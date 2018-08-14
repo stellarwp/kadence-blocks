@@ -100,8 +100,8 @@ registerBlockType( 'kadence/advancedbtn', {
 				color: '#555555',
 				background: 'transparent',
 				border: '#555555',
-				borderRadius: '3',
-				borderWidth: '2',
+				borderRadius: 3,
+				borderWidth: 2,
 				colorHover: '#ffffff',
 				backgroundHover: '#444444',
 				borderHover: '#444444',
@@ -113,7 +113,7 @@ registerBlockType( 'kadence/advancedbtn', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { btnCount, btns, hAlign }, className } = props;
+		const { attributes: { btnCount, btns, hAlign, uniqueID }, className } = props;
 		const renderSaveBtns = (index) => {
 			return (
 				<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
@@ -144,7 +144,7 @@ registerBlockType( 'kadence/advancedbtn', {
 			);
 		};
 		return (
-			<div className={ `kt-btn-align-${ hAlign }` }>
+			<div className={ `kt-btn-align-${ hAlign } kt-btns-wrap kt-btns${ uniqueID }` }>
 				{ times( btnCount, n => renderSaveBtns( n ) ) }
 			</div>
 		);

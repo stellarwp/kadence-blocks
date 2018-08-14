@@ -197,7 +197,7 @@ function kadence_row_layout_css( $attr, $unique_id ) {
 			if ( isset( $attr['currentOverlayTab'] ) && 'grad' == $attr['currentOverlayTab'] ) {
 				$type = ( isset( $attr['overlayGradType'] ) ? $attr['overlayGradType'] : 'linear');
 				if ( 'radial' === $type ) {
-					$angle = 'at center center';
+					$angle = ( isset( $attr['overlayBgImgPosition'] ) ? 'at ' . $attr['overlayBgImgPosition'] : 'at center center' );
 				} else {
 					$angle = ( isset( $attr['overlayGradAngle'] ) ? $attr['overlayGradAngle'] . 'deg' : '180deg');
 				}

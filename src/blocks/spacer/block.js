@@ -88,7 +88,7 @@ registerBlockType( 'kadence/spacer', {
 		},
 		spacerHeight: {
 			type: 'number',
-			default: '60',
+			default: 60,
 		},
 		dividerEnable: {
 			type: 'boolean',
@@ -100,7 +100,7 @@ registerBlockType( 'kadence/spacer', {
 		},
 		dividerOpacity: {
 			type: 'number',
-			default: '100',
+			default: 100,
 		},
 		dividerColor: {
 			type: 'string',
@@ -108,11 +108,11 @@ registerBlockType( 'kadence/spacer', {
 		},
 		dividerWidth: {
 			type: 'number',
-			default: '80',
+			default: 80,
 		},
 		dividerHeight: {
 			type: 'number',
-			default: '1',
+			default: 1,
 		},
 	},
 	transforms: {

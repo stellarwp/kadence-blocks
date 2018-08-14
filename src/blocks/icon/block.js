@@ -71,7 +71,7 @@ registerBlockType( 'kadence/icon', {
 				icon: 'fe_aperture',
 				link: '',
 				target: '_self',
-				size: 18,
+				size: 50,
 				width: 2,
 				title: '',
 				color: '#444444',
@@ -129,155 +129,148 @@ registerBlockType( 'kadence/icon', {
 		};
 		const renderIconSettings = (index) => {
 			return (
-				<div>
-					<PanelBody
-						title={ __( 'Icon' ) + ' ' + (index+1) + ' ' + __( 'Settings' ) }
-						initialOpen={ ( 1 == iconCount ? true : false ) }
-					>
-						<FontIconPicker
-							icons={ IcoNames }
-							value={ icons[ index ].icon }
-							onChange={ value => {
-								return saveArray( 'icon', value, index);
-							} }
-							appendTo="body"
-							renderFunc={ renderSVG }
-							theme="default"
-							isMulti={ false }
-						/>
+				<PanelBody
+					title={ __( 'Icon' ) + ' ' + (index+1) + ' ' + __( 'Settings' ) }
+					initialOpen={ ( 1 == iconCount ? true : false ) }
+				>
+					<FontIconPicker
+						icons={ IcoNames }
+						value={ icons[ index ].icon }
+						onChange={ value => {
+							return saveArray( 'icon', value, index);
+						} }
+						appendTo="body"
+						renderFunc={ renderSVG }
+						theme="default"
+						isMulti={ false }
+					/>
+					<RangeControl
+						label={ __( 'Icon Size' ) }
+						value={ icons[ index ].size }
+						onChange={ value => {
+							return saveArray( 'size', value, index);
+						} }
+						min={ 5 }
+						max={ 250 }
+					/>
+					{ icons[ index ].icon && 'fe' === icons[ index ].icon.substring(0, 2) && (
 						<RangeControl
-							label={ __( 'Icon Size' ) }
-							value={ icons[ index ].size }
+							label={ __( 'Line Width' ) }
+							value={ icons[ index ].width }
 							onChange={ value => {
-								return saveArray( 'size', value, index);
+								return saveArray( 'width', value, index);
 							} }
-							min={ 5 }
-							max={ 250 }
+							min={ 0.5 }
+							max={ 4 }
 						/>
-						{ icons[ index ].icon && 'fe' === icons[ index ].icon.substring(0, 2) && (
-							<RangeControl
-								label={ __( 'Line Width' ) }
-								value={ icons[ index ].width }
-								onChange={ value => {
-									return saveArray( 'width', value, index);
-								} }
-								min={ 0.5 }
-								max={ 4 }
-							/>
-						) }
+					) }
+					<PanelColor
+						title={ __( 'Icon Color' ) }
+						colorValue={ icons[ index ].color }
+					>
+						<ColorPalette
+							value={ icons[ index ].color }
+							onChange={ value => {
+								return saveArray( 'color', value, index);
+							} }
+						/>
+					</PanelColor>
+					<SelectControl
+						label={ __( 'Icon Style' ) }
+						value={ icons[ index ].style }
+						options={ [
+							{ value: 'default', label: __( 'Default' ) },
+							{ value: 'stacked', label: __( 'Stacked' ) },
+						] }
+						onChange={ value => {
+							return saveArray( 'style', value, index);
+						} }
+					/>
+					{ icons[ index ].style != 'default' && (
 						<PanelColor
-							title={ __( 'Icon Color' ) }
-							colorValue={ icons[ index ].color }
+							title={ __( 'Icon Background' ) }
+							colorValue={ icons[ index ].background }
 						>
 							<ColorPalette
-								value={ icons[ index ].color }
+								value={ icons[ index ].background }
 								onChange={ value => {
-									return saveArray( 'color', value, index);
+									return saveArray( 'background', value, index);
 								} }
 							/>
 						</PanelColor>
-						<SelectControl
-							label={ __( 'Icon Style' ) }
-							value={ icons[ index ].style }
-							options={ [
-								{ value: 'default', label: __( 'Default' ) },
-								{ value: 'stacked', label: __( 'Stacked' ) },
-							] }
-							onChange={ value => {
-								return saveArray( 'style', value, index);
-							} }
-						/>
-						{ icons[ index ].style != 'default' && (
-							<PanelColor
-								title={ __( 'Icon Background' ) }
-								colorValue={ icons[ index ].background }
-							>
-								<ColorPalette
-									value={ icons[ index ].background }
-									onChange={ value => {
-										return saveArray( 'background', value, index);
-									} }
-								/>
-							</PanelColor>
-						) }
-						{ icons[ index ].style != 'default' && (
-							<PanelColor
-								title={ __( 'Border Color' ) }
-								colorValue={ icons[ index ].border }
-							>
-								<ColorPalette
-									value={ icons[ index ].border }
-									onChange={ value => {
-										return saveArray( 'border', value, index);
-									} }
-								/>
-							</PanelColor>
-						) }
-						{ icons[ index ].style != 'default' && (
-							<RangeControl
-								label={ __( 'Border Size (px)' ) }
-								value={ icons[ index ].borderWidth }
+					) }
+					{ icons[ index ].style != 'default' && (
+						<PanelColor
+							title={ __( 'Border Color' ) }
+							colorValue={ icons[ index ].border }
+						>
+							<ColorPalette
+								value={ icons[ index ].border }
 								onChange={ value => {
-									return saveArray( 'borderWidth', value, index);
+									return saveArray( 'border', value, index);
 								} }
-								min={ 0 }
-								max={ 20 }
 							/>
-						) }
-						{ icons[ index ].style != 'default' && (
-							<RangeControl
-								label={ __( 'Border Radius (%)' ) }
-								value={ icons[ index ].borderRadius }
-								onChange={ value => {
-									return saveArray( 'borderRadius', value, index);
-								} }
-								min={ 0 }
-								max={ 50 }
-							/>
-						) }
-						{ icons[ index ].style != 'default' && (
-							<RangeControl
-								label={ __( 'Padding (px)' ) }
-								value={ icons[ index ].padding }
-								onChange={ value => {
-									return saveArray( 'padding', value, index);
-								} }
-								min={ 0 }
-								max={ 180 }
-							/>
-						) }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Link Settings' ) }
-						initialOpen={ false }
-					>
-						<label class="components-base-control__label">{ __( 'Link' ) }</label>
-						<URLInput
-							value={ icons[ index ].link }
+						</PanelColor>
+					) }
+					{ icons[ index ].style != 'default' && (
+						<RangeControl
+							label={ __( 'Border Size (px)' ) }
+							value={ icons[ index ].borderWidth }
 							onChange={ value => {
-								return saveArray( 'link', value, index);
+								return saveArray( 'borderWidth', value, index);
 							} }
+							min={ 0 }
+							max={ 20 }
 						/>
-						<SelectControl
-							label={ __( 'Link Target' ) }
-							value={ icons[ index ].target }
-							options={ [
-								{ value: '_self', label: __( 'Same Window' ) },
-								{ value: '_blank', label: __( 'New Window' ) },
-							] }
+					) }
+					{ icons[ index ].style != 'default' && (
+						<RangeControl
+							label={ __( 'Border Radius (%)' ) }
+							value={ icons[ index ].borderRadius }
 							onChange={ value => {
-								return saveArray( 'target', value, index);
+								return saveArray( 'borderRadius', value, index);
 							} }
+							min={ 0 }
+							max={ 50 }
 						/>
-						<TextControl
-							label={ __( 'Title for Accessibility' ) }
-							value={ icons[ index ].title }
+					) }
+					{ icons[ index ].style != 'default' && (
+						<RangeControl
+							label={ __( 'Padding (px)' ) }
+							value={ icons[ index ].padding }
 							onChange={ value => {
-								return saveArray( 'title', value, index);
+								return saveArray( 'padding', value, index);
 							} }
+							min={ 0 }
+							max={ 180 }
 						/>
-					</PanelBody>
-				</div>
+					) }
+					<label class="components-base-control__label">{ __( 'Link' ) }</label>
+					<URLInput
+						value={ icons[ index ].link }
+						onChange={ value => {
+							return saveArray( 'link', value, index);
+						} }
+					/>
+					<SelectControl
+						label={ __( 'Link Target' ) }
+						value={ icons[ index ].target }
+						options={ [
+							{ value: '_self', label: __( 'Same Window' ) },
+							{ value: '_blank', label: __( 'New Window' ) },
+						] }
+						onChange={ value => {
+							return saveArray( 'target', value, index);
+						} }
+					/>
+					<TextControl
+						label={ __( 'Title for Accessibility' ) }
+						value={ icons[ index ].title }
+						onChange={ value => {
+							return saveArray( 'title', value, index);
+						} }
+					/>
+				</PanelBody>
 			);
 		};
 		const renderSettings = (
@@ -287,7 +280,7 @@ registerBlockType( 'kadence/icon', {
 		);
 		const renderIconsPreview = (index) => {
 			return (
-				<div className={ `kt-svg-style-${ icons[ index ].style }` } >
+				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` } >
 					{ icons[ index ].icon && (
 						<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }`} name={ icons[ index ].icon } size={ icons[ index ].size } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
 							color: ( icons[ index ].color ? icons[ index ].color : undefined ),
@@ -301,11 +294,6 @@ registerBlockType( 'kadence/icon', {
 				</div>
 			);
 		};
-		const renderIcons = (
-			<div>
-				{ times( iconCount, n => renderIconsPreview( n ) ) }
-			</div>
-		);
 		return (
 			<div className={ className }>
 				<BlockControls>
@@ -329,14 +317,14 @@ registerBlockType( 'kadence/icon', {
 							value={ iconCount }
 							onChange={ newcount => {
 								let newicons = icons;
-								if (newicons.length < newcount) {
+								if ( newicons.length < newcount ) {
 									let amount = Math.abs(newcount - newicons.length); 
 									{ times( amount, n => {
 										newicons.push( {
 											icon: 'fe_aperture',
 											link: '',
 											target: '_self',
-											size: 18,
+											size: 50,
 											width: 2,
 											title: '',
 											color: '#444444',
@@ -361,7 +349,7 @@ registerBlockType( 'kadence/icon', {
 				<div className={ `kt-svg-icons` } style={ {
 					textAlign: ( textAlignment ? textAlignment : undefined ),
 				} } >
-					{ renderIcons }
+					{ times( iconCount, n => renderIconsPreview( n ) ) }
 				</div>
 			</div>
 		);
@@ -374,7 +362,7 @@ registerBlockType( 'kadence/icon', {
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
 						<a href={ icons[ index ].link } className={ 'kt-svg-icon-link' } target={ icons[ index ].target }>
-							<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } icon={ ( 'fa' === icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
+							<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
 								color: ( icons[ index ].color ? icons[ index ].color : undefined ),
 								backgroundColor: ( icons[ index ].background && icons[ index ].style != 'default' ? icons[ index ].background : undefined ),
 								padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),

@@ -64,7 +64,9 @@ i.fipicon-angle-left:before {
    font-family: dashicons;
 }
 
-
+.kt-svg-icon-wrap {
+    display: inline-block;
+}
 .kt-svg-style-stacked .kt-svg-icon {
     border: 0px solid #444444;
 }

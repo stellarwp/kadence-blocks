@@ -44,7 +44,7 @@ const attributes = {
 	},
 	minHeight: {
 		type: 'number',
-		default: '0',
+		default: 0,
 	},
 	maxWidth: {
 		type: 'number',

@@ -74,7 +74,7 @@ class KadenceAdvancedButton extends Component {
 		}
 	}
 	render() {
-		const { attributes: { btnCount, btns, hAlign, currentTab }, className, setAttributes, isSelected, setState } = this.props;
+		const { attributes: { btnCount, btns, hAlign, currentTab, uniqueID }, className, setAttributes, isSelected, setState } = this.props;
 		const renderBtns = (index) => {
 			return (
 				<div className={ `btn-area-wrap kt-btn-${ index }-area` }>
@@ -458,13 +458,18 @@ class KadenceAdvancedButton extends Component {
 			</div>
 		);
 		const saveArray = ( key, value, index ) => {
+			if ( ! uniqueID ) {
+				setAttributes( { 
+					uniqueID : '_' + Math.random().toString( 36 ).substr( 2, 9 ),
+				} );
+			}
 			let newbtns = [];
 			{ times( btnCount, n => {
 				newbtns[n] = btns[n];
 				if( n === index ) {
 					newbtns[n][key] = value;
 				}
-			} ) };
+			} ); }
 			setAttributes( { 
 				btns: newbtns,
 			} );

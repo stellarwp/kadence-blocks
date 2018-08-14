@@ -537,7 +537,7 @@ class KadenceRowLayout extends Component {
 					onChange={ overlayBgImgSize => setAttributes( { overlayBgImgSize } ) }
 				/>
 				<SelectControl
-					label={ __( 'Background Image Size' ) }
+					label={ __( 'Background Image Position' ) }
 					value={ overlayBgImgPosition }
 					options={ [
 						{ value: 'center top', label: __( 'Center Top' ) },
@@ -670,6 +670,24 @@ class KadenceRowLayout extends Component {
 						} }
 						min={ 0 }
 						max={ 360 }
+					/>
+				) }
+				{ overlayGradType && 'radial' == overlayGradType && (
+					<SelectControl
+						label={ __( 'Gradient Position' ) }
+						value={ overlayBgImgPosition }
+						options={ [
+							{ value: 'center top', label: __( 'Center Top' ) },
+							{ value: 'center center', label: __( 'Center Center' ) },
+							{ value: 'center bottom', label: __( 'Center Bottom' ) },
+							{ value: 'left top', label: __( 'Left Top' ) },
+							{ value: 'left center', label: __( 'Left Center' ) },
+							{ value: 'left bottom', label: __( 'Center Bottom' ) },
+							{ value: 'right top', label: __( 'Right Top' ) },
+							{ value: 'right center', label: __( 'Right Center' ) },
+							{ value: 'right bottom', label: __( 'Right Bottom' ) },
+						] }
+						onChange={ overlayBgImgPosition => setAttributes( { overlayBgImgPosition } ) }
 					/>
 				) }
 				<SelectControl
@@ -990,7 +1008,7 @@ class KadenceRowLayout extends Component {
 					) }
 					{  currentOverlayTab && 'grad' === currentOverlayTab && (
 						<div className={ 'kt-row-layout-overlay kt-row-overlay-gradient' } data-bg-img-id={ overlayBgImgID } style={ {
-							backgroundImage: ( 'radial' === overlayGradType ? `radial-gradient(at center center, ${overlay} ${overlayGradLoc}%, ${ overlaySecond} ${overlayGradLocSecond}%)` : `linear-gradient(${ overlayGradAngle }deg, ${overlay} ${overlayGradLoc}%, ${ overlaySecond} ${overlayGradLocSecond}%)` ),
+							backgroundImage: ( 'radial' === overlayGradType ? `radial-gradient(at ${overlayBgImgPosition}, ${overlay} ${overlayGradLoc}%, ${ overlaySecond} ${overlayGradLocSecond}%)` : `linear-gradient(${ overlayGradAngle }deg, ${overlay} ${overlayGradLoc}%, ${ overlaySecond} ${overlayGradLocSecond}%)` ),
 							mixBlendMode:  overlayBlendMode,
 							opacity: overlayOpacityOutput(overlayOpacity),
 						} }>
