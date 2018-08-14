@@ -2,7 +2,7 @@
  * Gutenberg Blocks
  *
  */
-wp.i18n.setLocaleData({ '': {} }, 'kadence-gutenberg');
+wp.i18n.setLocaleData( { '': {} }, 'kadence-blocks' );
 
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';

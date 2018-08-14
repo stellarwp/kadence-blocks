@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Enqueue Gutenberg block assets for both frontend + backend.
+ * Enqueue Gutenberg block assets
  *
  * @since 1.0.0
  */

@@ -25,6 +25,19 @@ class Kadence_Blocks_Settings {
 			add_action( 'admin_menu', array( $this, 'add_menu' ) );
 			add_filter( 'plugin_action_links_kadence-blocks/kadence-blocks.php', array( $this, 'add_settings_link' ) );
 		}
+		add_action( 'wp_ajax_kadence_blocks_activate_deactivate', array( $this, 'ajax_blocks_activate_deactivate' ), 10, 0 );
+		add_action( 'enqueue_block_editor_assets', array( $this, 'deregister_blocks' ) );
+
+	}
+	/**
+	 * Deregister Blocks.
+	 */
+	public function deregister_blocks() {
+		// Scripts.
+		wp_enqueue_script( 'kadence-blocks-deregister-js', KT_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KT_BLOCKS_VERSION, true );
+		wp_localize_script( 'kadence-blocks-deregister-js', 'kt_deregister_params', array(
+			'deregister' => get_option( 'kt_blocks_unregistered_blocks' ),
+		) );
 	}
 	/**
 	 * Add option page menu
@@ -37,8 +50,12 @@ class Kadence_Blocks_Settings {
 	 * Loads admin style sheets and scripts
 	 */
 	public function scripts() {
-		wp_enqueue_style( 'kadence-blocks-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array(), KT_BLOCKS_VERSION, 'all' );
-		wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
+		wp_enqueue_style( 'kadence-blocks-admin-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array(), KT_BLOCKS_VERSION, 'all' );
+		wp_enqueue_script( 'kadence-blocks-admin-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
+		wp_localize_script( 'kadence-blocks-admin-js', 'kt_blocks_params', array(
+			'ajaxurl' => admin_url( 'admin-ajax.php' ),
+			'wpnonce' => wp_create_nonce( 'kadence-blocks-manage' ),
+		) );
 	}
 
 	/**
@@ -46,25 +63,9 @@ class Kadence_Blocks_Settings {
 	 */
 	public function config_page() {
 		?>
-			<div class="wrap kt_theme_welcome">
+			<div class="wrap kt_plugin_welcome">
 <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
-<symbol id="kt-svg-icon-mbri-extension" viewBox="0 0 32 32">
-<title>mbri-extension</title>
-<path d="M25.131 0.465c-0.619-0.619-1.643-0.619-2.261 0l-6.404 6.404c-0.619 0.619-0.619 1.643 0 2.261l6.404 6.405c0.619 0.619 1.643 0.619 2.261 0l6.405-6.404c0.619-0.619 0.619-1.643 0-2.261l-6.405-6.405zM24.378 1.22l6.403 6.403c0.215 0.215 0.215 0.539 0 0.754l-6.403 6.404c-0.215 0.215-0.539 0.215-0.754 0l-6.404-6.404c-0.215-0.215-0.215-0.539 0-0.754l6.404-6.403c0.215-0.215 0.539-0.215 0.754 0zM17.6 19.2c-0.877 0-1.6 0.723-1.6 1.6v9.6c0 0.877 0.723 1.6 1.6 1.6h9.6c0.877 0 1.6-0.723 1.6-1.6v-9.6c0-0.877-0.723-1.6-1.6-1.6h-9.6zM17.6 20.267h9.6c0.305 0 0.533 0.228 0.533 0.533v9.6c0 0.305-0.228 0.533-0.533 0.533h-9.6c-0.305 0-0.533-0.228-0.533-0.533v-9.6c0-0.305 0.228-0.533 0.533-0.533zM1.6 3.2c-0.877 0-1.6 0.723-1.6 1.6v9.6c0 0.877 0.723 1.6 1.6 1.6h9.6c0.877 0 1.6-0.723 1.6-1.6v-9.6c0-0.877-0.723-1.6-1.6-1.6h-9.6zM1.6 4.267h9.6c0.305 0 0.533 0.228 0.533 0.533v9.6c0 0.305-0.228 0.533-0.533 0.533h-9.6c-0.305 0-0.533-0.228-0.533-0.533v-9.6c0-0.305 0.228-0.533 0.533-0.533zM1.6 19.2c-0.877 0-1.6 0.723-1.6 1.6v9.6c0 0.877 0.723 1.6 1.6 1.6h9.6c0.877 0 1.6-0.723 1.6-1.6v-9.6c0-0.877-0.723-1.6-1.6-1.6h-9.6zM1.6 20.267h9.6c0.305 0 0.533 0.228 0.533 0.533v9.6c0 0.305-0.228 0.533-0.533 0.533h-9.6c-0.305 0-0.533-0.228-0.533-0.533v-9.6c0-0.305 0.228-0.533 0.533-0.533z"></path>
-</symbol>
-<symbol id="kt-svg-icon-mbri-edit" viewBox="0 0 32 32">
-<title>mbri-edit</title>
-<path d="M29.856 6.866c-0.619-0.619-1.643-0.619-2.261 0l-0.462 0.461c-0.619 0.619-0.619 1.643 0 2.261l1.678 1.679c0.621 0.619 1.643 0.619 2.263 0l0.461-0.462c0.619-0.619 0.619-1.641 0-2.261l-1.679-1.678zM29.103 7.62l1.678 1.678c0.215 0.215 0.215 0.539 0 0.754l-0.462 0.462c-0.213 0.215-0.539 0.215-0.754 0l-1.678-1.678c-0.215-0.215-0.215-0.539 0-0.754l0.462-0.462c0.215-0.215 0.539-0.215 0.754 0zM25.466 9.604c-0.32-0.026-0.71 0.064-1.001 0.356l-10.976 10.995c-0.199 0.203-0.411 0.412-0.537 0.738-0.125 0.326-0.151 0.683-0.151 1.239v1.6c0 0.539 0.459 1.067 1.067 1.067h1.6c0.559 0 0.923-0.032 1.248-0.158 0.326-0.128 0.537-0.338 0.73-0.531l10.976-10.997c0.528-0.529 0.48-1.34 0-1.82l-2.133-2.133c-0.226-0.224-0.501-0.331-0.821-0.356zM25.532 10.714l2.133 2.133c0.041 0.041 0.081 0.233 0 0.314l-10.976 10.995c-0.192 0.192-0.249 0.249-0.359 0.292-0.112 0.043-0.354 0.085-0.864 0.085h-1.599v-1.6c0-0.512 0.041-0.752 0.082-0.859 0.041-0.107 0.096-0.163 0.295-0.363l10.976-10.997c0.096-0.096 0.263-0.048 0.311 0zM4.8 11.733h13.867c0.295 0 0.533 0.238 0.533 0.533s-0.238 0.533-0.533 0.533h-13.867c-0.295 0-0.533-0.238-0.533-0.533s0.238-0.533 0.533-0.533zM4.8 8.533h13.867c0.295 0 0.533 0.238 0.533 0.533s-0.238 0.533-0.533 0.533h-13.867c-0.295 0-0.533-0.238-0.533-0.533s0.238-0.533 0.533-0.533zM4.8 5.333h13.867c0.295 0 0.533 0.238 0.533 0.533s-0.238 0.533-0.533 0.533h-13.867c-0.295 0-0.533-0.238-0.533-0.533s0.238-0.533 0.533-0.533zM1.6 0c-0.877 0-1.6 0.723-1.6 1.6v28.8c0 0.877 0.723 1.6 1.6 1.6h20.267c0.877 0 1.6-0.723 1.6-1.6v-8.533c0-0.713-1.067-0.691-1.067 0v8.533c0 0.305-0.228 0.533-0.533 0.533h-20.267c-0.305 0-0.533-0.228-0.533-0.533v-28.8c0-0.305 0.228-0.533 0.533-0.533h20.267c0.305 0 0.533 0.228 0.533 0.533v7.467c0 0.717 1.067 0.691 1.067 0v-7.467c0-0.877-0.723-1.6-1.6-1.6z"></path>
-</symbol>
-<symbol id="kt-svg-icon-browser" viewBox="0 0 42 32">
-<title>browser</title>
-<path d="M41.5 10c-0.276 0-0.5 0.224-0.5 0.5v20c0 0.276-0.224 0.5-0.5 0.5h-39c-0.276 0-0.5-0.224-0.5-0.5v-20c0-0.276-0.224-0.5-0.5-0.5s-0.5 0.224-0.5 0.5v20c0 0.827 0.673 1.5 1.5 1.5h39c0.827 0 1.5-0.673 1.5-1.5v-20c0-0.276-0.224-0.5-0.5-0.5zM40.5 0h-39c-0.827 0-1.5 0.673-1.5 1.5v6c0 0.276 0.224 0.5 0.5 0.5h41c0.276 0 0.5-0.224 0.5-0.5v-6c0-0.827-0.673-1.5-1.5-1.5zM41 7h-40v-5.5c0-0.276 0.224-0.5 0.5-0.5h39c0.276 0 0.5 0.224 0.5 0.5v5.5zM17.5 28c0.276 0 0.5-0.224 0.5-0.5v-16c0-0.276-0.224-0.5-0.5-0.5h-13c-0.276 0-0.5 0.224-0.5 0.5v16c0 0.276 0.224 0.5 0.5 0.5h13zM5 12h12v15h-12v-15zM22.5 15h15c0.276 0 0.5-0.224 0.5-0.5s-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5s0.224 0.5 0.5 0.5zM22.5 20h15c0.276 0 0.5-0.224 0.5-0.5s-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5s0.224 0.5 0.5 0.5zM22.5 25h15c0.276 0 0.5-0.224 0.5-0.5s-0.224-0.5-0.5-0.5h-15c-0.276 0-0.5 0.224-0.5 0.5s0.224 0.5 0.5 0.5zM3 4c0 0.552 0.448 1 1 1s1-0.448 1-1c0-0.552-0.448-1-1-1s-1 0.448-1 1zM7 4c0 0.552 0.448 1 1 1s1-0.448 1-1c0-0.552-0.448-1-1-1s-1 0.448-1 1zM11 4c0 0.552 0.448 1 1 1s1-0.448 1-1c0-0.552-0.448-1-1-1s-1 0.448-1 1z"></path>
-</symbol>
-<symbol id="kt-svg-icon-adjustments" viewBox="0 0 33 32">
-<title>adjustments</title>
-<path d="M31 0h-29c-0.822 0-2 1.178-2 2v28c0 0.822 1.178 2 2 2h29c0.822 0 2-1.178 2-2v-28c0-0.822-1.178-2-2-2zM32 30c-0.006 0.284-0.716 0.994-1 1h-29c-0.284-0.006-0.994-0.716-1-1v-28c0.006-0.284 0.716-0.994 1-1h29c0.284 0.006 0.994 0.716 1 1v28zM16.5 5.5c-1.103 0-2 0.897-2 2s0.897 2 2 2 2-0.897 2-2-0.897-2-2-2zM16.5 8.5c-0.551 0-1-0.449-1-1s0.449-1 1-1 1 0.449 1 1-0.449 1-1 1zM24.5 21.5c-1.103 0-2 0.897-2 2s0.897 2 2 2 2-0.897 2-2-0.897-2-2-2zM24.5 24.5c-0.551 0-1-0.449-1-1s0.449-1 1-1 1 0.449 1 1-0.449 1-1 1zM8.5 16.5c-1.103 0-2 0.897-2 2s0.897 2 2 2 2-0.897 2-2-0.897-2-2-2zM8.5 19.5c-0.551 0-1-0.449-1-1s0.449-1 1-1 1 0.449 1 1-0.449 1-1 1zM8.5 15c0.276 0 0.5-0.224 0.5-0.5v-9c0-0.276-0.224-0.5-0.5-0.5s-0.5 0.224-0.5 0.5v9c0 0.276 0.224 0.5 0.5 0.5zM8.5 22c-0.276 0-0.5 0.224-0.5 0.5v3c0 0.276 0.224 0.5 0.5 0.5s0.5-0.224 0.5-0.5v-3c0-0.276-0.224-0.5-0.5-0.5zM16.5 11c-0.276 0-0.5 0.224-0.5 0.5v14c0 0.276 0.224 0.5 0.5 0.5s0.5-0.224 0.5-0.5v-14c0-0.276-0.224-0.5-0.5-0.5zM24.5 20c0.276 0 0.5-0.224 0.5-0.5v-14c0-0.276-0.224-0.5-0.5-0.5s-0.5 0.224-0.5 0.5v14c0 0.276 0.224 0.5 0.5 0.5z"></path>
-</symbol>
 <symbol id="kt-svg-icon-envelope" viewBox="0 0 38 32">
 <title>envelope</title>
 <path d="M20.060 0.413c-0.58-0.533-1.539-0.533-2.119 0l-17.688 10.671c-0.15 0.091-0.242 0.253-0.242 0.428v18.922c0 0.863 0.706 1.566 1.574 1.566h34.83c0.868 0 1.574-0.703 1.574-1.566v-18.922c0-0.175-0.092-0.337-0.242-0.428l-17.687-10.671zM18.504 1.24c0.035-0.021 0.066-0.046 0.095-0.074 0.108-0.107 0.25-0.166 0.401-0.166s0.293 0.059 0.4 0.166c0.029 0.028 0.061 0.053 0.095 0.074l17.227 10.394-12.478 7.436c-0.237 0.142-0.315 0.448-0.174 0.686 0.094 0.157 0.26 0.244 0.43 0.244 0.087 0 0.175-0.022 0.255-0.070l12.245-7.29v17.757l-16.935-11.266c-0.538-0.429-1.594-0.429-2.096-0.025l-16.969 11.286v-17.752l12.244 7.29c0.080 0.048 0.169 0.070 0.256 0.070 0.17 0 0.336-0.087 0.43-0.244 0.141-0.237 0.063-0.544-0.174-0.686l-12.479-7.436 17.227-10.394zM36.090 31h-34.188l16.656-11.086c0.173-0.138 0.712-0.137 0.919 0.025l16.613 11.061zM6.5 13h25c0.276 0 0.5-0.224 0.5-0.5s-0.224-0.5-0.5-0.5h-25c-0.276 0-0.5 0.224-0.5 0.5s0.224 0.5 0.5 0.5z"></path>
@@ -96,14 +97,45 @@ class Kadence_Blocks_Settings {
 					<div class="kad-panel-contain">
 						<h2 class="nav-tab-wrapper">
 							<a class="nav-tab nav-tab-active nav-tab-link" data-tab-id="kt-dashboard" href="#"><?php echo esc_html__( 'Dashboard', 'kadence-blocks' ); ?></a>
+							<a class="nav-tab nav-tab-link" data-tab-id="kt-help" href="#"><?php echo esc_html__( 'Help / Tutorials', 'kadence-blocks' ); ?></a>
 						<a class="nav-tab go-pro-tab" target="_blank" href="https://www.kadencethemes.com/product/kadence-gutenberg-blocks/"><?php echo esc_html__( 'Go Pro', 'kadence-blocks' ); ?> <i class="dashicons dashicons-external"></i></a>
 						</h2>
 						<div id="kt-dashboard" class="nav-tab-content panel_open kt-admin-clearfix">
 							<div class="kad-helpful-links kt-main">
 								<h2><?php echo esc_html__( 'Settings', 'kadence-blocks' ); ?></h2>
+								<h5 style="text-align:center" class="kt-main-subtitle"><?php echo esc_html__( 'Disable/Enable Blocks', 'kadence-blocks' ); ?></h5>
 								<div class="kt-promo-row">
-									
+									<?php
+									$blocks = $this->blocks_array();
+									$unregistered_blocks = get_option( 'kt_blocks_unregistered_blocks', array() );
+									if ( ! is_array( $unregistered_blocks ) ) {
+										$unregistered_blocks = array();
+									}
+									foreach ( $blocks as $block_key => $block ) {
+										if ( in_array( $block['slug'], $unregistered_blocks ) ) {
+											$enabled_class = 'kt-block-inactive';
+										} else {
+											$enabled_class = 'kt-block-active';
+										}
+										echo '<div class="kt_plugin_box ' . esc_attr( $enabled_class ) . '">';
+										echo '<img src="' . esc_url( $block['image'] ) . '">';
+										echo '<h3>' . esc_html( $block['name'] ) . '</h3>';
+										echo '<p>' . wp_kses_post( $block['desc'] ) . '</p>';
+										if ( in_array( $block['slug'], $unregistered_blocks ) ) {
+											$btntitle = __( 'Activate', 'kadence-blocks' );
+										} else {
+											$btntitle = __( 'Deactivate', 'kadence-blocks' );
+										}
+										echo '<a class="kt_block_button button button-primary ' . esc_attr( $enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
+										echo '</div>';
+									}
+									?>
 								</div>
+								<div class="kt-dashboard-spacer"></div>
+							</div>
+						</div>
+						<div id="kt-help" class="nav-tab-content kt-admin-clearfix">
+							<div class="kad-helpful-links kt-main">
 								<h2><?php echo esc_html__( 'Helpful Links and Resources', 'kadence-blocks' ); ?></h2>
 								<div class="kt-promo-row">
 									<div class="kt-promo-box-contain kt-promo-three">
@@ -157,12 +189,77 @@ class Kadence_Blocks_Settings {
 										</div>
 									</div>
 								</div>
+								<div class="kt-dashboard-spacer"></div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		<?php
+	}
+	/**
+	 * Get array of Kadence Blocks.
+	 */
+	public function blocks_array() {
+		$blocks = array(
+			'kadence/rowlayout'   => array(
+				'slug'  => 'kadence/rowlayout',
+				'name'  => __( 'Row Layout', 'kadence-blocks' ),
+				'desc'  => __( 'Create rows with nested blocks either in columns or as a container. Give style to your rows with background, overlay, padding, etc.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/rowlayout.jpg',
+			),
+			'kadence/icon'        => array(
+				'slug'  => 'kadence/icon',
+				'name'  => __( 'Icon', 'kadence-blocks' ),
+				'desc'  => __( 'Choose from over 1500+ SVG Icons to add into your page and style the size, colors, background, border, etc.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/icon.jpg',
+			),
+			'kadence/advancedbtn' => array(
+				'slug'  => 'kadence/advancedbtn',
+				'name'  => __( 'Advanced Button', 'kadence-blocks' ),
+				'desc'  => __( 'Create an advanced button or a row of buttons. Style each one including hover controls plus you can use an icon and display them side by side', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/btn.jpg',
+			),
+			'kadence/spacer'      => array(
+				'slug'  => 'kadence/spacer',
+				'name'  => __( 'Spacer/Divider', 'kadence-blocks' ),
+				'desc'  => __( 'Easily create a divder and determine the space around it or just create some space in your content.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/spacer.jpg',
+			),
+		);
+		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );
+	}
+	/**
+	 * Ajax activate/deactivate blocks
+	 */
+	public function ajax_blocks_activate_deactivate() {
+		if ( ! check_ajax_referer( 'kadence-blocks-manage', 'wpnonce' ) ) {
+			wp_send_json_error();
+		}
+		if ( ! isset( $_POST['kt_block'] ) ) {
+			return wp_send_json_error();
+		}
+		// Get variables.
+		$unregistered_blocks = get_option( 'kt_blocks_unregistered_blocks' );
+		$block = sanitize_text_field( wp_unslash( $_POST['kt_block'] ) );
+
+		if ( ! is_array( $unregistered_blocks ) ) {
+			$unregistered_blocks = array();
+		}
+
+		// If current block is in the array - remove it.
+		if ( in_array( $block, $unregistered_blocks ) ) {
+			$index = array_search( $block, $unregistered_blocks );
+			if ( false !== $index ) {
+				unset( $unregistered_blocks[ $index ] );
+			}
+			// if current block is not in the array - add it.
+		} else {
+			array_push( $unregistered_blocks, $block );
+		}
+
+		update_option( 'kt_blocks_unregistered_blocks', $unregistered_blocks );
+		return wp_send_json_success();
 	}
 	/**
 	 * Add settings link

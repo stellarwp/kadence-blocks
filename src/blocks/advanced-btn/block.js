@@ -82,7 +82,11 @@ registerBlockType( 'kadence/advancedbtn', {
 		},
 		btnCount: {
 			type: 'number',
-			default: '1',
+			default: 1,
+		},
+		uniqueID: {
+			type: 'string',
+			default: '',
 		},
 		btns :{
 			type: 'array',
@@ -95,7 +99,7 @@ registerBlockType( 'kadence/advancedbtn', {
 				paddingLR: '',
 				color: '#555555',
 				background: 'transparent',
-				border: '#55555',
+				border: '#555555',
 				borderRadius: '3',
 				borderWidth: '2',
 				colorHover: '#ffffff',
