@@ -1,11 +1,12 @@
 <?php
 /**
  * Plugin Name: Kadence Blocks - Gutenberg Page Builder Blocks
- * Plugin URI: https://www.kadencethemes.com
- * Description: Custom Blocks for for Gutenberg
+ * Plugin URI: https://www.kadencethemes.com/product/kadence-gutenberg-blocks/
+ * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts and backgrounds with the responsive Row / Layout Block.
  * Author: Kadence Themes
  * Author URI: https://www.kadencethemes.com
  * Version: 0.2.0
+ * Text Domain: kadence-blocks
  * License: GPL2+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  *
@@ -22,6 +23,18 @@ define( 'KT_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
 define( 'KT_BLOCKS_VERSION', '0.2.0' );
 
 /**
- * Block Initializer.
+ * Load Plugin
  */
-require_once KT_BLOCKS_PATH . 'dist/init.php';
+function kadence_blocks_init() {
+	require_once KT_BLOCKS_PATH . 'dist/init.php';
+	require_once KT_BLOCKS_PATH . 'dist/settings/class-kadence-blocks-settings.php';
+}
+add_action( 'plugins_loaded', 'kadence_blocks_init' );
+
+/**
+ * Load the plugin textdomain
+ */
+function kadence_blocks_lang() {
+	load_plugin_textdomain( 'kadence-blocks', false, basename( dirname( __FILE__ ) ) . '/languages' );
+}
+add_action( 'init', 'kadence_blocks_lang' );
