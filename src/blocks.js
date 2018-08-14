@@ -1,12 +1,11 @@
 /**
  * Gutenberg Blocks
  *
- * All blocks related JavaScript files should be imported here.
- * You can create a new block folder in this dir and include code
- * for that block here as well.
- *
- * All blocks should be included here since this is the file that
- * Webpack is compiling as the input file.
  */
+wp.i18n.setLocaleData({ '': {} }, 'kadence-gutenberg');
 
-import './block/block.js';
+import './blocks/spacer/block.js';
+import './blocks/advanced-btn/block.js';
+import './blocks/row-layout/block.js';
+import './blocks/column/block.js';
+import './blocks/icon/block.js';

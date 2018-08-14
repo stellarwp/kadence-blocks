@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Just a Sample to check if UMD is working</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" media="screen" href="fonticonpicker.base-theme.react.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="fonticonpicker.material-theme.react.css" />
+	<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+</head>
+<body>
+	<div id="app"></div>
+	<script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+	<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+	<script crossorigin src="https://unpkg.com/classnames@2.2.5/index.js"></script>
+	<script crossorigin src="https://unpkg.com/prop-types@15.6.1/prop-types.min.js"></script>
+	<script crossorigin src="https://unpkg.com/react-transition-group@2.3.0/dist/react-transition-group.min.js"></script>
+	<script src="fonticonpicker.react.js"></script>
+	<script>
+		'use strict';
+
+		var TestFip = function TestFip() {
+			return React.createElement(FontIconPicker, { icons: ['fipicon-angle-left', 'fipicon-angle-right', 'fipicon-angle-up', 'fipicon-angle-down'], theme: 'bluegrey', renderUsing: 'class' });
+		};
+
+		ReactDOM.render(React.createElement(TestFip, null), document.getElementById('app'));
+	</script>
+</body>
+</html>

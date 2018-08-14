@@ -1,0 +1,59 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+ // Controls
+ .editor-block-list__block[data-type="kadence/spacer"].is-selected .editor-block-list__block-edit {
+
+	.kadence-spacer__resize-handler-top,
+	.kadence-spacer__resize-handler-bottom {
+		display: block;
+	}
+}
+
+.kadence-spacer__resize-handler-top,
+.kadence-spacer__resize-handler-bottom {
+	display: none;
+	border-radius: 50%;
+	border: 2px solid white;
+	width: 15px !important;
+	height: 15px !important;
+	position: absolute;
+	background: #0085ba;
+	padding: 0 3px 3px 0;
+	cursor: se-resize;
+	left: 50% !important;
+	margin-left: -7.5px;
+}
+
+// Item
+.kt-block-spacer {
+    position: relative;
+    height: 100%;
+    border: dashed 1px #eee;
+}
+.kt-block-spacer .kt-divider {
+    width: 100%;
+    border-top: solid 1px #eee;
+    position: absolute;
+    top: 50%;
+        margin: 0;
+    padding: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
+    left: 50%;
+    transform: perspective(1px) translate(-50%, -50%);
+}
+.kt-block-spacer.kt-block-spacer-halign-left .kt-divider {
+    left: 0;
+    transform: perspective(1px) translate(0%, -50%);
+}
+.kt-block-spacer.kt-block-spacer-halign-right .kt-divider {
+    left: auto;
+    right:0;
+    transform: perspective(1px) translate(0%, -50%);
+}

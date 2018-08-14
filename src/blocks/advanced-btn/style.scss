@@ -1,0 +1,40 @@
+/**
+ * #.# Styles
+ */
+ .kt-button {
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    border-style: solid;
+    transition: all .3s ease-in-out;
+}
+.kt-btn-svg-icon.kt-btn-side-right {
+    padding-left: 5px;
+}
+.kt-btn-svg-icon.kt-btn-side-left {
+    padding-right: 5px;
+}
+.kt-btn-has-text-false .kt-btn-svg-icon {
+    padding-left:0;
+    padding-right:0;
+}
+.kt-btn-wrap {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+.kt-btn-align-center {
+    text-align: center;
+}
+.kt-btn-align-left {
+    text-align: left;
+}
+.kt-btn-align-right {
+    text-align: right;
+}
+.wp-block-kadence-advancedbtn .kt-btn-wrap:last-child {
+    margin-right: 0;
+}
+.wp-block-kadence-advancedbtn .kt-btn-wrap {
+    margin-right: 5px;
+}

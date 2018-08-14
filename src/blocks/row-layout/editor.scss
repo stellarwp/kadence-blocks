@@ -1,0 +1,382 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+ // Controls
+
+ // Sidebar Buttons
+ .kt-cta-upload-btn {
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+	border-radius: 4px;
+	display: inline-flex;
+}
+.kt-remove-img.kt-cta-upload-btn {
+    margin-left: 5px;
+}
+// Tabs
+.kt-inspect-tabs .components-button-group {
+    margin-bottom: 1em;
+}
+// Tab Controls
+.edit-post-block-sidebar__panel .kt-inspect-tabs .components-panel__body {
+	border-top:0;
+	margin-top: 6px;
+	margin-bottom: 0;
+}
+.edit-post-block-sidebar__panel .kt-inspect-tabs .components-panel__body:not(:last-child) {
+    padding-bottom:0px
+}
+.kt-inspect-tabs {
+	padding-top: 10px;
+	.components-tab-panel__tabs {
+		border-bottom: 4px solid #ddd;
+		button {
+			background:transparent;
+			border:0;
+			border-bottom:4px solid transparent;
+			padding: 6px 16px;
+			margin-bottom: -4px;
+			outline:0;
+		}
+		button.active-tab {
+			border-bottom-color:#0085ba;
+			color:#0085ba;
+		}
+	}
+}
+.kt-inspect-tabs.kt-gradient-tabs {
+	padding-top: 0;
+}
+.kt-inspect-tabs.kt-gradient-tabs .components-tab-panel__tabs {
+    margin-bottom: 15px;
+}
+.kt-inspect-tabs.kt-gradient-tabs .components-tab-panel__tabs button {
+    background: transparent;
+    border: 0;
+    border: 1px solid #eee;
+    border-bottom: 4px solid transparent;
+    padding: 10px 16px 6px;
+    margin-bottom: -4px;
+    outline: 0;
+    color: #575757;
+    width: 50%;
+    font-size: 14px;
+    font-weight: bold;
+}
+.kt-inspect-tabs.kt-gradient-tabs .components-tab-panel__tabs button.active-tab {
+    background: #0085ba;
+    color: white;
+}
+// Button Groups
+.components-button-group .kt-layout-btn{
+    height: 36px;
+    background: transparent;
+    box-shadow: none;
+    border: 1px solid #eee;
+	padding: 2px;
+	margin-right: 5px;
+    margin-bottom: 5px;
+}
+.components-button-group .kt-layout-btn svg {
+    width:60px;
+    height:30px;
+}
+.components-button-group .kt-layout-btn:hover, .components-button-group .kt-layout-btn.is-primary, .components-button-group .kt-layout-btn:focus:not(:disabled):not([aria-disabled=true]) {
+    border-color: #ddd;
+    background:transparent;
+    box-shadow:none;
+}
+.components-button-group .kt-layout-btn:hover svg rect {
+    fill: #9EAAB5;
+}
+.components-button-group .kt-layout-btn.is-primary svg rect {
+    fill: #738495;
+}
+// spacing controls:
+.editor-block-list__block[data-type="kadence/rowlayout"].is-selected .editor-block-list__block-edit {
+
+	.wp-block-kadence-rowlayout-handler-top,
+	.wp-block-kadence-rowlayout-handler-bottom {
+		display: block;
+	}
+}
+.wp-block-kadence-rowlayout-handler-bottom {
+	bottom:-16px !important;
+}
+.wp-block-kadence-rowlayout-handler-top {
+	top:-16px !important;
+}
+.wp-block-kadence-rowlayout-handler-top,
+.wp-block-kadence-rowlayout-handler-bottom {
+    display: none;
+    border-radius: 0;
+    border: 0;
+    min-height: 20px;
+    width: 100%;
+    height: 100% !important;
+    position: absolute;
+    background: transparent;
+    padding: 0;
+    z-index: 1000;
+    cursor: se-resize;
+    left: 0px;
+    margin-left: 0px;
+}
+// These margins make sure that nested blocks stack/overlay with the parent block chrome
+// This is sort of an experiment at making sure the editor looks as much like the end result as possible
+// Potentially the rules here can apply to all nested blocks and enable stacking, in which case it should be moved elsewhere
+// When using CSS grid, margins do not collapse on the container.
+.wp-block-kadence-rowlayout .editor-block-list__layout {
+	margin-left: 0;
+	margin-right: 0;
+
+	&:first-child {
+		margin-left: -14px;
+	}
+	&:last-child {
+		margin-right: -14px;
+	}
+
+	// This max-width is used to constrain the main editor column, it should not cascade into columns
+	.editor-block-list__block {
+		max-width: none;
+	}
+}
+// column outline:
+[data-type="kadence/rowlayout"] .wp-block-kadence-rowlayout .kadence-column:before {
+    outline: 1px dashed rgba(145, 151, 162, 0.25);
+    content:'';
+    position:absolute;
+    width:100%;
+    top:16px;
+    bottom:16px;
+}
+.editor-block-list__block[data-type="kadence/rowlayout"] {
+    clear: both;
+}
+// [data-type="kadence/rowlayout"] .wp-block-kadence-rowlayout > .editor-inner-blocks > .editor-block-list__layout > .editor-block-list__block:before {
+//     outline:1px dashed rgba(145,151,162,.25);
+// }
+// When setting on center this keeps
+.editor-block-list__block[data-align=center][data-type="kadence/rowlayout"] {
+	text-align: inherit;
+}
+// Fullwide: show margin left/right to ensure there's room for the side UI
+// This is not a 1:1 preview with the front-end where these margins would presumably be zero
+// @todo this could be revisited, by for example showing this margin only when the parent block was selected first
+// Then at least an unselected columns block would be an accurate preview
+.editor-block-list__block[data-align="full"] .wp-block-kadence-rowlayout > .editor-inner-blocks > .editor-block-list__layout {
+	&:first-child {
+		margin-left: 30px;
+	}
+	&:last-child {
+		margin-right: 30px;
+	}
+}
+
+// This block has flex container children. Flex container margins do not collapse: https://www.w3.org/TR/css-flexbox-1/#flex-containers.
+// Therefore, let's at least not add any additional margins here.
+// The goal is for the editor to look more like the front-end.
+//.editor-block-list__layout .editor-block-list__block[data-type="kadence/rowlayout"] > .editor-block-list__block-edit,
+
+.editor-block-list__layout .editor-block-list__block[data-type="kadence/column"] > .editor-block-list__block-edit {
+	margin-top: 0;
+	margin-bottom: 0;
+
+	// This uncollapses margins on this parent container.
+	padding-top: 0.1px;
+	padding-bottom: 0.1px;
+}
+.kt-row-has-bg {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.wp-block-kadence-rowlayout {
+	display: block;
+	position: relative;
+
+	> .innerblocks-wrap {
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		> .editor-inner-blocks > .editor-block-list__layout {
+			display: flex;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+			> [data-type="kadence/column"] {
+				display: flex;
+				flex-direction: column;
+				flex: 1;
+				width: 0;
+
+				.editor-block-list__block-edit {
+					flex-basis: 100%;
+				}
+			}
+		}
+	}
+}
+// Two columns
+.wp-block-kadence-rowlayout.kt-row-layout-left-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 2;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 1;
+	}
+}
+.wp-block-kadence-rowlayout.kt-row-layout-right-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 2;
+	}
+}
+// Three Columns
+.wp-block-kadence-rowlayout.kt-row-layout-left-half > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"] {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:first-child {
+		flex: 2;
+	}
+}
+.wp-block-kadence-rowlayout.kt-row-layout-right-half > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"] {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 2;
+	}
+}
+.wp-block-kadence-rowlayout.kt-row-layout-center-half > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"] {
+		flex: 2;
+	}
+	> [data-type="kadence/column"]:first-child {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 1;
+	}
+}
+.wp-block-kadence-rowlayout.kt-row-layout-center-wide > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"] {
+		flex: 3;
+	}
+	> [data-type="kadence/column"]:first-child {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 1;
+	}
+}
+.wp-block-kadence-rowlayout.kt-row-layout-center-exwide > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"] {
+		flex: 6;
+	}
+	> [data-type="kadence/column"]:first-child {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 1;
+	}
+}
+.wp-block-kadence-rowlayout.kt-row-layout-left-forty > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"] {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:first-child {
+		flex: 2;
+	}
+}
+.wp-block-kadence-rowlayout.kt-row-layout-right-forty > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"] {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 2;
+	}
+}
+// Align items:
+.wp-block-kadence-rowlayout.kt-row-valign-middle > .innerblocks-wrap {
+	justify-content: center;
+}
+.wp-block-kadence-rowlayout.kt-row-valign-bottom > .innerblocks-wrap {
+	justify-content: flex-end;
+}
+.wp-block-kadence-rowlayout.kt-row-valign-middle > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"] > .editor-block-list__block-edit {
+    align-items: center;
+    display: flex;
+}
+.wp-block-kadence-rowlayout.kt-row-valign-bottom > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"] > .editor-block-list__block-edit {
+    align-items: flex-end;
+    display: flex;
+}
+.kadence-column {
+    width: 100%;
+}
+
+// Overlay
+.kt-row-layout-overlay {
+    top: 0;
+    left: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+// Inital Setup
+.kt-select-layout-title {
+    text-transform: uppercase;
+    padding-bottom: 10px;
+    font-size: 16px;
+}
+.kt-select-layout {
+	padding: 30px;
+	border: 2px dashed #ddd;
+	text-align: center;
+	position: relative;
+    z-index: 10;
+	.components-button-group .kt-layout-btn {
+		height:49px;
+		border: 0;
+		margin-right: 10px;
+		margin-bottom: 10px;
+		svg {
+			width: 90px;
+			height: 45px;
+		}
+	}
+}
+
+
+// Mobile Preview maybe later... 
+// .editor-block-list__block[data-type="kadence/rowlayout"].is-selected .wp-block-kadence-rowlayout.current-tab-mobile {
+//     max-width: 380px;
+//     margin: 0 auto;
+// }
+// .editor-block-list__block[data-align="full"][data-type="kadence/rowlayout"].is-selected .wp-block-kadence-rowlayout.current-tab-mobile .editor-block-list__layout:first-child {
+//     margin-left: -14px;
+// }
+// .editor-block-list__block[data-align="full"][data-type="kadence/rowlayout"].is-selected .wp-block-kadence-rowlayout.current-tab-mobile .editor-block-list__layout:last-child {
+// 	margin-right: -14px;
+// }
+// .editor-block-list__block[data-type="kadence/rowlayout"].is-selected .wp-block-kadence-rowlayout.current-tab-mobile.kt-mobile-layout-row > .editor-inner-blocks > .editor-block-list__layout {
+// 	flex-direction: column;
+// 	> [data-type="kadence/column"] {
+// 		flex: 1;
+// 		width: auto;
+// 	}
+// }
+// .editor-block-list__block[data-type="kadence/rowlayout"].is-selected .wp-block-kadence-rowlayout.current-tab-mobile.kt-mobile-layout-equal > .editor-inner-blocks > .editor-block-list__layout {
+// 	> [data-type="kadence/column"] {
+// 		flex: 1;
+// 		width: auto;
+// 	}
+// }

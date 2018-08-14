@@ -1,0 +1,104 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+ // Controls
+.components-base-control__field .components-range-control__slider+.dashicon.dashicons-editor-textcolor {
+    width: 30px;
+    height: 30px;
+}
+.wp-block-kadence-advancedbtn form.blocks-button__inline-link {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    line-height: 1.4;
+    width: 280px;
+}
+.wp-block-kadence-advancedbtn .btn-area-wrap form.blocks-button__inline-link {
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    border: 1px solid #eee;
+    padding: 0 5px;
+    background: white;
+    transform: translate(-50%, 0);
+}
+.kt-inspect-tabs.kt-hover-tabs {
+    padding-top: 0;
+    margin-top: -5px;
+}
+
+.kt-inspect-tabs.kt-hover-tabs  .components-tab-panel__tabs {
+    margin-bottom: 15px;
+}
+
+.kt-inspect-tabs.kt-hover-tabs .components-tab-panel__tabs button.active-tab {
+    border-color: #0085ba;
+    color: #0085ba;
+}
+.kt-inspect-tabs.kt-hover-tabs  .components-tab-panel__tabs button {
+    background: transparent;
+    border: 0;
+    border: 1px solid #eee;
+    border-bottom: 4px solid transparent;
+    padding: 6px 16px;
+    margin-bottom: -4px;
+    outline: 0;
+    color: #575757;
+    width: 50%;
+    font-size: 14px;
+    font-weight: bold;
+}
+.wp-block-kadence-advancedbtn.kt-btn-align-left .btn-area-wrap form.blocks-button__inline-link {
+    left: 0;
+    transform: translate(0, 0);
+}
+.wp-block-kadence-advancedbtn.kt-btn-align-right .btn-area-wrap form.blocks-button__inline-link {
+    left: auto;
+    right:0;
+    transform: translate(0, 0);
+}
+// Item
+.wp-block-kadence-advancedbtn .btn-area-wrap {
+    position: relative;
+    display:inline-block;
+}
+[data-type="kadence/advancedbtn"].is-selected .wp-block-kadence-advancedbtn, [data-type="kadence/advancedbtn"].is-typing .wp-block-kadence-advancedbtn {
+    padding-bottom: 40px;
+}
+.kt-button {
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    border-style: solid;
+    transition: all .3s ease-in-out;
+}
+.kt-btn-svg-icon.kt-btn-side-right {
+    padding-left: 5px;
+}
+.kt-btn-svg-icon.kt-btn-side-left {
+    padding-right: 5px;
+}
+.kt-button-wrap {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+.kt-btn-align-center {
+    text-align: center;
+}
+.kt-btn-align-left {
+    text-align: left;
+}
+.kt-btn-align-right {
+    text-align: right;
+}
+.wp-block-kadence-advancedbtn .btn-area-wrap:last-child {
+    margin-right: 0;
+}
+.wp-block-kadence-advancedbtn .btn-area-wrap {
+    margin-right: 5px;
+}
