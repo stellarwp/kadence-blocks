@@ -17,12 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Kadence_Blocks_Settings {
 	/**
-	 * Class version.
-	 *
-	 * @var string
-	 */
-	public $version = '1.0.0';
-	/**
 	 * Class Constructor.
 	 */
 	public function __construct() {
@@ -36,14 +30,14 @@ class Kadence_Blocks_Settings {
 	 * Add option page menu
 	 */
 	public function add_menu() {
-		$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks'), 'edit_pages', 'kadence_blocks', array( $this, 'config_page' ) );
+		$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence_blocks', array( $this, 'config_page' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'scripts' ) );
 	}
 	/**
 	 * Loads admin style sheets and scripts
 	 */
 	public function scripts() {
-		wp_enqueue_style( 'kadence-blocks-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array(),  KT_BLOCKS_VERSION, 'all' );
+		wp_enqueue_style( 'kadence-blocks-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array(), KT_BLOCKS_VERSION, 'all' );
 		wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 	}
 
@@ -95,100 +89,20 @@ class Kadence_Blocks_Settings {
 						<?php echo esc_html__( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ); ?>
 					</h1>
 					<h4>
-						<?php echo esc_html__( 'Gutenberg Page Builder Blocks', 'kadence-blocks' ); ?>
+						<?php echo esc_html__( 'Settings and Helpful Links', 'kadence-blocks' ); ?>
 					</h4>
 				</div>
 				<div class="kad-panel-left kt-admin-clearfix">
 					<div class="kad-panel-contain">
 						<h2 class="nav-tab-wrapper">
 							<a class="nav-tab nav-tab-active nav-tab-link" data-tab-id="kt-dashboard" href="#"><?php echo esc_html__( 'Dashboard', 'kadence-blocks' ); ?></a>
-							<a class="nav-tab nav-tab-link" data-tab-id="kt-page-builder" href="#"><?php echo esc_html__( 'Page Builder', 'kadence-blocks' ); ?></a>
-							<a class="nav-tab nav-tab-link" data-tab-id="kt-plugins" href="#"><?php echo esc_html__( 'Recommended Plugins', 'kadence-blocks' ); ?></a>
 						<a class="nav-tab go-pro-tab" target="_blank" href="https://www.kadencethemes.com/product/kadence-gutenberg-blocks/"><?php echo esc_html__( 'Go Pro', 'kadence-blocks' ); ?> <i class="dashicons dashicons-external"></i></a>
 						</h2>
 						<div id="kt-dashboard" class="nav-tab-content panel_open kt-admin-clearfix">
 							<div class="kad-helpful-links kt-main">
-								<h2><?php echo esc_html__( 'Getting Started', 'kadence-blocks' ); ?></h2>
+								<h2><?php echo esc_html__( 'Settings', 'kadence-blocks' ); ?></h2>
 								<div class="kt-promo-row">
-									<div class="kt-promo-box-contain">
-										<div class="kt-docs-promo kt-promo-box">
-											<div class="kt-welcome-clearfix kt-promo-icon-container">
-												<svg class="kt-svg-icon kt-svg-icon-adjustments"><use xlink:href="#kt-svg-icon-adjustments"></use></svg>
-											</div>
-											<div class="kt-content-promo">
-												<h3><?php echo esc_html__( 'Customization', 'kadence-blocks' ); ?></h3>
-												<p><?php echo esc_html__( 'Layouts, fonts, colors, and more. You can control it all from the options panel.', 'kadence-blocks' ); ?></p>
-												<?php
-												if ( 'Ascend' === $this->theme_name ) {
-													$options_url = admin_url( 'themes.php?page=kad_options' );
-												} elseif ( 'Virtue' === $this->theme_name ) {
-													$options_url = admin_url( 'themes.php?page=ktoptions' );
-												} elseif ( 'Pinnacle' === $this->theme_name ) {
-													$options_url = admin_url( 'themes.php?page=ktoptions' );
-												}
-												echo '<a href="' . esc_attr( $options_url ) . '">' . esc_html__( 'Customize', 'kadence-blocks' ) . '</a>'; ?>
-											</div>
-										</div>
-									</div>
-									<div class="kt-promo-box-contain">
-										<div class="kt-demos-promo kt-promo-box">
-											<div class="kt-welcome-clearfix kt-promo-icon-container">
-											<svg class="kt-svg-icon kt-svg-icon-browser"><use xlink:href="#kt-svg-icon-browser"></use></svg>
-											</div>
-											<div class="kt-content-promo">
-												<h3><?php echo esc_html__( 'Import Demo Content', 'kadence-blocks' ); ?></h3>
-												<p><?php echo esc_html__( 'In just a few clicks you can import an entire demo site to work from.', 'kadence-blocks' ); ?></p>
-												<?php
-												if ( class_exists( 'Kadence_Importer' ) ) {
-													echo '<a href="' . esc_url( admin_url( 'tools.php?page=kadence-importer' ) ) . '" class="kt-welcome-btn">' . esc_html__( 'View Importer', 'kadence-blocks' ) . '</a>';
-												} else {
-													$installed_plugins = get_plugins();
-													if ( ! isset( $installed_plugins['kadence-importer/kadence-importer.php'] ) ) {
-														$button_label = esc_html__( 'Install Importer', 'kadence-blocks' );
-														$data_action  = 'install';
-														wp_create_nonce( 'tgmpa-install' );
-													} elseif ( ! is_plugin_active( 'kadence-importer/kadence-importer.php' ) ) {
-														$button_label = esc_html__( 'Activate Importer', 'kadence-blocks' );
-														$data_action  = 'activate';
-													}
-													$install_link    = admin_url( 'admin-ajax.php' );
-													$install_nonce   = '';
-													$activate_nonce  = wp_create_nonce( 'activate-plugin_kadence-importer/kadence-importer.php' );
-													$activation_link = self_admin_url( 'plugins.php?_wpnonce=' . $activate_nonce . '&action=activate&plugin=kadence-importer%2Fkadence-importer.php' );
-													?>
-													<a class="kt-welcome-btn button kt-trigger-plugin-install install-toolkit" data-redirect-url="<?php echo esc_url( admin_url( 'tools.php?page=kadence-importer' ) ); ?>" data-activating-label="<?php echo esc_attr__( 'Activating...', 'kadence-blocks' ); ?>" data-installing-label="<?php echo esc_attr__( 'Installing...', 'kadence-blocks' ); ?>" data-installed-label="<?php echo esc_attr__( 'Installed', 'kadence-blocks' ); ?>" data-activated-label="<?php echo esc_attr__( 'Activated', 'kadence-blocks' ); ?>" data-action="<?php echo esc_attr( $data_action ); ?>" data-install-url="<?php echo esc_attr( $install_link ); ?>" data-install-nonce="<?php echo esc_attr( $install_nonce ); ?>" data-activate-url="<?php echo esc_attr( $activation_link ); ?>"><?php echo esc_html( $button_label ); ?></a>
-													<?php
-												}
-												?>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="kt-promo-row">
-									<div class="kt-promo-box-contain">
-										<div class="kt-builder-promo kt-promo-box">
-											<div class="kt-welcome-clearfix kt-promo-icon-container">
-												<svg class="kt-svg-icon kt-svg-icon-mbri-edit"><use xlink:href="#kt-svg-icon-mbri-edit"></use></svg>
-											</div>
-											<div class="kt-content-promo">
-												<h3><?php echo esc_html__( 'Page Builder', 'kadence-blocks' ); ?></h3>
-												<p><?php echo esc_html__( 'Take total control over your content with a powerful page builder that will make editing a breeze.', 'kadence-blocks' ); ?></p>
-												<?php echo '<a data-tab-id="kt-page-builder" class="nav-tab-link" href="#">' . esc_html__( 'Get a Builder', 'kadence-blocks' ) . '</a>'; ?>
-											</div>
-										</div>
-									</div>
-									<div class="kt-promo-box-contain">
-										<div class="kt-plugins-promo kt-promo-box">
-											<div class="kt-welcome-clearfix kt-promo-icon-container">
-												<svg class="kt-svg-icon kt-svg-icon-mbri-extension"><use xlink:href="#kt-svg-icon-mbri-extension"></use></svg>
-											</div>
-											<div class="kt-content-promo">
-												<h3><?php echo esc_html__( 'Recommend Plugins', 'kadence-blocks' ); ?></h3>
-												<p><?php echo esc_html__( 'An excellent selection of extensions for your site that can get you powered for greatness.', 'kadence-blocks' ); ?></p>
-												<?php echo '<a data-tab-id="kt-plugins" class="nav-tab-link" href="#">' . esc_html__( 'Explore', 'kadence-blocks' ) . '</a>'; ?>
-											</div>
-										</div>
-									</div>
+									
 								</div>
 								<h2><?php echo esc_html__( 'Helpful Links and Resources', 'kadence-blocks' ); ?></h2>
 								<div class="kt-promo-row">
@@ -200,16 +114,7 @@ class Kadence_Blocks_Settings {
 											<div class="kt-content-promo">
 												<h3><?php echo esc_html__( 'Support', 'kadence-blocks' ); ?></h3>
 												<p><?php echo esc_html__( 'Are you having trouble getting things to look how you want? Or are you stuck and not sure what to do? We can help!', 'kadence-blocks' ); ?></p>
-												<?php
-												if ( 'Ascend' === $this->theme_name ) {
-													$link = 'https://wordpress.org/support/theme/ascend';
-												} elseif ( 'Virtue' === $this->theme_name ) {
-													$link = 'https://wordpress.org/support/theme/virtue';
-												} elseif ( 'Pinnacle' === $this->theme_name ) {
-													$link = 'https://wordpress.org/support/theme/pinnacle';
-												}
-												?>
-												<a href="<?php echo esc_url( $link ); ?>" target="_blank"><?php echo esc_html__( 'Ask a question', 'kadence-blocks' ); ?></a>
+												<a href="https://wordpress.org/support/plugins/kadence-blocks" target="_blank"><?php echo esc_html__( 'Ask a question', 'kadence-blocks' ); ?></a>
 											</div>
 										</div>
 									</div>
@@ -221,7 +126,7 @@ class Kadence_Blocks_Settings {
 											<div class="kt-content-promo">
 												<h3><?php echo esc_html__( 'Tutorials', 'kadence-blocks' ); ?></h3>
 												<p><?php echo esc_html__( 'Are you not sure how to do something? Check out our tutorials for quick help with many topics.', 'kadence-blocks' ); ?></p>
-												<a href="https://www.kadencethemes.com/kadence-tutorials/?utm_source=toolkit-welcome&utm_medium=dashboard&utm_campaign=toolkit-<?php echo esc_attr( strtolower( $this->theme_name ) ); ?>" target="_blank"><?php echo esc_html__( 'View', 'kadence-blocks' ); ?></a>
+												<a href="https://www.kadencethemes.com/gutenberg-tutorials/?utm_source=blocks-settings&utm_medium=dashboard&utm_campaign=kadence-blocks" target="_blank"><?php echo esc_html__( 'View', 'kadence-blocks' ); ?></a>
 											</div>
 										</div>
 									</div>
@@ -231,9 +136,9 @@ class Kadence_Blocks_Settings {
 												<svg class="kt-svg-icon kt-svg-icon-documents"><use xlink:href="#kt-svg-icon-documents"></use></svg>
 											</div>
 											<div class="kt-content-promo">
-												<h3><?php echo esc_html__( 'Theme Documentation', 'kadence-blocks' ); ?></h3>
-												<p><?php /* translators: %1$s: Theme Title, %2$s: Theme title */ printf( esc_html__( 'The %1$s has thorough documentation that can help you learn about any aspect of the %2$s.', 'kadence-blocks' ), esc_html( $this->theme_title ), esc_html( $this->theme_title ) ); ?></p>
-												<?php echo '<a href="http://docs.kadencethemes.com/' . esc_attr( strtolower( $this->theme_name ) ) . '-free/" target="_blank">' . esc_html__( 'Browse', 'kadence-blocks' ) . '</a>'; ?>
+												<h3><?php echo esc_html__( 'Plugin Documentation', 'kadence-blocks' ); ?></h3>
+												<p><?php echo esc_html__( 'Kadence Blocks has throughou documentation to help you create amazing content.', 'kadence-blocks' ); ?></p>
+												<?php echo '<a href="http://docs.kadencethemes.com/kadence-blocks/" target="_blank">' . esc_html__( 'Browse', 'kadence-blocks' ) . '</a>'; ?>
 											</div>
 										</div>
 									</div>
@@ -247,7 +152,7 @@ class Kadence_Blocks_Settings {
 											<div class="kt-content-promo">
 												<h3><?php echo esc_html__( 'Kadence Themes Newsletter', 'kadence-blocks' ); ?></h3>
 												<p><?php echo esc_html__( 'Get the latest news about product updates and new plugins right to your inbox.', 'kadence-blocks' ); ?></p>
-												<a href="https://www.kadencethemes.com/newsletter-subscribe/?utm_source=toolkit-welcome&utm_medium=dashboard&utm_campaign=toolkit" target="_blank"><?php echo esc_html__( 'Subscribe', 'kadence-blocks' ); ?></a>
+												<a href="https://www.kadencethemes.com/newsletter-subscribe/?utm_source=kadence-blocks&utm_medium=dashboard&utm_campaign=settings" target="_blank"><?php echo esc_html__( 'Subscribe', 'kadence-blocks' ); ?></a>
 											</div>
 										</div>
 									</div>
@@ -257,18 +162,19 @@ class Kadence_Blocks_Settings {
 					</div>
 				</div>
 			</div>
-			<?php
-		}
+		<?php
 	}
 	/**
-	 * add settings link
+	 * Add settings link
+	 *
+	 * @param array $links plugin activate/deactivate links array.
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="' . admin_url( 'settings.php?page=kadence_blocks' ) . '">' . __( 'Settings', 'kadence-blocks' ) . '</a>';
+		$settings_link = '<a href="' . admin_url( 'options-general.php?page=kadence_blocks' ) . '">' . __( 'Settings', 'kadence-blocks' ) . '</a>';
 		array_push( $links, $settings_link );
 		return $links;
 	}
 
 }
 
-new Kadence_Blocks_Welcome();
+new Kadence_Blocks_Settings();

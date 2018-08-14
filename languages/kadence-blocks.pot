@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2018-08-14 11:32-0600\n"
+"POT-Creation-Date: 2018-08-14 12:05-0600\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence Themes\n"
@@ -18,447 +18,91 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: node_modules\n"
 
-#: dist/settings/class-kadence-blocks-settings.php:48
-msgid "Getting Started with: "
+#: dist/settings/class-kadence-blocks-settings.php:33
+#: dist/settings/class-kadence-blocks-settings.php:89
+msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:48
-#: dist/settings/class-kadence-blocks-settings.php:148
-msgid "Getting Started"
+#: dist/settings/class-kadence-blocks-settings.php:33
+msgid "Kadence Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:72
-msgid "The Kadence Toolkit is only designed to work with Kadence Themes"
+#: dist/settings/class-kadence-blocks-settings.php:92
+msgid "Gutenberg Page Builder Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:119
-msgid "Getting Started with the "
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:122
-msgid "Demo content, recommended plugins and helpful links."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:130
+#: dist/settings/class-kadence-blocks-settings.php:98
 msgid "Dashboard"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:131
-#: dist/settings/class-kadence-blocks-settings.php:211
-msgid "Page Builder"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:132
-#: dist/settings/class-kadence-blocks-settings.php:332
-msgid "Recommended Plugins"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:142
+#: dist/settings/class-kadence-blocks-settings.php:99
 msgid "Go Pro"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:156
-msgid "Customization"
+#: dist/settings/class-kadence-blocks-settings.php:103
+#: dist/settings/class-kadence-blocks-settings.php:173
+#: src/blocks/advanced-btn/edit.js:247
+msgid "Settings"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:157
-msgid ""
-"Layouts, fonts, colors, and more. You can control it all from the options "
-"panel."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:166
-msgid "Customize"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:176
-msgid "Import Demo Content"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:177
-msgid "In just a few clicks you can import an entire demo site to work from."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:180
-msgid "View Importer"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:184
-msgid "Install Importer"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:188
-msgid "Activate Importer"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:196
-#: dist/settings/class-kadence-blocks-settings.php:320
-#: dist/settings/class-kadence-blocks-settings.php:343
-msgid "Activating..."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:196
-#: dist/settings/class-kadence-blocks-settings.php:320
-#: dist/settings/class-kadence-blocks-settings.php:343
-msgid "Installing..."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:196
-#: dist/settings/class-kadence-blocks-settings.php:320
-#: dist/settings/class-kadence-blocks-settings.php:343
-#: dist/settings/class-kadence-blocks-settings.php:467
-#: dist/settings/class-kadence-blocks-settings.php:577
-msgid "Installed"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:196
-#: dist/settings/class-kadence-blocks-settings.php:320
-#: dist/settings/class-kadence-blocks-settings.php:343
-#: dist/settings/class-kadence-blocks-settings.php:453
-#: dist/settings/class-kadence-blocks-settings.php:563
-msgid "Activated"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:212
-msgid ""
-"Take total control over your content with a powerful page builder that will "
-"make editing a breeze."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:213
-msgid "Get a Builder"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:223
-msgid "Recommend Plugins"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:224
-msgid ""
-"An excellent selection of extensions for your site that can get you powered "
-"for greatness."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:225
-msgid "Explore"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:230
+#: dist/settings/class-kadence-blocks-settings.php:107
 msgid "Helpful Links and Resources"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:238
+#: dist/settings/class-kadence-blocks-settings.php:115
 msgid "Support"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:239
+#: dist/settings/class-kadence-blocks-settings.php:116
 msgid ""
 "Are you having trouble getting things to look how you want? Or are you stuck "
 "and not sure what to do? We can help!"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:249
+#: dist/settings/class-kadence-blocks-settings.php:117
 msgid "Ask a question"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:259
+#: dist/settings/class-kadence-blocks-settings.php:127
 msgid "Tutorials"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:260
+#: dist/settings/class-kadence-blocks-settings.php:128
 msgid ""
 "Are you not sure how to do something? Check out our tutorials for quick help "
 "with many topics."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:261
+#: dist/settings/class-kadence-blocks-settings.php:129
 msgid "View"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:271
-msgid "Theme Documentation"
+#: dist/settings/class-kadence-blocks-settings.php:139
+msgid "Plugin Documentation"
 msgstr ""
 
-#. translators: %1$s: Theme Title, %2$s: Theme title
-#: dist/settings/class-kadence-blocks-settings.php:272
-#, php-format
+#: dist/settings/class-kadence-blocks-settings.php:140
 msgid ""
-"The %1$s has thorough documentation that can help you learn about any aspect "
-"of the %2$s."
+"Kadence Blocks has throughou documentation to help you create amazing "
+"content."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:273
+#: dist/settings/class-kadence-blocks-settings.php:141
 msgid "Browse"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:285
+#: dist/settings/class-kadence-blocks-settings.php:153
 msgid "Kadence Themes Newsletter"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:286
+#: dist/settings/class-kadence-blocks-settings.php:154
 msgid ""
 "Get the latest news about product updates and new plugins right to your "
 "inbox."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:287
+#: dist/settings/class-kadence-blocks-settings.php:155
 msgid "Subscribe"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:296
-msgid "Choosing a Page Builder"
-msgstr ""
-
-#. translators: %1$s: <u>, %2$s: </u>, %3$s: Theme Title
-#: dist/settings/class-kadence-blocks-settings.php:297
-#, php-format
-msgid ""
-"We recommend using %1$sONE%2$s of these page builders. You can certainly try "
-"them all out but for performance we suggest just using one. The %3$s will "
-"work great with any one."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:312
-msgid "Pros:"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:316
-msgid "Cons:"
-msgstr ""
-
-#. translators: %1$s: <a>, %2$s: </a>
-#: dist/settings/class-kadence-blocks-settings.php:327
-#, php-format
-msgid ""
-"Having trouble deciding? Check out our post about the best %1$sPage Builders"
-"%2$s."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:333
-msgid ""
-"These are plugins are not required. But they are worth checking out for the "
-"impressive features that can really enhance your site."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:356
-#: dist/settings/class-kadence-blocks-settings.php:377
-msgid "Featured WooCommerce Extensions"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:416
-msgid "WooCommerce Settings"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:428
-msgid "WPForms Settings"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:440
-msgid "Yoast SEO Settings"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:465
-#: dist/settings/class-kadence-blocks-settings.php:575
-msgid "Activate"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:486
-#: dist/settings/class-kadence-blocks-settings.php:596
-msgid "Install"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:487
-#: dist/settings/class-kadence-blocks-settings.php:597
-msgid "Not Installed"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:527
-msgid "Elementor Settings"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:541
-msgid "Brizy Settings"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:555
-msgid "SiteOrigin Page Builder Settings"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:646
-msgid "Install Recommended Plugins"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:647
-msgid "Theme Plugins"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:648
-#, php-format
-msgid "Installing Plugin: %s"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:649
-msgid "Something went wrong with the plugin API."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:660
-msgid "Return to recommended Plugins Installer"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:661
-msgid "Plugin activated successfully."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:662
-#, php-format
-msgid "All plugins installed and activated successfully. %s"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:674
-#: src/blocks/advanced-btn/edit.js:247
-msgid "Settings"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:694
-msgid "Installing"
-msgstr ""
-
-#: node_modules/cgb-scripts/template/src/block/block.js:30
-msgid "<% blockName %> - CGB Block"
-msgstr ""
-
-#: node_modules/cgb-scripts/template/src/block/block.js:34
-msgid "<% blockName %> — CGB Block"
-msgstr ""
-
-#: node_modules/cgb-scripts/template/src/block/block.js:35
-msgid "CGB Example"
-msgstr ""
-
-#: node_modules/cgb-scripts/template/src/block/block.js:36
-msgid "create-guten-block"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs-parser/index.js:306
-#: node_modules/yargs-parser/index.js:301
-#, javascript-format
-msgid "Not enough arguments following: %s"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs-parser/index.js:454
-#: node_modules/yargs-parser/index.js:449
-#, javascript-format
-msgid "Invalid JSON config file: %s"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:169
-#: node_modules/yargs/lib/usage.js:169
-msgid "Commands:"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:177
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:407
-#: node_modules/yargs/lib/usage.js:177 node_modules/yargs/lib/usage.js:407
-msgid "default:"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:179
-#: node_modules/yargs/lib/usage.js:179
-msgid "aliases:"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:241
-#: node_modules/yargs/lib/usage.js:241
-msgid "boolean"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:242
-#: node_modules/yargs/lib/usage.js:242
-msgid "count"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:243
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:244
-#: node_modules/yargs/lib/usage.js:243 node_modules/yargs/lib/usage.js:244
-msgid "string"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:245
-#: node_modules/yargs/lib/usage.js:245
-msgid "array"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:246
-#: node_modules/yargs/lib/usage.js:246
-msgid "number"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:250
-#: node_modules/yargs/lib/usage.js:250
-msgid "required"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:251
-#: node_modules/yargs/lib/usage.js:251
-msgid "choices:"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:270
-#: node_modules/yargs/lib/usage.js:270
-msgid "Examples:"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/usage.js:385
-#: node_modules/yargs/lib/usage.js:385
-msgid "generated-value"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:27
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:50
-#: node_modules/yargs/lib/validation.js:26
-#: node_modules/yargs/lib/validation.js:49
-#, javascript-format
-msgid "Not enough non-option arguments: got %s, need at least %s"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:38
-#: node_modules/yargs/lib/validation.js:37
-#, javascript-format
-msgid "Too many non-option arguments: got %s, maximum of %s"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:186
-#: node_modules/yargs/lib/validation.js:185
-msgid "Invalid values:"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:189
-#: node_modules/yargs/lib/validation.js:188
-#, javascript-format
-msgid "Argument: %s, Given: %s, Choices: %s"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:219
-#: node_modules/yargs/lib/validation.js:218
-#, javascript-format
-msgid "Argument check failed: %s"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:284
-#: node_modules/yargs/lib/validation.js:283
-msgid "Implications failed:"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:314
-#: node_modules/yargs/lib/validation.js:313
-#, javascript-format
-msgid "Arguments %s and %s are mutually exclusive"
-msgstr ""
-
-#: node_modules/webpack/node_modules/yargs/lib/validation.js:333
-#: node_modules/yargs/lib/validation.js:332
-#, javascript-format
-msgid "Did you mean %s?"
 msgstr ""
 
 #: src/blocks/advanced-btn/block.js:68
