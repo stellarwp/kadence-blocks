@@ -3,9 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
-Requires PHP: 5.4
 Tested up to: 4.9.8
-Stable tag: 0.2.0
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +19,6 @@ Build better content with Gutenberg using Kadence Gutenberg blocks.
 * Icon.
 * Advanced Button.
 * Spacer / Divider.
-* Advanced Heading.
 
 = Support =
 

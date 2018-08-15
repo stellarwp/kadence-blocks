@@ -169,8 +169,8 @@ class Kadence_Blocks_Settings {
 											</div>
 											<div class="kt-content-promo">
 												<h3><?php echo esc_html__( 'Plugin Documentation', 'kadence-blocks' ); ?></h3>
-												<p><?php echo esc_html__( 'Kadence Blocks has throughou documentation to help you create amazing content.', 'kadence-blocks' ); ?></p>
-												<?php echo '<a href="http://docs.kadencethemes.com/kadence-blocks/" target="_blank">' . esc_html__( 'Browse', 'kadence-blocks' ) . '</a>'; ?>
+												<p><?php echo esc_html__( 'Coming soon, Kadence Blocks documentation to help you create amazing content.', 'kadence-blocks' ); ?></p>
+												<?php echo '<a href="#" target="_blank">' . esc_html__( 'Coming Soon', 'kadence-blocks' ) . '</a>'; ?>
 											</div>
 										</div>
 									</div>
