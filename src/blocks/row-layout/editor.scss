@@ -126,6 +126,26 @@
     left: 0px;
     margin-left: 0px;
 }
+.kt-row-padding {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    color: #777;
+    opacity: 0;
+	transition: opacity .3s ease;
+	span {
+		background: rgba(255,255,255,.7);
+		padding:0 6px;
+	}
+}
+.kt-row-has-bg .kt-row-padding {
+	color:#000;
+}
+.is-selected .kt-padding-resize-box:hover .kt-row-padding {
+    opacity: 1;
+}
 // These margins make sure that nested blocks stack/overlay with the parent block chrome
 // This is sort of an experiment at making sure the editor looks as much like the end result as possible
 // Potentially the rules here can apply to all nested blocks and enable stacking, in which case it should be moved elsewhere
@@ -193,6 +213,10 @@
 }
 .kt-row-has-bg {
     padding-left: 15px;
+    padding-right: 15px;
+}
+.editor-block-list__block[data-align="full"] .wp-block-kadence-rowlayout {
+	padding-left: 15px;
     padding-right: 15px;
 }
 .wp-block-kadence-rowlayout {

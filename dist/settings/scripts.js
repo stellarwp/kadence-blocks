@@ -39,7 +39,6 @@ jQuery(document).ready(function ($) {
 			}
 
 			function ajax_callback(response){
-				console.log(response);
 				if ( typeof response.success != "undefined" && response.success ) {
 					if( $button.hasClass( 'kt-block-active' ) ) {
 						buttonStatusToggled( $button.data('deactivated-label') );
@@ -58,10 +57,8 @@ jQuery(document).ready(function ($) {
 			 */
 			function toggleBlock(){
 				if( $button.hasClass( 'kt-block-active' ) ) {
-					console.log('deactivating');
 					buttonStatusInProgress( $button.data('deactivating-label') );
 				} else {
-					console.log('activating');
 					buttonStatusInProgress( $button.data('activating-label') );
 				}
 				jQuery.post( kt_blocks_params.ajaxurl, {

@@ -66,6 +66,17 @@ class KadenceAdvancedButton extends Component {
 			btnFocused: 'false',
 		};
 	}
+	componentDidMount() {
+		if ( ! this.props.attributes.uniqueID ) {
+			this.props.setAttributes( { 
+				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+			} );
+		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+			this.props.setAttributes( { 
+				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+			} );
+		}
+	}
 	componentDidUpdate( prevProps ) {
 		if ( ! this.props.isSelected && prevProps.isSelected && this.state.btnFocused ) {
 			this.setState( {
@@ -73,8 +84,23 @@ class KadenceAdvancedButton extends Component {
 			} );
 		}
 	}
+	saveArrayUpdate( value, index ) {
+		const { attributes, setAttributes } = this.props;
+		const { btns } = attributes;
+
+		let newItems = btns.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		setAttributes( { 
+			btns: newItems,
+		} );
+	}
 	render() {
-		const { attributes: { btnCount, btns, hAlign, currentTab, uniqueID }, className, setAttributes, isSelected, setState } = this.props;
+		const { attributes: { btnCount, btns, hAlign, currentTab, uniqueID }, className, clientId, setAttributes, isSelected, setState } = this.props;
 		const renderBtns = (index) => {
 			return (
 				<div className={ `btn-area-wrap kt-btn-${ index }-area` }>
@@ -97,7 +123,7 @@ class KadenceAdvancedButton extends Component {
 							fontSize: btns[index].size + 'px',
 							borderRadius: btns[index].borderRadius + 'px',
 							borderWidth: btns[index].borderWidth + 'px',
-							borderColor: ( this.state.hovered && 'btn'+index == this.state.hovered ? btns[index].borderHover : btns[index].border ),
+							borderColor: ( this.state.hovered && 'btn' + index == this.state.hovered ? btns[index].borderHover : btns[index].border ),
 							paddingLeft: btns[index].paddingLR + 'px',
 							paddingRight: btns[index].paddingLR + 'px',
 							paddingTop: btns[index].paddingTB + 'px',
@@ -124,7 +150,7 @@ class KadenceAdvancedButton extends Component {
 									}
 								} }
 								onChange={ value => {
-									return saveArray( 'text', value, index);
+									this.saveArrayUpdate( { text: value }, index);
 								} }
 								formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
 								className={ 'kt-button-text' }
@@ -144,7 +170,7 @@ class KadenceAdvancedButton extends Component {
 							<URLInput
 								value={ btns[index].link }
 								onChange={ value => {
-									return saveArray( 'link', value, index);
+									this.saveArrayUpdate( { link: value }, index);
 								} }
 							/>
 							<IconButton
@@ -251,7 +277,7 @@ class KadenceAdvancedButton extends Component {
 					<URLInput
 						value={ btns[index].link }
 						onChange={ value => {
-							return saveArray( 'link', value, index);
+							this.saveArrayUpdate( { link: value }, index);
 						} }
 					/>
 					<SelectControl
@@ -262,7 +288,7 @@ class KadenceAdvancedButton extends Component {
 							{ value: '_blank', label: __( 'New Window' ) },
 						] }
 						onChange={ value => {
-							return saveArray( 'target', value, index);
+							this.saveArrayUpdate( { target: value }, index);
 						} }
 					/>
 					<RangeControl
@@ -271,7 +297,7 @@ class KadenceAdvancedButton extends Component {
 						label={ __( 'Button Text Size' ) }
 						value={ btns[index].size }
 						onChange={ value => {
-							return saveArray( 'size', value, index);
+							this.saveArrayUpdate( { size: value }, index );
 						} }
 						min={ 10 }
 						max={ 100 }
@@ -280,7 +306,7 @@ class KadenceAdvancedButton extends Component {
 						label={ __( 'Top and Bottom Padding' ) }
 						value={ btns[index].paddingTB }
 						onChange={ value => {
-							return saveArray( 'paddingTB', value, index);
+							this.saveArrayUpdate( { paddingTB: value }, index);
 						} }
 						min={ 0 }
 						max={ 100 }
@@ -289,7 +315,7 @@ class KadenceAdvancedButton extends Component {
 						label={ __( 'Left and Right Padding' ) }
 						value={ btns[index].paddingLR }
 						onChange={ value => {
-							return saveArray( 'paddingLR', value, index);
+							this.saveArrayUpdate( { paddingLR: value }, index);
 						} }
 						min={ 0 }
 						max={ 100 }
@@ -298,7 +324,7 @@ class KadenceAdvancedButton extends Component {
 						label={ __( 'Border Thickness' ) }
 						value={ btns[index].borderWidth }
 						onChange={ value => {
-							return saveArray( 'borderWidth', value, index);
+							this.saveArrayUpdate( { borderWidth: value }, index);
 						} }
 						min={ 0 }
 						max={ 20 }
@@ -307,7 +333,7 @@ class KadenceAdvancedButton extends Component {
 						label={ __( 'Border Radius' ) }
 						value={ btns[index].borderRadius }
 						onChange={ value => {
-							return saveArray( 'borderRadius', value, index);
+							this.saveArrayUpdate( { borderRadius: value }, index);
 						} }
 						min={ 0 }
 						max={ 50 }
@@ -344,7 +370,7 @@ class KadenceAdvancedButton extends Component {
 						icons={ IcoNames }
 						value={ btns[index].icon }
 						onChange={ value => {
-							return saveArray( 'icon', value, index);
+							this.saveArrayUpdate( { icon: value }, index);
 						} }
 						appendTo="body"
 						renderFunc={ renderSVG }
@@ -359,7 +385,7 @@ class KadenceAdvancedButton extends Component {
 							{ value: 'left', label: __( 'Left' ) },
 						] }
 						onChange={ value => {
-							return saveArray( 'iconSide', value, index);
+							this.saveArrayUpdate( { iconSide: value }, index);
 						} }
 					/>
 				</PanelBody>
@@ -375,7 +401,7 @@ class KadenceAdvancedButton extends Component {
 						<ColorPalette
 							value={ btns[index].colorHover }
 							onChange={ value => {
-								return saveArray( 'colorHover', value, index );
+								this.saveArrayUpdate( { colorHover: value }, index );
 							} }
 						/>
 					</PanelColor>
@@ -386,7 +412,7 @@ class KadenceAdvancedButton extends Component {
 						<ColorPalette
 							value={ btns[index].backgroundHover }
 							onChange={ value => {
-								return saveArray( 'backgroundHover', value, index );
+								this.saveArrayUpdate( { backgroundHover: value }, index );
 							} }
 						/>
 					</PanelColor>
@@ -397,7 +423,7 @@ class KadenceAdvancedButton extends Component {
 						<ColorPalette
 							value={ btns[index].borderHover }
 							onChange={ value => {
-								return saveArray( 'borderHover', value, index );
+								this.saveArrayUpdate( { borderHover: value }, index );
 							} }
 						/>
 					</PanelColor>
@@ -417,7 +443,7 @@ class KadenceAdvancedButton extends Component {
 						<ColorPalette
 							value={ btns[index].color }
 							onChange={ value => {
-								return saveArray( 'color', value, index);
+								this.saveArrayUpdate( { color: value }, index);
 							} }
 						/>
 					</PanelColor>
@@ -428,7 +454,7 @@ class KadenceAdvancedButton extends Component {
 						<ColorPalette
 							value={ btns[index].background }
 							onChange={ value => {
-								return saveArray( 'background', value, index);
+								this.saveArrayUpdate( { background: value }, index);
 							} }
 						/>
 					</PanelColor>
@@ -440,7 +466,7 @@ class KadenceAdvancedButton extends Component {
 						<ColorPalette
 							value={ btns[index].border }
 							onChange={ value => {
-								return saveArray( 'border', value, index);
+								this.saveArrayUpdate( { border: value }, index);
 							} }
 						/>
 					</PanelColor>
@@ -457,17 +483,12 @@ class KadenceAdvancedButton extends Component {
 				{ times( btnCount, n => renderBtns( n ) ) }
 			</div>
 		);
-		const saveArray = ( key, value, index ) => {
-			if ( ! uniqueID ) {
-				setAttributes( { 
-					uniqueID : '_' + Math.random().toString( 36 ).substr( 2, 9 ),
-				} );
-			}
-			let newbtns = [];
+		function saveArray( key, value, index ) {
+			const newbtns = [];
 			{ times( btnCount, n => {
-				newbtns[n] = btns[n];
-				if( n === index ) {
-					newbtns[n][key] = value;
+				newbtns[ n ] = btns[ n ];
+				if ( n === index ) {
+					newbtns[ n ][ key ] = value;
 				}
 			} ); }
 			setAttributes( { 

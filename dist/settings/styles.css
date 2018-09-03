@@ -609,4 +609,49 @@ h5.kt-main-subtitle {
 
 .kad-featured-items .featured h5 {
     color: #00b5e2;
+}.kt-main table.form-table {
+    display: block;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.kt-main .form-table tbody, .kt-main .form-table tr {
+    display: block;
+}
+
+.kt-main .form-table th {
+    display: block;
+    width: 100%;
+    padding: 15px 10px 0;
+}
+
+.kt-main .form-table tr {
+    width: 50%;
+    float: left;
+}
+.kt-main .form-table td {
+    display: block;
+    padding: 0px 10px 15px;
+}
+
+.kt-main .form-table input[type=number] {
+    width: 100px;
+    margin-right: 5px;
+}
+.kt-main  table.form-table:after {
+    clear: both;
+    display: table;
+    content: '';
+}
+.kt-main p.submit {
+    max-width: 800px;
+    text-align: center;
+    margin: 0 auto;
+}
+.kt-main table.form-table {
+    border: 2px solid #eee;
+    border-radius: 10px;
+    background: #f9f9f9;
+    padding: 0 20px;
+    margin-bottom: 10px;
 }

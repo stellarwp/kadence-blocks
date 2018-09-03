@@ -299,8 +299,28 @@ registerBlockType( 'kadence/column', {
 
 		return (
 			<div className={ `inner-column-${ id }` }>
-				<InnerBlocks.Content />
+				<div className={ 'kt-inside-inner-col' } >
+					<InnerBlocks.Content />
+				</div>
 			</div>
 		);
 	},
+	deprecated: [
+		{
+			attributes: {
+				id: {
+					type: 'number',
+					default: 1,
+				},
+			},
+			save: ( { attributes } ) => {
+				const { id } = attributes;
+				return (
+					<div className={ `inner-column-${ id }` }>
+						<InnerBlocks.Content />
+					</div>
+				);
+			},
+		},
+	],
 } );

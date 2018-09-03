@@ -1,0 +1,32 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+ // Button Groups
+ .kt-blocks-width-control {
+    padding:10px;
+ }
+.components-button-group .kt-editor-width-btn {
+    background: transparent;
+    box-shadow: none;
+    border: 1px solid #eee;
+    padding: 8px;
+    margin-right: 0px;
+    height: auto;
+    width: 100%;
+    font-size: 13px;
+    margin-bottom: 5px;
+    text-shadow: none;
+}
+.components-button-group .kt-editor-width-btn:hover, .components-button-group .kt-editor-width-btn.is-primary, .components-button-group .kt-editor-width-btn:focus:not(:disabled):not([aria-disabled=true]) {
+    border-color: #444;
+    box-shadow:none;
+    background:#777;
+    color:white;
+}
+.components-button-group .kt-editor-width-btn.is-primary, .components-button-group .kt-editor-width-btn:focus:not(:disabled):not([aria-disabled=true]) {
+    background:#444;
+}

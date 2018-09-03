@@ -76,8 +76,19 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
  * Build the row edit
  */
 class KadenceRowLayout extends Component {
+	componentDidMount() {
+		if ( ! this.props.attributes.uniqueID ) {
+			this.props.setAttributes( { 
+				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+			} );
+		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+			this.props.setAttributes( { 
+				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+			} );
+		}
+	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth }, toggleSelection, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth }, toggleSelection, className, setAttributes, isSelected, clientId } = this.props;
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
@@ -369,11 +380,6 @@ class KadenceRowLayout extends Component {
 									isPrimary={ colLayout === key }
 									aria-pressed={ colLayout === key }
 									onClick={ () => {
-										if ( ! uniqueID ) {
-											setAttributes( { 
-												uniqueID : '_' + Math.random().toString( 36 ).substr( 2, 9 ),
-											} );
-										}
 										setAttributes( { 
 											colLayout: key 
 										} ) }
@@ -1029,7 +1035,6 @@ class KadenceRowLayout extends Component {
 											onClick={ () => setAttributes( { 
 												colLayout: key,
 												columns: col,
-												uniqueID: '_' + Math.random().toString(36).substr(2, 9),
 											} ) }
 										>
 											{ icon }
@@ -1060,6 +1065,10 @@ class KadenceRowLayout extends Component {
 								bottomLeft: false,
 								topLeft: false,
 							} }
+							className={ 'kt-top-padding-resize kt-padding-resize-box' }
+							onResize={ ( event, direction, elt, delta ) => {
+								document.getElementById('row-top-' + uniqueID ).innerHTML = parseInt( topPadding + delta.height, 10 ) + 'px';
+							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
 								setAttributes( {
 									topPadding: parseInt( topPadding + delta.height, 10 ),
@@ -1069,7 +1078,15 @@ class KadenceRowLayout extends Component {
 							onResizeStart={ () => {
 								toggleSelection( false );
 							} }
-						/>
+						>
+							{ uniqueID && (
+								<div className='kt-row-padding'>
+									<span id={ `row-top-${uniqueID}` } >
+										{topPadding + 'px'}
+									</span>
+								</div>
+							) }
+						</ResizableBox>
 					) }
 					{ colLayout && (
 						<div className='innerblocks-wrap' style={ {
@@ -1104,6 +1121,10 @@ class KadenceRowLayout extends Component {
 								bottomLeft: false,
 								topLeft: false,
 							} }
+							className={ 'kt-bottom-padding-resize kt-padding-resize-box' }
+							onResize={ ( event, direction, elt, delta ) => {
+								document.getElementById('row-bottom-' + uniqueID ).innerHTML = parseInt( bottomPadding + delta.height, 10 ) + 'px';
+							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
 								setAttributes( {
 									bottomPadding: parseInt( bottomPadding + delta.height, 10 ),
@@ -1113,7 +1134,15 @@ class KadenceRowLayout extends Component {
 							onResizeStart={ () => {
 								toggleSelection( false );
 							} }
-						/>
+						>
+							{ uniqueID && (
+								<div className='kt-row-padding'>
+									<span id={ `row-bottom-${uniqueID}` } >
+										{bottomPadding + 'px'}
+									</span>
+								</div>
+							) }
+						</ResizableBox>
 					) }
 					<div style={ { height: '1px' } }></div>
 				</div>
