@@ -1,0 +1,233 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+ // Controls
+ .edit-post-sidebar h2.kt-heading-size-title {
+    font-size: 15px;
+	margin-bottom: 0;
+	color:#000;
+}
+.kt-size-tabs  .components-button-group.kt-size-type-options {
+    margin: 0;
+    text-align: right;
+    display: block;
+    margin-bottom: -18px;
+}
+.kt-size-type-options button.components-button.kt-size-btn {
+    background: transparent;
+    color: #777;
+    border: 0;
+    box-shadow: none;
+    text-shadow: none;
+    height: 18px;
+    line-height: 18px;
+    padding: 0 4px;
+}
+.kt-size-type-options button.components-button.kt-size-btn.is-primary, .kt-size-type-options button.components-button.kt-size-btn.is-primary:focus:not(:disabled):not([aria-disabled=true]) {
+ color:#000;
+ text-decoration:underline;
+ background:transparent;
+ box-shadow:none;
+ border:none;
+ outline: none;
+}
+.kt-size-type-options button.components-button.kt-size-btn:hover, .kt-size-type-options button.components-button.kt-size-btn:hover:focus:not(:disabled):not([aria-disabled=true]) {
+    color:#000;
+     background:transparent;
+ box-shadow:none;
+ border:none;
+ outline: none;
+}
+.kt-size-tabs .components-tab-panel__tabs {
+    border-bottom: 0;
+	text-align: right;
+	margin-top: -20px;
+}
+.kt-size-tabs .components-tab-panel__tabs button {
+    background: transparent;
+    border: 0;
+    border-bottom: 0;
+    padding: 2px 4px;
+    margin-bottom: 0;
+    outline: 0;
+    font-size: 10px;
+}
+.kt-size-tabs .components-tab-panel__tabs button.active-tab {
+	color: #0085ba;
+	background: #f2f2f2;
+}
+.kt-size-tabs .components-tab-panel__tabs button svg {
+	width: 15px;
+	height:15px;
+}
+
+.select-search-box {
+    width: auto;
+    position: relative;
+    margin-bottom: 20px;
+    background: #fff;
+    border-radius: 4px;
+	&::after {
+        font-family: dashicons;
+		content: "\f140";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 30px;
+        text-align: center;
+        line-height: 30px;
+        color: #222f3e;
+        z-index: 1;
+    }
+    .select-search-box--input::after {
+        display: none !important;
+    }
+    .select-search-box__out {
+        display: none;
+    }
+	.select-search-box__search {
+        display: block;
+        width: 100%;
+        height: 30px;
+        border: none;
+        background: none;
+        outline: none;
+        font-size: 16px;
+        padding: 0 20px;
+        color: #222f3e;
+        -webkit-appearance: none;
+        box-sizing: border-box;
+        position: relative;
+        z-index: 2;
+        cursor: pointer;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        line-height: 30px;
+        box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
+    }
+    input.select-search-box__search {
+        line-height: 1;
+    }
+    .select-search-box--multiple .select-search-box__search {
+        box-shadow: none;
+    }
+    .select-search-box--input .select-search-box__search {
+        cursor: text;
+    }
+	.select-search-box__search:focus {
+		cursor: text;
+	}
+	.select-search-box__search--placeholder {
+		font-style: italic;
+		font-weight: normal;
+	}
+    .select-search-box input::-webkit-input-placeholder {
+        color: #ccc;
+        font-style: italic;
+        font-weight: normal;
+    }
+
+    .select-search-box input::-moz-placeholder {
+        color: #ccc;
+        font-style: italic;
+        font-weight: normal;
+    }
+
+    .select-search-box input:-moz-placeholder {
+        color: #ccc;
+        font-style: italic;
+        font-weight: normal;
+    }
+
+    .select-search-box input:-ms-input-placeholder {
+        color: #ccc;
+        font-style: italic;
+        font-weight: normal;
+    }
+
+    input[type='search']::-webkit-search-cancel-button, input[type='search']::-webkit-search-decoration {
+        -webkit-appearance: none;
+    }
+
+    .select-search-box__select {
+        display: none;
+        position: absolute;
+        top: 35px;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border-radius: 4px;
+        overflow: auto;
+        box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1), 0 3px 6px 0 rgba(0, 0, 0, 0.07);
+        z-index: 100;
+        min-height: 30px;
+    }
+
+    .select-search-box--multiple .select-search-box__select {
+        display: block;
+        position: static;
+        border-top: 1px solid #eee;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+	.select-search-box__select--display {
+		display: block;
+	}
+
+    .select-search-box__option {
+		font-size: 14px;
+		font-weight: 400;
+		color: #616b74;
+		line-height: 30px;
+		margin-bottom: 0;
+		padding: 0px 10px;	
+        border-top: 1px solid #eee;
+        cursor: pointer;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        user-select: none;
+    }
+
+        .select-search-box__option:first-child {
+            border-top: none;
+        }
+
+        .select-search-box__option--hover, .select-search-box__option:hover {
+            background: #f4f7fa;
+        }
+
+        .select-search-box__option--selected {
+            background: #54A0FF;
+            color: #fff;
+            border-top-color: #2184ff;
+        }
+
+            .select-search-box__option--selected:hover, .select-search-box__option--selected.select-search-box__option--hover {
+                background: #2184ff;
+                color: #fff;
+                border-top-color: #2184ff;
+            }
+
+        .select-search-box__group {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            position: relative;
+        }
+
+        .select-search-box__group-header {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 0 10px;
+            color: rgba(0, 0, 0, 0.5);
+            font-size: 12px;
+		}
+	}

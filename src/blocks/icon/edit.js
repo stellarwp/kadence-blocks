@@ -112,6 +112,7 @@ class KadenceIcons extends Component {
 							onChange={ value => {
 								this.saveArrayUpdate( { width: value }, index);
 							} }
+							step={ 0.5 }
 							min={ 0.5 }
 							max={ 4 }
 						/>

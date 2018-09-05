@@ -8,12 +8,14 @@
     "eject": "cgb-scripts eject"
   },
   "dependencies": {
+    "@dr-kobros/react-webfont-loader": "^8.0.0",
     "@fonticonpicker/react-fonticonpicker": "^1.1.0",
     "cgb-scripts": "1.9.8",
     "classnames": "^2.2.6",
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",
     "re-resizable": "^4.7.1",
+    "react-select-search": "^0.9.3",
     "react-transition-group": "^2.4.0"
   }
 }

@@ -36,6 +36,7 @@ register_activation_hook( __FILE__, 'kadence_blocks_activate' );
  */
 function kadence_blocks_init() {
 	require_once KT_BLOCKS_PATH . 'dist/init.php';
+	require_once KT_BLOCKS_PATH . 'dist/class-kadence-blocks-frontend.php';
 	require_once KT_BLOCKS_PATH . 'dist/settings/class-kadence-blocks-settings.php';
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );

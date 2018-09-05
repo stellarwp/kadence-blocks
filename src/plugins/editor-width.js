@@ -89,23 +89,22 @@ function CustomComponent({ meta, oldMeta, onUpdateWidth }) {
 	);
 }
 const plugin = compose([
-	withSelect((select) => {
+	withSelect( ( select ) => {
 		const postMeta = select('core/editor').getEditedPostAttribute('meta');
 		const oldPostMeta = select('core/editor').getCurrentPostAttribute('meta');
-
 		return {
 			meta: { ...oldPostMeta, ...postMeta },
 			oldMeta: oldPostMeta,
 		};
 	}),
-	withDispatch((dispatch) => ({
-		onUpdateWidth(value, newMeta, oldMeta) {
+	withDispatch( ( dispatch ) => ( {
+		onUpdateWidth( value, newMeta, oldMeta ) {
 			const meta = {
 				...reviseData(oldMeta, newMeta),
 				kt_blocks_editor_width: value,
 			};
 
-			dispatch("core/editor").editPost({ meta })
+			dispatch( "core/editor" ).editPost( { meta } )
 		},
 	})),
 ])( CustomComponent );
