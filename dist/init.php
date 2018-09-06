@@ -107,7 +107,6 @@ function kadence_blocks_admin_editor_width() {
 }
 add_action( 'admin_head-post.php', 'kadence_blocks_admin_editor_width', 100 );
 add_action( 'admin_head-post-new.php', 'kadence_blocks_admin_editor_width', 100 );
-add_action( 'admin_head-edit.php', 'kadence_blocks_admin_editor_width', 100 );
 
 /**
  * Add class to match editor width.

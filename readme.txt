@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 4.9.8
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,8 +65,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+
+= 1.0.2 =
+* Fix: Small JS error in the admin.
+
 = 1.0.1 =
-* Add github link.
+* Add: github link.
 * Update: Editor width to change image max width.
 * Update: Spacer/Divider block to show height while resizing.
 * Update: Icons Block to copy styles from previous icon when adding more.
