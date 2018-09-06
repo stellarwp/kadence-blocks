@@ -49,11 +49,11 @@ class KadenceAdvancedButton extends Component {
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
-			this.props.setAttributes( { 
+			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
-			this.props.setAttributes( { 
+			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		}
@@ -76,7 +76,7 @@ class KadenceAdvancedButton extends Component {
 
 			return item;
 		} );
-		setAttributes( { 
+		setAttributes( {
 			btns: newItems,
 		} );
 	}
@@ -85,26 +85,26 @@ class KadenceAdvancedButton extends Component {
 		const renderBtns = ( index ) => {
 			return (
 				<div className={ `btn-area-wrap kt-btn-${ index }-area` }>
-					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` }  onMouseOut={ onMouseOut } onMouseOver={ () => {
-						if ( 1 == index ) {
-							onHover1()
-						} else if ( 2 == index ) { 
-							onHover2()
-						} else if ( 3 == index ) { 
-							onHover3()
-						} else if ( 4 == index ) { 
-							onHover4()
-						} else { 
-							onHover()
+					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` } onMouseOut={ onMouseOut } onMouseOver={ () => {
+						if ( 1 === index ) {
+							onHover1();
+						} else if ( 2 === index ) {
+							onHover2();
+						} else if ( 3 === index ) {
+							onHover3();
+						} else if ( 4 === index ) {
+							onHover4();
+						} else {
+							onHover();
 						}
 					} }>
 						<span className={ `kt-button kt-button-${ index }` } style={ {
-							backgroundColor: ( this.state.hovered && 'btn' + index == this.state.hovered ? btns[ index ].backgroundHover : btns[ index ].background ),
-							color: ( this.state.hovered && 'btn' + index == this.state.hovered ? btns[ index ].colorHover : btns[ index ].color ),
+							backgroundColor: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].backgroundHover : btns[ index ].background ),
+							color: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].colorHover : btns[ index ].color ),
 							fontSize: btns[ index ].size + 'px',
 							borderRadius: btns[ index ].borderRadius + 'px',
 							borderWidth: btns[ index ].borderWidth + 'px',
-							borderColor: ( this.state.hovered && 'btn' + index == this.state.hovered ? btns[ index ].borderHover : btns[ index ].border ),
+							borderColor: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].borderHover : btns[ index ].border ),
 							paddingLeft: btns[ index ].paddingLR + 'px',
 							paddingRight: btns[ index ].paddingLR + 'px',
 							paddingTop: btns[ index ].paddingTB + 'px',
@@ -120,13 +120,13 @@ class KadenceAdvancedButton extends Component {
 								unstableOnFocus={ () => {
 									if ( 1 === index ) {
 										onFocusBtn1();
-									} else if ( 2 === index ) { 
+									} else if ( 2 === index ) {
 										onFocusBtn2();
-									} else if ( 3 === index ) { 
+									} else if ( 3 === index ) {
 										onFocusBtn3();
-									} else if ( 4 === index ) { 
+									} else if ( 4 === index ) {
 										onFocusBtn4();
-									} else { 
+									} else {
 										onFocusBtn();
 									}
 								} }
@@ -142,7 +142,7 @@ class KadenceAdvancedButton extends Component {
 							) }
 						</span>
 					</span>
-					{ isSelected && ( ( this.state.btnFocused && 'btn' + [ index ] == this.state.btnFocused ) || ( this.state.btnFocused && 'false' == this.state.btnFocused && '0' == index ) )  && (
+					{ isSelected && ( ( this.state.btnFocused && 'btn' + [ index ] === this.state.btnFocused ) || ( this.state.btnFocused && 'false' === this.state.btnFocused && '0' === index ) ) && (
 						<form
 							key={ 'form-link' }
 							onSubmit={ ( event ) => event.preventDefault() }
@@ -203,13 +203,6 @@ class KadenceAdvancedButton extends Component {
 			if ( 'false' !== this.state.hovered ) {
 				this.setState( {
 					hovered: 'false',
-				} );
-			}
-		};
-		const onOtherClick = () => {
-			if ( 'false' !== this.state.btnFocused ) {
-				this.setState( {
-					btnFocused: 'false',
 				} );
 			}
 		};
@@ -324,12 +317,12 @@ class KadenceAdvancedButton extends Component {
 						activeClass="active-tab"
 						tabs={ [
 							{
-								name: 'normal'+index,
+								name: 'normal' + index,
 								title: __( 'Normal' ),
 								className: 'kt-normal-tab',
 							},
 							{
-								name: 'hover'+index,
+								name: 'hover' + index,
 								title: __( 'Hover' ),
 								className: 'kt-hover-tab',
 							},
@@ -341,7 +334,7 @@ class KadenceAdvancedButton extends Component {
 									tabout = hoverSettings( index );
 								} else {
 									tabout = buttonSettings( index );
-								};
+								}
 								return <div>{ tabout }</div>;
 							}
 						}
@@ -415,7 +408,7 @@ class KadenceAdvancedButton extends Component {
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
 		);
 		const buttonSettings = ( index ) => {
-			return ( 
+			return (
 				<div>
 					<PanelColor
 						title={ __( 'Font Color' ) }
@@ -469,7 +462,7 @@ class KadenceAdvancedButton extends Component {
 					<BlockControls>
 						<AlignmentToolbar
 							value={ hAlign }
-							onChange={ hAlign => setAttributes( { hAlign } ) }
+							onChange={ ( value ) => setAttributes( { hAlign: value } ) }
 						/>
 					</BlockControls>
 					<InspectorControls>

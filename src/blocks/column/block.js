@@ -15,7 +15,7 @@ import icons from './icon';
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const {
 	TabPanel,
@@ -36,7 +36,7 @@ registerBlockType( 'kadence/column', {
 	title: __( 'Column' ),
 	icon: icons.block,
 	category: 'common',
-	parent: ['kadence/rowlayout'],
+	parent: [ 'kadence/rowlayout' ],
 	attributes: {
 		id: {
 			type: 'number',
@@ -92,7 +92,7 @@ registerBlockType( 'kadence/column', {
 		},
 	},
 	edit: props => {
-		const { attributes: {  id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM}, className, setAttributes} = props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM }, className, setAttributes } = props;
 		const mobileControls = (
 			<PanelBody
 				title={ __( 'Mobile Padding/Margin' ) }
@@ -273,7 +273,7 @@ registerBlockType( 'kadence/column', {
 							tabout = mobileControls;
 						} else {
 							tabout = deskControls;
-						};
+						}
 						return <div>{ tabout }</div>;
 					}
 				}
@@ -289,7 +289,7 @@ registerBlockType( 'kadence/column', {
 				<InspectorControls>
 					{ tabControls }
 				</InspectorControls>
-				<InnerBlocks templateLock={false} />
+				<InnerBlocks templateLock={ false } />
 			</div>
 		);
 	},

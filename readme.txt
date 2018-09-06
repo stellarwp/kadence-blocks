@@ -1,10 +1,10 @@
-=== Kadence Blocks ===
+=== Kadence Blocks – Gutenberg Page Builder Toolkit ===
 Contributors: britner
-Tags: gutenberg, blocks, page builder, dual buttons, svg icons, editor width,
+Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 4.9.8
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,6 +16,7 @@ This plugin adds custom blocks to extend Gutenberg's editing capabilities to bet
 
 = Custom Blocks Include =
 * Row Layout - [demo](https://themes.kadencethemes.com/ascend-5/row-layout-block/)
+* Advanced Heading - [demo](https://themes.kadencethemes.com/ascend-5/advanced-heading-block/) 
 * Advanced Button - [demo](https://themes.kadencethemes.com/ascend-5/advanced-button-block/)
 * Icon - [demo](https://themes.kadencethemes.com/ascend-5/icon-block/)
 * Spacer / Divider - [demo](https://themes.kadencethemes.com/ascend-5/spacer-divider-block/) 
@@ -23,18 +24,22 @@ This plugin adds custom blocks to extend Gutenberg's editing capabilities to bet
 = Key Block Features =
 The Row Layout block can have 1-6 columns and any other blocks can be nested inside. So as a single column block it's a powerful wrapper because you can create very custom backgrounds and define padding and margin both for desktop and mobile layouts.
 
-The Advanced Button block allows you to have up to 5 buttons side by side, Plus you can control each individually, both with static and hover styles and each button can have an added icon next to the text.
+The Advanced Heading block provides full control for your heading, including font family (all google fonts), font weight, font style, font size (with tablet and mobile control), line height, color, letter spacing, alignment and margin.
+
+The Advanced Button block allows you to have up to 5 buttons side by side. Plus, you can control each individually, both with static and hover styles, and each button can have an added icon next to the text.
 
 The Icon block allows you to add an SVG icon right into you page. There are over 1500 icons to choose from and with each you can control the size, color, background, border and add a link.
 
 The Spacer / Divider block allows you to optionally show a divider inside an area with a drag-able height. The divider has style options allowing you to set the width, height, color, line style, and opacity.
 
 = Editor Max Width =
-One of the challenges with creating custom column and row layouts in Gutenberg is the width of the editor in your admin. By default Gutenberg uses a 650px max width for the content editor. While this can be great for writing text and in cases where you are writing posts that output to a page with a sidebar it's not an inappropriate size. But for content going into pages where you don’t have a sidebar it’s a poor representation of what you are actually going to get on the front end of your site. Not to mention it makes for a cramped space to work in if you are trying to manage a row with three columns.
+One of the challenges with creating custom column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don’t have a sidebar, it is a poor representation of what you are actually going to get on the front end of your site. Not to mention it makes for a cramped space to work in if you are trying to manage a row with three columns.
 
 In an effort to create an easier way to use Gutenberg in a more “page building experience” we created a simple way that allows you to change the default max width for pages and for posts as well as individually change that through a page by page setting. 
 
-Source files - [github](https://github.com/kadencethemes/kadence-blocks)
+= Source files =
+
+[github](https://github.com/kadencethemes/kadence-blocks)
 
 = Support =
 
@@ -66,7 +71,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Update: Spacer/Divider block to show height while resizing.
 * Update: Icons Block to copy styles from previous icon when adding more.
 * Update: Button Block to copy styles from previous Button when adding more.
-* Add: New Advanced Header Block
+* Add: New Advanced Header Block with full Google font support.
 
 = 1.0.0 =
 * Initial Release.

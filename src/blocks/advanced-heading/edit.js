@@ -60,11 +60,16 @@ class KadenceAdvancedHeading extends Component {
 		return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
 	}
 	render() {
-		const { attributes: { align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
+		const { attributes: { align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
 		const tagName = 'h' + level;
-		const sizeTypes = [ 
+		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
+		];
+		const marginTypes = [
+			{ key: 'px', name: __( 'px' ) },
+			{ key: 'em', name: __( 'em' ) },
+			{ key: '%', name: __( '%' ) },
 		];
 		const standardWeights = [
 			{ value: 'regular', label: 'Normal' },
@@ -80,9 +85,9 @@ class KadenceAdvancedHeading extends Component {
 			},
 		};
 		const config = ( googleFont ? gconfig : '' );
-		const typographyWeights = ( googleFont && typography ? gFonts[ typography ][ 'w' ].map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardWeights );
-		const typographyStyles = ( googleFont && typography ? gFonts[ typography ][ 'i' ].map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
-		const typographySubsets = ( googleFont && typography ? gFonts[ typography ][ 's' ].map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
+		const typographyWeights = ( googleFont && typography ? gFonts[ typography ].w.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardWeights );
+		const typographyStyles = ( googleFont && typography ? gFonts[ typography ].i.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
+		const typographySubsets = ( googleFont && typography ? gFonts[ typography ].s.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
 		const fontsarray = fonts.map( ( name ) => {
 			return { name: name, value: name, google: true };
 		} );
@@ -104,7 +109,7 @@ class KadenceAdvancedHeading extends Component {
 					{ name: '"Times New Roman", Times, serif', value: '"Times New Roman", Times, serif', google: false },
 					{ name: 'Courier, monospace', value: 'Courier, monospace', google: false },
 					{ name: '"Lucida Console", Monaco, monospace', value: '"Lucida Console", Monaco, monospace', google: false },
-				]
+				],
 			},
 			{
 				type: 'group',
@@ -113,6 +118,9 @@ class KadenceAdvancedHeading extends Component {
 			},
 		];
 		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
+		const marginMin = ( marginType === 'em' ? 0.1 : 1 );
+		const marginMax = ( marginType === 'em' ? 12 : 100 );
+		const marginStep = ( marginType === 'em' ? 0.1 : 1 );
 		const fontMax = ( sizeType === 'em' ? 12 : 200 );
 		const fontStep = ( sizeType === 'em' ? 0.1 : 1 );
 		const lineMin = ( lineType === 'em' ? 0.2 : 5 );
@@ -133,17 +141,17 @@ class KadenceAdvancedHeading extends Component {
 			let weight;
 			let subset;
 			if ( select.google ) {
-				if ( ! gFonts[ select.value ][ 'v' ].includes( 'regular' ) ) {
-					variant = gFonts[ select.value ][ 'v' ][ 0 ];
+				if ( ! gFonts[ select.value ].v.includes( 'regular' ) ) {
+					variant = gFonts[ select.value ].v[ 0 ];
 				} else {
 					variant = '';
 				}
-				if ( ! gFonts[ select.value ][ 'w' ].includes( 'regular' ) ) {
-					weight = gFonts[ select.value ][ 'w' ][ 0 ];
+				if ( ! gFonts[ select.value ].w.includes( 'regular' ) ) {
+					weight = gFonts[ select.value ].w[ 0 ];
 				} else {
 					weight = 'regular';
 				}
-				if ( gFonts[ select.value ][ 's' ].length > 1 ) {
+				if ( gFonts[ select.value ].s.length > 1 ) {
 					subset = 'latin';
 				} else {
 					subset = '';
@@ -197,7 +205,6 @@ class KadenceAdvancedHeading extends Component {
 			}
 		};
 		const onGLoadChange = ( select ) => {
-			console.log(select);
 			setAttributes( {
 				loadGoogleFont: select,
 			} );
@@ -226,7 +233,7 @@ class KadenceAdvancedHeading extends Component {
 			}
 		};
 		// const callback = status => {
-		// 	console.log( status );	
+		// 	console.log( status );
 		// };
 		const deskControls = (
 			<PanelBody>
@@ -247,7 +254,7 @@ class KadenceAdvancedHeading extends Component {
 				<RangeControl
 					label={ __( 'Font Size' ) }
 					value={ ( size ? size : '' ) }
-					onChange={ size => setAttributes( { size } ) }
+					onChange={ ( value ) => setAttributes( { size: value } ) }
 					min={ fontMin }
 					max={ fontMax }
 					step={ fontStep }
@@ -269,7 +276,7 @@ class KadenceAdvancedHeading extends Component {
 				<RangeControl
 					label={ __( 'Line Height' ) }
 					value={ ( lineHeight ? lineHeight : '' ) }
-					onChange={ lineHeight => setAttributes( { lineHeight } ) }
+					onChange={ ( value ) => setAttributes( { lineHeight: value } ) }
 					min={ lineMin }
 					max={ lineMax }
 					step={ lineStep }
@@ -294,8 +301,8 @@ class KadenceAdvancedHeading extends Component {
 				</ButtonGroup>
 				<RangeControl
 					label={ __( 'Tablet Font Size' ) }
-					value={ ( tabSize ? tabSize : '') }
-					onChange={ tabSize => setAttributes( { tabSize } ) }
+					value={ ( tabSize ? tabSize : '' ) }
+					onChange={ ( value ) => setAttributes( { tabSize: value } ) }
 					min={ fontMin }
 					max={ fontMax }
 					step={ fontStep }
@@ -316,8 +323,8 @@ class KadenceAdvancedHeading extends Component {
 				</ButtonGroup>
 				<RangeControl
 					label={ __( 'Tablet Line Height' ) }
-					value={ ( tabLineHeight ? tabLineHeight : '' )  }
-					onChange={ tabLineHeight => setAttributes( { tabLineHeight } ) }
+					value={ ( tabLineHeight ? tabLineHeight : '' ) }
+					onChange={ ( value ) => setAttributes( { tabLineHeight: value } ) }
 					min={ lineMin }
 					max={ lineMax }
 					step={ lineStep }
@@ -343,7 +350,7 @@ class KadenceAdvancedHeading extends Component {
 				<RangeControl
 					label={ __( 'Mobile Font Size' ) }
 					value={ ( mobileSize ? mobileSize : '' ) }
-					onChange={ mobileSize => setAttributes( { mobileSize } ) }
+					onChange={ ( value ) => setAttributes( { mobileSize: value } ) }
 					min={ fontMin }
 					max={ fontMax }
 					step={ fontStep }
@@ -364,8 +371,8 @@ class KadenceAdvancedHeading extends Component {
 				</ButtonGroup>
 				<RangeControl
 					label={ __( 'Mobile Line Height' ) }
-					value={ ( mobileLineHeight ? mobileLineHeight : '') }
-					onChange={ mobileLineHeight => setAttributes( { mobileLineHeight } ) }
+					value={ ( mobileLineHeight ? mobileLineHeight : '' ) }
+					onChange={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
 					min={ lineMin }
 					max={ lineMax }
 					step={ lineStep }
@@ -401,7 +408,7 @@ class KadenceAdvancedHeading extends Component {
 							tabout = tabletControls;
 						} else {
 							tabout = deskControls;
-						};
+						}
 						return <div>{ tabout }</div>;
 					}
 				}
@@ -435,7 +442,7 @@ class KadenceAdvancedHeading extends Component {
 						>
 							<ColorPalette
 								value={ color }
-								onChange={ color => setAttributes( { color } ) }
+								onChange={ ( value ) => setAttributes( { color: value } ) }
 							/>
 						</PanelColor>
 						<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
@@ -477,7 +484,7 @@ class KadenceAdvancedHeading extends Component {
 								label={ __( 'Font Subset' ) }
 								value={ fontSubset }
 								options={ typographySubsets }
-								onChange={ fontSubset => setAttributes( { fontSubset } ) }
+								onChange={ ( value ) => setAttributes( { fontSubset: value } ) }
 							/>
 						) }
 						{ typography && googleFont && (
@@ -492,10 +499,59 @@ class KadenceAdvancedHeading extends Component {
 						<RangeControl
 							label={ __( 'Letter Spacing' ) }
 							value={ ( letterSpacing ? letterSpacing : '' ) }
-							onChange={ letterSpacing => setAttributes( { letterSpacing } ) }
+							onChange={ ( value ) => setAttributes( { letterSpacing: value } ) }
 							min={ -5 }
 							max={ 15 }
 							step={ 0.1 }
+						/>
+					</PanelBody>
+					<PanelBody
+						title={ __( 'Margin Settings' ) }
+						initialOpen={ false }
+					>
+						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
+							{ map( marginTypes, ( { name, key } ) => (
+								<Button
+									key={ key }
+									className="kt-size-btn"
+									isSmall
+									isPrimary={ marginType === key }
+									aria-pressed={ marginType === key }
+									onClick={ () => setAttributes( { marginType: key } ) }
+								>
+									{ name }
+								</Button>
+							) ) }
+						</ButtonGroup>
+						<RangeControl
+							label={ __( 'Top Margin' ) }
+							value={ ( topMargin ? topMargin : '' ) }
+							onChange={ ( value ) => setAttributes( { topMargin: value } ) }
+							min={ marginMin }
+							max={ marginMax }
+							step={ marginStep }
+						/>
+						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
+							{ map( marginTypes, ( { name, key } ) => (
+								<Button
+									key={ key }
+									className="kt-size-btn"
+									isSmall
+									isPrimary={ marginType === key }
+									aria-pressed={ marginType === key }
+									onClick={ () => setAttributes( { marginType: key } ) }
+								>
+									{ name }
+								</Button>
+							) ) }
+						</ButtonGroup>
+						<RangeControl
+							label={ __( 'Bottom Margin' ) }
+							value={ ( bottomMargin ? bottomMargin : '' ) }
+							onChange={ ( value ) => setAttributes( { bottomMargin: value } ) }
+							min={ marginMin }
+							max={ marginMax }
+							step={ marginStep }
 						/>
 					</PanelBody>
 				</InspectorControls>
@@ -520,12 +576,14 @@ class KadenceAdvancedHeading extends Component {
 					style={ {
 						textAlign: align,
 						color: color,
-						fontFamily: typography,
 						fontWeight: fontWeight,
 						fontStyle: fontStyle,
 						fontSize: size + sizeType,
 						lineHeight: lineHeight + lineType,
 						letterSpacing: letterSpacing + 'px',
+						fontFamily: ( typography ? typography : '' ),
+						marginTop: ( topMargin ? topMargin + marginType : '' ),
+						marginBottom: ( bottomMargin ? bottomMargin + marginType : '' ),
 					} }
 					className={ className }
 					placeholder={ __( 'Write heading…' ) }
