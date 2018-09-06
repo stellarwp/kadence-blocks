@@ -30,7 +30,6 @@ const {
 	InspectorControls,
 	ColorPalette,
 	BlockControls,
-	AlignmentToolbar,
 	BlockAlignmentToolbar,
 } = wp.editor;
 const {
@@ -78,17 +77,17 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
 class KadenceRowLayout extends Component {
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
-			this.props.setAttributes( { 
+			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
-			this.props.setAttributes( { 
+			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth }, toggleSelection, className, setAttributes, isSelected, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth }, toggleSelection, className, setAttributes } = this.props;
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
@@ -106,7 +105,7 @@ class KadenceRowLayout extends Component {
 			{ key: 'right-half', col: 3, name: __( 'Three: Right Heavy 25/25/50' ), icon: icons.righthalf },
 			{ key: 'center-half', col: 3, name: __( 'Three: Center Heavy 25/50/25' ), icon: icons.centerhalf },
 			{ key: 'center-wide', col: 3, name: __( 'Three: Wide Center 20/60/20' ), icon: icons.widecenter },
-			{ key: 'center-exwide', col: 3, name: __('Three: Wider Center 15/70/15'), icon: icons.exwidecenter },
+			{ key: 'center-exwide', col: 3, name: __( 'Three: Wider Center 15/70/15' ), icon: icons.exwidecenter },
 			{ key: 'equal', col: 4, name: __( 'Four: Equal' ), icon: icons.fourcol },
 			{ key: 'left-forty', col: 4, name: __( 'Four: Left Heavy 40/20/20/20' ), icon: icons.lfourforty },
 			{ key: 'right-forty', col: 4, name: __( 'Four: Right Heavy 20/20/20/40' ), icon: icons.rfourforty },
@@ -114,41 +113,41 @@ class KadenceRowLayout extends Component {
 			{ key: 'equal', col: 6, name: __( 'Six: Equal' ), icon: icons.sixcol },
 		];
 		if ( 2 === columns ) {
-			layoutOptions = [ 
+			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.twocol },
 				{ key: 'left-golden', name: __( 'Left Heavy 66/33' ), icon: icons.twoleftgolden },
 				{ key: 'right-golden', name: __( 'Right Heavy 33/66' ), icon: icons.tworightgolden },
 			];
 		} else if ( 3 === columns ) {
-			layoutOptions = [ 
+			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.threecol },
 				{ key: 'left-half', name: __( 'Left Heavy 50/25/25' ), icon: icons.lefthalf },
 				{ key: 'right-half', name: __( 'Right Heavy 25/25/50' ), icon: icons.righthalf },
 				{ key: 'center-half', name: __( 'Center Heavy 25/50/25' ), icon: icons.centerhalf },
 				{ key: 'center-wide', name: __( 'Wide Center 20/60/20' ), icon: icons.widecenter },
-				{ key: 'center-exwide', name: __('Wider Center 15/70/15'), icon: icons.exwidecenter },
+				{ key: 'center-exwide', name: __( 'Wider Center 15/70/15' ), icon: icons.exwidecenter },
 			];
 		} else if ( 4 === columns ) {
-			layoutOptions = [ 
+			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.fourcol },
 				{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20' ), icon: icons.lfourforty },
 				{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40' ), icon: icons.rfourforty },
 			];
 		} else if ( 5 === columns ) {
-			layoutOptions = [ 
+			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.fivecol },
 			];
 		} else if ( 6 === columns ) {
-			layoutOptions = [ 
+			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.sixcol },
 			];
 		} else {
-			layoutOptions = [ 
-				{ key: 'equal', name: __( 'Single Row' ),  icon: icons.row },
+			layoutOptions = [
+				{ key: 'equal', name: __( 'Single Row' ), icon: icons.row },
 			];
 		}
 		if ( 2 === columns ) {
-			mobileLayoutOptions = [ 
+			mobileLayoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.twocol },
 				{ key: 'left-golden', name: __( 'Left Heavy 66/33' ), icon: icons.twoleftgolden },
 				{ key: 'right-golden', name: __( 'Right Heavy 33/66' ), icon: icons.tworightgolden },
@@ -161,11 +160,11 @@ class KadenceRowLayout extends Component {
 				{ key: 'right-half', name: __( 'Right Heavy 25/25/50' ), icon: icons.righthalf },
 				{ key: 'center-half', name: __( 'Center Heavy 25/50/25' ), icon: icons.centerhalf },
 				{ key: 'center-wide', name: __( 'Wide Center 20/60/20' ), icon: icons.widecenter },
-				{ key: 'center-exwide', name: __('Wider Center 15/70/15'), icon: icons.exwidecenter },
+				{ key: 'center-exwide', name: __( 'Wider Center 15/70/15' ), icon: icons.exwidecenter },
 				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowthree },
 			];
 		} else if ( 4 === columns ) {
-			mobileLayoutOptions = [ 
+			mobileLayoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.fourcol },
 				{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20' ), icon: icons.lfourforty },
 				{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40' ), icon: icons.rfourforty },
@@ -173,20 +172,20 @@ class KadenceRowLayout extends Component {
 				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowfour },
 			];
 		} else if ( 5 === columns ) {
-			mobileLayoutOptions = [ 
+			mobileLayoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.fivecol },
 				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowfive },
 			];
 		} else if ( 6 === columns ) {
-			mobileLayoutOptions = [ 
+			mobileLayoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.sixcol },
 				{ key: 'two-grid', name: __( 'Two Column Grid' ), icon: icons.grid },
 				{ key: 'three-grid', name: __( 'Three Column Grid' ), icon: icons.threegrid },
 				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowsix },
 			];
 		} else {
-			mobileLayoutOptions = [ 
-				{ key: 'row', name: __( 'Single Row' ),  icon: icons.row },
+			mobileLayoutOptions = [
+				{ key: 'row', name: __( 'Single Row' ), icon: icons.row },
 			];
 		}
 		const onTabSelect = ( tabName ) => {
@@ -222,7 +221,7 @@ class KadenceRowLayout extends Component {
 		const mobileControls = (
 			<div>
 				<PanelBody>
-					<label class="components-base-control__label">{ __( 'Mobile Layout' ) }</label>
+					<p className="components-base-control__label">{ __( 'Mobile Layout' ) }</p>
 					<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
 						{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
 							<Tooltip text={ name }>
@@ -332,7 +331,7 @@ class KadenceRowLayout extends Component {
 		);
 		const tabletControls = (
 			<PanelBody>
-				<label class="components-base-control__label">{ __( 'Tablet Layout' ) }</label>
+				<p className="components-base-control__label">{ __( 'Tablet Layout' ) }</p>
 				<ButtonGroup aria-label={ __( 'Tablet Layout' ) }>
 					{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
 						<Tooltip text={ name }>
@@ -369,7 +368,7 @@ class KadenceRowLayout extends Component {
 						min={ 1 }
 						max={ 6 }
 					/>
-					<label class="components-base-control__label">{ __( 'Layout' ) }</label>
+					<p className="components-base-control__label">{ __( 'Layout' ) }</p>
 					<ButtonGroup aria-label={ __( 'Column Layout' ) }>
 						{ map( layoutOptions, ( { name, key, icon } ) => (
 							<Tooltip text={ name }>
@@ -380,10 +379,10 @@ class KadenceRowLayout extends Component {
 									isPrimary={ colLayout === key }
 									aria-pressed={ colLayout === key }
 									onClick={ () => {
-										setAttributes( { 
-											colLayout: key 
-										} ) }
-									}
+										setAttributes( {
+											colLayout: key,
+										} );
+									} }
 								>
 									{ icon }
 								</Button>
@@ -523,7 +522,7 @@ class KadenceRowLayout extends Component {
 					) }
 				/>
 				{ overlayBgImg && (
-					<Tooltip text={ __( 'Remove Image' )  }>
+					<Tooltip text={ __( 'Remove Image' ) }>
 						<Button
 							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
 							onClick={ onRemoveOverlayImage }
@@ -600,7 +599,7 @@ class KadenceRowLayout extends Component {
 					] }
 					onChange={ overlayBlendMode => setAttributes( { overlayBlendMode } ) }
 				/>
-				<p>{__('Notice: Blend Mode not supported in all browsers')}</p>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
 			</div>
 		);
 		const overGradControls = (
@@ -665,7 +664,7 @@ class KadenceRowLayout extends Component {
 					] }
 					onChange={ overlayGradType => setAttributes( { overlayGradType } ) }
 				/>
-				{ overlayGradType && 'linear' == overlayGradType && (
+				{ overlayGradType && 'linear' === overlayGradType && (
 					<RangeControl
 						label={ __( 'Gradient Angle' ) }
 						value={ overlayGradAngle }
@@ -678,7 +677,7 @@ class KadenceRowLayout extends Component {
 						max={ 360 }
 					/>
 				) }
-				{ overlayGradType && 'radial' == overlayGradType && (
+				{ overlayGradType && 'radial' === overlayGradType && (
 					<SelectControl
 						label={ __( 'Gradient Position' ) }
 						value={ overlayBgImgPosition }
@@ -718,7 +717,7 @@ class KadenceRowLayout extends Component {
 					] }
 					onChange={ overlayBlendMode => setAttributes( { overlayBlendMode } ) }
 				/>
-				<p>{__('Notice: Blend Mode not supported in all browsers')}</p>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
 			</div>
 		);
 		const overlayControls = (
@@ -749,7 +748,7 @@ class KadenceRowLayout extends Component {
 								tabout = overGradControls;
 							} else {
 								tabout = overControls;
-							};
+							}
 							return <div>{ tabout }</div>;
 						}
 					}
@@ -785,7 +784,7 @@ class KadenceRowLayout extends Component {
 					) }
 				/>
 				{ bgImg && (
-					<Tooltip text={ __( 'Remove Image' )  }>
+					<Tooltip text={ __( 'Remove Image' ) }>
 						<Button
 							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
 							onClick={ onRemoveImage }
@@ -873,7 +872,7 @@ class KadenceRowLayout extends Component {
 							tabout = tabletControls;
 						} else {
 							tabout = deskControls;
-						};
+						}
 						return <div>{ tabout }</div>;
 					}
 				}
@@ -903,12 +902,12 @@ class KadenceRowLayout extends Component {
 						/>
 					</Toolbar>
 					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Top' )  }>
+						<Tooltip text={ __( 'Vertical Align Top' ) }>
 							<Button
 								className={ classnames(
 									'components-icon-button',
 									'components-toolbar__control',
-									{ 'is-active': verticalAlignment == 'top' },
+									{ 'is-active': verticalAlignment === 'top' },
 								) }
 								onClick={ () => setAttributes( { verticalAlignment: 'top' } ) }
 							>
@@ -917,12 +916,12 @@ class KadenceRowLayout extends Component {
 						</Tooltip>
 					</Toolbar>
 					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Middle' )  }>
+						<Tooltip text={ __( 'Vertical Align Middle' ) }>
 							<Button
 								className={ classnames(
 									'components-icon-button',
 									'components-toolbar__control',
-									{ 'is-active': verticalAlignment == 'middle' },
+									{ 'is-active': verticalAlignment === 'middle' },
 								) }
 								onClick={ () => setAttributes( { verticalAlignment: 'middle' } ) }
 							>
@@ -931,12 +930,12 @@ class KadenceRowLayout extends Component {
 						</Tooltip>
 					</Toolbar>
 					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Bottom' )  }>
+						<Tooltip text={ __( 'Vertical Align Bottom' ) }>
 							<Button
 								className={ classnames(
 									'components-icon-button',
 									'components-toolbar__control',
-									{ 'is-active': verticalAlignment == 'bottom' },
+									{ 'is-active': verticalAlignment === 'bottom' },
 								) }
 								onClick={ () => setAttributes( { verticalAlignment: 'bottom' } ) }
 							>
@@ -993,30 +992,30 @@ class KadenceRowLayout extends Component {
 					backgroundColor: ( bgColor ? bgColor : undefined ),
 					backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
 					backgroundSize: bgImgSize,
-					backgroundPosition:  bgImgPosition,
+					backgroundPosition: bgImgPosition,
 					backgroundRepeat: bgImgRepeat,
-					backgroundAttachment:  bgImgAttachment,
+					backgroundAttachment: bgImgAttachment,
 					marginBottom: bottomMargin,
 					marginTop: topMargin,
 				} }>
-					{ ! currentOverlayTab || 'grad' !== currentOverlayTab && (
+					{ ( ! currentOverlayTab || 'grad' !== currentOverlayTab ) && (
 						<div className={ 'kt-row-layout-overlay kt-row-overlay-normal' } data-bg-img-id={ overlayBgImgID } style={ {
 							backgroundColor: ( overlay ? overlay : undefined ),
 							backgroundImage: ( overlayBgImg ? `url(${ overlayBgImg })` : undefined ),
 							backgroundSize: overlayBgImgSize,
-							backgroundPosition:  overlayBgImgPosition,
+							backgroundPosition: overlayBgImgPosition,
 							backgroundRepeat: overlayBgImgRepeat,
 							backgroundAttachment: overlayBgImgAttachment,
-							mixBlendMode:  overlayBlendMode,
-							opacity: overlayOpacityOutput(overlayOpacity),
+							mixBlendMode: overlayBlendMode,
+							opacity: overlayOpacityOutput( overlayOpacity ),
 						} }>
 						</div>
 					) }
-					{  currentOverlayTab && 'grad' === currentOverlayTab && (
+					{ currentOverlayTab && 'grad' === currentOverlayTab && (
 						<div className={ 'kt-row-layout-overlay kt-row-overlay-gradient' } data-bg-img-id={ overlayBgImgID } style={ {
-							backgroundImage: ( 'radial' === overlayGradType ? `radial-gradient(at ${overlayBgImgPosition}, ${overlay} ${overlayGradLoc}%, ${ overlaySecond} ${overlayGradLocSecond}%)` : `linear-gradient(${ overlayGradAngle }deg, ${overlay} ${overlayGradLoc}%, ${ overlaySecond} ${overlayGradLocSecond}%)` ),
-							mixBlendMode:  overlayBlendMode,
-							opacity: overlayOpacityOutput(overlayOpacity),
+							backgroundImage: ( 'radial' === overlayGradType ? `radial-gradient(at ${ overlayBgImgPosition }, ${ overlay } ${ overlayGradLoc }%, ${ overlaySecond } ${ overlayGradLocSecond }%)` : `linear-gradient(${ overlayGradAngle }deg, ${ overlay } ${ overlayGradLoc }%, ${ overlaySecond } ${ overlayGradLocSecond }%)` ),
+							mixBlendMode: overlayBlendMode,
+							opacity: overlayOpacityOutput( overlayOpacity ),
 						} }>
 						</div>
 					) }
@@ -1032,7 +1031,7 @@ class KadenceRowLayout extends Component {
 											key={ key }
 											className="kt-layout-btn"
 											isSmall
-											onClick={ () => setAttributes( { 
+											onClick={ () => setAttributes( {
 												colLayout: key,
 												columns: col,
 											} ) }
@@ -1067,7 +1066,7 @@ class KadenceRowLayout extends Component {
 							} }
 							className={ 'kt-top-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
-								document.getElementById('row-top-' + uniqueID ).innerHTML = parseInt( topPadding + delta.height, 10 ) + 'px';
+								document.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( topPadding + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
 								setAttributes( {
@@ -1080,16 +1079,16 @@ class KadenceRowLayout extends Component {
 							} }
 						>
 							{ uniqueID && (
-								<div className='kt-row-padding'>
-									<span id={ `row-top-${uniqueID}` } >
-										{topPadding + 'px'}
+								<div className="kt-row-padding">
+									<span id={ `row-top-${ uniqueID }` } >
+										{ topPadding + 'px' }
 									</span>
 								</div>
 							) }
 						</ResizableBox>
 					) }
 					{ colLayout && (
-						<div className='innerblocks-wrap' style={ {
+						<div className="innerblocks-wrap" style={ {
 							maxWidth: maxWidth + 'px',
 							minHeight: minHeight + 'px',
 							paddingLeft: leftPadding + 'px',
@@ -1123,7 +1122,7 @@ class KadenceRowLayout extends Component {
 							} }
 							className={ 'kt-bottom-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
-								document.getElementById('row-bottom-' + uniqueID ).innerHTML = parseInt( bottomPadding + delta.height, 10 ) + 'px';
+								document.getElementById( 'row-bottom-' + uniqueID ).innerHTML = parseInt( bottomPadding + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
 								setAttributes( {
@@ -1136,9 +1135,9 @@ class KadenceRowLayout extends Component {
 							} }
 						>
 							{ uniqueID && (
-								<div className='kt-row-padding'>
-									<span id={ `row-bottom-${uniqueID}` } >
-										{bottomPadding + 'px'}
+								<div className="kt-row-padding">
+									<span id={ `row-bottom-${ uniqueID }` } >
+										{ bottomPadding + 'px' }
 									</span>
 								</div>
 							) }

@@ -134,6 +134,11 @@ class Kadence_Blocks_Frontend {
 							}
 						}
 					}
+					if ( 'kadence' === strtok( $block['blockName'], '/' ) ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) && isset( $block['attrs']['typography'] ) ) {
+							$this->blocks_google_fonts( $block['attrs'] );
+						}
+					}
 				}
 				if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 					$css .= $this->blocks_cycle_through( $block['innerBlocks'] );
@@ -194,6 +199,11 @@ class Kadence_Blocks_Frontend {
 						}
 					}
 				}
+				if ( 'kadence' === strtok( $block['blockName'], '/' ) ) {
+					if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) && isset( $block['attrs']['typography'] ) ) {
+						$this->blocks_google_fonts( $block['attrs'] );
+					}
+				}
 			}
 			if ( isset( $inner_block['innerBlocks'] ) && ! empty( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) ) {
 				$css .= $this->blocks_cycle_through( $inner_block['innerBlocks'] );
@@ -207,22 +217,8 @@ class Kadence_Blocks_Frontend {
 	 * @param array  $attr the blocks attr.
 	 * @param string $unique_id the blocks attr ID.
 	 */
-	function blocks_advanced_heading( $attr, $unique_id ) {
-		$css = '';
-		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) ) {
-			$css .= '#kt-adv-heading' . $unique_id . ' {';
-			if ( isset( $attr['size'] ) ) {
-				$css .= 'font-size:' . $attr['size'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
-			}
-			if ( isset( $attr['lineHeight'] ) ) {
-				$css .= 'line-height:' . $attr['lineHeight'] . ( ! isset( $attr['lineType'] ) ? 'px' : $attr['lineType'] ) . ';';
-			}
-			if ( isset( $attr['typography'] ) ) {
-				$css .= 'font-family:' . $attr['typography'] . ';';
-			}
-			$css .= '}';
-		}
-		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && isset( $attr['typography'] ) ) {
+	function blocks_google_fonts( $attr ) {
+		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( isset( $attr['loadGooleFonts'] ) && $attr['loadGooleFonts'] || ! isset( $attr['loadGooleFonts'] ) ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet
 			if ( ! in_array( $attr['typography'], self::$gfonts, true ) ) {
 				$add_font = array(
@@ -239,6 +235,28 @@ class Kadence_Blocks_Frontend {
 					self::$gfonts[ $attr['typography'] ]['fontsubsets'] = $attr['fontSubset'];
 				}
 			}
+		}
+	}
+	/**
+	 * Builds CSS for Advanced Heading block.
+	 * 
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	function blocks_advanced_heading( $attr, $unique_id ) {
+		$css = '';
+		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) ) {
+			$css .= '#kt-adv-heading' . $unique_id . ' {';
+			if ( isset( $attr['size'] ) && ! empty( $attr['size'] ) ) {
+				$css .= 'font-size:' . $attr['size'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['lineHeight'] ) && ! empty( $attr['lineHeight'] ) ) {
+				$css .= 'line-height:' . $attr['lineHeight'] . ( ! isset( $attr['lineType'] ) ? 'px' : $attr['lineType'] ) . ';';
+			}
+			if ( isset( $attr['typography'] ) && ! empty( $attr['typography'] ) ) {
+				$css .= 'font-family:' . $attr['typography'] . ';';
+			}
+			$css .= '}';
 		}
 		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';

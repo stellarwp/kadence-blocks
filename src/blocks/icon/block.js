@@ -7,11 +7,9 @@
  */
 import itemicons from './icon';
 import times from 'lodash/times';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
 import FaIco from '../../faicons';
-import IcoNames from '../../svgiconsnames';
 
 import edit from './edit';
 /**
@@ -27,22 +25,6 @@ const { __ } = wp.i18n;
 const {
 	registerBlockType,
 } = wp.blocks;
-const { withState } = wp.compose;
-const {
-	InspectorControls,
-	ColorPalette,
-	URLInput,
-	BlockControls,
-	AlignmentToolbar,
-	BlockAlignmentToolbar,
-} = wp.editor;
-const {
-	PanelColor,
-	PanelBody,
-	RangeControl,
-	TextControl,
-	SelectControl,
-} = wp.components;
 
 /**
  * Register: a Gutenberg Block.
@@ -109,15 +91,15 @@ registerBlockType( 'kadence/icon', {
 	edit,
 
 	save: props => {
-		const { attributes: { icons, iconCount, blockAlignment, textAlignment, uniqueID }, clientId, className } = props;
-		const renderSaveIcons = (index) => {
+		const { attributes: { icons, iconCount, blockAlignment, textAlignment, uniqueID } } = props;
+		const renderSaveIcons = ( index ) => {
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
 						<a href={ icons[ index ].link } className={ 'kt-svg-icon-link' } target={ icons[ index ].target }>
 							<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
 								color: ( icons[ index ].color ? icons[ index ].color : undefined ),
-								backgroundColor: ( icons[ index ].background && icons[ index ].style != 'default' ? icons[ index ].background : undefined ),
+								backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? icons[ index ].background : undefined ),
 								padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
 								borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? icons[ index ].border : undefined ),
 								borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
@@ -126,9 +108,9 @@ registerBlockType( 'kadence/icon', {
 						</a>
 					) }
 					{ icons[ index ].icon && ! icons[ index ].link && (
-						<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }`} name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
+						<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
 							color: ( icons[ index ].color ? icons[ index ].color : undefined ),
-							backgroundColor: ( icons[ index ].background && icons[ index ].style != 'default' ? icons[ index ].background : undefined ),
+							backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? icons[ index ].background : undefined ),
 							padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
 							borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? icons[ index ].border : undefined ),
 							borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
@@ -137,7 +119,7 @@ registerBlockType( 'kadence/icon', {
 					) }
 				</div>
 			);
-		}
+		};
 		return (
 			<div className={ `kt-svg-icons kt-svg-icons${ uniqueID } align${ blockAlignment }` } style={ {
 				textAlign: ( textAlignment ? textAlignment : undefined ),

@@ -8,7 +8,6 @@
  * Import Icons
  */
 import icons from './icon';
-import ResizableBox from 're-resizable';
 /**
  * Import Css
  */
@@ -24,33 +23,9 @@ const {
 	createBlock,
 } = wp.blocks;
 const {
-	InspectorControls,
-	ColorPalette,
-	BlockControls,
-	AlignmentToolbar,
 	RichText,
 } = wp.editor;
-const {
-	Fragment,
-} = wp.element;
-const {
-	PanelColor,
-	PanelBody,
-	Toolbar,
-	RangeControl,
-	SelectControl,
-} = wp.components;
 
-function createLevelControl( targetLevel ) {
-	return {
-		icon: 'heading',
-		// translators: %s: heading level e.g: "1", "2", "3"
-		title: sprintf( __( 'Heading %d' ), targetLevel ),
-		isActive: targetLevel === level,
-		onClick: () => setAttributes( { level: targetLevel } ),
-		subscript: String( targetLevel ),
-	};
-}
 /**
  * Register: a Gutenberg Block.
  *
@@ -126,6 +101,10 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'bool',
 			default: false,
 		},
+		loadGoogleFont: {
+			type: 'bool',
+			default: true,
+		},
 		fontSubset: {
 			type: 'string',
 			default: 'latin',
@@ -192,8 +171,8 @@ registerBlockType( 'kadence/advancedheading', {
 		return (
 			<RichText.Content
 				tagName={ tagName }
-				id={ `kt-adv-heading${uniqueID}` }
-				style={ { 
+				id={ `kt-adv-heading${ uniqueID }` }
+				style={ {
 					textAlign: align,
 					color: color,
 					letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),

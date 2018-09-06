@@ -22,9 +22,7 @@ import './editor.scss';
  * Internal block libraries
  */
 const { __ } = wp.i18n;
-const {
-	registerBlockType,
-} = wp.blocks;
+
 const {
 	InspectorControls,
 	ColorPalette,
@@ -45,16 +43,13 @@ const {
 } = wp.components;
 
 class KadenceIcons extends Component {
-	constructor() {
-		super( ...arguments );
-	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
-			this.props.setAttributes( { 
+			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
-			this.props.setAttributes( { 
+			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		}
@@ -63,27 +58,27 @@ class KadenceIcons extends Component {
 		const { attributes, setAttributes } = this.props;
 		const { icons } = attributes;
 
-		let newItems = icons.map( ( item, thisIndex ) => {
+		const newItems = icons.map( ( item, thisIndex ) => {
 			if ( index === thisIndex ) {
 				item = { ...item, ...value };
 			}
 
 			return item;
 		} );
-		setAttributes( { 
+		setAttributes( {
 			icons: newItems,
 		} );
 	}
 	render() {
-		const { attributes: { iconCount, icons, blockAlignment, textAlignment, uniqueID }, className, setAttributes, clientId } = this.props;
+		const { attributes: { iconCount, icons, blockAlignment, textAlignment }, className, setAttributes, clientId } = this.props;
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
 		);
-		const renderIconSettings = (index) => {
+		const renderIconSettings = ( index ) => {
 			return (
 				<PanelBody
-					title={ __( 'Icon' ) + ' ' + (index+1) + ' ' + __( 'Settings' ) }
-					initialOpen={ ( 1 == iconCount ? true : false ) }
+					title={ __( 'Icon' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }
+					initialOpen={ ( 1 === iconCount ? true : false ) }
 				>
 					<FontIconPicker
 						icons={ IcoNames }
@@ -100,17 +95,17 @@ class KadenceIcons extends Component {
 						label={ __( 'Icon Size' ) }
 						value={ icons[ index ].size }
 						onChange={ value => {
-							this.saveArrayUpdate( { size: value }, index);
+							this.saveArrayUpdate( { size: value }, index );
 						} }
 						min={ 5 }
 						max={ 250 }
 					/>
-					{ icons[ index ].icon && 'fe' === icons[ index ].icon.substring(0, 2) && (
+					{ icons[ index ].icon && 'fe' === icons[ index ].icon.substring( 0, 2 ) && (
 						<RangeControl
 							label={ __( 'Line Width' ) }
 							value={ icons[ index ].width }
 							onChange={ value => {
-								this.saveArrayUpdate( { width: value }, index);
+								this.saveArrayUpdate( { width: value }, index );
 							} }
 							step={ 0.5 }
 							min={ 0.5 }
@@ -124,7 +119,7 @@ class KadenceIcons extends Component {
 						<ColorPalette
 							value={ icons[ index ].color }
 							onChange={ value => {
-								this.saveArrayUpdate( { color: value }, index);
+								this.saveArrayUpdate( { color: value }, index );
 							} }
 						/>
 					</PanelColor>
@@ -136,10 +131,10 @@ class KadenceIcons extends Component {
 							{ value: 'stacked', label: __( 'Stacked' ) },
 						] }
 						onChange={ value => {
-							this.saveArrayUpdate( { style: value }, index);
+							this.saveArrayUpdate( { style: value }, index );
 						} }
 					/>
-					{ icons[ index ].style != 'default' && (
+					{ icons[ index ].style !== 'default' && (
 						<PanelColor
 							title={ __( 'Icon Background' ) }
 							colorValue={ icons[ index ].background }
@@ -147,12 +142,12 @@ class KadenceIcons extends Component {
 							<ColorPalette
 								value={ icons[ index ].background }
 								onChange={ value => {
-									this.saveArrayUpdate( { background: value }, index);
+									this.saveArrayUpdate( { background: value }, index );
 								} }
 							/>
 						</PanelColor>
 					) }
-					{ icons[ index ].style != 'default' && (
+					{ icons[ index ].style !== 'default' && (
 						<PanelColor
 							title={ __( 'Border Color' ) }
 							colorValue={ icons[ index ].border }
@@ -160,49 +155,49 @@ class KadenceIcons extends Component {
 							<ColorPalette
 								value={ icons[ index ].border }
 								onChange={ value => {
-									this.saveArrayUpdate( { border: value }, index);
+									this.saveArrayUpdate( { border: value }, index );
 								} }
 							/>
 						</PanelColor>
 					) }
-					{ icons[ index ].style != 'default' && (
+					{ icons[ index ].style !== 'default' && (
 						<RangeControl
 							label={ __( 'Border Size (px)' ) }
 							value={ icons[ index ].borderWidth }
 							onChange={ value => {
-								this.saveArrayUpdate( { borderWidth: value }, index);
+								this.saveArrayUpdate( { borderWidth: value }, index );
 							} }
 							min={ 0 }
 							max={ 20 }
 						/>
 					) }
-					{ icons[ index ].style != 'default' && (
+					{ icons[ index ].style !== 'default' && (
 						<RangeControl
 							label={ __( 'Border Radius (%)' ) }
 							value={ icons[ index ].borderRadius }
 							onChange={ value => {
-								this.saveArrayUpdate( { borderRadius: value }, index);
+								this.saveArrayUpdate( { borderRadius: value }, index );
 							} }
 							min={ 0 }
 							max={ 50 }
 						/>
 					) }
-					{ icons[ index ].style != 'default' && (
+					{ icons[ index ].style !== 'default' && (
 						<RangeControl
 							label={ __( 'Padding (px)' ) }
 							value={ icons[ index ].padding }
 							onChange={ value => {
-								this.saveArrayUpdate( { padding: value }, index);
+								this.saveArrayUpdate( { padding: value }, index );
 							} }
 							min={ 0 }
 							max={ 180 }
 						/>
 					) }
-					<label class="components-base-control__label">{ __( 'Link' ) }</label>
+					<p className="components-base-control__label">{ __( 'Link' ) }</p>
 					<URLInput
 						value={ icons[ index ].link }
 						onChange={ value => {
-							this.saveArrayUpdate( { link: value }, index);
+							this.saveArrayUpdate( { link: value }, index );
 						} }
 					/>
 					<SelectControl
@@ -213,7 +208,7 @@ class KadenceIcons extends Component {
 							{ value: '_blank', label: __( 'New Window' ) },
 						] }
 						onChange={ value => {
-							this.saveArrayUpdate( { target: value }, index);
+							this.saveArrayUpdate( { target: value }, index );
 						} }
 					/>
 					<TextControl
@@ -231,13 +226,13 @@ class KadenceIcons extends Component {
 				{ times( iconCount, n => renderIconSettings( n ) ) }
 			</div>
 		);
-		const renderIconsPreview = (index) => {
+		const renderIconsPreview = ( index ) => {
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` } >
 					{ icons[ index ].icon && (
-						<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }`} name={ icons[ index ].icon } size={ icons[ index ].size } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
+						<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
 							color: ( icons[ index ].color ? icons[ index ].color : undefined ),
-							backgroundColor: ( icons[ index ].background && icons[ index ].style != 'default' ? icons[ index ].background : undefined ),
+							backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? icons[ index ].background : undefined ),
 							padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
 							borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? icons[ index ].border : undefined ),
 							borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
@@ -269,26 +264,26 @@ class KadenceIcons extends Component {
 							label={ __( 'Number of Icons' ) }
 							value={ iconCount }
 							onChange={ newcount => {
-								let newicons = icons;
+								const newicons = icons;
 								if ( newicons.length < newcount ) {
-									let amount = Math.abs(newcount - newicons.length); 
+									const amount = Math.abs( newcount - newicons.length );
 									{ times( amount, n => {
 										newicons.push( {
-											icon: 'fe_aperture',
-											link: '',
-											target: '_self',
-											size: 50,
-											width: 2,
-											title: '',
-											color: '#444444',
-											background: 'transparent',
-											border: '#444444',
-											borderRadius: 0,
-											borderWidth: 2,
-											padding: 20,
-											style: 'default',
+											icon: newicons[ 0 ].icon,
+											link: newicons[ 0 ].link,
+											target: newicons[ 0 ].target,
+											size: newicons[ 0 ].size,
+											width: newicons[ 0 ].width,
+											title: newicons[ 0 ].title,
+											color: newicons[ 0 ].color,
+											background: newicons[ 0 ].background,
+											border: newicons[ 0 ].border,
+											borderRadius: newicons[ 0 ].borderRadius,
+											borderWidth: newicons[ 0 ].borderWidth,
+											padding: newicons[ 0 ].padding,
+											style: newicons[ 0 ].style,
 										} );
-									} ) };
+									} ); }
 									setAttributes( { icons: newicons } );
 								}
 								setAttributes( { iconCount: newcount } );
@@ -299,7 +294,7 @@ class KadenceIcons extends Component {
 					</PanelBody>
 					{ renderSettings }
 				</InspectorControls>
-				<div className={ `kt-svg-icons ${clientId}` } style={ {
+				<div className={ `kt-svg-icons ${ clientId }` } style={ {
 					textAlign: ( textAlignment ? textAlignment : undefined ),
 				} } >
 					{ times( iconCount, n => renderIconsPreview( n ) ) }

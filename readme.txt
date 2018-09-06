@@ -1,4 +1,4 @@
-=== Kadence Gutenberg ===
+=== Kadence Blocks ===
 Contributors: britner
 Tags: gutenberg, blocks, page builder, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
@@ -34,6 +34,8 @@ One of the challenges with creating custom column and row layouts in Gutenberg i
 
 In an effort to create an easier way to use Gutenberg in a more “page building experience” we created a simple way that allows you to change the default max width for pages and for posts as well as individually change that through a page by page setting. 
 
+Souce files - [github](https://github.com/kadencethemes/kadence-blocks)
+
 = Support =
 
 We are happy to help as best we can with questions! Please use the support forums.
@@ -57,6 +59,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.0.1 =
+* Add github link.
+* Update: Editor width to change image max width.
+** Update: Spacer/Divider block to show height while resizing.
+** Update: Icons Block to copy styles from previous icon when adding more.
+** Update: Button Block to copy styles from previous Button when adding more.
+** Add: New Advanced Header Block
 
 = 1.0.0 =
 * Initial Release.
