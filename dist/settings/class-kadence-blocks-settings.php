@@ -268,8 +268,8 @@ class Kadence_Blocks_Settings {
 											</div>
 											<div class="kt-content-promo">
 												<h3><?php echo esc_html__( 'Plugin Documentation', 'kadence-blocks' ); ?></h3>
-												<p><?php echo esc_html__( 'Coming soon, Kadence Blocks documentation to help you create amazing content.', 'kadence-blocks' ); ?></p>
-												<?php echo '<a href="#">' . esc_html__( 'Coming Soon', 'kadence-blocks' ) . '</a>'; ?>
+												<p><?php echo esc_html__( 'Kadence Blocks documentation is set up to help you create amazing content.', 'kadence-blocks' ); ?></p>
+												<?php echo '<a href="http://docs.kadencethemes.com/kadence-blocks/">' . esc_html__( 'Browse Docs', 'kadence-blocks' ) . '</a>'; ?>
 											</div>
 										</div>
 									</div>
@@ -324,6 +324,12 @@ class Kadence_Blocks_Settings {
 				'name'  => __( 'Spacer/Divider', 'kadence-blocks' ),
 				'desc'  => __( 'Easily create a divder and determine the space around it or just create some space in your content.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/spacer.jpg',
+			),
+			'kadence/advancedheading'      => array(
+				'slug'  => 'kadence/advancedheading',
+				'name'  => __( 'Advanced Heading', 'kadence-blocks' ),
+				'desc'  => __( 'Transform your headings to Advanced Headings and customize the font family (even google fonts), color, and size.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/heading.jpg',
 			),
 		);
 		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );

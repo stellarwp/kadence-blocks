@@ -19,45 +19,26 @@ import './editor.scss';
 const { __ } = wp.i18n;
 const {
 	RichText,
-	MediaUpload,
 	URLInput,
 	InspectorControls,
 	ColorPalette,
 	BlockControls,
 	AlignmentToolbar,
-	BlockAlignmentToolbar,
 } = wp.editor;
 const {
 	Component,
 	Fragment,
 } = wp.element;
 const {
-	Button,
 	IconButton,
 	PanelColor,
 	Dashicon,
 	TabPanel,
-	ToggleControl,
 	PanelBody,
 	RangeControl,
-	Toolbar,
 	SelectControl,
 } = wp.components;
-function kadenceHexToRGB(hex, alpha) {
-	hex = hex.replace('#', '');
-	let r = parseInt( hex.length == 3 ? hex.slice (0, 1 ).repeat(2) : hex.slice( 0, 2 ), 16 );
-	let g = parseInt( hex.length == 3 ? hex.slice( 1, 2 ).repeat(2) : hex.slice( 2, 4 ), 16 );
-	let b = parseInt( hex.length == 3 ? hex.slice( 2, 3 ).repeat(2) : hex.slice( 4, 6 ), 16 );
-	let alp;
-	if ( alpha < 10 ) {
-		alp = '0.0' + alpha;
-	} else if ( alpha >= 100 ) {
-		alp = '1';
-	} else {
-		alp = '0.' + alpha;
-	}
-	return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alp + ')';
-}
+
 class KadenceAdvancedButton extends Component {
 	constructor() {
 		super( ...arguments );
@@ -88,7 +69,7 @@ class KadenceAdvancedButton extends Component {
 		const { attributes, setAttributes } = this.props;
 		const { btns } = attributes;
 
-		let newItems = btns.map( ( item, thisIndex ) => {
+		const newItems = btns.map( ( item, thisIndex ) => {
 			if ( index === thisIndex ) {
 				item = { ...item, ...value };
 			}
@@ -100,11 +81,11 @@ class KadenceAdvancedButton extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { btnCount, btns, hAlign, currentTab, uniqueID }, className, clientId, setAttributes, isSelected, setState } = this.props;
-		const renderBtns = (index) => {
+		const { attributes: { btnCount, btns, hAlign }, className, setAttributes, isSelected } = this.props;
+		const renderBtns = ( index ) => {
 			return (
 				<div className={ `btn-area-wrap kt-btn-${ index }-area` }>
-					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[index].iconHover ? 'always' : 'hover' ) }` }  onMouseOut={ onMouseOut } onMouseOver={ () => {
+					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` }  onMouseOut={ onMouseOut } onMouseOver={ () => {
 						if ( 1 == index ) {
 							onHover1()
 						} else if ( 2 == index ) { 
@@ -118,59 +99,59 @@ class KadenceAdvancedButton extends Component {
 						}
 					} }>
 						<span className={ `kt-button kt-button-${ index }` } style={ {
-							backgroundColor: ( this.state.hovered && 'btn'+index == this.state.hovered ? btns[index].backgroundHover : btns[index].background ),
-							color: ( this.state.hovered && 'btn'+index == this.state.hovered ? btns[index].colorHover : btns[index].color ),
-							fontSize: btns[index].size + 'px',
-							borderRadius: btns[index].borderRadius + 'px',
-							borderWidth: btns[index].borderWidth + 'px',
-							borderColor: ( this.state.hovered && 'btn' + index == this.state.hovered ? btns[index].borderHover : btns[index].border ),
-							paddingLeft: btns[index].paddingLR + 'px',
-							paddingRight: btns[index].paddingLR + 'px',
-							paddingTop: btns[index].paddingTB + 'px',
-							paddingBottom: btns[index].paddingTB + 'px',
+							backgroundColor: ( this.state.hovered && 'btn' + index == this.state.hovered ? btns[ index ].backgroundHover : btns[ index ].background ),
+							color: ( this.state.hovered && 'btn' + index == this.state.hovered ? btns[ index ].colorHover : btns[ index ].color ),
+							fontSize: btns[ index ].size + 'px',
+							borderRadius: btns[ index ].borderRadius + 'px',
+							borderWidth: btns[ index ].borderWidth + 'px',
+							borderColor: ( this.state.hovered && 'btn' + index == this.state.hovered ? btns[ index ].borderHover : btns[ index ].border ),
+							paddingLeft: btns[ index ].paddingLR + 'px',
+							paddingRight: btns[ index ].paddingLR + 'px',
+							paddingTop: btns[ index ].paddingTB + 'px',
+							paddingBottom: btns[ index ].paddingTB + 'px',
 						} } >
-							{  btns[index].icon && 'left' === btns[index].iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[index].icon } kt-btn-side-${btns[index].iconSide}`} name={ btns[index].icon } size={ ( ! btns[index].size ? '14' : btns[index].size ) } icon={ ( 'fa' === btns[index].icon.substring( 0, 2 ) ? FaIco[ btns[index].icon ] : Ico[ btns[index].icon ] ) } />
+							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
+								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
 							) }
 							<RichText
 								tagName="span"
 								placeholder={ __( 'Button...' ) }
-								value={ btns[index].text }
+								value={ btns[ index ].text }
 								unstableOnFocus={ () => {
-									if ( 1 == index ) {
-										onFocusBtn1()
-									} else if ( 2 == index ) { 
-										onFocusBtn2()
-									} else if ( 3 == index ) { 
-										onFocusBtn3()
-									} else if ( 4 == index ) { 
-										onFocusBtn4()
+									if ( 1 === index ) {
+										onFocusBtn1();
+									} else if ( 2 === index ) { 
+										onFocusBtn2();
+									} else if ( 3 === index ) { 
+										onFocusBtn3();
+									} else if ( 4 === index ) { 
+										onFocusBtn4();
 									} else { 
-										onFocusBtn()
+										onFocusBtn();
 									}
 								} }
 								onChange={ value => {
-									this.saveArrayUpdate( { text: value }, index);
+									this.saveArrayUpdate( { text: value }, index );
 								} }
 								formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
 								className={ 'kt-button-text' }
 								keepPlaceholderOnFocus
 							/>
-							{  btns[index].icon && 'left' !== btns[index].iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[index].icon } kt-btn-side-${btns[index].iconSide}`} name={ btns[index].icon } size={ ( ! btns[index].size ? '14' : btns[index].size ) } icon={ ( 'fa' === btns[index].icon.substring( 0, 2 ) ? FaIco[ btns[index].icon ] : Ico[ btns[index].icon ] ) } />
+							{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
+								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
 							) }
 						</span>
 					</span>
-					{ isSelected && ( ( this.state.btnFocused && 'btn'+[index] == this.state.btnFocused ) || ( this.state.btnFocused && 'false' == this.state.btnFocused && '0' == index ) )  && (
+					{ isSelected && ( ( this.state.btnFocused && 'btn' + [ index ] == this.state.btnFocused ) || ( this.state.btnFocused && 'false' == this.state.btnFocused && '0' == index ) )  && (
 						<form
 							key={ 'form-link' }
 							onSubmit={ ( event ) => event.preventDefault() }
 							className="blocks-button__inline-link">
 							<Dashicon icon={ 'admin-links' } />
 							<URLInput
-								value={ btns[index].link }
+								value={ btns[ index ].link }
 								onChange={ value => {
-									this.saveArrayUpdate( { link: value }, index);
+									this.saveArrayUpdate( { link: value }, index );
 								} }
 							/>
 							<IconButton
@@ -183,7 +164,7 @@ class KadenceAdvancedButton extends Component {
 				</div>
 			);
 		};
-		const onHover = (index) => {
+		const onHover = () => {
 			if ( 'btn0' !== this.state.hovered ) {
 				this.setState( {
 					hovered: 'btn0',
@@ -270,32 +251,32 @@ class KadenceAdvancedButton extends Component {
 		const tabControls = ( index ) => {
 			return (
 				<PanelBody
-					title={ __( 'Button' ) + ' ' + (index+1) + ' ' + __( 'Settings' ) }
+					title={ __( 'Button' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }
 					initialOpen={ false }
 				>
-					<label className="components-base-control__label">{ __( 'Link' ) }</label>
+					<p className="components-base-control__label">{ __( 'Link' ) }</p>
 					<URLInput
-						value={ btns[index].link }
+						value={ btns[ index ].link }
 						onChange={ value => {
-							this.saveArrayUpdate( { link: value }, index);
+							this.saveArrayUpdate( { link: value }, index );
 						} }
 					/>
 					<SelectControl
 						label={ __( 'Link Target' ) }
-						value={ btns[index].target }
+						value={ btns[ index ].target }
 						options={ [
 							{ value: '_self', label: __( 'Same Window' ) },
 							{ value: '_blank', label: __( 'New Window' ) },
 						] }
 						onChange={ value => {
-							this.saveArrayUpdate( { target: value }, index);
+							this.saveArrayUpdate( { target: value }, index );
 						} }
 					/>
 					<RangeControl
 						beforeIcon="editor-textcolor"
 						afterIcon="editor-textcolor"
 						label={ __( 'Button Text Size' ) }
-						value={ btns[index].size }
+						value={ btns[ index ].size }
 						onChange={ value => {
 							this.saveArrayUpdate( { size: value }, index );
 						} }
@@ -304,36 +285,36 @@ class KadenceAdvancedButton extends Component {
 					/>
 					<RangeControl
 						label={ __( 'Top and Bottom Padding' ) }
-						value={ btns[index].paddingTB }
+						value={ btns[ index ].paddingTB }
 						onChange={ value => {
-							this.saveArrayUpdate( { paddingTB: value }, index);
+							this.saveArrayUpdate( { paddingTB: value }, index );
 						} }
 						min={ 0 }
 						max={ 100 }
 					/>
 					<RangeControl
 						label={ __( 'Left and Right Padding' ) }
-						value={ btns[index].paddingLR }
+						value={ btns[ index ].paddingLR }
 						onChange={ value => {
-							this.saveArrayUpdate( { paddingLR: value }, index);
+							this.saveArrayUpdate( { paddingLR: value }, index );
 						} }
 						min={ 0 }
 						max={ 100 }
 					/>
 					<RangeControl
 						label={ __( 'Border Thickness' ) }
-						value={ btns[index].borderWidth }
+						value={ btns[ index ].borderWidth }
 						onChange={ value => {
-							this.saveArrayUpdate( { borderWidth: value }, index);
+							this.saveArrayUpdate( { borderWidth: value }, index );
 						} }
 						min={ 0 }
 						max={ 20 }
 					/>
 					<RangeControl
 						label={ __( 'Border Radius' ) }
-						value={ btns[index].borderRadius }
+						value={ btns[ index ].borderRadius }
 						onChange={ value => {
-							this.saveArrayUpdate( { borderRadius: value }, index);
+							this.saveArrayUpdate( { borderRadius: value }, index );
 						} }
 						min={ 0 }
 						max={ 50 }
@@ -356,10 +337,10 @@ class KadenceAdvancedButton extends Component {
 						{
 							( tabName ) => {
 								let tabout;
-								if ( 'hover'+index === tabName ) {
-									tabout = hoverSettings(index);
+								if ( 'hover' + index === tabName ) {
+									tabout = hoverSettings( index );
 								} else {
-									tabout = buttonSettings(index);
+									tabout = buttonSettings( index );
 								};
 								return <div>{ tabout }</div>;
 							}
@@ -368,9 +349,9 @@ class KadenceAdvancedButton extends Component {
 					<h2 className="kt-tool">{ __( 'Icon Settings' ) }</h2>
 					<FontIconPicker
 						icons={ IcoNames }
-						value={ btns[index].icon }
+						value={ btns[ index ].icon }
 						onChange={ value => {
-							this.saveArrayUpdate( { icon: value }, index);
+							this.saveArrayUpdate( { icon: value }, index );
 						} }
 						appendTo="body"
 						renderFunc={ renderSVG }
@@ -379,27 +360,27 @@ class KadenceAdvancedButton extends Component {
 					/>
 					<SelectControl
 						label={ __( 'Icon Location' ) }
-						value={ btns[index].iconSide }
+						value={ btns[ index ].iconSide }
 						options={ [
 							{ value: 'right', label: __( 'Right' ) },
 							{ value: 'left', label: __( 'Left' ) },
 						] }
 						onChange={ value => {
-							this.saveArrayUpdate( { iconSide: value }, index);
+							this.saveArrayUpdate( { iconSide: value }, index );
 						} }
 					/>
 				</PanelBody>
 			);
 		};
-		const hoverSettings = (index) => {
+		const hoverSettings = ( index ) => {
 			return (
 				<div>
 					<PanelColor
 						title={ __( 'Hover Font Color' ) }
-						colorValue={ btns[index].colorHover }
+						colorValue={ btns[ index ].colorHover }
 					>
 						<ColorPalette
-							value={ btns[index].colorHover }
+							value={ btns[ index ].colorHover }
 							onChange={ value => {
 								this.saveArrayUpdate( { colorHover: value }, index );
 							} }
@@ -407,10 +388,10 @@ class KadenceAdvancedButton extends Component {
 					</PanelColor>
 					<PanelColor
 						title={ __( 'Hover Background Color' ) }
-						colorValue={ btns[index].backgroundHover }
+						colorValue={ btns[ index ].backgroundHover }
 					>
 						<ColorPalette
-							value={ btns[index].backgroundHover }
+							value={ btns[ index ].backgroundHover }
 							onChange={ value => {
 								this.saveArrayUpdate( { backgroundHover: value }, index );
 							} }
@@ -418,10 +399,10 @@ class KadenceAdvancedButton extends Component {
 					</PanelColor>
 					<PanelColor
 						title={ __( 'Button Hover Border Color' ) }
-						colorValue={ btns[index].borderHover }
+						colorValue={ btns[ index ].borderHover }
 					>
 						<ColorPalette
-							value={ btns[index].borderHover }
+							value={ btns[ index ].borderHover }
 							onChange={ value => {
 								this.saveArrayUpdate( { borderHover: value }, index );
 							} }
@@ -431,42 +412,41 @@ class KadenceAdvancedButton extends Component {
 			);
 		};
 		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' ===  svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
+			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
 		);
 		const buttonSettings = ( index ) => {
 			return ( 
 				<div>
 					<PanelColor
 						title={ __( 'Font Color' ) }
-						colorValue={ btns[index].color }
+						colorValue={ btns[ index ].color }
 					>
 						<ColorPalette
-							value={ btns[index].color }
+							value={ btns[ index ].color }
 							onChange={ value => {
-								this.saveArrayUpdate( { color: value }, index);
+								this.saveArrayUpdate( { color: value }, index );
 							} }
 						/>
 					</PanelColor>
 					<PanelColor
 						title={ __( 'Background Color' ) }
-						colorValue={ btns[index].background }
+						colorValue={ btns[ index ].background }
 					>
 						<ColorPalette
-							value={ btns[index].background }
+							value={ btns[ index ].background }
 							onChange={ value => {
-								this.saveArrayUpdate( { background: value }, index);
+								this.saveArrayUpdate( { background: value }, index );
 							} }
 						/>
 					</PanelColor>
-					
 					<PanelColor
 						title={ __( 'Border Color' ) }
-						colorValue={ btns[index].border }
+						colorValue={ btns[ index ].border }
 					>
 						<ColorPalette
-							value={ btns[index].border }
+							value={ btns[ index ].border }
 							onChange={ value => {
-								this.saveArrayUpdate( { border: value }, index);
+								this.saveArrayUpdate( { border: value }, index );
 							} }
 						/>
 					</PanelColor>
@@ -483,21 +463,9 @@ class KadenceAdvancedButton extends Component {
 				{ times( btnCount, n => renderBtns( n ) ) }
 			</div>
 		);
-		function saveArray( key, value, index ) {
-			const newbtns = [];
-			{ times( btnCount, n => {
-				newbtns[ n ] = btns[ n ];
-				if ( n === index ) {
-					newbtns[ n ][ key ] = value;
-				}
-			} ); }
-			setAttributes( { 
-				btns: newbtns,
-			} );
-		};
 		return (
 			<Fragment>
-				<div className={ `${className} kt-btn-align-${ hAlign }` }>
+				<div className={ `${ className } kt-btn-align-${ hAlign }` }>
 					<BlockControls>
 						<AlignmentToolbar
 							value={ hAlign }
@@ -513,30 +481,30 @@ class KadenceAdvancedButton extends Component {
 								label={ __( 'Number of Buttons' ) }
 								value={ btnCount }
 								onChange={ newcount => {
-									let newbtns = btns;
-									if (newbtns.length < newcount) {
-										let amount = Math.abs(newcount - newbtns.length); 
+									const newbtns = btns;
+									if ( newbtns.length < newcount ) {
+										const amount = Math.abs( newcount - newbtns.length );
 										{ times( amount, n => {
 											newbtns.push( {
-												text: '',
-												link: '',
-												target: '_self',
-												size: 18,
-												paddingBT: '',
-												paddingLR: '',
-												color: '#555555',
-												background: 'transparent',
-												border: '#55555',
-												borderRadius: '3',
-												borderWidth: '2',
-												colorHover: '#ffffff',
-												backgroundHover: '#444444',
-												borderHover: '#444444',
-												icon: '',
-												iconSide: 'right',
-												iconHover: false,
+												text: newbtns[ 0 ].text,
+												link: newbtns[ 0 ].link,
+												target: newbtns[ 0 ].target,
+												size: newbtns[ 0 ].size,
+												paddingBT: newbtns[ 0 ].paddingBT,
+												paddingLR: newbtns[ 0 ].paddingLR,
+												color: newbtns[ 0 ].color,
+												background: newbtns[ 0 ].background,
+												border: newbtns[ 0 ].border,
+												borderRadius: newbtns[ 0 ].borderRadius,
+												borderWidth: newbtns[ 0 ].borderWidth,
+												colorHover: newbtns[ 0 ].colorHover,
+												backgroundHover: newbtns[ 0 ].backgroundHover,
+												borderHover: newbtns[ 0 ].borderHover,
+												icon: newbtns[ 0 ].icon,
+												iconSide: newbtns[ 0 ].iconSide,
+												iconHover: newbtns[ 0 ].iconHover,
 											} );
-										} ) };
+										} ); }
 										setAttributes( { btns: newbtns } );
 									}
 									setAttributes( { btnCount: newcount } );

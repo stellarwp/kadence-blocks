@@ -107,10 +107,11 @@ registerBlockType( 'kadence/advancedheading', {
 		},
 		fontSubset: {
 			type: 'string',
-			default: 'latin',
+			default: '',
 		},
 		fontVariant: {
 			type: 'string',
+			default: '',
 		},
 		fontWeight: {
 			type: 'string',
@@ -138,7 +139,7 @@ registerBlockType( 'kadence/advancedheading', {
 				transform: ( { content, level } ) => {
 					return createBlock( 'kadence/advancedheading', {
 						content: content,
-						tagName: 'h' + level,
+						level: level,
 					} );
 				},
 			},
@@ -147,7 +148,7 @@ registerBlockType( 'kadence/advancedheading', {
 			{
 				type: 'block',
 				blocks: [ 'core/paragraph' ],
-				transform: ( content ) => {
+				transform: ( { content } ) => {
 					return createBlock( 'core/paragraph', {
 						content,
 					} );
@@ -156,9 +157,10 @@ registerBlockType( 'kadence/advancedheading', {
 			{
 				type: 'block',
 				blocks: [ 'core/heading' ],
-				transform: ( content ) => {
+				transform: ( { content, level } ) => {
 					return createBlock( 'core/heading', {
-						content,
+						content: content,
+						level: level,
 					} );
 				},
 			},

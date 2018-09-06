@@ -23,7 +23,7 @@ class Kadence_Blocks_Frontend {
 	 *
 	 * @var array
 	 */
-	private static $gfonts = array();
+	public static $gfonts = array();
 
 	/**
 	 * Instance of this class
@@ -71,7 +71,7 @@ class Kadence_Blocks_Frontend {
 		}
 		$link    = '';
 		$subsets = array();
-		foreach ( self::$gfonts as $kay => $gfont_values ) {
+		foreach ( self::$gfonts as $key => $gfont_values ) {
 			if ( ! empty( $link ) ) {
 				$link .= '%7C'; // Append a new font to the string.
 			}
@@ -134,11 +134,6 @@ class Kadence_Blocks_Frontend {
 							}
 						}
 					}
-					if ( 'kadence' === strtok( $block['blockName'], '/' ) ) {
-						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) && isset( $block['attrs']['typography'] ) ) {
-							$this->blocks_google_fonts( $block['attrs'] );
-						}
-					}
 				}
 				if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 					$css .= $this->blocks_cycle_through( $block['innerBlocks'] );
@@ -199,43 +194,12 @@ class Kadence_Blocks_Frontend {
 						}
 					}
 				}
-				if ( 'kadence' === strtok( $block['blockName'], '/' ) ) {
-					if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) && isset( $block['attrs']['typography'] ) ) {
-						$this->blocks_google_fonts( $block['attrs'] );
-					}
-				}
 			}
 			if ( isset( $inner_block['innerBlocks'] ) && ! empty( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) ) {
 				$css .= $this->blocks_cycle_through( $inner_block['innerBlocks'] );
 			}
 		}
 		return $css;
-	}
-	/**
-	 * Builds CSS for Advanced Heading block.
-	 * 
-	 * @param array  $attr the blocks attr.
-	 * @param string $unique_id the blocks attr ID.
-	 */
-	function blocks_google_fonts( $attr ) {
-		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( isset( $attr['loadGooleFonts'] ) && $attr['loadGooleFonts'] || ! isset( $attr['loadGooleFonts'] ) ) && isset( $attr['typography'] ) ) {
-			// Check if the font has been added yet
-			if ( ! in_array( $attr['typography'], self::$gfonts, true ) ) {
-				$add_font = array(
-					'fontfamily' => $attr['typography'],
-					'fontvariants' => ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ? array( $attr['fontVariant'] ) : array() ),
-					'fontsubsets' => ( isset( $attr['fontSubset'] ) && !empty( $attr['fontSubset'] ) ? array( $attr['fontSubset'] ) : array() ),
-				);
-				self::$gfonts[$attr['typography']] = $add_font;
-			} else {
-				if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
-					self::$gfonts[ $attr['typography'] ]['fontvariants'] = $attr['fontVariant'];
-				}
-				if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
-					self::$gfonts[ $attr['typography'] ]['fontsubsets'] = $attr['fontSubset'];
-				}
-			}
-		}
 	}
 	/**
 	 * Builds CSS for Advanced Heading block.
@@ -257,6 +221,24 @@ class Kadence_Blocks_Frontend {
 				$css .= 'font-family:' . $attr['typography'] . ';';
 			}
 			$css .= '}';
+		}
+		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || $attr['loadGoogleFont'] == true ) && isset( $attr['typography'] ) ) {
+			// Check if the font has been added yet
+			if ( ! in_array( $attr['typography'], self::$gfonts, true ) ) {
+				$add_font = array(
+					'fontfamily' => $attr['typography'],
+					'fontvariants' => ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ? array( $attr['fontVariant'] ) : array() ),
+					'fontsubsets' => ( isset( $attr['fontSubset'] ) && !empty( $attr['fontSubset'] ) ? array( $attr['fontSubset'] ) : array() ),
+				);
+				self::$gfonts[$attr['typography']] = $add_font;
+			} else {
+				if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
+					self::$gfonts[ $attr['typography'] ]['fontvariants'] = $attr['fontVariant'];
+				}
+				if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
+					self::$gfonts[ $attr['typography'] ]['fontsubsets'] = $attr['fontSubset'];
+				}
+			}
 		}
 		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';

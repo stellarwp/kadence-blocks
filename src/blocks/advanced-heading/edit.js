@@ -44,7 +44,6 @@ const {
 	TabPanel,
 	SelectControl,
 } = wp.components;
-
 class KadenceAdvancedHeading extends Component {
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
@@ -78,9 +77,9 @@ class KadenceAdvancedHeading extends Component {
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
-			}
+			},
 		};
-		const config = (googleFont ? gconfig : '');
+		const config = ( googleFont ? gconfig : '' );
 		const typographyWeights = ( googleFont && typography ? gFonts[ typography ][ 'w' ].map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardWeights );
 		const typographyStyles = ( googleFont && typography ? gFonts[ typography ][ 'i' ].map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
 		const typographySubsets = ( googleFont && typography ? gFonts[ typography ][ 's' ].map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
@@ -93,7 +92,18 @@ class KadenceAdvancedHeading extends Component {
 				name: 'Standard Fonts',
 				items: [
 					{ name: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
+					{ name: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
+					{ name: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
+					{ name: 'Impact, Charcoal, sans-serif', value: 'Impact, Charcoal, sans-serif', google: false },
+					{ name: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', value: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', google: false },
+					{ name: 'Tahoma, Geneva, sans-serif', value: 'Tahoma, Geneva, sans-serif', google: false },
+					{ name: '"Trebuchet MS", Helvetica, sans-serif', value: '"Trebuchet MS", Helvetica, sans-serif', google: false },
+					{ name: 'Verdana, Geneva, sans-serif', value: 'Verdana, Geneva, sans-serif', google: false },
+					{ name: 'Georgia, serif', value: 'Georgia, serif', google: false },
+					{ name: '"Palatino Linotype", "Book Antiqua", Palatino, serif', value: '"Palatino Linotype", "Book Antiqua", Palatino, serif', google: false },
+					{ name: '"Times New Roman", Times, serif', value: '"Times New Roman", Times, serif', google: false },
 					{ name: 'Courier, monospace', value: 'Courier, monospace', google: false },
+					{ name: '"Lucida Console", Monaco, monospace', value: '"Lucida Console", Monaco, monospace', google: false },
 				]
 			},
 			{
@@ -122,20 +132,26 @@ class KadenceAdvancedHeading extends Component {
 			let variant;
 			let weight;
 			let subset;
-			if ( ! gFonts[ select.value ][ 'v' ].includes( 'regular' ) ) {
-				variant = gFonts[ select.value ][ 'v' ][ 0 ];
-			} else {
-				variant = '';
-			}
-			if ( ! gFonts[ select.value ][ 'w' ].includes( 'regular' ) ) {
-				weight = gFonts[ select.value ][ 'w' ][ 0 ];
-			} else {
-				weight = 'regular';
-			}
-			if ( gFonts[ select.value ][ 's' ].length > 1 ) {
-				subset = 'latin';
+			if ( select.google ) {
+				if ( ! gFonts[ select.value ][ 'v' ].includes( 'regular' ) ) {
+					variant = gFonts[ select.value ][ 'v' ][ 0 ];
+				} else {
+					variant = '';
+				}
+				if ( ! gFonts[ select.value ][ 'w' ].includes( 'regular' ) ) {
+					weight = gFonts[ select.value ][ 'w' ][ 0 ];
+				} else {
+					weight = 'regular';
+				}
+				if ( gFonts[ select.value ][ 's' ].length > 1 ) {
+					subset = 'latin';
+				} else {
+					subset = '';
+				}
 			} else {
 				subset = '';
+				variant = '';
+				weight = 'regular';
 			}
 			setAttributes( {
 				typography: select.value,
@@ -150,6 +166,7 @@ class KadenceAdvancedHeading extends Component {
 			setAttributes( {
 				typography: '',
 				googleFont: false,
+				loadGoogleFont: true,
 				fontVariant: '',
 				fontSubset: '',
 				fontWeight: 'regular',
@@ -178,6 +195,12 @@ class KadenceAdvancedHeading extends Component {
 					fontWeight: select,
 				} );
 			}
+		};
+		const onGLoadChange = ( select ) => {
+			console.log(select);
+			setAttributes( {
+				loadGoogleFont: select,
+			} );
 		};
 		const onStyleChange = ( select ) => {
 			if ( googleFont ) {
@@ -461,7 +484,7 @@ class KadenceAdvancedHeading extends Component {
 							<ToggleControl
 								label={ __( 'Load Google Font on Frontend' ) }
 								checked={ loadGoogleFont }
-								onChange={ loadGoogleFont => setAttributes( { loadGoogleFont } ) }
+								onChange={ onGLoadChange }
 							/>
 						) }
 						<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
