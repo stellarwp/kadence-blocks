@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Call to action
+ * BLOCK: Kadence Column
  *
  * Registering a basic block with Gutenberg.
  */

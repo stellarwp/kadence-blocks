@@ -10,8 +10,8 @@ import './editor.scss';
 import range from 'lodash/range';
 import map from 'lodash/map';
 import SelectSearch from 'react-select-search';
-import fonts from './fonts';
-import gFonts from './gfonts';
+import fonts from '../../fonts';
+import gFonts from '../../gfonts';
 import WebfontLoader from '@dr-kobros/react-webfont-loader';
 /**
  * Internal block libraries

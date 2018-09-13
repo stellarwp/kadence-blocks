@@ -251,4 +251,48 @@ clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
     <rect x='4.489' y='12.802' width='11.022' height='2.512'
     />
 </svg>;
+icons.outlinetop = <svg width="20px" height="20px" viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
+clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
+    <rect x='2.714' y='5.492' width='1.499' height='9.017' fill='#555d66'
+    />
+    <rect x='15.772' y='5.498' width='1.516' height='9.003' fill='#555d66'
+    />
+    <path d='M14.482,4.668l0,-2.482l-8.964,0l0,2.482l8.964,0Z' fill='#272b2f'
+    />
+    <path d='M14.513,17.298l0,-1.499l-9.026,0l0,1.499l9.026,0Z' fill='#555d66'
+    />
+</svg>;
+icons.outlineright = <svg width="20px" height="20px" viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
+clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
+    <rect x='2.714' y='5.492' width='1.499' height='9.017' fill='#555d66'
+    />
+    <rect x='15.244' y='5.498' width='2.518' height='9.003' fill='#272b2f'
+    />
+    <path d='M14.482,4.218l0,-1.499l-8.964,0l0,1.499l8.964,0Z' fill='#555d66'
+    />
+    <path d='M14.513,17.298l0,-1.499l-9.026,0l0,1.499l9.026,0Z' fill='#555d66'
+    />
+</svg>;
+icons.outlinebottom = <svg width="20px" height="20px" viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
+clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
+    <rect x='2.714' y='5.492' width='1.499' height='9.017' fill='#555d66'
+    />
+    <rect x='15.772' y='5.498' width='1.516' height='9.003' fill='#555d66'
+    />
+    <path d='M14.482,4.218l0,-1.499l-8.964,0l0,1.499l8.964,0Z' fill='#555d66'
+    />
+    <path d='M14.513,17.779l0,-2.499l-9.026,0l0,2.499l9.026,0Z' fill='#272b2f'
+    />
+</svg>;
+icons.outlineleft = <svg width="20px" height="20px" viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
+clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
+    <rect x='2.202' y='5.492' width='2.503' height='9.017' fill='#272b2f'
+    />
+    <rect x='15.772' y='5.498' width='1.516' height='9.003' fill='#555d66'
+    />
+    <path d='M14.482,4.218l0,-1.499l-8.964,0l0,1.499l8.964,0Z' fill='#555d66'
+    />
+    <path d='M14.513,17.298l0,-1.499l-9.026,0l0,1.499l9.026,0Z' fill='#555d66'
+    />
+</svg>;
 export default icons;

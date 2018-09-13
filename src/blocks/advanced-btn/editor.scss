@@ -17,6 +17,12 @@
     line-height: 1.4;
     width: 280px;
 }
+.components-panel__body.kt-font-family-area.is-opened {
+    min-height: 340px;
+}
+.components-panel__body.kt-font-family-area h2.kt-heading-fontfamily-title {
+    margin-top: 0;
+}
 .wp-block-kadence-advancedbtn .btn-area-wrap form.blocks-button__inline-link {
     position: absolute;
     left: 50%;

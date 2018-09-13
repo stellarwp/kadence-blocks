@@ -99,11 +99,11 @@ registerBlockType( 'kadence/advancedheading', {
 			default: '',
 		},
 		googleFont: {
-			type: 'bool',
+			type: 'boolean',
 			default: false,
 		},
 		loadGoogleFont: {
-			type: 'bool',
+			type: 'boolean',
 			default: true,
 		},
 		fontSubset: {
@@ -254,11 +254,11 @@ registerBlockType( 'kadence/advancedheading', {
 					default: '',
 				},
 				googleFont: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				loadGoogleFont: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				fontSubset: {

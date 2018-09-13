@@ -1,0 +1,122 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+ // Controls
+ .components-button-group .kt-layout-btn.kt-tablayout {
+	height: 46px;
+	svg {
+		width: 40px;
+		height: 40px;
+	}
+	&:hover, &.is-primary, &:focus:not(:disabled):not([aria-disabled=true]) {
+		background:#eee;
+		svg path, svg rect {
+			fill: #222;
+		}
+	}
+}
+
+.kt-size-type-options.kt-outline-control {
+	.components-button.kt-size-btn {
+		padding: 2px 4px;
+		svg {
+			fill: #777;
+			width: 15px;
+			height: 15px;
+		}
+		&.is-primary svg {
+			fill: #222;
+		}
+	}
+}
+.components-panel__body > .components-panel__body >.components-panel__body-title > .components-panel__body-toggle {
+    padding: 10px 10px 10px 30px;
+}
+.components-range-control.kt-icon-rangecontrol .components-base-control__label {
+    width: 30px;
+}
+
+.kt-inspect-tabs.kt-hover-tabs.kt-no-ho-ac-tabs .components-tab-panel__tabs button {
+    width: 33.33%;
+    padding: 6px 0;
+    font-size: 12px;
+}
+
+.kt-tabs-title-list {
+	margin:0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	list-style: none;
+	border-bottom: 1px solid #dee2e6;
+	li {
+		margin: 0 4px 0 0;
+		cursor: pointer;
+		list-style: none;
+		margin-bottom: -1px;
+		.kt-tab-title {
+			padding: 8px 16px;
+			display:block;
+			border: 1px solid transparent;
+			border-top-left-radius: 4px;
+			border-top-right-radius: 4px;
+		}
+		&.kt-tab-title-active .kt-tab-title {
+			background-color: #fff;
+			border-color: #dee2e6 #dee2e6 #fff;
+		}
+	}
+}
+.kt-tabs-content-wrap:before, .kt-tabs-content-wrap:after {
+    content: '';
+    clear: both;
+    display: table;
+}
+.kt-tabs-content-wrap {
+    border: 1px solid #dee2e6;
+	border-top: 0;
+	padding: 0px 20px;
+}
+.kt-tabs-content-wrap [data-type="kadence/tab"] {
+	display: none;
+}
+.wp-block-kadence-tabs.kt-active-tab-1 [data-tab="1"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-2 [data-tab="2"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-3 [data-tab="3"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-4 [data-tab="4"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-5 [data-tab="5"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-6 [data-tab="6"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-7 [data-tab="7"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-8 [data-tab="8"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-9 [data-tab="9"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-10 [data-tab="10"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-11 [data-tab="11"] {
+	display: block;
+}
+.wp-block-kadence-tabs.kt-active-tab-12 [data-tab="12"] {
+	display: block;
+}

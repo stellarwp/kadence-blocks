@@ -245,7 +245,7 @@ class Kadence_Blocks_Settings {
 											<div class="kt-content-promo">
 												<h3><?php echo esc_html__( 'Support', 'kadence-blocks' ); ?></h3>
 												<p><?php echo esc_html__( 'Are you having trouble getting things to look how you want? Or are you stuck and not sure what to do? We can help!', 'kadence-blocks' ); ?></p>
-												<a href="https://wordpress.org/support/plugins/kadence-blocks" target="_blank"><?php echo esc_html__( 'Ask a question', 'kadence-blocks' ); ?></a>
+												<a href="https://wordpress.org/support/plugin/kadence-blocks" target="_blank"><?php echo esc_html__( 'Ask a question', 'kadence-blocks' ); ?></a>
 											</div>
 										</div>
 									</div>

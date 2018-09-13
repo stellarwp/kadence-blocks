@@ -190,5 +190,73 @@ const attributes = {
 		type: 'string',
 		default: 'top',
 	},
+	topSep: {
+		type: 'string',
+		default: 'none',
+	},
+	topSepColor: {
+		type: 'string',
+		default: '#ffffff',
+	},
+	topSepFlip: {
+		type: 'boolean',
+		default: false,
+	},
+	topSepInvert: {
+		type: 'boolean',
+		default: false,
+	},
+	topSepHeight: {
+		type: 'number',
+		default: 100,
+	},
+	topSepHeightTab: {
+		type: 'number',
+		default: '',
+	},
+	topSepHeightMobile: {
+		type: 'number',
+		default: '',
+	},
+	bottomSep: {
+		type: 'string',
+		default: 'none',
+	},
+	bottomSepColor: {
+		type: 'string',
+		default: '#ffffff',
+	},
+	bottomSepFlip: {
+		type: 'boolean',
+		default: false,
+	},
+	bottomSepInvert: {
+		type: 'boolean',
+		default: false,
+	},
+	bottomSepHeight: {
+		type: 'number',
+		default: 100,
+	},
+	bottomSepWidth: {
+		type: 'number',
+		default: 100,
+	},
+	bottomSepWidthTab: {
+		type: 'number',
+		default: '',
+	},
+	bottomSepWidthMobile: {
+		type: 'number',
+		default: '',
+	},
+	bottomSepHeightTab: {
+		type: 'number',
+		default: '',
+	},
+	bottomSepHeightMobile: {
+		type: 'number',
+		default: '',
+	},
 };
 export default attributes;

@@ -9,6 +9,10 @@ import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
 import FaIco from '../../faicons';
 import IcoNames from '../../svgiconsnames';
+import SelectSearch from 'react-select-search';
+import fonts from '../../fonts';
+import gFonts from '../../gfonts';
+import WebfontLoader from '@dr-kobros/react-webfont-loader';
 /**
  * Import Css
  */
@@ -35,6 +39,7 @@ const {
 	Dashicon,
 	TabPanel,
 	PanelBody,
+	ToggleControl,
 	RangeControl,
 	SelectControl,
 } = wp.components;
@@ -80,8 +85,153 @@ class KadenceAdvancedButton extends Component {
 			btns: newItems,
 		} );
 	}
+	capitalizeFirstLetter( string ) {
+		return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
+	}
 	render() {
-		const { attributes: { btnCount, btns, hAlign }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant }, className, setAttributes, isSelected } = this.props;
+		const standardWeights = [
+			{ value: 'regular', label: 'Normal' },
+			{ value: 'bold', label: 'Bold' },
+		];
+		const standardStyles = [
+			{ value: 'normal', label: 'Normal' },
+			{ value: 'italic', label: 'Italic' },
+		];
+		const gconfig = {
+			google: {
+				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
+			},
+		};
+		const config = ( googleFont ? gconfig : '' );
+		const typographyWeights = ( googleFont && typography ? gFonts[ typography ].w.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardWeights );
+		const typographyStyles = ( googleFont && typography ? gFonts[ typography ].i.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
+		const typographySubsets = ( googleFont && typography ? gFonts[ typography ].s.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
+		const fontsarray = fonts.map( ( name ) => {
+			return { name: name, value: name, google: true };
+		} );
+		const options = [
+			{
+				type: 'group',
+				name: 'Standard Fonts',
+				items: [
+					{ name: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
+					{ name: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
+					{ name: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
+					{ name: 'Impact, Charcoal, sans-serif', value: 'Impact, Charcoal, sans-serif', google: false },
+					{ name: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', value: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', google: false },
+					{ name: 'Tahoma, Geneva, sans-serif', value: 'Tahoma, Geneva, sans-serif', google: false },
+					{ name: '"Trebuchet MS", Helvetica, sans-serif', value: '"Trebuchet MS", Helvetica, sans-serif', google: false },
+					{ name: 'Verdana, Geneva, sans-serif', value: 'Verdana, Geneva, sans-serif', google: false },
+					{ name: 'Georgia, serif', value: 'Georgia, serif', google: false },
+					{ name: '"Palatino Linotype", "Book Antiqua", Palatino, serif', value: '"Palatino Linotype", "Book Antiqua", Palatino, serif', google: false },
+					{ name: '"Times New Roman", Times, serif', value: '"Times New Roman", Times, serif', google: false },
+					{ name: 'Courier, monospace', value: 'Courier, monospace', google: false },
+					{ name: '"Lucida Console", Monaco, monospace', value: '"Lucida Console", Monaco, monospace', google: false },
+				],
+			},
+			{
+				type: 'group',
+				name: 'Google Fonts',
+				items: fontsarray,
+			},
+		];
+		const onTypeChange = ( select ) => {
+			let variant;
+			let weight;
+			let subset;
+			if ( select.google ) {
+				if ( ! gFonts[ select.value ].v.includes( 'regular' ) ) {
+					variant = gFonts[ select.value ].v[ 0 ];
+				} else {
+					variant = '';
+				}
+				if ( ! gFonts[ select.value ].w.includes( 'regular' ) ) {
+					weight = gFonts[ select.value ].w[ 0 ];
+				} else {
+					weight = 'regular';
+				}
+				if ( gFonts[ select.value ].s.length > 1 ) {
+					subset = 'latin';
+				} else {
+					subset = '';
+				}
+			} else {
+				subset = '';
+				variant = '';
+				weight = 'regular';
+			}
+			setAttributes( {
+				typography: select.value,
+				googleFont: select.google,
+				fontVariant: variant,
+				fontWeight: weight,
+				fontStyle: 'normal',
+				fontSubset: subset,
+			} );
+		};
+		const onTypeClear = () => {
+			setAttributes( {
+				typography: '',
+				googleFont: false,
+				loadGoogleFont: true,
+				fontVariant: '',
+				fontSubset: '',
+				fontWeight: 'regular',
+				fontStyle: 'normal',
+			} );
+		};
+		const onWeightChange = ( select ) => {
+			if ( googleFont ) {
+				let variant;
+				if ( 'italic' === fontStyle ) {
+					if ( 'regular' === select ) {
+						variant = 'italic';
+					} else {
+						variant = select + 'italic';
+					}
+				} else {
+					variant = select;
+				}
+				setAttributes( {
+					fontVariant: variant,
+					fontWeight: select,
+				} );
+			} else {
+				setAttributes( {
+					fontVariant: '',
+					fontWeight: select,
+				} );
+			}
+		};
+		const onGLoadChange = ( select ) => {
+			setAttributes( {
+				loadGoogleFont: select,
+			} );
+		};
+		const onStyleChange = ( select ) => {
+			if ( googleFont ) {
+				let variant;
+				if ( 'italic' === select ) {
+					if ( ! fontWeight || 'regular' === fontWeight ) {
+						variant = 'italic';
+					} else {
+						variant = fontWeight + 'italic';
+					}
+				} else {
+					variant = ( fontWeight ? fontWeight : 'regular' );
+				}
+				setAttributes( {
+					fontVariant: variant,
+					fontStyle: select,
+				} );
+			} else {
+				setAttributes( {
+					fontVariant: '',
+					fontStyle: select,
+				} );
+			}
+		};
 		const renderBtns = ( index ) => {
 			return (
 				<div className={ `btn-area-wrap kt-btn-${ index }-area` }>
@@ -102,6 +252,10 @@ class KadenceAdvancedButton extends Component {
 							backgroundColor: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].backgroundHover : btns[ index ].background ),
 							color: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].colorHover : btns[ index ].color ),
 							fontSize: btns[ index ].size + 'px',
+							fontWeight: fontWeight,
+							fontStyle: fontStyle,
+							letterSpacing: letterSpacing + 'px',
+							fontFamily: ( typography ? typography : '' ),
 							borderRadius: btns[ index ].borderRadius + 'px',
 							borderWidth: btns[ index ].borderWidth + 'px',
 							borderColor: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].borderHover : btns[ index ].border ),
@@ -447,9 +601,9 @@ class KadenceAdvancedButton extends Component {
 			);
 		};
 		const renderArray = (
-			<div>
+			<Fragment>
 				{ times( btnCount, n => tabControls( n ) ) }
-			</div>
+			</Fragment>
 		);
 		const renderPreviewArray = (
 			<div>
@@ -507,9 +661,68 @@ class KadenceAdvancedButton extends Component {
 							/>
 						</PanelBody>
 						{ renderArray }
+						<PanelBody
+							title={ __( 'Font Family' ) }
+							initialOpen={ false }
+							className="kt-font-family-area"
+						>
+							<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
+							{ typography && (
+								<IconButton
+									label={ __( 'clear' ) }
+									className="kt-font-clear-btn"
+									icon="no-alt"
+									onClick={ onTypeClear }
+								/>
+							) }
+							<SelectSearch
+								height={ 30 }
+								search={ true }
+								multiple={ false }
+								value={ typography }
+								onChange={ onTypeChange }
+								options={ options }
+								placeholder={ __( 'Select a font family' ) }
+							/>
+							{ typography && (
+								<SelectControl
+									label={ __( 'Font Weight' ) }
+									value={ fontWeight }
+									options={ typographyWeights }
+									onChange={ onWeightChange }
+								/>
+							) }
+							{ typography && (
+								<SelectControl
+									label={ __( 'Font Style' ) }
+									value={ fontStyle }
+									options={ typographyStyles }
+									onChange={ onStyleChange }
+								/>
+							) }
+							{ typography && googleFont && (
+								<SelectControl
+									label={ __( 'Font Subset' ) }
+									value={ fontSubset }
+									options={ typographySubsets }
+									onChange={ ( value ) => setAttributes( { fontSubset: value } ) }
+								/>
+							) }
+							{ typography && googleFont && (
+								<ToggleControl
+									label={ __( 'Load Google Font on Frontend' ) }
+									checked={ loadGoogleFont }
+									onChange={ onGLoadChange }
+								/>
+							) }
+						</PanelBody>
 					</InspectorControls>
 					<div className={ 'btn-inner-wrap' } >
 						{ renderPreviewArray }
+						{ googleFont && (
+							<WebfontLoader config={ config }>
+							</WebfontLoader>
+						) }
 					</div>
 				</div>
 			</Fragment>

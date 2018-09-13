@@ -6,7 +6,25 @@
  */
 
  // Controls
-
+ .kt-row-layout-bottom-sep {
+    position: absolute;
+    height: 100px;
+    bottom: 0;
+    left: 0;
+	right: 0;
+	z-index: 1;
+	svg {
+		position: absolute;
+		bottom: 0px;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+}
+.components-range-control.kt-icon-rangecontrol .components-base-control__label {
+    width: 30px;
+}
  // Sidebar Buttons
  .kt-cta-upload-btn {
     border: 1px solid #ddd;
@@ -163,7 +181,7 @@
 
 	// This max-width is used to constrain the main editor column, it should not cascade into columns
 	.editor-block-list__block {
-		max-width: none;
+		max-width: none !important;
 	}
 }
 // column outline:
@@ -224,6 +242,8 @@
 	position: relative;
 
 	> .innerblocks-wrap {
+		z-index: 10;
+		position: relative;
 		margin: 0 auto;
 		display: flex;
 		flex-direction: column;
@@ -236,7 +256,7 @@
 				flex-direction: column;
 				flex: 1;
 				width: 0;
-
+				max-width: none;
 				.editor-block-list__block-edit {
 					flex-basis: 100%;
 				}

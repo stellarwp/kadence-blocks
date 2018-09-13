@@ -87,7 +87,7 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth }, toggleSelection, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet }, toggleSelection, className, setAttributes } = this.props;
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
@@ -112,6 +112,14 @@ class KadenceRowLayout extends Component {
 			{ key: 'equal', col: 5, name: __( 'Five: Equal' ), icon: icons.fivecol },
 			{ key: 'equal', col: 6, name: __( 'Six: Equal' ), icon: icons.sixcol },
 		];
+		let bottomSVGDivider;
+		if ( 'ct' === bottomSep ) {
+			bottomSVGDivider = <path className="large-center-triangle" d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'ctd' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
+		} else if ( 'ctt' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
+		}
 		if ( 2 === columns ) {
 			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.twocol },
@@ -410,22 +418,23 @@ class KadenceRowLayout extends Component {
 					title={ __( 'Padding/Margin' ) }
 					initialOpen={ false }
 				>
+					<h2>{ __( 'Padding (px)' ) }</h2>
 					<RangeControl
-						label={ __( 'Top padding (px)' ) }
+						label={ icons.outlinetop }
 						value={ topPadding }
-						className="kt-padding-inputs kt-top-padding"
-						onChange={ ( topPadding ) => {
+						className="kt-icon-rangecontrol"
+						onChange={ ( value ) => {
 							setAttributes( {
-								topPadding: topPadding,
+								topPadding: value,
 							} );
 						} }
 						min={ 0 }
 						max={ 500 }
 					/>
 					<RangeControl
-						label={ __( 'Bottom padding (px)' ) }
+						label={ icons.outlinebottom }
 						value={ bottomPadding }
-						className="kt-padding-inputs kt-bottom-padding"
+						className="kt-icon-rangecontrol"
 						onChange={ ( bottomPadding ) => {
 							setAttributes( {
 								bottomPadding: bottomPadding,
@@ -435,9 +444,9 @@ class KadenceRowLayout extends Component {
 						max={ 500 }
 					/>
 					<RangeControl
-						label={ __( 'Right padding (px)' ) }
+						label={ icons.outlineright }
 						value={ rightPadding }
-						className="kt-padding-inputs kt-right-padding"
+						className="kt-icon-rangecontrol"
 						onChange={ ( rightPadding ) => {
 							setAttributes( {
 								rightPadding: rightPadding,
@@ -447,9 +456,9 @@ class KadenceRowLayout extends Component {
 						max={ 500 }
 					/>
 					<RangeControl
-						label={ __( 'Left padding (px)' ) }
+						label={ icons.outlineleft }
 						value={ leftPadding }
-						className="kt-padding-inputs kt-left-padding"
+						className="kt-icon-rangecontrol"
 						onChange={ ( leftPadding ) => {
 							setAttributes( {
 								leftPadding: leftPadding,
@@ -878,6 +887,45 @@ class KadenceRowLayout extends Component {
 				}
 			</TabPanel>
 		);
+		const bottomSepSizesMobile = (
+			<RangeControl
+				label={ __( 'Mobile Height (px)' ) }
+				value={ ( bottomSepHeightMobile ? bottomSepHeightMobile : '' ) }
+				onChange={ ( value ) => {
+					setAttributes( {
+						bottomSepHeightMobile: value,
+					} );
+				} }
+				min={ 0 }
+				max={ 500 }
+			/>
+		);
+		const bottomSepSizesTablet = (
+			<RangeControl
+				label={ __( 'Tablet Height (px)' ) }
+				value={ ( bottomSepHeightTablet ? bottomSepHeightTablet : '' ) }
+				onChange={ ( value ) => {
+					setAttributes( {
+						bottomSepHeightTablet: value,
+					} );
+				} }
+				min={ 0 }
+				max={ 500 }
+			/>
+		);
+		const bottomSepSizes = (
+			<RangeControl
+				label={ __( 'Divider Height (px)' ) }
+				value={ bottomSepHeight }
+				onChange={ ( value ) => {
+					setAttributes( {
+						bottomSepHeight: value,
+					} );
+				} }
+				min={ 0 }
+				max={ 500 }
+			/>
+		);
 		return (
 			<Fragment>
 				<BlockControls>
@@ -949,6 +997,64 @@ class KadenceRowLayout extends Component {
 					{ backgroundControls }
 					{ overlayControls }
 					<PanelBody
+						title={ __( 'Dividers' ) }
+						initialOpen={ false }
+					>
+						<SelectControl
+							label={ __( 'Bottom Divider' ) }
+							value={ bottomSep }
+							options={ [
+								{ value: 'none', label: __( 'None' ) },
+								{ value: 'ct', label: __( 'Center Triangle' ) },
+								{ value: 'ctd', label: __( 'Center Triangle Double' ) },
+							] }
+							onChange={ value => setAttributes( { bottomSep: value } ) }
+						/>
+						<PanelColor
+							title={ __( 'Divider Color' ) }
+							colorValue={ bottomSepColor }
+						>
+							<ColorPalette
+								value={ bottomSepColor }
+								onChange={ value => setAttributes( { bottomSepColor: value } ) }
+							/>
+						</PanelColor>
+						<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+						<TabPanel className="kt-size-tabs"
+							activeClass="active-tab"
+							tabs={ [
+								{
+									name: 'desk',
+									title: <Dashicon icon="desktop" />,
+									className: 'kt-desk-tab',
+								},
+								{
+									name: 'tablet',
+									title: <Dashicon icon="tablet" />,
+									className: 'kt-tablet-tab',
+								},
+								{
+									name: 'mobile',
+									title: <Dashicon icon="smartphone" />,
+									className: 'kt-mobile-tab',
+								},
+							] }>
+							{
+								( tabName ) => {
+									let tabout;
+									if ( 'mobile' === tabName ) {
+										tabout = bottomSepSizesMobile;
+									} else if ( 'tablet' === tabName ) {
+										tabout = bottomSepSizesTablet;
+									} else {
+										tabout = bottomSepSizes;
+									}
+									return <div>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
+					</PanelBody>
+					<PanelBody
 						title={ __( 'Structure Settings' ) }
 						initialOpen={ false }
 					>
@@ -962,7 +1068,7 @@ class KadenceRowLayout extends Component {
 								{ value: 'main', label: __( 'main' ) },
 								{ value: 'aside', label: __( 'aside' ) },
 							] }
-							onChange={ htmlTag => setAttributes( { htmlTag } ) }
+							onChange={ value => setAttributes( { htmlTag: value } ) }
 						/>
 						<RangeControl
 							label={ __( 'Minimium Height' ) }
@@ -1144,6 +1250,15 @@ class KadenceRowLayout extends Component {
 						</ResizableBox>
 					) }
 					<div style={ { height: '1px' } }></div>
+					{ colLayout && 'none' !== bottomSep && (
+						<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` } style={ { 
+							height: bottomSepHeight + 'px',
+						} }>
+							<svg style={ { fill: bottomSepColor } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+								{ bottomSVGDivider }
+							</svg>
+						</div>
+					) }
 				</div>
 			</Fragment>
 		);
