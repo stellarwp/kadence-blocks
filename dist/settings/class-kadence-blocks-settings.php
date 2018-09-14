@@ -89,8 +89,8 @@ class Kadence_Blocks_Settings {
 
 		// Sidebar and No sidebar Max widths.
 		add_settings_section( 'kt_blocks_editor_width_sec', __( 'Max Widths', 'kadence-blocks' ), array( $this, 'maxwidths_callback' ), 'kt_blocks_editor_width_section' );
-		add_settings_field( 'sidebar', __( 'Sidebar Template', 'kadence-blocks' ), array( $this, 'sidebar_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
-		add_settings_field( 'nosidebar', __( 'No Sidebar Template', 'kadence-blocks' ), array( $this, 'nosidebar_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
+		add_settings_field( 'sidebar', __( 'Small Template', 'kadence-blocks' ), array( $this, 'sidebar_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
+		add_settings_field( 'nosidebar', __( 'Large Template', 'kadence-blocks' ), array( $this, 'nosidebar_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		// Defaults for Pages and posts.
 		add_settings_field( 'post_default', __( 'Post default', 'kadence-blocks' ), array( $this, 'post_default_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		add_settings_field( 'page_default', __( 'Page Default', 'kadence-blocks' ), array( $this, 'page_default_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
@@ -120,9 +120,9 @@ class Kadence_Blocks_Settings {
 		$data = self::get_data_options( 'kt_blocks_editor_width' );
 		$default_post_type = ( isset( $data['post_default'] ) ? $data['post_default'] : 'sidebar' );
 		echo '<select class="kt-blocks-posts-defaults kt-editor-width-defaults-select" name="kt_blocks_editor_width[post_default]">';
-			echo '<option value="sidebar" ' . ( $default_post_type === 'sidebar' ? 'selected' : '' ) . '>Sidebar</option>';
-			echo '<option value="nosidebar" ' . ( $default_post_type === 'nosidebar' ? 'selected' : '' ) . '>No Sidebar</option>';
-			echo '<option value="fullwidth" ' . ( $default_post_type === 'fullwidth' ? 'selected' : '' ) . '>Fullwidth</option>';
+			echo '<option value="sidebar" ' . ( $default_post_type === 'sidebar' ? 'selected' : '' ) . '>' . __( 'Small', 'kadence-blocks' ) . '</option>';
+			echo '<option value="nosidebar" ' . ( $default_post_type === 'nosidebar' ? 'selected' : '' ) . '>' . __( 'Large', 'kadence-blocks' ) . '</option>';
+			echo '<option value="fullwidth" ' . ( $default_post_type === 'fullwidth' ? 'selected' : '' ) . '>' . __( 'Fullwidth', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
 	/**
@@ -132,13 +132,15 @@ class Kadence_Blocks_Settings {
 		$data = self::get_data_options( 'kt_blocks_editor_width' );
 		$default_page_type = ( isset( $data['page_default'] ) ? $data['page_default'] : 'sidebar' );
 		echo '<select class="kt-blocks-posts-defaults kt-editor-width-defaults-select" name="kt_blocks_editor_width[page_default]">';
-			echo '<option value="sidebar" ' . ( $default_page_type === 'sidebar' ? 'selected' : '' ) . '>Sidebar</option>';
-			echo '<option value="nosidebar" ' . ( $default_page_type === 'nosidebar' ? 'selected' : '' ) . '>No Sidebar</option>';
-			echo '<option value="fullwidth" ' . ( $default_page_type === 'fullwidth' ? 'selected' : '' ) . '>Fullwidth</option>';
+			echo '<option value="sidebar" ' . ( $default_page_type === 'sidebar' ? 'selected' : '' ) . '>' . __( 'Small', 'kadence-blocks' ) . '</option>';
+			echo '<option value="nosidebar" ' . ( $default_page_type === 'nosidebar' ? 'selected' : '' ) . '>' . __( 'Large', 'kadence-blocks' ) . '</option>';
+			echo '<option value="fullwidth" ' . ( $default_page_type === 'fullwidth' ? 'selected' : '' ) . '>' . __( 'Fullwidth', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
 	public function maxwidths_callback() {
+		global $content_width;
 		echo '<h5 class="kt-main-subtitle">' . __( 'Assign Editor Template Max Widths', 'kadence-blocks' ) . '</h5>';
+		echo '<div class="kt-main-description-notice">' . __( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . $content_width . 'px</div>';
 	}
 	/**
 	 * Sanitizes and validates all input and output for Dashboard

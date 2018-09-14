@@ -385,23 +385,86 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		if ( isset( $attr->bottomSep ) && 'none' != $attr->bottomSep ) {
-			if ( isset( $attr->bottomSepHeight ) ) {
-				$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
-					$css .= 'height:' . $attr->bottomSepHeight . 'px;';
-				$css .= '}';
+			if ( isset( $attr->bottomSepHeight ) || isset( $attr->bottomSepWidth ) ) {
+				if ( isset( $attr->bottomSepHeight ) ) {
+					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+						$css .= 'height:' . $attr->bottomSepHeight . 'px;';
+					$css .= '}';
+				}
+				if ( isset( $attr->bottomSepWidth ) ) {
+					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+						$css .= 'width:' . $attr->bottomSepWidth . '%;';
+					$css .= '}';
+				}
 			}
-			if ( isset( $attr->bottomSepHeightTablet ) ) {
+			if ( isset( $attr->bottomSepHeightTablet ) || isset( $attr->bottomSepWidthTablet ) ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
-						$css .= 'height:' . $attr->bottomSepHeightTablet . 'px;';
-					$css .= '}';
+					if ( isset( $attr->bottomSepHeightTablet ) ) {
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+							$css .= 'height:' . $attr->bottomSepHeightTablet . 'px;';
+						$css .= '}';
+					}
+					if ( isset( $attr->bottomSepWidthTablet ) ) {
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+							$css .= 'width:' . $attr->bottomSepWidthTablet . '%;';
+						$css .= '}';
+					}
 				$css .= '}';
 			}
-			if ( isset( $attr->bottomSepHeightMobile ) ) {
+			if ( isset( $attr->bottomSepHeightMobile ) || isset( $attr->bottomSepWidthMobile ) ) {
 				$css .= '@media (max-width: 767px) {';
+					if ( isset( $attr->bottomSepHeightMobile ) ) {
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+							$css .= 'height:' . $attr->bottomSepHeightMobile . 'px;';
+						$css .= '}';
+					}
+					if ( isset( $attr->bottomSepWidthMobile ) ) {
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+							$css .= 'width:' . $attr->bottomSepWidthMobile . '%;';
+						$css .= '}';
+					}
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr->topSep ) && 'none' != $attr->topSep ) {
+			if ( isset( $attr->topSepHeight ) || isset( $attr->topSepWidth ) ) {
+				if ( isset( $attr->topSepHeight ) ) {
 					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
-						$css .= 'height:' . $attr->bottomSepHeightMobile . 'px;';
+						$css .= 'height:' . $attr->topSepHeight . 'px;';
 					$css .= '}';
+				}
+				if ( isset( $attr->topSepWidth ) ) {
+					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+						$css .= 'width:' . $attr->topSepWidth . '%;';
+					$css .= '}';
+				}
+			}
+			if ( isset( $attr->topSepHeightTablet ) || isset( $attr->topSepWidthTablet ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+					if ( isset( $attr->topSepHeightTablet ) ) {
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+							$css .= 'height:' . $attr->topSepHeightTablet . 'px;';
+						$css .= '}';
+					}
+					if ( isset( $attr->topSepWidthTablet ) ) {
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+							$css .= 'width:' . $attr->topSepWidthTablet . '%;';
+						$css .= '}';
+					}
+				$css .= '}';
+			}
+			if ( isset( $attr->topSepHeightMobile ) || isset( $attr->topSepWidthMobile ) ) {
+				$css .= '@media (max-width: 767px) {';
+					if ( isset( $attr->topSepHeightMobile ) ) {
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+							$css .= 'height:' . $attr->topSepHeightMobile . 'px;';
+						$css .= '}';
+					}
+					if ( isset( $attr->topSepWidthMobile ) ) {
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+							$css .= 'width:' . $attr->topSepWidthMobile . '%;';
+						$css .= '}';
+					}
 				$css .= '}';
 			}
 		}

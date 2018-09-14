@@ -4,23 +4,25 @@
  * Registering a basic block with Gutenberg.
  */
 
-const {
-	InnerBlocks,
-	InspectorControls,
-} = wp.editor;
 /**
  * Import Icons
  */
-import icons from './icon';
+import icons from '../../icons';
 /**
  * Internal block libraries
  */
 const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const {
+	InnerBlocks,
+	InspectorControls,
+	ColorPalette,
+} = wp.editor;
+const {
 	TabPanel,
 	Dashicon,
 	PanelBody,
+	PanelColor,
 	RangeControl,
 } = wp.components;
 /**
@@ -34,7 +36,7 @@ const {
  */
 registerBlockType( 'kadence/column', {
 	title: __( 'Column' ),
-	icon: icons.block,
+	icon: icons.blockColumn,
 	category: 'common',
 	parent: [ 'kadence/rowlayout' ],
 	attributes: {
@@ -92,79 +94,81 @@ registerBlockType( 'kadence/column', {
 		},
 	},
 	edit: props => {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM }, className, setAttributes } = props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM }, setAttributes } = props;
 		const mobileControls = (
 			<PanelBody
 				title={ __( 'Mobile Padding/Margin' ) }
 				initialOpen={ false }
 			>
+				<h2>{ __( 'Mobile Padding (px)' ) }</h2>
 				<RangeControl
-					label={ __( 'Mobile top padding (px)' ) }
+					label={ icons.outlinetop }
 					value={ topPaddingM }
-					className="kt-padding-inputs kt-top-padding"
-					onChange={ ( topPaddingM ) => {
+					className="kt-icon-rangecontrol kt-top-padding"
+					onChange={ ( value ) => {
 						setAttributes( {
-							topPaddingM: topPaddingM,
+							topPaddingM: value,
 						} );
 					} }
 					min={ 0 }
 					max={ 500 }
 				/>
 				<RangeControl
-					label={ __( 'Mobile bottom padding (px)' ) }
-					value={ bottomPaddingM }
-					className="kt-padding-inputs kt-bottom-padding"
-					onChange={ ( bottomPaddingM ) => {
-						setAttributes( {
-							bottomPaddingM: bottomPaddingM,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ __( 'Mobile right padding (px)' ) }
+					label={ icons.outlineright }
 					value={ rightPaddingM }
-					className="kt-padding-inputs kt-right-padding"
-					onChange={ ( rightPaddingM ) => {
+					className="kt-icon-rangecontrol kt-right-padding"
+					onChange={ ( value ) => {
 						setAttributes( {
-							rightPaddingM: rightPaddingM,
+							rightPaddingM: value,
 						} );
 					} }
 					min={ 0 }
 					max={ 500 }
 				/>
 				<RangeControl
-					label={ __( 'Mobile left padding (px)' ) }
+					label={ icons.outlinebottom }
+					value={ bottomPaddingM }
+					className="kt-icon-rangecontrol kt-bottom-padding"
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomPaddingM: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ icons.outlineleft }
 					value={ leftPaddingM }
-					className="kt-padding-inputs kt-left-padding"
-					onChange={ ( leftPaddingM ) => {
+					className="kt-icon-rangecontrol kt-left-padding"
+					onChange={ ( value ) => {
 						setAttributes( {
-							leftPaddingM: leftPaddingM,
+							leftPaddingM: value,
 						} );
 					} }
 					min={ 0 }
 					max={ 500 }
 				/>
+				<h2>{ __( 'Mobile Margin (px)' ) }</h2>
 				<RangeControl
-					label={ __( 'Mobile top margin (px)' ) }
+					label={ icons.outlinetop }
 					value={ topMarginM }
-					className="kt-padding-inputs kt-top-margin"
-					onChange={ ( topMarginM ) => {
+					className="kt-icon-rangecontrol kt-top-margin"
+					onChange={ ( value ) => {
 						setAttributes( {
-							topMarginM: topMarginM,
+							topMarginM: value,
 						} );
 					} }
 					min={ 0 }
 					max={ 200 }
 				/>
 				<RangeControl
-					label={ __( 'Mobile bottom margin (px)' ) }
+					label={ icons.outlinebottom }
 					value={ bottomMarginM }
-					className="kt-padding-inputs kt-bottom-margin"
-					onChange={ ( bottomMarginM ) => {
+					className="kt-icon-rangecontrol kt-bottom-margin"
+					onChange={ ( value ) => {
 						setAttributes( {
-							bottomMarginM: bottomMarginM,
+							bottomMarginM: value,
 						} );
 					} }
 					min={ 0 }
@@ -177,73 +181,75 @@ registerBlockType( 'kadence/column', {
 				title={ __( 'Padding/Margin' ) }
 				initialOpen={ true }
 			>
+				<h2>{ __( 'Padding (px)' ) }</h2>
 				<RangeControl
-					label={ __( 'Top padding (px)' ) }
+					label={ icons.outlinetop }
 					value={ topPadding }
-					className="kt-padding-inputs kt-top-padding"
-					onChange={ ( topPadding ) => {
+					className="kt-icon-rangecontrol kt-top-padding"
+					onChange={ ( value ) => {
 						setAttributes( {
-							topPadding: topPadding,
+							topPadding: value,
 						} );
 					} }
 					min={ 0 }
 					max={ 500 }
 				/>
 				<RangeControl
-					label={ __( 'Bottom padding (px)' ) }
-					value={ bottomPadding }
-					className="kt-padding-inputs kt-bottom-padding"
-					onChange={ ( bottomPadding ) => {
-						setAttributes( {
-							bottomPadding: bottomPadding,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ __( 'Right padding (px)' ) }
+					label={ icons.outlineright }
 					value={ rightPadding }
-					className="kt-padding-inputs kt-right-padding"
-					onChange={ ( rightPadding ) => {
+					className="kt-icon-rangecontrol kt-right-padding"
+					onChange={ ( value ) => {
 						setAttributes( {
-							rightPadding: rightPadding,
+							rightPadding: value,
 						} );
 					} }
 					min={ 0 }
 					max={ 500 }
 				/>
 				<RangeControl
-					label={ __( 'Left padding (px)' ) }
+					label={ icons.outlinebottom }
+					value={ bottomPadding }
+					className="kt-icon-rangecontrol kt-bottom-padding"
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomPadding: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ icons.outlineleft }
 					value={ leftPadding }
-					className="kt-padding-inputs kt-left-padding"
-					onChange={ ( leftPadding ) => {
+					className="kt-icon-rangecontrol kt-left-padding"
+					onChange={ ( value ) => {
 						setAttributes( {
-							leftPadding: leftPadding,
+							leftPadding: value,
 						} );
 					} }
 					min={ 0 }
 					max={ 500 }
 				/>
+				<h2>{ __( 'Margin (px)' ) }</h2>
 				<RangeControl
-					label={ __( 'Top Margin (px)' ) }
+					label={ icons.outlinetop }
 					value={ topMargin }
-					className="kt-padding-inputs kt-top-margin"
-					onChange={ ( topMargin ) => {
+					className="kt-icon-rangecontrol kt-top-margin"
+					onChange={ ( value ) => {
 						setAttributes( {
-							topMargin: topMargin,
+							topMargin: value,
 						} );
 					} }
 					min={ 0 }
 					max={ 200 }
 				/>
 				<RangeControl
-					label={ __( 'Bottom Margin (px)' ) }
+					label={ icons.outlinebottom }
 					value={ bottomMargin }
-					className="kt-padding-inputs kt-bottom-margin"
-					onChange={ ( bottomMargin ) => {
+					className="kt-icon-rangecontrol kt-bottom-margin"
+					onChange={ ( value ) => {
 						setAttributes( {
-							bottomMargin: bottomMargin,
+							bottomMargin: value,
 						} );
 					} }
 					min={ 0 }
@@ -280,16 +286,18 @@ registerBlockType( 'kadence/column', {
 			</TabPanel>
 		);
 		return (
-			<div className={ `kadence-column inner-column-${ id }` } style={ {
-				paddingLeft: leftPadding + 'px',
-				paddingRight: rightPadding + 'px',
-				paddingTop: topPadding + 'px',
-				paddingBottom: bottomPadding + 'px',
-			} } >
+			<div className={ `kadence-column inner-column-${ id }` } >
 				<InspectorControls>
 					{ tabControls }
 				</InspectorControls>
-				<InnerBlocks templateLock={ false } />
+				<div className="kadence-inner-column-inner" style={ {
+					paddingLeft: leftPadding + 'px',
+					paddingRight: rightPadding + 'px',
+					paddingTop: topPadding + 'px',
+					paddingBottom: bottomPadding + 'px',
+				} } >
+					<InnerBlocks templateLock={ false } />
+				</div>
 			</div>
 		);
 	},

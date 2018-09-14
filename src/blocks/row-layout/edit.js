@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import icons from './icon';
+import icons from '../../icons';
 
 /**
  * Import External
@@ -87,12 +87,12 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet }, toggleSelection, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet  }, toggleSelection, className, setAttributes } = this.props;
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
-		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } ${ hasBG }` );
+		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } ${ hasBG }` );
 		let layoutOptions;
 		let mobileLayoutOptions;
 		const startlayoutOptions = [
@@ -114,11 +114,91 @@ class KadenceRowLayout extends Component {
 		];
 		let bottomSVGDivider;
 		if ( 'ct' === bottomSep ) {
-			bottomSVGDivider = <path className="large-center-triangle" d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'cti' === bottomSep ) {
+			bottomSVGDivider = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
 		} else if ( 'ctd' === bottomSep ) {
 			bottomSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
-		} else if ( 'ctt' === bottomSep ) {
-			bottomSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
+		} else if ( 'ctdi' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M500,2l500,78l0,20l-1000,0l0,-20l500,-78Z" style={ { opacity: 0.4 } } /><path d="M500,2l500,98l-1000,0l500,-98Z" /></Fragment>;
+		} else if ( 'sltl' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,0l-1000,100l1000,0l0,-100Z" />;
+		} else if ( 'sltli' === bottomSep ) {
+			bottomSVGDivider = <path d="M0,100l1000,-100l-1000,0l0,100Z" />;
+		} else if ( 'sltr' === bottomSep ) {
+			bottomSVGDivider = <path d="M0,0l1000,100l-1000,0l0,-100Z" />;
+		} else if ( 'sltri' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100l-1000,-100l1000,0l0,100Z" />;
+		} else if ( 'crv' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z" />;
+		} else if ( 'crvi' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,0c0,0 -270.987,98 -500,98c-229.013,0 -500,-98 -500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'crvl' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100c0,0 -420.987,-98 -650,-98c-229.013,0 -350,98 -350,98l1000,0Z" />;
+		} else if ( 'crvli' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,0c0,0 -420.987,98 -650,98c-229.013,0 -350,-98 -350,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'crvr' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100c0,0 -120.987,-98 -350,-98c-229.013,0 -650,98 -650,98l1000,0Z" />;
+		} else if ( 'crvri' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,0c0,0 -120.987,98 -350,98c-229.013,0 -650,-98 -650,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'wave' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" />;
+		} else if ( 'wavei' === bottomSep ) {
+			bottomSVGDivider = <path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-78 500,-78c154.895,0 250,30 250,30l0,-50l-1000,0l0,60Z" />;
+		} else if ( 'waves' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z"/><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+		} else if ( 'wavesi' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-68 500,-68c154.895,0 250,65 250,65l0,-95l-1000,0l0,60Z" style={ { opacity: 0.4 } } /><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-73 500,-73c154.895,0 250,45 250,45l0,-70l-1000,0l0,60Z" style={ { opacity: 0.4 } } /><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-78 500,-78c154.895,0 250,30 250,30l0,-50l-1000,0l0,60Z" /></Fragment>;
+		} else if ( 'mtns' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
+		} else if ( 'littri' === bottomSep ) {
+			bottomSVGDivider = <path d="M500,2l25,98l-50,0l25,-98Z" />;
+		} else if ( 'littrii' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
+		}
+		let topSVGDivider;
+		if ( 'ct' === topSep ) {
+			topSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'cti' === topSep ) {
+			topSVGDivider = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
+		} else if ( 'ctd' === topSep ) {
+			topSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
+		} else if ( 'ctdi' === topSep ) {
+			topSVGDivider = <Fragment><path d="M500,2l500,78l0,20l-1000,0l0,-20l500,-78Z" style={ { opacity: 0.4 } } /><path d="M500,2l500,98l-1000,0l500,-98Z" /></Fragment>;
+		} else if ( 'sltl' === topSep ) {
+			topSVGDivider = <path d="M1000,0l-1000,100l1000,0l0,-100Z" />;
+		} else if ( 'sltli' === topSep ) {
+			topSVGDivider = <path d="M0,100l1000,-100l-1000,0l0,100Z" />;
+		} else if ( 'sltr' === topSep ) {
+			topSVGDivider = <path d="M0,0l1000,100l-1000,0l0,-100Z" />;
+		} else if ( 'sltri' === topSep ) {
+			topSVGDivider = <path d="M1000,100l-1000,-100l1000,0l0,100Z" />;
+		} else if ( 'crv' === topSep ) {
+			topSVGDivider = <path d="M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z" />;
+		} else if ( 'crvi' === topSep ) {
+			topSVGDivider = <path d="M1000,0c0,0 -270.987,98 -500,98c-229.013,0 -500,-98 -500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'crvl' === topSep ) {
+			topSVGDivider = <path d="M1000,100c0,0 -420.987,-98 -650,-98c-229.013,0 -350,98 -350,98l1000,0Z" />;
+		} else if ( 'crvli' === topSep ) {
+			topSVGDivider = <path d="M1000,0c0,0 -420.987,98 -650,98c-229.013,0 -350,-98 -350,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'crvr' === topSep ) {
+			topSVGDivider = <path d="M1000,100c0,0 -120.987,-98 -350,-98c-229.013,0 -650,98 -650,98l1000,0Z" />;
+		} else if ( 'crvri' === topSep ) {
+			topSVGDivider = <path d="M1000,0c0,0 -120.987,98 -350,98c-229.013,0 -650,-98 -650,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'wave' === topSep ) {
+			topSVGDivider = <path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" />;
+		} else if ( 'wavei' === topSep ) {
+			topSVGDivider = <path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-78 500,-78c154.895,0 250,30 250,30l0,-50l-1000,0l0,60Z" />;
+		} else if ( 'waves' === topSep ) {
+			topSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z"/><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+		} else if ( 'wavesi' === topSep ) {
+			topSVGDivider = <Fragment><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-68 500,-68c154.895,0 250,65 250,65l0,-95l-1000,0l0,60Z" style={ { opacity: 0.4 } } /><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-73 500,-73c154.895,0 250,45 250,45l0,-70l-1000,0l0,60Z" style={ { opacity: 0.4 } } /><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-78 500,-78c154.895,0 250,30 250,30l0,-50l-1000,0l0,60Z" /></Fragment>;
+		} else if ( 'mtns' === topSep ) {
+			topSVGDivider = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
+		} else if ( 'littri' === topSep ) {
+			topSVGDivider = <path d="M500,2l25,98l-50,0l25,-98Z" />;
+		} else if ( 'littrii' === topSep ) {
+			topSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
 		}
 		if ( 2 === columns ) {
 			layoutOptions = [
@@ -254,7 +334,7 @@ class KadenceRowLayout extends Component {
 								{ value: 'left-to-right', label: __( 'Left to Right' ) },
 								{ value: 'right-to-left', label: __( 'Right to Left' ) },
 							] }
-							onChange={ collapseOrder => setAttributes( { collapseOrder } ) }
+							onChange={ value => setAttributes( { collapseOrder: value } ) }
 						/>
 					) }
 				</PanelBody>
@@ -262,73 +342,75 @@ class KadenceRowLayout extends Component {
 					title={ __( 'Mobile Padding/Margin' ) }
 					initialOpen={ false }
 				>
+					<h2>{ __( 'Padding (px)' ) }</h2>
 					<RangeControl
-						label={ __( 'Mobile top padding (px)' ) }
+						label={ icons.outlinetop }
 						value={ topPaddingM }
-						className="kt-padding-inputs kt-top-padding"
-						onChange={ ( topPaddingM ) => {
+						className="kt-icon-rangecontrol kt-top-padding"
+						onChange={ ( value ) => {
 							setAttributes( {
-								topPaddingM: topPaddingM,
+								topPaddingM: value,
 							} );
 						} }
 						min={ 0 }
 						max={ 500 }
 					/>
 					<RangeControl
-						label={ __( 'Mobile bottom padding (px)' ) }
-						value={ bottomPaddingM }
-						className="kt-padding-inputs kt-bottom-padding"
-						onChange={ ( bottomPaddingM ) => {
-							setAttributes( {
-								bottomPaddingM: bottomPaddingM,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<RangeControl
-						label={ __( 'Mobile right padding (px)' ) }
+						label={ icons.outlineright }
 						value={ rightPaddingM }
-						className="kt-padding-inputs kt-right-padding"
-						onChange={ ( rightPaddingM ) => {
+						className="kt-icon-rangecontrol kt-right-padding"
+						onChange={ ( value ) => {
 							setAttributes( {
-								rightPaddingM: rightPaddingM,
+								rightPaddingM: value,
 							} );
 						} }
 						min={ 0 }
 						max={ 500 }
 					/>
 					<RangeControl
-						label={ __( 'Mobile left padding (px)' ) }
+						label={ icons.outlinebottom }
+						value={ bottomPaddingM }
+						className="kt-icon-rangecontrol kt-bottom-padding"
+						onChange={ ( value ) => {
+							setAttributes( {
+								bottomPaddingM: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 500 }
+					/>
+					<RangeControl
+						label={ icons.outlineleft }
 						value={ leftPaddingM }
-						className="kt-padding-inputs kt-left-padding"
-						onChange={ ( leftPaddingM ) => {
+						className="kt-icon-rangecontrol kt-left-padding"
+						onChange={ ( value ) => {
 							setAttributes( {
-								leftPaddingM: leftPaddingM,
+								leftPaddingM: value,
 							} );
 						} }
 						min={ 0 }
 						max={ 500 }
 					/>
+					<h2>{ __( 'Mobile Margin (px)' ) }</h2>
 					<RangeControl
-						label={ __( 'Mobile top margin (px)' ) }
+						label={ icons.outlinetop }
 						value={ topMarginM }
-						className="kt-padding-inputs kt-top-margin"
-						onChange={ ( topMarginM ) => {
+						className="kt-icon-rangecontrol kt-top-margin"
+						onChange={ ( value ) => {
 							setAttributes( {
-								topMarginM: topMarginM,
+								topMarginM: value,
 							} );
 						} }
 						min={ 0 }
 						max={ 200 }
 					/>
 					<RangeControl
-						label={ __( 'Mobile bottom margin (px)' ) }
+						label={ icons.outlinebottom }
 						value={ bottomMarginM }
-						className="kt-padding-inputs kt-bottom-margin"
-						onChange={ ( bottomMarginM ) => {
+						className="kt-icon-rangecontrol kt-bottom-margin"
+						onChange={ ( value ) => {
 							setAttributes( {
-								bottomMarginM: bottomMarginM,
+								bottomMarginM: value,
 							} );
 						} }
 						min={ 0 }
@@ -410,7 +492,7 @@ class KadenceRowLayout extends Component {
 								{ value: 'wider', label: __( 'Wider: 60px' ) },
 								{ value: 'widest', label: __( 'Widest: 80px' ) },
 							] }
-							onChange={ columnGutter => setAttributes( { columnGutter } ) }
+							onChange={ ( value ) => setAttributes( { columnGutter: value } ) }
 						/>
 					) }
 				</PanelBody>
@@ -467,25 +549,26 @@ class KadenceRowLayout extends Component {
 						min={ 0 }
 						max={ 500 }
 					/>
+					<h2>{ __( 'Margin (px)' ) }</h2>
 					<RangeControl
-						label={ __( 'Top Margin (px)' ) }
+						label={ icons.outlinetop }
 						value={ topMargin }
-						className="kt-padding-inputs kt-top-margin"
-						onChange={ ( topMargin ) => {
+						className="kt-icon-rangecontrol"
+						onChange={ ( value ) => {
 							setAttributes( {
-								topMargin: topMargin,
+								topMargin: value,
 							} );
 						} }
 						min={ 0 }
 						max={ 200 }
 					/>
 					<RangeControl
-						label={ __( 'Bottom Margin (px)' ) }
+						label={ icons.outlinebottom }
 						value={ bottomMargin }
-						className="kt-padding-inputs kt-bottom-margin"
-						onChange={ ( bottomMargin ) => {
+						className="kt-icon-rangecontrol"
+						onChange={ ( value ) => {
 							setAttributes( {
-								bottomMargin: bottomMargin,
+								bottomMargin: value,
 							} );
 						} }
 						min={ 0 }
@@ -499,9 +582,9 @@ class KadenceRowLayout extends Component {
 				<RangeControl
 					label={ __( 'Overlay Opacity' ) }
 					value={ overlayOpacity }
-					onChange={ ( overlayOpacity ) => {
+					onChange={ ( value ) => {
 						setAttributes( {
-							overlayOpacity: overlayOpacity,
+							overlayOpacity: value,
 						} );
 					} }
 					min={ 0 }
@@ -888,43 +971,304 @@ class KadenceRowLayout extends Component {
 			</TabPanel>
 		);
 		const bottomSepSizesMobile = (
-			<RangeControl
-				label={ __( 'Mobile Height (px)' ) }
-				value={ ( bottomSepHeightMobile ? bottomSepHeightMobile : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepHeightMobile: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
+			<Fragment>
+				<RangeControl
+					label={ __( 'Mobile Height (px)' ) }
+					value={ ( bottomSepHeightMobile ? bottomSepHeightMobile : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomSepHeightMobile: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ __( 'Mobile Width (%)' ) }
+					value={ ( bottomSepWidthMobile ? bottomSepWidthMobile : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomSepWidthMobile: value,
+						} );
+					} }
+					min={ 100 }
+					max={ 400 }
+				/>
+			</Fragment>
 		);
 		const bottomSepSizesTablet = (
-			<RangeControl
-				label={ __( 'Tablet Height (px)' ) }
-				value={ ( bottomSepHeightTablet ? bottomSepHeightTablet : '' ) }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepHeightTablet: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
+			<Fragment>
+				<RangeControl
+					label={ __( 'Tablet Height (px)' ) }
+					value={ ( bottomSepHeightTablet ? bottomSepHeightTablet : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomSepHeightTablet: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ __( 'Tablet Width (%)' ) }
+					value={ ( bottomSepWidthTablet ? bottomSepWidthTablet : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomSepWidthTablet: value,
+						} );
+					} }
+					min={ 100 }
+					max={ 400 }
+				/>
+			</Fragment>
 		);
 		const bottomSepSizes = (
-			<RangeControl
-				label={ __( 'Divider Height (px)' ) }
-				value={ bottomSepHeight }
-				onChange={ ( value ) => {
-					setAttributes( {
-						bottomSepHeight: value,
-					} );
-				} }
-				min={ 0 }
-				max={ 500 }
-			/>
+			<Fragment>
+				<RangeControl
+					label={ __( 'Divider Height (px)' ) }
+					value={ bottomSepHeight }
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomSepHeight: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ __( 'Divider Width (%)' ) }
+					value={ ( bottomSepWidth ? bottomSepWidth : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomSepWidth: value,
+						} );
+					} }
+					min={ 100 }
+					max={ 400 }
+				/>
+			</Fragment>
+		);
+		const topSepSizesMobile = (
+			<Fragment>
+				<RangeControl
+					label={ __( 'Mobile Height (px)' ) }
+					value={ ( topSepHeightMobile ? topSepHeightMobile : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							topSepHeightMobile: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ __( 'Mobile Width (%)' ) }
+					value={ ( topSepWidthMobile ? topSepWidthMobile : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							topSepWidthMobile: value,
+						} );
+					} }
+					min={ 100 }
+					max={ 400 }
+				/>
+			</Fragment>
+		);
+		const topSepSizesTablet = (
+			<Fragment>
+				<RangeControl
+					label={ __( 'Tablet Height (px)' ) }
+					value={ ( topSepHeightTablet ? topSepHeightTablet : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							topSepHeightTablet: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ __( 'Tablet Width (%)' ) }
+					value={ ( topSepWidthTablet ? topSepWidthTablet : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							topSepWidthTablet: value,
+						} );
+					} }
+					min={ 100 }
+					max={ 400 }
+				/>
+			</Fragment>
+		);
+		const topSepSizes = (
+			<Fragment>
+				<RangeControl
+					label={ __( 'Divider Height (px)' ) }
+					value={ topSepHeight }
+					onChange={ ( value ) => {
+						setAttributes( {
+							topSepHeight: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ __( 'Divider Width (%)' ) }
+					value={ ( topSepWidth ? topSepWidth : '' ) }
+					onChange={ ( value ) => {
+						setAttributes( {
+							topSepWidth: value,
+						} );
+					} }
+					min={ 100 }
+					max={ 400 }
+				/>
+			</Fragment>
+		);
+		const topDividerSettings = (
+			<Fragment>
+				<SelectControl
+					label={ __( 'Top Divider' ) }
+					value={ topSep }
+					options={ [
+						{ value: 'none', label: __( 'None' ) },
+						{ value: 'ct', label: __( 'Large Triangle' ) },
+						{ value: 'cti', label: __( 'Large Triangle - Invert' ) },
+						{ value: 'ctd', label: __( 'Large Triangle Double' ) },
+						{ value: 'ctdi', label: __( 'Large Triangle Double - Invert' ) },
+						{ value: 'sltl', label: __( 'Slant Left' ) },
+						{ value: 'sltli', label: __( 'Slant Left - Invert' ) },
+						{ value: 'sltr', label: __( 'Slant Right' ) },
+						{ value: 'sltri', label: __( 'Slant Right - Invert' ) },
+						{ value: 'crv', label: __( 'Curve' ) },
+						{ value: 'crvi', label: __( 'Curve - Invert' ) },
+						{ value: 'crvl', label: __( 'Curve Left' ) },
+						{ value: 'crvli', label: __( 'Curve Left - Invert' ) },
+						{ value: 'crvr', label: __( 'Curve Right' ) },
+						{ value: 'crvri', label: __( 'Curve Right - Invert' ) },
+						{ value: 'mtns', label: __( 'Mountains' ) },
+						{ value: 'littri', label: __( 'Little Triangle' ) },
+						{ value: 'littrii', label: __( 'Little Triangle - Invert' ) },
+					] }
+					onChange={ value => setAttributes( { topSep: value } ) }
+				/>
+				<PanelColor
+					title={ __( 'Divider Color' ) }
+					colorValue={ topSepColor }
+				>
+					<ColorPalette
+						value={ topSepColor }
+						onChange={ value => setAttributes( { topSepColor: value } ) }
+					/>
+				</PanelColor>
+				<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+				<TabPanel className="kt-size-tabs"
+					activeClass="active-tab"
+					tabs={ [
+						{
+							name: 'desk',
+							title: <Dashicon icon="desktop" />,
+							className: 'kt-desk-tab',
+						},
+						{
+							name: 'tablet',
+							title: <Dashicon icon="tablet" />,
+							className: 'kt-tablet-tab',
+						},
+						{
+							name: 'mobile',
+							title: <Dashicon icon="smartphone" />,
+							className: 'kt-mobile-tab',
+						},
+					] }>
+					{
+						( tabName ) => {
+							let tabout;
+							if ( 'mobile' === tabName ) {
+								tabout = topSepSizesMobile;
+							} else if ( 'tablet' === tabName ) {
+								tabout = topSepSizesTablet;
+							} else {
+								tabout = topSepSizes;
+							}
+							return <div>{ tabout }</div>;
+						}
+					}
+				</TabPanel>
+			</Fragment>
+		);
+		const bottomDividerSettings = (
+			<Fragment>
+				<SelectControl
+					label={ __( 'Bottom Divider' ) }
+					value={ bottomSep }
+					options={ [
+						{ value: 'none', label: __( 'None' ) },
+						{ value: 'ct', label: __( 'Large Triangle' ) },
+						{ value: 'cti', label: __( 'Large Triangle - Invert' ) },
+						{ value: 'ctd', label: __( 'Large Triangle Double' ) },
+						{ value: 'ctdi', label: __( 'Large Triangle Double - Invert' ) },
+						{ value: 'sltl', label: __( 'Slant Left' ) },
+						{ value: 'sltli', label: __( 'Slant Left - Invert' ) },
+						{ value: 'sltr', label: __( 'Slant Right' ) },
+						{ value: 'sltri', label: __( 'Slant Right - Invert' ) },
+						{ value: 'crv', label: __( 'Curve' ) },
+						{ value: 'crvi', label: __( 'Curve - Invert' ) },
+						{ value: 'crvl', label: __( 'Curve Left' ) },
+						{ value: 'crvli', label: __( 'Curve Left - Invert' ) },
+						{ value: 'crvr', label: __( 'Curve Right' ) },
+						{ value: 'crvri', label: __( 'Curve Right - Invert' ) },
+						{ value: 'mtns', label: __( 'Mountains' ) },
+						{ value: 'littri', label: __( 'Little Triangle' ) },
+						{ value: 'littrii', label: __( 'Little Triangle - Invert' ) },
+					] }
+					onChange={ value => setAttributes( { bottomSep: value } ) }
+				/>
+				<PanelColor
+					title={ __( 'Divider Color' ) }
+					colorValue={ bottomSepColor }
+				>
+					<ColorPalette
+						value={ bottomSepColor }
+						onChange={ value => setAttributes( { bottomSepColor: value } ) }
+					/>
+				</PanelColor>
+				<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+				<TabPanel className="kt-size-tabs"
+					activeClass="active-tab"
+					tabs={ [
+						{
+							name: 'desk',
+							title: <Dashicon icon="desktop" />,
+							className: 'kt-desk-tab',
+						},
+						{
+							name: 'tablet',
+							title: <Dashicon icon="tablet" />,
+							className: 'kt-tablet-tab',
+						},
+						{
+							name: 'mobile',
+							title: <Dashicon icon="smartphone" />,
+							className: 'kt-mobile-tab',
+						},
+					] }>
+					{
+						( tabName ) => {
+							let tabout;
+							if ( 'mobile' === tabName ) {
+								tabout = bottomSepSizesMobile;
+							} else if ( 'tablet' === tabName ) {
+								tabout = bottomSepSizesTablet;
+							} else {
+								tabout = bottomSepSizes;
+							}
+							return <div>{ tabout }</div>;
+						}
+					}
+				</TabPanel>
+			</Fragment>
 		);
 		return (
 			<Fragment>
@@ -1000,54 +1344,27 @@ class KadenceRowLayout extends Component {
 						title={ __( 'Dividers' ) }
 						initialOpen={ false }
 					>
-						<SelectControl
-							label={ __( 'Bottom Divider' ) }
-							value={ bottomSep }
-							options={ [
-								{ value: 'none', label: __( 'None' ) },
-								{ value: 'ct', label: __( 'Center Triangle' ) },
-								{ value: 'ctd', label: __( 'Center Triangle Double' ) },
-							] }
-							onChange={ value => setAttributes( { bottomSep: value } ) }
-						/>
-						<PanelColor
-							title={ __( 'Divider Color' ) }
-							colorValue={ bottomSepColor }
-						>
-							<ColorPalette
-								value={ bottomSepColor }
-								onChange={ value => setAttributes( { bottomSepColor: value } ) }
-							/>
-						</PanelColor>
-						<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
-						<TabPanel className="kt-size-tabs"
+						<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 							activeClass="active-tab"
 							tabs={ [
 								{
-									name: 'desk',
-									title: <Dashicon icon="desktop" />,
-									className: 'kt-desk-tab',
+									name: 'bottomdivider',
+									title: __( 'Bottom' ),
+									className: 'kt-bottom-tab',
 								},
 								{
-									name: 'tablet',
-									title: <Dashicon icon="tablet" />,
-									className: 'kt-tablet-tab',
-								},
-								{
-									name: 'mobile',
-									title: <Dashicon icon="smartphone" />,
-									className: 'kt-mobile-tab',
+									name: 'topdivider',
+									title: __( 'Top' ),
+									className: 'kt-top-tab',
 								},
 							] }>
 							{
 								( tabName ) => {
 									let tabout;
-									if ( 'mobile' === tabName ) {
-										tabout = bottomSepSizesMobile;
-									} else if ( 'tablet' === tabName ) {
-										tabout = bottomSepSizesTablet;
+									if ( 'topdivider' === tabName ) {
+										tabout = topDividerSettings;
 									} else {
-										tabout = bottomSepSizes;
+										tabout = bottomDividerSettings;
 									}
 									return <div>{ tabout }</div>;
 								}
@@ -1073,9 +1390,9 @@ class KadenceRowLayout extends Component {
 						<RangeControl
 							label={ __( 'Minimium Height' ) }
 							value={ minHeight }
-							onChange={ ( minHeight ) => {
+							onChange={ ( value ) => {
 								setAttributes( {
-									minHeight: minHeight,
+									minHeight: value,
 								} );
 							} }
 							min={ 0 }
@@ -1084,9 +1401,9 @@ class KadenceRowLayout extends Component {
 						<RangeControl
 							label={ __( 'Content Max Width' ) }
 							value={ maxWidth }
-							onChange={ ( maxWidth ) => {
+							onChange={ ( value ) => {
 								setAttributes( {
-									maxWidth: maxWidth,
+									maxWidth: value,
 								} );
 							} }
 							min={ 0 }
@@ -1094,16 +1411,19 @@ class KadenceRowLayout extends Component {
 						/>
 					</PanelBody>
 				</InspectorControls>
-				<div className={ classes } data-bg-img-id={ bgImgID } style={ {
-					backgroundColor: ( bgColor ? bgColor : undefined ),
-					backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
-					backgroundSize: bgImgSize,
-					backgroundPosition: bgImgPosition,
-					backgroundRepeat: bgImgRepeat,
-					backgroundAttachment: bgImgAttachment,
+				<div className={ classes } style={ {
 					marginBottom: bottomMargin,
 					marginTop: topMargin,
+					minHeight: minHeight + 'px',
 				} }>
+					<div className="kt-row-layout-background" data-bg-img-id={ bgImgID } style={ {
+						backgroundColor: ( bgColor ? bgColor : undefined ),
+						backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
+						backgroundSize: bgImgSize,
+						backgroundPosition: bgImgPosition,
+						backgroundRepeat: bgImgRepeat,
+						backgroundAttachment: bgImgAttachment,
+					} }></div>
 					{ ( ! currentOverlayTab || 'grad' !== currentOverlayTab ) && (
 						<div className={ 'kt-row-layout-overlay kt-row-overlay-normal' } data-bg-img-id={ overlayBgImgID } style={ {
 							backgroundColor: ( overlay ? overlay : undefined ),
@@ -1147,6 +1467,15 @@ class KadenceRowLayout extends Component {
 									</Tooltip>
 								) ) }
 							</ButtonGroup>
+						</div>
+					) }
+					{ colLayout && 'none' !== topSep && (
+						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` } style={ { 
+							height: topSepHeight + 'px',
+						} }>
+							<svg style={ { fill: topSepColor, width: topSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+								{ topSVGDivider }
+							</svg>
 						</div>
 					) }
 					<div style={ { height: '1px' } }></div>
@@ -1196,7 +1525,6 @@ class KadenceRowLayout extends Component {
 					{ colLayout && (
 						<div className="innerblocks-wrap" style={ {
 							maxWidth: maxWidth + 'px',
-							minHeight: minHeight + 'px',
 							paddingLeft: leftPadding + 'px',
 							paddingRight: rightPadding + 'px',
 						} }>
@@ -1254,7 +1582,7 @@ class KadenceRowLayout extends Component {
 						<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` } style={ { 
 							height: bottomSepHeight + 'px',
 						} }>
-							<svg style={ { fill: bottomSepColor } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+							<svg style={ { fill: bottomSepColor, width: bottomSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
 								{ bottomSVGDivider }
 							</svg>
 						</div>

@@ -46,7 +46,8 @@
 .kt-size-tabs .components-tab-panel__tabs {
     border-bottom: 0;
 	text-align: right;
-	margin-top: -20px;
+    margin-top: -20px;
+    margin-bottom:0;
 }
 .kt-size-tabs .components-tab-panel__tabs button {
     background: transparent;
@@ -55,6 +56,7 @@
     padding: 2px 4px;
     margin-bottom: 0;
     outline: 0;
+    width: auto;
     font-size: 10px;
 }
 .kt-size-tabs .components-tab-panel__tabs button.active-tab {

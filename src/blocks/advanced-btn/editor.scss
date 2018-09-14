@@ -32,20 +32,18 @@
     background: white;
     transform: translate(-50%, 0);
 }
-.kt-inspect-tabs.kt-hover-tabs {
+.kt-hover-tabs {
     padding-top: 0;
     margin-top: -5px;
 }
-
-.kt-inspect-tabs.kt-hover-tabs  .components-tab-panel__tabs {
+.kt-hover-tabs  .components-tab-panel__tabs {
     margin-bottom: 15px;
 }
-
-.kt-inspect-tabs.kt-hover-tabs .components-tab-panel__tabs button.active-tab {
+.kt-hover-tabs .components-tab-panel__tabs button.active-tab {
     border-color: #0085ba;
     color: #0085ba;
 }
-.kt-inspect-tabs.kt-hover-tabs  .components-tab-panel__tabs button {
+.kt-hover-tabs .components-tab-panel__tabs button {
     background: transparent;
     border: 0;
     border: 1px solid #eee;

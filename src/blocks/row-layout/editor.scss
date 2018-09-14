@@ -6,17 +6,37 @@
  */
 
  // Controls
+ .kt-row-layout-top-sep {
+    position: absolute;
+    height: 100px;
+    top: -16px;
+	left: 0;
+	overflow: hidden;
+	right: 0;
+	z-index: 1;
+	svg {
+		position: absolute;
+		top: 0px;
+		left: 50%;
+		transform: translateX(-50%) rotate(180deg);
+		width: 100%;
+		height: 100%;
+		display: block;
+	}
+}
  .kt-row-layout-bottom-sep {
     position: absolute;
     height: 100px;
-    bottom: 0;
-    left: 0;
+    bottom: -16px;
+	left: 0;
+	overflow: hidden;
 	right: 0;
 	z-index: 1;
 	svg {
 		position: absolute;
 		bottom: 0px;
-		left: 0;
+		left: 50%;
+		transform: translateX(-50%);
 		width: 100%;
 		height: 100%;
 		display: block;
@@ -144,6 +164,9 @@
     left: 0px;
     margin-left: 0px;
 }
+.kt-padding-resize-box {
+	z-index: 2;
+}
 .kt-row-padding {
     display: flex;
     width: 100%;
@@ -185,14 +208,14 @@
 	}
 }
 // column outline:
-[data-type="kadence/rowlayout"] .wp-block-kadence-rowlayout .kadence-column:before {
-    outline: 1px dashed rgba(145, 151, 162, 0.25);
-    content:'';
-    position:absolute;
-    width:100%;
-    top:16px;
-    bottom:16px;
-}
+// [data-type="kadence/rowlayout"] .wp-block-kadence-rowlayout .kadence-column:before {
+//     outline: 1px dashed rgba(145, 151, 162, 0.25);
+//     content:'';
+//     position:absolute;
+//     width:100%;
+//     top:16px;
+//     bottom:16px;
+// }
 .editor-block-list__block[data-type="kadence/rowlayout"] {
     clear: both;
 }
@@ -362,16 +385,13 @@
     align-items: flex-end;
     display: flex;
 }
-.kadence-column {
-    width: 100%;
-}
-
 // Overlay
-.kt-row-layout-overlay {
-    top: 0;
+.kt-row-layout-overlay, .kt-row-layout-background {
+	top: -16px;
+	bottom:-16px;
     left: 0;
     position: absolute;
-    height: 100%;
+    height: auto;
     width: 100%;
 }
 
@@ -398,7 +418,21 @@
 		}
 	}
 }
-
+.kadence-column {
+	width: 100%;
+}
+.kt-gutter-wide > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"] > .editor-block-list__block-edit {
+	margin-left: -23px;
+    margin-right: -23px;
+}
+.kt-gutter-wider > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"] > .editor-block-list__block-edit {
+	margin-left: -13px;
+    margin-right: -13px;
+}
+.kt-gutter-widest > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"] > .editor-block-list__block-edit {
+	margin-left: -3px;
+    margin-right: -3px;
+}
 
 // Mobile Preview maybe later... 
 // .editor-block-list__block[data-type="kadence/rowlayout"].is-selected .wp-block-kadence-rowlayout.current-tab-mobile {

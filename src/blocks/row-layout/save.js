@@ -13,14 +13,94 @@ const {
 
 class KadenceRowLayoutSave extends Component {
 	render() {
-		const { attributes: { columns, blockAlignment, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor } } = this.props;
+		const { attributes: { columns, blockAlignment, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor } } = this.props;
 		let bottomSVGDivider;
 		if ( 'ct' === bottomSep ) {
-			bottomSVGDivider = <path className="large-center-triangle" d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'cti' === bottomSep ) {
+			bottomSVGDivider = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
 		} else if ( 'ctd' === bottomSep ) {
 			bottomSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
-		} else if ( 'ctt' === bottomSep ) {
-			bottomSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
+		} else if ( 'ctdi' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M500,2l500,78l0,20l-1000,0l0,-20l500,-78Z" style={ { opacity: 0.4 } } /><path d="M500,2l500,98l-1000,0l500,-98Z" /></Fragment>;
+		} else if ( 'sltl' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,0l-1000,100l1000,0l0,-100Z" />;
+		} else if ( 'sltli' === bottomSep ) {
+			bottomSVGDivider = <path d="M0,100l1000,-100l-1000,0l0,100Z" />;
+		} else if ( 'sltr' === bottomSep ) {
+			bottomSVGDivider = <path d="M0,0l1000,100l-1000,0l0,-100Z" />;
+		} else if ( 'sltri' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100l-1000,-100l1000,0l0,100Z" />;
+		} else if ( 'crv' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z" />;
+		} else if ( 'crvi' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,0c0,0 -270.987,98 -500,98c-229.013,0 -500,-98 -500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'crvl' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100c0,0 -420.987,-98 -650,-98c-229.013,0 -350,98 -350,98l1000,0Z" />;
+		} else if ( 'crvli' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,0c0,0 -420.987,98 -650,98c-229.013,0 -350,-98 -350,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'crvr' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100c0,0 -120.987,-98 -350,-98c-229.013,0 -650,98 -650,98l1000,0Z" />;
+		} else if ( 'crvri' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,0c0,0 -120.987,98 -350,98c-229.013,0 -650,-98 -650,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'wave' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" />;
+		} else if ( 'wavei' === bottomSep ) {
+			bottomSVGDivider = <path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-78 500,-78c154.895,0 250,30 250,30l0,-50l-1000,0l0,60Z" />;
+		} else if ( 'waves' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z"/><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+		} else if ( 'wavesi' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-68 500,-68c154.895,0 250,65 250,65l0,-95l-1000,0l0,60Z" style={ { opacity: 0.4 } } /><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-73 500,-73c154.895,0 250,45 250,45l0,-70l-1000,0l0,60Z" style={ { opacity: 0.4 } } /><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-78 500,-78c154.895,0 250,30 250,30l0,-50l-1000,0l0,60Z" /></Fragment>;
+		} else if ( 'mtns' === bottomSep ) {
+			bottomSVGDivider = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
+		} else if ( 'littri' === bottomSep ) {
+			bottomSVGDivider = <path d="M500,2l25,98l-50,0l25,-98Z" />;
+		} else if ( 'littrii' === bottomSep ) {
+			bottomSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
+		}
+		let topSVGDivider;
+		if ( 'ct' === topSep ) {
+			topSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'cti' === topSep ) {
+			topSVGDivider = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
+		} else if ( 'ctd' === topSep ) {
+			topSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
+		} else if ( 'ctdi' === topSep ) {
+			topSVGDivider = <Fragment><path d="M500,2l500,78l0,20l-1000,0l0,-20l500,-78Z" style={ { opacity: 0.4 } } /><path d="M500,2l500,98l-1000,0l500,-98Z" /></Fragment>;
+		} else if ( 'sltl' === topSep ) {
+			topSVGDivider = <path d="M1000,0l-1000,100l1000,0l0,-100Z" />;
+		} else if ( 'sltli' === topSep ) {
+			topSVGDivider = <path d="M0,100l1000,-100l-1000,0l0,100Z" />;
+		} else if ( 'sltr' === topSep ) {
+			topSVGDivider = <path d="M0,0l1000,100l-1000,0l0,-100Z" />;
+		} else if ( 'sltri' === topSep ) {
+			topSVGDivider = <path d="M1000,100l-1000,-100l1000,0l0,100Z" />;
+		} else if ( 'crv' === topSep ) {
+			topSVGDivider = <path d="M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z" />;
+		} else if ( 'crvi' === topSep ) {
+			topSVGDivider = <path d="M1000,0c0,0 -270.987,98 -500,98c-229.013,0 -500,-98 -500,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'crvl' === topSep ) {
+			topSVGDivider = <path d="M1000,100c0,0 -420.987,-98 -650,-98c-229.013,0 -350,98 -350,98l1000,0Z" />;
+		} else if ( 'crvli' === topSep ) {
+			topSVGDivider = <path d="M1000,0c0,0 -420.987,98 -650,98c-229.013,0 -350,-98 -350,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'crvr' === topSep ) {
+			topSVGDivider = <path d="M1000,100c0,0 -120.987,-98 -350,-98c-229.013,0 -650,98 -650,98l1000,0Z" />;
+		} else if ( 'crvri' === topSep ) {
+			topSVGDivider = <path d="M1000,0c0,0 -120.987,98 -350,98c-229.013,0 -650,-98 -650,-98l0,100l1000,0l0,-100Z" />;
+		} else if ( 'wave' === topSep ) {
+			topSVGDivider = <path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" />;
+		} else if ( 'wavei' === topSep ) {
+			topSVGDivider = <path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-78 500,-78c154.895,0 250,30 250,30l0,-50l-1000,0l0,60Z" />;
+		} else if ( 'waves' === topSep ) {
+			topSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z"/><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+		} else if ( 'wavesi' === topSep ) {
+			topSVGDivider = <Fragment><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-68 500,-68c154.895,0 250,65 250,65l0,-95l-1000,0l0,60Z" style={ { opacity: 0.4 } } /><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-73 500,-73c154.895,0 250,45 250,45l0,-70l-1000,0l0,60Z" style={ { opacity: 0.4 } } /><path d="M0,60c0,0 120.077,38.076 250,38c129.923,-0.076 345.105,-78 500,-78c154.895,0 250,30 250,30l0,-50l-1000,0l0,60Z" /></Fragment>;
+		} else if ( 'mtns' === topSep ) {
+			topSVGDivider = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
+		} else if ( 'littri' === topSep ) {
+			topSVGDivider = <path d="M500,2l25,98l-50,0l25,-98Z" />;
+		} else if ( 'littrii' === topSep ) {
+			topSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
 		}
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
@@ -38,6 +118,13 @@ class KadenceRowLayoutSave extends Component {
 				<div id={ `kt-layout-id${ uniqueID }` } className={ innerClasses }>
 					{ ( overlay || overlayBgImg ) && (
 						<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }` }></div>
+					) }
+					{ topSep && 'none' !== topSep && (
+						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` }>
+							<svg style={ { fill: topSepColor } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+								{ topSVGDivider }
+							</svg>
+						</div>
 					) }
 					<div className={ innerColumnClasses }>
 						<InnerBlocks.Content />

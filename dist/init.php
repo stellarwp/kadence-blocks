@@ -70,15 +70,20 @@ function kadence_blocks_admin_editor_width() {
 	if ( 'sidebar' == $defualt_size_type ) {
 		$default_size = $sidebar_size;
 	} elseif ( 'fullwidth' == $defualt_size_type ) {
-		$default_size = none;
+		$default_size = 'none';
 	} else {
 		$default_size = $nosidebar_size;
+	}
+	if ( 'none' === $default_size ) {
+		$jssize = 2000;
+	} else {
+		$jssize = $default_size;
 	}
 	echo '<style type="text/css" id="kt-block-editor-width">';
 	echo 'body.gutenberg-editor-page.kt-editor-width-default .editor-post-title__block,
 	body.gutenberg-editor-page.kt-editor-width-default .editor-default-block-appender,
 	body.gutenberg-editor-page.kt-editor-width-default .editor-block-list__block {
-		max-width: ' . esc_attr( $default_size ) . 'px;
+		max-width: ' . esc_attr( $default_size ) . ( is_numeric( $default_size ) ? 'px' : '' ) . ';
 	}';
 	echo 'body.gutenberg-editor-page.kt-editor-width-sidebar .editor-post-title__block,
 	body.gutenberg-editor-page.kt-editor-width-sidebar .editor-default-block-appender,
@@ -103,7 +108,7 @@ function kadence_blocks_admin_editor_width() {
 		max-width: none;
 	}';
 	echo '</style>';
-	echo "<script> var kt_blocks_sidebar_size = ".$sidebar_size."; var kt_blocks_nosidebar_size = ".$nosidebar_size."; var kt_blocks_default_size = ".$default_size."; wp.data.dispatch('core/editor').updateEditorSettings( {maxWidth:".$default_size."} );</script>";
+	echo "<script> var kt_blocks_sidebar_size = ".$sidebar_size."; var kt_blocks_nosidebar_size = ".$nosidebar_size."; var kt_blocks_default_size = ".$jssize."; wp.data.dispatch('core/editor').updateEditorSettings( {maxWidth:".$jssize."} );</script>";
 }
 add_action( 'admin_head-post.php', 'kadence_blocks_admin_editor_width', 100 );
 add_action( 'admin_head-post-new.php', 'kadence_blocks_admin_editor_width', 100 );

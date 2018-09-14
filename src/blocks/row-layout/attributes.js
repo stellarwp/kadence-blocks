@@ -202,10 +202,6 @@ const attributes = {
 		type: 'boolean',
 		default: false,
 	},
-	topSepInvert: {
-		type: 'boolean',
-		default: false,
-	},
 	topSepHeight: {
 		type: 'number',
 		default: 100,
@@ -227,10 +223,6 @@ const attributes = {
 		default: '#ffffff',
 	},
 	bottomSepFlip: {
-		type: 'boolean',
-		default: false,
-	},
-	bottomSepInvert: {
 		type: 'boolean',
 		default: false,
 	},

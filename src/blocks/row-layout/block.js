@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import icons from './icon';
+import icons from '../../icons';
 /**
  * Import attributes
  */
@@ -42,7 +42,7 @@ const { registerBlockType } = wp.blocks;
 registerBlockType( 'kadence/rowlayout', {
 	title: __( 'Row Layout' ), // Block title.
 	icon: {
-		src: icons.block,
+		src: icons.blockRow,
 	},
 	category: 'layout',
 	keywords: [

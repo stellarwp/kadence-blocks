@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 4.9.8
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,10 @@ Custom Blocks for for Gutenberg to help extend the editing capablitlies.
 
 == Description ==
 
-This plugin adds custom blocks to extend Gutenberg's editing capabilities to better build custom layouts and make Gutenberg able to do more closely what popular page builders can do. With the [Kadence Row Layout Block](https://themes.kadencethemes.com/ascend-5/row-layout-block/) you can better control columns for different screen sizes plus it gives you full row editing tools like padding, backgrounds, overlays with gradients, vertical align and much more. 
+This plugin adds custom blocks to extend Gutenberg's editing capabilities to better build custom layouts and make Gutenberg able to do more closely what popular page builders can do. With the [Kadence Row Layout Block](https://themes.kadencethemes.com/ascend-5/row-layout-block/) you can better control columns for different screen sizes plus it gives you full row editing tools like padding, backgrounds, overlays with gradients, vertical align and much more.
+
+= Try Kadence Blocks =
+[Demo Testing](http://demo.kadencethemes.com/kadence-blocks/)
 
 = Custom Blocks Include =
 * Row Layout - [demo](https://themes.kadencethemes.com/ascend-5/row-layout-block/)
@@ -64,6 +67,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.0.4 =
+* Fix: Min Height so it doesn't add to padding.
+* Update: Add extra space when using larger gutter.
+* Update: Change Sidebar to small and No sidebar to Large.
+* Add: New Dividers to Row Layout!
+* Fix: Issue with fullwidth if set as default.
+* Add: Link to Demo Tester.
 
 = 1.0.3 =
 * Fix: Row Inner max width.
