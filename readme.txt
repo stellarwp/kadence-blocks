@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 4.9.8
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,7 @@ This plugin adds custom blocks to extend Gutenberg's editing capabilities to bet
 * Row Layout - [demo](https://themes.kadencethemes.com/ascend-5/row-layout-block/)
 * Advanced Heading - [demo](https://themes.kadencethemes.com/ascend-5/advanced-heading-block/) 
 * Advanced Button - [demo](https://themes.kadencethemes.com/ascend-5/advanced-button-block/)
+* Tabs - [demo](https://themes.kadencethemes.com/ascend-5/tabs-block/)
 * Icon - [demo](https://themes.kadencethemes.com/ascend-5/icon-block/)
 * Spacer / Divider - [demo](https://themes.kadencethemes.com/ascend-5/spacer-divider-block/) 
 
@@ -31,6 +32,8 @@ The Advanced Heading block provides full control for your heading, including fon
 
 The Advanced Button block allows you to have up to 5 buttons side by side. Plus, you can control each individually, both with static and hover styles, and each button can have an added icon next to the text.
 
+The Tabs block is highly customizable with unique tab title settings for spacing, color, icons and text. Set up vertical or horizontal tabs plus there is options to switch to an accordion setup for mobile. Each tab content is an empty canvas able to contain any other blocks.
+
 The Icon block allows you to add an SVG icon right into you page. There are over 1500 icons to choose from and with each you can control the size, color, background, border and add a link.
 
 The Spacer / Divider block allows you to optionally show a divider inside an area with a drag-able height. The divider has style options allowing you to set the width, height, color, line style, and opacity.
@@ -39,6 +42,13 @@ The Spacer / Divider block allows you to optionally show a divider inside an are
 One of the challenges with creating custom column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don’t have a sidebar, it is a poor representation of what you are actually going to get on the front end of your site. Not to mention it makes for a cramped space to work in if you are trying to manage a row with three columns.
 
 In an effort to create an easier way to use Gutenberg in a more “page building experience” we created a simple way that allows you to change the default max width for pages and for posts as well as individually change that through a page by page setting. 
+
+= Less Margin = 
+Another challenge with Gutenberg is not having an exact representation of how your content is going to look on the font end of your site. Gutenberg does not quite give you this becuase it's not a front end editor and therefor doesn't include all the css that your theme and other plugins add to style your content. Much of this can be reconciled as theme authors add support for Gutenberg and add key styling from the theme into Gutenberg. We've already done this with our themes and it greatly improves the editing experience.
+
+But Gutenberg adds in spacing between blocks that simply doesn’t exist on the front end. This spacing can negatively effect the way you design your content because it doesn't represent how your page will look on the font end of your site. This is especially true as you start to use Gutenberg for more advanced page building. 
+
+We've added in an optional less margin setting that removes a lot of this extra spacing to give a more accurate representation of how your content will look on the front end. We think it helps a great deal with the overall experience in Gutenberg and encourage you to try it out.
 
 = Source files =
 
@@ -67,6 +77,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.0.5 =
+* Add: Minimal Margin css option.
+* Add: Waves divider to row.
+* Add: New Tabs Block
+* Update: Option to turn off the editor width settings.
+* Update: Tweak  admin google font load so duplicates are not loaded.
+* Fix: Editor Width name issue.
+* Fix: Vertical alignment when minimum height is used.
+* Fix: Typography font when regular is reselected.
 
 = 1.0.4 =
 * Fix: Min Height so it doesn't add to padding.

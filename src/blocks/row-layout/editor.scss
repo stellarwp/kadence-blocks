@@ -55,6 +55,7 @@
 .kt-remove-img.kt-cta-upload-btn {
     margin-left: 5px;
 }
+
 // Tabs
 .kt-inspect-tabs .components-button-group {
     margin-bottom: 1em;
@@ -243,7 +244,22 @@
 // Therefore, let's at least not add any additional margins here.
 // The goal is for the editor to look more like the front-end.
 //.editor-block-list__layout .editor-block-list__block[data-type="kadence/rowlayout"] > .editor-block-list__block-edit,
-
+.wp-block-kadence-rowlayout.kt-row-valign-middle {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+.wp-block-kadence-rowlayout.kt-row-valign-middle>.innerblocks-wrap {
+	width:100%;
+}
+.wp-block-kadence-rowlayout.kt-row-valign-bottom {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+.wp-block-kadence-rowlayout.kt-row-valign-bottom>.innerblocks-wrap {
+	width:100%;
+}
 .editor-block-list__layout .editor-block-list__block[data-type="kadence/column"] > .editor-block-list__block-edit {
 	margin-top: 0;
 	margin-bottom: 0;
@@ -252,7 +268,7 @@
 	padding-top: 0.1px;
 	padding-bottom: 0.1px;
 }
-.kt-row-has-bg {
+.kt-row-has-bg .innerblocks-wrap {
     padding-left: 15px;
     padding-right: 15px;
 }

@@ -57,9 +57,16 @@ class Kadence_Blocks_Settings {
 	 */
 	public function deregister_blocks() {
 		// Scripts.
+		$editor_widths = get_option( 'kt_blocks_editor_width', array() );
+		if ( isset( $editor_widths['enable_editor_width'] ) && 'false' === $editor_widths['enable_editor_width'] ) {
+			$plugins = array('kadence-editor-width');
+		} else {
+			$plugins = array();
+		}
 		wp_enqueue_script( 'kadence-blocks-deregister-js', KT_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KT_BLOCKS_VERSION, true );
 		wp_localize_script( 'kadence-blocks-deregister-js', 'kt_deregister_params', array(
 			'deregister' => get_option( 'kt_blocks_unregistered_blocks' ),
+			'dergisterplugins' => $plugins,
 		) );
 	}
 	/**
@@ -94,7 +101,34 @@ class Kadence_Blocks_Settings {
 		// Defaults for Pages and posts.
 		add_settings_field( 'post_default', __( 'Post default', 'kadence-blocks' ), array( $this, 'post_default_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		add_settings_field( 'page_default', __( 'Page Default', 'kadence-blocks' ), array( $this, 'page_default_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
+		add_settings_field( 'limited_margins', __( 'Enable Less Margin CSS', 'kadence-blocks' ), array( $this, 'limited_margins_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
+		add_settings_field( 'enable_editor_width', __( 'Enable Editor Width', 'kadence-blocks' ), array( $this, 'enabled_editor_width_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 
+	}
+	/**
+	 * Outputs Sidebar number field
+	 */
+	public function enabled_editor_width_callback() {
+		$data = self::get_data_options( 'kt_blocks_editor_width' );
+		$default_enabled = ( isset( $data['enable_editor_width'] ) ? $data['enable_editor_width'] : 'true' );
+		echo '<p>' . __( 'Allows for changes to the editor width on per page/post basis with preset defaults.', 'kadence-blocks' ) . '<p>';
+		echo '<select class="kt-blocks-enable-editor-width kt-editor-width-defaults-select" name="kt_blocks_editor_width[enable_editor_width]">';
+			echo '<option value="false" ' . ( $default_enabled === 'false' ? 'selected' : '' ) . '>' . __( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( $default_enabled === 'true' ? 'selected' : '' ) . '>' . __( 'True', 'kadence-blocks' ) . '</option>';
+		echo '</select>';
+	}
+
+	/**
+	 * Outputs Limited Margins Field
+	 */
+	public function limited_margins_callback() {
+		$data = self::get_data_options( 'kt_blocks_editor_width' );
+		$default_limited = ( isset( $data['limited_margins'] ) ? $data['limited_margins'] : 'false' );
+		echo '<p>' . __( 'Experimental editor CSS for less excess margins in Gutenberg in an attempt to get a closer WYSIWYG editing experience.', 'kadence-blocks' ) . '<p>';
+		echo '<select class="kt-blocks-limited-margins kt-editor-width-defaults-select" name="kt_blocks_editor_width[limited_margins]">';
+			echo '<option value="false" ' . ( $default_limited === 'false' ? 'selected' : '' ) . '>' . __( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( $default_limited === 'true' ? 'selected' : '' ) . '>' . __( 'True', 'kadence-blocks' ) . '</option>';
+		echo '</select>';
 	}
 	/**
 	 * Outputs Sidebar number field
@@ -332,6 +366,12 @@ class Kadence_Blocks_Settings {
 				'name'  => __( 'Advanced Heading', 'kadence-blocks' ),
 				'desc'  => __( 'Transform your headings to Advanced Headings and customize the font family (even google fonts), color, and size.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/heading.jpg',
+			),
+			'kadence/tabs'      => array(
+				'slug'  => 'kadence/tabs',
+				'name'  => __( 'Tabs', 'kadence-blocks' ),
+				'desc'  => __( 'Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/tabs.jpg',
 			),
 		);
 		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );

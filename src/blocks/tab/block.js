@@ -46,7 +46,7 @@ registerBlockType( 'kadence/tab', {
 		const { attributes: { id } } = props;
 		return (
 			<Fragment>
-				<div className={ `kt-tab-content kt-inner-tab-${ id }` } >
+				<div className={ `kt-tab-inner-content kt-inner-tab-${ id }` } >
 					<InnerBlocks templateLock={ false } />
 				</div>
 			</Fragment>
@@ -56,8 +56,8 @@ registerBlockType( 'kadence/tab', {
 	save( { attributes } ) {
 		const { id } = attributes;
 		return (
-			<div className={ `kt-tab-content kt-inner-tab-${ id }` }>
-				<div className={ 'kt-tab-content-inner' } >
+			<div className={ `kt-tab-inner-content kt-inner-tab-${ id }` }>
+				<div className={ 'kt-tab-inner-content-inner' } >
 					<InnerBlocks.Content />
 				</div>
 			</div>

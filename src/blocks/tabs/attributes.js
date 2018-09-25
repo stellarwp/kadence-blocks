@@ -89,6 +89,10 @@ const attributes = {
 			onlyIcon: false,
 		} ],
 	},
+	iSize: {
+		type: 'number',
+		default: 14,
+	},
 	titleColor: {
 		type: 'string',
 	},
@@ -106,6 +110,7 @@ const attributes = {
 	},
 	titleBgActive: {
 		type: 'string',
+		default: '#ffffff',
 	},
 	titleBorder: {
 		type: 'string',
@@ -118,15 +123,20 @@ const attributes = {
 	},
 	titleBorderWidth: {
 		type: 'array',
-		default: [ 1, 1, 1, 1 ],
 	},
 	titleBorderControl: {
 		type: 'string',
-		default: 'linked',
+		default: 'individual',
+	},
+	titleBorderRadius: {
+		type: 'array',
+	},
+	titleBorderRadiusControl: {
+		type: 'string',
+		default: 'individual',
 	},
 	titlePadding: {
 		type: 'array',
-		default: [ 8, 16, 8, 16 ],
 	},
 	titlePaddingControl: {
 		type: 'string',
@@ -134,7 +144,6 @@ const attributes = {
 	},
 	titleMargin: {
 		type: 'array',
-		default: [ 0, 4, -1, 0 ],
 	},
 	titleMarginControl: {
 		type: 'string',
@@ -196,10 +205,6 @@ const attributes = {
 	fontStyle: {
 		type: 'string',
 		default: 'normal',
-	},
-	borderRadius: {
-		type: 'number',
-		default: 4,
 	},
 };
 export default attributes;

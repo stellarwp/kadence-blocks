@@ -44,8 +44,8 @@ const changeBodyClass = ( key ) => {
 function CustomComponent( { meta, oldMeta, onUpdateWidth } ) {
 	const editorWidthOptions = [
 		{ key: 'default', name: __( 'Default' ) },
-		{ key: 'nosidebar', name: __( 'Small' ) },
-		{ key: 'sidebar', name: __( 'Large' ) },
+		{ key: 'nosidebar', name: __( 'Large' ) },
+		{ key: 'sidebar', name: __( 'Small' ) },
 		{ key: 'fullwidth', name: __( 'Full Screen Width' ) },
 	];
 	return (

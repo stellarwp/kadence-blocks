@@ -16,35 +16,35 @@ const {
 } = wp.editor;
 
 class KadenceTabsSave extends Component {
+	stripStringRender( string ) {
+		return string.toLowerCase().replace( /[^0-9a-z-]/g,'' );
+	}
 	render() {
-		const { attributes: { tabCount, blockAlignment, currentTab, mobileLayout, layout, tabletLayout, uniqueID, titles, bgColor, innerPadding, size, borderRadius, titleBorderWidth, maxWidth, minHeight } } = this.props;
+		const { attributes: { tabCount, blockAlignment, currentTab, mobileLayout, layout, tabletLayout, uniqueID, titles, iSize, maxWidth, tabAlignment } } = this.props;
 		const layoutClass = ( ! layout ? 'tabs' : layout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
+		const accordionClass = ( ( mobileLayout && 'accordion' === mobileLayout ) || ( tabletLayout && 'accordion' === tabletLayout ) ? 'kt-create-accordion' : '' );
 		const classId = ( ! uniqueID ? 'notset' : uniqueID );
 		const classes = classnames( `align${ blockAlignment }` );
-		const innerClasses = classnames( `kt-tabs-wrap kt-tabs-id${ classId } kt-tabs-has-${ tabCount }-tabs kt-tabs-layout-${ layoutClass } kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass }` );
+		const innerClasses = classnames( `kt-tabs-wrap kt-tabs-id${ classId } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment } ${ accordionClass }` );
 		const renderTitles = ( index ) => {
 			return (
 				<Fragment>
-					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( ! titles[ index ].onlyIcon ? 'always' : 'only' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` }>
-						<span className={ `kt-tab-title kt-tab-title-${ 1 + index } ` } style={ {
-							borderTopLeftRadius: borderRadius + 'px',
-							borderTopRightRadius: borderRadius + 'px',
-							borderWidth: titleBorderWidth[ 0 ] + 'px' + titleBorderWidth[ 1 ] + 'px' + titleBorderWidth[ 2 ] + 'px' + titleBorderWidth[ 3 ] + 'px',
-						} } >
-							{ titles[ index ].icon && 'left' === titles[ index ].iconSide && (
-								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! size ? '14' : size ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
+					<li id={ `tab-${ this.stripStringRender( titles[ index ].text.toString() ) }` } className={ `kt-title-item kt-title-item-${ 1 + index } kt-tabs-svg-show-${ ( ! titles[ index ].onlyIcon ? 'always' : 'only' ) } kt-tabs-icon-side-${ ( titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` }>
+						<a href={ `#tab-${ this.stripStringRender( titles[ index ].text.toString() ) }` } data-tab={ 1 + index } className={ `kt-tab-title kt-tab-title-${ 1 + index } ` } >
+							{ titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
+								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
 							) }
 							<RichText.Content
 								tagName="span"
 								value={ titles[ index ].text }
-								className={ 'kt-button-text' }
+								className={ 'kt-title-text' }
 							/>
-							{ titles[ index ].icon && 'left' !== titles[ index ].iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ titles[ index ].icon } kt-btn-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! size ? '14' : size ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
+							{ titles[ index ].icon && 'right' === titles[ index ].iconSide && (
+								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
 							) }
-						</span>
+						</a>
 					</li>
 				</Fragment>
 			);
@@ -52,15 +52,12 @@ class KadenceTabsSave extends Component {
 		return (
 			<div className={ classes } >
 				<div className={ innerClasses } style={ {
-					maxWidth: ( maxWidth ? maxWidth + 'px' : '' ),
+					maxWidth: ( maxWidth ? maxWidth + 'px' : 'none' ),
 				} }>
 					<ul className="kt-tabs-title-list">
 						{ times( tabCount, n => renderTitles( n ) ) }
 					</ul>
-					<div className="kt-tabs-content-wrap" style={ {
-						minHeight: ( minHeight ? minHeight + 'px' : '' ),
-						padding: ( innerPadding ? innerPadding + 'px' : '' ),
-					} } >
+					<div className="kt-tabs-content-wrap">
 						<InnerBlocks.Content />
 					</div>
 				</div>

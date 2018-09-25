@@ -12,7 +12,8 @@ import IcoNames from '../../svgiconsnames';
 import SelectSearch from 'react-select-search';
 import fonts from '../../fonts';
 import gFonts from '../../gfonts';
-import WebfontLoader from '@dr-kobros/react-webfont-loader';
+//import WebfontLoader from '@dr-kobros/react-webfont-loader';
+import WebfontLoader from '../../fontloader';
 /**
  * Import Css
  */
@@ -149,7 +150,7 @@ class KadenceAdvancedButton extends Component {
 				if ( ! gFonts[ select.value ].w.includes( 'regular' ) ) {
 					weight = gFonts[ select.value ].w[ 0 ];
 				} else {
-					weight = 'regular';
+					weight = '400';
 				}
 				if ( gFonts[ select.value ].s.length > 1 ) {
 					subset = 'latin';
@@ -159,7 +160,7 @@ class KadenceAdvancedButton extends Component {
 			} else {
 				subset = '';
 				variant = '';
-				weight = 'regular';
+				weight = '400';
 			}
 			setAttributes( {
 				typography: select.value,
@@ -195,12 +196,12 @@ class KadenceAdvancedButton extends Component {
 				}
 				setAttributes( {
 					fontVariant: variant,
-					fontWeight: select,
+					fontWeight: ( 'regular' === select ? '400' : select ),
 				} );
 			} else {
 				setAttributes( {
 					fontVariant: '',
-					fontWeight: select,
+					fontWeight: ( 'regular' === select ? '400' : select ),
 				} );
 			}
 		};
@@ -687,7 +688,7 @@ class KadenceAdvancedButton extends Component {
 							{ typography && (
 								<SelectControl
 									label={ __( 'Font Weight' ) }
-									value={ fontWeight }
+									value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
 									options={ typographyWeights }
 									onChange={ onWeightChange }
 								/>
