@@ -280,3 +280,9 @@
     left: -5px;
     right: -5px;
 }
+.editor-block-list__layout .reusable-block-edit-panel {
+	margin-left: -5px;
+	top: 0;
+	margin-right: -5px;
+	margin-bottom: 0;
+}

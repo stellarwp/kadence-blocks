@@ -590,7 +590,7 @@ class KadenceTabs extends Component {
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
 							) }
 							<RichText
-								tagName="span"
+								tagName="div"
 								placeholder={ __( 'Tab Title' ) }
 								value={ titles[ index ].text }
 								unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }

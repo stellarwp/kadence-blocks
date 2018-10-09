@@ -269,7 +269,7 @@ class KadenceAdvancedButton extends Component {
 								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
 							) }
 							<RichText
-								tagName="span"
+								tagName="div"
 								placeholder={ __( 'Button...' ) }
 								value={ btns[ index ].text }
 								unstableOnFocus={ () => {
