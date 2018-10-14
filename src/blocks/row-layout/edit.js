@@ -896,7 +896,7 @@ class KadenceRowLayout extends Component {
 					onChange={ bgImgSize => setAttributes( { bgImgSize } ) }
 				/>
 				<SelectControl
-					label={ __( 'Background Image Size' ) }
+					label={ __( 'Background Image Position' ) }
 					value={ bgImgPosition }
 					options={ [
 						{ value: 'center top', label: __( 'Center Top' ) },
