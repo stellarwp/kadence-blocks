@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2018-09-25 14:49-0600\n"
+"POT-Creation-Date: 2018-10-15 15:33-0600\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence Themes\n"
@@ -240,7 +240,7 @@ msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:348
 #: src/blocks/advanced-btn/block.js:42 src/blocks/icon/block.js:40
-#: src/blocks/icon/edit.js:80 src/blocks/tabs/edit.js:623
+#: src/blocks/icon/edit.js:80 src/blocks/tabs/edit.js:633
 msgid "Icon"
 msgstr ""
 
@@ -349,108 +349,108 @@ msgid "Border Radius"
 msgstr ""
 
 #: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:470
-#: src/blocks/tabs/edit.js:1107
+#: src/blocks/tabs/edit.js:1127
 msgid "Color Settings"
 msgstr ""
 
 #: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:476
 #: src/blocks/row-layout/edit.js:676 src/blocks/row-layout/edit.js:794
-#: src/blocks/row-layout/edit.js:827 src/blocks/tabs/edit.js:1115
+#: src/blocks/row-layout/edit.js:827 src/blocks/tabs/edit.js:1135
 msgid "Normal"
 msgstr ""
 
 #: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:481
-#: src/blocks/tabs/edit.js:1120
+#: src/blocks/tabs/edit.js:1140
 msgid "Hover"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:497
-#: src/blocks/tabs/edit.js:1482
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:505
+#: src/blocks/tabs/edit.js:1502
 msgid "Icon Settings"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:510
-#: src/blocks/tabs/edit.js:638
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:518
+#: src/blocks/tabs/edit.js:648
 msgid "Icon Location"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:513
-#: src/blocks/tabs/edit.js:641
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:521
+#: src/blocks/tabs/edit.js:651
 msgid "Right"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:514
-#: src/blocks/tabs/edit.js:642
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:522
+#: src/blocks/tabs/edit.js:652
 msgid "Left"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:527
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:535
 msgid "Hover Font Color"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:538
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:546
 msgid "Hover Background Color"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:549
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:557
 msgid "Button Hover Border Color"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:569
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:577
 msgid "Font Color"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:580
-#: src/blocks/row-layout/edit.js:856
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:588
+#: src/blocks/row-layout/edit.js:864
 msgid "Background Color"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:591
-#: src/blocks/icon/edit.js:152 src/blocks/tabs/edit.js:1029
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:599
+#: src/blocks/icon/edit.js:152 src/blocks/tabs/edit.js:1049
 msgid "Border Color"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:625
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:633
 msgid "Button Count"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:629
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:637
 msgid "Number of Buttons"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:666
-#: src/blocks/advanced-btn/edit.js:670 src/blocks/advanced-heading/edit.js:448
-#: src/blocks/tabs/edit.js:1421
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:674
+#: src/blocks/advanced-btn/edit.js:678 src/blocks/advanced-heading/edit.js:458
+#: src/blocks/tabs/edit.js:1441
 msgid "Font Family"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:673
-#: src/blocks/advanced-heading/edit.js:451 src/blocks/tabs/edit.js:1424
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:681
+#: src/blocks/advanced-heading/edit.js:461 src/blocks/tabs/edit.js:1444
 msgid "clear"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:686
-#: src/blocks/advanced-heading/edit.js:464 src/blocks/tabs/edit.js:1437
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:694
+#: src/blocks/advanced-heading/edit.js:474 src/blocks/tabs/edit.js:1457
 msgid "Select a font family"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:690
-#: src/blocks/advanced-heading/edit.js:468 src/blocks/tabs/edit.js:1441
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:698
+#: src/blocks/advanced-heading/edit.js:478 src/blocks/tabs/edit.js:1461
 msgid "Font Weight"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:698
-#: src/blocks/advanced-heading/edit.js:476 src/blocks/tabs/edit.js:1449
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:706
+#: src/blocks/advanced-heading/edit.js:486 src/blocks/tabs/edit.js:1469
 msgid "Font Style"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:706
-#: src/blocks/advanced-heading/edit.js:484 src/blocks/tabs/edit.js:1457
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:714
+#: src/blocks/advanced-heading/edit.js:494 src/blocks/tabs/edit.js:1477
 msgid "Font Subset"
 msgstr ""
 
-#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:714
-#: src/blocks/advanced-heading/edit.js:492 src/blocks/tabs/edit.js:1465
+#: dist/blocks.build.js:1 src/blocks/advanced-btn/edit.js:722
+#: src/blocks/advanced-heading/edit.js:502 src/blocks/tabs/edit.js:1485
 msgid "Load Google Font on Frontend"
 msgstr ""
 
@@ -503,80 +503,80 @@ msgstr ""
 #: src/blocks/advanced-heading/edit.js:288
 #: src/blocks/advanced-heading/edit.js:310
 #: src/blocks/advanced-heading/edit.js:336
-#: src/blocks/advanced-heading/edit.js:358 src/blocks/tabs/edit.js:754
-#: src/blocks/tabs/edit.js:776 src/blocks/tabs/edit.js:802
-#: src/blocks/tabs/edit.js:824 src/blocks/tabs/edit.js:850
-#: src/blocks/tabs/edit.js:872
+#: src/blocks/advanced-heading/edit.js:358 src/blocks/tabs/edit.js:764
+#: src/blocks/tabs/edit.js:786 src/blocks/tabs/edit.js:812
+#: src/blocks/tabs/edit.js:834 src/blocks/tabs/edit.js:860
+#: src/blocks/tabs/edit.js:882
 msgid "Size Type"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:255 src/blocks/tabs/edit.js:769
+#: src/blocks/advanced-heading/edit.js:255 src/blocks/tabs/edit.js:779
 msgid "Font Size"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:277 src/blocks/tabs/edit.js:791
+#: src/blocks/advanced-heading/edit.js:277 src/blocks/tabs/edit.js:801
 msgid "Line Height"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:303 src/blocks/tabs/edit.js:817
+#: src/blocks/advanced-heading/edit.js:303 src/blocks/tabs/edit.js:827
 msgid "Tablet Font Size"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:325 src/blocks/tabs/edit.js:839
+#: src/blocks/advanced-heading/edit.js:325 src/blocks/tabs/edit.js:849
 msgid "Tablet Line Height"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:351 src/blocks/tabs/edit.js:865
+#: src/blocks/advanced-heading/edit.js:351 src/blocks/tabs/edit.js:875
 msgid "Mobile Font Size"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:373 src/blocks/tabs/edit.js:887
+#: src/blocks/advanced-heading/edit.js:373 src/blocks/tabs/edit.js:897
 msgid "Mobile Line Height"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:429
+#: src/blocks/advanced-heading/edit.js:439
 msgid "Heading Settings"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:430
+#: src/blocks/advanced-heading/edit.js:440
 msgid "HTML Tag"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:432
+#: src/blocks/advanced-heading/edit.js:442
 msgid "Text Alignment"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:440
+#: src/blocks/advanced-heading/edit.js:450
 msgid "Heading Color"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:497 src/blocks/row-layout/edit.js:1167
-#: src/blocks/row-layout/edit.js:1241 src/blocks/tabs/edit.js:1470
+#: src/blocks/advanced-heading/edit.js:507 src/blocks/row-layout/edit.js:1185
+#: src/blocks/row-layout/edit.js:1269 src/blocks/tabs/edit.js:1490
 msgid "Size Controls"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:500 src/blocks/tabs/edit.js:1473
+#: src/blocks/advanced-heading/edit.js:510 src/blocks/tabs/edit.js:1493
 msgid "Letter Spacing"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:509
+#: src/blocks/advanced-heading/edit.js:519
 msgid "Margin Settings"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:512
-#: src/blocks/advanced-heading/edit.js:534
+#: src/blocks/advanced-heading/edit.js:522
+#: src/blocks/advanced-heading/edit.js:544
 msgid "Margin Type"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:527
+#: src/blocks/advanced-heading/edit.js:537
 msgid "Top Margin"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:549
+#: src/blocks/advanced-heading/edit.js:559
 msgid "Bottom Margin"
 msgstr ""
 
-#: src/blocks/advanced-heading/edit.js:589
+#: src/blocks/advanced-heading/edit.js:599
 msgid "Write heading…"
 msgstr ""
 
@@ -619,7 +619,7 @@ msgstr ""
 msgid "svg"
 msgstr ""
 
-#: src/blocks/icon/edit.js:95 src/blocks/tabs/edit.js:1486
+#: src/blocks/icon/edit.js:95 src/blocks/tabs/edit.js:1506
 msgid "Icon Size"
 msgstr ""
 
@@ -880,7 +880,7 @@ msgstr ""
 msgid "Layout"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:462 src/blocks/row-layout/edit.js:1457
+#: src/blocks/row-layout/edit.js:462 src/blocks/row-layout/edit.js:1503
 msgid "Column Layout"
 msgstr ""
 
@@ -924,105 +924,104 @@ msgstr ""
 msgid "Overlay Color"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:612 src/blocks/row-layout/edit.js:874
+#: src/blocks/row-layout/edit.js:612 src/blocks/row-layout/edit.js:882
 msgid "Select Image"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:617 src/blocks/row-layout/edit.js:879
+#: src/blocks/row-layout/edit.js:617 src/blocks/row-layout/edit.js:887
 msgid "Remove Image"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:627 src/blocks/row-layout/edit.js:889
-#: src/blocks/row-layout/edit.js:899
+#: src/blocks/row-layout/edit.js:627 src/blocks/row-layout/edit.js:897
 msgid "Background Image Size"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:630 src/blocks/row-layout/edit.js:892
+#: src/blocks/row-layout/edit.js:630 src/blocks/row-layout/edit.js:900
 msgid "Cover"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:631 src/blocks/row-layout/edit.js:893
+#: src/blocks/row-layout/edit.js:631 src/blocks/row-layout/edit.js:901
 msgid "Contain"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:632 src/blocks/row-layout/edit.js:894
+#: src/blocks/row-layout/edit.js:632 src/blocks/row-layout/edit.js:902
 msgid "Auto"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:637
+#: src/blocks/row-layout/edit.js:637 src/blocks/row-layout/edit.js:907
 msgid "Background Image Position"
 msgstr ""
 
 #: src/blocks/row-layout/edit.js:640 src/blocks/row-layout/edit.js:777
-#: src/blocks/row-layout/edit.js:902
+#: src/blocks/row-layout/edit.js:910
 msgid "Center Top"
 msgstr ""
 
 #: src/blocks/row-layout/edit.js:641 src/blocks/row-layout/edit.js:778
-#: src/blocks/row-layout/edit.js:903
+#: src/blocks/row-layout/edit.js:911
 msgid "Center Center"
 msgstr ""
 
 #: src/blocks/row-layout/edit.js:642 src/blocks/row-layout/edit.js:645
 #: src/blocks/row-layout/edit.js:779 src/blocks/row-layout/edit.js:782
-#: src/blocks/row-layout/edit.js:904 src/blocks/row-layout/edit.js:907
+#: src/blocks/row-layout/edit.js:912 src/blocks/row-layout/edit.js:915
 msgid "Center Bottom"
 msgstr ""
 
 #: src/blocks/row-layout/edit.js:643 src/blocks/row-layout/edit.js:780
-#: src/blocks/row-layout/edit.js:905
+#: src/blocks/row-layout/edit.js:913
 msgid "Left Top"
 msgstr ""
 
 #: src/blocks/row-layout/edit.js:644 src/blocks/row-layout/edit.js:781
-#: src/blocks/row-layout/edit.js:906
+#: src/blocks/row-layout/edit.js:914
 msgid "Left Center"
 msgstr ""
 
 #: src/blocks/row-layout/edit.js:646 src/blocks/row-layout/edit.js:783
-#: src/blocks/row-layout/edit.js:908
+#: src/blocks/row-layout/edit.js:916
 msgid "Right Top"
 msgstr ""
 
 #: src/blocks/row-layout/edit.js:647 src/blocks/row-layout/edit.js:784
-#: src/blocks/row-layout/edit.js:909
+#: src/blocks/row-layout/edit.js:917
 msgid "Right Center"
 msgstr ""
 
 #: src/blocks/row-layout/edit.js:648 src/blocks/row-layout/edit.js:785
-#: src/blocks/row-layout/edit.js:910
+#: src/blocks/row-layout/edit.js:918
 msgid "Right Bottom"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:653 src/blocks/row-layout/edit.js:915
+#: src/blocks/row-layout/edit.js:653 src/blocks/row-layout/edit.js:923
 msgid "Background Image Repeat"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:656 src/blocks/row-layout/edit.js:918
+#: src/blocks/row-layout/edit.js:656 src/blocks/row-layout/edit.js:926
 msgid "No Repeat"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:657 src/blocks/row-layout/edit.js:919
+#: src/blocks/row-layout/edit.js:657 src/blocks/row-layout/edit.js:927
 msgid "Repeat"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:658 src/blocks/row-layout/edit.js:920
+#: src/blocks/row-layout/edit.js:658 src/blocks/row-layout/edit.js:928
 msgid "Repeat-x"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:659 src/blocks/row-layout/edit.js:921
+#: src/blocks/row-layout/edit.js:659 src/blocks/row-layout/edit.js:929
 msgid "Repeat-y"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:664 src/blocks/row-layout/edit.js:926
+#: src/blocks/row-layout/edit.js:664 src/blocks/row-layout/edit.js:934
 msgid "Background Image Attachment"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:667 src/blocks/row-layout/edit.js:929
+#: src/blocks/row-layout/edit.js:667 src/blocks/row-layout/edit.js:937
 msgid "Scroll"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:668 src/blocks/row-layout/edit.js:930
+#: src/blocks/row-layout/edit.js:668 src/blocks/row-layout/edit.js:938
 msgid "Fixed"
 msgstr ""
 
@@ -1123,192 +1122,192 @@ msgstr ""
 msgid "Gradient"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:852
+#: src/blocks/row-layout/edit.js:860
 msgid "Background Settings"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:976 src/blocks/row-layout/edit.js:1054
+#: src/blocks/row-layout/edit.js:994 src/blocks/row-layout/edit.js:1072
 msgid "Mobile Height (px)"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:987 src/blocks/row-layout/edit.js:1065
+#: src/blocks/row-layout/edit.js:1005 src/blocks/row-layout/edit.js:1083
 msgid "Mobile Width (%)"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1002 src/blocks/row-layout/edit.js:1080
+#: src/blocks/row-layout/edit.js:1020 src/blocks/row-layout/edit.js:1098
 msgid "Tablet Height (px)"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1013 src/blocks/row-layout/edit.js:1091
+#: src/blocks/row-layout/edit.js:1031 src/blocks/row-layout/edit.js:1109
 msgid "Tablet Width (%)"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1028 src/blocks/row-layout/edit.js:1106
+#: src/blocks/row-layout/edit.js:1046 src/blocks/row-layout/edit.js:1124
 msgid "Divider Height (px)"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1039 src/blocks/row-layout/edit.js:1117
+#: src/blocks/row-layout/edit.js:1057 src/blocks/row-layout/edit.js:1135
 msgid "Divider Width (%)"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1132
+#: src/blocks/row-layout/edit.js:1150
 msgid "Top Divider"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1135 src/blocks/row-layout/edit.js:1209
+#: src/blocks/row-layout/edit.js:1153 src/blocks/row-layout/edit.js:1237
 msgid "None"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1136 src/blocks/row-layout/edit.js:1210
+#: src/blocks/row-layout/edit.js:1154 src/blocks/row-layout/edit.js:1238
 msgid "Large Triangle"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1137 src/blocks/row-layout/edit.js:1211
+#: src/blocks/row-layout/edit.js:1155 src/blocks/row-layout/edit.js:1239
 msgid "Large Triangle - Invert"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1138 src/blocks/row-layout/edit.js:1212
+#: src/blocks/row-layout/edit.js:1156 src/blocks/row-layout/edit.js:1240
 msgid "Large Triangle Double"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1139 src/blocks/row-layout/edit.js:1213
+#: src/blocks/row-layout/edit.js:1157 src/blocks/row-layout/edit.js:1241
 msgid "Large Triangle Double - Invert"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1140 src/blocks/row-layout/edit.js:1214
+#: src/blocks/row-layout/edit.js:1158 src/blocks/row-layout/edit.js:1242
 msgid "Slant Left"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1141 src/blocks/row-layout/edit.js:1215
+#: src/blocks/row-layout/edit.js:1159 src/blocks/row-layout/edit.js:1243
 msgid "Slant Right"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1142 src/blocks/row-layout/edit.js:1216
+#: src/blocks/row-layout/edit.js:1160 src/blocks/row-layout/edit.js:1244
 msgid "Curve"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1143 src/blocks/row-layout/edit.js:1217
+#: src/blocks/row-layout/edit.js:1161 src/blocks/row-layout/edit.js:1245
 msgid "Curve - Invert"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1144 src/blocks/row-layout/edit.js:1218
+#: src/blocks/row-layout/edit.js:1162 src/blocks/row-layout/edit.js:1246
 msgid "Curve Left"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1145 src/blocks/row-layout/edit.js:1219
+#: src/blocks/row-layout/edit.js:1163 src/blocks/row-layout/edit.js:1247
 msgid "Curve Left - Invert"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1146 src/blocks/row-layout/edit.js:1220
+#: src/blocks/row-layout/edit.js:1164 src/blocks/row-layout/edit.js:1248
 msgid "Curve Right"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1147 src/blocks/row-layout/edit.js:1221
+#: src/blocks/row-layout/edit.js:1165 src/blocks/row-layout/edit.js:1249
 msgid "Curve Right - Invert"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1148 src/blocks/row-layout/edit.js:1222
+#: src/blocks/row-layout/edit.js:1166 src/blocks/row-layout/edit.js:1250
 msgid "Wave"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1149 src/blocks/row-layout/edit.js:1223
+#: src/blocks/row-layout/edit.js:1167 src/blocks/row-layout/edit.js:1251
 msgid "Wave - Flip"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1150 src/blocks/row-layout/edit.js:1224
+#: src/blocks/row-layout/edit.js:1168 src/blocks/row-layout/edit.js:1252
 msgid "Waves"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1151 src/blocks/row-layout/edit.js:1225
+#: src/blocks/row-layout/edit.js:1169 src/blocks/row-layout/edit.js:1253
 msgid "Waves - Flip"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1152 src/blocks/row-layout/edit.js:1226
+#: src/blocks/row-layout/edit.js:1170 src/blocks/row-layout/edit.js:1254
 msgid "Mountains"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1153 src/blocks/row-layout/edit.js:1227
+#: src/blocks/row-layout/edit.js:1171 src/blocks/row-layout/edit.js:1255
 msgid "Little Triangle"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1154 src/blocks/row-layout/edit.js:1228
+#: src/blocks/row-layout/edit.js:1172 src/blocks/row-layout/edit.js:1256
 msgid "Little Triangle - Invert"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1159 src/blocks/row-layout/edit.js:1233
+#: src/blocks/row-layout/edit.js:1177 src/blocks/row-layout/edit.js:1261
 #: src/blocks/spacer/edit.js:117
 msgid "Divider Color"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1206
+#: src/blocks/row-layout/edit.js:1234
 msgid "Bottom Divider"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1293
+#: src/blocks/row-layout/edit.js:1331
 msgid "Background Image"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1301
+#: src/blocks/row-layout/edit.js:1339
 msgid "Vertical Align Top"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1315
+#: src/blocks/row-layout/edit.js:1353
 msgid "Vertical Align Middle"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1329
+#: src/blocks/row-layout/edit.js:1367
 msgid "Vertical Align Bottom"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1348
+#: src/blocks/row-layout/edit.js:1386
 msgid "Dividers"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1356
+#: src/blocks/row-layout/edit.js:1394
 msgid "Bottom"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1361 src/blocks/tabs/edit.js:643
+#: src/blocks/row-layout/edit.js:1399 src/blocks/tabs/edit.js:653
 msgid "Top"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1379 src/blocks/tabs/edit.js:1497
+#: src/blocks/row-layout/edit.js:1425 src/blocks/tabs/edit.js:1517
 msgid "Structure Settings"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1383
+#: src/blocks/row-layout/edit.js:1429
 msgid "Container HTML tag"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1386
+#: src/blocks/row-layout/edit.js:1432
 msgid "div"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1387
+#: src/blocks/row-layout/edit.js:1433
 msgid "section"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1388
+#: src/blocks/row-layout/edit.js:1434
 msgid "article"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1389
+#: src/blocks/row-layout/edit.js:1435
 msgid "main"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1390
+#: src/blocks/row-layout/edit.js:1436
 msgid "aside"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1395
+#: src/blocks/row-layout/edit.js:1441
 msgid "Minimium Height"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1406
+#: src/blocks/row-layout/edit.js:1452
 msgid "Content Max Width"
 msgstr ""
 
-#: src/blocks/row-layout/edit.js:1455
+#: src/blocks/row-layout/edit.js:1501
 msgid "Select Your Layout"
 msgstr ""
 
@@ -1364,7 +1363,7 @@ msgstr ""
 msgid "Divider Width by %"
 msgstr ""
 
-#: src/blocks/tab/block.js:32 src/blocks/tabs/edit.js:623
+#: src/blocks/tab/block.js:32 src/blocks/tabs/edit.js:633
 msgid "Tab"
 msgstr ""
 
@@ -1409,119 +1408,119 @@ msgstr ""
 msgid "Tab %d"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:594
+#: src/blocks/tabs/edit.js:604
 msgid "Tab Title"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:650
+#: src/blocks/tabs/edit.js:660
 msgid "Show Only Icon?"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:662
+#: src/blocks/tabs/edit.js:672
 msgid "Title Color"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:671
+#: src/blocks/tabs/edit.js:681
 msgid "Title Background"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:680
+#: src/blocks/tabs/edit.js:690
 msgid "Title Border Color"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:693
+#: src/blocks/tabs/edit.js:703
 msgid "Hover Color"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:702
+#: src/blocks/tabs/edit.js:712
 msgid "Hover Background"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:711
+#: src/blocks/tabs/edit.js:721
 msgid "Hover Border Color"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:724
+#: src/blocks/tabs/edit.js:734
 msgid "Active Color"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:733
+#: src/blocks/tabs/edit.js:743
 msgid "Active Background"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:742
+#: src/blocks/tabs/edit.js:752
 msgid "Active Border Color"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:949
+#: src/blocks/tabs/edit.js:969
 msgid "Content Settings"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:953
+#: src/blocks/tabs/edit.js:973
 msgid "Content Background"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:961 src/blocks/tabs/edit.js:1148
+#: src/blocks/tabs/edit.js:981 src/blocks/tabs/edit.js:1168
 msgid "Padding Control Type"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:979 src/blocks/tabs/edit.js:989
+#: src/blocks/tabs/edit.js:999 src/blocks/tabs/edit.js:1009
 msgid "Inner Content Padding (px)"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1037 src/blocks/tabs/edit.js:1282
+#: src/blocks/tabs/edit.js:1057 src/blocks/tabs/edit.js:1302
 msgid "Border Control Type"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1055 src/blocks/tabs/edit.js:1065
+#: src/blocks/tabs/edit.js:1075 src/blocks/tabs/edit.js:1085
 msgid "Content Border Width (px)"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1105
+#: src/blocks/tabs/edit.js:1125
 msgid "Tab Title Settings"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1125
+#: src/blocks/tabs/edit.js:1145
 msgid "Active"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1145
+#: src/blocks/tabs/edit.js:1165
 msgid "Title Spacing/Border"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1166 src/blocks/tabs/edit.js:1176
+#: src/blocks/tabs/edit.js:1186 src/blocks/tabs/edit.js:1196
 msgid "Title Paddding (px)"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1215
+#: src/blocks/tabs/edit.js:1235
 msgid "Margin Control Type"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1233 src/blocks/tabs/edit.js:1243
+#: src/blocks/tabs/edit.js:1253 src/blocks/tabs/edit.js:1263
 msgid "Title Margin (px)"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1300 src/blocks/tabs/edit.js:1310
+#: src/blocks/tabs/edit.js:1320 src/blocks/tabs/edit.js:1330
 msgid "Title Border Width (px)"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1349
+#: src/blocks/tabs/edit.js:1369
 msgid "Border Radius Control Type"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1367 src/blocks/tabs/edit.js:1377
+#: src/blocks/tabs/edit.js:1387 src/blocks/tabs/edit.js:1397
 msgid "Title Border Radius (px)"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1418
+#: src/blocks/tabs/edit.js:1438
 msgid "Font Settings"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1501
+#: src/blocks/tabs/edit.js:1521
 msgid "Content Minimium Height"
 msgstr ""
 
-#: src/blocks/tabs/edit.js:1512
+#: src/blocks/tabs/edit.js:1532
 msgid "Max Width"
 msgstr ""
 

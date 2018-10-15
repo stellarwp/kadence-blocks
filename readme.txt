@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 4.9.8
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.0.7 =
+* Updates: Various fixes for Gutenberg 4.0
+* Fix: Typo in layout background.
 
 = 1.0.6 =
 * Fix: Tab title not saving.

@@ -483,12 +483,20 @@ class KadenceAdvancedButton extends Component {
 							},
 						] }>
 						{
-							( tabName ) => {
+							( tab ) => {
 								let tabout;
-								if ( 'hover' + index === tabName ) {
-									tabout = hoverSettings( index );
+								if ( tab.name ) {
+									if ( 'hover' + index === tab.name ) {
+										tabout = hoverSettings( index );
+									} else {
+										tabout = buttonSettings( index );
+									}
 								} else {
-									tabout = buttonSettings( index );
+									if ( 'hover' + index === tab ) {
+										tabout = hoverSettings( index );
+									} else {
+										tabout = buttonSettings( index );
+									}
 								}
 								return <div>{ tabout }</div>;
 							}

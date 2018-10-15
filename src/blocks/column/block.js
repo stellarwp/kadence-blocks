@@ -273,12 +273,20 @@ registerBlockType( 'kadence/column', {
 					},
 				] }>
 				{
-					( tabName ) => {
+					( tab ) => {
 						let tabout;
-						if ( 'mobile' === tabName ) {
-							tabout = mobileControls;
+						if ( tab.name ) {
+							if ( 'mobile' === tab.name ) {
+								tabout = mobileControls;
+							} else {
+								tabout = deskControls;
+							}
 						} else {
-							tabout = deskControls;
+							if ( 'mobile' === tab ) {
+								tabout = mobileControls;
+							} else {
+								tabout = deskControls;
+							}
 						}
 						return <div>{ tabout }</div>;
 					}

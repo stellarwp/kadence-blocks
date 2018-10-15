@@ -62,7 +62,7 @@ jQuery( document ).ready( function( $ ) {
 				return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
 			} ).addClass( 'kt-active-tab-' + tabnumber );
 			$( '#' + tabid ).addClass( 'kt-tab-title-active' );
-			$( '#' + tabid ).parents( '.kt-tabs-wrap' ).find( '.kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
+			$( '#' + tabid ).parents( '.kt-tabs-wrap' ).find( '.kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabid ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
 		}
 	}
 } );

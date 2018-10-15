@@ -834,12 +834,20 @@ class KadenceRowLayout extends Component {
 						},
 					] }>
 					{
-						( tabName ) => {
+						( tab ) => {
 							let tabout;
-							if ( 'grad' === tabName ) {
-								tabout = overGradControls;
+							if ( tab.name ) {
+								if ( 'grad' === tab.name ) {
+									tabout = overGradControls;
+								} else {
+									tabout = overControls;
+								}
 							} else {
-								tabout = overControls;
+								if ( 'grad' === tab ) {
+									tabout = overGradControls;
+								} else {
+									tabout = overControls;
+								}
 							}
 							return <div>{ tabout }</div>;
 						}
@@ -896,7 +904,7 @@ class KadenceRowLayout extends Component {
 					onChange={ bgImgSize => setAttributes( { bgImgSize } ) }
 				/>
 				<SelectControl
-					label={ __( 'Background Image Size' ) }
+					label={ __( 'Background Image Position' ) }
 					value={ bgImgPosition }
 					options={ [
 						{ value: 'center top', label: __( 'Center Top' ) },
@@ -956,14 +964,24 @@ class KadenceRowLayout extends Component {
 					},
 				] }>
 				{
-					( tabName ) => {
+					( tab ) => {
 						let tabout;
-						if ( 'mobile' === tabName ) {
-							tabout = mobileControls;
-						} else if ( 'tablet' === tabName ) {
-							tabout = tabletControls;
+						if ( tab.name ) {
+							if ( 'mobile' === tab.name ) {
+								tabout = mobileControls;
+							} else if ( 'tablet' === tab.name ) {
+								tabout = tabletControls;
+							} else {
+								tabout = deskControls;
+							}
 						} else {
-							tabout = deskControls;
+							if ( 'mobile' === tab ) {
+								tabout = mobileControls;
+							} else if ( 'tablet' === tab ) {
+								tabout = tabletControls;
+							} else {
+								tabout = deskControls;
+							}
 						}
 						return <div>{ tabout }</div>;
 					}
@@ -1185,14 +1203,24 @@ class KadenceRowLayout extends Component {
 						},
 					] }>
 					{
-						( tabName ) => {
+						( tab ) => {
 							let tabout;
-							if ( 'mobile' === tabName ) {
-								tabout = topSepSizesMobile;
-							} else if ( 'tablet' === tabName ) {
-								tabout = topSepSizesTablet;
+							if ( tab.name ) {
+								if ( 'mobile' === tab.name ) {
+									tabout = topSepSizesMobile;
+								} else if ( 'tablet' === tab.name ) {
+									tabout = topSepSizesTablet;
+								} else {
+									tabout = topSepSizes;
+								}
 							} else {
-								tabout = topSepSizes;
+								if ( 'mobile' === tab ) {
+									tabout = topSepSizesMobile;
+								} else if ( 'tablet' === tab ) {
+									tabout = topSepSizesTablet;
+								} else {
+									tabout = topSepSizes;
+								}
 							}
 							return <div>{ tabout }</div>;
 						}
@@ -1259,14 +1287,24 @@ class KadenceRowLayout extends Component {
 						},
 					] }>
 					{
-						( tabName ) => {
+						( tab ) => {
 							let tabout;
-							if ( 'mobile' === tabName ) {
-								tabout = bottomSepSizesMobile;
-							} else if ( 'tablet' === tabName ) {
-								tabout = bottomSepSizesTablet;
+							if ( tab.name ) {
+								if ( 'mobile' === tab.name ) {
+									tabout = bottomSepSizesMobile;
+								} else if ( 'tablet' === tab.name ) {
+									tabout = bottomSepSizesTablet;
+								} else {
+									tabout = bottomSepSizes;
+								}
 							} else {
-								tabout = bottomSepSizes;
+								if ( 'mobile' === tab ) {
+									tabout = bottomSepSizesMobile;
+								} else if ( 'tablet' === tab ) {
+									tabout = bottomSepSizesTablet;
+								} else {
+									tabout = bottomSepSizes;
+								}
 							}
 							return <div>{ tabout }</div>;
 						}
@@ -1363,12 +1401,20 @@ class KadenceRowLayout extends Component {
 								},
 							] }>
 							{
-								( tabName ) => {
+								( tab ) => {
 									let tabout;
-									if ( 'topdivider' === tabName ) {
-										tabout = topDividerSettings;
+									if ( tab.name ) {
+										if ( 'topdivider' === tab.name ) {
+											tabout = topDividerSettings;
+										} else {
+											tabout = bottomDividerSettings;
+										}
 									} else {
-										tabout = bottomDividerSettings;
+										if ( 'topdivider' === tab ) {
+											tabout = topDividerSettings;
+										} else {
+											tabout = bottomDividerSettings;
+										}
 									}
 									return <div>{ tabout }</div>;
 								}

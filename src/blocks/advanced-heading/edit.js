@@ -400,14 +400,24 @@ class KadenceAdvancedHeading extends Component {
 					},
 				] }>
 				{
-					( tabName ) => {
+					( tab ) => {
 						let tabout;
-						if ( 'mobile' === tabName ) {
-							tabout = mobileControls;
-						} else if ( 'tablet' === tabName ) {
-							tabout = tabletControls;
+						if ( tab.name ) {
+							if ( 'mobile' === tab.name ) {
+								tabout = mobileControls;
+							} else if ( 'tablet' === tab.name ) {
+								tabout = tabletControls;
+							} else {
+								tabout = deskControls;
+							}
 						} else {
-							tabout = deskControls;
+							if ( 'mobile' === tab ) {
+								tabout = mobileControls;
+							} else if ( 'tablet' === tab ) {
+								tabout = tabletControls;
+							} else {
+								tabout = deskControls;
+							}
 						}
 						return <div>{ tabout }</div>;
 					}

@@ -1,5 +1,6 @@
-var ktgooglefonts = [];
-
+if ( ktgooglefonts === undefined ) {
+	var ktgooglefonts = [];
+}
 const {
 	Component,
 } = wp.element;

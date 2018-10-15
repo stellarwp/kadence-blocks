@@ -504,14 +504,24 @@ class KadenceTabs extends Component {
 					},
 				] }>
 				{
-					( tabName ) => {
+					( tab ) => {
 						let tabout;
-						if ( 'mobile' === tabName ) {
-							tabout = mobileControls;
-						} else if ( 'tablet' === tabName ) {
-							tabout = tabletControls;
+						if ( tab.name ) {
+							if ( 'mobile' === tab.name ) {
+								tabout = mobileControls;
+							} else if ( 'tablet' === tab.name ) {
+								tabout = tabletControls;
+							} else {
+								tabout = deskControls;
+							}
 						} else {
-							tabout = deskControls;
+							if ( 'mobile' === tab ) {
+								tabout = mobileControls;
+							} else if ( 'tablet' === tab ) {
+								tabout = tabletControls;
+							} else {
+								tabout = deskControls;
+							}
 						}
 						return <div>{ tabout }</div>;
 					}
@@ -914,14 +924,24 @@ class KadenceTabs extends Component {
 					},
 				] }>
 				{
-					( tabName ) => {
+					( tab ) => {
 						let tabout;
-						if ( 'mobile' === tabName ) {
-							tabout = sizeMobileControls;
-						} else if ( 'tablet' === tabName ) {
-							tabout = sizeTabletControls;
+						if ( tab.name ) {
+							if ( 'mobile' === tab.name ) {
+								tabout = sizeMobileControls;
+							} else if ( 'tablet' === tab.name ) {
+								tabout = sizeTabletControls;
+							} else {
+								tabout = sizeDeskControls;
+							}
 						} else {
-							tabout = sizeDeskControls;
+							if ( 'mobile' === tab ) {
+								tabout = sizeMobileControls;
+							} else if ( 'tablet' === tab ) {
+								tabout = sizeTabletControls;
+							} else {
+								tabout = sizeDeskControls;
+							}
 						}
 						return <div>{ tabout }</div>;
 					}
@@ -1127,14 +1147,24 @@ class KadenceTabs extends Component {
 									},
 								] }>
 								{
-									( tabName ) => {
+									( tab ) => {
 										let tabout;
-										if ( 'hover' === tabName ) {
-											tabout = hoverSettings;
-										} else if ( 'active' === tabName ) {
-											tabout = activeSettings;
+										if ( tab.name ) {
+											if ( 'hover' === tab.name ) {
+												tabout = hoverSettings;
+											} else if ( 'active' === tab.name ) {
+												tabout = activeSettings;
+											} else {
+												tabout = normalSettings;
+											}
 										} else {
-											tabout = normalSettings;
+											if ( 'hover' === tab ) {
+												tabout = hoverSettings;
+											} else if ( 'active' === tab ) {
+												tabout = activeSettings;
+											} else {
+												tabout = normalSettings;
+											}
 										}
 										return <div>{ tabout }</div>;
 									}
