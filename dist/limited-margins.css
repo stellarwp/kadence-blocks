@@ -56,7 +56,9 @@
   .editor-block-list__block .editor-block-contextual-toolbar {
 	-webkit-transform: translateY(-38px);
 		-ms-transform: translateY(-38px);
-			transform: translateY(-38px); }
+			transform: translateY(-38px); 
+			z-index: 100;
+		}
   
 .editor-block-list__block > .editor-block-mover, .editor-block-list__block > .editor-block-settings-menu {
 	top: 0;
@@ -95,6 +97,8 @@
   
   .wp-block-columns > .editor-inner-blocks > .editor-block-list__layout > [data-type="core/column"] {
 	margin-right: 30px;
+	margin-top: 0;
+	margin-bottom: 0;
 	padding: 0; }
   
   .wp-block-columns > .editor-inner-blocks > .editor-block-list__layout > [data-type="core/column"]:last-child {
