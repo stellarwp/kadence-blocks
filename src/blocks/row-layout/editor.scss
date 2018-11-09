@@ -4,12 +4,84 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
-
+ .edit-post-settings-sidebar__panel-block .kt-inspect-tabs .components-panel__body:last-child {
+    margin-bottom: 0;
+}
+.kt-select-layout > button.components-button.kt-prebuilt {
+    background: #0085ba;
+    color: white;
+    padding: 0;
+    margin: 0;
+    line-height: 45px;
+    font-size: 14px;
+	font-weight: bold;
+	margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    height: 45px;
+    padding: 0 10px;
+    text-align: center;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+.kt-select-layout > button.components-button.kt-prebuilt:hover, .kt-select-layout > button.components-button.kt-prebuilt:focus:enabled {
+    background: #006994;
+    color: white;
+    box-shadow:none;
+}
+.kt-prebuilt-modal .components-button-group {
+    width: 680px;
+    padding-top: 10px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-gap: 0;
+}
+.kt-prebuilt-modal .components-modal__header .components-modal__header-heading {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.kt-prebuilt-modal .components-base-control .components-base-control__field .components-base-control__label {
+    font-weight: bold;
+    line-height: 30px;
+    padding-right: 10px;
+}
+.kt-prebuilt-modal .components-base-control .components-base-control__field {
+    display: flex;
+}
+.kt-prebuilt-modal .components-base-control .components-base-control__field select {
+    max-width:200px;
+}
+.kt-prebuilt-modal .kt-prebuilt-item {
+	padding: 0 10px 20px;
+	.kt-import-btn {
+		padding-bottom: 61%;
+		border: 5px solid #fff;
+		border-radius: 0 !important;
+		height: 0;
+		background: #eee;
+		width: 100%;
+		overflow: hidden;
+		position: relative;
+		box-shadow: 0 -1px 10px 0 rgba(0,0,0,.07);
+		img {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width:100%;
+			height: auto;
+			max-width: 100%;
+		}
+		&:hover {
+			border: 5px solid #0085ba;
+		}
+	}
+}
  // Controls
  .kt-row-layout-top-sep {
     position: absolute;
     height: 100px;
-    top: -16px;
+    top: -14px;
 	left: 0;
 	overflow: hidden;
 	right: 0;
@@ -27,7 +99,7 @@
  .kt-row-layout-bottom-sep {
     position: absolute;
     height: 100px;
-    bottom: -16px;
+    bottom: -14px;
 	left: 0;
 	overflow: hidden;
 	right: 0;
@@ -144,10 +216,10 @@
 	}
 }
 .wp-block-kadence-rowlayout-handler-bottom {
-	bottom:-16px !important;
+	bottom:-14px !important;
 }
 .wp-block-kadence-rowlayout-handler-top {
-	top:-16px !important;
+	top:-14px !important;
 }
 .wp-block-kadence-rowlayout-handler-top,
 .wp-block-kadence-rowlayout-handler-bottom {
@@ -166,7 +238,7 @@
     margin-left: 0px;
 }
 .kt-padding-resize-box {
-	z-index: 2;
+	z-index: 10;
 }
 .kt-row-padding {
     display: flex;
@@ -208,6 +280,10 @@
 		max-width: none !important;
 	}
 }
+// .editor-block-list__layout .editor-block-list__block[data-type="kadence/rowlayout"]>.editor-block-list__block-edit {
+//     margin-bottom: 0;
+//     margin-top: 0;
+// }
 // column outline:
 // [data-type="kadence/rowlayout"] .wp-block-kadence-rowlayout .kadence-column:before {
 //     outline: 1px dashed rgba(145, 151, 162, 0.25);
@@ -226,6 +302,16 @@
 // When setting on center this keeps
 .editor-block-list__block[data-align=center][data-type="kadence/rowlayout"] {
 	text-align: inherit;
+}
+.editor-block-list__block[data-type="kadence/column"] > .editor-block-contextual-toolbar {
+    top: 38px;
+    transform: translateY(-38px);
+    margin-left: -29px;
+    margin-right: -29px;
+}
+.editor-block-list__block[data-type="kadence/column"]>.editor-block-list__insertion-point {
+    top: 0;
+    margin-top: 0;
 }
 // Fullwide: show margin left/right to ensure there's room for the side UI
 // This is not a 1:1 preview with the front-end where these margins would presumably be zero
@@ -268,6 +354,12 @@
 	padding-top: 0.1px;
 	padding-bottom: 0.1px;
 }
+.wp-block-kadence-rowlayout>.innerblocks-wrap>.editor-inner-blocks>.editor-block-list__layout>[data-type="kadence/column"]>.editor-block-list__block-edit:before {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+}
 .kt-row-has-bg .innerblocks-wrap {
     padding-left: 15px;
     padding-right: 15px;
@@ -296,6 +388,8 @@
 				flex: 1;
 				width: 0;
 				max-width: none;
+				margin-top: -14px;
+				margin-bottom: -14px;
 				.editor-block-list__block-edit {
 					flex-basis: 100%;
 				}
@@ -403,8 +497,8 @@
 }
 // Overlay
 .kt-row-layout-overlay, .kt-row-layout-background {
-	top: -16px;
-	bottom:-16px;
+	top: -14px;
+	bottom:-14px;
     left: 0;
     position: absolute;
     height: auto;

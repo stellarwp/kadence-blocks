@@ -26,7 +26,6 @@ const {
 	BlockAlignmentToolbar,
 } = wp.editor;
 const {
-	PanelColor,
 	PanelBody,
 	ToggleControl,
 	RangeControl,
@@ -113,15 +112,11 @@ class KadenceSpacerDivider extends Component {
 							] }
 							onChange={ dividerStyle => setAttributes( { dividerStyle } ) }
 						/>
-						<PanelColor
-							title={ __( 'Divider Color' ) }
-							colorValue={ dividerColor }
-						>
-							<ColorPalette
-								value={ dividerColor }
-								onChange={ dividerColor => setAttributes( { dividerColor } ) }
-							/>
-						</PanelColor>
+						<p className="kt-setting-label">{ __( 'Divider Color' ) }</p>
+						<ColorPalette
+							value={ dividerColor }
+							onChange={ dividerColor => setAttributes( { dividerColor } ) }
+						/>
 						<RangeControl
 							label={ __( 'Divider Opacity' ) }
 							value={ dividerOpacity }

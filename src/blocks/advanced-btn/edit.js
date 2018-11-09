@@ -36,7 +36,6 @@ const {
 } = wp.element;
 const {
 	IconButton,
-	PanelColor,
 	Dashicon,
 	TabPanel,
 	PanelBody,
@@ -531,39 +530,27 @@ class KadenceAdvancedButton extends Component {
 		const hoverSettings = ( index ) => {
 			return (
 				<div>
-					<PanelColor
-						title={ __( 'Hover Font Color' ) }
-						colorValue={ btns[ index ].colorHover }
-					>
-						<ColorPalette
-							value={ btns[ index ].colorHover }
-							onChange={ value => {
-								this.saveArrayUpdate( { colorHover: value }, index );
-							} }
-						/>
-					</PanelColor>
-					<PanelColor
-						title={ __( 'Hover Background Color' ) }
-						colorValue={ btns[ index ].backgroundHover }
-					>
-						<ColorPalette
-							value={ btns[ index ].backgroundHover }
-							onChange={ value => {
-								this.saveArrayUpdate( { backgroundHover: value }, index );
-							} }
-						/>
-					</PanelColor>
-					<PanelColor
-						title={ __( 'Button Hover Border Color' ) }
-						colorValue={ btns[ index ].borderHover }
-					>
-						<ColorPalette
-							value={ btns[ index ].borderHover }
-							onChange={ value => {
-								this.saveArrayUpdate( { borderHover: value }, index );
-							} }
-						/>
-					</PanelColor>
+					<p className="kt-setting-label">{ __( 'Hover Font Color' ) }</p>
+					<ColorPalette
+						value={ btns[ index ].colorHover }
+						onChange={ value => {
+							this.saveArrayUpdate( { colorHover: value }, index );
+						} }
+					/>
+					<p className="kt-setting-label">{ __( 'Hover Background Color' ) }</p>
+					<ColorPalette
+						value={ btns[ index ].backgroundHover }
+						onChange={ value => {
+							this.saveArrayUpdate( { backgroundHover: value }, index );
+						} }
+					/>
+					<p className="kt-setting-label">{ __( 'Button Hover Border Color' ) }</p>
+					<ColorPalette
+						value={ btns[ index ].borderHover }
+						onChange={ value => {
+							this.saveArrayUpdate( { borderHover: value }, index );
+						} }
+					/>
 				</div>
 			);
 		};
@@ -573,39 +560,27 @@ class KadenceAdvancedButton extends Component {
 		const buttonSettings = ( index ) => {
 			return (
 				<div>
-					<PanelColor
-						title={ __( 'Font Color' ) }
-						colorValue={ btns[ index ].color }
-					>
-						<ColorPalette
-							value={ btns[ index ].color }
-							onChange={ value => {
-								this.saveArrayUpdate( { color: value }, index );
-							} }
-						/>
-					</PanelColor>
-					<PanelColor
-						title={ __( 'Background Color' ) }
-						colorValue={ btns[ index ].background }
-					>
-						<ColorPalette
-							value={ btns[ index ].background }
-							onChange={ value => {
-								this.saveArrayUpdate( { background: value }, index );
-							} }
-						/>
-					</PanelColor>
-					<PanelColor
-						title={ __( 'Border Color' ) }
-						colorValue={ btns[ index ].border }
-					>
-						<ColorPalette
-							value={ btns[ index ].border }
-							onChange={ value => {
-								this.saveArrayUpdate( { border: value }, index );
-							} }
-						/>
-					</PanelColor>
+					<p className="kt-setting-label">{ __( 'Font Color' ) }</p>
+					<ColorPalette
+						value={ btns[ index ].color }
+						onChange={ value => {
+							this.saveArrayUpdate( { color: value }, index );
+						} }
+					/>
+					<p className="kt-setting-label">{ __( 'Background Color' ) }</p>
+					<ColorPalette
+						value={ btns[ index ].background }
+						onChange={ value => {
+							this.saveArrayUpdate( { background: value }, index );
+						} }
+					/>
+					<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
+					<ColorPalette
+						value={ btns[ index ].border }
+						onChange={ value => {
+							this.saveArrayUpdate( { border: value }, index );
+						} }
+					/>
 				</div>
 			);
 		};

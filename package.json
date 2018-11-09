@@ -15,6 +15,7 @@
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",
     "re-resizable": "^4.7.1",
+    "react-lazy-load": "^3.0.13",
     "react-select-search": "^0.9.3",
     "react-transition-group": "^2.4.0"
   }

@@ -33,9 +33,9 @@ const {
 } = wp.editor;
 const {
 	Component,
+	Fragment,
 } = wp.element;
 const {
-	PanelColor,
 	PanelBody,
 	RangeControl,
 	TextControl,
@@ -112,17 +112,13 @@ class KadenceIcons extends Component {
 							max={ 4 }
 						/>
 					) }
-					<PanelColor
-						title={ __( 'Icon Color' ) }
-						colorValue={ icons[ index ].color }
-					>
-						<ColorPalette
-							value={ icons[ index ].color }
-							onChange={ value => {
-								this.saveArrayUpdate( { color: value }, index );
-							} }
-						/>
-					</PanelColor>
+					<p className="kt-setting-label">{ __( 'Icon Color' ) }</p>
+					<ColorPalette
+						value={ icons[ index ].color }
+						onChange={ value => {
+							this.saveArrayUpdate( { color: value }, index );
+						} }
+					/>
 					<SelectControl
 						label={ __( 'Icon Style' ) }
 						value={ icons[ index ].style }
@@ -135,30 +131,26 @@ class KadenceIcons extends Component {
 						} }
 					/>
 					{ icons[ index ].style !== 'default' && (
-						<PanelColor
-							title={ __( 'Icon Background' ) }
-							colorValue={ icons[ index ].background }
-						>
+						<Fragment>
+							<p className="kt-setting-label">{ __( 'Icon Background' ) }</p>
 							<ColorPalette
 								value={ icons[ index ].background }
 								onChange={ value => {
 									this.saveArrayUpdate( { background: value }, index );
 								} }
 							/>
-						</PanelColor>
+						</Fragment>
 					) }
 					{ icons[ index ].style !== 'default' && (
-						<PanelColor
-							title={ __( 'Border Color' ) }
-							colorValue={ icons[ index ].border }
-						>
+						<Fragment>
+							<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
 							<ColorPalette
 								value={ icons[ index ].border }
 								onChange={ value => {
 									this.saveArrayUpdate( { border: value }, index );
 								} }
 							/>
-						</PanelColor>
+						</Fragment>
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<RangeControl

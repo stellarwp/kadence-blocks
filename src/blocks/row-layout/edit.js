@@ -15,6 +15,8 @@ import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
 import ResizableBox from 're-resizable';
+
+import PrebuiltModal from './prebuilt';
 /**
  * Import Css
  */
@@ -38,7 +40,6 @@ const {
 	Tooltip,
 	TabPanel,
 	IconButton,
-	PanelColor,
 	Dashicon,
 	PanelBody,
 	RangeControl,
@@ -87,7 +88,7 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet  }, toggleSelection, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet  }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
@@ -590,15 +591,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<PanelColor
-					title={ __( 'Overlay Color' ) }
-					colorValue={ overlay }
-				>
-					<ColorPalette
-						value={ overlay }
-						onChange={ overlay => setAttributes( { overlay } ) }
-					/>
-				</PanelColor>
+				<p>{ __( 'Overlay Color' ) }</p>
+				<ColorPalette
+					value={ overlay }
+					onChange={ overlay => setAttributes( { overlay } ) }
+				/>
 				<MediaUpload
 					onSelect={ onSelectOverlayImage }
 					type="image"
@@ -707,15 +704,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<PanelColor
-					title={ __( 'Color' ) }
-					colorValue={ overlay }
-				>
-					<ColorPalette
-						value={ overlay }
-						onChange={ overlay => setAttributes( { overlay } ) }
-					/>
-				</PanelColor>
+				<p>{ __( 'Color' ) }</p>
+				<ColorPalette
+					value={ overlay }
+					onChange={ overlay => setAttributes( { overlay } ) }
+				/>
 				<RangeControl
 					label={ __( 'Location' ) }
 					value={ overlayGradLoc }
@@ -727,15 +720,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<PanelColor
-					title={ __( 'Second Color' ) }
-					colorValue={ overlaySecond }
-				>
-					<ColorPalette
-						value={ overlaySecond }
-						onChange={ overlaySecond => setAttributes( { overlaySecond } ) }
-					/>
-				</PanelColor>
+				<p>{ __( 'Second Color' ) }</p>
+				<ColorPalette
+					value={ overlaySecond }
+					onChange={ overlaySecond => setAttributes( { overlaySecond } ) }
+				/>
 				<RangeControl
 					label={ __( 'Location' ) }
 					value={ overlayGradLocSecond }
@@ -860,15 +849,11 @@ class KadenceRowLayout extends Component {
 				title={ __( 'Background Settings' ) }
 				initialOpen={ false }
 			>
-				<PanelColor
-					title={ __( 'Background Color' ) }
-					colorValue={ bgColor }
-				>
-					<ColorPalette
-						value={ bgColor }
-						onChange={ bgColor => setAttributes( { bgColor } ) }
-					/>
-				</PanelColor>
+				<p>{ __( 'Background Color' ) }</p>
+				<ColorPalette
+					value={ bgColor }
+					onChange={ bgColor => setAttributes( { bgColor } ) }
+				/>
 				<MediaUpload
 					onSelect={ onSelectImage }
 					type="image"
@@ -1173,15 +1158,11 @@ class KadenceRowLayout extends Component {
 					] }
 					onChange={ value => setAttributes( { topSep: value } ) }
 				/>
-				<PanelColor
-					title={ __( 'Divider Color' ) }
-					colorValue={ topSepColor }
-				>
-					<ColorPalette
-						value={ topSepColor }
-						onChange={ value => setAttributes( { topSepColor: value } ) }
-					/>
-				</PanelColor>
+				<p>{ __( 'Divider Color' ) }</p>
+				<ColorPalette
+					value={ topSepColor }
+					onChange={ value => setAttributes( { topSepColor: value } ) }
+				/>
 				<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
 				<TabPanel className="kt-size-tabs"
 					activeClass="active-tab"
@@ -1257,15 +1238,11 @@ class KadenceRowLayout extends Component {
 					] }
 					onChange={ value => setAttributes( { bottomSep: value } ) }
 				/>
-				<PanelColor
-					title={ __( 'Divider Color' ) }
-					colorValue={ bottomSepColor }
-				>
-					<ColorPalette
-						value={ bottomSepColor }
-						onChange={ value => setAttributes( { bottomSepColor: value } ) }
-					/>
-				</PanelColor>
+				<p>{ __( 'Divider Color' ) }</p>
+				<ColorPalette
+					value={ bottomSepColor }
+					onChange={ value => setAttributes( { bottomSepColor: value } ) }
+				/>
 				<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
 				<TabPanel className="kt-size-tabs"
 					activeClass="active-tab"
@@ -1517,6 +1494,9 @@ class KadenceRowLayout extends Component {
 									</Tooltip>
 								) ) }
 							</ButtonGroup>
+							<PrebuiltModal
+								clientId={ clientId }
+							/>
 						</div>
 					) }
 					{ colLayout && 'none' !== topSep && (

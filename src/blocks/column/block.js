@@ -16,13 +16,11 @@ const { registerBlockType } = wp.blocks;
 const {
 	InnerBlocks,
 	InspectorControls,
-	ColorPalette,
 } = wp.editor;
 const {
 	TabPanel,
 	Dashicon,
 	PanelBody,
-	PanelColor,
 	RangeControl,
 } = wp.components;
 /**

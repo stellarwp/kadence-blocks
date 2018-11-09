@@ -32,7 +32,6 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	PanelColor,
 	PanelBody,
 	Toolbar,
 	RangeControl,
@@ -446,15 +445,11 @@ class KadenceAdvancedHeading extends Component {
 								setAttributes( { align: nextAlign } );
 							} }
 						/>
-						<PanelColor
-							title={ __( 'Heading Color' ) }
-							colorValue={ color }
-						>
-							<ColorPalette
-								value={ color }
-								onChange={ ( value ) => setAttributes( { color: value } ) }
-							/>
-						</PanelColor>
+						<p className="kt-setting-label">{ __( 'Heading Color' ) }</p>
+						<ColorPalette
+							value={ color }
+							onChange={ ( value ) => setAttributes( { color: value } ) }
+						/>
 						<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
 						{ typography && (
 							<IconButton

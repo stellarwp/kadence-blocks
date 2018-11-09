@@ -47,7 +47,6 @@ const {
 	Tooltip,
 	TabPanel,
 	IconButton,
-	PanelColor,
 	Dashicon,
 	PanelBody,
 	RangeControl,
@@ -668,95 +667,59 @@ class KadenceTabs extends Component {
 		};
 		const normalSettings = (
 			<Fragment>
-				<PanelColor
-					title={ __( 'Title Color' ) }
-					colorValue={ titleColor }
-				>
-					<ColorPalette
-						value={ titleColor }
-						onChange={ ( value ) => setAttributes( { titleColor: value } ) }
-					/>
-				</PanelColor>
-				<PanelColor
-					title={ __( 'Title Background' ) }
-					colorValue={ titleBg }
-				>
-					<ColorPalette
-						value={ titleBg }
-						onChange={ ( value ) => setAttributes( { titleBg: value } ) }
-					/>
-				</PanelColor>
-				<PanelColor
-					title={ __( 'Title Border Color' ) }
-					colorValue={ titleBorder }
-				>
-					<ColorPalette
-						value={ titleBorder }
-						onChange={ ( value ) => setAttributes( { titleBorder: value } ) }
-					/>
-				</PanelColor>
+				<p className="kt-setting-label">{ __( 'Title Color' ) }</p>
+				<ColorPalette
+					value={ titleColor }
+					onChange={ ( value ) => setAttributes( { titleColor: value } ) }
+				/>
+				<p className="kt-setting-label">{ __( 'Title Background' ) }</p>
+				<ColorPalette
+					value={ titleBg }
+					onChange={ ( value ) => setAttributes( { titleBg: value } ) }
+				/>
+				<p className="kt-setting-label">{ __( 'Title Border Color' ) }</p>
+				<ColorPalette
+					value={ titleBorder }
+					onChange={ ( value ) => setAttributes( { titleBorder: value } ) }
+				/>
 			</Fragment>
 		);
 		const hoverSettings = (
 			<Fragment>
-				<PanelColor
-					title={ __( 'Hover Color' ) }
-					colorValue={ titleColorHover }
-				>
-					<ColorPalette
-						value={ titleColorHover }
-						onChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
-					/>
-				</PanelColor>
-				<PanelColor
-					title={ __( 'Hover Background' ) }
-					colorValue={ titleBgHover }
-				>
-					<ColorPalette
-						value={ titleBgHover }
-						onChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
-					/>
-				</PanelColor>
-				<PanelColor
-					title={ __( 'Hover Border Color' ) }
-					colorValue={ titleBorderHover }
-				>
-					<ColorPalette
-						value={ titleBorderHover }
-						onChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
-					/>
-				</PanelColor>
+				<p className="kt-setting-label">{ __( 'Hover Color' ) }</p>
+				<ColorPalette
+					value={ titleColorHover }
+					onChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
+				/>
+				<p className="kt-setting-label">{ __( 'Hover Background' ) }</p>
+				<ColorPalette
+					value={ titleBgHover }
+					onChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
+				/>
+				<p className="kt-setting-label">{ __( 'Hover Border Color' ) }</p>
+				<ColorPalette
+					value={ titleBorderHover }
+					onChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
+				/>
 			</Fragment>
 		);
 		const activeSettings = (
 			<Fragment>
-				<PanelColor
-					title={ __( 'Active Color' ) }
-					colorValue={ titleColorActive }
-				>
-					<ColorPalette
-						value={ titleColorActive }
-						onChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
-					/>
-				</PanelColor>
-				<PanelColor
-					title={ __( 'Active Background' ) }
-					colorValue={ titleBgActive }
-				>
-					<ColorPalette
-						value={ titleBgActive }
-						onChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
-					/>
-				</PanelColor>
-				<PanelColor
-					title={ __( 'Active Border Color' ) }
-					colorValue={ titleBorderActive }
-				>
-					<ColorPalette
-						value={ titleBorderActive }
-						onChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
-					/>
-				</PanelColor>
+				<p className="kt-setting-label">{ __( 'Active Color' ) }</p>
+				<ColorPalette
+					value={ titleColorActive }
+					onChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
+				/>
+				<p className="kt-setting-label">{ __( 'Active Background' ) }</p>
+				<ColorPalette
+					value={ titleBgActive }
+					onChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
+				/>
+				<p className="kt-setting-label">{ __( 'Active Border Color' ) }</p>
+				<ColorPalette
+					value={ titleBorderActive }
+					onChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
+				/>
 			</Fragment>
 		);
 		const sizeDeskControls = (
@@ -969,15 +932,11 @@ class KadenceTabs extends Component {
 						title={ __( 'Content Settings' ) }
 						initialOpen={ false }
 					>
-						<PanelColor
-							title={ __( 'Content Background' ) }
-							colorValue={ contentBgColor }
-						>
-							<ColorPalette
-								value={ contentBgColor }
-								onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
-							/>
-						</PanelColor>
+						<p className="kt-setting-label">{ __( 'Content Background' ) }</p>
+						<ColorPalette
+							value={ contentBgColor }
+							onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
+						/>
 						<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Padding Control Type' ) }>
 							{ map( borderTypes, ( { name, key, icon } ) => (
 								<Tooltip text={ name }>
@@ -1006,7 +965,7 @@ class KadenceTabs extends Component {
 						) }
 						{ innerPaddingControl && innerPaddingControl === 'individual' && (
 							<Fragment>
-								<p>{ __( 'Inner Content Padding (px)' ) }</p>
+								<p className="kt-setting-label">{ __( 'Inner Content Padding (px)' ) }</p>
 								<RangeControl
 									className="kt-icon-rangecontrol"
 									label={ icons.outlinetop }
@@ -1045,15 +1004,11 @@ class KadenceTabs extends Component {
 								/>
 							</Fragment>
 						) }
-						<PanelColor
-							title={ __( 'Border Color' ) }
-							colorValue={ contentBorderColor }
-						>
-							<ColorPalette
-								value={ contentBorderColor }
-								onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
-							/>
-						</PanelColor>
+						<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
+						<ColorPalette
+							value={ contentBorderColor }
+							onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
+						/>
 						<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Border Control Type' ) }>
 							{ map( borderTypes, ( { name, key, icon } ) => (
 								<Tooltip text={ name }>
@@ -1082,7 +1037,7 @@ class KadenceTabs extends Component {
 						) }
 						{ contentBorderControl && contentBorderControl === 'individual' && (
 							<Fragment>
-								<p>{ __( 'Content Border Width (px)' ) }</p>
+								<p className="kt-setting-label">{ __( 'Content Border Width (px)' ) }</p>
 								<RangeControl
 									className="kt-icon-rangecontrol"
 									label={ icons.outlinetop }
@@ -1203,7 +1158,7 @@ class KadenceTabs extends Component {
 							) }
 							{ titlePaddingControl && titlePaddingControl === 'individual' && (
 								<Fragment>
-									<p>{ __( 'Title Paddding (px)' ) }</p>
+									<p className="kt-setting-label">{ __( 'Title Paddding (px)' ) }</p>
 									<RangeControl
 										className="kt-icon-rangecontrol"
 										label={ icons.outlinetop }
@@ -1270,7 +1225,7 @@ class KadenceTabs extends Component {
 							) }
 							{ titleMarginControl && titleMarginControl === 'individual' && (
 								<Fragment>
-									<p>{ __( 'Title Margin (px)' ) }</p>
+									<p className="kt-setting-label">{ __( 'Title Margin (px)' ) }</p>
 									<RangeControl
 										className="kt-icon-rangecontrol"
 										label={ icons.outlinetop }
@@ -1337,7 +1292,7 @@ class KadenceTabs extends Component {
 							) }
 							{ titleBorderControl && titleBorderControl === 'individual' && (
 								<Fragment>
-									<p>{ __( 'Title Border Width (px)' ) }</p>
+									<p className="kt-setting-label">{ __( 'Title Border Width (px)' ) }</p>
 									<RangeControl
 										className="kt-icon-rangecontrol"
 										label={ icons.outlinetop }
@@ -1404,7 +1359,7 @@ class KadenceTabs extends Component {
 							) }
 							{ titleBorderRadiusControl && titleBorderRadiusControl === 'individual' && (
 								<Fragment>
-									<p>{ __( 'Title Border Radius (px)' ) }</p>
+									<p className="kt-setting-label">{ __( 'Title Border Radius (px)' ) }</p>
 									<RangeControl
 										className="kt-icon-rangecontrol"
 										label={ icons.topleft }

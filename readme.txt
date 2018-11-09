@@ -79,6 +79,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 1.0.8 =
+* Updates: Various fixes for Gutenberg 4.2
+* Add: Prebuilt Libray to row block.
+
+= 1.0.8 =
 * Updates: Various fixes for Gutenberg 4.1
 * Fix: Nested columns.
 
