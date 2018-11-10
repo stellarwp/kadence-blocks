@@ -155,6 +155,18 @@ class Kadence_Blocks_Frontend {
 							}
 						}
 					}
+					if ( 'core/block' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							if ( isset( $blockattr['ref']  ) ) {
+								$reusable_block = get_post( $blockattr['ref'] );
+								if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
+									$reuse_data_block = gutenberg_parse_blocks( $reusable_block->post_content );
+									$css .= $this->blocks_cycle_through( $reuse_data_block );
+								}
+							}
+						}
+					}
 					if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
 						$css .= $this->blocks_cycle_through( $block['innerBlocks'] );
 					}
@@ -482,7 +494,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr->googleFont ) && $attr->googleFont && ( ! isset( $attr->loadGoogleFont ) || $attr->loadGoogleFont == true ) && isset( $attr->typography ) ) {
 			// Check if the font has been added yet
-			if ( ! in_array( $attr->typography, self::$gfonts, true ) ) {
+			if ( ! array_key_exists( $attr->typography, self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $attr->typography,
 					'fontvariants' => ( isset( $attr->fontVariant ) && ! empty( $attr->fontVariant ) ? array( $attr->fontVariant ) : array() ),
@@ -491,10 +503,10 @@ class Kadence_Blocks_Frontend {
 				self::$gfonts[$attr->typography] = $add_font;
 			} else {
 				if ( ! in_array( $attr->fontVariant, self::$gfonts[ $attr->typography ]['fontvariants'], true ) ) {
-					self::$gfonts[ $attr->typography ]['fontvariants'] = $attr->fontVariant;
+					array_push( self::$gfonts[ $attr->typography ]['fontvariants'], $attr->fontVariant );
 				}
 				if ( ! in_array( $attr->fontSubset, self::$gfonts[ $attr->typography ]['fontsubsets'], true ) ) {
-					self::$gfonts[ $attr->typography ]['fontsubsets'] = $attr->fontSubset;
+					array_push( self::$gfonts[ $attr->typography ]['fontsubsets'], $attr->fontSubset );
 				}
 			}
 		}
@@ -620,7 +632,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || $attr['loadGoogleFont'] == true ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet
-			if ( ! in_array( $attr['typography'], self::$gfonts, true ) ) {
+			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $attr['typography'],
 					'fontvariants' => ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ? array( $attr['fontVariant'] ) : array() ),
@@ -628,11 +640,15 @@ class Kadence_Blocks_Frontend {
 				);
 				self::$gfonts[$attr['typography']] = $add_font;
 			} else {
-				if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
-					self::$gfonts[ $attr['typography'] ]['fontvariants'] = $attr['fontVariant'];
+				if( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ) {
+					if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
+						array_push( self::$gfonts[ $attr['typography'] ]['fontvariants'], $attr['fontVariant'] );
+					}
 				}
-				if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
-					self::$gfonts[ $attr['typography'] ]['fontsubsets'] = $attr['fontSubset'];
+				if( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ) {
+					if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
+						array_push( self::$gfonts[ $attr['typography'] ]['fontsubsets'], $attr['fontSubset'] );
+					}
 				}
 			}
 		}
@@ -675,6 +691,12 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr->size ) && ! empty( $attr->size ) ) {
 				$css .= 'font-size:' . $attr->size . ( ! isset( $attr->sizeType ) ? 'px' : $attr->sizeType ) . ';';
 			}
+			if ( isset( $attr->fontWeight ) && ! empty( $attr->fontWeight ) ) {
+				$css .= 'font-weight:' . $attr->fontWeight . ';';
+			}
+			if ( isset( $attr->fontStyle ) && ! empty( $attr->fontStyle ) ) {
+				$css .= 'font-style:' . $attr->fontStyle . ';';
+			}
 			if ( isset( $attr->lineHeight ) && ! empty( $attr->lineHeight ) ) {
 				$css .= 'line-height:' . $attr->lineHeight . ( ! isset( $attr->lineType ) ? 'px' : $attr->lineType ) . ';';
 			}
@@ -685,7 +707,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr->googleFont ) && $attr->googleFont && ( ! isset( $attr->loadGoogleFont ) || $attr->loadGoogleFont == true ) && isset( $attr->typography ) ) {
 			// Check if the font has been added yet
-			if ( ! in_array( $attr->typography, self::$gfonts, true ) ) {
+			if ( ! array_key_exists( $attr->typography, self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $attr->typography,
 					'fontvariants' => ( isset( $attr->fontVariant ) && ! empty( $attr->fontVariant ) ? array( $attr->fontVariant ) : array() ),
@@ -694,10 +716,10 @@ class Kadence_Blocks_Frontend {
 				self::$gfonts[$attr->typography] = $add_font;
 			} else {
 				if ( ! in_array( $attr->fontVariant, self::$gfonts[ $attr->typography ]['fontvariants'], true ) ) {
-					self::$gfonts[ $attr->typography ]['fontvariants'] = $attr->fontVariant;
+					array_push( self::$gfonts[ $attr->typography ]['fontvariants'], $attr->fontVariant );
 				}
 				if ( ! in_array( $attr->fontSubset, self::$gfonts[ $attr->typography ]['fontsubsets'], true ) ) {
-					self::$gfonts[ $attr->typography ]['fontsubsets'] = $attr->fontSubset;
+					array_push( self::$gfonts[ $attr->typography ]['fontsubsets'], $attr->fontSubset );
 				}
 			}
 		}
@@ -736,13 +758,19 @@ class Kadence_Blocks_Frontend {
 	 */
 	function blocks_advanced_heading_array( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) ) {
+		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['fontWeight'] ) || isset( $attr['fontStyle'] ) ) {
 			$css .= '#kt-adv-heading' . $unique_id . ' {';
 			if ( isset( $attr['size'] ) && ! empty( $attr['size'] ) ) {
 				$css .= 'font-size:' . $attr['size'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
 			if ( isset( $attr['lineHeight'] ) && ! empty( $attr['lineHeight'] ) ) {
 				$css .= 'line-height:' . $attr['lineHeight'] . ( ! isset( $attr['lineType'] ) ? 'px' : $attr['lineType'] ) . ';';
+			}
+			if ( isset( $attr['fontWeight'] ) && ! empty( $attr['fontWeight'] ) ) {
+				$css .= 'font-weight:' . $attr['fontWeight'] . ';';
+			}
+			if ( isset( $attr['fontStyle'] ) && ! empty( $attr['fontStyle'] ) ) {
+				$css .= 'font-style:' . $attr['fontStyle'] . ';';
 			}
 			if ( isset( $attr['typography'] ) && ! empty( $attr['typography'] ) ) {
 				$css .= 'font-family:' . $attr['typography'] . ';';
@@ -751,7 +779,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || $attr['loadGoogleFont'] == true ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet
-			if ( ! in_array( $attr['typography'], self::$gfonts, true ) ) {
+			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $attr['typography'],
 					'fontvariants' => ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ? array( $attr['fontVariant'] ) : array() ),
@@ -759,11 +787,15 @@ class Kadence_Blocks_Frontend {
 				);
 				self::$gfonts[ $attr['typography'] ] = $add_font;
 			} else {
-				if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
-					self::$gfonts[ $attr['typography'] ]['fontvariants'] = $attr['fontVariant'];
+				if( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ) {
+					if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
+						array_push( self::$gfonts[ $attr['typography'] ]['fontvariants'], $attr['fontVariant'] );
+					}
 				}
-				if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
-					self::$gfonts[ $attr['typography'] ]['fontsubsets'] = $attr['fontSubset'];
+				if( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ) {
+					if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
+						array_push(  self::$gfonts[ $attr['typography'] ]['fontsubsets'], $attr['fontSubset'] );
+					}
 				}
 			}
 		}
@@ -844,7 +876,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr->googleFont ) && $attr->googleFont && ( ! isset( $attr->loadGoogleFont ) || $attr->loadGoogleFont == true ) && isset( $attr->typography ) ) {
 			// Check if the font has been added yet
-			if ( ! in_array( $attr->typography, self::$gfonts, true ) ) {
+			if ( ! array_key_exists( $attr->typography, self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $attr->typography,
 					'fontvariants' => ( isset( $attr->fontVariant ) && ! empty( $attr->fontVariant ) ? array( $attr->fontVariant ) : array() ),
@@ -853,10 +885,10 @@ class Kadence_Blocks_Frontend {
 				self::$gfonts[$attr->typography] = $add_font;
 			} else {
 				if ( ! in_array( $attr->fontVariant, self::$gfonts[ $attr->typography ]['fontvariants'], true ) ) {
-					self::$gfonts[ $attr->typography ]['fontvariants'] = $attr->fontVariant;
+					array_push( self::$gfonts[ $attr->typography ]['fontvariants'], $attr->fontVariant );
 				}
 				if ( ! in_array( $attr->fontSubset, self::$gfonts[ $attr->typography ]['fontsubsets'], true ) ) {
-					self::$gfonts[ $attr->typography ]['fontsubsets'] = $attr->fontSubset;
+					array_push( self::$gfonts[ $attr->typography ]['fontsubsets'], $attr->fontSubset );
 				}
 			}
 		}
@@ -913,7 +945,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || $attr['loadGoogleFont'] == true ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet
-			if ( ! in_array( $attr['typography'], self::$gfonts, true ) ) {
+			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $attr['typography'],
 					'fontvariants' => ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ? array( $attr['fontVariant'] ) : array() ),
@@ -921,11 +953,15 @@ class Kadence_Blocks_Frontend {
 				);
 				self::$gfonts[ $attr['typography'] ] = $add_font;
 			} else {
-				if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
-					self::$gfonts[ $attr['typography'] ]['fontvariants'] = $attr['fontVariant'];
+				if( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ) {
+					if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
+						array_push( self::$gfonts[ $attr['typography'] ]['fontvariants'], $attr['fontVariant'] );
+					}
 				}
-				if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
-					self::$gfonts[ $attr['typography'] ]['fontsubsets'] = $attr['fontSubset'];
+				if( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ) {
+					if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
+						array_push( self::$gfonts[ $attr['typography'] ]['fontsubsets'], $attr['fontSubset'] );
+					}
 				}
 			}
 		}

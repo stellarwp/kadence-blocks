@@ -16,7 +16,7 @@ import classnames from 'classnames';
 import memoize from 'memize';
 import ResizableBox from 're-resizable';
 
-import PrebuiltModal from './prebuilt';
+import PrebuiltModal from './prebuilt_modal';
 /**
  * Import Css
  */

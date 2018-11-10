@@ -287,7 +287,7 @@ class KadenceIcons extends Component {
 					{ renderSettings }
 				</InspectorControls>
 				<div className={ `kt-svg-icons ${ clientId }` } style={ {
-					textAlign: ( textAlignment ? textAlignment : undefined ),
+					textAlign: ( textAlignment ? textAlignment : 'center' ),
 				} } >
 					{ times( iconCount, n => renderIconsPreview( n ) ) }
 				</div>

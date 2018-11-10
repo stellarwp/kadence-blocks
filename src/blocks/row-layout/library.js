@@ -10,7 +10,6 @@ const {
 	Button,
 	ButtonGroup,
 	Tooltip,
-	Modal,
 	SelectControl,
 } = wp.components;
 const {
@@ -29,9 +28,7 @@ class CustomComponent extends Component {
 	constructor() {
 		super( ...arguments );
 		this.state = {
-			modalOpen: false,
 			category: 'all',
-			prebuilts: [],
 		};
 	}
 	onInsertContent( blockcode ) {
@@ -42,7 +39,7 @@ class CustomComponent extends Component {
 	}
 	render() {
 		const blockOutput = applyFilters( 'kadence.prebuilt_array', Prebuilts );
-		const cats = ['all'];
+		const cats = [ 'all' ];
 		for ( let i = 0; i < blockOutput.length; i++ ) {
 			for ( let c = 0; c < blockOutput[ i ].category.length; c++ ) {
 				if ( ! cats.includes( blockOutput[ i ].category[ c ] ) ) {
@@ -55,42 +52,34 @@ class CustomComponent extends Component {
 		} );
 		return (
 			<Fragment>
-				<Button className="kt-prebuilt" onClick={ () => this.setState( { modalOpen: true } ) }>{ __( 'Prebuilt Library' ) }</Button>
-				{ this.state.modalOpen ?
-					<Modal
-						className="kt-prebuilt-modal"
-						title={ __( 'Prebuilt Library' ) }
-						onRequestClose={ () => this.setState( { modalOpen: false } ) }>
-						<SelectControl
-							label={ __( 'Category' ) }
-							value={ this.state.category }
-							options={ catOptions }
-							onChange={ value => this.setState( { category: value } ) }
-						/>
-						<ButtonGroup aria-label={ __( 'Prebuilt Options' ) }>
-							{ map( blockOutput, ( { name, key, image, content, background, category } ) => {
-								if ( 'all' == this.state.category || category.includes( this.state.category ) ) {
-									return (
-										<div className="kt-prebuilt-item" data-background-style={ background }>
-											<Tooltip text={ name }>
-												<Button
-													key={ key }
-													className="kt-import-btn"
-													isSmall
-													onClick={ () => this.onInsertContent( content )  }
-												>
-													<LazyLoad>
-														<img src={ image } alt={ name } />
-													</LazyLoad>
-												</Button>
-											</Tooltip>
-										</div>
-									);
-								}
-							} ) }
-						</ButtonGroup>
-					</Modal>
-					: null }
+				<SelectControl
+					label={ __( 'Category' ) }
+					value={ this.state.category }
+					options={ catOptions }
+					onChange={ value => this.setState( { category: value } ) }
+				/>
+				<ButtonGroup aria-label={ __( 'Prebuilt Options' ) }>
+					{ map( blockOutput, ( { name, key, image, content, background, category } ) => {
+						if ( 'all' == this.state.category || category.includes( this.state.category ) ) {
+							return (
+								<div className="kt-prebuilt-item" data-background-style={ background }>
+									<Tooltip text={ name }>
+										<Button
+											key={ key }
+											className="kt-import-btn"
+											isSmall
+											onClick={ () => this.onInsertContent( content )  }
+										>
+											<LazyLoad>
+												<img src={ image } alt={ name } />
+											</LazyLoad>
+										</Button>
+									</Tooltip>
+								</div>
+							);
+						}
+					} ) }
+				</ButtonGroup>
 			</Fragment>
 		);
 	}

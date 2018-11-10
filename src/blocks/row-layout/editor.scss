@@ -81,7 +81,7 @@
  .kt-row-layout-top-sep {
     position: absolute;
     height: 100px;
-    top: -14px;
+    top: -16px;
 	left: 0;
 	overflow: hidden;
 	right: 0;
@@ -99,7 +99,7 @@
  .kt-row-layout-bottom-sep {
     position: absolute;
     height: 100px;
-    bottom: -14px;
+    bottom: -16px;
 	left: 0;
 	overflow: hidden;
 	right: 0;
@@ -216,10 +216,10 @@
 	}
 }
 .wp-block-kadence-rowlayout-handler-bottom {
-	bottom:-14px !important;
+	bottom:-16px !important;
 }
 .wp-block-kadence-rowlayout-handler-top {
-	top:-14px !important;
+	top:-16px !important;
 }
 .wp-block-kadence-rowlayout-handler-top,
 .wp-block-kadence-rowlayout-handler-bottom {
@@ -497,8 +497,8 @@
 }
 // Overlay
 .kt-row-layout-overlay, .kt-row-layout-background {
-	top: -14px;
-	bottom:-14px;
+	top: -16px;
+	bottom:-16px;
     left: 0;
     position: absolute;
     height: auto;

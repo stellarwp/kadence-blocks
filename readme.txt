@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 4.9.8
-Stable tag: 1.0.8
+Stable tag: 1.0.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,7 +78,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 1.0.8 =
+= 1.1.0 =
+* Fix: Button link width.
+* Fix: Font weight setting.
+* Fix: Reusable Blocks issue.
+* Update: Add more to Prebuilt Library
+
+= 1.0.9 =
 * Updates: Various fixes for Gutenberg 4.2
 * Add: Prebuilt Libray to row block.
 
