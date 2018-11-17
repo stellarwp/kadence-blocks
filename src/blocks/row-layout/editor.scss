@@ -353,6 +353,9 @@
 	// This uncollapses margins on this parent container.
 	padding-top: 0.1px;
 	padding-bottom: 0.1px;
+	> div {
+		width: 100%;
+	}
 }
 .wp-block-kadence-rowlayout>.innerblocks-wrap>.editor-inner-blocks>.editor-block-list__layout>[data-type="kadence/column"]>.editor-block-list__block-edit:before {
     bottom: 0;

@@ -60,7 +60,7 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		wp_register_script( 'kadence-frontend-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', KT_BLOCKS_VERSION, true );
-		wp_enqueue_style( 'kadence-blocks-style-css', KT_BLOCKS_URL . 'dist/blocks.style.build.css', array( 'wp-blocks' ), KT_BLOCKS_VERSION );
+		wp_enqueue_style( 'kadence-blocks-style-css', KT_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KT_BLOCKS_VERSION );
 	}
 	public function frontend_gfonts() {
 		if ( empty( self::$gfonts ) ) {
@@ -96,15 +96,27 @@ class Kadence_Blocks_Frontend {
 
 	}
 	/**
+	 * Gets the parsed blocks, need to use this becuase wordpress 5 doesn't seem to include gutenberg_parse_blocks
+	 */
+	public function kadence_parse_blocks( $content ) {
+		$parser_class = apply_filters( 'block_parser_class', 'WP_Block_Parser' );
+		if ( class_exists( $parser_class ) ) {
+			$parser = new $parser_class();
+			return $parser->parse( $content );
+		} else {
+			return false;
+		}
+	}
+	/**
 	 * Outputs extra css for blocks.
 	 */
 	public function frontend_inline_css() {
-		if ( function_exists( 'the_gutenberg_project' ) && has_blocks( get_the_ID() ) ) {
+		if ( function_exists( 'has_blocks' ) && has_blocks( get_the_ID() ) ) {
 			global $post;
 			if ( ! is_object( $post ) ) {
 				return;
 			}
-			$blocks = gutenberg_parse_blocks( $post->post_content );
+			$blocks = $this->kadence_parse_blocks( $post->post_content );
 			//print_r($blocks );
 			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 				return;
@@ -161,7 +173,7 @@ class Kadence_Blocks_Frontend {
 							if ( isset( $blockattr['ref']  ) ) {
 								$reusable_block = get_post( $blockattr['ref'] );
 								if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
-									$reuse_data_block = gutenberg_parse_blocks( $reusable_block->post_content );
+									$reuse_data_block = $this->kadence_parse_blocks( $reusable_block->post_content );
 									$css .= $this->blocks_cycle_through( $reuse_data_block );
 								}
 							}
@@ -310,6 +322,18 @@ class Kadence_Blocks_Frontend {
 							// Create CSS for Advanced Heading.
 							$unique_id = $blockattr['uniqueID'];
 							$css .= $this->blocks_tabs_array( $blockattr, $unique_id );
+						}
+					}
+				}
+				if ( 'core/block' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						if ( isset( $blockattr['ref']  ) ) {
+							$reusable_block = get_post( $blockattr['ref'] );
+							if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
+								$reuse_data_block = $this->kadence_parse_blocks( $reusable_block->post_content );
+								$css .= $this->blocks_cycle_through( $reuse_data_block );
+							}
 						}
 					}
 				}
