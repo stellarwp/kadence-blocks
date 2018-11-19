@@ -68,7 +68,7 @@
   
   .editor-block-list__block > .editor-block-list__insertion-point {
 	height: 0;
-	top: 0;
+	top: -16px;
 	margin-top: 0; }
   
   .editor-block-list__insertion-point-inserter .editor-block-list__insertion-point-button {
@@ -166,13 +166,21 @@
   .wp-block-kadence-rowlayout-handler-bottom {
 	bottom: -1px !important; }
   
+.wp-block-columns>.editor-inner-blocks>.editor-block-list__layout>[data-type="core/column"]>.editor-block-list__block-edit>div>.editor-inner-blocks {
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
   .kt-row-layout-overlay, .kt-row-layout-background {
 	top: 0;
-	left: 5px;
+	left: 0px;
 	bottom: 0;
-	right: 5px;
+	right: 0px;
 	width: auto; }
-  
+	.editor-block-list__insertion-point-inserter .editor-inserter__toggle {
+		height: 20px;
+		width: 20px;
+		padding: 0;
+	}
   .kt-row-layout-top-sep {
 	top: 0; }
   

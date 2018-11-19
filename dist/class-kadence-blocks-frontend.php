@@ -103,6 +103,8 @@ class Kadence_Blocks_Frontend {
 		if ( class_exists( $parser_class ) ) {
 			$parser = new $parser_class();
 			return $parser->parse( $content );
+		} elseif ( function_exists( 'gutenberg_parse_blocks' ) ) {
+			return gutenberg_parse_blocks( $content );
 		} else {
 			return false;
 		}
@@ -117,7 +119,7 @@ class Kadence_Blocks_Frontend {
 				return;
 			}
 			$blocks = $this->kadence_parse_blocks( $post->post_content );
-			//print_r($blocks );
+			//print_r( $blocks );
 			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 				return;
 			}

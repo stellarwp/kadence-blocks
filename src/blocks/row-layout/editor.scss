@@ -353,14 +353,19 @@
 	// This uncollapses margins on this parent container.
 	padding-top: 0.1px;
 	padding-bottom: 0.1px;
-	> div {
+	> div:not(.editor-block-contextual-toolbar) {
 		width: 100%;
+	}
+	> .editor-block-contextual-toolbar {
+		position: absolute;
+		top: 0;
+		transform: translateY(-39px);
 	}
 }
 .wp-block-kadence-rowlayout>.innerblocks-wrap>.editor-inner-blocks>.editor-block-list__layout>[data-type="kadence/column"]>.editor-block-list__block-edit:before {
     bottom: 0;
-    left: 0;
-    right: 0;
+    //left: 0;
+    //right: 0;
     top: 0;
 }
 .kt-row-has-bg .innerblocks-wrap {
