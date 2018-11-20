@@ -250,6 +250,7 @@ class Kadence_Blocks_Frontend {
 			if ( is_object( $inner_block ) ) {
 				if ( isset( $inner_block->blockName ) ) {
 					if ( 'kadence/column' === $inner_block->blockName ) {
+						echo 'test';
 						if ( isset( $inner_block->attrs ) && is_object( $inner_block->attrs ) ) {
 							$blockattr = $inner_block->attrs;
 							$csskey = $in_indexkey + 1;
@@ -291,8 +292,8 @@ class Kadence_Blocks_Frontend {
 							// Create CSS for Row/Layout.
 							$unique_id = $blockattr['uniqueID'];
 							$css .= $this->row_layout_array_css( $blockattr, $unique_id );
-							if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-								$css .= $this->column_layout_cycle( $block['innerBlocks'], $unique_id );
+							if ( isset( $inner_block['innerBlocks'] ) && ! empty( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) ) {
+								$css .= $this->column_layout_cycle( $inner_block['innerBlocks'], $unique_id );
 							}
 						}
 					}
