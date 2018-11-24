@@ -1067,12 +1067,12 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr->topSep ) && 'none' != $attr->topSep ) {
 			if ( isset( $attr->topSepHeight ) || isset( $attr->topSepWidth ) ) {
 				if ( isset( $attr->topSepHeight ) ) {
-					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep {';
 						$css .= 'height:' . $attr->topSepHeight . 'px;';
 					$css .= '}';
 				}
 				if ( isset( $attr->topSepWidth ) ) {
-					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg {';
 						$css .= 'width:' . $attr->topSepWidth . '%;';
 					$css .= '}';
 				}
@@ -1080,12 +1080,12 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr->topSepHeightTablet ) || isset( $attr->topSepWidthTablet ) ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
 					if ( isset( $attr->topSepHeightTablet ) ) {
-						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep {';
 							$css .= 'height:' . $attr->topSepHeightTablet . 'px;';
 						$css .= '}';
 					}
 					if ( isset( $attr->topSepWidthTablet ) ) {
-						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg {';
 							$css .= 'width:' . $attr->topSepWidthTablet . '%;';
 						$css .= '}';
 					}
@@ -1094,12 +1094,12 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr->topSepHeightMobile ) || isset( $attr->topSepWidthMobile ) ) {
 				$css .= '@media (max-width: 767px) {';
 					if ( isset( $attr->topSepHeightMobile ) ) {
-						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep {';
 							$css .= 'height:' . $attr->topSepHeightMobile . 'px;';
 						$css .= '}';
 					}
 					if ( isset( $attr->topSepWidthMobile ) ) {
-						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg {';
 							$css .= 'width:' . $attr->topSepWidthMobile . '%;';
 						$css .= '}';
 					}
@@ -1276,12 +1276,12 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['topSep'] ) && 'none' != $attr['topSep'] ) {
 			if ( isset( $attr['topSepHeight'] ) || isset( $attr['topSepWidth'] ) ) {
 				if ( isset( $attr['topSepHeight'] ) ) {
-					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep {';
 						$css .= 'height:' . $attr['topSepHeight'] . 'px;';
 					$css .= '}';
 				}
 				if ( isset( $attr['topSepWidth'] ) ) {
-					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+					$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg {';
 						$css .= 'width:' . $attr['topSepWidth'] . '%;';
 					$css .= '}';
 				}
@@ -1289,12 +1289,12 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['topSepHeightTablet'] ) || isset( $attr['topSepWidthTablet'] ) ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
 					if ( isset( $attr['topSepHeightTablet'] ) ) {
-						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep {';
 							$css .= 'height:' . $attr['topSepHeightTablet'] . 'px;';
 						$css .= '}';
 					}
 					if ( isset( $attr['topSepWidthTablet'] ) ) {
-						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg {';
 							$css .= 'width:' . $attr['topSepWidthTablet'] . '%;';
 						$css .= '}';
 					}
@@ -1303,12 +1303,12 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['topSepHeightMobile'] ) || isset( $attr['topSepWidthMobile'] ) ) {
 				$css .= '@media (max-width: 767px) {';
 					if ( isset( $attr['topSepHeightMobile'] ) ) {
-						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep {';
 							$css .= 'height:' . $attr['topSepHeightMobile'] . 'px;';
 						$css .= '}';
 					}
 					if ( isset( $attr['topSepWidthMobile'] ) ) {
-						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
+						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg {';
 							$css .= 'width:' . $attr['topSepWidthMobile'] . '%;';
 						$css .= '}';
 					}

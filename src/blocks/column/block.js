@@ -157,7 +157,7 @@ registerBlockType( 'kadence/column', {
 							topMarginM: value,
 						} );
 					} }
-					min={ 0 }
+					min={ -200 }
 					max={ 200 }
 				/>
 				<RangeControl
@@ -169,7 +169,7 @@ registerBlockType( 'kadence/column', {
 							bottomMarginM: value,
 						} );
 					} }
-					min={ 0 }
+					min={ -200 }
 					max={ 200 }
 				/>
 			</PanelBody>
@@ -238,7 +238,7 @@ registerBlockType( 'kadence/column', {
 							topMargin: value,
 						} );
 					} }
-					min={ 0 }
+					min={ -200 }
 					max={ 200 }
 				/>
 				<RangeControl
@@ -250,7 +250,7 @@ registerBlockType( 'kadence/column', {
 							bottomMargin: value,
 						} );
 					} }
-					min={ 0 }
+					min={ -200 }
 					max={ 200 }
 				/>
 			</PanelBody>
