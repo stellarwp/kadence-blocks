@@ -250,7 +250,6 @@ class Kadence_Blocks_Frontend {
 			if ( is_object( $inner_block ) ) {
 				if ( isset( $inner_block->blockName ) ) {
 					if ( 'kadence/column' === $inner_block->blockName ) {
-						echo 'test';
 						if ( isset( $inner_block->attrs ) && is_object( $inner_block->attrs ) ) {
 							$blockattr = $inner_block->attrs;
 							$csskey = $in_indexkey + 1;

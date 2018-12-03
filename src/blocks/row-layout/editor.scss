@@ -551,6 +551,54 @@
 	margin-left: -3px;
     margin-right: -3px;
 }
+.kt-gutter-skinny {
+	&.kt-row-layout-left-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:first-child {
+		flex-basis: 10px;
+	}
+	&.kt-row-layout-right-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:last-child {
+		flex-basis: 10px;
+	}
+}
+.kt-gutter-narrow {
+	&.kt-row-layout-left-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:first-child {
+		flex-basis: 20px;
+	}
+	&.kt-row-layout-right-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:last-child {
+		flex-basis: 20px;
+	}
+}
+.kt-gutter-default {
+	&.kt-row-layout-left-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:first-child {
+		flex-basis: 30px;
+	}
+	&.kt-row-layout-right-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:last-child {
+		flex-basis: 30px;
+	}
+}
+.kt-gutter-wide {
+	&.kt-row-layout-left-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:first-child {
+		flex-basis: 40px;
+	}
+	&.kt-row-layout-right-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:last-child {
+		flex-basis: 40px;
+	}
+}
+.kt-gutter-wider{
+	&.kt-row-layout-left-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:first-child {
+		flex-basis: 60px;
+	}
+	&.kt-row-layout-right-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:last-child {
+		flex-basis: 60px;
+	}
+}
+.kt-gutter-widest{
+	&.kt-row-layout-left-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:first-child {
+		flex-basis: 80px;
+	}
+	&.kt-row-layout-right-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:last-child {
+		flex-basis: 80px;
+	}
+}
 
 // Mobile Preview maybe later... 
 // .editor-block-list__block[data-type="kadence/rowlayout"].is-selected .wp-block-kadence-rowlayout.current-tab-mobile {
