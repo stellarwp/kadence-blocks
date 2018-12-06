@@ -422,6 +422,142 @@
 		flex: 2;
 	}
 }
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-10 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 10%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 90%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-15 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 15%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 85%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-20 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 20%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 80%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-25 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 25%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 75%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-30 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 30%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 70%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-35 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 35%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 65%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-40 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 40%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 60%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-45 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 45%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 55%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-50 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 1;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 1;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-55 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 55%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 45%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-60 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 60%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 40%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-65 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 65%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 35%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-70 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 70%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 30%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-75 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 75%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 25%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-80 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 80%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 20%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-85 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 85%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 15%;
+	}
+}
+.wp-block-kadence-rowlayout.kt-has-2-columns.kt-custom-first-width-90 > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
+	> [data-type="kadence/column"]:first-child {
+		flex: 0 1 90%;
+	}
+	> [data-type="kadence/column"]:last-child {
+		flex: 0 1 10%;
+	}
+}
 // Three Columns
 .wp-block-kadence-rowlayout.kt-row-layout-left-half > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout {
 	> [data-type="kadence/column"] {
@@ -598,6 +734,44 @@
 	&.kt-row-layout-right-golden > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:last-child {
 		flex-basis: 80px;
 	}
+}
+.editor-row-first-column__resizer {
+    position: absolute !important;
+    left: 0;
+    height: 100% !important;
+    background: transparent;
+    top: 0;
+	.components-resizable-box__handle {
+		z-index: 1000;
+	}
+	.components-resizable-box__handle:before {
+		top: 50%;
+		position: absolute;
+		left: -3px;
+		margin-top: -8px;
+	}
+	.components-resizable-box__handle:after {
+		background: rgba(0,0,0, 0.1);
+		border:none;
+		border-radius: 0;
+		content: "";
+		cursor: inherit;
+		display: block;
+		height: 100%;
+		width: 2px;
+	}
+}
+.kt-resizeable-column-container {
+    margin-left: -14px;
+    margin-right: -14px;
+    position: absolute !important;
+    height: 100%;
+    width: auto;
+    left: 0;
+    right: 0;
+}
+.wp-block.is-selected[data-type="kadence/rowlayout"] .editor-row-first-column__resizer .components-resizable-box__handle {
+    display: block;
 }
 
 // Mobile Preview maybe later... 

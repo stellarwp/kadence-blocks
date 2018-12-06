@@ -250,5 +250,8 @@ const attributes = {
 		type: 'number',
 		default: '',
 	},
+	firstColumnWidth: {
+		type: 'number',
+	},
 };
 export default attributes;

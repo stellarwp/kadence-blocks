@@ -170,6 +170,10 @@
 	margin-bottom: 0px;
 	margin-top: 0px;
 }
+.kt-resizeable-column-container {
+    margin-left: 0px;
+	margin-right: 0px;
+}
   .kt-row-layout-overlay, .kt-row-layout-background {
 	top: 0;
 	left: 0px;

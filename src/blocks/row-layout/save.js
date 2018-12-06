@@ -13,7 +13,7 @@ const {
 
 class KadenceRowLayoutSave extends Component {
 	render() {
-		const { attributes: { columns, blockAlignment, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor } } = this.props;
+		const { attributes: { columns, blockAlignment, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth } } = this.props;
 		let bottomSVGDivider;
 		if ( 'ct' === bottomSep ) {
 			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
@@ -102,6 +102,7 @@ class KadenceRowLayoutSave extends Component {
 		} else if ( 'littrii' === topSep ) {
 			topSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
 		}
+		const firstColumnClass = ( firstColumnWidth && columns == 2 ? ' kt-custom-first-width-' + firstColumnWidth : '' );
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const HtmlTagOut = ( ! htmlTag ? 'div' : htmlTag );
@@ -111,7 +112,7 @@ class KadenceRowLayoutSave extends Component {
 		const overlayType = ( ! currentOverlayTab || 'grad' !== currentOverlayTab ? 'normal' : 'gradient')
 		const classes = classnames( `align${ blockAlignment }` );
 		const innerClasses = classnames( `kt-row-layout-inner ${ hasBG } kt-layout-id${ classId }` );
-		const innerColumnClasses = classnames( `kt-row-column-wrap kt-has-${ columns }-columns kt-gutter-${ columnGutter } kt-row-valign-${ verticalAlignment } kt-row-layout-${ layoutClass } kt-tab-layout-${ tabLayoutClass } kt-m-colapse-${ collapseOrder } kt-mobile-layout-${ mobileLayoutClass }` );
+		const innerColumnClasses = classnames( `kt-row-column-wrap kt-has-${ columns }-columns kt-gutter-${ columnGutter } kt-row-valign-${ verticalAlignment } kt-row-layout-${ layoutClass } kt-tab-layout-${ tabLayoutClass } kt-m-colapse-${ collapseOrder } kt-mobile-layout-${ mobileLayoutClass }${ firstColumnClass }` );
 
 		return (
 			<HtmlTagOut className={ classes }>

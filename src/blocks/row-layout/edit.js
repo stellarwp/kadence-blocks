@@ -15,7 +15,7 @@ import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
 import ResizableBox from 're-resizable';
-
+import ContainerDimensions from 'react-container-dimensions';
 import PrebuiltModal from './prebuilt_modal';
 /**
  * Import Css
@@ -76,6 +76,12 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
  * Build the row edit
  */
 class KadenceRowLayout extends Component {
+	constructor() {
+		super( ...arguments );
+		this.state = {
+			firstWidth: null,
+		};
+	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
 			this.props.setAttributes( {
@@ -88,12 +94,36 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet  }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const onResize = ( event, direction, elt ) => {
+			this.setState( {
+				firstWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5,
+			} );
+		};
+		const onResizeStop = ( event, direction, elt ) => {
+			setAttributes( { firstColumnWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5 } );
+			this.setState( {
+				firstWidth: null,
+			} );
+		};
+		const temporaryColumnWidth = this.state.firstWidth;
+		const widthString = `${ temporaryColumnWidth || firstColumnWidth || colLayout }`;
+		let widthNumber;
+		if ( widthString === parseInt( widthString ) ) {
+			widthNumber = widthString + '%';
+		} else if ( 'left-golden' === widthString ) {
+			widthNumber = '66.67%';
+		} else if ( 'right-golden' === widthString ) {
+			widthNumber = '33.37%';
+		} else {
+			widthNumber = '50%';
+		}
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
+		const selectColLayout = ( columns && 2 === columns ? widthString : colLayout );
 		const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
-		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } ${ hasBG }` );
+		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } kt-custom-first-width-${ widthString } ${ hasBG }` );
 		let layoutOptions;
 		let mobileLayoutOptions;
 		const startlayoutOptions = [
@@ -467,11 +497,14 @@ class KadenceRowLayout extends Component {
 									key={ key }
 									className="kt-layout-btn"
 									isSmall
-									isPrimary={ colLayout === key }
-									aria-pressed={ colLayout === key }
+									isPrimary={ selectColLayout === key }
+									aria-pressed={ selectColLayout === key }
 									onClick={ () => {
 										setAttributes( {
 											colLayout: key,
+										} );
+										setAttributes( {
+											firstColumnWidth: undefined,
 										} );
 									} }
 								>
@@ -1470,6 +1503,31 @@ class KadenceRowLayout extends Component {
 							mixBlendMode: overlayBlendMode,
 							opacity: overlayOpacityOutput( overlayOpacity ),
 						} }>
+						</div>
+					) }
+					{ colLayout && columns && 2 === columns && (
+						<div className="kt-resizeable-column-container">
+							<ContainerDimensions>
+								{ ( { width } ) =>
+									<ResizableBox
+										className="editor-row-first-column__resizer"
+										size={ { width: ( ! firstColumnWidth ? widthNumber : firstColumnWidth + '%' ) } }
+										minWidth="10%"
+										maxWidth="90%"
+										enable={ {
+											right: true,
+										} }
+										handleClasses={ {
+											right: 'components-resizable-box__handle components-resizable-box__handle-right',
+										} }
+										grid={ [ width / 20, 1 ] }
+										onResize={ onResize }
+										onResizeStop={ onResizeStop }
+										axis="x"
+									>
+									</ResizableBox>
+								}
+							</ContainerDimensions>
 						</div>
 					) }
 					{ ! colLayout && (
