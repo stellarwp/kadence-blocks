@@ -301,7 +301,6 @@ class KadenceAdvancedButton extends Component {
 							key={ 'form-link' }
 							onSubmit={ ( event ) => event.preventDefault() }
 							className="blocks-button__inline-link">
-							<Dashicon icon={ 'admin-links' } />
 							<URLInput
 								value={ btns[ index ].link }
 								onChange={ value => {

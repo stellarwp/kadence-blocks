@@ -80,6 +80,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 1.1.7 =
 * Add: Granular control over two column Layouts.
+* Add: Background color options for columns.
+* Add: 'noreferrer noopener' to external buttons
 
 = 1.1.6 =
 * Update: Layouts css tweek.

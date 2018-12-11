@@ -15,6 +15,7 @@ const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const {
 	InnerBlocks,
+	ColorPalette,
 	InspectorControls,
 } = wp.editor;
 const {
@@ -23,6 +24,14 @@ const {
 	PanelBody,
 	RangeControl,
 } = wp.components;
+
+function kadenceHexToRGB( hex, alpha ) {
+	hex = hex.replace( '#', '' );
+	const r = parseInt( hex.length === 3 ? hex.slice( 0, 1 ).repeat( 2 ) : hex.slice( 0, 2 ), 16 );
+	const g = parseInt( hex.length === 3 ? hex.slice( 1, 2 ).repeat( 2 ) : hex.slice( 2, 4 ), 16 );
+	const b = parseInt( hex.length === 3 ? hex.slice( 2, 3 ).repeat( 2 ) : hex.slice( 4, 6 ), 16 );
+	return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')';
+}
 /**
  * Register: a Gutenberg Block.
  *
@@ -90,9 +99,17 @@ registerBlockType( 'kadence/column', {
 			type: 'number',
 			default: '',
 		},
+		background: {
+			type: 'string',
+			default: '',
+		},
+		backgroundOpacity: {
+			type: 'number',
+			default: 1,
+		},
 	},
 	edit: props => {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM }, setAttributes } = props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, backgroundOpacity, background }, setAttributes } = props;
 		const mobileControls = (
 			<PanelBody
 				title={ __( 'Mobile Padding/Margin' ) }
@@ -291,9 +308,27 @@ registerBlockType( 'kadence/column', {
 				}
 			</TabPanel>
 		);
+		const backgroundString = ( background ? kadenceHexToRGB( background, backgroundOpacity ) : 'transparent' );
 		return (
 			<div className={ `kadence-column inner-column-${ id }` } >
 				<InspectorControls>
+					<h2>{ __( 'Background Color' ) }</h2>
+					<ColorPalette
+						value={ background }
+						onChange={ ( value ) => setAttributes( { background: value } ) }
+					/>
+					<RangeControl
+						label={ __( 'Background Opacity' ) }
+						value={ backgroundOpacity }
+						onChange={ ( value ) => {
+							setAttributes( {
+								backgroundOpacity: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 1 }
+						step={ 0.01 }
+					/>
 					{ tabControls }
 				</InspectorControls>
 				<div className="kadence-inner-column-inner" style={ {
@@ -301,6 +336,7 @@ registerBlockType( 'kadence/column', {
 					paddingRight: rightPadding + 'px',
 					paddingTop: topPadding + 'px',
 					paddingBottom: bottomPadding + 'px',
+					background: backgroundString,
 				} } >
 					<InnerBlocks templateLock={ false } />
 				</div>
@@ -309,17 +345,37 @@ registerBlockType( 'kadence/column', {
 	},
 
 	save( { attributes } ) {
-		const { id } = attributes;
-
+		const { id, background, backgroundOpacity } = attributes;
+		const backgroundString = ( background ? kadenceHexToRGB( background, backgroundOpacity ) : undefined );
 		return (
 			<div className={ `inner-column-${ id }` }>
-				<div className={ 'kt-inside-inner-col' } >
+				<div className={ 'kt-inside-inner-col' } style={ {
+					background: backgroundString,
+				} } >
 					<InnerBlocks.Content />
 				</div>
 			</div>
 		);
 	},
 	deprecated: [
+		{
+			attributes: {
+				id: {
+					type: 'number',
+					default: 1,
+				},
+			},
+			save: ( { attributes } ) => {
+				const { id } = attributes;
+				return (
+					<div className={ `inner-column-${ id }` }>
+						<div className={ 'kt-inside-inner-col' } >
+							<InnerBlocks.Content />
+						</div>
+					</div>
+				);
+			},
+		},
 		{
 			attributes: {
 				id: {
