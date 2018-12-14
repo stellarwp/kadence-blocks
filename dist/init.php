@@ -23,6 +23,56 @@ if ( ! defined( 'ABSPATH' ) ) {
 function kadence_gutenberg_editor_assets() {
 	// Scripts.
 	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ), KT_BLOCKS_VERSION, true );
+	$editor_widths = get_option( 'kt_blocks_editor_width', array() );
+	$sidebar_size = 750;
+	$nosidebar_size = 1140;
+	$jssize = 2000;
+	if ( ! isset( $editor_widths['enable_editor_width'] ) || 'true' === $editor_widths['enable_editor_width'] ) {
+		if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
+			$add_size = 10;
+		} else {
+			$add_size = 30;
+		}
+		$post_type = get_post_type();
+		if( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
+			if ( isset( $post_type ) &&  'page' === $post_type ) {
+				$defualt_size_type = $editor_widths['page_default'];
+			} else {
+				$defualt_size_type = $editor_widths['post_default'];
+			}
+		} else {
+			$defualt_size_type = 'sidebar';
+		}
+		if ( isset( $editor_widths['sidebar'] ) && ! empty( $editor_widths['sidebar'] ) ) {
+			$sidebar_size = $editor_widths['sidebar'] + $add_size;
+		} else {
+			$sidebar_size = 750;
+		}
+		if ( isset( $editor_widths['nosidebar'] ) && ! empty( $editor_widths['nosidebar'] ) ) {
+			$nosidebar_size = $editor_widths['nosidebar'] + $add_size;
+		} else {
+			$nosidebar_size = 1140 + $add_size;
+		}
+		if ( 'sidebar' == $defualt_size_type ) {
+			$default_size = $sidebar_size;
+		} elseif ( 'fullwidth' == $defualt_size_type ) {
+			$default_size = 'none';
+		} else {
+			$default_size = $nosidebar_size;
+		}
+		if ( 'none' === $default_size ) {
+			$jssize = 2000;
+		} else {
+			$jssize = $default_size;
+		}
+	}
+	wp_localize_script( 'kadence-blocks-js', 'kadence_blocks_params', array(
+		'sidebar_size' => $sidebar_size,
+		'nosidebar_size' => $nosidebar_size,
+		'default_size' => $jssize,
+		'config'   => get_option( 'kt_blocks_config_blocks' ),
+		'settings' => get_option( 'kt_blocks_settings_blocks' ),
+	) );
 	// Styles.
 	wp_enqueue_style( 'kadence-blocks-editor-css', KT_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KT_BLOCKS_VERSION );
 	// Limited Margins.

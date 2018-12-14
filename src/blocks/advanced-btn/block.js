@@ -115,22 +115,16 @@ registerBlockType( 'kadence/advancedbtn', {
 		const renderSaveBtns = ( index ) => {
 			return (
 				<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-					<a
-						className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` }
-						href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) }
-						target={ btns[ index ].target }
-						rel={ ( '_blank' === btns[ index ].target ? 'noreferrer noopener' : undefined ) }
-						style={ {
-							fontSize: ( btns[ index ].size ? btns[ index ].size + 'px' : undefined ),
-							borderRadius: ( btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
-							borderWidth: btns[ index ].borderWidth + 'px',
-							paddingLeft: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
-							paddingRight: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
-							paddingTop: ( btns[ index ].paddingTB ? btns[ index ].paddingTB + 'px' : undefined ),
-							paddingBottom: ( btns[ index ].paddingTB ? btns[ index ].paddingTB + 'px' : undefined ),
-							letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-						} }
-					>
+					<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } rel={ '_blank' === btns[ index ].target ? 'noreferrer noopener' : undefined } style={ {
+						fontSize: ( btns[ index ].size ? btns[ index ].size + 'px' : undefined ),
+						borderRadius: ( btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
+						borderWidth: btns[ index ].borderWidth + 'px',
+						paddingLeft: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
+						paddingRight: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
+						paddingTop: ( btns[ index ].paddingBT ? btns[ index ].paddingBT + 'px' : undefined ),
+						paddingBottom: ( btns[ index ].paddingBT ? btns[ index ].paddingBT + 'px' : undefined ),
+						letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
+					} } >
 						{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
 							<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
 						) }
@@ -168,6 +162,34 @@ registerBlockType( 'kadence/advancedbtn', {
 				letterSpacing: {
 					type: 'number',
 				},
+				typography: {
+					type: 'string',
+					default: '',
+				},
+				googleFont: {
+					type: 'boolean',
+					default: false,
+				},
+				loadGoogleFont: {
+					type: 'boolean',
+					default: true,
+				},
+				fontSubset: {
+					type: 'string',
+					default: '',
+				},
+				fontVariant: {
+					type: 'string',
+					default: '',
+				},
+				fontWeight: {
+					type: 'string',
+					default: 'regular',
+				},
+				fontStyle: {
+					type: 'string',
+					default: 'normal',
+				},
 				btns: {
 					type: 'array',
 					default: [ {
@@ -196,21 +218,16 @@ registerBlockType( 'kadence/advancedbtn', {
 				const renderSaveBtns = ( index ) => {
 					return (
 						<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-							<a
-								className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` }
-								href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) }
-								target={ btns[ index ].target }
-								style={ {
-									fontSize: ( btns[ index ].size ? btns[ index ].size + 'px' : undefined ),
-									borderRadius: ( btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
-									borderWidth: btns[ index ].borderWidth + 'px',
-									paddingLeft: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
-									paddingRight: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
-									paddingTop: ( btns[ index ].paddingTB ? btns[ index ].paddingTB + 'px' : undefined ),
-									paddingBottom: ( btns[ index ].paddingTB ? btns[ index ].paddingTB + 'px' : undefined ),
-									letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-								} }
-							>
+							<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } style={ {
+								fontSize: ( btns[ index ].size ? btns[ index ].size + 'px' : undefined ),
+								borderRadius: ( btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
+								borderWidth: btns[ index ].borderWidth + 'px',
+								paddingLeft: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
+								paddingRight: ( btns[ index ].paddingLR ? btns[ index ].paddingLR + 'px' : undefined ),
+								paddingTop: ( btns[ index ].paddingTB ? btns[ index ].paddingTB + 'px' : undefined ),
+								paddingBottom: ( btns[ index ].paddingTB ? btns[ index ].paddingTB + 'px' : undefined ),
+								letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
+							} } >
 								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
 									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
 								) }

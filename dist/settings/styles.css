@@ -660,3 +660,44 @@ h5.kt-main-subtitle {
     margin-bottom: 12px;
     margin-top: -12px;
 }
+.kad-panel-left .kt_plugin_box .kt-blocks-config-settings {
+    border-radius: 4px;
+    line-height: 30px;
+    padding: 6px 6px;
+    font-size: 14px;
+    text-shadow: none;
+    border: 2px solid #888;
+    -webkit-appearance: none;
+    background: white;
+    font-weight: bold;
+    color: #888;
+    margin-left: 5px;
+    box-shadow: none;
+    height: auto;
+    vertical-align: middle;
+}
+.kad-panel-left .kt_plugin_box .kt-blocks-config-settings:hover {
+	border: 2px solid #00b5e2;
+	background: #00b5e2;
+	color:white;
+}
+.kad-panel-left .kt_plugin_box .kt-blocks-config-settings i {
+    line-height: 30px;
+}
+.kt-modal-settings-field {
+    padding: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+}
+.kt-modal-settings-field label {
+    font-weight: bold;
+}
+.kt-modal-item-title {
+	font-size: 15px;
+	font-weight: bold;
+	margin-top: 0;
+	padding: 5px 0;
+	border-bottom: 1px solid #eee;
+}

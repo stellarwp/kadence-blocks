@@ -20,6 +20,22 @@ class Kadence_Blocks_Settings {
 	public static $settings = array();
 
 	/**
+	 * Instance of this class
+	 *
+	 * @var null
+	 */
+	private static $instance = null;
+
+	/**
+	 * Instance Control
+	 */
+	public static function get_instance() {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+		return self::$instance;
+	}
+	/**
 	 * Class Constructor.
 	 */
 	public function __construct() {
@@ -29,6 +45,7 @@ class Kadence_Blocks_Settings {
 			add_filter( 'plugin_action_links_kadence-blocks/kadence-blocks.php', array( $this, 'add_settings_link' ) );
 		}
 		add_action( 'wp_ajax_kadence_blocks_activate_deactivate', array( $this, 'ajax_blocks_activate_deactivate' ), 10, 0 );
+		add_action( 'wp_ajax_kadence_blocks_save_config', array( $this, 'ajax_blocks_save_config' ), 10, 0 );
 		add_action( 'wp_ajax_kadence_post_default_width', array( $this, 'ajax_default_editor_width' ), 10, 0 );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'deregister_blocks' ) );
 		add_action( 'admin_init', array( $this, 'activation_redirect' ) );
@@ -80,11 +97,392 @@ class Kadence_Blocks_Settings {
 	 * Loads admin style sheets and scripts
 	 */
 	public function scripts() {
-		wp_enqueue_style( 'kadence-blocks-admin-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array(), KT_BLOCKS_VERSION, 'all' );
-		wp_enqueue_script( 'kadence-blocks-admin-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
+		$texts = array(
+			'close' => __( 'Close', 'kadence-blocks' ),
+			'save' => __( 'Save', 'kadence-blocks' ),
+			'updating' => __( 'Updating', 'kadence-blocks' ),
+			'updated' => __( 'Updated', 'kadence-blocks' ),
+			'config' => __( 'Config', 'kadence-blocks' ),
+			'settings' => __( 'Default Settings', 'kadence-blocks' ),
+		);
+		$settings = array(
+			'kadence/spacer' => array(
+				'spacerHeight' => array(
+					'type' => 'number',
+					'default' => 60,
+					'options' => array(
+						'min' => 6,
+						'max' => 600,
+						'step' => 1,
+					),
+					'name' => __( 'Spacer Height (px)', 'kadence-blocks' ),
+				),
+				'dividerEnable' => array(
+					'type' => 'boolean',
+					'default' => true,
+					'name' => __( 'Enable Divider', 'kadence-blocks' ),
+				),
+				'dividerStyle' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'solid',
+							'name' =>  __( 'Solid', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'dashed',
+							'name' =>  __( 'Dashed', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'dotted',
+							'name' =>  __( 'Dotted', 'kadence-blocks' ),
+						),
+					),
+					'default' => 'solid',
+					'name' => __( 'Divider Style', 'kadence-blocks' ),
+				),
+				'dividerOpacity' => array(
+					'type' => 'number',
+					'default' => 100,
+					'options' => array(
+						'min' => 0,
+						'max' => 100,
+						'step' => 1,
+					),
+					'name' => __( 'Divider Opacity (0-100)', 'kadence-blocks' ),
+				),
+				'dividerColor' => array(
+					'type' => 'color',
+					'default' => '#eee',
+					'name' => __( 'Divider Color', 'kadence-blocks' ),
+				),
+				'dividerWidth' => array(
+					'type' => 'number',
+					'default' => 80,
+					'options' => array(
+						'min' => 0,
+						'max' => 100,
+						'step' => 1,
+					),
+					'name' => __( 'Divider Width (%)', 'kadence-blocks' ),
+				),
+				'dividerHeight' => array(
+					'type' => 'number',
+					'default' => 1,
+					'options' => array(
+						'min' => 0,
+						'max' => 40,
+						'step' => 1,
+					),
+					'name' => __( 'Divider Height (px)', 'kadence-blocks' ),
+				),
+			),
+			'kadence/rowlayout' => array(
+				'columnGutter' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'default',
+							'name' =>  __( 'Default: 30px', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'none',
+							'name' =>  __( 'No Gutter', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'skinny',
+							'name' =>  __( 'Skinny: 10px', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'narrow',
+							'name' =>  __( 'Narrow: 20px', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'wide',
+							'name' =>  __( 'Wide: 40px', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'wider',
+							'name' =>  __( 'Wider: 60px', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'widest',
+							'name' =>  __( 'Widest: 80px', 'kadence-blocks' ),
+						),
+					),
+					'default' => 'default',
+					'name' => __( 'Column Gutter', 'kadence-blocks' ),
+				),
+				'htmlTag' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'div',
+							'name' =>  __( 'div', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'section',
+							'name' =>  __( 'section', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'article',
+							'name' =>  __( 'article', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'main',
+							'name' =>  __( 'main', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'aside',
+							'name' =>  __( 'aside', 'kadence-blocks' ),
+						),
+					),
+					'default' => 'div',
+					'name' => __( 'Container HTML tag', 'kadence-blocks' ),
+				),
+				'maxWidth' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 400,
+						'max' => 2000,
+						'step' => 1,
+					),
+					'name' => __( 'Row Content Max Width (px)', 'kadence-blocks' ),
+				),
+				'topPadding' => array(
+					'type' => 'number',
+					'default' => 25,
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'Top Padding (px)', 'kadence-blocks' ),
+				),
+				'bottomPadding' => array(
+					'type' => 'number',
+					'default' => 25,
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'Bottom Padding (px)', 'kadence-blocks' ),
+				),
+				'leftPadding' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'Left Padding (px)', 'kadence-blocks' ),
+				),
+				'rightPadding' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'Right Padding (px)', 'kadence-blocks' ),
+				),
+				'topPaddingM' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'MOBILE - Top Padding (px)', 'kadence-blocks' ),
+				),
+				'bottomPaddingM' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'MOBILE - Bottom Padding (px)', 'kadence-blocks' ),
+				),
+				'leftPaddingM' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'MOBILE - Left Padding (px)', 'kadence-blocks' ),
+				),
+				'rightPaddingM' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'MOBILE - Right Padding (px)', 'kadence-blocks' ),
+				),
+				'topMargin' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'Top Margin (px)', 'kadence-blocks' ),
+				),
+				'bottomMargin' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'Bottom Margin (px)', 'kadence-blocks' ),
+				),
+				'topMarginM' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'MOBILE - Top Margin (px)', 'kadence-blocks' ),
+				),
+				'bottomMarginM' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 0,
+						'max' => 500,
+						'step' => 1,
+					),
+					'name' => __( 'MOBILE - Bottom Margin (px)', 'kadence-blocks' ),
+				),
+			),
+			'kadence/advancedbtn' => array(
+				'btns' => array(
+					'type' => 'array',
+					'name' => __( 'Button Settings', 'kadence-blocks' ),
+					'default' => array(
+						array(
+							'size' => 18,
+							'paddingBT' => '',
+							'paddingLR' => '',
+							'color' => '#555555',
+							'background' => 'transparent',
+							'border' => '#555555',
+							'borderRadius' => 3,
+							'borderWidth' => 2,
+							'colorHover' => '#ffffff',
+							'backgroundHover' => '#444444',
+							'borderHover' => '#444444',
+						),
+					),
+					'options' => array(
+						'size' => array(
+							'type' => 'number',
+							'default' => 18,
+							'options' => array(
+								'min' => 10,
+								'max' => 100,
+								'step' => 1,
+							),
+							'name' => __( 'Font Size (px)', 'kadence-blocks' ),
+						),
+						'paddingBT' => array(
+							'type' => 'number',
+							'default' => '',
+							'options' => array(
+								'min' => 0,
+								'max' => 100,
+								'step' => 1,
+							),
+							'name' => __( 'Padding Top and Bottom (px)', 'kadence-blocks' ),
+						),
+						'paddingLR' => array(
+							'type' => 'number',
+							'default' => '',
+							'options' => array(
+								'min' => 0,
+								'max' => 100,
+								'step' => 1,
+							),
+							'name' => __( 'Padding Left and Right (px)', 'kadence-blocks' ),
+						),
+						'color' => array(
+							'type' => 'color',
+							'default' => '#555555',
+							'name' => __( 'Text Color', 'kadence-blocks' ),
+						),
+						'background' => array(
+							'type' => 'color',
+							'default' => 'transparent',
+							'name' => __( 'Background Color', 'kadence-blocks' ),
+						),
+						'border' => array(
+							'type' => 'color',
+							'default' => '#555555',
+							'name' => __( 'Border Color', 'kadence-blocks' ),
+						),
+						'borderRadius' => array(
+							'type' => 'number',
+							'default' => 3,
+							'options' => array(
+								'min' => 0,
+								'max' => 50,
+								'step' => 1,
+							),
+							'name' => __( 'Border Radius (px)', 'kadence-blocks' ),
+						),
+						'borderWidth' => array(
+							'type' => 'number',
+							'default' => 2,
+							'options' => array(
+								'min' => 0,
+								'max' => 20,
+								'step' => 1,
+							),
+							'name' => __( 'Border Width (px)', 'kadence-blocks' ),
+						),
+						'colorHover' => array(
+							'type' => 'color',
+							'default' => '#ffffff',
+							'name' => __( 'HOVER - Text Color', 'kadence-blocks' ),
+						),
+						'backgroundHover' => array(
+							'type' => 'color',
+							'default' => '#444444',
+							'name' => __( 'HOVER - Background Color', 'kadence-blocks' ),
+						),
+						'borderHover' => array(
+							'type' => 'color',
+							'default' => '#444444',
+							'name' => __( 'HOVER - Border Color', 'kadence-blocks' ),
+						),
+					),
+				),
+			),
+		);
+		wp_enqueue_style( 'kadence-blocks-admin-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, 'all' );
+		wp_enqueue_script( 'kadence-blocks-admin-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, true );
 		wp_localize_script( 'kadence-blocks-admin-js', 'kt_blocks_params', array(
 			'ajaxurl' => admin_url( 'admin-ajax.php' ),
 			'wpnonce' => wp_create_nonce( 'kadence-blocks-manage' ),
+			'blockConfig' => get_option( 'kt_blocks_config_blocks' ),
+			'blockConfigSettings' => $settings,
+			'texts' => $texts,
 		) );
 	}
 	/**
@@ -251,6 +649,9 @@ class Kadence_Blocks_Settings {
 											$btntitle = __( 'Deactivate', 'kadence-blocks' );
 										}
 										echo '<a class="kt_block_button button button-primary ' . esc_attr( $enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
+										if ( ! in_array( $block['slug'], $unregistered_blocks ) ) {
+											echo '<button class="button kt-blocks-config-settings" data-name="' . esc_attr( $block['name'] ) . '" value="' . esc_attr( $block['slug'] ) . '"><i class="dashicons dashicons-admin-generic"></i></button>';
+										}
 										echo '</div>';
 									}
 									?>
@@ -328,6 +729,7 @@ class Kadence_Blocks_Settings {
 							</div>
 						</div>
 					</div>
+					<div id="js-settings-modal-content"></div>
 				</div>
 			</div>
 		<?php
@@ -375,6 +777,64 @@ class Kadence_Blocks_Settings {
 			),
 		);
 		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );
+	}
+	/**
+	 * Ajax Save blocks Config
+	 */
+	public function ajax_blocks_save_config() {
+		if ( ! check_ajax_referer( 'kadence-blocks-manage', 'wpnonce' ) ) {
+			wp_send_json_error( __( 'Invalid nonce', 'kadence-blocks' ) );
+		}
+		if ( ! isset( $_POST['kt_block'] ) && ! isset( $_POST['config'] ) ) {
+			return wp_send_json_error( __( 'Missing Content', 'kadence-blocks' ) );
+		}
+		// Get settings.
+		$current_settings = get_option( 'kt_blocks_config_blocks' );
+		$new_settings = $_POST['config'];
+		if ( ! is_array( $new_settings ) ) {
+			return wp_send_json_error(  __( 'Nothing to Save', 'kadence-blocks' ) );
+		}
+		foreach ( $new_settings as $block_key => $settings ) {
+			foreach ( $settings as $attribute_key => $value ) {
+				if ( is_array( $value ) ) {
+					foreach ( $value as $array_attribute_index => $array_value ) {
+						foreach ( $array_value as $array_attribute_key => $array_attribute_value ) {
+							$array_attribute_value = sanitize_text_field( $array_attribute_value );
+							if ( is_numeric( $array_attribute_value ) ) {
+								$array_attribute_value = floatval( $array_attribute_value );
+							}
+							if ( 'true' === $array_attribute_value ) {
+								$array_attribute_value = true;
+							}
+							if ( 'false' === $array_attribute_value ) {
+								$array_attribute_value = false;
+							}
+							$new_settings[ $block_key ][ $attribute_key ][ $array_attribute_index ][ $array_attribute_key ] = $array_attribute_value;
+						}
+					}
+				} else {
+					$value = sanitize_text_field( $value );
+					if ( is_numeric( $value ) ) {
+						$value = floatval( $value );
+					}
+					if ( 'true' === $value ) {
+						$value = true;
+					}
+					if ( 'false' === $value ) {
+						$value = false;
+					}
+					$new_settings[ $block_key ][ $attribute_key ] = $value;
+				}
+			}
+		}
+		$block = sanitize_text_field( wp_unslash( $_POST['kt_block'] ) );
+
+		if ( ! is_array( $current_settings ) ) {
+			$current_settings = array();
+		}
+		$current_settings[ $block ] = $new_settings[ $block ];
+		update_option( 'kt_blocks_config_blocks', $current_settings );
+		return wp_send_json_success();
 	}
 	/**
 	 * Ajax activate/deactivate blocks
@@ -442,5 +902,4 @@ class Kadence_Blocks_Settings {
 	}
 
 }
-
-new Kadence_Blocks_Settings();
+Kadence_Blocks_Settings::get_instance();

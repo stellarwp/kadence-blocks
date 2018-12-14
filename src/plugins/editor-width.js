@@ -100,11 +100,11 @@ const plugin = compose( [
 				kt_blocks_editor_width: value,
 			};
 			if ( 'default' === value ) {
-				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kt_blocks_default_size } );
+				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.default_size } );
 			} else if ( 'sidebar' === value ) {
-				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kt_blocks_sidebar_size } );
+				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.sidebar_size } );
 			} else if ( 'nosidebar' === value ) {
-				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kt_blocks_nosidebar_size } );
+				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.nosidebar_size } );
 			} else if ( 'fullwidth' === value ) {
 				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: 2000 } );
 			}

@@ -54,6 +54,13 @@ class KadenceAdvancedButton extends Component {
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
+			const blockConfig = kadence_blocks_params.config[ 'kadence/advancedbtn' ];
+			console.log( blockConfig );
+			if ( blockConfig !== undefined && typeof blockConfig === 'object' ) {
+				Object.keys( blockConfig ).map( ( attribute ) => {
+					this.props.attributes[ attribute ] = blockConfig[ attribute ];
+				} );
+			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
@@ -261,8 +268,8 @@ class KadenceAdvancedButton extends Component {
 							borderColor: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].borderHover : btns[ index ].border ),
 							paddingLeft: btns[ index ].paddingLR + 'px',
 							paddingRight: btns[ index ].paddingLR + 'px',
-							paddingTop: btns[ index ].paddingTB + 'px',
-							paddingBottom: btns[ index ].paddingTB + 'px',
+							paddingTop: btns[ index ].paddingBT + 'px',
+							paddingBottom: btns[ index ].paddingBT + 'px',
 						} } >
 							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
 								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
@@ -431,9 +438,9 @@ class KadenceAdvancedButton extends Component {
 					/>
 					<RangeControl
 						label={ __( 'Top and Bottom Padding' ) }
-						value={ btns[ index ].paddingTB }
+						value={ btns[ index ].paddingBT }
 						onChange={ value => {
-							this.saveArrayUpdate( { paddingTB: value }, index );
+							this.saveArrayUpdate( { paddingBT: value }, index );
 						} }
 						min={ 0 }
 						max={ 100 }

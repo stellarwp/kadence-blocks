@@ -84,6 +84,12 @@ class KadenceRowLayout extends Component {
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
+			const blockConfig = kadence_blocks_params.config[ 'kadence/rowlayout' ];
+			if ( blockConfig !== undefined && typeof blockConfig === 'object' ) {
+				Object.keys( blockConfig ).map( ( attribute ) => {
+					this.props.attributes[ attribute ] = blockConfig[ attribute ];
+				} );
+			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
@@ -99,6 +105,8 @@ class KadenceRowLayout extends Component {
 			this.setState( {
 				firstWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5,
 			} );
+			document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ) + '%';
+			document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = Math.abs( ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ) - 100 ) + '%';
 		};
 		const onResizeStop = ( event, direction, elt ) => {
 			setAttributes( { firstColumnWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5 } );
@@ -1505,31 +1513,6 @@ class KadenceRowLayout extends Component {
 						} }>
 						</div>
 					) }
-					{ colLayout && columns && 2 === columns && (
-						<div className="kt-resizeable-column-container">
-							<ContainerDimensions>
-								{ ( { width } ) =>
-									<ResizableBox
-										className="editor-row-first-column__resizer"
-										size={ { width: ( ! firstColumnWidth ? widthNumber : firstColumnWidth + '%' ) } }
-										minWidth="10%"
-										maxWidth="90%"
-										enable={ {
-											right: true,
-										} }
-										handleClasses={ {
-											right: 'components-resizable-box__handle components-resizable-box__handle-right',
-										} }
-										grid={ [ width / 20, 1 ] }
-										onResize={ onResize }
-										onResizeStop={ onResizeStop }
-										axis="x"
-									>
-									</ResizableBox>
-								}
-							</ContainerDimensions>
-						</div>
-					) }
 					{ ! colLayout && (
 						<div className="kt-select-layout">
 							<div className="kt-select-layout-title">
@@ -1616,6 +1599,40 @@ class KadenceRowLayout extends Component {
 							paddingLeft: leftPadding + 'px',
 							paddingRight: rightPadding + 'px',
 						} }>
+							{ colLayout && columns && 2 === columns && (
+								<div className="kt-resizeable-column-container" style={ {
+									left: leftPadding + 'px',
+									right: rightPadding + 'px',
+								} }>
+									<ContainerDimensions>
+										{ ( { width } ) =>
+											<ResizableBox
+												className="editor-row-first-column__resizer"
+												size={ { width: ( ! firstColumnWidth ? widthNumber : firstColumnWidth + '%' ) } }
+												minWidth="10%"
+												maxWidth="90%"
+												enable={ {
+													right: true,
+												} }
+												handleClasses={ {
+													right: 'components-resizable-box__handle components-resizable-box__handle-right',
+												} }
+												grid={ [ width / 20, 1 ] }
+												onResize={ onResize }
+												onResizeStop={ onResizeStop }
+												axis="x"
+											>
+												<span id={ `left-column-width-${ uniqueID }` } className="left-column-width-size column-width-size-handle" >
+													{ ( ! firstColumnWidth ? widthNumber : firstColumnWidth + '%' ) }
+												</span>
+												<span id={ `right-column-width-${ uniqueID }` } className="right-column-width-size column-width-size-handle" >
+													{ ( ! firstColumnWidth ? Math.abs( parseInt( widthNumber ) - 100 ) + '%' : Math.abs( firstColumnWidth - 100 ) + '%' ) }
+												</span>
+											</ResizableBox>
+										}
+									</ContainerDimensions>
+								</div>
+							) }
 							<InnerBlocks
 								template={ getColumnsTemplate( columns ) }
 								templateLock="all"

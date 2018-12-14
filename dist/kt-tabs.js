@@ -44,9 +44,10 @@ jQuery( document ).ready( function( $ ) {
 		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tab-title-active' )
 			.addClass( 'kt-tab-title-inactive' )
 			.removeClass( 'kt-tab-title-active' );
-		$( this ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
-			return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
-		} ).addClass( 'kt-active-tab-' + tabId );
+		// $( this ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
+		// 	return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
+		// } ).addClass( 'kt-active-tab-' + tabId );
+		$( this ).closest( '.kt-tabs-wrap' ).addClass( 'kt-active-tab-' + tabId );
 		$( this ).closest( '.kt-tabs-wrap' ).find( 'ul .kt-title-item-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
 		$( this ).parent( '.kt-tabs-accordion-title' ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
 	} );

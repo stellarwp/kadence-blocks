@@ -53,6 +53,12 @@ function kadenceHexToRGB( hex, alpha ) {
 class KadenceSpacerDivider extends Component {
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
+			const blockConfig = kadence_blocks_params.config[ 'kadence/spacer' ];
+			if ( blockConfig !== undefined && typeof blockConfig === 'object' ) {
+				Object.keys( blockConfig ).map( ( attribute ) => {
+					this.props.attributes[ attribute ] = blockConfig[ attribute ];
+				} );
+			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
