@@ -25,7 +25,8 @@
                 border-width: 1px 1px 0 1px;
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
-                transition: all .2s ease-in-out;
+				transition: all .2s ease-in-out;
+				&:focus {outline:0;}
             }
             &.kt-tab-title-active {
                 z-index: 4;
@@ -68,10 +69,10 @@
 .wp-block-kadence-tabs .kt-tab-inner-content-inner p:last-child {
     margin-bottom: 0;
 }
-.kt-tab-alignment-center .kt-tabs-title-list, .kt-tab-alignment-center .kt-tabs-accordion-title a {
+.kt-tab-alignment-center > .kt-tabs-title-list, .kt-tab-alignment-center > .kt-tabs-content-wrap > .kt-tabs-accordion-title a {
 	justify-content: center;
 }
-.kt-tab-alignment-right .kt-tabs-title-list, .kt-tab-alignment-right .kt-tabs-accordion-title a {
+.kt-tab-alignment-right > .kt-tabs-title-list, .kt-tab-alignment-right > .kt-tabs-content-wrap > .kt-tabs-accordion-title a {
 	justify-content: flex-end;
 }
 .kt-tabs-content-wrap:before, .kt-tabs-content-wrap:after {
@@ -129,6 +130,42 @@
 .kt-tabs-wrap.kt-active-tab-12 > .kt-tabs-content-wrap > .kt-inner-tab-12 {
 	display: block;
 }
+.kt-tabs-wrap.kt-active-tab-13 > .kt-tabs-content-wrap > .kt-inner-tab-13 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-14 > .kt-tabs-content-wrap > .kt-inner-tab-14 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-15 > .kt-tabs-content-wrap > .kt-inner-tab-15 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-16 > .kt-tabs-content-wrap > .kt-inner-tab-16 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-17 > .kt-tabs-content-wrap > .kt-inner-tab-17 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-18 > .kt-tabs-content-wrap > .kt-inner-tab-18 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-19 > .kt-tabs-content-wrap > .kt-inner-tab-19 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-20 > .kt-tabs-content-wrap > .kt-inner-tab-20 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-21 > .kt-tabs-content-wrap > .kt-inner-tab-21 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-22 > .kt-tabs-content-wrap > .kt-inner-tab-22 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-23 > .kt-tabs-content-wrap > .kt-inner-tab-23 {
+	display: block;
+}
+.kt-tabs-wrap.kt-active-tab-24 > .kt-tabs-content-wrap > .kt-inner-tab-24 {
+	display: block;
+}
 // V tabs
 .kt-tabs-layout-vtabs:after, .kt-tabs-wrap:after {
     clear: both;
@@ -136,7 +173,7 @@
     content: '';
 }
 .kt-tabs-layout-vtabs {
-	.kt-tabs-title-list {
+	> .kt-tabs-title-list {
 		float: left;
 		width: 30%;
 		flex-direction: column;
@@ -152,14 +189,15 @@
             }
 		}
 	}
-	.kt-tabs-content-wrap {
+	> .kt-tabs-content-wrap {
 		float: left;
 		width: 70%;
     }
-    &.kt-tab-alignment-left .kt-tabs-title-list li .kt-tab-title {
-		align-items: flex-start;
+    &.kt-tab-alignment-left > .kt-tabs-title-list li .kt-tab-title {
+		align-items: center;
+		justify-content: flex-start;
 	}
-	&.kt-tab-alignment-center .kt-tabs-title-list {
+	&.kt-tab-alignment-center > .kt-tabs-title-list {
 		justify-content: flex-start;
 		li {
 			text-align: center;
@@ -169,13 +207,13 @@
 			}
 		}
 	}
-	&.kt-tab-alignment-right .kt-tabs-title-list {
+	&.kt-tab-alignment-right > .kt-tabs-title-list {
 		justify-content: flex-start;
 		li {
 			text-align: right;
 			.kt-tab-title {
                 justify-content: flex-end;
-                align-items:flex-end;
+				align-items: center;
 			}
 		}
 	}
@@ -241,13 +279,13 @@
         }
     }
     .kt-tabs-tablet-layout-accordion {
-        .kt-tabs-title-list {
+        > .kt-tabs-title-list {
             display:none;
         }
-        .kt-tabs-accordion-title {
+        > .kt-tabs-content-wrap > .kt-tabs-accordion-title {
             display: block;
         }
-        .kt-tabs-content-wrap {
+        > .kt-tabs-content-wrap {
             float: none;
             width: 100%;
         }
@@ -317,13 +355,13 @@
         }
     }
     .kt-tabs-mobile-layout-accordion {
-        .kt-tabs-title-list {
+        > .kt-tabs-title-list {
             display:none;
         }
-        .kt-tabs-accordion-title {
+        > .kt-tabs-content-wrap > .kt-tabs-accordion-title {
             display: block;
         }
-        .kt-tabs-content-wrap {
+        > .kt-tabs-content-wrap {
             float: none;
             width: 100%;
         }

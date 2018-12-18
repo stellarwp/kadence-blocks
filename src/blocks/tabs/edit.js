@@ -82,6 +82,12 @@ class KadenceTabs extends Component {
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
+			const blockConfig = kadence_blocks_params.config[ 'kadence/tabs' ];
+			if ( blockConfig !== undefined && typeof blockConfig === 'object' ) {
+				Object.keys( blockConfig ).map( ( attribute ) => {
+					this.props.attributes[ attribute ] = blockConfig[ attribute ];
+				} );
+			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
@@ -279,6 +285,90 @@ class KadenceTabs extends Component {
 				} );
 			}
 		};
+		const onHover13 = () => {
+			if ( 'title13' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title13',
+				} );
+			}
+		};
+		const onHover14 = () => {
+			if ( 'title14' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title14',
+				} );
+			}
+		};
+		const onHover15 = () => {
+			if ( 'title15' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title15',
+				} );
+			}
+		};
+		const onHover16 = () => {
+			if ( 'title16' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title16',
+				} );
+			}
+		};
+		const onHover17 = () => {
+			if ( 'title17' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title17',
+				} );
+			}
+		};
+		const onHover18 = () => {
+			if ( 'title18' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title18',
+				} );
+			}
+		};
+		const onHover19 = () => {
+			if ( 'title19' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title19',
+				} );
+			}
+		};
+		const onHover20 = () => {
+			if ( 'title20' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title20',
+				} );
+			}
+		};
+		const onHover21 = () => {
+			if ( 'title21' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title21',
+				} );
+			}
+		};
+		const onHover22 = () => {
+			if ( 'title22' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title22',
+				} );
+			}
+		};
+		const onHover23 = () => {
+			if ( 'title23' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title23',
+				} );
+			}
+		};
+		const onHover24 = () => {
+			if ( 'title24' !== this.state.hovered ) {
+				this.setState( {
+					hovered: 'title24',
+				} );
+			}
+		};
 		const onMouseOut = () => {
 			if ( 'false' !== this.state.hovered ) {
 				this.setState( {
@@ -456,7 +546,7 @@ class KadenceTabs extends Component {
 							} );
 						} }
 						min={ 1 }
-						max={ 12 }
+						max={ 24 }
 					/>
 					<p className="components-base-control__label">{ __( 'Layout' ) }</p>
 					<ButtonGroup aria-label={ __( 'Layout' ) }>
@@ -513,14 +603,6 @@ class KadenceTabs extends Component {
 							} else {
 								tabout = deskControls;
 							}
-						} else {
-							if ( 'mobile' === tab ) {
-								tabout = mobileControls;
-							} else if ( 'tablet' === tab ) {
-								tabout = tabletControls;
-							} else {
-								tabout = deskControls;
-							}
 						}
 						return <div>{ tabout }</div>;
 					}
@@ -548,7 +630,7 @@ class KadenceTabs extends Component {
 			}
 			return (
 				<Fragment>
-					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( ! titles[ index ].onlyIcon ? 'always' : 'only' ) } kt-tabs-icon-side-${ ( titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` } onMouseOut={ onMouseOut } onMouseOver={ () => {
+					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( ! titles[ index ].onlyIcon ? 'always' : 'only' ) } kt-tabs-icon-side-${ ( titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` } onMouseOut={ onMouseOut } onBlur={ onMouseOut } onMouseOver={ () => {
 						if ( 0 === index ) {
 							onHover();
 						} else if ( 1 === index ) {
@@ -575,11 +657,87 @@ class KadenceTabs extends Component {
 							onHover11();
 						} else if ( 12 === index ) {
 							onHover12();
+						} else if ( 13 === index ) {
+							onHover13();
+						} else if ( 14 === index ) {
+							onHover14();
+						} else if ( 15 === index ) {
+							onHover15();
+						} else if ( 16 === index ) {
+							onHover16();
+						} else if ( 17 === index ) {
+							onHover17();
+						} else if ( 18 === index ) {
+							onHover18();
+						} else if ( 19 === index ) {
+							onHover19();
+						} else if ( 20 === index ) {
+							onHover20();
+						} else if ( 21 === index ) {
+							onHover21();
+						} else if ( 22 === index ) {
+							onHover22();
+						} else if ( 23 === index ) {
+							onHover23();
+						} else if ( 24 === index ) {
+							onHover24();
+						}
+					} } onFocus={ () => {
+						if ( 0 === index ) {
+							onHover();
+						} else if ( 1 === index ) {
+							onHover1();
+						} else if ( 2 === index ) {
+							onHover2();
+						} else if ( 3 === index ) {
+							onHover3();
+						} else if ( 4 === index ) {
+							onHover4();
+						} else if ( 5 === index ) {
+							onHover5();
+						} else if ( 6 === index ) {
+							onHover6();
+						} else if ( 7 === index ) {
+							onHover7();
+						} else if ( 8 === index ) {
+							onHover8();
+						} else if ( 9 === index ) {
+							onHover9();
+						} else if ( 10 === index ) {
+							onHover10();
+						} else if ( 11 === index ) {
+							onHover11();
+						} else if ( 12 === index ) {
+							onHover12();
+						} else if ( 13 === index ) {
+							onHover13();
+						} else if ( 14 === index ) {
+							onHover14();
+						} else if ( 15 === index ) {
+							onHover15();
+						} else if ( 16 === index ) {
+							onHover16();
+						} else if ( 17 === index ) {
+							onHover17();
+						} else if ( 18 === index ) {
+							onHover18();
+						} else if ( 19 === index ) {
+							onHover19();
+						} else if ( 20 === index ) {
+							onHover20();
+						} else if ( 21 === index ) {
+							onHover21();
+						} else if ( 22 === index ) {
+							onHover22();
+						} else if ( 23 === index ) {
+							onHover23();
+						} else if ( 24 === index ) {
+							onHover24();
 						}
 					} } style={ {
 						margin: ( titleMargin ? titleMargin[ 0 ] + 'px ' + titleMargin[ 1 ] + 'px ' + titleMargin[ 2 ] + 'px ' + titleMargin[ 3 ] + 'px' : '' ),
 					} }>
-						<span className={ `kt-tab-title kt-tab-title-${ 1 + index } ` } style={ {
+						<Button className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
 							backgroundColor: thebackground,
 							color: thecolor,
 							fontSize: size + sizeType,
@@ -616,7 +774,7 @@ class KadenceTabs extends Component {
 							{ titles[ index ].icon && 'right' === titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
 							) }
-						</span>
+						</Button>
 					</li>
 				</Fragment>
 			);
@@ -890,17 +1048,10 @@ class KadenceTabs extends Component {
 					( tab ) => {
 						let tabout;
 						if ( tab.name ) {
+							// check which size tab to show.
 							if ( 'mobile' === tab.name ) {
 								tabout = sizeMobileControls;
 							} else if ( 'tablet' === tab.name ) {
-								tabout = sizeTabletControls;
-							} else {
-								tabout = sizeDeskControls;
-							}
-						} else {
-							if ( 'mobile' === tab ) {
-								tabout = sizeMobileControls;
-							} else if ( 'tablet' === tab ) {
 								tabout = sizeTabletControls;
 							} else {
 								tabout = sizeDeskControls;
@@ -1108,14 +1259,6 @@ class KadenceTabs extends Component {
 											if ( 'hover' === tab.name ) {
 												tabout = hoverSettings;
 											} else if ( 'active' === tab.name ) {
-												tabout = activeSettings;
-											} else {
-												tabout = normalSettings;
-											}
-										} else {
-											if ( 'hover' === tab ) {
-												tabout = hoverSettings;
-											} else if ( 'active' === tab ) {
 												tabout = activeSettings;
 											} else {
 												tabout = normalSettings;

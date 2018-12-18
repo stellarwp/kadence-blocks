@@ -2,20 +2,78 @@
  * Tabs that can create an accordion for mobile.
  */
 jQuery( document ).ready( function( $ ) {
+	$( '.kt-tabs-wrap' ).each( function( a ) {
+		const ktStartTab = $( this ).find( '> .kt-tabs-title-list .kt-tab-title-active' ).attr( 'data-tab' );
+		const ktTabsList = $( this ).find( '> .kt-tabs-title-list' ).attr( {
+			role: 'tablist',
+		} );
+		$( this ).find( '> .kt-tabs-content-wrap > .kt-tab-inner-content' ).attr( {
+			role: 'tabpanel',
+			'aria-hidden': 'true',
+		} );
+		$( this ).find( '.kt-tabs-content-wrap > .kt-inner-tab-' + ktStartTab ).attr( 'aria-hidden', 'false' );
+		$( this ).find( '> .kt-tabs-title-list li:not(.kt-tab-title-active) a' ).each( function() {
+			$( this ).attr( {
+				role: 'tab',
+				'aria-selected': 'false',
+				tabindex: '-1',
+			} ).parent().attr( 'role', 'presentation' );
+		} );
+		$( this ).find( '> .kt-tabs-title-list li.kt-tab-title-active a' ).attr( {
+			role: 'tab',
+			'aria-selected': 'true',
+			tabindex: '0',
+		} ).parent().attr( 'role', 'presentation' );
+		$( ktTabsList ).delegate( 'a', 'keydown', function( e ) {
+			switch ( e.which ) {
+				case 37: case 38:
+					if ( $( this ).parent().prev().length != 0 ) {
+						$( this ).parent().prev().find( '> a' ).click();
+					} else {
+						$( ktTabsList ).find( 'li:last > a' ).click();
+					}
+					break;
+				case 39: case 40:
+					if ( $( this ).parent().next().length != 0 ) {
+						$( this ).parent().next().find( '> a' ).click();
+					} else {
+						$( ktTabsList ).find( 'li:first > a' ).click();
+					}
+					break;
+			}
+		} );
+	} );
 	$( '.kt-tabs-title-list li a' ).click( function( e ) {
 		e.preventDefault();
 		const tabId = $( this ).attr( 'data-tab' );
 
 		$( this ).closest( '.kt-tabs-title-list' ).find( '.kt-tab-title-active' )
 			.addClass( 'kt-tab-title-inactive' )
-			.removeClass( 'kt-tab-title-active' );
+			.removeClass( 'kt-tab-title-active' )
+			.find( 'a.kt-tab-title' ).attr( {
+				tabindex: '-1',
+				'aria-selected': 'false',
+			} );
 		$( this ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
 			return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
 		} ).addClass( 'kt-active-tab-' + tabId );
 		$( this ).parent( 'li' ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
-		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
+		$( this ).attr( {
+			tabindex: '0',
+			'aria-selected': 'true',
+		} ).focus();
+		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tab-inner-content:not(.kt-inner-tab-' + tabId + ')' ).attr( 'aria-hidden', 'true' );
+		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-inner-tab-' + tabId ).attr( 'aria-hidden', 'false' );
+		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tabs-accordion-title:not(.kt-tabs-accordion-title-' + tabId + ')' ).addClass( 'kt-tab-title-inactive' ).removeClass( 'kt-tab-title-active' ).attr( {
+			tabindex: '-1',
+			'aria-selected': 'false',
+		} );
+		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' ).attr( {
+			tabindex: '0',
+			'aria-selected': 'true',
+		} );
 	} );
-	$( '.kt-create-accordion' ).find( '.kt-tabs-title-list .kt-title-item' ).each( function() {
+	$( '.kt-create-accordion' ).find( '> .kt-tabs-title-list .kt-title-item' ).each( function() {
 		const tabId = $( this ).find( 'a' ).attr( 'data-tab' );
 		let activeclass;
 		let iconclass;
@@ -35,21 +93,25 @@ jQuery( document ).ready( function( $ ) {
 		} else {
 			iconsideclass = '';
 		}
-		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-inner-tab-' + tabId ).before( '<div class="kt-tabs-accordion-title kt-tabs-accordion-title-' + tabId + ' ' + activeclass + ' ' + iconclass + ' ' + iconsideclass + '">' + $( this ).html() + '</div>' );
+		$( this ).closest( '.kt-tabs-wrap' ).find( '> .kt-tabs-content-wrap > .kt-inner-tab-' + tabId ).before( '<div class="kt-tabs-accordion-title kt-tabs-accordion-title-' + tabId + ' ' + activeclass + ' ' + iconclass + ' ' + iconsideclass + '">' + $( this ).html() + '</div>' );
 	} );
 	$( '.kt-tabs-accordion-title a' ).click( function( e ) {
 		e.preventDefault();
 		const tabId = $( this ).attr( 'data-tab' );
-
-		$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tab-title-active' )
-			.addClass( 'kt-tab-title-inactive' )
-			.removeClass( 'kt-tab-title-active' );
-		// $( this ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
-		// 	return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
-		// } ).addClass( 'kt-active-tab-' + tabId );
-		$( this ).closest( '.kt-tabs-wrap' ).addClass( 'kt-active-tab-' + tabId );
-		$( this ).closest( '.kt-tabs-wrap' ).find( 'ul .kt-title-item-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
-		$( this ).parent( '.kt-tabs-accordion-title' ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
+		if ( $( this ).parent( '.kt-tabs-accordion-title' ).hasClass( 'kt-tab-title-active' ) ) {
+			$( this ).closest( '.kt-tabs-wrap' ).removeClass( 'kt-active-tab-' + tabId );
+			$( this ).parent( '.kt-tabs-accordion-title' ).removeClass( 'kt-tab-title-active' ).addClass( 'kt-tab-title-inactive' );
+		} else {
+			// $( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tab-title-active' )
+			// 	.addClass( 'kt-tab-title-inactive' )
+			// 	.removeClass( 'kt-tab-title-active' );
+			// $( this ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
+			// 	return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
+			// } ).addClass( 'kt-active-tab-' + tabId );
+			$( this ).closest( '.kt-tabs-wrap' ).addClass( 'kt-active-tab-' + tabId );
+			//$( this ).closest( '.kt-tabs-wrap' ).find( 'ul .kt-title-item-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
+			$( this ).parent( '.kt-tabs-accordion-title' ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
+		}
 	} );
 	if ( window.location.hash != '' ) {
 		const matches = window.location.hash.match( /\btab-\S+/g );

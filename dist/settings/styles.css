@@ -701,3 +701,17 @@ h5.kt-main-subtitle {
 	padding: 5px 0;
 	border-bottom: 1px solid #eee;
 }
+.kt-modal-settings-number-array .kt-modal-settings-field {
+    float: left;
+    box-sizing: border-box;
+    width: 25%;
+    font-size: 10px;
+}
+.kt-modal-settings-number-array:after {
+    clear: both;
+    display: table;
+    content: '';
+}
+.kt-modal-settings-number-array .kt-modal-settings-field:not(:last-child) {
+    padding-right: 5px;
+}

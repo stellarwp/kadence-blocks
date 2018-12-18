@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
-Tested up to: 5.0.0
-Stable tag: 1.1.7
+Tested up to: 5.0.1
+Stable tag: 1.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,10 +78,18 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.1.8 =
+* Fix: Nested tabs in tabs styling.
+* Tweak: Row Layout editor css for better selecting row.
+* Tweak: Tabs for better accessibility.
+* Update: Increase the amount of possible tabs.
+* Add: Tab Default controls.
+
 = 1.1.7 =
 * Add: Granular control over two column Layouts.
 * Add: Background color options for columns.
 * Add: 'noreferrer noopener' to external buttons.
+* Add: Default Controls for Row layout, button and spacer blocks.
 * Fix: Issue with button top and bottom padding.
 
 = 1.1.6 =

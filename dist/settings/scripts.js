@@ -37,6 +37,13 @@ jQuery( document ).ready( function( $ ) {
 					case 'number':
 						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '">' + obj.name + '</label><input id="' + key + '" class="kt-block-config-input" name="' + key + '" type="number" step="' + obj.options.step + '" max="' + obj.options.max + '" min="' + obj.options.min + '" value="' + settingDefault + '"></div>';
 						break;
+					case 'typoNumber':
+						if ( obj.units && 'em' === kt_blocks_params.blockConfig[ selectedSlug ][ obj.units ] ) {
+							settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '">' + obj.name + '</label><input id="' + key + '" class="kt-block-config-input" name="' + key + '" type="number" step="0.1" max="12" min="0.1" value="' + settingDefault + '"></div>';
+						} else {
+							settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '">' + obj.name + '</label><input id="' + key + '" class="kt-block-config-input" name="' + key + '" type="number" step="' + obj.options.step + '" max="' + obj.options.max + '" min="' + obj.options.min + '" value="' + settingDefault + '"></div>';
+						}
+						break;
 					case 'select':
 						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '">' + obj.name + '</label><select id="' + key + '" class="kt-block-config-input" name="' + key + '">';
 						for ( const option in obj.options ) {
@@ -45,6 +52,14 @@ jQuery( document ).ready( function( $ ) {
 							settingsContent += '<option value="' + obj.options[ option ].value + '" ' + selected + '>' + obj.options[ option ].name + '</option>';
 						}
 						settingsContent += '</select></div>';
+						break;
+					case 'numberArray':
+						settingsContent += '<div class="kt-modal-settings-number-array" data-array-key="' + key + '"><h4>' + obj.name + '</h4>';
+						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '[0]"><i class="dashicons dashicons-arrow-up-alt"></i></label><input id="' + key + '[0]" class="kt-block-config-input-number-array" name="' + key + '[0]" data-array-key="' + key + '" type="number" step="' + obj.options.step + '" max="' + obj.options.max + '" min="' + obj.options.min + '" value="' + ( settingDefault ? settingDefault[ 0 ] : '' ) + '"></div>';
+						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '[1]"><i class="dashicons dashicons-arrow-right-alt"></i></label><input id="' + key + '[1]" class="kt-block-config-input-number-array" name="' + key + '[1]" data-array-key="' + key + '" type="number" step="' + obj.options.step + '" max="' + obj.options.max + '" min="' + obj.options.min + '" value="' + ( settingDefault ? settingDefault[ 1 ] : '' ) + '"></div>';
+						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '[2]"><i class="dashicons dashicons-arrow-down-alt"></i></label><input id="' + key + '[2]" class="kt-block-config-input-number-array" name="' + key + '[2]" data-array-key="' + key + '" type="number" step="' + obj.options.step + '" max="' + obj.options.max + '" min="' + obj.options.min + '" value="' + ( settingDefault ? settingDefault[ 2 ] : '' ) + '"></div>';
+						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '[3]"><i class="dashicons dashicons-arrow-left-alt"></i></label><input id="' + key + '[3]" class="kt-block-config-input-number-array" name="' + key + '[3]" data-array-key="' + key + '" type="number" step="' + obj.options.step + '" max="' + obj.options.max + '" min="' + obj.options.min + '" value="' + ( settingDefault ? settingDefault[ 3 ] : '' ) + '"></div>';
+						settingsContent += '</div>';
 						break;
 					case 'color':
 						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '">' + obj.name + '</label><input class="kt-block-config-input kt-init-color" id="' + key + '" name="' + key + '" type="text" value="' + settingDefault + '"></div>';
@@ -132,6 +147,24 @@ jQuery( document ).ready( function( $ ) {
 									dataConfig[ selectedSlug ][ arrayKey ] = {};
 									dataConfig[ selectedSlug ][ arrayKey ][ 0 ] = {};
 									dataConfig[ selectedSlug ][ arrayKey ][ 0 ][ arrayAttribute ] = value;
+								}
+							}
+						} );
+						$( '#js-settings-modal-content .kt-modal-settings-number-array' ).each( function() {
+							var numberValue = [];
+							const arrayKey = $( this ).attr( 'data-array-key' );
+							$( this ).find( '.kt-block-config-input-number-array' ).each( function() {
+								const value = $( this ).val().trim();
+								if ( value !== '' ) {
+									numberValue.push( value );
+								}
+							} );
+							if ( ( Array.isArray( numberValue ) && numberValue.length ) && 4 === numberValue.length ) {
+								if ( dataConfig[ selectedSlug ][ arrayKey ] !== undefined ) {
+									dataConfig[ selectedSlug ][ arrayKey ] = numberValue;
+								} else {
+									dataConfig[ selectedSlug ][ arrayKey ] = {};
+									dataConfig[ selectedSlug ][ arrayKey ] = numberValue;
 								}
 							}
 						} );

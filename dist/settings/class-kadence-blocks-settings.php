@@ -474,6 +474,291 @@ class Kadence_Blocks_Settings {
 					),
 				),
 			),
+			'kadence/tabs' => array(
+				'layout' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'tabs',
+							'name' =>  __( 'Standard Tabs', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'vtabs',
+							'name' =>  __( 'Vertical Tabs', 'kadence-blocks' ),
+						),
+					),
+					'default' => 'tabs',
+					'name' => __( 'Tab Layout', 'kadence-blocks' ),
+				),
+				'tabletLayout' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'tabs',
+							'name' =>  __( 'Standard Tabs', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'vtabs',
+							'name' =>  __( 'Vertical Tabs', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'accordion',
+							'name' =>  __( 'Accordion', 'kadence-blocks' ),
+						),
+					),
+					'default' => '',
+					'name' => __( 'TABLET - Tab Layout', 'kadence-blocks' ),
+				),
+				'mobileLayout' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'tabs',
+							'name' =>  __( 'Standard Tabs', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'vtabs',
+							'name' =>  __( 'Vertical Tabs', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'accordion',
+							'name' =>  __( 'Accordion', 'kadence-blocks' ),
+						),
+					),
+					'default' => '',
+					'name' => __( 'MOBILE - Tab Layout', 'kadence-blocks' ),
+				),
+				'contentBgColor' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'Content Background Color', 'kadence-blocks' ),
+				),
+				'contentBorderColor' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'Content Border Color', 'kadence-blocks' ),
+				),
+				'contentBorder' => array(
+					'type' => 'numberArray',
+					'options' => array(
+						'min' => 0,
+						'max' => 20,
+						'step' => 1,
+					),
+					'default' => array( 1,1,1,1 ),
+					'name' => __( 'Content Border Width', 'kadence-blocks' ),
+				),
+				'innerPadding' => array(
+					'type' => 'numberArray',
+					'options' => array(
+						'min' => 0,
+						'max' => 100,
+						'step' => 1,
+					),
+					'default' => array( 20,20,20,20 ),
+					'name' => __( 'Content Padding', 'kadence-blocks' ),
+				),
+				'tabAlignment' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'left',
+							'name' =>  __( 'Left', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'center',
+							'name' =>  __( 'Center', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'right',
+							'name' =>  __( 'Right', 'kadence-blocks' ),
+						),
+					),
+					'default' => 'left',
+					'name' => __( 'Tab Alignment', 'kadence-blocks' ),
+				),
+				'titleColor' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'Title Text Color', 'kadence-blocks' ),
+				),
+				'titleColorHover' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'HOVER - Title Text Color', 'kadence-blocks' ),
+				),
+				'titleColorActive' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'ACTIVE - Title Text Color', 'kadence-blocks' ),
+				),
+				'titleBg' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'Title Background Color', 'kadence-blocks' ),
+				),
+				'titleBgHover' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'HOVER - Title Background Color', 'kadence-blocks' ),
+				),
+				'titleBgActive' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'ACTIVE - Title Background Color', 'kadence-blocks' ),
+				),
+				'titleBorder' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'Title Border Color', 'kadence-blocks' ),
+				),
+				'titleBorderHover' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'HOVER - Title Border Color', 'kadence-blocks' ),
+				),
+				'titleBorderActive' => array(
+					'type' => 'color',
+					'default' => '',
+					'name' => __( 'ACTIVE - Title Border Color', 'kadence-blocks' ),
+				),
+				'titleBorderWidth' => array(
+					'type' => 'numberArray',
+					'options' => array(
+						'min' => 0,
+						'max' => 20,
+						'step' => 1,
+					),
+					'default' => '',
+					'name' => __( 'Title Border Width', 'kadence-blocks' ),
+				),
+				'titleBorderRadius' => array(
+					'type' => 'numberArray',
+					'options' => array(
+						'min' => 0,
+						'max' => 50,
+						'step' => 1,
+					),
+					'default' => '',
+					'name' => __( 'Title Border Radius', 'kadence-blocks' ),
+				),
+				'titlePadding' => array(
+					'type' => 'numberArray',
+					'options' => array(
+						'min' => 0,
+						'max' => 50,
+						'step' => 1,
+					),
+					'default' => '',
+					'name' => __( 'Title Padding', 'kadence-blocks' ),
+				),
+				'titleMargin' => array(
+					'type' => 'numberArray',
+					'default' => '',
+					'options' => array(
+						'min' => -25,
+						'max' => 25,
+						'step' => 1,
+					),
+					'name' => __( 'Title Margin', 'kadence-blocks' ),
+				),
+				'sizeType' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'px',
+							'name' =>  __( 'px', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'em',
+							'name' =>  __( 'em', 'kadence-blocks' ),
+						),
+					),
+					'default' => 'px',
+					'name' => __( 'Font Size Units', 'kadence-blocks' ),
+				),
+				'size' => array(
+					'type' => 'typoNumber',
+					'default' => '',
+					'units' => 'sizeType',
+					'options' => array(
+						'min' => 5,
+						'max' => 200,
+						'step' => 1,
+					),
+					'name' => __( 'Title Font Size', 'kadence-blocks' ),
+				),
+				'tabSize' => array(
+					'type' => 'typoNumber',
+					'default' => '',
+					'units' => 'sizeType',
+					'options' => array(
+						'min' => 5,
+						'max' => 200,
+						'step' => 1,
+					),
+					'name' => __( 'TABLET - Title Font Size', 'kadence-blocks' ),
+				),
+				'mobileSize' => array(
+					'type' => 'typoNumber',
+					'default' => '',
+					'units' => 'sizeType',
+					'options' => array(
+						'min' => 5,
+						'max' => 200,
+						'step' => 1,
+					),
+					'name' => __( 'MOBILE - Title Font Size', 'kadence-blocks' ),
+				),
+				'lineType' => array(
+					'type' => 'select',
+					'options' => array(
+						array(
+							'value' => 'px',
+							'name' =>  __( 'px', 'kadence-blocks' ),
+						),
+						array(
+							'value' => 'em',
+							'name' =>  __( 'em', 'kadence-blocks' ),
+						),
+					),
+					'default' => 'px',
+					'name' => __( 'Line Height Size Units', 'kadence-blocks' ),
+				),
+				'lineHeight' => array(
+					'type' => 'typoNumber',
+					'default' => '',
+					'units' => 'lineType',
+					'options' => array(
+						'min' => 5,
+						'max' => 200,
+						'step' => 1,
+					),
+					'name' => __( 'Title Font Line Height (px)', 'kadence-blocks' ),
+				),
+				'tabLineHeight' => array(
+					'type' => 'typoNumber',
+					'default' => '',
+					'units' => 'lineType',
+					'options' => array(
+						'min' => 5,
+						'max' => 200,
+						'step' => 1,
+					),
+					'name' => __( 'TABLET - Title Font Line Height', 'kadence-blocks' ),
+				),
+				'mobileLineHeight' => array(
+					'type' => 'typoNumber',
+					'default' => '',
+					'units' => 'lineType',
+					'options' => array(
+						'min' => 5,
+						'max' => 200,
+						'step' => 1,
+					),
+					'name' => __( 'MOBILE - Title Font Line Height', 'kadence-blocks' ),
+				),
+			),
 		);
 		wp_enqueue_style( 'kadence-blocks-admin-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, 'all' );
 		wp_enqueue_script( 'kadence-blocks-admin-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, true );
@@ -798,18 +1083,26 @@ class Kadence_Blocks_Settings {
 			foreach ( $settings as $attribute_key => $value ) {
 				if ( is_array( $value ) ) {
 					foreach ( $value as $array_attribute_index => $array_value ) {
-						foreach ( $array_value as $array_attribute_key => $array_attribute_value ) {
-							$array_attribute_value = sanitize_text_field( $array_attribute_value );
-							if ( is_numeric( $array_attribute_value ) ) {
-								$array_attribute_value = floatval( $array_attribute_value );
+						if ( is_array( $array_value ) ) {
+							foreach ( $array_value as $array_attribute_key => $array_attribute_value ) {
+								$array_attribute_value = sanitize_text_field( $array_attribute_value );
+								if ( is_numeric( $array_attribute_value ) ) {
+									$array_attribute_value = floatval( $array_attribute_value );
+								}
+								if ( 'true' === $array_attribute_value ) {
+									$array_attribute_value = true;
+								}
+								if ( 'false' === $array_attribute_value ) {
+									$array_attribute_value = false;
+								}
+								$new_settings[ $block_key ][ $attribute_key ][ $array_attribute_index ][ $array_attribute_key ] = $array_attribute_value;
 							}
-							if ( 'true' === $array_attribute_value ) {
-								$array_attribute_value = true;
+						} else {
+							$array_value = sanitize_text_field( $array_value );
+							if ( is_numeric( $array_value ) ) {
+								$array_value = floatval( $array_value );
 							}
-							if ( 'false' === $array_attribute_value ) {
-								$array_attribute_value = false;
-							}
-							$new_settings[ $block_key ][ $attribute_key ][ $array_attribute_index ][ $array_attribute_key ] = $array_attribute_value;
+							$new_settings[ $block_key ][ $attribute_key ][ $array_attribute_index ] = $array_value;
 						}
 					}
 				} else {

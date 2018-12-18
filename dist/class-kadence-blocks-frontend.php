@@ -572,7 +572,7 @@ class Kadence_Blocks_Frontend {
 		wp_enqueue_script( 'kadence-frontend-tabs-js' );
 		$css = '';
 		if ( isset( $attr['contentBorder'] ) || isset( $attr['innerPadding'] ) || isset( $attr['minHeight'] ) || isset( $attr['contentBorderColor'] ) || isset( $attr['contentBgColor'] ) ) {
-			$css .= '.kt-tabs-id' . $unique_id . ' .wp-block-kadence-tab {';
+			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .wp-block-kadence-tab {';
 			if ( isset(  $attr['contentBorder'] ) && ! empty(  $attr['contentBorder'] ) && is_array(  $attr['contentBorder'] ) ) {
 				$css .= 'border-width:' .  $attr['contentBorder'][0] . 'px ' .  $attr['contentBorder'][1] . 'px ' .  $attr['contentBorder'][2] . 'px ' .  $attr['contentBorder'][3] . 'px ;';
 			}
@@ -591,14 +591,14 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		if ( isset( $attr['titleMargin'] ) ) {
-			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' .kt-tabs-title-list li {';
+			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li {';
 			if ( isset(  $attr['titleMargin'] ) && ! empty(  $attr['titleMargin'] ) && is_array(  $attr['titleMargin'] ) ) {
 				$css .= 'margin:' .  $attr['titleMargin'][0] . 'px ' .  $attr['titleMargin'][1] . 'px ' .  $attr['titleMargin'][2] . 'px ' .  $attr['titleMargin'][3] . 'px ;';
 			}
 			$css .= '}';
 		}
 		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['titleBorderWidth'] ) || isset( $attr['titleBorderRadius'] ) || isset( $attr['titlePadding'] ) || isset( $attr['titleBorder'] ) || isset( $attr['titleColor'] ) || isset( $attr['titleBg'] ) ) {
-			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' .kt-tabs-title-list li .kt-tab-title, .kt-tabs-id' . $unique_id . ' .kt-tabs-accordion-title .kt-tab-title {';
+			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';
 			if ( isset( $attr['size'] ) && ! empty( $attr['size'] ) ) {
 				$css .= 'font-size:' . $attr['size'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -630,7 +630,7 @@ class Kadence_Blocks_Frontend {
 		}
 		// Hover
 		if ( isset( $attr['titleBorderHover'] ) || isset( $attr['titleColorHover'] ) || isset( $attr['titleBgHover'] ) ) {
-			$css .= '.kt-tabs-id' . $unique_id . ' .kt-tabs-title-list li .kt-tab-title:hover, .kt-tabs-id' . $unique_id . ' .kt-tabs-content-wrap .kt-tabs-accordion-title .kt-tab-title:hover {';
+			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title:hover, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title:hover {';
 			if ( isset( $attr['titleBorderHover'] ) && ! empty( $attr['titleBorderHover'] ) ) {
 				$css .= 'border-color:' . $attr['titleBorderHover'] . ';';
 			}
@@ -644,7 +644,7 @@ class Kadence_Blocks_Frontend {
 		}
 		// Active
 		if ( isset( $attr['titleBorderActive'] ) || isset( $attr['titleColorActive'] ) || isset( $attr['titleBgActive'] ) ) {
-			$css .= '.kt-tabs-id' . $unique_id . ' .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title, .kt-tabs-id' . $unique_id . ' .kt-tabs-content-wrap .kt-tabs-accordion-title.kt-tab-title-active .kt-tab-title  {';
+			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tab-title-active .kt-tab-title  {';
 			if ( isset( $attr['titleBorderActive'] ) && ! empty( $attr['titleBorderActive'] ) ) {
 				$css .= 'border-color:' . $attr['titleBorderActive'] . ';';
 			}
@@ -680,7 +680,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-				$css .= '.kt-tabs-id_' . $unique_id . ' .kt-tabs-title-list li .kt-tab-title {';
+				$css .= '.kt-tabs-id_' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 					if ( isset( $attr['tabSize'] ) ) {
 						$css .= 'font-size:' . $attr['tabSize'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 					}
@@ -692,7 +692,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['mobileSize'] ) || isset( $attr['mobileLineHeight'] ) ) {
 			$css .= '@media (max-width: 767px) {';
-				$css .= '.kt-tabs-id_' . $unique_id . ' .kt-tabs-title-list li .kt-tab-title  {';
+				$css .= '.kt-tabs-id_' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title  {';
 					if ( isset( $attr['mobileSize'] ) ) {
 						$css .= 'font-size:' . $attr['mobileSize'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 					}
