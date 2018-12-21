@@ -14,15 +14,13 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
-import SelectSearch from 'react-select-search';
-import fonts from '../../fonts';
-import gFonts from '../../gfonts';
 import WebfontLoader from '../../fontloader';
 import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
 import IcoNames from '../../svgiconsnames';
 import FaIco from '../../faicons';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
+import TypographyControls from '../../typography-control';
 /**
  * Import Css
  */
@@ -46,7 +44,6 @@ const {
 	ButtonGroup,
 	Tooltip,
 	TabPanel,
-	IconButton,
 	Dashicon,
 	PanelBody,
 	RangeControl,
@@ -112,9 +109,6 @@ class KadenceTabs extends Component {
 			titles: newItems,
 		} );
 	}
-	capitalizeFirstLetter( string ) {
-		return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
-	}
 	render() {
 		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize }, className, setAttributes } = this.props;
 		const layoutClass = ( ! layout ? 'tabs' : layout );
@@ -130,52 +124,12 @@ class KadenceTabs extends Component {
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
 		];
-		const standardWeights = [
-			{ value: 'regular', label: 'Normal' },
-			{ value: 'bold', label: 'Bold' },
-		];
-		const standardStyles = [
-			{ value: 'normal', label: 'Normal' },
-			{ value: 'italic', label: 'Italic' },
-		];
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
 			},
 		};
 		const config = ( googleFont ? gconfig : '' );
-		const typographyWeights = ( googleFont && typography ? gFonts[ typography ].w.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardWeights );
-		const typographyStyles = ( googleFont && typography ? gFonts[ typography ].i.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
-		const typographySubsets = ( googleFont && typography ? gFonts[ typography ].s.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
-		const fontsarray = fonts.map( ( name ) => {
-			return { name: name, value: name, google: true };
-		} );
-		const options = [
-			{
-				type: 'group',
-				name: 'Standard Fonts',
-				items: [
-					{ name: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
-					{ name: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
-					{ name: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
-					{ name: 'Impact, Charcoal, sans-serif', value: 'Impact, Charcoal, sans-serif', google: false },
-					{ name: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', value: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', google: false },
-					{ name: 'Tahoma, Geneva, sans-serif', value: 'Tahoma, Geneva, sans-serif', google: false },
-					{ name: '"Trebuchet MS", Helvetica, sans-serif', value: '"Trebuchet MS", Helvetica, sans-serif', google: false },
-					{ name: 'Verdana, Geneva, sans-serif', value: 'Verdana, Geneva, sans-serif', google: false },
-					{ name: 'Georgia, serif', value: 'Georgia, serif', google: false },
-					{ name: '"Palatino Linotype", "Book Antiqua", Palatino, serif', value: '"Palatino Linotype", "Book Antiqua", Palatino, serif', google: false },
-					{ name: '"Times New Roman", Times, serif', value: '"Times New Roman", Times, serif', google: false },
-					{ name: 'Courier, monospace', value: 'Courier, monospace', google: false },
-					{ name: '"Lucida Console", Monaco, monospace', value: '"Lucida Console", Monaco, monospace', google: false },
-				],
-			},
-			{
-				type: 'group',
-				name: 'Google Fonts',
-				items: fontsarray,
-			},
-		];
 		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
 		const fontMax = ( sizeType === 'em' ? 12 : 200 );
 		const fontStep = ( sizeType === 'em' ? 0.1 : 1 );
@@ -184,7 +138,7 @@ class KadenceTabs extends Component {
 		const lineStep = ( lineType === 'em' ? 0.1 : 1 );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
-		const classes = classnames( className, `kt-tabs-wrap kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
+		const classes = classnames( className, `kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
 		const mLayoutOptions = [
 			{ key: 'tabs', name: __( 'Tabs' ), icon: icons.tabs },
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: icons.vtabs },
@@ -194,287 +148,9 @@ class KadenceTabs extends Component {
 			{ key: 'tabs', name: __( 'Tabs' ), icon: icons.tabs },
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: icons.vtabs },
 		];
-		const onHover = () => {
-			if ( 'title0' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title0',
-				} );
-			}
-		};
-		const onHover1 = () => {
-			if ( 'title1' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title1',
-				} );
-			}
-		};
-		const onHover2 = () => {
-			if ( 'title2' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title2',
-				} );
-			}
-		};
-		const onHover3 = () => {
-			if ( 'title3' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title3',
-				} );
-			}
-		};
-		const onHover4 = () => {
-			if ( 'title4' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title4',
-				} );
-			}
-		};
-		const onHover5 = () => {
-			if ( 'title5' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title5',
-				} );
-			}
-		};
-		const onHover6 = () => {
-			if ( 'title6' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title6',
-				} );
-			}
-		};
-		const onHover7 = () => {
-			if ( 'title7' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title7',
-				} );
-			}
-		};
-		const onHover8 = () => {
-			if ( 'title8' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title8',
-				} );
-			}
-		};
-		const onHover9 = () => {
-			if ( 'title9' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title9',
-				} );
-			}
-		};
-		const onHover10 = () => {
-			if ( 'title10' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title10',
-				} );
-			}
-		};
-		const onHover11 = () => {
-			if ( 'title11' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title11',
-				} );
-			}
-		};
-		const onHover12 = () => {
-			if ( 'title12' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title12',
-				} );
-			}
-		};
-		const onHover13 = () => {
-			if ( 'title13' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title13',
-				} );
-			}
-		};
-		const onHover14 = () => {
-			if ( 'title14' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title14',
-				} );
-			}
-		};
-		const onHover15 = () => {
-			if ( 'title15' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title15',
-				} );
-			}
-		};
-		const onHover16 = () => {
-			if ( 'title16' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title16',
-				} );
-			}
-		};
-		const onHover17 = () => {
-			if ( 'title17' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title17',
-				} );
-			}
-		};
-		const onHover18 = () => {
-			if ( 'title18' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title18',
-				} );
-			}
-		};
-		const onHover19 = () => {
-			if ( 'title19' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title19',
-				} );
-			}
-		};
-		const onHover20 = () => {
-			if ( 'title20' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title20',
-				} );
-			}
-		};
-		const onHover21 = () => {
-			if ( 'title21' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title21',
-				} );
-			}
-		};
-		const onHover22 = () => {
-			if ( 'title22' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title22',
-				} );
-			}
-		};
-		const onHover23 = () => {
-			if ( 'title23' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title23',
-				} );
-			}
-		};
-		const onHover24 = () => {
-			if ( 'title24' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'title24',
-				} );
-			}
-		};
-		const onMouseOut = () => {
-			if ( 'false' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'false',
-				} );
-			}
-		};
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
 		);
-		const onTypeChange = ( select ) => {
-			let variant;
-			let weight;
-			let subset;
-			if ( select.google ) {
-				if ( ! gFonts[ select.value ].v.includes( 'regular' ) ) {
-					variant = gFonts[ select.value ].v[ 0 ];
-				} else {
-					variant = '';
-				}
-				if ( ! gFonts[ select.value ].w.includes( 'regular' ) ) {
-					weight = gFonts[ select.value ].w[ 0 ];
-				} else {
-					weight = '400';
-				}
-				if ( gFonts[ select.value ].s.length > 1 ) {
-					subset = 'latin';
-				} else {
-					subset = '';
-				}
-			} else {
-				subset = '';
-				variant = '';
-				weight = '400';
-			}
-			setAttributes( {
-				typography: select.value,
-				googleFont: select.google,
-				fontVariant: variant,
-				fontWeight: weight,
-				fontStyle: 'normal',
-				fontSubset: subset,
-			} );
-		};
-		const onTypeClear = () => {
-			setAttributes( {
-				typography: '',
-				googleFont: false,
-				loadGoogleFont: true,
-				fontVariant: '',
-				fontSubset: '',
-				fontWeight: 'regular',
-				fontStyle: 'normal',
-			} );
-		};
-		const onWeightChange = ( select ) => {
-			if ( googleFont ) {
-				let variant;
-				if ( 'italic' === fontStyle ) {
-					if ( 'regular' === select ) {
-						variant = 'italic';
-					} else {
-						variant = select + 'italic';
-					}
-				} else {
-					variant = select;
-				}
-				setAttributes( {
-					fontVariant: variant,
-					fontWeight: ( 'regular' === select ? '400' : select ),
-				} );
-			} else {
-				setAttributes( {
-					fontVariant: '',
-					fontWeight: ( 'regular' === select ? '400' : select ),
-				} );
-			}
-		};
-		const onGLoadChange = ( select ) => {
-			setAttributes( {
-				loadGoogleFont: select,
-			} );
-		};
-		const onStyleChange = ( select ) => {
-			if ( googleFont ) {
-				let variant;
-				if ( 'italic' === select ) {
-					if ( ! fontWeight || 'regular' === fontWeight ) {
-						variant = 'italic';
-					} else {
-						variant = fontWeight + 'italic';
-					}
-				} else {
-					variant = ( fontWeight ? fontWeight : 'regular' );
-				}
-				setAttributes( {
-					fontVariant: variant,
-					fontStyle: select,
-				} );
-			} else {
-				setAttributes( {
-					fontVariant: '',
-					fontStyle: select,
-				} );
-			}
-		};
 		const mobileControls = (
 			<div>
 				<PanelBody>
@@ -610,136 +286,14 @@ class KadenceTabs extends Component {
 			</TabPanel>
 		);
 		const renderTitles = ( index ) => {
-			let thecolor;
-			let theborder;
-			let thebackground;
-			if ( 1 + index === currentTab ) {
-				thecolor = titleColorActive;
-			} else {
-				thecolor = ( this.state.hovered && 'title' + index === this.state.hovered ? titleColorHover : titleColor );
-			}
-			if ( 1 + index === currentTab ) {
-				thebackground = titleBgActive;
-			} else {
-				thebackground = ( this.state.hovered && 'title' + index === this.state.hovered ? titleBgHover : titleBg );
-			}
-			if ( 1 + index === currentTab ) {
-				theborder = titleBorderActive;
-			} else {
-				theborder = ( this.state.hovered && 'title' + index === this.state.hovered ? titleBorderHover : titleBorder );
-			}
 			return (
 				<Fragment>
-					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( ! titles[ index ].onlyIcon ? 'always' : 'only' ) } kt-tabs-icon-side-${ ( titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` } onMouseOut={ onMouseOut } onBlur={ onMouseOut } onMouseOver={ () => {
-						if ( 0 === index ) {
-							onHover();
-						} else if ( 1 === index ) {
-							onHover1();
-						} else if ( 2 === index ) {
-							onHover2();
-						} else if ( 3 === index ) {
-							onHover3();
-						} else if ( 4 === index ) {
-							onHover4();
-						} else if ( 5 === index ) {
-							onHover5();
-						} else if ( 6 === index ) {
-							onHover6();
-						} else if ( 7 === index ) {
-							onHover7();
-						} else if ( 8 === index ) {
-							onHover8();
-						} else if ( 9 === index ) {
-							onHover9();
-						} else if ( 10 === index ) {
-							onHover10();
-						} else if ( 11 === index ) {
-							onHover11();
-						} else if ( 12 === index ) {
-							onHover12();
-						} else if ( 13 === index ) {
-							onHover13();
-						} else if ( 14 === index ) {
-							onHover14();
-						} else if ( 15 === index ) {
-							onHover15();
-						} else if ( 16 === index ) {
-							onHover16();
-						} else if ( 17 === index ) {
-							onHover17();
-						} else if ( 18 === index ) {
-							onHover18();
-						} else if ( 19 === index ) {
-							onHover19();
-						} else if ( 20 === index ) {
-							onHover20();
-						} else if ( 21 === index ) {
-							onHover21();
-						} else if ( 22 === index ) {
-							onHover22();
-						} else if ( 23 === index ) {
-							onHover23();
-						} else if ( 24 === index ) {
-							onHover24();
-						}
-					} } onFocus={ () => {
-						if ( 0 === index ) {
-							onHover();
-						} else if ( 1 === index ) {
-							onHover1();
-						} else if ( 2 === index ) {
-							onHover2();
-						} else if ( 3 === index ) {
-							onHover3();
-						} else if ( 4 === index ) {
-							onHover4();
-						} else if ( 5 === index ) {
-							onHover5();
-						} else if ( 6 === index ) {
-							onHover6();
-						} else if ( 7 === index ) {
-							onHover7();
-						} else if ( 8 === index ) {
-							onHover8();
-						} else if ( 9 === index ) {
-							onHover9();
-						} else if ( 10 === index ) {
-							onHover10();
-						} else if ( 11 === index ) {
-							onHover11();
-						} else if ( 12 === index ) {
-							onHover12();
-						} else if ( 13 === index ) {
-							onHover13();
-						} else if ( 14 === index ) {
-							onHover14();
-						} else if ( 15 === index ) {
-							onHover15();
-						} else if ( 16 === index ) {
-							onHover16();
-						} else if ( 17 === index ) {
-							onHover17();
-						} else if ( 18 === index ) {
-							onHover18();
-						} else if ( 19 === index ) {
-							onHover19();
-						} else if ( 20 === index ) {
-							onHover20();
-						} else if ( 21 === index ) {
-							onHover21();
-						} else if ( 22 === index ) {
-							onHover22();
-						} else if ( 23 === index ) {
-							onHover23();
-						} else if ( 24 === index ) {
-							onHover24();
-						}
-					} } style={ {
+					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( ! titles[ index ].onlyIcon ? 'always' : 'only' ) } kt-tabs-icon-side-${ ( titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` } style={ {
 						margin: ( titleMargin ? titleMargin[ 0 ] + 'px ' + titleMargin[ 1 ] + 'px ' + titleMargin[ 2 ] + 'px ' + titleMargin[ 3 ] + 'px' : '' ),
 					} }>
 						<Button className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
-							backgroundColor: thebackground,
-							color: thecolor,
+							backgroundColor: titleBg,
+							color: titleColor,
 							fontSize: size + sizeType,
 							lineHeight: lineHeight + lineType,
 							fontWeight: fontWeight,
@@ -751,7 +305,7 @@ class KadenceTabs extends Component {
 							borderWidth: ( titleBorderWidth ? titleBorderWidth[ 0 ] + 'px ' + titleBorderWidth[ 1 ] + 'px ' + titleBorderWidth[ 2 ] + 'px ' + titleBorderWidth[ 3 ] + 'px' : '' ),
 							borderRadius: ( titleBorderRadius ? titleBorderRadius[ 0 ] + 'px ' + titleBorderRadius[ 1 ] + 'px ' + titleBorderRadius[ 2 ] + 'px ' + titleBorderRadius[ 3 ] + 'px' : '' ),
 							padding: ( titlePadding ? titlePadding[ 0 ] + 'px ' + titlePadding[ 1 ] + 'px ' + titlePadding[ 2 ] + 'px ' + titlePadding[ 3 ] + 'px' : '' ),
-							borderColor: theborder,
+							borderColor: titleBorder,
 						} } onClick={ () => setAttributes( { currentTab: 1 + index } ) } >
 							{ titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
@@ -1062,8 +616,23 @@ class KadenceTabs extends Component {
 				}
 			</TabPanel>
 		);
+		const renderCSS = (
+			<style>
+				{ `.kt-tabs-id${ uniqueID } .kt-title-item:hover .kt-tab-title {
+					color: ${ titleColorHover } !important;
+					border-color: ${ titleBorderHover } !important;
+					background-color: ${ titleBgHover } !important;
+				}
+				.kt-tabs-id${ uniqueID } .kt-title-item.kt-tab-title-active .kt-tab-title, .kt-tabs-id${ uniqueID } .kt-title-item.kt-tab-title-active:hover .kt-tab-title {
+					color: ${ titleColorActive } !important;
+					border-color: ${ titleBorderActive } !important;
+					background-color: ${ titleBgActive } !important;
+				}` }
+			</style>
+		);
 		return (
 			<Fragment>
+				{ renderCSS }
 				<BlockControls>
 					<BlockAlignmentToolbar
 						value={ blockAlignment }
@@ -1546,55 +1115,22 @@ class KadenceTabs extends Component {
 							title={ __( 'Font Settings' ) }
 							initialOpen={ false }
 						>
-							<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
-							{ typography && (
-								<IconButton
-									label={ __( 'clear' ) }
-									className="kt-font-clear-btn"
-									icon="no-alt"
-									onClick={ onTypeClear }
-								/>
-							) }
-							<SelectSearch
-								height={ 30 }
-								search={ true }
-								multiple={ false }
-								value={ typography }
-								onChange={ onTypeChange }
-								options={ options }
-								placeholder={ __( 'Select a font family' ) }
+							<TypographyControls
+								fontFamily={ typography }
+								onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+								googleFont={ googleFont }
+								onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
+								loadGoogleFont={ loadGoogleFont }
+								onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
+								fontVariant={ fontVariant }
+								onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
+								fontWeight={ fontWeight }
+								onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
+								fontStyle={ fontStyle }
+								onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
+								fontSubset={ fontSubset }
+								onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
 							/>
-							{ typography && (
-								<SelectControl
-									label={ __( 'Font Weight' ) }
-									value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
-									options={ typographyWeights }
-									onChange={ onWeightChange }
-								/>
-							) }
-							{ typography && (
-								<SelectControl
-									label={ __( 'Font Style' ) }
-									value={ fontStyle }
-									options={ typographyStyles }
-									onChange={ onStyleChange }
-								/>
-							) }
-							{ typography && googleFont && (
-								<SelectControl
-									label={ __( 'Font Subset' ) }
-									value={ fontSubset }
-									options={ typographySubsets }
-									onChange={ ( value ) => setAttributes( { fontSubset: value } ) }
-								/>
-							) }
-							{ typography && googleFont && (
-								<ToggleControl
-									label={ __( 'Load Google Font on Frontend' ) }
-									checked={ loadGoogleFont }
-									onChange={ onGLoadChange }
-								/>
-							) }
 							<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
 							{ sizeTabControls }
 							<RangeControl

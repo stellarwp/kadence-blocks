@@ -134,6 +134,87 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'string',
 			default: 'px',
 		},
+		markSize: {
+			type: 'array',
+			default: [ '', '', '' ],
+		},
+		markSizeType: {
+			type: 'string',
+			default: 'px',
+		},
+		markLineHeight: {
+			type: 'array',
+			default: [ '', '', '' ],
+		},
+		markLineType: {
+			type: 'string',
+			default: 'px',
+		},
+		markLetterSpacing: {
+			type: 'number',
+		},
+		markTypography: {
+			type: 'string',
+			default: '',
+		},
+		markGoogleFont: {
+			type: 'boolean',
+			default: false,
+		},
+		markLoadGoogleFont: {
+			type: 'boolean',
+			default: true,
+		},
+		markFontSubset: {
+			type: 'string',
+			default: '',
+		},
+		markFontVariant: {
+			type: 'string',
+			default: '',
+		},
+		markFontWeight: {
+			type: 'string',
+			default: 'regular',
+		},
+		markFontStyle: {
+			type: 'string',
+			default: 'normal',
+		},
+		markColor: {
+			type: 'string',
+			default: '#f76a0c',
+		},
+		markBG: {
+			type: 'string',
+		},
+		markBGOpacity: {
+			type: 'number',
+			default: 1,
+		},
+		markPadding: {
+			type: 'array',
+			default: [ 0, 0, 0, 0 ],
+		},
+		markPaddingControl: {
+			type: 'string',
+			default: 'linked',
+		},
+		markBorder: {
+			type: 'string',
+		},
+		markBorderOpacity: {
+			type: 'number',
+			default: 1,
+		},
+		markBorderWidth: {
+			type: 'number',
+			default: 0,
+		},
+		markBorderStyle: {
+			type: 'string',
+			default: 'solid',
+		},
 	},
 	transforms: {
 		from: [

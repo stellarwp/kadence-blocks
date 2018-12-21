@@ -100,7 +100,7 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, textColor, linkColor, linkHoverColor }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const onResize = ( event, direction, elt ) => {
 			this.setState( {
 				firstWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5,
@@ -185,7 +185,7 @@ class KadenceRowLayout extends Component {
 		} else if ( 'wavei' === bottomSep ) {
 			bottomSVGDivider = <path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" />;
 		} else if ( 'waves' === bottomSep ) {
-			bottomSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z"/><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+			bottomSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
 		} else if ( 'wavesi' === bottomSep ) {
 			bottomSVGDivider = <Fragment><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,73 500,73c154.895,0 250,-45 250,-45l0,70l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,68 500,68c154.895,0 250,-65 250,-65l0,95l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
 		} else if ( 'mtns' === bottomSep ) {
@@ -229,7 +229,7 @@ class KadenceRowLayout extends Component {
 		} else if ( 'wavei' === topSep ) {
 			topSVGDivider = <path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" />;
 		} else if ( 'waves' === topSep ) {
-			topSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z"/><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+			topSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
 		} else if ( 'wavesi' === topSep ) {
 			topSVGDivider = <Fragment><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,73 500,73c154.895,0 250,-45 250,-45l0,70l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,68 500,68c154.895,0 250,-65 250,-65l0,95l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
 		} else if ( 'mtns' === topSep ) {
@@ -559,9 +559,9 @@ class KadenceRowLayout extends Component {
 						label={ icons.outlinebottom }
 						value={ bottomPadding }
 						className="kt-icon-rangecontrol"
-						onChange={ ( bottomPadding ) => {
+						onChange={ ( value ) => {
 							setAttributes( {
-								bottomPadding: bottomPadding,
+								bottomPadding: value,
 							} );
 						} }
 						min={ 0 }
@@ -571,9 +571,9 @@ class KadenceRowLayout extends Component {
 						label={ icons.outlineright }
 						value={ rightPadding }
 						className="kt-icon-rangecontrol"
-						onChange={ ( rightPadding ) => {
+						onChange={ ( value ) => {
 							setAttributes( {
-								rightPadding: rightPadding,
+								rightPadding: value,
 							} );
 						} }
 						min={ 0 }
@@ -583,9 +583,9 @@ class KadenceRowLayout extends Component {
 						label={ icons.outlineleft }
 						value={ leftPadding }
 						className="kt-icon-rangecontrol"
-						onChange={ ( leftPadding ) => {
+						onChange={ ( value ) => {
 							setAttributes( {
-								leftPadding: leftPadding,
+								leftPadding: value,
 							} );
 						} }
 						min={ 0 }
@@ -635,7 +635,7 @@ class KadenceRowLayout extends Component {
 				<p>{ __( 'Overlay Color' ) }</p>
 				<ColorPalette
 					value={ overlay }
-					onChange={ overlay => setAttributes( { overlay } ) }
+					onChange={ value => setAttributes( { overlay: value } ) }
 				/>
 				<MediaUpload
 					onSelect={ onSelectOverlayImage }
@@ -669,7 +669,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'contain', label: __( 'Contain' ) },
 						{ value: 'auto', label: __( 'Auto' ) },
 					] }
-					onChange={ overlayBgImgSize => setAttributes( { overlayBgImgSize } ) }
+					onChange={ value => setAttributes( { overlayBgImgSize: value } ) }
 				/>
 				<SelectControl
 					label={ __( 'Background Image Position' ) }
@@ -685,7 +685,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'right center', label: __( 'Right Center' ) },
 						{ value: 'right bottom', label: __( 'Right Bottom' ) },
 					] }
-					onChange={ overlayBgImgPosition => setAttributes( { overlayBgImgPosition } ) }
+					onChange={ value => setAttributes( { overlayBgImgPosition: value } ) }
 				/>
 				<SelectControl
 					label={ __( 'Background Image Repeat' ) }
@@ -696,7 +696,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'repeat-x', label: __( 'Repeat-x' ) },
 						{ value: 'repeat-y', label: __( 'Repeat-y' ) },
 					] }
-					onChange={ overlayBgImgRepeat => setAttributes( { overlayBgImgRepeat } ) }
+					onChange={ value => setAttributes( { overlayBgImgRepeat: value } ) }
 				/>
 				<SelectControl
 					label={ __( 'Background Image Attachment' ) }
@@ -705,7 +705,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'scroll', label: __( 'Scroll' ) },
 						{ value: 'fixed', label: __( 'Fixed' ) },
 					] }
-					onChange={ overlayBgImgAttachment => setAttributes( { overlayBgImgAttachment } ) }
+					onChange={ value => setAttributes( { overlayBgImgAttachment: value } ) }
 				/>
 				<SelectControl
 					label={ __( 'Blend Mode' ) }
@@ -727,7 +727,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'luminosity', label: __( 'Luminosity' ) },
 
 					] }
-					onChange={ overlayBlendMode => setAttributes( { overlayBlendMode } ) }
+					onChange={ value => setAttributes( { overlayBlendMode: value } ) }
 				/>
 				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
 			</div>
@@ -737,9 +737,9 @@ class KadenceRowLayout extends Component {
 				<RangeControl
 					label={ __( 'Overlay Opacity' ) }
 					value={ overlayOpacity }
-					onChange={ ( overlayOpacity ) => {
+					onChange={ ( value ) => {
 						setAttributes( {
-							overlayOpacity: overlayOpacity,
+							overlayOpacity: value,
 						} );
 					} }
 					min={ 0 }
@@ -748,14 +748,14 @@ class KadenceRowLayout extends Component {
 				<p>{ __( 'Color' ) }</p>
 				<ColorPalette
 					value={ overlay }
-					onChange={ overlay => setAttributes( { overlay } ) }
+					onChange={ value => setAttributes( { overlay: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
 					value={ overlayGradLoc }
-					onChange={ ( overlayGradLoc ) => {
+					onChange={ ( value ) => {
 						setAttributes( {
-							overlayGradLoc: overlayGradLoc,
+							overlayGradLoc: value,
 						} );
 					} }
 					min={ 0 }
@@ -764,14 +764,14 @@ class KadenceRowLayout extends Component {
 				<p>{ __( 'Second Color' ) }</p>
 				<ColorPalette
 					value={ overlaySecond }
-					onChange={ overlaySecond => setAttributes( { overlaySecond } ) }
+					onChange={ value => setAttributes( { overlaySecond: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
 					value={ overlayGradLocSecond }
-					onChange={ ( overlayGradLocSecond ) => {
+					onChange={ ( value ) => {
 						setAttributes( {
-							overlayGradLocSecond: overlayGradLocSecond,
+							overlayGradLocSecond: value,
 						} );
 					} }
 					min={ 0 }
@@ -784,15 +784,15 @@ class KadenceRowLayout extends Component {
 						{ value: 'linear', label: __( 'Linear' ) },
 						{ value: 'radial', label: __( 'Radial' ) },
 					] }
-					onChange={ overlayGradType => setAttributes( { overlayGradType } ) }
+					onChange={ value => setAttributes( { overlayGradType: value } ) }
 				/>
 				{ overlayGradType && 'linear' === overlayGradType && (
 					<RangeControl
 						label={ __( 'Gradient Angle' ) }
 						value={ overlayGradAngle }
-						onChange={ ( overlayGradAngle ) => {
+						onChange={ ( value ) => {
 							setAttributes( {
-								overlayGradAngle: overlayGradAngle,
+								overlayGradAngle: value,
 							} );
 						} }
 						min={ 0 }
@@ -814,7 +814,7 @@ class KadenceRowLayout extends Component {
 							{ value: 'right center', label: __( 'Right Center' ) },
 							{ value: 'right bottom', label: __( 'Right Bottom' ) },
 						] }
-						onChange={ overlayBgImgPosition => setAttributes( { overlayBgImgPosition } ) }
+						onChange={ value => setAttributes( { overlayBgImgPosition: value } ) }
 					/>
 				) }
 				<SelectControl
@@ -837,7 +837,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'luminosity', label: __( 'Luminosity' ) },
 
 					] }
-					onChange={ overlayBlendMode => setAttributes( { overlayBlendMode } ) }
+					onChange={ value => setAttributes( { overlayBlendMode: value } ) }
 				/>
 				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
 			</div>
@@ -872,17 +872,33 @@ class KadenceRowLayout extends Component {
 								} else {
 									tabout = overControls;
 								}
-							} else {
-								if ( 'grad' === tab ) {
-									tabout = overGradControls;
-								} else {
-									tabout = overControls;
-								}
 							}
 							return <div>{ tabout }</div>;
 						}
 					}
 				</TabPanel>
+			</PanelBody>
+		);
+		const colorControls = (
+			<PanelBody
+				title={ __( 'Text Color Settings' ) }
+				initialOpen={ false }
+			>
+				<p>{ __( 'Text Color' ) }</p>
+				<ColorPalette
+					value={ textColor }
+					onChange={ value => setAttributes( { textColor: value } ) }
+				/>
+				<p>{ __( 'Link Color' ) }</p>
+				<ColorPalette
+					value={ linkColor }
+					onChange={ value => setAttributes( { linkColor: value } ) }
+				/>
+				<p>{ __( 'Link Hover Color' ) }</p>
+				<ColorPalette
+					value={ linkHoverColor }
+					onChange={ value => setAttributes( { linkHoverColor: value } ) }
+				/>
 			</PanelBody>
 		);
 		const backgroundControls = (
@@ -893,7 +909,7 @@ class KadenceRowLayout extends Component {
 				<p>{ __( 'Background Color' ) }</p>
 				<ColorPalette
 					value={ bgColor }
-					onChange={ bgColor => setAttributes( { bgColor } ) }
+					onChange={ value => setAttributes( { bgColor: value } ) }
 				/>
 				<MediaUpload
 					onSelect={ onSelectImage }
@@ -927,7 +943,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'contain', label: __( 'Contain' ) },
 						{ value: 'auto', label: __( 'Auto' ) },
 					] }
-					onChange={ bgImgSize => setAttributes( { bgImgSize } ) }
+					onChange={ value => setAttributes( { bgImgSize: value } ) }
 				/>
 				<SelectControl
 					label={ __( 'Background Image Position' ) }
@@ -943,7 +959,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'right center', label: __( 'Right Center' ) },
 						{ value: 'right bottom', label: __( 'Right Bottom' ) },
 					] }
-					onChange={ bgImgPosition => setAttributes( { bgImgPosition } ) }
+					onChange={ value => setAttributes( { bgImgPosition: value } ) }
 				/>
 				<SelectControl
 					label={ __( 'Background Image Repeat' ) }
@@ -954,7 +970,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'repeat-x', label: __( 'Repeat-x' ) },
 						{ value: 'repeat-y', label: __( 'Repeat-y' ) },
 					] }
-					onChange={ bgImgRepeat => setAttributes( { bgImgRepeat } ) }
+					onChange={ value => setAttributes( { bgImgRepeat: value } ) }
 				/>
 				<SelectControl
 					label={ __( 'Background Image Attachment' ) }
@@ -963,7 +979,7 @@ class KadenceRowLayout extends Component {
 						{ value: 'scroll', label: __( 'Scroll' ) },
 						{ value: 'fixed', label: __( 'Fixed' ) },
 					] }
-					onChange={ bgImgAttachment => setAttributes( { bgImgAttachment } ) }
+					onChange={ value => setAttributes( { bgImgAttachment: value } ) }
 				/>
 			</PanelBody>
 		);
@@ -996,14 +1012,6 @@ class KadenceRowLayout extends Component {
 							if ( 'mobile' === tab.name ) {
 								tabout = mobileControls;
 							} else if ( 'tablet' === tab.name ) {
-								tabout = tabletControls;
-							} else {
-								tabout = deskControls;
-							}
-						} else {
-							if ( 'mobile' === tab ) {
-								tabout = mobileControls;
-							} else if ( 'tablet' === tab ) {
 								tabout = tabletControls;
 							} else {
 								tabout = deskControls;
@@ -1235,14 +1243,6 @@ class KadenceRowLayout extends Component {
 								} else {
 									tabout = topSepSizes;
 								}
-							} else {
-								if ( 'mobile' === tab ) {
-									tabout = topSepSizesMobile;
-								} else if ( 'tablet' === tab ) {
-									tabout = topSepSizesTablet;
-								} else {
-									tabout = topSepSizes;
-								}
 							}
 							return <div>{ tabout }</div>;
 						}
@@ -1315,14 +1315,6 @@ class KadenceRowLayout extends Component {
 								} else {
 									tabout = bottomSepSizes;
 								}
-							} else {
-								if ( 'mobile' === tab ) {
-									tabout = bottomSepSizesMobile;
-								} else if ( 'tablet' === tab ) {
-									tabout = bottomSepSizesTablet;
-								} else {
-									tabout = bottomSepSizes;
-								}
 							}
 							return <div>{ tabout }</div>;
 						}
@@ -1336,7 +1328,7 @@ class KadenceRowLayout extends Component {
 					<BlockAlignmentToolbar
 						value={ blockAlignment }
 						controls={ [ 'center', 'wide', 'full' ] }
-						onChange={ blockAlignment => setAttributes( { blockAlignment } ) }
+						onChange={ value => setAttributes( { blockAlignment: value } ) }
 					/>
 					<Toolbar>
 						<MediaUpload
@@ -1427,18 +1419,13 @@ class KadenceRowLayout extends Component {
 										} else {
 											tabout = bottomDividerSettings;
 										}
-									} else {
-										if ( 'topdivider' === tab ) {
-											tabout = topDividerSettings;
-										} else {
-											tabout = bottomDividerSettings;
-										}
 									}
 									return <div>{ tabout }</div>;
 								}
 							}
 						</TabPanel>
 					</PanelBody>
+					{ colorControls }
 					<PanelBody
 						title={ __( 'Structure Settings' ) }
 						initialOpen={ false }
@@ -1479,6 +1466,13 @@ class KadenceRowLayout extends Component {
 						/>
 					</PanelBody>
 				</InspectorControls>
+				{ ( textColor || linkColor || linkHoverColor ) && (
+					<style>
+						{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ textColor }; }` : '' ) }
+						{ ( linkColor ? `#kt-layout-id${ uniqueID } a { color: ${ linkColor }; }` : '' ) }
+						{ ( linkHoverColor ? `#kt-layout-id${ uniqueID } a:hover { color: ${ linkHoverColor }; }` : '' ) }
+					</style>
+				) }
 				<div className={ classes } style={ {
 					marginBottom: bottomMargin,
 					marginTop: topMargin,
@@ -1541,7 +1535,7 @@ class KadenceRowLayout extends Component {
 						</div>
 					) }
 					{ colLayout && 'none' !== topSep && (
-						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` } style={ { 
+						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` } style={ {
 							height: topSepHeight + 'px',
 						} }>
 							<svg style={ { fill: topSepColor, width: topSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
@@ -1594,7 +1588,7 @@ class KadenceRowLayout extends Component {
 						</ResizableBox>
 					) }
 					{ colLayout && (
-						<div className="innerblocks-wrap" style={ {
+						<div className="innerblocks-wrap" id={ `kt-layout-id${ uniqueID }` } style={ {
 							maxWidth: maxWidth + 'px',
 							paddingLeft: leftPadding + 'px',
 							paddingRight: rightPadding + 'px',
@@ -1684,7 +1678,7 @@ class KadenceRowLayout extends Component {
 					) }
 					<div style={ { height: '1px' } }></div>
 					{ colLayout && 'none' !== bottomSep && (
-						<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` } style={ { 
+						<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` } style={ {
 							height: bottomSepHeight + 'px',
 						} }>
 							<svg style={ { fill: bottomSepColor, width: bottomSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">

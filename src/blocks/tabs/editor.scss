@@ -29,7 +29,8 @@
 .edit-post-sidebar p.kt-setting-label {
     font-weight: 600;
     color: #191e23;
-    padding: 0 0 5px;
+	padding: 0 0 5px;
+	clear: both;
 }
 .kt-size-type-options.kt-outline-control {
 	.components-button.kt-size-btn {
@@ -79,6 +80,8 @@
 			border-top-left-radius: 4px;
 			border-top-right-radius: 4px;
 			transition: all .2s ease-in-out;
+			box-shadow: none !important;
+			outline: 0 !important;
 		}
 		&.kt-tab-title-active {
 			z-index: 4;

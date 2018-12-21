@@ -62,6 +62,27 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-frontend-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', KT_BLOCKS_VERSION, true );
 		wp_enqueue_style( 'kadence-blocks-style-css', KT_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KT_BLOCKS_VERSION );
 	}
+	/**
+	 * Hex to RGBA
+	 *
+	 * @param string $hex string hex code.
+	 * @param number $alpha alpha number.
+	 */
+	public function hex2rgba( $hex, $alpha ) {
+		$hex = str_replace( '#', '', $hex );
+
+		if ( strlen( $hex ) == 3 ) {
+			$r = hexdec( substr( $hex, 0, 1 ) . substr( $hex, 0, 1 ) );
+			$g = hexdec( substr( $hex, 1, 1 ) . substr( $hex, 1, 1 ) );
+			$b = hexdec( substr( $hex, 2, 1 ) . substr( $hex, 2, 1 ) );
+		} else {
+			$r = hexdec( substr( $hex, 0, 2 ) );
+			$g = hexdec( substr( $hex, 2, 2 ) );
+			$b = hexdec( substr( $hex, 4, 2 ) );
+		}
+		$rgba = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
+		return $rgba;
+	}
 	public function frontend_gfonts() {
 		if ( empty( self::$gfonts ) ) {
 			return;
@@ -92,7 +113,7 @@ class Kadence_Blocks_Frontend {
 		if ( ! empty( $subsets ) ) {
 			$link .= '&amp;subset=' . implode( ',', $subsets );
 		}
-		echo '<link href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . ' " rel="stylesheet">';
+		echo '<link href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
 
 	}
 	/**
@@ -803,6 +824,49 @@ class Kadence_Blocks_Frontend {
 			}
 			$css .= '}';
 		}
+		// Highlight
+		if ( isset( $attr['markBorder'] ) || isset( $attr['markBorderWidth'] ) || isset( $attr['markBorderStyle'] ) || isset( $attr['markPadding'] ) || isset( $attr['markLetterSpacing'] ) || isset( $attr['markSize'] ) || isset( $attr['markLineHeight'] ) || isset( $attr['markTypography'] ) || isset( $attr['markColor'] ) || isset( $attr['markBG'] ) ) {
+			$css .= '#kt-adv-heading' . $unique_id . ' mark {';
+			if ( isset( $attr['markLetterSpacing'] ) && ! empty( $attr['markLetterSpacing'] ) ) {
+				$css .= 'letter-spacing:' . $attr['markLetterSpacing'] . 'px;';
+			}
+			if ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && !empty( $attr['markSize'][ 0 ] ) ) {
+				$css .= 'font-size:' . $attr['markSize'][0] . ( ! isset( $attr['markSizeType'] ) ? 'px' : $attr['markSizeType'] ) . ';';
+			}
+			if ( isset( $attr['markLineHeight'] ) && is_array( $attr['markLineHeight'] ) && !empty( $attr['markLineHeight'][ 0 ] ) ) {
+				$css .= 'line-height:' . $attr['markLineHeight'][0] . ( ! isset( $attr['markLineType'] ) ? 'px' : $attr['markLineType'] ) . ';';
+			}
+			if ( isset( $attr['markTypography'] ) && ! empty( $attr['markTypography'] ) ) {
+				$css .= 'font-family:' . $attr['markTypography'] . ';';
+			}
+			if ( isset( $attr['markFontWeight'] ) && ! empty( $attr['markFontWeight'] ) ) {
+				$css .= 'font-weight:' . $attr['markFontWeight'] . ';';
+			}
+			if ( isset( $attr['markFontStyle'] ) && ! empty( $attr['markFontStyle'] ) ) {
+				$css .= 'font-style:' . $attr['markFontStyle'] . ';';
+			}
+			if ( isset( $attr['markColor'] ) && ! empty( $attr['markColor'] ) ) {
+				$css .= 'color:' . $attr['markColor'] . ';';
+			}
+			if ( isset( $attr['markBG'] ) && ! empty( $attr['markBG'] ) ) {
+				$alpha = ( isset( $attr['markBGOpacity'] ) && ! empty( $attr['markBGOpacity'] ) ? $attr['markBGOpacity'] : 1 );
+				$css .= 'background:' . $this->hex2rgba( $attr['markBG'], $alpha ) . ';';
+			}
+			if ( isset( $attr['markBorder'] ) && ! empty( $attr['markBorder'] ) ) {
+				$alpha = ( isset( $attr['markBorderOpacity'] ) && ! empty( $attr['markBorderOpacity'] ) ? $attr['markBorderOpacity'] : 1 );
+				$css .= 'border-color:' . $this->hex2rgba( $attr['markBorder'], $alpha ) . ';';
+			}
+			if ( isset( $attr['markBorderWidth'] ) && ! empty( $attr['markBorderWidth'] ) ) {
+				$css .= 'border-width:' . $attr['markBorderWidth'] . 'px;';
+			}
+			if ( isset( $attr['markBorderStyle'] ) && ! empty( $attr['markBorderStyle'] ) ) {
+				$css .= 'border-style:' . $attr['markBorderStyle'] . ';';
+			}
+			if( isset( $attr['markPadding'] ) && is_array( $attr['markPadding'] ) ) {
+				$css .= 'padding:' . ( isset( $attr['markPadding'][0] ) ? $attr['markPadding'][0] . 'px' : 0 ) . ' ' . ( isset( $attr['markPadding'][1] ) ? $attr['markPadding'][1] . 'px' : 0 ) . ' ' . ( isset( $attr['markPadding'][2] ) ? $attr['markPadding'][2] . 'px' : 0 ) . ' ' . ( isset( $attr['markPadding'][3] ) ? $attr['markPadding'][3] . 'px' : 0 ) . ';';
+			}
+			$css .= '}';
+		}
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || $attr['loadGoogleFont'] == true ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet
 			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {
@@ -825,6 +889,28 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+		if ( isset( $attr['markGoogleFont'] ) && $attr['markGoogleFont'] && ( ! isset( $attr['markLoadGoogleFont'] ) || $attr['markLoadGoogleFont'] == true ) && isset( $attr['markTypography'] ) ) {
+			// Check if the font has been added yet
+			if ( ! array_key_exists( $attr['markTypography'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily' => $attr['markTypography'],
+					'fontvariants' => ( isset( $attr['markFontVariant'] ) && ! empty( $attr['markFontVariant'] ) ? array( $attr['markFontVariant'] ) : array() ),
+					'fontsubsets' => ( isset( $attr['markFontSubset'] ) && !empty( $attr['markFontSubset'] ) ? array( $attr['markFontSubset'] ) : array() ),
+				);
+				self::$gfonts[ $attr['markTypography'] ] = $add_font;
+			} else {
+				if( isset( $attr['markFontVariant'] ) && ! empty( $attr['markFontVariant'] ) ) {
+					if ( ! in_array( $attr['markFontVariant'], self::$gfonts[ $attr['markTypography'] ]['fontvariants'], true ) ) {
+						array_push( self::$gfonts[ $attr['markTypography'] ]['fontvariants'], $attr['markFontVariant'] );
+					}
+				}
+				if( isset( $attr['markFontSubset'] ) && ! empty( $attr['markFontSubset'] ) ) {
+					if ( ! in_array( $attr['markFontSubset'], self::$gfonts[ $attr['markTypography'] ]['fontsubsets'], true ) ) {
+						array_push(  self::$gfonts[ $attr['markTypography'] ]['fontsubsets'], $attr['markFontSubset'] );
+					}
+				}
+			}
+		}
 		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
 				$css .= '#kt-adv-heading' . $unique_id . ' {';
@@ -834,6 +920,18 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $attr['tabLineHeight'] ) ) {
 						$css .= 'line-height:' . $attr['tabLineHeight'] . ( ! isset( $attr['lineType'] ) ? 'px' : $attr['lineType'] ) . ';';
 					}
+				$css .= '}';
+			$css .= '}';
+		}
+		if ( ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && ! empty( $attr['markSize'][ 1 ] ) ) || isset( $attr['markLineHeight'] ) && is_array( $attr['markLineHeight'] ) && ! empty( $attr['markLineHeight'][ 1 ] ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '#kt-adv-heading' . $unique_id . ' mark {';
+				if ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && !empty( $attr['markSize'][ 1 ] ) ) {
+					$css .= 'font-size:' . $attr['markSize'][ 1 ] . ( ! isset( $attr['markSizeType'] ) ? 'px' : $attr['markSizeType'] ) . ';';
+				}
+				if ( isset( $attr['markLineHeight'] ) && is_array( $attr['markLineHeight'] ) && !empty( $attr['markLineHeight'][ 1 ] ) ) {
+					$css .= 'line-height:' . $attr['markLineHeight'][ 1 ] . ( ! isset( $attr['markLineType'] ) ? 'px' : $attr['markLineType'] ) . ';';
+				}
 				$css .= '}';
 			$css .= '}';
 		}
@@ -849,6 +947,19 @@ class Kadence_Blocks_Frontend {
 				$css .= '}';
 			$css .= '}';
 		}
+		if ( ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && ! empty( $attr['markSize'][ 2 ] ) ) || isset( $attr['markLineHeight'] ) && is_array( $attr['markLineHeight'] ) && ! empty( $attr['markLineHeight'][ 2 ] ) ) {
+			$css .= '@media (max-width: 767px) {';
+				$css .= '#kt-adv-heading' . $unique_id . ' mark {';
+				if ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && !empty( $attr['markSize'][ 2 ] ) ) {
+					$css .= 'font-size:' . $attr['markSize'][ 2 ] . ( ! isset( $attr['markSizeType'] ) ? 'px' : $attr['markSizeType'] ) . ';';
+				}
+				if ( isset( $attr['markLineHeight'] ) && is_array( $attr['markLineHeight'] ) && !empty( $attr['markLineHeight'][ 2 ] ) ) {
+					$css .= 'line-height:' . $attr['markLineHeight'][ 2 ] . ( ! isset( $attr['markLineType'] ) ? 'px' : $attr['markLineType'] ) . ';';
+				}
+				$css .= '}';
+			$css .= '}';
+		}
+		
 		return $css;
 	}
 	/**
@@ -1228,6 +1339,21 @@ class Kadence_Blocks_Frontend {
 				$css .= 'background-attachment:' . ( isset( $attr['bgImgAttachment'] ) ? $attr['bgImgAttachment'] : 'scroll' ) . ';';
 				$css .= 'background-repeat:' . ( isset( $attr['bgImgRepeat'] ) ? $attr['bgImgRepeat'] : 'no-repeat' ) . ';';
 			}
+			$css .= '}';
+		}
+		if ( isset( $attr['textColor'] ) ) {
+			$css .= '.kt-layout-id' . $unique_id . ', .kt-layout-id' . $unique_id . ' h1, .kt-layout-id' . $unique_id . ' h2, .kt-layout-id' . $unique_id . ' h3, .kt-layout-id' . $unique_id . ' h4, .kt-layout-id' . $unique_id . ' h5, .kt-layout-id' . $unique_id . ' h6 {';
+				$css .= 'color:' . $attr['textColor'] . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['linkColor'] ) ) {
+			$css .= '.kt-layout-id' . $unique_id . ' a {';
+				$css .= 'color:' . $attr['linkColor'] . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['linkHoverColor'] ) ) {
+			$css .= '.kt-layout-id' . $unique_id . ' a:hover {';
+				$css .= 'color:' . $attr['linkHoverColor'] . ';';
 			$css .= '}';
 		}
 		if ( isset( $attr['bottomSep'] ) && 'none' != $attr['bottomSep'] ) {

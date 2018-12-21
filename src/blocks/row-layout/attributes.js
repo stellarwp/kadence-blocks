@@ -253,5 +253,17 @@ const attributes = {
 	firstColumnWidth: {
 		type: 'number',
 	},
+	textColor: {
+		type: 'string',
+		default: '',
+	},
+	linkColor: {
+		type: 'string',
+		default: '',
+	},
+	linkHoverColor: {
+		type: 'string',
+		default: '',
+	},
 };
 export default attributes;

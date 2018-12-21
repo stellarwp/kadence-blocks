@@ -7,11 +7,11 @@
  * Import Css
  */
 import './editor.scss';
+import './markformat';
 import range from 'lodash/range';
 import map from 'lodash/map';
-import SelectSearch from 'react-select-search';
-import fonts from '../../fonts';
-import gFonts from '../../gfonts';
+import hexToRGBA from '../../hex-to-rgba';
+import TypographyControls from '../../typography-control';
 import WebfontLoader from '../../fontloader';
 /**
  * Internal block libraries
@@ -38,8 +38,6 @@ const {
 	ButtonGroup,
 	Button,
 	Dashicon,
-	IconButton,
-	ToggleControl,
 	TabPanel,
 	SelectControl,
 } = wp.components;
@@ -55,11 +53,22 @@ class KadenceAdvancedHeading extends Component {
 			} );
 		}
 	}
-	capitalizeFirstLetter( string ) {
-		return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
-	}
 	render() {
-		const { attributes: { align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
+		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
+		const markBGString = ( markBG ? hexToRGBA( markBG, markBGOpacity ) : '' );
+		const markBorderString = ( markBorder ? hexToRGBA( markBorder, markBorderOpacity ) : '' );
+		const gconfig = {
+			google: {
+				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
+			},
+		};
+		const sgconfig = {
+			google: {
+				families: [ markTypography + ( markFontVariant ? ':' + markFontVariant : '' ) ],
+			},
+		};
+		const config = ( googleFont ? gconfig : '' );
+		const sconfig = ( markGoogleFont ? sgconfig : '' );
 		const tagName = 'h' + level;
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
@@ -69,52 +78,6 @@ class KadenceAdvancedHeading extends Component {
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
 			{ key: '%', name: __( '%' ) },
-		];
-		const standardWeights = [
-			{ value: 'regular', label: 'Normal' },
-			{ value: 'bold', label: 'Bold' },
-		];
-		const standardStyles = [
-			{ value: 'normal', label: 'Normal' },
-			{ value: 'italic', label: 'Italic' },
-		];
-		const gconfig = {
-			google: {
-				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
-			},
-		};
-		const config = ( googleFont ? gconfig : '' );
-		const typographyWeights = ( googleFont && typography ? gFonts[ typography ].w.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardWeights );
-		const typographyStyles = ( googleFont && typography ? gFonts[ typography ].i.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
-		const typographySubsets = ( googleFont && typography ? gFonts[ typography ].s.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
-		const fontsarray = fonts.map( ( name ) => {
-			return { name: name, value: name, google: true };
-		} );
-		const options = [
-			{
-				type: 'group',
-				name: 'Standard Fonts',
-				items: [
-					{ name: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
-					{ name: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
-					{ name: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
-					{ name: 'Impact, Charcoal, sans-serif', value: 'Impact, Charcoal, sans-serif', google: false },
-					{ name: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', value: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', google: false },
-					{ name: 'Tahoma, Geneva, sans-serif', value: 'Tahoma, Geneva, sans-serif', google: false },
-					{ name: '"Trebuchet MS", Helvetica, sans-serif', value: '"Trebuchet MS", Helvetica, sans-serif', google: false },
-					{ name: 'Verdana, Geneva, sans-serif', value: 'Verdana, Geneva, sans-serif', google: false },
-					{ name: 'Georgia, serif', value: 'Georgia, serif', google: false },
-					{ name: '"Palatino Linotype", "Book Antiqua", Palatino, serif', value: '"Palatino Linotype", "Book Antiqua", Palatino, serif', google: false },
-					{ name: '"Times New Roman", Times, serif', value: '"Times New Roman", Times, serif', google: false },
-					{ name: 'Courier, monospace', value: 'Courier, monospace', google: false },
-					{ name: '"Lucida Console", Monaco, monospace', value: '"Lucida Console", Monaco, monospace', google: false },
-				],
-			},
-			{
-				type: 'group',
-				name: 'Google Fonts',
-				items: fontsarray,
-			},
 		];
 		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
 		const marginMin = ( marginType === 'em' ? 0.1 : 1 );
@@ -135,105 +98,6 @@ class KadenceAdvancedHeading extends Component {
 				subscript: String( targetLevel ),
 			} ];
 		};
-		const onTypeChange = ( select ) => {
-			let variant;
-			let weight;
-			let subset;
-			if ( select.google ) {
-				if ( ! gFonts[ select.value ].v.includes( 'regular' ) ) {
-					variant = gFonts[ select.value ].v[ 0 ];
-				} else {
-					variant = '';
-				}
-				if ( ! gFonts[ select.value ].w.includes( 'regular' ) ) {
-					weight = gFonts[ select.value ].w[ 0 ];
-				} else {
-					weight = '400';
-				}
-				if ( gFonts[ select.value ].s.length > 1 ) {
-					subset = 'latin';
-				} else {
-					subset = '';
-				}
-			} else {
-				subset = '';
-				variant = '';
-				weight = '400';
-			}
-			setAttributes( {
-				typography: select.value,
-				googleFont: select.google,
-				fontVariant: variant,
-				fontWeight: weight,
-				fontStyle: 'normal',
-				fontSubset: subset,
-			} );
-		};
-		const onTypeClear = () => {
-			setAttributes( {
-				typography: '',
-				googleFont: false,
-				loadGoogleFont: true,
-				fontVariant: '',
-				fontSubset: '',
-				fontWeight: 'regular',
-				fontStyle: 'normal',
-			} );
-		};
-		const onWeightChange = ( select ) => {
-			if ( googleFont ) {
-				let variant;
-				if ( 'italic' === fontStyle ) {
-					if ( 'regular' === select ) {
-						variant = 'italic';
-					} else {
-						variant = select + 'italic';
-					}
-				} else {
-					variant = select;
-				}
-				setAttributes( {
-					fontVariant: variant,
-					fontWeight: ( 'regular' === select ? '400' : select ),
-				} );
-			} else {
-				setAttributes( {
-					fontVariant: '',
-					fontWeight: ( 'regular' === select ? '400' : select ),
-				} );
-			}
-		};
-		const onGLoadChange = ( select ) => {
-			setAttributes( {
-				loadGoogleFont: select,
-			} );
-		};
-		const onStyleChange = ( select ) => {
-			if ( googleFont ) {
-				let variant;
-				if ( 'italic' === select ) {
-					if ( ! fontWeight || 'regular' === fontWeight ) {
-						variant = 'italic';
-					} else {
-						variant = fontWeight + 'italic';
-					}
-				} else {
-					variant = ( fontWeight ? fontWeight : 'regular' );
-				}
-				setAttributes( {
-					fontVariant: variant,
-					fontStyle: select,
-				} );
-			} else {
-				setAttributes( {
-					fontVariant: '',
-					fontStyle: select,
-				} );
-			}
-		};
-		// const callback = status => {
-		// 	console.log( status );
-		// };
 		const deskControls = (
 			<PanelBody>
 				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
@@ -409,14 +273,6 @@ class KadenceAdvancedHeading extends Component {
 							} else {
 								tabout = deskControls;
 							}
-						} else {
-							if ( 'mobile' === tab ) {
-								tabout = mobileControls;
-							} else if ( 'tablet' === tab ) {
-								tabout = tabletControls;
-							} else {
-								tabout = deskControls;
-							}
 						}
 						return <div>{ tabout }</div>;
 					}
@@ -425,6 +281,22 @@ class KadenceAdvancedHeading extends Component {
 		);
 		return (
 			<Fragment>
+				<style>
+					{ `.kt-adv-heading${ uniqueID } mark {
+						color: ${ markColor };
+						background: ${ ( markBG ? markBGString : 'transparent' ) };
+						font-weight: ${ ( markFontWeight ? markFontWeight : 'inherit' ) };
+						font-style: ${ ( markFontStyle ? markFontStyle : 'inherit' ) };
+						font-size: ${ ( markSize && markSize[ 0 ] ? markSize[ 0 ] + markSizeType : 'inherit' ) };
+						line-height: ${ ( markLineHeight && markLineHeight[ 0 ] ? markLineHeight[ 0 ] + markLineType : 'inherit' ) };
+						letter-spacing: ${ ( markLetterSpacing ? markLetterSpacing + 'px' : 'inherit' ) };
+						font-family: ${ ( markTypography ? markTypography : 'inherit' ) };
+						border-color: ${ ( markBorder ? markBorderString : 'transparent' ) };
+						border-width: ${ ( markBorderWidth ? markBorderWidth + 'px' : '0' ) };
+						border-style: ${ ( markBorderStyle ? markBorderStyle : 'solid' ) };
+						padding: ${ ( markPadding ? markPadding[ 0 ] + 'px ' + markPadding[ 1 ] + 'px ' + markPadding[ 2 ] + 'px ' + markPadding[ 3 ] + 'px' : '' ) };
+					}` }
+				</style>
 				<BlockControls>
 					<Toolbar controls={ range( 2, 5 ).map( createLevelControl ) } />
 					<AlignmentToolbar
@@ -450,64 +322,109 @@ class KadenceAdvancedHeading extends Component {
 							value={ color }
 							onChange={ ( value ) => setAttributes( { color: value } ) }
 						/>
-						<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
-						{ typography && (
-							<IconButton
-								label={ __( 'clear' ) }
-								className="kt-font-clear-btn"
-								icon="no-alt"
-								onClick={ onTypeClear }
-							/>
-						) }
-						<SelectSearch
-							height={ 30 }
-							search={ true }
-							multiple={ false }
-							value={ typography }
-							onChange={ onTypeChange }
-							options={ options }
-							placeholder={ __( 'Select a font family' ) }
-						/>
-						{ typography && (
-							<SelectControl
-								label={ __( 'Font Weight' ) }
-								value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
-								options={ typographyWeights }
-								onChange={ onWeightChange }
-							/>
-						) }
-						{ typography && (
-							<SelectControl
-								label={ __( 'Font Style' ) }
-								value={ fontStyle }
-								options={ typographyStyles }
-								onChange={ onStyleChange }
-							/>
-						) }
-						{ typography && googleFont && (
-							<SelectControl
-								label={ __( 'Font Subset' ) }
-								value={ fontSubset }
-								options={ typographySubsets }
-								onChange={ ( value ) => setAttributes( { fontSubset: value } ) }
-							/>
-						) }
-						{ typography && googleFont && (
-							<ToggleControl
-								label={ __( 'Load Google Font on Frontend' ) }
-								checked={ loadGoogleFont }
-								onChange={ onGLoadChange }
-							/>
-						) }
 						<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
 						{ tabControls }
+						<TypographyControls
+							letterSpacing={ letterSpacing }
+							onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
+							fontFamily={ typography }
+							onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+							googleFont={ googleFont }
+							onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
+							loadGoogleFont={ loadGoogleFont }
+							onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
+							fontVariant={ fontVariant }
+							onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
+							fontWeight={ fontWeight }
+							onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
+							fontStyle={ fontStyle }
+							onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
+							fontSubset={ fontSubset }
+							onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
+						/>
+					</PanelBody>
+					<PanelBody
+						title={ __( 'Highlight Settings' ) }
+						initialOpen={ false }
+					>
+						<h2>{ __( 'Highlight Color' ) }</h2>
+						<ColorPalette
+							value={ markColor }
+							onChange={ value => setAttributes( { markColor: value } ) }
+						/>
+						<h2>{ __( 'Highlight Background' ) }</h2>
+						<ColorPalette
+							value={ markBG }
+							onChange={ value => setAttributes( { markBG: value } ) }
+						/>
 						<RangeControl
-							label={ __( 'Letter Spacing' ) }
-							value={ ( letterSpacing ? letterSpacing : '' ) }
-							onChange={ ( value ) => setAttributes( { letterSpacing: value } ) }
-							min={ -5 }
-							max={ 15 }
-							step={ 0.1 }
+							label={ __( 'Highlight Background Opacity' ) }
+							value={ markBGOpacity }
+							onChange={ value => setAttributes( { markBGOpacity: value } ) }
+							min={ 0 }
+							max={ 1 }
+							step={ 0.01 }
+						/>
+						<h2>{ __( 'Highlight Border Color' ) }</h2>
+						<ColorPalette
+							value={ markBorder }
+							onChange={ value => setAttributes( { markBorder: value } ) }
+						/>
+						<RangeControl
+							label={ __( 'Highlight Border Opacity' ) }
+							value={ markBorderOpacity }
+							onChange={ value => setAttributes( { markBorderOpacity: value } ) }
+							min={ 0 }
+							max={ 1 }
+							step={ 0.01 }
+						/>
+						<SelectControl
+							label={ __( 'Highlight Border Style' ) }
+							value={ markBorderStyle }
+							options={ [
+								{ value: 'solid', label: __( 'Solid' ) },
+								{ value: 'dashed', label: __( 'Dashed' ) },
+								{ value: 'dotted', label: __( 'Dotted' ) },
+							] }
+							onChange={ value => setAttributes( { markBorderStyle: value } ) }
+						/>
+						<RangeControl
+							label={ __( 'Highlight Border Width' ) }
+							value={ markBorderWidth }
+							onChange={ value => setAttributes( { markBorderWidth: value } ) }
+							min={ 0 }
+							max={ 20 }
+							step={ 1 }
+						/>
+						<TypographyControls
+							fontSize={ markSize }
+							onFontSize={ ( value ) => setAttributes( { markSize: value } ) }
+							fontSizeType={ markSizeType }
+							onFontSizeType={ ( value ) => setAttributes( { markSizeType: value } ) }
+							lineHeight={ markLineHeight }
+							onLineHeight={ ( value ) => setAttributes( { markLineHeight: value } ) }
+							lineHeightType={ markLineType }
+							onLineHeightType={ ( value ) => setAttributes( { markLineType: value } ) }
+							letterSpacing={ markLetterSpacing }
+							onLetterSpacing={ ( value ) => setAttributes( { markLetterSpacing: value } ) }
+							fontFamily={ markTypography }
+							onFontFamily={ ( value ) => setAttributes( { markTypography: value } ) }
+							googleFont={ markGoogleFont }
+							onGoogleFont={ ( value ) => setAttributes( { markGoogleFont: value } ) }
+							loadGoogleFont={ markLoadGoogleFont }
+							onLoadGoogleFont={ ( value ) => setAttributes( { markLoadGoogleFont: value } ) }
+							fontVariant={ markFontVariant }
+							onFontVariant={ ( value ) => setAttributes( { markFontVariant: value } ) }
+							fontWeight={ markFontWeight }
+							onFontWeight={ ( value ) => setAttributes( { markFontWeight: value } ) }
+							fontStyle={ markFontStyle }
+							onFontStyle={ ( value ) => setAttributes( { markFontStyle: value } ) }
+							fontSubset={ markFontSubset }
+							onFontSubset={ ( value ) => setAttributes( { markFontSubset: value } ) }
+							padding={ markPadding }
+							onPadding={ ( value ) => setAttributes( { markPadding: value } ) }
+							paddingControl={ markPaddingControl }
+							onPaddingControl={ ( value ) => setAttributes( { markPaddingControl: value } ) }
 						/>
 					</PanelBody>
 					<PanelBody
@@ -561,6 +478,7 @@ class KadenceAdvancedHeading extends Component {
 					</PanelBody>
 				</InspectorControls>
 				<RichText
+					formattingControls={ [ 'bold', 'italic', 'link', 'strikethrough', 'mark' ] }
 					wrapperClassName={ className }
 					tagName={ tagName }
 					value={ content }
@@ -590,11 +508,15 @@ class KadenceAdvancedHeading extends Component {
 						marginTop: ( topMargin ? topMargin + marginType : '' ),
 						marginBottom: ( bottomMargin ? bottomMargin + marginType : '' ),
 					} }
-					className={ className }
+					className={ `kt-adv-heading${ uniqueID }` }
 					placeholder={ __( 'Write heading…' ) }
 				/>
 				{ googleFont && (
 					<WebfontLoader config={ config }>
+					</WebfontLoader>
+				) }
+				{ markGoogleFont && (
+					<WebfontLoader config={ sconfig }>
 					</WebfontLoader>
 				) }
 			</Fragment>

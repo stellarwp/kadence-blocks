@@ -9,10 +9,7 @@ import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
 import FaIco from '../../faicons';
 import IcoNames from '../../svgiconsnames';
-import SelectSearch from 'react-select-search';
-import fonts from '../../fonts';
-import gFonts from '../../gfonts';
-//import WebfontLoader from '@dr-kobros/react-webfont-loader';
+import TypographyControls from '../../typography-control';
 import WebfontLoader from '../../fontloader';
 /**
  * Import Css
@@ -36,10 +33,8 @@ const {
 } = wp.element;
 const {
 	IconButton,
-	Dashicon,
 	TabPanel,
 	PanelBody,
-	ToggleControl,
 	RangeControl,
 	SelectControl,
 } = wp.components;
@@ -48,14 +43,12 @@ class KadenceAdvancedButton extends Component {
 	constructor() {
 		super( ...arguments );
 		this.state = {
-			hovered: 'false',
 			btnFocused: 'false',
 		};
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
 			const blockConfig = kadence_blocks_params.config[ 'kadence/advancedbtn' ];
-			console.log( blockConfig );
 			if ( blockConfig !== undefined && typeof blockConfig === 'object' ) {
 				Object.keys( blockConfig ).map( ( attribute ) => {
 					this.props.attributes[ attribute ] = blockConfig[ attribute ];
@@ -92,172 +85,21 @@ class KadenceAdvancedButton extends Component {
 			btns: newItems,
 		} );
 	}
-	capitalizeFirstLetter( string ) {
-		return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
-	}
 	render() {
-		const { attributes: { btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant }, className, setAttributes, isSelected } = this.props;
-		const standardWeights = [
-			{ value: 'regular', label: 'Normal' },
-			{ value: 'bold', label: 'Bold' },
-		];
-		const standardStyles = [
-			{ value: 'normal', label: 'Normal' },
-			{ value: 'italic', label: 'Italic' },
-		];
+		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant }, className, setAttributes, isSelected } = this.props;
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
 			},
 		};
 		const config = ( googleFont ? gconfig : '' );
-		const typographyWeights = ( googleFont && typography ? gFonts[ typography ].w.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardWeights );
-		const typographyStyles = ( googleFont && typography ? gFonts[ typography ].i.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
-		const typographySubsets = ( googleFont && typography ? gFonts[ typography ].s.map( opt => ( { label: this.capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
-		const fontsarray = fonts.map( ( name ) => {
-			return { name: name, value: name, google: true };
-		} );
-		const options = [
-			{
-				type: 'group',
-				name: 'Standard Fonts',
-				items: [
-					{ name: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
-					{ name: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
-					{ name: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
-					{ name: 'Impact, Charcoal, sans-serif', value: 'Impact, Charcoal, sans-serif', google: false },
-					{ name: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', value: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', google: false },
-					{ name: 'Tahoma, Geneva, sans-serif', value: 'Tahoma, Geneva, sans-serif', google: false },
-					{ name: '"Trebuchet MS", Helvetica, sans-serif', value: '"Trebuchet MS", Helvetica, sans-serif', google: false },
-					{ name: 'Verdana, Geneva, sans-serif', value: 'Verdana, Geneva, sans-serif', google: false },
-					{ name: 'Georgia, serif', value: 'Georgia, serif', google: false },
-					{ name: '"Palatino Linotype", "Book Antiqua", Palatino, serif', value: '"Palatino Linotype", "Book Antiqua", Palatino, serif', google: false },
-					{ name: '"Times New Roman", Times, serif', value: '"Times New Roman", Times, serif', google: false },
-					{ name: 'Courier, monospace', value: 'Courier, monospace', google: false },
-					{ name: '"Lucida Console", Monaco, monospace', value: '"Lucida Console", Monaco, monospace', google: false },
-				],
-			},
-			{
-				type: 'group',
-				name: 'Google Fonts',
-				items: fontsarray,
-			},
-		];
-		const onTypeChange = ( select ) => {
-			let variant;
-			let weight;
-			let subset;
-			if ( select.google ) {
-				if ( ! gFonts[ select.value ].v.includes( 'regular' ) ) {
-					variant = gFonts[ select.value ].v[ 0 ];
-				} else {
-					variant = '';
-				}
-				if ( ! gFonts[ select.value ].w.includes( 'regular' ) ) {
-					weight = gFonts[ select.value ].w[ 0 ];
-				} else {
-					weight = '400';
-				}
-				if ( gFonts[ select.value ].s.length > 1 ) {
-					subset = 'latin';
-				} else {
-					subset = '';
-				}
-			} else {
-				subset = '';
-				variant = '';
-				weight = '400';
-			}
-			setAttributes( {
-				typography: select.value,
-				googleFont: select.google,
-				fontVariant: variant,
-				fontWeight: weight,
-				fontStyle: 'normal',
-				fontSubset: subset,
-			} );
-		};
-		const onTypeClear = () => {
-			setAttributes( {
-				typography: '',
-				googleFont: false,
-				loadGoogleFont: true,
-				fontVariant: '',
-				fontSubset: '',
-				fontWeight: 'regular',
-				fontStyle: 'normal',
-			} );
-		};
-		const onWeightChange = ( select ) => {
-			if ( googleFont ) {
-				let variant;
-				if ( 'italic' === fontStyle ) {
-					if ( 'regular' === select ) {
-						variant = 'italic';
-					} else {
-						variant = select + 'italic';
-					}
-				} else {
-					variant = select;
-				}
-				setAttributes( {
-					fontVariant: variant,
-					fontWeight: ( 'regular' === select ? '400' : select ),
-				} );
-			} else {
-				setAttributes( {
-					fontVariant: '',
-					fontWeight: ( 'regular' === select ? '400' : select ),
-				} );
-			}
-		};
-		const onGLoadChange = ( select ) => {
-			setAttributes( {
-				loadGoogleFont: select,
-			} );
-		};
-		const onStyleChange = ( select ) => {
-			if ( googleFont ) {
-				let variant;
-				if ( 'italic' === select ) {
-					if ( ! fontWeight || 'regular' === fontWeight ) {
-						variant = 'italic';
-					} else {
-						variant = fontWeight + 'italic';
-					}
-				} else {
-					variant = ( fontWeight ? fontWeight : 'regular' );
-				}
-				setAttributes( {
-					fontVariant: variant,
-					fontStyle: select,
-				} );
-			} else {
-				setAttributes( {
-					fontVariant: '',
-					fontStyle: select,
-				} );
-			}
-		};
 		const renderBtns = ( index ) => {
 			return (
 				<div className={ `btn-area-wrap kt-btn-${ index }-area` }>
-					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` } onMouseOut={ onMouseOut } onMouseOver={ () => {
-						if ( 1 === index ) {
-							onHover1();
-						} else if ( 2 === index ) {
-							onHover2();
-						} else if ( 3 === index ) {
-							onHover3();
-						} else if ( 4 === index ) {
-							onHover4();
-						} else {
-							onHover();
-						}
-					} }>
+					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` }>
 						<span className={ `kt-button kt-button-${ index }` } style={ {
-							backgroundColor: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].backgroundHover : btns[ index ].background ),
-							color: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].colorHover : btns[ index ].color ),
+							backgroundColor: btns[ index ].background,
+							color: btns[ index ].color,
 							fontSize: btns[ index ].size + 'px',
 							fontWeight: fontWeight,
 							fontStyle: fontStyle,
@@ -265,7 +107,7 @@ class KadenceAdvancedButton extends Component {
 							fontFamily: ( typography ? typography : '' ),
 							borderRadius: btns[ index ].borderRadius + 'px',
 							borderWidth: btns[ index ].borderWidth + 'px',
-							borderColor: ( this.state.hovered && 'btn' + index === this.state.hovered ? btns[ index ].borderHover : btns[ index ].border ),
+							borderColor: btns[ index ].border,
 							paddingLeft: btns[ index ].paddingLR + 'px',
 							paddingRight: btns[ index ].paddingLR + 'px',
 							paddingTop: btns[ index ].paddingBT + 'px',
@@ -323,48 +165,6 @@ class KadenceAdvancedButton extends Component {
 					) }
 				</div>
 			);
-		};
-		const onHover = () => {
-			if ( 'btn0' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'btn0',
-				} );
-			}
-		};
-		const onHover1 = () => {
-			if ( 'btn1' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'btn1',
-				} );
-			}
-		};
-		const onHover2 = () => {
-			if ( 'btn2' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'btn2',
-				} );
-			}
-		};
-		const onHover3 = () => {
-			if ( 'btn3' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'btn3',
-				} );
-			}
-		};
-		const onHover4 = () => {
-			if ( 'btn4' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'btn4',
-				} );
-			}
-		};
-		const onMouseOut = () => {
-			if ( 'false' !== this.state.hovered ) {
-				this.setState( {
-					hovered: 'false',
-				} );
-			}
 		};
 		const onFocusBtn = () => {
 			if ( 'btn0' !== this.state.btnFocused ) {
@@ -496,12 +296,6 @@ class KadenceAdvancedButton extends Component {
 									} else {
 										tabout = buttonSettings( index );
 									}
-								} else {
-									if ( 'hover' + index === tab ) {
-										tabout = hoverSettings( index );
-									} else {
-										tabout = buttonSettings( index );
-									}
 								}
 								return <div>{ tabout }</div>;
 							}
@@ -600,9 +394,24 @@ class KadenceAdvancedButton extends Component {
 				{ times( btnCount, n => renderBtns( n ) ) }
 			</div>
 		);
+		const renderBtnCSS = ( index ) => {
+			return (
+				`#kt-btns_${ uniqueID } .kt-button-${ index }:hover {
+					color: ${ btns[ index ].colorHover } !important;
+					border-color: ${ btns[ index ].borderHover } !important;
+					background-color: ${ btns[ index ].backgroundHover } !important;
+				}`
+			);
+		};
+		const renderCSS = (
+			<style>
+				{ times( btnCount, n => renderBtnCSS( n ) ) }
+			</style>
+		);
 		return (
 			<Fragment>
-				<div className={ `${ className } kt-btn-align-${ hAlign }` }>
+				{ renderCSS }
+				<div id={ `kt-btns_${ uniqueID }` } className={ `${ className } kt-btn-align-${ hAlign }` }>
 					<BlockControls>
 						<AlignmentToolbar
 							value={ hAlign }
@@ -656,55 +465,24 @@ class KadenceAdvancedButton extends Component {
 							initialOpen={ false }
 							className="kt-font-family-area"
 						>
-							<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
-							{ typography && (
-								<IconButton
-									label={ __( 'clear' ) }
-									className="kt-font-clear-btn"
-									icon="no-alt"
-									onClick={ onTypeClear }
-								/>
-							) }
-							<SelectSearch
-								height={ 30 }
-								search={ true }
-								multiple={ false }
-								value={ typography }
-								onChange={ onTypeChange }
-								options={ options }
-								placeholder={ __( 'Select a font family' ) }
+							<TypographyControls
+								letterSpacing={ letterSpacing }
+								onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
+								fontFamily={ typography }
+								onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+								googleFont={ googleFont }
+								onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
+								loadGoogleFont={ loadGoogleFont }
+								onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
+								fontVariant={ fontVariant }
+								onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
+								fontWeight={ fontWeight }
+								onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
+								fontStyle={ fontStyle }
+								onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
+								fontSubset={ fontSubset }
+								onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
 							/>
-							{ typography && (
-								<SelectControl
-									label={ __( 'Font Weight' ) }
-									value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
-									options={ typographyWeights }
-									onChange={ onWeightChange }
-								/>
-							) }
-							{ typography && (
-								<SelectControl
-									label={ __( 'Font Style' ) }
-									value={ fontStyle }
-									options={ typographyStyles }
-									onChange={ onStyleChange }
-								/>
-							) }
-							{ typography && googleFont && (
-								<SelectControl
-									label={ __( 'Font Subset' ) }
-									value={ fontSubset }
-									options={ typographySubsets }
-									onChange={ ( value ) => setAttributes( { fontSubset: value } ) }
-								/>
-							) }
-							{ typography && googleFont && (
-								<ToggleControl
-									label={ __( 'Load Google Font on Frontend' ) }
-									checked={ loadGoogleFont }
-									onChange={ onGLoadChange }
-								/>
-							) }
 						</PanelBody>
 					</InspectorControls>
 					<div className={ 'btn-inner-wrap' } >

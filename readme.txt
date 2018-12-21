@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
-Tested up to: 5.0.1
-Stable tag: 1.1.8
+Tested up to: 5.0.2
+Stable tag: 1.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.1.9 =
+* Add: NEW Highlight options for Heading Block.
+* Add: Text color, link color and link hover color to row layout options.
+* Update: Filter for Typography Font Options.
 
 = 1.1.8 =
 * Fix: Nested tabs in tabs styling.

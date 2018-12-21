@@ -17,7 +17,7 @@ const {
 
 class KadenceTabsSave extends Component {
 	stripStringRender( string ) {
-		return string.toLowerCase().replace( /[^0-9a-z-]/g,'' );
+		return string.toLowerCase().replace( /[^0-9a-z-]/g, '' );
 	}
 	render() {
 		const { attributes: { tabCount, blockAlignment, currentTab, mobileLayout, layout, tabletLayout, uniqueID, titles, iSize, maxWidth, tabAlignment } } = this.props;
