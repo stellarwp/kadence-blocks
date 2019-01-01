@@ -13,6 +13,8 @@ import map from 'lodash/map';
 import hexToRGBA from '../../hex-to-rgba';
 import TypographyControls from '../../typography-control';
 import WebfontLoader from '../../fontloader';
+
+import icons from '../../icons';
 /**
  * Internal block libraries
  */
@@ -91,6 +93,16 @@ class KadenceAdvancedHeading extends Component {
 		const createLevelControl = ( targetLevel ) => {
 			return [ {
 				icon: 'heading',
+				// translators: %s: heading level e.g: "1", "2", "3"
+				title: sprintf( __( 'Heading %d' ), targetLevel ),
+				isActive: targetLevel === level,
+				onClick: () => setAttributes( { level: targetLevel } ),
+				subscript: String( targetLevel ),
+			} ];
+		};
+		const createLevelControlToolbar = ( targetLevel ) => {
+			return [ {
+				icon: icons[ 'h' + targetLevel ],
 				// translators: %s: heading level e.g: "1", "2", "3"
 				title: sprintf( __( 'Heading %d' ), targetLevel ),
 				isActive: targetLevel === level,
@@ -285,8 +297,8 @@ class KadenceAdvancedHeading extends Component {
 					{ `.kt-adv-heading${ uniqueID } mark {
 						color: ${ markColor };
 						background: ${ ( markBG ? markBGString : 'transparent' ) };
-						font-weight: ${ ( markFontWeight ? markFontWeight : 'inherit' ) };
-						font-style: ${ ( markFontStyle ? markFontStyle : 'inherit' ) };
+						font-weight: ${ ( markTypography && markFontWeight ? markFontWeight : 'inherit' ) };
+						font-style: ${ ( markTypography && markFontStyle ? markFontStyle : 'inherit' ) };
 						font-size: ${ ( markSize && markSize[ 0 ] ? markSize[ 0 ] + markSizeType : 'inherit' ) };
 						line-height: ${ ( markLineHeight && markLineHeight[ 0 ] ? markLineHeight[ 0 ] + markLineType : 'inherit' ) };
 						letter-spacing: ${ ( markLetterSpacing ? markLetterSpacing + 'px' : 'inherit' ) };
@@ -298,7 +310,12 @@ class KadenceAdvancedHeading extends Component {
 					}` }
 				</style>
 				<BlockControls>
-					<Toolbar controls={ range( 2, 5 ).map( createLevelControl ) } />
+					<Toolbar
+						isCollapsed={ true }
+						icon={ icons[ 'h' + level ] }
+						label={ __( 'Change Heading Level' ) }
+						controls={ range( 1, 7 ).map( createLevelControlToolbar ) }
+					/>
 					<AlignmentToolbar
 						value={ align }
 						onChange={ ( nextAlign ) => {
@@ -329,6 +346,12 @@ class KadenceAdvancedHeading extends Component {
 							onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
 							fontFamily={ typography }
 							onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+							onFontChange={ ( select ) => {
+								setAttributes( {
+									typography: select.value,
+									googleFont: select.google,
+								} );
+							} }
 							googleFont={ googleFont }
 							onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
 							loadGoogleFont={ loadGoogleFont }
@@ -409,6 +432,12 @@ class KadenceAdvancedHeading extends Component {
 							onLetterSpacing={ ( value ) => setAttributes( { markLetterSpacing: value } ) }
 							fontFamily={ markTypography }
 							onFontFamily={ ( value ) => setAttributes( { markTypography: value } ) }
+							onFontChange={ ( select ) => {
+								setAttributes( {
+									markTypography: select.value,
+									markGoogleFont: select.google,
+								} );
+							} }
 							googleFont={ markGoogleFont }
 							onGoogleFont={ ( value ) => setAttributes( { markGoogleFont: value } ) }
 							loadGoogleFont={ markLoadGoogleFont }

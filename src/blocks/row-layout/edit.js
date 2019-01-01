@@ -15,6 +15,7 @@ import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
 import ResizableBox from 're-resizable';
+import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 import PrebuiltModal from './prebuilt_modal';
 /**
@@ -151,94 +152,60 @@ class KadenceRowLayout extends Component {
 			{ key: 'equal', col: 5, name: __( 'Five: Equal' ), icon: icons.fivecol },
 			{ key: 'equal', col: 6, name: __( 'Six: Equal' ), icon: icons.sixcol },
 		];
-		let bottomSVGDivider;
-		if ( 'ct' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
-		} else if ( 'cti' === bottomSep ) {
-			bottomSVGDivider = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
-		} else if ( 'ctd' === bottomSep ) {
-			bottomSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
-		} else if ( 'ctdi' === bottomSep ) {
-			bottomSVGDivider = <Fragment><path d="M500,2l500,78l0,20l-1000,0l0,-20l500,-78Z" style={ { opacity: 0.4 } } /><path d="M500,2l500,98l-1000,0l500,-98Z" /></Fragment>;
-		} else if ( 'sltl' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,0l-1000,100l1000,0l0,-100Z" />;
-		} else if ( 'sltli' === bottomSep ) {
-			bottomSVGDivider = <path d="M0,100l1000,-100l-1000,0l0,100Z" />;
-		} else if ( 'sltr' === bottomSep ) {
-			bottomSVGDivider = <path d="M0,0l1000,100l-1000,0l0,-100Z" />;
-		} else if ( 'sltri' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,100l-1000,-100l1000,0l0,100Z" />;
-		} else if ( 'crv' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z" />;
-		} else if ( 'crvi' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,0c0,0 -270.987,98 -500,98c-229.013,0 -500,-98 -500,-98l0,100l1000,0l0,-100Z" />;
-		} else if ( 'crvl' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,100c0,0 -420.987,-98 -650,-98c-229.013,0 -350,98 -350,98l1000,0Z" />;
-		} else if ( 'crvli' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,0c0,0 -420.987,98 -650,98c-229.013,0 -350,-98 -350,-98l0,100l1000,0l0,-100Z" />;
-		} else if ( 'crvr' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,100c0,0 -120.987,-98 -350,-98c-229.013,0 -650,98 -650,98l1000,0Z" />;
-		} else if ( 'crvri' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,0c0,0 -120.987,98 -350,98c-229.013,0 -650,-98 -650,-98l0,100l1000,0l0,-100Z" />;
-		} else if ( 'wave' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" />;
-		} else if ( 'wavei' === bottomSep ) {
-			bottomSVGDivider = <path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" />;
-		} else if ( 'waves' === bottomSep ) {
-			bottomSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
-		} else if ( 'wavesi' === bottomSep ) {
-			bottomSVGDivider = <Fragment><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,73 500,73c154.895,0 250,-45 250,-45l0,70l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,68 500,68c154.895,0 250,-65 250,-65l0,95l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
-		} else if ( 'mtns' === bottomSep ) {
-			bottomSVGDivider = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
-		} else if ( 'littri' === bottomSep ) {
-			bottomSVGDivider = <path d="M500,2l25,98l-50,0l25,-98Z" />;
-		} else if ( 'littrii' === bottomSep ) {
-			bottomSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
-		}
-		let topSVGDivider;
-		if ( 'ct' === topSep ) {
-			topSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
-		} else if ( 'cti' === topSep ) {
-			topSVGDivider = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
-		} else if ( 'ctd' === topSep ) {
-			topSVGDivider = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
-		} else if ( 'ctdi' === topSep ) {
-			topSVGDivider = <Fragment><path d="M500,2l500,78l0,20l-1000,0l0,-20l500,-78Z" style={ { opacity: 0.4 } } /><path d="M500,2l500,98l-1000,0l500,-98Z" /></Fragment>;
-		} else if ( 'sltl' === topSep ) {
-			topSVGDivider = <path d="M1000,0l-1000,100l1000,0l0,-100Z" />;
-		} else if ( 'sltli' === topSep ) {
-			topSVGDivider = <path d="M0,100l1000,-100l-1000,0l0,100Z" />;
-		} else if ( 'sltr' === topSep ) {
-			topSVGDivider = <path d="M0,0l1000,100l-1000,0l0,-100Z" />;
-		} else if ( 'sltri' === topSep ) {
-			topSVGDivider = <path d="M1000,100l-1000,-100l1000,0l0,100Z" />;
-		} else if ( 'crv' === topSep ) {
-			topSVGDivider = <path d="M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z" />;
-		} else if ( 'crvi' === topSep ) {
-			topSVGDivider = <path d="M1000,0c0,0 -270.987,98 -500,98c-229.013,0 -500,-98 -500,-98l0,100l1000,0l0,-100Z" />;
-		} else if ( 'crvl' === topSep ) {
-			topSVGDivider = <path d="M1000,100c0,0 -420.987,-98 -650,-98c-229.013,0 -350,98 -350,98l1000,0Z" />;
-		} else if ( 'crvli' === topSep ) {
-			topSVGDivider = <path d="M1000,0c0,0 -420.987,98 -650,98c-229.013,0 -350,-98 -350,-98l0,100l1000,0l0,-100Z" />;
-		} else if ( 'crvr' === topSep ) {
-			topSVGDivider = <path d="M1000,100c0,0 -120.987,-98 -350,-98c-229.013,0 -650,98 -650,98l1000,0Z" />;
-		} else if ( 'crvri' === topSep ) {
-			topSVGDivider = <path d="M1000,0c0,0 -120.987,98 -350,98c-229.013,0 -650,-98 -650,-98l0,100l1000,0l0,-100Z" />;
-		} else if ( 'wave' === topSep ) {
-			topSVGDivider = <path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" />;
-		} else if ( 'wavei' === topSep ) {
-			topSVGDivider = <path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" />;
-		} else if ( 'waves' === topSep ) {
-			topSVGDivider = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
-		} else if ( 'wavesi' === topSep ) {
-			topSVGDivider = <Fragment><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,73 500,73c154.895,0 250,-45 250,-45l0,70l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,68 500,68c154.895,0 250,-65 250,-65l0,95l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
-		} else if ( 'mtns' === topSep ) {
-			topSVGDivider = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
-		} else if ( 'littri' === topSep ) {
-			topSVGDivider = <path d="M500,2l25,98l-50,0l25,-98Z" />;
-		} else if ( 'littrii' === topSep ) {
-			topSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
-		}
+		const bottomSVGDivider = {};
+		bottomSVGDivider.ct = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+		bottomSVGDivider.cti = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
+		bottomSVGDivider.ctd = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
+		bottomSVGDivider.ctdi = <Fragment><path d="M500,2l500,78l0,20l-1000,0l0,-20l500,-78Z" style={ { opacity: 0.4 } } /><path d="M500,2l500,98l-1000,0l500,-98Z" /></Fragment>;
+		bottomSVGDivider.sltl = <path d="M1000,0l-1000,100l1000,0l0,-100Z" />;
+		bottomSVGDivider.sltli = <path d="M0,100l1000,-100l-1000,0l0,100Z" />;
+		bottomSVGDivider.sltr = <path d="M0,0l1000,100l-1000,0l0,-100Z" />;
+		bottomSVGDivider.sltri = <path d="M1000,100l-1000,-100l1000,0l0,100Z" />;
+		bottomSVGDivider.crv = <path d="M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z" />;
+		bottomSVGDivider.crvi = <path d="M1000,0c0,0 -270.987,98 -500,98c-229.013,0 -500,-98 -500,-98l0,100l1000,0l0,-100Z" />;
+		bottomSVGDivider.crvl = <path d="M1000,100c0,0 -420.987,-98 -650,-98c-229.013,0 -350,98 -350,98l1000,0Z" />;
+		bottomSVGDivider.crvli = <path d="M1000,0c0,0 -420.987,98 -650,98c-229.013,0 -350,-98 -350,-98l0,100l1000,0l0,-100Z" />;
+		bottomSVGDivider.crvr = <path d="M1000,100c0,0 -120.987,-98 -350,-98c-229.013,0 -650,98 -650,98l1000,0Z" />;
+		bottomSVGDivider.crvri = <path d="M1000,0c0,0 -120.987,98 -350,98c-229.013,0 -650,-98 -650,-98l0,100l1000,0l0,-100Z" />;
+		bottomSVGDivider.wave = <path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" />;
+		bottomSVGDivider.wavei = <path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" />;
+		bottomSVGDivider.waves = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+		bottomSVGDivider.wavesi = <Fragment><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,73 500,73c154.895,0 250,-45 250,-45l0,70l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,68 500,68c154.895,0 250,-65 250,-65l0,95l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+		bottomSVGDivider.mtns = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
+		bottomSVGDivider.littri = <path d="M500,2l25,98l-50,0l25,-98Z" />;
+		bottomSVGDivider.littrii = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
+		const renderBottomSVGDivider = svg => (
+			<svg viewBox="0 0 1000 100" preserveAspectRatio="none" style={ { fill: '#000000' } }>
+				{ bottomSVGDivider[ svg ] }
+			</svg>
+		);
+		const topSVGDivider = {};
+		topSVGDivider.ct = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
+		topSVGDivider.cti = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
+		topSVGDivider.ctd = <Fragment><path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" style={ { opacity: 0.4 } } /><path d="M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z" /></Fragment>;
+		topSVGDivider.ctdi = <Fragment><path d="M500,2l500,78l0,20l-1000,0l0,-20l500,-78Z" style={ { opacity: 0.4 } } /><path d="M500,2l500,98l-1000,0l500,-98Z" /></Fragment>;
+		topSVGDivider.sltl = <path d="M1000,0l-1000,100l1000,0l0,-100Z" />;
+		topSVGDivider.sltli = <path d="M0,100l1000,-100l-1000,0l0,100Z" />;
+		topSVGDivider.sltr = <path d="M0,0l1000,100l-1000,0l0,-100Z" />;
+		topSVGDivider.sltri = <path d="M1000,100l-1000,-100l1000,0l0,100Z" />;
+		topSVGDivider.crv = <path d="M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z" />;
+		topSVGDivider.crvi = <path d="M1000,0c0,0 -270.987,98 -500,98c-229.013,0 -500,-98 -500,-98l0,100l1000,0l0,-100Z" />;
+		topSVGDivider.crvl = <path d="M1000,100c0,0 -420.987,-98 -650,-98c-229.013,0 -350,98 -350,98l1000,0Z" />;
+		topSVGDivider.crvli = <path d="M1000,0c0,0 -420.987,98 -650,98c-229.013,0 -350,-98 -350,-98l0,100l1000,0l0,-100Z" />;
+		topSVGDivider.crvr = <path d="M1000,100c0,0 -120.987,-98 -350,-98c-229.013,0 -650,98 -650,98l1000,0Z" />;
+		topSVGDivider.crvri = <path d="M1000,0c0,0 -120.987,98 -350,98c-229.013,0 -650,-98 -650,-98l0,100l1000,0l0,-100Z" />;
+		topSVGDivider.wave = <path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" />;
+		topSVGDivider.wavei = <path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" />;
+		topSVGDivider.waves = <Fragment><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,78 -500,78c-154.895,0 -250,-30 -250,-30l0,50l1000,0l0,-60Z" /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,73 -500,73c-154.895,0 -250,-45 -250,-45l0,70l1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M1000,40c0,0 -120.077,-38.076 -250,-38c-129.923,0.076 -345.105,68 -500,68c-154.895,0 -250,-65 -250,-65l0,95l1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+		topSVGDivider.wavesi = <Fragment><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,78 500,78c154.895,0 250,-30 250,-30l0,50l-1000,0l0,-60Z" /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,73 500,73c154.895,0 250,-45 250,-45l0,70l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /><path d="M0,40c0,0 120.077,-38.076 250,-38c129.923,0.076 345.105,68 500,68c154.895,0 250,-65 250,-65l0,95l-1000,0l0,-60Z" style={ { opacity: 0.4 } } /></Fragment>;
+		topSVGDivider.mtns = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
+		topSVGDivider.littri = <path d="M500,2l25,98l-50,0l25,-98Z" />;
+		topSVGDivider.littrii = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
+		const renderTopSVGDivider = svg => (
+			<svg className="top-icon" viewBox="0 0 1000 100" preserveAspectRatio="none" style={ { fill: '#000000' } }>
+				{ topSVGDivider[ svg ] }
+			</svg>
+		);
 		if ( 2 === columns ) {
 			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.twocol },
@@ -1180,32 +1147,36 @@ class KadenceRowLayout extends Component {
 		);
 		const topDividerSettings = (
 			<Fragment>
-				<SelectControl
-					label={ __( 'Top Divider' ) }
-					value={ topSep }
-					options={ [
-						{ value: 'none', label: __( 'None' ) },
-						{ value: 'ct', label: __( 'Large Triangle' ) },
-						{ value: 'cti', label: __( 'Large Triangle - Invert' ) },
-						{ value: 'ctd', label: __( 'Large Triangle Double' ) },
-						{ value: 'ctdi', label: __( 'Large Triangle Double - Invert' ) },
-						{ value: 'sltl', label: __( 'Slant Left' ) },
-						{ value: 'sltr', label: __( 'Slant Right' ) },
-						{ value: 'crv', label: __( 'Curve' ) },
-						{ value: 'crvi', label: __( 'Curve - Invert' ) },
-						{ value: 'crvl', label: __( 'Curve Left' ) },
-						{ value: 'crvli', label: __( 'Curve Left - Invert' ) },
-						{ value: 'crvr', label: __( 'Curve Right' ) },
-						{ value: 'crvri', label: __( 'Curve Right - Invert' ) },
-						{ value: 'wave', label: __( 'Wave' ) },
-						{ value: 'wavei', label: __( 'Wave - Flip' ) },
-						{ value: 'waves', label: __( 'Waves' ) },
-						{ value: 'wavesi', label: __( 'Waves - Flip' ) },
-						{ value: 'mtns', label: __( 'Mountains' ) },
-						{ value: 'littri', label: __( 'Little Triangle' ) },
-						{ value: 'littrii', label: __( 'Little Triangle - Invert' ) },
+				<FontIconPicker
+					icons={ [
+						'ct',
+						'cti',
+						'ctd',
+						'ctdi',
+						'sltl',
+						'sltr',
+						'crv',
+						'crvi',
+						'crvl',
+						'crvli',
+						'crvr',
+						'crvri',
+						'wave',
+						'wavei',
+						'waves',
+						'wavesi',
+						'mtns',
+						'littri',
+						'littrii',
 					] }
+					value={ ( topSep === 'none' ? '' : topSep ) }
 					onChange={ value => setAttributes( { topSep: value } ) }
+					appendTo="body"
+					showSearch={ false } 
+					renderFunc={ renderTopSVGDivider }
+					theme="dividers"
+					noSelectedPlaceholder={ __( 'Select Divider' ) }
+					isMulti={ false }
 				/>
 				<p>{ __( 'Divider Color' ) }</p>
 				<ColorPalette
@@ -1252,32 +1223,36 @@ class KadenceRowLayout extends Component {
 		);
 		const bottomDividerSettings = (
 			<Fragment>
-				<SelectControl
-					label={ __( 'Bottom Divider' ) }
-					value={ bottomSep }
-					options={ [
-						{ value: 'none', label: __( 'None' ) },
-						{ value: 'ct', label: __( 'Large Triangle' ) },
-						{ value: 'cti', label: __( 'Large Triangle - Invert' ) },
-						{ value: 'ctd', label: __( 'Large Triangle Double' ) },
-						{ value: 'ctdi', label: __( 'Large Triangle Double - Invert' ) },
-						{ value: 'sltl', label: __( 'Slant Left' ) },
-						{ value: 'sltr', label: __( 'Slant Right' ) },
-						{ value: 'crv', label: __( 'Curve' ) },
-						{ value: 'crvi', label: __( 'Curve - Invert' ) },
-						{ value: 'crvl', label: __( 'Curve Left' ) },
-						{ value: 'crvli', label: __( 'Curve Left - Invert' ) },
-						{ value: 'crvr', label: __( 'Curve Right' ) },
-						{ value: 'crvri', label: __( 'Curve Right - Invert' ) },
-						{ value: 'wave', label: __( 'Wave' ) },
-						{ value: 'wavei', label: __( 'Wave - Flip' ) },
-						{ value: 'waves', label: __( 'Waves' ) },
-						{ value: 'wavesi', label: __( 'Waves - Flip' ) },
-						{ value: 'mtns', label: __( 'Mountains' ) },
-						{ value: 'littri', label: __( 'Little Triangle' ) },
-						{ value: 'littrii', label: __( 'Little Triangle - Invert' ) },
+				<FontIconPicker
+					icons={ [
+						'ct',
+						'cti',
+						'ctd',
+						'ctdi',
+						'sltl',
+						'sltr',
+						'crv',
+						'crvi',
+						'crvl',
+						'crvli',
+						'crvr',
+						'crvri',
+						'wave',
+						'wavei',
+						'waves',
+						'wavesi',
+						'mtns',
+						'littri',
+						'littrii',
 					] }
+					value={ ( bottomSep === 'none' ? '' : bottomSep ) }
 					onChange={ value => setAttributes( { bottomSep: value } ) }
+					appendTo="body"
+					showSearch={ false }
+					renderFunc={ renderBottomSVGDivider }
+					theme="dividers"
+					noSelectedPlaceholder={ __( 'Select Divider' ) }
+					isMulti={ false }
 				/>
 				<p>{ __( 'Divider Color' ) }</p>
 				<ColorPalette
@@ -1468,7 +1443,7 @@ class KadenceRowLayout extends Component {
 				</InspectorControls>
 				{ ( textColor || linkColor || linkHoverColor ) && (
 					<style>
-						{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ textColor }; }` : '' ) }
+						{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ textColor }; }` : '' ) }
 						{ ( linkColor ? `#kt-layout-id${ uniqueID } a { color: ${ linkColor }; }` : '' ) }
 						{ ( linkHoverColor ? `#kt-layout-id${ uniqueID } a:hover { color: ${ linkHoverColor }; }` : '' ) }
 					</style>
@@ -1534,12 +1509,12 @@ class KadenceRowLayout extends Component {
 							/>
 						</div>
 					) }
-					{ colLayout && 'none' !== topSep && (
+					{ colLayout && 'none' !== topSep && '' !== topSep && (
 						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` } style={ {
 							height: topSepHeight + 'px',
 						} }>
 							<svg style={ { fill: topSepColor, width: topSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
-								{ topSVGDivider }
+								{ topSVGDivider[ topSep ] }
 							</svg>
 						</div>
 					) }
@@ -1677,12 +1652,12 @@ class KadenceRowLayout extends Component {
 						</ResizableBox>
 					) }
 					<div style={ { height: '1px' } }></div>
-					{ colLayout && 'none' !== bottomSep && (
+					{ colLayout && 'none' !== bottomSep && '' !== bottomSep && (
 						<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` } style={ {
 							height: bottomSepHeight + 'px',
 						} }>
 							<svg style={ { fill: bottomSepColor, width: bottomSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
-								{ bottomSVGDivider }
+								{ bottomSVGDivider[ bottomSep ] }
 							</svg>
 						</div>
 					) }

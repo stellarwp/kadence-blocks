@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.0.2
-Stable tag: 1.1.9
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.2.0 =
+* Fix: Typography bug when selecting google to non google font.
+* Fix: Row layout Text more specific css.
+* Fix: Tab titles not editable in FireFox.
+* Add: Custom css class options to buttons.
+* Add: Visual Select for Dividers.
+* Add: Left and Right Margins for columns. Allow Negative Margins.
+* Add: Z-index option to columns.
+* Update: Move Heading Tag Level controls to dropdown. 
 
 = 1.1.9 =
 * Add: NEW Highlight options for Heading Block.

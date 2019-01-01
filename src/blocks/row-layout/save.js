@@ -120,7 +120,7 @@ class KadenceRowLayoutSave extends Component {
 					{ ( overlay || overlayBgImg ) && (
 						<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }` }></div>
 					) }
-					{ topSep && 'none' !== topSep && (
+					{ topSep && 'none' !== topSep && '' !== topSep && (
 						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` }>
 							<svg style={ { fill: topSepColor } } viewBox="0 0 1000 100" preserveAspectRatio="none">
 								{ topSVGDivider }
@@ -130,7 +130,7 @@ class KadenceRowLayoutSave extends Component {
 					<div className={ innerColumnClasses }>
 						<InnerBlocks.Content />
 					</div>
-					{ bottomSep && 'none' !== bottomSep && (
+					{ bottomSep && 'none' !== bottomSep && '' !== bottomSep && (
 						<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` }>
 							<svg style={ { fill: bottomSepColor } } viewBox="0 0 1000 100" preserveAspectRatio="none">
 								{ bottomSVGDivider }

@@ -1603,7 +1603,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	function column_layout_array_css( $attr, $unique_id, $column_key ) {
 		$css = '';
-		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) ) {
+		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) ) {
 			$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-' . $column_key . ' > .kt-inside-inner-col {';
 				if ( isset( $attr['topPadding'] ) ) {
 					$css .= 'padding-top:' . $attr['topPadding'] . 'px;';
@@ -1623,9 +1623,22 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $attr['bottomMargin'] ) ) {
 					$css .= 'margin-bottom:' . $attr['bottomMargin'] . 'px;';
 				}
+				if ( isset( $attr['rightMargin'] ) ) {
+					$css .= 'margin-right:' . $attr['rightMargin'] . 'px;';
+				}
+				if ( isset( $attr['leftMargin'] ) ) {
+					$css .= 'margin-left:' . $attr['leftMargin'] . 'px;';
+				}
 			$css .= '}';
 		}
-		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) ) {
+		if ( isset( $attr['zIndex'] ) ) {
+			$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-' . $column_key . ' {';
+				if ( isset( $attr['zIndex'] ) ) {
+					$css .= 'z-index:' . $attr['zIndex'] . ';';
+				}
+			$css .= '}';
+		}
+		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) ) {
 			$css .= '@media (max-width: 767px) {';
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-' . $column_key . ' > .kt-inside-inner-col {';
 				if ( isset( $attr['topPaddingM'] ) ) {
@@ -1645,6 +1658,12 @@ class Kadence_Blocks_Frontend {
 				}
 				if ( isset( $attr['bottomMarginM'] ) ) {
 					$css .= 'margin-bottom:' . $attr['bottomMarginM'] . 'px;';
+				}
+				if ( isset( $attr['rightMarginM'] ) ) {
+					$css .= 'margin-right:' . $attr['rightMarginM'] . 'px;';
+				}
+				if ( isset( $attr['leftMarginM'] ) ) {
+					$css .= 'margin-left:' . $attr['leftMarginM'] . 'px;';
 				}
 				$css .= '}';		
 			$css .= '}';

@@ -99,6 +99,26 @@ registerBlockType( 'kadence/column', {
 			type: 'number',
 			default: '',
 		},
+		leftMargin: {
+			type: 'number',
+			default: '',
+		},
+		rightMargin: {
+			type: 'number',
+			default: '',
+		},
+		leftMarginM: {
+			type: 'number',
+			default: '',
+		},
+		rightMarginM: {
+			type: 'number',
+			default: '',
+		},
+		zIndex: {
+			type: 'number',
+			default: '',
+		},
 		background: {
 			type: 'string',
 			default: '',
@@ -109,7 +129,7 @@ registerBlockType( 'kadence/column', {
 		},
 	},
 	edit: props => {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, backgroundOpacity, background }, setAttributes } = props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex }, setAttributes } = props;
 		const mobileControls = (
 			<PanelBody
 				title={ __( 'Mobile Padding/Margin' ) }
@@ -178,12 +198,36 @@ registerBlockType( 'kadence/column', {
 					max={ 200 }
 				/>
 				<RangeControl
+					label={ icons.outlineright }
+					value={ rightMarginM }
+					className="kt-icon-rangecontrol kt-right-margin"
+					onChange={ ( value ) => {
+						setAttributes( {
+							rightMarginM: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 200 }
+				/>
+				<RangeControl
 					label={ icons.outlinebottom }
 					value={ bottomMarginM }
 					className="kt-icon-rangecontrol kt-bottom-margin"
 					onChange={ ( value ) => {
 						setAttributes( {
 							bottomMarginM: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 200 }
+				/>
+				<RangeControl
+					label={ icons.outlineleft }
+					value={ leftMarginM }
+					className="kt-icon-rangecontrol kt-left-margin"
+					onChange={ ( value ) => {
+						setAttributes( {
+							leftMarginM: value,
 						} );
 					} }
 					min={ -200 }
@@ -259,12 +303,36 @@ registerBlockType( 'kadence/column', {
 					max={ 200 }
 				/>
 				<RangeControl
+					label={ icons.outlineright }
+					value={ rightMargin }
+					className="kt-icon-rangecontrol kt-right-margin"
+					onChange={ ( value ) => {
+						setAttributes( {
+							rightMargin: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 200 }
+				/>
+				<RangeControl
 					label={ icons.outlinebottom }
 					value={ bottomMargin }
 					className="kt-icon-rangecontrol kt-bottom-margin"
 					onChange={ ( value ) => {
 						setAttributes( {
 							bottomMargin: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 200 }
+				/>
+				<RangeControl
+					label={ icons.outlineleft }
+					value={ leftMargin }
+					className="kt-icon-rangecontrol kt-left-margin"
+					onChange={ ( value ) => {
+						setAttributes( {
+							leftMargin: value,
 						} );
 					} }
 					min={ -200 }
@@ -296,12 +364,6 @@ registerBlockType( 'kadence/column', {
 							} else {
 								tabout = deskControls;
 							}
-						} else {
-							if ( 'mobile' === tab ) {
-								tabout = mobileControls;
-							} else {
-								tabout = deskControls;
-							}
 						}
 						return <div>{ tabout }</div>;
 					}
@@ -329,6 +391,17 @@ registerBlockType( 'kadence/column', {
 						max={ 1 }
 						step={ 0.01 }
 					/>
+					<RangeControl
+						label={ __( 'Z Index Control' ) }
+						value={ zIndex }
+						onChange={ ( value ) => {
+							setAttributes( {
+								zIndex: value,
+							} );
+						} }
+						min={ -200 }
+						max={ 200 }
+					/>
 					{ tabControls }
 				</InspectorControls>
 				<div className="kadence-inner-column-inner" style={ {
@@ -336,6 +409,11 @@ registerBlockType( 'kadence/column', {
 					paddingRight: rightPadding + 'px',
 					paddingTop: topPadding + 'px',
 					paddingBottom: bottomPadding + 'px',
+					marginLeft: leftMargin + 'px',
+					marginRight: rightMargin + 'px',
+					marginTop: topMargin + 'px',
+					marginBottom: bottomMargin + 'px',
+					zIndex: zIndex,
 					background: backgroundString,
 				} } >
 					<InnerBlocks templateLock={ false } />

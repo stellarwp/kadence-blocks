@@ -121,7 +121,7 @@ registerBlockType( 'kadence/icon', {
 			);
 		};
 		return (
-			<div className={ `kt-svg-icons kt-svg-icons${ uniqueID } align${ blockAlignment }` } style={ {
+			<div className={ `kt-svg-icons kt-svg-icons${ uniqueID } align${ ( blockAlignment ? blockAlignment : 'center' ) }` } style={ {
 				textAlign: ( textAlignment ? textAlignment : 'center' ),
 			} } >
 				{ times( iconCount, n => renderSaveIcons( n ) ) }

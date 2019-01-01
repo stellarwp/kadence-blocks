@@ -240,11 +240,11 @@ class KadenceIcons extends Component {
 					<BlockAlignmentToolbar
 						value={ blockAlignment }
 						controls={ [ 'center', 'left', 'right' ] }
-						onChange={ blockAlignment => setAttributes( { blockAlignment } ) }
+						onChange={ value => setAttributes( { blockAlignment: value } ) }
 					/>
 					<AlignmentToolbar
 						value={ textAlignment }
-						onChange={ textAlignment => setAttributes( { textAlignment } ) }
+						onChange={ value => setAttributes( { textAlignment: value } ) }
 					/>
 				</BlockControls>
 				<InspectorControls>

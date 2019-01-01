@@ -75,6 +75,7 @@ registerBlockType( 'kadence/advancedbtn', {
 				icon: '',
 				iconSide: 'right',
 				iconHover: false,
+				cssClass: '',
 			} ],
 		},
 		letterSpacing: {
@@ -115,7 +116,7 @@ registerBlockType( 'kadence/advancedbtn', {
 		const renderSaveBtns = ( index ) => {
 			return (
 				<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-					<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } rel={ '_blank' === btns[ index ].target ? 'noreferrer noopener' : undefined } style={ {
+					<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ btns[ index ].target } rel={ '_blank' === btns[ index ].target ? 'noreferrer noopener' : undefined } style={ {
 						fontSize: ( btns[ index ].size ? btns[ index ].size + 'px' : undefined ),
 						borderRadius: ( btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
 						borderWidth: btns[ index ].borderWidth + 'px',

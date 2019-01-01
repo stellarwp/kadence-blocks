@@ -36,6 +36,7 @@ const {
 	TabPanel,
 	PanelBody,
 	RangeControl,
+	TextControl,
 	SelectControl,
 } = wp.components;
 
@@ -324,6 +325,11 @@ class KadenceAdvancedButton extends Component {
 							this.saveArrayUpdate( { iconSide: value }, index );
 						} }
 					/>
+					<TextControl
+						label={ __( 'Add Custom CSS Class' ) }
+						value={ ( btns[ index ].cssClass ? btns[ index ].cssClass : '' ) }
+						onChange={ ( value ) => this.saveArrayUpdate( { cssClass: value }, index ) }
+					/>
 				</PanelBody>
 			);
 		};
@@ -449,6 +455,7 @@ class KadenceAdvancedButton extends Component {
 												icon: newbtns[ 0 ].icon,
 												iconSide: newbtns[ 0 ].iconSide,
 												iconHover: newbtns[ 0 ].iconHover,
+												cssClass: ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
 											} );
 										} ); }
 										setAttributes( { btns: newbtns } );
@@ -470,6 +477,12 @@ class KadenceAdvancedButton extends Component {
 								onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
 								fontFamily={ typography }
 								onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+								onFontChange={ ( select ) => {
+									setAttributes( {
+										typography: select.value,
+										googleFont: select.google,
+									} );
+								} }
 								googleFont={ googleFont }
 								onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
 								loadGoogleFont={ loadGoogleFont }

@@ -69,6 +69,7 @@ export default function TypographyControls( {
 	onLineHeight,
 	onFontSize,
 	onFontFamily,
+	onFontChange,
 	onFontVariant,
 	onFontWeight,
 	onFontStyle,
@@ -108,16 +109,15 @@ export default function TypographyControls( {
 			variant = '';
 			weight = '400';
 		}
-		onFontFamily( select.value );
-		onGoogleFont( select.google );
+		onFontChange( select );
 		onFontVariant( variant );
 		onFontWeight( weight );
 		onFontStyle( 'normal' );
 		onFontSubset( subset );
 	};
 	const onTypoFontClear = () => {
-		onFontFamily( '' );
 		onGoogleFont( false );
+		onFontFamily( '' );
 		onFontVariant( '' );
 		onFontWeight( 'regular' );
 		onFontStyle( 'normal' );
@@ -439,7 +439,7 @@ export default function TypographyControls( {
 				step={ 0.1 }
 			/>
 		),
-		onFontFamily && onTypoFontClear && (
+		onFontChange && onFontFamily && onTypoFontClear && (
 			<Fragment>
 				<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
 				{ fontFamily && (
