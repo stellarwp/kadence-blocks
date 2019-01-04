@@ -1410,10 +1410,12 @@ class KadenceRowLayout extends Component {
 							value={ htmlTag }
 							options={ [
 								{ value: 'div', label: __( 'div' ) },
+								{ value: 'header', label: __( 'header' ) },
 								{ value: 'section', label: __( 'section' ) },
 								{ value: 'article', label: __( 'article' ) },
 								{ value: 'main', label: __( 'main' ) },
 								{ value: 'aside', label: __( 'aside' ) },
+								{ value: 'footer', label: __( 'footer' ) },
 							] }
 							onChange={ value => setAttributes( { htmlTag: value } ) }
 						/>
