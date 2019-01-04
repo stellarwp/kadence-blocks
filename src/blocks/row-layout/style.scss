@@ -230,6 +230,14 @@
 			flex: 0 1 45%;
 		}
 	}
+	.kt-has-2-columns.kt-custom-first-width-60 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 60%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 40%;
+		}
+	}
 	.kt-has-2-columns.kt-custom-first-width-65 > .wp-block-kadence-column {
 		&.inner-column-1 {
 			flex: 0 1 65%;
