@@ -26,7 +26,7 @@ define( 'KT_BLOCKS_VERSION', '1.2.1' );
  * Add a check before redirecting
  */
 function kadence_blocks_activate() {
-    add_option( 'kadence_blocks_redirect_on_activation', true );
+	add_option( 'kadence_blocks_redirect_on_activation', true );
 }
 register_activation_hook( __FILE__, 'kadence_blocks_activate' );
 

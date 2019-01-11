@@ -34,8 +34,8 @@ function kadence_gutenberg_editor_assets() {
 			$add_size = 30;
 		}
 		$post_type = get_post_type();
-		if( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
-			if ( isset( $post_type ) &&  'page' === $post_type ) {
+		if ( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
+			if ( isset( $post_type ) && 'page' === $post_type ) {
 				$defualt_size_type = $editor_widths['page_default'];
 			} else {
 				$defualt_size_type = $editor_widths['post_default'];
@@ -66,13 +66,17 @@ function kadence_gutenberg_editor_assets() {
 			$jssize = $default_size;
 		}
 	}
-	wp_localize_script( 'kadence-blocks-js', 'kadence_blocks_params', array(
-		'sidebar_size' => $sidebar_size,
-		'nosidebar_size' => $nosidebar_size,
-		'default_size' => $jssize,
-		'config'   => get_option( 'kt_blocks_config_blocks' ),
-		'settings' => get_option( 'kt_blocks_settings_blocks' ),
-	) );
+	wp_localize_script(
+		'kadence-blocks-js',
+		'kadence_blocks_params',
+		array(
+			'sidebar_size' => $sidebar_size,
+			'nosidebar_size' => $nosidebar_size,
+			'default_size' => $jssize,
+			'config'   => get_option( 'kt_blocks_config_blocks' ),
+			'settings' => get_option( 'kt_blocks_settings_blocks' ),
+		)
+	);
 	// Styles.
 	wp_enqueue_style( 'kadence-blocks-editor-css', KT_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KT_BLOCKS_VERSION );
 	// Limited Margins.
@@ -89,13 +93,17 @@ add_action( 'enqueue_block_editor_assets', 'kadence_gutenberg_editor_assets' );
  */
 function kt_blocks_init_post_meta() {
 
-	register_post_meta('', 'kt_blocks_editor_width', array(
-            'show_in_rest' => true,
-            'single' => true,
-            'type' => 'string',
-        ));
+	register_post_meta(
+		'',
+		'kt_blocks_editor_width',
+		array(
+			'show_in_rest' => true,
+			'single' => true,
+			'type' => 'string',
+		)
+	);
 }
-add_action('init', 'kt_blocks_init_post_meta' );
+add_action( 'init', 'kt_blocks_init_post_meta' );
 
 /**
  * Add inline css editor width
@@ -109,8 +117,8 @@ function kadence_blocks_admin_editor_width() {
 			$add_size = 30;
 		}
 		$post_type = get_post_type();
-		if( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
-			if ( isset( $post_type ) &&  'page' === $post_type ) {
+		if ( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
+			if ( isset( $post_type ) && 'page' === $post_type ) {
 				$defualt_size_type = $editor_widths['page_default'];
 			} else {
 				$defualt_size_type = $editor_widths['post_default'];
@@ -170,13 +178,13 @@ function kadence_blocks_admin_editor_width() {
 			width: auto;
 			max-width: ' . esc_attr( $nosidebar_size + 200 ) . 'px;
 		}';
-		
+
 		echo 'body.gutenberg-editor-page .editor-block-list__layout .editor-block-list__block[data-align=full],
 		body.block-editor-page .editor-block-list__layout .wp-block[data-align=full] {
 			max-width: none;
 		}';
 		echo '</style>';
-		echo "<script> var kt_blocks_sidebar_size = ".$sidebar_size."; var kt_blocks_nosidebar_size = ".$nosidebar_size."; var kt_blocks_default_size = ".$jssize.";</script>";
+		echo "<script> var kt_blocks_sidebar_size = " . $sidebar_size . "; var kt_blocks_nosidebar_size = " . $nosidebar_size . "; var kt_blocks_default_size = " . $jssize . ";</script>";
 	}
 }
 add_action( 'admin_head-post.php', 'kadence_blocks_admin_editor_width', 100 );
@@ -184,6 +192,8 @@ add_action( 'admin_head-post-new.php', 'kadence_blocks_admin_editor_width', 100 
 
 /**
  * Add class to match editor width.
+ *
+ * @param string $classes string of body classes.
  */
 function kadence_blocks_admin_body_class( $classes ) {
 	$screen = get_current_screen();

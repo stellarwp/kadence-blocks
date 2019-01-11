@@ -76,7 +76,7 @@ registerBlockType( 'kadence/spacer', {
 			type: 'number',
 			default: '',
 		},
-		mobileSpaceHeight: {
+		mobileSpacerHeight: {
 			type: 'number',
 			default: '',
 		},

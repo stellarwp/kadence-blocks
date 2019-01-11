@@ -13,7 +13,9 @@
 		display: block;
 	}
 }
-
+.kt-inspect-tabs.kt-spacer-tabs .components-tab-panel__tabs {
+	margin-bottom: 10px;
+}
 .kadence-spacer__resize-handler-top,
 .kadence-spacer__resize-handler-bottom {
 	display: none;

@@ -84,7 +84,7 @@ class KadenceSpacerDivider extends Component {
 		);
 		const tabletControls = (
 			<RangeControl
-				label={ __( 'Height' ) }
+				label={ __( 'Tablet Height' ) }
 				value={ tabletSpacerHeight }
 				onChange={ value => setAttributes( { tabletSpacerHeight: value } ) }
 				min={ 6 }
@@ -93,7 +93,7 @@ class KadenceSpacerDivider extends Component {
 		);
 		const mobileControls = (
 			<RangeControl
-				label={ __( 'Height' ) }
+				label={ __( 'Mobile Height' ) }
 				value={ mobileSpacerHeight }
 				onChange={ value => setAttributes( { mobileSpacerHeight: value } ) }
 				min={ 6 }
@@ -106,11 +106,11 @@ class KadenceSpacerDivider extends Component {
 					<BlockAlignmentToolbar
 						value={ blockAlignment }
 						controls={ [ 'center', 'wide', 'full' ] }
-						onChange={ blockAlignment => setAttributes( { blockAlignment } ) }
+						onChange={ value => setAttributes( { blockAlignment: value } ) }
 					/>
 					<AlignmentToolbar
 						value={ hAlign }
-						onChange={ hAlign => setAttributes( { hAlign } ) }
+						onChange={ value => setAttributes( { hAlign: value } ) }
 					/>
 				</BlockControls>
 				<InspectorControls>
@@ -118,7 +118,7 @@ class KadenceSpacerDivider extends Component {
 						title={ __( 'Spacer Settings' ) }
 						initialOpen={ true }
 					>
-						<TabPanel className="kt-inspect-tabs"
+						<TabPanel className="kt-inspect-tabs kt-spacer-tabs"
 							activeClass="active-tab"
 							tabs={ [
 								{
@@ -162,7 +162,7 @@ class KadenceSpacerDivider extends Component {
 							<ToggleControl
 								label={ __( 'Enable Divider' ) }
 								checked={ dividerEnable }
-								onChange={ dividerEnable => setAttributes( { dividerEnable } ) }
+								onChange={ value => setAttributes( { dividerEnable: value } ) }
 							/>
 						</PanelBody>
 						<SelectControl
@@ -173,31 +173,31 @@ class KadenceSpacerDivider extends Component {
 								{ value: 'dashed', label: __( 'Dashed' ) },
 								{ value: 'dotted', label: __( 'Dotted' ) },
 							] }
-							onChange={ dividerStyle => setAttributes( { dividerStyle } ) }
+							onChange={ value => setAttributes( { dividerStyle: value } ) }
 						/>
 						<p className="kt-setting-label">{ __( 'Divider Color' ) }</p>
 						<ColorPalette
 							value={ dividerColor }
-							onChange={ dividerColor => setAttributes( { dividerColor } ) }
+							onChange={ value => setAttributes( { dividerColor: value } ) }
 						/>
 						<RangeControl
 							label={ __( 'Divider Opacity' ) }
 							value={ dividerOpacity }
-							onChange={ dividerOpacity => setAttributes( { dividerOpacity } ) }
+							onChange={ value => setAttributes( { dividerOpacity: value } ) }
 							min={ 0 }
 							max={ 100 }
 						/>
 						<RangeControl
 							label={ __( 'Divider Height in px' ) }
 							value={ dividerHeight }
-							onChange={ dividerHeight => setAttributes( { dividerHeight } ) }
+							onChange={ value => setAttributes( { dividerHeight: value } ) }
 							min={ 0 }
 							max={ 40 }
 						/>
 						<RangeControl
 							label={ __( 'Divider Width by %' ) }
 							value={ dividerWidth }
-							onChange={ dividerWidth => setAttributes( { dividerWidth } ) }
+							onChange={ value => setAttributes( { dividerWidth: value } ) }
 							min={ 0 }
 							max={ 100 }
 						/>
