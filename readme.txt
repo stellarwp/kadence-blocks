@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
-Tested up to: 5.0.2
-Stable tag: 1.2.0
+Tested up to: 5.0.3
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.2.1 =
+* Update: Font family select box for easier select.
+* Add: Tablet and Moble height to spacer block.
+* Fix: Highlight option in Gutenberg 4.8
+* Fix: Column 60/40 css missing - thanks @bucketpress
+* Add: Footer and Header tag options - thanks @bucketpress
+* Fix: Firefox issue with swtiching tabs - thanks @bucketpress
 
 = 1.2.0 =
 * Fix: Typography bug when selecting google to non google font.

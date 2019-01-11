@@ -17,7 +17,7 @@
     "re-resizable": "^4.7.1",
     "react-container-dimensions": "^1.4.1",
     "react-lazy-load": "^3.0.13",
-    "react-select-search": "^0.9.3",
+    "react-select": "^2.2.0",
     "react-transition-group": "^2.4.0"
   }
 }

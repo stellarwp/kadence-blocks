@@ -29,6 +29,8 @@ const {
 	PanelBody,
 	ToggleControl,
 	RangeControl,
+	TabPanel,
+	Dashicon,
 	SelectControl,
 } = wp.components;
 
@@ -69,8 +71,35 @@ class KadenceSpacerDivider extends Component {
 		}
 	}
 	render() {
-		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID }, className, setAttributes, toggleSelection } = this.props;
+		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID }, className, setAttributes, toggleSelection } = this.props;
 		const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
+		const deskControls = (
+			<RangeControl
+				label={ __( 'Height' ) }
+				value={ spacerHeight }
+				onChange={ value => setAttributes( { spacerHeight: value } ) }
+				min={ 6 }
+				max={ 600 }
+			/>
+		);
+		const tabletControls = (
+			<RangeControl
+				label={ __( 'Height' ) }
+				value={ tabletSpacerHeight }
+				onChange={ value => setAttributes( { tabletSpacerHeight: value } ) }
+				min={ 6 }
+				max={ 600 }
+			/>
+		);
+		const mobileControls = (
+			<RangeControl
+				label={ __( 'Height' ) }
+				value={ mobileSpacerHeight }
+				onChange={ value => setAttributes( { mobileSpacerHeight: value } ) }
+				min={ 6 }
+				max={ 600 }
+			/>
+		);
 		return (
 			<div className={ className }>
 				<BlockControls key="controls">
@@ -89,13 +118,41 @@ class KadenceSpacerDivider extends Component {
 						title={ __( 'Spacer Settings' ) }
 						initialOpen={ true }
 					>
-						<RangeControl
-							label={ __( 'Height' ) }
-							value={ spacerHeight }
-							onChange={ spacerHeight => setAttributes( { spacerHeight } ) }
-							min={ 6 }
-							max={ 600 }
-						/>
+						<TabPanel className="kt-inspect-tabs"
+							activeClass="active-tab"
+							tabs={ [
+								{
+									name: 'desk',
+									title: <Dashicon icon="desktop" />,
+									className: 'kt-desk-tab',
+								},
+								{
+									name: 'tablet',
+									title: <Dashicon icon="tablet" />,
+									className: 'kt-tablet-tab',
+								},
+								{
+									name: 'mobile',
+									title: <Dashicon icon="smartphone" />,
+									className: 'kt-mobile-tab',
+								},
+							] }>
+							{
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'mobile' === tab.name ) {
+											tabout = mobileControls;
+										} else if ( 'tablet' === tab.name ) {
+											tabout = tabletControls;
+										} else {
+											tabout = deskControls;
+										}
+									}
+									return <div>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
 					</PanelBody>
 					<PanelBody
 						title={ __( 'Divider Settings' ) }

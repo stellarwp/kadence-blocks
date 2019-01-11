@@ -190,6 +190,16 @@ class Kadence_Blocks_Frontend {
 							}
 						}
 					}
+					if ( 'kadence/spacer' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							if ( isset( $blockattr['uniqueID']  ) ) {
+								// Create CSS for Advanced Button.
+								$unique_id = $blockattr['uniqueID'] ;
+								$css .= $this->blocks_spacer_array( $blockattr, $unique_id );
+							}
+						}
+					}
 					if ( 'core/block' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -578,6 +588,29 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $attr->mobileLineHeight ) ) {
 						$css .= 'line-height:' . $attr->mobileLineHeight . ( ! isset( $attr->lineType ) ? 'px' : $attr->lineType ) . ';';
 					}
+				$css .= '}';
+			$css .= '}';
+		}
+		return $css;
+	}
+	/**
+	 * Builds CSS for Spacer block.
+	 * 
+	 * @param array $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	function blocks_spacer_array( $attr, $unique_id ) {
+		if ( isset( $attr['tabletSpacerHeight'] ) && ! empty( $attr['tabletSpacerHeight'] ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
+					$css .= 'height:' . $attr['tabletSpacerHeight'] . 'px !important;';
+				$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['mobileSpacerHeight'] ) && ! empty( $attr['mobileSpacerHeight'] ) ) {
+			$css .= '@media (max-width: 767px) {';
+				$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
+					$css .= 'height:' . $attr['mobileSpacerHeight'] . 'px !important;';
 				$css .= '}';
 			$css .= '}';
 		}
