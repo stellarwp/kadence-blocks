@@ -144,6 +144,74 @@ registerBlockType( 'kadence/column', {
 					type: 'number',
 					default: 1,
 				},
+				topPadding: {
+					type: 'number',
+					default: '',
+				},
+				bottomPadding: {
+					type: 'number',
+					default: '',
+				},
+				leftPadding: {
+					type: 'number',
+					default: '',
+				},
+				rightPadding: {
+					type: 'number',
+					default: '',
+				},
+				topPaddingM: {
+					type: 'number',
+					default: '',
+				},
+				bottomPaddingM: {
+					type: 'number',
+					default: '',
+				},
+				leftPaddingM: {
+					type: 'number',
+					default: '',
+				},
+				rightPaddingM: {
+					type: 'number',
+					default: '',
+				},
+				topMargin: {
+					type: 'number',
+					default: '',
+				},
+				bottomMargin: {
+					type: 'number',
+					default: '',
+				},
+				topMarginM: {
+					type: 'number',
+					default: '',
+				},
+				bottomMarginM: {
+					type: 'number',
+					default: '',
+				},
+				leftMargin: {
+					type: 'number',
+					default: '',
+				},
+				rightMargin: {
+					type: 'number',
+					default: '',
+				},
+				leftMarginM: {
+					type: 'number',
+					default: '',
+				},
+				rightMarginM: {
+					type: 'number',
+					default: '',
+				},
+				zIndex: {
+					type: 'number',
+					default: '',
+				},
 				background: {
 					type: 'string',
 					default: '',
