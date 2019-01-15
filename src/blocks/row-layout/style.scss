@@ -45,6 +45,9 @@
     width: 100%;
     z-index: 0;
 }
+.kt-inside-inner-col {
+	border: 0 solid transparent;
+}
 .kt-row-valign-middle > .wp-block-kadence-column {
     justify-content: center;
 }

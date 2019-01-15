@@ -30,7 +30,7 @@ class KadenceTab extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id } } = this.props;
+		const { attributes: { id, uniqueID } } = this.props;
 		return (
 			<Fragment>
 				<div className={ `kt-tab-inner-content kt-inner-tab-${ id } kt-inner-tab${ uniqueID }` } >

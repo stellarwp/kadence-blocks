@@ -117,6 +117,18 @@ registerBlockType( 'kadence/column', {
 			type: 'number',
 			default: 1,
 		},
+		border: {
+			type: 'string',
+			default: '',
+		},
+		borderOpacity: {
+			type: 'number',
+			default: 1,
+		},
+		borderWidth: {
+			type: 'array',
+			default: [ 0, 0, 0, 0 ],
+		},
 		uniqueID: {
 			type: 'string',
 			default: '',

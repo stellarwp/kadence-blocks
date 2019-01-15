@@ -9,6 +9,7 @@
  */
 import icons from '../../icons';
 import hexToRGBA from '../../hex-to-rgba';
+import MeasurementControls from '../../measurement-control';
 /**
  * Internal block libraries
  */
@@ -33,6 +34,12 @@ const {
  * Build the spacer edit
  */
 class KadenceColumn extends Component {
+	constructor() {
+		super( ...arguments );
+		this.state = {
+			borderWidthControl: 'linked',
+		};
+	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
 			this.props.setAttributes( {
@@ -43,9 +50,15 @@ class KadenceColumn extends Component {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		}
+		if ( this.props.attributes.borderWidth && this.props.attributes.borderWidth[ 0 ] === this.props.attributes.borderWidth[ 1 ] && this.props.attributes.borderWidth[ 0 ] === this.props.attributes.borderWidth[ 2 ] && this.props.attributes.borderWidth[ 0 ] === this.props.attributes.borderWidth[ 3 ] ) {
+			this.setState( { borderWidthControl: 'linked' } );
+		} else {
+			this.setState( { borderWidthControl: 'individual' } );
+		}
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, uniqueID }, setAttributes } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, uniqueID }, setAttributes } = this.props;
+		const { borderWidthControl } = this.state;
 		const mobileControls = (
 			<PanelBody
 				title={ __( 'Mobile Padding/Margin' ) }
@@ -287,6 +300,7 @@ class KadenceColumn extends Component {
 			</TabPanel>
 		);
 		const backgroundString = ( background ? hexToRGBA( background, backgroundOpacity ) : 'transparent' );
+		const borderString = ( border ? hexToRGBA( border, borderOpacity ) : 'transparent' );
 		return (
 			<div className={ `kadence-column inner-column-${ id } kadence-column-${ uniqueID }` } >
 				<InspectorControls>
@@ -306,6 +320,33 @@ class KadenceColumn extends Component {
 						min={ 0 }
 						max={ 1 }
 						step={ 0.01 }
+					/>
+					<h2>{ __( 'Border Color' ) }</h2>
+					<ColorPalette
+						value={ border }
+						onChange={ ( value ) => setAttributes( { border: value } ) }
+					/>
+					<RangeControl
+						label={ __( 'Border Opacity' ) }
+						value={ borderOpacity }
+						onChange={ ( value ) => {
+							setAttributes( {
+								borderOpacity: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 1 }
+						step={ 0.01 }
+					/>
+					<MeasurementControls
+						label={ __( 'Border Width' ) }
+						measurement={ borderWidth }
+						control={ borderWidthControl }
+						onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
+						onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
+						min={ 0 }
+						max={ 40 }
+						step={ 1 }
 					/>
 					<RangeControl
 						label={ __( 'Z Index Control' ) }
@@ -331,6 +372,8 @@ class KadenceColumn extends Component {
 					marginBottom: bottomMargin + 'px',
 					zIndex: zIndex,
 					background: backgroundString,
+					borderColor: borderString,
+					borderWidth: ( borderWidth ? borderWidth[ 0 ] + 'px ' + borderWidth[ 1 ] + 'px ' + borderWidth[ 2 ] + 'px ' + borderWidth[ 3 ] + 'px' : '' ),
 				} } >
 					<InnerBlocks templateLock={ false } />
 				</div>
