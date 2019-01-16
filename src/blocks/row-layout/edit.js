@@ -1172,7 +1172,7 @@ class KadenceRowLayout extends Component {
 					value={ ( topSep === 'none' ? '' : topSep ) }
 					onChange={ value => setAttributes( { topSep: value } ) }
 					appendTo="body"
-					showSearch={ false } 
+					showSearch={ false }
 					renderFunc={ renderTopSVGDivider }
 					theme="dividers"
 					noSelectedPlaceholder={ __( 'Select Divider' ) }

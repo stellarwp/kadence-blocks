@@ -17,6 +17,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Kadence_Blocks_Settings {
 
+	/**
+	 * Settings of this class
+	 *
+	 * @var array
+	 */
 	public static $settings = array();
 
 	/**
@@ -59,15 +64,20 @@ class Kadence_Blocks_Settings {
 		if ( get_option( 'kadence_blocks_redirect_on_activation', false ) ) {
 			delete_option( 'kadence_blocks_redirect_on_activation' );
 			if ( ! isset( $_GET['activate-multi'] ) ) {
-				wp_safe_redirect(  admin_url( 'options-general.php?page=kadence_blocks' ) );
+				wp_safe_redirect( admin_url( 'options-general.php?page=kadence_blocks' ) );
 			}
 		}
 	}
+	/**
+	 * Redirect to the settings page on activation.
+	 *
+	 * @param string $key setting key.
+	 */
 	public static function get_data_options( $key ) {
-		if ( ! isset( self::$settings[$key] ) ) {
-			self::$settings[$key] = get_option( $key, array() );
+		if ( ! isset( self::$settings[ $key ] ) ) {
+			self::$settings[ $key ] = get_option( $key, array() );
 		}
-		return self::$settings[$key];
+		return self::$settings[ $key ];
 	}
 	/**
 	 * Deregister Blocks.
@@ -76,15 +86,19 @@ class Kadence_Blocks_Settings {
 		// Scripts.
 		$editor_widths = get_option( 'kt_blocks_editor_width', array() );
 		if ( isset( $editor_widths['enable_editor_width'] ) && 'false' === $editor_widths['enable_editor_width'] ) {
-			$plugins = array('kadence-editor-width');
+			$plugins = array( 'kadence-editor-width' );
 		} else {
 			$plugins = array();
 		}
 		wp_enqueue_script( 'kadence-blocks-deregister-js', KT_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KT_BLOCKS_VERSION, true );
-		wp_localize_script( 'kadence-blocks-deregister-js', 'kt_deregister_params', array(
-			'deregister' => get_option( 'kt_blocks_unregistered_blocks' ),
-			'dergisterplugins' => $plugins,
-		) );
+		wp_localize_script(
+			'kadence-blocks-deregister-js',
+			'kt_deregister_params',
+			array(
+				'deregister'       => get_option( 'kt_blocks_unregistered_blocks' ),
+				'dergisterplugins' => $plugins,
+			)
+		);
 	}
 	/**
 	 * Add option page menu
@@ -98,11 +112,11 @@ class Kadence_Blocks_Settings {
 	 */
 	public function scripts() {
 		$texts = array(
-			'close' => __( 'Close', 'kadence-blocks' ),
-			'save' => __( 'Save', 'kadence-blocks' ),
+			'close'    => __( 'Close', 'kadence-blocks' ),
+			'save'     => __( 'Save', 'kadence-blocks' ),
 			'updating' => __( 'Updating', 'kadence-blocks' ),
-			'updated' => __( 'Updated', 'kadence-blocks' ),
-			'config' => __( 'Config', 'kadence-blocks' ),
+			'updated'  => __( 'Updated', 'kadence-blocks' ),
+			'config'   => __( 'Config', 'kadence-blocks' ),
 			'settings' => __( 'Default Settings', 'kadence-blocks' ),
 		);
 		$settings = array(
@@ -117,6 +131,26 @@ class Kadence_Blocks_Settings {
 					),
 					'name' => __( 'Spacer Height (px)', 'kadence-blocks' ),
 				),
+				'tabletSpacerHeight' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 6,
+						'max' => 600,
+						'step' => 1,
+					),
+					'name' => __( 'Tablet Spacer Height (px)', 'kadence-blocks' ),
+				),
+				'mobileSpacerHeight' => array(
+					'type' => 'number',
+					'default' => '',
+					'options' => array(
+						'min' => 6,
+						'max' => 600,
+						'step' => 1,
+					),
+					'name' => __( 'Mobile Spacer Height (px)', 'kadence-blocks' ),
+				),
 				'dividerEnable' => array(
 					'type' => 'boolean',
 					'default' => true,
@@ -127,15 +161,15 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'solid',
-							'name' =>  __( 'Solid', 'kadence-blocks' ),
+							'name' => __( 'Solid', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'dashed',
-							'name' =>  __( 'Dashed', 'kadence-blocks' ),
+							'name' => __( 'Dashed', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'dotted',
-							'name' =>  __( 'Dotted', 'kadence-blocks' ),
+							'name' => __( 'Dotted', 'kadence-blocks' ),
 						),
 					),
 					'default' => 'solid',
@@ -183,31 +217,31 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'default',
-							'name' =>  __( 'Default: 30px', 'kadence-blocks' ),
+							'name' => __( 'Default: 30px', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'none',
-							'name' =>  __( 'No Gutter', 'kadence-blocks' ),
+							'name' => __( 'No Gutter', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'skinny',
-							'name' =>  __( 'Skinny: 10px', 'kadence-blocks' ),
+							'name' => __( 'Skinny: 10px', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'narrow',
-							'name' =>  __( 'Narrow: 20px', 'kadence-blocks' ),
+							'name' => __( 'Narrow: 20px', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'wide',
-							'name' =>  __( 'Wide: 40px', 'kadence-blocks' ),
+							'name' => __( 'Wide: 40px', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'wider',
-							'name' =>  __( 'Wider: 60px', 'kadence-blocks' ),
+							'name' => __( 'Wider: 60px', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'widest',
-							'name' =>  __( 'Widest: 80px', 'kadence-blocks' ),
+							'name' => __( 'Widest: 80px', 'kadence-blocks' ),
 						),
 					),
 					'default' => 'default',
@@ -218,23 +252,23 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'div',
-							'name' =>  __( 'div', 'kadence-blocks' ),
+							'name' => __( 'div', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'section',
-							'name' =>  __( 'section', 'kadence-blocks' ),
+							'name' => __( 'section', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'article',
-							'name' =>  __( 'article', 'kadence-blocks' ),
+							'name' => __( 'article', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'main',
-							'name' =>  __( 'main', 'kadence-blocks' ),
+							'name' => __( 'main', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'aside',
-							'name' =>  __( 'aside', 'kadence-blocks' ),
+							'name' => __( 'aside', 'kadence-blocks' ),
 						),
 					),
 					'default' => 'div',
@@ -480,11 +514,11 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'tabs',
-							'name' =>  __( 'Standard Tabs', 'kadence-blocks' ),
+							'name' => __( 'Standard Tabs', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'vtabs',
-							'name' =>  __( 'Vertical Tabs', 'kadence-blocks' ),
+							'name' => __( 'Vertical Tabs', 'kadence-blocks' ),
 						),
 					),
 					'default' => 'tabs',
@@ -495,15 +529,15 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'tabs',
-							'name' =>  __( 'Standard Tabs', 'kadence-blocks' ),
+							'name' => __( 'Standard Tabs', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'vtabs',
-							'name' =>  __( 'Vertical Tabs', 'kadence-blocks' ),
+							'name' => __( 'Vertical Tabs', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'accordion',
-							'name' =>  __( 'Accordion', 'kadence-blocks' ),
+							'name' => __( 'Accordion', 'kadence-blocks' ),
 						),
 					),
 					'default' => '',
@@ -514,15 +548,15 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'tabs',
-							'name' =>  __( 'Standard Tabs', 'kadence-blocks' ),
+							'name' => __( 'Standard Tabs', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'vtabs',
-							'name' =>  __( 'Vertical Tabs', 'kadence-blocks' ),
+							'name' => __( 'Vertical Tabs', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'accordion',
-							'name' =>  __( 'Accordion', 'kadence-blocks' ),
+							'name' => __( 'Accordion', 'kadence-blocks' ),
 						),
 					),
 					'default' => '',
@@ -545,7 +579,7 @@ class Kadence_Blocks_Settings {
 						'max' => 20,
 						'step' => 1,
 					),
-					'default' => array( 1,1,1,1 ),
+					'default' => array( 1, 1, 1, 1 ),
 					'name' => __( 'Content Border Width', 'kadence-blocks' ),
 				),
 				'innerPadding' => array(
@@ -555,7 +589,7 @@ class Kadence_Blocks_Settings {
 						'max' => 100,
 						'step' => 1,
 					),
-					'default' => array( 20,20,20,20 ),
+					'default' => array( 20, 20, 20, 20 ),
 					'name' => __( 'Content Padding', 'kadence-blocks' ),
 				),
 				'tabAlignment' => array(
@@ -563,15 +597,15 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'left',
-							'name' =>  __( 'Left', 'kadence-blocks' ),
+							'name' => __( 'Left', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'center',
-							'name' =>  __( 'Center', 'kadence-blocks' ),
+							'name' => __( 'Center', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'right',
-							'name' =>  __( 'Right', 'kadence-blocks' ),
+							'name' => __( 'Right', 'kadence-blocks' ),
 						),
 					),
 					'default' => 'left',
@@ -667,11 +701,11 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'px',
-							'name' =>  __( 'px', 'kadence-blocks' ),
+							'name' => __( 'px', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'em',
-							'name' =>  __( 'em', 'kadence-blocks' ),
+							'name' => __( 'em', 'kadence-blocks' ),
 						),
 					),
 					'default' => 'px',
@@ -715,11 +749,11 @@ class Kadence_Blocks_Settings {
 					'options' => array(
 						array(
 							'value' => 'px',
-							'name' =>  __( 'px', 'kadence-blocks' ),
+							'name' => __( 'px', 'kadence-blocks' ),
 						),
 						array(
 							'value' => 'em',
-							'name' =>  __( 'em', 'kadence-blocks' ),
+							'name' => __( 'em', 'kadence-blocks' ),
 						),
 					),
 					'default' => 'px',
@@ -762,13 +796,17 @@ class Kadence_Blocks_Settings {
 		);
 		wp_enqueue_style( 'kadence-blocks-admin-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, 'all' );
 		wp_enqueue_script( 'kadence-blocks-admin-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, true );
-		wp_localize_script( 'kadence-blocks-admin-js', 'kt_blocks_params', array(
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
-			'wpnonce' => wp_create_nonce( 'kadence-blocks-manage' ),
-			'blockConfig' => get_option( 'kt_blocks_config_blocks' ),
-			'blockConfigSettings' => $settings,
-			'texts' => $texts,
-		) );
+		wp_localize_script(
+			'kadence-blocks-admin-js',
+			'kt_blocks_params',
+			array(
+				'ajaxurl'             => admin_url( 'admin-ajax.php' ),
+				'wpnonce'             => wp_create_nonce( 'kadence-blocks-manage' ),
+				'blockConfig'         => get_option( 'kt_blocks_config_blocks' ),
+				'blockConfigSettings' => $settings,
+				'texts'               => $texts,
+			)
+		);
 	}
 	/**
 	 * Register settings
@@ -794,10 +832,10 @@ class Kadence_Blocks_Settings {
 	public function enabled_editor_width_callback() {
 		$data = self::get_data_options( 'kt_blocks_editor_width' );
 		$default_enabled = ( isset( $data['enable_editor_width'] ) ? $data['enable_editor_width'] : 'true' );
-		echo '<p>' . __( 'Allows for changes to the editor width on per page/post basis with preset defaults.', 'kadence-blocks' ) . '<p>';
+		echo '<p>' . esc_html__( 'Allows for changes to the editor width on per page/post basis with preset defaults.', 'kadence-blocks' ) . '<p>';
 		echo '<select class="kt-blocks-enable-editor-width kt-editor-width-defaults-select" name="kt_blocks_editor_width[enable_editor_width]">';
-			echo '<option value="false" ' . ( $default_enabled === 'false' ? 'selected' : '' ) . '>' . __( 'False', 'kadence-blocks' ) . '</option>';
-			echo '<option value="true" ' . ( $default_enabled === 'true' ? 'selected' : '' ) . '>' . __( 'True', 'kadence-blocks' ) . '</option>';
+			echo '<option value="false" ' . ( 'false' === $default_enabled ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( 'true' === $default_enabled ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
 
@@ -807,10 +845,10 @@ class Kadence_Blocks_Settings {
 	public function limited_margins_callback() {
 		$data = self::get_data_options( 'kt_blocks_editor_width' );
 		$default_limited = ( isset( $data['limited_margins'] ) ? $data['limited_margins'] : 'false' );
-		echo '<p>' . __( 'Experimental editor CSS for less excess margins in Gutenberg in an attempt to get a closer WYSIWYG editing experience.', 'kadence-blocks' ) . '<p>';
+		echo '<p>' . esc_html__( 'Experimental editor CSS for less excess margins in Gutenberg in an attempt to get a closer WYSIWYG editing experience.', 'kadence-blocks' ) . '<p>';
 		echo '<select class="kt-blocks-limited-margins kt-editor-width-defaults-select" name="kt_blocks_editor_width[limited_margins]">';
-			echo '<option value="false" ' . ( $default_limited === 'false' ? 'selected' : '' ) . '>' . __( 'False', 'kadence-blocks' ) . '</option>';
-			echo '<option value="true" ' . ( $default_limited === 'true' ? 'selected' : '' ) . '>' . __( 'True', 'kadence-blocks' ) . '</option>';
+			echo '<option value="false" ' . ( 'false' === $default_limited ? 'selected' : '' ) . '>' . esc_html__( 'False', 'kadence-blocks' ) . '</option>';
+			echo '<option value="true" ' . ( 'true' === $default_limited ? 'selected' : '' ) . '>' . esc_html__( 'True', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
 	/**
@@ -818,16 +856,16 @@ class Kadence_Blocks_Settings {
 	 */
 	public function sidebar_callback() {
 		$data = self::get_data_options( 'kt_blocks_editor_width' );
-		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[sidebar]' size='25' type='number' value='" . ( isset( $data['sidebar'] ) ? $data['sidebar'] : '750' ) . "' />";
-		echo '<span class="kt-sub-input-description">' . __( 'px', 'kadence-blocks' ) . '</span>';
+		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[sidebar]' size='25' type='number' value='" . ( isset( $data['sidebar'] ) ? esc_attr( $data['sidebar'] ) : '750' ) . "' />";
+		echo '<span class="kt-sub-input-description">' . esc_html__( 'px', 'kadence-blocks' ) . '</span>';
 	}
 	/**
 	 * Outputs no sidebar number field
 	 */
 	public function nosidebar_callback() {
 		$data = self::get_data_options( 'kt_blocks_editor_width' );
-		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[nosidebar]' size='25' type='number' value='" . ( isset( $data['nosidebar'] ) ? $data['nosidebar'] : '1140' ) . "' />";
-		echo '<span class="kt-sub-input-description">' . __( 'px', 'kadence-blocks' ) . '</span>';
+		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[nosidebar]' size='25' type='number' value='" . ( isset( $data['nosidebar'] ) ? esc_attr( $data['nosidebar'] ) : '1140' ) . "' />";
+		echo '<span class="kt-sub-input-description">' . esc_html__( 'px', 'kadence-blocks' ) . '</span>';
 	}
 
 	/**
@@ -837,9 +875,9 @@ class Kadence_Blocks_Settings {
 		$data = self::get_data_options( 'kt_blocks_editor_width' );
 		$default_post_type = ( isset( $data['post_default'] ) ? $data['post_default'] : 'sidebar' );
 		echo '<select class="kt-blocks-posts-defaults kt-editor-width-defaults-select" name="kt_blocks_editor_width[post_default]">';
-			echo '<option value="sidebar" ' . ( $default_post_type === 'sidebar' ? 'selected' : '' ) . '>' . __( 'Small', 'kadence-blocks' ) . '</option>';
-			echo '<option value="nosidebar" ' . ( $default_post_type === 'nosidebar' ? 'selected' : '' ) . '>' . __( 'Large', 'kadence-blocks' ) . '</option>';
-			echo '<option value="fullwidth" ' . ( $default_post_type === 'fullwidth' ? 'selected' : '' ) . '>' . __( 'Fullwidth', 'kadence-blocks' ) . '</option>';
+			echo '<option value="sidebar" ' . ( 'sidebar' === $default_post_type ? 'selected' : '' ) . '>' . esc_html__( 'Small', 'kadence-blocks' ) . '</option>';
+			echo '<option value="nosidebar" ' . ( 'nosidebar' === $default_post_type ? 'selected' : '' ) . '>' . esc_html__( 'Large', 'kadence-blocks' ) . '</option>';
+			echo '<option value="fullwidth" ' . ( 'fullwidth' === $default_post_type ? 'selected' : '' ) . '>' . esc_html__( 'Fullwidth', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
 	/**
@@ -849,18 +887,23 @@ class Kadence_Blocks_Settings {
 		$data = self::get_data_options( 'kt_blocks_editor_width' );
 		$default_page_type = ( isset( $data['page_default'] ) ? $data['page_default'] : 'sidebar' );
 		echo '<select class="kt-blocks-posts-defaults kt-editor-width-defaults-select" name="kt_blocks_editor_width[page_default]">';
-			echo '<option value="sidebar" ' . ( $default_page_type === 'sidebar' ? 'selected' : '' ) . '>' . __( 'Small', 'kadence-blocks' ) . '</option>';
-			echo '<option value="nosidebar" ' . ( $default_page_type === 'nosidebar' ? 'selected' : '' ) . '>' . __( 'Large', 'kadence-blocks' ) . '</option>';
-			echo '<option value="fullwidth" ' . ( $default_page_type === 'fullwidth' ? 'selected' : '' ) . '>' . __( 'Fullwidth', 'kadence-blocks' ) . '</option>';
+			echo '<option value="sidebar" ' . ( 'sidebar' === $default_page_type ? 'selected' : '' ) . '>' . esc_html__( 'Small', 'kadence-blocks' ) . '</option>';
+			echo '<option value="nosidebar" ' . ( 'nosidebar' === $default_page_type ? 'selected' : '' ) . '>' . esc_html__( 'Large', 'kadence-blocks' ) . '</option>';
+			echo '<option value="fullwidth" ' . ( 'fullwidth' === $default_page_type ? 'selected' : '' ) . '>' . esc_html__( 'Fullwidth', 'kadence-blocks' ) . '</option>';
 		echo '</select>';
 	}
+	/**
+	 * Outputs title for content width.
+	 */
 	public function maxwidths_callback() {
 		global $content_width;
-		echo '<h5 class="kt-main-subtitle">' . __( 'Assign Editor Template Max Widths', 'kadence-blocks' ) . '</h5>';
-		echo '<div class="kt-main-description-notice">' . __( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . $content_width . 'px</div>';
+		echo '<h5 class="kt-main-subtitle">' . esc_html__( 'Assign Editor Template Max Widths', 'kadence-blocks' ) . '</h5>';
+		echo '<div class="kt-main-description-notice">' . esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ) . 'px</div>';
 	}
 	/**
-	 * Sanitizes and validates all input and output for Dashboard
+	 * Sanitizes and validates all input and output for Dashboard.
+	 *
+	 * @param array $input settings input.
 	 */
 	public function validate_options( $input ) {
 		return $input;
@@ -1075,9 +1118,9 @@ class Kadence_Blocks_Settings {
 		}
 		// Get settings.
 		$current_settings = get_option( 'kt_blocks_config_blocks' );
-		$new_settings = $_POST['config'];
+		$new_settings = wp_unslash( $_POST['config'] );
 		if ( ! is_array( $new_settings ) ) {
-			return wp_send_json_error(  __( 'Nothing to Save', 'kadence-blocks' ) );
+			return wp_send_json_error( __( 'Nothing to Save', 'kadence-blocks' ) );
 		}
 		foreach ( $new_settings as $block_key => $settings ) {
 			foreach ( $settings as $attribute_key => $value ) {

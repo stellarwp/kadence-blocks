@@ -29,7 +29,8 @@
 				&:focus {outline:0;}
             }
             &.kt-tab-title-active {
-                z-index: 4;
+				z-index: 4;
+				position: relative;
                 .kt-tab-title {
                     background-color: #fff;
                     border-color: #dee2e6;

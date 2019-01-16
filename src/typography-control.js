@@ -14,7 +14,7 @@ import icons from './icons';
 import gFonts from './gfonts';
 import fonts from './fonts';
 import capitalizeFirstLetter from './capitalfirst';
-import SelectSearch from 'react-select-search';
+import Select from 'react-select';
 import map from 'lodash/map';
 import range from 'lodash/range';
 
@@ -183,7 +183,7 @@ export default function TypographyControls( {
 	const typographyStyles = ( googleFont && fontFamily ? gFonts[ fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
 	const typographySubsets = ( googleFont && fontFamily ? gFonts[ fontFamily ].s.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
 	const fontsarray = fonts.map( ( name ) => {
-		return { name: name, value: name, google: true };
+		return { label: name, value: name, google: true };
 	} );
 	const sizeTypes = [
 		{ key: 'px', name: __( 'px' ) },
@@ -196,30 +196,31 @@ export default function TypographyControls( {
 	const options = [
 		{
 			type: 'group',
-			name: 'Standard Fonts',
-			items: [
-				{ name: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
-				{ name: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
-				{ name: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
-				{ name: 'Impact, Charcoal, sans-serif', value: 'Impact, Charcoal, sans-serif', google: false },
-				{ name: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', value: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', google: false },
-				{ name: 'Tahoma, Geneva, sans-serif', value: 'Tahoma, Geneva, sans-serif', google: false },
-				{ name: '"Trebuchet MS", Helvetica, sans-serif', value: '"Trebuchet MS", Helvetica, sans-serif', google: false },
-				{ name: 'Verdana, Geneva, sans-serif', value: 'Verdana, Geneva, sans-serif', google: false },
-				{ name: 'Georgia, serif', value: 'Georgia, serif', google: false },
-				{ name: '"Palatino Linotype", "Book Antiqua", Palatino, serif', value: '"Palatino Linotype", "Book Antiqua", Palatino, serif', google: false },
-				{ name: '"Times New Roman", Times, serif', value: '"Times New Roman", Times, serif', google: false },
-				{ name: 'Courier, monospace', value: 'Courier, monospace', google: false },
-				{ name: '"Lucida Console", Monaco, monospace', value: '"Lucida Console", Monaco, monospace', google: false },
+			label: 'Standard Fonts',
+			options: [
+				{ label: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
+				{ label: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
+				{ label: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
+				{ label: 'Impact, Charcoal, sans-serif', value: 'Impact, Charcoal, sans-serif', google: false },
+				{ label: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', value: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', google: false },
+				{ label: 'Tahoma, Geneva, sans-serif', value: 'Tahoma, Geneva, sans-serif', google: false },
+				{ label: '"Trebuchet MS", Helvetica, sans-serif', value: '"Trebuchet MS", Helvetica, sans-serif', google: false },
+				{ label: 'Verdana, Geneva, sans-serif', value: 'Verdana, Geneva, sans-serif', google: false },
+				{ label: 'Georgia, serif', value: 'Georgia, serif', google: false },
+				{ label: '"Palatino Linotype", "Book Antiqua", Palatino, serif', value: '"Palatino Linotype", "Book Antiqua", Palatino, serif', google: false },
+				{ label: '"Times New Roman", Times, serif', value: '"Times New Roman", Times, serif', google: false },
+				{ label: 'Courier, monospace', value: 'Courier, monospace', google: false },
+				{ label: '"Lucida Console", Monaco, monospace', value: '"Lucida Console", Monaco, monospace', google: false },
 			],
 		},
 		{
 			type: 'group',
-			name: 'Google Fonts',
-			items: fontsarray,
+			label: 'Google Fonts',
+			options: fontsarray,
 		},
 	];
 	const typographyOptions = applyFilters( 'kadence.typography_options', options );
+	const typographySelectOptions = [].concat.apply( [], typographyOptions.map( option => option.options ) );
 	const fontMin = ( fontSizeType === 'em' ? 0.2 : 5 );
 	const fontMax = ( fontSizeType === 'em' ? 12 : 200 );
 	const fontStep = ( fontSizeType === 'em' ? 0.1 : 1 );
@@ -450,15 +451,16 @@ export default function TypographyControls( {
 						onClick={ onTypoFontClear }
 					/>
 				) }
-				<SelectSearch
-					height={ 30 }
-					search={ true }
-					multiple={ false }
-					value={ fontFamily }
-					onChange={ onTypoFontChange }
-					options={ typographyOptions }
-					placeholder={ __( 'Select a font family' ) }
-				/>
+				<div className="typography-family-select-form-row">
+					<Select
+						options={ typographyOptions }
+						value={ typographySelectOptions.filter( ( { value } ) => value === fontFamily ) }
+						isMulti={ false }
+						maxMenuHeight={ 300 }
+						placeholder={ __( 'Select a font family' ) }
+						onChange={ onTypoFontChange }
+					/>
+				</div>
 				{ fontFamily && onFontWeight && (
 					<SelectControl
 						label={ __( 'Font Weight' ) }

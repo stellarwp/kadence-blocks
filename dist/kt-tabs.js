@@ -3,8 +3,8 @@
  */
 jQuery( document ).ready( function( $ ) {
 	$( '.kt-tabs-wrap' ).each( function( a ) {
-		const ktStartTab = $( this ).find( '> .kt-tabs-title-list .kt-tab-title-active' ).attr( 'data-tab' );
-		const ktTabsList = $( this ).find( '> .kt-tabs-title-list' ).attr( {
+		var ktStartTab = $( this ).find( '> .kt-tabs-title-list .kt-tab-title-active' ).attr( 'data-tab' );
+		var ktTabsList = $( this ).find( '> .kt-tabs-title-list' ).attr( {
 			role: 'tablist',
 		} );
 		$( this ).find( '> .kt-tabs-content-wrap > .kt-tab-inner-content' ).attr( {
@@ -45,7 +45,7 @@ jQuery( document ).ready( function( $ ) {
 	} );
 	$( '.kt-tabs-title-list li a' ).click( function( e ) {
 		e.preventDefault();
-		const tabId = $( this ).attr( 'data-tab' );
+		var tabId = $( this ).attr( 'data-tab' );
 
 		$( this ).closest( '.kt-tabs-title-list' ).find( '.kt-tab-title-active' )
 			.addClass( 'kt-tab-title-inactive' )
@@ -74,10 +74,10 @@ jQuery( document ).ready( function( $ ) {
 		} );
 	} );
 	$( '.kt-create-accordion' ).find( '> .kt-tabs-title-list .kt-title-item' ).each( function() {
-		const tabId = $( this ).find( 'a' ).attr( 'data-tab' );
-		let activeclass;
-		let iconclass;
-		let iconsideclass;
+		var tabId = $( this ).find( 'a' ).attr( 'data-tab' );
+		var activeclass;
+		var iconclass;
+		var iconsideclass;
 		if ( $( this ).hasClass( 'kt-tab-title-active' ) ) {
 			activeclass = 'kt-tab-title-active';
 		} else {
@@ -97,7 +97,7 @@ jQuery( document ).ready( function( $ ) {
 	} );
 	$( '.kt-tabs-accordion-title a' ).click( function( e ) {
 		e.preventDefault();
-		const tabId = $( this ).attr( 'data-tab' );
+		var tabId = $( this ).attr( 'data-tab' );
 		if ( $( this ).parent( '.kt-tabs-accordion-title' ).hasClass( 'kt-tab-title-active' ) ) {
 			$( this ).closest( '.kt-tabs-wrap' ).removeClass( 'kt-active-tab-' + tabId );
 			$( this ).parent( '.kt-tabs-accordion-title' ).removeClass( 'kt-tab-title-active' ).addClass( 'kt-tab-title-inactive' );
@@ -114,10 +114,10 @@ jQuery( document ).ready( function( $ ) {
 		}
 	} );
 	if ( window.location.hash != '' ) {
-		const matches = window.location.hash.match( /\btab-\S+/g );
+		var matches = window.location.hash.match( /\btab-\S+/g );
 		if ( matches !== null && matches.length === 1 ) {
-			const tabid = matches[ 0 ];
-			const tabnumber = $( '#' + tabid + ' a' ).attr( 'data-tab' );
+			var tabid = matches[ 0 ];
+			var tabnumber = $( '#' + tabid + ' a' ).attr( 'data-tab' );
 			$( '#' + tabid ).closest( '.kt-tabs-title-list' ).find( '.kt-tab-title-active' )
 				.addClass( 'kt-tab-title-inactive' )
 				.removeClass( 'kt-tab-title-active' );

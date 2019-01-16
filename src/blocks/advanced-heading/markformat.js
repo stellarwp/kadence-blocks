@@ -10,7 +10,7 @@ const kadenceMarkHighlight = {
 	name,
 	title: __( 'Highlight' ),
 	tagName: 'mark',
-	className: null,
+	className: 'kt-highlight',
 	edit( { isActive, value, onChange } ) {
 		const onToggle = () => onChange( toggleFormat( value, { type: name } ) );
 
@@ -29,6 +29,7 @@ const kadenceMarkHighlight = {
 					isActive={ isActive }
 					shortcutType="access"
 					shortcutCharacter="m"
+					className={ `toolbar-button-with-text toolbar-button__${ name }` }
 				/>
 			</Fragment>
 		);

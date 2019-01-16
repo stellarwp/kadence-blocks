@@ -72,6 +72,14 @@ registerBlockType( 'kadence/spacer', {
 			type: 'number',
 			default: 60,
 		},
+		tabletSpacerHeight: {
+			type: 'number',
+			default: '',
+		},
+		mobileSpacerHeight: {
+			type: 'number',
+			default: '',
+		},
 		dividerEnable: {
 			type: 'boolean',
 			default: true,
@@ -150,10 +158,10 @@ registerBlockType( 'kadence/spacer', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth } } = props;
+		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID } } = props;
 		const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
 		return (
-			<div className={ `align${ blockAlignment }` }>
+			<div className={ `align${ ( blockAlignment ? blockAlignment : 'none' ) } kt-block-spacer-${ uniqueID }` }>
 				<div className={ `kt-block-spacer kt-block-spacer-halign-${ hAlign }` } style={ {
 					height: spacerHeight + 'px',
 				} } >
@@ -170,6 +178,70 @@ registerBlockType( 'kadence/spacer', {
 		);
 	},
 	deprecated: [
+		{
+			attributes: {
+				blockAlignment: {
+					type: 'string',
+					default: 'center',
+				},
+				hAlign: {
+					type: 'string',
+					default: 'center',
+				},
+				spacerHeight: {
+					type: 'number',
+					default: '60',
+				},
+				dividerEnable: {
+					type: 'boolean',
+					default: true,
+				},
+				dividerStyle: {
+					type: 'string',
+					default: 'solid',
+				},
+				dividerOpacity: {
+					type: 'number',
+					default: '100',
+				},
+				dividerColor: {
+					type: 'string',
+					default: '#eee',
+				},
+				dividerWidth: {
+					type: 'number',
+					default: '80',
+				},
+				dividerHeight: {
+					type: 'number',
+					default: '1',
+				},
+				uniqueID: {
+					type: 'string',
+					default: '',
+				},
+			},
+			save: ( { attributes } ) => {
+				const { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth } = attributes;
+				const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
+				return (
+					<div className={ `align${ blockAlignment }` }>
+						<div className={ `kt-block-spacer kt-block-spacer-halign-${ hAlign }` } style={ {
+							height: spacerHeight + 'px',
+						} } >
+							{ dividerEnable && (
+								<hr className="kt-divider" style={ {
+									borderTopColor: dividerBorderColor,
+									borderTopWidth: dividerHeight + 'px',
+									width: dividerWidth + '%',
+									borderTopStyle: dividerStyle,
+								} } />
+							) }
+						</div>
+					</div>
+				);
+			},
+		},
 		{
 			attributes: {
 				blockAlignment: {

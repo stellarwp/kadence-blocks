@@ -507,7 +507,7 @@ class KadenceAdvancedHeading extends Component {
 					</PanelBody>
 				</InspectorControls>
 				<RichText
-					formattingControls={ [ 'bold', 'italic', 'link', 'strikethrough', 'mark' ] }
+					formattingControls={ [ 'bold', 'italic', 'link', 'underline', 'mark' ] }
 					wrapperClassName={ className }
 					tagName={ tagName }
 					value={ content }

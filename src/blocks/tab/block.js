@@ -7,13 +7,15 @@
 const {
 	InnerBlocks,
 } = wp.editor;
-const {
-	Fragment,
-} = wp.element;
+
 /**
  * Import Icons
  */
 import icons from './icon';
+/**
+ * Import edit
+ */
+import edit from './edit';
 /**
  * Internal block libraries
  */
@@ -38,29 +40,44 @@ registerBlockType( 'kadence/tab', {
 			type: 'number',
 			default: 1,
 		},
+		uniqueID: {
+			type: 'string',
+			default: '',
+		},
 	},
 	getEditWrapperProps( attributes ) {
 		return { 'data-tab': attributes.id };
 	},
-	edit: props => {
-		const { attributes: { id } } = props;
-		return (
-			<Fragment>
-				<div className={ `kt-tab-inner-content kt-inner-tab-${ id }` } >
-					<InnerBlocks templateLock={ false } />
-				</div>
-			</Fragment>
-		);
-	},
+	edit,
 
 	save( { attributes } ) {
-		const { id } = attributes;
+		const { id, uniqueID } = attributes;
 		return (
-			<div className={ `kt-tab-inner-content kt-inner-tab-${ id }` }>
+			<div className={ `kt-tab-inner-content kt-inner-tab-${ id } kt-inner-tab${ uniqueID }` }>
 				<div className={ 'kt-tab-inner-content-inner' } >
 					<InnerBlocks.Content />
 				</div>
 			</div>
 		);
 	},
+	deprecated: [
+		{
+			attributes: {
+				id: {
+					type: 'number',
+					default: 1,
+				},
+			},
+			save: ( { attributes } ) => {
+				const { id } = attributes;
+				return (
+					<div className={ `kt-tab-inner-content kt-inner-tab-${ id }` }>
+						<div className={ 'kt-tab-inner-content-inner' } >
+							<InnerBlocks.Content />
+						</div>
+					</div>
+				);
+			},
+		},
+	],
 } );
