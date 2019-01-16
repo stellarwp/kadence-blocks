@@ -77,7 +77,17 @@ class Kadence_Blocks_Frontend {
 			'render_callback' => array( $this, 'render_spacer_css' ),
 		) );
 	}
-
+	/**
+	 * Render Inline CSS helper function
+	 *
+	 * @param array  $css the css for each rendered block.
+	 * @param string $style_id the unique id for the rendered style
+	 */
+	public function render_inline_css( $css, $style_id ) {
+		wp_register_style( $style_id, false );
+		wp_enqueue_style( $style_id );
+		wp_add_inline_style( $style_id, $css );
+	}
 	/**
 	 * Render Row Block CSS
 	 *
@@ -88,12 +98,11 @@ class Kadence_Blocks_Frontend {
 		$css = '';
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-
-			$css .= '<style media="all" id="kt-blocks' . esc_attr( $unique_id ) . '">';
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			$css .= $this->row_layout_array_css( $attributes, $unique_id );
-			$css .= '</style>';
 		}
-		return $css . $content;
+		$this->render_inline_css( $css, $style_id );
+		return $content;
 	}
 	/**
 	 * Render Column Block CSS
@@ -112,10 +121,10 @@ class Kadence_Blocks_Frontend {
 				$content = substr_replace( $content, 'kadence-column' . $unique_id . ' inner-column-', $pos, strlen( 'inner-column-' ) );
 			}
 		}
-		$css .= '<style media="all" id="kt-blocks' . esc_attr( $unique_id ) . '">';
+		$style_id = 'kt-blocks' . esc_attr( $unique_id );
 		$css .= $this->column_layout_css( $attributes, $unique_id );
-		$css .= '</style>';
-		return $css . $content;
+		$this->render_inline_css( $css, $style_id );
+		return $content;
 	}
 	/**
 	 * Render Advanced Btn Block CSS
@@ -127,12 +136,11 @@ class Kadence_Blocks_Frontend {
 		$css = '';
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-
-			$css .= '<style media="all" id="kt-blocks' . esc_attr( $unique_id ) . '">';
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			$css .= $this->blocks_advanced_btn_array( $attributes, $unique_id );
-			$css .= '</style>';
 		}
-		return $css . $content;
+		$this->render_inline_css( $css, $style_id );
+		return $content;
 	}
 	/**
 	 * Render Advanced Heading Block CSS
@@ -144,12 +152,11 @@ class Kadence_Blocks_Frontend {
 		$css = '';
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-
-			$css .= '<style media="all" id="kt-blocks' . esc_attr( $unique_id ) . '">';
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			$css .= $this->blocks_advanced_heading_array( $attributes, $unique_id );
-			$css .= '</style>';
 		}
-		return $css . $content;
+		$this->render_inline_css( $css, $style_id );
+		return $content;
 	}
 	/**
 	 * Render Tabs Block CSS
@@ -161,12 +168,11 @@ class Kadence_Blocks_Frontend {
 		$css = '';
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-
-			$css .= '<style media="all" id="kt-blocks' . esc_attr( $unique_id ) . '">';
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			$css .= $this->blocks_tabs_array( $attributes, $unique_id );
-			$css .= '</style>';
 		}
-		return $css . $content;
+		$this->render_inline_css( $css, $style_id );
+		return $content;
 	}
 	/**
 	 * Render Spacing Block CSS
@@ -178,12 +184,11 @@ class Kadence_Blocks_Frontend {
 		$css = '';
 		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
 			$unique_id = $attributes['uniqueID'];
-
-			$css .= '<style media="all" id="kt-blocks' . esc_attr( $attributes['uniqueID'] ) . '">';
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			$css .= $this->blocks_spacer_array( $attributes, $unique_id );
-			$css .= '</style>';
 		}
-		return $css . $content;
+		$this->render_inline_css( $css, $style_id );
+		return $content;
 	}
 	/**
 	 * Enqueue Gutenberg block assets
