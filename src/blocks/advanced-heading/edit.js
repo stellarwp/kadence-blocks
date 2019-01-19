@@ -44,6 +44,12 @@ const {
 	SelectControl,
 } = wp.components;
 class KadenceAdvancedHeading extends Component {
+	constructor() {
+		super( ...arguments );
+		this.state = {
+			isVisible: false,
+		};
+	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
 			this.props.setAttributes( {

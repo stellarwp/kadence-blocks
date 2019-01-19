@@ -12,6 +12,7 @@ import './blocks/icon/block.js';
 import './blocks/advanced-heading/block.js';
 import './blocks/tabs/block.js';
 import './blocks/tab/block.js';
+import './blocks/info-box/block.js';
 
 import './plugins/editor-width.js';
 
