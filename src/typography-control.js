@@ -7,7 +7,6 @@
  * Import Icons
  */
 import icons from './icons';
-
 /**
  * Import External
  */
@@ -69,11 +68,12 @@ export default function TypographyControls( {
 	onLineHeight,
 	onFontSize,
 	onFontFamily,
-	onFontChange,
 	onFontVariant,
 	onFontWeight,
 	onFontStyle,
 	onFontSubset,
+	onFontChange,
+	onFontArrayChange,
 	onLoadGoogleFont,
 	onGoogleFont,
 	onLetterSpacing,
@@ -83,6 +83,8 @@ export default function TypographyControls( {
 	onPaddingControl,
 	onMargin,
 	onMarginControl,
+	textTransform,
+	onTextTransform,
 } ) {
 	const onTypoFontChange = ( select ) => {
 		let variant;
@@ -109,19 +111,27 @@ export default function TypographyControls( {
 			variant = '';
 			weight = '400';
 		}
-		onFontChange( select );
-		onFontVariant( variant );
-		onFontWeight( weight );
-		onFontStyle( 'normal' );
-		onFontSubset( subset );
+		if ( onFontArrayChange ) {
+			onFontArrayChange( { google: select.google, family: select.value, variant: variant, weight: weight, style: 'normal', subset: subset } );
+		} else {
+			onFontChange( select );
+			onFontVariant( variant );
+			onFontWeight( weight );
+			onFontStyle( 'normal' );
+			onFontSubset( subset );
+		}
 	};
 	const onTypoFontClear = () => {
-		onGoogleFont( false );
-		onFontFamily( '' );
-		onFontVariant( '' );
-		onFontWeight( 'regular' );
-		onFontStyle( 'normal' );
-		onFontSubset( '' );
+		if ( onFontArrayChange ) {
+			onFontArrayChange( { google: false, family: '', variant: '', weight: 'regular', style: 'normal', subset: '' } );
+		} else {
+			onGoogleFont( false );
+			onFontFamily( '' );
+			onFontVariant( '' );
+			onFontWeight( 'regular' );
+			onFontStyle( 'normal' );
+			onFontSubset( '' );
+		}
 	};
 	const onTypoFontWeightChange = ( select ) => {
 		if ( googleFont ) {
@@ -135,8 +145,14 @@ export default function TypographyControls( {
 			} else {
 				variant = select;
 			}
-			onFontVariant( variant );
-			onFontWeight( ( 'regular' === select ? '400' : select ) );
+			if ( onFontArrayChange ) {
+				onFontArrayChange( { variant: variant, weight: ( 'regular' === select ? '400' : select ) } );
+			} else {
+				onFontVariant( variant );
+				onFontWeight( ( 'regular' === select ? '400' : select ) );
+			}
+		} else if ( onFontArrayChange ) {
+			onFontArrayChange( { variant: '', weight: ( 'regular' === select ? '400' : select ) } );
 		} else {
 			onFontVariant( '' );
 			onFontWeight( ( 'regular' === select ? '400' : select ) );
@@ -154,8 +170,14 @@ export default function TypographyControls( {
 			} else {
 				variant = ( fontWeight ? fontWeight : 'regular' );
 			}
-			onFontVariant( variant );
-			onFontStyle( select );
+			if ( onFontArrayChange ) {
+				onFontArrayChange( { variant: variant, style: select } );
+			} else {
+				onFontVariant( variant );
+				onFontStyle( select );
+			}
+		} else if ( onFontArrayChange ) {
+			onFontArrayChange( { variant: '', style: select } );
 		} else {
 			onFontVariant( '' );
 			onFontStyle( select );
@@ -171,6 +193,12 @@ export default function TypographyControls( {
 			subscript: String( targetLevel ),
 		} ];
 	};
+	const textTransformOptions = [
+		{ value: 'none', label: 'None' },
+		{ value: 'capitalize', label: 'Capitalize' },
+		{ value: 'uppercase', label: 'Uppercase' },
+		{ value: 'lowercase', label: 'Lowercase' },
+	];
 	const standardWeights = [
 		{ value: 'regular', label: 'Normal' },
 		{ value: 'bold', label: 'Bold' },
@@ -440,7 +468,15 @@ export default function TypographyControls( {
 				step={ 0.1 }
 			/>
 		),
-		onFontChange && onFontFamily && onTypoFontClear && (
+		onTextTransform && (
+			<SelectControl
+				label={ __( 'Text Transform' ) }
+				value={ textTransform }
+				options={ textTransformOptions }
+				onChange={ ( value ) => onTextTransform( value ) }
+			/>
+		),
+		onFontFamily && onTypoFontClear && (
 			<Fragment>
 				<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
 				{ fontFamily && (

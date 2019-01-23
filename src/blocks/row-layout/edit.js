@@ -81,6 +81,7 @@ class KadenceRowLayout extends Component {
 		super( ...arguments );
 		this.state = {
 			firstWidth: null,
+			secondWidth: null,
 		};
 	}
 	componentDidMount() {
@@ -101,22 +102,35 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, textColor, linkColor, linkHoverColor }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const onResize = ( event, direction, elt ) => {
 			this.setState( {
 				firstWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5,
+			} );
+			this.setState( {
+				secondWidth: 100 - ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ),
 			} );
 			document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ) + '%';
 			document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = Math.abs( ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ) - 100 ) + '%';
 		};
 		const onResizeStop = ( event, direction, elt ) => {
 			setAttributes( { firstColumnWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5 } );
+			setAttributes( { secondColumnWidth: 100 - ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ) } );
 			this.setState( {
 				firstWidth: null,
+				secondWidth: null,
 			} );
 		};
 		const temporaryColumnWidth = this.state.firstWidth;
+		const temporarySecondColumnWidth = this.state.secondWidth;
 		const widthString = `${ temporaryColumnWidth || firstColumnWidth || colLayout }`;
+		const secondWidthString = `${ temporarySecondColumnWidth || secondColumnWidth || colLayout }`;
+		let thirdWidthString;
+		if ( 3 === columns ) {
+			thirdWidthString = `${ colLayout }`;
+		} else {
+			thirdWidthString = colLayout;
+		}
 		let widthNumber;
 		if ( widthString === parseInt( widthString ) ) {
 			widthNumber = widthString + '%';
@@ -132,7 +146,7 @@ class KadenceRowLayout extends Component {
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const selectColLayout = ( columns && 2 === columns ? widthString : colLayout );
 		const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
-		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } kt-custom-first-width-${ widthString } ${ hasBG }` );
+		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } kt-custom-first-width-${ widthString } kt-custom-second-width-${ secondWidthString } kt-custom-third-width-${ thirdWidthString } ${ hasBG }` );
 		let layoutOptions;
 		let mobileLayoutOptions;
 		const startlayoutOptions = [
@@ -480,6 +494,7 @@ class KadenceRowLayout extends Component {
 										} );
 										setAttributes( {
 											firstColumnWidth: undefined,
+											secondColumnWidth: undefined,
 										} );
 									} }
 								>

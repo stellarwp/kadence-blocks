@@ -19,11 +19,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Kadence_Blocks_Frontend {
 
 	/**
-	 * Google fonts to gnqueue
+	 * Google fonts to enqueue
 	 *
 	 * @var array
 	 */
 	public static $gfonts = array();
+
+	/**
+	 * Bool for is backend request.
+	 *
+	 * @var null
+	 */
+	public static $backend = null;
 
 	/**
 	 * Instance of this class
@@ -47,7 +54,7 @@ class Kadence_Blocks_Frontend {
 	public function __construct() {
 		add_action( 'init', array( $this, 'on_init' ) );
 		add_action( 'enqueue_block_assets', array( $this, 'blocks_assets' ) );
-		add_action( 'wp_head', array( $this, 'frontend_inline_css' ), 80 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
 	}
 	/**
@@ -86,13 +93,35 @@ class Kadence_Blocks_Frontend {
 	 * @param array  $css the css for each rendered block.
 	 * @param string $style_id the unique id for the rendered style
 	 */
-	public function render_inline_css( $css, $style_id ) {
-		wp_register_style( $style_id, false );
-		wp_enqueue_style( $style_id );
-		wp_add_inline_style( $style_id, $css );
+	public function render_inline_css( $css, $style_id, $in_content = false ) {
+		if ( ! is_admin() ) {
+			wp_register_style( $style_id, false );
+			wp_enqueue_style( $style_id );
+			wp_add_inline_style( $style_id, $css );
+			if ( 1 === did_action( 'wp_head' ) && $in_content ) {
+				wp_print_styles( $style_id );
+			}
+		}
 	}
 	/**
-	 * Render Row Block CSS
+	 * Render Row Block CSS In Head
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_row_layout_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->row_layout_array_css( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Row Block CSS Inline
 	 *
 	 * @param array  $attributes the blocks attribtues.
 	 * @param string $content the blocks content.
@@ -101,13 +130,34 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			$css = $this->row_layout_array_css( $attributes, $unique_id );
-			$this->render_inline_css( $css, $style_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->row_layout_array_css( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id, true );
+				}
+			}
 		}
 		return $content;
 	}
 	/**
-	 * Render Column Block CSS
+	 * Render Column Block CSS Head
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_column_layout_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) && ! empty( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->column_layout_css( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Column Block CSS Inline
 	 *
 	 * @param array  $attributes the blocks attribtues.
 	 * @param string $content the blocks content.
@@ -123,9 +173,30 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		$style_id = 'kt-blocks' . esc_attr( $unique_id );
-		$css = $this->column_layout_css( $attributes, $unique_id );
-		$this->render_inline_css( $css, $style_id );
+		if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+			$css = $this->column_layout_css( $attributes, $unique_id );
+			if ( ! empty( $css ) ) {
+				$this->render_inline_css( $css, $style_id, true );
+			}
+		}
 		return $content;
+	}
+	/**
+	 * Render Advanced Btn Block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_advanced_btn_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_advanced_btn_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
 	}
 	/**
 	 * Render Advanced Btn Block CSS
@@ -137,10 +208,31 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			$css = $this->blocks_advanced_btn_array( $attributes, $unique_id );
-			$this->render_inline_css( $css, $style_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_advanced_btn_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id, true );
+				}
+			}
 		}
 		return $content;
+	}
+	/**
+	 * Render Advanced Heading Block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_advanced_heading_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_advanced_heading_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
 	}
 	/**
 	 * Render Advanced Heading Block CSS
@@ -152,10 +244,31 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			$css = $this->blocks_advanced_heading_array( $attributes, $unique_id );
-			$this->render_inline_css( $css, $style_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_advanced_heading_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id, true );
+				}
+			}
 		}
 		return $content;
+	}
+	/**
+	 * Render Tabs Block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_tabs_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_tabs_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
 	}
 	/**
 	 * Render Tabs Block CSS
@@ -167,10 +280,31 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			$css = $this->blocks_tabs_array( $attributes, $unique_id );
-			$this->render_inline_css( $css, $style_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_tabs_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id, true );
+				}
+			}
 		}
 		return $content;
+	}
+	/**
+	 * Render Spacing Block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_spacer_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_spacer_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
 	}
 	/**
 	 * Render Spacing Block CSS
@@ -182,13 +316,32 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			$css = $this->blocks_spacer_array( $attributes, $unique_id );
-			$this->render_inline_css( $css, $style_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_spacer_array( $attributes, $unique_id );
+				$this->render_inline_css( $css, $style_id, true );
+			}
 		}
 		return $content;
 	}
 	/**
-	 * Render Tabs Block CSS
+	 * Render Info Block CSS in Head
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_infobox_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_infobox_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Info Block CSS
 	 *
 	 * @param array  $attributes the blocks attribtues.
 	 * @param string $content the blocks content.
@@ -197,8 +350,12 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			$css = $this->blocks_infobox_array( $attributes, $unique_id );
-			$this->render_inline_css( $css, $style_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_infobox_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id, true );
+				}
+			}
 		}
 		return $content;
 	}
@@ -302,62 +459,52 @@ class Kadence_Blocks_Frontend {
 			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 				return;
 			}
-			$css  = '<style type="text/css" media="all" id="kadence-blocks-frontend">';
 			foreach ( $blocks as $indexkey => $block ) {
 				if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
 					if ( 'kadence/rowlayout' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
-							if ( isset( $blockattr['uniqueID'] ) ) {
-								// Create CSS for Row/Layout.
-								$unique_id = $blockattr['uniqueID'];
-								// $css .= $this->row_layout_array_css( $blockattr, $unique_id );
-								if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-									// $css .= $this->column_layout_cycle( $block['innerBlocks'], $unique_id );
-								}
-							}
+							$this->render_row_layout_css_head( $blockattr );
+						}
+					}
+					if ( 'kadence/column' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_column_layout_css_head( $blockattr );
 						}
 					}
 					if ( 'kadence/advancedheading' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
-							if ( isset( $blockattr['uniqueID'] ) ) {
-								// Create CSS for Advanced Heading.
-								$unique_id = $blockattr['uniqueID'];
-								$this->blocks_advanced_heading_gfont( $blockattr, $unique_id );
-							}
+							$this->render_advanced_heading_css_head( $blockattr );
+							$this->blocks_advanced_heading_gfont( $blockattr );
 						}
 					}
 					if ( 'kadence/advancedbtn' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
-							if ( isset( $blockattr['uniqueID'] ) ) {
-								// Create CSS for Advanced Button.
-								$unique_id = $blockattr['uniqueID'];
-								// $css .= $this->blocks_advanced_btn_array( $blockattr, $unique_id );
-								$this->blocks_advanced_btn_gfont( $blockattr, $unique_id );
-							}
+							$this->render_advanced_btn_css_head( $blockattr );
+							$this->blocks_advanced_btn_gfont( $blockattr );
 						}
 					}
 					if ( 'kadence/tabs' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
-							if ( isset( $blockattr['uniqueID'] ) ) {
-								// Create CSS for Tabs.
-								$unique_id = $blockattr['uniqueID'];
-								$this->blocks_tabs_scripts_gfonts( $blockattr, $unique_id );
-								// $css .= $this->blocks_tabs_array( $blockattr, $unique_id );
-							}
+							$this->render_advanced_heading_css_head( $blockattr );
+							$this->blocks_tabs_scripts_gfonts( $blockattr );
+						}
+					}
+					if ( 'kadence/infobox' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_infobox_css_head( $blockattr );
+							$this->blocks_infobox_scripts_gfonts( $blockattr );
 						}
 					}
 					if ( 'kadence/spacer' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
-							if ( isset( $blockattr['uniqueID'] ) ) {
-								// Create CSS for Spacer.
-								$unique_id = $blockattr['uniqueID'];
-								// $css .= $this->blocks_spacer_array( $blockattr, $unique_id );
-							}
+							$this->render_spacer_css_head( $blockattr );
 						}
 					}
 					if ( 'core/block' === $block['blockName'] ) {
@@ -367,53 +514,17 @@ class Kadence_Blocks_Frontend {
 								$reusable_block = get_post( $blockattr['ref'] );
 								if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
 									$reuse_data_block = $this->kadence_parse_blocks( $reusable_block->post_content );
-									$css .= $this->blocks_cycle_through( $reuse_data_block );
+									$this->blocks_cycle_through( $reuse_data_block );
 								}
 							}
 						}
 					}
 					if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-						$css .= $this->blocks_cycle_through( $block['innerBlocks'] );
-					}
-				}
-			}
-			$css .= '</style>';
-			echo $css;
-		}
-	}
-
-	/**
-	 * Builds css for inner columns
-	 *
-	 * @param object/array $inner_blocks array of inner blocks.
-	 * @param string       $unique_id id for the specific block.
-	 */
-	public function column_layout_cycle( $inner_blocks, $unique_id ) {
-		$css = '';
-		foreach ( $inner_blocks as $in_indexkey => $inner_block ) {
-			if ( is_object( $inner_block ) ) {
-				if ( isset( $inner_block->blockName ) ) {
-					if ( 'kadence/column' === $inner_block->blockName ) {
-						if ( isset( $inner_block->attrs ) && is_array( $inner_block->attrs ) ) {
-							$blockattr = $inner_block->attrs;
-							$csskey = $in_indexkey + 1;
-							$css .= $this->column_layout_array_css( $blockattr, $unique_id, $csskey );
-						}
-					}
-				}
-			} elseif ( is_array( $inner_block ) ) {
-				if ( isset( $inner_block['blockName'] ) ) {
-					if ( 'kadence/column' === $inner_block['blockName'] ) {
-						if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
-							$blockattr = $inner_block['attrs'];
-							$csskey = $in_indexkey + 1;
-							$css .= $this->column_layout_array_css( $blockattr, $unique_id, $csskey );
-						}
+						$this->blocks_cycle_through( $block['innerBlocks'] );
 					}
 				}
 			}
 		}
-		return $css;
 	}
 	/**
 	 * Builds css for inner blocks
@@ -421,63 +532,52 @@ class Kadence_Blocks_Frontend {
 	 * @param array $inner_blocks array of inner blocks.
 	 */
 	public function blocks_cycle_through( $inner_blocks ) {
-		$css = '';
 		foreach ( $inner_blocks as $in_indexkey => $inner_block ) {
 			if ( ! is_object( $inner_block ) && is_array( $inner_block ) && isset( $inner_block['blockName'] ) ) {
 				if ( 'kadence/rowlayout' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
-						if ( isset( $blockattr['uniqueID'] ) ) {
-							// Create CSS for Row/Layout.
-							$unique_id = $blockattr['uniqueID'];
-							//$css .= $this->row_layout_array_css( $blockattr, $unique_id );
-							if ( isset( $inner_block['innerBlocks'] ) && ! empty( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) ) {
-								//$css .= $this->column_layout_cycle( $inner_block['innerBlocks'], $unique_id );
-							}
-						}
+						$this->render_row_layout_css_head( $blockattr );
+					}
+				}
+				if ( 'kadence/column' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_column_layout_css_head( $blockattr );
 					}
 				}
 				if ( 'kadence/advancedheading' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
-						if ( isset( $blockattr['uniqueID'] ) ) {
-							// Create CSS for Advanced Heading.
-							$unique_id = $blockattr['uniqueID'];
-							//$css .= $this->blocks_advanced_heading_array( $blockattr, $unique_id );
-							$this->blocks_advanced_heading_gfont( $blockattr, $unique_id );
-						}
+						$this->render_advanced_heading_css_head( $blockattr );
+						$this->blocks_advanced_heading_gfont( $blockattr );
 					}
 				}
 				if ( 'kadence/advancedbtn' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
-						if ( isset( $blockattr['uniqueID'] ) ) {
-							// Create CSS for Advanced Button.
-							$unique_id = $blockattr['uniqueID'];
-							//$css .= $this->blocks_advanced_btn_array( $blockattr, $unique_id );
-							$this->blocks_advanced_btn_gfont( $blockattr, $unique_id );
-						}
+						$this->render_advanced_btn_css_head( $blockattr );
+						$this->blocks_advanced_btn_gfont( $blockattr );
 					}
 				}
 				if ( 'kadence/tabs' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
-						if ( isset( $blockattr['uniqueID'] ) ) {
-							// Create CSS for Advanced Heading.
-							$unique_id = $blockattr['uniqueID'];
-							$this->blocks_tabs_scripts_gfonts( $blockattr, $unique_id );
-							//$css .= $this->blocks_tabs_array( $blockattr, $unique_id );
-						}
+						$this->render_advanced_heading_css_head( $blockattr );
+						$this->blocks_tabs_scripts_gfonts( $blockattr );
+					}
+				}
+				if ( 'kadence/infobox' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_infobox_css_head( $blockattr );
+						$this->blocks_infobox_scripts_gfonts( $blockattr );
 					}
 				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
-						if ( isset( $blockattr['uniqueID'] ) ) {
-							// Create CSS for Advanced Heading.
-							$unique_id = $blockattr['uniqueID'];
-							//$css .= $this->blocks_spacer_array( $blockattr, $unique_id );
-						}
+						$this->render_spacer_css_head( $blockattr );
 					}
 				}
 				if ( 'core/block' === $inner_block['blockName'] ) {
@@ -487,17 +587,16 @@ class Kadence_Blocks_Frontend {
 							$reusable_block = get_post( $blockattr['ref'] );
 							if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
 								$reuse_data_block = $this->kadence_parse_blocks( $reusable_block->post_content );
-								$css .= $this->blocks_cycle_through( $reuse_data_block );
+								$this->blocks_cycle_through( $reuse_data_block );
 							}
 						}
 					}
 				}
 				if ( isset( $inner_block['innerBlocks'] ) && ! empty( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) ) {
-					$css .= $this->blocks_cycle_through( $inner_block['innerBlocks'] );
+					$this->blocks_cycle_through( $inner_block['innerBlocks'] );
 				}
 			}
 		}
-		return $css;
 	}
 	/**
 	 * Builds CSS for InfoBox block.
@@ -559,13 +658,13 @@ class Kadence_Blocks_Frontend {
 			$css .= 'border-radius:' . $media_style['borderRadius'] . 'px;';
 		}
 		if ( isset( $media_style['borderWidth'] ) && is_array( $media_style['borderWidth'] ) ) {
-			$css .= 'border-width:' . $media_style['borderWidth'][ 0 ] . 'px ' . $media_style['borderWidth'][ 1 ] . 'px ' . $media_style['borderWidth'][ 2 ] . 'px ' . $media_style['borderWidth'][ 3 ] . 'px;';
+			$css .= 'border-width:' . ( empty( $media_style['borderWidth'][ 0 ] ) ? '0' : $media_style['borderWidth'][ 0 ] ) . 'px ' . ( empty( $media_style['borderWidth'][ 1 ] ) ? '0' : $media_style['borderWidth'][ 1 ] ) . 'px ' . ( empty( $media_style['borderWidth'][ 2 ] ) ? '0' : $media_style['borderWidth'][ 2 ] ) . 'px ' . ( empty( $media_style['borderWidth'][ 3 ] ) ? '0' : $media_style['borderWidth'][ 3 ] ) . 'px;';
 		}
 		if ( isset( $media_style['padding'] ) && is_array( $media_style['padding'] ) ) {
-			$css .= 'padding:' . $media_style['padding'][ 0 ] . 'px ' . $media_style['padding'][ 1 ] . 'px ' . $media_style['padding'][ 2 ] . 'px ' . $media_style['padding'][ 3 ] . 'px;';
+			$css .= 'padding:' . ( empty( $media_style['padding'][ 0 ] ) ? '0' : $media_style['padding'][ 0 ] ) . 'px ' . ( empty( $media_style['padding'][ 1 ] ) ? '0' : $media_style['padding'][ 1 ] ) . 'px ' . ( empty( $media_style['padding'][ 2 ] ) ? '0' : $media_style['padding'][ 2 ] ) . 'px ' . ( empty( $media_style['padding'][ 3 ] ) ? '0' : $media_style['padding'][ 3 ] ) . 'px;';
 		}
 		if ( isset( $media_style['margin'] ) && is_array( $media_style['margin'] ) ) {
-			$css .= 'margin:' . $media_style['margin'][ 0 ] . 'px ' . $media_style['margin'][ 1 ] . 'px ' . $media_style['margin'][ 2 ] . 'px ' . $media_style['margin'][ 3 ] . 'px;';
+			$css .= 'margin:' . ( empty( $media_style['margin'][ 0 ] ) ? '0' : $media_style['margin'][ 0 ] ) . 'px ' . ( empty( $media_style['margin'][ 1 ] ) ? '0' : $media_style['margin'][ 1 ] ) . 'px ' . ( empty( $media_style['margin'][ 2 ] ) ? '0' : $media_style['margin'][ 2 ] ) . 'px ' . ( empty( $media_style['margin'][ 3 ] ) ? '0' : $media_style['margin'][ 3 ] ) . 'px;';
 		}
 		$css .= '}';
 		$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media {';
@@ -679,19 +778,157 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 			$css .= '}';
 		}
-		if ( isset( $attr['tabletSpacerHeight'] ) && ! empty( $attr['tabletSpacerHeight'] ) ) {
+		if ( isset( $attr['textColor'] ) || isset( $attr['textFont'] ) ) {
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
+			if ( isset( $attr['textColor'] ) && ! empty( $attr['textColor'] ) ) {
+				$css .= 'color:' . $attr['textColor'] . ';';
+			}
+			if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && is_array( $attr['textFont'][ 0 ] ) ) {
+				$text_font = $attr['textFont'][ 0 ];
+				if ( isset( $text_font['size'] ) && is_array( $text_font['size'] ) && ! empty( $text_font['size'][0] ) ) {
+					$css .= 'font-size:' . $text_font['size'][0] . ( ! isset( $text_font['sizeType'] ) ? 'px' : $text_font['sizeType'] ) . ';';
+				}
+				if ( isset( $text_font['lineHeight'] ) && is_array( $text_font['lineHeight'] ) && ! empty( $text_font['lineHeight'][0] ) ) {
+					$css .= 'line-height:' . $text_font['lineHeight'][0] . ( ! isset( $text_font['lineType'] ) ? 'px' : $text_font['lineType'] ) . ';';
+				}
+				if ( isset( $text_font['letterSpacing'] ) && ! empty( $text_font['letterSpacing'] ) ) {
+					$css .= 'letter-spacing:' . $text_font['letterSpacing'] .  'px;';
+				}
+				if ( isset( $text_font['family'] ) && ! empty( $text_font['family'] ) ) {
+					$css .= 'font-family:' . $text_font['family'] .  ';';
+				}
+				if ( isset( $text_font['style'] ) && ! empty( $text_font['style'] ) ) {
+					$css .= 'font-style:' . $text_font['style'] .  ';';
+				}
+				if ( isset( $text_font['weight'] ) && ! empty( $text_font['weight'] ) ) {
+					$css .= 'font-weight:' . $text_font['weight'] .  ';';
+				}
+			}
+			$css .= '}';
+		}
+		if ( isset( $attr['textHoverColor'] ) && ! empty( $attr['textHoverColor'] ) ) {
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text {';
+				$css .= 'color:' . $attr['textHoverColor'] . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && ( ( isset( $attr['textFont'][0]['size'] ) && is_array( $attr['textFont'][0]['size'] ) && isset( $attr['textFont'][0]['size'][1] ) && ! empty( $attr['textFont'][0]['size'][1] ) ) || ( isset( $attr['textFont'][0]['lineHeight'] ) && is_array( $attr['textFont'][0]['lineHeight'] ) && isset( $attr['textFont'][0]['lineHeight'][1] ) && ! empty( $attr['textFont'][0]['lineHeight'][1] ) ) ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
-			$css .= 'height:' . $attr['tabletSpacerHeight'] . 'px !important;';
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
+			if ( isset( $attr['textFont'][0]['size'][1] ) && ! empty( $attr['textFont'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['textFont'][0]['size'][1] . ( ! isset( $attr['textFont'][0]['sizeType'] ) ? 'px' : $attr['textFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['textFont'][0]['lineHeight'][1] ) && ! empty( $attr['textFont'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['textFont'][0]['lineHeight'][1] . ( ! isset( $attr['textFont'][0]['lineType'] ) ? 'px' : $attr['textFont'][0]['lineType'] ) . ';';
+			}
 			$css .= '}';
 			$css .= '}';
 		}
-		if ( isset( $attr['mobileSpacerHeight'] ) && ! empty( $attr['mobileSpacerHeight'] ) ) {
+		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && ( ( isset( $attr['textFont'][0]['size'] ) && is_array( $attr['textFont'][0]['size'] ) && isset( $attr['textFont'][0]['size'][2] ) && ! empty( $attr['textFont'][0]['size'][2] ) ) || ( isset( $attr['textFont'][0]['lineHeight'] ) && is_array( $attr['textFont'][0]['lineHeight'] ) && isset( $attr['textFont'][0]['lineHeight'][2] ) && ! empty( $attr['textFont'][0]['lineHeight'][2] ) ) ) ) {
 			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
-			$css .= 'height:' . $attr['mobileSpacerHeight'] . 'px !important;';
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
+				if ( isset( $attr['textFont'][0]['size'][2] ) && ! empty( $attr['textFont'][0]['size'][2] ) ) {
+					$css .= 'font-size:' . $attr['textFont'][0]['size'][2] . ( ! isset( $attr['textFont'][0]['sizeType'] ) ? 'px' : $attr['textFont'][0]['sizeType'] ) . ';';
+				}
+				if ( isset( $attr['textFont'][0]['lineHeight'][2] ) && ! empty( $attr['textFont'][0]['lineHeight'][2] ) ) {
+					$css .= 'line-height:' . $attr['textFont'][0]['lineHeight'][2] . ( ! isset( $attr['textFont'][0]['lineType'] ) ? 'px' : $attr['textFont'][0]['lineType'] ) . ';';
+				}
 			$css .= '}';
 			$css .= '}';
+		}
+		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'][ 0 ] ) ) {
+			$learn_more_styles = $attr['learnMoreStyles'][ 0 ];
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-learnmore {';
+			if ( isset( $learn_more_styles['color'] ) && ! empty( $learn_more_styles['color'] ) ) {
+				$css .= 'color:' . $learn_more_styles['color'] . ';';
+			}
+			if ( isset( $learn_more_styles['background'] ) && ! empty( $learn_more_styles['background'] ) ) {
+				$css .= 'background:' . $learn_more_styles['background'] . ';';
+			}
+			if ( isset( $learn_more_styles['border'] ) && ! empty( $learn_more_styles['border'] ) ) {
+				$css .= 'border-color:' . $learn_more_styles['border'] . ';';
+			}
+			if ( isset( $learn_more_styles['borderRadius'] ) && ! empty( $learn_more_styles['borderRadius'] ) ) {
+				$css .= 'border-radius:' . $learn_more_styles['borderRadius'] . 'px;';
+			}
+			if ( isset( $learn_more_styles['size'] ) && is_array( $learn_more_styles['size'] ) && ! empty( $learn_more_styles['size'][0] ) ) {
+				$css .= 'font-size:' . $learn_more_styles['size'][0] . ( ! isset( $learn_more_styles['sizeType'] ) ? 'px' : $learn_more_styles['sizeType'] ) . ';';
+			}
+			if ( isset( $learn_more_styles['lineHeight'] ) && is_array( $learn_more_styles['lineHeight'] ) && ! empty( $learn_more_styles['lineHeight'][0] ) ) {
+				$css .= 'line-height:' . $learn_more_styles['lineHeight'][0] . ( ! isset( $learn_more_styles['lineType'] ) ? 'px' : $learn_more_styles['lineType'] ) . ';';
+			}
+			if ( isset( $learn_more_styles['letterSpacing'] ) && ! empty( $learn_more_styles['letterSpacing'] ) ) {
+				$css .= 'letter-spacing:' . $learn_more_styles['letterSpacing'] .  'px;';
+			}
+			if ( isset( $learn_more_styles['family'] ) && ! empty( $learn_more_styles['family'] ) ) {
+				$css .= 'font-family:' . $learn_more_styles['family'] .  ';';
+			}
+			if ( isset( $learn_more_styles['style'] ) && ! empty( $learn_more_styles['style'] ) ) {
+				$css .= 'font-style:' . $learn_more_styles['style'] .  ';';
+			}
+			if ( isset( $learn_more_styles['weight'] ) && ! empty( $learn_more_styles['weight'] ) ) {
+				$css .= 'font-weight:' . $learn_more_styles['weight'] .  ';';
+			}
+			if ( isset( $learn_more_styles['borderWidth'] ) && is_array( $learn_more_styles['borderWidth'] ) ) {
+				$css .= 'border-width:' . $learn_more_styles['borderWidth'][0] . 'px ' . $learn_more_styles['borderWidth'][1] . 'px ' . $learn_more_styles['borderWidth'][2] . 'px ' . $learn_more_styles['borderWidth'][3] . 'px;';
+			}
+			if ( isset( $learn_more_styles['padding'] ) && is_array( $learn_more_styles['padding'] ) ) {
+				$css .= 'padding:' . $learn_more_styles['padding'][0] . 'px ' . $learn_more_styles['padding'][1] . 'px ' . $learn_more_styles['padding'][2] . 'px ' . $learn_more_styles['padding'][3] . 'px;';
+			}
+			if ( isset( $learn_more_styles['margin'] ) && is_array( $learn_more_styles['margin'] ) ) {
+				$css .= 'margin:' . $learn_more_styles['margin'][0] . 'px ' . $learn_more_styles['margin'][1] . 'px ' . $learn_more_styles['margin'][2] . 'px ' . $learn_more_styles['margin'][3] . 'px;';
+			}
+			$css .= '}';
+			if ( isset( $learn_more_styles['colorHover'] ) || isset( $learn_more_styles['colorHover'] ) || isset( $learn_more_styles['borderHover'] ) ) {
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore {';
+					if ( isset( $learn_more_styles['colorHover'] ) && ! empty( $learn_more_styles['colorHover'] ) ) {
+						$css .= 'color:' . $learn_more_styles['colorHover'] . ';';
+					}
+					if ( isset( $learn_more_styles['backgroundHover'] ) && ! empty( $learn_more_styles['backgroundHover'] ) ) {
+						$css .= 'background:' . $learn_more_styles['backgroundHover'] . ';';
+					}
+					if ( isset( $learn_more_styles['borderHover'] ) && ! empty( $learn_more_styles['borderHover'] ) ) {
+						$css .= 'border-color:' . $learn_more_styles['borderHover'] . ';';
+					}
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && ( ( isset( $attr['learnMoreStyles'][0]['size'] ) && is_array( $attr['learnMoreStyles'][0]['size'] ) && isset( $attr['learnMoreStyles'][0]['size'][1] ) && ! empty( $attr['learnMoreStyles'][0]['size'][1] ) ) || ( isset( $attr['learnMoreStyles'][0]['lineHeight'] ) && is_array( $attr['learnMoreStyles'][0]['lineHeight'] ) && isset( $attr['learnMoreStyles'][0]['lineHeight'][1] ) && ! empty( $attr['learnMoreStyles'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-learnmore {';
+			if ( isset( $attr['learnMoreStyles'][0]['size'][1] ) && ! empty( $attr['learnMoreStyles'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['learnMoreStyles'][0]['size'][1] . ( ! isset( $attr['learnMoreStyles'][0]['sizeType'] ) ? 'px' : $attr['learnMoreStyles'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['learnMoreStyles'][0]['lineHeight'][1] ) && ! empty( $attr['learnMoreStyles'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['learnMoreStyles'][0]['lineHeight'][1] . ( ! isset( $attr['learnMoreStyles'][0]['lineType'] ) ? 'px' : $attr['learnMoreStyles'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && ( ( isset( $attr['learnMoreStyles'][0]['size'] ) && is_array( $attr['learnMoreStyles'][0]['size'] ) && isset( $attr['learnMoreStyles'][0]['size'][2] ) && ! empty( $attr['learnMoreStyles'][0]['size'][2] ) ) || ( isset( $attr['learnMoreStyles'][0]['lineHeight'] ) && is_array( $attr['learnMoreStyles'][0]['lineHeight'] ) && isset( $attr['learnMoreStyles'][0]['lineHeight'][2] ) && ! empty( $attr['learnMoreStyles'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-learnmore {';
+				if ( isset( $attr['learnMoreStyles'][0]['size'][2] ) && ! empty( $attr['learnMoreStyles'][0]['size'][2] ) ) {
+					$css .= 'font-size:' . $attr['learnMoreStyles'][0]['size'][2] . ( ! isset( $attr['learnMoreStyles'][0]['sizeType'] ) ? 'px' : $attr['learnMoreStyles'][0]['sizeType'] ) . ';';
+				}
+				if ( isset( $attr['learnMoreStyles'][0]['lineHeight'][2] ) && ! empty( $attr['learnMoreStyles'][0]['lineHeight'][2] ) ) {
+					$css .= 'line-height:' . $attr['learnMoreStyles'][0]['lineHeight'][2] . ( ! isset( $attr['learnMoreStyles'][0]['lineType'] ) ? 'px' : $attr['learnMoreStyles'][0]['lineType'] ) . ';';
+				}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['displayShadow'] ) && ! empty( $attr['displayShadow'] ) && true === $attr['displayShadow'] ) {
+			if ( isset( $attr['shadow'] ) && is_array( $attr['shadow'] ) && is_array( $attr['shadow'][ 0 ] ) ) {
+				$shadow = $attr['shadow'][ 0 ];
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap {';
+				$css .= 'box-shadow:' . $shadow['hOffset'] . 'px ' . $shadow['vOffset'] . 'px ' . $shadow['blur'] . 'px ' . $shadow['spread'] . 'px ' . $this->hex2rgba( $shadow['color'], $shadow['opacity'] ) . ';';
+				$css .= '}';
+			}
+			if ( isset( $attr['shadowHover'] ) && is_array( $attr['shadowHover'] ) && is_array( $attr['shadowHover'][ 0 ] ) ) {
+				$shadow_hover = $attr['shadowHover'][ 0 ];
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover {';
+				$css .= 'box-shadow:' . $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $this->hex2rgba( $shadow_hover['color'], $shadow_hover['opacity'] ) . ';';
+				$css .= '}';
+			}
 		}
 		return $css;
 	}
@@ -840,12 +1077,75 @@ class Kadence_Blocks_Frontend {
 		return $css;
 	}
 	/**
+	 * Adds Google fonts for infobox block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 */
+	public function blocks_infobox_scripts_gfonts( $attr ) {
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
+			$title_font = $attr['titleFont'][0];
+			// Check if the font has been added yet
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily' => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets' => ( isset( $title_font['subset'] ) && !empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
+		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && isset( $attr['textFont'][0]['google'] ) && $attr['textFont'][0]['google'] && ( ! isset( $attr['textFont'][0]['loadGoogle'] ) || true === $attr['textFont'][0]['loadGoogle'] ) &&  isset( $attr['textFont'][0]['family'] ) ) {
+			$text_font = $attr['textFont'][0];
+			// Check if the font has been added yet
+			if ( ! array_key_exists( $text_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily' => $text_font['family'],
+					'fontvariants' => ( isset( $text_font['variant'] ) && ! empty( $text_font['variant'] ) ? array( $text_font['variant'] ) : array() ),
+					'fontsubsets' => ( isset( $text_font['subset'] ) && !empty( $text_font['subset'] ) ? array( $text_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $text_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $text_font['variant'], self::$gfonts[ $text_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $text_font['family'] ]['fontvariants'], $text_font['variant'] );
+				}
+				if ( ! in_array( $text_font['subset'], self::$gfonts[ $text_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $text_font['family'] ]['fontsubsets'], $text_font['subset'] );
+				}
+			}
+		}
+		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && isset( $attr['learnMoreStyles'][0]['google'] ) && $attr['learnMoreStyles'][0]['google'] && ( ! isset( $attr['learnMoreStyles'][0]['loadGoogle'] ) || true === $attr['learnMoreStyles'][0]['loadGoogle'] ) &&  isset( $attr['learnMoreStyles'][0]['family'] ) ) {
+			$learn_more_font = $attr['learnMoreStyles'][0];
+			// Check if the font has been added yet
+			if ( ! array_key_exists( $learn_more_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily' => $learn_more_font['family'],
+					'fontvariants' => ( isset( $learn_more_font['variant'] ) && ! empty( $learn_more_font['variant'] ) ? array( $learn_more_font['variant'] ) : array() ),
+					'fontsubsets' => ( isset( $learn_more_font['subset'] ) && !empty( $learn_more_font['subset'] ) ? array( $learn_more_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $learn_more_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $learn_more_font['variant'], self::$gfonts[ $learn_more_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $learn_more_font['family'] ]['fontvariants'], $learn_more_font['variant'] );
+				}
+				if ( ! in_array( $learn_more_font['subset'], self::$gfonts[ $learn_more_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $learn_more_font['family'] ]['fontsubsets'], $learn_more_font['subset'] );
+				}
+			}
+		}
+	}
+	/**
 	 * Adds Scripts and Google fonts for Tabs block.
 	 *
 	 * @param array  $attr the blocks attr.
-	 * @param string $unique_id the blocks attr ID.
 	 */
-	public function blocks_tabs_scripts_gfonts( $attr, $unique_id ) {
+	public function blocks_tabs_scripts_gfonts( $attr ) {
 		wp_enqueue_script( 'kadence-frontend-tabs-js' );
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet.
@@ -996,7 +1296,7 @@ class Kadence_Blocks_Frontend {
 	 * @param array  $attr the blocks attr.
 	 * @param string $unique_id the blocks attr ID.
 	 */
-	public function blocks_advanced_heading_gfont( $attr, $unique_id ) {
+	public function blocks_advanced_heading_gfont( $attr ) {
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet.
 			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {
@@ -1097,9 +1397,8 @@ class Kadence_Blocks_Frontend {
 	 * Builds CSS for Advanced Button block.
 	 *
 	 * @param array  $attr the blocks attr.
-	 * @param string $unique_id the blocks attr ID.
 	 */
-	public function blocks_advanced_btn_gfont( $attr, $unique_id ) {
+	public function blocks_advanced_btn_gfont( $attr ) {
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet.
 			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {

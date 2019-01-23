@@ -209,3 +209,17 @@ function kadence_blocks_admin_body_class( $classes ) {
 	return $classes;
 }
 add_filter( 'admin_body_class', 'kadence_blocks_admin_body_class' );
+
+
+function kadence_blocks_block_category( $categories, $post ) {
+	return array_merge(
+		$categories,
+		array(
+			array(
+				'slug' => 'kadence-blocks',
+				'title' => __( 'Kadence Blocks', 'kadence-blocks' ),
+			),
+		)
+	);
+}
+add_filter( 'block_categories', 'kadence_blocks_block_category', 10, 2 );

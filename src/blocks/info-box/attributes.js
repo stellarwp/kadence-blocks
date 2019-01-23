@@ -190,7 +190,7 @@ const attributes = {
 	learnMore: {
 		type: 'array',
 		source: 'children',
-		selector: 'a,span',
+		selector: '.kt-blocks-info-box-learnmore',
 		default: __( 'Learn More' ),
 	},
 	learnMoreStyles: {

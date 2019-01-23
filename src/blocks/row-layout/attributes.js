@@ -253,6 +253,9 @@ const attributes = {
 	firstColumnWidth: {
 		type: 'number',
 	},
+	secondColumnWidth: {
+		type: 'number',
+	},
 	textColor: {
 		type: 'string',
 		default: '',

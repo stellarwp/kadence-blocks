@@ -53,7 +53,7 @@ registerBlockType( 'kadence/rowlayout', {
 	icon: {
 		src: icons.blockRow,
 	},
-	category: 'layout',
+	category: 'kadence-blocks',
 	keywords: [
 		__( 'row' ),
 		__( 'layout' ),

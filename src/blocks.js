@@ -15,5 +15,6 @@ import './blocks/tab/block.js';
 import './blocks/info-box/block.js';
 
 import './plugins/editor-width.js';
-
-wp.data.dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kt_blocks_default_size } );
+if ( typeof kt_blocks_default_size !== 'undefined' ) {
+	wp.data.dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kt_blocks_default_size } );
+}

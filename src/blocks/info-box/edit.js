@@ -302,11 +302,13 @@ class KadenceInfoBox extends Component {
 				</BlockControls>
 				<InspectorControls>
 					<PanelBody>
-						<h2>{ __( 'Link' ) }</h2>
-						<URLInput
-							value={ link }
-							onChange={ value => setAttributes( { link: value } ) }
-						/>
+						<div className="kt-controls-link-wrap">
+							<h2>{ __( 'Link' ) }</h2>
+							<URLInput
+								value={ link }
+								onChange={ value => setAttributes( { link: value } ) }
+							/>
+						</div>
 						<SelectControl
 							label={ __( 'Link Target' ) }
 							value={ target }

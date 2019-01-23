@@ -60,7 +60,7 @@ registerBlockType( 'kadence/tabs', {
 	icon: {
 		src: icons.blocktabs,
 	},
-	category: 'layout',
+	category: 'kadence-blocks',
 	keywords: [
 		__( 'tabs' ),
 		__( 'tab' ),

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.0.3
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.2.3 =
+* Add: NEW Info Box Block!
+* Update: CSS placed in head if possible, reverts to inline if outside content area.
+* Update: Blocks now added to a category.
+* Update: improve selection for block row.
 
 = 1.2.2 =
 * Update: render CSS inline per Gutenberg Hook, future need to add an option for rendering in head.

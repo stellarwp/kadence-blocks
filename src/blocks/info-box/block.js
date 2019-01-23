@@ -48,7 +48,7 @@ registerBlockType( 'kadence/infobox', {
 	icon: {
 		src: icons.infobox,
 	},
-	category: 'common',
+	category: 'kadence-blocks',
 	keywords: [
 		__( 'Info' ),
 		__( 'Icon' ),

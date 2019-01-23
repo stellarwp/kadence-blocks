@@ -49,6 +49,9 @@
 }
 .kt-blocks-info-box-media {
 	border-color:#444444;
+	color: #444444;
+	padding: 10px;
+	margin: 0 15px 0 15px;
 }
 .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media {
 	border-color:#444444;
@@ -61,6 +64,7 @@
 }
 .kt-blocks-info-box-learnmore {
 border: 0 solid transparent;
+display: block;
 }
 .wp-block-kadence-infobox .kt-blocks-info-box-learnmore-wrap {
     display: inline-block;

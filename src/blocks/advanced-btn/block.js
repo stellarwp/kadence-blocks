@@ -36,7 +36,7 @@ registerBlockType( 'kadence/advancedbtn', {
 	icon: {
 		src: icons.block,
 	},
-	category: 'common',
+	category: 'kadence-blocks',
 	keywords: [
 		__( 'Button' ),
 		__( 'Icon' ),

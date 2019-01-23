@@ -53,7 +53,7 @@ registerBlockType( 'kadence/spacer', {
 	icon: {
 		src: icons.block,
 	},
-	category: 'layout', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
+	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [
 		__( 'spacer' ),
 		__( 'divider' ),

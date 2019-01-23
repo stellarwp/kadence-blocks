@@ -40,7 +40,7 @@ registerBlockType( 'kadence/advancedheading', {
 	icon: {
 		src: icons.block,
 	},
-	category: 'common',
+	category: 'kadence-blocks',
 	keywords: [
 		__( 'title' ),
 		__( 'heading' ),

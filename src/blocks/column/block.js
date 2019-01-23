@@ -34,7 +34,7 @@ const {
 registerBlockType( 'kadence/column', {
 	title: __( 'Column' ),
 	icon: icons.blockColumn,
-	category: 'common',
+	category: 'kadence-blocks',
 	parent: [ 'kadence/rowlayout' ],
 	attributes: {
 		id: {

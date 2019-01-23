@@ -33,7 +33,7 @@ const { registerBlockType } = wp.blocks;
 registerBlockType( 'kadence/tab', {
 	title: __( 'Tab' ),
 	icon: icons.block,
-	category: 'common',
+	category: 'kadence-blocks',
 	parent: [ 'kadence/tabs' ],
 	attributes: {
 		id: {
