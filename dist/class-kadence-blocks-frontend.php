@@ -928,6 +928,10 @@ class Kadence_Blocks_Frontend {
 				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover {';
 				$css .= 'box-shadow:' . $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $this->hex2rgba( $shadow_hover['color'], $shadow_hover['opacity'] ) . ';';
 				$css .= '}';
+			} else {
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover {';
+				$css .= 'box-shadow:0px 0px 14px 0px rgba(0,0,0,0.2);';
+				$css .= '}';
 			}
 		}
 		return $css;

@@ -1103,6 +1103,12 @@ class Kadence_Blocks_Settings {
 				'desc'  => __( 'Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/tabs.jpg',
 			),
+			'kadence/infobox'      => array(
+				'slug'  => 'kadence/infobox',
+				'name'  => __( 'Info Box', 'kadence-blocks' ),
+				'desc'  => __( 'Create a box link containing an icon or image and optionally a title, description and learn more text. Style static and hover colors even show a box shadow.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/infobox.jpg',
+			),
 		);
 		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );
 	}

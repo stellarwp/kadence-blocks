@@ -39,6 +39,9 @@
 		display: block;
 	}
 }
+.wp-block-kadence-infobox .kt-blocks-info-box-text {
+	margin-bottom: 0;
+}
 .kt-blocks-info-box-media, .kt-blocks-info-box-link-wrap {
 	border: 0 solid transparent;
 	transition: all 0.3s cubic-bezier(.17,.67,.35,.95);
