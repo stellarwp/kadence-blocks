@@ -369,7 +369,7 @@ class Kadence_Blocks_Frontend {
 		if ( is_admin() ) {
 			return;
 		}
-		wp_register_script( 'kadence-frontend-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-frontend-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_enqueue_style( 'kadence-blocks-style-css', KT_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KT_BLOCKS_VERSION );
 	}
 	/**
@@ -490,7 +490,7 @@ class Kadence_Blocks_Frontend {
 					if ( 'kadence/tabs' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
-							$this->render_advanced_heading_css_head( $blockattr );
+							$this->render_tabs_css_head( $blockattr );
 							$this->blocks_tabs_scripts_gfonts( $blockattr );
 						}
 					}
@@ -563,7 +563,7 @@ class Kadence_Blocks_Frontend {
 				if ( 'kadence/tabs' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
-						$this->render_advanced_heading_css_head( $blockattr );
+						$this->render_tabs_css_head( $blockattr );
 						$this->blocks_tabs_scripts_gfonts( $blockattr );
 					}
 				}
@@ -667,6 +667,11 @@ class Kadence_Blocks_Frontend {
 			$css .= 'margin:' . ( empty( $media_style['margin'][ 0 ] ) ? '0' : $media_style['margin'][ 0 ] ) . 'px ' . ( empty( $media_style['margin'][ 1 ] ) ? '0' : $media_style['margin'][ 1 ] ) . 'px ' . ( empty( $media_style['margin'][ 2 ] ) ? '0' : $media_style['margin'][ 2 ] ) . 'px ' . ( empty( $media_style['margin'][ 3 ] ) ? '0' : $media_style['margin'][ 3 ] ) . 'px;';
 		}
 		$css .= '}';
+		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) ) {
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-media img {';
+			$css .= 'border-radius:' . $media_style['borderRadius'] . 'px;';
+			$css .= '}';
+		}
 		$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media {';
 		if ( isset( $media_icon['hoverColor'] ) && ! empty( $media_icon['hoverColor'] ) ) {
 			$css .= 'color:' . $media_icon['hoverColor'] . ';';

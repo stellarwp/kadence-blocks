@@ -11,6 +11,11 @@
 	margin:8px 0;
 	display: block;
 }
+.kt-prebuilt-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+}
 // Button
 .rfipbtn.rfipbtn--dividers {
 	background-color: #fff;

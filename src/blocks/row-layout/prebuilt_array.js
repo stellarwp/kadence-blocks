@@ -4,6 +4,7 @@ const prebuilt = [
 		key: 'kt_demo_header', 
 		content: "<!-- wp:kadence/rowlayout {\"uniqueID\":\"_f963ea-7a\",\"columns\":1,\"colLayout\":\"equal\",\"currentOverlayTab\":\"grad\",\"maxWidth\":845,\"topPadding\":130,\"bottomPadding\":152,\"bgImg\":\"https://s3.us-west-1.wasabisys.com/kadence/kt_01_background_image.jpg\",\"bgImgID\":\"48\",\"overlay\":\"#00b5e2\",\"overlaySecond\":\"#1c809a\",\"overlayGradAngle\":90,\"overlayOpacity\":71,\"overlayBlendMode\":\"overlay\",\"blockAlignment\":\"full\",\"bottomSep\":\"ctd\"} -->\n<div class=\"wp-block-kadence-rowlayout alignfull\"><div id=\"kt-layout-id_f963ea-7a\" class=\"kt-row-layout-inner kt-row-has-bg kt-layout-id_f963ea-7a\"><div class=\"kt-row-layout-overlay kt-row-overlay-gradient\"></div><div class=\"kt-row-column-wrap kt-has-1-columns kt-gutter-default kt-row-valign-top kt-row-layout-equal kt-tab-layout-inherit kt-m-colapse-left-to-right kt-mobile-layout-row\"><!-- wp:kadence/column -->\n<div class=\"wp-block-kadence-column inner-column-1\"><div class=\"kt-inside-inner-col\"><!-- wp:kadence/advancedheading {\"uniqueID\":\"_251ae0-68\",\"align\":\"center\",\"color\":\"#ffffff\",\"size\":3.5,\"sizeType\":\"em\",\"lineHeight\":1.3,\"lineType\":\"em\",\"typography\":\"Montserrat\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"800\",\"fontWeight\":\"800\"} -->\n<h2 id=\"kt-adv-heading_251ae0-68\" style=\"text-align:center;color:#ffffff\" class=\"wp-block-kadence-advancedheading\">Create Amazing Content with Gutenberg</h2>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:kadence/advancedheading {\"level\":4,\"uniqueID\":\"_a7c087-76\",\"align\":\"center\",\"color\":\"#ffffff\",\"size\":1.6,\"sizeType\":\"em\",\"lineHeight\":1,\"lineType\":\"em\",\"typography\":\"Montserrat\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"200\",\"fontWeight\":\"200\"} -->\n<h4 id=\"kt-adv-heading_a7c087-76\" style=\"text-align:center;color:#ffffff\" class=\"wp-block-kadence-advancedheading\">Kadence Blocks - Gutenberg Page Builder Toolkit</h4>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:kadence/advancedbtn {\"btnCount\":2,\"uniqueID\":\"_74f96e-b3\",\"btns\":[{\"text\":[\"ADVANCED\"],\"link\":\"#link\",\"target\":\"_self\",\"size\":18,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#ffffff\",\"background\":\"#00b5e2\",\"border\":\"#00b5e2\",\"borderRadius\":3,\"borderWidth\":3,\"colorHover\":\"#ffffff\",\"backgroundHover\":\"#444444\",\"borderHover\":\"#444444\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false},{\"text\":[\"BUTTONS\"],\"link\":\"#link\",\"target\":\"_self\",\"size\":18,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#ffffff\",\"border\":\"#fbfcfd\",\"borderRadius\":3,\"borderWidth\":3,\"colorHover\":\"#ffffff\",\"backgroundHover\":\"#444444\",\"borderHover\":\"#444444\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false}],\"typography\":\"Montserrat\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"300\",\"fontWeight\":\"300\"} -->\n<div class=\"wp-block-kadence-advancedbtn kt-btn-align-center kt-btns-wrap kt-btns_74f96e-b3\"><div class=\"kt-btn-wrap kt-btn-wrap-0\"><a class=\"kt-button kt-btn-0-action kt-btn-svg-show-always kt-btn-has-text-true kt-btn-has-svg-false\" href=\"#link\" target=\"_self\" style=\"font-size:18px;border-radius:3px;border-width:3px\"><span class=\"kt-btn-inner-text\">ADVANCED</span></a></div><div class=\"kt-btn-wrap kt-btn-wrap-1\"><a class=\"kt-button kt-btn-1-action kt-btn-svg-show-always kt-btn-has-text-true kt-btn-has-svg-false\" href=\"#link\" target=\"_self\" style=\"font-size:18px;border-radius:3px;border-width:3px\"><span class=\"kt-btn-inner-text\">BUTTONS</span></a></div></div>\n<!-- /wp:kadence/advancedbtn --></div></div>\n<!-- /wp:kadence/column --></div><div class=\"kt-row-layout-bottom-sep kt-row-sep-type-ctd\"><svg style=\"fill:#ffffff\" viewbox=\"0 0 1000 100\" preserveaspectratio=\"none\"><path d=\"M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z\" style=\"opacity:0.4\"></path><path d=\"M1000,20l-500,78l-500,-78l0,80l1000,0l0,-80Z\"></path></svg></div></div></div>\n<!-- /wp:kadence/rowlayout -->", 
 		name: __( 'Header Demo' ),
+		keywords: [ __( 'header' ), __( 'call-to-action' ), __( 'fullwidth' ), __( 'row' ), __( 'buttons' ) ],
 		background: 'light',
 		category: [ 'header', 'call-to-action' ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_01-min.jpg',
@@ -13,6 +14,7 @@ const prebuilt = [
 		content: "<!-- wp:kadence/rowlayout {\"uniqueID\":\"_33e7a9-01\",\"columns\":3,\"columnGutter\":\"wider\",\"colLayout\":\"equal\",\"maxWidth\":1140,\"topPadding\":50,\"bottomPadding\":50,\"blockAlignment\":\"full\",\"bottomSep\":\"crv\",\"bottomSepColor\":\"#eeeeee\",\"bottomSepHeight\":292,\"bottomSepWidth\":251} -->\n<div class=\"wp-block-kadence-rowlayout alignfull\"><div id=\"kt-layout-id_33e7a9-01\" class=\"kt-row-layout-inner  kt-layout-id_33e7a9-01\"><div class=\"kt-row-column-wrap kt-has-3-columns kt-gutter-wider kt-row-valign-top kt-row-layout-equal kt-tab-layout-inherit kt-m-colapse-left-to-right kt-mobile-layout-row\"><!-- wp:kadence/column -->\n<div class=\"wp-block-kadence-column inner-column-1\"><div class=\"kt-inside-inner-col\"><!-- wp:kadence/rowlayout {\"uniqueID\":\"_53d34c-57\",\"columns\":1,\"colLayout\":\"equal\",\"topPadding\":10,\"bottomPadding\":10,\"leftPadding\":25,\"rightPadding\":25,\"bgColor\":\"#ffffff\"} -->\n<div class=\"wp-block-kadence-rowlayout alignnone\"><div id=\"kt-layout-id_53d34c-57\" class=\"kt-row-layout-inner kt-row-has-bg kt-layout-id_53d34c-57\"><div class=\"kt-row-column-wrap kt-has-1-columns kt-gutter-default kt-row-valign-top kt-row-layout-equal kt-tab-layout-inherit kt-m-colapse-left-to-right kt-mobile-layout-row\"><!-- wp:kadence/column -->\n<div class=\"wp-block-kadence-column inner-column-1\"><div class=\"kt-inside-inner-col\"><!-- wp:kadence/icon {\"icons\":[{\"icon\":\"fe_smartphone\",\"link\":\"\",\"target\":\"_self\",\"size\":80,\"width\":1.5,\"title\":\"\",\"color\":\"#ffffff\",\"background\":\"#00b5e2\",\"border\":\"#00b5e2\",\"borderRadius\":5,\"borderWidth\":3,\"padding\":20,\"style\":\"stacked\"}],\"uniqueID\":\"_c899f0-d9\"} -->\n<div class=\"wp-block-kadence-icon kt-svg-icons kt-svg-icons_c899f0-d9 aligncenter\" style=\"text-align:center\"><div class=\"kt-svg-style-stacked kt-svg-icon-wrap kt-svg-item-0\"><div style=\"display:inline-flex;justify-content:center;align-items:center;color:#ffffff;background-color:#00b5e2;padding:20px;border-color:#00b5e2;border-width:3px;border-radius:5%\" class=\"kt-svg-icon kt-svg-icon-fe_smartphone\"><svg style=\"display:inline-block;vertical-align:middle\" viewbox=\"0 0 24 24\" height=\"80\" width=\"80\" fill=\"none\" stroke=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"5\" y=\"2\" width=\"14\" height=\"20\" rx=\"2\" ry=\"2\"></rect><line x1=\"12\" y1=\"18\" x2=\"12\" y2=\"18\"></line></svg></div></div></div>\n<!-- /wp:kadence/icon -->\n\n<!-- wp:kadence/advancedheading {\"level\":3,\"uniqueID\":\"_b8beb8-91\",\"align\":\"center\",\"size\":20,\"lineHeight\":30,\"typography\":\"Montserrat\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"600\",\"fontWeight\":\"600\",\"topMargin\":15,\"bottomMargin\":15} -->\n<h3 id=\"kt-adv-heading_b8beb8-91\" style=\"text-align:center;margin-top:15px;margin-bottom:15px\" class=\"wp-block-kadence-advancedheading\">Responsive Settings</h3>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:paragraph {\"align\":\"center\"} -->\n<p style=\"text-align:center\">Kadence Blocks provides a powerful row/layout block that makes building dynamic responsive layouts possible with Gutenberg! Build with powerful backgrounds, overlays, and row dividers.</p>\n<!-- /wp:paragraph --></div></div>\n<!-- /wp:kadence/column --></div></div></div>\n<!-- /wp:kadence/rowlayout --></div></div>\n<!-- /wp:kadence/column -->\n\n<!-- wp:kadence/column {\"id\":2} -->\n<div class=\"wp-block-kadence-column inner-column-2\"><div class=\"kt-inside-inner-col\"><!-- wp:kadence/rowlayout {\"uniqueID\":\"_6688db-42\",\"columns\":1,\"colLayout\":\"equal\",\"topPadding\":10,\"bottomPadding\":10,\"leftPadding\":25,\"rightPadding\":25,\"bgColor\":\"#ffffff\"} -->\n<div class=\"wp-block-kadence-rowlayout alignnone\"><div id=\"kt-layout-id_6688db-42\" class=\"kt-row-layout-inner kt-row-has-bg kt-layout-id_6688db-42\"><div class=\"kt-row-column-wrap kt-has-1-columns kt-gutter-default kt-row-valign-top kt-row-layout-equal kt-tab-layout-inherit kt-m-colapse-left-to-right kt-mobile-layout-row\"><!-- wp:kadence/column -->\n<div class=\"wp-block-kadence-column inner-column-1\"><div class=\"kt-inside-inner-col\"><!-- wp:kadence/icon {\"icons\":[{\"icon\":\"fe_type\",\"link\":\"\",\"target\":\"_self\",\"size\":80,\"width\":1.5,\"title\":\"\",\"color\":\"#ffffff\",\"background\":\"#ff6900\",\"border\":\"#ff6900\",\"borderRadius\":5,\"borderWidth\":3,\"padding\":20,\"style\":\"stacked\"}],\"uniqueID\":\"_e9c019-62\"} -->\n<div class=\"wp-block-kadence-icon kt-svg-icons kt-svg-icons_e9c019-62 aligncenter\" style=\"text-align:center\"><div class=\"kt-svg-style-stacked kt-svg-icon-wrap kt-svg-item-0\"><div style=\"display:inline-flex;justify-content:center;align-items:center;color:#ffffff;background-color:#ff6900;padding:20px;border-color:#ff6900;border-width:3px;border-radius:5%\" class=\"kt-svg-icon kt-svg-icon-fe_type\"><svg style=\"display:inline-block;vertical-align:middle\" viewbox=\"0 0 24 24\" height=\"80\" width=\"80\" fill=\"none\" stroke=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"4 7 4 4 20 4 20 7\"></polyline><line x1=\"9\" y1=\"20\" x2=\"15\" y2=\"20\"></line><line x1=\"12\" y1=\"4\" x2=\"12\" y2=\"20\"></line></svg></div></div></div>\n<!-- /wp:kadence/icon -->\n\n<!-- wp:kadence/advancedheading {\"level\":3,\"uniqueID\":\"_8f8cb9-a9\",\"align\":\"center\",\"size\":20,\"lineHeight\":30,\"typography\":\"Montserrat\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"600\",\"fontWeight\":\"600\",\"topMargin\":15,\"bottomMargin\":15} -->\n<h3 id=\"kt-adv-heading_8f8cb9-a9\" style=\"text-align:center;margin-top:15px;margin-bottom:15px\" class=\"wp-block-kadence-advancedheading\">Custom Heading Fonts</h3>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:paragraph {\"align\":\"center\"} -->\n<p style=\"text-align:center\">Kadence Blocks provides a unique advanced heading block that allows you to assign any google font right in Gutenberg. Plus you can adjust sizing and control it responsively based on screen size.</p>\n<!-- /wp:paragraph --></div></div>\n<!-- /wp:kadence/column --></div></div></div>\n<!-- /wp:kadence/rowlayout --></div></div>\n<!-- /wp:kadence/column -->\n\n<!-- wp:kadence/column {\"id\":3} -->\n<div class=\"wp-block-kadence-column inner-column-3\"><div class=\"kt-inside-inner-col\"><!-- wp:kadence/rowlayout {\"uniqueID\":\"_7367a5-35\",\"columns\":1,\"colLayout\":\"equal\",\"topPadding\":10,\"bottomPadding\":10,\"leftPadding\":25,\"rightPadding\":25,\"bgColor\":\"#ffffff\"} -->\n<div class=\"wp-block-kadence-rowlayout alignnone\"><div id=\"kt-layout-id_7367a5-35\" class=\"kt-row-layout-inner kt-row-has-bg kt-layout-id_7367a5-35\"><div class=\"kt-row-column-wrap kt-has-1-columns kt-gutter-default kt-row-valign-top kt-row-layout-equal kt-tab-layout-inherit kt-m-colapse-left-to-right kt-mobile-layout-row\"><!-- wp:kadence/column -->\n<div class=\"wp-block-kadence-column inner-column-1\"><div class=\"kt-inside-inner-col\"><!-- wp:kadence/icon {\"icons\":[{\"icon\":\"fe_codepen\",\"link\":\"\",\"target\":\"_self\",\"size\":80,\"width\":1.5,\"title\":\"\",\"color\":\"#ffffff\",\"background\":\"#00d084\",\"border\":\"#00d084\",\"borderRadius\":5,\"borderWidth\":3,\"padding\":20,\"style\":\"stacked\"}],\"uniqueID\":\"_b10b47-98\"} -->\n<div class=\"wp-block-kadence-icon kt-svg-icons kt-svg-icons_b10b47-98 aligncenter\" style=\"text-align:center\"><div class=\"kt-svg-style-stacked kt-svg-icon-wrap kt-svg-item-0\"><div style=\"display:inline-flex;justify-content:center;align-items:center;color:#ffffff;background-color:#00d084;padding:20px;border-color:#00d084;border-width:3px;border-radius:5%\" class=\"kt-svg-icon kt-svg-icon-fe_codepen\"><svg style=\"display:inline-block;vertical-align:middle\" viewbox=\"0 0 24 24\" height=\"80\" width=\"80\" fill=\"none\" stroke=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2\"></polygon><line x1=\"12\" y1=\"22\" x2=\"12\" y2=\"15.5\"></line><polyline points=\"22 8.5 12 15.5 2 8.5\"></polyline><polyline points=\"2 15.5 12 8.5 22 15.5\"></polyline><line x1=\"12\" y1=\"2\" x2=\"12\" y2=\"8.5\"></line></svg></div></div></div>\n<!-- /wp:kadence/icon -->\n\n<!-- wp:kadence/advancedheading {\"level\":3,\"uniqueID\":\"_de29e3-48\",\"align\":\"center\",\"size\":20,\"lineHeight\":30,\"typography\":\"Montserrat\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"600\",\"fontWeight\":\"600\",\"topMargin\":15,\"bottomMargin\":15} -->\n<h3 id=\"kt-adv-heading_de29e3-48\" style=\"text-align:center;margin-top:15px;margin-bottom:15px\" class=\"wp-block-kadence-advancedheading\">1500+ SVG Icons</h3>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:paragraph {\"align\":\"center\"} -->\n<p style=\"text-align:center\">Kadence Blocks provides a smart icons block that allows you to choose from over 1500 icons. You can set the size and style&nbsp; then add inline so you're only ever loading the icons you use on the front end.</p>\n<!-- /wp:paragraph --></div></div>\n<!-- /wp:kadence/column --></div></div></div>\n<!-- /wp:kadence/rowlayout --></div></div>\n<!-- /wp:kadence/column --></div><div class=\"kt-row-layout-bottom-sep kt-row-sep-type-crv\"><svg style=\"fill:#eeeeee\" viewbox=\"0 0 1000 100\" preserveaspectratio=\"none\"><path d=\"M1000,100c0,0 -270.987,-98 -500,-98c-229.013,0 -500,98 -500,98l1000,0Z\"></path></svg></div></div></div>\n<!-- /wp:kadence/rowlayout -->", 
 		name: __( 'Three Icons' ),
 		background: 'light',
+		keywords: [ __( 'features' ), __( 'icons' ), __( 'columns' ), __( 'info' ), __( 'buttons' ) ],
 		category: [ 'features' ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_02-min.jpg',
 	},
@@ -21,6 +23,7 @@ const prebuilt = [
 		content: "<!-- wp:kadence/rowlayout {\"uniqueID\":\"_81cda2-26\",\"columnGutter\":\"wide\",\"colLayout\":\"left-golden\",\"maxWidth\":1134,\"topPadding\":0,\"bottomPadding\":140,\"bgColor\":\"#eeeeee\",\"blockAlignment\":\"full\",\"verticalAlignment\":\"middle\",\"bottomSep\":\"mtns\",\"bottomSepHeight\":120} -->\n<div class=\"wp-block-kadence-rowlayout alignfull\"><div id=\"kt-layout-id_81cda2-26\" class=\"kt-row-layout-inner kt-row-has-bg kt-layout-id_81cda2-26\"><div class=\"kt-row-column-wrap kt-has-2-columns kt-gutter-wide kt-row-valign-middle kt-row-layout-left-golden kt-tab-layout-inherit kt-m-colapse-left-to-right kt-mobile-layout-row\"><!-- wp:kadence/column -->\n<div class=\"wp-block-kadence-column inner-column-1\"><div class=\"kt-inside-inner-col\"><!-- wp:kadence/advancedheading {\"level\":4,\"uniqueID\":\"_404b4e-72\",\"color\":\"#707981\",\"size\":21,\"lineHeight\":12,\"typography\":\"Playfair Display\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"900italic\",\"fontWeight\":\"900\",\"fontStyle\":\"italic\"} -->\n<h4 id=\"kt-adv-heading_404b4e-72\" style=\"color:#707981\" class=\"wp-block-kadence-advancedheading\">Powerfull</h4>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:kadence/advancedheading {\"uniqueID\":\"_2536cd-a0\",\"color\":\"#313131\",\"size\":65,\"lineHeight\":54,\"typography\":\"Montserrat\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"800\",\"fontWeight\":\"800\"} -->\n<h2 id=\"kt-adv-heading_2536cd-a0\" style=\"color:#313131\" class=\"wp-block-kadence-advancedheading\">DUAL BUTTONS</h2>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:paragraph -->\n<p>One great <g class=\"gr_ gr_161 gr-alert sel gr_gramm gr_replaced gr_inline_cards gr_disable_anim_appear Grammar multiReplace\" id=\"161\" data-gr-id=\"161\">feature</g> of the <strong>Advanced Button</strong> block in Kadence Blocks is the ability to have more than one button on a line. In fact, you can have up to five if you so desire. Each can be styled separately with both normal and hover color settings.</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:kadence/advancedbtn {\"hAlign\":\"left\",\"btnCount\":2,\"uniqueID\":\"_672b5f-0a\",\"btns\":[{\"text\":[\"Style\"],\"link\":\"\",\"target\":\"_self\",\"size\":18,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#ffffff\",\"background\":\"#00b5e2\",\"border\":\"#00b5e2\",\"borderRadius\":3,\"borderWidth\":2,\"colorHover\":\"#ffffff\",\"backgroundHover\":\"#31c7ec\",\"borderHover\":\"#31c7ec\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false},{\"text\":[\"Individually\"],\"link\":\"\",\"target\":\"_self\",\"size\":18,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#ffffff\",\"background\":\"#abb8c3\",\"border\":\"#abb8c3\",\"borderRadius\":3,\"borderWidth\":2,\"colorHover\":\"#ffffff\",\"backgroundHover\":\"#313131\",\"borderHover\":\"#313131\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false},{\"text\":[\"Individually\"],\"link\":\"\",\"target\":\"_self\",\"size\":18,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#ffffff\",\"background\":\"#abb8c3\",\"border\":\"#abb8c3\",\"borderRadius\":3,\"borderWidth\":2,\"colorHover\":\"#ffffff\",\"backgroundHover\":\"#313131\",\"borderHover\":\"#313131\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false},{\"text\":\"\",\"link\":\"\",\"target\":\"_self\",\"size\":18,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#555555\",\"background\":\"transparent\",\"border\":\"#555555\",\"borderRadius\":3,\"borderWidth\":2,\"colorHover\":\"#ffffff\",\"backgroundHover\":\"#444444\",\"borderHover\":\"#444444\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false},{\"text\":\"\",\"link\":\"\",\"target\":\"_self\",\"size\":18,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#555555\",\"background\":\"transparent\",\"border\":\"#555555\",\"borderRadius\":3,\"borderWidth\":2,\"colorHover\":\"#ffffff\",\"backgroundHover\":\"#444444\",\"borderHover\":\"#444444\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false}],\"typography\":\"Montserrat\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontVariant\":\"500\",\"fontWeight\":\"500\"} -->\n<div class=\"wp-block-kadence-advancedbtn kt-btn-align-left kt-btns-wrap kt-btns_672b5f-0a\"><div class=\"kt-btn-wrap kt-btn-wrap-0\"><a class=\"kt-button kt-btn-0-action kt-btn-svg-show-always kt-btn-has-text-true kt-btn-has-svg-false\" href=\"#\" target=\"_self\" style=\"font-size:18px;border-radius:3px;border-width:2px\"><span class=\"kt-btn-inner-text\">Style</span></a></div><div class=\"kt-btn-wrap kt-btn-wrap-1\"><a class=\"kt-button kt-btn-1-action kt-btn-svg-show-always kt-btn-has-text-true kt-btn-has-svg-false\" href=\"#\" target=\"_self\" style=\"font-size:18px;border-radius:3px;border-width:2px\"><span class=\"kt-btn-inner-text\">Individually</span></a></div></div>\n<!-- /wp:kadence/advancedbtn --></div></div>\n<!-- /wp:kadence/column -->\n\n<!-- wp:kadence/column {\"id\":2} -->\n<div class=\"wp-block-kadence-column inner-column-2\"><div class=\"kt-inside-inner-col\"><!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https://s3.us-west-1.wasabisys.com/kadence/kt_03_image-min.jpg\" alt=\"\"/></figure>\n<!-- /wp:image --></div></div>\n<!-- /wp:kadence/column --></div><div class=\"kt-row-layout-bottom-sep kt-row-sep-type-mtns\"><svg style=\"fill:#ffffff\" viewbox=\"0 0 1000 100\" preserveaspectratio=\"none\"><path d=\"M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z\" style=\"opacity:0.4\"></path><path d=\"M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z\"></path></svg></div></div></div>\n<!-- /wp:kadence/rowlayout -->", 
 		name: __( 'Image and Dual Buttons' ),
 		background: 'light',
+		keywords: [ __( 'features' ), __( 'image' ), __( 'columns' ), __( 'buttons' ) ],
 		category: [ 'features', 'call-to-action' ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_03-min.jpg',
 	},
@@ -29,6 +32,7 @@ const prebuilt = [
 		content: "<!-- wp:kadence/rowlayout {\"uniqueID\":\"_f1a9d5-d5\",\"columns\":3,\"colLayout\":\"equal\",\"blockAlignment\":\"wide\"} -->\n<div class=\"wp-block-kadence-rowlayout alignwide\"><div id=\"kt-layout-id_f1a9d5-d5\" class=\"kt-row-layout-inner  kt-layout-id_f1a9d5-d5\"><div class=\"kt-row-column-wrap kt-has-3-columns kt-gutter-default kt-row-valign-top kt-row-layout-equal kt-tab-layout-inherit kt-m-colapse-left-to-right kt-mobile-layout-row\"><!-- wp:kadence/column -->\n<div class=\"wp-block-kadence-column inner-column-1\"><div class=\"kt-inside-inner-col\"><!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https://s3.us-west-1.wasabisys.com/kadence/kt_10_image_01-min.jpg\" alt=\"\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:kadence/advancedheading {\"level\":4,\"uniqueID\":\"_9eee88-8c\",\"align\":\"center\",\"size\":24,\"lineHeight\":40,\"typography\":\"Archivo Black\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontWeight\":\"400\",\"topMargin\":10,\"bottomMargin\":10} -->\n<h4 id=\"kt-adv-heading_9eee88-8c\" style=\"text-align:center;margin-top:10px;margin-bottom:10px\" class=\"wp-block-kadence-advancedheading\">Lonely&nbsp;Mountains</h4>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:paragraph {\"align\":\"center\",\"fontSize\":\"small\"} -->\n<p style=\"text-align:center\" class=\"has-small-font-size\">Stories of travel into hard to reach places</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:kadence/advancedbtn {\"uniqueID\":\"_890751-e7\",\"btns\":[{\"text\":[\"BROWSE\"],\"link\":\"https://themes.kadencethemes.com/ascend-5/category/the-last-best/\",\"target\":\"_self\",\"size\":16,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#939393\",\"background\":\"transparent\",\"border\":\"#eee\",\"borderRadius\":0,\"borderWidth\":2,\"colorHover\":\"#008c9e\",\"backgroundHover\":\"#fff\",\"borderHover\":\"#008c9e\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false,\"paddingTB\":5}]} -->\n<div class=\"wp-block-kadence-advancedbtn kt-btn-align-center kt-btns-wrap kt-btns_890751-e7\"><div class=\"kt-btn-wrap kt-btn-wrap-0\"><a class=\"kt-button kt-btn-0-action kt-btn-svg-show-always kt-btn-has-text-true kt-btn-has-svg-false\" href=\"https://themes.kadencethemes.com/ascend-5/category/the-last-best/\" target=\"_self\" style=\"font-size:16px;border-width:2px;padding-top:5px;padding-bottom:5px\"><span class=\"kt-btn-inner-text\">BROWSE</span></a></div></div>\n<!-- /wp:kadence/advancedbtn --></div></div>\n<!-- /wp:kadence/column -->\n\n<!-- wp:kadence/column {\"id\":2} -->\n<div class=\"wp-block-kadence-column inner-column-2\"><div class=\"kt-inside-inner-col\"><!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https://s3.us-west-1.wasabisys.com/kadence/kt_10_image_02-min.jpg\" alt=\"\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:kadence/advancedheading {\"level\":4,\"uniqueID\":\"_3ea22a-e3\",\"align\":\"center\",\"size\":24,\"lineHeight\":40,\"typography\":\"Archivo Black\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontWeight\":\"400\",\"topMargin\":10,\"bottomMargin\":10} -->\n<h4 id=\"kt-adv-heading_3ea22a-e3\" style=\"text-align:center;margin-top:10px;margin-bottom:10px\" class=\"wp-block-kadence-advancedheading\">Last Best</h4>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:paragraph {\"align\":\"center\",\"fontSize\":\"small\"} -->\n<p style=\"text-align:center\" class=\"has-small-font-size\">Guides off the Map to secret Destinations</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:kadence/advancedbtn {\"uniqueID\":\"_0afc45-80\",\"btns\":[{\"text\":[\"BROWSE\"],\"link\":\"https://themes.kadencethemes.com/ascend-5/category/the-last-best/\",\"target\":\"_self\",\"size\":16,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#939393\",\"background\":\"transparent\",\"border\":\"#eee\",\"borderRadius\":0,\"borderWidth\":2,\"colorHover\":\"#008c9e\",\"backgroundHover\":\"#fff\",\"borderHover\":\"#008c9e\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false,\"paddingTB\":5}]} -->\n<div class=\"wp-block-kadence-advancedbtn kt-btn-align-center kt-btns-wrap kt-btns_0afc45-80\"><div class=\"kt-btn-wrap kt-btn-wrap-0\"><a class=\"kt-button kt-btn-0-action kt-btn-svg-show-always kt-btn-has-text-true kt-btn-has-svg-false\" href=\"https://themes.kadencethemes.com/ascend-5/category/the-last-best/\" target=\"_self\" style=\"font-size:16px;border-width:2px;padding-top:5px;padding-bottom:5px\"><span class=\"kt-btn-inner-text\">BROWSE</span></a></div></div>\n<!-- /wp:kadence/advancedbtn --></div></div>\n<!-- /wp:kadence/column -->\n\n<!-- wp:kadence/column {\"id\":3} -->\n<div class=\"wp-block-kadence-column inner-column-3\"><div class=\"kt-inside-inner-col\"><!-- wp:image -->\n<figure class=\"wp-block-image\"><img src=\"https://s3.us-west-1.wasabisys.com/kadence/kt_10_image_03-min.jpg\" alt=\"\"/></figure>\n<!-- /wp:image -->\n\n<!-- wp:kadence/advancedheading {\"level\":4,\"uniqueID\":\"_b79474-1d\",\"align\":\"center\",\"size\":24,\"lineHeight\":40,\"typography\":\"Archivo Black\",\"googleFont\":true,\"fontSubset\":\"latin\",\"fontWeight\":\"400\",\"topMargin\":10,\"bottomMargin\":10} -->\n<h4 id=\"kt-adv-heading_b79474-1d\" style=\"text-align:center;margin-top:10px;margin-bottom:10px\" class=\"wp-block-kadence-advancedheading\">Don't Forget</h4>\n<!-- /wp:kadence/advancedheading -->\n\n<!-- wp:paragraph {\"align\":\"center\",\"fontSize\":\"small\"} -->\n<p style=\"text-align:center\" class=\"has-small-font-size\">Tips on what to look for that make or break a trip</p>\n<!-- /wp:paragraph -->\n\n<!-- wp:kadence/advancedbtn {\"uniqueID\":\"_2ea8e5-25\",\"btns\":[{\"text\":[\"BROWSE\"],\"link\":\"https://themes.kadencethemes.com/ascend-5/category/the-last-best/\",\"target\":\"_self\",\"size\":16,\"paddingBT\":\"\",\"paddingLR\":\"\",\"color\":\"#939393\",\"background\":\"transparent\",\"border\":\"#eee\",\"borderRadius\":0,\"borderWidth\":2,\"colorHover\":\"#008c9e\",\"backgroundHover\":\"#fff\",\"borderHover\":\"#008c9e\",\"icon\":\"\",\"iconSide\":\"right\",\"iconHover\":false,\"paddingTB\":5}]} -->\n<div class=\"wp-block-kadence-advancedbtn kt-btn-align-center kt-btns-wrap kt-btns_2ea8e5-25\"><div class=\"kt-btn-wrap kt-btn-wrap-0\"><a class=\"kt-button kt-btn-0-action kt-btn-svg-show-always kt-btn-has-text-true kt-btn-has-svg-false\" href=\"https://themes.kadencethemes.com/ascend-5/category/the-last-best/\" target=\"_self\" style=\"font-size:16px;border-width:2px;padding-top:5px;padding-bottom:5px\"><span class=\"kt-btn-inner-text\">BROWSE</span></a></div></div>\n<!-- /wp:kadence/advancedbtn --></div></div>\n<!-- /wp:kadence/column --></div></div></div>\n<!-- /wp:kadence/rowlayout -->", 
 		name: __( 'Three Column Images' ),
 		background: 'light',
+		keywords: [ __( 'features' ), __( 'images' ), __( 'columns' ), __( 'buttons' ) ],
 		category: [ 'features' ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_10-min.jpg',
 	},
@@ -38,6 +42,7 @@ const prebuilt = [
 		name: __( 'Split with Iphone' ),
 		background: 'light',
 		category: [ 'features' ],
+		keywords: [ __( 'features' ), __( 'icons' ), __( 'columns' ), __( 'buttons' ), __( 'split' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_14-min.jpg',
 	},
 	{
@@ -46,6 +51,7 @@ const prebuilt = [
 		name: __( 'Demo Tabs' ),
 		background: 'light',
 		category: [ 'tabs' ],
+		keywords: [ __( 'tabs' ), __( 'columns' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_04-min.jpg',
 	},
 	{
@@ -54,6 +60,7 @@ const prebuilt = [
 		name: __( 'Bottom Call to action' ),
 		background: 'light',
 		category: [ 'header', 'call-to-action' ],
+		keywords: [ __( 'header' ), __( 'call-to-action' ), __( 'footer' ), __( 'fullwidth' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_11-min.jpg',
 	},
 	{
@@ -62,6 +69,7 @@ const prebuilt = [
 		name: __( 'Basic Tabs' ),
 		background: 'light',
 		category: [ 'tabs' ],
+		keywords: [ __( 'tabs' ), __( 'layout' ), __( 'columns' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_05-min.jpg',
 	},
 	{
@@ -70,6 +78,7 @@ const prebuilt = [
 		name: __( 'Features Around Image' ),
 		background: 'light',
 		category: [ 'features' ],
+		keywords: [ __( 'features' ), __( 'icons' ), __( 'image' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_21-min.jpg',
 	},
 	{
@@ -78,6 +87,7 @@ const prebuilt = [
 		name: __( 'Three Color Blocks' ),
 		background: 'light',
 		category: [ 'features' ],
+		keywords: [ __( 'features' ), __( 'icons' ), __( 'columns' ), __( 'background' ), __( 'buttons' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_20-min.jpg',
 	},
 	{
@@ -86,6 +96,7 @@ const prebuilt = [
 		name: __( 'Split Content' ),
 		background: 'light',
 		category: [ 'features' ],
+		keywords: [ __( 'features' ), __( 'split' ), __( 'columns' ), __( 'image' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_09-min.jpg',
 	},
 	{
@@ -94,6 +105,7 @@ const prebuilt = [
 		name: __( 'Vertical Tabs' ),
 		background: 'light',
 		category: [ 'tabs' ],
+		keywords: [ __( 'tabs' ), __( 'vertical' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_06-min.jpg',
 	},
 	{
@@ -102,6 +114,7 @@ const prebuilt = [
 		name: __( 'Three Contact Icons' ),
 		background: 'light',
 		category: [ 'features' ],
+		keywords: [ __( 'features' ), __( 'icons' ), __( 'columns' ), __( 'contact' ), __( 'footer' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_19-min.jpg',
 	},
 	{
@@ -110,6 +123,7 @@ const prebuilt = [
 		name: __( 'Split with column features' ),
 		background: 'light',
 		category: [ 'features' ],
+		keywords: [ __( 'features' ), __( 'image' ), __( 'columns' ), __( 'nested' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_16-min.jpg',
 	},
 	{
@@ -118,6 +132,7 @@ const prebuilt = [
 		name: __( 'Call to action with box' ),
 		background: 'light',
 		category: [ 'features', 'call-to-action' ],
+		keywords: [ __( 'features' ), __( 'call-to-action' ), __( 'box' ), __( 'buttons' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_17-min.jpg',
 	},
 	{
@@ -126,6 +141,7 @@ const prebuilt = [
 		name: __( 'Icon Tabs' ),
 		background: 'light',
 		category: [ 'tabs' ],
+		keywords: [ __( 'tabs' ), __( 'icons' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_07-min.jpg',
 	},
 	{
@@ -134,6 +150,7 @@ const prebuilt = [
 		name: __( 'Split with Phone beside Icons' ),
 		background: 'light',
 		category: [ 'features' ],
+		keywords: [ __( 'features' ), __( 'icons' ), __( 'columns' ), __( 'image' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_13-min.jpg',
 	},
 	{
@@ -142,6 +159,7 @@ const prebuilt = [
 		name: __( 'Basic Header' ),
 		background: 'light',
 		category: [ 'header' ],
+		keywords: [ __( 'features' ), __( 'header' ), __( 'fullwidth' ), __( 'background' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_12-min.jpg',
 	},
 	{
@@ -150,6 +168,7 @@ const prebuilt = [
 		name: __( 'Split Call to action' ),
 		background: 'light',
 		category: [ 'features', 'call-to-action' ],
+		keywords: [ __( 'features' ), __( 'call-to-action' ), __( 'fullwidth' ), __( 'buttons' ), __( 'split' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_15-min.jpg',
 	},
 	{
@@ -158,6 +177,7 @@ const prebuilt = [
 		name: __( 'Simple Tabs' ),
 		background: 'light',
 		category: [ 'tabs' ],
+		keywords: [ __( 'tabs' ), __( 'simple' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_08-min.jpg',
 	},
 	{
@@ -166,6 +186,7 @@ const prebuilt = [
 		name: __( 'Call to action with box' ),
 		background: 'light',
 		category: [ 'features', 'call-to-action' ],
+		keywords: [ __( 'call-to-action' ), __( 'button' ) ],
 		image: 'https://s3.us-west-1.wasabisys.com/kadence/ktblocks_prebuilt_18-min.jpg',
 	},
 ];

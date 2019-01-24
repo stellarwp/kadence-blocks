@@ -10,6 +10,7 @@ const {
 	Button,
 	ButtonGroup,
 	Tooltip,
+	TextControl,
 	SelectControl,
 } = wp.components;
 const {
@@ -29,6 +30,7 @@ class CustomComponent extends Component {
 		super( ...arguments );
 		this.state = {
 			category: 'all',
+			search: null,
 		};
 	}
 	onInsertContent( blockcode ) {
@@ -52,15 +54,23 @@ class CustomComponent extends Component {
 		} );
 		return (
 			<Fragment>
-				<SelectControl
-					label={ __( 'Category' ) }
-					value={ this.state.category }
-					options={ catOptions }
-					onChange={ value => this.setState( { category: value } ) }
-				/>
+				<div className="kt-prebuilt-header">
+					<SelectControl
+						label={ __( 'Category' ) }
+						value={ this.state.category }
+						options={ catOptions }
+						onChange={ value => this.setState( { category: value } ) }
+					/>
+					<TextControl
+						type="text"
+						value={ this.state.search }
+						placeholder={ __( 'Search' ) }
+						onChange={ value => this.setState( { search: value } ) }
+					/>
+				</div>
 				<ButtonGroup aria-label={ __( 'Prebuilt Options' ) }>
-					{ map( blockOutput, ( { name, key, image, content, background, category } ) => {
-						if ( 'all' == this.state.category || category.includes( this.state.category ) ) {
+					{ map( blockOutput, ( { name, key, image, content, background, category, keywords } ) => {
+						if ( ( 'all' === this.state.category || category.includes( this.state.category ) ) && ( ! this.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( this.state.search.toLowerCase() ) ) ) ) ) {
 							return (
 								<div className="kt-prebuilt-item" data-background-style={ background }>
 									<Tooltip text={ name }>

@@ -241,6 +241,7 @@ class KadenceInfoBox extends Component {
 		const renderCSS = (
 			<style>
 				{ ( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon { color: ${ mediaIcon[ 0 ].hoverColor } !important; }` : '' ) }
+				{ ( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media img { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }` : '' ) }
 				{ ( titleHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${ titleHoverColor } !important; }` : '' ) }
 				{ ( textHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${ textHoverColor } !important; }` : '' ) }
 				{ ( learnMoreStyles[ 0 ].colorHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${ learnMoreStyles[ 0 ].colorHover } !important; }` : '' ) }

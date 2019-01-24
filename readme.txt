@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.0.3
-Stable tag: 1.2.4
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,7 @@ This plugin adds custom blocks to extend Gutenberg's editing capabilities to bet
 * Tabs - [demo](https://themes.kadencethemes.com/ascend-5/tabs-block/)
 * Icon - [demo](https://themes.kadencethemes.com/ascend-5/icon-block/)
 * Spacer / Divider - [demo](https://themes.kadencethemes.com/ascend-5/spacer-divider-block/) 
+* Info Box - [demo](https://themes.kadencethemes.com/ascend-5/info-box/) 
 
 = Key Block Features =
 The Row Layout block can have 1-6 columns and any other blocks can be nested inside. So as a single column block it's a powerful wrapper because you can create very custom backgrounds and define padding and margin both for desktop and mobile layouts.
@@ -37,6 +38,8 @@ The Tabs Block is highly customizable with unique tab title settings for spacing
 The Icon block allows you to add an SVG icon right into you page. There are over 1500 icons to choose from and with each you can control the size, color, background, border and add a link.
 
 The Spacer / Divider block allows you to optionally show a divider inside an area with a drag-able height. The divider has style options allowing you to set the width, height, color, line style, and opacity.
+
+The Info Box Block is a box link containing an icon or image and optionally a title, description and learn more text. Configure padding, fonts, backgrounds, borders and style static and hover colors even show a box shadow.
 
 = Editor Max Width =
 One of the challenges with creating custom column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don’t have a sidebar, it is a poor representation of what you are actually going to get on the front end of your site. Not to mention it makes for a cramped space to work in if you are trying to manage a row with three columns.
@@ -77,6 +80,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.2.5 =
+* Fix: Tabs Styles.
+* Add: Search for Prebuilt.
 
 = 1.2.4 =
 * Update: Info box, add in settings.
