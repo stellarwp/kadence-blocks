@@ -278,7 +278,7 @@ class KadenceInfoBox extends Component {
 			<div id={ `kt-info-box${ uniqueID }` } className={ className }>
 				{ renderCSS }
 				<BlockControls key="controls">
-					{ 'image' === mediaType && mediaImage[ 0 ].url && mediaImage[ 0 ].id && (
+					{ 'image' === mediaType && mediaImage[ 0 ].url && (
 						<Toolbar>
 							<MediaUpload
 								onSelect={ onSelectImage }

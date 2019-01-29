@@ -134,6 +134,11 @@ registerBlockType( 'kadence/column', {
 			default: '',
 		},
 	},
+	supports: {
+		inserter: false,
+		reusable: false,
+		html: false,
+	},
 	edit,
 
 	save( { attributes } ) {

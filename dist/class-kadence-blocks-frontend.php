@@ -26,13 +26,6 @@ class Kadence_Blocks_Frontend {
 	public static $gfonts = array();
 
 	/**
-	 * Bool for is backend request.
-	 *
-	 * @var null
-	 */
-	public static $backend = null;
-
-	/**
 	 * Instance of this class
 	 *
 	 * @var null
@@ -133,7 +126,11 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $this->row_layout_array_css( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id, true );
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
 				}
 			}
 		}
@@ -176,7 +173,11 @@ class Kadence_Blocks_Frontend {
 		if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 			$css = $this->column_layout_css( $attributes, $unique_id );
 			if ( ! empty( $css ) ) {
-				$this->render_inline_css( $css, $style_id, true );
+				if ( doing_filter( 'the_content' ) ) {
+					$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+				} else {
+					$this->render_inline_css( $css, $style_id, true );
+				}
 			}
 		}
 		return $content;
@@ -211,7 +212,12 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $this->blocks_advanced_btn_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id, true );
+					// This only runs if the content if loaded via the rest API. Normally the css would already be added in the head.
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
 				}
 			}
 		}
@@ -247,7 +253,11 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $this->blocks_advanced_heading_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id, true );
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
 				}
 			}
 		}
@@ -283,7 +293,11 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id, true );
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
 				}
 			}
 		}
@@ -318,7 +332,11 @@ class Kadence_Blocks_Frontend {
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $this->blocks_spacer_array( $attributes, $unique_id );
-				$this->render_inline_css( $css, $style_id, true );
+				if ( doing_filter( 'the_content' ) ) {
+					$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+				} else {
+					$this->render_inline_css( $css, $style_id, true );
+				}
 			}
 		}
 		return $content;
@@ -353,7 +371,11 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $this->blocks_infobox_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id, true );
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
 				}
 			}
 		}

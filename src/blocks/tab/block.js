@@ -45,6 +45,11 @@ registerBlockType( 'kadence/tab', {
 			default: '',
 		},
 	},
+	supports: {
+		inserter: false,
+		reusable: false,
+		html: false,
+	},
 	getEditWrapperProps( attributes ) {
 		return { 'data-tab': attributes.id };
 	},

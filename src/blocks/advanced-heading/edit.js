@@ -27,6 +27,7 @@ const {
 	ColorPalette,
 	BlockControls,
 	AlignmentToolbar,
+	InspectorAdvancedControls,
 	RichText,
 } = wp.editor;
 const {
@@ -42,7 +43,15 @@ const {
 	Dashicon,
 	TabPanel,
 	SelectControl,
+	TextControl,
 } = wp.components;
+/**
+ * Regular expression matching invalid anchor characters for replacement.
+ *
+ * @type {RegExp}
+ */
+const ANCHOR_REGEX = /[\s#]/g;
+
 class KadenceAdvancedHeading extends Component {
 	constructor() {
 		super( ...arguments );
@@ -62,7 +71,7 @@ class KadenceAdvancedHeading extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
+		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
 		const markBGString = ( markBG ? hexToRGBA( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? hexToRGBA( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -512,6 +521,18 @@ class KadenceAdvancedHeading extends Component {
 						/>
 					</PanelBody>
 				</InspectorControls>
+				<InspectorAdvancedControls>
+					<TextControl
+						label={ __( 'HTML Anchor' ) }
+						help={ __( 'Anchors lets you link directly to a section on a page.' ) }
+						value={ anchor || '' }
+						onChange={ ( nextValue ) => {
+							nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
+							setAttributes( {
+								anchor: nextValue,
+							} );
+						} } />
+				</InspectorAdvancedControls>
 				<RichText
 					formattingControls={ [ 'bold', 'italic', 'link', 'underline', 'mark' ] }
 					wrapperClassName={ className }
