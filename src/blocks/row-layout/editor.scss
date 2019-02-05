@@ -11,6 +11,9 @@
 	margin:8px 0;
 	display: block;
 }
+.kt-inspect-tabs .components-button-group .kt-layout-btn.is-primary {
+    z-index: 0;
+}
 .kt-prebuilt-header {
     display: flex;
     justify-content: space-between;

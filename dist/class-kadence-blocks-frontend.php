@@ -391,7 +391,9 @@ class Kadence_Blocks_Frontend {
 		if ( is_admin() ) {
 			return;
 		}
-		wp_register_script( 'kadence-frontend-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'jarallax', KT_BLOCKS_URL . 'dist/jarallax.min.js', array( ), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-parallax-js', KT_BLOCKS_URL . 'dist/kt-init-parallax.js', array( 'jquery', 'jarallax' ), KT_BLOCKS_VERSION, true );
 		wp_enqueue_style( 'kadence-blocks-style-css', KT_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KT_BLOCKS_VERSION );
 	}
 	/**
@@ -487,6 +489,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
 							$this->render_row_layout_css_head( $blockattr );
+							$this->render_row_layout_scripts( $blockattr );
 						}
 					}
 					if ( 'kadence/column' === $block['blockName'] ) {
@@ -1172,12 +1175,22 @@ class Kadence_Blocks_Frontend {
 		}
 	}
 	/**
+	 * Adds Scripts for row block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 */
+	public function render_row_layout_scripts( $attr ) {
+		if ( ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] ) || ( isset( $attr['overlayBgImg'] ) && ! empty( $attr['overlayBgImg']) && isset( $attr['overlayBgImgAttachment'] ) && 'parallax' === $attr['overlayBgImgAttachment'] ) ) {
+			wp_enqueue_script( 'kadence-blocks-parallax-js' );
+		}
+	}
+	/**
 	 * Adds Scripts and Google fonts for Tabs block.
 	 *
 	 * @param array  $attr the blocks attr.
 	 */
 	public function blocks_tabs_scripts_gfonts( $attr ) {
-		wp_enqueue_script( 'kadence-frontend-tabs-js' );
+		wp_enqueue_script( 'kadence-blocks-tabs-js' );
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet.
 			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {
@@ -1473,10 +1486,19 @@ class Kadence_Blocks_Frontend {
 				$css .= 'background-color:' . $attr['bgColor'] . ';';
 			}
 			if ( isset( $attr['bgImg'] ) ) {
+				if ( isset( $attr['bgImgAttachment'] ) ) {
+					if ( 'parallax' === $attr['bgImgAttachment'] ) {
+						$bg_attach = 'fixed';
+					} else {
+						$bg_attach = $attr['bgImgAttachment'];
+					}
+				} else {
+					$bg_attach = 'scroll';
+				}
 				$css .= 'background-image:url(' . $attr['bgImg'] . ');';
 				$css .= 'background-size:' . ( isset( $attr['bgImgSize'] ) ? $attr['bgImgSize'] : 'cover' ) . ';';
 				$css .= 'background-position:' . ( isset( $attr['bgImgPosition'] ) ? $attr['bgImgPosition'] : 'center center' ) . ';';
-				$css .= 'background-attachment:' . ( isset( $attr['bgImgAttachment'] ) ? $attr['bgImgAttachment'] : 'scroll' ) . ';';
+				$css .= 'background-attachment:' . $bg_attach . ';';
 				$css .= 'background-repeat:' . ( isset( $attr['bgImgRepeat'] ) ? $attr['bgImgRepeat'] : 'no-repeat' ) . ';';
 			}
 			$css .= '}';
@@ -1632,10 +1654,19 @@ class Kadence_Blocks_Frontend {
 						$css .= 'background-color:' . $attr['overlay'] . ';';
 					}
 					if ( isset( $attr['overlayBgImg'] ) ) {
+						if ( isset( $attr['overlayBgImgAttachment'] ) ) {
+							if ( 'parallax' === $attr['overlayBgImgAttachment'] ) {
+								$overbg_attach = 'fixed';
+							} else {
+								$overbg_attach = $attr['overlayBgImgAttachment'];
+							}
+						} else {
+							$overbg_attach = 'scroll';
+						}
 						$css .= 'background-image:url(' . $attr['overlayBgImg'] . ');';
 						$css .= 'background-size:' . ( isset( $attr['overlayBgImgSize'] ) ? $attr['overlayBgImgSize'] : 'cover' ) . ';';
 						$css .= 'background-position:' . ( isset( $attr['overlayBgImgPosition'] ) ? $attr['overlayBgImgPosition'] : 'center center' ) . ';';
-						$css .= 'background-attachment:' . ( isset( $attr['overlayBgImgAttachment'] ) ? $attr['overlayBgImgAttachment'] : 'scroll' ) . ';';
+						$css .= 'background-attachment:' . $overbg_attach . ';';
 						$css .= 'background-repeat:' . ( isset( $attr['overlayBgImgRepeat'] ) ? $attr['overlayBgImgRepeat'] : 'no-repeat' ) . ';';
 					}
 				}

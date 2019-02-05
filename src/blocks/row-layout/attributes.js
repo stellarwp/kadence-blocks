@@ -22,6 +22,10 @@ const attributes = {
 		type: 'string',
 		default: 'left-to-right',
 	},
+	collapseGutter: {
+		type: 'string',
+		default: 'default',
+	},
 	columnGutter: {
 		type: 'string',
 		default: 'default',

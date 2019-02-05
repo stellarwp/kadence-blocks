@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.0.3
-Stable tag: 1.2.6
+Stable tag: 1.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,19 +12,19 @@ Custom Blocks for for Gutenberg to help extend the editing capablitlies.
 
 == Description ==
 
-This plugin adds custom blocks to extend Gutenberg's editing capabilities to better build custom layouts and make Gutenberg able to do more closely what popular page builders can do. With the [Kadence Row Layout Block](https://themes.kadencethemes.com/ascend-5/row-layout-block/) you can better control columns for different screen sizes plus it gives you full row editing tools like padding, backgrounds, overlays with gradients, vertical align and much more.
+This plugin adds custom blocks to extend Gutenberg's editing capabilities to better build custom layouts and make Gutenberg able to do more closely what popular page builders can do. With the [Kadence Row Layout Block](https://www.kadenceblocks.com/row-layout-block/) you can better control columns for different screen sizes plus it gives you full row editing tools like padding, backgrounds, overlays with gradients, vertical align and much more.
 
 = Try Kadence Blocks =
 [Demo Testing](http://demo.kadencethemes.com/kadence-blocks/)
 
 = Custom Blocks Include =
-* Row Layout - [demo](https://themes.kadencethemes.com/ascend-5/row-layout-block/)
-* Advanced Heading - [demo](https://themes.kadencethemes.com/ascend-5/advanced-heading-block/) 
-* Advanced Button - [demo](https://themes.kadencethemes.com/ascend-5/advanced-button-block/)
-* Tabs - [demo](https://themes.kadencethemes.com/ascend-5/tabs-block/)
-* Icon - [demo](https://themes.kadencethemes.com/ascend-5/icon-block/)
-* Spacer / Divider - [demo](https://themes.kadencethemes.com/ascend-5/spacer-divider-block/) 
-* Info Box - [demo](https://themes.kadencethemes.com/ascend-5/info-box/) 
+* Row Layout - [demo](https://www.kadenceblocks.com/row-layout-block/)
+* Advanced Heading - [demo](https://www.kadenceblocks.com/advanced-heading-block/) 
+* Advanced Button - [demo](https://www.kadenceblocks.com/advanced-button-block/)
+* Tabs - [demo](https://www.kadenceblocks.com/tabs-block/)
+* Icon - [demo](https://www.kadenceblocks.com/icon-block/)
+* Spacer / Divider - [demo](https://www.kadenceblocks.com/spacer-divider-block/) 
+* Info Box - [demo](https://www.kadenceblocks.com/info-box-block/) 
 
 = Overview Video =
 https://www.youtube.com/watch?v=pSrCYcOeuMc
@@ -84,10 +84,17 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.2.7 =
+* Update: Prep for three column controls.
+* Add: Collapse row gutter control.
+* Add: Parallax for Background Images!!
+
 = 1.2.6 =
 * Fix: CSS loading for rest api calls.
 * Add: Anchor support for Advanced Heading.
 * Add: New Four Prebuilt items.
+* Fix: Issue with columns being insertable.
+* Add: Youtube Video to description.
 
 = 1.2.5 =
 * Fix: Tabs Styles.

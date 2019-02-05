@@ -1088,7 +1088,7 @@ class Kadence_Blocks_Settings {
 			'kadence/spacer'      => array(
 				'slug'  => 'kadence/spacer',
 				'name'  => __( 'Spacer/Divider', 'kadence-blocks' ),
-				'desc'  => __( 'Easily create a divder and determine the space around it or just create some space in your content.', 'kadence-blocks' ),
+				'desc'  => __( 'Easily create a divider and determine the space around it or just create some space in your content.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/spacer.jpg',
 			),
 			'kadence/advancedheading'      => array(

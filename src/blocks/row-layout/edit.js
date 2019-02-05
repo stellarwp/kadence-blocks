@@ -102,7 +102,7 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const onResize = ( event, direction, elt ) => {
 			this.setState( {
 				firstWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5,
@@ -146,7 +146,7 @@ class KadenceRowLayout extends Component {
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const selectColLayout = ( columns && 2 === columns ? widthString : colLayout );
 		const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
-		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } kt-custom-first-width-${ widthString } kt-custom-second-width-${ secondWidthString } kt-custom-third-width-${ thirdWidthString } ${ hasBG }` );
+		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } kt-v-gutter-${ collapseGutter } kt-custom-first-width-${ widthString } kt-custom-second-width-${ secondWidthString } kt-custom-third-width-${ thirdWidthString } ${ hasBG }` );
 		let layoutOptions;
 		let mobileLayoutOptions;
 		const startlayoutOptions = [
@@ -348,6 +348,22 @@ class KadenceRowLayout extends Component {
 					</ButtonGroup>
 					{ columns > 1 && (
 						<SelectControl
+							label={ __( 'Column Collapse Vertical Gutter' ) }
+							value={ collapseGutter }
+							options={ [
+								{ value: 'default', label: __( 'Default: 30px' ) },
+								{ value: 'none', label: __( 'No Gutter' ) },
+								{ value: 'skinny', label: __( 'Skinny: 10px' ) },
+								{ value: 'narrow', label: __( 'Narrow: 20px' ) },
+								{ value: 'wide', label: __( 'Wide: 40px' ) },
+								{ value: 'wider', label: __( 'Wider: 60px' ) },
+								{ value: 'widest', label: __( 'Widest: 80px' ) },
+							] }
+							onChange={ ( value ) => setAttributes( { collapseGutter: value } ) }
+						/>
+					) }
+					{ columns > 1 && (
+						<SelectControl
 							label={ __( 'Collapse Order' ) }
 							value={ collapseOrder }
 							options={ [
@@ -471,6 +487,8 @@ class KadenceRowLayout extends Component {
 							setAttributes( {
 								columns: nextColumns,
 								colLayout: 'equal',
+								firstColumnWidth: undefined,
+								secondColumnWidth: undefined,
 								tabletLayout: 'inherit',
 								mobileLayout: 'row',
 							} );
@@ -686,6 +704,7 @@ class KadenceRowLayout extends Component {
 					options={ [
 						{ value: 'scroll', label: __( 'Scroll' ) },
 						{ value: 'fixed', label: __( 'Fixed' ) },
+						{ value: 'parallax', label: __( 'Parallax' ) },
 					] }
 					onChange={ value => setAttributes( { overlayBgImgAttachment: value } ) }
 				/>
@@ -960,6 +979,7 @@ class KadenceRowLayout extends Component {
 					options={ [
 						{ value: 'scroll', label: __( 'Scroll' ) },
 						{ value: 'fixed', label: __( 'Fixed' ) },
+						{ value: 'parallax', label: __( 'Parallax' ) },
 					] }
 					onChange={ value => setAttributes( { bgImgAttachment: value } ) }
 				/>
@@ -1470,22 +1490,22 @@ class KadenceRowLayout extends Component {
 					marginTop: topMargin,
 					minHeight: minHeight + 'px',
 				} }>
-					<div className="kt-row-layout-background" data-bg-img-id={ bgImgID } style={ {
+					<div className={ `kt-row-layout-background${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
 						backgroundColor: ( bgColor ? bgColor : undefined ),
 						backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
 						backgroundSize: bgImgSize,
 						backgroundPosition: bgImgPosition,
 						backgroundRepeat: bgImgRepeat,
-						backgroundAttachment: bgImgAttachment,
+						backgroundAttachment: ( bgImgAttachment === 'parallax' ? 'fixed' : bgImgAttachment ),
 					} }></div>
 					{ ( ! currentOverlayTab || 'grad' !== currentOverlayTab ) && (
-						<div className={ 'kt-row-layout-overlay kt-row-overlay-normal' } data-bg-img-id={ overlayBgImgID } style={ {
+						<div className={ `kt-row-layout-overlay kt-row-overlay-normal${ overlayBgImg && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ overlayBgImgID } style={ {
 							backgroundColor: ( overlay ? overlay : undefined ),
 							backgroundImage: ( overlayBgImg ? `url(${ overlayBgImg })` : undefined ),
 							backgroundSize: overlayBgImgSize,
 							backgroundPosition: overlayBgImgPosition,
 							backgroundRepeat: overlayBgImgRepeat,
-							backgroundAttachment: overlayBgImgAttachment,
+							backgroundAttachment: ( overlayBgImgAttachment === 'parallax' ? 'fixed' : overlayBgImgAttachment ),
 							mixBlendMode: overlayBlendMode,
 							opacity: overlayOpacityOutput( overlayOpacity ),
 						} }>
