@@ -256,6 +256,18 @@
 .kt-tabs-accordion-title {
     display: none;
 }
+.kt-tabs-layout-accordion {
+	> .kt-tabs-title-list {
+		display:none;
+	}
+	> .kt-tabs-content-wrap > .kt-tabs-accordion-title {
+		display: block;
+	}
+	> .kt-tabs-content-wrap {
+		float: none;
+		width: 100%;
+	}
+}
 @media (min-width: 767px) and (max-width: 1024px) {
     .kt-tabs-tablet-layout-tabs.kt-tabs-layout-vtabs {
         .kt-tabs-title-list {

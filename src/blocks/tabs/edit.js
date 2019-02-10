@@ -147,6 +147,7 @@ class KadenceTabs extends Component {
 		const layoutOptions = [
 			{ key: 'tabs', name: __( 'Tabs' ), icon: icons.tabs },
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: icons.vtabs },
+			{ key: 'accordion', name: __( 'Accordion' ), icon: icons.accordion },
 		];
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />

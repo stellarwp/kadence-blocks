@@ -520,6 +520,10 @@ class Kadence_Blocks_Settings {
 							'value' => 'vtabs',
 							'name' => __( 'Vertical Tabs', 'kadence-blocks' ),
 						),
+						array(
+							'value' => 'accordion',
+							'name' => __( 'Accordion', 'kadence-blocks' ),
+						),
 					),
 					'default' => 'tabs',
 					'name' => __( 'Tab Layout', 'kadence-blocks' ),
