@@ -21,7 +21,7 @@ class KadenceTabsSave extends Component {
 	}
 	render() {
 		const { attributes: { tabCount, blockAlignment, currentTab, mobileLayout, layout, tabletLayout, uniqueID, titles, iSize, maxWidth, tabAlignment } } = this.props;
-		const layoutClass = ( ! layout ? 'accordion' : layout );
+		const layoutClass = ( ! layout ? 'tabs' : layout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const accordionClass = ( ( layout && 'accordion' === layout ) || ( mobileLayout && 'accordion' === mobileLayout ) || ( tabletLayout && 'accordion' === tabletLayout ) ? 'kt-create-accordion' : '' );
