@@ -1748,6 +1748,9 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['borderWidth'] ) && ! empty( $attr['borderWidth'] ) && is_array( $attr['borderWidth'] ) ) {
 				$css .= 'border-width:' . $attr['borderWidth'][0] . 'px ' . $attr['borderWidth'][1] . 'px ' . $attr['borderWidth'][2] . 'px ' . $attr['borderWidth'][3] . 'px ;';
 			}
+			if ( isset( $attr['borderRadius'] ) ) {
+				$css .= 'border-radius:' . $attr['borderRadius'] . 'px;';
+			}
 			$css .= '}';
 		}
 		if ( isset( $attr['zIndex'] ) ) {

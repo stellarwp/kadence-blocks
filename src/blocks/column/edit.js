@@ -57,7 +57,7 @@ class KadenceColumn extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, uniqueID }, setAttributes } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID }, setAttributes } = this.props;
 		const { borderWidthControl } = this.state;
 		const mobileControls = (
 			<PanelBody
@@ -349,6 +349,17 @@ class KadenceColumn extends Component {
 						step={ 1 }
 					/>
 					<RangeControl
+						label={ __( 'Border Radius' ) }
+						value={ borderRadius }
+						onChange={ ( value ) => {
+							setAttributes( {
+								borderRadius: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 50 }
+					/>
+					<RangeControl
 						label={ __( 'Z Index Control' ) }
 						value={ zIndex }
 						onChange={ ( value ) => {
@@ -374,6 +385,7 @@ class KadenceColumn extends Component {
 					background: backgroundString,
 					borderColor: borderString,
 					borderWidth: ( borderWidth ? borderWidth[ 0 ] + 'px ' + borderWidth[ 1 ] + 'px ' + borderWidth[ 2 ] + 'px ' + borderWidth[ 3 ] + 'px' : '' ),
+					borderRadius: borderRadius + 'px',
 				} } >
 					<InnerBlocks templateLock={ false } />
 				</div>
