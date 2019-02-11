@@ -120,7 +120,7 @@ class KadenceRowLayoutSave extends Component {
 			<HtmlTagOut className={ classes }>
 				<div id={ `kt-layout-id${ uniqueID }` } className={ innerClasses }>
 					{ ( overlay || overlayBgImg ) && (
-						<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }${ overlayBgImg && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` }></div>
+						<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }${ overlayBgImg && 'gradient' !== overlayType && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` }></div>
 					) }
 					{ topSep && 'none' !== topSep && '' !== topSep && (
 						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` }>

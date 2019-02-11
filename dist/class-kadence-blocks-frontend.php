@@ -179,7 +179,7 @@ class Kadence_Blocks_Frontend {
 					$this->render_inline_css( $css, $style_id, true );
 				}
 			}
-		}
+		};
 		return $content;
 	}
 	/**
