@@ -3,7 +3,7 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
-Tested up to: 5.0.3
+Tested up to: 5.0.4
 Stable tag: 1.2.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -84,8 +84,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 1.2.7 =
-* Update: Small change with parallax.
+= 1.2.8 =
+* Add: New Accordion block!
+* Add: Presets for Tabs Block.
+* Add: You can now define which Tab should be open regardless of what is open in the editor.
+* Fix: Small change with parallax settings.
+* Fix: Unique IDs causing revisions needlessly.
+* Tweek: Setting Page styles.
+* Add: BorderRadius Property to columns - thanks @DizzySquirrel
+* Fix: Correct naming for 'Left Bottom' background - thanks @DizzySquirrel
 
 = 1.2.7 =
 * Update: Prep for three column controls.

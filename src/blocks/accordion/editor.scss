@@ -1,0 +1,417 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+ .kt-border-color-array-control .components-color-palette {
+    padding-left: 50px;
+}
+    
+.kt-border-color-array-control .kt-border-color-icon {
+    float: left;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    margin-right: 10px;
+}
+ // Controls
+ .rfipbtn.rfipbtn--accordion {
+	background-color: #fff;
+	border: 1px solid #e0e0e0;
+	width: 96%;
+	&:active,
+	&:focus {
+		border: 1px solid #bdbdbd;
+	}
+	// dropdown button
+	.rfipbtn__current {
+		flex: 100%;
+		justify-content: flex-start;
+		padding: 0;
+		svg.top-icon {
+			transform: rotate(180deg) !important;
+		}
+		.rfipbtn__icon {
+			width: 100%;
+			.rfipbtn__elm {
+				width: 100%;
+				svg {
+					width: auto;
+				}
+			}
+		}
+	}
+	.rfipbtn__button {
+		border: 0 none transparent;
+		border-left: 1px solid #e0e0e0;
+		background-color: #f5f5f5;
+		color: #424242;
+
+		&:hover {
+			background-color: #bdbdbd;
+		}
+
+		&:active {
+			box-shadow: inset 0 0 10px 0 #e0e0e0;
+		}
+	}
+
+		// icon
+	.rfipbtn__icon {
+		border: 0;
+		color: #424242;
+
+		// empty
+		&--empty {
+			color: #555d66;
+			text-transform: none;
+			text-align: left;
+		}
+	}
+
+	// del
+	.rfipbtn__del {
+		background-color: #eee;
+
+		&:hover {
+			background-color: #e0e0e0;
+		}
+
+		&:focus,
+		&:active {
+			outline: 1px solid #e0e0e0;
+		}
+	}
+}
+.rfipdropdown.rfipdropdown--accordion {
+    max-height: 240px;
+    overflow: scroll;
+}
+.rfipdropdown.rfipdropdown--accordion {
+	background-color: #fff;
+	border: 1px solid #e0e0e0;
+	.rfipdropdown__selector {
+		overflow: hidden;
+		padding: 8px;
+	}
+	.rfipicons__pager {
+		display: none;
+	}
+	// Icons box
+	.rfipicons {
+		// current page
+		&__cp {
+			border-bottom:1px solid #bdbdbd;
+			&:focus {
+				border-bottom-color: #9e9e9e;
+			}
+		}
+
+		&__left,
+		&__right {
+			background-color: #eee;
+			border: 1px solid #eee;
+			color: #424242;
+			&:hover {
+				background-color: #bdbdbd;
+				border: 1px solid #bdbdbd;
+			}
+			&:focus,
+			&:active {
+				border: 1px solid #bdbdbd;
+			}
+		}
+
+		// Individual icon box
+		&__ibox {
+			background-color: #f5f5f5;
+			border: 1px solid #f5f5f5;
+			color: #424242;
+			&:hover {
+				background-color: #bdbdbd;
+				border: 1px solid #bdbdbd;
+			}
+			&:focus,
+			&:active {
+				border: 1px solid #bdbdbd;
+			}
+			&--error {
+				color: red;
+			}
+		}
+
+		// Invidual icons
+		&__icon {
+			width:100%;
+			height: 50px;
+			margin: 2px 0;
+			svg {
+				fill: #000;
+				width: auto;
+				transform: scale(1);
+			}
+			svg.top-icon {
+				transform: rotate(180deg) !important;
+			}
+			// selected
+			&--selected {
+				.rfipicons__ibox {
+					background-color: #eee;
+				}
+			}
+		}
+	}
+}
+ .kt-accordion-selecter {
+	border: 2px dashed #aaa;
+    font-size: 12px;
+	text-align: center;
+	cursor: pointer;
+	text-transform: uppercase;
+	font-weight: bold;
+    color: #999;
+}
+ button.kt-blocks-accordion-header {
+    align-content: space-between;
+    align-items: center;
+    background-color: #f2f2f2;
+	border: 0 solid transparent;
+    border-radius: 0px;
+    color: #444444;
+    display: flex;
+    padding: 8px 12px;
+    text-align: left;
+    transition: all ease-in-out .2s;
+    width: 100%;
+}
+
+.kt-accordion-panel-inner {
+    padding: 20px;
+    border: 1px solid #eee;
+    border-top-width: 0;
+}
+button.components-button.kt-accordion-add.is-button.is-primary {
+    border: 0;
+    text-shadow: none;
+    box-shadow: none;
+}
+button.components-button.kt-accordion-add.is-button.is-primary svg {
+    margin-top: 4px;
+}
+.components-button-group button.components-button.kt-init-open-pane {
+    width: 100%;
+    padding: 4px 10px;
+    border-radius: 3px !important;
+    height: auto;
+    text-shadow: none;
+    box-shadow: none;
+    margin-bottom: 5px;
+}
+.components-button-group button.components-button.kt-init-open-pane:focus:enabled {
+	box-shadow:none;
+}
+.kt-blocks-accordion-icon-trigger {
+    display: block;
+    height: 24px;
+    margin-left: auto;
+    position: relative;
+    transition: all ease-in-out 0.2s;
+	width: 24px;
+}
+.kt-blocks-accordion-title-wrap {
+    display: flex;
+}
+.kt-pane-header-alignment-center button.kt-blocks-accordion-header {
+    text-align: center;
+}
+.kt-pane-header-alignment-center button.kt-blocks-accordion-header .kt-blocks-accordion-title-wrap {
+	flex-grow: 2;
+	justify-content: center;
+}
+.kt-pane-header-alignment-right button.kt-blocks-accordion-header {
+    text-align: right;
+}
+.kt-pane-header-alignment-right button.kt-blocks-accordion-header .kt-blocks-accordion-title-wrap {
+	flex-grow: 2;
+	justify-content: flex-end;
+}
+.kt-pane-header-alignment-right button.kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger {
+	margin-left:10px;
+}
+.kt-acccordion-button-label-hide .editor-rich-text {
+    display: none;
+}
+// Basic
+.kt-accodion-icon-style-none .kt-blocks-accordion-icon-trigger {
+	display:none;
+}
+.kt-accodion-icon-side-left .kt-blocks-accordion-icon-trigger {
+    order: -1;
+    margin-left: 0;
+    margin-right:10px;
+}
+.kt-accodion-icon-style-basic, .kt-accodion-icon-style-basiccircle {
+	.kt-blocks-accordion-header.kt-accordion-panel-active {
+		.kt-blocks-accordion-icon-trigger:before {
+			transform: rotate(0deg);
+		}
+		.kt-blocks-accordion-icon-trigger:after {
+			transform: rotate(0deg);
+		}
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		content: "";
+		height: 4px;
+		position: absolute;
+		transition: all ease-in-out 0.1333333333s;
+		width: 20px;
+		left: 2px;
+		top: 10px;
+	}
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(90deg);
+		transform-origin: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(0deg);
+		transform-origin: 50%;
+	}
+}
+.kt-start-active-pane-1.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-basic > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(0deg);
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(0deg);
+	}
+}
+// Basic Circle
+.kt-accodion-icon-style-basiccircle {
+	.kt-blocks-accordion-icon-trigger {
+		border-radius: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		width: 16px;
+		left: 4px;
+		top: 10px;
+	}
+}
+.kt-start-active-pane-1.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-basiccircle > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(0deg);
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(0deg);
+	}
+}
+// x close
+.kt-accodion-icon-style-xclose, .kt-accodion-icon-style-xclosecircle {
+	.kt-blocks-accordion-header.kt-accordion-panel-active {
+		.kt-blocks-accordion-icon-trigger:before {
+			transform: rotate(45deg);
+		}
+		.kt-blocks-accordion-icon-trigger:after {
+			transform: rotate(-45deg);
+		}
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		content: "";
+		height: 4px;
+		position: absolute;
+		transition: all ease-in-out 0.1333333333s;
+		width: 20px;
+		left: 2px;
+		top: 10px;
+	}
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(90deg);
+		transform-origin: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(0deg);
+		transform-origin: 50%;
+	}
+}
+.kt-start-active-pane-1.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-xclose > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(45deg);
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(-45deg);
+	}
+}
+// x Circle
+.kt-accodion-icon-style-xclosecircle {
+	.kt-blocks-accordion-icon-trigger {
+		border-radius: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		width: 16px;
+		left: 4px;
+		top: 10px;
+	}
+}
+.kt-start-active-pane-1.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-xclosecircle > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(45deg);
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(-45deg);
+	}
+}
+// Arrows
+.kt-accodion-icon-style-arrow, .kt-accodion-icon-style-arrowcircle {
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		content: "";
+		height: 2px;
+		position: absolute;
+		top: 11px;
+		transition: all ease-in-out 0.1333333333s;
+		width: 12px;
+	}
+	.kt-blocks-accordion-icon-trigger:before {
+		left: 2px;
+		transform: rotate(45deg);
+		transform-origin: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(-45deg);
+		right: 2px;
+		transform-origin: 50%;
+	}
+}
+.kt-start-active-pane-1.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-arrow > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(-45deg);
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(45deg);
+	}
+}
+// arrow Circle
+.kt-accodion-icon-style-arrowcircle {
+	.kt-blocks-accordion-icon-trigger {
+		border-radius: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		width: 10px;
+	}
+	.kt-blocks-accordion-icon-trigger:before {
+		left: 4px;
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		right: 4px;
+	}
+}
+.kt-start-active-pane-1.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-1 > div > .kt-blocks-accordion-header, .kt-start-active-pane-2.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-2 > div > .kt-blocks-accordion-header, .kt-start-active-pane-3.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-3 > div > .kt-blocks-accordion-header, .kt-start-active-pane-4.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-4 > div > .kt-blocks-accordion-header, .kt-start-active-pane-5.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-5 > div > .kt-blocks-accordion-header, .kt-start-active-pane-6.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-6 > div > .kt-blocks-accordion-header, .kt-start-active-pane-7.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-7 > div > .kt-blocks-accordion-header, .kt-start-active-pane-8.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-8 > div > .kt-blocks-accordion-header, .kt-start-active-pane-9.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-9 > div > .kt-blocks-accordion-header, .kt-start-active-pane-10.kt-accodion-icon-style-arrowcircle > div > div > div > div > div > .kt-accordion-pane-10 > div > .kt-blocks-accordion-header {
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(-45deg);
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(45deg);
+	}
+}

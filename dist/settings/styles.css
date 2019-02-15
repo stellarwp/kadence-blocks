@@ -1,3 +1,49 @@
+.settings_page_kadence_blocks #wpcontent {
+    padding: 0;
+}
+.kt_plugin_welcome_title_head {
+    background: white;
+    padding: 20px;
+}
+.kt_plugin_welcome_head_container {
+    margin: 0 auto;
+	max-width: 1260px;
+    display: flex;
+}
+
+.kt_plugin_welcome_logo {
+    max-width: 60px;
+    padding-right: 10px;
+}
+
+.kt_plugin_welcome_logo_area {
+    display: flex;
+	align-items: center;
+	text-decoration: none;
+}
+.kt_plugin_welcome_logo_area:focus {
+    outline:0;
+}
+.kt_plugin_welcome_logo img {
+    max-width: 100%;
+    height: auto;
+}
+.kt_plugin_welcome_logo_title h1 {
+    line-height: 30px;
+    margin: 0;
+    padding: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+.kt_plugin_welcome_logo_title h4 {
+    line-height: 20px;
+    padding: 0;
+    margin: 0;
+    letter-spacing: 1.2px;
+    font-size: 14px;
+    color: #888;
+    text-transform: uppercase;
+}
 .nav-tab-content * {
     box-sizing: border-box;
 }
@@ -115,10 +161,21 @@ content: '';
     color: white;
 }
 .kt-main h2 {
-    font-size: 30px;
-    margin: 30px 0 30px;
-    font-weight: 300;
-    text-align: center;
+	font-size: 30px;
+    margin: 10px 0 15px;
+    font-weight: bold;
+    line-height: 40px;
+    text-align: left;
+    color: #444;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #eee;
+}
+.kt-main .kt-main-subtitle {
+    float: right;
+    font-size: 16px;
+    color: #888;
+    font-weight: 500;
+    display: block;
 }
 .kt_plugin_welcome .kt-demos-promo a:hover {
     border:2px solid #fff;
@@ -399,7 +456,7 @@ a.kt_block_button {
     font-size: 14px;
 }
 .kt_plugin_box img {
-    max-width: 100%;
+    max-width: 100px;
     transition: all .3s ease;
 }
 .kt_plugin_box.builder_box {
@@ -609,10 +666,11 @@ h5.kt-main-subtitle {
 
 .kad-featured-items .featured h5 {
     color: #00b5e2;
-}.kt-main table.form-table {
+}
+.kt-main table.form-table {
     display: block;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 0 0 0 10px;
 }
 
 .kt-main .form-table tbody, .kt-main .form-table tr {
@@ -645,20 +703,20 @@ h5.kt-main-subtitle {
 }
 .kt-main p.submit {
     max-width: 800px;
-    text-align: center;
-    margin: 0 auto;
+    text-align: left;
+    margin: 0 0 0 10px;
 }
 .kt-main table.form-table {
-    border: 2px solid #eee;
-    border-radius: 10px;
-    background: #f9f9f9;
-    padding: 0 20px;
+    border: 0;
+    border-radius: 0px;
+    background:transparent;
+    padding: 0px;
     margin-bottom: 10px;
 }
 .kt-main-description-notice {
-    text-align: center;
+	text-align: left;
     margin-bottom: 12px;
-    margin-top: -12px;
+    margin-top: -5px;
 }
 .kad-panel-left .kt_plugin_box .kt-blocks-config-settings {
     border-radius: 4px;

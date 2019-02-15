@@ -1,0 +1,249 @@
+/**
+ * #.# Styles
+ *
+ * CSS for both Frontend+Backend.
+ */
+// Item
+.kt-blocks-accordion-header {
+    align-content: space-between;
+    align-items: center;
+    background-color: #f2f2f2;
+	border: 0 solid transparent;
+    border-radius: 0px;
+    color: #555555;
+	display: flex;
+	font-size: 18px;
+	padding: 10px 14px;
+	position: relative;
+	line-height: 24px;
+    text-align: left;
+    transition: all ease-in-out .2s;
+    width: 100%;
+}
+
+.kt-blocks-accordion-header:hover {
+    background-color: #eeeeee;
+	color: #444444;
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		background-color: #444444;
+	}
+}
+.kt-blocks-accordion-header.kt-accordion-panel-active {
+    background-color: #444444;
+	color: #ffffff;
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		background-color: #ffffff;
+	}
+}
+.kt-accodion-icon-style-basiccircle .kt-blocks-accordion-header:hover, .kt-accodion-icon-style-xclosecircle .kt-blocks-accordion-header:hover, .kt-accodion-icon-style-arrowcircle .kt-blocks-accordion-header:hover {
+	.kt-blocks-accordion-icon-trigger {
+		background-color: #444444;
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		background-color: #444444;
+	}
+}
+.kt-accodion-icon-style-basiccircle .kt-blocks-accordion-header.kt-accordion-panel-active, .kt-accodion-icon-style-xclosecircle .kt-blocks-accordion-header.kt-accordion-panel-active, .kt-accodion-icon-style-arrowcircle .kt-blocks-accordion-header.kt-accordion-panel-active {
+	.kt-blocks-accordion-icon-trigger {
+		background-color: #ffffff;
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		background-color: #444444;
+	}
+}
+.kt-blocks-accordion-title-wrap {
+    display: flex;
+}
+.kt-pane-header-alignment-center button.kt-blocks-accordion-header {
+    text-align: center;
+}
+.kt-pane-header-alignment-center button.kt-blocks-accordion-header .kt-blocks-accordion-title-wrap {
+	flex-grow: 2;
+	justify-content: center;
+}
+.kt-pane-header-alignment-right button.kt-blocks-accordion-header {
+    text-align: right;
+}
+.kt-pane-header-alignment-right button.kt-blocks-accordion-header .kt-blocks-accordion-title-wrap {
+	flex-grow: 2;
+	justify-content: flex-end;
+}
+.kt-pane-header-alignment-right button.kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger {
+	margin-left:10px;
+}
+.kt-acccordion-button-label-hide .kt-blocks-accordion-title {
+    display: none;
+}
+// Trigger
+.kt-accodion-icon-style-none .kt-blocks-accordion-icon-trigger {
+	display:none;
+}
+.kt-accodion-icon-side-left .kt-blocks-accordion-icon-trigger {
+    order: -1;
+    margin-left: 0;
+    margin-right:10px;
+}
+.kt-blocks-accordion-icon-trigger {
+    display: block;
+    height: 24px;
+    margin-left: auto;
+    position: relative;
+    transition: all ease-in-out 0.2s;
+	width: 24px;
+}
+.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+	background-color: #333;
+}
+// Basic
+.kt-accodion-icon-style-basic, .kt-accodion-icon-style-basiccircle {
+	.kt-blocks-accordion-header.kt-accordion-panel-active {
+		.kt-blocks-accordion-icon-trigger:before {
+			transform: rotate(0deg);
+		}
+		.kt-blocks-accordion-icon-trigger:after {
+			transform: rotate(0deg);
+		}
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		content: "";
+		height: 4px;
+		position: absolute;
+		transition: all ease-in-out 0.1333333333s;
+		width: 20px;
+		left: 2px;
+		top: 10px;
+	}
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(90deg);
+		transform-origin: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(0deg);
+		transform-origin: 50%;
+	}
+}
+// Basic Circle
+.kt-accodion-icon-style-basiccircle {
+	.kt-blocks-accordion-icon-trigger {
+		background-color: #333;
+		border-radius: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		background-color: #fff;
+		width: 16px;
+		left: 4px;
+		top: 10px;
+	}
+}
+// x close
+.kt-accodion-icon-style-xclose, .kt-accodion-icon-style-xclosecircle {
+	.kt-blocks-accordion-header.kt-accordion-panel-active {
+		.kt-blocks-accordion-icon-trigger:before {
+			transform: rotate(45deg);
+		}
+		.kt-blocks-accordion-icon-trigger:after {
+			transform: rotate(-45deg);
+		}
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		content: "";
+		height: 4px;
+		position: absolute;
+		transition: all ease-in-out 0.1333333333s;
+		width: 20px;
+		left: 2px;
+		top: 10px;
+	}
+	.kt-blocks-accordion-icon-trigger:before {
+		transform: rotate(90deg);
+		transform-origin: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(0deg);
+		transform-origin: 50%;
+	}
+}
+// x Circle
+.kt-accodion-icon-style-xclosecircle {
+	.kt-blocks-accordion-icon-trigger {
+		background-color: #333;
+		border-radius: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		background-color: #fff;
+		width: 16px;
+		left: 4px;
+		top: 10px;
+	}
+}
+// Arrows
+.kt-accodion-icon-style-arrow, .kt-accodion-icon-style-arrowcircle {
+	.kt-blocks-accordion-header.kt-accordion-panel-active {
+		.kt-blocks-accordion-icon-trigger:before {
+			transform: rotate(-45deg);
+		}
+		.kt-blocks-accordion-icon-trigger:after {
+			transform: rotate(45deg);
+		}
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		content: "";
+		height: 2px;
+		position: absolute;
+		top: 11px;
+		transition: all ease-in-out 0.1333333333s;
+		width: 12px;
+	}
+	.kt-blocks-accordion-icon-trigger:before {
+		left: 2px;
+		transform: rotate(45deg);
+		transform-origin: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		transform: rotate(-45deg);
+		right: 2px;
+		transform-origin: 50%;
+	}
+}
+// x Circle
+.kt-accodion-icon-style-arrowcircle {
+	.kt-blocks-accordion-icon-trigger {
+		background-color: #333;
+		border-radius: 50%;
+	}
+	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
+		background-color: #fff;
+		width: 10px;
+	}
+	.kt-blocks-accordion-icon-trigger:before {
+		left: 4px;
+	}
+	.kt-blocks-accordion-icon-trigger:after {
+		right: 4px;
+	}
+}
+.kt-blocks-accordion-header:focus {
+    outline: 0;
+}
+.kt-accordion-header-wrap {
+    margin-top: 8px;
+}
+.kt-accordion-inner-wrap .wp-block-kadence-pane:first-child .kt-accordion-header-wrap {
+    margin-top: 0px;
+}
+.kt-accordion-panel-inner {
+    padding: 20px;
+    border: 1px solid #eee;
+    border-top: 0;
+}
+.kt-accordion-panel {
+    max-height: 75vh;
+    overflow: hidden;
+    &.kt-accordion-panel-hidden { 
+        max-height: 0 !important;
+        visibility: hidden;
+    }
+    .kt-accordion-initialized & { 
+		transition: max-height ease-in-out 0.2s;
+	}
+}

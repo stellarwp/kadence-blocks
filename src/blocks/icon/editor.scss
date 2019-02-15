@@ -37,15 +37,20 @@
 .rfipbtn--default .rfipbtn__del {
 	height: 18px;
 }
+.rfipicons__icon svg[fill="none"] {
+    fill:none !important;
+}
+.rfipbtn__elm svg[fill="none"] {
+    fill: none !important;
+}
 [class^=fipicon-] {
-speak: none;
-font-style: normal;
-font-weight: 400;
-font-variant: normal;
-text-transform: none;
-line-height: 1;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
+	font-style: normal;
+	font-weight: 400;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 i.fipicon-angle-down:before {
 	content: "\f140";

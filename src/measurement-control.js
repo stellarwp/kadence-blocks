@@ -40,17 +40,20 @@ export default function MeasurementControls( {
 	step = 1,
 	max = 100,
 	min = 0,
-} ) {
-	const borderTypes = [
+	controlTypes = [
 		{ key: 'linked', name: __( 'Linked' ), icon: icons.linked },
 		{ key: 'individual', name: __( 'Individual' ), icon: icons.individual },
-	];
-
+	],
+	firstIcon = icons.outlinetop,
+	secondIcon = icons.outlineright,
+	thirdIcon = icons.outlinebottom,
+	fourthIcon = icons.outlineleft,
+} ) {
 	return [
 		onChange && onControl && (
 			<Fragment>
 				<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Measurement Control Type' ) }>
-					{ map( borderTypes, ( { name, key, icon } ) => (
+					{ map( controlTypes, ( { name, key, icon } ) => (
 						<Tooltip text={ name }>
 							<Button
 								key={ key }
@@ -80,7 +83,7 @@ export default function MeasurementControls( {
 						<p>{ label }</p>
 						<RangeControl
 							className="kt-icon-rangecontrol"
-							label={ icons.outlinetop }
+							label={ firstIcon }
 							value={ ( measurement ? measurement[ 0 ] : '' ) }
 							onChange={ ( value ) => onChange( [ value, measurement[ 1 ], measurement[ 2 ], measurement[ 3 ] ] ) }
 							min={ min }
@@ -89,7 +92,7 @@ export default function MeasurementControls( {
 						/>
 						<RangeControl
 							className="kt-icon-rangecontrol"
-							label={ icons.outlineright }
+							label={ secondIcon }
 							value={ ( measurement ? measurement[ 1 ] : '' ) }
 							onChange={ ( value ) => onChange( [ measurement[ 0 ], value, measurement[ 2 ], measurement[ 3 ] ] ) }
 							min={ min }
@@ -98,7 +101,7 @@ export default function MeasurementControls( {
 						/>
 						<RangeControl
 							className="kt-icon-rangecontrol"
-							label={ icons.outlinebottom }
+							label={ thirdIcon }
 							value={ ( measurement ? measurement[ 2 ] : '' ) }
 							onChange={ ( value ) => onChange( [ measurement[ 0 ], measurement[ 1 ], value, measurement[ 3 ] ] ) }
 							min={ min }
@@ -107,7 +110,7 @@ export default function MeasurementControls( {
 						/>
 						<RangeControl
 							className="kt-icon-rangecontrol"
-							label={ icons.outlineleft }
+							label={ fourthIcon }
 							value={ ( measurement ? measurement[ 3 ] : '' ) }
 							onChange={ ( value ) => onChange( [ measurement[ 0 ], measurement[ 1 ], measurement[ 2 ], value ] ) }
 							min={ min }

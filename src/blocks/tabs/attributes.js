@@ -206,5 +206,13 @@ const attributes = {
 		type: 'string',
 		default: 'normal',
 	},
+	startTab: {
+		type: 'number',
+		default: '',
+	},
+	showPresets: {
+		type: 'bool',
+		default: true,
+	},
 };
 export default attributes;

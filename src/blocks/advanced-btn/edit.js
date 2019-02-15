@@ -40,6 +40,11 @@ const {
 	SelectControl,
 } = wp.components;
 
+/**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+const ktadvancedbuttonUniqueIDs = [];
+
 class KadenceAdvancedButton extends Component {
 	constructor() {
 		super( ...arguments );
@@ -58,10 +63,12 @@ class KadenceAdvancedButton extends Component {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
-		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+		} else if ( ktadvancedbuttonUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+		} else {
+			ktadvancedbuttonUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 	}
 	componentDidUpdate( prevProps ) {

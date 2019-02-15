@@ -509,6 +509,11 @@ class Kadence_Blocks_Settings {
 				),
 			),
 			'kadence/tabs' => array(
+				'showPresets' => array(
+					'type' => 'boolean',
+					'default' => true,
+					'name' => __( 'Show Presets', 'kadence-blocks' ),
+				),
 				'layout' => array(
 					'type' => 'select',
 					'options' => array(
@@ -816,7 +821,7 @@ class Kadence_Blocks_Settings {
 		register_setting( 'kt_blocks_editor_width', 'kt_blocks_editor_width', array( $this, 'validate_options' ) );
 
 		// Sidebar and No sidebar Max widths.
-		add_settings_section( 'kt_blocks_editor_width_sec', __( 'Max Widths', 'kadence-blocks' ), array( $this, 'maxwidths_callback' ), 'kt_blocks_editor_width_section' );
+		add_settings_section( 'kt_blocks_editor_width_sec', '', array( $this, 'maxwidths_callback' ), 'kt_blocks_editor_width_section' );
 		add_settings_field( 'sidebar', __( 'Small Template', 'kadence-blocks' ), array( $this, 'sidebar_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		add_settings_field( 'nosidebar', __( 'Large Template', 'kadence-blocks' ), array( $this, 'nosidebar_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		// Defaults for Pages and posts.
@@ -896,9 +901,9 @@ class Kadence_Blocks_Settings {
 	 * Outputs title for content width.
 	 */
 	public function maxwidths_callback() {
-		global $content_width;
-		echo '<h5 class="kt-main-subtitle">' . esc_html__( 'Assign Editor Template Max Widths', 'kadence-blocks' ) . '</h5>';
-		echo '<div class="kt-main-description-notice">' . esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ) . 'px</div>';
+		// global $content_width;
+		// echo '<h5 class="kt-main-subtitle">' . esc_html__( 'Assign Editor Template Max Widths', 'kadence-blocks' ) . '</h5>';
+		// echo '<div class="kt-main-description-notice">' . esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ) . 'px</div>';
 	}
 	/**
 	 * Sanitizes and validates all input and output for Dashboard.
@@ -913,7 +918,24 @@ class Kadence_Blocks_Settings {
 	 */
 	public function config_page() {
 		?>
-			<div class="wrap kt_plugin_welcome">
+		<div class="kt_plugin_welcome_title_head">
+			<div class="kt_plugin_welcome_head_container">
+				<a href="https://www.kadenceblocks.com/" class="kt_plugin_welcome_logo_area">
+					<div class="kt_plugin_welcome_logo">
+						<img src="<?php echo KT_BLOCKS_URL . 'dist/settings/img/kadence-logo.png'; ?>">
+					</div>
+					<div class="kt_plugin_welcome_logo_title">
+						<h1>
+							<?php echo esc_html__( 'Kadence Blocks', 'kadence-blocks' ); ?>
+						</h1>
+						<h4>
+							<?php echo esc_html__( 'Page Builder Toolkit', 'kadence-blocks' ); ?>
+						</h4>
+					</div>
+				</a>
+			</div>
+		</div>
+		<div class="wrap kt_plugin_welcome">
 <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 <defs>
 <symbol id="kt-svg-icon-envelope" viewBox="0 0 38 32">
@@ -935,14 +957,6 @@ class Kadence_Blocks_Settings {
 </defs>
 </svg>
 				<h2 class="notices"></h2>
-				<div class="kt_title_area">
-					<h1>
-						<?php echo esc_html__( 'Kadence Blocks -  Gutenberg Page Builder Toolkit', 'kadence-blocks' ); ?>
-					</h1>
-					<h4>
-						<?php echo esc_html__( 'Settings and Helpful Links', 'kadence-blocks' ); ?>
-					</h4>
-				</div>
 				<div class="kad-panel-left kt-admin-clearfix">
 					<div class="kad-panel-contain">
 						<h2 class="nav-tab-wrapper">
@@ -952,8 +966,8 @@ class Kadence_Blocks_Settings {
 						</h2>
 						<div id="kt-dashboard" class="nav-tab-content panel_open kt-admin-clearfix">
 							<div class="kad-helpful-links kt-main">
-								<h2><?php echo esc_html__( 'Settings', 'kadence-blocks' ); ?></h2>
-								<h5 style="text-align:center" class="kt-main-subtitle"><?php echo esc_html__( 'Disable/Enable Blocks', 'kadence-blocks' ); ?></h5>
+								<h2><?php echo esc_html__( 'Settings', 'kadence-blocks' ); ?><span class="kt-main-subtitle"><?php echo esc_html__( 'Disable/Enable Blocks', 'kadence-blocks' ); ?></span></h2>
+
 								<div class="kt-promo-row">
 									<?php
 									$blocks = $this->blocks_array();
@@ -985,7 +999,10 @@ class Kadence_Blocks_Settings {
 									?>
 								</div>
 								<div class="kt-dashboard-spacer"></div>
-								<div class="kt-promo-row">
+								<h2><?php echo esc_html__( 'Editor Max Widths', 'kadence-blocks' ); ?><span class="kt-main-subtitle"><?php echo esc_html__( 'Match the editor width to your sites width.', 'kadence-blocks' ); ?></span></h2>
+								<?php global $content_width; ?>
+									<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
+									<div class="kt-promo-row">
 									<?php
 									echo '<form action="options.php" method="post">';
 										settings_fields( 'kt_blocks_editor_width' );
@@ -1034,7 +1051,7 @@ class Kadence_Blocks_Settings {
 											<div class="kt-content-promo">
 												<h3><?php echo esc_html__( 'Plugin Documentation', 'kadence-blocks' ); ?></h3>
 												<p><?php echo esc_html__( 'Kadence Blocks documentation is set up to help you create amazing content.', 'kadence-blocks' ); ?></p>
-												<?php echo '<a href="http://docs.kadencethemes.com/kadence-blocks/">' . esc_html__( 'Browse Docs', 'kadence-blocks' ) . '</a>'; ?>
+												<?php echo '<a href="https://www.kadenceblocks.com/docs/?utm_source=blocks-settings&utm_medium=dashboard&utm_campaign=kadence-blocks">' . esc_html__( 'Browse Docs', 'kadence-blocks' ) . '</a>'; ?>
 											</div>
 										</div>
 									</div>
@@ -1108,6 +1125,12 @@ class Kadence_Blocks_Settings {
 				'name'  => __( 'Info Box', 'kadence-blocks' ),
 				'desc'  => __( 'Create a box link containing an icon or image and optionally a title, description and learn more text. Style static and hover colors even show a box shadow.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/infobox.jpg',
+			),
+			'kadence/accordion'      => array(
+				'slug'  => 'kadence/accordion',
+				'name'  => __( 'Accordion', 'kadence-blocks' ),
+				'desc'  => __( 'Create beautiful accordions! Each pane is able to contain any other block, customize title styles, content background and borders.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/accordion.jpg',
 			),
 		);
 		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );

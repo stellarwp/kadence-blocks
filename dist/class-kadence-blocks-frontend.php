@@ -79,6 +79,9 @@ class Kadence_Blocks_Frontend {
 		register_block_type( 'kadence/infobox', array(
 			'render_callback' => array( $this, 'render_infobox_css' ),
 		) );
+		register_block_type( 'kadence/accordion', array(
+			'render_callback' => array( $this, 'render_accordion_css' ),
+		) );
 	}
 	/**
 	 * Render Inline CSS helper function
@@ -382,6 +385,46 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
+	 * Render Accordion CSS in Head
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_accordion_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_accordion_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Accordion CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_accordion_css( $attributes, $content ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_accordion_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
+	}
+	/**
 	 * Enqueue Gutenberg block assets
 	 *
 	 * @since 1.0.0
@@ -391,6 +434,7 @@ class Kadence_Blocks_Frontend {
 		if ( is_admin() ) {
 			return;
 		}
+		wp_register_script( 'kadence-blocks-accordion-js', KT_BLOCKS_URL . 'dist/kt-accordion.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KT_BLOCKS_URL . 'dist/jarallax.min.js', array( ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-parallax-js', KT_BLOCKS_URL . 'dist/kt-init-parallax.js', array( 'jquery', 'jarallax' ), KT_BLOCKS_VERSION, true );
@@ -512,6 +556,13 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_advanced_btn_gfont( $blockattr );
 						}
 					}
+					if ( 'kadence/accordion' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_accordion_css_head( $blockattr );
+							$this->blocks_accordion_scripts_gfonts( $blockattr );
+						}
+					}
 					if ( 'kadence/tabs' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -576,6 +627,13 @@ class Kadence_Blocks_Frontend {
 						$blockattr = $inner_block['attrs'];
 						$this->render_advanced_heading_css_head( $blockattr );
 						$this->blocks_advanced_heading_gfont( $blockattr );
+					}
+				}
+				if ( 'kadence/accordion' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_accordion_css_head( $blockattr );
+						$this->blocks_accordion_scripts_gfonts( $blockattr );
 					}
 				}
 				if ( 'kadence/advancedbtn' === $inner_block['blockName'] ) {
@@ -1081,6 +1139,8 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['titleBgActive'] ) && ! empty( $attr['titleBgActive'] ) ) {
 				$css .= 'background:' . $attr['titleBgActive'] . ';';
+			} else {
+				$css .= 'background:#ffffff;';
 			}
 			$css .= '}';
 		}
@@ -1213,6 +1273,206 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+	}
+	/**
+	 * Adds Scripts and Google fonts for Accordion block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 */
+	public function blocks_accordion_scripts_gfonts( $attr ) {
+		wp_enqueue_script( 'kadence-blocks-accordion-js' );
+		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && isset( $attr['titleStyles'][0] ) && is_array( $attr['titleStyles'][0] ) && isset( $attr['titleStyles'][0]['google'] ) && $attr['titleStyles'][0]['google'] && ( ! isset( $attr['titleStyles'][0]['loadGoogle'] ) || true === $attr['titleStyles'][0]['loadGoogle'] ) &&  isset( $attr['titleStyles'][0]['family'] ) ) {
+			$title_styles = $attr['titleStyles'][0];
+			// Check if the font has been added yet
+			if ( ! array_key_exists( $title_styles['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily' => $title_styles['family'],
+					'fontvariants' => ( isset( $title_styles['variant'] ) && ! empty( $title_styles['variant'] ) ? array( $title_styles['variant'] ) : array() ),
+					'fontsubsets' => ( isset( $title_styles['subset'] ) && !empty( $title_styles['subset'] ) ? array( $title_styles['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_styles['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_styles['variant'], self::$gfonts[ $title_styles['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_styles['family'] ]['fontvariants'], $title_styles['variant'] );
+				}
+				if ( ! in_array( $title_styles['subset'], self::$gfonts[ $title_styles['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_styles['family'] ]['fontsubsets'], $title_styles['subset'] );
+				}
+			}
+		}
+	}
+	/**
+	 * Builds CSS for Accordion block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_accordion_array( $attr, $unique_id ) {
+		$css = '';
+		if ( isset( $attr['contentBorderColor'] ) || isset( $attr['contentBgColor'] ) || isset( $attr['contentPadding'] ) || isset( $attr['contentBorderRadius'] ) || isset( $attr['contentBorder'] ) ) {
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner {';
+			if ( isset( $attr['contentBorderColor'] ) && ! empty( $attr['contentBorderColor'] ) ) {
+				$css .= 'border-color:' . $attr['contentBorderColor'] . ';';
+			}
+			if ( isset( $attr['contentBorderRadius'] ) && ! empty( $attr['contentBorderRadius'] ) ) {
+				$css .= 'border-radius:' . $attr['contentBorderRadius'][ 0 ] . 'px ' . $attr['contentBorderRadius'][ 1 ] . 'px ' . $attr['contentBorderRadius'][ 2 ] . 'px ' . $attr['contentBorderRadius'][ 3 ] . 'px;';
+			}
+			if ( isset( $attr['contentBgColor'] ) && ! empty( $attr['contentBgColor'] ) ) {
+				$css .= 'background:' . $attr['contentBgColor'] . ';';
+			}
+			if ( isset( $attr['contentPadding'] ) && is_array( $attr['contentPadding'] ) ) {
+				$css .= 'padding:' . $attr['contentPadding'][ 0 ] . 'px ' . $attr['contentPadding'][ 1 ] . 'px ' . $attr['contentPadding'][ 2 ] . 'px ' . $attr['contentPadding'][ 3 ] . 'px;';
+			}
+			if ( isset( $attr['contentBorder'] ) && is_array( $attr['contentBorder'] ) ) {
+				$css .= 'border-width:' . $attr['contentBorder'][ 0 ] . 'px ' . $attr['contentBorder'][ 1 ] . 'px ' . $attr['contentBorder'][ 2 ] . 'px ' . $attr['contentBorder'][ 3 ] . 'px;';
+			}
+			$css .= '}';
+		}
+		
+		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && is_array( $attr['titleStyles'][ 0 ] ) ) {
+			$title_styles = $attr['titleStyles'][ 0 ];
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header {';
+			if ( isset( $title_styles['color'] ) && ! empty( $title_styles['color'] ) ) {
+				$css .= 'color:' . $title_styles['color'] .  ';';
+			}
+			if ( isset( $title_styles['background'] ) && ! empty( $title_styles['background'] ) ) {
+				$css .= 'background:' . $title_styles['background'] .  ';';
+			}
+			if ( isset( $title_styles['border'] ) && is_array( $title_styles['border'] ) && ! empty( $title_styles['border'][ 0 ] ) ) {
+				$css .= 'border-color:' . $title_styles['border'][0] . ' ' . $title_styles['border'][1] . ' ' . $title_styles['border'][2] . ' ' . $title_styles['border'][3] . ';';
+			}
+			if ( isset( $title_styles['size'] ) && is_array( $title_styles['size'] ) && ! empty( $title_styles['size'][0] ) ) {
+				$css .= 'font-size:' . $title_styles['size'][0] . ( ! isset( $title_styles['sizeType'] ) ? 'px' : $title_styles['sizeType'] ) . ';';
+			}
+			if ( isset( $title_styles['lineHeight'] ) && is_array( $title_styles['lineHeight'] ) && ! empty( $title_styles['lineHeight'][0] ) ) {
+				$css .= 'line-height:' . $title_styles['lineHeight'][0] . ( ! isset( $title_styles['lineType'] ) ? 'px' : $title_styles['lineType'] ) . ';';
+			}
+			if ( isset( $title_styles['letterSpacing'] ) && ! empty( $title_styles['letterSpacing'] ) ) {
+				$css .= 'letter-spacing:' . $title_styles['letterSpacing'] .  'px;';
+			}
+			if ( isset( $title_styles['family'] ) && ! empty( $title_styles['family'] ) ) {
+				$css .= 'font-family:' . $title_styles['family'] .  ';';
+			}
+			if ( isset( $title_styles['style'] ) && ! empty( $title_styles['style'] ) ) {
+				$css .= 'font-style:' . $title_styles['style'] .  ';';
+			}
+			if ( isset( $title_styles['weight'] ) && ! empty( $title_styles['weight'] ) ) {
+				$css .= 'font-weight:' . $title_styles['weight'] .  ';';
+			}
+			if ( isset( $title_styles['borderRadius'] ) && is_array( $title_styles['borderRadius'] ) ) {
+				$css .= 'border-radius:' . $title_styles['borderRadius'][0] . 'px ' . $title_styles['borderRadius'][1] . 'px ' . $title_styles['borderRadius'][2] . 'px ' . $title_styles['borderRadius'][3] . 'px;';
+			}
+			if ( isset( $title_styles['borderWidth'] ) && is_array( $title_styles['borderWidth'] ) ) {
+				$css .= 'border-width:' . $title_styles['borderWidth'][0] . 'px ' . $title_styles['borderWidth'][1] . 'px ' . $title_styles['borderWidth'][2] . 'px ' . $title_styles['borderWidth'][3] . 'px;';
+			}
+			if ( isset( $title_styles['padding'] ) && is_array( $title_styles['padding'] ) ) {
+				$css .= 'padding:' . $title_styles['padding'][0] . 'px ' . $title_styles['padding'][1] . 'px ' . $title_styles['padding'][2] . 'px ' . $title_styles['padding'][3] . 'px;';
+			}
+			if ( isset( $title_styles['marginTop'] ) && ! empty( $title_styles['marginTop'] ) ) {
+				$css .= 'margin-top:' . $title_styles['marginTop'] . 'px;';
+			}
+			$css .= '}';
+			if ( isset( $title_styles['size'] ) && is_array( $title_styles['size'] ) && ! empty( $title_styles['size'][0] ) ) {
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header .kt-btn-svg-icon svg {';
+					$css .= 'width:' . $title_styles['size'][0] . ( ! isset( $title_styles['sizeType'] ) ? 'px' : $title_styles['sizeType'] ) . ';';
+					$css .= 'height:' . $title_styles['size'][0] . ( ! isset( $title_styles['sizeType'] ) ? 'px' : $title_styles['sizeType'] ) . ';';
+				$css .= '}';
+			}
+			if ( isset( $title_styles['color'] ) && ! empty( $title_styles['color'] ) ) {
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-icon-trigger:before {';
+				$css .= 'background:' . $title_styles['color'] .  ';';
+				$css .= '}';
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-icon-trigger {';
+					$css .= 'background:' . $title_styles['color'] .  ';';
+				$css .= '}';
+			}
+			if ( isset( $title_styles['background'] ) && ! empty( $title_styles['background'] ) ) {
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-icon-trigger:before {';
+					$css .= 'background:' . $title_styles['background'] .  ';';
+				$css .= '}';
+			}
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header:hover {';
+				if ( isset( $title_styles['colorHover'] ) && ! empty( $title_styles['colorHover'] ) ) {
+					$css .= 'color:' . $title_styles['colorHover'] .  ';';
+				}
+				if ( isset( $title_styles['backgroundHover'] ) && ! empty( $title_styles['backgroundHover'] ) ) {
+					$css .= 'background:' . $title_styles['backgroundHover'] .  ';';
+				}
+				if ( isset( $title_styles['borderHover'] ) && is_array( $title_styles['borderHover'] ) && ! empty( $title_styles['borderHover'][0] ) ) {
+					$css .= 'border-color:' . $title_styles['borderHover'][0] . ' ' . $title_styles['borderHover'][1] . ' ' . $title_styles['borderHover'][2] . ' ' . $title_styles['borderHover'][3] . ';';
+				}
+			$css .= '}';
+			if ( isset( $title_styles['colorHover'] ) && ! empty( $title_styles['colorHover'] ) ) {
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before {';
+				$css .= 'background:' . $title_styles['colorHover'] .  ';';
+				$css .= '}';
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger {';
+					$css .= 'background:' . $title_styles['colorHover'] .  ';';
+				$css .= '}';
+			}
+			if ( isset( $title_styles['backgroundHover'] ) && ! empty( $title_styles['backgroundHover'] ) ) {
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before {';
+					$css .= 'background:' . $title_styles['backgroundHover'] .  ';';
+				$css .= '}';
+			}
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header.kt-accordion-panel-active {';
+				if ( isset( $title_styles['colorActive'] ) && ! empty( $title_styles['colorActive'] ) ) {
+					$css .= 'color:' . $title_styles['colorActive'] .  ';';
+				}
+				if ( isset( $title_styles['backgroundActive'] ) && ! empty( $title_styles['backgroundActive'] ) ) {
+					$css .= 'background:' . $title_styles['backgroundActive'] .  ';';
+				}
+				if ( isset( $title_styles['borderActive'] ) && is_array( $title_styles['borderActive'] ) && ! empty( $title_styles['borderActive'][0] ) ) {
+					$css .= 'border-color:' . $title_styles['borderActive'][0] . ' ' . $title_styles['borderActive'][1] . ' ' . $title_styles['borderActive'][2] . ' ' . $title_styles['borderActive'][3] . ';';
+				}
+			$css .= '}';
+			if ( isset( $title_styles['colorActive'] ) && ! empty( $title_styles['colorActive'] ) ) {
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header.kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header.kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:before {';
+				$css .= 'background:' . $title_styles['colorActive'] .  ';';
+				$css .= '}';
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header.kt-accordion-panel-active .kt-blocks-accordion-icon-trigger {';
+					$css .= 'background:' . $title_styles['colorActive'] .  ';';
+				$css .= '}';
+			}
+			if ( isset( $title_styles['backgroundActive'] ) && ! empty( $title_styles['backgroundActive'] ) ) {
+				$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header.kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ' .kt-accordion-inner-wrap:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header.kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:before {';
+					$css .= 'background:' . $title_styles['backgroundActive'] .  ';';
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && isset( $attr['titleStyles'][0] ) && is_array( $attr['titleStyles'][0] ) && ( ( isset( $attr['titleStyles'][0]['size'] ) && is_array( $attr['titleStyles'][0]['size'] ) && isset( $attr['titleStyles'][0]['size'][1] ) && ! empty( $attr['titleStyles'][0]['size'][1] ) ) || ( isset( $attr['titleStyles'][0]['lineHeight'] ) && is_array( $attr['titleStyles'][0]['lineHeight'] ) && isset( $attr['titleStyles'][0]['lineHeight'][1] ) && ! empty( $attr['titleStyles'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header {';
+			if ( isset( $attr['titleStyles'][0]['size'][1] ) && ! empty( $attr['titleStyles'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['titleStyles'][0]['size'][1] . ( ! isset( $attr['titleStyles'][0]['sizeType'] ) ? 'px' : $attr['titleStyles'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['titleStyles'][0]['lineHeight'][1] ) && ! empty( $attr['titleStyles'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['titleStyles'][0]['lineHeight'][1] . ( ! isset( $attr['titleStyles'][0]['lineType'] ) ? 'px' : $attr['titleStyles'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header .kt-btn-svg-icon svg {';
+				$css .= 'width:' . $attr['titleStyles'][0]['size'][1] . ( ! isset( $attr['titleStyles'][0]['sizeType'] ) ? 'px' : $attr['titleStyles'][0]['sizeType'] ) . ';';
+				$css .= 'height:' . $attr['titleStyles'][0]['size'][1] . ( ! isset( $attr['titleStyles'][0]['sizeType'] ) ? 'px' : $attr['titleStyles'][0]['sizeType'] ) . ';';
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && isset( $attr['titleStyles'][0] ) && is_array( $attr['titleStyles'][0] ) && ( ( isset( $attr['titleStyles'][0]['size'] ) && is_array( $attr['titleStyles'][0]['size'] ) && isset( $attr['titleStyles'][0]['size'][2] ) && ! empty( $attr['titleStyles'][0]['size'][2] ) ) || ( isset( $attr['titleStyles'][0]['lineHeight'] ) && is_array( $attr['titleStyles'][0]['lineHeight'] ) && isset( $attr['titleStyles'][0]['lineHeight'][2] ) && ! empty( $attr['titleStyles'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header {';
+				if ( isset( $attr['titleStyles'][0]['size'][2] ) && ! empty( $attr['titleStyles'][0]['size'][2] ) ) {
+					$css .= 'font-size:' . $attr['titleStyles'][0]['size'][2] . ( ! isset( $attr['titleStyles'][0]['sizeType'] ) ? 'px' : $attr['titleStyles'][0]['sizeType'] ) . ';';
+				}
+				if ( isset( $attr['titleStyles'][0]['lineHeight'][2] ) && ! empty( $attr['titleStyles'][0]['lineHeight'][2] ) ) {
+					$css .= 'line-height:' . $attr['titleStyles'][0]['lineHeight'][2] . ( ! isset( $attr['titleStyles'][0]['lineType'] ) ? 'px' : $attr['titleStyles'][0]['lineType'] ) . ';';
+				}
+			$css .= '}';
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header .kt-btn-svg-icon svg {';
+				$css .= 'width:' . $attr['titleStyles'][0]['size'][2] . ( ! isset( $attr['titleStyles'][0]['sizeType'] ) ? 'px' : $attr['titleStyles'][0]['sizeType'] ) . ';';
+				$css .= 'height:' . $attr['titleStyles'][0]['size'][2] . ( ! isset( $attr['titleStyles'][0]['sizeType'] ) ? 'px' : $attr['titleStyles'][0]['sizeType'] ) . ';';
+			$css .= '}';
+			$css .= '}';
+		}
+		return $css;
 	}
 	/**
 	 * Builds CSS for Advanced Heading block.
@@ -1748,8 +2008,8 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['borderWidth'] ) && ! empty( $attr['borderWidth'] ) && is_array( $attr['borderWidth'] ) ) {
 				$css .= 'border-width:' . $attr['borderWidth'][0] . 'px ' . $attr['borderWidth'][1] . 'px ' . $attr['borderWidth'][2] . 'px ' . $attr['borderWidth'][3] . 'px ;';
 			}
-			if ( isset( $attr['borderRadius'] ) ) {
-				$css .= 'border-radius:' . $attr['borderRadius'] . 'px;';
+			if ( isset( $attr['borderRadius'] ) && ! empty( $attr['borderRadius'] ) && is_array( $attr['borderRadius'] ) ) {
+				$css .= 'border-radius:' . $attr['borderRadius'][0] . 'px ' . $attr['borderRadius'][1] . 'px ' . $attr['borderRadius'][2] . 'px ' . $attr['borderRadius'][3] . 'px ;';
 			}
 			$css .= '}';
 		}

@@ -13,6 +13,8 @@ import './blocks/advanced-heading/block.js';
 import './blocks/tabs/block.js';
 import './blocks/tab/block.js';
 import './blocks/info-box/block.js';
+import './blocks/accordion/block.js';
+import './blocks/pane/block.js';
 
 import './plugins/editor-width.js';
 if ( typeof kt_blocks_default_size !== 'undefined' ) {

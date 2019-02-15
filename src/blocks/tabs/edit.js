@@ -66,7 +66,10 @@ const ALLOWED_BLOCKS = [ 'kadence/tab' ];
 const getPanesTemplate = memoize( ( panes ) => {
 	return times( panes, n => [ 'kadence/tab', { id: n + 1 } ] );
 } );
-
+/**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+const kttabsUniqueIDs = [];
 /**
  * Build the row edit
  */
@@ -75,6 +78,7 @@ class KadenceTabs extends Component {
 		super( ...arguments );
 		this.state = {
 			hovered: 'false',
+			showPreset: false,
 		};
 	}
 	componentDidMount() {
@@ -85,13 +89,18 @@ class KadenceTabs extends Component {
 					this.props.attributes[ attribute ] = blockConfig[ attribute ];
 				} );
 			}
+			if ( this.props.attributes.showPresets ) {
+				this.setState( { showPreset: true } );
+			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
-		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+		} else if ( kttabsUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+		} else {
+			kttabsUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 	}
 	saveArrayUpdate( value, index ) {
@@ -110,7 +119,7 @@ class KadenceTabs extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize }, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab }, className, setAttributes } = this.props;
 		const layoutClass = ( ! layout ? 'tabs' : layout );
 		const borderTypes = [
 			{ key: 'linked', name: __( 'Linked' ), icon: icons.linked },
@@ -128,6 +137,139 @@ class KadenceTabs extends Component {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
 			},
+		};
+		const startlayoutOptions = [
+			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
+			{ key: 'simple', name: __( 'Simple' ), icon: icons.tabsSimple },
+			{ key: 'boldbg', name: __( 'Boldbg' ), icon: icons.tabsBold },
+			{ key: 'center', name: __( 'Center' ), icon: icons.tabsCenter },
+			{ key: 'vertical', name: __( 'Vertical' ), icon: icons.tabsVertical },
+		];
+		const setInitalLayout = ( key ) => {
+			if ( 'skip' === key ) {
+			} else if ( 'simple' === key ) {
+				setAttributes( {
+					layout: 'tabs',
+					tabAlignment: 'left',
+					size: 1.1,
+					sizeType: 'em',
+					lineHeight: 1.4,
+					lineType: 'em',
+					titleBorderWidth: [ 1, 1, 0, 1 ],
+					titleBorderControl: 'individual',
+					titleBorderRadius:  [ 4, 4, 0, 0 ],
+					titleBorderRadiusControl: 'individual',
+					titlePadding: [ 8, 20, 8, 20 ],
+					titlePaddingControl: 'individual',
+					titleMargin: [ 0, 8, -1, 0 ],
+					titleMarginControl: 'individual',
+					titleColor: '#444444',
+					titleColorHover: '#444444',
+					titleColorActive: '#444444',
+					titleBg: '#ffffff',
+					titleBgHover:'#ffffff',
+					titleBgActive:'#ffffff',
+					titleBorder:'#eeeeee',
+					titleBorderHover: '#e2e2e2',
+					titleBorderActive: '#bcbcbc',
+					contentBgColor: '#ffffff',
+					contentBorderColor: '#bcbcbc',
+					contentBorder: [ 1, 1, 1, 1 ],
+					contentBorderControl: 'linked',
+				} );
+			} else if ( 'boldbg' === key ) {
+				setAttributes( {
+					layout: 'tabs',
+					tabAlignment: 'left',
+					size: 1.1,
+					sizeType: 'em',
+					lineHeight: 1.4,
+					lineType: 'em',
+					titleBorderWidth: [ 0, 0, 0, 0 ],
+					titleBorderControl: 'linked',
+					titleBorderRadius:  [ 4, 4, 0, 0 ],
+					titleBorderRadiusControl: 'individual',
+					titlePadding: [ 8, 20, 8, 20 ],
+					titlePaddingControl: 'individual',
+					titleMargin: [ 0, 8, 0, 0 ],
+					titleMarginControl: 'individual',
+					titleColor: '#222222',
+					titleColorHover: '#222222',
+					titleColorActive: '#ffffff',
+					titleBg: '#eeeeee',
+					titleBgHover:'#e2e2e2',
+					titleBgActive:'#0a6689',
+					titleBorder:'#eeeeee',
+					titleBorderHover: '#eeeeee',
+					titleBorderActive: '#eeeeee',
+					contentBgColor: '#ffffff',
+					contentBorderColor: '#0a6689',
+					contentBorder: [ 3, 0, 0, 0 ],
+					contentBorderControl: 'individual',
+				} );
+			} else if ( 'center' === key ) {
+				setAttributes( {
+					layout: 'tabs',
+					tabAlignment: 'center',
+					size: 1.1,
+					sizeType: 'em',
+					lineHeight: 1.4,
+					lineType: 'em',
+					titleBorderWidth: [ 0, 0, 4, 0 ],
+					titleBorderControl: 'individual',
+					titleBorderRadius:  [ 4, 4, 0, 0 ],
+					titleBorderRadiusControl: 'individual',
+					titlePadding: [ 8, 20, 8, 20 ],
+					titlePaddingControl: 'individual',
+					titleMargin: [ 0, 8, 0, 0 ],
+					titleMarginControl: 'individual',
+					titleColor: '#555555',
+					titleColorHover: '#555555',
+					titleColorActive: '#0a6689',
+					titleBg: '#ffffff',
+					titleBgHover:'#ffffff',
+					titleBgActive:'#ffffff',
+					titleBorder:'#ffffff',
+					titleBorderHover: '#eeeeee',
+					titleBorderActive: '#0a6689',
+					contentBgColor: '#ffffff',
+					contentBorderColor: '#eeeeee',
+					contentBorder: [ 1, 0, 0, 0 ],
+					contentBorderControl: 'individual',
+				} );
+			} else if ( 'vertical' === key ) {
+				setAttributes( {
+					layout: 'vtabs',
+					mobileLayout: 'accordion',
+					tabAlignment: 'left',
+					size: 1.1,
+					sizeType: 'em',
+					lineHeight: 1.4,
+					lineType: 'em',
+					titleBorderWidth: [ 4, 0, 4, 4 ],
+					titleBorderControl: 'individual',
+					titleBorderRadius:  [ 10, 0, 0, 10 ],
+					titleBorderRadiusControl: 'individual',
+					titlePadding: [ 12, 8, 12, 20 ],
+					titlePaddingControl: 'individual',
+					titleMargin: [ 0, -4, 10, 0 ],
+					titleMarginControl: 'individual',
+					titleColor: '#444444',
+					titleColorHover: '#444444',
+					titleColorActive: '#444444',
+					titleBg: '#eeeeee',
+					titleBgHover:'#e9e9e9',
+					titleBgActive:'#ffffff',
+					titleBorder:'#eeeeee',
+					titleBorderHover: '#e9e9e9',
+					titleBorderActive: '#eeeeee',
+					contentBgColor: '#ffffff',
+					contentBorderColor: '#eeeeee',
+					contentBorder: [ 4, 4, 4, 4 ],
+					contentBorderControl: 'linked',
+					minHeight:400,
+				} );
+			} 
 		};
 		const config = ( googleFont ? gconfig : '' );
 		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
@@ -243,6 +385,21 @@ class KadenceTabs extends Component {
 									{ icon }
 								</Button>
 							</Tooltip>
+						) ) }
+					</ButtonGroup>
+					<h2>{ __( 'Set Inital Open Tab' ) }</h2>
+					<ButtonGroup aria-label={ __( 'Inital Open Tab' ) }>
+						{ times( tabCount, n => (
+							<Button
+								key={ n + 1 }
+								className="kt-init-open-tab"
+								isSmall
+								isPrimary={ startTab === n + 1 }
+								aria-pressed={ startTab === n + 1 }
+								onClick={ () => setAttributes( { startTab: n + 1 } ) }
+							>
+								{ __( 'Tab' ) + ' ' + ( n + 1 ) }
+							</Button>
 						) ) }
 					</ButtonGroup>
 				</PanelBody>
@@ -1192,29 +1349,53 @@ class KadenceTabs extends Component {
 					</PanelBody>
 				</InspectorControls>
 				<div className={ classes } >
-					<div className="kt-tabs-wrap" style={ {
-						maxWidth: maxWidth + 'px',
-					} }>
-						<ul className="kt-tabs-title-list">
-							{ renderPreviewArray }
-						</ul>
-						{ googleFont && (
-							<WebfontLoader config={ config }>
-							</WebfontLoader>
-						) }
-						<div className="kt-tabs-content-wrap" style={ {
-							padding: ( innerPadding ? innerPadding[ 0 ] + 'px ' + innerPadding[ 1 ] + 'px ' + innerPadding[ 2 ] + 'px ' + innerPadding[ 3 ] + 'px' : '' ),
-							borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
-							minHeight: minHeight + 'px',
-							backgroundColor: contentBgColor,
-							borderColor: contentBorderColor,
-						} }>
-							<InnerBlocks
-								template={ getPanesTemplate( tabCount ) }
-								templateLock="all"
-								allowedBlocks={ ALLOWED_BLOCKS } />
+					{ this.state.showPreset && (
+						<div className="kt-select-starter-style-tabs">
+							<div className="kt-select-starter-style-tabs-title">
+								{ __( 'Select Intial Style' ) }
+							</div>
+							<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Intial Style' ) }>
+								{ map( startlayoutOptions, ( { name, key, icon } ) => (
+									<Button
+										key={ key }
+										className="kt-inital-tabs-style-btn"
+										isSmall
+										onClick={ () => {
+											setInitalLayout( key );
+											this.setState( { showPreset: false } );
+										} }
+									>
+										{ icon }
+									</Button>
+								) ) }
+							</ButtonGroup>
 						</div>
-					</div>
+					) }
+					{ ! this.state.showPreset && (
+						<div className="kt-tabs-wrap" style={ {
+							maxWidth: maxWidth + 'px',
+						} }>
+							<ul className="kt-tabs-title-list">
+								{ renderPreviewArray }
+							</ul>
+							{ googleFont && (
+								<WebfontLoader config={ config }>
+								</WebfontLoader>
+							) }
+							<div className="kt-tabs-content-wrap" style={ {
+								padding: ( innerPadding ? innerPadding[ 0 ] + 'px ' + innerPadding[ 1 ] + 'px ' + innerPadding[ 2 ] + 'px ' + innerPadding[ 3 ] + 'px' : '' ),
+								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
+								minHeight: minHeight + 'px',
+								backgroundColor: contentBgColor,
+								borderColor: contentBorderColor,
+							} }>
+								<InnerBlocks
+									template={ getPanesTemplate( tabCount ) }
+									templateLock="all"
+									allowedBlocks={ ALLOWED_BLOCKS } />
+							</div>
+						</div>
+					) }
 				</div>
 			</Fragment>
 		);

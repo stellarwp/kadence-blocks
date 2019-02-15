@@ -42,16 +42,23 @@ const {
 	SelectControl,
 } = wp.components;
 
+/**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+const kticonUniqueIDs = [];
+
 class KadenceIcons extends Component {
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
-		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+		} else if ( kticonUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+		} else {
+			kticonUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 	}
 	saveArrayUpdate( value, index ) {

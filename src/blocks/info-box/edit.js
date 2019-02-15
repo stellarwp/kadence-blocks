@@ -53,6 +53,11 @@ const {
 	ToggleControl,
 	SelectControl,
 } = wp.components;
+
+/**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+const ktinfoboxUniqueIDs = [];
 /**
  * Build the overlay edit
  */
@@ -72,10 +77,12 @@ class KadenceInfoBox extends Component {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
-		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+		} else if ( ktinfoboxUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+		} else {
+			ktinfoboxUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 		if ( this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 1 ] && this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 2 ] && this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 3 ] ) {
 			this.setState( { mediaBorderControl: 'linked' } );

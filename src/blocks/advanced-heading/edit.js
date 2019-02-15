@@ -52,6 +52,11 @@ const {
  */
 const ANCHOR_REGEX = /[\s#]/g;
 
+/**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+const ktadvancedheadingUniqueIDs = [];
+
 class KadenceAdvancedHeading extends Component {
 	constructor() {
 		super( ...arguments );
@@ -64,10 +69,12 @@ class KadenceAdvancedHeading extends Component {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
-		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+		} else if ( ktadvancedheadingUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+		} else {
+			ktadvancedheadingUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 	}
 	render() {

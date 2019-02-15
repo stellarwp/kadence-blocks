@@ -31,6 +31,10 @@ const {
 } = wp.components;
 
 /**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+const ktcolumnUniqueIDs = [];
+/**
  * Build the spacer edit
  */
 class KadenceColumn extends Component {
@@ -38,6 +42,7 @@ class KadenceColumn extends Component {
 		super( ...arguments );
 		this.state = {
 			borderWidthControl: 'linked',
+			borderRadiusControl: 'linked',
 		};
 	}
 	componentDidMount() {
@@ -45,20 +50,27 @@ class KadenceColumn extends Component {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
-		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+		} else if ( ktcolumnUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+		} else {
+			ktcolumnUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 		if ( this.props.attributes.borderWidth && this.props.attributes.borderWidth[ 0 ] === this.props.attributes.borderWidth[ 1 ] && this.props.attributes.borderWidth[ 0 ] === this.props.attributes.borderWidth[ 2 ] && this.props.attributes.borderWidth[ 0 ] === this.props.attributes.borderWidth[ 3 ] ) {
 			this.setState( { borderWidthControl: 'linked' } );
 		} else {
 			this.setState( { borderWidthControl: 'individual' } );
 		}
+		if ( this.props.attributes.borderRadius && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 1 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 2 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 3 ] ) {
+			this.setState( { borderRadiusControl: 'linked' } );
+		} else {
+			this.setState( { borderRadiusControl: 'individual' } );
+		}
 	}
 	render() {
 		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID }, setAttributes } = this.props;
-		const { borderWidthControl } = this.state;
+		const { borderWidthControl, borderRadiusControl } = this.state;
 		const mobileControls = (
 			<PanelBody
 				title={ __( 'Mobile Padding/Margin' ) }
@@ -348,16 +360,23 @@ class KadenceColumn extends Component {
 						max={ 40 }
 						step={ 1 }
 					/>
-					<RangeControl
+					<MeasurementControls
 						label={ __( 'Border Radius' ) }
-						value={ borderRadius }
-						onChange={ ( value ) => {
-							setAttributes( {
-								borderRadius: value,
-							} );
-						} }
+						measurement={ borderRadius }
+						control={ borderRadiusControl }
+						onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
+						onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
 						min={ 0 }
-						max={ 50 }
+						max={ 200 }
+						step={ 1 }
+						controlTypes={ [
+							{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
+							{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+						] }
+						firstIcon={ icons.topleft }
+						secondIcon={ icons.topright }
+						thirdIcon={ icons.bottomright }
+						fourthIcon={ icons.bottomleft }
 					/>
 					<RangeControl
 						label={ __( 'Z Index Control' ) }
@@ -385,7 +404,7 @@ class KadenceColumn extends Component {
 					background: backgroundString,
 					borderColor: borderString,
 					borderWidth: ( borderWidth ? borderWidth[ 0 ] + 'px ' + borderWidth[ 1 ] + 'px ' + borderWidth[ 2 ] + 'px ' + borderWidth[ 3 ] + 'px' : '' ),
-					borderRadius: borderRadius + 'px',
+					borderRadius: ( borderRadius ? borderRadius[ 0 ] + 'px ' + borderRadius[ 1 ] + 'px ' + borderRadius[ 2 ] + 'px ' + borderRadius[ 3 ] + 'px' : '' ),
 				} } >
 					<InnerBlocks templateLock={ false } />
 				</div>

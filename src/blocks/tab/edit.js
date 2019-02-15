@@ -13,7 +13,10 @@ const {
 const {
 	Component,
 } = wp.element;
-
+/**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+const kttabUniqueIDs = [];
 /**
  * Build the spacer edit
  */
@@ -23,10 +26,12 @@ class KadenceTab extends Component {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
-		} else if ( this.props.attributes.uniqueID && this.props.attributes.uniqueID !== '_' + this.props.clientId.substr( 2, 9 ) ) {
+		} else if ( kttabUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+		} else {
+			kttabUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 	}
 	render() {

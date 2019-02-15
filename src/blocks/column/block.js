@@ -130,8 +130,8 @@ registerBlockType( 'kadence/column', {
 			default: [ 0, 0, 0, 0 ],
 		},
 		borderRadius: {
-			type: 'number',
-			default: 0,
+			type: 'array',
+			default: [ 0, 0, 0, 0 ],
 		},
 		uniqueID: {
 			type: 'string',
