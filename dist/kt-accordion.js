@@ -340,7 +340,7 @@ function () {
       this._initalState(); // Setting the height of each panel
 
 
-      //this.calculateAllPanelsHeight(); // Inserting data-attribute onto each `header`
+      this.calculateAllPanelsHeight(); // Inserting data-attribute onto each `header`
 
       this._insertDataAttrs(); // Adding listeners to headers
 
@@ -608,7 +608,7 @@ function () {
           // 1. Getting ID of panel that we want to close
           var header = this.headers[headerIndex];
           var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
-
+		  panelToClose.style.maxHeight = panelToClose.getAttribute('data-panel-height');
           panelToClose.classList.add(this.settings.hiddenClass); // 3. Removing active classes
 
           panelToClose.classList.remove(this.settings.activeClass);
@@ -617,13 +617,14 @@ function () {
           header.setAttribute('aria-expanded', false); // 5. Resetting toggling so a new event can be fired
 
           panelToClose.onCSSTransitionEnd(function () {
+			panelToClose.style.maxHeight = '';
             return _this8.toggling = false;
           });
         } else if (animationAction === 'open') {
           // 1. Getting ID of panel that we want to open
           var _header = this.headers[headerIndex];
           var panelToOpen = this.panels[headerIndex]; // 2. Opening panel
-
+		  panelToOpen.style.maxHeight = panelToOpen.getAttribute('data-panel-height');
           panelToOpen.classList.remove(this.settings.hiddenClass); // 3. Adding active classes
 
           panelToOpen.classList.add(this.settings.activeClass);
@@ -635,6 +636,7 @@ function () {
 
 
           panelToOpen.onCSSTransitionEnd(function () {
+			panelToOpen.style.maxHeight = '';
             return _this8.toggling = false;
           });
         }
@@ -752,7 +754,9 @@ function () {
     value: function calculatePanelHeight(panel) {
       var panelInner = panel.querySelector(this.settings.panelInnerClass);
       var activeHeight = panelInner.offsetHeight;
-      return panel.style.maxHeight = "".concat(activeHeight, "px");
+	  return panel.setAttribute('data-panel-height', "".concat(activeHeight, "px") ); 
+	  //panel.style.maxHeight = "".concat(activeHeight, "px");
+	  // panel.style.maxHeight = panel.getAttribute('data-panel-height');
     }
     /**
      *  CALCULATE PANEL HEIGHT

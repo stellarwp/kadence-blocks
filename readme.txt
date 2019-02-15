@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.0.4
-Stable tag: 1.2.9
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,8 +84,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.3.0 =
+* Fix: Jerky Accordion Animation.
+
 = 1.2.9 =
-* Add: Fix some of the Accordion styling.
+* Fix: some of the Accordion styling.
 
 = 1.2.8 =
 * Add: New Accordion block!

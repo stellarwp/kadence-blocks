@@ -254,7 +254,6 @@
     overflow: hidden;
     &.kt-accordion-panel-hidden { 
         max-height: 0 !important;
-        visibility: hidden;
     }
     .kt-accordion-initialized & { 
 		transition: max-height ease-in-out 0.2s;
