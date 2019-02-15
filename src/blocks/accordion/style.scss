@@ -18,12 +18,20 @@
 	line-height: 24px;
     text-align: left;
     transition: all ease-in-out .2s;
-    width: 100%;
+	width: 100%;
+	box-shadow: none;
+    text-shadow: none;
 }
-
+.kt-blocks-accordion-header:focus {
+	box-shadow: none;
+	text-shadow: none;
+	outline:0;
+}
 .kt-blocks-accordion-header:hover {
     background-color: #eeeeee;
 	color: #444444;
+	box-shadow: none;
+    text-shadow: none;
 	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
 		background-color: #444444;
 	}
@@ -40,7 +48,7 @@
 		background-color: #444444;
 	}
 	.kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
-		background-color: #444444;
+		background-color: #eeeeee;
 	}
 }
 .kt-accodion-icon-style-basiccircle .kt-blocks-accordion-header.kt-accordion-panel-active, .kt-accodion-icon-style-xclosecircle .kt-blocks-accordion-header.kt-accordion-panel-active, .kt-accodion-icon-style-arrowcircle .kt-blocks-accordion-header.kt-accordion-panel-active {
@@ -73,6 +81,11 @@
 }
 .kt-acccordion-button-label-hide .kt-blocks-accordion-title {
     display: none;
+}
+.kt-accordion-panel-inner:after {
+    clear: both;
+    display: table;
+    content: '';
 }
 // Trigger
 .kt-accodion-icon-style-none .kt-blocks-accordion-icon-trigger {
@@ -237,7 +250,7 @@
     border-top: 0;
 }
 .kt-accordion-panel {
-    max-height: 75vh;
+	max-height: 275vh;
     overflow: hidden;
     &.kt-accordion-panel-hidden { 
         max-height: 0 !important;

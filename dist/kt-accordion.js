@@ -340,7 +340,7 @@ function () {
       this._initalState(); // Setting the height of each panel
 
 
-      this.calculateAllPanelsHeight(); // Inserting data-attribute onto each `header`
+      //this.calculateAllPanelsHeight(); // Inserting data-attribute onto each `header`
 
       this._insertDataAttrs(); // Adding listeners to headers
 
