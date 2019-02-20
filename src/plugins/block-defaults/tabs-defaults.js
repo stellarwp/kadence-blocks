@@ -31,7 +31,7 @@ class KadenceTabsDefault extends Component {
 		this.state = {
 			isOpen: false,
 			isSaving: false,
-			configuration: JSON.parse( kadence_blocks_params.configuration ),
+			configuration: ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} ),
 		};
 	}
 	componentDidMount() {
