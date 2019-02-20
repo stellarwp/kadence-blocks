@@ -90,6 +90,7 @@ const attributes = {
 			colorActive: '#ffffff',
 			backgroundActive: '#444444',
 			borderActive: [ '#444444', '#444444', '#444444', '#444444' ],
+			textTransform: '',
 		} ],
 	},
 	showIcon: {

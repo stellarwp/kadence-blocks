@@ -260,6 +260,7 @@ class KadenceAccordionComponent extends Component {
 					font-size:${ titleStyles[ 0 ].size[ 0 ] }${ titleStyles[ 0 ].sizeType };
 					line-height:${ titleStyles[ 0 ].lineHeight[ 0 ] }${ titleStyles[ 0 ].lineType };
 					letter-spacing:${ titleStyles[ 0 ].letterSpacing }px;
+					text-transform:${ titleStyles[ 0 ].textTransform };
 					font-family:${ titleStyles[ 0 ].family };
 					font-style:${ titleStyles[ 0 ].style };
 					font-weight:${ titleStyles[ 0 ].weight };
@@ -526,6 +527,8 @@ class KadenceAccordionComponent extends Component {
 							onLineHeightType={ ( value ) => saveTitleStyles( { lineType: value } ) }
 							letterSpacing={ titleStyles[ 0 ].letterSpacing }
 							onLetterSpacing={ ( value ) => saveTitleStyles( { letterSpacing: value } ) }
+							textTransform={ titleStyles[ 0 ].textTransform }
+							onTextTransform={ ( value ) => saveTitleStyles( { textTransform: value } ) }
 							fontFamily={ titleStyles[ 0 ].family }
 							onFontFamily={ ( value ) => saveTitleStyles( { family: value } ) }
 							onFontChange={ ( select ) => {

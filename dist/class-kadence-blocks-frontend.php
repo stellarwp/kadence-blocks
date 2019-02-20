@@ -1350,6 +1350,9 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $title_styles['letterSpacing'] ) && ! empty( $title_styles['letterSpacing'] ) ) {
 				$css .= 'letter-spacing:' . $title_styles['letterSpacing'] .  'px;';
 			}
+			if ( isset( $title_styles['textTransform'] ) && ! empty( $title_styles['textTransform'] ) ) {
+				$css .= 'text-transform:' . $title_styles['textTransform'] .  ';';
+			}
 			if ( isset( $title_styles['family'] ) && ! empty( $title_styles['family'] ) ) {
 				$css .= 'font-family:' . $title_styles['family'] .  ';';
 			}

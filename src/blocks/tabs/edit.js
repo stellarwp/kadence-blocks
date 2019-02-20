@@ -87,7 +87,7 @@ class KadenceTabs extends Component {
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
 			const oldBlockConfig = kadence_blocks_params.config[ 'kadence/tabs' ];
-			const blockConfigObject = JSON.parse( kadence_blocks_params.configuration );
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/tabs' ] !== undefined && typeof blockConfigObject[ 'kadence/tabs' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/tabs' ] ).map( ( attribute ) => {
 					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/tabs' ][ attribute ];
@@ -907,160 +907,158 @@ class KadenceTabs extends Component {
 								/>
 							</PanelBody>
 						) }
-						<PanelBody title={ __( 'Tab Title Settings' ) }>
-							{ this.showSettings( 'titleColor' ) && (
-								<PanelBody
-									title={ __( 'Color Settings' ) }
-									initialOpen={ false }
-								>
-									<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
-										activeClass="active-tab"
-										tabs={ [
-											{
-												name: 'normal',
-												title: __( 'Normal' ),
-												className: 'kt-normal-tab',
-											},
-											{
-												name: 'hover',
-												title: __( 'Hover' ),
-												className: 'kt-hover-tab',
-											},
-											{
-												name: 'active',
-												title: __( 'Active' ),
-												className: 'kt-active-tab',
-											},
-										] }>
+						{ this.showSettings( 'titleColor' ) && (
+							<PanelBody
+								title={ __( 'Tab Title Color Settings' ) }
+								initialOpen={ false }
+							>
+								<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+									activeClass="active-tab"
+									tabs={ [
 										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'hover' === tab.name ) {
-														tabout = hoverSettings;
-													} else if ( 'active' === tab.name ) {
-														tabout = activeSettings;
-													} else {
-														tabout = normalSettings;
-													}
+											name: 'normal',
+											title: __( 'Normal' ),
+											className: 'kt-normal-tab',
+										},
+										{
+											name: 'hover',
+											title: __( 'Hover' ),
+											className: 'kt-hover-tab',
+										},
+										{
+											name: 'active',
+											title: __( 'Active' ),
+											className: 'kt-active-tab',
+										},
+									] }>
+									{
+										( tab ) => {
+											let tabout;
+											if ( tab.name ) {
+												if ( 'hover' === tab.name ) {
+													tabout = hoverSettings;
+												} else if ( 'active' === tab.name ) {
+													tabout = activeSettings;
+												} else {
+													tabout = normalSettings;
 												}
-												return <div>{ tabout }</div>;
 											}
+											return <div>{ tabout }</div>;
 										}
-									</TabPanel>
-								</PanelBody>
-							) }
-							{ this.showSettings( 'titleSpacing' ) && (
-								<PanelBody
-									title={ __( 'Title Spacing/Border' ) }
-									initialOpen={ false }
-								>
-									<MeasurementControls
-										label={ __( 'Title Paddding (px)' ) }
-										measurement={ titlePadding }
-										control={ titlePaddingControl }
-										onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
-										onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
-										min={ 0 }
-										max={ 50 }
-										step={ 1 }
-									/>
-									<MeasurementControls
-										label={ __( 'Title Margin (px)' ) }
-										measurement={ titleMargin }
-										control={ titleMarginControl }
-										onChange={ ( value ) => setAttributes( { titleMargin: value } ) }
-										onControl={ ( value ) => setAttributes( { titleMarginControl: value } ) }
-										min={ -25 }
-										max={ 25 }
-										step={ 1 }
-									/>
-									<MeasurementControls
-										label={ __( 'Title Border Width (px)' ) }
-										measurement={ titleBorderWidth }
-										control={ titleBorderControl }
-										onChange={ ( value ) => setAttributes( { titleBorderWidth: value } ) }
-										onControl={ ( value ) => setAttributes( { titleBorderControl: value } ) }
-										min={ 0 }
-										max={ 20 }
-										step={ 1 }
-									/>
-									<MeasurementControls
-										label={ __( 'Title Border Radius (px)' ) }
-										measurement={ titleBorderRadius }
-										control={ titleBorderRadiusControl }
-										onChange={ ( value ) => setAttributes( { titleBorderRadius: value } ) }
-										onControl={ ( value ) => setAttributes( { titleBorderRadiusControl: value } ) }
-										min={ 0 }
-										max={ 50 }
-										step={ 1 }
-										controlTypes={ [
-											{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-											{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
-										] }
-										firstIcon={ icons.topleft }
-										secondIcon={ icons.topright }
-										thirdIcon={ icons.bottomright }
-										fourthIcon={ icons.bottomleft }
-									/>
-								</PanelBody>
-							) }
-							{ this.showSettings( 'titleFont' ) && (
-								<PanelBody
-									title={ __( 'Font Settings' ) }
-									initialOpen={ false }
-								>
-									<TypographyControls
-										fontFamily={ typography }
-										onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
-										googleFont={ googleFont }
-										onFontChange={ ( select ) => {
-											setAttributes( {
-												typography: select.value,
-												googleFont: select.google,
-											} );
-										} }
-										onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
-										loadGoogleFont={ loadGoogleFont }
-										onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
-										fontVariant={ fontVariant }
-										onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
-										fontWeight={ fontWeight }
-										onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
-										fontStyle={ fontStyle }
-										onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
-										fontSubset={ fontSubset }
-										onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
-									/>
-									<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
-									{ sizeTabControls }
-									<RangeControl
-										label={ __( 'Letter Spacing' ) }
-										value={ ( letterSpacing ? letterSpacing : '' ) }
-										onChange={ ( value ) => setAttributes( { letterSpacing: value } ) }
-										min={ -5 }
-										max={ 15 }
-										step={ 0.1 }
-									/>
-								</PanelBody>
-							) }
-							{ this.showSettings( 'titleIcon' ) && (
-								<PanelBody
-									title={ __( 'Icon Settings' ) }
-									initialOpen={ false }
-								>
-									<RangeControl
-										label={ __( 'Icon Size' ) }
-										value={ ( iSize ? iSize : '' ) }
-										onChange={ ( value ) => setAttributes( { iSize: value } ) }
-										min={ 2 }
-										max={ 120 }
-										step={ 1 }
-									/>
-									{ times( tabCount, n => renderTitleSettings( n ) ) }
-								</PanelBody>
-							) }
-						</PanelBody>
+									}
+								</TabPanel>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'titleSpacing' ) && (
+							<PanelBody
+								title={ __( 'Tab Title Spacing/Border' ) }
+								initialOpen={ false }
+							>
+								<MeasurementControls
+									label={ __( 'Title Paddding (px)' ) }
+									measurement={ titlePadding }
+									control={ titlePaddingControl }
+									onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
+									onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
+									min={ 0 }
+									max={ 50 }
+									step={ 1 }
+								/>
+								<MeasurementControls
+									label={ __( 'Title Margin (px)' ) }
+									measurement={ titleMargin }
+									control={ titleMarginControl }
+									onChange={ ( value ) => setAttributes( { titleMargin: value } ) }
+									onControl={ ( value ) => setAttributes( { titleMarginControl: value } ) }
+									min={ -25 }
+									max={ 25 }
+									step={ 1 }
+								/>
+								<MeasurementControls
+									label={ __( 'Title Border Width (px)' ) }
+									measurement={ titleBorderWidth }
+									control={ titleBorderControl }
+									onChange={ ( value ) => setAttributes( { titleBorderWidth: value } ) }
+									onControl={ ( value ) => setAttributes( { titleBorderControl: value } ) }
+									min={ 0 }
+									max={ 20 }
+									step={ 1 }
+								/>
+								<MeasurementControls
+									label={ __( 'Title Border Radius (px)' ) }
+									measurement={ titleBorderRadius }
+									control={ titleBorderRadiusControl }
+									onChange={ ( value ) => setAttributes( { titleBorderRadius: value } ) }
+									onControl={ ( value ) => setAttributes( { titleBorderRadiusControl: value } ) }
+									min={ 0 }
+									max={ 50 }
+									step={ 1 }
+									controlTypes={ [
+										{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
+										{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+									] }
+									firstIcon={ icons.topleft }
+									secondIcon={ icons.topright }
+									thirdIcon={ icons.bottomright }
+									fourthIcon={ icons.bottomleft }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'titleFont' ) && (
+							<PanelBody
+								title={ __( 'Tab Title Font Settings' ) }
+								initialOpen={ false }
+							>
+								<TypographyControls
+									fontFamily={ typography }
+									onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+									googleFont={ googleFont }
+									onFontChange={ ( select ) => {
+										setAttributes( {
+											typography: select.value,
+											googleFont: select.google,
+										} );
+									} }
+									onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
+									loadGoogleFont={ loadGoogleFont }
+									onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
+									fontVariant={ fontVariant }
+									onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
+									fontWeight={ fontWeight }
+									onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
+									fontStyle={ fontStyle }
+									onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
+									fontSubset={ fontSubset }
+									onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
+								/>
+								<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+								{ sizeTabControls }
+								<RangeControl
+									label={ __( 'Letter Spacing' ) }
+									value={ ( letterSpacing ? letterSpacing : '' ) }
+									onChange={ ( value ) => setAttributes( { letterSpacing: value } ) }
+									min={ -5 }
+									max={ 15 }
+									step={ 0.1 }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'titleIcon' ) && (
+							<PanelBody
+								title={ __( 'Tab Title Icon Settings' ) }
+								initialOpen={ false }
+							>
+								<RangeControl
+									label={ __( 'Icon Size' ) }
+									value={ ( iSize ? iSize : '' ) }
+									onChange={ ( value ) => setAttributes( { iSize: value } ) }
+									min={ 2 }
+									max={ 120 }
+									step={ 1 }
+								/>
+								{ times( tabCount, n => renderTitleSettings( n ) ) }
+							</PanelBody>
+						) }
 						{ this.showSettings( 'structure' ) && (
 							<PanelBody
 								title={ __( 'Structure Settings' ) }

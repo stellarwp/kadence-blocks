@@ -64,8 +64,8 @@ class KadenceSpacerDivider extends Component {
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
-			let oldBlockConfig = kadence_blocks_params.config[ 'kadence/spacer' ];
-			const blockConfigObject = JSON.parse( kadence_blocks_params.configuration );
+			const oldBlockConfig = kadence_blocks_params.config[ 'kadence/spacer' ];
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/spacer' ] !== undefined && typeof blockConfigObject[ 'kadence/spacer' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/spacer' ] ).map( ( attribute ) => {
 					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/spacer' ][ attribute ];

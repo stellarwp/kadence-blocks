@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2019-01-11 13:01-0700\n"
+"POT-Creation-Date: 2019-02-20 10:02-0700\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence Themes\n"
@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;esc_attr_e;esc_attr__;esc_html__;"
 "esc_html_e;esc_attr_x;_x;esc_html_x\n"
 "X-Poedit-Basepath: ..\n"
@@ -19,658 +19,495 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: node_modules\n"
 "X-Poedit-SearchPathExcluded-1: src\n"
 
-#: dist/settings/class-kadence-blocks-settings.php:107
-msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:107
+#: dist/init.php:233 dist/settings/class-kadence-blocks-settings.php:108
+#: dist/settings/class-kadence-blocks-settings.php:583
 msgid "Kadence Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:115
-msgid "Close"
+#: dist/settings/class-kadence-blocks-settings.php:108
+msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:116
-msgid "Save"
+msgid "Close"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:117
-msgid "Updating"
+msgid "Save"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:118
-msgid "Updated"
+msgid "Updating"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:119
-msgid "Config"
+msgid "Updated"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:120
+msgid "Config"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:121
 msgid "Default Settings"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:132
-msgid "Spacer Height (px)"
+#: dist/settings/class-kadence-blocks-settings.php:127
+#: dist/settings/class-kadence-blocks-settings.php:430
+msgid ""
+"Setting defaults has moved into Gutenberg, click on the top right corner "
+"settings and go to Kadence Blocks Controls"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:142
-msgid "Tablet Spacer Height (px)"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:152
-msgid "Mobile Spacer Height (px)"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:157
-msgid "Enable Divider"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:164
-msgid "Solid"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:168
-msgid "Dashed"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:172
-msgid "Dotted"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:176
-msgid "Divider Style"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:186
-msgid "Divider Opacity (0-100)"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:191
-msgid "Divider Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:201
-msgid "Divider Width (%)"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:211
-msgid "Divider Height (px)"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:220
+#: dist/settings/class-kadence-blocks-settings.php:136
 msgid "Default: 30px"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:224
+#: dist/settings/class-kadence-blocks-settings.php:140
 msgid "No Gutter"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:228
+#: dist/settings/class-kadence-blocks-settings.php:144
 msgid "Skinny: 10px"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:232
+#: dist/settings/class-kadence-blocks-settings.php:148
 msgid "Narrow: 20px"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:236
+#: dist/settings/class-kadence-blocks-settings.php:152
 msgid "Wide: 40px"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:240
+#: dist/settings/class-kadence-blocks-settings.php:156
 msgid "Wider: 60px"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:244
+#: dist/settings/class-kadence-blocks-settings.php:160
 msgid "Widest: 80px"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:248
+#: dist/settings/class-kadence-blocks-settings.php:164
 msgid "Column Gutter"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:255
+#: dist/settings/class-kadence-blocks-settings.php:171
 msgid "div"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:259
+#: dist/settings/class-kadence-blocks-settings.php:175
 msgid "section"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:263
+#: dist/settings/class-kadence-blocks-settings.php:179
 msgid "article"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:267
+#: dist/settings/class-kadence-blocks-settings.php:183
 msgid "main"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:271
+#: dist/settings/class-kadence-blocks-settings.php:187
 msgid "aside"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:275
+#: dist/settings/class-kadence-blocks-settings.php:191
 msgid "Container HTML tag"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:285
+#: dist/settings/class-kadence-blocks-settings.php:201
 msgid "Row Content Max Width (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:295
+#: dist/settings/class-kadence-blocks-settings.php:211
 msgid "Top Padding (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:305
+#: dist/settings/class-kadence-blocks-settings.php:221
 msgid "Bottom Padding (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:315
+#: dist/settings/class-kadence-blocks-settings.php:231
 msgid "Left Padding (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:325
+#: dist/settings/class-kadence-blocks-settings.php:241
 msgid "Right Padding (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:335
+#: dist/settings/class-kadence-blocks-settings.php:251
 msgid "MOBILE - Top Padding (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:345
+#: dist/settings/class-kadence-blocks-settings.php:261
 msgid "MOBILE - Bottom Padding (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:355
+#: dist/settings/class-kadence-blocks-settings.php:271
 msgid "MOBILE - Left Padding (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:365
+#: dist/settings/class-kadence-blocks-settings.php:281
 msgid "MOBILE - Right Padding (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:375
+#: dist/settings/class-kadence-blocks-settings.php:291
 msgid "Top Margin (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:385
+#: dist/settings/class-kadence-blocks-settings.php:301
 msgid "Bottom Margin (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:395
+#: dist/settings/class-kadence-blocks-settings.php:311
 msgid "MOBILE - Top Margin (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:405
+#: dist/settings/class-kadence-blocks-settings.php:321
 msgid "MOBILE - Bottom Margin (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:411
+#: dist/settings/class-kadence-blocks-settings.php:327
 msgid "Button Settings"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:436
+#: dist/settings/class-kadence-blocks-settings.php:352
 msgid "Font Size (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:446
+#: dist/settings/class-kadence-blocks-settings.php:362
 msgid "Padding Top and Bottom (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:456
+#: dist/settings/class-kadence-blocks-settings.php:372
 msgid "Padding Left and Right (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:461
+#: dist/settings/class-kadence-blocks-settings.php:377
 msgid "Text Color"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:466
+#: dist/settings/class-kadence-blocks-settings.php:382
 msgid "Background Color"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:471
+#: dist/settings/class-kadence-blocks-settings.php:387
 msgid "Border Color"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:481
+#: dist/settings/class-kadence-blocks-settings.php:397
 msgid "Border Radius (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:491
+#: dist/settings/class-kadence-blocks-settings.php:407
 msgid "Border Width (px)"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:496
+#: dist/settings/class-kadence-blocks-settings.php:412
 msgid "HOVER - Text Color"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:501
+#: dist/settings/class-kadence-blocks-settings.php:417
 msgid "HOVER - Background Color"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:506
+#: dist/settings/class-kadence-blocks-settings.php:422
 msgid "HOVER - Border Color"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:517
-#: dist/settings/class-kadence-blocks-settings.php:532
-#: dist/settings/class-kadence-blocks-settings.php:551
-msgid "Standard Tabs"
+#: dist/settings/class-kadence-blocks-settings.php:455
+msgid "Config Kadence Block Defaults"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:521
-#: dist/settings/class-kadence-blocks-settings.php:536
-#: dist/settings/class-kadence-blocks-settings.php:555
-msgid "Vertical Tabs"
+#: dist/settings/class-kadence-blocks-settings.php:463
+msgid "Config Kadence Block Settings View"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:525
-msgid "Tab Layout"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:540
-#: dist/settings/class-kadence-blocks-settings.php:559
-msgid "Accordion"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:544
-msgid "TABLET - Tab Layout"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:563
-msgid "MOBILE - Tab Layout"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:568
-msgid "Content Background Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:573
-msgid "Content Border Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:583
-msgid "Content Border Width"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:593
-msgid "Content Padding"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:600
-msgid "Left"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:604
-msgid "Center"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:608
-msgid "Right"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:612
-msgid "Tab Alignment"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:617
-msgid "Title Text Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:622
-msgid "HOVER - Title Text Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:627
-msgid "ACTIVE - Title Text Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:632
-msgid "Title Background Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:637
-msgid "HOVER - Title Background Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:642
-msgid "ACTIVE - Title Background Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:647
-msgid "Title Border Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:652
-msgid "HOVER - Title Border Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:657
-msgid "ACTIVE - Title Border Color"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:667
-msgid "Title Border Width"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:677
-msgid "Title Border Radius"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:687
-msgid "Title Padding"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:697
-msgid "Title Margin"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:704
-#: dist/settings/class-kadence-blocks-settings.php:752
-#: dist/settings/class-kadence-blocks-settings.php:860
-#: dist/settings/class-kadence-blocks-settings.php:868
-msgid "px"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:708
-#: dist/settings/class-kadence-blocks-settings.php:756
-msgid "em"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:712
-msgid "Font Size Units"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:723
-msgid "Title Font Size"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:734
-msgid "TABLET - Title Font Size"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:745
-msgid "MOBILE - Title Font Size"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:760
-msgid "Line Height Size Units"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:771
-msgid "Title Font Line Height (px)"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:782
-msgid "TABLET - Title Font Line Height"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:793
-msgid "MOBILE - Title Font Line Height"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:819
-msgid "Max Widths"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:820
+#: dist/settings/class-kadence-blocks-settings.php:479
 msgid "Small Template"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:821
+#: dist/settings/class-kadence-blocks-settings.php:480
 msgid "Large Template"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:823
+#: dist/settings/class-kadence-blocks-settings.php:482
 msgid "Post default"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:824
+#: dist/settings/class-kadence-blocks-settings.php:483
 msgid "Page Default"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:825
+#: dist/settings/class-kadence-blocks-settings.php:484
 msgid "Enable Less Margin CSS"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:826
+#: dist/settings/class-kadence-blocks-settings.php:485
 msgid "Enable Editor Width"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:835
+#: dist/settings/class-kadence-blocks-settings.php:494
 msgid ""
 "Allows for changes to the editor width on per page/post basis with preset "
 "defaults."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:837
-#: dist/settings/class-kadence-blocks-settings.php:850
+#: dist/settings/class-kadence-blocks-settings.php:496
+#: dist/settings/class-kadence-blocks-settings.php:509
 msgid "False"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:838
-#: dist/settings/class-kadence-blocks-settings.php:851
+#: dist/settings/class-kadence-blocks-settings.php:497
+#: dist/settings/class-kadence-blocks-settings.php:510
 msgid "True"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:848
+#: dist/settings/class-kadence-blocks-settings.php:507
 msgid ""
 "Experimental editor CSS for less excess margins in Gutenberg in an attempt "
 "to get a closer WYSIWYG editing experience."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:878
-#: dist/settings/class-kadence-blocks-settings.php:890
+#: dist/settings/class-kadence-blocks-settings.php:519
+#: dist/settings/class-kadence-blocks-settings.php:527
+msgid "px"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:537
+#: dist/settings/class-kadence-blocks-settings.php:549
 msgid "Small"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:879
-#: dist/settings/class-kadence-blocks-settings.php:891
+#: dist/settings/class-kadence-blocks-settings.php:538
+#: dist/settings/class-kadence-blocks-settings.php:550
 msgid "Large"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:880
-#: dist/settings/class-kadence-blocks-settings.php:892
+#: dist/settings/class-kadence-blocks-settings.php:539
+#: dist/settings/class-kadence-blocks-settings.php:551
 msgid "Fullwidth"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:900
-msgid "Assign Editor Template Max Widths"
+#: dist/settings/class-kadence-blocks-settings.php:586
+msgid "Page Builder Toolkit"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:901
-msgid "Note: The current active themes \"$content_width\" is set to:"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:940
-msgid "Kadence Blocks -  Gutenberg Page Builder Toolkit"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:943
-msgid "Settings and Helpful Links"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:949
+#: dist/settings/class-kadence-blocks-settings.php:617
 msgid "Dashboard"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:950
+#: dist/settings/class-kadence-blocks-settings.php:618
 msgid "Help / Tutorials"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:951
+#: dist/settings/class-kadence-blocks-settings.php:619
 msgid "Go Pro"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:955
-#: dist/settings/class-kadence-blocks-settings.php:1235
+#: dist/settings/class-kadence-blocks-settings.php:623
+#: dist/settings/class-kadence-blocks-settings.php:918
 msgid "Settings"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:956
+#: dist/settings/class-kadence-blocks-settings.php:623
 msgid "Disable/Enable Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:975
-#: dist/settings/class-kadence-blocks-settings.php:979
+#: dist/settings/class-kadence-blocks-settings.php:643
+#: dist/settings/class-kadence-blocks-settings.php:647
 msgid "Activate"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:977
-#: dist/settings/class-kadence-blocks-settings.php:979
+#: dist/settings/class-kadence-blocks-settings.php:645
+#: dist/settings/class-kadence-blocks-settings.php:647
 msgid "Deactivate"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:979
+#: dist/settings/class-kadence-blocks-settings.php:647
 msgid "Activating..."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:979
+#: dist/settings/class-kadence-blocks-settings.php:647
 msgid "Activated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:979
+#: dist/settings/class-kadence-blocks-settings.php:647
 msgid "Deactivating..."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:979
+#: dist/settings/class-kadence-blocks-settings.php:647
 msgid "Deactivated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:994
+#: dist/settings/class-kadence-blocks-settings.php:656
+msgid "Editor Max Widths"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:656
+msgid "Match the editor width to your sites width."
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:658
+msgid "Note: The current active themes \"$content_width\" is set to:"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:665
 msgid "Save Changes"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1003
+#: dist/settings/class-kadence-blocks-settings.php:674
 msgid "Helpful Links and Resources"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1011
+#: dist/settings/class-kadence-blocks-settings.php:682
 msgid "Support"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1012
+#: dist/settings/class-kadence-blocks-settings.php:683
 msgid ""
 "Are you having trouble getting things to look how you want? Or are you stuck "
 "and not sure what to do? We can help!"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1013
+#: dist/settings/class-kadence-blocks-settings.php:684
 msgid "Ask a question"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1023
+#: dist/settings/class-kadence-blocks-settings.php:694
 msgid "Tutorials"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1024
+#: dist/settings/class-kadence-blocks-settings.php:695
 msgid ""
 "Are you not sure how to do something? Check out our tutorials for quick help "
 "with many topics."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1025
+#: dist/settings/class-kadence-blocks-settings.php:696
 msgid "View"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1035
+#: dist/settings/class-kadence-blocks-settings.php:706
 msgid "Plugin Documentation"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1036
+#: dist/settings/class-kadence-blocks-settings.php:707
 msgid ""
 "Kadence Blocks documentation is set up to help you create amazing content."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1037
+#: dist/settings/class-kadence-blocks-settings.php:708
 msgid "Browse Docs"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1049
+#: dist/settings/class-kadence-blocks-settings.php:720
 msgid "Kadence Themes Newsletter"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1050
+#: dist/settings/class-kadence-blocks-settings.php:721
 msgid ""
 "Get the latest news about product updates and new plugins right to your "
 "inbox."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1051
+#: dist/settings/class-kadence-blocks-settings.php:722
 msgid "Subscribe"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1072
+#: dist/settings/class-kadence-blocks-settings.php:743
 msgid "Row Layout"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1073
+#: dist/settings/class-kadence-blocks-settings.php:744
 msgid ""
 "Create rows with nested blocks either in columns or as a container. Give "
 "style to your rows with background, overlay, padding, etc."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1078
+#: dist/settings/class-kadence-blocks-settings.php:749
 msgid "Icon"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1079
+#: dist/settings/class-kadence-blocks-settings.php:750
 msgid ""
 "Choose from over 1500+ SVG Icons to add into your page and style the size, "
 "colors, background, border, etc."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1084
+#: dist/settings/class-kadence-blocks-settings.php:755
 msgid "Advanced Button"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1085
+#: dist/settings/class-kadence-blocks-settings.php:756
 msgid ""
 "Create an advanced button or a row of buttons. Style each one including "
 "hover controls plus you can use an icon and display them side by side"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1090
+#: dist/settings/class-kadence-blocks-settings.php:761
 msgid "Spacer/Divider"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1091
+#: dist/settings/class-kadence-blocks-settings.php:762
 msgid ""
-"Easily create a divder and determine the space around it or just create some "
-"space in your content."
+"Easily create a divider and determine the space around it or just create "
+"some space in your content."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1096
+#: dist/settings/class-kadence-blocks-settings.php:767
 msgid "Advanced Heading"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1097
+#: dist/settings/class-kadence-blocks-settings.php:768
 msgid ""
 "Transform your headings to Advanced Headings and customize the font family "
 "(even google fonts), color, and size."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1102
+#: dist/settings/class-kadence-blocks-settings.php:773
 msgid "Tabs"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1103
+#: dist/settings/class-kadence-blocks-settings.php:774
 msgid ""
 "Create custom vertical or horizontal tabs with advanced styling controls. "
 "Each tab content is an empty canvas able to contain any other blocks."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1114
+#: dist/settings/class-kadence-blocks-settings.php:779
+msgid "Info Box"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:780
+msgid ""
+"Create a box link containing an icon or image and optionally a title, "
+"description and learn more text. Style static and hover colors even show a "
+"box shadow."
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:785
+msgid "Accordion"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:786
+msgid ""
+"Create beautiful accordions! Each pane is able to contain any other block, "
+"customize title styles, content background and borders."
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:797
 msgid "Invalid nonce"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1117
+#: dist/settings/class-kadence-blocks-settings.php:800
 msgid "Missing Content"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:1123
+#: dist/settings/class-kadence-blocks-settings.php:806
 msgid "Nothing to Save"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "font-weight:"
 msgstr ""
