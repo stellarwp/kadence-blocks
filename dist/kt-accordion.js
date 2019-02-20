@@ -607,11 +607,14 @@ function () {
         if (animationAction === 'closed') {
           // 1. Getting ID of panel that we want to close
           var header = this.headers[headerIndex];
-          var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
+		  var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
+		  
 		  panelToClose.style.maxHeight = panelToClose.getAttribute('data-panel-height');
-          panelToClose.classList.add(this.settings.hiddenClass); // 3. Removing active classes
 
-          panelToClose.classList.remove(this.settings.activeClass);
+		  panelToClose.classList.add(this.settings.hiddenClass); // 3. Removing active classes
+		  
+		  panelToClose.classList.remove(this.settings.activeClass);
+
           header.classList.remove(this.settings.activeClass); // 4. Set aria attrs
 
           header.setAttribute('aria-expanded', false); // 5. Resetting toggling so a new event can be fired
@@ -755,7 +758,7 @@ function () {
       var panelInner = panel.querySelector(this.settings.panelInnerClass);
       var activeHeight = panelInner.offsetHeight;
 	  return panel.setAttribute('data-panel-height', "".concat(activeHeight, "px") ); 
-	  //panel.style.maxHeight = "".concat(activeHeight, "px");
+	  //return panel.style.minHeight = "".concat(activeHeight, "px");
 	  // panel.style.maxHeight = panel.getAttribute('data-panel-height');
     }
     /**

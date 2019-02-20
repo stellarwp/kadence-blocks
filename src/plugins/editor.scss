@@ -6,7 +6,7 @@
  */
 
  // Button Groups
- .kt-blocks-width-control {
+ .kt-blocks-width-control, .kt-blocks-control-wrap {
     padding:10px;
  }
 .components-button-group .kt-editor-width-btn {
@@ -29,4 +29,63 @@
 }
 .components-button-group .kt-editor-width-btn.is-primary, .components-button-group .kt-editor-width-btn:focus:not(:disabled):not([aria-disabled=true]) {
     background:#444;
+}
+.kt-blocks-control-wrap .kt-block-defaults {
+	display: inline-flex;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    align-items: center;
+    line-height: 24px;
+    background: #fff;
+    border: 1px solid #ddd;
+    text-align: left;
+    color: #444;
+    width: 80%;
+    box-shadow: none;
+    margin-bottom: 10px;
+	span.kt-block-icon {
+		display: block;
+		height: 20px;
+		margin-right: 10px;
+	}
+}
+.kt-blocks-control-wrap .kt-block-defaults:hover {
+	background: #f9f9f9;
+}
+.kt-blocks-control-wrap .kt-block-defaults:focus {
+    box-shadow: none;
+}
+.kt-blocks-control-wrap .kt-block-settings {
+    width: 16%;
+    display: inline-flex;
+    padding: 6px 10px;
+    font-weight: 600;
+    -ms-flex-align: center;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #ddd;
+    text-align: left;
+    color: #555;
+	box-shadow: none;
+	margin-left: 2%;
+    margin-bottom: 10px;
+}
+.kt-blocks-control-wrap .kt-block-settings:hover {
+	background: #f9f9f9;
+}
+.kt-blocks-control-wrap .kt-block-settings:focus {
+    box-shadow: none;
+}
+.kt-block-settings-modal .components-modal__header h1, .kt-block-defaults-modal .components-modal__header h1 {
+    font-size: 14px;
+    font-weight: bold;
+}
+.kt-block-defaults-modal button.components-button.kt-defaults-save, .kt-block-settings-modal button.components-button.kt-settings-save  {
+    margin-top: 10px;
+}
+@media (min-width: 600px){
+    .kt-block-defaults-modal {
+        width: 400px;
+    }
 }

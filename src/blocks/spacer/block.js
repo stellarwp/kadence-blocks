@@ -7,7 +7,7 @@
 /**
  * Import files
  */
-import icons from './icon';
+import icons from '../../icons';
 import edit from './edit';
 /**
  * Import Css
@@ -51,7 +51,7 @@ function kadenceHexToRGB( hex, alpha ) {
 registerBlockType( 'kadence/spacer', {
 	title: __( 'Spacer/Divider' ), // Block title.
 	icon: {
-		src: icons.block,
+		src: icons.spacerblock,
 	},
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [
@@ -71,6 +71,10 @@ registerBlockType( 'kadence/spacer', {
 		spacerHeight: {
 			type: 'number',
 			default: 60,
+		},
+		spacerHeightUnits: {
+			type: 'string',
+			default: 'px',
 		},
 		tabletSpacerHeight: {
 			type: 'number',
@@ -158,12 +162,12 @@ registerBlockType( 'kadence/spacer', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID } } = props;
+		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID, spacerHeightUnits } } = props;
 		const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
 		return (
 			<div className={ `align${ ( blockAlignment ? blockAlignment : 'none' ) } kt-block-spacer-${ uniqueID }` }>
 				<div className={ `kt-block-spacer kt-block-spacer-halign-${ hAlign }` } style={ {
-					height: spacerHeight + 'px',
+					height: spacerHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ),
 				} } >
 					{ dividerEnable && (
 						<hr className="kt-divider" style={ {

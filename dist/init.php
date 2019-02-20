@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function kadence_gutenberg_editor_assets() {
 	// Scripts.
-	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor' ), KT_BLOCKS_VERSION, true );
+	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api' ), KT_BLOCKS_VERSION, true );
 	$editor_widths = get_option( 'kt_blocks_editor_width', array() );
 	$sidebar_size = 750;
 	$nosidebar_size = 1140;
@@ -66,15 +66,28 @@ function kadence_gutenberg_editor_assets() {
 			$jssize = $default_size;
 		}
 	}
+	if ( current_user_can( apply_filters( 'kadence_blocks_admin_role', 'manage_options' ) ) ) {
+		$userrole = 'admin';
+	} else if ( current_user_can( apply_filters( 'kadence_blocks_editor_role', 'delete_others_pages' ) ) ) {
+		$userrole = 'editor';
+	} else if ( current_user_can( apply_filters( 'kadence_blocks_author_role', 'publish_posts' ) ) ) {
+		$userrole = 'author';
+	} else if ( current_user_can( apply_filters( 'kadence_blocks_contributor_role', 'edit_posts' ) ) ) {
+		$userrole = 'contributor';
+	} else {
+		$userrole = 'none';
+	}
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
 		array(
-			'sidebar_size' => $sidebar_size,
+			'sidebar_size'   => $sidebar_size,
 			'nosidebar_size' => $nosidebar_size,
-			'default_size' => $jssize,
-			'config'   => get_option( 'kt_blocks_config_blocks' ),
-			'settings' => get_option( 'kt_blocks_settings_blocks' ),
+			'default_size'   => $jssize,
+			'config'         => get_option( 'kt_blocks_config_blocks' ),
+			'configuration'  => get_option( 'kadence_blocks_config_blocks' ),
+			'settings'       => get_option( 'kadence_blocks_settings_blocks' ),
+			'userrole'       => $userrole,
 		)
 	);
 	// Styles.

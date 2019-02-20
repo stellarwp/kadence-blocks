@@ -84,7 +84,7 @@ class KadencePane extends Component {
 					</PanelBody>
 				</InspectorControls>
 				<div className={ 'kt-accordion-header-wrap' } >
-					<button className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
+					<div className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
 						<div className="kt-blocks-accordion-title-wrap">
 							{ icon && 'left' === iconSide && (
 								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } icon={ ( 'fa' === icon.substring( 0, 2 ) ? FaIco[ icon ] : Ico[ icon ] ) } />
@@ -102,7 +102,7 @@ class KadencePane extends Component {
 							) }
 						</div>
 						<div className="kt-blocks-accordion-icon-trigger"></div>
-					</button>
+					</div>
 				</div>
 				<div className={ 'kt-accordion-panel' } >
 					<div className={ 'kt-accordion-panel-inner' } >

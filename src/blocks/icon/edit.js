@@ -25,11 +25,11 @@ const { __ } = wp.i18n;
 
 const {
 	InspectorControls,
-	ColorPalette,
 	URLInput,
 	BlockControls,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
+	ColorPalette,
 } = wp.editor;
 const {
 	Component,

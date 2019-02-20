@@ -250,10 +250,11 @@
     border-top: 0;
 }
 .kt-accordion-panel {
-	max-height: 275vh;
-    overflow: hidden;
+	max-height: 75vh;
+	overflow: auto;
     &.kt-accordion-panel-hidden { 
-        max-height: 0 !important;
+		max-height: 0 !important;
+		overflow: hidden;
     }
     .kt-accordion-initialized & { 
 		transition: max-height ease-in-out 0.2s;

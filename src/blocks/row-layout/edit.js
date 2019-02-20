@@ -561,24 +561,24 @@ class KadenceRowLayout extends Component {
 						max={ 500 }
 					/>
 					<RangeControl
-						label={ icons.outlinebottom }
-						value={ bottomPadding }
-						className="kt-icon-rangecontrol"
-						onChange={ ( value ) => {
-							setAttributes( {
-								bottomPadding: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<RangeControl
 						label={ icons.outlineright }
 						value={ rightPadding }
 						className="kt-icon-rangecontrol"
 						onChange={ ( value ) => {
 							setAttributes( {
 								rightPadding: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 500 }
+					/>
+					<RangeControl
+						label={ icons.outlinebottom }
+						value={ bottomPadding }
+						className="kt-icon-rangecontrol"
+						onChange={ ( value ) => {
+							setAttributes( {
+								bottomPadding: value,
 							} );
 						} }
 						min={ 0 }

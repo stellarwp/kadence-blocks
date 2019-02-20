@@ -55,6 +55,7 @@ class Kadence_Blocks_Settings {
 		add_action( 'enqueue_block_editor_assets', array( $this, 'deregister_blocks' ) );
 		add_action( 'admin_init', array( $this, 'activation_redirect' ) );
 		add_action( 'admin_init', array( $this, 'load_settings' ) );
+		add_action( 'init', array( $this, 'load_api_settings' ) );
 
 	}
 	/**
@@ -121,94 +122,9 @@ class Kadence_Blocks_Settings {
 		);
 		$settings = array(
 			'kadence/spacer' => array(
-				'spacerHeight' => array(
-					'type' => 'number',
-					'default' => 60,
-					'options' => array(
-						'min' => 6,
-						'max' => 600,
-						'step' => 1,
-					),
-					'name' => __( 'Spacer Height (px)', 'kadence-blocks' ),
-				),
-				'tabletSpacerHeight' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 6,
-						'max' => 600,
-						'step' => 1,
-					),
-					'name' => __( 'Tablet Spacer Height (px)', 'kadence-blocks' ),
-				),
-				'mobileSpacerHeight' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 6,
-						'max' => 600,
-						'step' => 1,
-					),
-					'name' => __( 'Mobile Spacer Height (px)', 'kadence-blocks' ),
-				),
-				'dividerEnable' => array(
-					'type' => 'boolean',
-					'default' => true,
-					'name' => __( 'Enable Divider', 'kadence-blocks' ),
-				),
-				'dividerStyle' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'solid',
-							'name' => __( 'Solid', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'dashed',
-							'name' => __( 'Dashed', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'dotted',
-							'name' => __( 'Dotted', 'kadence-blocks' ),
-						),
-					),
-					'default' => 'solid',
-					'name' => __( 'Divider Style', 'kadence-blocks' ),
-				),
-				'dividerOpacity' => array(
-					'type' => 'number',
-					'default' => 100,
-					'options' => array(
-						'min' => 0,
-						'max' => 100,
-						'step' => 1,
-					),
-					'name' => __( 'Divider Opacity (0-100)', 'kadence-blocks' ),
-				),
-				'dividerColor' => array(
-					'type' => 'color',
-					'default' => '#eee',
-					'name' => __( 'Divider Color', 'kadence-blocks' ),
-				),
-				'dividerWidth' => array(
-					'type' => 'number',
-					'default' => 80,
-					'options' => array(
-						'min' => 0,
-						'max' => 100,
-						'step' => 1,
-					),
-					'name' => __( 'Divider Width (%)', 'kadence-blocks' ),
-				),
-				'dividerHeight' => array(
-					'type' => 'number',
-					'default' => 1,
-					'options' => array(
-						'min' => 0,
-						'max' => 40,
-						'step' => 1,
-					),
-					'name' => __( 'Divider Height (px)', 'kadence-blocks' ),
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
 				),
 			),
 			'kadence/rowlayout' => array(
@@ -509,293 +425,9 @@ class Kadence_Blocks_Settings {
 				),
 			),
 			'kadence/tabs' => array(
-				'showPresets' => array(
-					'type' => 'boolean',
-					'default' => true,
-					'name' => __( 'Show Presets', 'kadence-blocks' ),
-				),
-				'layout' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'tabs',
-							'name' => __( 'Standard Tabs', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'vtabs',
-							'name' => __( 'Vertical Tabs', 'kadence-blocks' ),
-						),
-					),
-					'default' => 'tabs',
-					'name' => __( 'Tab Layout', 'kadence-blocks' ),
-				),
-				'tabletLayout' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'tabs',
-							'name' => __( 'Standard Tabs', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'vtabs',
-							'name' => __( 'Vertical Tabs', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'accordion',
-							'name' => __( 'Accordion', 'kadence-blocks' ),
-						),
-					),
-					'default' => '',
-					'name' => __( 'TABLET - Tab Layout', 'kadence-blocks' ),
-				),
-				'mobileLayout' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'tabs',
-							'name' => __( 'Standard Tabs', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'vtabs',
-							'name' => __( 'Vertical Tabs', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'accordion',
-							'name' => __( 'Accordion', 'kadence-blocks' ),
-						),
-					),
-					'default' => '',
-					'name' => __( 'MOBILE - Tab Layout', 'kadence-blocks' ),
-				),
-				'contentBgColor' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'Content Background Color', 'kadence-blocks' ),
-				),
-				'contentBorderColor' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'Content Border Color', 'kadence-blocks' ),
-				),
-				'contentBorder' => array(
-					'type' => 'numberArray',
-					'options' => array(
-						'min' => 0,
-						'max' => 20,
-						'step' => 1,
-					),
-					'default' => array( 1, 1, 1, 1 ),
-					'name' => __( 'Content Border Width', 'kadence-blocks' ),
-				),
-				'innerPadding' => array(
-					'type' => 'numberArray',
-					'options' => array(
-						'min' => 0,
-						'max' => 100,
-						'step' => 1,
-					),
-					'default' => array( 20, 20, 20, 20 ),
-					'name' => __( 'Content Padding', 'kadence-blocks' ),
-				),
-				'tabAlignment' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'left',
-							'name' => __( 'Left', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'center',
-							'name' => __( 'Center', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'right',
-							'name' => __( 'Right', 'kadence-blocks' ),
-						),
-					),
-					'default' => 'left',
-					'name' => __( 'Tab Alignment', 'kadence-blocks' ),
-				),
-				'titleColor' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'Title Text Color', 'kadence-blocks' ),
-				),
-				'titleColorHover' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'HOVER - Title Text Color', 'kadence-blocks' ),
-				),
-				'titleColorActive' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'ACTIVE - Title Text Color', 'kadence-blocks' ),
-				),
-				'titleBg' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'Title Background Color', 'kadence-blocks' ),
-				),
-				'titleBgHover' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'HOVER - Title Background Color', 'kadence-blocks' ),
-				),
-				'titleBgActive' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'ACTIVE - Title Background Color', 'kadence-blocks' ),
-				),
-				'titleBorder' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'Title Border Color', 'kadence-blocks' ),
-				),
-				'titleBorderHover' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'HOVER - Title Border Color', 'kadence-blocks' ),
-				),
-				'titleBorderActive' => array(
-					'type' => 'color',
-					'default' => '',
-					'name' => __( 'ACTIVE - Title Border Color', 'kadence-blocks' ),
-				),
-				'titleBorderWidth' => array(
-					'type' => 'numberArray',
-					'options' => array(
-						'min' => 0,
-						'max' => 20,
-						'step' => 1,
-					),
-					'default' => '',
-					'name' => __( 'Title Border Width', 'kadence-blocks' ),
-				),
-				'titleBorderRadius' => array(
-					'type' => 'numberArray',
-					'options' => array(
-						'min' => 0,
-						'max' => 50,
-						'step' => 1,
-					),
-					'default' => '',
-					'name' => __( 'Title Border Radius', 'kadence-blocks' ),
-				),
-				'titlePadding' => array(
-					'type' => 'numberArray',
-					'options' => array(
-						'min' => 0,
-						'max' => 50,
-						'step' => 1,
-					),
-					'default' => '',
-					'name' => __( 'Title Padding', 'kadence-blocks' ),
-				),
-				'titleMargin' => array(
-					'type' => 'numberArray',
-					'default' => '',
-					'options' => array(
-						'min' => -25,
-						'max' => 25,
-						'step' => 1,
-					),
-					'name' => __( 'Title Margin', 'kadence-blocks' ),
-				),
-				'sizeType' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'px',
-							'name' => __( 'px', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'em',
-							'name' => __( 'em', 'kadence-blocks' ),
-						),
-					),
-					'default' => 'px',
-					'name' => __( 'Font Size Units', 'kadence-blocks' ),
-				),
-				'size' => array(
-					'type' => 'typoNumber',
-					'default' => '',
-					'units' => 'sizeType',
-					'options' => array(
-						'min' => 5,
-						'max' => 200,
-						'step' => 1,
-					),
-					'name' => __( 'Title Font Size', 'kadence-blocks' ),
-				),
-				'tabSize' => array(
-					'type' => 'typoNumber',
-					'default' => '',
-					'units' => 'sizeType',
-					'options' => array(
-						'min' => 5,
-						'max' => 200,
-						'step' => 1,
-					),
-					'name' => __( 'TABLET - Title Font Size', 'kadence-blocks' ),
-				),
-				'mobileSize' => array(
-					'type' => 'typoNumber',
-					'default' => '',
-					'units' => 'sizeType',
-					'options' => array(
-						'min' => 5,
-						'max' => 200,
-						'step' => 1,
-					),
-					'name' => __( 'MOBILE - Title Font Size', 'kadence-blocks' ),
-				),
-				'lineType' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'px',
-							'name' => __( 'px', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'em',
-							'name' => __( 'em', 'kadence-blocks' ),
-						),
-					),
-					'default' => 'px',
-					'name' => __( 'Line Height Size Units', 'kadence-blocks' ),
-				),
-				'lineHeight' => array(
-					'type' => 'typoNumber',
-					'default' => '',
-					'units' => 'lineType',
-					'options' => array(
-						'min' => 5,
-						'max' => 200,
-						'step' => 1,
-					),
-					'name' => __( 'Title Font Line Height (px)', 'kadence-blocks' ),
-				),
-				'tabLineHeight' => array(
-					'type' => 'typoNumber',
-					'default' => '',
-					'units' => 'lineType',
-					'options' => array(
-						'min' => 5,
-						'max' => 200,
-						'step' => 1,
-					),
-					'name' => __( 'TABLET - Title Font Line Height', 'kadence-blocks' ),
-				),
-				'mobileLineHeight' => array(
-					'type' => 'typoNumber',
-					'default' => '',
-					'units' => 'lineType',
-					'options' => array(
-						'min' => 5,
-						'max' => 200,
-						'step' => 1,
-					),
-					'name' => __( 'MOBILE - Title Font Line Height', 'kadence-blocks' ),
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
 				),
 			),
 		);
@@ -812,6 +444,28 @@ class Kadence_Blocks_Settings {
 				'texts'               => $texts,
 			)
 		);
+	}
+	/**
+	 * Register settings
+	 */
+	public function load_api_settings() {
+
+		register_setting( 'kadence_blocks_config_blocks', 'kadence_blocks_config_blocks', array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Block Defaults', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting( 'kadence_blocks_settings_blocks', 'kadence_blocks_settings_blocks', array(
+			'type'              => 'string',
+			'description'       => __( 'Config Kadence Block Settings View', 'kadence-blocks' ),
+			'sanitize_callback' => 'sanitize_text_field',
+			'show_in_rest'      => true,
+			'default'           => '',
+		)
+	);
 	}
 	/**
 	 * Register settings

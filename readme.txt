@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
-Tested up to: 5.0.4
-Stable tag: 1.3.0
+Tested up to: 5.1.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.3.1 =
+* Fix: Pane Title not selectable in Firefox.
+* Add: VH unit options to Spacer.
+* Add: Kadence Blocks Control Plugin! 
+You can now define which settings users see based on user role. Currently just added for Tabs and Spacer Block.
+You can also set the block defaults.
 
 = 1.3.0 =
 * Fix: Jerky Accordion Animation.

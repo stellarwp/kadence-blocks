@@ -35,9 +35,9 @@ const {
 const {
 	InnerBlocks,
 	InspectorControls,
-	ColorPalette,
 	BlockControls,
 	AlignmentToolbar,
+	ColorPalette,
 	BlockAlignmentToolbar,
 } = wp.editor;
 const {

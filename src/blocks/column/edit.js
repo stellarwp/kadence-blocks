@@ -20,8 +20,8 @@ const {
 } = wp.element;
 const {
 	InnerBlocks,
-	ColorPalette,
 	InspectorControls,
+	ColorPalette,
 } = wp.editor;
 const {
 	TabPanel,

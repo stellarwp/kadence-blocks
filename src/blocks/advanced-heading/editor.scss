@@ -6,15 +6,15 @@
  */
 
  // Controls
- .edit-post-sidebar .typography-family-select-form-row input[type=text] {
+ .edit-post-sidebar .typography-family-select-form-row input[type=text], .kt-block-defaults-modal .typography-family-select-form-row input[type=text] {
 	box-shadow:none;
 }
-.edit-post-sidebar .typography-family-select-form-row {
+.edit-post-sidebar .typography-family-select-form-row, .kt-block-defaults-modal .typography-family-select-form-row {
 	margin-bottom: 10px;
 	z-index: 200;
     position: relative;
 }
- .edit-post-sidebar h2.kt-heading-size-title {
+ .edit-post-sidebar h2.kt-heading-size-title,  .kt-block-defaults-modal h2.kt-heading-size-title {
     font-size: 14px;
 	margin-bottom: 0;
     color:#555d66;

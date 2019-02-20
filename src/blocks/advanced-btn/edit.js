@@ -22,8 +22,8 @@ const { __ } = wp.i18n;
 const {
 	RichText,
 	URLInput,
-	InspectorControls,
 	ColorPalette,
+	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
 } = wp.editor;

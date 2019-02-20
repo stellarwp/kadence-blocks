@@ -22,7 +22,7 @@
 
 .kt-select-starter-style-tabs .kt-inital-tabs-style-btn {
     height: auto;
-    width: 350px;
+    width: 320px;
     background: white;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -87,7 +87,7 @@
 .kt-tab-title .editor-rich-text {
     display: inline-flex;
 }
-.edit-post-sidebar p.kt-setting-label {
+.edit-post-sidebar p.kt-setting-label, .kt-block-defaults-modal p.kt-setting-label {
     font-weight: 600;
     color: #191e23;
 	padding: 0 0 5px;

@@ -34,6 +34,9 @@ jQuery( document ).ready( function( $ ) {
 					case 'boolean':
 						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '">' + obj.name + '</label><input id="' + key + '" class="kt-block-config-input" name="' + key + '" type="checkbox" ' + ( false === settingDefault ? '' : 'checked' ) + '></div>';
 						break;
+					case 'info':
+						settingsContent += '<div class="kt-modal-settings-field"><p>' + obj.name + '</p></div>';
+						break;
 					case 'number':
 						settingsContent += '<div class="kt-modal-settings-field"><label for="' + key + '">' + obj.name + '</label><input id="' + key + '" class="kt-block-config-input" name="' + key + '" type="number" step="' + obj.options.step + '" max="' + obj.options.max + '" min="' + obj.options.min + '" value="' + settingDefault + '"></div>';
 						break;

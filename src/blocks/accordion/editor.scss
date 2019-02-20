@@ -151,7 +151,7 @@
 			margin: 2px 0;
 			svg {
 				fill: #000;
-				width: auto;
+				width: 100px;
 				transform: scale(1);
 			}
 			svg.top-icon {
@@ -175,7 +175,7 @@
 	font-weight: bold;
     color: #999;
 }
- button.kt-blocks-accordion-header {
+.kt-blocks-accordion-header {
     align-content: space-between;
     align-items: center;
     background-color: #f2f2f2;
@@ -225,21 +225,21 @@ button.components-button.kt-accordion-add.is-button.is-primary svg {
 .kt-blocks-accordion-title-wrap {
     display: flex;
 }
-.kt-pane-header-alignment-center button.kt-blocks-accordion-header {
+.kt-pane-header-alignment-center .kt-blocks-accordion-header {
     text-align: center;
 }
-.kt-pane-header-alignment-center button.kt-blocks-accordion-header .kt-blocks-accordion-title-wrap {
+.kt-pane-header-alignment-center .kt-blocks-accordion-header .kt-blocks-accordion-title-wrap {
 	flex-grow: 2;
 	justify-content: center;
 }
-.kt-pane-header-alignment-right button.kt-blocks-accordion-header {
+.kt-pane-header-alignment-right .kt-blocks-accordion-header {
     text-align: right;
 }
-.kt-pane-header-alignment-right button.kt-blocks-accordion-header .kt-blocks-accordion-title-wrap {
+.kt-pane-header-alignment-right .kt-blocks-accordion-header .kt-blocks-accordion-title-wrap {
 	flex-grow: 2;
 	justify-content: flex-end;
 }
-.kt-pane-header-alignment-right button.kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger {
+.kt-pane-header-alignment-right .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger {
 	margin-left:10px;
 }
 .kt-acccordion-button-label-hide .editor-rich-text {

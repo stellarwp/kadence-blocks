@@ -1035,14 +1035,14 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['tabletSpacerHeight'] ) && ! empty( $attr['tabletSpacerHeight'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
 			$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
-			$css .= 'height:' . $attr['tabletSpacerHeight'] . 'px !important;';
+			$css .= 'height:' . $attr['tabletSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . ' !important;';
 			$css .= '}';
 			$css .= '}';
 		}
 		if ( isset( $attr['mobileSpacerHeight'] ) && ! empty( $attr['mobileSpacerHeight'] ) ) {
 			$css .= '@media (max-width: 767px) {';
 			$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
-			$css .= 'height:' . $attr['mobileSpacerHeight'] . 'px !important;';
+			$css .= 'height:' . $attr['mobileSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . ' !important;';
 			$css .= '}';
 			$css .= '}';
 		}

@@ -37,8 +37,8 @@ const {
 	RichText,
 	AlignmentToolbar,
 	InspectorControls,
-	ColorPalette,
 	BlockControls,
+	ColorPalette,
 	MediaPlaceholder,
 } = wp.editor;
 const {
