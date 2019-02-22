@@ -102,6 +102,7 @@ class KadenceAdvancedHeading extends Component {
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
 			{ key: '%', name: __( '%' ) },
+			{ key: 'vh', name: __( 'vh' ) },
 		];
 		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
 		const marginMin = ( marginType === 'em' ? 0.1 : 1 );

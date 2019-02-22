@@ -50,6 +50,9 @@ registerBlockType( 'kadence/advancedheading', {
 		__( 'heading' ),
 		__( 'KT' ),
 	],
+	supports: {
+		ktanimate: true,
+	},
 	attributes: {
 		content: {
 			type: 'array',
@@ -269,17 +272,18 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { anchor, align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className } } = props;
+		const { attributes: { anchor, align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation } } = props;
 		const tagName = 'h' + level;
 		const mType = ( marginType ? marginType : 'px' );
 		const tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
-		const wrapper = ( anchor ? true : false );
+		const wrapper = ( anchor || ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation ||'reveal-down' === kadenceAnimation ) ) ? true : false );
 		const classes = ( className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
 		const htmlItem = (
 			<RichText.Content
 				tagName={ tagName }
 				id={ tagId }
 				className={ `kt-adv-heading${ uniqueID } ${ classes }` }
+				data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
 				style={ {
 					textAlign: align,
 					color: color,
@@ -293,7 +297,7 @@ registerBlockType( 'kadence/advancedheading', {
 		return (
 			<Fragment>
 				{ wrapper && (
-					<div id={ `kt-adv-heading${ uniqueID }` } className="kadence-advanced-heading-wrapper">
+					<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( kadenceAnimation ? ' kadence-heading-clip-animation' : '' ) }` }>
 						{ htmlItem }
 					</div>
 				) }

@@ -10,3 +10,13 @@
 	border-style: solid;
 	border-width:0;
 }
+.kadence-heading-clip-animation {
+	overflow: hidden;
+}
+[data-aos="reveal-up"] {
+	transition-property: transform;
+	transform: translate3d(0, -110%, 0);
+	&.aos-animate {
+		transform: translate3d(0, 0, 0);
+	}
+}
