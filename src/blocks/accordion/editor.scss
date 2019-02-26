@@ -175,6 +175,10 @@
 	font-weight: bold;
     color: #999;
 }
+.kt-accordion-wrap .kt-accordion-header-wrap {
+	margin:0;
+	padding:0;
+}
 .kt-blocks-accordion-header {
     align-content: space-between;
     align-items: center;
@@ -186,7 +190,7 @@
     padding: 8px 12px;
     text-align: left;
     transition: all ease-in-out .2s;
-    width: 100%;
+	width: 100%;
 }
 
 .kt-accordion-panel-inner {
@@ -194,10 +198,28 @@
     border: 1px solid #eee;
     border-top-width: 0;
 }
+.kt-accordion-add-selecter {
+    display: flex;
+}
 button.components-button.kt-accordion-add.is-button.is-primary {
     border: 0;
     text-shadow: none;
     box-shadow: none;
+}
+.kt-accordion-add-selecter button.components-button.kt-accordion-remove {
+    border: 0;
+    text-shadow: none;
+	box-shadow: none;
+	background: #e1e1e1;
+    border-radius: 3px;
+    margin-left: 5px;
+    height: 28px;
+    line-height: 26px;
+    padding: 0 10px 1px;
+}
+.kt-accordion-add-selecter button.components-button.kt-accordion-remove:not(:disabled):not([aria-disabled=true]):not(.is-default):hover {
+	background: #eee;
+	box-shadow: none;
 }
 button.components-button.kt-accordion-add.is-button.is-primary svg {
     margin-top: 4px;

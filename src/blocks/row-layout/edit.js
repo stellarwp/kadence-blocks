@@ -18,6 +18,7 @@ import ResizableBox from 're-resizable';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 import PrebuiltModal from './prebuilt_modal';
+import MeasurementControls from '../../measurement-control';
 /**
  * Import Css
  */
@@ -107,7 +108,7 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const onResize = ( event, direction, elt ) => {
 			this.setState( {
 				firstWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5,
@@ -479,6 +480,44 @@ class KadenceRowLayout extends Component {
 						</Tooltip>
 					) ) }
 				</ButtonGroup>
+				<PanelBody
+					title={ __( 'Tablet Padding/Margin' ) }
+					initialOpen={ false }
+				>
+					<MeasurementControls
+						label={ __( 'Padding (px)' ) }
+						measurement={ tabletPadding }
+						onChange={ ( value ) => setAttributes( { tabletPadding: value } ) }
+						min={ 0 }
+						max={ 500 }
+						step={ 1 }
+					/>
+					<h2>{ __( 'Tablet Margin (px)' ) }</h2>
+					<RangeControl
+						label={ icons.outlinetop }
+						value={ topMarginT }
+						className="kt-icon-rangecontrol kt-top-margin"
+						onChange={ ( value ) => {
+							setAttributes( {
+								topMarginT: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 200 }
+					/>
+					<RangeControl
+						label={ icons.outlinebottom }
+						value={ bottomMarginT }
+						className="kt-icon-rangecontrol kt-bottom-margin"
+						onChange={ ( value ) => {
+							setAttributes( {
+								bottomMarginT: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 200 }
+					/>
+				</PanelBody>
 			</PanelBody>
 		);
 

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.1.0
-Stable tag: 1.3.4
+Stable tag: 1.3.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.3.5 =
+* Fix: Font Weight tab titles, remove underline if theme adding.
+* Add: Tablet Padding and margin controls to row layout.
+* Add: Allow for wrapping of the accordion button with heading tag.
 
 = 1.3.4 =
 * Fix: Error buttons.

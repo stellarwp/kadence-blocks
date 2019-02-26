@@ -15,8 +15,32 @@
 }
 [data-aos="reveal-up"] {
 	transition-property: transform;
-	transform: translate3d(0, -110%, 0);
+	transform: translate3d(0, -140%, 0);
 	&.aos-animate {
 		transform: translate3d(0, 0, 0);
 	}
+}
+[data-aos="reveal-down"] {
+	transition-property: transform;
+	transform: translate3d(0, 140%, 0);
+	&.aos-animate {
+		transform: translate3d(0, 0, 0);
+	}
+}
+[data-aos="reveal-left"] {
+	transition-property: transform;
+	transform: translate3d(-110%, 0, 0);
+	&.aos-animate {
+		transform: translate3d(0, 0, 0);
+	}
+}
+[data-aos="reveal-right"] {
+	transition-property: transform;
+	transform: translate3d(110%, 0, 0);
+	&.aos-animate {
+		transform: translate3d(0, 0, 0);
+	}
+}
+.kadence-heading-clip-animation .wp-block-kadence-advancedheading {
+	display: inline-block;
 }

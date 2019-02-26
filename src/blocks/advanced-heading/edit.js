@@ -78,7 +78,7 @@ class KadenceAdvancedHeading extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
+		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, kadenceAnimation, kadenceAOSOptions }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
 		const markBGString = ( markBG ? hexToRGBA( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? hexToRGBA( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -314,6 +314,42 @@ class KadenceAdvancedHeading extends Component {
 				}
 			</TabPanel>
 		);
+		const headingContent = (
+			<RichText
+				formattingControls={ [ 'bold', 'italic', 'link', 'underline', 'mark' ] }
+				wrapperClassName={ className }
+				tagName={ tagName }
+				value={ content }
+				onChange={ ( value ) => setAttributes( { content: value } ) }
+				onMerge={ mergeBlocks }
+				unstableOnSplit={
+					insertBlocksAfter ?
+						( before, after, ...blocks ) => {
+							setAttributes( { content: before } );
+							insertBlocksAfter( [
+								...blocks,
+								createBlock( 'core/paragraph', { content: after } ),
+							] );
+						} :
+						undefined
+				}
+				onRemove={ () => onReplace( [] ) }
+				style={ {
+					textAlign: align,
+					color: color,
+					fontWeight: fontWeight,
+					fontStyle: fontStyle,
+					fontSize: size + sizeType,
+					lineHeight: lineHeight + lineType,
+					letterSpacing: letterSpacing + 'px',
+					fontFamily: ( typography ? typography : '' ),
+					marginTop: ( topMargin ? topMargin + marginType : '' ),
+					marginBottom: ( bottomMargin ? bottomMargin + marginType : '' ),
+				} }
+				className={ `kt-adv-heading${ uniqueID }` }
+				placeholder={ __( 'Write heading…' ) }
+			/>
+		);
 		return (
 			<Fragment>
 				<style>
@@ -541,40 +577,19 @@ class KadenceAdvancedHeading extends Component {
 							} );
 						} } />
 				</InspectorAdvancedControls>
-				<RichText
-					formattingControls={ [ 'bold', 'italic', 'link', 'underline', 'mark' ] }
-					wrapperClassName={ className }
-					tagName={ tagName }
-					value={ content }
-					onChange={ ( value ) => setAttributes( { content: value } ) }
-					onMerge={ mergeBlocks }
-					unstableOnSplit={
-						insertBlocksAfter ?
-							( before, after, ...blocks ) => {
-								setAttributes( { content: before } );
-								insertBlocksAfter( [
-									...blocks,
-									createBlock( 'core/paragraph', { content: after } ),
-								] );
-							} :
-							undefined
-					}
-					onRemove={ () => onReplace( [] ) }
-					style={ {
-						textAlign: align,
-						color: color,
-						fontWeight: fontWeight,
-						fontStyle: fontStyle,
-						fontSize: size + sizeType,
-						lineHeight: lineHeight + lineType,
-						letterSpacing: letterSpacing + 'px',
-						fontFamily: ( typography ? typography : '' ),
-						marginTop: ( topMargin ? topMargin + marginType : '' ),
-						marginBottom: ( bottomMargin ? bottomMargin + marginType : '' ),
-					} }
-					className={ `kt-adv-heading${ uniqueID }` }
-					placeholder={ __( 'Write heading…' ) }
-				/>
+				{ kadenceAnimation && (
+					<div className={ `kt-animation-wrap-${ kadenceAnimation }` }>
+						<div id={ `animate-id${ uniqueID }` } className={ 'aos-animate kt-animation-wrap' } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
+							data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
+							data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
+						>
+							{ headingContent }
+						</div>
+					</div>
+				) }
+				{ ! kadenceAnimation && (
+					headingContent
+				) }
 				{ googleFont && (
 					<WebfontLoader config={ config }>
 					</WebfontLoader>

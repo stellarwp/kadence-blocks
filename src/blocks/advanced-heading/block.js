@@ -52,6 +52,8 @@ registerBlockType( 'kadence/advancedheading', {
 	],
 	supports: {
 		ktanimate: true,
+		ktanimatereveal: true,
+		ktanimatepreview: true,
 	},
 	attributes: {
 		content: {
@@ -272,11 +274,13 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { anchor, align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation } } = props;
+		const { attributes: { anchor, align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions } } = props;
 		const tagName = 'h' + level;
 		const mType = ( marginType ? marginType : 'px' );
-		const tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
-		const wrapper = ( anchor || ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation ||'reveal-down' === kadenceAnimation ) ) ? true : false );
+		let tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
+		const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
+		const wrapper = ( anchor || revealAnimation ? true : false );
+		tagId = ( revealAnimation && ! anchor ? `kt-adv-inner-heading${ uniqueID }` : `kt-adv-heading${ uniqueID }` );
 		const classes = ( className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
 		const htmlItem = (
 			<RichText.Content
@@ -284,6 +288,11 @@ registerBlockType( 'kadence/advancedheading', {
 				id={ tagId }
 				className={ `kt-adv-heading${ uniqueID } ${ classes }` }
 				data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
+				data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
+				data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
+				data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
+				data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
+				data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
 				style={ {
 					textAlign: align,
 					color: color,
@@ -297,7 +306,7 @@ registerBlockType( 'kadence/advancedheading', {
 		return (
 			<Fragment>
 				{ wrapper && (
-					<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( kadenceAnimation ? ' kadence-heading-clip-animation' : '' ) }` }>
+					<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }` }>
 						{ htmlItem }
 					</div>
 				) }

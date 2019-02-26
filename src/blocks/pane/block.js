@@ -50,6 +50,10 @@ registerBlockType( 'kadence/pane', {
 			selector: '.kt-blocks-accordion-title',
 			default: '',
 		},
+		titleTag: {
+			type: 'string',
+			default: 'div',
+		},
 		hideLabel: {
 			type: 'bool',
 			default: false,
@@ -78,10 +82,11 @@ registerBlockType( 'kadence/pane', {
 	edit,
 
 	save( { attributes } ) {
-		const { id, uniqueID, title, icon, iconSide, hideLabel } = attributes;
+		const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag } = attributes;
+		const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
 		return (
 			<div className={ `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }` }>
-				<div className={ 'kt-accordion-header-wrap' } >
+				<HtmlTagOut className={ 'kt-accordion-header-wrap' } >
 					<button className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
 						<div className="kt-blocks-accordion-title-wrap">
 							{ icon && 'left' === iconSide && (
@@ -98,7 +103,7 @@ registerBlockType( 'kadence/pane', {
 						</div>
 						<div className="kt-blocks-accordion-icon-trigger"></div>
 					</button>
-				</div>
+				</HtmlTagOut>
 				<div className={ 'kt-accordion-panel' } >
 					<div className={ 'kt-accordion-panel-inner' } >
 						<InnerBlocks.Content />

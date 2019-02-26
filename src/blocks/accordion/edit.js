@@ -49,6 +49,7 @@ const {
 	RangeControl,
 	ToggleControl,
 	SelectControl,
+	IconButton,
 } = wp.components;
 /**
  * Internal block libraries
@@ -658,6 +659,14 @@ class KadenceAccordionComponent extends Component {
 							<Dashicon icon="plus" />
 							{ __( 'Add Accordion Item' ) }
 						</Button>
+						{ paneCount > 1 && (
+							<IconButton
+								className="kt-accordion-remove"
+								label={ __( 'Remove Accordion Item' ) }
+								icon="minus"
+								onClick={ () => setAttributes( { paneCount: paneCount - 1 } ) }
+							/>
+						) }
 					</div>
 				</div>
 			</Fragment>

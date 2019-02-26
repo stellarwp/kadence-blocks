@@ -47,10 +47,11 @@ class KadencePane extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, uniqueID, title, icon, iconSide, hideLabel }, setAttributes } = this.props;
+		const { attributes: { id, uniqueID, title, icon, iconSide, hideLabel, titleTag }, setAttributes } = this.props;
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
 		);
+		const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
 		return (
 			<div className={ `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }` }>
 				<InspectorControls>
@@ -82,8 +83,26 @@ class KadencePane extends Component {
 							onChange={ value => setAttributes( { hideLabel: value } ) }
 						/>
 					</PanelBody>
+					<PanelBody
+						title={ __( 'Title Tag Settings' ) }
+						initialOpen={ false }
+					>
+						<SelectControl
+							label={ __( 'Title Tag' ) }
+							value={ titleTag }
+							options={ [
+								{ value: 'div', label: __( 'div' ) },
+								{ value: 'h2', label: __( 'h2' ) },
+								{ value: 'h3', label: __( 'h3' ) },
+								{ value: 'h4', label: __( 'h4' ) },
+								{ value: 'h5', label: __( 'h5' ) },
+								{ value: 'h6', label: __( 'h6' ) },
+							] }
+							onChange={ value => setAttributes( { titleTag: value } ) }
+						/>
+					</PanelBody>
 				</InspectorControls>
-				<div className={ 'kt-accordion-header-wrap' } >
+				<HtmlTagOut className={ 'kt-accordion-header-wrap' } >
 					<div className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
 						<div className="kt-blocks-accordion-title-wrap">
 							{ icon && 'left' === iconSide && (
@@ -103,7 +122,7 @@ class KadencePane extends Component {
 						</div>
 						<div className="kt-blocks-accordion-icon-trigger"></div>
 					</div>
-				</div>
+				</HtmlTagOut>
 				<div className={ 'kt-accordion-panel' } >
 					<div className={ 'kt-accordion-panel-inner' } >
 						<InnerBlocks templateLock={ false } />

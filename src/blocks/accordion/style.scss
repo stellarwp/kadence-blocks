@@ -4,6 +4,10 @@
  * CSS for both Frontend+Backend.
  */
 // Item
+.kt-accordion-wrap .kt-accordion-header-wrap {
+	margin:0;
+	padding:0;
+}
 .kt-blocks-accordion-header {
     align-content: space-between;
     align-items: center;

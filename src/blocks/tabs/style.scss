@@ -24,12 +24,20 @@
                 border-color: transparent;
                 border-width: 1px 1px 0 1px;
                 border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
+				border-top-right-radius: 4px;
+				text-decoration: none;
 				transition: all .2s ease-in-out;
-				&:focus {outline:0;}
+				&:focus {
+					outline:0;
+					text-decoration: none;
+				}
+				&:hover {
+					text-decoration: none;
+				}
             }
             &.kt-tab-title-active {
 				z-index: 4;
+				text-decoration: none;
 				position: relative;
                 .kt-tab-title {
                     background-color: #fff;

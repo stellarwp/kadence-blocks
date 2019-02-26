@@ -1094,6 +1094,12 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['typography'] ) && ! empty( $attr['typography'] ) ) {
 				$css .= 'font-family:' . $attr['typography'] . ';';
 			}
+			if ( isset( $attr['fontWeight'] ) && ! empty( $attr['fontWeight'] ) ) {
+				$css .= 'font-weight:' . $attr['fontWeight'] . ';';
+			}
+			if ( isset( $attr['fontStyle'] ) && ! empty( $attr['fontStyle'] ) ) {
+				$css .= 'font-style:' . $attr['fontStyle'] . ';';
+			}
 			if ( isset( $attr['titleBorderWidth'] ) && ! empty( $attr['titleBorderWidth'] ) && is_array( $attr['titleBorderWidth'] ) ) {
 				$css .= 'border-width:' . $attr['titleBorderWidth'][0] . 'px ' . $attr['titleBorderWidth'][1] . 'px ' . $attr['titleBorderWidth'][2] . 'px ' . $attr['titleBorderWidth'][3] . 'px ;';
 			}
@@ -1936,6 +1942,25 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $attr['overlayBlendMode'] ) ) {
 					$css .= 'mix-blend-mode:' . $attr['overlayBlendMode'] . ';';
 				}
+			$css .= '}';
+		}
+		if ( isset( $attr['tabletPadding'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) ) {
+			$css .= '@media (min-width: 768px) and (max-width: 992px) {';
+			if ( isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) ) {
+				$css .= '#kt-layout-id' . $unique_id . ' {';
+				if ( isset( $attr['topMarginT'] ) ) {
+					$css .= 'margin-top:' . $attr['topMarginT'] . 'px;';
+				}
+				if ( isset( $attr['bottomMarginT'] ) ) {
+					$css .= 'margin-bottom:' . $attr['bottomMarginT'] . 'px;';
+				}
+				$css .= '}';
+			}
+			if ( isset( $attr['tabletPadding'] ) && is_array( $attr['tabletPadding'] ) ) {
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap {';
+				$css .= 'padding:' . $attr['tabletPadding'][ 0 ] . 'px ' . $attr['tabletPadding'][ 1 ] . 'px ' . $attr['tabletPadding'][ 2 ] . 'px ' . $attr['tabletPadding'][ 3 ] . 'px;';
+				$css .= '}';
+			}
 			$css .= '}';
 		}
 		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) ) {

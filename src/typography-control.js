@@ -497,7 +497,7 @@ export default function TypographyControls( {
 						onChange={ onTypoFontChange }
 					/>
 				</div>
-				{ fontFamily && onFontWeight && (
+				{ onFontWeight && (
 					<SelectControl
 						label={ __( 'Font Weight' ) }
 						value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }

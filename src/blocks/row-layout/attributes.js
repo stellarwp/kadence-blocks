@@ -272,5 +272,17 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	tabletPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	topMarginT: {
+		type: 'number',
+		default: '',
+	},
+	bottomMarginT: {
+		type: 'number',
+		default: '',
+	},
 };
 export default attributes;
