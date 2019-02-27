@@ -87,6 +87,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 1.3.6 =
 * Fix: Much smoother accordion animation.
 * Fix: Info Box Prebuilt error.
+* Fix: Issue with parallax on mobile.
 * Update: Allow Accordion Panes to be rearanged.
 * Update: Move accodion wrap tag into main accordion settings panel.
 

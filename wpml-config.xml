@@ -1,0 +1,40 @@
+<wpml-config>
+	<gutenberg-blocks>
+		<gutenberg-block type="kadence/spacer" translate="0"></gutenberg-block>
+		<gutenberg-block type="kadence/rowlayout" translate="0"></gutenberg-block>
+		<gutenberg-block type="kadence/column" translate="0"></gutenberg-block>
+		<gutenberg-block type="kadence/icon" translate="1">
+			<xpath>//div/a/@href</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/tab" translate="0"></gutenberg-block>
+		<gutenberg-block type="kadence/accordion" translate="0"></gutenberg-block>
+		<gutenberg-block type="kadence/advancedheading" translate="1">
+			<xpath>//div/h1</xpath>
+			<xpath>//div/h2</xpath>
+			<xpath>//div/h3</xpath>
+			<xpath>//div/h4</xpath>
+			<xpath>//div/h5</xpath>
+			<xpath>//div/h6</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/advancedbtn" translate="1">
+			<xpath>//div/a/span</xpath>
+			<xpath>//div/a/@href</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/tabs" translate="1">
+			<xpath>//a[@class="kt-tab-title"]</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/infobox" translate="1">
+			<xpath>//div/h1</xpath>
+			<xpath>//div/h2</xpath>
+			<xpath>//div/h3</xpath>
+			<xpath>//div/h4</xpath>
+			<xpath>//div/h5</xpath>
+			<xpath>//div/h6</xpath>
+			<xpath>//div/p</xpath>
+			<xpath>//div/a/@href</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/pane" translate="1">
+			<xpath>//span[@class="kt-blocks-accordion-title"]</xpath>
+		</gutenberg-block>
+	</gutenberg-blocks>
+</wpml-config>

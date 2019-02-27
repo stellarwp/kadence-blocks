@@ -213,7 +213,7 @@ if (!Array.from) {
 
 /**
  *  ACCORDION
- *
+ * Based from Badger Accordion
  * A lightwight vanilla JS accordion with an exstensible API
  */
 // import uuid from 'uuid/v4';
@@ -240,23 +240,23 @@ function () {
     }
 
     var defaults = {
-      headerClass: '.js-badger-accordion-header',
-      panelClass: '.js-badger-accordion-panel',
-      panelInnerClass: '.js-badger-accordion-panel-inner',
-      hiddenClass: '-ba-is-hidden',
-      activeClass: '-ba-is-active',
+      headerClass: '.kt-blocks-accordion-header',
+      panelClass: '.kt-accordion-panel',
+      panelInnerClass: '.kt-accordion-panel-inner',
+      hiddenClass: 'kt-accordion-panel-hidden',
+	  activeClass: 'kt-accordion-panel-active',
 
       get hidenClass() {
         return this.hiddenClass;
       },
 
-      initializedClass: 'badger-accordion--initialized',
+      initializedClass: 'kt-accordion-initialized',
 
       get initalisedClass() {
         return this.initializedClass;
       },
 
-      headerDataAttr: 'data-badger-accordion-header-id',
+      headerDataAttr: 'data-kt-accordion-header-id',
       openMultiplePanels: false,
       openHeadersOnLoad: [],
       headerOpenLabel: '',
@@ -271,9 +271,9 @@ function () {
 	// Kadence Edit
 	var panes = Array.from(this.container.children);
 	var children = [];
-	Array.from( panes ).forEach( ( pane ) => {
-		Array.from( pane.children ).forEach( ( item ) => {
-		children.push( item );
+	Array.from( panes ).forEach(function ( pane ) {
+		Array.from( pane.children ).forEach(function ( item ) {
+			children.push( item );
 		});
 	});
     //var children = Array.from(this.container.children); // Since the Accordions header button is nested inside an element with class
@@ -605,23 +605,25 @@ function () {
 
       if (animationAction !== undefined && headerIndex !== undefined) {
         if (animationAction === 'closed') {
-          // 1. Getting ID of panel that we want to close
-          var header = this.headers[headerIndex];
-		  var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
-			panelToClose.style.height = panelToClose.getAttribute('data-panel-height');
-			//reflow
-			panelToClose.offsetHeight;
-			panelToClose.style.height = '';
-			panelToClose.classList.add('kt-panel-is-collapsing');
-			panelToClose.classList.remove(this.settings.activeClass);
-			header.classList.remove(this.settings.activeClass);
-			header.setAttribute('aria-expanded', false);
-			var transDuration = ( 1000 * parseFloat(getComputedStyle(panelToClose)['transitionDuration']) );
-			setTimeout(function(){
-				panelToClose.classList.add(_this8.settings.hiddenClass);
-				panelToClose.classList.remove('kt-panel-is-collapsing');
-				return _this8.toggling = false;
-			}, transDuration );
+			// 1. Getting ID of panel that we want to close
+			var header = this.headers[headerIndex];
+			var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
+			if ( ! panelToClose.classList.contains(this.settings.hiddenClass) ) {
+				panelToClose.style.height = panelToClose.getAttribute('data-panel-height');
+				//reflow
+				panelToClose.offsetHeight;
+				panelToClose.style.height = '';
+				panelToClose.classList.add('kt-panel-is-collapsing');
+				panelToClose.classList.remove(this.settings.activeClass);
+				header.classList.remove(this.settings.activeClass);
+				header.setAttribute('aria-expanded', false);
+				var transDuration = ( 1000 * parseFloat(getComputedStyle(panelToClose)['transitionDuration']) );
+				setTimeout(function(){
+					panelToClose.classList.add(_this8.settings.hiddenClass);
+					panelToClose.classList.remove('kt-panel-is-collapsing');
+					return _this8.toggling = false;
+				}, transDuration );
+			}
         //   panelToClose.onCSSTransitionEnd(function () {
 		// 	panelToClose.classList.remove('kt-panel-is-collapsing');
         //     return _this8.toggling = false;
@@ -630,23 +632,25 @@ function () {
           // 1. Getting ID of panel that we want to open
           var _header = this.headers[headerIndex];
 		  var panelToOpen = this.panels[headerIndex]; // 2. Opening panel
-		  panelToOpen.classList.remove(this.settings.hiddenClass);
-		  panelToOpen.style.height = 0;
-		  //reflow
-			panelToOpen.offsetHeight;
-		  panelToOpen.classList.add('kt-panel-is-expanding');
-		  panelToOpen.style.height = panelToOpen.getAttribute('data-panel-height');
-		  //reflow
-		  panelToOpen.offsetHeight;
-		  _header.classList.add(this.settings.activeClass); // 4. Set aria attrs
-          _header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
-		  var _transDuration = ( 1000 * parseFloat(getComputedStyle(panelToOpen)['transitionDuration']) );
-		  setTimeout(function(){
-				panelToOpen.classList.add(_this8.settings.activeClass);
-				panelToOpen.style.height = '';
-				panelToOpen.classList.remove('kt-panel-is-expanding');
-            return _this8.toggling = false;
-		  }, _transDuration );
+		  if ( ! panelToOpen.classList.contains(this.settings.activeClass) ) {
+				panelToOpen.classList.remove(this.settings.hiddenClass);
+				panelToOpen.style.height = 0;
+				//reflow
+				panelToOpen.offsetHeight;
+				panelToOpen.classList.add('kt-panel-is-expanding');
+				panelToOpen.style.height = panelToOpen.getAttribute('data-panel-height');
+				//reflow
+				panelToOpen.offsetHeight;
+				_header.classList.add(this.settings.activeClass); // 4. Set aria attrs
+				_header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
+				var _transDuration = ( 1000 * parseFloat(getComputedStyle(panelToOpen)['transitionDuration']) );
+				setTimeout(function(){
+					panelToOpen.classList.add(_this8.settings.activeClass);
+					panelToOpen.style.height = '';
+					panelToOpen.classList.remove('kt-panel-is-expanding');
+				return _this8.toggling = false;
+				}, _transDuration );
+			}
         //   panelToOpen.onCSSTransitionEnd(function () {
 		// 	panelToOpen.style.height = '';
 		// 	panelToOpen.classList.remove('kt-panel-is-expanding');
@@ -715,7 +719,6 @@ function () {
       var _this10 = this;
 
       var headersToOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-		console.log(headersToOpen);
       if (headersToOpen.length && Array.isArray(headersToOpen)) {
         var headers = headersToOpen.filter(function (header) {
           return header != undefined;
@@ -766,8 +769,8 @@ function () {
     key: "calculatePanelHeight",
     value: function calculatePanelHeight(panel) {
       var panelInner = panel.querySelector(this.settings.panelInnerClass);
-      var activeHeight = panelInner.offsetHeight;
-	  return panel.setAttribute('data-panel-height', "".concat(activeHeight, "px") ); 
+      var activeHeight = panelInner.getBoundingClientRect();
+	  return panel.setAttribute('data-panel-height', "".concat(activeHeight['height'], "px") ); 
 	  //return panel.style.maxHeight = "".concat(activeHeight, "px");
 	  // panel.style.maxHeight = panel.getAttribute('data-panel-height');
     }
@@ -827,19 +830,19 @@ return KadenceAccordion;
 
 })));
 var accordions = document.querySelectorAll('.kt-accordion-inner-wrap');
-
-Array.from( accordions ).forEach( ( accordion ) => {
-	var multiplePanels = accordion.getAttribute('data-allow-multiple-open');
-	var openPanels = accordion.getAttribute('data-start-open');
+var accordionsArray = Array.from( accordions );
+for (var i = 0, len = accordionsArray.length; i < len; i++) {
+	var multiplePanels = accordionsArray[i].getAttribute('data-allow-multiple-open');
+	var openPanels = accordionsArray[i].getAttribute('data-start-open');
 	var openPanel = parseInt(openPanels);
 	if (  openPanels !== 'none' ) {
-		for (var i = 0; i < accordion.children.length; i++) {
-			if ( accordion.children[i].classList.contains('kt-accordion-pane-' + ( 1 + openPanel ) ) ) {
-				openPanel = i;
+		for (var b = 0, lenb = accordionsArray[i].children.length; b < lenb; b++) {
+			if ( accordionsArray[i].children[b].classList.contains('kt-accordion-pane-' + ( 1 + openPanel ) ) ) {
+				openPanel = b;
 			}
 		}
 	}
-    new KadenceAccordion( accordion, {
+    new KadenceAccordion( accordionsArray[i], {
 		openHeadersOnLoad: ( openPanels === 'none' ? [] : [parseInt(openPanel)] ),
 		headerClass: '.kt-blocks-accordion-header',
 		panelClass: '.kt-accordion-panel',
@@ -850,4 +853,4 @@ Array.from( accordions ).forEach( ( accordion ) => {
 		headerDataAttr: 'data-kt-accordion-header-id',
 		openMultiplePanels: ( multiplePanels === 'true' ? true : false ),
 	} );
-});
+};

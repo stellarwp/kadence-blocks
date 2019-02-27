@@ -434,7 +434,7 @@ class Kadence_Blocks_Frontend {
 		if ( is_admin() ) {
 			return;
 		}
-		wp_register_script( 'kadence-blocks-accordion-js', KT_BLOCKS_URL . 'dist/kt-accordion.js', array(), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-accordion-js', KT_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KT_BLOCKS_URL . 'dist/jarallax.min.js', array( ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-parallax-js', KT_BLOCKS_URL . 'dist/kt-init-parallax.js', array( 'jquery', 'jarallax' ), KT_BLOCKS_VERSION, true );

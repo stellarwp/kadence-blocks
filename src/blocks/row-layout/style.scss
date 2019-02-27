@@ -591,6 +591,10 @@
 		height: 100vh !important;
 		transform: none !important;
 	}
+	.wp-block-kadence-rowlayout [id*="jarallax-container-"] {
+		backface-visibility: hidden;
+		clip: rect(auto, auto, auto, auto);
+	}
 }
 // Mobile specific
 @media (max-width: 766px) {
@@ -821,6 +825,10 @@
 		margin-top: 0 !important;
 		height: 100vh !important;
 		transform: none !important;
+	}
+	.wp-block-kadence-rowlayout [id*="jarallax-container-"] {
+		backface-visibility: hidden;
+		clip: rect(auto, auto, auto, auto);
 	}
 }
 .kt-row-layout-bottom-sep {
