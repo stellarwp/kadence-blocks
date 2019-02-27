@@ -373,7 +373,7 @@ clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
     <path d='M24,6.243l2.173,4.402l4.859,0.71l-3.516,3.424l0.83,4.838l-4.346,-2.285l-4.346,2.285l0.83,-4.838l-3.516,-3.424l4.859,-0.71l2.173,-4.402Z'
     fill='#00a9d3' fillRule='nonzero' />
 </svg>;
-icons.accordionBlock = <svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
+icons.accordionBlock = <svg width="20px" height="20px" viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
 clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
     <path d='M44.775,12.78l-42.039,0l0,-8.619l42.039,0l0,8.619Zm-39.539,-6.119l0,3.619l37.039,0l0,-3.619l-37.039,0Z'
     fill='#00b5e2' />

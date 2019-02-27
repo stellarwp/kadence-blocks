@@ -83,24 +83,6 @@ class KadencePane extends Component {
 							onChange={ value => setAttributes( { hideLabel: value } ) }
 						/>
 					</PanelBody>
-					<PanelBody
-						title={ __( 'Title Tag Settings' ) }
-						initialOpen={ false }
-					>
-						<SelectControl
-							label={ __( 'Title Tag' ) }
-							value={ titleTag }
-							options={ [
-								{ value: 'div', label: __( 'div' ) },
-								{ value: 'h2', label: __( 'h2' ) },
-								{ value: 'h3', label: __( 'h3' ) },
-								{ value: 'h4', label: __( 'h4' ) },
-								{ value: 'h5', label: __( 'h5' ) },
-								{ value: 'h6', label: __( 'h6' ) },
-							] }
-							onChange={ value => setAttributes( { titleTag: value } ) }
-						/>
-					</PanelBody>
 				</InspectorControls>
 				<HtmlTagOut className={ 'kt-accordion-header-wrap' } >
 					<div className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>

@@ -608,40 +608,50 @@ function () {
           // 1. Getting ID of panel that we want to close
           var header = this.headers[headerIndex];
 		  var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
-		  
-		  panelToClose.style.maxHeight = panelToClose.getAttribute('data-panel-height');
-
-		  panelToClose.classList.add(this.settings.hiddenClass); // 3. Removing active classes
-		  
-		  panelToClose.classList.remove(this.settings.activeClass);
-
-          header.classList.remove(this.settings.activeClass); // 4. Set aria attrs
-
-          header.setAttribute('aria-expanded', false); // 5. Resetting toggling so a new event can be fired
-
-          panelToClose.onCSSTransitionEnd(function () {
-			panelToClose.style.maxHeight = '';
-            return _this8.toggling = false;
-          });
+			panelToClose.style.height = panelToClose.getAttribute('data-panel-height');
+			//reflow
+			panelToClose.offsetHeight;
+			panelToClose.style.height = '';
+			panelToClose.classList.add('kt-panel-is-collapsing');
+			panelToClose.classList.remove(this.settings.activeClass);
+			header.classList.remove(this.settings.activeClass);
+			header.setAttribute('aria-expanded', false);
+			var transDuration = ( 1000 * parseFloat(getComputedStyle(panelToClose)['transitionDuration']) );
+			setTimeout(function(){
+				panelToClose.classList.add(_this8.settings.hiddenClass);
+				panelToClose.classList.remove('kt-panel-is-collapsing');
+				return _this8.toggling = false;
+			}, transDuration );
+        //   panelToClose.onCSSTransitionEnd(function () {
+		// 	panelToClose.classList.remove('kt-panel-is-collapsing');
+        //     return _this8.toggling = false;
+        //   });
         } else if (animationAction === 'open') {
           // 1. Getting ID of panel that we want to open
           var _header = this.headers[headerIndex];
-          var panelToOpen = this.panels[headerIndex]; // 2. Opening panel
-		  panelToOpen.style.maxHeight = panelToOpen.getAttribute('data-panel-height');
-          panelToOpen.classList.remove(this.settings.hiddenClass); // 3. Adding active classes
-
-          panelToOpen.classList.add(this.settings.activeClass);
-
-          _header.classList.add(this.settings.activeClass); // 4. Set aria attrs
-
-
+		  var panelToOpen = this.panels[headerIndex]; // 2. Opening panel
+		  panelToOpen.classList.remove(this.settings.hiddenClass);
+		  panelToOpen.style.height = 0;
+		  //reflow
+			panelToOpen.offsetHeight;
+		  panelToOpen.classList.add('kt-panel-is-expanding');
+		  panelToOpen.style.height = panelToOpen.getAttribute('data-panel-height');
+		  //reflow
+		  panelToOpen.offsetHeight;
+		  _header.classList.add(this.settings.activeClass); // 4. Set aria attrs
           _header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
-
-
-          panelToOpen.onCSSTransitionEnd(function () {
-			panelToOpen.style.maxHeight = '';
+		  var _transDuration = ( 1000 * parseFloat(getComputedStyle(panelToOpen)['transitionDuration']) );
+		  setTimeout(function(){
+				panelToOpen.classList.add(_this8.settings.activeClass);
+				panelToOpen.style.height = '';
+				panelToOpen.classList.remove('kt-panel-is-expanding');
             return _this8.toggling = false;
-          });
+		  }, _transDuration );
+        //   panelToOpen.onCSSTransitionEnd(function () {
+		// 	panelToOpen.style.height = '';
+		// 	panelToOpen.classList.remove('kt-panel-is-expanding');
+        //     return _this8.toggling = false;
+        //   });
         }
       }
     } // @TODO - is this needed anymore?
@@ -705,7 +715,7 @@ function () {
       var _this10 = this;
 
       var headersToOpen = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
-
+		console.log(headersToOpen);
       if (headersToOpen.length && Array.isArray(headersToOpen)) {
         var headers = headersToOpen.filter(function (header) {
           return header != undefined;
@@ -758,7 +768,7 @@ function () {
       var panelInner = panel.querySelector(this.settings.panelInnerClass);
       var activeHeight = panelInner.offsetHeight;
 	  return panel.setAttribute('data-panel-height', "".concat(activeHeight, "px") ); 
-	  //return panel.style.minHeight = "".concat(activeHeight, "px");
+	  //return panel.style.maxHeight = "".concat(activeHeight, "px");
 	  // panel.style.maxHeight = panel.getAttribute('data-panel-height');
     }
     /**
@@ -821,8 +831,16 @@ var accordions = document.querySelectorAll('.kt-accordion-inner-wrap');
 Array.from( accordions ).forEach( ( accordion ) => {
 	var multiplePanels = accordion.getAttribute('data-allow-multiple-open');
 	var openPanels = accordion.getAttribute('data-start-open');
+	var openPanel = parseInt(openPanels);
+	if (  openPanels !== 'none' ) {
+		for (var i = 0; i < accordion.children.length; i++) {
+			if ( accordion.children[i].classList.contains('kt-accordion-pane-' + ( 1 + openPanel ) ) ) {
+				openPanel = i;
+			}
+		}
+	}
     new KadenceAccordion( accordion, {
-		openHeadersOnLoad: ( openPanels === 'none' ? [] : [parseInt(openPanels)] ),
+		openHeadersOnLoad: ( openPanels === 'none' ? [] : [parseInt(openPanel)] ),
 		headerClass: '.kt-blocks-accordion-header',
 		panelClass: '.kt-accordion-panel',
 		panelInnerClass: '.kt-accordion-panel-inner',

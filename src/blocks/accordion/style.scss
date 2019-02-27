@@ -254,13 +254,17 @@
     border-top: 0;
 }
 .kt-accordion-panel {
-	max-height: 75vh;
 	overflow: auto;
+	display:block;
     &.kt-accordion-panel-hidden { 
 		max-height: 0 !important;
 		overflow: hidden;
+		display:none;
     }
-    .kt-accordion-initialized & { 
-		transition: max-height ease-in-out 0.2s;
-	}
+}
+.kt-accordion-initialized .kt-panel-is-collapsing, .kt-accordion-initialized .kt-panel-is-expanding { 
+	transition: height 0.45s ease;
+	position: relative;
+    height: 0;
+    overflow: hidden;
 }

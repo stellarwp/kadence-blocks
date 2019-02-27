@@ -20,7 +20,7 @@ import KadenceSpacer from './block-defaults/spacer-defaults';
 import KadenceSpacerSettings from './block-settings/spacer-settings';
 import KadenceTabs from './block-defaults/tabs-defaults';
 import KadenceTabsSettings from './block-settings/tabs-settings';
-
+import KadenceAccordion from './block-defaults/accordion-defaults';
 /**
  * Build the row edit
  */

@@ -296,7 +296,7 @@ class KadenceInfoBox extends Component {
 									<IconButton
 										className="components-toolbar__control"
 										label={ __( 'Edit Media' ) }
-										icon="edit"
+										icon="format-image"
 										onClick={ open }
 									/>
 								) }
