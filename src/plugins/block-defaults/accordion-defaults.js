@@ -102,17 +102,13 @@ class KadenceTabsDefault extends Component {
 			}
 		}
 	}
-	saveConfig( blockID, settingArray, paneSettingsArray ) {
+	saveConfig( blockID, settingArray ) {
 		this.setState( { isSaving: true } );
 		const config = this.state.configuration;
 		if ( ! config[ blockID ] ) {
 			config[ blockID ] = {};
 		}
 		config[ blockID ] = settingArray;
-		if ( ! config[ 'kadence/pane' ] ) {
-			config[ 'kadence/pane' ] = {};
-		}
-		config[ 'kadence/pane' ] = paneSettingsArray;
 		const settingModel = new wp.api.models.Settings( { kadence_blocks_config_blocks: JSON.stringify( config ) } );
 		settingModel.save().then( response => {
 			this.setState( { isSaving: false, configuration: config, isOpen: false } );
@@ -125,14 +121,6 @@ class KadenceTabsDefault extends Component {
 			config[ 'kadence/accordion' ] = {};
 		}
 		config[ 'kadence/accordion' ][ key ] = value;
-		this.setState( { configuration: config } );
-	}
-	saveConfigStatePane( key, value ) {
-		const config = this.state.configuration;
-		if ( ! config[ 'kadence/pane' ] ) {
-			config[ 'kadence/pane' ] = {};
-		}
-		config[ 'kadence/pane' ][ key ] = value;
 		this.setState( { configuration: config } );
 	}
 	render() {
@@ -266,18 +254,16 @@ class KadenceTabsDefault extends Component {
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/accordion', accordionConfig );
 						} }>
-						<PanelBody>
-							<ToggleControl
-								label={ __( 'Panes close when another opens' ) }
-								checked={ ( undefined !== accordionConfig.linkPaneCollapse ? accordionConfig.linkPaneCollapse : true ) }
-								onChange={ value => this.saveConfigState( 'linkPaneCollapse', value ) }
-							/>
-							<ToggleControl
-								label={ __( 'Start with all panes collapsed' ) }
-								checked={ ( undefined !== accordionConfig.startCollapsed ? accordionConfig.startCollapsed : false ) }
-								onChange={ value => this.saveConfigState( 'startCollapsed', value ) }
-							/>
-						</PanelBody>
+						<ToggleControl
+							label={ __( 'Panes close when another opens' ) }
+							checked={ ( undefined !== accordionConfig.linkPaneCollapse ? accordionConfig.linkPaneCollapse : true ) }
+							onChange={ value => this.saveConfigState( 'linkPaneCollapse', value ) }
+						/>
+						<ToggleControl
+							label={ __( 'Start with all panes collapsed' ) }
+							checked={ ( undefined !== accordionConfig.startCollapsed ? accordionConfig.startCollapsed : false ) }
+							onChange={ value => this.saveConfigState( 'startCollapsed', value ) }
+						/>
 						<PanelBody
 							title={ __( 'Pane Title Color Settings' ) }
 							initialOpen={ false }
@@ -339,8 +325,9 @@ class KadenceTabsDefault extends Component {
 								] }
 								value={ ( undefined !== accordionConfig.iconStyle ? accordionConfig.iconStyle : 'basic' ) }
 								onChange={ value => this.saveConfigState( 'iconStyle', value ) }
-								appendTo="body"
+								appendTo={ false }
 								renderFunc={ renderIconSet }
+								closeOnSelect={ true }
 								theme="accordion"
 								showSearch={ false }
 								noSelectedPlaceholder={ __( 'Select Icon Set' ) }
@@ -510,7 +497,7 @@ class KadenceTabsDefault extends Component {
 						>
 							<SelectControl
 								label={ __( 'Title Tag' ) }
-								value={ ( undefined !== paneConfig.titleTag ? paneConfig.titleTag : 'div' ) }
+								value={ ( undefined !== accordionConfig.titleTag ? accordionConfig.titleTag : 'div' ) }
 								options={ [
 									{ value: 'div', label: __( 'div' ) },
 									{ value: 'h2', label: __( 'h2' ) },
@@ -519,7 +506,7 @@ class KadenceTabsDefault extends Component {
 									{ value: 'h5', label: __( 'h5' ) },
 									{ value: 'h6', label: __( 'h6' ) },
 								] }
-								onChange={ value => this.saveConfigStatePane( 'titleTag', value ) }
+								onChange={ value => this.saveConfigState( 'titleTag', value ) }
 							/>
 						</PanelBody>
 						<PanelBody

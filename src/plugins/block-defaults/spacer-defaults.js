@@ -156,7 +156,7 @@ class KadenceSpacerDefault extends Component {
 							checked={ ( undefined !== spacerConfig.dividerEnable ? spacerConfig.dividerEnable : true ) }
 							onChange={ value => this.saveConfigState( 'dividerEnable', value ) }
 						/>
-						{ ( spacerConfig.dividerEnable ? spacerConfig.dividerEnable : true ) && (
+						{ ( undefined !== spacerConfig.dividerEnable ? spacerConfig.dividerEnable : true ) && (
 							<Fragment>
 								<SelectControl
 									label={ __( 'Divider Style' ) }

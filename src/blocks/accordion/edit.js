@@ -89,6 +89,9 @@ class KadenceAccordionComponent extends Component {
 			titleBorderHoverColorControl: 'linked',
 			titleBorderActiveColorControl: 'linked',
 			titleTag: 'div',
+			showPreset: false,
+			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			settings: {},
 		};
 	}
 	componentDidMount() {
@@ -96,7 +99,18 @@ class KadenceAccordionComponent extends Component {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/accordion' ] !== undefined && typeof blockConfigObject[ 'kadence/accordion' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/accordion' ] ).map( ( attribute ) => {
-					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/accordion' ][ attribute ];
+					if ( 'titleTag' === attribute ) {
+						const accordionBlock = wp.data.select( 'core/editor' ).getBlocksByClientId( this.props.clientId );
+						const realPaneCount = accordionBlock[ 0 ].innerBlocks.length;
+						times( realPaneCount, n => {
+							wp.data.dispatch( 'core/editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
+								titleTag: blockConfigObject[ 'kadence/accordion' ][ attribute ],
+							} );
+						} );
+						this.setState( { titleTag: blockConfigObject[ 'kadence/accordion' ][ attribute ] } );
+					} else {
+						this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/accordion' ][ attribute ];
+					}
 				} );
 			}
 			if ( blockConfigObject[ 'kadence/pane' ] !== undefined && typeof blockConfigObject[ 'kadence/pane' ] === 'object' ) {
@@ -163,6 +177,24 @@ class KadenceAccordionComponent extends Component {
 		if ( accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
 			this.setState( { titleTag: accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag } );
 		}
+		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
+		if ( blockSettings[ 'kadence/accordion' ] !== undefined && typeof blockSettings[ 'kadence/accordion' ] === 'object' ) {
+			this.setState( { settings: blockSettings[ 'kadence/accordion' ] } );
+		}
+	}
+	showSettings( key ) {
+		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
+			return true;
+		} else if ( 'contributor' === this.state.settings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'author' === this.state.settings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'editor' === this.state.settings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'admin' === this.state.settings[ key ] && 'admin' === this.state.user ) {
+			return true;
+		}
+		return false;
 	}
 	render() {
 		const { attributes: { uniqueID, paneCount, blockAlignment, openPane, titleStyles, contentPadding, minHeight, maxWidth, contentBorder, contentBorderColor, contentBorderRadius, contentBgColor, titleAlignment, startCollapsed, linkPaneCollapse, showIcon, iconStyle, iconSide }, className, setAttributes, clientId } = this.props;
@@ -353,317 +385,339 @@ class KadenceAccordionComponent extends Component {
 						} }
 					/>
 				</BlockControls>
-				<InspectorControls>
-					<PanelBody>
-						<ToggleControl
-							label={ __( 'Panes close when another opens' ) }
-							checked={ linkPaneCollapse }
-							onChange={ ( value ) => setAttributes( { linkPaneCollapse: value } ) }
-						/>
-						<ToggleControl
-							label={ __( 'Start with all panes collapsed' ) }
-							checked={ startCollapsed }
-							onChange={ ( value ) => setAttributes( { startCollapsed: value } ) }
-						/>
-						{ ! startCollapsed && (
-							<Fragment>
-								<h2>{ __( 'Inital Open Accordion' ) }</h2>
-								<ButtonGroup aria-label={ __( 'Inital Open Accordion' ) }>
-									{ map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
-										<Button
-											key={ attributes.id - 1 }
-											className="kt-init-open-pane"
-											isSmall
-											isPrimary={ openPane === attributes.id - 1 }
-											aria-pressed={ openPane === attributes.id - 1 }
-											onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
-										>
-											{ __( 'Accordion Pane' ) + ' ' + ( attributes.id ) }
-										</Button>
-									) ) }
-								</ButtonGroup>
-							</Fragment>
-						) }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Pane Title Color Settings' ) }
-						initialOpen={ false }
-					>
-						<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
-							activeClass="active-tab"
-							tabs={ [
-								{
-									name: 'normal',
-									title: __( 'Normal' ),
-									className: 'kt-normal-tab',
-								},
-								{
-									name: 'hover',
-									title: __( 'Hover' ),
-									className: 'kt-hover-tab',
-								},
-								{
-									name: 'active',
-									title: __( 'Active' ),
-									className: 'kt-active-tab',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'hover' === tab.name ) {
-											tabout = hoverSettings;
-										} else if ( 'active' === tab.name ) {
-											tabout = activeSettings;
-										} else {
-											tabout = normalSettings;
+				{ this.showSettings( 'allSettings' ) && (
+					<InspectorControls>
+						<PanelBody>
+							{ this.showSettings( 'paneControl' ) && (
+								<Fragment>
+									<ToggleControl
+										label={ __( 'Panes close when another opens' ) }
+										checked={ linkPaneCollapse }
+										onChange={ ( value ) => setAttributes( { linkPaneCollapse: value } ) }
+									/>
+									<ToggleControl
+										label={ __( 'Start with all panes collapsed' ) }
+										checked={ startCollapsed }
+										onChange={ ( value ) => setAttributes( { startCollapsed: value } ) }
+									/>
+									{ ! startCollapsed && (
+										<Fragment>
+											<h2>{ __( 'Inital Open Accordion' ) }</h2>
+											<ButtonGroup aria-label={ __( 'Inital Open Accordion' ) }>
+												{ map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
+													<Button
+														key={ attributes.id - 1 }
+														className="kt-init-open-pane"
+														isSmall
+														isPrimary={ openPane === attributes.id - 1 }
+														aria-pressed={ openPane === attributes.id - 1 }
+														onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
+													>
+														{ __( 'Accordion Pane' ) + ' ' + ( attributes.id ) }
+													</Button>
+												) ) }
+											</ButtonGroup>
+										</Fragment>
+									) }
+								</Fragment>
+							) }
+						</PanelBody>
+						{ this.showSettings( 'titleColors' ) && (
+							<PanelBody
+								title={ __( 'Pane Title Color Settings' ) }
+								initialOpen={ false }
+							>
+								<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+									activeClass="active-tab"
+									tabs={ [
+										{
+											name: 'normal',
+											title: __( 'Normal' ),
+											className: 'kt-normal-tab',
+										},
+										{
+											name: 'hover',
+											title: __( 'Hover' ),
+											className: 'kt-hover-tab',
+										},
+										{
+											name: 'active',
+											title: __( 'Active' ),
+											className: 'kt-active-tab',
+										},
+									] }>
+									{
+										( tab ) => {
+											let tabout;
+											if ( tab.name ) {
+												if ( 'hover' === tab.name ) {
+													tabout = hoverSettings;
+												} else if ( 'active' === tab.name ) {
+													tabout = activeSettings;
+												} else {
+													tabout = normalSettings;
+												}
+											}
+											return <div>{ tabout }</div>;
 										}
 									}
-									return <div>{ tabout }</div>;
-								}
-							}
-						</TabPanel>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Pane Title Trigger Icon' ) }
-						initialOpen={ false }
-					>
-						<ToggleControl
-							label={ __( 'Show Icon' ) }
-							checked={ showIcon }
-							onChange={ ( value ) => setAttributes( { showIcon: value } ) }
-						/>
-						<h2>{ __( 'Icon Style' ) }</h2>
-						<FontIconPicker
-							icons={ [
-								'basic',
-								'basiccircle',
-								'xclose',
-								'xclosecircle',
-								'arrow',
-								'arrowcircle',
-							] }
-							value={ iconStyle }
-							onChange={ value => setAttributes( { iconStyle: value } ) }
-							appendTo="body"
-							renderFunc={ renderIconSet }
-							theme="accordion"
-							showSearch={ false }
-							noSelectedPlaceholder={ __( 'Select Icon Set' ) }
-							isMulti={ false }
-						/>
-						<SelectControl
-							label={ __( 'Icon Side' ) }
-							value={ iconSide }
-							options={ [
-								{ value: 'right', label: __( 'Right' ) },
-								{ value: 'left', label: __( 'Left' ) },
-							] }
-							onChange={ value => setAttributes( { iconSide: value } ) }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Pane Title Spacing' ) }
-						initialOpen={ false }
-					>
-						<MeasurementControls
-							label={ __( 'Pane Title Padding (px)' ) }
-							measurement={ titleStyles[ 0 ].padding }
-							control={ titlePaddingControl }
-							onChange={ ( value ) => saveTitleStyles( { padding: value } ) }
-							onControl={ ( value ) => this.setState( { titlePaddingControl: value } ) }
-							min={ 0 }
-							max={ 40 }
-							step={ 1 }
-						/>
-						<RangeControl
-							label={ __( 'Pane Spacer Between' ) }
-							value={ titleStyles[ 0 ].marginTop }
-							onChange={ ( value ) => saveTitleStyles( { marginTop: value } ) }
-							min={ 1 }
-							max={ 120 }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Pane Title Border' ) }
-						initialOpen={ false }
-					>
-						<MeasurementControls
-							label={ __( 'Pane Title Border Width (px)' ) }
-							measurement={ titleStyles[ 0 ].borderWidth }
-							control={ titleBorderControl }
-							onChange={ ( value ) => saveTitleStyles( { borderWidth: value } ) }
-							onControl={ ( value ) => this.setState( { titleBorderControl: value } ) }
-							min={ 0 }
-							max={ 100 }
-							step={ 1 }
-						/>
-						<MeasurementControls
-							label={ __( 'Pane Title Border Radius (px)' ) }
-							measurement={ titleStyles[ 0 ].borderRadius }
-							control={ titleBorderRadiusControl }
-							onChange={ ( value ) => saveTitleStyles( { borderRadius: value } ) }
-							onControl={ ( value ) => this.setState( { titleBorderRadiusControl: value } ) }
-							min={ 0 }
-							max={ 100 }
-							step={ 1 }
-							controlTypes={ [
-								{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-								{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
-							] }
-							firstIcon={ icons.topleft }
-							secondIcon={ icons.topright }
-							thirdIcon={ icons.bottomright }
-							fourthIcon={ icons.bottomleft }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Pane Title Font Settings' ) }
-						initialOpen={ false }
-					>
-						<TypographyControls
-							fontSize={ titleStyles[ 0 ].size }
-							onFontSize={ ( value ) => saveTitleStyles( { size: value } ) }
-							fontSizeType={ titleStyles[ 0 ].sizeType }
-							onFontSizeType={ ( value ) => saveTitleStyles( { sizeType: value } ) }
-							lineHeight={ titleStyles[ 0 ].lineHeight }
-							onLineHeight={ ( value ) => saveTitleStyles( { lineHeight: value } ) }
-							lineHeightType={ titleStyles[ 0 ].lineType }
-							onLineHeightType={ ( value ) => saveTitleStyles( { lineType: value } ) }
-							letterSpacing={ titleStyles[ 0 ].letterSpacing }
-							onLetterSpacing={ ( value ) => saveTitleStyles( { letterSpacing: value } ) }
-							textTransform={ titleStyles[ 0 ].textTransform }
-							onTextTransform={ ( value ) => saveTitleStyles( { textTransform: value } ) }
-							fontFamily={ titleStyles[ 0 ].family }
-							onFontFamily={ ( value ) => saveTitleStyles( { family: value } ) }
-							onFontChange={ ( select ) => {
-								saveTitleStyles( {
-									family: select.value,
-									google: select.google,
-								} );
-							} }
-							onFontArrayChange={ ( values ) => saveTitleStyles( values ) }
-							googleFont={ titleStyles[ 0 ].google }
-							onGoogleFont={ ( value ) => saveTitleStyles( { google: value } ) }
-							loadGoogleFont={ titleStyles[ 0 ].loadGoogle }
-							onLoadGoogleFont={ ( value ) => saveTitleStyles( { loadGoogle: value } ) }
-							fontVariant={ titleStyles[ 0 ].variant }
-							onFontVariant={ ( value ) => saveTitleStyles( { variant: value } ) }
-							fontWeight={ titleStyles[ 0 ].weight }
-							onFontWeight={ ( value ) => saveTitleStyles( { weight: value } ) }
-							fontStyle={ titleStyles[ 0 ].style }
-							onFontStyle={ ( value ) => saveTitleStyles( { style: value } ) }
-							fontSubset={ titleStyles[ 0 ].subset }
-							onFontSubset={ ( value ) => saveTitleStyles( { subset: value } ) }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Inner Content Settings' ) }
-						initialOpen={ false }
-					>
-						<MeasurementControls
-							label={ __( 'Inner Content Padding (px)' ) }
-							measurement={ contentPadding }
-							control={ contentPaddingControl }
-							onChange={ ( value ) => setAttributes( { contentPadding: value } ) }
-							onControl={ ( value ) => this.setState( { contentPaddingControl: value } ) }
-							min={ 0 }
-							max={ 100 }
-							step={ 1 }
-						/>
-						<p className="kt-setting-label">{ __( 'Inner Content Background' ) }</p>
-						<ColorPalette
-							value={ contentBgColor }
-							onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
-						/>
-						<p className="kt-setting-label">{ __( 'Inner Content Border Color' ) }</p>
-						<ColorPalette
-							value={ contentBorderColor }
-							onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
-						/>
-						<MeasurementControls
-							label={ __( 'Inner Content Border Width (px)' ) }
-							measurement={ contentBorder }
-							control={ contentBorderControl }
-							onChange={ ( value ) => setAttributes( { contentBorder: value } ) }
-							onControl={ ( value ) => this.setState( { contentBorderControl: value } ) }
-							min={ 0 }
-							max={ 40 }
-							step={ 1 }
-						/>
-						<MeasurementControls
-							label={ __( 'Inner Content Border Radius (px)' ) }
-							measurement={ contentBorderRadius }
-							control={ contentBorderRadiusControl }
-							onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
-							onControl={ ( value ) => this.setState( { contentBorderRadiusControl: value } ) }
-							min={ 0 }
-							max={ 100 }
-							step={ 1 }
-							controlTypes={ [
-								{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-								{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
-							] }
-							firstIcon={ icons.topleft }
-							secondIcon={ icons.topright }
-							thirdIcon={ icons.bottomright }
-							fourthIcon={ icons.bottomleft }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Title Tag Settings' ) }
-						initialOpen={ false }
-					>
-						<SelectControl
-							label={ __( 'Title Tag' ) }
-							value={ titleTag }
-							options={ [
-								{ value: 'div', label: __( 'div' ) },
-								{ value: 'h2', label: __( 'h2' ) },
-								{ value: 'h3', label: __( 'h3' ) },
-								{ value: 'h4', label: __( 'h4' ) },
-								{ value: 'h5', label: __( 'h5' ) },
-								{ value: 'h6', label: __( 'h6' ) },
-							] }
-							onChange={ value => {
-								times( realPaneCount, n => {
-									wp.data.dispatch( 'core/editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
-										titleTag: value,
-									} );
-								} );
-								this.setState( { titleTag: value } );
-							} }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Structure Settings' ) }
-						initialOpen={ false }
-					>
-						<RangeControl
-							label={ __( 'Content Minimium Height' ) }
-							value={ minHeight }
-							onChange={ ( value ) => {
-								setAttributes( {
-									minHeight: value,
-								} );
-							} }
-							min={ 0 }
-							max={ 1000 }
-						/>
-						<RangeControl
-							label={ __( 'Max Width' ) }
-							value={ maxWidth }
-							onChange={ ( value ) => {
-								setAttributes( {
-									maxWidth: value,
-								} );
-							} }
-							min={ 0 }
-							max={ 2000 }
-						/>
-					</PanelBody>
-				</InspectorControls>
+								</TabPanel>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'titleIcon' ) && (
+							<PanelBody
+								title={ __( 'Pane Title Trigger Icon' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Show Icon' ) }
+									checked={ showIcon }
+									onChange={ ( value ) => setAttributes( { showIcon: value } ) }
+								/>
+								<h2>{ __( 'Icon Style' ) }</h2>
+								<FontIconPicker
+									icons={ [
+										'basic',
+										'basiccircle',
+										'xclose',
+										'xclosecircle',
+										'arrow',
+										'arrowcircle',
+									] }
+									value={ iconStyle }
+									onChange={ value => setAttributes( { iconStyle: value } ) }
+									appendTo="body"
+									renderFunc={ renderIconSet }
+									theme="accordion"
+									showSearch={ false }
+									noSelectedPlaceholder={ __( 'Select Icon Set' ) }
+									isMulti={ false }
+								/>
+								<SelectControl
+									label={ __( 'Icon Side' ) }
+									value={ iconSide }
+									options={ [
+										{ value: 'right', label: __( 'Right' ) },
+										{ value: 'left', label: __( 'Left' ) },
+									] }
+									onChange={ value => setAttributes( { iconSide: value } ) }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'titleSpacing' ) && (
+							<PanelBody
+								title={ __( 'Pane Title Spacing' ) }
+								initialOpen={ false }
+							>
+								<MeasurementControls
+									label={ __( 'Pane Title Padding (px)' ) }
+									measurement={ titleStyles[ 0 ].padding }
+									control={ titlePaddingControl }
+									onChange={ ( value ) => saveTitleStyles( { padding: value } ) }
+									onControl={ ( value ) => this.setState( { titlePaddingControl: value } ) }
+									min={ 0 }
+									max={ 40 }
+									step={ 1 }
+								/>
+								<RangeControl
+									label={ __( 'Pane Spacer Between' ) }
+									value={ titleStyles[ 0 ].marginTop }
+									onChange={ ( value ) => saveTitleStyles( { marginTop: value } ) }
+									min={ 1 }
+									max={ 120 }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'titleBorder' ) && (
+							<PanelBody
+								title={ __( 'Pane Title Border' ) }
+								initialOpen={ false }
+							>
+								<MeasurementControls
+									label={ __( 'Pane Title Border Width (px)' ) }
+									measurement={ titleStyles[ 0 ].borderWidth }
+									control={ titleBorderControl }
+									onChange={ ( value ) => saveTitleStyles( { borderWidth: value } ) }
+									onControl={ ( value ) => this.setState( { titleBorderControl: value } ) }
+									min={ 0 }
+									max={ 100 }
+									step={ 1 }
+								/>
+								<MeasurementControls
+									label={ __( 'Pane Title Border Radius (px)' ) }
+									measurement={ titleStyles[ 0 ].borderRadius }
+									control={ titleBorderRadiusControl }
+									onChange={ ( value ) => saveTitleStyles( { borderRadius: value } ) }
+									onControl={ ( value ) => this.setState( { titleBorderRadiusControl: value } ) }
+									min={ 0 }
+									max={ 100 }
+									step={ 1 }
+									controlTypes={ [
+										{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
+										{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+									] }
+									firstIcon={ icons.topleft }
+									secondIcon={ icons.topright }
+									thirdIcon={ icons.bottomright }
+									fourthIcon={ icons.bottomleft }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'titleFont' ) && (
+							<PanelBody
+								title={ __( 'Pane Title Font Settings' ) }
+								initialOpen={ false }
+							>
+								<TypographyControls
+									fontSize={ titleStyles[ 0 ].size }
+									onFontSize={ ( value ) => saveTitleStyles( { size: value } ) }
+									fontSizeType={ titleStyles[ 0 ].sizeType }
+									onFontSizeType={ ( value ) => saveTitleStyles( { sizeType: value } ) }
+									lineHeight={ titleStyles[ 0 ].lineHeight }
+									onLineHeight={ ( value ) => saveTitleStyles( { lineHeight: value } ) }
+									lineHeightType={ titleStyles[ 0 ].lineType }
+									onLineHeightType={ ( value ) => saveTitleStyles( { lineType: value } ) }
+									letterSpacing={ titleStyles[ 0 ].letterSpacing }
+									onLetterSpacing={ ( value ) => saveTitleStyles( { letterSpacing: value } ) }
+									textTransform={ titleStyles[ 0 ].textTransform }
+									onTextTransform={ ( value ) => saveTitleStyles( { textTransform: value } ) }
+									fontFamily={ titleStyles[ 0 ].family }
+									onFontFamily={ ( value ) => saveTitleStyles( { family: value } ) }
+									onFontChange={ ( select ) => {
+										saveTitleStyles( {
+											family: select.value,
+											google: select.google,
+										} );
+									} }
+									onFontArrayChange={ ( values ) => saveTitleStyles( values ) }
+									googleFont={ titleStyles[ 0 ].google }
+									onGoogleFont={ ( value ) => saveTitleStyles( { google: value } ) }
+									loadGoogleFont={ titleStyles[ 0 ].loadGoogle }
+									onLoadGoogleFont={ ( value ) => saveTitleStyles( { loadGoogle: value } ) }
+									fontVariant={ titleStyles[ 0 ].variant }
+									onFontVariant={ ( value ) => saveTitleStyles( { variant: value } ) }
+									fontWeight={ titleStyles[ 0 ].weight }
+									onFontWeight={ ( value ) => saveTitleStyles( { weight: value } ) }
+									fontStyle={ titleStyles[ 0 ].style }
+									onFontStyle={ ( value ) => saveTitleStyles( { style: value } ) }
+									fontSubset={ titleStyles[ 0 ].subset }
+									onFontSubset={ ( value ) => saveTitleStyles( { subset: value } ) }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'paneContent' ) && (
+							<PanelBody
+								title={ __( 'Inner Content Settings' ) }
+								initialOpen={ false }
+							>
+								<MeasurementControls
+									label={ __( 'Inner Content Padding (px)' ) }
+									measurement={ contentPadding }
+									control={ contentPaddingControl }
+									onChange={ ( value ) => setAttributes( { contentPadding: value } ) }
+									onControl={ ( value ) => this.setState( { contentPaddingControl: value } ) }
+									min={ 0 }
+									max={ 100 }
+									step={ 1 }
+								/>
+								<p className="kt-setting-label">{ __( 'Inner Content Background' ) }</p>
+								<ColorPalette
+									value={ contentBgColor }
+									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
+								/>
+								<p className="kt-setting-label">{ __( 'Inner Content Border Color' ) }</p>
+								<ColorPalette
+									value={ contentBorderColor }
+									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
+								/>
+								<MeasurementControls
+									label={ __( 'Inner Content Border Width (px)' ) }
+									measurement={ contentBorder }
+									control={ contentBorderControl }
+									onChange={ ( value ) => setAttributes( { contentBorder: value } ) }
+									onControl={ ( value ) => this.setState( { contentBorderControl: value } ) }
+									min={ 0 }
+									max={ 40 }
+									step={ 1 }
+								/>
+								<MeasurementControls
+									label={ __( 'Inner Content Border Radius (px)' ) }
+									measurement={ contentBorderRadius }
+									control={ contentBorderRadiusControl }
+									onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
+									onControl={ ( value ) => this.setState( { contentBorderRadiusControl: value } ) }
+									min={ 0 }
+									max={ 100 }
+									step={ 1 }
+									controlTypes={ [
+										{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
+										{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+									] }
+									firstIcon={ icons.topleft }
+									secondIcon={ icons.topright }
+									thirdIcon={ icons.bottomright }
+									fourthIcon={ icons.bottomleft }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'titleTag' ) && (
+							<PanelBody
+								title={ __( 'Title Tag Settings' ) }
+								initialOpen={ false }
+							>
+								<SelectControl
+									label={ __( 'Title Tag' ) }
+									value={ titleTag }
+									options={ [
+										{ value: 'div', label: __( 'div' ) },
+										{ value: 'h2', label: __( 'h2' ) },
+										{ value: 'h3', label: __( 'h3' ) },
+										{ value: 'h4', label: __( 'h4' ) },
+										{ value: 'h5', label: __( 'h5' ) },
+										{ value: 'h6', label: __( 'h6' ) },
+									] }
+									onChange={ value => {
+										times( realPaneCount, n => {
+											wp.data.dispatch( 'core/editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
+												titleTag: value,
+											} );
+										} );
+										this.setState( { titleTag: value } );
+									} }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'structure' ) && (
+							<PanelBody
+								title={ __( 'Structure Settings' ) }
+								initialOpen={ false }
+							>
+								<RangeControl
+									label={ __( 'Content Minimium Height' ) }
+									value={ minHeight }
+									onChange={ ( value ) => {
+										setAttributes( {
+											minHeight: value,
+										} );
+									} }
+									min={ 0 }
+									max={ 1000 }
+								/>
+								<RangeControl
+									label={ __( 'Max Width' ) }
+									value={ maxWidth }
+									onChange={ ( value ) => {
+										setAttributes( {
+											maxWidth: value,
+										} );
+									} }
+									min={ 0 }
+									max={ 2000 }
+								/>
+							</PanelBody>
+						) }
+					</InspectorControls>
+				) }
 				<div className={ classes } >
 					<div className="kt-accordion-selecter">{ __( 'Accordion' ) }</div>
 					<div className="kt-accordion-wrap" style={ {

@@ -21,6 +21,12 @@ import KadenceSpacerSettings from './block-settings/spacer-settings';
 import KadenceTabs from './block-defaults/tabs-defaults';
 import KadenceTabsSettings from './block-settings/tabs-settings';
 import KadenceAccordion from './block-defaults/accordion-defaults';
+import KadenceAccordionSettings from './block-settings/accordion-settings';
+
+/*
+ * Components
+ */
+import KadenceFontFamily from './block-defaults/typography-defaults';
 /**
  * Build the row edit
  */
@@ -55,9 +61,15 @@ class KadenceConfig extends Component {
 						{ 'admin' === this.state.user && (
 							<KadenceTabsSettings />
 						) }
+						<KadenceAccordion />
+						{ 'admin' === this.state.user && (
+							<KadenceAccordionSettings />
+						) }
 						{ map( this.state.controls, ( { Control } ) => (
 							<Control />
 						) ) }
+						<h3>{ __( 'Components' ) }</h3>
+						<KadenceFontFamily />
 					</div>
 				</PluginSidebar>
 			</Fragment>

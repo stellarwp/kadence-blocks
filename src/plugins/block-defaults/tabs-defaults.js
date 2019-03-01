@@ -251,364 +251,362 @@ class KadenceTabsDefault extends Component {
 								step={ 1 }
 							/>
 						</PanelBody>
-						<PanelBody title={ __( 'Tab Title Settings' ) }>
-							<PanelBody
-								title={ __( 'Color Settings' ) }
-								initialOpen={ false }
-							>
-								<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover' ),
-											className: 'kt-hover-tab',
-										},
-										{
-											name: 'active',
-											title: __( 'Active' ),
-											className: 'kt-active-tab',
-										},
-									] }>
+						<PanelBody
+							title={ __( 'Tab Title Color Settings' ) }
+							initialOpen={ false }
+						>
+							<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+								activeClass="active-tab"
+								tabs={ [
 									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = (
-														<Fragment>
-															<p className="kt-setting-label">{ __( 'Hover Color' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleColorHover ? tabsConfig.titleColorHover : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleColorHover', value ) }
-															/>
-															<p className="kt-setting-label">{ __( 'Hover Background' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleBgHover ? tabsConfig.titleBgHover : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleBgHover', value ) }
-															/>
-															<p className="kt-setting-label">{ __( 'Hover Border Color' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleBorderHover ? tabsConfig.titleBorderHover : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleBorderHover', value ) }
-															/>
-														</Fragment>
-													);
-												} else if ( 'active' === tab.name ) {
-													tabout = (
-														<Fragment>
-															<p className="kt-setting-label">{ __( 'Active Color' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleColorActive ? tabsConfig.titleColorActive : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleColorActive', value ) }
-															/>
-															<p className="kt-setting-label">{ __( 'Active Background' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleBgActive ? tabsConfig.titleBgActive : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleBgActive', value ) }
-															/>
-															<p className="kt-setting-label">{ __( 'Active Border Color' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleBorderActive ? tabsConfig.titleBorderActive : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleBorderActive', value ) }
-															/>
-														</Fragment>
-													);
-												} else {
-													tabout = (
-														<Fragment>
-															<p className="kt-setting-label">{ __( 'Title Color' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleColor ? tabsConfig.titleColor : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleColor', value ) }
-															/>
-															<p className="kt-setting-label">{ __( 'Title Background' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleBg ? tabsConfig.titleBg : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleBg', value ) }
-															/>
-															<p className="kt-setting-label">{ __( 'Title Border Color' ) }</p>
-															<ColorPalette
-																value={ ( tabsConfig.titleBorder ? tabsConfig.titleBorder : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'titleBorder', value ) }
-															/>
-														</Fragment>
-													);
-												}
-											}
-											return <div>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-							</PanelBody>
-							<PanelBody
-								title={ __( 'Title Spacing/Border' ) }
-								initialOpen={ false }
-							>
-								<MeasurementControls
-									label={ __( 'Title Paddding (px)' ) }
-									measurement={ ( tabsConfig.titlePadding ? tabsConfig.titlePadding : [] ) }
-									control={ ( tabsConfig.titlePaddingControl ? tabsConfig.titlePaddingControl : 'linked' ) }
-									onChange={ ( value ) => this.saveConfigState( 'titlePadding', value ) }
-									onControl={ ( value ) => this.saveConfigState( 'titlePaddingControl', value ) }
-									min={ 0 }
-									max={ 50 }
-									step={ 1 }
-								/>
-								<MeasurementControls
-									label={ __( 'Title Margin (px)' ) }
-									measurement={ ( tabsConfig.titleMargin ? tabsConfig.titleMargin : [] ) }
-									control={ ( tabsConfig.titleMarginControl ? tabsConfig.titleMarginControl : 'linked' ) }
-									onChange={ ( value ) => this.saveConfigState( 'titleMargin', value ) }
-									onControl={ ( value ) => this.saveConfigState( 'titleMarginControl', value ) }
-									min={ -25 }
-									max={ 25 }
-									step={ 1 }
-								/>
-								<MeasurementControls
-									label={ __( 'Title Border Width (px)' ) }
-									measurement={ ( tabsConfig.titleBorderWidth ? tabsConfig.titleBorderWidth : [] ) }
-									control={ ( tabsConfig.titleBorderControl ? tabsConfig.titleBorderControl : 'linked' ) }
-									onChange={ ( value ) => this.saveConfigState( 'titleBorderWidth', value ) }
-									onControl={ ( value ) => this.saveConfigState( 'titleBorderControl', value ) }
-									min={ 0 }
-									max={ 20 }
-									step={ 1 }
-								/>
-								<MeasurementControls
-									label={ __( 'Title Border Radius (px)' ) }
-									measurement={ ( tabsConfig.titleBorderRadius ? tabsConfig.titleBorderRadius : [] ) }
-									control={ ( tabsConfig.titleBorderRadiusControl ? tabsConfig.titleBorderRadiusControl : 'linked' ) }
-									onChange={ ( value ) => this.saveConfigState( 'titleBorderRadius', value ) }
-									onControl={ ( value ) => this.saveConfigState( 'titleBorderRadiusControl', value ) }
-									min={ 0 }
-									max={ 50 }
-									step={ 1 }
-									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-										{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
-									] }
-									firstIcon={ icons.topleft }
-									secondIcon={ icons.topright }
-									thirdIcon={ icons.bottomright }
-									fourthIcon={ icons.bottomleft }
-								/>
-							</PanelBody>
-							<PanelBody
-								title={ __( 'Font Settings' ) }
-								initialOpen={ false }
-							>
-								<TypographyControls
-									fontFamily={ ( tabsConfig.typography ? tabsConfig.typography : '' ) }
-									onFontFamily={ ( value ) => this.saveConfigState( 'typography', value ) }
-									googleFont={ ( tabsConfig.googleFont ? tabsConfig.googleFont : false ) }
-									onFontChange={ ( select ) => {
-										this.saveConfigState( 'typography', select.value );
-										this.saveConfigState( 'googleFont', select.google );
-									} }
-									onGoogleFont={ ( value ) => this.saveConfigState( 'googleFont', value ) }
-									loadGoogleFont={ ( tabsConfig.loadGoogleFont ? tabsConfig.loadGoogleFont : true ) }
-									onLoadGoogleFont={ ( value ) => this.saveConfigState( 'loadGoogleFont', value ) }
-									fontVariant={ ( tabsConfig.fontVariant ? tabsConfig.fontVariant : '' ) }
-									onFontVariant={ ( value ) => this.saveConfigState( 'fontVariant', value ) }
-									fontWeight={ ( tabsConfig.fontWeight ? tabsConfig.fontWeight : '' ) }
-									onFontWeight={ ( value ) => this.saveConfigState( 'fontWeight', value ) }
-									fontStyle={ ( tabsConfig.fontStyle ? tabsConfig.fontStyle : '' ) }
-									onFontStyle={ ( value ) => this.saveConfigState( 'fontStyle', value ) }
-									fontSubset={ ( tabsConfig.fontSubset ? tabsConfig.fontSubset : '' ) }
-									onFontSubset={ ( value ) => this.saveConfigState( 'fontSubset', value ) }
-								/>
-								<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
-								<TabPanel className="kt-size-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'desk',
-											title: <Dashicon icon="desktop" />,
-											className: 'kt-desk-tab',
-										},
-										{
-											name: 'tablet',
-											title: <Dashicon icon="tablet" />,
-											className: 'kt-tablet-tab',
-										},
-										{
-											name: 'mobile',
-											title: <Dashicon icon="smartphone" />,
-											className: 'kt-mobile-tab',
-										},
-									] }>
+										name: 'normal',
+										title: __( 'Normal' ),
+										className: 'kt-normal-tab',
+									},
 									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'mobile' === tab.name ) {
-													tabout = (
-														<PanelBody>
-															<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
-																{ map( sizeTypes, ( { name, key } ) => (
-																	<Button
-																		key={ key }
-																		className="kt-size-btn"
-																		isSmall
-																		isPrimary={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
-																		aria-pressed={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
-																		onClick={ () => this.saveConfigState( 'sizeType', key ) }
-																	>
-																		{ name }
-																	</Button>
-																) ) }
-															</ButtonGroup>
-															<RangeControl
-																label={ __( 'Mobile Font Size' ) }
-																value={ ( tabsConfig.mobileSize ? tabsConfig.mobileSize : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'mobileSize', value ) }
-																min={ fontMin }
-																max={ fontMax }
-																step={ fontStep }
-															/>
-															<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
-																{ map( sizeTypes, ( { name, key } ) => (
-																	<Button
-																		key={ key }
-																		className="kt-size-btn"
-																		isSmall
-																		isPrimary={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
-																		aria-pressed={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
-																		onClick={ () => this.saveConfigState( 'lineType', key ) }
-																	>
-																		{ name }
-																	</Button>
-																) ) }
-															</ButtonGroup>
-															<RangeControl
-																label={ __( 'Mobile Line Height' ) }
-																value={ ( tabsConfig.mobileLineHeight ? tabsConfig.mobileLineHeight : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'mobileLineHeight', value ) }
-																min={ lineMin }
-																max={ lineMax }
-																step={ lineStep }
-															/>
-														</PanelBody>
-													);
-												} else if ( 'tablet' === tab.name ) {
-													tabout = (
-														<PanelBody>
-															<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
-																{ map( sizeTypes, ( { name, key } ) => (
-																	<Button
-																		key={ key }
-																		className="kt-size-btn"
-																		isSmall
-																		isPrimary={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
-																		aria-pressed={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
-																		onClick={ () => this.saveConfigState( 'sizeType', key ) }
-																	>
-																		{ name }
-																	</Button>
-																) ) }
-															</ButtonGroup>
-															<RangeControl
-																label={ __( 'Tablet Font Size' ) }
-																value={ ( tabsConfig.tabSize ? tabsConfig.tabSize : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'tabSize', value ) }
-																min={ fontMin }
-																max={ fontMax }
-																step={ fontStep }
-															/>
-															<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
-																{ map( sizeTypes, ( { name, key } ) => (
-																	<Button
-																		key={ key }
-																		className="kt-size-btn"
-																		isSmall
-																		isPrimary={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
-																		aria-pressed={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
-																		onClick={ () => this.saveConfigState( 'lineType', key ) }
-																	>
-																		{ name }
-																	</Button>
-																) ) }
-															</ButtonGroup>
-															<RangeControl
-																label={ __( 'Tablet Line Height' ) }
-																value={ ( tabsConfig.tabLineHeight ? tabsConfig.tabLineHeight : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'tabLineHeight', value ) }
-																min={ lineMin }
-																max={ lineMax }
-																step={ lineStep }
-															/>
-														</PanelBody>
-													);
-												} else {
-													tabout = (
-														<PanelBody>
-															<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
-																{ map( sizeTypes, ( { name, key } ) => (
-																	<Button
-																		key={ key }
-																		className="kt-size-btn"
-																		isSmall
-																		isPrimary={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
-																		aria-pressed={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
-																		onClick={ () => this.saveConfigState( 'sizeType', key ) }
-																	>
-																		{ name }
-																	</Button>
-																) ) }
-															</ButtonGroup>
-															<RangeControl
-																label={ __( 'Font Size' ) }
-																value={ ( tabsConfig.size ? tabsConfig.size : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'size', value ) }
-																min={ fontMin }
-																max={ fontMax }
-																step={ fontStep }
-															/>
-															<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
-																{ map( sizeTypes, ( { name, key } ) => (
-																	<Button
-																		key={ key }
-																		className="kt-size-btn"
-																		isSmall
-																		isPrimary={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
-																		aria-pressed={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
-																		onClick={ () => this.saveConfigState( 'lineType', key ) }
-																	>
-																		{ name }
-																	</Button>
-																) ) }
-															</ButtonGroup>
-															<RangeControl
-																label={ __( 'Line Height' ) }
-																value={ ( tabsConfig.lineHeight ? tabsConfig.lineHeight : '' ) }
-																onChange={ ( value ) => this.saveConfigState( 'lineHeight', value ) }
-																min={ lineMin }
-																max={ lineMax }
-																step={ lineStep }
-															/>
-														</PanelBody>
-													);
-												}
+										name: 'hover',
+										title: __( 'Hover' ),
+										className: 'kt-hover-tab',
+									},
+									{
+										name: 'active',
+										title: __( 'Active' ),
+										className: 'kt-active-tab',
+									},
+								] }>
+								{
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'hover' === tab.name ) {
+												tabout = (
+													<Fragment>
+														<p className="kt-setting-label">{ __( 'Hover Color' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleColorHover ? tabsConfig.titleColorHover : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleColorHover', value ) }
+														/>
+														<p className="kt-setting-label">{ __( 'Hover Background' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleBgHover ? tabsConfig.titleBgHover : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleBgHover', value ) }
+														/>
+														<p className="kt-setting-label">{ __( 'Hover Border Color' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleBorderHover ? tabsConfig.titleBorderHover : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleBorderHover', value ) }
+														/>
+													</Fragment>
+												);
+											} else if ( 'active' === tab.name ) {
+												tabout = (
+													<Fragment>
+														<p className="kt-setting-label">{ __( 'Active Color' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleColorActive ? tabsConfig.titleColorActive : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleColorActive', value ) }
+														/>
+														<p className="kt-setting-label">{ __( 'Active Background' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleBgActive ? tabsConfig.titleBgActive : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleBgActive', value ) }
+														/>
+														<p className="kt-setting-label">{ __( 'Active Border Color' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleBorderActive ? tabsConfig.titleBorderActive : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleBorderActive', value ) }
+														/>
+													</Fragment>
+												);
+											} else {
+												tabout = (
+													<Fragment>
+														<p className="kt-setting-label">{ __( 'Title Color' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleColor ? tabsConfig.titleColor : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleColor', value ) }
+														/>
+														<p className="kt-setting-label">{ __( 'Title Background' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleBg ? tabsConfig.titleBg : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleBg', value ) }
+														/>
+														<p className="kt-setting-label">{ __( 'Title Border Color' ) }</p>
+														<ColorPalette
+															value={ ( tabsConfig.titleBorder ? tabsConfig.titleBorder : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'titleBorder', value ) }
+														/>
+													</Fragment>
+												);
 											}
-											return <div>{ tabout }</div>;
 										}
+										return <div>{ tabout }</div>;
 									}
-								</TabPanel>
-								<RangeControl
-									label={ __( 'Letter Spacing' ) }
-									value={ ( tabsConfig.letterSpacing ? tabsConfig.letterSpacing : '' ) }
-									onChange={ ( value ) => this.saveConfigState( 'letterSpacing', value ) }
-									min={ -5 }
-									max={ 15 }
-									step={ 0.1 }
-								/>
-							</PanelBody>
+								}
+							</TabPanel>
+						</PanelBody>
+						<PanelBody
+							title={ __( 'Tab Title Spacing/Border' ) }
+							initialOpen={ false }
+						>
+							<MeasurementControls
+								label={ __( 'Title Paddding (px)' ) }
+								measurement={ ( tabsConfig.titlePadding ? tabsConfig.titlePadding : [] ) }
+								control={ ( tabsConfig.titlePaddingControl ? tabsConfig.titlePaddingControl : 'linked' ) }
+								onChange={ ( value ) => this.saveConfigState( 'titlePadding', value ) }
+								onControl={ ( value ) => this.saveConfigState( 'titlePaddingControl', value ) }
+								min={ 0 }
+								max={ 50 }
+								step={ 1 }
+							/>
+							<MeasurementControls
+								label={ __( 'Title Margin (px)' ) }
+								measurement={ ( tabsConfig.titleMargin ? tabsConfig.titleMargin : [] ) }
+								control={ ( tabsConfig.titleMarginControl ? tabsConfig.titleMarginControl : 'linked' ) }
+								onChange={ ( value ) => this.saveConfigState( 'titleMargin', value ) }
+								onControl={ ( value ) => this.saveConfigState( 'titleMarginControl', value ) }
+								min={ -25 }
+								max={ 25 }
+								step={ 1 }
+							/>
+							<MeasurementControls
+								label={ __( 'Title Border Width (px)' ) }
+								measurement={ ( tabsConfig.titleBorderWidth ? tabsConfig.titleBorderWidth : [] ) }
+								control={ ( tabsConfig.titleBorderControl ? tabsConfig.titleBorderControl : 'linked' ) }
+								onChange={ ( value ) => this.saveConfigState( 'titleBorderWidth', value ) }
+								onControl={ ( value ) => this.saveConfigState( 'titleBorderControl', value ) }
+								min={ 0 }
+								max={ 20 }
+								step={ 1 }
+							/>
+							<MeasurementControls
+								label={ __( 'Title Border Radius (px)' ) }
+								measurement={ ( tabsConfig.titleBorderRadius ? tabsConfig.titleBorderRadius : [] ) }
+								control={ ( tabsConfig.titleBorderRadiusControl ? tabsConfig.titleBorderRadiusControl : 'linked' ) }
+								onChange={ ( value ) => this.saveConfigState( 'titleBorderRadius', value ) }
+								onControl={ ( value ) => this.saveConfigState( 'titleBorderRadiusControl', value ) }
+								min={ 0 }
+								max={ 50 }
+								step={ 1 }
+								controlTypes={ [
+									{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
+									{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+								] }
+								firstIcon={ icons.topleft }
+								secondIcon={ icons.topright }
+								thirdIcon={ icons.bottomright }
+								fourthIcon={ icons.bottomleft }
+							/>
+						</PanelBody>
+						<PanelBody
+							title={ __( 'Tab Title Font Settings' ) }
+							initialOpen={ false }
+						>
+							<TypographyControls
+								fontFamily={ ( tabsConfig.typography ? tabsConfig.typography : '' ) }
+								onFontFamily={ ( value ) => this.saveConfigState( 'typography', value ) }
+								googleFont={ ( tabsConfig.googleFont ? tabsConfig.googleFont : false ) }
+								onFontChange={ ( select ) => {
+									this.saveConfigState( 'typography', select.value );
+									this.saveConfigState( 'googleFont', select.google );
+								} }
+								onGoogleFont={ ( value ) => this.saveConfigState( 'googleFont', value ) }
+								loadGoogleFont={ ( tabsConfig.loadGoogleFont ? tabsConfig.loadGoogleFont : true ) }
+								onLoadGoogleFont={ ( value ) => this.saveConfigState( 'loadGoogleFont', value ) }
+								fontVariant={ ( tabsConfig.fontVariant ? tabsConfig.fontVariant : '' ) }
+								onFontVariant={ ( value ) => this.saveConfigState( 'fontVariant', value ) }
+								fontWeight={ ( tabsConfig.fontWeight ? tabsConfig.fontWeight : '' ) }
+								onFontWeight={ ( value ) => this.saveConfigState( 'fontWeight', value ) }
+								fontStyle={ ( tabsConfig.fontStyle ? tabsConfig.fontStyle : '' ) }
+								onFontStyle={ ( value ) => this.saveConfigState( 'fontStyle', value ) }
+								fontSubset={ ( tabsConfig.fontSubset ? tabsConfig.fontSubset : '' ) }
+								onFontSubset={ ( value ) => this.saveConfigState( 'fontSubset', value ) }
+							/>
+							<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+							<TabPanel className="kt-size-tabs"
+								activeClass="active-tab"
+								tabs={ [
+									{
+										name: 'desk',
+										title: <Dashicon icon="desktop" />,
+										className: 'kt-desk-tab',
+									},
+									{
+										name: 'tablet',
+										title: <Dashicon icon="tablet" />,
+										className: 'kt-tablet-tab',
+									},
+									{
+										name: 'mobile',
+										title: <Dashicon icon="smartphone" />,
+										className: 'kt-mobile-tab',
+									},
+								] }>
+								{
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'mobile' === tab.name ) {
+												tabout = (
+													<PanelBody>
+														<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+															{ map( sizeTypes, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-size-btn"
+																	isSmall
+																	isPrimary={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
+																	aria-pressed={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
+																	onClick={ () => this.saveConfigState( 'sizeType', key ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+														<RangeControl
+															label={ __( 'Mobile Font Size' ) }
+															value={ ( tabsConfig.mobileSize ? tabsConfig.mobileSize : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'mobileSize', value ) }
+															min={ fontMin }
+															max={ fontMax }
+															step={ fontStep }
+														/>
+														<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+															{ map( sizeTypes, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-size-btn"
+																	isSmall
+																	isPrimary={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
+																	aria-pressed={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
+																	onClick={ () => this.saveConfigState( 'lineType', key ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+														<RangeControl
+															label={ __( 'Mobile Line Height' ) }
+															value={ ( tabsConfig.mobileLineHeight ? tabsConfig.mobileLineHeight : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'mobileLineHeight', value ) }
+															min={ lineMin }
+															max={ lineMax }
+															step={ lineStep }
+														/>
+													</PanelBody>
+												);
+											} else if ( 'tablet' === tab.name ) {
+												tabout = (
+													<PanelBody>
+														<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+															{ map( sizeTypes, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-size-btn"
+																	isSmall
+																	isPrimary={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
+																	aria-pressed={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
+																	onClick={ () => this.saveConfigState( 'sizeType', key ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+														<RangeControl
+															label={ __( 'Tablet Font Size' ) }
+															value={ ( tabsConfig.tabSize ? tabsConfig.tabSize : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'tabSize', value ) }
+															min={ fontMin }
+															max={ fontMax }
+															step={ fontStep }
+														/>
+														<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+															{ map( sizeTypes, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-size-btn"
+																	isSmall
+																	isPrimary={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
+																	aria-pressed={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
+																	onClick={ () => this.saveConfigState( 'lineType', key ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+														<RangeControl
+															label={ __( 'Tablet Line Height' ) }
+															value={ ( tabsConfig.tabLineHeight ? tabsConfig.tabLineHeight : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'tabLineHeight', value ) }
+															min={ lineMin }
+															max={ lineMax }
+															step={ lineStep }
+														/>
+													</PanelBody>
+												);
+											} else {
+												tabout = (
+													<PanelBody>
+														<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+															{ map( sizeTypes, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-size-btn"
+																	isSmall
+																	isPrimary={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
+																	aria-pressed={ ( tabsConfig.sizeType ? tabsConfig.sizeType : 'px' ) === key }
+																	onClick={ () => this.saveConfigState( 'sizeType', key ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+														<RangeControl
+															label={ __( 'Font Size' ) }
+															value={ ( tabsConfig.size ? tabsConfig.size : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'size', value ) }
+															min={ fontMin }
+															max={ fontMax }
+															step={ fontStep }
+														/>
+														<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+															{ map( sizeTypes, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-size-btn"
+																	isSmall
+																	isPrimary={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
+																	aria-pressed={ ( tabsConfig.lineType ? tabsConfig.lineType : 'px' ) === key }
+																	onClick={ () => this.saveConfigState( 'lineType', key ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+														<RangeControl
+															label={ __( 'Line Height' ) }
+															value={ ( tabsConfig.lineHeight ? tabsConfig.lineHeight : '' ) }
+															onChange={ ( value ) => this.saveConfigState( 'lineHeight', value ) }
+															min={ lineMin }
+															max={ lineMax }
+															step={ lineStep }
+														/>
+													</PanelBody>
+												);
+											}
+										}
+										return <div>{ tabout }</div>;
+									}
+								}
+							</TabPanel>
+							<RangeControl
+								label={ __( 'Letter Spacing' ) }
+								value={ ( tabsConfig.letterSpacing ? tabsConfig.letterSpacing : '' ) }
+								onChange={ ( value ) => this.saveConfigState( 'letterSpacing', value ) }
+								min={ -5 }
+								max={ 15 }
+								step={ 0.1 }
+							/>
 						</PanelBody>
 						<PanelBody
 							title={ __( 'Structure Settings' ) }

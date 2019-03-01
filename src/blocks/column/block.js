@@ -142,6 +142,10 @@ registerBlockType( 'kadence/column', {
 		inserter: false,
 		reusable: false,
 		html: false,
+		ktanimate: true,
+		ktanimateadd: true,
+		ktanimatepreview: true,
+		ktanimateswipe: true,
 	},
 	edit,
 

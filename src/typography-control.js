@@ -247,8 +247,15 @@ export default function TypographyControls( {
 			options: fontsarray,
 		},
 	];
-	const typographyOptions = applyFilters( 'kadence.typography_options', options );
-	const typographySelectOptions = [].concat.apply( [], typographyOptions.map( option => option.options ) );
+	let typographyOptions = applyFilters( 'kadence.typography_options', options );
+	let typographySelectOptions = [].concat.apply( [], typographyOptions.map( option => option.options ) );
+	const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+	if ( blockConfigObject[ 'kadence/typography' ] !== undefined && typeof blockConfigObject[ 'kadence/typography' ] === 'object' ) {
+		if ( blockConfigObject[ 'kadence/typography' ].showAll !== undefined && ! blockConfigObject[ 'kadence/typography' ].showAll ) {
+			typographyOptions = blockConfigObject[ 'kadence/typography' ].choiceArray;
+			typographySelectOptions = blockConfigObject[ 'kadence/typography' ].choiceArray;
+		}
+	}
 	const fontMin = ( fontSizeType === 'em' ? 0.2 : 5 );
 	const fontMax = ( fontSizeType === 'em' ? 12 : 200 );
 	const fontStep = ( fontSizeType === 'em' ? 0.1 : 1 );

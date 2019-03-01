@@ -1492,7 +1492,7 @@ class Kadence_Blocks_Frontend {
 	public function blocks_advanced_heading_array( $attr, $unique_id ) {
 		$css = '';
 		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['fontWeight'] ) || isset( $attr['fontStyle'] ) ) {
-			$css .= '#kt-adv-heading' . $unique_id . ' {';
+			$css .= '#kt-adv-heading' . $unique_id . ', #kt-adv-inner-heading' . $unique_id . ' {';
 			if ( isset( $attr['size'] ) && ! empty( $attr['size'] ) ) {
 				$css .= 'font-size:' . $attr['size'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -1512,7 +1512,7 @@ class Kadence_Blocks_Frontend {
 		}
 		// Highlight.
 		if ( isset( $attr['markBorder'] ) || isset( $attr['markBorderWidth'] ) || isset( $attr['markBorderStyle'] ) || isset( $attr['markPadding'] ) || isset( $attr['markLetterSpacing'] ) || isset( $attr['markSize'] ) || isset( $attr['markLineHeight'] ) || isset( $attr['markTypography'] ) || isset( $attr['markColor'] ) || isset( $attr['markBG'] ) ) {
-			$css .= '#kt-adv-heading' . $unique_id . ' mark {';
+			$css .= '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-inner-heading' . $unique_id . ' mark {';
 			if ( isset( $attr['markLetterSpacing'] ) && ! empty( $attr['markLetterSpacing'] ) ) {
 				$css .= 'letter-spacing:' . $attr['markLetterSpacing'] . 'px;';
 			}
@@ -1555,7 +1555,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '#kt-adv-heading' . $unique_id . ' {';
+			$css .= '#kt-adv-heading' . $unique_id . ', #kt-adv-inner-heading' . $unique_id . ' {';
 			if ( isset( $attr['tabSize'] ) ) {
 				$css .= 'font-size:' . $attr['tabSize'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -1567,7 +1567,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && ! empty( $attr['markSize'][1] ) ) || isset( $attr['markLineHeight'] ) && is_array( $attr['markLineHeight'] ) && ! empty( $attr['markLineHeight'][1] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '#kt-adv-heading' . $unique_id . ' mark {';
+			$css .= '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-inner-heading' . $unique_id . ' mark {';
 			if ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && ! empty( $attr['markSize'][1] ) ) {
 				$css .= 'font-size:' . $attr['markSize'][1] . ( ! isset( $attr['markSizeType'] ) ? 'px' : $attr['markSizeType'] ) . ';';
 			}
@@ -1579,7 +1579,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['mobileSize'] ) || isset( $attr['mobileLineHeight'] ) ) {
 			$css .= '@media (max-width: 767px) {';
-			$css .= '#kt-adv-heading' . $unique_id . ' {';
+			$css .= '#kt-adv-heading' . $unique_id . ', #kt-adv-inner-heading' . $unique_id . ' {';
 			if ( isset( $attr['mobileSize'] ) ) {
 				$css .= 'font-size:' . $attr['mobileSize'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -1591,7 +1591,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && ! empty( $attr['markSize'][2] ) ) || isset( $attr['markLineHeight'] ) && is_array( $attr['markLineHeight'] ) && ! empty( $attr['markLineHeight'][2] ) ) {
 			$css .= '@media (max-width: 767px) {';
-			$css .= '#kt-adv-heading' . $unique_id . ' mark {';
+			$css .= '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-inner-heading' . $unique_id . ' mark {';
 			if ( isset( $attr['markSize'] ) && is_array( $attr['markSize'] ) && ! empty( $attr['markSize'][2] ) ) {
 				$css .= 'font-size:' . $attr['markSize'][2] . ( ! isset( $attr['markSizeType'] ) ? 'px' : $attr['markSizeType'] ) . ';';
 			}

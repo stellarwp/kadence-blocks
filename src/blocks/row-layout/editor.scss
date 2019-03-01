@@ -1013,3 +1013,91 @@
 // 		width: auto;
 // 	}
 // }
+[data-aos="swipe-up"] {
+	position: relative;
+	&:after {
+		left:0;
+		top:0;
+		right:0;
+		bottom:auto;
+		height:100%;
+		position: absolute;
+		background:white;
+		z-index: 10;
+		content:'';
+		transition-property: height;
+		transition-duration: inherit;
+		transition-timing-function: inherit;
+	}
+	&.aos-animate {
+		&:after {
+			height:0;
+		}
+	}
+}
+[data-aos="swipe-down"] {
+	position: relative;
+	&:after {
+		left:0;
+		top:auto;
+		right:0;
+		bottom:0;
+		height:100%;
+		position: absolute;
+		background:white;
+		z-index: 10;
+		content:'';
+		transition-property: height;
+		transition-duration: inherit;
+		transition-timing-function: inherit;
+	}
+	&.aos-animate {
+		&:after {
+			height:0;
+		}
+	}
+}
+[data-aos="swipe-left"] {
+	position: relative;
+	&:after {
+		left:0;
+		top:0;
+		right:auto;
+		bottom:0;
+		width:100%;
+		position: absolute;
+		background:white;
+		z-index: 10;
+		content:'';
+		transition-property: width;
+		transition-duration: inherit;
+		transition-timing-function: inherit;
+	}
+	&.aos-animate {
+		&:after {
+			width:0;
+		}
+	}
+}
+[data-aos="swipe-right"] {
+	position: relative;
+	&:after {
+		left:auto;
+		top:0;
+		right:0;
+		bottom:0;
+		width:100%;
+		position: absolute;
+		background:white;
+		z-index: 10;
+		content:'';
+		transition-property: width;
+		transition-duration: inherit;
+		transition-timing-function: inherit;
+	}
+	&.aos-animate {
+		&:after {
+			width:0;
+		}
+	}
+}
