@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function kadence_gutenberg_editor_assets() {
 	// Scripts.
-	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api' ), KT_BLOCKS_VERSION, true );
+	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KT_BLOCKS_VERSION, true );
 	$editor_widths = get_option( 'kt_blocks_editor_width', array() );
 	$sidebar_size = 750;
 	$nosidebar_size = 1140;

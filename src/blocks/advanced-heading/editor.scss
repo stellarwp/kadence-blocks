@@ -261,34 +261,3 @@ button.components-button.components-icon-button.kt-font-clear-btn {
 	color: #f76a0c;
 	background:transparent;
 }
-[data-aos="reveal-up"] {
-	transition-property: transform;
-	transform: translate3d(0, -140%, 0);
-	&.aos-animate {
-		transform: translate3d(0, 0, 0);
-	}
-}
-[data-aos="reveal-down"] {
-	transition-property: transform;
-	transform: translate3d(0, 140%, 0);
-	&.aos-animate {
-		transform: translate3d(0, 0, 0);
-	}
-}
-[data-aos="reveal-left"] {
-	transition-property: transform;
-	transform: translate3d(-110%, 0, 0);
-	&.aos-animate {
-		transform: translate3d(0, 0, 0);
-	}
-}
-[data-aos="reveal-right"] {
-	transition-property: transform;
-	transform: translate3d(110%, 0, 0);
-	&.aos-animate {
-		transform: translate3d(0, 0, 0);
-	}
-}
-.kt-animation-wrap-reveal-right, .kt-animation-wrap-reveal-left, .kt-animation-wrap-reveal-up, .kt-animation-wrap-reveal-down {
-	overflow: hidden;
-}

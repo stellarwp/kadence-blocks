@@ -19,6 +19,7 @@ import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 import PrebuiltModal from './prebuilt_modal';
 import MeasurementControls from '../../measurement-control';
+//import ThreeColumnDrag from './threecolumndrag';
 /**
  * Import Css
  */
@@ -108,7 +109,28 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const marginTypes = [
+			{ key: 'px', name: __( 'px' ) },
+			{ key: 'em', name: __( 'em' ) },
+			{ key: '%', name: __( '%' ) },
+			{ key: 'vh', name: __( 'vh' ) },
+		];
+		const heightTypes = [
+			{ key: 'px', name: __( 'px' ) },
+			{ key: 'vw', name: __( 'vw' ) },
+			{ key: 'vh', name: __( 'vh' ) },
+		];
+		const widthTypes = [
+			{ key: 'px', name: __( 'px' ) },
+			{ key: '%', name: __( '%' ) },
+			{ key: 'vw', name: __( 'vw' ) },
+		];
+		const heightMax = ( minHeightUnit === 'px' ? 2000 : 200 );
+		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
+		const marginMin = ( marginUnit === 'em' ? 0.1 : 1 );
+		const marginMax = ( marginUnit === 'em' ? 24 : 200 );
+		const marginStep = ( marginUnit === 'em' ? 0.1 : 1 );
 		const onResize = ( event, direction, elt ) => {
 			this.setState( {
 				firstWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5,
@@ -433,7 +455,21 @@ class KadenceRowLayout extends Component {
 						min={ 0 }
 						max={ 500 }
 					/>
-					<h2>{ __( 'Mobile Margin (px)' ) }</h2>
+					<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
+						{ map( marginTypes, ( { name, key } ) => (
+							<Button
+								key={ key }
+								className="kt-size-btn"
+								isSmall
+								isPrimary={ marginUnit === key }
+								aria-pressed={ marginUnit === key }
+								onClick={ () => setAttributes( { marginUnit: key } ) }
+							>
+								{ name }
+							</Button>
+						) ) }
+					</ButtonGroup>
+					<h2>{ __( 'Mobile Margin' ) }</h2>
 					<RangeControl
 						label={ icons.outlinetop }
 						value={ topMarginM }
@@ -443,8 +479,9 @@ class KadenceRowLayout extends Component {
 								topMarginM: value,
 							} );
 						} }
-						min={ 0 }
-						max={ 200 }
+						min={ marginMin }
+						max={ marginMax }
+						step={ marginStep }
 					/>
 					<RangeControl
 						label={ icons.outlinebottom }
@@ -455,8 +492,9 @@ class KadenceRowLayout extends Component {
 								bottomMarginM: value,
 							} );
 						} }
-						min={ 0 }
-						max={ 200 }
+						min={ marginMin }
+						max={ marginMax }
+						step={ marginStep }
 					/>
 				</PanelBody>
 			</div>
@@ -492,7 +530,21 @@ class KadenceRowLayout extends Component {
 						max={ 500 }
 						step={ 1 }
 					/>
-					<h2>{ __( 'Tablet Margin (px)' ) }</h2>
+					<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
+						{ map( marginTypes, ( { name, key } ) => (
+							<Button
+								key={ key }
+								className="kt-size-btn"
+								isSmall
+								isPrimary={ marginUnit === key }
+								aria-pressed={ marginUnit === key }
+								onClick={ () => setAttributes( { marginUnit: key } ) }
+							>
+								{ name }
+							</Button>
+						) ) }
+					</ButtonGroup>
+					<h2>{ __( 'Tablet Margin' ) }</h2>
 					<RangeControl
 						label={ icons.outlinetop }
 						value={ topMarginT }
@@ -502,8 +554,9 @@ class KadenceRowLayout extends Component {
 								topMarginT: value,
 							} );
 						} }
-						min={ 0 }
-						max={ 200 }
+						min={ marginMin }
+						max={ marginMax }
+						step={ marginStep }
 					/>
 					<RangeControl
 						label={ icons.outlinebottom }
@@ -514,8 +567,9 @@ class KadenceRowLayout extends Component {
 								bottomMarginT: value,
 							} );
 						} }
-						min={ 0 }
-						max={ 200 }
+						min={ marginMin }
+						max={ marginMax }
+						step={ marginStep }
 					/>
 				</PanelBody>
 			</PanelBody>
@@ -635,7 +689,21 @@ class KadenceRowLayout extends Component {
 						min={ 0 }
 						max={ 500 }
 					/>
-					<h2>{ __( 'Margin (px)' ) }</h2>
+					<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
+						{ map( marginTypes, ( { name, key } ) => (
+							<Button
+								key={ key }
+								className="kt-size-btn"
+								isSmall
+								isPrimary={ marginUnit === key }
+								aria-pressed={ marginUnit === key }
+								onClick={ () => setAttributes( { marginUnit: key } ) }
+							>
+								{ name }
+							</Button>
+						) ) }
+					</ButtonGroup>
+					<h2>{ __( 'Margin' ) }</h2>
 					<RangeControl
 						label={ icons.outlinetop }
 						value={ topMargin }
@@ -645,8 +713,9 @@ class KadenceRowLayout extends Component {
 								topMargin: value,
 							} );
 						} }
-						min={ 0 }
-						max={ 200 }
+						min={ marginMin }
+						max={ marginMax }
+						step={ marginStep }
 					/>
 					<RangeControl
 						label={ icons.outlinebottom }
@@ -657,8 +726,9 @@ class KadenceRowLayout extends Component {
 								bottomMargin: value,
 							} );
 						} }
-						min={ 0 }
-						max={ 200 }
+						min={ marginMin }
+						max={ marginMax }
+						step={ marginStep }
 					/>
 				</PanelBody>
 			</div>
@@ -1498,6 +1568,20 @@ class KadenceRowLayout extends Component {
 							] }
 							onChange={ value => setAttributes( { htmlTag: value } ) }
 						/>
+						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Min Height Type' ) }>
+							{ map( heightTypes, ( { name, key } ) => (
+								<Button
+									key={ key }
+									className="kt-size-btn"
+									isSmall
+									isPrimary={ minHeightUnit === key }
+									aria-pressed={ minHeightUnit === key }
+									onClick={ () => setAttributes( { minHeightUnit: key } ) }
+								>
+									{ name }
+								</Button>
+							) ) }
+						</ButtonGroup>
 						<RangeControl
 							label={ __( 'Minimium Height' ) }
 							value={ minHeight }
@@ -1507,8 +1591,22 @@ class KadenceRowLayout extends Component {
 								} );
 							} }
 							min={ 0 }
-							max={ 1000 }
+							max={ heightMax }
 						/>
+						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
+							{ map( widthTypes, ( { name, key } ) => (
+								<Button
+									key={ key }
+									className="kt-size-btn"
+									isSmall
+									isPrimary={ maxWidthUnit === key }
+									aria-pressed={ maxWidthUnit === key }
+									onClick={ () => setAttributes( { maxWidthUnit: key } ) }
+								>
+									{ name }
+								</Button>
+							) ) }
+						</ButtonGroup>
 						<RangeControl
 							label={ __( 'Content Max Width' ) }
 							value={ maxWidth }
@@ -1518,7 +1616,7 @@ class KadenceRowLayout extends Component {
 								} );
 							} }
 							min={ 0 }
-							max={ 2000 }
+							max={ widthMax }
 						/>
 					</PanelBody>
 				</InspectorControls>
@@ -1530,9 +1628,9 @@ class KadenceRowLayout extends Component {
 					</style>
 				) }
 				<div className={ classes } style={ {
-					marginBottom: bottomMargin,
-					marginTop: topMargin,
-					minHeight: minHeight + 'px',
+					marginBottom: bottomMargin + marginUnit,
+					marginTop: topMargin + marginUnit,
+					minHeight: minHeight + minHeightUnit,
 				} }>
 					<div className={ `kt-row-layout-background${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
 						backgroundColor: ( bgColor ? bgColor : undefined ),
@@ -1645,7 +1743,7 @@ class KadenceRowLayout extends Component {
 					) }
 					{ colLayout && (
 						<div className="innerblocks-wrap" id={ `kt-layout-id${ uniqueID }` } style={ {
-							maxWidth: maxWidth + 'px',
+							maxWidth: maxWidth + maxWidthUnit,
 							paddingLeft: leftPadding + 'px',
 							paddingRight: rightPadding + 'px',
 						} }>

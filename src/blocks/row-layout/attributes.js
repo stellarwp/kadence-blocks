@@ -284,5 +284,17 @@ const attributes = {
 		type: 'number',
 		default: '',
 	},
+	marginUnit: {
+		type: 'string',
+		default: 'px',
+	},
+	minHeightUnit: {
+		type: 'string',
+		default: 'px',
+	},
+	maxWidthUnit: {
+		type: 'string',
+		default: 'px',
+	},
 };
 export default attributes;

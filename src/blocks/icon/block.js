@@ -172,6 +172,84 @@ registerBlockType( 'kadence/icon', {
 					return (
 						<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 							{ icons[ index ].icon && icons[ index ].link && (
+								<a href={ icons[ index ].link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === icons[ index ].target ? icons[ index ].target : undefined ) } rel={ '_blank' === icons[ index ].target ? 'noopener noreferrer' : undefined }>
+									<div style={ {
+										color: ( icons[ index ].color ? icons[ index ].color : undefined ),
+										backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? icons[ index ].background : undefined ),
+										padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
+										borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? icons[ index ].border : undefined ),
+										borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
+										borderRadius: ( icons[ index ].borderRadius && icons[ index ].style !== 'default' ? icons[ index ].borderRadius + '%' : undefined ),
+									} } className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` }>
+									</div>
+								</a>
+							) }
+							{ icons[ index ].icon && ! icons[ index ].link && (
+								<div style={ {
+									color: ( icons[ index ].color ? icons[ index ].color : undefined ),
+									backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? icons[ index ].background : undefined ),
+									padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
+									borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? icons[ index ].border : undefined ),
+									borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
+									borderRadius: ( icons[ index ].borderRadius && icons[ index ].style !== 'default' ? icons[ index ].borderRadius + '%' : undefined ),
+								} } className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` }>
+								</div>
+							) }
+						</div>
+					);
+				};
+				return (
+					<div className={ `kt-svg-icons kt-svg-icons${ uniqueID } align${ ( blockAlignment ? blockAlignment : 'center' ) }` } style={ {
+						textAlign: ( textAlignment ? textAlignment : 'center' ),
+					} } >
+						{ times( iconCount, n => renderSaveIcons( n ) ) }
+					</div>
+				);
+			},
+		},
+		{
+			attributes: {
+				icons: {
+					type: 'array',
+					default: [ {
+						icon: 'fe_aperture',
+						link: '',
+						target: '_self',
+						size: 50,
+						width: 2,
+						title: '',
+						color: '#444444',
+						background: 'transparent',
+						border: '#444444',
+						borderRadius: 0,
+						borderWidth: 2,
+						padding: 20,
+						style: 'default',
+					} ],
+				},
+				iconCount: {
+					type: 'number',
+					default: 1,
+				},
+				uniqueID: {
+					type: 'string',
+					default: '',
+				},
+				blockAlignment: {
+					type: 'string',
+					default: 'center',
+				},
+				textAlignment: {
+					type: 'string',
+					default: 'center',
+				},
+			},
+			save: ( { attributes } ) => {
+				const { icons, iconCount, blockAlignment, textAlignment, uniqueID } = attributes;
+				const renderSaveIcons = ( index ) => {
+					return (
+						<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
+							{ icons[ index ].icon && icons[ index ].link && (
 								<a href={ icons[ index ].link } className={ 'kt-svg-icon-link' } target={ icons[ index ].target }>
 									<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
 										color: ( icons[ index ].color ? icons[ index ].color : undefined ),

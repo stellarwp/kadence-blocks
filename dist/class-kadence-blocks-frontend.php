@@ -294,6 +294,7 @@ class Kadence_Blocks_Frontend {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				wp_enqueue_script( 'kadence-blocks-tabs-js' );
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
@@ -1743,13 +1744,23 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function row_layout_array_css( $attr, $unique_id ) {
 		$css = '';
+		// if ( isset( $attr['firstColumnWidth'] ) && ! empty( $attr['firstColumnWidth'] ) && ( isset( $attr['columns'] ) || 3 === $attr['columns'] ) ) {
+		// 	$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+		// 		$css .= '-ms-flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
+		// 		$css .= 'flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
+		// 	$css .= '}';
+		// 	$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+		// 		$css .= '-ms-flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
+		// 		$css .= 'flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
+		// 	$css .= '}';
+		// }
 		if ( isset( $attr['bgColor'] ) || isset( $attr['bgImg'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) ) {
 			$css .= '#kt-layout-id' . $unique_id . ' {';
 			if ( isset( $attr['topMargin'] ) ) {
-				$css .= 'margin-top:' . $attr['topMargin'] . 'px;';
+				$css .= 'margin-top:' . $attr['topMargin'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px') . ';';
 			}
 			if ( isset( $attr['bottomMargin'] ) ) {
-				$css .= 'margin-bottom:' . $attr['bottomMargin'] . 'px;';
+				$css .= 'margin-bottom:' . $attr['bottomMargin'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px') . ';';
 			}
 			if ( isset( $attr['bgColor'] ) ) {
 				$css .= 'background-color:' . $attr['bgColor'] . ';';
@@ -1886,10 +1897,10 @@ class Kadence_Blocks_Frontend {
 					$css .= 'padding-right:' . $attr['rightPadding'] . 'px;';
 				}
 				if ( isset( $attr['minHeight'] ) ) {
-					$css .= 'min-height:' . $attr['minHeight'] . 'px;';
+					$css .= 'min-height:' . $attr['minHeight'] . ( isset( $attr['minHeightUnit'] ) && ! empty( $attr['minHeightUnit'] ) ? $attr['minHeightUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['maxWidth'] ) ) {
-					$css .= 'max-width:' . $attr['maxWidth'] . 'px;';
+					$css .= 'max-width:' . $attr['maxWidth'] . ( isset( $attr['maxWidthUnit'] ) && ! empty( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px') . ';';
 					$css .= 'margin-left:auto;';
 					$css .= 'margin-right:auto;';
 				}
@@ -1949,10 +1960,10 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) ) {
 				$css .= '#kt-layout-id' . $unique_id . ' {';
 				if ( isset( $attr['topMarginT'] ) ) {
-					$css .= 'margin-top:' . $attr['topMarginT'] . 'px;';
+					$css .= 'margin-top:' . $attr['topMarginT'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['bottomMarginT'] ) ) {
-					$css .= 'margin-bottom:' . $attr['bottomMarginT'] . 'px;';
+					$css .= 'margin-bottom:' . $attr['bottomMarginT'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px') . ';';
 				}
 				$css .= '}';
 			}
@@ -1968,10 +1979,10 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) ) {
 				$css .= '#kt-layout-id' . $unique_id . ' {';
 				if ( isset( $attr['topMarginM'] ) ) {
-					$css .= 'margin-top:' . $attr['topMarginM'] . 'px;';
+					$css .= 'margin-top:' . $attr['topMarginM'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['bottomMarginM'] ) ) {
-					$css .= 'margin-bottom:' . $attr['bottomMarginM'] . 'px;';
+					$css .= 'margin-bottom:' . $attr['bottomMarginM'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px') . ';';
 				}
 				$css .= '}';
 			}

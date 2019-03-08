@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.1.0
-Stable tag: 1.3.8
+Stable tag: 1.3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.3.9 =
+* Add: Differnet size units to Margin, maxwidth and minheight controls in row layout.
+* Update: Add some fallback support for content imported to a muitisite where it strips html.
+* Updates: Better Mobile Parallax.
+* Fix: Attempt fix for Tabs in widget area.
 
 = 1.3.8 =
 * Fix: Anchor in Header issue.

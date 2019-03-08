@@ -348,7 +348,7 @@
     }
 }
 // Tablet specific
-@media (min-width: 767px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1024px) {
     .kt-row-column-wrap.kt-tab-layout-equal > .wp-block-kadence-column {
         flex: 1;
         width: 0;
@@ -597,7 +597,7 @@
 	}
 }
 // Mobile specific
-@media (max-width: 766px) {
+@media (max-width: 767px) {
     .kt-row-column-wrap.kt-mobile-layout-equal > .wp-block-kadence-column {
         flex: 1;
         width: 0;
@@ -820,15 +820,12 @@
         margin-right: 0px;
 	}
 	.wp-block-kadence-rowlayout [id*="jarallax-container-"] > div { 
-		position: fixed !important;
 		width: 100% !important;
 		margin-top: 0 !important;
 		height: 100vh !important;
-		transform: none !important;
 	}
 	.wp-block-kadence-rowlayout [id*="jarallax-container-"] {
 		backface-visibility: hidden;
-		clip: rect(auto, auto, auto, auto);
 	}
 }
 .kt-row-layout-bottom-sep {
@@ -865,93 +862,5 @@
 		width: 100.2%;
 		height: 100%;
 		display: block;
-	}
-}
-[data-aos="swipe-up"] {
-	position: relative;
-	&:after {
-		left:0;
-		top:0;
-		right:0;
-		bottom:auto;
-		height:100%;
-		position: absolute;
-		background:white;
-		z-index: 10;
-		content:'';
-		transition-property: height;
-		transition-duration: inherit;
-		transition-timing-function: inherit;
-	}
-	&.aos-animate {
-		&:after {
-			height:0;
-		}
-	}
-}
-[data-aos="swipe-down"] {
-	position: relative;
-	&:after {
-		left:0;
-		top:auto;
-		right:0;
-		bottom:0;
-		height:100%;
-		position: absolute;
-		background:white;
-		z-index: 10;
-		content:'';
-		transition-property: height;
-		transition-duration: inherit;
-		transition-timing-function: inherit;
-	}
-	&.aos-animate {
-		&:after {
-			height:0;
-		}
-	}
-}
-[data-aos="swipe-left"] {
-	position: relative;
-	&:after {
-		left:0;
-		top:0;
-		right:auto;
-		bottom:0;
-		width:100%;
-		position: absolute;
-		background:white;
-		z-index: 10;
-		content:'';
-		transition-property: width;
-		transition-duration: inherit;
-		transition-timing-function: inherit;
-	}
-	&.aos-animate {
-		&:after {
-			width:0;
-		}
-	}
-}
-[data-aos="swipe-right"] {
-	position: relative;
-	&:after {
-		left:auto;
-		top:0;
-		right:0;
-		bottom:0;
-		width:100%;
-		position: absolute;
-		background:white;
-		z-index: 10;
-		content:'';
-		transition-property: width;
-		transition-duration: inherit;
-		transition-timing-function: inherit;
-	}
-	&.aos-animate {
-		&:after {
-			width:0;
-		}
 	}
 }
