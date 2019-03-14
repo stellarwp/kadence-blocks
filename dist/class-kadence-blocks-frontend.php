@@ -413,6 +413,7 @@ class Kadence_Blocks_Frontend {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				wp_enqueue_script( 'kadence-blocks-accordion-js' );
 				$css = $this->blocks_accordion_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
@@ -727,6 +728,24 @@ class Kadence_Blocks_Frontend {
 			$media_image = $attr['mediaImage'][ 0 ];
 		} else {
 			$media_image = array();
+		}
+		if ( isset( $media_image['subtype'] ) && 'svg+xml' === $media_image['subtype'] ) {
+			if ( isset( $media_image['maxWidth'] ) && ! empty( $media_image['maxWidth'] ) ) {
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-media .kt-info-box-image {';
+				$css .= 'width:' . $media_image['maxWidth'] . 'px;';
+				$css .= 'height:auto;';
+				$css .= '}';
+			}
+			if ( isset( $media_icon['color'] ) && ! empty( $media_icon['color'] ) ) {
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-media .kt-info-box-image {';
+				$css .= 'fill:' . $media_icon['color'] . ';';
+				$css .= '}';
+			}
+			if ( isset( $media_icon['hoverColor'] ) && ! empty( $media_icon['hoverColor'] ) ) {
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media .kt-info-box-image {';
+				$css .= 'fill:' . $media_icon['hoverColor'] . ';';
+				$css .= '}';
+			}
 		}
 		$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-media {';
 		if ( isset( $media_icon['color'] ) && ! empty( $media_icon['color'] ) ) {
@@ -1744,16 +1763,104 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function row_layout_array_css( $attr, $unique_id ) {
 		$css = '';
-		// if ( isset( $attr['firstColumnWidth'] ) && ! empty( $attr['firstColumnWidth'] ) && ( isset( $attr['columns'] ) || 3 === $attr['columns'] ) ) {
-		// 	$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
-		// 		$css .= '-ms-flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
-		// 		$css .= 'flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
-		// 	$css .= '}';
-		// 	$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
-		// 		$css .= '-ms-flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
-		// 		$css .= 'flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
-		// 	$css .= '}';
-		// }
+		if ( isset( $attr['firstColumnWidth'] ) && ! empty( $attr['firstColumnWidth'] ) && ( ! isset( $attr['columns'] ) || 2 === $attr['columns'] ) ) {
+			$css .= '@media (min-width: 767px) {';
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+					$css .= '-ms-flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
+					$css .= 'flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
+				$css .= '}';
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+					$css .= '-ms-flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
+					$css .= 'flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
+				$css .= '}';
+			$css .= '}';
+			if ( isset( $attr['tabletLayout'] ) && ! empty( $attr['tabletLayout'] ) ) {
+				if ( 'left-golden' === $attr['tabletLayout'] ) {
+					$tabCol1 = '66.67';
+					$tabCol2 = '33.33';
+				} elseif ( 'right-golden' === $attr['tabletLayout'] ) {
+					$tabCol1 = '33.33';
+					$tabCol2 = '66.67';
+				} elseif ( 'row' === $attr['tabletLayout'] ) {
+					$tabCol1 = '100';
+					$tabCol2 = '100';
+				} else {
+					$tabCol1 = '50';
+					$tabCol2 = '50';
+				}
+				$css .= '@media (min-width: 768px) and (max-width: 992px) {';
+					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+						$css .= '-ms-flex: 0 1 ' . $tabCol1 . '%;';
+						$css .= 'flex: 0 1 ' . $tabCol1 . '%;';
+					$css .= '}';
+					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+						$css .= '-ms-flex: 0 1 ' . $tabCol2 . '%;';
+						$css .= 'flex: 0 1 ' . $tabCol2 . '%;';
+					$css .= '}';
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr['firstColumnWidth'] ) && ! empty( $attr['firstColumnWidth'] ) &&  isset( $attr['secondColumnWidth'] ) && ! empty( $attr['secondColumnWidth'] ) && ( isset( $attr['columns'] ) && 3 === $attr['columns'] ) ) {
+			$css .= '@media (min-width: 767px) {';
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+					$css .= '-ms-flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
+					$css .= 'flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
+				$css .= '}';
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+					$css .= '-ms-flex: 0 1 ' . $attr['secondColumnWidth'] . '%;';
+					$css .= 'flex: 0 1 ' . $attr['secondColumnWidth'] . '%;';
+				$css .= '}';
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-3 {';
+					$css .= '-ms-flex: 0 1 ' . abs( ( $attr['firstColumnWidth'] + $attr['secondColumnWidth'] ) - 100 ) . '%;';
+					$css .= 'flex: 0 1 ' . abs( ( $attr['firstColumnWidth'] + $attr['secondColumnWidth'] ) - 100 ) . '%;';
+				$css .= '}';
+			$css .= '}';
+			if ( isset( $attr['tabletLayout'] ) && ! empty( $attr['tabletLayout'] ) ) {
+				if ( 'left-half' === $attr['tabletLayout'] ) {
+					$tabCol1 = '50';
+					$tabCol2 = '25';
+					$tabCol3 = '25';
+				} elseif ( 'right-half' === $attr['tabletLayout'] ) {
+					$tabCol1 = '25';
+					$tabCol2 = '25';
+					$tabCol3 = '50';
+				} elseif ( 'center-half' === $attr['tabletLayout'] ) {
+					$tabCol1 = '25';
+					$tabCol2 = '50';
+					$tabCol3 = '25';
+				} elseif ( 'center-wide' === $attr['tabletLayout'] ) {
+					$tabCol1 = '20';
+					$tabCol2 = '60';
+					$tabCol3 = '20';
+				} elseif ( 'center-exwide' === $attr['tabletLayout'] ) {
+					$tabCol1 = '15';
+					$tabCol2 = '70';
+					$tabCol3 = '15';
+				} elseif ( 'row' === $attr['tabletLayout'] ) {
+					$tabCol1 = '100';
+					$tabCol2 = '100';
+					$tabCol3 = '100';
+				} else {
+					$tabCol1 = '33.33';
+					$tabCol2 = '33.33';
+					$tabCol3 = '33.33';
+				}
+				$css .= '@media (min-width: 768px) and (max-width: 992px) {';
+					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+						$css .= '-ms-flex: 0 1 ' . $tabCol1 . '%;';
+						$css .= 'flex: 0 1 ' . $tabCol1 . '%;';
+					$css .= '}';
+					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+						$css .= '-ms-flex: 0 1 ' . $tabCol2 . '%;';
+						$css .= 'flex: 0 1 ' . $tabCol2 . '%;';
+					$css .= '}';
+					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-3 {';
+						$css .= '-ms-flex: 0 1 ' . $tabCol3 . '%;';
+						$css .= 'flex: 0 1 ' . $tabCol3 . '%;';
+					$css .= '}';
+				$css .= '}';
+			}
+		}
 		if ( isset( $attr['bgColor'] ) || isset( $attr['bgImg'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) ) {
 			$css .= '#kt-layout-id' . $unique_id . ' {';
 			if ( isset( $attr['topMargin'] ) ) {
@@ -2057,6 +2164,22 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['zIndex'] ) ) {
 				$css .= 'z-index:' . $attr['zIndex'] . ';';
 			}
+			$css .= '}';
+		}
+		if ( isset( $attr['collapseOrder'] ) ) {
+			$css .= '@media (min-width: 768px) and (max-width: 992px) {';
+			$css .= '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id . ' {';
+				if ( isset( $attr['collapseOrder'] ) ) {
+					$css .= 'order:' . $attr['collapseOrder'] . ';';
+				}
+			$css .= '}';
+			$css .= '}';
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-row-column-wrap.kt-mobile-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-row > .kadence-column' . $unique_id . ' {';
+				if ( isset( $attr['collapseOrder'] ) ) {
+					$css .= 'order:' . $attr['collapseOrder'] . ';';
+				}
+			$css .= '}';
 			$css .= '}';
 		}
 		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) ) {

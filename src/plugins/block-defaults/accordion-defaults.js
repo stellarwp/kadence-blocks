@@ -27,7 +27,7 @@ import icons from '../../icons';
  * Internal block libraries
  */
 const { __ } = wp.i18n;
-class KadenceTabsDefault extends Component {
+class KadenceAccordionDefault extends Component {
 	constructor() {
 		super( ...arguments );
 		this.state = {
@@ -126,7 +126,6 @@ class KadenceTabsDefault extends Component {
 	render() {
 		const { configuration, isOpen, contentPaddingControl, contentBorderRadiusControl, contentBorderControl, titleBorderControl, titlePaddingControl, titleBorderRadiusControl, titleBorderColorControl, titleBorderHoverColorControl, titleBorderActiveColorControl, titleTag } = this.state;
 		const accordionConfig = ( configuration && configuration[ 'kadence/accordion' ] ? configuration[ 'kadence/accordion' ] : {} );
-		const paneConfig = ( configuration && configuration[ 'kadence/pane' ] ? configuration[ 'kadence/pane' ] : {} );
 		const titleDefaultStyles = [ {
 			size: [ 18, '', '' ],
 			sizeType: 'px',
@@ -529,7 +528,7 @@ class KadenceTabsDefault extends Component {
 							/>
 						</PanelBody>
 						<Button className="kt-defaults-save" isDefault isPrimary onClick={ () => {
-							this.saveConfig( 'kadence/accordion', accordionConfig, paneConfig );
+							this.saveConfig( 'kadence/accordion', accordionConfig );
 						} }>
 							{ __( 'Save/Close' ) }
 						</Button>
@@ -539,4 +538,4 @@ class KadenceTabsDefault extends Component {
 		);
 	}
 }
-export default KadenceTabsDefault;
+export default KadenceAccordionDefault;

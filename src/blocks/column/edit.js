@@ -69,7 +69,7 @@ class KadenceColumn extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions }, setAttributes } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder }, setAttributes } = this.props;
 		const { borderWidthControl, borderRadiusControl } = this.state;
 		const mobileControls = (
 			<PanelBody
@@ -173,6 +173,17 @@ class KadenceColumn extends Component {
 					} }
 					min={ -200 }
 					max={ 200 }
+				/>
+				<RangeControl
+					label={ __( 'Mobile Collapse Order' ) }
+					value={ collapseOrder }
+					onChange={ ( value ) => {
+						setAttributes( {
+							collapseOrder: value,
+						} );
+					} }
+					min={ -10 }
+					max={ 10 }
 				/>
 			</PanelBody>
 		);

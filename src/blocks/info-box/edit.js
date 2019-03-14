@@ -14,6 +14,7 @@ import './editor.scss';
  * Import Icons
  */
 import icons from '../../icons';
+import map from 'lodash/map';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../fontloader';
@@ -44,6 +45,7 @@ const {
 const {
 	Button,
 	IconButton,
+	ButtonGroup,
 	TabPanel,
 	Dashicon,
 	PanelBody,
@@ -70,13 +72,25 @@ class KadenceInfoBox extends Component {
 			mediaBorderControl: 'linked',
 			mediaPaddingControl: 'linked',
 			mediaMarginControl: 'linked',
+			showPreset: false,
+			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			settings: {},
 		};
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/infobox' ] !== undefined && typeof blockConfigObject[ 'kadence/infobox' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/infobox' ] ).map( ( attribute ) => {
+					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/infobox' ][ attribute ];
+				} );
+			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+			if ( this.props.attributes.showPresets ) {
+				this.setState( { showPreset: true } );
+			}
 		} else if ( ktinfoboxUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
@@ -109,10 +123,403 @@ class KadenceInfoBox extends Component {
 		} else {
 			this.setState( { containerPaddingControl: 'individual' } );
 		}
+		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
+		if ( blockSettings[ 'kadence/infobox' ] !== undefined && typeof blockSettings[ 'kadence/infobox' ] === 'object' ) {
+			this.setState( { settings: blockSettings[ 'kadence/infobox' ] } );
+		}
+	}
+	showSettings( key ) {
+		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
+			return true;
+		} else if ( 'contributor' === this.state.settings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'author' === this.state.settings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'editor' === this.state.settings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'admin' === this.state.settings[ key ] && 'admin' === this.state.user ) {
+			return true;
+		}
+		return false;
 	}
 	render() {
 		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl } = this.state;
+		const startlayoutOptions = [
+			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
+			{ key: 'simple', name: __( 'Simple' ), icon: icons.infoSimple },
+			{ key: 'left', name: __( 'Align Left' ), icon: icons.infoLeft },
+			{ key: 'bold', name: __( 'Bold Background' ), icon: icons.infoBackground },
+			{ key: 'image', name: __( 'Circle Image' ), icon: icons.infoImage },
+		];
+		const setInitalLayout = ( key ) => {
+			if ( 'skip' === key ) {
+			} else if ( 'simple' === key ) {
+				setAttributes( {
+					hAlign: 'center',
+					containerBackground: '#f2f2f2',
+					containerHoverBackground: '#f2f2f2',
+					containerBorder: '#eeeeee',
+					containerHoverBorder: '#eeeeee',
+					containerBorderWidth: [ 0, 0, 0, 0 ],
+					containerBorderRadius: 0,
+					containerPadding: [ 20, 20, 20, 20 ],
+					mediaType: 'icon',
+					mediaAlign: 'top',
+					mediaIcon: [ {
+						icon: 'ic_star',
+						size: 70,
+						width: 2,
+						title: '',
+						color: '#444444',
+						hoverColor: '#444444',
+						hoverAnimation: 'none',
+						flipIcon: '',
+					} ],
+					mediaStyle: [ {
+						background: 'transparent',
+						hoverBackground: 'transparent',
+						border: '#444444',
+						hoverBorder: '#444444',
+						borderRadius: 200,
+						borderWidth: [ 3, 3, 3, 3 ],
+						padding: [ 16, 16, 16, 16 ],
+						margin: [ 0, 15, 8, 15 ],
+					} ],
+					displayTitle: true,
+					titleColor: '#444444',
+					titleHoverColor: '#444444',
+					titleFont: [ {
+						level: 2,
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+					displayText: true,
+					textColor: '#777777',
+					textHoverColor: '#777777',
+					textFont: [ {
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						family: '',
+						google: '',
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					} ],
+					displayLearnMore: false,
+					displayShadow: false,
+				} );
+			} else if ( 'left' === key ) {
+				setAttributes( {
+					hAlign: 'left',
+					containerBackground: '#ffffff',
+					containerHoverBackground: '#ffffff',
+					containerBorder: '#888888',
+					containerHoverBorder: '#888888',
+					containerBorderWidth: [ 2, 2, 2, 2 ],
+					containerBorderRadius: 20,
+					containerPadding: [ 20, 20, 20, 20 ],
+					mediaType: 'icon',
+					mediaAlign: 'left',
+					mediaIcon: [ {
+						icon: 'ic_star',
+						size: 50,
+						width: 2,
+						title: '',
+						color: '#ffffff',
+						hoverColor: '#ffffff',
+						hoverAnimation: 'none',
+						flipIcon: '',
+					} ],
+					mediaStyle: [ {
+						background: '#555555',
+						hoverBackground: '#444444',
+						border: '#444444',
+						hoverBorder: '#444444',
+						borderRadius: 200,
+						borderWidth: [ 0, 0, 0, 0 ],
+						padding: [ 20, 20, 20, 20 ],
+						margin: [ 0, 15, 0, 15 ],
+					} ],
+					displayTitle: true,
+					titleColor: '',
+					titleHoverColor: '',
+					titleFont: [ {
+						level: 2,
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+					displayText: true,
+					textColor: '#555555',
+					textHoverColor: '',
+					textFont: [ {
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						family: '',
+						google: '',
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					} ],
+					displayLearnMore: false,
+					displayShadow: true,
+				} );
+			} else if ( 'bold' === key ) {
+				setAttributes( {
+					hAlign: 'center',
+					containerBackground: '#0A6689',
+					containerHoverBackground: '#0A6689',
+					containerBorder: '#eeeeee',
+					containerHoverBorder: '#eeeeee',
+					containerBorderWidth: [ 0, 0, 0, 0 ],
+					containerBorderRadius: 0,
+					containerPadding: [ 20, 20, 20, 20 ],
+					mediaType: 'icon',
+					mediaAlign: 'top',
+					mediaImage: [ {
+						url: '',
+						id: '',
+						alt: '',
+						width: '',
+						height: '',
+						maxWidth: '',
+						hoverAnimation: 'none',
+						flipUrl: '',
+						flipId: '',
+						flipAlt: '',
+						flipWidth: '',
+						flipHeight: '',
+						subtype: '',
+						flipSubtype: '',
+					} ],
+					mediaIcon: [ {
+						icon: 'ic_star',
+						size: 80,
+						width: 2,
+						title: '',
+						color: '#ffffff',
+						hoverColor: '#ffffff',
+						hoverAnimation: 'none',
+						flipIcon: '',
+					} ],
+					mediaStyle: [ {
+						background: 'transparent',
+						hoverBackground: 'transparent',
+						border: '#444444',
+						hoverBorder: '#444444',
+						borderRadius: 0,
+						borderWidth: [ 0, 0, 0, 0 ],
+						padding: [ 10, 10, 10, 10 ],
+						margin: [ 0, 15, 0, 15 ],
+					} ],
+					displayTitle: true,
+					titleColor: '#ffffff',
+					titleHoverColor: '#ffffff',
+					titleFont: [ {
+						level: 2,
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+					displayText: false,
+					textColor: '#ffffff',
+					textHoverColor: '#ffffff',
+					displayLearnMore: true,
+					learnMoreStyles: [ {
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						family: '',
+						google: '',
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+						padding: [ 4, 8, 4, 8 ],
+						paddingControl: 'individual',
+						margin: [ 10, 0, 10, 0 ],
+						marginControl: 'individual',
+						color: '#ffffff',
+						background: '#0A6689',
+						border: '#ffffff',
+						borderRadius: 0,
+						borderWidth: [ 0, 0, 0, 0 ],
+						borderControl: 'linked',
+						colorHover: '#0A6689',
+						backgroundHover: '#ffffff',
+						borderHover: '#ffffff',
+						hoverEffect: 'revealBorder',
+					} ],
+					displayShadow: false,
+				} );
+			} else if ( 'image' === key ) {
+				setAttributes( {
+					hAlign: 'center',
+					containerBackground: '#ffffff',
+					containerHoverBackground: '#ffffff',
+					containerBorder: '#ffffff',
+					containerHoverBorder: '#eeeeee',
+					containerBorderWidth: [ 5, 5, 5, 5 ],
+					containerBorderRadius: 30,
+					containerPadding: [ 20, 20, 20, 20 ],
+					mediaType: 'image',
+					mediaAlign: 'top',
+					mediaImage: [ {
+						url: '',
+						id: '',
+						alt: '',
+						width: '',
+						height: '',
+						maxWidth: '200',
+						hoverAnimation: 'none',
+						flipUrl: '',
+						flipId: '',
+						flipAlt: '',
+						flipWidth: '',
+						flipHeight: '',
+						subtype: '',
+						flipSubtype: '',
+					} ],
+					mediaStyle: [ {
+						background: 'transparent',
+						hoverBackground: 'transparent',
+						border: '#444444',
+						hoverBorder: '#444444',
+						borderRadius: 200,
+						borderWidth: [ 0, 0, 0, 0 ],
+						padding: [ 10, 10, 10, 10 ],
+						margin: [ 0, 15, 0, 15 ],
+					} ],
+					displayTitle: true,
+					titleColor: '',
+					titleHoverColor: '',
+					titleFont: [ {
+						level: 2,
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						textTransform: '',
+						family: '',
+						google: false,
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+					displayText: true,
+					textColor: '#555555',
+					textHoverColor: '',
+					textFont: [ {
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						family: '',
+						google: '',
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+					} ],
+					displayLearnMore: true,
+					learnMoreStyles: [ {
+						size: [ '', '', '' ],
+						sizeType: 'px',
+						lineHeight: [ '', '', '' ],
+						lineType: 'px',
+						letterSpacing: '',
+						family: '',
+						google: '',
+						style: '',
+						weight: '',
+						variant: '',
+						subset: '',
+						loadGoogle: true,
+						padding: [ 4, 8, 4, 8 ],
+						paddingControl: 'individual',
+						margin: [ 10, 0, 10, 0 ],
+						marginControl: 'individual',
+						color: '#444444',
+						background: '#ffffff',
+						border: '#444444',
+						borderRadius: 0,
+						borderWidth: [ 1, 0, 0, 0 ],
+						borderControl: 'linked',
+						colorHover: '#222222',
+						backgroundHover: '#ffffff',
+						borderHover: '#222222',
+						hoverEffect: 'revealBorder',
+					} ],
+					displayShadow: false,
+				} );
+			}
+		};
 		const onChangeTitle = value => {
 			setAttributes( { title: value } );
 		};
@@ -144,6 +551,7 @@ class KadenceInfoBox extends Component {
 				width: media.width,
 				height: media.height,
 				maxWidth: media.width,
+				subtype: media.subtype,
 			} );
 		};
 		const onSelectFlipImage = media => {
@@ -153,6 +561,7 @@ class KadenceInfoBox extends Component {
 				flipAlt: media.alt,
 				flipWidth: media.width,
 				flipHeight: media.height,
+				flipSubtype: media.subtype,
 			} );
 		};
 		const isSelectedClass = ( isSelected ? 'is-selected' : 'not-selected' );
@@ -308,1041 +717,1099 @@ class KadenceInfoBox extends Component {
 						onChange={ value => setAttributes( { hAlign: value } ) }
 					/>
 				</BlockControls>
-				<InspectorControls>
-					<PanelBody>
-						<div className="kt-controls-link-wrap">
-							<h2>{ __( 'Link' ) }</h2>
-							<URLInput
-								value={ link }
-								onChange={ value => setAttributes( { link: value } ) }
+				{ this.showSettings( 'allSettings' ) && (
+					<InspectorControls>
+						<PanelBody>
+							<div className="kt-controls-link-wrap">
+								<h2>{ __( 'Link' ) }</h2>
+								<URLInput
+									value={ link }
+									onChange={ value => setAttributes( { link: value } ) }
+								/>
+							</div>
+							<SelectControl
+								label={ __( 'Link Target' ) }
+								value={ target }
+								options={ [
+									{ value: '_self', label: __( 'Same Window' ) },
+									{ value: '_blank', label: __( 'New Window' ) },
+								] }
+								onChange={ value => setAttributes( { target: value } ) }
 							/>
-						</div>
-						<SelectControl
-							label={ __( 'Link Target' ) }
-							value={ target }
-							options={ [
-								{ value: '_self', label: __( 'Same Window' ) },
-								{ value: '_blank', label: __( 'New Window' ) },
-							] }
-							onChange={ value => setAttributes( { target: value } ) }
-						/>
-						<SelectControl
-							label={ __( 'Link Content' ) }
-							value={ linkProperty }
-							options={ [
-								{ value: 'box', label: __( 'Entire Box' ) },
-								{ value: 'learnmore', label: __( 'Only Learn More Text' ) },
-							] }
-							onChange={ value => setAttributes( { linkProperty: value } ) }
-						/>
-						<SelectControl
-							label={ __( 'Content Align' ) }
-							value={ hAlign }
-							options={ [
-								{ value: 'center', label: __( 'Center' ) },
-								{ value: 'left', label: __( 'Left' ) },
-								{ value: 'right', label: __( 'Right' ) },
-							] }
-							onChange={ value => setAttributes( { hAlign: value } ) }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Container Settings' ) }
-						initialOpen={ false }
-					>
-						<MeasurementControls
-							label={ __( 'Container Border Width (px)' ) }
-							measurement={ containerBorderWidth }
-							control={ containerBorderControl }
-							onChange={ ( value ) => setAttributes( { containerBorderWidth: value } ) }
-							onControl={ ( value ) => this.setState( { containerBorderControl: value } ) }
-							min={ 0 }
-							max={ 40 }
-							step={ 1 }
-						/>
-						<RangeControl
-							label={ __( 'Container Border Radius (px)' ) }
-							value={ containerBorderRadius }
-							onChange={ value => setAttributes( { containerBorderRadius: value } ) }
-							step={ 1 }
-							min={ 0 }
-							max={ 200 }
-						/>
-						<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-							activeClass="active-tab"
-							tabs={ [
-								{
-									name: 'normal',
-									title: __( 'Normal' ),
-									className: 'kt-normal-tab',
-								},
-								{
-									name: 'hover',
-									title: __( 'Hover' ),
-									className: 'kt-hover-tab',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'hover' === tab.name ) {
-											tabout = (
-												<Fragment>
-													<h2>{ __( 'Container Hover Background' ) }</h2>
-													<ColorPalette
-														value={ containerHoverBackground }
-														onChange={ value => setAttributes( { containerHoverBackground: value } ) }
-													/>
-													<h2>{ __( 'Container Hover Border' ) }</h2>
-													<ColorPalette
-														value={ containerHoverBorder }
-														onChange={ value => setAttributes( { containerHoverBorder: value } ) }
-													/>
-												</Fragment>
-											);
-										} else {
-											tabout = (
-												<Fragment>
-													<h2>{ __( 'Container Background' ) }</h2>
-													<ColorPalette
-														value={ containerBackground }
-														onChange={ value => setAttributes( { containerBackground: value } ) }
-													/>
-													<h2>{ __( 'Container Border' ) }</h2>
-													<ColorPalette
-														value={ containerBorder }
-														onChange={ value => setAttributes( { containerBorder: value } ) }
-													/>
-												</Fragment>
-											);
-										}
-									}
-									return <div>{ tabout }</div>;
-								}
-							}
-						</TabPanel>
-						<MeasurementControls
-							label={ __( 'Container Padding' ) }
-							measurement={ containerPadding }
-							control={ containerPaddingControl }
-							onChange={ ( value ) => setAttributes( { containerPadding: value } ) }
-							onControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
-							min={ 0 }
-							max={ 100 }
-							step={ 1 }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Media Settings' ) }
-						initialOpen={ false }
-					>
-						<SelectControl
-							label={ __( 'Media Align' ) }
-							value={ mediaAlign }
-							options={ [
-								{ value: 'top', label: __( 'Top' ) },
-								{ value: 'left', label: __( 'Left' ) },
-								{ value: 'right', label: __( 'Right' ) },
-							] }
-							onChange={ value => setAttributes( { mediaAlign: value } ) }
-						/>
-						<SelectControl
-							label={ __( 'Media Type' ) }
-							value={ mediaType }
-							options={ [
-								{ value: 'icon', label: __( 'Icon' ) },
-								{ value: 'image', label: __( 'Image' ) },
-							] }
-							onChange={ value => setAttributes( { mediaType: value } ) }
-						/>
-						{ 'image' === mediaType && (
-							<Fragment>
-								<RangeControl
-									label={ __( 'Max Image Width' ) }
-									value={ mediaImage[ 0 ].maxWidth }
-									onChange={ value => saveMediaImage( { maxWidth: value } ) }
-									min={ 5 }
-									max={ 800 }
+							<SelectControl
+								label={ __( 'Link Content' ) }
+								value={ linkProperty }
+								options={ [
+									{ value: 'box', label: __( 'Entire Box' ) },
+									{ value: 'learnmore', label: __( 'Only Learn More Text' ) },
+								] }
+								onChange={ value => setAttributes( { linkProperty: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Content Align' ) }
+								value={ hAlign }
+								options={ [
+									{ value: 'center', label: __( 'Center' ) },
+									{ value: 'left', label: __( 'Left' ) },
+									{ value: 'right', label: __( 'Right' ) },
+								] }
+								onChange={ value => setAttributes( { hAlign: value } ) }
+							/>
+						</PanelBody>
+						{ this.showSettings( 'containerSettings' ) && (
+							<PanelBody
+								title={ __( 'Container Settings' ) }
+								initialOpen={ false }
+							>
+								<MeasurementControls
+									label={ __( 'Container Border Width (px)' ) }
+									measurement={ containerBorderWidth }
+									control={ containerBorderControl }
+									onChange={ ( value ) => setAttributes( { containerBorderWidth: value } ) }
+									onControl={ ( value ) => this.setState( { containerBorderControl: value } ) }
+									min={ 0 }
+									max={ 40 }
 									step={ 1 }
 								/>
-								<SelectControl
-									label={ __( 'Image Hover Animation' ) }
-									value={ mediaImage[ 0 ].hoverAnimation }
-									options={ [
-										{ value: 'none', label: __( 'None' ) },
-										{ value: 'grayscale', label: __( 'Grayscale to Color' ) },
-										{ value: 'drawborder', label: __( 'Border Spin In' ) },
-										{ value: 'grayscale-border-draw', label: __( 'Grayscale to Color & Border Spin In' ) },
-										{ value: 'flip', label: __( 'Flip to Another Image' ) },
-									] }
-									onChange={ value => saveMediaImage( { hoverAnimation: value } ) }
+								<RangeControl
+									label={ __( 'Container Border Radius (px)' ) }
+									value={ containerBorderRadius }
+									onChange={ value => setAttributes( { containerBorderRadius: value } ) }
+									step={ 1 }
+									min={ 0 }
+									max={ 200 }
 								/>
-								{ 'flip' === mediaImage[ 0 ].hoverAnimation && (
+								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+									activeClass="active-tab"
+									tabs={ [
+										{
+											name: 'normal',
+											title: __( 'Normal' ),
+											className: 'kt-normal-tab',
+										},
+										{
+											name: 'hover',
+											title: __( 'Hover' ),
+											className: 'kt-hover-tab',
+										},
+									] }>
+									{
+										( tab ) => {
+											let tabout;
+											if ( tab.name ) {
+												if ( 'hover' === tab.name ) {
+													tabout = (
+														<Fragment>
+															<h2>{ __( 'Container Hover Background' ) }</h2>
+															<ColorPalette
+																value={ containerHoverBackground }
+																onChange={ value => setAttributes( { containerHoverBackground: value } ) }
+															/>
+															<h2>{ __( 'Container Hover Border' ) }</h2>
+															<ColorPalette
+																value={ containerHoverBorder }
+																onChange={ value => setAttributes( { containerHoverBorder: value } ) }
+															/>
+														</Fragment>
+													);
+												} else {
+													tabout = (
+														<Fragment>
+															<h2>{ __( 'Container Background' ) }</h2>
+															<ColorPalette
+																value={ containerBackground }
+																onChange={ value => setAttributes( { containerBackground: value } ) }
+															/>
+															<h2>{ __( 'Container Border' ) }</h2>
+															<ColorPalette
+																value={ containerBorder }
+																onChange={ value => setAttributes( { containerBorder: value } ) }
+															/>
+														</Fragment>
+													);
+												}
+											}
+											return <div>{ tabout }</div>;
+										}
+									}
+								</TabPanel>
+								<MeasurementControls
+									label={ __( 'Container Padding' ) }
+									measurement={ containerPadding }
+									control={ containerPaddingControl }
+									onChange={ ( value ) => setAttributes( { containerPadding: value } ) }
+									onControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
+									min={ 0 }
+									max={ 100 }
+									step={ 1 }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'mediaSettings' ) && (
+							<PanelBody
+								title={ __( 'Media Settings' ) }
+								initialOpen={ false }
+							>
+								<SelectControl
+									label={ __( 'Media Align' ) }
+									value={ mediaAlign }
+									options={ [
+										{ value: 'top', label: __( 'Top' ) },
+										{ value: 'left', label: __( 'Left' ) },
+										{ value: 'right', label: __( 'Right' ) },
+									] }
+									onChange={ value => setAttributes( { mediaAlign: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Media Type' ) }
+									value={ mediaType }
+									options={ [
+										{ value: 'icon', label: __( 'Icon' ) },
+										{ value: 'image', label: __( 'Image' ) },
+									] }
+									onChange={ value => setAttributes( { mediaType: value } ) }
+								/>
+								{ 'image' === mediaType && (
 									<Fragment>
-										<h2>{ __( 'Flip Image (Use same size as start image' ) }</h2>
-										<MediaUpload
-											onSelect={ onSelectFlipImage }
-											type="image"
-											value={ mediaImage[ 0 ].flipId }
-											render={ ( { open } ) => (
-												<Button
-													className={ 'components-button components-icon-button kt-cta-upload-btn' }
-													onClick={ open }
-												>
-													<Dashicon icon="format-image" />
-													{ __( 'Select Image' ) }
-												</Button>
-											) }
+										<RangeControl
+											label={ __( 'Max Image Width' ) }
+											value={ mediaImage[ 0 ].maxWidth }
+											onChange={ value => saveMediaImage( { maxWidth: value } ) }
+											min={ 5 }
+											max={ 800 }
+											step={ 1 }
+										/>
+										<SelectControl
+											label={ __( 'Image Hover Animation' ) }
+											value={ mediaImage[ 0 ].hoverAnimation }
+											options={ [
+												{ value: 'none', label: __( 'None' ) },
+												{ value: 'grayscale', label: __( 'Grayscale to Color' ) },
+												{ value: 'drawborder', label: __( 'Border Spin In' ) },
+												{ value: 'grayscale-border-draw', label: __( 'Grayscale to Color & Border Spin In' ) },
+												{ value: 'flip', label: __( 'Flip to Another Image' ) },
+											] }
+											onChange={ value => saveMediaImage( { hoverAnimation: value } ) }
+										/>
+										{ 'flip' === mediaImage[ 0 ].hoverAnimation && (
+											<Fragment>
+												<h2>{ __( 'Flip Image (Use same size as start image' ) }</h2>
+												<MediaUpload
+													onSelect={ onSelectFlipImage }
+													type="image"
+													value={ mediaImage[ 0 ].flipId }
+													render={ ( { open } ) => (
+														<Button
+															className={ 'components-button components-icon-button kt-cta-upload-btn' }
+															onClick={ open }
+														>
+															<Dashicon icon="format-image" />
+															{ __( 'Select Image' ) }
+														</Button>
+													) }
+												/>
+											</Fragment>
+										) }
+										<MeasurementControls
+											label={ __( 'Image Border' ) }
+											measurement={ mediaStyle[ 0 ].borderWidth }
+											control={ mediaBorderControl }
+											onChange={ ( value ) => saveMediaStyle( { borderWidth: value } ) }
+											onControl={ ( value ) => this.setState( { mediaBorderControl: value } ) }
+											min={ 0 }
+											max={ 40 }
+											step={ 1 }
+										/>
+										<RangeControl
+											label={ __( 'Image Border Radius (px)' ) }
+											value={ mediaStyle[ 0 ].borderRadius }
+											onChange={ value => saveMediaStyle( { borderRadius: value } ) }
+											step={ 1 }
+											min={ 0 }
+											max={ 200 }
+										/>
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'normal',
+													title: __( 'Normal' ),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'hover',
+													title: __( 'Hover' ),
+													className: 'kt-hover-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															tabout = (
+																<Fragment>
+																	{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
+																		<Fragment>
+																			<h2>{ __( 'SVG Hover Color' ) }</h2>
+																			<ColorPalette
+																				value={ mediaIcon[ 0 ].hoverColor }
+																				onChange={ value => saveMediaIcon( { hoverColor: value } ) }
+																			/>
+																			<small>{ __( '*you must force inline svg for this to have effect.' ) }</small>
+																		</Fragment>
+																	) }
+																	<h2>{ __( 'Image Hover Background' ) }</h2>
+																	<ColorPalette
+																		value={ mediaStyle[ 0 ].hoverBackground }
+																		onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
+																	/>
+																	<h2>{ __( 'Image Hover Border' ) }</h2>
+																	<ColorPalette
+																		value={ mediaStyle[ 0 ].hoverBorder }
+																		onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
+																	/>
+																</Fragment>
+															);
+														} else {
+															tabout = (
+																<Fragment>
+																	{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
+																		<Fragment>
+																			<h2>{ __( 'SVG Color' ) }</h2>
+																			<ColorPalette
+																				value={ mediaIcon[ 0 ].color }
+																				onChange={ value => saveMediaIcon( { color: value } ) }
+																			/>
+																			<small>{ __( '*you must force inline svg for this to have effect.' ) }</small>
+																		</Fragment>
+																	) }
+																	<h2>{ __( 'Image Background' ) }</h2>
+																	<ColorPalette
+																		value={ mediaStyle[ 0 ].background }
+																		onChange={ value => saveMediaStyle( { background: value } ) }
+																	/>
+																	<h2>{ __( 'Image Border' ) }</h2>
+																	<ColorPalette
+																		value={ mediaStyle[ 0 ].border }
+																		onChange={ value => saveMediaStyle( { border: value } ) }
+																	/>
+																</Fragment>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
+									</Fragment>
+								) }
+								{ 'icon' === mediaType && (
+									<Fragment>
+										<FontIconPicker
+											icons={ IcoNames }
+											value={ mediaIcon[ 0 ].icon }
+											onChange={ value => saveMediaIcon( { icon: value } ) }
+											appendTo="body"
+											renderFunc={ renderSVG }
+											theme="default"
+											isMulti={ false }
+										/>
+										<RangeControl
+											label={ __( 'Icon Size' ) }
+											value={ mediaIcon[ 0 ].size }
+											onChange={ value => saveMediaIcon( { size: value } ) }
+											min={ 5 }
+											max={ 250 }
+											step={ 1 }
+										/>
+										{ mediaIcon[ 0 ].icon && 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) && (
+											<RangeControl
+												label={ __( 'Icon Line Width' ) }
+												value={ mediaIcon[ 0 ].width }
+												onChange={ value => saveMediaIcon( { width: value } ) }
+												step={ 0.5 }
+												min={ 0.5 }
+												max={ 4 }
+											/>
+										) }
+										<MeasurementControls
+											label={ __( 'Icon Border' ) }
+											measurement={ mediaStyle[ 0 ].borderWidth }
+											control={ mediaBorderControl }
+											onChange={ ( value ) => saveMediaStyle( { borderWidth: value } ) }
+											onControl={ ( value ) => this.setState( { mediaBorderControl: value } ) }
+											min={ 0 }
+											max={ 40 }
+											step={ 1 }
+										/>
+										<RangeControl
+											label={ __( 'Icon Border Radius (px)' ) }
+											value={ mediaStyle[ 0 ].borderRadius }
+											onChange={ value => saveMediaStyle( { borderRadius: value } ) }
+											step={ 1 }
+											min={ 0 }
+											max={ 200 }
+										/>
+										<SelectControl
+											label={ __( 'Icon Hover Animation' ) }
+											value={ mediaIcon[ 0 ].hoverAnimation }
+											options={ [
+												{ value: 'none', label: __( 'None' ) },
+												{ value: 'drawborder', label: __( 'Border Spin In' ) },
+												{ value: 'flip', label: __( 'Flip to Another Icon' ) },
+											] }
+											onChange={ value => saveMediaIcon( { hoverAnimation: value } ) }
+										/>
+										{ mediaIcon[ 0 ].hoverAnimation === 'flip' && (
+											<FontIconPicker
+												icons={ IcoNames }
+												value={ mediaIcon[ 0 ].flipIcon }
+												onChange={ value => saveMediaIcon( { flipIcon: value } ) }
+												appendTo="body"
+												renderFunc={ renderSVG }
+												theme="default"
+												isMulti={ false }
+											/>
+										) }
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'normal',
+													title: __( 'Normal' ),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'hover',
+													title: __( 'Hover' ),
+													className: 'kt-hover-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															tabout = (
+																<Fragment>
+																	<h2>{ __( 'Icon Hover Color' ) }</h2>
+																	<ColorPalette
+																		value={ mediaIcon[ 0 ].hoverColor }
+																		onChange={ value => saveMediaIcon( { hoverColor: value } ) }
+																	/>
+																	<h2>{ __( 'Icon Hover Background' ) }</h2>
+																	<ColorPalette
+																		value={ mediaStyle[ 0 ].hoverBackground }
+																		onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
+																	/>
+																	<h2>{ __( 'Icon Hover Border Color' ) }</h2>
+																	<ColorPalette
+																		value={ mediaStyle[ 0 ].hoverBorder }
+																		onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
+																	/>
+																</Fragment>
+															);
+														} else {
+															tabout = (
+																<Fragment>
+																	<h2>{ __( 'Icon Color' ) }</h2>
+																	<ColorPalette
+																		value={ mediaIcon[ 0 ].color }
+																		onChange={ value => saveMediaIcon( { color: value } ) }
+																	/>
+																	<h2>{ __( 'Icon Background' ) }</h2>
+																	<ColorPalette
+																		value={ mediaStyle[ 0 ].background }
+																		onChange={ value => saveMediaStyle( { background: value } ) }
+																	/>
+																	<h2>{ __( 'Icon Border Color' ) }</h2>
+																	<ColorPalette
+																		value={ mediaStyle[ 0 ].border }
+																		onChange={ value => saveMediaStyle( { border: value } ) }
+																	/>
+																</Fragment>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
+										<TextControl
+											label={ __( 'Icon Title for Accessibility' ) }
+											value={ mediaIcon[ 0 ].title }
+											onChange={ value => saveMediaIcon( { title: value } ) }
 										/>
 									</Fragment>
 								) }
 								<MeasurementControls
-									label={ __( 'Image Border' ) }
-									measurement={ mediaStyle[ 0 ].borderWidth }
-									control={ mediaBorderControl }
-									onChange={ ( value ) => saveMediaStyle( { borderWidth: value } ) }
-									onControl={ ( value ) => this.setState( { mediaBorderControl: value } ) }
+									label={ __( 'Media Padding' ) }
+									measurement={ mediaStyle[ 0 ].padding }
+									control={ mediaPaddingControl }
+									onChange={ ( value ) => saveMediaStyle( { padding: value } ) }
+									onControl={ ( value ) => this.setState( { mediaPaddingControl: value } ) }
 									min={ 0 }
-									max={ 40 }
+									max={ 100 }
 									step={ 1 }
 								/>
-								<RangeControl
-									label={ __( 'Image Border Radius (px)' ) }
-									value={ mediaStyle[ 0 ].borderRadius }
-									onChange={ value => saveMediaStyle( { borderRadius: value } ) }
-									step={ 1 }
-									min={ 0 }
-									max={ 200 }
-								/>
-								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover' ),
-											className: 'kt-hover-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = (
-														<Fragment>
-															<h2>{ __( 'Image Hover Background' ) }</h2>
-															<ColorPalette
-																value={ mediaStyle[ 0 ].hoverBackground }
-																onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
-															/>
-															<h2>{ __( 'Image Hover Border' ) }</h2>
-															<ColorPalette
-																value={ mediaStyle[ 0 ].hoverBorder }
-																onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
-															/>
-														</Fragment>
-													);
-												} else {
-													tabout = (
-														<Fragment>
-															<h2>{ __( 'Image Background' ) }</h2>
-															<ColorPalette
-																value={ mediaStyle[ 0 ].background }
-																onChange={ value => saveMediaStyle( { background: value } ) }
-															/>
-															<h2>{ __( 'Image Border' ) }</h2>
-															<ColorPalette
-																value={ mediaStyle[ 0 ].border }
-																onChange={ value => saveMediaStyle( { border: value } ) }
-															/>
-														</Fragment>
-													);
-												}
-											}
-											return <div>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-							</Fragment>
-						) }
-						{ 'icon' === mediaType && (
-							<Fragment>
-								<FontIconPicker
-									icons={ IcoNames }
-									value={ mediaIcon[ 0 ].icon }
-									onChange={ value => saveMediaIcon( { icon: value } ) }
-									appendTo="body"
-									renderFunc={ renderSVG }
-									theme="default"
-									isMulti={ false }
-								/>
-								<RangeControl
-									label={ __( 'Icon Size' ) }
-									value={ mediaIcon[ 0 ].size }
-									onChange={ value => saveMediaIcon( { size: value } ) }
-									min={ 5 }
-									max={ 250 }
-									step={ 1 }
-								/>
-								{ mediaIcon[ 0 ].icon && 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) && (
-									<RangeControl
-										label={ __( 'Icon Line Width' ) }
-										value={ mediaIcon[ 0 ].width }
-										onChange={ value => saveMediaIcon( { width: value } ) }
-										step={ 0.5 }
-										min={ 0.5 }
-										max={ 4 }
-									/>
-								) }
 								<MeasurementControls
-									label={ __( 'Icon Border' ) }
-									measurement={ mediaStyle[ 0 ].borderWidth }
-									control={ mediaBorderControl }
-									onChange={ ( value ) => saveMediaStyle( { borderWidth: value } ) }
-									onControl={ ( value ) => this.setState( { mediaBorderControl: value } ) }
-									min={ 0 }
-									max={ 40 }
-									step={ 1 }
-								/>
-								<RangeControl
-									label={ __( 'Icon Border Radius (px)' ) }
-									value={ mediaStyle[ 0 ].borderRadius }
-									onChange={ value => saveMediaStyle( { borderRadius: value } ) }
-									step={ 1 }
-									min={ 0 }
+									label={ __( 'Media Margin' ) }
+									measurement={ mediaStyle[ 0 ].margin }
+									control={ mediaMarginControl }
+									onChange={ ( value ) => saveMediaStyle( { margin: value } ) }
+									onControl={ ( value ) => this.setState( { mediaMarginControl: value } ) }
+									min={ -200 }
 									max={ 200 }
-								/>
-								<SelectControl
-									label={ __( 'Icon Hover Animation' ) }
-									value={ mediaIcon[ 0 ].hoverAnimation }
-									options={ [
-										{ value: 'none', label: __( 'None' ) },
-										{ value: 'drawborder', label: __( 'Border Spin In' ) },
-										{ value: 'flip', label: __( 'Flip to Another Icon' ) },
-									] }
-									onChange={ value => saveMediaIcon( { hoverAnimation: value } ) }
-								/>
-								{ mediaIcon[ 0 ].hoverAnimation === 'flip' && (
-									<FontIconPicker
-										icons={ IcoNames }
-										value={ mediaIcon[ 0 ].flipIcon }
-										onChange={ value => saveMediaIcon( { flipIcon: value } ) }
-										appendTo="body"
-										renderFunc={ renderSVG }
-										theme="default"
-										isMulti={ false }
-									/>
-								) }
-								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover' ),
-											className: 'kt-hover-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = (
-														<Fragment>
-															<h2>{ __( 'Icon Hover Color' ) }</h2>
-															<ColorPalette
-																value={ mediaIcon[ 0 ].hoverColor }
-																onChange={ value => saveMediaIcon( { hoverColor: value } ) }
-															/>
-															<h2>{ __( 'Icon Hover Background' ) }</h2>
-															<ColorPalette
-																value={ mediaStyle[ 0 ].hoverBackground }
-																onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
-															/>
-															<h2>{ __( 'Icon Hover Border Color' ) }</h2>
-															<ColorPalette
-																value={ mediaStyle[ 0 ].hoverBorder }
-																onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
-															/>
-														</Fragment>
-													);
-												} else {
-													tabout = (
-														<Fragment>
-															<h2>{ __( 'Icon Color' ) }</h2>
-															<ColorPalette
-																value={ mediaIcon[ 0 ].color }
-																onChange={ value => saveMediaIcon( { color: value } ) }
-															/>
-															<h2>{ __( 'Icon Background' ) }</h2>
-															<ColorPalette
-																value={ mediaStyle[ 0 ].background }
-																onChange={ value => saveMediaStyle( { background: value } ) }
-															/>
-															<h2>{ __( 'Icon Border Color' ) }</h2>
-															<ColorPalette
-																value={ mediaStyle[ 0 ].border }
-																onChange={ value => saveMediaStyle( { border: value } ) }
-															/>
-														</Fragment>
-													);
-												}
-											}
-											return <div>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-								<TextControl
-									label={ __( 'Icon Title for Accessibility' ) }
-									value={ mediaIcon[ 0 ].title }
-									onChange={ value => saveMediaIcon( { title: value } ) }
-								/>
-							</Fragment>
-						) }
-						<MeasurementControls
-							label={ __( 'Media Padding' ) }
-							measurement={ mediaStyle[ 0 ].padding }
-							control={ mediaPaddingControl }
-							onChange={ ( value ) => saveMediaStyle( { padding: value } ) }
-							onControl={ ( value ) => this.setState( { mediaPaddingControl: value } ) }
-							min={ 0 }
-							max={ 100 }
-							step={ 1 }
-						/>
-						<MeasurementControls
-							label={ __( 'Media Margin' ) }
-							measurement={ mediaStyle[ 0 ].margin }
-							control={ mediaMarginControl }
-							onChange={ ( value ) => saveMediaStyle( { margin: value } ) }
-							onControl={ ( value ) => this.setState( { mediaMarginControl: value } ) }
-							min={ -200 }
-							max={ 200 }
-							step={ 1 }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Title Settings' ) }
-						initialOpen={ false }
-					>
-						<ToggleControl
-							label={ __( 'Show Title' ) }
-							checked={ displayTitle }
-							onChange={ ( value ) => setAttributes( { displayTitle: value } ) }
-						/>
-						{ displayTitle && (
-							<Fragment>
-								<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
-								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover' ),
-											className: 'kt-hover-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = (
-														<ColorPalette
-															value={ titleHoverColor }
-															onChange={ value => setAttributes( { titleHoverColor: value } ) }
-														/>
-													);
-												} else {
-													tabout = (
-														<ColorPalette
-															value={ titleColor }
-															onChange={ value => setAttributes( { titleColor: value } ) }
-														/>
-													);
-												}
-											}
-											return <div>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-								<TypographyControls
-									tagLevel={ titleFont[ 0 ].level }
-									onTagLevel={ ( value ) => saveTitleFont( { level: value } ) }
-									fontSize={ titleFont[ 0 ].size }
-									onFontSize={ ( value ) => saveTitleFont( { size: value } ) }
-									fontSizeType={ titleFont[ 0 ].sizeType }
-									onFontSizeType={ ( value ) => saveTitleFont( { sizeType: value } ) }
-									lineHeight={ titleFont[ 0 ].lineHeight }
-									onLineHeight={ ( value ) => saveTitleFont( { lineHeight: value } ) }
-									lineHeightType={ titleFont[ 0 ].lineType }
-									onLineHeightType={ ( value ) => saveTitleFont( { lineType: value } ) }
-									letterSpacing={ titleFont[ 0 ].letterSpacing }
-									onLetterSpacing={ ( value ) => saveTitleFont( { letterSpacing: value } ) }
-									fontFamily={ titleFont[ 0 ].family }
-									onFontFamily={ ( value ) => saveTitleFont( { family: value } ) }
-									onFontChange={ ( select ) => {
-										saveTitleFont( {
-											family: select.value,
-											google: select.google,
-										} );
-									} }
-									onFontArrayChange={ ( values ) => saveTitleFont( values ) }
-									googleFont={ titleFont[ 0 ].google }
-									onGoogleFont={ ( value ) => saveTitleFont( { google: value } ) }
-									loadGoogleFont={ titleFont[ 0 ].loadGoogle }
-									onLoadGoogleFont={ ( value ) => saveTitleFont( { loadGoogle: value } ) }
-									fontVariant={ titleFont[ 0 ].variant }
-									onFontVariant={ ( value ) => saveTitleFont( { variant: value } ) }
-									fontWeight={ titleFont[ 0 ].weight }
-									onFontWeight={ ( value ) => saveTitleFont( { weight: value } ) }
-									fontStyle={ titleFont[ 0 ].style }
-									onFontStyle={ ( value ) => saveTitleFont( { style: value } ) }
-									fontSubset={ titleFont[ 0 ].subset }
-									onFontSubset={ ( value ) => saveTitleFont( { subset: value } ) }
-									padding={ titleFont[ 0 ].padding }
-									onPadding={ ( value ) => saveTitleFont( { padding: value } ) }
-									paddingControl={ titleFont[ 0 ].paddingControl }
-									onPaddingControl={ ( value ) => saveTitleFont( { paddingControl: value } ) }
-									margin={ titleFont[ 0 ].margin }
-									onMargin={ ( value ) => saveTitleFont( { margin: value } ) }
-									marginControl={ titleFont[ 0 ].marginControl }
-									onMarginControl={ ( value ) => saveTitleFont( { marginControl: value } ) }
-								/>
-							</Fragment>
-						) }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Text Settings' ) }
-						initialOpen={ false }
-					>
-						<ToggleControl
-							label={ __( 'Show Text' ) }
-							checked={ displayText }
-							onChange={ ( value ) => setAttributes( { displayText: value } ) }
-						/>
-						{ displayText && (
-							<Fragment>
-								<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
-								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover' ),
-											className: 'kt-hover-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = (
-														<ColorPalette
-															value={ textHoverColor }
-															onChange={ value => setAttributes( { textHoverColor: value } ) }
-														/>
-													);
-												} else {
-													tabout = (
-														<ColorPalette
-															value={ textColor }
-															onChange={ value => setAttributes( { textColor: value } ) }
-														/>
-													);
-												}
-											}
-											return <div>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-								<TypographyControls
-									fontSize={ textFont[ 0 ].size }
-									onFontSize={ ( value ) => saveTextFont( { size: value } ) }
-									fontSizeType={ textFont[ 0 ].sizeType }
-									onFontSizeType={ ( value ) => saveTextFont( { sizeType: value } ) }
-									lineHeight={ textFont[ 0 ].lineHeight }
-									onLineHeight={ ( value ) => saveTextFont( { lineHeight: value } ) }
-									lineHeightType={ textFont[ 0 ].lineType }
-									onLineHeightType={ ( value ) => saveTextFont( { lineType: value } ) }
-									letterSpacing={ textFont[ 0 ].letterSpacing }
-									onLetterSpacing={ ( value ) => saveTextFont( { letterSpacing: value } ) }
-									fontFamily={ textFont[ 0 ].family }
-									onFontFamily={ ( value ) => saveTextFont( { family: value } ) }
-									onFontChange={ ( select ) => {
-										saveTextFont( {
-											family: select.value,
-											google: select.google,
-										} );
-									} }
-									onFontArrayChange={ ( values ) => saveTextFont( values ) }
-									googleFont={ textFont[ 0 ].google }
-									onGoogleFont={ ( value ) => saveTextFont( { google: value } ) }
-									loadGoogleFont={ textFont[ 0 ].loadGoogle }
-									onLoadGoogleFont={ ( value ) => saveTextFont( { loadGoogle: value } ) }
-									fontVariant={ textFont[ 0 ].variant }
-									onFontVariant={ ( value ) => saveTextFont( { variant: value } ) }
-									fontWeight={ textFont[ 0 ].weight }
-									onFontWeight={ ( value ) => saveTextFont( { weight: value } ) }
-									fontStyle={ textFont[ 0 ].style }
-									onFontStyle={ ( value ) => saveTextFont( { style: value } ) }
-									fontSubset={ textFont[ 0 ].subset }
-									onFontSubset={ ( value ) => saveTextFont( { subset: value } ) }
-								/>
-							</Fragment>
-						) }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Learn More Settings' ) }
-						initialOpen={ false }
-					>
-						<ToggleControl
-							label={ __( 'Show Learn More' ) }
-							checked={ displayLearnMore }
-							onChange={ ( value ) => setAttributes( { displayLearnMore: value } ) }
-						/>
-						{ displayLearnMore && (
-							<Fragment>
-								<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
-								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover' ),
-											className: 'kt-hover-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = (
-														<Fragment>
-															<h2>{ __( 'HOVER: Learn More Color' ) }</h2>
-															<ColorPalette
-																value={ learnMoreStyles[ 0 ].colorHover }
-																onChange={ value => saveLearnMoreStyles( { colorHover: value } ) }
-															/>
-															<h2>{ __( 'HOVER: Learn More Background' ) }</h2>
-															<ColorPalette
-																value={ learnMoreStyles[ 0 ].backgroundHover }
-																onChange={ value => saveLearnMoreStyles( { backgroundHover: value } ) }
-															/>
-															<h2>{ __( 'HOVER: Learn More Border Color' ) }</h2>
-															<ColorPalette
-																value={ learnMoreStyles[ 0 ].borderHover }
-																onChange={ value => saveLearnMoreStyles( { borderHover: value } ) }
-															/>
-														</Fragment>
-													);
-												} else {
-													tabout = (
-														<Fragment>
-															<h2>{ __( 'Learn More Color' ) }</h2>
-															<ColorPalette
-																value={ learnMoreStyles[ 0 ].color }
-																onChange={ value => saveLearnMoreStyles( { color: value } ) }
-															/>
-															<h2>{ __( 'Learn More Background' ) }</h2>
-															<ColorPalette
-																value={ learnMoreStyles[ 0 ].background }
-																onChange={ value => saveLearnMoreStyles( { background: value } ) }
-															/>
-															<h2>{ __( 'Learn More Border Color' ) }</h2>
-															<ColorPalette
-																value={ learnMoreStyles[ 0 ].border }
-																onChange={ value => saveLearnMoreStyles( { border: value } ) }
-															/>
-														</Fragment>
-													);
-												}
-											}
-											return <div>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-								<MeasurementControls
-									label={ __( 'Learn More Border Width (px)' ) }
-									measurement={ learnMoreStyles[ 0 ].borderWidth }
-									control={ learnMoreStyles[ 0 ].borderControl }
-									onChange={ ( value ) => saveLearnMoreStyles( { borderWidth: value } ) }
-									onControl={ ( value ) => saveLearnMoreStyles( { borderControl: value } ) }
-									min={ 0 }
-									max={ 40 }
 									step={ 1 }
 								/>
-								<RangeControl
-									label={ __( 'Learn More Border Radius (px)' ) }
-									value={ learnMoreStyles[ 0 ].borderRadius }
-									onChange={ value => saveLearnMoreStyles( { borderRadius: value } ) }
-									step={ 1 }
-									min={ 0 }
-									max={ 200 }
-								/>
-								<TypographyControls
-									fontSize={ learnMoreStyles[ 0 ].size }
-									onFontSize={ ( value ) => saveLearnMoreStyles( { size: value } ) }
-									fontSizeType={ learnMoreStyles[ 0 ].sizeType }
-									onFontSizeType={ ( value ) => saveLearnMoreStyles( { sizeType: value } ) }
-									lineHeight={ learnMoreStyles[ 0 ].lineHeight }
-									onLineHeight={ ( value ) => saveLearnMoreStyles( { lineHeight: value } ) }
-									lineHeightType={ learnMoreStyles[ 0 ].lineType }
-									onLineHeightType={ ( value ) => saveLearnMoreStyles( { lineType: value } ) }
-									letterSpacing={ learnMoreStyles[ 0 ].letterSpacing }
-									onLetterSpacing={ ( value ) => saveLearnMoreStyles( { letterSpacing: value } ) }
-									fontFamily={ learnMoreStyles[ 0 ].family }
-									onFontFamily={ ( value ) => saveLearnMoreStyles( { family: value } ) }
-									onFontChange={ ( select ) => {
-										saveLearnMoreStyles( {
-											family: select.value,
-											google: select.google,
-										} );
-									} }
-									onFontArrayChange={ ( values ) => saveLearnMoreStyles( values ) }
-									googleFont={ learnMoreStyles[ 0 ].google }
-									onGoogleFont={ ( value ) => saveLearnMoreStyles( { google: value } ) }
-									loadGoogleFont={ learnMoreStyles[ 0 ].loadGoogle }
-									onLoadGoogleFont={ ( value ) => saveLearnMoreStyles( { loadGoogle: value } ) }
-									fontVariant={ learnMoreStyles[ 0 ].variant }
-									onFontVariant={ ( value ) => saveLearnMoreStyles( { variant: value } ) }
-									fontWeight={ learnMoreStyles[ 0 ].weight }
-									onFontWeight={ ( value ) => saveLearnMoreStyles( { weight: value } ) }
-									fontStyle={ learnMoreStyles[ 0 ].style }
-									onFontStyle={ ( value ) => saveLearnMoreStyles( { style: value } ) }
-									fontSubset={ learnMoreStyles[ 0 ].subset }
-									onFontSubset={ ( value ) => saveLearnMoreStyles( { subset: value } ) }
-									padding={ learnMoreStyles[ 0 ].padding }
-									onPadding={ ( value ) => saveLearnMoreStyles( { padding: value } ) }
-									paddingControl={ learnMoreStyles[ 0 ].paddingControl }
-									onPaddingControl={ ( value ) => saveLearnMoreStyles( { paddingControl: value } ) }
-									margin={ learnMoreStyles[ 0 ].margin }
-									onMargin={ ( value ) => saveLearnMoreStyles( { margin: value } ) }
-									marginControl={ learnMoreStyles[ 0 ].marginControl }
-									onMarginControl={ ( value ) => saveLearnMoreStyles( { marginControl: value } ) }
-								/>
-							</Fragment>
+							</PanelBody>
 						) }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Container Shaddow' ) }
-						initialOpen={ false }
-					>
-						<ToggleControl
-							label={ __( 'Enable Shadow' ) }
-							checked={ displayShadow }
-							onChange={ value => setAttributes( { displayShadow: value } ) }
-						/>
-						{ displayShadow && (
-							<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-								activeClass="active-tab"
-								tabs={ [
-									{
-										name: 'normal',
-										title: __( 'Normal' ),
-										className: 'kt-normal-tab',
-									},
-									{
-										name: 'hover',
-										title: __( 'Hover' ),
-										className: 'kt-hover-tab',
-									},
-								] }>
-								{
-									( tab ) => {
-										let tabout;
-										if ( tab.name ) {
-											if ( 'hover' === tab.name ) {
-												tabout = (
-													<Fragment>
-														<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
-														<ColorPalette
-															value={ shadowHover[ 0 ].color }
-															onChange={ value => saveHoverShadow( { color: value } ) }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Opacity' ) }
-															value={ shadowHover[ 0 ].opacity }
-															onChange={ value => saveHoverShadow( { opacity: value } ) }
-															min={ 0 }
-															max={ 1 }
-															step={ 0.1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Blur' ) }
-															value={ shadowHover[ 0 ].blur }
-															onChange={ value => saveHoverShadow( { blur: value } ) }
-															min={ 0 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Spread' ) }
-															value={ shadowHover[ 0 ].spread }
-															onChange={ value => saveHoverShadow( { spread: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Vertical Offset' ) }
-															value={ shadowHover[ 0 ].vOffset }
-															onChange={ value => saveHoverShadow( { vOffset: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Horizontal Offset' ) }
-															value={ shadowHover[ 0 ].hOffset }
-															onChange={ value => saveHoverShadow( { hOffset: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-													</Fragment>
-												);
-											} else {
-												tabout = (
-													<Fragment>
-														<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
-														<ColorPalette
-															value={ shadow[ 0 ].color }
-															onChange={ value => saveShadow( { color: value } ) }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Opacity' ) }
-															value={ shadow[ 0 ].opacity }
-															onChange={ value => saveShadow( { opacity: value } ) }
-															min={ 0 }
-															max={ 1 }
-															step={ 0.1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Blur' ) }
-															value={ shadow[ 0 ].blur }
-															onChange={ value => saveShadow( { blur: value } ) }
-															min={ 0 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Spread' ) }
-															value={ shadow[ 0 ].spread }
-															onChange={ value => saveShadow( { spread: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Vertical Offset' ) }
-															value={ shadow[ 0 ].vOffset }
-															onChange={ value => saveShadow( { vOffset: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Horizontal Offset' ) }
-															value={ shadow[ 0 ].hOffset }
-															onChange={ value => saveShadow( { hOffset: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-													</Fragment>
-												);
+						{ this.showSettings( 'titleSettings' ) && (
+							<PanelBody
+								title={ __( 'Title Settings' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Show Title' ) }
+									checked={ displayTitle }
+									onChange={ ( value ) => setAttributes( { displayTitle: value } ) }
+								/>
+								{ displayTitle && (
+									<Fragment>
+										<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'normal',
+													title: __( 'Normal' ),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'hover',
+													title: __( 'Hover' ),
+													className: 'kt-hover-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															tabout = (
+																<ColorPalette
+																	value={ titleHoverColor }
+																	onChange={ value => setAttributes( { titleHoverColor: value } ) }
+																/>
+															);
+														} else {
+															tabout = (
+																<ColorPalette
+																	value={ titleColor }
+																	onChange={ value => setAttributes( { titleColor: value } ) }
+																/>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
 											}
-										}
-										return <div>{ tabout }</div>;
-									}
-								}
-							</TabPanel>
-						) }
-					</PanelBody>
-				</InspectorControls>
-				<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } ${ isSelectedClass } kt-info-halign-${ hAlign }` } style={ {
-					boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + hexToRGBA( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
-					borderColor: containerBorder,
-					background: containerBackground,
-					borderRadius: containerBorderRadius + 'px',
-					borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
-					padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
-				} } >
-					<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` } style={ {
-						borderColor: mediaStyle[ 0 ].border,
-						backgroundColor: mediaStyle[ 0 ].background,
-						borderRadius: mediaStyle[ 0 ].borderRadius + 'px',
-						borderWidth: ( mediaStyle[ 0 ].borderWidth ? mediaStyle[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
-						padding: ( mediaStyle[ 0 ].padding ? mediaStyle[ 0 ].padding[ 0 ] + 'px ' + mediaStyle[ 0 ].padding[ 1 ] + 'px ' + mediaStyle[ 0 ].padding[ 2 ] + 'px ' + mediaStyle[ 0 ].padding[ 3 ] + 'px' : '' ),
-						margin: ( mediaStyle[ 0 ].margin ? mediaStyle[ 0 ].margin[ 0 ] + 'px ' + mediaStyle[ 0 ].margin[ 1 ] + 'px ' + mediaStyle[ 0 ].margin[ 2 ] + 'px ' + mediaStyle[ 0 ].margin[ 3 ] + 'px' : '' ),
-					} } >
-						{ ! mediaImage[ 0 ].url && 'image' === mediaType && (
-							<MediaPlaceholder
-								icon="format-image"
-								labels={ {
-									title: __( 'Media area' ),
-								} }
-								onSelect={ onSelectImage }
-								accept="image/*"
-								allowedTypes={ ALLOWED_MEDIA_TYPES }
-							/>
-						) }
-						{ mediaImage[ 0 ].url && 'image' === mediaType && (
-							<div className="kadence-info-box-image-inner-intrisic-container" style={ {
-								maxWidth: mediaImage[ 0 ].maxWidth + 'px',
-							} } >
-								<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }` } style={ {
-									paddingBottom: ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
-								} } >
-									<div className="kadence-info-box-image-inner-intrisic">
-										<img
-											src={ mediaImage[ 0 ].url }
-											alt={ mediaImage[ 0 ].alt }
-											width={ mediaImage[ 0 ].width }
-											height={ mediaImage[ 0 ].height }
-											className={ mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' }
+										</TabPanel>
+										<TypographyControls
+											tagLevel={ titleFont[ 0 ].level }
+											onTagLevel={ ( value ) => saveTitleFont( { level: value } ) }
+											fontSize={ titleFont[ 0 ].size }
+											onFontSize={ ( value ) => saveTitleFont( { size: value } ) }
+											fontSizeType={ titleFont[ 0 ].sizeType }
+											onFontSizeType={ ( value ) => saveTitleFont( { sizeType: value } ) }
+											lineHeight={ titleFont[ 0 ].lineHeight }
+											onLineHeight={ ( value ) => saveTitleFont( { lineHeight: value } ) }
+											lineHeightType={ titleFont[ 0 ].lineType }
+											onLineHeightType={ ( value ) => saveTitleFont( { lineType: value } ) }
+											letterSpacing={ titleFont[ 0 ].letterSpacing }
+											onLetterSpacing={ ( value ) => saveTitleFont( { letterSpacing: value } ) }
+											fontFamily={ titleFont[ 0 ].family }
+											onFontFamily={ ( value ) => saveTitleFont( { family: value } ) }
+											onFontChange={ ( select ) => {
+												saveTitleFont( {
+													family: select.value,
+													google: select.google,
+												} );
+											} }
+											onFontArrayChange={ ( values ) => saveTitleFont( values ) }
+											googleFont={ titleFont[ 0 ].google }
+											onGoogleFont={ ( value ) => saveTitleFont( { google: value } ) }
+											loadGoogleFont={ titleFont[ 0 ].loadGoogle }
+											onLoadGoogleFont={ ( value ) => saveTitleFont( { loadGoogle: value } ) }
+											fontVariant={ titleFont[ 0 ].variant }
+											onFontVariant={ ( value ) => saveTitleFont( { variant: value } ) }
+											fontWeight={ titleFont[ 0 ].weight }
+											onFontWeight={ ( value ) => saveTitleFont( { weight: value } ) }
+											fontStyle={ titleFont[ 0 ].style }
+											onFontStyle={ ( value ) => saveTitleFont( { style: value } ) }
+											fontSubset={ titleFont[ 0 ].subset }
+											onFontSubset={ ( value ) => saveTitleFont( { subset: value } ) }
+											padding={ titleFont[ 0 ].padding }
+											onPadding={ ( value ) => saveTitleFont( { padding: value } ) }
+											paddingControl={ titleFont[ 0 ].paddingControl }
+											onPaddingControl={ ( value ) => saveTitleFont( { paddingControl: value } ) }
+											margin={ titleFont[ 0 ].margin }
+											onMargin={ ( value ) => saveTitleFont( { margin: value } ) }
+											marginControl={ titleFont[ 0 ].marginControl }
+											onMarginControl={ ( value ) => saveTitleFont( { marginControl: value } ) }
 										/>
-										{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+									</Fragment>
+								) }
+							</PanelBody>
+						) }
+						{ this.showSettings( 'textSettings' ) && (
+							<PanelBody
+								title={ __( 'Text Settings' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Show Text' ) }
+									checked={ displayText }
+									onChange={ ( value ) => setAttributes( { displayText: value } ) }
+								/>
+								{ displayText && (
+									<Fragment>
+										<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'normal',
+													title: __( 'Normal' ),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'hover',
+													title: __( 'Hover' ),
+													className: 'kt-hover-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															tabout = (
+																<ColorPalette
+																	value={ textHoverColor }
+																	onChange={ value => setAttributes( { textHoverColor: value } ) }
+																/>
+															);
+														} else {
+															tabout = (
+																<ColorPalette
+																	value={ textColor }
+																	onChange={ value => setAttributes( { textColor: value } ) }
+																/>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
+										<TypographyControls
+											fontSize={ textFont[ 0 ].size }
+											onFontSize={ ( value ) => saveTextFont( { size: value } ) }
+											fontSizeType={ textFont[ 0 ].sizeType }
+											onFontSizeType={ ( value ) => saveTextFont( { sizeType: value } ) }
+											lineHeight={ textFont[ 0 ].lineHeight }
+											onLineHeight={ ( value ) => saveTextFont( { lineHeight: value } ) }
+											lineHeightType={ textFont[ 0 ].lineType }
+											onLineHeightType={ ( value ) => saveTextFont( { lineType: value } ) }
+											letterSpacing={ textFont[ 0 ].letterSpacing }
+											onLetterSpacing={ ( value ) => saveTextFont( { letterSpacing: value } ) }
+											fontFamily={ textFont[ 0 ].family }
+											onFontFamily={ ( value ) => saveTextFont( { family: value } ) }
+											onFontChange={ ( select ) => {
+												saveTextFont( {
+													family: select.value,
+													google: select.google,
+												} );
+											} }
+											onFontArrayChange={ ( values ) => saveTextFont( values ) }
+											googleFont={ textFont[ 0 ].google }
+											onGoogleFont={ ( value ) => saveTextFont( { google: value } ) }
+											loadGoogleFont={ textFont[ 0 ].loadGoogle }
+											onLoadGoogleFont={ ( value ) => saveTextFont( { loadGoogle: value } ) }
+											fontVariant={ textFont[ 0 ].variant }
+											onFontVariant={ ( value ) => saveTextFont( { variant: value } ) }
+											fontWeight={ textFont[ 0 ].weight }
+											onFontWeight={ ( value ) => saveTextFont( { weight: value } ) }
+											fontStyle={ textFont[ 0 ].style }
+											onFontStyle={ ( value ) => saveTextFont( { style: value } ) }
+											fontSubset={ textFont[ 0 ].subset }
+											onFontSubset={ ( value ) => saveTextFont( { subset: value } ) }
+										/>
+									</Fragment>
+								) }
+							</PanelBody>
+						) }
+						{ this.showSettings( 'learnMoreSettings' ) && (
+							<PanelBody
+								title={ __( 'Learn More Settings' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Show Learn More' ) }
+									checked={ displayLearnMore }
+									onChange={ ( value ) => setAttributes( { displayLearnMore: value } ) }
+								/>
+								{ displayLearnMore && (
+									<Fragment>
+										<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'normal',
+													title: __( 'Normal' ),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'hover',
+													title: __( 'Hover' ),
+													className: 'kt-hover-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															tabout = (
+																<Fragment>
+																	<h2>{ __( 'HOVER: Learn More Color' ) }</h2>
+																	<ColorPalette
+																		value={ learnMoreStyles[ 0 ].colorHover }
+																		onChange={ value => saveLearnMoreStyles( { colorHover: value } ) }
+																	/>
+																	<h2>{ __( 'HOVER: Learn More Background' ) }</h2>
+																	<ColorPalette
+																		value={ learnMoreStyles[ 0 ].backgroundHover }
+																		onChange={ value => saveLearnMoreStyles( { backgroundHover: value } ) }
+																	/>
+																	<h2>{ __( 'HOVER: Learn More Border Color' ) }</h2>
+																	<ColorPalette
+																		value={ learnMoreStyles[ 0 ].borderHover }
+																		onChange={ value => saveLearnMoreStyles( { borderHover: value } ) }
+																	/>
+																</Fragment>
+															);
+														} else {
+															tabout = (
+																<Fragment>
+																	<h2>{ __( 'Learn More Color' ) }</h2>
+																	<ColorPalette
+																		value={ learnMoreStyles[ 0 ].color }
+																		onChange={ value => saveLearnMoreStyles( { color: value } ) }
+																	/>
+																	<h2>{ __( 'Learn More Background' ) }</h2>
+																	<ColorPalette
+																		value={ learnMoreStyles[ 0 ].background }
+																		onChange={ value => saveLearnMoreStyles( { background: value } ) }
+																	/>
+																	<h2>{ __( 'Learn More Border Color' ) }</h2>
+																	<ColorPalette
+																		value={ learnMoreStyles[ 0 ].border }
+																		onChange={ value => saveLearnMoreStyles( { border: value } ) }
+																	/>
+																</Fragment>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
+										<MeasurementControls
+											label={ __( 'Learn More Border Width (px)' ) }
+											measurement={ learnMoreStyles[ 0 ].borderWidth }
+											control={ learnMoreStyles[ 0 ].borderControl }
+											onChange={ ( value ) => saveLearnMoreStyles( { borderWidth: value } ) }
+											onControl={ ( value ) => saveLearnMoreStyles( { borderControl: value } ) }
+											min={ 0 }
+											max={ 40 }
+											step={ 1 }
+										/>
+										<RangeControl
+											label={ __( 'Learn More Border Radius (px)' ) }
+											value={ learnMoreStyles[ 0 ].borderRadius }
+											onChange={ value => saveLearnMoreStyles( { borderRadius: value } ) }
+											step={ 1 }
+											min={ 0 }
+											max={ 200 }
+										/>
+										<TypographyControls
+											fontSize={ learnMoreStyles[ 0 ].size }
+											onFontSize={ ( value ) => saveLearnMoreStyles( { size: value } ) }
+											fontSizeType={ learnMoreStyles[ 0 ].sizeType }
+											onFontSizeType={ ( value ) => saveLearnMoreStyles( { sizeType: value } ) }
+											lineHeight={ learnMoreStyles[ 0 ].lineHeight }
+											onLineHeight={ ( value ) => saveLearnMoreStyles( { lineHeight: value } ) }
+											lineHeightType={ learnMoreStyles[ 0 ].lineType }
+											onLineHeightType={ ( value ) => saveLearnMoreStyles( { lineType: value } ) }
+											letterSpacing={ learnMoreStyles[ 0 ].letterSpacing }
+											onLetterSpacing={ ( value ) => saveLearnMoreStyles( { letterSpacing: value } ) }
+											fontFamily={ learnMoreStyles[ 0 ].family }
+											onFontFamily={ ( value ) => saveLearnMoreStyles( { family: value } ) }
+											onFontChange={ ( select ) => {
+												saveLearnMoreStyles( {
+													family: select.value,
+													google: select.google,
+												} );
+											} }
+											onFontArrayChange={ ( values ) => saveLearnMoreStyles( values ) }
+											googleFont={ learnMoreStyles[ 0 ].google }
+											onGoogleFont={ ( value ) => saveLearnMoreStyles( { google: value } ) }
+											loadGoogleFont={ learnMoreStyles[ 0 ].loadGoogle }
+											onLoadGoogleFont={ ( value ) => saveLearnMoreStyles( { loadGoogle: value } ) }
+											fontVariant={ learnMoreStyles[ 0 ].variant }
+											onFontVariant={ ( value ) => saveLearnMoreStyles( { variant: value } ) }
+											fontWeight={ learnMoreStyles[ 0 ].weight }
+											onFontWeight={ ( value ) => saveLearnMoreStyles( { weight: value } ) }
+											fontStyle={ learnMoreStyles[ 0 ].style }
+											onFontStyle={ ( value ) => saveLearnMoreStyles( { style: value } ) }
+											fontSubset={ learnMoreStyles[ 0 ].subset }
+											onFontSubset={ ( value ) => saveLearnMoreStyles( { subset: value } ) }
+											padding={ learnMoreStyles[ 0 ].padding }
+											onPadding={ ( value ) => saveLearnMoreStyles( { padding: value } ) }
+											paddingControl={ learnMoreStyles[ 0 ].paddingControl }
+											onPaddingControl={ ( value ) => saveLearnMoreStyles( { paddingControl: value } ) }
+											margin={ learnMoreStyles[ 0 ].margin }
+											onMargin={ ( value ) => saveLearnMoreStyles( { margin: value } ) }
+											marginControl={ learnMoreStyles[ 0 ].marginControl }
+											onMarginControl={ ( value ) => saveLearnMoreStyles( { marginControl: value } ) }
+										/>
+									</Fragment>
+								) }
+							</PanelBody>
+						) }
+						{ this.showSettings( 'shadowSettings' ) && (
+							<PanelBody
+								title={ __( 'Container Shaddow' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Enable Shadow' ) }
+									checked={ displayShadow }
+									onChange={ value => setAttributes( { displayShadow: value } ) }
+								/>
+								{ displayShadow && (
+									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+										activeClass="active-tab"
+										tabs={ [
+											{
+												name: 'normal',
+												title: __( 'Normal' ),
+												className: 'kt-normal-tab',
+											},
+											{
+												name: 'hover',
+												title: __( 'Hover' ),
+												className: 'kt-hover-tab',
+											},
+										] }>
+										{
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'hover' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
+																<ColorPalette
+																	value={ shadowHover[ 0 ].color }
+																	onChange={ value => saveHoverShadow( { color: value } ) }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Opacity' ) }
+																	value={ shadowHover[ 0 ].opacity }
+																	onChange={ value => saveHoverShadow( { opacity: value } ) }
+																	min={ 0 }
+																	max={ 1 }
+																	step={ 0.1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Blur' ) }
+																	value={ shadowHover[ 0 ].blur }
+																	onChange={ value => saveHoverShadow( { blur: value } ) }
+																	min={ 0 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Spread' ) }
+																	value={ shadowHover[ 0 ].spread }
+																	onChange={ value => saveHoverShadow( { spread: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Vertical Offset' ) }
+																	value={ shadowHover[ 0 ].vOffset }
+																	onChange={ value => saveHoverShadow( { vOffset: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Horizontal Offset' ) }
+																	value={ shadowHover[ 0 ].hOffset }
+																	onChange={ value => saveHoverShadow( { hOffset: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+															</Fragment>
+														);
+													} else {
+														tabout = (
+															<Fragment>
+																<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
+																<ColorPalette
+																	value={ shadow[ 0 ].color }
+																	onChange={ value => saveShadow( { color: value } ) }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Opacity' ) }
+																	value={ shadow[ 0 ].opacity }
+																	onChange={ value => saveShadow( { opacity: value } ) }
+																	min={ 0 }
+																	max={ 1 }
+																	step={ 0.1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Blur' ) }
+																	value={ shadow[ 0 ].blur }
+																	onChange={ value => saveShadow( { blur: value } ) }
+																	min={ 0 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Spread' ) }
+																	value={ shadow[ 0 ].spread }
+																	onChange={ value => saveShadow( { spread: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Vertical Offset' ) }
+																	value={ shadow[ 0 ].vOffset }
+																	onChange={ value => saveShadow( { vOffset: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Horizontal Offset' ) }
+																	value={ shadow[ 0 ].hOffset }
+																	onChange={ value => saveShadow( { hOffset: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+															</Fragment>
+														);
+													}
+												}
+												return <div>{ tabout }</div>;
+											}
+										}
+									</TabPanel>
+								) }
+							</PanelBody>
+						) }
+					</InspectorControls>
+				) }
+				{ this.state.showPreset && (
+					<div className="kt-select-starter-style-tabs kt-select-starter-style-infobox">
+						<div className="kt-select-starter-style-tabs-title">
+							{ __( 'Select Intial Style' ) }
+						</div>
+						<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Intial Style' ) }>
+							{ map( startlayoutOptions, ( { name, key, icon } ) => (
+								<Button
+									key={ key }
+									className="kt-inital-tabs-style-btn"
+									isSmall
+									onClick={ () => {
+										setInitalLayout( key );
+										this.setState( { showPreset: false } );
+									} }
+								>
+									{ icon }
+								</Button>
+							) ) }
+						</ButtonGroup>
+					</div>
+				) }
+				{ ! this.state.showPreset && (
+					<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } ${ isSelectedClass } kt-info-halign-${ hAlign }` } style={ {
+						boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + hexToRGBA( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
+						borderColor: containerBorder,
+						background: containerBackground,
+						borderRadius: containerBorderRadius + 'px',
+						borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
+						padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
+					} } >
+						<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` } style={ {
+							borderColor: mediaStyle[ 0 ].border,
+							backgroundColor: mediaStyle[ 0 ].background,
+							borderRadius: mediaStyle[ 0 ].borderRadius + 'px',
+							borderWidth: ( mediaStyle[ 0 ].borderWidth ? mediaStyle[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
+							padding: ( mediaStyle[ 0 ].padding ? mediaStyle[ 0 ].padding[ 0 ] + 'px ' + mediaStyle[ 0 ].padding[ 1 ] + 'px ' + mediaStyle[ 0 ].padding[ 2 ] + 'px ' + mediaStyle[ 0 ].padding[ 3 ] + 'px' : '' ),
+							margin: ( mediaStyle[ 0 ].margin ? mediaStyle[ 0 ].margin[ 0 ] + 'px ' + mediaStyle[ 0 ].margin[ 1 ] + 'px ' + mediaStyle[ 0 ].margin[ 2 ] + 'px ' + mediaStyle[ 0 ].margin[ 3 ] + 'px' : '' ),
+						} } >
+							{ ! mediaImage[ 0 ].url && 'image' === mediaType && (
+								<MediaPlaceholder
+									icon="format-image"
+									labels={ {
+										title: __( 'Media area' ),
+									} }
+									onSelect={ onSelectImage }
+									accept="image/*"
+									allowedTypes={ ALLOWED_MEDIA_TYPES }
+								/>
+							) }
+							{ mediaImage[ 0 ].url && 'image' === mediaType && (
+								<div className="kadence-info-box-image-inner-intrisic-container" style={ {
+									maxWidth: mediaImage[ 0 ].maxWidth + 'px',
+								} } >
+									<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }` } style={ {
+										paddingBottom: ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+									} } >
+										<div className="kadence-info-box-image-inner-intrisic">
 											<img
-												src={ mediaImage[ 0 ].flipUrl }
-												alt={ mediaImage[ 0 ].flipAlt }
-												width={ mediaImage[ 0 ].flipWidth }
-												height={ mediaImage[ 0 ].flipHeight }
-												className={ mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' }
+												src={ mediaImage[ 0 ].url }
+												alt={ mediaImage[ 0 ].alt }
+												width={ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width ) }
+												height={ mediaImage[ 0 ].height }
+												className={ `${ ( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' ) } ${ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' ) }` }
 											/>
+											{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+												<img
+													src={ mediaImage[ 0 ].flipUrl }
+													alt={ mediaImage[ 0 ].flipAlt }
+													width={ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth ) }
+													height={ mediaImage[ 0 ].flipHeight }
+													className={ `${ ( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' ) } ${ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' ) }` }
+												/>
+											) }
+										</div>
+									</div>
+								</div>
+							) }
+							{ 'icon' === mediaType && (
+								<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
+									<div className={ 'kadence-info-box-icon-inner-container' } >
+										<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+											display: 'block',
+											color: ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : undefined ),
+										} } />
+										{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
+											<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+												display: 'block',
+												color: ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : undefined ),
+											} } />
 										) }
 									</div>
 								</div>
-							</div>
-						) }
-						{ 'icon' === mediaType && (
-							<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
-								<div className={ 'kadence-info-box-icon-inner-container' } >
-									<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
-										display: 'block',
-										color: ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : undefined ),
-									} } />
-									{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
-										<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
-											display: 'block',
-											color: ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : undefined ),
-										} } />
-									) }
-								</div>
-							</div>
-						) }
-					</div>
-					<div className={ 'kt-infobox-textcontent' } >
-						{ displayTitle && titleFont[ 0 ].google && (
-							<WebfontLoader config={ config }>
-							</WebfontLoader>
-						) }
-						{ displayTitle && (
-							<RichText
-								className="kt-blocks-info-box-title"
-								tagName={ titleTagName }
-								placeholder={ __( 'Title' ) }
-								onChange={ onChangeTitle }
-								value={ title }
-								style={ {
-									fontWeight: titleFont[ 0 ].weight,
-									fontStyle: titleFont[ 0 ].style,
-									color: titleColor,
-									fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
-									lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
-									letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
-									fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
-									padding: ( titleFont[ 0 ].padding ? titleFont[ 0 ].padding[ 0 ] + 'px ' + titleFont[ 0 ].padding[ 1 ] + 'px ' + titleFont[ 0 ].padding[ 2 ] + 'px ' + titleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
-									margin: ( titleFont[ 0 ].margin ? titleFont[ 0 ].margin[ 0 ] + 'px ' + titleFont[ 0 ].margin[ 1 ] + 'px ' + titleFont[ 0 ].margin[ 2 ] + 'px ' + titleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
-								} }
-								keepPlaceholderOnFocus
-							/>
-						) }
-						{ displayText && textFont[ 0 ].google && (
-							<WebfontLoader config={ tconfig }>
-							</WebfontLoader>
-						) }
-						{ displayText && (
-							<RichText
-								className="kt-blocks-info-box-text"
-								tagName={ 'p' }
-								placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.' ) }
-								onChange={ ( value ) => setAttributes( { contentText: value } ) }
-								value={ contentText }
-								style={ {
-									fontWeight: textFont[ 0 ].weight,
-									fontStyle: textFont[ 0 ].style,
-									color: textColor,
-									fontSize: textFont[ 0 ].size[ 0 ] + textFont[ 0 ].sizeType,
-									lineHeight: ( textFont[ 0 ].lineHeight && textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] + textFont[ 0 ].lineType : undefined ),
-									letterSpacing: textFont[ 0 ].letterSpacing + 'px',
-									fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
-								} }
-								keepPlaceholderOnFocus
-							/>
-						) }
-						{ displayLearnMore && learnMoreStyles[ 0 ].google && (
-							<WebfontLoader config={ lconfig }>
-							</WebfontLoader>
-						) }
-						{ displayLearnMore && (
-							<div className="kt-blocks-info-box-learnmore-wrap" style={ {
-								margin: ( learnMoreStyles[ 0 ].margin ? learnMoreStyles[ 0 ].margin[ 0 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 1 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 2 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
-							} } >
+							) }
+						</div>
+						<div className={ 'kt-infobox-textcontent' } >
+							{ displayTitle && titleFont[ 0 ].google && (
+								<WebfontLoader config={ config }>
+								</WebfontLoader>
+							) }
+							{ displayTitle && (
 								<RichText
-									className="kt-blocks-info-box-learnmore"
-									tagName={ 'div' }
-									placeholder={ __( 'Learn More' ) }
-									onChange={ value => setAttributes( { learnMore: value } ) }
-									value={ learnMore }
+									className="kt-blocks-info-box-title"
+									tagName={ titleTagName }
+									placeholder={ __( 'Title' ) }
+									onChange={ onChangeTitle }
+									value={ title }
 									style={ {
-										fontWeight: learnMoreStyles[ 0 ].weight,
-										fontStyle: learnMoreStyles[ 0 ].style,
-										color: learnMoreStyles[ 0 ].color,
-										borderRadius: learnMoreStyles[ 0 ].borderRadius + 'px',
-										background: learnMoreStyles[ 0 ].background,
-										borderColor: learnMoreStyles[ 0 ].border,
-										fontSize: learnMoreStyles[ 0 ].size[ 0 ] + learnMoreStyles[ 0 ].sizeType,
-										lineHeight: ( learnMoreStyles[ 0 ].lineHeight && learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] + learnMoreStyles[ 0 ].lineType : undefined ),
-										letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
-										fontFamily: ( learnMoreStyles[ 0 ].family ? learnMoreStyles[ 0 ].family : '' ),
-										borderWidth: ( learnMoreStyles[ 0 ].borderWidth ? learnMoreStyles[ 0 ].borderWidth[ 0 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 1 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 2 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
-										padding: ( learnMoreStyles[ 0 ].padding ? learnMoreStyles[ 0 ].padding[ 0 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 1 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 2 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
+										fontWeight: titleFont[ 0 ].weight,
+										fontStyle: titleFont[ 0 ].style,
+										color: titleColor,
+										fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
+										lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
+										letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
+										fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
+										padding: ( titleFont[ 0 ].padding ? titleFont[ 0 ].padding[ 0 ] + 'px ' + titleFont[ 0 ].padding[ 1 ] + 'px ' + titleFont[ 0 ].padding[ 2 ] + 'px ' + titleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
+										margin: ( titleFont[ 0 ].margin ? titleFont[ 0 ].margin[ 0 ] + 'px ' + titleFont[ 0 ].margin[ 1 ] + 'px ' + titleFont[ 0 ].margin[ 2 ] + 'px ' + titleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
 									} }
 									keepPlaceholderOnFocus
 								/>
-							</div>
-						) }
+							) }
+							{ displayText && textFont[ 0 ].google && (
+								<WebfontLoader config={ tconfig }>
+								</WebfontLoader>
+							) }
+							{ displayText && (
+								<RichText
+									className="kt-blocks-info-box-text"
+									tagName={ 'p' }
+									placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.' ) }
+									onChange={ ( value ) => setAttributes( { contentText: value } ) }
+									value={ contentText }
+									style={ {
+										fontWeight: textFont[ 0 ].weight,
+										fontStyle: textFont[ 0 ].style,
+										color: textColor,
+										fontSize: textFont[ 0 ].size[ 0 ] + textFont[ 0 ].sizeType,
+										lineHeight: ( textFont[ 0 ].lineHeight && textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] + textFont[ 0 ].lineType : undefined ),
+										letterSpacing: textFont[ 0 ].letterSpacing + 'px',
+										fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
+									} }
+									keepPlaceholderOnFocus
+								/>
+							) }
+							{ displayLearnMore && learnMoreStyles[ 0 ].google && (
+								<WebfontLoader config={ lconfig }>
+								</WebfontLoader>
+							) }
+							{ displayLearnMore && (
+								<div className="kt-blocks-info-box-learnmore-wrap" style={ {
+									margin: ( learnMoreStyles[ 0 ].margin ? learnMoreStyles[ 0 ].margin[ 0 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 1 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 2 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
+								} } >
+									<RichText
+										className="kt-blocks-info-box-learnmore"
+										tagName={ 'div' }
+										placeholder={ __( 'Learn More' ) }
+										onChange={ value => setAttributes( { learnMore: value } ) }
+										value={ learnMore }
+										style={ {
+											fontWeight: learnMoreStyles[ 0 ].weight,
+											fontStyle: learnMoreStyles[ 0 ].style,
+											color: learnMoreStyles[ 0 ].color,
+											borderRadius: learnMoreStyles[ 0 ].borderRadius + 'px',
+											background: learnMoreStyles[ 0 ].background,
+											borderColor: learnMoreStyles[ 0 ].border,
+											fontSize: learnMoreStyles[ 0 ].size[ 0 ] + learnMoreStyles[ 0 ].sizeType,
+											lineHeight: ( learnMoreStyles[ 0 ].lineHeight && learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] + learnMoreStyles[ 0 ].lineType : undefined ),
+											letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
+											fontFamily: ( learnMoreStyles[ 0 ].family ? learnMoreStyles[ 0 ].family : '' ),
+											borderWidth: ( learnMoreStyles[ 0 ].borderWidth ? learnMoreStyles[ 0 ].borderWidth[ 0 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 1 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 2 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
+											padding: ( learnMoreStyles[ 0 ].padding ? learnMoreStyles[ 0 ].padding[ 0 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 1 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 2 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
+										} }
+										keepPlaceholderOnFocus
+									/>
+								</div>
+							) }
+						</div>
 					</div>
-				</div>
+				) }
 			</div>
 		);
 	}

@@ -296,5 +296,9 @@ const attributes = {
 		type: 'string',
 		default: 'px',
 	},
+	columnsUnlocked: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

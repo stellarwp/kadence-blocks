@@ -137,6 +137,9 @@ registerBlockType( 'kadence/column', {
 			type: 'string',
 			default: '',
 		},
+		collapseOrder: {
+			type: 'number',
+		},
 	},
 	supports: {
 		inserter: false,

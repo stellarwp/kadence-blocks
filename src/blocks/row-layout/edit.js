@@ -19,7 +19,7 @@ import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 import PrebuiltModal from './prebuilt_modal';
 import MeasurementControls from '../../measurement-control';
-//import ThreeColumnDrag from './threecolumndrag';
+import ThreeColumnDrag from './threecolumndrag';
 /**
  * Import Css
  */
@@ -109,7 +109,7 @@ class KadenceRowLayout extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const marginTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
@@ -132,18 +132,36 @@ class KadenceRowLayout extends Component {
 		const marginMax = ( marginUnit === 'em' ? 24 : 200 );
 		const marginStep = ( marginUnit === 'em' ? 0.1 : 1 );
 		const onResize = ( event, direction, elt ) => {
+			let firstCol;
+			let secondCol;
+			if ( columnsUnlocked ) {
+				firstCol = Math.round( parseFloat( elt.style.width ) * 10 ) / 10;
+				secondCol = Math.round( ( 100 - firstCol ) * 10 ) / 10;
+			} else {
+				firstCol = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
+				secondCol = 100 - ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 );
+			}
 			this.setState( {
-				firstWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5,
+				firstWidth: firstCol,
 			} );
 			this.setState( {
-				secondWidth: 100 - ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ),
+				secondWidth: secondCol,
 			} );
-			document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ) + '%';
-			document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = Math.abs( ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ) - 100 ) + '%';
+			document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = firstCol + '%';
+			document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = secondCol + '%';
 		};
 		const onResizeStop = ( event, direction, elt ) => {
-			setAttributes( { firstColumnWidth: Math.round( parseInt( elt.style.width ) / 5 ) * 5 } );
-			setAttributes( { secondColumnWidth: 100 - ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 ) } );
+			let firstCol;
+			let secondCol;
+			if ( columnsUnlocked ) {
+				firstCol = Math.round( parseFloat( elt.style.width ) * 10 ) / 10;
+				secondCol = Math.round( ( 100 - firstCol ) * 10 ) / 10;
+			} else {
+				firstCol = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
+				secondCol = 100 - ( Math.round( parseInt( elt.style.width ) / 5 ) * 5 );
+			}
+			setAttributes( { firstColumnWidth: firstCol } );
+			setAttributes( { secondColumnWidth: secondCol } );
 			this.setState( {
 				firstWidth: null,
 				secondWidth: null,
@@ -155,12 +173,18 @@ class KadenceRowLayout extends Component {
 		const secondWidthString = `${ temporarySecondColumnWidth || secondColumnWidth || colLayout }`;
 		let thirdWidthString;
 		if ( 3 === columns ) {
-			thirdWidthString = `${ colLayout }`;
+			if ( this.state.firstWidth ) {
+				thirdWidthString = Math.abs( ( parseFloat( this.state.firstWidth ) + parseFloat( this.state.secondWidth ) ) - 100 );
+			} else if ( Math.abs( firstColumnWidth ) === parseFloat( firstColumnWidth ) ) {
+				thirdWidthString = Math.abs( ( parseFloat( firstColumnWidth ) + parseFloat( secondColumnWidth ) ) - 100 );
+			} else {
+				thirdWidthString = colLayout;
+			}
 		} else {
 			thirdWidthString = colLayout;
 		}
 		let widthNumber;
-		if ( widthString === parseInt( widthString ) ) {
+		if ( widthString === parseFloat( widthString ) ) {
 			widthNumber = widthString + '%';
 		} else if ( 'left-golden' === widthString ) {
 			widthNumber = '66.67%';
@@ -172,7 +196,7 @@ class KadenceRowLayout extends Component {
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
-		const selectColLayout = ( columns && 2 === columns ? widthString : colLayout );
+		const selectColLayout = ( columns && ( 2 === columns || 3 === columns ) ? widthString : colLayout );
 		const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
 		const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } kt-v-gutter-${ collapseGutter } kt-custom-first-width-${ widthString } kt-custom-second-width-${ secondWidthString } kt-custom-third-width-${ thirdWidthString } ${ hasBG }` );
 		let layoutOptions;
@@ -357,23 +381,27 @@ class KadenceRowLayout extends Component {
 		const mobileControls = (
 			<div>
 				<PanelBody>
-					<p className="components-base-control__label">{ __( 'Mobile Layout' ) }</p>
-					<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
-						{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
-							<Tooltip text={ name }>
-								<Button
-									key={ key }
-									className="kt-layout-btn"
-									isSmall
-									isPrimary={ mobileLayout === key }
-									aria-pressed={ mobileLayout === key }
-									onClick={ () => setAttributes( { mobileLayout: key } ) }
-								>
-									{ icon }
-								</Button>
-							</Tooltip>
-						) ) }
-					</ButtonGroup>
+					{ columns > 1 && (
+						<Fragment>
+							<p className="components-base-control__label">{ __( 'Mobile Layout' ) }</p>
+							<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
+								{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
+									<Tooltip text={ name }>
+										<Button
+											key={ key }
+											className="kt-layout-btn"
+											isSmall
+											isPrimary={ mobileLayout === key }
+											aria-pressed={ mobileLayout === key }
+											onClick={ () => setAttributes( { mobileLayout: key } ) }
+										>
+											{ icon }
+										</Button>
+									</Tooltip>
+								) ) }
+							</ButtonGroup>
+						</Fragment>
+					) }
 					{ columns > 1 && (
 						<SelectControl
 							label={ __( 'Column Collapse Vertical Gutter' ) }
@@ -500,24 +528,28 @@ class KadenceRowLayout extends Component {
 			</div>
 		);
 		const tabletControls = (
-			<PanelBody>
-				<p className="components-base-control__label">{ __( 'Tablet Layout' ) }</p>
-				<ButtonGroup aria-label={ __( 'Tablet Layout' ) }>
-					{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
-						<Tooltip text={ name }>
-							<Button
-								key={ key }
-								className="kt-layout-btn"
-								isSmall
-								isPrimary={ tabletLayout === key }
-								aria-pressed={ tabletLayout === key }
-								onClick={ () => setAttributes( { tabletLayout: key } ) }
-							>
-								{ icon }
-							</Button>
-						</Tooltip>
-					) ) }
-				</ButtonGroup>
+			<div>
+				{ columns > 1 && (
+					<Fragment>
+						<p className="components-base-control__label">{ __( 'Tablet Layout' ) }</p>
+						<ButtonGroup aria-label={ __( 'Tablet Layout' ) }>
+							{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
+								<Tooltip text={ name }>
+									<Button
+										key={ key }
+										className="kt-layout-btn"
+										isSmall
+										isPrimary={ tabletLayout === key }
+										aria-pressed={ tabletLayout === key }
+										onClick={ () => setAttributes( { tabletLayout: key } ) }
+									>
+										{ icon }
+									</Button>
+								</Tooltip>
+							) ) }
+						</ButtonGroup>
+					</Fragment>
+				) }
 				<PanelBody
 					title={ __( 'Tablet Padding/Margin' ) }
 					initialOpen={ false }
@@ -572,7 +604,7 @@ class KadenceRowLayout extends Component {
 						step={ marginStep }
 					/>
 				</PanelBody>
-			</PanelBody>
+			</div>
 		);
 
 		const deskControls = (
@@ -594,31 +626,35 @@ class KadenceRowLayout extends Component {
 						min={ 1 }
 						max={ 6 }
 					/>
-					<p className="components-base-control__label">{ __( 'Layout' ) }</p>
-					<ButtonGroup aria-label={ __( 'Column Layout' ) }>
-						{ map( layoutOptions, ( { name, key, icon } ) => (
-							<Tooltip text={ name }>
-								<Button
-									key={ key }
-									className="kt-layout-btn"
-									isSmall
-									isPrimary={ selectColLayout === key }
-									aria-pressed={ selectColLayout === key }
-									onClick={ () => {
-										setAttributes( {
-											colLayout: key,
-										} );
-										setAttributes( {
-											firstColumnWidth: undefined,
-											secondColumnWidth: undefined,
-										} );
-									} }
-								>
-									{ icon }
-								</Button>
-							</Tooltip>
-						) ) }
-					</ButtonGroup>
+					{ columns > 1 && (
+						<Fragment>
+							<p className="components-base-control__label">{ __( 'Layout' ) }</p>
+							<ButtonGroup aria-label={ __( 'Column Layout' ) }>
+								{ map( layoutOptions, ( { name, key, icon } ) => (
+									<Tooltip text={ name }>
+										<Button
+											key={ key }
+											className="kt-layout-btn"
+											isSmall
+											isPrimary={ selectColLayout === key }
+											aria-pressed={ selectColLayout === key }
+											onClick={ () => {
+												setAttributes( {
+													colLayout: key,
+												} );
+												setAttributes( {
+													firstColumnWidth: undefined,
+													secondColumnWidth: undefined,
+												} );
+											} }
+										>
+											{ icon }
+										</Button>
+									</Tooltip>
+								) ) }
+							</ButtonGroup>
+						</Fragment>
+					) }
 					{ columns > 1 && (
 						<SelectControl
 							label={ __( 'Column Gutter' ) }
@@ -1620,11 +1656,24 @@ class KadenceRowLayout extends Component {
 						/>
 					</PanelBody>
 				</InspectorControls>
-				{ ( textColor || linkColor || linkHoverColor ) && (
+				{ ( textColor || linkColor || linkHoverColor || columns ) && (
 					<style>
 						{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ textColor }; }` : '' ) }
 						{ ( linkColor ? `#kt-layout-id${ uniqueID } a { color: ${ linkColor }; }` : '' ) }
 						{ ( linkHoverColor ? `#kt-layout-id${ uniqueID } a:hover { color: ${ linkHoverColor }; }` : '' ) }
+						{ columns && columns === 2 && (
+							<Fragment>
+								{ ( firstColumnWidth || temporaryColumnWidth ? `#kt-layout-id${ uniqueID } > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:nth-child(1) { flex: 0 1 ${ parseFloat( widthString ) }%; }` : '' ) }
+								{ ( secondColumnWidth || temporarySecondColumnWidth ? `#kt-layout-id${ uniqueID } > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:nth-child(2) { flex: 0 1 ${ parseFloat( secondWidthString ) }%; }` : '' ) }
+							</Fragment>
+						) }
+						{ columns && columns === 3 && (
+							<Fragment>
+								{ ( firstColumnWidth || temporaryColumnWidth ? `#kt-layout-id${ uniqueID } > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:nth-child(1) { flex: 0 1 ${ parseFloat( widthString ) }%; }` : '' ) }
+								{ ( secondColumnWidth || temporarySecondColumnWidth ? `#kt-layout-id${ uniqueID } > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:nth-child(2) { flex: 0 1 ${ parseFloat( secondWidthString ) }%; }` : '' ) }
+								{ ( secondColumnWidth || temporarySecondColumnWidth ? `#kt-layout-id${ uniqueID } > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"]:nth-child(3) { flex: 0 1 ${ parseFloat( thirdWidthString ) }%; }` : '' ) }
+							</Fragment>
+						) }
 					</style>
 				) }
 				<div className={ classes } style={ {
@@ -1765,21 +1814,69 @@ class KadenceRowLayout extends Component {
 												handleClasses={ {
 													right: 'components-resizable-box__handle components-resizable-box__handle-right',
 												} }
-												grid={ [ width / 20, 1 ] }
+												grid={ ( columnsUnlocked ? [ width / 1000, 1 ] : [ width / 20, 1 ] ) }
 												onResize={ onResize }
 												onResizeStop={ onResizeStop }
 												axis="x"
 											>
+												{ columnsUnlocked && (
+													<Tooltip text={ __( 'Switch to 5% step resizing' ) }>
+														<Button
+															className="kt-fluid-grid-btn"
+															isSmall
+															onClick={ () => setAttributes( { columnsUnlocked: false } ) }
+														>
+															{
+																<svg viewBox="0 0 20 20" width="20" height="20" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" strokeLinejoin="round" strokeMiterlimit="1.414"><path d="M4.217,10.611l0,2.7l-3.31,-3.311l3.31,-3.311l0,2.7l11.566,0l0,-2.7l3.31,3.311l-3.31,3.311l0,-2.7l-11.566,0Z" /></svg>
+															}
+														</Button>
+													</Tooltip>
+												) }
+												{ ! columnsUnlocked && (
+													<Tooltip text={ __( 'Switch to fluid resizing' ) }>
+														<Button
+															className="kt-fluid-grid-btn"
+															isSmall
+															onClick={ () => setAttributes( { columnsUnlocked: true } ) }
+														>
+															{
+																<svg viewBox="0 0 20 20" width="20" height="20" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="1.5">
+																	<path d="M13.967,10.611l0.001,-1.222l1.815,0l0,-2.7l3.31,3.311l-3.31,3.311l0,-2.7l-1.816,0Z"
+																	/>
+																	<path d="M8.918,10.611l-0.022,-1.222l2.15,0l-0.031,1.222l-2.097,0Z" />
+																	<path d="M4.217,10.611l0,2.7l-3.31,-3.311l3.31,-3.311l0,2.7l1.693,0l-0.028,1.222l-1.665,0Z"
+																	/>
+																	<circle cx="12.427" cy="9.997" r="1.419" fill="none" stroke="#0085ba" />
+																	<circle cx="7.456" cy="9.997" r="1.419" fill="none" stroke="#0085ba" />
+																</svg>
+															}
+														</Button>
+													</Tooltip>
+												) }
 												<span id={ `left-column-width-${ uniqueID }` } className="left-column-width-size column-width-size-handle" >
 													{ ( ! firstColumnWidth ? widthNumber : firstColumnWidth + '%' ) }
 												</span>
 												<span id={ `right-column-width-${ uniqueID }` } className="right-column-width-size column-width-size-handle" >
-													{ ( ! firstColumnWidth ? Math.abs( parseInt( widthNumber ) - 100 ) + '%' : Math.abs( firstColumnWidth - 100 ) + '%' ) }
+													{ ( ! firstColumnWidth ? Math.abs( parseFloat( widthNumber ) - 100 ) + '%' : ( Math.round( ( 100 - firstColumnWidth ) * 10 ) / 10 ) + '%' ) }
 												</span>
 											</ResizableBox>
 										}
 									</ContainerDimensions>
 								</div>
+							) }
+							{ colLayout && columns && 3 === columns && (
+								<ThreeColumnDrag
+									uniqueID={ uniqueID }
+									onSetState={ value => this.setState( value ) }
+									onSetAttributes={ value => setAttributes( value ) }
+									firstColumnWidth={ firstColumnWidth }
+									secondColumnWidth={ secondColumnWidth }
+									widthString={ widthString }
+									secondWidthString={ secondWidthString }
+									columnsUnlocked={ columnsUnlocked }
+									leftPadding={ leftPadding }
+									rightPadding={ rightPadding }
+								/>
 							) }
 							<InnerBlocks
 								template={ getColumnsTemplate( columns ) }

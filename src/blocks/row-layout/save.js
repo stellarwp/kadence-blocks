@@ -104,7 +104,7 @@ class KadenceRowLayoutSave extends Component {
 		}
 		const firstColumnClass = ( firstColumnWidth && ( 2 === columns || 3 === columns ) ? ' kt-custom-first-width-' + firstColumnWidth : '' );
 		const secondColumnClass = ( secondColumnWidth && ( 2 === columns || 3 === columns ) ? ' kt-custom-second-width-' + secondColumnWidth : '' );
-		const thirdColumnClass = ( secondColumnWidth && firstColumnWidth && 3 === columns ? ' kt-custom-third-width-' + ( 100 - ( firstColumnWidth + secondColumnWidth ) ) : '' );
+		const thirdColumnClass = ( secondColumnWidth && firstColumnWidth && 3 === columns ? ' kt-custom-third-width-' + ( Math.round( ( 100 - ( firstColumnWidth + secondColumnWidth ) ) * 10 ) / 10 ) : '' );
 		const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const HtmlTagOut = ( ! htmlTag ? 'div' : htmlTag );

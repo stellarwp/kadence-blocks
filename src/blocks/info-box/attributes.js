@@ -79,6 +79,8 @@ const attributes = {
 			flipAlt: '',
 			flipWidth: '',
 			flipHeight: '',
+			subtype: '',
+			flipSubtype: '',
 		} ],
 	},
 	mediaIcon: {
@@ -249,6 +251,10 @@ const attributes = {
 			hOffset: 0,
 			vOffset: 0,
 		} ],
+	},
+	showPresets: {
+		type: 'bool',
+		default: true,
 	},
 };
 export default attributes;

@@ -431,7 +431,7 @@ registerBlockType( 'kadence/rowlayout', {
 				} else if ( 'littrii' === topSep ) {
 					topSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
 				}
-				const firstColumnClass = ( firstColumnWidth && columns == 2 ? ' kt-custom-first-width-' + firstColumnWidth : '' );
+				const firstColumnClass = ( firstColumnWidth && columns === 2 ? ' kt-custom-first-width-' + firstColumnWidth : '' );
 				const layoutClass = ( ! colLayout ? 'equal' : colLayout );
 				const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 				const HtmlTagOut = ( ! htmlTag ? 'div' : htmlTag );

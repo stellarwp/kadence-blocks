@@ -3,9 +3,15 @@
  */
 
 /**
+ * Import Icons
+ */
+import editorIcons from '../../icons';
+
+/**
  * Import Icon stuff
  */
 import times from 'lodash/times';
+import map from 'lodash/map';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
@@ -40,6 +46,9 @@ const {
 	RangeControl,
 	TextControl,
 	SelectControl,
+	Button,
+	ButtonGroup,
+	Tooltip,
 } = wp.components;
 
 /**
@@ -48,6 +57,12 @@ const {
 const kticonUniqueIDs = [];
 
 class KadenceIcons extends Component {
+	constructor() {
+		super( ...arguments );
+		this.state = {
+			marginControl: 'linked',
+		};
+	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
 			this.props.setAttributes( {
@@ -78,6 +93,11 @@ class KadenceIcons extends Component {
 	}
 	render() {
 		const { attributes: { iconCount, icons, blockAlignment, textAlignment }, className, setAttributes, clientId } = this.props;
+		const { marginControl } = this.state;
+		const controlTypes = [
+			{ key: 'linked', name: __( 'Linked' ), micon: editorIcons.linked },
+			{ key: 'individual', name: __( 'Individual' ), micon: editorIcons.individual },
+		];
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
 		);
@@ -192,6 +212,88 @@ class KadenceIcons extends Component {
 							max={ 180 }
 						/>
 					) }
+					<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Margin Control Type' ) }>
+						{ map( controlTypes, ( { name, key, micon } ) => (
+							<Tooltip text={ name }>
+								<Button
+									key={ key }
+									className="kt-size-btn"
+									isSmall
+									isPrimary={ marginControl === key }
+									aria-pressed={ marginControl === key }
+									onClick={ () => this.setState( { marginControl: key } ) }
+								>
+									{ micon }
+								</Button>
+							</Tooltip>
+						) ) }
+					</ButtonGroup>
+					{ marginControl && marginControl !== 'individual' && (
+						<RangeControl
+							label={ __( 'Margin (px)' ) }
+							value={ ( icons[ index ].marginTop ? icons[ index ].marginTop : 0 ) }
+							onChange={ ( value ) => {
+								this.saveArrayUpdate( {
+									marginTop: value,
+									marginRight: value,
+									marginBottom: value,
+									marginLeft: value,
+								}, index );
+							} }
+							min={ 0 }
+							max={ 180 }
+							step={ 1 }
+						/>
+					) }
+					{ marginControl && marginControl === 'individual' && (
+						<Fragment>
+							<p>{ __( 'Margin (px)' ) }</p>
+							<RangeControl
+								className="kt-icon-rangecontrol"
+								label={ editorIcons.outlinetop }
+								value={ ( icons[ index ].marginTop ? icons[ index ].marginTop : 0 ) }
+								onChange={ value => {
+									this.saveArrayUpdate( { marginTop: value }, index );
+								} }
+								min={ 0 }
+								max={ 180 }
+								step={ 1 }
+							/>
+							<RangeControl
+								className="kt-icon-rangecontrol"
+								label={ editorIcons.outlineright }
+								value={ ( icons[ index ].marginRight ? icons[ index ].marginRight : 0 ) }
+								onChange={ value => {
+									this.saveArrayUpdate( { marginRight: value }, index );
+								} }
+								min={ 0 }
+								max={ 180 }
+								step={ 1 }
+							/>
+							<RangeControl
+								className="kt-icon-rangecontrol"
+								label={ editorIcons.outlinebottom }
+								value={ ( icons[ index ].marginBottom ? icons[ index ].marginBottom : 0 ) }
+								onChange={ value => {
+									this.saveArrayUpdate( { marginBottom: value }, index );
+								} }
+								min={ 0 }
+								max={ 180 }
+								step={ 1 }
+							/>
+							<RangeControl
+								className="kt-icon-rangecontrol"
+								label={ editorIcons.outlineleft }
+								value={ ( icons[ index ].marginLeft ? icons[ index ].marginLeft : 0 ) }
+								onChange={ value => {
+									this.saveArrayUpdate( { marginLeft: value }, index );
+								} }
+								min={ 0 }
+								max={ 180 }
+								step={ 1 }
+							/>
+						</Fragment>
+					) }
 					<p className="components-base-control__label">{ __( 'Link' ) }</p>
 					<URLInput
 						value={ icons[ index ].link }
@@ -236,6 +338,10 @@ class KadenceIcons extends Component {
 							borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? icons[ index ].border : undefined ),
 							borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
 							borderRadius: ( icons[ index ].borderRadius && icons[ index ].style !== 'default' ? icons[ index ].borderRadius + '%' : undefined ),
+							marginTop: ( icons[ index ].marginTop ? icons[ index ].marginTop + 'px' : undefined ),
+							marginRight: ( icons[ index ].marginRight ? icons[ index ].marginRight + 'px' : undefined ),
+							marginBottom: ( icons[ index ].marginBottom ? icons[ index ].marginBottom + 'px' : undefined ),
+							marginLeft: ( icons[ index ].marginLeft ? icons[ index ].marginLeft + 'px' : undefined ),
 						} } />
 					) }
 				</div>
@@ -281,6 +387,10 @@ class KadenceIcons extends Component {
 											borderWidth: newicons[ 0 ].borderWidth,
 											padding: newicons[ 0 ].padding,
 											style: newicons[ 0 ].style,
+											marginTop: ( newicons[ 0 ].marginTop ? newicons[ 0 ].marginTop : 0 ),
+											marginRight: ( newicons[ 0 ].marginRight ? newicons[ 0 ].marginRight : 0 ),
+											marginBottom: ( newicons[ 0 ].marginBottom ? newicons[ 0 ].marginBottom : 0 ),
+											marginLeft: ( newicons[ 0 ].marginLeft ? newicons[ 0 ].marginLeft : 0 ),
 										} );
 									} ); }
 									setAttributes( { icons: newicons } );
