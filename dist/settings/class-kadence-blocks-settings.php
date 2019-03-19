@@ -620,7 +620,7 @@ class Kadence_Blocks_Settings {
 						</h2>
 						<div id="kt-dashboard" class="nav-tab-content panel_open kt-admin-clearfix">
 							<div class="kad-helpful-links kt-main">
-								<h2><?php echo esc_html__( 'Settings', 'kadence-blocks' ); ?><span class="kt-main-subtitle"><?php echo esc_html__( 'Disable/Enable Blocks', 'kadence-blocks' ); ?></span></h2>
+								<h2><?php echo esc_html__( 'Blocks', 'kadence-blocks' ); ?><span class="kt-main-subtitle"><?php echo esc_html__( 'Disable/Enable Blocks', 'kadence-blocks' ); ?></span></h2>
 
 								<div class="kt-promo-row">
 									<?php

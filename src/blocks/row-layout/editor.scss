@@ -1057,14 +1057,16 @@
 // 		width: auto;
 // 	}
 // }
-// .wp-block-kadence-rowlayout .editor-block-list__layout .editor-block-list__block:not( [data-type="kadence/column"] ) {
-//     backface-visibility: hidden;
-//     z-index: 2;
-// }
+.wp-block-kadence-rowlayout .editor-block-list__layout .editor-block-list__block {
+    backface-visibility: hidden;
+}
 // .wp-block-kadence-rowlayout .editor-block-list__layout .editor-block-list__block[data-type="kadence/column"] {
 // 	backface-visibility: hidden;
 // 	z-index: 1;
 // }
 .wp-block-image img {
     backface-visibility: hidden;
+}
+.kt-row-layout-overlay, .kt-row-layout-background, .kt-row-layout-bottom-sep, .kt-row-layout-top-sep, .editor-block-list__block[data-type="kadence/rowlayout"] {
+	backface-visibility: hidden;
 }

@@ -431,9 +431,19 @@ a.kt_block_button {
     text-align: center;
     box-sizing: border-box;
 }
+@media (min-width: 1351px) {
+.kt_plugin_box:nth-child(4n+5) {
+    clear: left;
+}
+}
 @media (max-width: 1350px) {
 	.kt_plugin_box {
 	    width: 31.3%;
+	}
+}
+@media (max-width: 1350px) and (min-width: 1101px) {
+	.kt_plugin_box:nth-child(3n+4) {
+		clear: left;
 	}
 }
 @media (max-width: 1100px) {
@@ -441,9 +451,15 @@ a.kt_block_button {
 	    width: 48%;
 	}
 }
+@media (max-width: 1100px) and (max-width: 651px)  {
+	.kt_plugin_box:nth-child(2n+3) {
+		clear: left;
+	}
+}
 @media (max-width: 650px) {
 	.kt_plugin_box {
-	    width: 98%;
+		width: 98%;
+		clear:left;
 	}
 }
 .kt_plugin_box span {
