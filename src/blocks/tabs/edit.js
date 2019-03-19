@@ -103,10 +103,12 @@ class KadenceTabs extends Component {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+			kttabsUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( kttabsUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+			kttabsUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kttabsUniqueIDs.push( this.props.attributes.uniqueID );
 		}

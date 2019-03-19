@@ -38,10 +38,12 @@ class KadencePane extends Component {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+			ktpaneUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktpaneUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+			ktpaneUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktpaneUniqueIDs.push( this.props.attributes.uniqueID );
 		}

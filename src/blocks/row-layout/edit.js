@@ -47,6 +47,7 @@ const {
 	PanelBody,
 	RangeControl,
 	Toolbar,
+	ToggleControl,
 	SelectControl,
 } = wp.components;
 /**
@@ -100,16 +101,62 @@ class KadenceRowLayout extends Component {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+			ktrowUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktrowUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+			ktrowUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktrowUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const saveTabletBackground = ( value ) => {
+			const newUpdate = tabletBackground.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				tabletBackground: newUpdate,
+			} );
+		};
+		const saveTabletOverlay = ( value ) => {
+			const newUpdate = tabletOverlay.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				tabletOverlay: newUpdate,
+			} );
+		};
+		const saveMobileBackground = ( value ) => {
+			const newUpdate = mobileBackground.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				mobileBackground: newUpdate,
+			} );
+		};
+		const saveMobileOverlay = ( value ) => {
+			const newUpdate = mobileOverlay.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				mobileOverlay: newUpdate,
+			} );
+		};
 		const marginTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
@@ -366,10 +413,34 @@ class KadenceRowLayout extends Component {
 				overlayBgImg: img.url,
 			} );
 		};
+		const onRemoveMobileImage = () => {
+			saveMobileBackground( {
+				bgImgID: '',
+				bgImg: '',
+			} );
+		};
+		const onRemoveTabletImage = () => {
+			saveTabletBackground( {
+				bgImgID: '',
+				bgImg: '',
+			} );
+		};
 		const onRemoveImage = () => {
 			setAttributes( {
 				bgImgID: null,
 				bgImg: null,
+			} );
+		};
+		const onRemoveMobileOverlayImage = () => {
+			saveMobileOverlay( {
+				overlayBgImgID: '',
+				overlayBgImg: '',
+			} );
+		};
+		const onRemoveTabletOverlayImage = () => {
+			saveTabletOverlay( {
+				overlayBgImgID: '',
+				overlayBgImg: '',
 			} );
 		};
 		const onRemoveOverlayImage = () => {
@@ -379,7 +450,7 @@ class KadenceRowLayout extends Component {
 			} );
 		};
 		const mobileControls = (
-			<div>
+			<Fragment>
 				<PanelBody>
 					{ columns > 1 && (
 						<Fragment>
@@ -525,31 +596,167 @@ class KadenceRowLayout extends Component {
 						step={ marginStep }
 					/>
 				</PanelBody>
-			</div>
-		);
-		const tabletControls = (
-			<div>
-				{ columns > 1 && (
-					<Fragment>
-						<p className="components-base-control__label">{ __( 'Tablet Layout' ) }</p>
-						<ButtonGroup aria-label={ __( 'Tablet Layout' ) }>
-							{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
-								<Tooltip text={ name }>
+				<PanelBody
+					title={ __( 'Mobile Background' ) }
+					initialOpen={ false }
+				>
+					<ToggleControl
+						label={ __( 'Set custom background for Mobile?' ) }
+						checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].enable : false ) }
+						onChange={ ( value ) => saveMobileBackground( { enable: value } ) }
+					/>
+					{ mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].enable && (
+						<Fragment>
+							<p>{ __( 'Background Color' ) }</p>
+							<ColorPalette
+								value={ mobileBackground[ 0 ].bgColor }
+								onChange={ value => saveMobileBackground( { bgColor: value } ) }
+							/>
+							<MediaUpload
+								onSelect={ img => {
+									saveMobileBackground( { bgImgID: img.id, bgImg: img.url } );
+								} }
+								type="image"
+								value={ mobileBackground[ 0 ].bgImgID }
+								render={ ( { open } ) => (
 									<Button
-										key={ key }
-										className="kt-layout-btn"
-										isSmall
-										isPrimary={ tabletLayout === key }
-										aria-pressed={ tabletLayout === key }
-										onClick={ () => setAttributes( { tabletLayout: key } ) }
+										className={ 'components-button components-icon-button kt-cta-upload-btn' }
+										onClick={ open }
 									>
-										{ icon }
+										<Dashicon icon="format-image" />
+										{ __( 'Select Image' ) }
+									</Button>
+								) }
+							/>
+							{ mobileBackground[ 0 ].bgImg && (
+								<Tooltip text={ __( 'Remove Image' ) }>
+									<Button
+										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+										onClick={ onRemoveMobileImage }
+									>
+										<Dashicon icon="no-alt" />
 									</Button>
 								</Tooltip>
-							) ) }
-						</ButtonGroup>
-					</Fragment>
-				) }
+							) }
+							<SelectControl
+								label={ __( 'Background Image Size' ) }
+								value={ mobileBackground[ 0 ].bgImgSize }
+								options={ [
+									{ value: 'cover', label: __( 'Cover' ) },
+									{ value: 'contain', label: __( 'Contain' ) },
+									{ value: 'auto', label: __( 'Auto' ) },
+								] }
+								onChange={ value => saveMobileBackground( { bgImgSize: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Position' ) }
+								value={ mobileBackground[ 0 ].bgImgPosition }
+								options={ [
+									{ value: 'center top', label: __( 'Center Top' ) },
+									{ value: 'center center', label: __( 'Center Center' ) },
+									{ value: 'center bottom', label: __( 'Center Bottom' ) },
+									{ value: 'left top', label: __( 'Left Top' ) },
+									{ value: 'left center', label: __( 'Left Center' ) },
+									{ value: 'left bottom', label: __( 'Left Bottom' ) },
+									{ value: 'right top', label: __( 'Right Top' ) },
+									{ value: 'right center', label: __( 'Right Center' ) },
+									{ value: 'right bottom', label: __( 'Right Bottom' ) },
+								] }
+								onChange={ value => saveMobileBackground( { bgImgPosition: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Repeat' ) }
+								value={ mobileBackground[ 0 ].bgImgRepeat }
+								options={ [
+									{ value: 'no-repeat', label: __( 'No Repeat' ) },
+									{ value: 'repeat', label: __( 'Repeat' ) },
+									{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+									{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+								] }
+								onChange={ value => saveMobileBackground( { bgImgRepeat: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Attachment' ) }
+								value={ mobileBackground[ 0 ].bgImgAttachment }
+								options={ [
+									{ value: 'scroll', label: __( 'Scroll' ) },
+									{ value: 'fixed', label: __( 'Fixed' ) },
+									{ value: 'parallax', label: __( 'Parallax' ) },
+								] }
+								onChange={ value => saveMobileBackground( { bgImgAttachment: value } ) }
+							/>
+						</Fragment>
+					) }
+				</PanelBody>
+				<PanelBody
+					title={ __( 'Mobile Background Overlay' ) }
+					initialOpen={ false }
+				>
+					<ToggleControl
+						label={ __( 'Set custom background overlay for mobile?' ) }
+						checked={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].enable : false ) }
+						onChange={ ( value ) => saveMobileOverlay( { enable: value } ) }
+					/>
+					{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].enable && (
+						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
+							activeClass="active-tab"
+							initialTabName={ mobileOverlay[ 0 ].currentOverlayTab }
+							onSelect={ value => saveMobileOverlay( { currentOverlayTab: value } ) }
+							tabs={ [
+								{
+									name: 'normal',
+									title: __( 'Normal' ),
+									className: 'kt-over-normal',
+								},
+								{
+									name: 'grad',
+									title: __( 'Gradient' ),
+									className: 'kt-over-grad',
+								},
+							] }>
+							{
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'grad' === tab.name ) {
+											tabout = overMobileGradControls;
+										} else {
+											tabout = overMobileControls;
+										}
+									}
+									return <div>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
+					) }
+				</PanelBody>
+			</Fragment>
+		);
+		const tabletControls = (
+			<Fragment>
+				<PanelBody>
+					{ columns > 1 && (
+						<Fragment>
+							<p className="components-base-control__label">{ __( 'Tablet Layout' ) }</p>
+							<ButtonGroup aria-label={ __( 'Tablet Layout' ) }>
+								{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
+									<Tooltip text={ name }>
+										<Button
+											key={ key }
+											className="kt-layout-btn"
+											isSmall
+											isPrimary={ tabletLayout === key }
+											aria-pressed={ tabletLayout === key }
+											onClick={ () => setAttributes( { tabletLayout: key } ) }
+										>
+											{ icon }
+										</Button>
+									</Tooltip>
+								) ) }
+							</ButtonGroup>
+						</Fragment>
+					) }
+				</PanelBody>
 				<PanelBody
 					title={ __( 'Tablet Padding/Margin' ) }
 					initialOpen={ false }
@@ -604,11 +811,142 @@ class KadenceRowLayout extends Component {
 						step={ marginStep }
 					/>
 				</PanelBody>
-			</div>
+				<PanelBody
+					title={ __( 'Tablet Background' ) }
+					initialOpen={ false }
+				>
+					<ToggleControl
+						label={ __( 'Set custom background for tablets?' ) }
+						checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].enable : false ) }
+						onChange={ ( value ) => saveTabletBackground( { enable: value } ) }
+					/>
+					{ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].enable && (
+						<Fragment>
+							<p>{ __( 'Background Color' ) }</p>
+							<ColorPalette
+								value={ tabletBackground[ 0 ].bgColor }
+								onChange={ value => saveTabletBackground( { bgColor: value } ) }
+							/>
+							<MediaUpload
+								onSelect={ value => saveTabletBackground( { bgImgID: value.id, bgImg: value.url } ) }
+								type="image"
+								value={ tabletBackground[ 0 ].bgImgID }
+								render={ ( { open } ) => (
+									<Button
+										className={ 'components-button components-icon-button kt-cta-upload-btn' }
+										onClick={ open }
+									>
+										<Dashicon icon="format-image" />
+										{ __( 'Select Image' ) }
+									</Button>
+								) }
+							/>
+							{ tabletBackground[ 0 ].bgImg && (
+								<Tooltip text={ __( 'Remove Image' ) }>
+									<Button
+										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+										onClick={ onRemoveTabletImage }
+									>
+										<Dashicon icon="no-alt" />
+									</Button>
+								</Tooltip>
+							) }
+							<SelectControl
+								label={ __( 'Background Image Size' ) }
+								value={ tabletBackground[ 0 ].bgImgSize }
+								options={ [
+									{ value: 'cover', label: __( 'Cover' ) },
+									{ value: 'contain', label: __( 'Contain' ) },
+									{ value: 'auto', label: __( 'Auto' ) },
+								] }
+								onChange={ value => saveTabletBackground( { bgImgSize: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Position' ) }
+								value={ tabletBackground[ 0 ].bgImgPosition }
+								options={ [
+									{ value: 'center top', label: __( 'Center Top' ) },
+									{ value: 'center center', label: __( 'Center Center' ) },
+									{ value: 'center bottom', label: __( 'Center Bottom' ) },
+									{ value: 'left top', label: __( 'Left Top' ) },
+									{ value: 'left center', label: __( 'Left Center' ) },
+									{ value: 'left bottom', label: __( 'Left Bottom' ) },
+									{ value: 'right top', label: __( 'Right Top' ) },
+									{ value: 'right center', label: __( 'Right Center' ) },
+									{ value: 'right bottom', label: __( 'Right Bottom' ) },
+								] }
+								onChange={ value => saveTabletBackground( { bgImgPosition: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Repeat' ) }
+								value={ tabletBackground[ 0 ].bgImgRepeat }
+								options={ [
+									{ value: 'no-repeat', label: __( 'No Repeat' ) },
+									{ value: 'repeat', label: __( 'Repeat' ) },
+									{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+									{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+								] }
+								onChange={ value => saveTabletBackground( { bgImgRepeat: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Attachment' ) }
+								value={ tabletBackground[ 0 ].bgImgAttachment }
+								options={ [
+									{ value: 'scroll', label: __( 'Scroll' ) },
+									{ value: 'fixed', label: __( 'Fixed' ) },
+									{ value: 'parallax', label: __( 'Parallax' ) },
+								] }
+								onChange={ value => saveTabletBackground( { bgImgAttachment: value } ) }
+							/>
+						</Fragment>
+					) }
+				</PanelBody>
+				<PanelBody
+					title={ __( 'Tablet Background Overlay' ) }
+					initialOpen={ false }
+				>
+					<ToggleControl
+						label={ __( 'Set custom background overlay for tablets?' ) }
+						checked={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].enable : false ) }
+						onChange={ ( value ) => saveTabletOverlay( { enable: value } ) }
+					/>
+					{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].enable && (
+						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
+							activeClass="active-tab"
+							initialTabName={ tabletOverlay[ 0 ].currentOverlayTab }
+							onSelect={ value => saveTabletOverlay( { currentOverlayTab: value } ) }
+							tabs={ [
+								{
+									name: 'normal',
+									title: __( 'Normal' ),
+									className: 'kt-over-normal',
+								},
+								{
+									name: 'grad',
+									title: __( 'Gradient' ),
+									className: 'kt-over-grad',
+								},
+							] }>
+							{
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'grad' === tab.name ) {
+											tabout = overTabGradControls;
+										} else {
+											tabout = overTabControls;
+										}
+									}
+									return <div>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
+					) }
+				</PanelBody>
+			</Fragment>
 		);
-
 		const deskControls = (
-			<div>
+			<Fragment>
 				<PanelBody>
 					<RangeControl
 						label={ __( 'Columns' ) }
@@ -767,10 +1105,126 @@ class KadenceRowLayout extends Component {
 						step={ marginStep }
 					/>
 				</PanelBody>
-			</div>
+				<PanelBody
+					title={ __( 'Background Settings' ) }
+					initialOpen={ false }
+				>
+					<p>{ __( 'Background Color' ) }</p>
+					<ColorPalette
+						value={ bgColor }
+						onChange={ value => setAttributes( { bgColor: value } ) }
+					/>
+					<MediaUpload
+						onSelect={ onSelectImage }
+						type="image"
+						value={ bgImgID }
+						render={ ( { open } ) => (
+							<Button
+								className={ 'components-button components-icon-button kt-cta-upload-btn' }
+								onClick={ open }
+							>
+								<Dashicon icon="format-image" />
+								{ __( 'Select Image' ) }
+							</Button>
+						) }
+					/>
+					{ bgImg && (
+						<Tooltip text={ __( 'Remove Image' ) }>
+							<Button
+								className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+								onClick={ onRemoveImage }
+							>
+								<Dashicon icon="no-alt" />
+							</Button>
+						</Tooltip>
+					) }
+					<SelectControl
+						label={ __( 'Background Image Size' ) }
+						value={ bgImgSize }
+						options={ [
+							{ value: 'cover', label: __( 'Cover' ) },
+							{ value: 'contain', label: __( 'Contain' ) },
+							{ value: 'auto', label: __( 'Auto' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgSize: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Background Image Position' ) }
+						value={ bgImgPosition }
+						options={ [
+							{ value: 'center top', label: __( 'Center Top' ) },
+							{ value: 'center center', label: __( 'Center Center' ) },
+							{ value: 'center bottom', label: __( 'Center Bottom' ) },
+							{ value: 'left top', label: __( 'Left Top' ) },
+							{ value: 'left center', label: __( 'Left Center' ) },
+							{ value: 'left bottom', label: __( 'Left Bottom' ) },
+							{ value: 'right top', label: __( 'Right Top' ) },
+							{ value: 'right center', label: __( 'Right Center' ) },
+							{ value: 'right bottom', label: __( 'Right Bottom' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgPosition: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Background Image Repeat' ) }
+						value={ bgImgRepeat }
+						options={ [
+							{ value: 'no-repeat', label: __( 'No Repeat' ) },
+							{ value: 'repeat', label: __( 'Repeat' ) },
+							{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+							{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgRepeat: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Background Image Attachment' ) }
+						value={ bgImgAttachment }
+						options={ [
+							{ value: 'scroll', label: __( 'Scroll' ) },
+							{ value: 'fixed', label: __( 'Fixed' ) },
+							{ value: 'parallax', label: __( 'Parallax' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgAttachment: value } ) }
+					/>
+				</PanelBody>
+				<PanelBody
+					title={ __( 'Background Overlay Settings' ) }
+					initialOpen={ false }
+				>
+					<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
+						activeClass="active-tab"
+						initialTabName={ currentOverlayTab }
+						onSelect={ onOverlayTabSelect }
+						tabs={ [
+							{
+								name: 'normal',
+								title: __( 'Normal' ),
+								className: 'kt-over-normal',
+							},
+							{
+								name: 'grad',
+								title: __( 'Gradient' ),
+								className: 'kt-over-grad',
+							},
+						] }>
+						{
+							( tab ) => {
+								let tabout;
+								if ( tab.name ) {
+									if ( 'grad' === tab.name ) {
+										tabout = overGradControls;
+									} else {
+										tabout = overControls;
+									}
+								}
+								return <div>{ tabout }</div>;
+							}
+						}
+					</TabPanel>
+				</PanelBody>
+			</Fragment>
 		);
 		const overControls = (
-			<div>
+			<Fragment>
 				<RangeControl
 					label={ __( 'Overlay Opacity' ) }
 					value={ overlayOpacity }
@@ -881,7 +1335,7 @@ class KadenceRowLayout extends Component {
 					onChange={ value => setAttributes( { overlayBlendMode: value } ) }
 				/>
 				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
-			</div>
+			</Fragment>
 		);
 		const overGradControls = (
 			<div>
@@ -993,42 +1447,453 @@ class KadenceRowLayout extends Component {
 				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
 			</div>
 		);
-		const overlayControls = (
-			<PanelBody
-				title={ __( 'Background Overlay Settings' ) }
-				initialOpen={ false }
-			>
-				<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-					activeClass="active-tab"
-					initialTabName={ currentOverlayTab }
-					onSelect={ onOverlayTabSelect }
-					tabs={ [
-						{
-							name: 'normal',
-							title: __( 'Normal' ),
-							className: 'kt-over-normal',
-						},
-						{
-							name: 'grad',
-							title: __( 'Gradient' ),
-							className: 'kt-over-grad',
-						},
-					] }>
-					{
-						( tab ) => {
-							let tabout;
-							if ( tab.name ) {
-								if ( 'grad' === tab.name ) {
-									tabout = overGradControls;
-								} else {
-									tabout = overControls;
-								}
-							}
-							return <div>{ tabout }</div>;
-						}
-					}
-				</TabPanel>
-			</PanelBody>
+		const overTabControls = (
+			<div>
+				<RangeControl
+					label={ __( 'Overlay Opacity' ) }
+					value={ tabletOverlay[ 0 ].overlayOpacity }
+					onChange={ ( value ) => {
+						saveTabletOverlay( {
+							overlayOpacity: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 100 }
+				/>
+				<p>{ __( 'Overlay Color' ) }</p>
+				<ColorPalette
+					value={ tabletOverlay[ 0 ].overlay }
+					onChange={ value => saveTabletOverlay( { overlay: value } ) }
+				/>
+				<MediaUpload
+					onSelect={ value => saveTabletOverlay( { overlayBgImg: value.url, overlayBgImgID: value.id } ) }
+					type="image"
+					value={ tabletOverlay[ 0 ].overlayBgImgID }
+					render={ ( { open } ) => (
+						<Button
+							className={ 'components-button components-icon-button kt-cta-upload-btn' }
+							onClick={ open }
+						>
+							<Dashicon icon="format-image" />
+							{ __( 'Select Image' ) }
+						</Button>
+					) }
+				/>
+				{ tabletOverlay[ 0 ].overlayBgImg && (
+					<Tooltip text={ __( 'Remove Image' ) }>
+						<Button
+							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+							onClick={ onRemoveTabletOverlayImage }
+						>
+							<Dashicon icon="no-alt" />
+						</Button>
+					</Tooltip>
+				) }
+				<SelectControl
+					label={ __( 'Background Image Size' ) }
+					value={ tabletOverlay[ 0 ].overlayBgImgSize }
+					options={ [
+						{ value: 'cover', label: __( 'Cover' ) },
+						{ value: 'contain', label: __( 'Contain' ) },
+						{ value: 'auto', label: __( 'Auto' ) },
+					] }
+					onChange={ value => saveTabletOverlay( { overlayBgImgSize: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Background Image Position' ) }
+					value={ tabletOverlay[ 0 ].overlayBgImgPosition }
+					options={ [
+						{ value: 'center top', label: __( 'Center Top' ) },
+						{ value: 'center center', label: __( 'Center Center' ) },
+						{ value: 'center bottom', label: __( 'Center Bottom' ) },
+						{ value: 'left top', label: __( 'Left Top' ) },
+						{ value: 'left center', label: __( 'Left Center' ) },
+						{ value: 'left bottom', label: __( 'Left Bottom' ) },
+						{ value: 'right top', label: __( 'Right Top' ) },
+						{ value: 'right center', label: __( 'Right Center' ) },
+						{ value: 'right bottom', label: __( 'Right Bottom' ) },
+					] }
+					onChange={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Background Image Repeat' ) }
+					value={ tabletOverlay[ 0 ].overlayBgImgRepeat }
+					options={ [
+						{ value: 'no-repeat', label: __( 'No Repeat' ) },
+						{ value: 'repeat', label: __( 'Repeat' ) },
+						{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+						{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+					] }
+					onChange={ value => saveTabletOverlay( { overlayBgImgRepeat: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Background Image Attachment' ) }
+					value={ tabletOverlay[ 0 ].overlayBgImgAttachment }
+					options={ [
+						{ value: 'scroll', label: __( 'Scroll' ) },
+						{ value: 'fixed', label: __( 'Fixed' ) },
+						{ value: 'parallax', label: __( 'Parallax' ) },
+					] }
+					onChange={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Blend Mode' ) }
+					value={ tabletOverlay[ 0 ].overlayBlendMode }
+					options={ [
+						{ value: 'normal', label: __( 'Normal' ) },
+						{ value: 'multiply', label: __( 'Multiply' ) },
+						{ value: 'screen', label: __( 'Screen' ) },
+						{ value: 'overlay', label: __( 'Overlay' ) },
+						{ value: 'darken', label: __( 'Darken' ) },
+						{ value: 'lighten', label: __( 'Lighten' ) },
+						{ value: 'color-dodge', label: __( 'Color Dodge' ) },
+						{ value: 'color-burn', label: __( 'Color Burn' ) },
+						{ value: 'difference', label: __( 'Difference' ) },
+						{ value: 'exclusion', label: __( 'Exclusion' ) },
+						{ value: 'hue', label: __( 'Hue' ) },
+						{ value: 'saturation', label: __( 'Saturation' ) },
+						{ value: 'color', label: __( 'Color' ) },
+						{ value: 'luminosity', label: __( 'Luminosity' ) },
+
+					] }
+					onChange={ value => saveTabletOverlay( { overlayBlendMode: value } ) }
+				/>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
+			</div>
+		);
+		const overTabGradControls = (
+			<div>
+				<RangeControl
+					label={ __( 'Overlay Opacity' ) }
+					value={ tabletOverlay[ 0 ].overlayOpacity }
+					onChange={ ( value ) => {
+						saveTabletOverlay( {
+							overlayOpacity: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 100 }
+				/>
+				<p>{ __( 'Color' ) }</p>
+				<ColorPalette
+					value={ tabletOverlay[ 0 ].overlay }
+					onChange={ value => saveTabletOverlay( { overlay: value } ) }
+				/>
+				<RangeControl
+					label={ __( 'Location' ) }
+					value={ tabletOverlay[ 0 ].overlayGradLoc }
+					onChange={ ( value ) => {
+						saveTabletOverlay( {
+							overlayGradLoc: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 100 }
+				/>
+				<p>{ __( 'Second Color' ) }</p>
+				<ColorPalette
+					value={ tabletOverlay[ 0 ].overlaySecond }
+					onChange={ value => saveTabletOverlay( { overlaySecond: value } ) }
+				/>
+				<RangeControl
+					label={ __( 'Location' ) }
+					value={ tabletOverlay[ 0 ].overlayGradLocSecond }
+					onChange={ ( value ) => {
+						saveTabletOverlay( {
+							overlayGradLocSecond: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 100 }
+				/>
+				<SelectControl
+					label={ __( 'Gradient Type' ) }
+					value={ tabletOverlay[ 0 ].overlayGradType }
+					options={ [
+						{ value: 'linear', label: __( 'Linear' ) },
+						{ value: 'radial', label: __( 'Radial' ) },
+					] }
+					onChange={ value => saveTabletOverlay( { overlayGradType: value } ) }
+				/>
+				{ tabletOverlay[ 0 ].overlayGradType && 'linear' === tabletOverlay[ 0 ].overlayGradType && (
+					<RangeControl
+						label={ __( 'Gradient Angle' ) }
+						value={ tabletOverlay[ 0 ].overlayGradAngle }
+						onChange={ ( value ) => {
+							saveTabletOverlay( {
+								overlayGradAngle: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 360 }
+					/>
+				) }
+				{ tabletOverlay[ 0 ].overlayGradType && 'radial' === tabletOverlay[ 0 ].overlayGradType && (
+					<SelectControl
+						label={ __( 'Gradient Position' ) }
+						value={ tabletOverlay[ 0 ].overlayBgImgPosition }
+						options={ [
+							{ value: 'center top', label: __( 'Center Top' ) },
+							{ value: 'center center', label: __( 'Center Center' ) },
+							{ value: 'center bottom', label: __( 'Center Bottom' ) },
+							{ value: 'left top', label: __( 'Left Top' ) },
+							{ value: 'left center', label: __( 'Left Center' ) },
+							{ value: 'left bottom', label: __( 'Left Bottom' ) },
+							{ value: 'right top', label: __( 'Right Top' ) },
+							{ value: 'right center', label: __( 'Right Center' ) },
+							{ value: 'right bottom', label: __( 'Right Bottom' ) },
+						] }
+						onChange={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
+					/>
+				) }
+				<SelectControl
+					label={ __( 'Blend Mode' ) }
+					value={ tabletOverlay[ 0 ].overlayBlendMode }
+					options={ [
+						{ value: 'normal', label: __( 'Normal' ) },
+						{ value: 'multiply', label: __( 'Multiply' ) },
+						{ value: 'screen', label: __( 'Screen' ) },
+						{ value: 'overlay', label: __( 'Overlay' ) },
+						{ value: 'darken', label: __( 'Darken' ) },
+						{ value: 'lighten', label: __( 'Lighten' ) },
+						{ value: 'color-dodge', label: __( 'Color Dodge' ) },
+						{ value: 'color-burn', label: __( 'Color Burn' ) },
+						{ value: 'difference', label: __( 'Difference' ) },
+						{ value: 'exclusion', label: __( 'Exclusion' ) },
+						{ value: 'hue', label: __( 'Hue' ) },
+						{ value: 'saturation', label: __( 'Saturation' ) },
+						{ value: 'color', label: __( 'Color' ) },
+						{ value: 'luminosity', label: __( 'Luminosity' ) },
+
+					] }
+					onChange={ value => saveTabletOverlay( { overlayBlendMode: value } ) }
+				/>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
+			</div>
+		);
+		const overMobileControls = (
+			<div>
+				<RangeControl
+					label={ __( 'Overlay Opacity' ) }
+					value={ mobileOverlay[ 0 ].overlayOpacity }
+					onChange={ ( value ) => {
+						saveMobileOverlay( {
+							overlayOpacity: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 100 }
+				/>
+				<p>{ __( 'Overlay Color' ) }</p>
+				<ColorPalette
+					value={ mobileOverlay[ 0 ].overlay }
+					onChange={ value => saveMobileOverlay( { overlay: value } ) }
+				/>
+				<MediaUpload
+					onSelect={ value => saveMobileOverlay( { overlayBgImg: value.url, overlayBgImgID: value.id } ) }
+					type="image"
+					value={ mobileOverlay[ 0 ].overlayBgImgID }
+					render={ ( { open } ) => (
+						<Button
+							className={ 'components-button components-icon-button kt-cta-upload-btn' }
+							onClick={ open }
+						>
+							<Dashicon icon="format-image" />
+							{ __( 'Select Image' ) }
+						</Button>
+					) }
+				/>
+				{ mobileOverlay[ 0 ].overlayBgImg && (
+					<Tooltip text={ __( 'Remove Image' ) }>
+						<Button
+							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+							onClick={ onRemoveMobileOverlayImage }
+						>
+							<Dashicon icon="no-alt" />
+						</Button>
+					</Tooltip>
+				) }
+				<SelectControl
+					label={ __( 'Background Image Size' ) }
+					value={ mobileOverlay[ 0 ].overlayBgImgSize }
+					options={ [
+						{ value: 'cover', label: __( 'Cover' ) },
+						{ value: 'contain', label: __( 'Contain' ) },
+						{ value: 'auto', label: __( 'Auto' ) },
+					] }
+					onChange={ value => saveMobileOverlay( { overlayBgImgSize: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Background Image Position' ) }
+					value={ mobileOverlay[ 0 ].overlayBgImgPosition }
+					options={ [
+						{ value: 'center top', label: __( 'Center Top' ) },
+						{ value: 'center center', label: __( 'Center Center' ) },
+						{ value: 'center bottom', label: __( 'Center Bottom' ) },
+						{ value: 'left top', label: __( 'Left Top' ) },
+						{ value: 'left center', label: __( 'Left Center' ) },
+						{ value: 'left bottom', label: __( 'Left Bottom' ) },
+						{ value: 'right top', label: __( 'Right Top' ) },
+						{ value: 'right center', label: __( 'Right Center' ) },
+						{ value: 'right bottom', label: __( 'Right Bottom' ) },
+					] }
+					onChange={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Background Image Repeat' ) }
+					value={ mobileOverlay[ 0 ].overlayBgImgRepeat }
+					options={ [
+						{ value: 'no-repeat', label: __( 'No Repeat' ) },
+						{ value: 'repeat', label: __( 'Repeat' ) },
+						{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+						{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+					] }
+					onChange={ value => saveMobileOverlay( { overlayBgImgRepeat: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Background Image Attachment' ) }
+					value={ mobileOverlay[ 0 ].overlayBgImgAttachment }
+					options={ [
+						{ value: 'scroll', label: __( 'Scroll' ) },
+						{ value: 'fixed', label: __( 'Fixed' ) },
+						{ value: 'parallax', label: __( 'Parallax' ) },
+					] }
+					onChange={ value => saveMobileOverlay( { overlayBgImgAttachment: value } ) }
+				/>
+				<SelectControl
+					label={ __( 'Blend Mode' ) }
+					value={ mobileOverlay[ 0 ].overlayBlendMode }
+					options={ [
+						{ value: 'normal', label: __( 'Normal' ) },
+						{ value: 'multiply', label: __( 'Multiply' ) },
+						{ value: 'screen', label: __( 'Screen' ) },
+						{ value: 'overlay', label: __( 'Overlay' ) },
+						{ value: 'darken', label: __( 'Darken' ) },
+						{ value: 'lighten', label: __( 'Lighten' ) },
+						{ value: 'color-dodge', label: __( 'Color Dodge' ) },
+						{ value: 'color-burn', label: __( 'Color Burn' ) },
+						{ value: 'difference', label: __( 'Difference' ) },
+						{ value: 'exclusion', label: __( 'Exclusion' ) },
+						{ value: 'hue', label: __( 'Hue' ) },
+						{ value: 'saturation', label: __( 'Saturation' ) },
+						{ value: 'color', label: __( 'Color' ) },
+						{ value: 'luminosity', label: __( 'Luminosity' ) },
+
+					] }
+					onChange={ value => saveMobileOverlay( { overlayBlendMode: value } ) }
+				/>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
+			</div>
+		);
+		const overMobileGradControls = (
+			<div>
+				<RangeControl
+					label={ __( 'Overlay Opacity' ) }
+					value={ mobileOverlay[ 0 ].overlayOpacity }
+					onChange={ ( value ) => {
+						saveMobileOverlay( {
+							overlayOpacity: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 100 }
+				/>
+				<p>{ __( 'Color' ) }</p>
+				<ColorPalette
+					value={ mobileOverlay[ 0 ].overlay }
+					onChange={ value => saveMobileOverlay( { overlay: value } ) }
+				/>
+				<RangeControl
+					label={ __( 'Location' ) }
+					value={ mobileOverlay[ 0 ].overlayGradLoc }
+					onChange={ ( value ) => {
+						saveMobileOverlay( {
+							overlayGradLoc: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 100 }
+				/>
+				<p>{ __( 'Second Color' ) }</p>
+				<ColorPalette
+					value={ mobileOverlay[ 0 ].overlaySecond }
+					onChange={ value => saveMobileOverlay( { overlaySecond: value } ) }
+				/>
+				<RangeControl
+					label={ __( 'Location' ) }
+					value={ mobileOverlay[ 0 ].overlayGradLocSecond }
+					onChange={ ( value ) => {
+						saveMobileOverlay( {
+							overlayGradLocSecond: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 100 }
+				/>
+				<SelectControl
+					label={ __( 'Gradient Type' ) }
+					value={ mobileOverlay[ 0 ].overlayGradType }
+					options={ [
+						{ value: 'linear', label: __( 'Linear' ) },
+						{ value: 'radial', label: __( 'Radial' ) },
+					] }
+					onChange={ value => saveMobileOverlay( { overlayGradType: value } ) }
+				/>
+				{ mobileOverlay[ 0 ].overlayGradType && 'linear' === mobileOverlay[ 0 ].overlayGradType && (
+					<RangeControl
+						label={ __( 'Gradient Angle' ) }
+						value={ mobileOverlay[ 0 ].overlayGradAngle }
+						onChange={ ( value ) => {
+							saveMobileOverlay( {
+								overlayGradAngle: value,
+							} );
+						} }
+						min={ 0 }
+						max={ 360 }
+					/>
+				) }
+				{ mobileOverlay[ 0 ].overlayGradType && 'radial' === mobileOverlay[ 0 ].overlayGradType && (
+					<SelectControl
+						label={ __( 'Gradient Position' ) }
+						value={ mobileOverlay[ 0 ].overlayBgImgPosition }
+						options={ [
+							{ value: 'center top', label: __( 'Center Top' ) },
+							{ value: 'center center', label: __( 'Center Center' ) },
+							{ value: 'center bottom', label: __( 'Center Bottom' ) },
+							{ value: 'left top', label: __( 'Left Top' ) },
+							{ value: 'left center', label: __( 'Left Center' ) },
+							{ value: 'left bottom', label: __( 'Left Bottom' ) },
+							{ value: 'right top', label: __( 'Right Top' ) },
+							{ value: 'right center', label: __( 'Right Center' ) },
+							{ value: 'right bottom', label: __( 'Right Bottom' ) },
+						] }
+						onChange={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
+					/>
+				) }
+				<SelectControl
+					label={ __( 'Blend Mode' ) }
+					value={ mobileOverlay[ 0 ].overlayBlendMode }
+					options={ [
+						{ value: 'normal', label: __( 'Normal' ) },
+						{ value: 'multiply', label: __( 'Multiply' ) },
+						{ value: 'screen', label: __( 'Screen' ) },
+						{ value: 'overlay', label: __( 'Overlay' ) },
+						{ value: 'darken', label: __( 'Darken' ) },
+						{ value: 'lighten', label: __( 'Lighten' ) },
+						{ value: 'color-dodge', label: __( 'Color Dodge' ) },
+						{ value: 'color-burn', label: __( 'Color Burn' ) },
+						{ value: 'difference', label: __( 'Difference' ) },
+						{ value: 'exclusion', label: __( 'Exclusion' ) },
+						{ value: 'hue', label: __( 'Hue' ) },
+						{ value: 'saturation', label: __( 'Saturation' ) },
+						{ value: 'color', label: __( 'Color' ) },
+						{ value: 'luminosity', label: __( 'Luminosity' ) },
+
+					] }
+					onChange={ value => saveMobileOverlay( { overlayBlendMode: value } ) }
+				/>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
+			</div>
 		);
 		const colorControls = (
 			<PanelBody
@@ -1049,89 +1914,6 @@ class KadenceRowLayout extends Component {
 				<ColorPalette
 					value={ linkHoverColor }
 					onChange={ value => setAttributes( { linkHoverColor: value } ) }
-				/>
-			</PanelBody>
-		);
-		const backgroundControls = (
-			<PanelBody
-				title={ __( 'Background Settings' ) }
-				initialOpen={ false }
-			>
-				<p>{ __( 'Background Color' ) }</p>
-				<ColorPalette
-					value={ bgColor }
-					onChange={ value => setAttributes( { bgColor: value } ) }
-				/>
-				<MediaUpload
-					onSelect={ onSelectImage }
-					type="image"
-					value={ bgImgID }
-					render={ ( { open } ) => (
-						<Button
-							className={ 'components-button components-icon-button kt-cta-upload-btn' }
-							onClick={ open }
-						>
-							<Dashicon icon="format-image" />
-							{ __( 'Select Image' ) }
-						</Button>
-					) }
-				/>
-				{ bgImg && (
-					<Tooltip text={ __( 'Remove Image' ) }>
-						<Button
-							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-							onClick={ onRemoveImage }
-						>
-							<Dashicon icon="no-alt" />
-						</Button>
-					</Tooltip>
-				) }
-				<SelectControl
-					label={ __( 'Background Image Size' ) }
-					value={ bgImgSize }
-					options={ [
-						{ value: 'cover', label: __( 'Cover' ) },
-						{ value: 'contain', label: __( 'Contain' ) },
-						{ value: 'auto', label: __( 'Auto' ) },
-					] }
-					onChange={ value => setAttributes( { bgImgSize: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Position' ) }
-					value={ bgImgPosition }
-					options={ [
-						{ value: 'center top', label: __( 'Center Top' ) },
-						{ value: 'center center', label: __( 'Center Center' ) },
-						{ value: 'center bottom', label: __( 'Center Bottom' ) },
-						{ value: 'left top', label: __( 'Left Top' ) },
-						{ value: 'left center', label: __( 'Left Center' ) },
-						{ value: 'left bottom', label: __( 'Left Bottom' ) },
-						{ value: 'right top', label: __( 'Right Top' ) },
-						{ value: 'right center', label: __( 'Right Center' ) },
-						{ value: 'right bottom', label: __( 'Right Bottom' ) },
-					] }
-					onChange={ value => setAttributes( { bgImgPosition: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Repeat' ) }
-					value={ bgImgRepeat }
-					options={ [
-						{ value: 'no-repeat', label: __( 'No Repeat' ) },
-						{ value: 'repeat', label: __( 'Repeat' ) },
-						{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-						{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-					] }
-					onChange={ value => setAttributes( { bgImgRepeat: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Attachment' ) }
-					value={ bgImgAttachment }
-					options={ [
-						{ value: 'scroll', label: __( 'Scroll' ) },
-						{ value: 'fixed', label: __( 'Fixed' ) },
-						{ value: 'parallax', label: __( 'Parallax' ) },
-					] }
-					onChange={ value => setAttributes( { bgImgAttachment: value } ) }
 				/>
 			</PanelBody>
 		);
@@ -1550,8 +2332,7 @@ class KadenceRowLayout extends Component {
 				</BlockControls>
 				<InspectorControls>
 					{ tabControls }
-					{ backgroundControls }
-					{ overlayControls }
+					<div className="kt-sidebar-settings-spacer"></div>
 					<PanelBody
 						title={ __( 'Dividers' ) }
 						initialOpen={ false }

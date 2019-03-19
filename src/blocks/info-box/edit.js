@@ -91,10 +91,12 @@ class KadenceInfoBox extends Component {
 			if ( this.props.attributes.showPresets ) {
 				this.setState( { showPreset: true } );
 			}
+			ktinfoboxUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktinfoboxUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
+			ktinfoboxUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktinfoboxUniqueIDs.push( this.props.attributes.uniqueID );
 		}

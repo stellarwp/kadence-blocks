@@ -2062,7 +2062,9 @@ class Kadence_Blocks_Frontend {
 				}
 			$css .= '}';
 		}
-		if ( isset( $attr['tabletPadding'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) ) {
+		$tablet_overlay = ( isset( $attr['tabletOverlay'] ) && is_array( $attr['tabletOverlay'] ) && isset( $attr['tabletOverlay'][0] ) && is_array( $attr['tabletOverlay'][0] ) ? $attr['tabletOverlay'][0] : array() );
+		$tablet_background = ( isset( $attr['tabletBackground'] ) && is_array( $attr['tabletBackground'] ) && isset( $attr['tabletBackground'][0] ) && is_array( $attr['tabletBackground'][0] ) ? $attr['tabletBackground'][0] : array() );
+		if ( isset( $attr['tabletPadding'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) || ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) ) {
 			$css .= '@media (min-width: 768px) and (max-width: 992px) {';
 			if ( isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) ) {
 				$css .= '#kt-layout-id' . $unique_id . ' {';
@@ -2079,9 +2081,83 @@ class Kadence_Blocks_Frontend {
 				$css .= 'padding:' . $attr['tabletPadding'][ 0 ] . 'px ' . $attr['tabletPadding'][ 1 ] . 'px ' . $attr['tabletPadding'][ 2 ] . 'px ' . $attr['tabletPadding'][ 3 ] . 'px;';
 				$css .= '}';
 			}
+			if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) {
+				$css .= '#kt-layout-id' . $unique_id . ' {';
+					if ( ! empty( $tablet_background['bgColor'] ) ) {
+						$css .= 'background-color:' . $tablet_background['bgColor'] . ';';
+					}
+					if ( ! empty( $tablet_background['bgImg'] ) ) {
+						if ( ! empty( $tablet_background['bgImgAttachment'] ) ) {
+							if ( 'parallax' === $tablet_background['bgImgAttachment'] ) {
+								$bg_attach = 'fixed';
+							} else {
+								$bg_attach = $tablet_background['bgImgAttachment'];
+							}
+						} else {
+							$bg_attach = 'scroll';
+						}
+						$css .= 'background-image:url(' . $tablet_background['bgImg'] . ');';
+						$css .= 'background-size:' . ( ! empty( $tablet_background['bgImgSize'] ) ? $tablet_background['bgImgSize'] : 'cover' ) . ';';
+						$css .= 'background-position:' . ( ! empty( $tablet_background['bgImgPosition'] ) ? $tablet_background['bgImgPosition'] : 'center center' ) . ';';
+						$css .= 'background-attachment:' . $bg_attach . ';';
+						$css .= 'background-repeat:' . ( ! empty( $tablet_background['bgImgRepeat'] ) ? $tablet_background['bgImgRepeat'] : 'no-repeat' ) . ';';
+					}
+				$css .= '}';
+			}
+			if ( ! empty( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) {
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay {';
+					if ( ! empty( $tablet_overlay['overlayOpacity'] ) ) {
+						if ( $tablet_overlay['overlayOpacity'] < 10 ) {
+							$css .= 'opacity:0.0' . $tablet_overlay['overlayOpacity'] . ';';
+						} else if ( $tablet_overlay['overlayOpacity'] >= 100 ) {
+							$css .= 'opacity:1;';
+						} else {
+							$css .= 'opacity:0.' . $tablet_overlay['overlayOpacity'] . ';';
+						}
+					}
+					if ( ! empty( $tablet_overlay['currentOverlayTab'] ) && 'grad' == $tablet_overlay['currentOverlayTab'] ) {
+						$type = ( ! empty( $tablet_overlay['overlayGradType'] ) ? $tablet_overlay['overlayGradType'] : 'linear');
+						if ( 'radial' === $type ) {
+							$angle = ( ! empty( $tablet_overlay['overlayBgImgPosition'] ) ? 'at ' . $tablet_overlay['overlayBgImgPosition'] : 'at center center' );
+						} else {
+							$angle = ( ! empty( $tablet_overlay['overlayGradAngle'] ) ? $tablet_overlay['overlayGradAngle'] . 'deg' : '180deg');
+						}
+						$loc = ( ! empty( $tablet_overlay['overlayGradLoc'] ) ? $tablet_overlay['overlayGradLoc'] : '0');
+						$color = ( ! empty( $tablet_overlay['overlay'] ) ? $tablet_overlay['overlay'] : 'transparent');
+						$locsecond = ( ! empty( $tablet_overlay['overlayGradLocSecond'] ) ? $tablet_overlay['overlayGradLocSecond'] : '100');
+						$colorsecond = ( ! empty( $tablet_overlay['overlaySecond'] ) ? $tablet_overlay['overlaySecond'] : '#00B5E2');
+						$css .= 'background-image: ' . $type . '-gradient(' . $angle. ', ' . $color . ' ' . $loc . '%, ' . $colorsecond . ' ' . $locsecond . '%);';
+					} else {
+						if ( ! empty( $tablet_overlay['overlay'] ) ) {
+							$css .= 'background-color:' . $tablet_overlay['overlay'] . ';';
+						}
+						if ( ! empty( $tablet_overlay['overlayBgImg'] ) ) {
+							if ( ! empty( $tablet_overlay['overlayBgImgAttachment'] ) ) {
+								if ( 'parallax' === $tablet_overlay['overlayBgImgAttachment'] ) {
+									$overbg_attach = 'fixed';
+								} else {
+									$overbg_attach = $tablet_overlay['overlayBgImgAttachment'];
+								}
+							} else {
+								$overbg_attach = 'scroll';
+							}
+							$css .= 'background-image:url(' . $tablet_overlay['overlayBgImg'] . ');';
+							$css .= 'background-size:' . ( ! empty( $tablet_overlay['overlayBgImgSize'] ) ? $tablet_overlay['overlayBgImgSize'] : 'cover' ) . ';';
+							$css .= 'background-position:' . ( ! empty( $tablet_overlay['overlayBgImgPosition'] ) ? $tablet_overlay['overlayBgImgPosition'] : 'center center' ) . ';';
+							$css .= 'background-attachment:' . $overbg_attach . ';';
+							$css .= 'background-repeat:' . ( ! empty( $tablet_overlay['overlayBgImgRepeat'] ) ? $tablet_overlay['overlayBgImgRepeat'] : 'no-repeat' ) . ';';
+						}
+					}
+					if ( ! empty( $tablet_overlay['overlayBlendMode'] ) ) {
+						$css .= 'mix-blend-mode:' . $tablet_overlay['overlayBlendMode'] . ';';
+					}
+				$css .= '}';
+			}
 			$css .= '}';
 		}
-		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) ) {
+		$mobile_overlay = ( isset( $attr['mobileOverlay'] ) && is_array( $attr['mobileOverlay'] ) && isset( $attr['mobileOverlay'][0] ) && is_array( $attr['mobileOverlay'][0] ) ? $attr['mobileOverlay'][0] : array() );
+		$mobile_background = ( isset( $attr['mobileBackground'] ) && is_array( $attr['mobileBackground'] ) && isset( $attr['mobileBackground'][0] ) && is_array( $attr['mobileBackground'][0] ) ? $attr['mobileBackground'][0] : array() );
+		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) || ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] == 'true' ) ) {
 			$css .= '@media (max-width: 767px) {';
 			if ( isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) ) {
 				$css .= '#kt-layout-id' . $unique_id . ' {';
@@ -2107,6 +2183,78 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $attr['rightPaddingM'] ) ) {
 					$css .= 'padding-right:' . $attr['rightPaddingM'] . 'px;';
 				}
+				$css .= '}';
+			}
+			if ( isset( $mobile_background['enable'] ) && $mobile_background['enable'] ) {
+				$css .= '#kt-layout-id' . $unique_id . ' {';
+					if ( isset( $mobile_background['bgColor'] ) && ! empty( $mobile_background['bgColor'] ) ) {
+						$css .= 'background-color:' . $mobile_background['bgColor'] . ';';
+					}
+					if ( isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) ) {
+						if ( ! empty( $mobile_background['bgImgAttachment'] ) ) {
+							if ( 'parallax' === $mobile_background['bgImgAttachment'] ) {
+								$bg_attach = 'fixed';
+							} else {
+								$bg_attach = $mobile_background['bgImgAttachment'];
+							}
+						} else {
+							$bg_attach = 'scroll';
+						}
+						$css .= 'background-image:url(' . $mobile_background['bgImg'] . ');';
+						$css .= 'background-size:' . ( ! empty( $mobile_background['bgImgSize'] ) ? $mobile_background['bgImgSize'] : 'cover' ) . ';';
+						$css .= 'background-position:' . ( ! empty( $mobile_background['bgImgPosition'] ) ? $mobile_background['bgImgPosition'] : 'center center' ) . ';';
+						$css .= 'background-attachment:' . $bg_attach . ';';
+						$css .= 'background-repeat:' . ( ! empty( $mobile_background['bgImgRepeat'] ) ? $mobile_background['bgImgRepeat'] : 'no-repeat' ) . ';';
+					}
+				$css .= '}';
+			}
+			if ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) {
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay {';
+					if ( ! empty( $mobile_overlay['overlayOpacity'] ) ) {
+						if ( $mobile_overlay['overlayOpacity'] < 10 ) {
+							$css .= 'opacity:0.0' . $mobile_overlay['overlayOpacity'] . ';';
+						} else if ( $mobile_overlay['overlayOpacity'] >= 100 ) {
+							$css .= 'opacity:1;';
+						} else {
+							$css .= 'opacity:0.' . $mobile_overlay['overlayOpacity'] . ';';
+						}
+					}
+					if ( ! empty( $mobile_overlay['currentOverlayTab'] ) && 'grad' == $mobile_overlay['currentOverlayTab'] ) {
+						$type = ( ! empty( $mobile_overlay['overlayGradType'] ) ? $mobile_overlay['overlayGradType'] : 'linear');
+						if ( 'radial' === $type ) {
+							$angle = ( ! empty( $mobile_overlay['overlayBgImgPosition'] ) ? 'at ' . $mobile_overlay['overlayBgImgPosition'] : 'at center center' );
+						} else {
+							$angle = ( ! empty( $mobile_overlay['overlayGradAngle'] ) ? $mobile_overlay['overlayGradAngle'] . 'deg' : '180deg');
+						}
+						$loc = ( ! empty( $mobile_overlay['overlayGradLoc'] ) ? $mobile_overlay['overlayGradLoc'] : '0');
+						$color = ( ! empty( $mobile_overlay['overlay'] ) ? $mobile_overlay['overlay'] : 'transparent');
+						$locsecond = ( ! empty( $mobile_overlay['overlayGradLocSecond'] ) ? $mobile_overlay['overlayGradLocSecond'] : '100');
+						$colorsecond = ( ! empty( $mobile_overlay['overlaySecond'] ) ? $mobile_overlay['overlaySecond'] : '#00B5E2');
+						$css .= 'background-image: ' . $type . '-gradient(' . $angle. ', ' . $color . ' ' . $loc . '%, ' . $colorsecond . ' ' . $locsecond . '%);';
+					} else {
+						if ( ! empty( $mobile_overlay['overlay'] ) ) {
+							$css .= 'background-color:' . $mobile_overlay['overlay'] . ';';
+						}
+						if ( ! empty( $mobile_overlay['overlayBgImg'] ) ) {
+							if ( ! empty( $mobile_overlay['overlayBgImgAttachment'] ) ) {
+								if ( 'parallax' === $mobile_overlay['overlayBgImgAttachment'] ) {
+									$overbg_attach = 'fixed';
+								} else {
+									$overbg_attach = $mobile_overlay['overlayBgImgAttachment'];
+								}
+							} else {
+								$overbg_attach = 'scroll';
+							}
+							$css .= 'background-image:url(' . $mobile_overlay['overlayBgImg'] . ');';
+							$css .= 'background-size:' . ( ! empty( $mobile_overlay['overlayBgImgSize'] ) ? $mobile_overlay['overlayBgImgSize'] : 'cover' ) . ';';
+							$css .= 'background-position:' . ( ! empty( $mobile_overlay['overlayBgImgPosition'] ) ? $mobile_overlay['overlayBgImgPosition'] : 'center center' ) . ';';
+							$css .= 'background-attachment:' . $overbg_attach . ';';
+							$css .= 'background-repeat:' . ( ! empty( $mobile_overlay['overlayBgImgRepeat'] ) ? $mobile_overlay['overlayBgImgRepeat'] : 'no-repeat' ) . ';';
+						}
+					}
+					if ( ! empty( $mobile_overlay['overlayBlendMode'] ) ) {
+						$css .= 'mix-blend-mode:' . $mobile_overlay['overlayBlendMode'] . ';';
+					}
 				$css .= '}';
 			}
 			$css .= '}';

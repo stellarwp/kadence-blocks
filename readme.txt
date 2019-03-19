@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
-Tested up to: 5.1.0
-Stable tag: 1.4.0
+Tested up to: 5.1.1
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.4.1 =
+* Fix: Duplication issue with row styles.
+* Fix: Issue with chrome cutting content white.
+* Add: Tablet and Mobile specific control for background and background overlay.
 
 = 1.4.0 =
 * Add: column resizing for three column layouts.
