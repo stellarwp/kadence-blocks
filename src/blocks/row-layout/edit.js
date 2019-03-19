@@ -1451,7 +1451,7 @@ class KadenceRowLayout extends Component {
 			<div>
 				<RangeControl
 					label={ __( 'Overlay Opacity' ) }
-					value={ tabletOverlay[ 0 ].overlayOpacity }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
 					onChange={ ( value ) => {
 						saveTabletOverlay( {
 							overlayOpacity: value,
@@ -1462,13 +1462,13 @@ class KadenceRowLayout extends Component {
 				/>
 				<p>{ __( 'Overlay Color' ) }</p>
 				<ColorPalette
-					value={ tabletOverlay[ 0 ].overlay }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
 					onChange={ value => saveTabletOverlay( { overlay: value } ) }
 				/>
 				<MediaUpload
 					onSelect={ value => saveTabletOverlay( { overlayBgImg: value.url, overlayBgImgID: value.id } ) }
 					type="image"
-					value={ tabletOverlay[ 0 ].overlayBgImgID }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgID : '' ) }
 					render={ ( { open } ) => (
 						<Button
 							className={ 'components-button components-icon-button kt-cta-upload-btn' }
@@ -1479,7 +1479,7 @@ class KadenceRowLayout extends Component {
 						</Button>
 					) }
 				/>
-				{ tabletOverlay[ 0 ].overlayBgImg && (
+				{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg && (
 					<Tooltip text={ __( 'Remove Image' ) }>
 						<Button
 							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
@@ -1491,7 +1491,7 @@ class KadenceRowLayout extends Component {
 				) }
 				<SelectControl
 					label={ __( 'Background Image Size' ) }
-					value={ tabletOverlay[ 0 ].overlayBgImgSize }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
 					options={ [
 						{ value: 'cover', label: __( 'Cover' ) },
 						{ value: 'contain', label: __( 'Contain' ) },
@@ -1501,7 +1501,7 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Background Image Position' ) }
-					value={ tabletOverlay[ 0 ].overlayBgImgPosition }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
 					options={ [
 						{ value: 'center top', label: __( 'Center Top' ) },
 						{ value: 'center center', label: __( 'Center Center' ) },
@@ -1517,7 +1517,7 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Background Image Repeat' ) }
-					value={ tabletOverlay[ 0 ].overlayBgImgRepeat }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
 					options={ [
 						{ value: 'no-repeat', label: __( 'No Repeat' ) },
 						{ value: 'repeat', label: __( 'Repeat' ) },
@@ -1528,7 +1528,7 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Background Image Attachment' ) }
-					value={ tabletOverlay[ 0 ].overlayBgImgAttachment }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgAttachment : 'scroll' ) }
 					options={ [
 						{ value: 'scroll', label: __( 'Scroll' ) },
 						{ value: 'fixed', label: __( 'Fixed' ) },
@@ -1538,7 +1538,7 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Blend Mode' ) }
-					value={ tabletOverlay[ 0 ].overlayBlendMode }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBlendMode : 'none' ) }
 					options={ [
 						{ value: 'normal', label: __( 'Normal' ) },
 						{ value: 'multiply', label: __( 'Multiply' ) },
@@ -1565,7 +1565,7 @@ class KadenceRowLayout extends Component {
 			<div>
 				<RangeControl
 					label={ __( 'Overlay Opacity' ) }
-					value={ tabletOverlay[ 0 ].overlayOpacity }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
 					onChange={ ( value ) => {
 						saveTabletOverlay( {
 							overlayOpacity: value,
@@ -1576,12 +1576,12 @@ class KadenceRowLayout extends Component {
 				/>
 				<p>{ __( 'Color' ) }</p>
 				<ColorPalette
-					value={ tabletOverlay[ 0 ].overlay }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
 					onChange={ value => saveTabletOverlay( { overlay: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
-					value={ tabletOverlay[ 0 ].overlayGradLoc }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradLoc : 0 ) }
 					onChange={ ( value ) => {
 						saveTabletOverlay( {
 							overlayGradLoc: value,
@@ -1592,12 +1592,12 @@ class KadenceRowLayout extends Component {
 				/>
 				<p>{ __( 'Second Color' ) }</p>
 				<ColorPalette
-					value={ tabletOverlay[ 0 ].overlaySecond }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlaySecond : '' ) }
 					onChange={ value => saveTabletOverlay( { overlaySecond: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
-					value={ tabletOverlay[ 0 ].overlayGradLocSecond }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradLocSecond : 100 ) }
 					onChange={ ( value ) => {
 						saveTabletOverlay( {
 							overlayGradLocSecond: value,
@@ -1608,17 +1608,17 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Gradient Type' ) }
-					value={ tabletOverlay[ 0 ].overlayGradType }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradType : 'linear' ) }
 					options={ [
 						{ value: 'linear', label: __( 'Linear' ) },
 						{ value: 'radial', label: __( 'Radial' ) },
 					] }
 					onChange={ value => saveTabletOverlay( { overlayGradType: value } ) }
 				/>
-				{ tabletOverlay[ 0 ].overlayGradType && 'linear' === tabletOverlay[ 0 ].overlayGradType && (
+				{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayGradType && 'linear' === tabletOverlay[ 0 ].overlayGradType && (
 					<RangeControl
 						label={ __( 'Gradient Angle' ) }
-						value={ tabletOverlay[ 0 ].overlayGradAngle }
+						value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradAngle : 180 ) }
 						onChange={ ( value ) => {
 							saveTabletOverlay( {
 								overlayGradAngle: value,
@@ -1628,10 +1628,10 @@ class KadenceRowLayout extends Component {
 						max={ 360 }
 					/>
 				) }
-				{ tabletOverlay[ 0 ].overlayGradType && 'radial' === tabletOverlay[ 0 ].overlayGradType && (
+				{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayGradType && 'radial' === tabletOverlay[ 0 ].overlayGradType && (
 					<SelectControl
 						label={ __( 'Gradient Position' ) }
-						value={ tabletOverlay[ 0 ].overlayBgImgPosition }
+						value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
 						options={ [
 							{ value: 'center top', label: __( 'Center Top' ) },
 							{ value: 'center center', label: __( 'Center Center' ) },
@@ -1648,7 +1648,7 @@ class KadenceRowLayout extends Component {
 				) }
 				<SelectControl
 					label={ __( 'Blend Mode' ) }
-					value={ tabletOverlay[ 0 ].overlayBlendMode }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBlendMode : 'none' ) }
 					options={ [
 						{ value: 'normal', label: __( 'Normal' ) },
 						{ value: 'multiply', label: __( 'Multiply' ) },
@@ -1675,7 +1675,7 @@ class KadenceRowLayout extends Component {
 			<div>
 				<RangeControl
 					label={ __( 'Overlay Opacity' ) }
-					value={ mobileOverlay[ 0 ].overlayOpacity }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
 					onChange={ ( value ) => {
 						saveMobileOverlay( {
 							overlayOpacity: value,
@@ -1686,13 +1686,13 @@ class KadenceRowLayout extends Component {
 				/>
 				<p>{ __( 'Overlay Color' ) }</p>
 				<ColorPalette
-					value={ mobileOverlay[ 0 ].overlay }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
 					onChange={ value => saveMobileOverlay( { overlay: value } ) }
 				/>
 				<MediaUpload
 					onSelect={ value => saveMobileOverlay( { overlayBgImg: value.url, overlayBgImgID: value.id } ) }
 					type="image"
-					value={ mobileOverlay[ 0 ].overlayBgImgID }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgID : '' ) }
 					render={ ( { open } ) => (
 						<Button
 							className={ 'components-button components-icon-button kt-cta-upload-btn' }
@@ -1703,7 +1703,7 @@ class KadenceRowLayout extends Component {
 						</Button>
 					) }
 				/>
-				{ mobileOverlay[ 0 ].overlayBgImg && (
+				{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg && (
 					<Tooltip text={ __( 'Remove Image' ) }>
 						<Button
 							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
@@ -1715,7 +1715,7 @@ class KadenceRowLayout extends Component {
 				) }
 				<SelectControl
 					label={ __( 'Background Image Size' ) }
-					value={ mobileOverlay[ 0 ].overlayBgImgSize }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
 					options={ [
 						{ value: 'cover', label: __( 'Cover' ) },
 						{ value: 'contain', label: __( 'Contain' ) },
@@ -1725,7 +1725,7 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Background Image Position' ) }
-					value={ mobileOverlay[ 0 ].overlayBgImgPosition }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
 					options={ [
 						{ value: 'center top', label: __( 'Center Top' ) },
 						{ value: 'center center', label: __( 'Center Center' ) },
@@ -1741,7 +1741,7 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Background Image Repeat' ) }
-					value={ mobileOverlay[ 0 ].overlayBgImgRepeat }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
 					options={ [
 						{ value: 'no-repeat', label: __( 'No Repeat' ) },
 						{ value: 'repeat', label: __( 'Repeat' ) },
@@ -1752,7 +1752,7 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Background Image Attachment' ) }
-					value={ mobileOverlay[ 0 ].overlayBgImgAttachment }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgAttachment : 'scroll' ) }
 					options={ [
 						{ value: 'scroll', label: __( 'Scroll' ) },
 						{ value: 'fixed', label: __( 'Fixed' ) },
@@ -1762,7 +1762,7 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Blend Mode' ) }
-					value={ mobileOverlay[ 0 ].overlayBlendMode }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBlendMode : 'none' ) }
 					options={ [
 						{ value: 'normal', label: __( 'Normal' ) },
 						{ value: 'multiply', label: __( 'Multiply' ) },
@@ -1789,7 +1789,7 @@ class KadenceRowLayout extends Component {
 			<div>
 				<RangeControl
 					label={ __( 'Overlay Opacity' ) }
-					value={ mobileOverlay[ 0 ].overlayOpacity }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
 					onChange={ ( value ) => {
 						saveMobileOverlay( {
 							overlayOpacity: value,
@@ -1800,12 +1800,12 @@ class KadenceRowLayout extends Component {
 				/>
 				<p>{ __( 'Color' ) }</p>
 				<ColorPalette
-					value={ mobileOverlay[ 0 ].overlay }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
 					onChange={ value => saveMobileOverlay( { overlay: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
-					value={ mobileOverlay[ 0 ].overlayGradLoc }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradLoc : 0 ) }
 					onChange={ ( value ) => {
 						saveMobileOverlay( {
 							overlayGradLoc: value,
@@ -1816,12 +1816,12 @@ class KadenceRowLayout extends Component {
 				/>
 				<p>{ __( 'Second Color' ) }</p>
 				<ColorPalette
-					value={ mobileOverlay[ 0 ].overlaySecond }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlaySecond : '' ) }
 					onChange={ value => saveMobileOverlay( { overlaySecond: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
-					value={ mobileOverlay[ 0 ].overlayGradLocSecond }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradLocSecond : 100 ) }
 					onChange={ ( value ) => {
 						saveMobileOverlay( {
 							overlayGradLocSecond: value,
@@ -1832,17 +1832,17 @@ class KadenceRowLayout extends Component {
 				/>
 				<SelectControl
 					label={ __( 'Gradient Type' ) }
-					value={ mobileOverlay[ 0 ].overlayGradType }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradType : 'linear' ) }
 					options={ [
 						{ value: 'linear', label: __( 'Linear' ) },
 						{ value: 'radial', label: __( 'Radial' ) },
 					] }
 					onChange={ value => saveMobileOverlay( { overlayGradType: value } ) }
 				/>
-				{ mobileOverlay[ 0 ].overlayGradType && 'linear' === mobileOverlay[ 0 ].overlayGradType && (
+				{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayGradType && 'linear' === mobileOverlay[ 0 ].overlayGradType && (
 					<RangeControl
 						label={ __( 'Gradient Angle' ) }
-						value={ mobileOverlay[ 0 ].overlayGradAngle }
+						value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradAngle : 180 ) }
 						onChange={ ( value ) => {
 							saveMobileOverlay( {
 								overlayGradAngle: value,
@@ -1852,10 +1852,10 @@ class KadenceRowLayout extends Component {
 						max={ 360 }
 					/>
 				) }
-				{ mobileOverlay[ 0 ].overlayGradType && 'radial' === mobileOverlay[ 0 ].overlayGradType && (
+				{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayGradType && 'radial' === mobileOverlay[ 0 ].overlayGradType && (
 					<SelectControl
 						label={ __( 'Gradient Position' ) }
-						value={ mobileOverlay[ 0 ].overlayBgImgPosition }
+						value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
 						options={ [
 							{ value: 'center top', label: __( 'Center Top' ) },
 							{ value: 'center center', label: __( 'Center Center' ) },
@@ -1872,7 +1872,7 @@ class KadenceRowLayout extends Component {
 				) }
 				<SelectControl
 					label={ __( 'Blend Mode' ) }
-					value={ mobileOverlay[ 0 ].overlayBlendMode }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBlendMode : 'none' ) }
 					options={ [
 						{ value: 'normal', label: __( 'Normal' ) },
 						{ value: 'multiply', label: __( 'Multiply' ) },
