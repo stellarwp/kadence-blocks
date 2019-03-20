@@ -3,6 +3,7 @@
  *
  * Editor for Advanced Btn
  */
+import { blockAttributes } from './index';
 import times from 'lodash/times';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import GenIcon from '../../genicon';
@@ -97,6 +98,7 @@ class KadenceAdvancedButton extends Component {
 	}
 	render() {
 		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant }, className, setAttributes, isSelected } = this.props;
+		const defaultBtns = blockAttributes.btns.default[0];
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -447,24 +449,24 @@ class KadenceAdvancedButton extends Component {
 										const amount = Math.abs( newcount - newbtns.length );
 										{ times( amount, n => {
 											newbtns.push( {
-												text: newbtns[ 0 ].text,
-												link: newbtns[ 0 ].link,
-												target: newbtns[ 0 ].target,
-												size: newbtns[ 0 ].size,
-												paddingBT: newbtns[ 0 ].paddingBT,
-												paddingLR: newbtns[ 0 ].paddingLR,
-												color: newbtns[ 0 ].color,
-												background: newbtns[ 0 ].background,
-												border: newbtns[ 0 ].border,
-												borderRadius: newbtns[ 0 ].borderRadius,
-												borderWidth: newbtns[ 0 ].borderWidth,
-												colorHover: newbtns[ 0 ].colorHover,
-												backgroundHover: newbtns[ 0 ].backgroundHover,
-												borderHover: newbtns[ 0 ].borderHover,
-												icon: newbtns[ 0 ].icon,
-												iconSide: newbtns[ 0 ].iconSide,
-												iconHover: newbtns[ 0 ].iconHover,
-												cssClass: ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
+												text: defaultBtns.text,
+												link: defaultBtns.link,
+												target: defaultBtns.target,
+												size: defaultBtns.size,
+												paddingBT: defaultBtns.paddingBT,
+												paddingLR: defaultBtns.paddingLR,
+												color: defaultBtns.color,
+												background: defaultBtns.background,
+												border: defaultBtns.border,
+												borderRadius: defaultBtns.borderRadius,
+												borderWidth: defaultBtns.borderWidth,
+												colorHover: defaultBtns.colorHover,
+												backgroundHover: defaultBtns.backgroundHover,
+												borderHover: defaultBtns.borderHover,
+												icon: defaultBtns.icon,
+												iconSide: defaultBtns.iconSide,
+												iconHover: defaultBtns.iconHover,
+												cssClass: ( defaultBtns.cssClass ? defaultBtns.cssClass : '' ),
 											} );
 										} ); }
 										setAttributes( { btns: newbtns } );
