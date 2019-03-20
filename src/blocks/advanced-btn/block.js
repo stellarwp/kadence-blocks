@@ -31,6 +31,75 @@ const { registerBlockType } = wp.blocks;
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
+export const blockAttributes = {
+	hAlign: {
+		type: 'string',
+		default: 'center',
+	},
+	btnCount: {
+		type: 'number',
+		default: 1,
+	},
+	uniqueID: {
+		type: 'string',
+		default: '',
+	},
+	btns: {
+		type: 'array',
+		default: [ {
+			text: '',
+			link: '',
+			target: '_self',
+			size: 18,
+			paddingBT: '',
+			paddingLR: '',
+			color: '#555555',
+			background: 'transparent',
+			border: '#555555',
+			borderRadius: 3,
+			borderWidth: 2,
+			colorHover: '#ffffff',
+			backgroundHover: '#444444',
+			borderHover: '#444444',
+			icon: '',
+			iconSide: 'right',
+			iconHover: false,
+			cssClass: '',
+		} ],
+	},
+	letterSpacing: {
+		type: 'number',
+	},
+	typography: {
+		type: 'string',
+		default: '',
+	},
+	googleFont: {
+		type: 'boolean',
+		default: false,
+	},
+	loadGoogleFont: {
+		type: 'boolean',
+		default: true,
+	},
+	fontSubset: {
+		type: 'string',
+		default: '',
+	},
+	fontVariant: {
+		type: 'string',
+		default: '',
+	},
+	fontWeight: {
+		type: 'string',
+		default: 'regular',
+	},
+	fontStyle: {
+		type: 'string',
+		default: 'normal',
+	},
+};
+
 registerBlockType( 'kadence/advancedbtn', {
 	title: __( 'Advanced Button' ), // Block title.
 	icon: {
@@ -42,74 +111,7 @@ registerBlockType( 'kadence/advancedbtn', {
 		__( 'Icon' ),
 		__( 'KT' ),
 	],
-	attributes: {
-		hAlign: {
-			type: 'string',
-			default: 'center',
-		},
-		btnCount: {
-			type: 'number',
-			default: 1,
-		},
-		uniqueID: {
-			type: 'string',
-			default: '',
-		},
-		btns: {
-			type: 'array',
-			default: [ {
-				text: '',
-				link: '',
-				target: '_self',
-				size: 18,
-				paddingBT: '',
-				paddingLR: '',
-				color: '#555555',
-				background: 'transparent',
-				border: '#555555',
-				borderRadius: 3,
-				borderWidth: 2,
-				colorHover: '#ffffff',
-				backgroundHover: '#444444',
-				borderHover: '#444444',
-				icon: '',
-				iconSide: 'right',
-				iconHover: false,
-				cssClass: '',
-			} ],
-		},
-		letterSpacing: {
-			type: 'number',
-		},
-		typography: {
-			type: 'string',
-			default: '',
-		},
-		googleFont: {
-			type: 'boolean',
-			default: false,
-		},
-		loadGoogleFont: {
-			type: 'boolean',
-			default: true,
-		},
-		fontSubset: {
-			type: 'string',
-			default: '',
-		},
-		fontVariant: {
-			type: 'string',
-			default: '',
-		},
-		fontWeight: {
-			type: 'string',
-			default: 'regular',
-		},
-		fontStyle: {
-			type: 'string',
-			default: 'normal',
-		},
-	},
+	attributes: blockAttributes,
 	edit,
 	save: props => {
 		const { attributes: { btnCount, btns, hAlign, uniqueID, letterSpacing } } = props;
