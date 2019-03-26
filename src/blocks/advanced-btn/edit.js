@@ -140,7 +140,7 @@ class KadenceAdvancedButton extends Component {
 				} } >
 					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` }>
 						<span className={ `kt-button kt-button-${ index }` } style={ {
-							backgroundColor: ( 'transparent' === btns[ index ].background ? btns[ index ].background : hexToRGBA( btns[ index ].background, ( btns[ index ].backgroundOpacity !== undefined ? btns[ index ].backgroundOpacity : 1 ) ) ),
+							backgroundColor: ( 'transparent' === btns[ index ].background || undefined === btns[ index ].background ? 'transparent' : hexToRGBA( btns[ index ].background, ( btns[ index ].backgroundOpacity !== undefined ? btns[ index ].backgroundOpacity : 1 ) ) ),
 							color: btns[ index ].color,
 							fontSize: btns[ index ].size + 'px',
 							fontWeight: fontWeight,
@@ -149,7 +149,7 @@ class KadenceAdvancedButton extends Component {
 							fontFamily: ( typography ? typography : '' ),
 							borderRadius: btns[ index ].borderRadius + 'px',
 							borderWidth: btns[ index ].borderWidth + 'px',
-							borderColor: hexToRGBA( btns[ index ].border, ( btns[ index ].borderOpacity !== undefined ? btns[ index ].borderOpacity : 1 ) ),
+							borderColor: ( undefined === btns[ index ].border ? '#555555' : hexToRGBA( btns[ index ].border, ( btns[ index ].borderOpacity !== undefined ? btns[ index ].borderOpacity : 1 ) ) ),
 							paddingLeft: btns[ index ].paddingLR + 'px',
 							paddingRight: btns[ index ].paddingLR + 'px',
 							paddingTop: btns[ index ].paddingBT + 'px',
@@ -415,7 +415,7 @@ class KadenceAdvancedButton extends Component {
 							this.saveArrayUpdate( { colorHover: value }, index );
 						} }
 					/>
-					<ColorIndicator className="kt-color-indicate" colorValue={ hexToRGBA( btns[ index ].backgroundHover, ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) } />
+					<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === btns[ index ].backgroundHoverOpacity ? '#444444' : hexToRGBA( btns[ index ].backgroundHover, ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) ) } />
 					<p className="kt-setting-label">{ __( 'Hover Background Color' ) }</p>
 					<ColorPalette
 						value={ btns[ index ].backgroundHover }
@@ -430,7 +430,7 @@ class KadenceAdvancedButton extends Component {
 						} }
 						label={ __( 'Background Hover Opacity' ) }
 					/>
-					<ColorIndicator className="kt-color-indicate" colorValue={ hexToRGBA( btns[ index ].borderHover, ( btns[ index ].borderHoverOpacity !== undefined ? btns[ index ].borderHoverOpacity : 1 ) ) } />
+					<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === btns[ index ].borderHover ? '#444444' : hexToRGBA( btns[ index ].borderHover, ( btns[ index ].borderHoverOpacity !== undefined ? btns[ index ].borderHoverOpacity : 1 ) ) ) } />
 					<p className="kt-setting-label">{ __( 'Hover Border Color' ) }</p>
 					<ColorPalette
 						value={ btns[ index ].borderHover }
@@ -462,7 +462,7 @@ class KadenceAdvancedButton extends Component {
 							this.saveArrayUpdate( { color: value }, index );
 						} }
 					/>
-					<ColorIndicator className="kt-color-indicate" colorValue={ ( 'transparent' === btns[ index ].background ? btns[ index ].background : hexToRGBA( btns[ index ].background, ( btns[ index ].backgroundOpacity !== undefined ? btns[ index ].backgroundOpacity : 1 ) ) ) } />
+					<ColorIndicator className="kt-color-indicate" colorValue={ ( 'transparent' === btns[ index ].background || undefined === btns[ index ].background ? 'transparent' : hexToRGBA( btns[ index ].background, ( btns[ index ].backgroundOpacity !== undefined ? btns[ index ].backgroundOpacity : 1 ) ) ) } />
 					<p className="kt-setting-label">{ __( 'Background Color' ) }</p>
 					<ColorPalette
 						value={ btns[ index ].background }
@@ -477,7 +477,7 @@ class KadenceAdvancedButton extends Component {
 						} }
 						label={ __( 'Background Opacity' ) }
 					/>
-					<ColorIndicator className="kt-color-indicate" colorValue={ hexToRGBA( btns[ index ].border, ( btns[ index ].borderOpacity !== undefined ? btns[ index ].borderOpacity : 1 ) ) } />
+					<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === btns[ index ].border ? '#555555' : hexToRGBA( btns[ index ].border, ( btns[ index ].borderOpacity !== undefined ? btns[ index ].borderOpacity : 1 ) ) ) } />
 					<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
 					<ColorPalette
 						value={ btns[ index ].border }
@@ -509,8 +509,8 @@ class KadenceAdvancedButton extends Component {
 			return (
 				`#kt-btns_${ uniqueID } .kt-button-${ index }:hover {
 					color: ${ btns[ index ].colorHover } !important;
-					border-color: ${ hexToRGBA( btns[ index ].borderHover, ( btns[ index ].borderHoverOpacity !== undefined ? btns[ index ].borderHoverOpacity : 1 ) ) } !important;
-					background-color: ${ hexToRGBA( btns[ index ].backgroundHover, ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) } !important;
+					border-color: ${ hexToRGBA( ( undefined === btns[ index ].borderHover ? '#555555' : btns[ index ].borderHover ), ( btns[ index ].borderHoverOpacity !== undefined ? btns[ index ].borderHoverOpacity : 1 ) ) } !important;
+					background-color: ${ hexToRGBA( ( undefined === btns[ index ].backgroundHover ? '#555555' : btns[ index ].backgroundHover ), ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) } !important;
 				}`
 			);
 		};
