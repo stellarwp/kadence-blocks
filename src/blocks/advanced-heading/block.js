@@ -225,6 +225,14 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'string',
 			default: 'solid',
 		},
+		textTransform: {
+			type: 'string',
+			default: '',
+		},
+		markTextTransform: {
+			type: 'string',
+			default: '',
+		},
 		anchor: {
 			type: 'string',
 		},

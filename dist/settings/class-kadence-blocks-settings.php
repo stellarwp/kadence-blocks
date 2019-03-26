@@ -322,106 +322,21 @@ class Kadence_Blocks_Settings {
 				),
 			),
 			'kadence/advancedbtn' => array(
-				'btns' => array(
-					'type' => 'array',
-					'name' => __( 'Button Settings', 'kadence-blocks' ),
-					'default' => array(
-						array(
-							'size' => 18,
-							'paddingBT' => '',
-							'paddingLR' => '',
-							'color' => '#555555',
-							'background' => 'transparent',
-							'border' => '#555555',
-							'borderRadius' => 3,
-							'borderWidth' => 2,
-							'colorHover' => '#ffffff',
-							'backgroundHover' => '#444444',
-							'borderHover' => '#444444',
-						),
-					),
-					'options' => array(
-						'size' => array(
-							'type' => 'number',
-							'default' => 18,
-							'options' => array(
-								'min' => 10,
-								'max' => 100,
-								'step' => 1,
-							),
-							'name' => __( 'Font Size (px)', 'kadence-blocks' ),
-						),
-						'paddingBT' => array(
-							'type' => 'number',
-							'default' => '',
-							'options' => array(
-								'min' => 0,
-								'max' => 100,
-								'step' => 1,
-							),
-							'name' => __( 'Padding Top and Bottom (px)', 'kadence-blocks' ),
-						),
-						'paddingLR' => array(
-							'type' => 'number',
-							'default' => '',
-							'options' => array(
-								'min' => 0,
-								'max' => 100,
-								'step' => 1,
-							),
-							'name' => __( 'Padding Left and Right (px)', 'kadence-blocks' ),
-						),
-						'color' => array(
-							'type' => 'color',
-							'default' => '#555555',
-							'name' => __( 'Text Color', 'kadence-blocks' ),
-						),
-						'background' => array(
-							'type' => 'color',
-							'default' => 'transparent',
-							'name' => __( 'Background Color', 'kadence-blocks' ),
-						),
-						'border' => array(
-							'type' => 'color',
-							'default' => '#555555',
-							'name' => __( 'Border Color', 'kadence-blocks' ),
-						),
-						'borderRadius' => array(
-							'type' => 'number',
-							'default' => 3,
-							'options' => array(
-								'min' => 0,
-								'max' => 50,
-								'step' => 1,
-							),
-							'name' => __( 'Border Radius (px)', 'kadence-blocks' ),
-						),
-						'borderWidth' => array(
-							'type' => 'number',
-							'default' => 2,
-							'options' => array(
-								'min' => 0,
-								'max' => 20,
-								'step' => 1,
-							),
-							'name' => __( 'Border Width (px)', 'kadence-blocks' ),
-						),
-						'colorHover' => array(
-							'type' => 'color',
-							'default' => '#ffffff',
-							'name' => __( 'HOVER - Text Color', 'kadence-blocks' ),
-						),
-						'backgroundHover' => array(
-							'type' => 'color',
-							'default' => '#444444',
-							'name' => __( 'HOVER - Background Color', 'kadence-blocks' ),
-						),
-						'borderHover' => array(
-							'type' => 'color',
-							'default' => '#444444',
-							'name' => __( 'HOVER - Border Color', 'kadence-blocks' ),
-						),
-					),
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
+				),
+			),
+			'kadence/infobox' => array(
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
+				),
+			),
+			'kadence/accordion' => array(
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
 				),
 			),
 			'kadence/tabs' => array(

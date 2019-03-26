@@ -574,10 +574,11 @@ class KadenceInfoBoxDefault extends Component {
 										icons={ IcoNames }
 										value={ mediaIcon[ 0 ].icon }
 										onChange={ value => saveMediaIcon( { icon: value } ) }
-										appendTo="body"
 										renderFunc={ renderSVG }
 										theme="default"
 										isMulti={ false }
+										appendTo={ false }
+										closeOnSelect={ true }
 									/>
 									<RangeControl
 										label={ __( 'Icon Size' ) }

@@ -80,7 +80,7 @@ class KadenceAdvancedHeading extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, kadenceAnimation, kadenceAOSOptions }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
+		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
 		const markBGString = ( markBG ? hexToRGBA( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? hexToRGBA( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -344,6 +344,7 @@ class KadenceAdvancedHeading extends Component {
 					fontSize: size + sizeType,
 					lineHeight: lineHeight + lineType,
 					letterSpacing: letterSpacing + 'px',
+					textTransform: ( textTransform ? textTransform : undefined ),
 					fontFamily: ( typography ? typography : '' ),
 					marginTop: ( topMargin ? topMargin + marginType : '' ),
 					marginBottom: ( bottomMargin ? bottomMargin + marginType : '' ),
@@ -363,6 +364,7 @@ class KadenceAdvancedHeading extends Component {
 						font-size: ${ ( markSize && markSize[ 0 ] ? markSize[ 0 ] + markSizeType : 'inherit' ) };
 						line-height: ${ ( markLineHeight && markLineHeight[ 0 ] ? markLineHeight[ 0 ] + markLineType : 'inherit' ) };
 						letter-spacing: ${ ( markLetterSpacing ? markLetterSpacing + 'px' : 'inherit' ) };
+						text-transform: ${ ( markTextTransform ? markTextTransform : 'inherit' ) };
 						font-family: ${ ( markTypography ? markTypography : 'inherit' ) };
 						border-color: ${ ( markBorder ? markBorderString : 'transparent' ) };
 						border-width: ${ ( markBorderWidth ? markBorderWidth + 'px' : '0' ) };
@@ -425,6 +427,8 @@ class KadenceAdvancedHeading extends Component {
 							onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
 							fontSubset={ fontSubset }
 							onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
+							textTransform={ textTransform }
+							onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
 						/>
 					</PanelBody>
 					<PanelBody
@@ -515,6 +519,8 @@ class KadenceAdvancedHeading extends Component {
 							onPadding={ ( value ) => setAttributes( { markPadding: value } ) }
 							paddingControl={ markPaddingControl }
 							onPaddingControl={ ( value ) => setAttributes( { markPaddingControl: value } ) }
+							textTransform={ markTextTransform }
+							onTextTransform={ ( value ) => setAttributes( { markTextTransform: value } ) }
 						/>
 					</PanelBody>
 					<PanelBody

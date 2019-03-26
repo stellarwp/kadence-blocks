@@ -140,6 +140,17 @@ registerBlockType( 'kadence/column', {
 		collapseOrder: {
 			type: 'number',
 		},
+		backgroundImg: {
+			type: 'array',
+			default: [ {
+				bgImg: '',
+				bgImgID: '',
+				bgImgSize: 'cover',
+				bgImgPosition: 'center center',
+				bgImgAttachment: 'scroll',
+				bgImgRepeat: 'no-repeat',
+			} ],
+		},
 	},
 	supports: {
 		inserter: false,
@@ -153,8 +164,9 @@ registerBlockType( 'kadence/column', {
 	edit,
 
 	save( { attributes } ) {
-		const { id, background, backgroundOpacity, uniqueID } = attributes;
-		const backgroundString = ( background ? hexToRGBA( background, backgroundOpacity ) : undefined );
+		const { id, background, backgroundOpacity, backgroundImg, uniqueID } = attributes;
+		const bgImg = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' );
+		const backgroundString = ( background && '' === bgImg ? hexToRGBA( background, backgroundOpacity ) : undefined );
 		return (
 			<div className={ `inner-column-${ id } kadence-column${ uniqueID }` }>
 				<div className={ 'kt-inside-inner-col' } style={ {

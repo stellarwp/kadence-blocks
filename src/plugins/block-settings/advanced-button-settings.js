@@ -13,7 +13,7 @@ const {
  * Internal block libraries
  */
 const { __ } = wp.i18n;
-class KadenceInfoBoxSettings extends Component {
+class KadenceButtonSettings extends Component {
 	constructor() {
 		super( ...arguments );
 		this.state = {
@@ -37,15 +37,15 @@ class KadenceInfoBoxSettings extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.settings;
-		if ( ! config[ 'kadence/infobox' ] ) {
-			config[ 'kadence/infobox' ] = {};
+		if ( ! config[ 'kadence/advancedbtn' ] ) {
+			config[ 'kadence/advancedbtn' ] = {};
 		}
-		config[ 'kadence/infobox' ][ key ] = value;
+		config[ 'kadence/advancedbtn' ][ key ] = value;
 		this.setState( { settings: config } );
 	}
 	render() {
 		const { settings, isOpen } = this.state;
-		const infoboxSettings = ( settings && settings[ 'kadence/infobox' ] ? settings[ 'kadence/infobox' ] : {} );
+		const btnSettings = ( settings && settings[ 'kadence/advancedbtn' ] ? settings[ 'kadence/advancedbtn' ] : {} );
 		return (
 			<Fragment>
 				<Tooltip text="Block Settings Visibility">
@@ -56,13 +56,13 @@ class KadenceInfoBoxSettings extends Component {
 				{ isOpen ?
 					<Modal
 						className="kt-block-settings-modal"
-						title={ __( 'Info Box Settings' ) }
+						title={ __( 'Advanced Button Settings' ) }
 						onRequestClose={ () => {
-							this.saveConfig( 'kadence/infobox', infoboxSettings );
+							this.saveConfig( 'kadence/advancedbtn', btnSettings );
 						} }>
 						<SelectControl
 							label={ __( 'Enabled All Settings For' ) }
-							value={ ( infoboxSettings.allSettings ? infoboxSettings.allSettings : 'all' ) }
+							value={ ( btnSettings.allSettings ? btnSettings.allSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users' ) },
 								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
@@ -74,10 +74,10 @@ class KadenceInfoBoxSettings extends Component {
 							onChange={ value => this.saveConfigState( 'allSettings', value ) }
 						/>
 						<hr />
-						<h2>{ __( 'Control Individual Settings Groups' ) }</h2>
+						<h2>{ __( 'Control Individual Settings' ) }</h2>
 						<SelectControl
 							label={ __( 'Enable Count Settings' ) }
-							value={ ( infoboxSettings.containerSettings ? infoboxSettings.containerSettings : 'all' ) }
+							value={ ( btnSettings.countSettings ? btnSettings.countSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users' ) },
 								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
@@ -86,11 +86,11 @@ class KadenceInfoBoxSettings extends Component {
 								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
 								{ value: 'none', label: __( 'No Users' ) },
 							] }
-							onChange={ value => this.saveConfigState( 'containerSettings', value ) }
+							onChange={ value => this.saveConfigState( 'countSettings', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Media Settings' ) }
-							value={ ( infoboxSettings.mediaSettings ? infoboxSettings.mediaSettings : 'all' ) }
+							label={ __( 'Enable Size Settings' ) }
+							value={ ( btnSettings.sizeSettings ? btnSettings.sizeSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users' ) },
 								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
@@ -99,11 +99,11 @@ class KadenceInfoBoxSettings extends Component {
 								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
 								{ value: 'none', label: __( 'No Users' ) },
 							] }
-							onChange={ value => this.saveConfigState( 'mediaSettings', value ) }
+							onChange={ value => this.saveConfigState( 'sizeSettings', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Title Settings' ) }
-							value={ ( infoboxSettings.titleSettings ? infoboxSettings.titleSettings : 'all' ) }
+							label={ __( 'Enable Color Settings' ) }
+							value={ ( btnSettings.colorSettings ? btnSettings.colorSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users' ) },
 								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
@@ -112,11 +112,11 @@ class KadenceInfoBoxSettings extends Component {
 								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
 								{ value: 'none', label: __( 'No Users' ) },
 							] }
-							onChange={ value => this.saveConfigState( 'titleSettings', value ) }
+							onChange={ value => this.saveConfigState( 'colorSettings', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Text Settings' ) }
-							value={ ( infoboxSettings.textSettings ? infoboxSettings.textSettings : 'all' ) }
+							label={ __( 'Enable Icon Settings' ) }
+							value={ ( btnSettings.iconSettings ? btnSettings.iconSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users' ) },
 								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
@@ -125,11 +125,11 @@ class KadenceInfoBoxSettings extends Component {
 								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
 								{ value: 'none', label: __( 'No Users' ) },
 							] }
-							onChange={ value => this.saveConfigState( 'textSettings', value ) }
+							onChange={ value => this.saveConfigState( 'iconSettings', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Learn More Settings' ) }
-							value={ ( infoboxSettings.learnMoreSettings ? infoboxSettings.learnMoreSettings : 'all' ) }
+							label={ __( 'Enable Font Family Settings' ) }
+							value={ ( btnSettings.fontSettings ? btnSettings.fontSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users' ) },
 								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
@@ -138,23 +138,10 @@ class KadenceInfoBoxSettings extends Component {
 								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
 								{ value: 'none', label: __( 'No Users' ) },
 							] }
-							onChange={ value => this.saveConfigState( 'learnMoreSettings', value ) }
-						/>
-						<SelectControl
-							label={ __( 'Enable Shadow Settings' ) }
-							value={ ( infoboxSettings.shadowSettings ? infoboxSettings.shadowSettings : 'all' ) }
-							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
-							] }
-							onChange={ value => this.saveConfigState( 'shadowSettings', value ) }
+							onChange={ value => this.saveConfigState( 'fontSettings', value ) }
 						/>
 						<Button className="kt-settings-save" isDefault isPrimary onClick={ () => {
-							this.saveConfig( 'kadence/infobox', infoboxSettings );
+							this.saveConfig( 'kadence/advancedbtn', btnSettings );
 						} }>
 							{ __( 'Save/Close' ) }
 						</Button>
@@ -164,4 +151,4 @@ class KadenceInfoBoxSettings extends Component {
 		);
 	}
 }
-export default KadenceInfoBoxSettings;
+export default KadenceButtonSettings;

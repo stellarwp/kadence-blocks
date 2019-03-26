@@ -24,6 +24,8 @@ import KadenceAccordion from './block-defaults/accordion-defaults';
 import KadenceAccordionSettings from './block-settings/accordion-settings';
 import KadenceInfoBox from './block-defaults/info-box-defaults';
 import KadenceInfoBoxSettings from './block-settings/info-box-settings';
+import KadenceAdvancedBtn from './block-defaults/advanced-button-defaults';
+import KadenceAdvancedSettings from './block-settings/advanced-button-settings';
 
 /*
  * Components
@@ -70,6 +72,10 @@ class KadenceConfig extends Component {
 						<KadenceInfoBox />
 						{ 'admin' === this.state.user && (
 							<KadenceInfoBoxSettings />
+						) }
+						<KadenceAdvancedBtn />
+						{ 'admin' === this.state.user && (
+							<KadenceAdvancedSettings />
 						) }
 						{ map( this.state.controls, ( { Control } ) => (
 							<Control />

@@ -67,15 +67,21 @@ registerBlockType( 'kadence/advancedbtn', {
 				color: '#555555',
 				background: 'transparent',
 				border: '#555555',
+				backgroundOpacity: 1,
+				borderOpacity: 1,
 				borderRadius: 3,
 				borderWidth: 2,
 				colorHover: '#ffffff',
 				backgroundHover: '#444444',
 				borderHover: '#444444',
+				backgroundHoverOpacity: 1,
+				borderHoverOpacity: 1,
 				icon: '',
 				iconSide: 'right',
 				iconHover: false,
 				cssClass: '',
+				noFollow: false,
+				gap: 5,
 			} ],
 		},
 		letterSpacing: {
@@ -114,9 +120,19 @@ registerBlockType( 'kadence/advancedbtn', {
 	save: props => {
 		const { attributes: { btnCount, btns, hAlign, uniqueID, letterSpacing } } = props;
 		const renderSaveBtns = ( index ) => {
+			let relAttr;
+			if ( '_blank' === btns[ index ].target && true === btns[ index ].noFollow ) {
+				relAttr = 'noreferrer noopener nofollow';
+			} else if ( '_blank' === btns[ index ].target ) {
+				relAttr = 'noreferrer noopener';
+			} else if ( true === btns[ index ].noFollow ) {
+				relAttr = 'nofollow';
+			} else {
+				relAttr = undefined;
+			}
 			return (
 				<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-					<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ '_blank' === btns[ index ].target ? 'noreferrer noopener' : undefined } style={ {
+					<a className={ `kt-button kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( 'video' === btns[ index ].target ? ' ktblocksvideopop' : '' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
 						fontSize: ( btns[ index ].size ? btns[ index ].size + 'px' : undefined ),
 						borderRadius: ( btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
 						borderWidth: btns[ index ].borderWidth + 'px',

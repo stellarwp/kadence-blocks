@@ -436,6 +436,9 @@ class Kadence_Blocks_Frontend {
 		if ( is_admin() ) {
 			return;
 		}
+		wp_register_style( 'kadence-blocks-magnific-css', KT_BLOCKS_URL . 'dist/magnific.css', array(), KT_BLOCKS_VERSION );
+		wp_register_script( 'magnific-popup', KT_BLOCKS_URL . 'dist/magnific.js', array(), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-magnific-js', KT_BLOCKS_URL . 'dist/kt-init-video-popup.js', array( 'jquery', 'magnific-popup' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-accordion-js', KT_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KT_BLOCKS_URL . 'dist/jarallax.min.js', array( ), KT_BLOCKS_VERSION, true );
@@ -1511,7 +1514,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_advanced_heading_array( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['fontWeight'] ) || isset( $attr['fontStyle'] ) ) {
+		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['fontWeight'] ) || isset( $attr['fontStyle'] ) || isset( $attr['textTransform'] ) ) {
 			$css .= '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading {';
 			if ( isset( $attr['size'] ) && ! empty( $attr['size'] ) ) {
 				$css .= 'font-size:' . $attr['size'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
@@ -1528,10 +1531,13 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['typography'] ) && ! empty( $attr['typography'] ) ) {
 				$css .= 'font-family:' . $attr['typography'] . ';';
 			}
+			if ( isset( $attr['textTransform'] ) && ! empty( $attr['textTransform'] ) ) {
+				$css .= 'text-transform:' . $attr['textTransform'] . ';';
+			}
 			$css .= '}';
 		}
 		// Highlight.
-		if ( isset( $attr['markBorder'] ) || isset( $attr['markBorderWidth'] ) || isset( $attr['markBorderStyle'] ) || isset( $attr['markPadding'] ) || isset( $attr['markLetterSpacing'] ) || isset( $attr['markSize'] ) || isset( $attr['markLineHeight'] ) || isset( $attr['markTypography'] ) || isset( $attr['markColor'] ) || isset( $attr['markBG'] ) ) {
+		if ( isset( $attr['markBorder'] ) || isset( $attr['markBorderWidth'] ) || isset( $attr['markBorderStyle'] ) || isset( $attr['markPadding'] ) || isset( $attr['markLetterSpacing'] ) || isset( $attr['markSize'] ) || isset( $attr['markLineHeight'] ) || isset( $attr['markTypography'] ) || isset( $attr['markColor'] ) || isset( $attr['markBG'] ) || isset( $attr['markTextTransform'] ) ) {
 			$css .= '#kt-adv-heading' . $unique_id . ' mark, #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading mark {';
 			if ( isset( $attr['markLetterSpacing'] ) && ! empty( $attr['markLetterSpacing'] ) ) {
 				$css .= 'letter-spacing:' . $attr['markLetterSpacing'] . 'px;';
@@ -1553,6 +1559,9 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['markColor'] ) && ! empty( $attr['markColor'] ) ) {
 				$css .= 'color:' . $attr['markColor'] . ';';
+			}
+			if ( isset( $attr['markTextTransform'] ) && ! empty( $attr['markTextTransform'] ) ) {
+				$css .= 'text-transform:' . $attr['markTextTransform'] . ';';
 			}
 			if ( isset( $attr['markBG'] ) && ! empty( $attr['markBG'] ) ) {
 				$alpha = ( isset( $attr['markBGOpacity'] ) && ! empty( $attr['markBGOpacity'] ) ? $attr['markBGOpacity'] : 1 );
@@ -1682,6 +1691,16 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_advanced_btn_array( $attr, $unique_id ) {
+		if ( isset( $attr['btns'] ) && is_array( $attr['btns'] ) ) {
+			foreach ( $attr['btns'] as $btnkey => $btnvalue ) {
+				if ( is_array( $btnvalue ) ) {
+					if ( isset( $btnvalue['target'] ) && ! empty( $btnvalue['target'] ) && 'video' == $btnvalue['target'] ) {
+						wp_enqueue_style( 'kadence-blocks-magnific-css' );
+						wp_enqueue_script( 'kadence-blocks-magnific-js' );
+					}
+				}	
+			}
+		}
 		$css = '';
 		if ( isset( $attr['typography'] ) ) {
 			$css .= '.kt-btns' . $unique_id . ' {';
@@ -1699,15 +1718,22 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['btns'] ) && is_array( $attr['btns'] ) ) {
 			foreach ( $attr['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
+					if ( isset( $btnvalue['gap'] ) && is_numeric( $btnvalue['gap'] ) ) {
+						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' {';
+						$css .= 'margin-right:' . $btnvalue['gap'] . 'px;';
+						$css .= '}';
+					}
 					$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
 					if ( isset( $btnvalue['color'] ) && ! empty( $btnvalue['color'] ) ) {
 						$css .= 'color:' . $btnvalue['color'] . ';';
 					}
 					if ( isset( $btnvalue['background'] ) && ! empty( $btnvalue['background'] ) ) {
-						$css .= 'background:' . $btnvalue['background'] . ';';
+						$alpha = ( isset( $btnvalue['backgroundOpacity'] ) && is_numeric( $btnvalue['backgroundOpacity'] ) ? $btnvalue['backgroundOpacity'] : 1 );
+						$css .= 'background:' . $this->hex2rgba( $btnvalue['background'], $alpha ) . ';';
 					}
 					if ( isset( $btnvalue['border'] ) && ! empty( $btnvalue['border'] ) ) {
-						$css .= 'border-color:' . $btnvalue['border'] . ';';
+						$alpha = ( isset( $btnvalue['borderOpacity'] ) && is_numeric( $btnvalue['borderOpacity'] ) ? $btnvalue['borderOpacity'] : 1 );
+						$css .= 'border-color:' . $this->hex2rgba( $btnvalue['border'], $alpha ) . ';';
 					}
 					$css .= '}';
 					$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus {';
@@ -1715,10 +1741,12 @@ class Kadence_Blocks_Frontend {
 						$css .= 'color:' . $btnvalue['colorHover'] . ';';
 					}
 					if ( isset( $btnvalue['backgroundHover'] ) && ! empty( $btnvalue['backgroundHover'] ) ) {
-						$css .= 'background:' . $btnvalue['backgroundHover'] . ';';
+						$alpha = ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 );
+						$css .= 'background:' . $this->hex2rgba( $btnvalue['backgroundHover'], $alpha ) . ';';
 					}
 					if ( isset( $btnvalue['borderHover'] ) && ! empty( $btnvalue['borderHover'] ) ) {
-						$css .= 'border-color:' . $btnvalue['borderHover'] . ';';
+						$alpha = ( isset( $btnvalue['borderHoverOpacity'] ) && is_numeric( $btnvalue['borderHoverOpacity'] ) ? $btnvalue['borderHoverOpacity'] : 1 );
+						$css .= 'border-color:' . $this->hex2rgba( $btnvalue['borderHover'], $alpha ) . ';';
 					}
 					$css .= '}';
 				}
@@ -2305,6 +2333,20 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['borderRadius'] ) && ! empty( $attr['borderRadius'] ) && is_array( $attr['borderRadius'] ) ) {
 				$css .= 'border-radius:' . $attr['borderRadius'][0] . 'px ' . $attr['borderRadius'][1] . 'px ' . $attr['borderRadius'][2] . 'px ' . $attr['borderRadius'][3] . 'px ;';
 			}
+			$css .= '}';
+		}
+		if( isset( $attr['backgroundImg'] ) && is_array( $attr['backgroundImg'] ) && isset( $attr['backgroundImg'][ 0 ] ) && is_array( $attr['backgroundImg'][0] ) && isset( $attr['backgroundImg'][0]['bgImg'] ) && ! empty( $attr['backgroundImg'][0]['bgImg'] ) ) {
+			$bg_img = $attr['backgroundImg'][ 0 ];
+			$css .= '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col {';
+				if ( isset( $attr['background'] ) && ! empty( $attr['background'] ) ) {
+					$alpha = ( isset( $attr['backgroundOpacity'] ) && ! empty( $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] : 1 );
+					$css .= 'background-color:' . $this->hex2rgba( $attr['background'], $alpha ) . ';';
+				}
+				$css .= 'background-image:url(' . $bg_img['bgImg'] . ');';
+				$css .= 'background-size:' . ( ! empty( $bg_img['bgImgSize'] ) ? $bg_img['bgImgSize'] : 'cover' ) . ';';
+				$css .= 'background-position:' . ( ! empty( $bg_img['bgImgPosition'] ) ? $bg_img['bgImgPosition'] : 'center center' ) . ';';
+				$css .= 'background-attachment:' . ( ! empty( $bg_img['bgImgAttachment'] ) ? $bg_img['bgImgAttachment'] : 'scroll' ) . ';';
+				$css .= 'background-repeat:' . ( ! empty( $bg_img['bgImgRepeat'] ) ? $bg_img['bgImgRepeat'] : 'no-repeat' ) . ';';
 			$css .= '}';
 		}
 		if ( isset( $attr['zIndex'] ) ) {

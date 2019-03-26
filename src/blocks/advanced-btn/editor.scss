@@ -10,6 +10,31 @@
     width: 30px;
     height: 30px;
 }
+.kt-popover-container {
+    float: left;
+    margin-top: -20px;
+}
+.components-popover.kt-popover-opacity .components-popover__content {
+    padding: 10px;
+}
+.components-popover.kt-popover-opacity .components-popover__content .components-base-control .components-base-control__field {
+    margin:0;
+}
+.kt-popover-container .components-button.is-button {
+    background: transparent;
+    height: 20px;
+    padding: 0;
+    width: 20px;
+    border: 0;
+    box-shadow: none !important;
+}
+.kt-popover-container .components-button.is-button svg {
+	opacity:1;
+	transition: all .3s ease-in-out;
+}
+.kt-popover-container .components-button.is-button:hover svg {
+    opacity:0.7;
+}
 .wp-block-kadence-advancedbtn form.blocks-button__inline-link {
     display: flex;
     align-items: center;
@@ -19,6 +44,12 @@
 }
 .components-panel__body.kt-font-family-area.is-opened {
     min-height: 340px;
+}
+.kt-color-indicate {
+    display: block;
+    float: right;
+	margin-bottom: -18px;
+    margin-top: 10px;
 }
 .components-panel__body.kt-font-family-area h2.kt-heading-fontfamily-title {
     margin-top: 0;

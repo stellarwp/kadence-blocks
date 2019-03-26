@@ -17,9 +17,11 @@ const { __ } = wp.i18n;
 
 const {
 	Component,
+	Fragment,
 } = wp.element;
 const {
 	InnerBlocks,
+	MediaUpload,
 	InspectorControls,
 	ColorPalette,
 } = wp.editor;
@@ -27,6 +29,9 @@ const {
 	TabPanel,
 	Dashicon,
 	PanelBody,
+	Button,
+	SelectControl,
+	Tooltip,
 	RangeControl,
 } = wp.components;
 
@@ -71,8 +76,25 @@ class KadenceColumn extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder }, setAttributes } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg }, setAttributes } = this.props;
 		const { borderWidthControl, borderRadiusControl } = this.state;
+		const saveBackgroundImage = ( value ) => {
+			const newUpdate = backgroundImg.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				backgroundImg: newUpdate,
+			} );
+		};
+		const onRemoveBGImage = () => {
+			saveBackgroundImage( {
+				bgImgID: '',
+				bgImg: '',
+			} );
+		};
 		const mobileControls = (
 			<PanelBody
 				title={ __( 'Mobile Padding/Margin' ) }
@@ -192,7 +214,7 @@ class KadenceColumn extends Component {
 		const deskControls = (
 			<PanelBody
 				title={ __( 'Padding/Margin' ) }
-				initialOpen={ true }
+				initialOpen={ false }
 			>
 				<h2>{ __( 'Padding (px)' ) }</h2>
 				<RangeControl
@@ -346,6 +368,80 @@ class KadenceColumn extends Component {
 						max={ 1 }
 						step={ 0.01 }
 					/>
+					<MediaUpload
+						onSelect={ img => {
+							saveBackgroundImage( { bgImgID: img.id, bgImg: img.url } );
+						} }
+						type="image"
+						value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' ) }
+						render={ ( { open } ) => (
+							<Button
+								className={ 'components-button components-icon-button kt-cta-upload-btn' }
+								onClick={ open }
+							>
+								<Dashicon icon="format-image" />
+								{ __( 'Select Image' ) }
+							</Button>
+						) }
+					/>
+					{ backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg && (
+						<Fragment>
+							<Tooltip text={ __( 'Remove Image' ) }>
+								<Button
+									className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+									onClick={ onRemoveBGImage }
+								>
+									<Dashicon icon="no-alt" />
+								</Button>
+							</Tooltip>
+							<SelectControl
+								label={ __( 'Background Image Size' ) }
+								value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) }
+								options={ [
+									{ value: 'cover', label: __( 'Cover' ) },
+									{ value: 'contain', label: __( 'Contain' ) },
+									{ value: 'auto', label: __( 'Auto' ) },
+								] }
+								onChange={ value => saveBackgroundImage( { bgImgSize: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Position' ) }
+								value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' ) }
+								options={ [
+									{ value: 'center top', label: __( 'Center Top' ) },
+									{ value: 'center center', label: __( 'Center Center' ) },
+									{ value: 'center bottom', label: __( 'Center Bottom' ) },
+									{ value: 'left top', label: __( 'Left Top' ) },
+									{ value: 'left center', label: __( 'Left Center' ) },
+									{ value: 'left bottom', label: __( 'Left Bottom' ) },
+									{ value: 'right top', label: __( 'Right Top' ) },
+									{ value: 'right center', label: __( 'Right Center' ) },
+									{ value: 'right bottom', label: __( 'Right Bottom' ) },
+								] }
+								onChange={ value => saveBackgroundImage( { bgImgPosition: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Repeat' ) }
+								value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
+								options={ [
+									{ value: 'no-repeat', label: __( 'No Repeat' ) },
+									{ value: 'repeat', label: __( 'Repeat' ) },
+									{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+									{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+								] }
+								onChange={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Background Image Attachment' ) }
+								value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : 'scroll' ) }
+								options={ [
+									{ value: 'scroll', label: __( 'Scroll' ) },
+									{ value: 'fixed', label: __( 'Fixed' ) },
+								] }
+								onChange={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
+							/>
+						</Fragment>
+					) }
 					<h2>{ __( 'Border Color' ) }</h2>
 					<ColorPalette
 						value={ border }
@@ -414,7 +510,12 @@ class KadenceColumn extends Component {
 					marginTop: topMargin + 'px',
 					marginBottom: bottomMargin + 'px',
 					zIndex: zIndex,
-					background: backgroundString,
+					backgroundColor: backgroundString,
+					backgroundImage: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? `url(${ backgroundImg[ 0 ].bgImg })` : undefined ),
+					backgroundSize: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : undefined ),
+					backgroundPosition: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : undefined ),
+					backgroundRepeat: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : undefined ),
+					backgroundAttachment: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : undefined ),
 					borderColor: borderString,
 					borderWidth: ( borderWidth ? borderWidth[ 0 ] + 'px ' + borderWidth[ 1 ] + 'px ' + borderWidth[ 2 ] + 'px ' + borderWidth[ 3 ] + 'px' : '' ),
 					borderRadius: ( borderRadius ? borderRadius[ 0 ] + 'px ' + borderRadius[ 1 ] + 'px ' + borderRadius[ 2 ] + 'px ' + borderRadius[ 3 ] + 'px' : '' ),
