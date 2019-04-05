@@ -82,6 +82,9 @@ class Kadence_Blocks_Frontend {
 		register_block_type( 'kadence/accordion', array(
 			'render_callback' => array( $this, 'render_accordion_css' ),
 		) );
+		register_block_type( 'kadence/iconlist', array(
+			'render_callback' => array( $this, 'render_iconlist_css' ),
+		) );
 	}
 	/**
 	 * Render Inline CSS helper function
@@ -427,6 +430,46 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
+	 * Render Accordion CSS in Head
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_iconlist_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_iconlist_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Icon list CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_iconlist_css( $attributes, $content ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_iconlist_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
+	}
+	/**
 	 * Enqueue Gutenberg block assets
 	 *
 	 * @since 1.0.0
@@ -582,6 +625,13 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_infobox_scripts_gfonts( $blockattr );
 						}
 					}
+					if ( 'kadence/iconlist' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_iconlist_css_head( $blockattr );
+							$this->blocks_iconlist_scripts_gfonts( $blockattr );
+						}
+					}
 					if ( 'kadence/spacer' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -662,6 +712,13 @@ class Kadence_Blocks_Frontend {
 						$this->blocks_infobox_scripts_gfonts( $blockattr );
 					}
 				}
+				if ( 'kadence/iconlist' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_iconlist_css_head( $blockattr );
+						$this->blocks_iconlist_scripts_gfonts( $blockattr );
+					}
+				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -697,13 +754,15 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) ) {
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap {';
 			if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
-				$css .= 'border-color:' . $attr['containerBorder'] . ';';
+				$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
+				$css .= 'border-color:' . $this->hex2rgba( $attr['containerBorder'], $alpha ) . ';';
 			}
 			if ( isset( $attr['containerBorderRadius'] ) && ! empty( $attr['containerBorderRadius'] ) ) {
 				$css .= 'border-radius:' . $attr['containerBorderRadius'] . 'px;';
 			}
 			if ( isset( $attr['containerBackground'] ) && ! empty( $attr['containerBackground'] ) ) {
-				$css .= 'background:' . $attr['containerBackground'] . ';';
+				$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
+				$css .= 'background:' . $this->hex2rgba( $attr['containerBackground'], $alpha ) . ';';
 			}
 			if ( isset( $attr['containerPadding'] ) && is_array( $attr['containerPadding'] ) ) {
 				$css .= 'padding:' . $attr['containerPadding'][ 0 ] . 'px ' . $attr['containerPadding'][ 1 ] . 'px ' . $attr['containerPadding'][ 2 ] . 'px ' . $attr['containerPadding'][ 3 ] . 'px;';
@@ -714,8 +773,12 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover {';
-			$css .= 'border-color:' . ( isset( $attr['containerHoverBorder'] ) && ! empty( $attr['containerHoverBorder'] ) ? $attr['containerHoverBorder'] : '#eeeeee' ) . ';';
-			$css .= 'background:' . ( isset( $attr['containerHoverBackground'] ) && ! empty( $attr['containerHoverBackground'] ) ? $attr['containerHoverBackground'] : '#f2f2f2' ) . ';';
+			$border_hover = ( isset( $attr['containerHoverBorder'] ) && ! empty( $attr['containerHoverBorder'] ) ? $attr['containerHoverBorder'] : '#eeeeee' );
+			$alpha = ( isset( $attr['containerHoverBorderOpacity'] ) && is_numeric( $attr['containerHoverBorderOpacity'] ) ? $attr['containerHoverBorderOpacity'] : 1 );
+			$bg_hover = ( isset( $attr['containerHoverBackground'] ) && ! empty( $attr['containerHoverBackground'] ) ? $attr['containerHoverBackground'] : '#f2f2f2' );
+			$bg_alpha = ( isset( $attr['containerHoverBackgroundOpacity'] ) && is_numeric( $attr['containerHoverBackgroundOpacity'] ) ? $attr['containerHoverBackgroundOpacity'] : 1 );
+			$css .= 'border-color:' . $this->hex2rgba( $border_hover, $alpha ) . ';';
+			$css .= 'background:' . $this->hex2rgba( $bg_hover, $bg_alpha ) . ';';
 		$css .= '}';
 		if ( isset( $attr['mediaIcon'] ) && is_array( $attr['mediaIcon'] ) && is_array( $attr['mediaIcon'][ 0 ] ) ) {
 			$media_icon = $attr['mediaIcon'][ 0 ];
@@ -1262,6 +1325,105 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+	}
+	/**
+	 * Adds Google fonts for iconlist block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 */
+	public function blocks_iconlist_scripts_gfonts( $attr ) {
+		if ( isset( $attr['listStyles'] ) && is_array( $attr['listStyles'] ) && isset( $attr['listStyles'][0] ) && is_array( $attr['listStyles'][0] ) && isset( $attr['listStyles'][0]['google'] ) && $attr['listStyles'][0]['google'] && ( ! isset( $attr['listStyles'][0]['loadGoogle'] ) || true === $attr['listStyles'][0]['loadGoogle'] ) &&  isset( $attr['listStyles'][0]['family'] ) ) {
+			$list_font = $attr['listStyles'][0];
+			// Check if the font has been added yet
+			if ( ! array_key_exists( $list_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily' => $list_font['family'],
+					'fontvariants' => ( isset( $list_font['variant'] ) && ! empty( $list_font['variant'] ) ? array( $list_font['variant'] ) : array() ),
+					'fontsubsets' => ( isset( $list_font['subset'] ) && !empty( $list_font['subset'] ) ? array( $list_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $list_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $list_font['variant'], self::$gfonts[ $list_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $list_font['family'] ]['fontvariants'], $list_font['variant'] );
+				}
+				if ( ! in_array( $list_font['subset'], self::$gfonts[ $list_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $list_font['family'] ]['fontsubsets'], $list_font['subset'] );
+				}
+			}
+		}
+	}
+	/**
+	 * Builds CSS for Icon List block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_iconlist_array( $attr, $unique_id ) {
+		$css = '';
+		if ( isset( $attr['listGap'] ) && ! empty( $attr['listGap'] ) ) {
+			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child) {';
+				$css .= 'margin-bottom:' . $attr['listGap'] . 'px;';
+			$css .= '}';
+		}
+		if ( isset( $attr['listLabelGap'] ) && ! empty( $attr['listLabelGap'] ) ) {
+			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single {';
+				$css .= 'margin-right:' . $attr['listLabelGap'] . 'px;';
+			$css .= '}';
+		}		
+		if ( isset( $attr['listStyles'] ) && is_array( $attr['listStyles'] ) && is_array( $attr['listStyles'][ 0 ] ) ) {
+			$list_styles = $attr['listStyles'][ 0 ];
+			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap, .kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a {';
+			if ( isset( $list_styles['color'] ) && ! empty( $list_styles['color'] ) ) {
+				$css .= 'color:' . $list_styles['color'] .  ';';
+			}
+			if ( isset( $list_styles['size'] ) && is_array( $list_styles['size'] ) && ! empty( $list_styles['size'][0] ) ) {
+				$css .= 'font-size:' . $list_styles['size'][0] . ( ! isset( $list_styles['sizeType'] ) ? 'px' : $list_styles['sizeType'] ) . ';';
+			}
+			if ( isset( $list_styles['lineHeight'] ) && is_array( $list_styles['lineHeight'] ) && ! empty( $list_styles['lineHeight'][0] ) ) {
+				$css .= 'line-height:' . $list_styles['lineHeight'][0] . ( ! isset( $list_styles['lineType'] ) ? 'px' : $list_styles['lineType'] ) . ';';
+			}
+			if ( isset( $list_styles['letterSpacing'] ) && ! empty( $list_styles['letterSpacing'] ) ) {
+				$css .= 'letter-spacing:' . $list_styles['letterSpacing'] .  'px;';
+			}
+			if ( isset( $list_styles['textTransform'] ) && ! empty( $list_styles['textTransform'] ) ) {
+				$css .= 'text-transform:' . $list_styles['textTransform'] .  ';';
+			}
+			if ( isset( $list_styles['family'] ) && ! empty( $list_styles['family'] ) ) {
+				$css .= 'font-family:' . $list_styles['family'] .  ';';
+			}
+			if ( isset( $list_styles['style'] ) && ! empty( $list_styles['style'] ) ) {
+				$css .= 'font-style:' . $list_styles['style'] .  ';';
+			}
+			if ( isset( $list_styles['weight'] ) && ! empty( $list_styles['weight'] ) ) {
+				$css .= 'font-weight:' . $list_styles['weight'] .  ';';
+			}
+			$css .= '}';
+		}
+		if ( isset( $attr['listStyles'] ) && is_array( $attr['listStyles'] ) && isset( $attr['listStyles'][0] ) && is_array( $attr['listStyles'][0] ) && ( ( isset( $attr['listStyles'][0]['size'] ) && is_array( $attr['listStyles'][0]['size'] ) && isset( $attr['listStyles'][0]['size'][1] ) && ! empty( $attr['listStyles'][0]['size'][1] ) ) || ( isset( $attr['listStyles'][0]['lineHeight'] ) && is_array( $attr['listStyles'][0]['lineHeight'] ) && isset( $attr['listStyles'][0]['lineHeight'][1] ) && ! empty( $attr['listStyles'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {';
+			if ( isset( $attr['listStyles'][0]['size'][1] ) && ! empty( $attr['listStyles'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['listStyles'][0]['size'][1] . ( ! isset( $attr['listStyles'][0]['sizeType'] ) ? 'px' : $attr['listStyles'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['listStyles'][0]['lineHeight'][1] ) && ! empty( $attr['listStyles'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['listStyles'][0]['lineHeight'][1] . ( ! isset( $attr['listStyles'][0]['lineType'] ) ? 'px' : $attr['listStyles'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['listStyles'] ) && is_array( $attr['listStyles'] ) && isset( $attr['listStyles'][0] ) && is_array( $attr['listStyles'][0] ) && ( ( isset( $attr['listStyles'][0]['size'] ) && is_array( $attr['listStyles'][0]['size'] ) && isset( $attr['listStyles'][0]['size'][2] ) && ! empty( $attr['listStyles'][0]['size'][2] ) ) || ( isset( $attr['listStyles'][0]['lineHeight'] ) && is_array( $attr['listStyles'][0]['lineHeight'] ) && isset( $attr['listStyles'][0]['lineHeight'][2] ) && ! empty( $attr['listStyles'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {';
+				if ( isset( $attr['listStyles'][0]['size'][2] ) && ! empty( $attr['listStyles'][0]['size'][2] ) ) {
+					$css .= 'font-size:' . $attr['listStyles'][0]['size'][2] . ( ! isset( $attr['listStyles'][0]['sizeType'] ) ? 'px' : $attr['listStyles'][0]['sizeType'] ) . ';';
+				}
+				if ( isset( $attr['listStyles'][0]['lineHeight'][2] ) && ! empty( $attr['listStyles'][0]['lineHeight'][2] ) ) {
+					$css .= 'line-height:' . $attr['listStyles'][0]['lineHeight'][2] . ( ! isset( $attr['listStyles'][0]['lineType'] ) ? 'px' : $attr['listStyles'][0]['lineType'] ) . ';';
+				}
+			$css .= '}';
+			$css .= '}';
+		}
+		return $css;
 	}
 	/**
 	 * Adds Scripts for row block.

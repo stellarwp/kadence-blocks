@@ -32,17 +32,33 @@ const attributes = {
 		type: 'string',
 		default: '#f2f2f2',
 	},
+	containerBackgroundOpacity: {
+		type: 'number',
+		default: 1,
+	},
 	containerHoverBackground: {
 		type: 'string',
 		default: '#f2f2f2',
+	},
+	containerHoverBackgroundOpacity: {
+		type: 'number',
+		default: 1,
 	},
 	containerBorder: {
 		type: 'string',
 		default: '#eeeeee',
 	},
+	containerBorderOpacity: {
+		type: 'number',
+		default: 1,
+	},
 	containerHoverBorder: {
 		type: 'string',
 		default: '#eeeeee',
+	},
+	containerHoverBorderOpacity: {
+		type: 'number',
+		default: 1,
 	},
 	containerBorderWidth: {
 		type: 'array',

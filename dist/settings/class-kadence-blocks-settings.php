@@ -701,6 +701,12 @@ class Kadence_Blocks_Settings {
 				'desc'  => __( 'Create beautiful accordions! Each pane is able to contain any other block, customize title styles, content background and borders.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/accordion.jpg',
 			),
+			'kadence/iconlist'      => array(
+				'slug'  => 'kadence/iconlist',
+				'name'  => __( 'Icon List', 'kadence-blocks' ),
+				'desc'  => __( 'Add beautiful icons to your lists and make them more engaging. Over 1500 icons to choose from and unlimited styles.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/iconlist.jpg',
+			),
 		);
 		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );
 	}

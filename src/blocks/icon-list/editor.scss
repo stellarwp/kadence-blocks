@@ -1,0 +1,39 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+ .kt-svg-icon-list-item-wrap {
+	display: flex;
+	align-items: center;
+	text-align: left;
+}
+.kt-svg-icon-list-single {
+    margin-right: 10px;
+}
+.kt-svg-icon-list-item-wrap {
+.editor-rich-text {
+    flex-grow: 2;
+}
+}
+.block-editor-block-list__block[data-align=center] .kt-svg-icon-list-item-wrap {
+	justify-content: center;
+	.editor-rich-text {
+		min-width: 20px;
+		flex-grow: 0;
+	}
+}
+.kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
+    border: 0px solid transparent;
+}
+.kt-svg-icon-list-columns-2 {
+    grid-template-columns: 50% auto;
+    grid-template-rows: auto;
+    display: grid;
+}
+.kt-svg-icon-list-columns-3 {
+    grid-template-columns: 33% 33% auto;
+    grid-template-rows: auto;
+    display: grid;
+}

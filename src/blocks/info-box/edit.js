@@ -23,6 +23,7 @@ import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
 import IcoNames from '../../svgiconsnames';
 import FaIco from '../../faicons';
+import OpacityControl from '../../opacity-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 /**
  * Internal block libraries
@@ -145,7 +146,7 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -665,8 +666,8 @@ class KadenceInfoBox extends Component {
 				{ ( learnMoreStyles[ 0 ].colorHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${ learnMoreStyles[ 0 ].colorHover } !important; }` : '' ) }
 				{ ( learnMoreStyles[ 0 ].borderHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${ learnMoreStyles[ 0 ].borderHover } !important; }` : '' ) }
 				{ ( learnMoreStyles[ 0 ].backgroundHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${ learnMoreStyles[ 0 ].backgroundHover } !important; }` : '' ) }
-				{ ( containerHoverBackground ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { background: ${ containerHoverBackground } !important; }` : '' ) }
-				{ ( containerHoverBorder ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { border-color: ${ containerHoverBorder } !important; }` : '' ) }
+				{ ( containerHoverBackground ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { background: ${ ( containerHoverBackground ? hexToRGBA( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) ) } !important; }` : '' ) }
+				{ ( containerHoverBorder ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { border-color: ${ ( containerHoverBorder ? hexToRGBA( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) ) } !important; }` : '' ) }
 				{ ( displayShadow ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { box-shadow: ${ shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + hexToRGBA( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity ) } !important; }` : '' ) }
 				{ ( mediaStyle[ 0 ].hoverBackground ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${ mediaStyle[ 0 ].hoverBackground } !important; }` : '' ) }
 				{ ( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${ mediaStyle[ 0 ].hoverBorder } !important; }` : '' ) }
@@ -807,10 +808,20 @@ class KadenceInfoBox extends Component {
 																value={ containerHoverBackground }
 																onChange={ value => setAttributes( { containerHoverBackground: value } ) }
 															/>
+															<OpacityControl
+																value={ containerHoverBackgroundOpacity }
+																onChanged={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
+																label={ __( 'Background Hover Opacity' ) }
+															/>
 															<h2>{ __( 'Container Hover Border' ) }</h2>
 															<ColorPalette
 																value={ containerHoverBorder }
 																onChange={ value => setAttributes( { containerHoverBorder: value } ) }
+															/>
+															<OpacityControl
+																value={ containerHoverBorderOpacity }
+																onChanged={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
+																label={ __( 'Border Hover Opacity' ) }
 															/>
 														</Fragment>
 													);
@@ -822,10 +833,20 @@ class KadenceInfoBox extends Component {
 																value={ containerBackground }
 																onChange={ value => setAttributes( { containerBackground: value } ) }
 															/>
+															<OpacityControl
+																value={ containerBackgroundOpacity }
+																onChanged={ value => setAttributes( { containerBackgroundOpacity: value } ) }
+																label={ __( 'Background Opacity' ) }
+															/>
 															<h2>{ __( 'Container Border' ) }</h2>
 															<ColorPalette
 																value={ containerBorder }
 																onChange={ value => setAttributes( { containerBorder: value } ) }
+															/>
+															<OpacityControl
+																value={ containerBorderOpacity }
+																onChanged={ value => setAttributes( { containerBorderOpacity: value } ) }
+																label={ __( 'Border Opacity' ) }
 															/>
 														</Fragment>
 													);
@@ -1658,8 +1679,8 @@ class KadenceInfoBox extends Component {
 				{ ! this.state.showPreset && (
 					<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } ${ isSelectedClass } kt-info-halign-${ hAlign }` } style={ {
 						boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + hexToRGBA( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
-						borderColor: containerBorder,
-						background: containerBackground,
+						borderColor: ( containerBorder ? hexToRGBA( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
+						background: ( containerBackground ? hexToRGBA( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
 						borderRadius: containerBorderRadius + 'px',
 						borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
 						padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),

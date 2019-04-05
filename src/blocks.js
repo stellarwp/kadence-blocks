@@ -16,6 +16,7 @@ import './blocks/tab/block.js';
 import './blocks/info-box/block.js';
 import './blocks/accordion/block.js';
 import './blocks/pane/block.js';
+import './blocks/icon-list/block.js';
 
 import './plugins/kadence-control.js';
 import './plugins/editor-width.js';
