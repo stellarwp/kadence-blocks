@@ -135,67 +135,68 @@ class KadenceIconLists extends Component {
 			} );
 		};
 		const createNewListItem = ( beforetext, aftertext, previousIndex ) => {
-			const amount = Math.abs( 1 + listCount );
+			const amount = Math.abs( 1 + this.props.attributes.listCount );
 			const newUpdate = [];
+			const currentitems = this.props.attributes.items;
+			const addin = Math.abs( previousIndex + 1 );
+			this.setState( { focusIndex: addin } );
+			setAttributes( { listCount: amount } );
 			{ times( amount, n => {
 				let ind = n;
-				const addin = Math.abs( previousIndex + 1 );
-				this.setState( { focusIndex: addin } );
 				if ( n === addin ) {
 					newUpdate.push( {
-						icon: items[ previousIndex ].icon,
-						link: items[ previousIndex ].link,
-						target: items[ previousIndex ].target,
-						size: items[ previousIndex ].size,
+						icon: currentitems[ previousIndex ].icon,
+						link: currentitems[ previousIndex ].link,
+						target: currentitems[ previousIndex ].target,
+						size: currentitems[ previousIndex ].size,
 						text: aftertext,
-						width: items[ previousIndex ].width,
-						color: items[ previousIndex ].color,
-						background: items[ previousIndex ].background,
-						border: items[ previousIndex ].border,
-						borderRadius: items[ previousIndex ].borderRadius,
-						borderWidth: items[ previousIndex ].borderWidth,
-						padding: items[ previousIndex ].padding,
-						style: items[ previousIndex ].style,
+						width: currentitems[ previousIndex ].width,
+						color: currentitems[ previousIndex ].color,
+						background: currentitems[ previousIndex ].background,
+						border: currentitems[ previousIndex ].border,
+						borderRadius: currentitems[ previousIndex ].borderRadius,
+						borderWidth: currentitems[ previousIndex ].borderWidth,
+						padding: currentitems[ previousIndex ].padding,
+						style: currentitems[ previousIndex ].style,
 					} );
 				} else if ( n === previousIndex ) {
 					newUpdate.push( {
-						icon: items[ previousIndex ].icon,
-						link: items[ previousIndex ].link,
-						target: items[ previousIndex ].target,
-						size: items[ previousIndex ].size,
+						icon: currentitems[ previousIndex ].icon,
+						link: currentitems[ previousIndex ].link,
+						target: currentitems[ previousIndex ].target,
+						size: currentitems[ previousIndex ].size,
 						text: beforetext,
-						width: items[ previousIndex ].width,
-						color: items[ previousIndex ].color,
-						background: items[ previousIndex ].background,
-						border: items[ previousIndex ].border,
-						borderRadius: items[ previousIndex ].borderRadius,
-						borderWidth: items[ previousIndex ].borderWidth,
-						padding: items[ previousIndex ].padding,
-						style: items[ previousIndex ].style,
+						width: currentitems[ previousIndex ].width,
+						color: currentitems[ previousIndex ].color,
+						background: currentitems[ previousIndex ].background,
+						border: currentitems[ previousIndex ].border,
+						borderRadius: currentitems[ previousIndex ].borderRadius,
+						borderWidth: currentitems[ previousIndex ].borderWidth,
+						padding: currentitems[ previousIndex ].padding,
+						style: currentitems[ previousIndex ].style,
 					} );
 				} else {
 					if ( n > addin ) {
 						ind = Math.abs( n - 1 );
 					}
 					newUpdate.push( {
-						icon: items[ ind ].icon,
-						link: items[ ind ].link,
-						target: items[ ind ].target,
-						size: items[ ind ].size,
-						text: items[ ind ].text,
-						width: items[ ind ].width,
-						color: items[ ind ].color,
-						background: items[ ind ].background,
-						border: items[ ind ].border,
-						borderRadius: items[ ind ].borderRadius,
-						borderWidth: items[ ind ].borderWidth,
-						padding: items[ ind ].padding,
-						style: items[ ind ].style,
+						icon: currentitems[ ind ].icon,
+						link: currentitems[ ind ].link,
+						target: currentitems[ ind ].target,
+						size: currentitems[ ind ].size,
+						text: currentitems[ ind ].text,
+						width: currentitems[ ind ].width,
+						color: currentitems[ ind ].color,
+						background: currentitems[ ind ].background,
+						border: currentitems[ ind ].border,
+						borderRadius: currentitems[ ind ].borderRadius,
+						borderWidth: currentitems[ ind ].borderWidth,
+						padding: currentitems[ ind ].padding,
+						style: currentitems[ ind ].style,
 					} );
 				}
 			} ); }
 			setAttributes( { items: newUpdate } );
-			setAttributes( { listCount: amount } );
 		};
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
@@ -341,7 +342,7 @@ class KadenceIconLists extends Component {
 			return (
 				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` } >
 					{ items[ index ].icon && (
-						<GenIcon className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } icon={ ( 'fa' === items[ index ].icon.substring( 0, 2 ) ? FaIco[ items[ index ].icon ] : Ico[ items[ index ].icon ] ) } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } title={ ( items[ index ].title ? items[ index ].title : '' ) } style={ {
+						<GenIcon className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } icon={ ( 'fa' === items[ index ].icon.substring( 0, 2 ) ? FaIco[ items[ index ].icon ] : Ico[ items[ index ].icon ] ) } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
 							color: ( items[ index ].color ? items[ index ].color : undefined ),
 							backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? items[ index ].background : undefined ),
 							padding: ( items[ index ].padding && items[ index ].style !== 'default' ? items[ index ].padding + 'px' : undefined ),
@@ -356,6 +357,7 @@ class KadenceIconLists extends Component {
 						onChange={ value => {
 							saveListItem( { text: value }, index );
 						} }
+						isSelected={ ( this.state.focusIndex === index ? true : false ) }
 						unstableOnSplit={ ( before, after ) => {
 							createNewListItem( before, after, index );
 						} }

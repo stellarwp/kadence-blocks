@@ -12,6 +12,7 @@ import range from 'lodash/range';
 import map from 'lodash/map';
 import hexToRGBA from '../../hex-to-rgba';
 import TypographyControls from '../../typography-control';
+import InlineTypographyControls from '../../inline-typography-control';
 import WebfontLoader from '../../fontloader';
 
 import icons from '../../icons';
@@ -379,6 +380,50 @@ class KadenceAdvancedHeading extends Component {
 						label={ __( 'Change Heading Level' ) }
 						controls={ range( 1, 7 ).map( createLevelControlToolbar ) }
 					/>
+					<InlineTypographyControls
+						uniqueID={ uniqueID }
+						letterSpacing={ letterSpacing }
+						onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
+						fontFamily={ typography }
+						onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+						onFontChange={ ( select ) => {
+							setAttributes( {
+								typography: select.value,
+								googleFont: select.google,
+							} );
+						} }
+						googleFont={ googleFont }
+						onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
+						loadGoogleFont={ loadGoogleFont }
+						onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
+						fontVariant={ fontVariant }
+						onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
+						fontWeight={ fontWeight }
+						onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
+						fontStyle={ fontStyle }
+						onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
+						fontSubset={ fontSubset }
+						onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
+						textTransform={ textTransform }
+						onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
+						fontSizeArray={ false }
+						fontSize={ size }
+						onFontSize={ ( value ) => setAttributes( { size: value } ) }
+						fontSizeType={ sizeType }
+						onFontSizeType={ ( value ) => setAttributes( { sizeType: value } ) }
+						lineHeight={ lineHeight }
+						onLineHeight={ ( value ) => setAttributes( { lineHeight: value } ) }
+						lineHeightType={ lineType }
+						onLineHeightType={ ( value ) => setAttributes( { lineType: value } ) }
+						tabSize={ tabSize }
+						onTabSize={ ( value ) => setAttributes( { tabSize: value } ) }
+						tabLineHeight={ tabLineHeight }
+						onTabLineHeight={ ( value ) => setAttributes( { tabLineHeight: value } ) }
+						mobileSize={ mobileSize }
+						onMobileSize={ ( value ) => setAttributes( { mobileSize: value } ) }
+						mobileLineHeight={ mobileLineHeight }
+						onMobileLineHeight={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
+					/>
 					<AlignmentToolbar
 						value={ align }
 						onChange={ ( nextAlign ) => {
@@ -404,6 +449,11 @@ class KadenceAdvancedHeading extends Component {
 						/>
 						<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
 						{ tabControls }
+					</PanelBody>
+					<PanelBody
+						title={ __( 'Advanced Typography Settings' ) }
+						initialOpen={ false }
+					>
 						<TypographyControls
 							letterSpacing={ letterSpacing }
 							onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }

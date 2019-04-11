@@ -345,6 +345,12 @@ class Kadence_Blocks_Settings {
 					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
 				),
 			),
+			'kadence/iconlist' => array(
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
+				),
+			),
 		);
 		wp_enqueue_style( 'kadence-blocks-admin-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, 'all' );
 		wp_enqueue_script( 'kadence-blocks-admin-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, true );
@@ -531,7 +537,9 @@ class Kadence_Blocks_Settings {
 						<h2 class="nav-tab-wrapper">
 							<a class="nav-tab nav-tab-active nav-tab-link" data-tab-id="kt-dashboard" href="#"><?php echo esc_html__( 'Dashboard', 'kadence-blocks' ); ?></a>
 							<a class="nav-tab nav-tab-link" data-tab-id="kt-help" href="#"><?php echo esc_html__( 'Help / Tutorials', 'kadence-blocks' ); ?></a>
-						<!-- <a class="nav-tab go-pro-tab" target="_blank" href="https://www.kadencethemes.com/product/kadence-gutenberg-blocks/"><?php echo esc_html__( 'Go Pro', 'kadence-blocks' ); ?> <i class="dashicons dashicons-external"></i></a> -->
+							<?php if ( ! class_exists( 'Kadence_Blocks_Pro' ) ) { ?>
+								<a class="nav-tab go-pro-tab" target="_blank" href="https://www.kadenceblocks.com/pro/?utm_source=kadence-blocks&utm_medium=dashboard&utm_campaign=settings"><?php echo esc_html__( 'Pro', 'kadence-blocks' ); ?> <i class="dashicons dashicons-external"></i></a>
+							<?php } ?>
 						</h2>
 						<div id="kt-dashboard" class="nav-tab-content panel_open kt-admin-clearfix">
 							<div class="kad-helpful-links kt-main">

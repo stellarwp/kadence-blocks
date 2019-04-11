@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.1.1
-Stable tag: 1.4.6
+Stable tag: 1.4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.4.7 =
+* Add: Inline Typography Settings for Advanaced Heading Block.
+* Update: Improve Typography Settings Performace.
+* Fix: Issue with list block clearing when using return to create a new line.
+* Fix: Issue where error showed if you didn't have any typography options selected.
 
 = 1.4.6 =
 * Update: Add Opacity options to Info Box.
