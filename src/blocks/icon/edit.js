@@ -59,6 +59,7 @@ const kticonUniqueIDs = [];
 class KadenceIcons extends Component {
 	constructor() {
 		super( ...arguments );
+		this.saveArrayUpdate = this.saveArrayUpdate.bind( this );
 		this.state = {
 			marginControl: 'linked',
 		};
@@ -396,6 +397,7 @@ class KadenceIcons extends Component {
 										} );
 									} ); }
 									setAttributes( { icons: newicons } );
+									this.saveArrayUpdate( { title: icons[ 0 ].title }, 0 );
 								}
 								setAttributes( { iconCount: newcount } );
 							} }

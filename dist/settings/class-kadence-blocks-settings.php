@@ -351,6 +351,12 @@ class Kadence_Blocks_Settings {
 					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
 				),
 			),
+			'kadence/testimonials' => array(
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
+				),
+			),
 		);
 		wp_enqueue_style( 'kadence-blocks-admin-css', KT_BLOCKS_URL . '/dist/settings/styles.css', array( 'wp-jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, 'all' );
 		wp_enqueue_script( 'kadence-blocks-admin-js', KT_BLOCKS_URL . '/dist/settings/scripts.js', array( 'jquery', 'jquery-ui-dialog', 'wp-color-picker' ), KT_BLOCKS_VERSION, true );
@@ -435,16 +441,18 @@ class Kadence_Blocks_Settings {
 	 * Outputs Sidebar number field
 	 */
 	public function sidebar_callback() {
-		$data = self::get_data_options( 'kt_blocks_editor_width' );
-		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[sidebar]' size='25' type='number' value='" . ( isset( $data['sidebar'] ) ? esc_attr( $data['sidebar'] ) : '750' ) . "' />";
+		$data    = self::get_data_options( 'kt_blocks_editor_width' );
+		$default = apply_filters( 'kadence_blocks_default_small_editor_width', '750' );
+		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[sidebar]' size='25' type='number' value='" . ( isset( $data['sidebar'] ) ? esc_attr( $data['sidebar'] ) : esc_attr( $default ) ) . "' />";
 		echo '<span class="kt-sub-input-description">' . esc_html__( 'px', 'kadence-blocks' ) . '</span>';
 	}
 	/**
 	 * Outputs no sidebar number field
 	 */
 	public function nosidebar_callback() {
-		$data = self::get_data_options( 'kt_blocks_editor_width' );
-		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[nosidebar]' size='25' type='number' value='" . ( isset( $data['nosidebar'] ) ? esc_attr( $data['nosidebar'] ) : '1140' ) . "' />";
+		$data    = self::get_data_options( 'kt_blocks_editor_width' );
+		$default = apply_filters( 'kadence_blocks_default_large_editor_width', '1140' );
+		echo "<input id='kt-sidebar-max' name='kt_blocks_editor_width[nosidebar]' size='25' type='number' value='" . ( isset( $data['nosidebar'] ) ? esc_attr( $data['nosidebar'] ) : esc_attr( $default ) ) . "' />";
 		echo '<span class="kt-sub-input-description">' . esc_html__( 'px', 'kadence-blocks' ) . '</span>';
 	}
 
@@ -715,6 +723,12 @@ class Kadence_Blocks_Settings {
 				'desc'  => __( 'Add beautiful icons to your lists and make them more engaging. Over 1500 icons to choose from and unlimited styles.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/iconlist.jpg',
 			),
+			'kadence/testimonials'      => array(
+				'slug'  => 'kadence/testimonials',
+				'name'  => __( 'Testimonials', 'kadence-blocks' ),
+				'desc'  => __( 'Create confidence in your brand or product by showing off beautiful unique testimonials, add as a carousel or a grid.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/testimonials.jpg',
+			),
 		);
 		return apply_filters( 'kadence_blocks_enable_disable_array', $blocks );
 	}
@@ -730,7 +744,7 @@ class Kadence_Blocks_Settings {
 		}
 		// Get settings.
 		$current_settings = get_option( 'kt_blocks_config_blocks' );
-		$new_settings = wp_unslash( $_POST['config'] );
+		$new_settings     = wp_unslash( $_POST['config'] );
 		if ( ! is_array( $new_settings ) ) {
 			return wp_send_json_error( __( 'Nothing to Save', 'kadence-blocks' ) );
 		}
@@ -796,7 +810,7 @@ class Kadence_Blocks_Settings {
 		}
 		// Get variables.
 		$unregistered_blocks = get_option( 'kt_blocks_unregistered_blocks' );
-		$block = sanitize_text_field( wp_unslash( $_POST['kt_block'] ) );
+		$block               = sanitize_text_field( wp_unslash( $_POST['kt_block'] ) );
 
 		if ( ! is_array( $unregistered_blocks ) ) {
 			$unregistered_blocks = array();
@@ -828,7 +842,7 @@ class Kadence_Blocks_Settings {
 		}
 		// Get variables.
 		$editor_widths = get_option( 'kt_blocks_editor_width' );
-		$default = sanitize_text_field( wp_unslash( $_POST['post_default'] ) );
+		$default       = sanitize_text_field( wp_unslash( $_POST['post_default'] ) );
 
 		if ( ! is_array( $editor_widths ) ) {
 			$editor_widths = array();

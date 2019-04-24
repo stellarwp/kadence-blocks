@@ -67,6 +67,7 @@ const ktinfoboxUniqueIDs = [];
 class KadenceInfoBox extends Component {
 	constructor() {
 		super( ...arguments );
+		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			containerPaddingControl: 'linked',
 			containerBorderControl: 'linked',
@@ -1516,7 +1517,7 @@ class KadenceInfoBox extends Component {
 						) }
 						{ this.showSettings( 'shadowSettings' ) && (
 							<PanelBody
-								title={ __( 'Container Shaddow' ) }
+								title={ __( 'Container Shadow' ) }
 								initialOpen={ false }
 							>
 								<ToggleControl

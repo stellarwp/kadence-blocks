@@ -51,6 +51,7 @@ const kticonlistUniqueIDs = [];
 class KadenceIconLists extends Component {
 	constructor() {
 		super( ...arguments );
+		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			focusIndex: null,
 			settings: {},
@@ -197,6 +198,7 @@ class KadenceIconLists extends Component {
 				}
 			} ); }
 			setAttributes( { items: newUpdate } );
+			saveListItem( { size: items[ 0 ].size }, 0 );
 		};
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
@@ -405,6 +407,7 @@ class KadenceIconLists extends Component {
 											} );
 										} ); }
 										setAttributes( { items: newitems } );
+										saveListItem( { size: items[ 0 ].size }, 0 );
 									}
 									setAttributes( { listCount: newcount } );
 								} }

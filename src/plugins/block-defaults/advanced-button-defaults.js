@@ -31,6 +31,8 @@ import icons from '../../icons';
 class KadenceButtonDefault extends Component {
 	constructor() {
 		super( ...arguments );
+		this.saveConfig = this.saveConfig.bind( this );
+		this.saveConfigState = this.saveConfigState.bind( this );
 		this.state = {
 			isOpen: false,
 			isSaving: false,

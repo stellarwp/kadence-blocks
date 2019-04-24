@@ -76,7 +76,7 @@ class KadenceInfoBoxSettings extends Component {
 						<hr />
 						<h2>{ __( 'Control Individual Settings Groups' ) }</h2>
 						<SelectControl
-							label={ __( 'Enable Count Settings' ) }
+							label={ __( 'Enable Container Settings' ) }
 							value={ ( infoboxSettings.containerSettings ? infoboxSettings.containerSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users' ) },

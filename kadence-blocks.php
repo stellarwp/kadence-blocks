@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'KT_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KT_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KT_BLOCKS_VERSION', '1.4.7' );
+define( 'KT_BLOCKS_VERSION', '1.4.8' );
 
 /**
  * Add a check before redirecting

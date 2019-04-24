@@ -41,3 +41,6 @@
     grid-template-rows: auto;
     display: grid;
 }
+.kt-info-icon-animate-flip .kadence-info-box-icon-inner-container {
+    backface-visibility: hidden;
+}

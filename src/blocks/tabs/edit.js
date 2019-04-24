@@ -77,6 +77,7 @@ const kttabsUniqueIDs = [];
 class KadenceTabs extends Component {
 	constructor() {
 		super( ...arguments );
+		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			hovered: 'false',
 			showPreset: false,
@@ -374,10 +375,11 @@ class KadenceTabs extends Component {
 										text: sprintf( __( 'Tab %d' ), tabnumber ),
 										icon: titles[ 0 ].icon,
 										iconSide: titles[ 0 ].iconSide,
-										onlyIcon: titles[ 0 ].iconHover,
+										onlyIcon: titles[ 0 ].onlyIcon,
 									} );
 								} ); }
 								setAttributes( { titles: newtabs } );
+								this.saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
 							}
 							setAttributes( {
 								tabCount: nexttabs,
@@ -407,8 +409,8 @@ class KadenceTabs extends Component {
 							</Tooltip>
 						) ) }
 					</ButtonGroup>
-					<h2>{ __( 'Set Inital Open Tab' ) }</h2>
-					<ButtonGroup aria-label={ __( 'Inital Open Tab' ) }>
+					<h2>{ __( 'Set initial Open Tab' ) }</h2>
+					<ButtonGroup aria-label={ __( 'initial Open Tab' ) }>
 						{ times( tabCount, n => (
 							<Button
 								key={ n + 1 }
@@ -465,7 +467,7 @@ class KadenceTabs extends Component {
 		const renderTitles = ( index ) => {
 			return (
 				<Fragment>
-					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( ! titles[ index ].onlyIcon ? 'always' : 'only' ) } kt-tabs-icon-side-${ ( titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` } style={ {
+					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` } style={ {
 						margin: ( titleMargin ? titleMargin[ 0 ] + 'px ' + titleMargin[ 1 ] + 'px ' + titleMargin[ 2 ] + 'px ' + titleMargin[ 3 ] + 'px' : '' ),
 					} }>
 						<div className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
@@ -484,13 +486,13 @@ class KadenceTabs extends Component {
 							padding: ( titlePadding ? titlePadding[ 0 ] + 'px ' + titlePadding[ 1 ] + 'px ' + titlePadding[ 2 ] + 'px ' + titlePadding[ 3 ] + 'px' : '' ),
 							borderColor: titleBorder,
 						} } onClick={ () => setAttributes( { currentTab: 1 + index } ) } onKeyPress={ () => setAttributes( { currentTab: 1 + index } ) } tabIndex="0" role="button">
-							{ titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
+							{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
 							) }
 							<RichText
 								tagName="div"
 								placeholder={ __( 'Tab Title' ) }
-								value={ titles[ index ].text }
+								value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab%d' ), ( 1 + index ) ) ) }
 								unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { text: value }, index );
@@ -502,7 +504,7 @@ class KadenceTabs extends Component {
 								} }
 								keepPlaceholderOnFocus
 							/>
-							{ titles[ index ].icon && 'right' === titles[ index ].iconSide && (
+							{ titles[ index ] && titles[ index ].icon && 'right' === titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
 							) }
 						</div>
@@ -523,7 +525,7 @@ class KadenceTabs extends Component {
 				>
 					<FontIconPicker
 						icons={ IcoNames }
-						value={ titles[ index ].icon }
+						value={ titles[ index ] && titles[ index ].icon ? titles[ index ].icon : '' }
 						onChange={ value => {
 							this.saveArrayUpdate( { icon: value }, index );
 						} }
@@ -534,7 +536,7 @@ class KadenceTabs extends Component {
 					/>
 					<SelectControl
 						label={ __( 'Icon Location' ) }
-						value={ titles[ index ].iconSide }
+						value={ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) }
 						options={ [
 							{ value: 'right', label: __( 'Right' ) },
 							{ value: 'left', label: __( 'Left' ) },
@@ -546,7 +548,7 @@ class KadenceTabs extends Component {
 					/>
 					<ToggleControl
 						label={ __( 'Show Only Icon?' ) }
-						checked={ titles[ index ].onlyIcon }
+						checked={ ( titles[ index ] && titles[ index ].onlyIcon ? titles[ index ].onlyIcon : false ) }
 						onChange={ value => {
 							this.saveArrayUpdate( { onlyIcon: value }, index );
 						} }
@@ -847,6 +849,7 @@ class KadenceTabs extends Component {
 												} );
 											} ); }
 											setAttributes( { titles: newtabs } );
+											this.saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
 										}
 										setAttributes( {
 											tabCount: nexttabs,
@@ -855,8 +858,8 @@ class KadenceTabs extends Component {
 									min={ 1 }
 									max={ 24 }
 								/>
-								<h2>{ __( 'Set Inital Open Tab' ) }</h2>
-								<ButtonGroup aria-label={ __( 'Inital Open Tab' ) }>
+								<h2>{ __( 'Set Initial Open Tab' ) }</h2>
+								<ButtonGroup aria-label={ __( 'Initial Open Tab' ) }>
 									{ times( tabCount, n => (
 										<Button
 											key={ n + 1 }
@@ -957,7 +960,7 @@ class KadenceTabs extends Component {
 								initialOpen={ false }
 							>
 								<MeasurementControls
-									label={ __( 'Title Paddding (px)' ) }
+									label={ __( 'Title Padding (px)' ) }
 									measurement={ titlePadding }
 									control={ titlePaddingControl }
 									onChange={ ( value ) => setAttributes( { titlePadding: value } ) }

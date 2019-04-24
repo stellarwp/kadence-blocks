@@ -23,10 +23,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 function kadence_gutenberg_editor_assets() {
 	// Scripts.
 	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KT_BLOCKS_VERSION, true );
-	$editor_widths = get_option( 'kt_blocks_editor_width', array() );
-	$sidebar_size = 750;
+	$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
+	$sidebar_size   = 750;
 	$nosidebar_size = 1140;
-	$jssize = 2000;
+	$jssize         = 2000;
 	if ( ! isset( $editor_widths['enable_editor_width'] ) || 'true' === $editor_widths['enable_editor_width'] ) {
 		if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
 			$add_size = 10;
@@ -223,12 +223,17 @@ function kadence_blocks_admin_body_class( $classes ) {
 }
 add_filter( 'admin_body_class', 'kadence_blocks_admin_body_class' );
 
-
+/**
+ * Add block category for Kadence Blocks.
+ *
+ * @param array  $categories the array of block categories.
+ * @param object $post the post object.
+ */
 function kadence_blocks_block_category( $categories, $post ) {
 	return array_merge(
 		array(
 			array(
-				'slug' => 'kadence-blocks',
+				'slug'  => 'kadence-blocks',
 				'title' => __( 'Kadence Blocks', 'kadence-blocks' ),
 			),
 		),
@@ -236,3 +241,4 @@ function kadence_blocks_block_category( $categories, $post ) {
 	);
 }
 add_filter( 'block_categories', 'kadence_blocks_block_category', 10, 2 );
+

@@ -78,6 +78,7 @@ const getPanesTemplate = memoize( ( panes ) => {
 class KadenceAccordionComponent extends Component {
 	constructor() {
 		super( ...arguments );
+		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			contentPaddingControl: 'linked',
 			contentBorderRadiusControl: 'linked',
@@ -404,8 +405,8 @@ class KadenceAccordionComponent extends Component {
 									/>
 									{ ! startCollapsed && (
 										<Fragment>
-											<h2>{ __( 'Inital Open Accordion' ) }</h2>
-											<ButtonGroup aria-label={ __( 'Inital Open Accordion' ) }>
+											<h2>{ __( 'Initial Open Accordion' ) }</h2>
+											<ButtonGroup aria-label={ __( 'Initial Open Accordion' ) }>
 												{ map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
 													<Button
 														key={ attributes.id - 1 }
@@ -731,8 +732,8 @@ class KadenceAccordionComponent extends Component {
 						) }
 						<div className={ `kt-accordion-inner-wrap kt-accordion-${ uniqueID } kt-start-active-pane-${ openPane + 1 } kt-accodion-icon-style-${ ( iconStyle && showIcon ? iconStyle : 'none' ) } kt-accodion-icon-side-${ ( iconSide ? iconSide : 'right' ) }` }>
 							<InnerBlocks
-								template={ getPanesTemplate( paneCount ) }
-								templateLock="insert"
+								template={ getPanesTemplate( ( 0 === realPaneCount ? paneCount : realPaneCount ) ) }
+								templateLock={ false }
 								allowedBlocks={ ALLOWED_BLOCKS } />
 						</div>
 					</div>
@@ -741,7 +742,8 @@ class KadenceAccordionComponent extends Component {
 							className="kt-accordion-add"
 							isPrimary={ true }
 							onClick={ () => {
-								wp.data.dispatch( 'core/editor' ).insertBlock( createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } ), undefined, clientId );
+								let newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
+								wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, realPaneCount, clientId );
 								setAttributes( { paneCount: paneCount + 1 } );
 							} }
 						>

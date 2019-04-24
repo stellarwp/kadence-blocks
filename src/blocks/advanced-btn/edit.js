@@ -53,6 +53,8 @@ const ktadvancedbuttonUniqueIDs = [];
 class KadenceAdvancedButton extends Component {
 	constructor() {
 		super( ...arguments );
+		this.showSettings = this.showSettings.bind( this );
+		this.saveArrayUpdate = this.saveArrayUpdate.bind( this );
 		this.state = {
 			btnFocused: 'false',
 			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
@@ -572,6 +574,7 @@ class KadenceAdvancedButton extends Component {
 													} );
 												} ); }
 												setAttributes( { btns: newbtns } );
+												this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
 											}
 											setAttributes( { btnCount: newcount } );
 										} }

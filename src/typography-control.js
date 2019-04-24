@@ -125,6 +125,8 @@ class TypographyControls extends Component {
 	}
 	render() {
 		const { tagLevel,
+			tagLowLevel = 1,
+			tagHighLevel = 7,
 			lineHeight,
 			lineHeightType = 'px',
 			fontSize,
@@ -455,7 +457,7 @@ class TypographyControls extends Component {
 				{ onTagLevel && (
 					<Fragment>
 						<p>{ __( 'HTML Tag' ) }</p>
-						<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
+						<Toolbar controls={ range( tagLowLevel, tagHighLevel ).map( createLevelControl ) } />
 					</Fragment>
 				) }
 				{ onFontSize && onFontSizeType && (

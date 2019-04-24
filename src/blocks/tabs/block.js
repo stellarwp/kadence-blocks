@@ -39,7 +39,7 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+const { __, sprintf } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 
 function kt_stripStringRender( string ) {
@@ -296,17 +296,17 @@ registerBlockType( 'kadence/tabs', {
 				const renderTitles = ( index ) => {
 					return (
 						<Fragment>
-							<li id={ `tab-${ kt_stripStringRender( titles[ index ].text.toString() ) }` } className={ `kt-title-item kt-title-item-${ 1 + index } kt-tabs-svg-show-${ ( ! titles[ index ].onlyIcon ? 'always' : 'only' ) } kt-tabs-icon-side-${ ( titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` }>
-								<a href={ `#tab-${ kt_stripStringRender( titles[ index ].text.toString() ) }` } data-tab={ 1 + index } className={ `kt-tab-title kt-tab-title-${ 1 + index } ` } >
-									{ titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
+							<li id={ `tab-${ ( titles[ index ] && titles[ index ].text ? kt_stripStringRender( titles[ index ].text.toString() ) : kt_stripStringRender( __( 'Tab' ) + ( 1 + index ) ) ) }` } className={ `kt-title-item kt-title-item-${ 1 + index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` }>
+								<a href={ `#tab-${ ( titles[ index ] && titles[ index ].text ? kt_stripStringRender( titles[ index ].text.toString() ) : kt_stripStringRender( __( 'Tab' ) + ( 1 + index ) ) ) }` } data-tab={ 1 + index } className={ `kt-tab-title kt-tab-title-${ 1 + index } ` } >
+									{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
 										<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
 									) }
 									<RichText.Content
 										tagName="span"
-										value={ titles[ index ].text }
+										value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab %d' ), ( 1 + index ) ) ) }
 										className={ 'kt-title-text' }
 									/>
-									{ titles[ index ].icon && 'right' === titles[ index ].iconSide && (
+									{ titles[ index ] && titles[ index ].icon && 'right' === titles[ index ].iconSide && (
 										<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } />
 									) }
 								</a>

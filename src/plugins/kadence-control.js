@@ -28,6 +28,8 @@ import KadenceAdvancedBtn from './block-defaults/advanced-button-defaults';
 import KadenceAdvancedSettings from './block-settings/advanced-button-settings';
 import KadenceIconList from './block-defaults/icon-list-defaults';
 import KadenceIconListSettings from './block-settings/icon-list-settings';
+import KadenceTestimonials from './block-defaults/testimonial-defaults';
+import KadenceTestimonialsSettings from './block-settings/testimonial-settings';
 
 /*
  * Components
@@ -82,6 +84,10 @@ class KadenceConfig extends Component {
 						<KadenceIconList />
 						{ 'admin' === this.state.user && (
 							<KadenceIconListSettings />
+						) }
+						<KadenceTestimonials />
+						{ 'admin' === this.state.user && (
+							<KadenceTestimonialsSettings />
 						) }
 						{ map( this.state.controls, ( { Control } ) => (
 							<Control />
