@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.1.1
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.5.1 =
+* Tweak: Testimonial Grid CSS.
 
 = 1.5.0 =
 * Fix: Testimonial Carousel Pagination not showing.

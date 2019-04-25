@@ -83,6 +83,9 @@
 .kt-testimonial-columns-5 .kt-testimonial-grid-wrap {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
+.kt-testimonial-grid-wrap .kt-testimonial-item-wrap {
+    width: 100%;
+}
  .kt-testimonial-media-inner-wrap {
     overflow: hidden;
 	border: 0 solid transparent;
