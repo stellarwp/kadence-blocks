@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.1.1
-Stable tag: 1.4.8
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,17 +84,24 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.5.0 =
+* Fix: Testimonial Carousel Pagination not showing.
+* Tweak: Testimonial Carousel CSS.
+
+= 1.4.9 =
+* Fix: Update not showing.
+
 = 1.4.8 =
-* Add: Testimonial Block
-* Fix: Typo.
+* Add: NEW Testimonial Block!
 * Fix: IE issue with images in info box.
 * Fix: FireFox issue with Icon flip.
 * Fix: IE issue with parallax scrolling.
 * Fix: Gutenberg 5.5 broke add accordion item button.
+* Fix: A few Typos.
 
 = 1.4.7 =
-* Add: Inline Typography Settings for Advanaced Heading Block.
-* Update: Improve Typography Settings Performace.
+* Add: Inline Typography Settings for Advanced Heading Block.
+* Update: Improve Typography Settings Performance.
 * Fix: Issue with list block clearing when using return to create a new line.
 * Fix: Issue where error showed if you didn't have any typography options selected.
 

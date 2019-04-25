@@ -1733,7 +1733,7 @@ class KadenceTestimonials extends Component {
 				{ ! this.state.showPreset && (
 					<Fragment>
 						{ layout && layout === 'carousel' && (
-							<div className={ 'kt-blocks-carousel' }>
+							<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ dotStyle }` }>
 								{ itemsCount !== 1 && (
 									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } { ...sliderSettings }>
 										{ times( itemsCount, n =>
