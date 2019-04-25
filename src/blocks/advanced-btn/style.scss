@@ -41,3 +41,13 @@
 .wp-block-kadence-advancedbtn .kt-btn-wrap {
     margin-right: 5px;
 }
+.kt-force-btn-fullwidth {
+    display: flex;
+}
+.kt-force-btn-fullwidth .kt-btn-wrap {
+    display: block;
+    flex-grow: 1;
+}
+.kt-force-btn-fullwidth .kt-btn-wrap .kt-button {
+    justify-content: center;
+}

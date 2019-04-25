@@ -727,6 +727,7 @@ class KadenceInfoBox extends Component {
 							<div className="kt-controls-link-wrap">
 								<h2>{ __( 'Link' ) }</h2>
 								<URLInput
+									className="kt-btn-link-input"
 									value={ link }
 									onChange={ value => setAttributes( { link: value } ) }
 								/>

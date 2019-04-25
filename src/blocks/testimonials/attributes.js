@@ -121,6 +121,7 @@ const attributes = {
 			borderWidth: [ 0, 0, 0, 0 ],
 			padding: [ 0, 0, 0, 0 ],
 			margin: [ '', '', '', '' ],
+			ratio: '',
 		} ],
 	},
 	itemsCount: {

@@ -310,6 +310,7 @@ class KadenceTestimonialDefault extends Component {
 			borderWidth: [ 0, 0, 0, 0 ],
 			padding: [ 0, 0, 0, 0 ],
 			margin: [ '', '', '', '' ],
+			ratio: '',
 		} ];
 		const mediaStyles = ( undefined !== testimonialConfig.mediaStyles && testimonialConfig.mediaStyles[ 0 ] ? testimonialConfig.mediaStyles : mediaStylesDefaultStyles );
 		const savemediaStyles = ( value ) => {
@@ -888,6 +889,8 @@ class KadenceTestimonialDefault extends Component {
 											onLineHeightType={ ( value ) => saveTitleFont( { lineType: value } ) }
 											letterSpacing={ titleFont[ 0 ].letterSpacing }
 											onLetterSpacing={ ( value ) => saveTitleFont( { letterSpacing: value } ) }
+											textTransform={ titleFont[ 0 ].textTransform }
+											onTextTransform={ ( value ) => saveTitleFont( { textTransform: value } ) }
 											fontFamily={ titleFont[ 0 ].family }
 											onFontFamily={ ( value ) => saveTitleFont( { family: value } ) }
 											onFontChange={ ( select ) => {
@@ -981,6 +984,8 @@ class KadenceTestimonialDefault extends Component {
 											onLineHeightType={ ( value ) => saveContentFont( { lineType: value } ) }
 											letterSpacing={ contentFont[ 0 ].letterSpacing }
 											onLetterSpacing={ ( value ) => saveContentFont( { letterSpacing: value } ) }
+											textTransform={ contentFont[ 0 ].textTransform }
+											onTextTransform={ ( value ) => saveContentFont( { textTransform: value } ) }
 											fontFamily={ contentFont[ 0 ].family }
 											onFontFamily={ ( value ) => saveContentFont( { family: value } ) }
 											onFontChange={ ( select ) => {
@@ -1085,25 +1090,58 @@ class KadenceTestimonialDefault extends Component {
 											step={ 1 }
 										/>
 										{ 'card' === style && (
-											<SelectControl
-												label={ __( 'Image Size' ) }
-												options={ [
-													{
-														label: __( 'Cover' ),
-														value: 'cover',
-													},
-													{
-														label: __( 'Contain' ),
-														value: 'Contain',
-													},
-													{
-														label: __( 'Auto' ),
-														value: 'auto',
-													},
-												] }
-												value={ mediaStyles[ 0 ].backgroundSize }
-												onChange={ ( value ) => savemediaStyles( { backgroundSize: value } ) }
-											/>
+											<Fragment>
+												<SelectControl
+													label={ __( 'Image Size' ) }
+													options={ [
+														{
+															label: __( 'Cover' ),
+															value: 'cover',
+														},
+														{
+															label: __( 'Contain' ),
+															value: 'Contain',
+														},
+														{
+															label: __( 'Auto' ),
+															value: 'auto',
+														},
+													] }
+													value={ mediaStyles[ 0 ].backgroundSize }
+													onChange={ ( value ) => savemediaStyles( { backgroundSize: value } ) }
+												/>
+												<SelectControl
+													label={ __( 'Image Ratio' ) }
+													options={ [
+														{
+															label: __( 'Landscape 4:2' ),
+															value: '50',
+														},
+														{
+															label: __( 'Landscape 3:2' ),
+															value: '66.67',
+														},
+														{
+															label: __( 'Landscape 4:3' ),
+															value: '75',
+														},
+														{
+															label: __( 'Portrait 3:4' ),
+															value: '133.33',
+														},
+														{
+															label: __( 'Portrait 2:3' ),
+															value: '150',
+														},
+														{
+															label: __( 'Square 1:1' ),
+															value: '100',
+														},
+													] }
+													value={ ( undefined === mediaStyles[ 0 ].ratio || '' === mediaStyles[ 0 ].ratio ? '50' : mediaStyles[ 0 ].ratio ) }
+													onChange={ ( value ) => savemediaStyles( { ratio: value } ) }
+												/>
+											</Fragment>
 										) }
 									</PanelBody>
 								) }
@@ -1133,6 +1171,8 @@ class KadenceTestimonialDefault extends Component {
 											onLineHeightType={ ( value ) => saveNameFont( { lineType: value } ) }
 											letterSpacing={ nameFont[ 0 ].letterSpacing }
 											onLetterSpacing={ ( value ) => saveNameFont( { letterSpacing: value } ) }
+											textTransform={ nameFont[ 0 ].textTransform }
+											onTextTransform={ ( value ) => saveNameFont( { textTransform: value } ) }
 											fontFamily={ nameFont[ 0 ].family }
 											onFontFamily={ ( value ) => saveNameFont( { family: value } ) }
 											onFontChange={ ( select ) => {
@@ -1183,6 +1223,8 @@ class KadenceTestimonialDefault extends Component {
 											onLineHeightType={ ( value ) => saveOccupationFont( { lineType: value } ) }
 											letterSpacing={ occupationFont[ 0 ].letterSpacing }
 											onLetterSpacing={ ( value ) => saveOccupationFont( { letterSpacing: value } ) }
+											textTransform={ occupationFont[ 0 ].textTransform }
+											onTextTransform={ ( value ) => saveOccupationFont( { textTransform: value } ) }
 											fontFamily={ occupationFont[ 0 ].family }
 											onFontFamily={ ( value ) => saveOccupationFont( { family: value } ) }
 											onFontChange={ ( select ) => {

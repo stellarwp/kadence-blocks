@@ -300,6 +300,7 @@ class KadenceIcons extends Component {
 					<p className="components-base-control__label">{ __( 'Link' ) }</p>
 					<URLInput
 						value={ icons[ index ].link }
+						className="kt-btn-link-input"
 						onChange={ value => {
 							this.saveArrayUpdate( { link: value }, index );
 						} }

@@ -642,7 +642,9 @@ class KadenceTestimonials extends Component {
 						marginBottom: ( mediaStyles[ 0 ].margin && undefined !== mediaStyles[ 0 ].margin[ 2 ] ? mediaStyles[ 0 ].margin[ 2 ] + 'px' : undefined ),
 						marginLeft: ( mediaStyles[ 0 ].margin && undefined !== mediaStyles[ 0 ].margin[ 3 ] ? mediaStyles[ 0 ].margin[ 3 ] + 'px' : undefined ),
 					} } >
-						<div className={ 'kadence-testimonial-image-intrisic' }>
+						<div className={ 'kadence-testimonial-image-intrisic' } style={ {
+							paddingBottom: ( undefined === mediaStyles[ 0 ].ratio || '' === mediaStyles[ 0 ].ratio ? undefined : mediaStyles[ 0 ].ratio + '%' ),
+						} }>
 							{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
 								<GenIcon className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } icon={ ( 'fa' === testimonials[ index ].icon.substring( 0, 2 ) ? FaIco[ testimonials[ index ].icon ] : Ico[ testimonials[ index ].icon ] ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
 									display: 'flex',
@@ -772,6 +774,7 @@ class KadenceTestimonials extends Component {
 										fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
 										lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
 										letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
+										textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
 										fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
 										padding: ( titleFont[ 0 ].padding ? titleFont[ 0 ].padding[ 0 ] + 'px ' + titleFont[ 0 ].padding[ 1 ] + 'px ' + titleFont[ 0 ].padding[ 2 ] + 'px ' + titleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
 										margin: ( titleFont[ 0 ].margin ? titleFont[ 0 ].margin[ 0 ] + 'px ' + titleFont[ 0 ].margin[ 1 ] + 'px ' + titleFont[ 0 ].margin[ 2 ] + 'px ' + titleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
@@ -814,6 +817,7 @@ class KadenceTestimonials extends Component {
 										color: contentFont[ 0 ].color,
 										fontSize: contentFont[ 0 ].size[ 0 ] + contentFont[ 0 ].sizeType,
 										lineHeight: ( contentFont[ 0 ].lineHeight && contentFont[ 0 ].lineHeight[ 0 ] ? contentFont[ 0 ].lineHeight[ 0 ] + contentFont[ 0 ].lineType : undefined ),
+										textTransform: ( contentFont[ 0 ].textTransform ? contentFont[ 0 ].textTransform : undefined ),
 										letterSpacing: contentFont[ 0 ].letterSpacing + 'px',
 										fontFamily: ( contentFont[ 0 ].family ? contentFont[ 0 ].family : '' ),
 									} }
@@ -843,6 +847,7 @@ class KadenceTestimonials extends Component {
 												color: nameFont[ 0 ].color,
 												fontSize: nameFont[ 0 ].size[ 0 ] + nameFont[ 0 ].sizeType,
 												lineHeight: ( nameFont[ 0 ].lineHeight && nameFont[ 0 ].lineHeight[ 0 ] ? nameFont[ 0 ].lineHeight[ 0 ] + nameFont[ 0 ].lineType : undefined ),
+												textTransform: ( nameFont[ 0 ].textTransform ? nameFont[ 0 ].textTransform : undefined ),
 												letterSpacing: nameFont[ 0 ].letterSpacing + 'px',
 												fontFamily: ( nameFont[ 0 ].family ? nameFont[ 0 ].family : '' ),
 											} }
@@ -865,6 +870,7 @@ class KadenceTestimonials extends Component {
 												color: occupationFont[ 0 ].color,
 												fontSize: occupationFont[ 0 ].size[ 0 ] + occupationFont[ 0 ].sizeType,
 												lineHeight: ( occupationFont[ 0 ].lineHeight && occupationFont[ 0 ].lineHeight[ 0 ] ? occupationFont[ 0 ].lineHeight[ 0 ] + occupationFont[ 0 ].lineType : undefined ),
+												textTransform: ( occupationFont[ 0 ].textTransform ? occupationFont[ 0 ].textTransform : undefined ),
 												letterSpacing: occupationFont[ 0 ].letterSpacing + 'px',
 												fontFamily: ( occupationFont[ 0 ].family ? occupationFont[ 0 ].family : '' ),
 											} }
@@ -1294,6 +1300,8 @@ class KadenceTestimonials extends Component {
 												onLineHeightType={ ( value ) => saveTitleFont( { lineType: value } ) }
 												letterSpacing={ titleFont[ 0 ].letterSpacing }
 												onLetterSpacing={ ( value ) => saveTitleFont( { letterSpacing: value } ) }
+												textTransform={ titleFont[ 0 ].textTransform }
+												onTextTransform={ ( value ) => saveTitleFont( { textTransform: value } ) }
 												fontFamily={ titleFont[ 0 ].family }
 												onFontFamily={ ( value ) => saveTitleFont( { family: value } ) }
 												onFontChange={ ( select ) => {
@@ -1395,6 +1403,8 @@ class KadenceTestimonials extends Component {
 												onLineHeightType={ ( value ) => saveContentFont( { lineType: value } ) }
 												letterSpacing={ contentFont[ 0 ].letterSpacing }
 												onLetterSpacing={ ( value ) => saveContentFont( { letterSpacing: value } ) }
+												textTransform={ contentFont[ 0 ].textTransform }
+												onTextTransform={ ( value ) => saveContentFont( { textTransform: value } ) }
 												fontFamily={ contentFont[ 0 ].family }
 												onFontFamily={ ( value ) => saveContentFont( { family: value } ) }
 												onFontChange={ ( select ) => {
@@ -1503,25 +1513,58 @@ class KadenceTestimonials extends Component {
 												step={ 1 }
 											/>
 											{ 'card' === style && (
-												<SelectControl
-													label={ __( 'Image Size' ) }
-													options={ [
-														{
-															label: __( 'Cover' ),
-															value: 'cover',
-														},
-														{
-															label: __( 'Contain' ),
-															value: 'Contain',
-														},
-														{
-															label: __( 'Auto' ),
-															value: 'auto',
-														},
-													] }
-													value={ mediaStyles[ 0 ].backgroundSize }
-													onChange={ ( value ) => savemediaStyles( { backgroundSize: value } ) }
-												/>
+												<Fragment>
+													<SelectControl
+														label={ __( 'Image Size' ) }
+														options={ [
+															{
+																label: __( 'Cover' ),
+																value: 'cover',
+															},
+															{
+																label: __( 'Contain' ),
+																value: 'Contain',
+															},
+															{
+																label: __( 'Auto' ),
+																value: 'auto',
+															},
+														] }
+														value={ mediaStyles[ 0 ].backgroundSize }
+														onChange={ ( value ) => savemediaStyles( { backgroundSize: value } ) }
+													/>
+													<SelectControl
+														label={ __( 'Image Ratio' ) }
+														options={ [
+															{
+																label: __( 'Landscape 4:2' ),
+																value: '50',
+															},
+															{
+																label: __( 'Landscape 3:2' ),
+																value: '66.67',
+															},
+															{
+																label: __( 'Landscape 4:3' ),
+																value: '75',
+															},
+															{
+																label: __( 'Portrait 3:4' ),
+																value: '133.33',
+															},
+															{
+																label: __( 'Portrait 2:3' ),
+																value: '150',
+															},
+															{
+																label: __( 'Square 1:1' ),
+																value: '100',
+															},
+														] }
+														value={ ( undefined === mediaStyles[ 0 ].ratio || '' === mediaStyles[ 0 ].ratio ? '50' : mediaStyles[ 0 ].ratio ) }
+														onChange={ ( value ) => savemediaStyles( { ratio: value } ) }
+													/>
+												</Fragment>
 											) }
 										</Fragment>
 									) }
@@ -1555,6 +1598,8 @@ class KadenceTestimonials extends Component {
 												onLineHeightType={ ( value ) => saveNameFont( { lineType: value } ) }
 												letterSpacing={ nameFont[ 0 ].letterSpacing }
 												onLetterSpacing={ ( value ) => saveNameFont( { letterSpacing: value } ) }
+												textTransform={ nameFont[ 0 ].textTransform }
+												onTextTransform={ ( value ) => saveNameFont( { textTransform: value } ) }
 												fontFamily={ nameFont[ 0 ].family }
 												onFontFamily={ ( value ) => saveNameFont( { family: value } ) }
 												onFontChange={ ( select ) => {
@@ -1607,6 +1652,8 @@ class KadenceTestimonials extends Component {
 												onLineHeight={ ( value ) => saveOccupationFont( { lineHeight: value } ) }
 												lineHeightType={ occupationFont[ 0 ].lineType }
 												onLineHeightType={ ( value ) => saveOccupationFont( { lineType: value } ) }
+												textTransform={ occupationFont[ 0 ].textTransform }
+												onTextTransform={ ( value ) => saveOccupationFont( { textTransform: value } ) }
 												letterSpacing={ occupationFont[ 0 ].letterSpacing }
 												onLetterSpacing={ ( value ) => saveOccupationFont( { letterSpacing: value } ) }
 												fontFamily={ occupationFont[ 0 ].family }

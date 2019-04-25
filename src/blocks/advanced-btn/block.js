@@ -115,10 +115,14 @@ registerBlockType( 'kadence/advancedbtn', {
 			type: 'string',
 			default: 'normal',
 		},
+		forceFullwidth: {
+			type: 'bool',
+			default: false,
+		},
 	},
 	edit,
 	save: props => {
-		const { attributes: { btnCount, btns, hAlign, uniqueID, letterSpacing } } = props;
+		const { attributes: { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth } } = props;
 		const renderSaveBtns = ( index ) => {
 			let relAttr;
 			if ( '_blank' === btns[ index ].target && true === btns[ index ].noFollow ) {
@@ -156,7 +160,7 @@ registerBlockType( 'kadence/advancedbtn', {
 			);
 		};
 		return (
-			<div className={ `kt-btn-align-${ hAlign } kt-btns-wrap kt-btns${ uniqueID }` }>
+			<div className={ `kt-btn-align-${ hAlign } kt-btns-wrap kt-btns${ uniqueID }${ ( forceFullwidth ? ' kt-force-btn-fullwidth' : '' ) }` }>
 				{ times( btnCount, n => renderSaveBtns( n ) ) }
 			</div>
 		);

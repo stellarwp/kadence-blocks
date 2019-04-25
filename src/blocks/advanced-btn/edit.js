@@ -29,6 +29,7 @@ const {
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
+	InspectorAdvancedControls,
 } = wp.editor;
 const {
 	Component,
@@ -128,7 +129,7 @@ class KadenceAdvancedButton extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth }, className, setAttributes, isSelected } = this.props;
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -254,6 +255,7 @@ class KadenceAdvancedButton extends Component {
 					<p className="components-base-control__label">{ __( 'Link' ) }</p>
 					<URLInput
 						value={ btns[ index ].link }
+						className="kt-btn-link-input"
 						onChange={ value => {
 							this.saveArrayUpdate( { link: value }, index );
 						} }
@@ -524,7 +526,7 @@ class KadenceAdvancedButton extends Component {
 		return (
 			<Fragment>
 				{ renderCSS }
-				<div id={ `kt-btns_${ uniqueID }` } className={ `${ className } kt-btn-align-${ hAlign }` }>
+				<div id={ `kt-btns_${ uniqueID }` } className={ `${ className } kt-btn-align-${ hAlign }${ ( forceFullwidth ? ' kt-force-btn-fullwidth' : '' ) }` }>
 					<BlockControls>
 						<AlignmentToolbar
 							value={ hAlign }
@@ -532,91 +534,100 @@ class KadenceAdvancedButton extends Component {
 						/>
 					</BlockControls>
 					{ this.showSettings( 'allSettings' ) && (
-						<InspectorControls>
-							{ this.showSettings( 'countSettings' ) && (
-								<PanelBody
-									title={ __( 'Button Count' ) }
-									initialOpen={ true }
-								>
-									<RangeControl
-										label={ __( 'Number of Buttons' ) }
-										value={ btnCount }
-										onChange={ newcount => {
-											const newbtns = btns;
-											if ( newbtns.length < newcount ) {
-												const amount = Math.abs( newcount - newbtns.length );
-												{ times( amount, n => {
-													newbtns.push( {
-														text: newbtns[ 0 ].text,
-														link: newbtns[ 0 ].link,
-														target: newbtns[ 0 ].target,
-														size: newbtns[ 0 ].size,
-														paddingBT: newbtns[ 0 ].paddingBT,
-														paddingLR: newbtns[ 0 ].paddingLR,
-														color: newbtns[ 0 ].color,
-														background: newbtns[ 0 ].background,
-														border: newbtns[ 0 ].border,
-														backgroundOpacity: newbtns[ 0 ].backgroundOpacity,
-														borderOpacity: newbtns[ 0 ].borderOpacity,
-														borderRadius: newbtns[ 0 ].borderRadius,
-														borderWidth: newbtns[ 0 ].borderWidth,
-														colorHover: newbtns[ 0 ].colorHover,
-														backgroundHover: newbtns[ 0 ].backgroundHover,
-														borderHover: newbtns[ 0 ].borderHover,
-														backgroundHoverOpacity: newbtns[ 0 ].backgroundHoverOpacity,
-														borderHoverOpacity: newbtns[ 0 ].borderHoverOpacity,
-														icon: newbtns[ 0 ].icon,
-														iconSide: newbtns[ 0 ].iconSide,
-														iconHover: newbtns[ 0 ].iconHover,
-														cssClass: ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
-														noFollow: ( newbtns[ 0 ].noFollow ? newbtns[ 0 ].noFollow : false ),
-														gap: ( newbtns[ 0 ].gap ? newbtns[ 0 ].gap : 5 ),
-													} );
-												} ); }
-												setAttributes( { btns: newbtns } );
-												this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
-											}
-											setAttributes( { btnCount: newcount } );
-										} }
-										min={ 1 }
-										max={ 5 }
-									/>
-								</PanelBody>
-							) }
-							{ renderArray }
-							{ this.showSettings( 'fontSettings' ) && (
-								<PanelBody
-									title={ __( 'Font Family' ) }
-									initialOpen={ false }
-									className="kt-font-family-area"
-								>
-									<TypographyControls
-										letterSpacing={ letterSpacing }
-										onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
-										fontFamily={ typography }
-										onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
-										onFontChange={ ( select ) => {
-											setAttributes( {
-												typography: select.value,
-												googleFont: select.google,
-											} );
-										} }
-										googleFont={ googleFont }
-										onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
-										loadGoogleFont={ loadGoogleFont }
-										onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
-										fontVariant={ fontVariant }
-										onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
-										fontWeight={ fontWeight }
-										onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
-										fontStyle={ fontStyle }
-										onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
-										fontSubset={ fontSubset }
-										onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
-									/>
-								</PanelBody>
-							) }
-						</InspectorControls>
+						<Fragment>
+							<InspectorControls>
+								{ this.showSettings( 'countSettings' ) && (
+									<PanelBody
+										title={ __( 'Button Count' ) }
+										initialOpen={ true }
+									>
+										<RangeControl
+											label={ __( 'Number of Buttons' ) }
+											value={ btnCount }
+											onChange={ newcount => {
+												const newbtns = btns;
+												if ( newbtns.length < newcount ) {
+													const amount = Math.abs( newcount - newbtns.length );
+													{ times( amount, n => {
+														newbtns.push( {
+															text: newbtns[ 0 ].text,
+															link: newbtns[ 0 ].link,
+															target: newbtns[ 0 ].target,
+															size: newbtns[ 0 ].size,
+															paddingBT: newbtns[ 0 ].paddingBT,
+															paddingLR: newbtns[ 0 ].paddingLR,
+															color: newbtns[ 0 ].color,
+															background: newbtns[ 0 ].background,
+															border: newbtns[ 0 ].border,
+															backgroundOpacity: newbtns[ 0 ].backgroundOpacity,
+															borderOpacity: newbtns[ 0 ].borderOpacity,
+															borderRadius: newbtns[ 0 ].borderRadius,
+															borderWidth: newbtns[ 0 ].borderWidth,
+															colorHover: newbtns[ 0 ].colorHover,
+															backgroundHover: newbtns[ 0 ].backgroundHover,
+															borderHover: newbtns[ 0 ].borderHover,
+															backgroundHoverOpacity: newbtns[ 0 ].backgroundHoverOpacity,
+															borderHoverOpacity: newbtns[ 0 ].borderHoverOpacity,
+															icon: newbtns[ 0 ].icon,
+															iconSide: newbtns[ 0 ].iconSide,
+															iconHover: newbtns[ 0 ].iconHover,
+															cssClass: ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
+															noFollow: ( newbtns[ 0 ].noFollow ? newbtns[ 0 ].noFollow : false ),
+															gap: ( newbtns[ 0 ].gap ? newbtns[ 0 ].gap : 5 ),
+														} );
+													} ); }
+													setAttributes( { btns: newbtns } );
+													this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
+												}
+												setAttributes( { btnCount: newcount } );
+											} }
+											min={ 1 }
+											max={ 5 }
+										/>
+									</PanelBody>
+								) }
+								{ renderArray }
+								{ this.showSettings( 'fontSettings' ) && (
+									<PanelBody
+										title={ __( 'Font Family' ) }
+										initialOpen={ false }
+										className="kt-font-family-area"
+									>
+										<TypographyControls
+											letterSpacing={ letterSpacing }
+											onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
+											fontFamily={ typography }
+											onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+											onFontChange={ ( select ) => {
+												setAttributes( {
+													typography: select.value,
+													googleFont: select.google,
+												} );
+											} }
+											googleFont={ googleFont }
+											onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
+											loadGoogleFont={ loadGoogleFont }
+											onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
+											fontVariant={ fontVariant }
+											onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
+											fontWeight={ fontWeight }
+											onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
+											fontStyle={ fontStyle }
+											onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
+											fontSubset={ fontSubset }
+											onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
+										/>
+									</PanelBody>
+								) }
+							</InspectorControls>
+							<InspectorAdvancedControls>
+								<ToggleControl
+									label={ __( 'Force Button Fullwidth' ) }
+									checked={ ( undefined !== forceFullwidth ? forceFullwidth : false ) }
+									onChange={ ( value ) => setAttributes( { forceFullwidth: value } ) }
+								/>
+							</InspectorAdvancedControls>
+						</Fragment>
 					) }
 					<div className={ 'btn-inner-wrap' } >
 						{ renderPreviewArray }

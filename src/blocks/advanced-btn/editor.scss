@@ -4,7 +4,9 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
-
+ .kt-btn-link-input input {
+    max-width: 100%;
+}
  // Controls
 .components-base-control__field .components-range-control__slider+.dashicon.dashicons-editor-textcolor {
     width: 30px;
@@ -136,4 +138,17 @@
 }
 .wp-block-kadence-advancedbtn .btn-area-wrap {
     margin-right: 5px;
+}
+.kt-force-btn-fullwidth .btn-inner-wrap > div {
+    display: flex;
+}
+.wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .btn-area-wrap {
+    display: block;
+    flex-grow:1;
+}
+.wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .btn-area-wrap .kt-button-wrap {
+    display:block;
+}
+.wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .kt-button {
+    justify-content: center;
 }
