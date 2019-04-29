@@ -643,7 +643,7 @@ class KadenceTestimonials extends Component {
 						marginLeft: ( mediaStyles[ 0 ].margin && undefined !== mediaStyles[ 0 ].margin[ 3 ] ? mediaStyles[ 0 ].margin[ 3 ] + 'px' : undefined ),
 					} } >
 						<div className={ 'kadence-testimonial-image-intrisic' } style={ {
-							paddingBottom: ( undefined === mediaStyles[ 0 ].ratio || '' === mediaStyles[ 0 ].ratio ? undefined : mediaStyles[ 0 ].ratio + '%' ),
+							paddingBottom: ( 'card' === style && ( undefined !== mediaStyles[ 0 ].ratio || '' !== mediaStyles[ 0 ].ratio ) ? mediaStyles[ 0 ].ratio + '%' : undefined ),
 						} }>
 							{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
 								<GenIcon className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } icon={ ( 'fa' === testimonials[ index ].icon.substring( 0, 2 ) ? FaIco[ testimonials[ index ].icon ] : Ico[ testimonials[ index ].icon ] ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {

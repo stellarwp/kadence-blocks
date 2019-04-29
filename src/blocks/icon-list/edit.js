@@ -52,6 +52,7 @@ class KadenceIconLists extends Component {
 	constructor() {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
+		this.saveListItem = this.saveListItem.bind( this );
 		this.state = {
 			focusIndex: null,
 			settings: {},
@@ -96,6 +97,18 @@ class KadenceIconLists extends Component {
 		}
 		return false;
 	}
+	saveListItem = ( value, thisIndex ) => {
+		const currentItems = this.props.attributes.items;
+		const newUpdate = currentItems.map( ( item, index ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+		this.props.setAttributes( {
+			items: newUpdate,
+		} );
+	};
 	render() {
 		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID }, className, setAttributes } = this.props;
 		const gconfig = {
@@ -115,17 +128,6 @@ class KadenceIconLists extends Component {
 				listStyles: newUpdate,
 			} );
 		};
-		const saveListItem = ( value, thisIndex ) => {
-			const newUpdate = items.map( ( item, index ) => {
-				if ( index === thisIndex ) {
-					item = { ...item, ...value };
-				}
-				return item;
-			} );
-			setAttributes( {
-				items: newUpdate,
-			} );
-		};
 		const saveAllListItem = ( value ) => {
 			const newUpdate = items.map( ( item, index ) => {
 				item = { ...item, ...value };
@@ -137,68 +139,87 @@ class KadenceIconLists extends Component {
 		};
 		const createNewListItem = ( beforetext, aftertext, previousIndex ) => {
 			const amount = Math.abs( 1 + this.props.attributes.listCount );
-			const newUpdate = [];
-			const currentitems = this.props.attributes.items;
+			const currentItems = this.props.attributes.items;
+			const newItems = [ {
+				icon: currentItems[ 0 ].icon,
+				link: currentItems[ 0 ].link,
+				target: currentItems[ 0 ].target,
+				size: currentItems[ 0 ].size,
+				text: currentItems[ 0 ].text,
+				width: currentItems[ 0 ].width,
+				color: currentItems[ 0 ].color,
+				background: currentItems[ 0 ].background,
+				border: currentItems[ 0 ].border,
+				borderRadius: currentItems[ 0 ].borderRadius,
+				borderWidth: currentItems[ 0 ].borderWidth,
+				padding: currentItems[ 0 ].padding,
+				style: currentItems[ 0 ].style,
+			} ];
 			const addin = Math.abs( previousIndex + 1 );
 			this.setState( { focusIndex: addin } );
-			setAttributes( { listCount: amount } );
-			{ times( amount, n => {
-				let ind = n;
-				if ( n === addin ) {
-					newUpdate.push( {
-						icon: currentitems[ previousIndex ].icon,
-						link: currentitems[ previousIndex ].link,
-						target: currentitems[ previousIndex ].target,
-						size: currentitems[ previousIndex ].size,
-						text: aftertext,
-						width: currentitems[ previousIndex ].width,
-						color: currentitems[ previousIndex ].color,
-						background: currentitems[ previousIndex ].background,
-						border: currentitems[ previousIndex ].border,
-						borderRadius: currentitems[ previousIndex ].borderRadius,
-						borderWidth: currentitems[ previousIndex ].borderWidth,
-						padding: currentitems[ previousIndex ].padding,
-						style: currentitems[ previousIndex ].style,
-					} );
-				} else if ( n === previousIndex ) {
-					newUpdate.push( {
-						icon: currentitems[ previousIndex ].icon,
-						link: currentitems[ previousIndex ].link,
-						target: currentitems[ previousIndex ].target,
-						size: currentitems[ previousIndex ].size,
-						text: beforetext,
-						width: currentitems[ previousIndex ].width,
-						color: currentitems[ previousIndex ].color,
-						background: currentitems[ previousIndex ].background,
-						border: currentitems[ previousIndex ].border,
-						borderRadius: currentitems[ previousIndex ].borderRadius,
-						borderWidth: currentitems[ previousIndex ].borderWidth,
-						padding: currentitems[ previousIndex ].padding,
-						style: currentitems[ previousIndex ].style,
-					} );
-				} else {
-					if ( n > addin ) {
-						ind = Math.abs( n - 1 );
+			{
+				times( amount, n => {
+					let ind = n;
+					if ( n === 0 ) {
+						if ( 0 === previousIndex ) {
+							newItems[ 0 ].text = beforetext;
+						}
+					} else if ( n === addin ) {
+						newItems.push( {
+							icon: currentItems[ previousIndex ].icon,
+							link: currentItems[ previousIndex ].link,
+							target: currentItems[ previousIndex ].target,
+							size: currentItems[ previousIndex ].size,
+							text: aftertext,
+							width: currentItems[ previousIndex ].width,
+							color: currentItems[ previousIndex ].color,
+							background: currentItems[ previousIndex ].background,
+							border: currentItems[ previousIndex ].border,
+							borderRadius: currentItems[ previousIndex ].borderRadius,
+							borderWidth: currentItems[ previousIndex ].borderWidth,
+							padding: currentItems[ previousIndex ].padding,
+							style: currentItems[ previousIndex ].style,
+						} );
+					} else if ( n === previousIndex ) {
+						newItems.push( {
+							icon: currentItems[ previousIndex ].icon,
+							link: currentItems[ previousIndex ].link,
+							target: currentItems[ previousIndex ].target,
+							size: currentItems[ previousIndex ].size,
+							text: beforetext,
+							width: currentItems[ previousIndex ].width,
+							color: currentItems[ previousIndex ].color,
+							background: currentItems[ previousIndex ].background,
+							border: currentItems[ previousIndex ].border,
+							borderRadius: currentItems[ previousIndex ].borderRadius,
+							borderWidth: currentItems[ previousIndex ].borderWidth,
+							padding: currentItems[ previousIndex ].padding,
+							style: currentItems[ previousIndex ].style,
+						} );
+					} else {
+						if ( n > addin ) {
+							ind = Math.abs( n - 1 );
+						}
+						newItems.push( {
+							icon: currentItems[ ind ].icon,
+							link: currentItems[ ind ].link,
+							target: currentItems[ ind ].target,
+							size: currentItems[ ind ].size,
+							text: currentItems[ ind ].text,
+							width: currentItems[ ind ].width,
+							color: currentItems[ ind ].color,
+							background: currentItems[ ind ].background,
+							border: currentItems[ ind ].border,
+							borderRadius: currentItems[ ind ].borderRadius,
+							borderWidth: currentItems[ ind ].borderWidth,
+							padding: currentItems[ ind ].padding,
+							style: currentItems[ ind ].style,
+						} );
 					}
-					newUpdate.push( {
-						icon: currentitems[ ind ].icon,
-						link: currentitems[ ind ].link,
-						target: currentitems[ ind ].target,
-						size: currentitems[ ind ].size,
-						text: currentitems[ ind ].text,
-						width: currentitems[ ind ].width,
-						color: currentitems[ ind ].color,
-						background: currentitems[ ind ].background,
-						border: currentitems[ ind ].border,
-						borderRadius: currentitems[ ind ].borderRadius,
-						borderWidth: currentitems[ ind ].borderWidth,
-						padding: currentitems[ ind ].padding,
-						style: currentitems[ ind ].style,
-					} );
-				}
-			} ); }
-			setAttributes( { items: newUpdate } );
-			saveListItem( { size: items[ 0 ].size }, 0 );
+				} );
+				setAttributes( { items: newItems } );
+				setAttributes( { listCount: amount } );
+			}
 		};
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
@@ -213,7 +234,7 @@ class KadenceIconLists extends Component {
 					<URLInput
 						value={ items[ index ].link }
 						onChange={ value => {
-							saveListItem( { link: value }, index );
+							this.saveListItem( { link: value }, index );
 						} }
 					/>
 					<SelectControl
@@ -224,14 +245,14 @@ class KadenceIconLists extends Component {
 							{ value: '_blank', label: __( 'New Window' ) },
 						] }
 						onChange={ value => {
-							saveListItem( { target: value }, index );
+							this.saveListItem( { target: value }, index );
 						} }
 					/>
 					<FontIconPicker
 						icons={ IcoNames }
 						value={ items[ index ].icon }
 						onChange={ value => {
-							saveListItem( { icon: value }, index );
+							this.saveListItem( { icon: value }, index );
 						} }
 						appendTo="body"
 						renderFunc={ renderSVG }
@@ -242,7 +263,7 @@ class KadenceIconLists extends Component {
 						label={ __( 'Icon Size' ) }
 						value={ items[ index ].size }
 						onChange={ value => {
-							saveListItem( { size: value }, index );
+							this.saveListItem( { size: value }, index );
 						} }
 						min={ 5 }
 						max={ 250 }
@@ -252,7 +273,7 @@ class KadenceIconLists extends Component {
 							label={ __( 'Line Width' ) }
 							value={ items[ index ].width }
 							onChange={ value => {
-								saveListItem( { width: value }, index );
+								this.saveListItem( { width: value }, index );
 							} }
 							step={ 0.5 }
 							min={ 0.5 }
@@ -263,7 +284,7 @@ class KadenceIconLists extends Component {
 					<ColorPalette
 						value={ items[ index ].color }
 						onChange={ value => {
-							saveListItem( { color: value }, index );
+							this.saveListItem( { color: value }, index );
 						} }
 					/>
 					<SelectControl
@@ -274,7 +295,7 @@ class KadenceIconLists extends Component {
 							{ value: 'stacked', label: __( 'Stacked' ) },
 						] }
 						onChange={ value => {
-							saveListItem( { style: value }, index );
+							this.saveListItem( { style: value }, index );
 						} }
 					/>
 					{ items[ index ].style !== 'default' && (
@@ -283,7 +304,7 @@ class KadenceIconLists extends Component {
 							<ColorPalette
 								value={ items[ index ].background }
 								onChange={ value => {
-									saveListItem( { background: value }, index );
+									this.saveListItem( { background: value }, index );
 								} }
 							/>
 						</Fragment>
@@ -294,7 +315,7 @@ class KadenceIconLists extends Component {
 							<ColorPalette
 								value={ items[ index ].border }
 								onChange={ value => {
-									saveListItem( { border: value }, index );
+									this.saveListItem( { border: value }, index );
 								} }
 							/>
 						</Fragment>
@@ -304,7 +325,7 @@ class KadenceIconLists extends Component {
 							label={ __( 'Border Size (px)' ) }
 							value={ items[ index ].borderWidth }
 							onChange={ value => {
-								saveListItem( { borderWidth: value }, index );
+								this.saveListItem( { borderWidth: value }, index );
 							} }
 							min={ 0 }
 							max={ 20 }
@@ -315,7 +336,7 @@ class KadenceIconLists extends Component {
 							label={ __( 'Border Radius (%)' ) }
 							value={ items[ index ].borderRadius }
 							onChange={ value => {
-								saveListItem( { borderRadius: value }, index );
+								this.saveListItem( { borderRadius: value }, index );
 							} }
 							min={ 0 }
 							max={ 50 }
@@ -326,7 +347,7 @@ class KadenceIconLists extends Component {
 							label={ __( 'Padding (px)' ) }
 							value={ items[ index ].padding }
 							onChange={ value => {
-								saveListItem( { padding: value }, index );
+								this.saveListItem( { padding: value }, index );
 							} }
 							min={ 0 }
 							max={ 180 }
@@ -357,7 +378,7 @@ class KadenceIconLists extends Component {
 						tagName="div"
 						value={ items[ index ].text }
 						onChange={ value => {
-							saveListItem( { text: value }, index );
+							this.saveListItem( { text: value }, index );
 						} }
 						isSelected={ ( this.state.focusIndex === index ? true : false ) }
 						unstableOnSplit={ ( before, after ) => {
@@ -407,7 +428,7 @@ class KadenceIconLists extends Component {
 											} );
 										} ); }
 										setAttributes( { items: newitems } );
-										saveListItem( { size: items[ 0 ].size }, 0 );
+										this.saveListItem( { size: items[ 0 ].size }, 0 );
 									}
 									setAttributes( { listCount: newcount } );
 								} }

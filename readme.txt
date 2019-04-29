@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.4
 Tested up to: 5.1.1
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,9 +22,12 @@ This plugin adds custom blocks to extend Gutenberg's editing capabilities to bet
 * Advanced Heading - [demo](https://www.kadenceblocks.com/advanced-heading-block/) 
 * Advanced Button - [demo](https://www.kadenceblocks.com/advanced-button-block/)
 * Tabs - [demo](https://www.kadenceblocks.com/tabs-block/)
+* Accordion - [demo](https://www.kadenceblocks.com/accordion-block/) 
+* Testimonials - [demo](https://www.kadenceblocks.com/testimonial-block/) 
 * Icon - [demo](https://www.kadenceblocks.com/icon-block/)
 * Spacer / Divider - [demo](https://www.kadenceblocks.com/spacer-divider-block/) 
-* Info Box - [demo](https://www.kadenceblocks.com/info-box-block/) 
+* Info Box - [demo](https://www.kadenceblocks.com/info-box-block/)
+* Icon List - [demo](https://www.kadenceblocks.com/icon-list-block/) 
 
 = Overview Video =
 https://www.youtube.com/watch?v=pSrCYcOeuMc
@@ -49,12 +52,6 @@ One of the challenges with creating custom column and row layouts in Gutenberg i
 
 In an effort to create an easier way to use Gutenberg in a more “page building experience” we created a simple way that allows you to change the default max width for pages and for posts as well as individually change that through a page by page setting. 
 
-= Less Margin = 
-Another challenge with Gutenberg is not having an exact representation of how your content is going to look on the font end of your site. Gutenberg does not quite give you this becuase it's not a front end editor and therefor doesn't include all the css that your theme and other plugins add to style your content. Much of this can be reconciled as theme authors add support for Gutenberg and add key styling from the theme into Gutenberg. We've already done this with our themes and it greatly improves the editing experience.
-
-But Gutenberg adds in spacing between blocks that simply doesn’t exist on the front end. This spacing can negatively effect the way you design your content because it doesn't represent how your page will look on the font end of your site. This is especially true as you start to use Gutenberg for more advanced page building. 
-
-We've added in an optional less margin setting that removes a lot of this extra spacing to give a more accurate representation of how your content will look on the front end. We think it helps a great deal with the overall experience in Gutenberg and encourage you to try it out.
 
 = Source files =
 
@@ -83,6 +80,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.5.3 =
+* Fix: Issue with icon list then typing return.
+* Add: Prebuilt Accordion Styles.
 
 = 1.5.2 =
 * Add: Fullwidth setting to Advanced Button.
