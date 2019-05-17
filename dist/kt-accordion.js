@@ -854,3 +854,42 @@ for (var i = 0, len = accordionsArray.length; i < len; i++) {
 		openMultiplePanels: ( multiplePanels === 'true' ? true : false ),
 	} );
 };
+( function() {
+	if ( document.getElementById && window.addEventListener ) {
+		function kt_accordion_scrollTo(element, to, duration) {
+			if (duration <= 0) return;
+			var difference = to - element.scrollTop;
+			var perTick = difference / duration * 10;
+		
+			setTimeout(function() {
+				element.scrollTop = element.scrollTop + perTick;
+				if (element.scrollTop === to) return;
+				scrollTo(element, to, duration - 10);
+			}, 10);
+		}
+		function kt_anchor_accordion() {
+			if ( window.location.hash != '' ) {
+				var id = location.hash.substring( 1 ),
+					element;
+
+				if ( ! ( /^[A-z0-9_-]+$/.test( id ) ) ) {
+					return;
+				}
+				element = document.getElementById( id );
+				if ( element ) {
+					if ( element.classList.contains('wp-block-kadence-pane') ) {
+						var child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
+						if ( ! child.classList.contains( 'kt-accordion-panel-active' ) ) {
+							child.click();
+						}
+						window.setTimeout(function() {
+							kt_accordion_scrollTo( document.body, element.offsetTop, 600 );
+						}, 500 );
+					}
+				}
+			}
+		}
+		window.addEventListener( 'hashchange', kt_anchor_accordion, false );
+		window.addEventListener( 'load', kt_anchor_accordion, false );
+	}
+} )();

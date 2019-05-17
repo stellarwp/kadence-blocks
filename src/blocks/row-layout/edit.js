@@ -85,17 +85,26 @@ const ktrowUniqueIDs = [];
 class KadenceRowLayout extends Component {
 	constructor() {
 		super( ...arguments );
+		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			firstWidth: null,
 			secondWidth: null,
+			showPreset: false,
+			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			settings: {},
 		};
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
-			const blockConfig = kadence_blocks_params.config[ 'kadence/rowlayout' ];
-			if ( blockConfig !== undefined && typeof blockConfig === 'object' ) {
-				Object.keys( blockConfig ).map( ( attribute ) => {
-					this.props.attributes[ attribute ] = blockConfig[ attribute ];
+			const oldBlockConfig = kadence_blocks_params.config[ 'kadence/rowlayout' ];
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/rowlayout' ] !== undefined && typeof blockConfigObject[ 'kadence/rowlayout' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/rowlayout' ] ).map( ( attribute ) => {
+					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/rowlayout' ][ attribute ];
+				} );
+			} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
+				Object.keys( oldBlockConfig ).map( ( attribute ) => {
+					this.props.attributes[ attribute ] = oldBlockConfig[ attribute ];
 				} );
 			}
 			this.props.setAttributes( {
@@ -110,6 +119,24 @@ class KadenceRowLayout extends Component {
 		} else {
 			ktrowUniqueIDs.push( this.props.attributes.uniqueID );
 		}
+		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
+		if ( blockSettings[ 'kadence/rowlayout' ] !== undefined && typeof blockSettings[ 'kadence/rowlayout' ] === 'object' ) {
+			this.setState( { settings: blockSettings[ 'kadence/rowlayout' ] } );
+		}
+	}
+	showSettings( key ) {
+		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
+			return true;
+		} else if ( 'contributor' === this.state.settings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'author' === this.state.settings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'editor' === this.state.settings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'admin' === this.state.settings[ key ] && 'admin' === this.state.user ) {
+			return true;
+		}
+		return false;
 	}
 	render() {
 		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay }, toggleSelection, className, setAttributes, clientId } = this.props;
@@ -368,6 +395,8 @@ class KadenceRowLayout extends Component {
 				{ key: 'center-half', name: __( 'Center Heavy 25/50/25' ), icon: icons.centerhalf },
 				{ key: 'center-wide', name: __( 'Wide Center 20/60/20' ), icon: icons.widecenter },
 				{ key: 'center-exwide', name: __( 'Wider Center 15/70/15' ), icon: icons.exwidecenter },
+				{ key: 'first-row', name: __( 'First Row, Next Columns 100 - 50/50' ), icon: icons.firstrow },
+				{ key: 'last-row', name: __( 'Last Row, Previous Columns 50/50 - 100' ), icon: icons.lastrow },
 				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowthree },
 			];
 		} else if ( 4 === columns ) {
@@ -478,7 +507,7 @@ class KadenceRowLayout extends Component {
 							label={ __( 'Column Collapse Vertical Gutter' ) }
 							value={ collapseGutter }
 							options={ [
-								{ value: 'default', label: __( 'Default: 30px' ) },
+								{ value: 'default', label: __( 'Standard: 30px' ) },
 								{ value: 'none', label: __( 'No Gutter' ) },
 								{ value: 'skinny', label: __( 'Skinny: 10px' ) },
 								{ value: 'narrow', label: __( 'Narrow: 20px' ) },
@@ -501,235 +530,241 @@ class KadenceRowLayout extends Component {
 						/>
 					) }
 				</PanelBody>
-				<PanelBody
-					title={ __( 'Mobile Padding/Margin' ) }
-					initialOpen={ false }
-				>
-					<h2>{ __( 'Padding (px)' ) }</h2>
-					<RangeControl
-						label={ icons.outlinetop }
-						value={ topPaddingM }
-						className="kt-icon-rangecontrol kt-top-padding"
-						onChange={ ( value ) => {
-							setAttributes( {
-								topPaddingM: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<RangeControl
-						label={ icons.outlineright }
-						value={ rightPaddingM }
-						className="kt-icon-rangecontrol kt-right-padding"
-						onChange={ ( value ) => {
-							setAttributes( {
-								rightPaddingM: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<RangeControl
-						label={ icons.outlinebottom }
-						value={ bottomPaddingM }
-						className="kt-icon-rangecontrol kt-bottom-padding"
-						onChange={ ( value ) => {
-							setAttributes( {
-								bottomPaddingM: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<RangeControl
-						label={ icons.outlineleft }
-						value={ leftPaddingM }
-						className="kt-icon-rangecontrol kt-left-padding"
-						onChange={ ( value ) => {
-							setAttributes( {
-								leftPaddingM: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
-						{ map( marginTypes, ( { name, key } ) => (
-							<Button
-								key={ key }
-								className="kt-size-btn"
-								isSmall
-								isPrimary={ marginUnit === key }
-								aria-pressed={ marginUnit === key }
-								onClick={ () => setAttributes( { marginUnit: key } ) }
-							>
-								{ name }
-							</Button>
-						) ) }
-					</ButtonGroup>
-					<h2>{ __( 'Mobile Margin' ) }</h2>
-					<RangeControl
-						label={ icons.outlinetop }
-						value={ topMarginM }
-						className="kt-icon-rangecontrol kt-top-margin"
-						onChange={ ( value ) => {
-							setAttributes( {
-								topMarginM: value,
-							} );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-					/>
-					<RangeControl
-						label={ icons.outlinebottom }
-						value={ bottomMarginM }
-						className="kt-icon-rangecontrol kt-bottom-margin"
-						onChange={ ( value ) => {
-							setAttributes( {
-								bottomMarginM: value,
-							} );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-					/>
-				</PanelBody>
-				<PanelBody
-					title={ __( 'Mobile Background' ) }
-					initialOpen={ false }
-				>
-					<ToggleControl
-						label={ __( 'Set custom background for Mobile?' ) }
-						checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].enable : false ) }
-						onChange={ ( value ) => saveMobileBackground( { enable: value } ) }
-					/>
-					{ mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].enable && (
-						<Fragment>
-							<p>{ __( 'Background Color' ) }</p>
-							<ColorPalette
-								value={ mobileBackground[ 0 ].bgColor }
-								onChange={ value => saveMobileBackground( { bgColor: value } ) }
-							/>
-							<MediaUpload
-								onSelect={ img => {
-									saveMobileBackground( { bgImgID: img.id, bgImg: img.url } );
-								} }
-								type="image"
-								value={ mobileBackground[ 0 ].bgImgID }
-								render={ ( { open } ) => (
-									<Button
-										className={ 'components-button components-icon-button kt-cta-upload-btn' }
-										onClick={ open }
-									>
-										<Dashicon icon="format-image" />
-										{ __( 'Select Image' ) }
-									</Button>
+				{ this.showSettings( 'paddingMargin' ) && (
+					<PanelBody
+						title={ __( 'Mobile Padding/Margin' ) }
+						initialOpen={ false }
+					>
+						<h2>{ __( 'Padding (px)' ) }</h2>
+						<RangeControl
+							label={ icons.outlinetop }
+							value={ topPaddingM }
+							className="kt-icon-rangecontrol kt-top-padding"
+							onChange={ ( value ) => {
+								setAttributes( {
+									topPaddingM: value,
+								} );
+							} }
+							min={ 0 }
+							max={ 500 }
+						/>
+						<RangeControl
+							label={ icons.outlineright }
+							value={ rightPaddingM }
+							className="kt-icon-rangecontrol kt-right-padding"
+							onChange={ ( value ) => {
+								setAttributes( {
+									rightPaddingM: value,
+								} );
+							} }
+							min={ 0 }
+							max={ 500 }
+						/>
+						<RangeControl
+							label={ icons.outlinebottom }
+							value={ bottomPaddingM }
+							className="kt-icon-rangecontrol kt-bottom-padding"
+							onChange={ ( value ) => {
+								setAttributes( {
+									bottomPaddingM: value,
+								} );
+							} }
+							min={ 0 }
+							max={ 500 }
+						/>
+						<RangeControl
+							label={ icons.outlineleft }
+							value={ leftPaddingM }
+							className="kt-icon-rangecontrol kt-left-padding"
+							onChange={ ( value ) => {
+								setAttributes( {
+									leftPaddingM: value,
+								} );
+							} }
+							min={ 0 }
+							max={ 500 }
+						/>
+						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
+							{ map( marginTypes, ( { name, key } ) => (
+								<Button
+									key={ key }
+									className="kt-size-btn"
+									isSmall
+									isPrimary={ marginUnit === key }
+									aria-pressed={ marginUnit === key }
+									onClick={ () => setAttributes( { marginUnit: key } ) }
+								>
+									{ name }
+								</Button>
+							) ) }
+						</ButtonGroup>
+						<h2>{ __( 'Mobile Margin' ) }</h2>
+						<RangeControl
+							label={ icons.outlinetop }
+							value={ topMarginM }
+							className="kt-icon-rangecontrol kt-top-margin"
+							onChange={ ( value ) => {
+								setAttributes( {
+									topMarginM: value,
+								} );
+							} }
+							min={ marginMin }
+							max={ marginMax }
+							step={ marginStep }
+						/>
+						<RangeControl
+							label={ icons.outlinebottom }
+							value={ bottomMarginM }
+							className="kt-icon-rangecontrol kt-bottom-margin"
+							onChange={ ( value ) => {
+								setAttributes( {
+									bottomMarginM: value,
+								} );
+							} }
+							min={ marginMin }
+							max={ marginMax }
+							step={ marginStep }
+						/>
+					</PanelBody>
+				) }
+				{ this.showSettings( 'background' ) && (
+					<PanelBody
+						title={ __( 'Mobile Background' ) }
+						initialOpen={ false }
+					>
+						<ToggleControl
+							label={ __( 'Set custom background for Mobile?' ) }
+							checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].enable : false ) }
+							onChange={ ( value ) => saveMobileBackground( { enable: value } ) }
+						/>
+						{ mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].enable && (
+							<Fragment>
+								<p>{ __( 'Background Color' ) }</p>
+								<ColorPalette
+									value={ mobileBackground[ 0 ].bgColor }
+									onChange={ value => saveMobileBackground( { bgColor: value } ) }
+								/>
+								<MediaUpload
+									onSelect={ img => {
+										saveMobileBackground( { bgImgID: img.id, bgImg: img.url } );
+									} }
+									type="image"
+									value={ mobileBackground[ 0 ].bgImgID }
+									render={ ( { open } ) => (
+										<Button
+											className={ 'components-button components-icon-button kt-cta-upload-btn' }
+											onClick={ open }
+										>
+											<Dashicon icon="format-image" />
+											{ __( 'Select Image' ) }
+										</Button>
+									) }
+								/>
+								{ mobileBackground[ 0 ].bgImg && (
+									<Tooltip text={ __( 'Remove Image' ) }>
+										<Button
+											className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+											onClick={ onRemoveMobileImage }
+										>
+											<Dashicon icon="no-alt" />
+										</Button>
+									</Tooltip>
 								) }
-							/>
-							{ mobileBackground[ 0 ].bgImg && (
-								<Tooltip text={ __( 'Remove Image' ) }>
-									<Button
-										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-										onClick={ onRemoveMobileImage }
-									>
-										<Dashicon icon="no-alt" />
-									</Button>
-								</Tooltip>
-							) }
-							<SelectControl
-								label={ __( 'Background Image Size' ) }
-								value={ mobileBackground[ 0 ].bgImgSize }
-								options={ [
-									{ value: 'cover', label: __( 'Cover' ) },
-									{ value: 'contain', label: __( 'Contain' ) },
-									{ value: 'auto', label: __( 'Auto' ) },
-								] }
-								onChange={ value => saveMobileBackground( { bgImgSize: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Position' ) }
-								value={ mobileBackground[ 0 ].bgImgPosition }
-								options={ [
-									{ value: 'center top', label: __( 'Center Top' ) },
-									{ value: 'center center', label: __( 'Center Center' ) },
-									{ value: 'center bottom', label: __( 'Center Bottom' ) },
-									{ value: 'left top', label: __( 'Left Top' ) },
-									{ value: 'left center', label: __( 'Left Center' ) },
-									{ value: 'left bottom', label: __( 'Left Bottom' ) },
-									{ value: 'right top', label: __( 'Right Top' ) },
-									{ value: 'right center', label: __( 'Right Center' ) },
-									{ value: 'right bottom', label: __( 'Right Bottom' ) },
-								] }
-								onChange={ value => saveMobileBackground( { bgImgPosition: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Repeat' ) }
-								value={ mobileBackground[ 0 ].bgImgRepeat }
-								options={ [
-									{ value: 'no-repeat', label: __( 'No Repeat' ) },
-									{ value: 'repeat', label: __( 'Repeat' ) },
-									{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-									{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-								] }
-								onChange={ value => saveMobileBackground( { bgImgRepeat: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Attachment' ) }
-								value={ mobileBackground[ 0 ].bgImgAttachment }
-								options={ [
-									{ value: 'scroll', label: __( 'Scroll' ) },
-									{ value: 'fixed', label: __( 'Fixed' ) },
-									{ value: 'parallax', label: __( 'Parallax' ) },
-								] }
-								onChange={ value => saveMobileBackground( { bgImgAttachment: value } ) }
-							/>
-						</Fragment>
-					) }
-				</PanelBody>
-				<PanelBody
-					title={ __( 'Mobile Background Overlay' ) }
-					initialOpen={ false }
-				>
-					<ToggleControl
-						label={ __( 'Set custom background overlay for mobile?' ) }
-						checked={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].enable : false ) }
-						onChange={ ( value ) => saveMobileOverlay( { enable: value } ) }
-					/>
-					{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].enable && (
-						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-							activeClass="active-tab"
-							initialTabName={ mobileOverlay[ 0 ].currentOverlayTab }
-							onSelect={ value => saveMobileOverlay( { currentOverlayTab: value } ) }
-							tabs={ [
+								<SelectControl
+									label={ __( 'Background Image Size' ) }
+									value={ mobileBackground[ 0 ].bgImgSize }
+									options={ [
+										{ value: 'cover', label: __( 'Cover' ) },
+										{ value: 'contain', label: __( 'Contain' ) },
+										{ value: 'auto', label: __( 'Auto' ) },
+									] }
+									onChange={ value => saveMobileBackground( { bgImgSize: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Position' ) }
+									value={ mobileBackground[ 0 ].bgImgPosition }
+									options={ [
+										{ value: 'center top', label: __( 'Center Top' ) },
+										{ value: 'center center', label: __( 'Center Center' ) },
+										{ value: 'center bottom', label: __( 'Center Bottom' ) },
+										{ value: 'left top', label: __( 'Left Top' ) },
+										{ value: 'left center', label: __( 'Left Center' ) },
+										{ value: 'left bottom', label: __( 'Left Bottom' ) },
+										{ value: 'right top', label: __( 'Right Top' ) },
+										{ value: 'right center', label: __( 'Right Center' ) },
+										{ value: 'right bottom', label: __( 'Right Bottom' ) },
+									] }
+									onChange={ value => saveMobileBackground( { bgImgPosition: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Repeat' ) }
+									value={ mobileBackground[ 0 ].bgImgRepeat }
+									options={ [
+										{ value: 'no-repeat', label: __( 'No Repeat' ) },
+										{ value: 'repeat', label: __( 'Repeat' ) },
+										{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+										{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+									] }
+									onChange={ value => saveMobileBackground( { bgImgRepeat: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Attachment' ) }
+									value={ mobileBackground[ 0 ].bgImgAttachment }
+									options={ [
+										{ value: 'scroll', label: __( 'Scroll' ) },
+										{ value: 'fixed', label: __( 'Fixed' ) },
+										{ value: 'parallax', label: __( 'Parallax' ) },
+									] }
+									onChange={ value => saveMobileBackground( { bgImgAttachment: value } ) }
+								/>
+							</Fragment>
+						) }
+					</PanelBody>
+				) }
+				{ this.showSettings( 'backgroundOverlay' ) && (
+					<PanelBody
+						title={ __( 'Mobile Background Overlay' ) }
+						initialOpen={ false }
+					>
+						<ToggleControl
+							label={ __( 'Set custom background overlay for mobile?' ) }
+							checked={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].enable : false ) }
+							onChange={ ( value ) => saveMobileOverlay( { enable: value } ) }
+						/>
+						{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].enable && (
+							<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
+								activeClass="active-tab"
+								initialTabName={ mobileOverlay[ 0 ].currentOverlayTab }
+								onSelect={ value => saveMobileOverlay( { currentOverlayTab: value } ) }
+								tabs={ [
+									{
+										name: 'normal',
+										title: __( 'Normal' ),
+										className: 'kt-over-normal',
+									},
+									{
+										name: 'grad',
+										title: __( 'Gradient' ),
+										className: 'kt-over-grad',
+									},
+								] }>
 								{
-									name: 'normal',
-									title: __( 'Normal' ),
-									className: 'kt-over-normal',
-								},
-								{
-									name: 'grad',
-									title: __( 'Gradient' ),
-									className: 'kt-over-grad',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'grad' === tab.name ) {
-											tabout = overMobileGradControls;
-										} else {
-											tabout = overMobileControls;
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'grad' === tab.name ) {
+												tabout = overMobileGradControls;
+											} else {
+												tabout = overMobileControls;
+											}
 										}
+										return <div>{ tabout }</div>;
 									}
-									return <div>{ tabout }</div>;
 								}
-							}
-						</TabPanel>
-					) }
-				</PanelBody>
+							</TabPanel>
+						) }
+					</PanelBody>
+				) }
 			</Fragment>
 		);
 		const tabletControls = (
@@ -757,192 +792,198 @@ class KadenceRowLayout extends Component {
 						</Fragment>
 					) }
 				</PanelBody>
-				<PanelBody
-					title={ __( 'Tablet Padding/Margin' ) }
-					initialOpen={ false }
-				>
-					<MeasurementControls
-						label={ __( 'Padding (px)' ) }
-						measurement={ tabletPadding }
-						onChange={ ( value ) => setAttributes( { tabletPadding: value } ) }
-						min={ 0 }
-						max={ 500 }
-						step={ 1 }
-					/>
-					<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
-						{ map( marginTypes, ( { name, key } ) => (
-							<Button
-								key={ key }
-								className="kt-size-btn"
-								isSmall
-								isPrimary={ marginUnit === key }
-								aria-pressed={ marginUnit === key }
-								onClick={ () => setAttributes( { marginUnit: key } ) }
-							>
-								{ name }
-							</Button>
-						) ) }
-					</ButtonGroup>
-					<h2>{ __( 'Tablet Margin' ) }</h2>
-					<RangeControl
-						label={ icons.outlinetop }
-						value={ topMarginT }
-						className="kt-icon-rangecontrol kt-top-margin"
-						onChange={ ( value ) => {
-							setAttributes( {
-								topMarginT: value,
-							} );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-					/>
-					<RangeControl
-						label={ icons.outlinebottom }
-						value={ bottomMarginT }
-						className="kt-icon-rangecontrol kt-bottom-margin"
-						onChange={ ( value ) => {
-							setAttributes( {
-								bottomMarginT: value,
-							} );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-					/>
-				</PanelBody>
-				<PanelBody
-					title={ __( 'Tablet Background' ) }
-					initialOpen={ false }
-				>
-					<ToggleControl
-						label={ __( 'Set custom background for tablets?' ) }
-						checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].enable : false ) }
-						onChange={ ( value ) => saveTabletBackground( { enable: value } ) }
-					/>
-					{ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].enable && (
-						<Fragment>
-							<p>{ __( 'Background Color' ) }</p>
-							<ColorPalette
-								value={ tabletBackground[ 0 ].bgColor }
-								onChange={ value => saveTabletBackground( { bgColor: value } ) }
-							/>
-							<MediaUpload
-								onSelect={ value => saveTabletBackground( { bgImgID: value.id, bgImg: value.url } ) }
-								type="image"
-								value={ tabletBackground[ 0 ].bgImgID }
-								render={ ( { open } ) => (
-									<Button
-										className={ 'components-button components-icon-button kt-cta-upload-btn' }
-										onClick={ open }
-									>
-										<Dashicon icon="format-image" />
-										{ __( 'Select Image' ) }
-									</Button>
+				{ this.showSettings( 'paddingMargin' ) && (
+					<PanelBody
+						title={ __( 'Tablet Padding/Margin' ) }
+						initialOpen={ false }
+					>
+						<MeasurementControls
+							label={ __( 'Padding (px)' ) }
+							measurement={ tabletPadding }
+							onChange={ ( value ) => setAttributes( { tabletPadding: value } ) }
+							min={ 0 }
+							max={ 500 }
+							step={ 1 }
+						/>
+						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
+							{ map( marginTypes, ( { name, key } ) => (
+								<Button
+									key={ key }
+									className="kt-size-btn"
+									isSmall
+									isPrimary={ marginUnit === key }
+									aria-pressed={ marginUnit === key }
+									onClick={ () => setAttributes( { marginUnit: key } ) }
+								>
+									{ name }
+								</Button>
+							) ) }
+						</ButtonGroup>
+						<h2>{ __( 'Tablet Margin' ) }</h2>
+						<RangeControl
+							label={ icons.outlinetop }
+							value={ topMarginT }
+							className="kt-icon-rangecontrol kt-top-margin"
+							onChange={ ( value ) => {
+								setAttributes( {
+									topMarginT: value,
+								} );
+							} }
+							min={ marginMin }
+							max={ marginMax }
+							step={ marginStep }
+						/>
+						<RangeControl
+							label={ icons.outlinebottom }
+							value={ bottomMarginT }
+							className="kt-icon-rangecontrol kt-bottom-margin"
+							onChange={ ( value ) => {
+								setAttributes( {
+									bottomMarginT: value,
+								} );
+							} }
+							min={ marginMin }
+							max={ marginMax }
+							step={ marginStep }
+						/>
+					</PanelBody>
+				) }
+				{ this.showSettings( 'background' ) && (
+					<PanelBody
+						title={ __( 'Tablet Background' ) }
+						initialOpen={ false }
+					>
+						<ToggleControl
+							label={ __( 'Set custom background for tablets?' ) }
+							checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].enable : false ) }
+							onChange={ ( value ) => saveTabletBackground( { enable: value } ) }
+						/>
+						{ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].enable && (
+							<Fragment>
+								<p>{ __( 'Background Color' ) }</p>
+								<ColorPalette
+									value={ tabletBackground[ 0 ].bgColor }
+									onChange={ value => saveTabletBackground( { bgColor: value } ) }
+								/>
+								<MediaUpload
+									onSelect={ value => saveTabletBackground( { bgImgID: value.id, bgImg: value.url } ) }
+									type="image"
+									value={ tabletBackground[ 0 ].bgImgID }
+									render={ ( { open } ) => (
+										<Button
+											className={ 'components-button components-icon-button kt-cta-upload-btn' }
+											onClick={ open }
+										>
+											<Dashicon icon="format-image" />
+											{ __( 'Select Image' ) }
+										</Button>
+									) }
+								/>
+								{ tabletBackground[ 0 ].bgImg && (
+									<Tooltip text={ __( 'Remove Image' ) }>
+										<Button
+											className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+											onClick={ onRemoveTabletImage }
+										>
+											<Dashicon icon="no-alt" />
+										</Button>
+									</Tooltip>
 								) }
-							/>
-							{ tabletBackground[ 0 ].bgImg && (
-								<Tooltip text={ __( 'Remove Image' ) }>
-									<Button
-										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-										onClick={ onRemoveTabletImage }
-									>
-										<Dashicon icon="no-alt" />
-									</Button>
-								</Tooltip>
-							) }
-							<SelectControl
-								label={ __( 'Background Image Size' ) }
-								value={ tabletBackground[ 0 ].bgImgSize }
-								options={ [
-									{ value: 'cover', label: __( 'Cover' ) },
-									{ value: 'contain', label: __( 'Contain' ) },
-									{ value: 'auto', label: __( 'Auto' ) },
-								] }
-								onChange={ value => saveTabletBackground( { bgImgSize: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Position' ) }
-								value={ tabletBackground[ 0 ].bgImgPosition }
-								options={ [
-									{ value: 'center top', label: __( 'Center Top' ) },
-									{ value: 'center center', label: __( 'Center Center' ) },
-									{ value: 'center bottom', label: __( 'Center Bottom' ) },
-									{ value: 'left top', label: __( 'Left Top' ) },
-									{ value: 'left center', label: __( 'Left Center' ) },
-									{ value: 'left bottom', label: __( 'Left Bottom' ) },
-									{ value: 'right top', label: __( 'Right Top' ) },
-									{ value: 'right center', label: __( 'Right Center' ) },
-									{ value: 'right bottom', label: __( 'Right Bottom' ) },
-								] }
-								onChange={ value => saveTabletBackground( { bgImgPosition: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Repeat' ) }
-								value={ tabletBackground[ 0 ].bgImgRepeat }
-								options={ [
-									{ value: 'no-repeat', label: __( 'No Repeat' ) },
-									{ value: 'repeat', label: __( 'Repeat' ) },
-									{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-									{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-								] }
-								onChange={ value => saveTabletBackground( { bgImgRepeat: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Attachment' ) }
-								value={ tabletBackground[ 0 ].bgImgAttachment }
-								options={ [
-									{ value: 'scroll', label: __( 'Scroll' ) },
-									{ value: 'fixed', label: __( 'Fixed' ) },
-									{ value: 'parallax', label: __( 'Parallax' ) },
-								] }
-								onChange={ value => saveTabletBackground( { bgImgAttachment: value } ) }
-							/>
-						</Fragment>
-					) }
-				</PanelBody>
-				<PanelBody
-					title={ __( 'Tablet Background Overlay' ) }
-					initialOpen={ false }
-				>
-					<ToggleControl
-						label={ __( 'Set custom background overlay for tablets?' ) }
-						checked={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].enable : false ) }
-						onChange={ ( value ) => saveTabletOverlay( { enable: value } ) }
-					/>
-					{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].enable && (
-						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-							activeClass="active-tab"
-							initialTabName={ tabletOverlay[ 0 ].currentOverlayTab }
-							onSelect={ value => saveTabletOverlay( { currentOverlayTab: value } ) }
-							tabs={ [
+								<SelectControl
+									label={ __( 'Background Image Size' ) }
+									value={ tabletBackground[ 0 ].bgImgSize }
+									options={ [
+										{ value: 'cover', label: __( 'Cover' ) },
+										{ value: 'contain', label: __( 'Contain' ) },
+										{ value: 'auto', label: __( 'Auto' ) },
+									] }
+									onChange={ value => saveTabletBackground( { bgImgSize: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Position' ) }
+									value={ tabletBackground[ 0 ].bgImgPosition }
+									options={ [
+										{ value: 'center top', label: __( 'Center Top' ) },
+										{ value: 'center center', label: __( 'Center Center' ) },
+										{ value: 'center bottom', label: __( 'Center Bottom' ) },
+										{ value: 'left top', label: __( 'Left Top' ) },
+										{ value: 'left center', label: __( 'Left Center' ) },
+										{ value: 'left bottom', label: __( 'Left Bottom' ) },
+										{ value: 'right top', label: __( 'Right Top' ) },
+										{ value: 'right center', label: __( 'Right Center' ) },
+										{ value: 'right bottom', label: __( 'Right Bottom' ) },
+									] }
+									onChange={ value => saveTabletBackground( { bgImgPosition: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Repeat' ) }
+									value={ tabletBackground[ 0 ].bgImgRepeat }
+									options={ [
+										{ value: 'no-repeat', label: __( 'No Repeat' ) },
+										{ value: 'repeat', label: __( 'Repeat' ) },
+										{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+										{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+									] }
+									onChange={ value => saveTabletBackground( { bgImgRepeat: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Attachment' ) }
+									value={ tabletBackground[ 0 ].bgImgAttachment }
+									options={ [
+										{ value: 'scroll', label: __( 'Scroll' ) },
+										{ value: 'fixed', label: __( 'Fixed' ) },
+										{ value: 'parallax', label: __( 'Parallax' ) },
+									] }
+									onChange={ value => saveTabletBackground( { bgImgAttachment: value } ) }
+								/>
+							</Fragment>
+						) }
+					</PanelBody>
+				) }
+				{ this.showSettings( 'backgroundOverlay' ) && (
+					<PanelBody
+						title={ __( 'Tablet Background Overlay' ) }
+						initialOpen={ false }
+					>
+						<ToggleControl
+							label={ __( 'Set custom background overlay for tablets?' ) }
+							checked={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].enable : false ) }
+							onChange={ ( value ) => saveTabletOverlay( { enable: value } ) }
+						/>
+						{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].enable && (
+							<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
+								activeClass="active-tab"
+								initialTabName={ tabletOverlay[ 0 ].currentOverlayTab }
+								onSelect={ value => saveTabletOverlay( { currentOverlayTab: value } ) }
+								tabs={ [
+									{
+										name: 'normal',
+										title: __( 'Normal' ),
+										className: 'kt-over-normal',
+									},
+									{
+										name: 'grad',
+										title: __( 'Gradient' ),
+										className: 'kt-over-grad',
+									},
+								] }>
 								{
-									name: 'normal',
-									title: __( 'Normal' ),
-									className: 'kt-over-normal',
-								},
-								{
-									name: 'grad',
-									title: __( 'Gradient' ),
-									className: 'kt-over-grad',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'grad' === tab.name ) {
-											tabout = overTabGradControls;
-										} else {
-											tabout = overTabControls;
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'grad' === tab.name ) {
+												tabout = overTabGradControls;
+											} else {
+												tabout = overTabControls;
+											}
 										}
+										return <div>{ tabout }</div>;
 									}
-									return <div>{ tabout }</div>;
 								}
-							}
-						</TabPanel>
-					) }
-				</PanelBody>
+							</TabPanel>
+						) }
+					</PanelBody>
+				) }
 			</Fragment>
 		);
 		const deskControls = (
@@ -998,7 +1039,7 @@ class KadenceRowLayout extends Component {
 							label={ __( 'Column Gutter' ) }
 							value={ columnGutter }
 							options={ [
-								{ value: 'default', label: __( 'Default: 30px' ) },
+								{ value: 'default', label: __( 'Standard: 30px' ) },
 								{ value: 'none', label: __( 'No Gutter' ) },
 								{ value: 'skinny', label: __( 'Skinny: 10px' ) },
 								{ value: 'narrow', label: __( 'Narrow: 20px' ) },
@@ -1010,217 +1051,223 @@ class KadenceRowLayout extends Component {
 						/>
 					) }
 				</PanelBody>
-				<PanelBody
-					title={ __( 'Padding/Margin' ) }
-					initialOpen={ false }
-				>
-					<h2>{ __( 'Padding (px)' ) }</h2>
-					<RangeControl
-						label={ icons.outlinetop }
-						value={ topPadding }
-						className="kt-icon-rangecontrol"
-						onChange={ ( value ) => {
-							setAttributes( {
-								topPadding: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<RangeControl
-						label={ icons.outlineright }
-						value={ rightPadding }
-						className="kt-icon-rangecontrol"
-						onChange={ ( value ) => {
-							setAttributes( {
-								rightPadding: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<RangeControl
-						label={ icons.outlinebottom }
-						value={ bottomPadding }
-						className="kt-icon-rangecontrol"
-						onChange={ ( value ) => {
-							setAttributes( {
-								bottomPadding: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<RangeControl
-						label={ icons.outlineleft }
-						value={ leftPadding }
-						className="kt-icon-rangecontrol"
-						onChange={ ( value ) => {
-							setAttributes( {
-								leftPadding: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 500 }
-					/>
-					<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
-						{ map( marginTypes, ( { name, key } ) => (
-							<Button
-								key={ key }
-								className="kt-size-btn"
-								isSmall
-								isPrimary={ marginUnit === key }
-								aria-pressed={ marginUnit === key }
-								onClick={ () => setAttributes( { marginUnit: key } ) }
-							>
-								{ name }
-							</Button>
-						) ) }
-					</ButtonGroup>
-					<h2>{ __( 'Margin' ) }</h2>
-					<RangeControl
-						label={ icons.outlinetop }
-						value={ topMargin }
-						className="kt-icon-rangecontrol"
-						onChange={ ( value ) => {
-							setAttributes( {
-								topMargin: value,
-							} );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-					/>
-					<RangeControl
-						label={ icons.outlinebottom }
-						value={ bottomMargin }
-						className="kt-icon-rangecontrol"
-						onChange={ ( value ) => {
-							setAttributes( {
-								bottomMargin: value,
-							} );
-						} }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
-					/>
-				</PanelBody>
-				<PanelBody
-					title={ __( 'Background Settings' ) }
-					initialOpen={ false }
-				>
-					<p>{ __( 'Background Color' ) }</p>
-					<ColorPalette
-						value={ bgColor }
-						onChange={ value => setAttributes( { bgColor: value } ) }
-					/>
-					<MediaUpload
-						onSelect={ onSelectImage }
-						type="image"
-						value={ bgImgID }
-						render={ ( { open } ) => (
-							<Button
-								className={ 'components-button components-icon-button kt-cta-upload-btn' }
-								onClick={ open }
-							>
-								<Dashicon icon="format-image" />
-								{ __( 'Select Image' ) }
-							</Button>
+				{ this.showSettings( 'paddingMargin' ) && (
+					<PanelBody
+						title={ __( 'Padding/Margin' ) }
+						initialOpen={ false }
+					>
+						<h2>{ __( 'Padding (px)' ) }</h2>
+						<RangeControl
+							label={ icons.outlinetop }
+							value={ topPadding }
+							className="kt-icon-rangecontrol"
+							onChange={ ( value ) => {
+								setAttributes( {
+									topPadding: value,
+								} );
+							} }
+							min={ 0 }
+							max={ 500 }
+						/>
+						<RangeControl
+							label={ icons.outlineright }
+							value={ rightPadding }
+							className="kt-icon-rangecontrol"
+							onChange={ ( value ) => {
+								setAttributes( {
+									rightPadding: value,
+								} );
+							} }
+							min={ 0 }
+							max={ 500 }
+						/>
+						<RangeControl
+							label={ icons.outlinebottom }
+							value={ bottomPadding }
+							className="kt-icon-rangecontrol"
+							onChange={ ( value ) => {
+								setAttributes( {
+									bottomPadding: value,
+								} );
+							} }
+							min={ 0 }
+							max={ 500 }
+						/>
+						<RangeControl
+							label={ icons.outlineleft }
+							value={ leftPadding }
+							className="kt-icon-rangecontrol"
+							onChange={ ( value ) => {
+								setAttributes( {
+									leftPadding: value,
+								} );
+							} }
+							min={ 0 }
+							max={ 500 }
+						/>
+						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
+							{ map( marginTypes, ( { name, key } ) => (
+								<Button
+									key={ key }
+									className="kt-size-btn"
+									isSmall
+									isPrimary={ marginUnit === key }
+									aria-pressed={ marginUnit === key }
+									onClick={ () => setAttributes( { marginUnit: key } ) }
+								>
+									{ name }
+								</Button>
+							) ) }
+						</ButtonGroup>
+						<h2>{ __( 'Margin' ) }</h2>
+						<RangeControl
+							label={ icons.outlinetop }
+							value={ topMargin }
+							className="kt-icon-rangecontrol"
+							onChange={ ( value ) => {
+								setAttributes( {
+									topMargin: value,
+								} );
+							} }
+							min={ marginMin }
+							max={ marginMax }
+							step={ marginStep }
+						/>
+						<RangeControl
+							label={ icons.outlinebottom }
+							value={ bottomMargin }
+							className="kt-icon-rangecontrol"
+							onChange={ ( value ) => {
+								setAttributes( {
+									bottomMargin: value,
+								} );
+							} }
+							min={ marginMin }
+							max={ marginMax }
+							step={ marginStep }
+						/>
+					</PanelBody>
+				) }
+				{ this.showSettings( 'background' ) && (
+					<PanelBody
+						title={ __( 'Background Settings' ) }
+						initialOpen={ false }
+					>
+						<p>{ __( 'Background Color' ) }</p>
+						<ColorPalette
+							value={ bgColor }
+							onChange={ value => setAttributes( { bgColor: value } ) }
+						/>
+						<MediaUpload
+							onSelect={ onSelectImage }
+							type="image"
+							value={ bgImgID }
+							render={ ( { open } ) => (
+								<Button
+									className={ 'components-button components-icon-button kt-cta-upload-btn' }
+									onClick={ open }
+								>
+									<Dashicon icon="format-image" />
+									{ __( 'Select Image' ) }
+								</Button>
+							) }
+						/>
+						{ bgImg && (
+							<Tooltip text={ __( 'Remove Image' ) }>
+								<Button
+									className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+									onClick={ onRemoveImage }
+								>
+									<Dashicon icon="no-alt" />
+								</Button>
+							</Tooltip>
 						) }
-					/>
-					{ bgImg && (
-						<Tooltip text={ __( 'Remove Image' ) }>
-							<Button
-								className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-								onClick={ onRemoveImage }
-							>
-								<Dashicon icon="no-alt" />
-							</Button>
-						</Tooltip>
-					) }
-					<SelectControl
-						label={ __( 'Background Image Size' ) }
-						value={ bgImgSize }
-						options={ [
-							{ value: 'cover', label: __( 'Cover' ) },
-							{ value: 'contain', label: __( 'Contain' ) },
-							{ value: 'auto', label: __( 'Auto' ) },
-						] }
-						onChange={ value => setAttributes( { bgImgSize: value } ) }
-					/>
-					<SelectControl
-						label={ __( 'Background Image Position' ) }
-						value={ bgImgPosition }
-						options={ [
-							{ value: 'center top', label: __( 'Center Top' ) },
-							{ value: 'center center', label: __( 'Center Center' ) },
-							{ value: 'center bottom', label: __( 'Center Bottom' ) },
-							{ value: 'left top', label: __( 'Left Top' ) },
-							{ value: 'left center', label: __( 'Left Center' ) },
-							{ value: 'left bottom', label: __( 'Left Bottom' ) },
-							{ value: 'right top', label: __( 'Right Top' ) },
-							{ value: 'right center', label: __( 'Right Center' ) },
-							{ value: 'right bottom', label: __( 'Right Bottom' ) },
-						] }
-						onChange={ value => setAttributes( { bgImgPosition: value } ) }
-					/>
-					<SelectControl
-						label={ __( 'Background Image Repeat' ) }
-						value={ bgImgRepeat }
-						options={ [
-							{ value: 'no-repeat', label: __( 'No Repeat' ) },
-							{ value: 'repeat', label: __( 'Repeat' ) },
-							{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-							{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-						] }
-						onChange={ value => setAttributes( { bgImgRepeat: value } ) }
-					/>
-					<SelectControl
-						label={ __( 'Background Image Attachment' ) }
-						value={ bgImgAttachment }
-						options={ [
-							{ value: 'scroll', label: __( 'Scroll' ) },
-							{ value: 'fixed', label: __( 'Fixed' ) },
-							{ value: 'parallax', label: __( 'Parallax' ) },
-						] }
-						onChange={ value => setAttributes( { bgImgAttachment: value } ) }
-					/>
-				</PanelBody>
-				<PanelBody
-					title={ __( 'Background Overlay Settings' ) }
-					initialOpen={ false }
-				>
-					<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-						activeClass="active-tab"
-						initialTabName={ currentOverlayTab }
-						onSelect={ onOverlayTabSelect }
-						tabs={ [
+						<SelectControl
+							label={ __( 'Background Image Size' ) }
+							value={ bgImgSize }
+							options={ [
+								{ value: 'cover', label: __( 'Cover' ) },
+								{ value: 'contain', label: __( 'Contain' ) },
+								{ value: 'auto', label: __( 'Auto' ) },
+							] }
+							onChange={ value => setAttributes( { bgImgSize: value } ) }
+						/>
+						<SelectControl
+							label={ __( 'Background Image Position' ) }
+							value={ bgImgPosition }
+							options={ [
+								{ value: 'center top', label: __( 'Center Top' ) },
+								{ value: 'center center', label: __( 'Center Center' ) },
+								{ value: 'center bottom', label: __( 'Center Bottom' ) },
+								{ value: 'left top', label: __( 'Left Top' ) },
+								{ value: 'left center', label: __( 'Left Center' ) },
+								{ value: 'left bottom', label: __( 'Left Bottom' ) },
+								{ value: 'right top', label: __( 'Right Top' ) },
+								{ value: 'right center', label: __( 'Right Center' ) },
+								{ value: 'right bottom', label: __( 'Right Bottom' ) },
+							] }
+							onChange={ value => setAttributes( { bgImgPosition: value } ) }
+						/>
+						<SelectControl
+							label={ __( 'Background Image Repeat' ) }
+							value={ bgImgRepeat }
+							options={ [
+								{ value: 'no-repeat', label: __( 'No Repeat' ) },
+								{ value: 'repeat', label: __( 'Repeat' ) },
+								{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+								{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+							] }
+							onChange={ value => setAttributes( { bgImgRepeat: value } ) }
+						/>
+						<SelectControl
+							label={ __( 'Background Image Attachment' ) }
+							value={ bgImgAttachment }
+							options={ [
+								{ value: 'scroll', label: __( 'Scroll' ) },
+								{ value: 'fixed', label: __( 'Fixed' ) },
+								{ value: 'parallax', label: __( 'Parallax' ) },
+							] }
+							onChange={ value => setAttributes( { bgImgAttachment: value } ) }
+						/>
+					</PanelBody>
+				) }
+				{ this.showSettings( 'backgroundOverlay' ) && (
+					<PanelBody
+						title={ __( 'Background Overlay Settings' ) }
+						initialOpen={ false }
+					>
+						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
+							activeClass="active-tab"
+							initialTabName={ currentOverlayTab }
+							onSelect={ onOverlayTabSelect }
+							tabs={ [
+								{
+									name: 'normal',
+									title: __( 'Normal' ),
+									className: 'kt-over-normal',
+								},
+								{
+									name: 'grad',
+									title: __( 'Gradient' ),
+									className: 'kt-over-grad',
+								},
+							] }>
 							{
-								name: 'normal',
-								title: __( 'Normal' ),
-								className: 'kt-over-normal',
-							},
-							{
-								name: 'grad',
-								title: __( 'Gradient' ),
-								className: 'kt-over-grad',
-							},
-						] }>
-						{
-							( tab ) => {
-								let tabout;
-								if ( tab.name ) {
-									if ( 'grad' === tab.name ) {
-										tabout = overGradControls;
-									} else {
-										tabout = overControls;
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'grad' === tab.name ) {
+											tabout = overGradControls;
+										} else {
+											tabout = overControls;
+										}
 									}
+									return <div>{ tabout }</div>;
 								}
-								return <div>{ tabout }</div>;
 							}
-						}
-					</TabPanel>
-				</PanelBody>
+						</TabPanel>
+					</PanelBody>
+				) }
 			</Fragment>
 		);
 		const overControls = (
@@ -2272,21 +2319,23 @@ class KadenceRowLayout extends Component {
 						controls={ [ 'center', 'wide', 'full' ] }
 						onChange={ value => setAttributes( { blockAlignment: value } ) }
 					/>
-					<Toolbar>
-						<MediaUpload
-							onSelect={ onSelectImage }
-							type="image"
-							value={ null }
-							render={ ( { open } ) => (
-								<IconButton
-									className="components-toolbar__control"
-									label={ __( 'Background Image' ) }
-									icon="format-image"
-									onClick={ open }
-								/>
-							) }
-						/>
-					</Toolbar>
+					{ this.showSettings( 'allSettings' ) && this.showSettings( 'background' ) && (
+						<Toolbar>
+							<MediaUpload
+								onSelect={ onSelectImage }
+								type="image"
+								value={ null }
+								render={ ( { open } ) => (
+									<IconButton
+										className="components-toolbar__control"
+										label={ __( 'Background Image' ) }
+										icon="format-image"
+										onClick={ open }
+									/>
+								) }
+							/>
+						</Toolbar>
+					) }
 					<Toolbar>
 						<Tooltip text={ __( 'Vertical Align Top' ) }>
 							<Button
@@ -2330,113 +2379,121 @@ class KadenceRowLayout extends Component {
 						</Tooltip>
 					</Toolbar>
 				</BlockControls>
-				<InspectorControls>
-					{ tabControls }
-					<div className="kt-sidebar-settings-spacer"></div>
-					<PanelBody
-						title={ __( 'Dividers' ) }
-						initialOpen={ false }
-					>
-						<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-							activeClass="active-tab"
-							tabs={ [
-								{
-									name: 'bottomdivider',
-									title: __( 'Bottom' ),
-									className: 'kt-bottom-tab',
-								},
-								{
-									name: 'topdivider',
-									title: __( 'Top' ),
-									className: 'kt-top-tab',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'topdivider' === tab.name ) {
-											tabout = topDividerSettings;
-										} else {
-											tabout = bottomDividerSettings;
+				{ this.showSettings( 'allSettings' ) && (
+					<InspectorControls>
+						{ tabControls }
+						<div className="kt-sidebar-settings-spacer"></div>
+						{ this.showSettings( 'dividers' ) && (
+							<PanelBody
+								title={ __( 'Dividers' ) }
+								initialOpen={ false }
+							>
+								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+									activeClass="active-tab"
+									tabs={ [
+										{
+											name: 'bottomdivider',
+											title: __( 'Bottom' ),
+											className: 'kt-bottom-tab',
+										},
+										{
+											name: 'topdivider',
+											title: __( 'Top' ),
+											className: 'kt-top-tab',
+										},
+									] }>
+									{
+										( tab ) => {
+											let tabout;
+											if ( tab.name ) {
+												if ( 'topdivider' === tab.name ) {
+													tabout = topDividerSettings;
+												} else {
+													tabout = bottomDividerSettings;
+												}
+											}
+											return <div>{ tabout }</div>;
 										}
 									}
-									return <div>{ tabout }</div>;
-								}
-							}
-						</TabPanel>
-					</PanelBody>
-					{ colorControls }
-					<PanelBody
-						title={ __( 'Structure Settings' ) }
-						initialOpen={ false }
-					>
-						<SelectControl
-							label={ __( 'Container HTML tag' ) }
-							value={ htmlTag }
-							options={ [
-								{ value: 'div', label: __( 'div' ) },
-								{ value: 'header', label: __( 'header' ) },
-								{ value: 'section', label: __( 'section' ) },
-								{ value: 'article', label: __( 'article' ) },
-								{ value: 'main', label: __( 'main' ) },
-								{ value: 'aside', label: __( 'aside' ) },
-								{ value: 'footer', label: __( 'footer' ) },
-							] }
-							onChange={ value => setAttributes( { htmlTag: value } ) }
-						/>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Min Height Type' ) }>
-							{ map( heightTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ minHeightUnit === key }
-									aria-pressed={ minHeightUnit === key }
-									onClick={ () => setAttributes( { minHeightUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<RangeControl
-							label={ __( 'Minimium Height' ) }
-							value={ minHeight }
-							onChange={ ( value ) => {
-								setAttributes( {
-									minHeight: value,
-								} );
-							} }
-							min={ 0 }
-							max={ heightMax }
-						/>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
-							{ map( widthTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ maxWidthUnit === key }
-									aria-pressed={ maxWidthUnit === key }
-									onClick={ () => setAttributes( { maxWidthUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<RangeControl
-							label={ __( 'Content Max Width' ) }
-							value={ maxWidth }
-							onChange={ ( value ) => {
-								setAttributes( {
-									maxWidth: value,
-								} );
-							} }
-							min={ 0 }
-							max={ widthMax }
-						/>
-					</PanelBody>
-				</InspectorControls>
+								</TabPanel>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'textColor' ) && (
+							colorControls
+						) }
+						{ this.showSettings( 'structure' ) && (
+							<PanelBody
+								title={ __( 'Structure Settings' ) }
+								initialOpen={ false }
+							>
+								<SelectControl
+									label={ __( 'Container HTML tag' ) }
+									value={ htmlTag }
+									options={ [
+										{ value: 'div', label: __( 'div' ) },
+										{ value: 'header', label: __( 'header' ) },
+										{ value: 'section', label: __( 'section' ) },
+										{ value: 'article', label: __( 'article' ) },
+										{ value: 'main', label: __( 'main' ) },
+										{ value: 'aside', label: __( 'aside' ) },
+										{ value: 'footer', label: __( 'footer' ) },
+									] }
+									onChange={ value => setAttributes( { htmlTag: value } ) }
+								/>
+								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Min Height Type' ) }>
+									{ map( heightTypes, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-size-btn"
+											isSmall
+											isPrimary={ minHeightUnit === key }
+											aria-pressed={ minHeightUnit === key }
+											onClick={ () => setAttributes( { minHeightUnit: key } ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+								<RangeControl
+									label={ __( 'Minimium Height' ) }
+									value={ minHeight }
+									onChange={ ( value ) => {
+										setAttributes( {
+											minHeight: value,
+										} );
+									} }
+									min={ 0 }
+									max={ heightMax }
+								/>
+								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
+									{ map( widthTypes, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-size-btn"
+											isSmall
+											isPrimary={ maxWidthUnit === key }
+											aria-pressed={ maxWidthUnit === key }
+											onClick={ () => setAttributes( { maxWidthUnit: key } ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+								<RangeControl
+									label={ __( 'Content Max Width' ) }
+									value={ maxWidth }
+									onChange={ ( value ) => {
+										setAttributes( {
+											maxWidth: value,
+										} );
+									} }
+									min={ 0 }
+									max={ widthMax }
+								/>
+							</PanelBody>
+						) }
+					</InspectorControls>
+				) }
 				{ ( textColor || linkColor || linkHoverColor || columns ) && (
 					<style>
 						{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ textColor }; }` : '' ) }
@@ -2528,7 +2585,7 @@ class KadenceRowLayout extends Component {
 						</div>
 					) }
 					<div style={ { height: '1px' } }></div>
-					{ colLayout && (
+					{ colLayout && this.showSettings( 'allSettings' ) && this.showSettings( 'paddingMargin' ) && (
 						<ResizableBox
 							size={ {
 								height: topPadding,
@@ -2577,7 +2634,7 @@ class KadenceRowLayout extends Component {
 							paddingLeft: leftPadding + 'px',
 							paddingRight: rightPadding + 'px',
 						} }>
-							{ colLayout && columns && 2 === columns && (
+							{ colLayout && columns && 2 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
 								<div className="kt-resizeable-column-container" style={ {
 									left: leftPadding + 'px',
 									right: rightPadding + 'px',
@@ -2645,7 +2702,7 @@ class KadenceRowLayout extends Component {
 									</ContainerDimensions>
 								</div>
 							) }
-							{ colLayout && columns && 3 === columns && (
+							{ colLayout && columns && 3 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
 								<ThreeColumnDrag
 									uniqueID={ uniqueID }
 									onSetState={ value => this.setState( value ) }
@@ -2665,7 +2722,7 @@ class KadenceRowLayout extends Component {
 								allowedBlocks={ ALLOWED_BLOCKS } />
 						</div>
 					) }
-					{ colLayout && (
+					{ colLayout && this.showSettings( 'allSettings' ) && this.showSettings( 'paddingMargin' ) && (
 						<ResizableBox
 							size={ {
 								height: bottomPadding,

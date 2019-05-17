@@ -2014,40 +2014,40 @@ class Kadence_Blocks_Frontend {
 					$css .= 'background:' . $title_styles['background'] .  ';';
 				$css .= '}';
 			}
-			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header:hover {';
-				if ( isset( $title_styles['colorHover'] ) && ! empty( $title_styles['colorHover'] ) ) {
-					$css .= 'color:' . $title_styles['colorHover'] .  ';';
-				}
-				if ( isset( $title_styles['backgroundHover'] ) && ! empty( $title_styles['backgroundHover'] ) ) {
-					$css .= 'background:' . $title_styles['backgroundHover'] .  ';';
-				}
-				if ( isset( $title_styles['borderHover'] ) && is_array( $title_styles['borderHover'] ) && ! empty( $title_styles['borderHover'][0] ) ) {
-					$css .= 'border-color:' . $title_styles['borderHover'][0] . ' ' . $title_styles['borderHover'][1] . ' ' . $title_styles['borderHover'][2] . ' ' . $title_styles['borderHover'][3] . ';';
-				}
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header:hover, .kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header:focus {';
+			if ( isset( $title_styles['colorHover'] ) && ! empty( $title_styles['colorHover'] ) ) {
+				$css .= 'color:' . $title_styles['colorHover'] .  ';';
+			}
+			if ( isset( $title_styles['backgroundHover'] ) && ! empty( $title_styles['backgroundHover'] ) ) {
+				$css .= 'background:' . $title_styles['backgroundHover'] .  ';';
+			}
+			if ( isset( $title_styles['borderHover'] ) && is_array( $title_styles['borderHover'] ) && ! empty( $title_styles['borderHover'][0] ) ) {
+				$css .= 'border-color:' . $title_styles['borderHover'][0] . ' ' . $title_styles['borderHover'][1] . ' ' . $title_styles['borderHover'][2] . ' ' . $title_styles['borderHover'][3] . ';';
+			}
 			$css .= '}';
 			if ( isset( $title_styles['colorHover'] ) && ! empty( $title_styles['colorHover'] ) ) {
-				$css .= '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before {';
+				$css .= '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:focus .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:focus .kt-blocks-accordion-icon-trigger:before {';
 				$css .= 'background:' . $title_styles['colorHover'] .  ';';
 				$css .= '}';
-				$css .= '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger {';
+				$css .= '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:focus .kt-blocks-accordion-icon-trigger {';
 					$css .= 'background:' . $title_styles['colorHover'] .  ';';
 				$css .= '}';
 			}
 			if ( isset( $title_styles['backgroundHover'] ) && ! empty( $title_styles['backgroundHover'] ) ) {
-				$css .= '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before {';
+				$css .= '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:focus .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:focus .kt-blocks-accordion-icon-trigger:before {';
 					$css .= 'background:' . $title_styles['backgroundHover'] .  ';';
 				$css .= '}';
 			}
 			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header.kt-accordion-panel-active {';
-				if ( isset( $title_styles['colorActive'] ) && ! empty( $title_styles['colorActive'] ) ) {
-					$css .= 'color:' . $title_styles['colorActive'] .  ';';
-				}
-				if ( isset( $title_styles['backgroundActive'] ) && ! empty( $title_styles['backgroundActive'] ) ) {
-					$css .= 'background:' . $title_styles['backgroundActive'] .  ';';
-				}
-				if ( isset( $title_styles['borderActive'] ) && is_array( $title_styles['borderActive'] ) && ! empty( $title_styles['borderActive'][0] ) ) {
-					$css .= 'border-color:' . $title_styles['borderActive'][0] . ' ' . $title_styles['borderActive'][1] . ' ' . $title_styles['borderActive'][2] . ' ' . $title_styles['borderActive'][3] . ';';
-				}
+			if ( isset( $title_styles['colorActive'] ) && ! empty( $title_styles['colorActive'] ) ) {
+				$css .= 'color:' . $title_styles['colorActive'] .  ';';
+			}
+			if ( isset( $title_styles['backgroundActive'] ) && ! empty( $title_styles['backgroundActive'] ) ) {
+				$css .= 'background:' . $title_styles['backgroundActive'] .  ';';
+			}
+			if ( isset( $title_styles['borderActive'] ) && is_array( $title_styles['borderActive'] ) && ! empty( $title_styles['borderActive'][0] ) ) {
+				$css .= 'border-color:' . $title_styles['borderActive'][0] . ' ' . $title_styles['borderActive'][1] . ' ' . $title_styles['borderActive'][2] . ' ' . $title_styles['borderActive'][3] . ';';
+			}
 			$css .= '}';
 			if ( isset( $title_styles['colorActive'] ) && ! empty( $title_styles['colorActive'] ) ) {
 				$css .= '.kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header.kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:after, .kt-accordion-id' . $unique_id . ':not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header.kt-accordion-panel-active .kt-blocks-accordion-icon-trigger:before {';
@@ -2289,7 +2289,7 @@ class Kadence_Blocks_Frontend {
 						wp_enqueue_style( 'kadence-blocks-magnific-css' );
 						wp_enqueue_script( 'kadence-blocks-magnific-js' );
 					}
-				}	
+				}
 			}
 		}
 		$css = '';
@@ -2319,8 +2319,12 @@ class Kadence_Blocks_Frontend {
 						$css .= 'color:' . $btnvalue['color'] . ';';
 					}
 					if ( isset( $btnvalue['background'] ) && ! empty( $btnvalue['background'] ) ) {
-						$alpha = ( isset( $btnvalue['backgroundOpacity'] ) && is_numeric( $btnvalue['backgroundOpacity'] ) ? $btnvalue['backgroundOpacity'] : 1 );
-						$css .= 'background:' . $this->hex2rgba( $btnvalue['background'], $alpha ) . ';';
+						if ( 'transparent' === $btnvalue['background'] ) {
+							$css .= 'background:transparent;';
+						} else {
+							$alpha = ( isset( $btnvalue['backgroundOpacity'] ) && is_numeric( $btnvalue['backgroundOpacity'] ) ? $btnvalue['backgroundOpacity'] : 1 );
+							$css .= 'background:' . $this->hex2rgba( $btnvalue['background'], $alpha ) . ';';
+						}
 					}
 					if ( isset( $btnvalue['border'] ) && ! empty( $btnvalue['border'] ) ) {
 						$alpha = ( isset( $btnvalue['borderOpacity'] ) && is_numeric( $btnvalue['borderOpacity'] ) ? $btnvalue['borderOpacity'] : 1 );
@@ -2407,7 +2411,7 @@ class Kadence_Blocks_Frontend {
 					$tabCol1 = '50';
 					$tabCol2 = '50';
 				}
-				$css .= '@media (min-width: 768px) and (max-width: 992px) {';
+				$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
 					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
 						$css .= '-ms-flex: 0 1 ' . $tabCol1 . '%;';
 						$css .= 'flex: 0 1 ' . $tabCol1 . '%;';
@@ -2464,7 +2468,7 @@ class Kadence_Blocks_Frontend {
 					$tabCol2 = '33.33';
 					$tabCol3 = '33.33';
 				}
-				$css .= '@media (min-width: 768px) and (max-width: 992px) {';
+				$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
 					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
 						$css .= '-ms-flex: 0 1 ' . $tabCol1 . '%;';
 						$css .= 'flex: 0 1 ' . $tabCol1 . '%;';
@@ -2684,7 +2688,7 @@ class Kadence_Blocks_Frontend {
 		$tablet_overlay = ( isset( $attr['tabletOverlay'] ) && is_array( $attr['tabletOverlay'] ) && isset( $attr['tabletOverlay'][0] ) && is_array( $attr['tabletOverlay'][0] ) ? $attr['tabletOverlay'][0] : array() );
 		$tablet_background = ( isset( $attr['tabletBackground'] ) && is_array( $attr['tabletBackground'] ) && isset( $attr['tabletBackground'][0] ) && is_array( $attr['tabletBackground'][0] ) ? $attr['tabletBackground'][0] : array() );
 		if ( isset( $attr['tabletPadding'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) || ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) ) {
-			$css .= '@media (min-width: 768px) and (max-width: 992px) {';
+			$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
 			if ( isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) ) {
 				$css .= '#kt-layout-id' . $unique_id . ' {';
 				if ( isset( $attr['topMarginT'] ) ) {
@@ -2940,6 +2944,25 @@ class Kadence_Blocks_Frontend {
 				$css .= 'background-repeat:' . ( ! empty( $bg_img['bgImgRepeat'] ) ? $bg_img['bgImgRepeat'] : 'no-repeat' ) . ';';
 			$css .= '}';
 		}
+		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 0 ] ) && ! empty( $attr['textAlign'][ 0 ] ) ) {
+			$css .= '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' {';
+			$css .= 'text-align:' . $attr['textAlign'][ 0 ] . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 1 ] ) && ! empty( $attr['textAlign'][ 1 ] ) ) {
+			$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
+			$css .= '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' {';
+			$css .= 'text-align:' . $attr['textAlign'][ 1 ] . ';';
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 2 ] ) && ! empty( $attr['textAlign'][ 2 ] ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' {';
+			$css .= 'text-align:' . $attr['textAlign'][ 2 ] . ';';
+			$css .= '}';
+			$css .= '}';
+		}
 		if ( isset( $attr['zIndex'] ) ) {
 			$css .= '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' {';
 			if ( isset( $attr['zIndex'] ) ) {
@@ -2948,7 +2971,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		if ( isset( $attr['collapseOrder'] ) ) {
-			$css .= '@media (min-width: 768px) and (max-width: 992px) {';
+			$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
 			$css .= '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id . ' {';
 				if ( isset( $attr['collapseOrder'] ) ) {
 					$css .= 'order:' . $attr['collapseOrder'] . ';';

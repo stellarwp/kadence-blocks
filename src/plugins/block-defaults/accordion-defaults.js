@@ -256,6 +256,11 @@ class KadenceAccordionDefault extends Component {
 							this.saveConfig( 'kadence/accordion', accordionConfig );
 						} }>
 						<ToggleControl
+							label={ __( 'Show Presets' ) }
+							checked={ ( undefined !== accordionConfig.showPresets ? accordionConfig.showPresets : true ) }
+							onChange={ value => this.saveConfigState( 'showPresets', value ) }
+						/>
+						<ToggleControl
 							label={ __( 'Panes close when another opens' ) }
 							checked={ ( undefined !== accordionConfig.linkPaneCollapse ? accordionConfig.linkPaneCollapse : true ) }
 							onChange={ value => this.saveConfigState( 'linkPaneCollapse', value ) }

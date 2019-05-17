@@ -75,6 +75,7 @@ registerBlockType( 'kadence/pane', {
 		inserter: false,
 		reusable: false,
 		html: false,
+		anchor: true,
 	},
 	getEditWrapperProps( attributes ) {
 		return { 'data-pane': attributes.id };

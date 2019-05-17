@@ -1659,9 +1659,9 @@ class KadenceInfoBox extends Component {
 				{ this.state.showPreset && (
 					<div className="kt-select-starter-style-tabs kt-select-starter-style-infobox">
 						<div className="kt-select-starter-style-tabs-title">
-							{ __( 'Select Intial Style' ) }
+							{ __( 'Select Initial Style' ) }
 						</div>
-						<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Intial Style' ) }>
+						<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Initial Style' ) }>
 							{ map( startlayoutOptions, ( { name, key, icon } ) => (
 								<Button
 									key={ key }

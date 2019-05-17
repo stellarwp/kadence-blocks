@@ -151,6 +151,10 @@ registerBlockType( 'kadence/column', {
 				bgImgRepeat: 'no-repeat',
 			} ],
 		},
+		textAlign: {
+			type: 'array',
+			default: [ '', '', '' ],
+		},
 	},
 	supports: {
 		inserter: false,

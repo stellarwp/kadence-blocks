@@ -2,13 +2,13 @@
 Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
-Requires at least: 4.4
-Tested up to: 5.1.1
-Stable tag: 1.5.3
+Requires at least: 4.8
+Tested up to: 5.2.0
+Stable tag: 1.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Custom Blocks for for Gutenberg to help extend the editing capablitlies.
+Custom Blocks for for Gutenberg to help extend the editing capabilities.
 
 == Description ==
 
@@ -81,9 +81,23 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.5.4 =
+* Add: Two new Prebuilt items ( Accordion examples )
+* Add: Initial styles for accordion block.
+* Add: Default settings for Advanced Heading Block
+* Add: Editor visibility settings for Advanced Heading Block
+* Add: Two new tablet and mobile three column layouts.
+* Add: Text align to Row and Column Blocks with mobile control.
+* Add: Anchor options for accordion panes and allow direct linking.
+* Add: Default settings for Row Layout Block.
+* Add: Editor visibility settings for Row Layout Block.
+* Update: Column Appender
+* Fix: Issue with Tablet media query not matching.
+* Fix: Button showing black background when should be transparent.
+
 = 1.5.3 =
 * Fix: Issue with icon list then typing return.
-* Add: Prebuilt Accordion Styles.
+* Add: Prebuilt testimonial.
 
 = 1.5.2 =
 * Add: Fullwidth setting to Advanced Button.

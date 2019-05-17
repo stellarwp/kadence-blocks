@@ -29,7 +29,6 @@
 .kt-blocks-accordion-header:focus {
 	box-shadow: none;
 	text-shadow: none;
-	outline:0;
 }
 .kt-blocks-accordion-header:hover {
     background-color: #eeeeee;
@@ -238,9 +237,6 @@
 	.kt-blocks-accordion-icon-trigger:after {
 		right: 4px;
 	}
-}
-.kt-blocks-accordion-header:focus {
-    outline: 0;
 }
 .kt-accordion-header-wrap {
     margin-top: 8px;

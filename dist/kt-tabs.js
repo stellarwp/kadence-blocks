@@ -113,19 +113,23 @@ jQuery( document ).ready( function( $ ) {
 			$( this ).parent( '.kt-tabs-accordion-title' ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
 		}
 	} );
-	if ( window.location.hash != '' ) {
-		var matches = window.location.hash.match( /\btab-\S+/g );
-		if ( matches !== null && matches.length === 1 ) {
-			var tabid = matches[ 0 ];
-			var tabnumber = $( '#' + tabid + ' a' ).attr( 'data-tab' );
-			$( '#' + tabid ).closest( '.kt-tabs-title-list' ).find( '.kt-tab-title-active' )
-				.addClass( 'kt-tab-title-inactive' )
-				.removeClass( 'kt-tab-title-active' );
-			$( '#' + tabid ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
-				return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
-			} ).addClass( 'kt-active-tab-' + tabnumber );
-			$( '#' + tabid ).addClass( 'kt-tab-title-active' );
-			$( '#' + tabid ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabid ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
+	function kt_anchor_tabs() {
+		if ( window.location.hash != '' ) {
+			var matches = window.location.hash.match( /\btab-\S+/g );
+			if ( matches !== null && matches.length === 1 ) {
+				var tabid = matches[ 0 ];
+				var tabnumber = $( '#' + tabid + ' a' ).attr( 'data-tab' );
+				$( '#' + tabid ).closest( '.kt-tabs-title-list' ).find( '.kt-tab-title-active' )
+					.addClass( 'kt-tab-title-inactive' )
+					.removeClass( 'kt-tab-title-active' );
+				$( '#' + tabid ).closest( '.kt-tabs-wrap' ).removeClass( function( index, className ) {
+					return ( className.match( /\bkt-active-tab-\S+/g ) || [] ).join( ' ' );
+				} ).addClass( 'kt-active-tab-' + tabnumber );
+				$( '#' + tabid ).addClass( 'kt-tab-title-active' );
+				$( '#' + tabid ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-accordion-title.kt-tabs-accordion-title-' + tabid ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
+			}
 		}
 	}
+	window.addEventListener( 'hashchange', kt_anchor_tabs, false );
+	window.addEventListener( 'load', kt_anchor_tabs, false );
 } );

@@ -61,12 +61,21 @@ const ktadvancedheadingUniqueIDs = [];
 class KadenceAdvancedHeading extends Component {
 	constructor() {
 		super( ...arguments );
+		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			isVisible: false,
+			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			settings: {},
 		};
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/advancedheading' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedheading' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/advancedheading' ] ).map( ( attribute ) => {
+					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/advancedheading' ][ attribute ];
+				} );
+			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
@@ -79,6 +88,24 @@ class KadenceAdvancedHeading extends Component {
 		} else {
 			ktadvancedheadingUniqueIDs.push( this.props.attributes.uniqueID );
 		}
+		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
+		if ( blockSettings[ 'kadence/advancedheading' ] !== undefined && typeof blockSettings[ 'kadence/advancedheading' ] === 'object' ) {
+			this.setState( { settings: blockSettings[ 'kadence/advancedheading' ] } );
+		}
+	}
+	showSettings( key ) {
+		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
+			return true;
+		} else if ( 'contributor' === this.state.settings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'author' === this.state.settings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'editor' === this.state.settings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'admin' === this.state.settings[ key ] && 'admin' === this.state.user ) {
+			return true;
+		}
+		return false;
 	}
 	render() {
 		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
@@ -380,81 +407,9 @@ class KadenceAdvancedHeading extends Component {
 						label={ __( 'Change Heading Level' ) }
 						controls={ range( 1, 7 ).map( createLevelControlToolbar ) }
 					/>
-					<InlineTypographyControls
-						uniqueID={ uniqueID }
-						letterSpacing={ letterSpacing }
-						onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
-						fontFamily={ typography }
-						onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
-						onFontChange={ ( select ) => {
-							setAttributes( {
-								typography: select.value,
-								googleFont: select.google,
-							} );
-						} }
-						googleFont={ googleFont }
-						onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
-						loadGoogleFont={ loadGoogleFont }
-						onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
-						fontVariant={ fontVariant }
-						onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
-						fontWeight={ fontWeight }
-						onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
-						fontStyle={ fontStyle }
-						onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
-						fontSubset={ fontSubset }
-						onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
-						textTransform={ textTransform }
-						onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
-						fontSizeArray={ false }
-						fontSize={ size }
-						onFontSize={ ( value ) => setAttributes( { size: value } ) }
-						fontSizeType={ sizeType }
-						onFontSizeType={ ( value ) => setAttributes( { sizeType: value } ) }
-						lineHeight={ lineHeight }
-						onLineHeight={ ( value ) => setAttributes( { lineHeight: value } ) }
-						lineHeightType={ lineType }
-						onLineHeightType={ ( value ) => setAttributes( { lineType: value } ) }
-						tabSize={ tabSize }
-						onTabSize={ ( value ) => setAttributes( { tabSize: value } ) }
-						tabLineHeight={ tabLineHeight }
-						onTabLineHeight={ ( value ) => setAttributes( { tabLineHeight: value } ) }
-						mobileSize={ mobileSize }
-						onMobileSize={ ( value ) => setAttributes( { mobileSize: value } ) }
-						mobileLineHeight={ mobileLineHeight }
-						onMobileLineHeight={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
-					/>
-					<AlignmentToolbar
-						value={ align }
-						onChange={ ( nextAlign ) => {
-							setAttributes( { align: nextAlign } );
-						} }
-					/>
-				</BlockControls>
-				<InspectorControls>
-					<PanelBody title={ __( 'Heading Settings' ) }>
-						<p>{ __( 'HTML Tag' ) }</p>
-						<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
-						<p>{ __( 'Text Alignment' ) }</p>
-						<AlignmentToolbar
-							value={ align }
-							onChange={ ( nextAlign ) => {
-								setAttributes( { align: nextAlign } );
-							} }
-						/>
-						<p className="kt-setting-label">{ __( 'Heading Color' ) }</p>
-						<ColorPalette
-							value={ color }
-							onChange={ ( value ) => setAttributes( { color: value } ) }
-						/>
-						<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
-						{ tabControls }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Advanced Typography Settings' ) }
-						initialOpen={ false }
-					>
-						<TypographyControls
+					{ this.showSettings( 'allSettings' ) && this.showSettings( 'toolbarTypography' ) && (
+						<InlineTypographyControls
+							uniqueID={ uniqueID }
 							letterSpacing={ letterSpacing }
 							onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
 							fontFamily={ typography }
@@ -479,150 +434,240 @@ class KadenceAdvancedHeading extends Component {
 							onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
 							textTransform={ textTransform }
 							onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
+							fontSizeArray={ false }
+							fontSize={ size }
+							onFontSize={ ( value ) => setAttributes( { size: value } ) }
+							fontSizeType={ sizeType }
+							onFontSizeType={ ( value ) => setAttributes( { sizeType: value } ) }
+							lineHeight={ lineHeight }
+							onLineHeight={ ( value ) => setAttributes( { lineHeight: value } ) }
+							lineHeightType={ lineType }
+							onLineHeightType={ ( value ) => setAttributes( { lineType: value } ) }
+							tabSize={ tabSize }
+							onTabSize={ ( value ) => setAttributes( { tabSize: value } ) }
+							tabLineHeight={ tabLineHeight }
+							onTabLineHeight={ ( value ) => setAttributes( { tabLineHeight: value } ) }
+							mobileSize={ mobileSize }
+							onMobileSize={ ( value ) => setAttributes( { mobileSize: value } ) }
+							mobileLineHeight={ mobileLineHeight }
+							onMobileLineHeight={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
 						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Highlight Settings' ) }
-						initialOpen={ false }
-					>
-						<h2>{ __( 'Highlight Color' ) }</h2>
-						<ColorPalette
-							value={ markColor }
-							onChange={ value => setAttributes( { markColor: value } ) }
-						/>
-						<h2>{ __( 'Highlight Background' ) }</h2>
-						<ColorPalette
-							value={ markBG }
-							onChange={ value => setAttributes( { markBG: value } ) }
-						/>
-						<RangeControl
-							label={ __( 'Highlight Background Opacity' ) }
-							value={ markBGOpacity }
-							onChange={ value => setAttributes( { markBGOpacity: value } ) }
-							min={ 0 }
-							max={ 1 }
-							step={ 0.01 }
-						/>
-						<h2>{ __( 'Highlight Border Color' ) }</h2>
-						<ColorPalette
-							value={ markBorder }
-							onChange={ value => setAttributes( { markBorder: value } ) }
-						/>
-						<RangeControl
-							label={ __( 'Highlight Border Opacity' ) }
-							value={ markBorderOpacity }
-							onChange={ value => setAttributes( { markBorderOpacity: value } ) }
-							min={ 0 }
-							max={ 1 }
-							step={ 0.01 }
-						/>
-						<SelectControl
-							label={ __( 'Highlight Border Style' ) }
-							value={ markBorderStyle }
-							options={ [
-								{ value: 'solid', label: __( 'Solid' ) },
-								{ value: 'dashed', label: __( 'Dashed' ) },
-								{ value: 'dotted', label: __( 'Dotted' ) },
-							] }
-							onChange={ value => setAttributes( { markBorderStyle: value } ) }
-						/>
-						<RangeControl
-							label={ __( 'Highlight Border Width' ) }
-							value={ markBorderWidth }
-							onChange={ value => setAttributes( { markBorderWidth: value } ) }
-							min={ 0 }
-							max={ 20 }
-							step={ 1 }
-						/>
-						<TypographyControls
-							fontSize={ markSize }
-							onFontSize={ ( value ) => setAttributes( { markSize: value } ) }
-							fontSizeType={ markSizeType }
-							onFontSizeType={ ( value ) => setAttributes( { markSizeType: value } ) }
-							lineHeight={ markLineHeight }
-							onLineHeight={ ( value ) => setAttributes( { markLineHeight: value } ) }
-							lineHeightType={ markLineType }
-							onLineHeightType={ ( value ) => setAttributes( { markLineType: value } ) }
-							letterSpacing={ markLetterSpacing }
-							onLetterSpacing={ ( value ) => setAttributes( { markLetterSpacing: value } ) }
-							fontFamily={ markTypography }
-							onFontFamily={ ( value ) => setAttributes( { markTypography: value } ) }
-							onFontChange={ ( select ) => {
-								setAttributes( {
-									markTypography: select.value,
-									markGoogleFont: select.google,
-								} );
-							} }
-							googleFont={ markGoogleFont }
-							onGoogleFont={ ( value ) => setAttributes( { markGoogleFont: value } ) }
-							loadGoogleFont={ markLoadGoogleFont }
-							onLoadGoogleFont={ ( value ) => setAttributes( { markLoadGoogleFont: value } ) }
-							fontVariant={ markFontVariant }
-							onFontVariant={ ( value ) => setAttributes( { markFontVariant: value } ) }
-							fontWeight={ markFontWeight }
-							onFontWeight={ ( value ) => setAttributes( { markFontWeight: value } ) }
-							fontStyle={ markFontStyle }
-							onFontStyle={ ( value ) => setAttributes( { markFontStyle: value } ) }
-							fontSubset={ markFontSubset }
-							onFontSubset={ ( value ) => setAttributes( { markFontSubset: value } ) }
-							padding={ markPadding }
-							onPadding={ ( value ) => setAttributes( { markPadding: value } ) }
-							paddingControl={ markPaddingControl }
-							onPaddingControl={ ( value ) => setAttributes( { markPaddingControl: value } ) }
-							textTransform={ markTextTransform }
-							onTextTransform={ ( value ) => setAttributes( { markTextTransform: value } ) }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Margin Settings' ) }
-						initialOpen={ false }
-					>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
-							{ map( marginTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ marginType === key }
-									aria-pressed={ marginType === key }
-									onClick={ () => setAttributes( { marginType: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<RangeControl
-							label={ __( 'Top Margin' ) }
-							value={ ( topMargin ? topMargin : '' ) }
-							onChange={ ( value ) => setAttributes( { topMargin: value } ) }
-							min={ marginMin }
-							max={ marginMax }
-							step={ marginStep }
-						/>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
-							{ map( marginTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ marginType === key }
-									aria-pressed={ marginType === key }
-									onClick={ () => setAttributes( { marginType: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<RangeControl
-							label={ __( 'Bottom Margin' ) }
-							value={ ( bottomMargin ? bottomMargin : '' ) }
-							onChange={ ( value ) => setAttributes( { bottomMargin: value } ) }
-							min={ marginMin }
-							max={ marginMax }
-							step={ marginStep }
-						/>
-					</PanelBody>
-				</InspectorControls>
+					) }
+					<AlignmentToolbar
+						value={ align }
+						onChange={ ( nextAlign ) => {
+							setAttributes( { align: nextAlign } );
+						} }
+					/>
+				</BlockControls>
+				{ this.showSettings( 'allSettings' ) && (
+					<InspectorControls>
+						<PanelBody title={ __( 'Heading Settings' ) }>
+							<p>{ __( 'HTML Tag' ) }</p>
+							<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
+							<p>{ __( 'Text Alignment' ) }</p>
+							<AlignmentToolbar
+								value={ align }
+								onChange={ ( nextAlign ) => {
+									setAttributes( { align: nextAlign } );
+								} }
+							/>
+							{ this.showSettings( 'colorSettings' ) && (
+								<Fragment>
+									<p className="kt-setting-label">{ __( 'Heading Color' ) }</p>
+									<ColorPalette
+										value={ color }
+										onChange={ ( value ) => setAttributes( { color: value } ) }
+									/>
+								</Fragment>
+							) }
+							{ this.showSettings( 'sizeSettings' ) && (
+								<Fragment>
+									<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+									{ tabControls }
+								</Fragment>
+							) }
+						</PanelBody>
+						{ this.showSettings( 'advancedSettings' ) && (
+							<PanelBody
+								title={ __( 'Advanced Typography Settings' ) }
+								initialOpen={ false }
+							>
+								<TypographyControls
+									letterSpacing={ letterSpacing }
+									onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
+									fontFamily={ typography }
+									onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
+									onFontChange={ ( select ) => {
+										setAttributes( {
+											typography: select.value,
+											googleFont: select.google,
+										} );
+									} }
+									googleFont={ googleFont }
+									onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
+									loadGoogleFont={ loadGoogleFont }
+									onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
+									fontVariant={ fontVariant }
+									onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
+									fontWeight={ fontWeight }
+									onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
+									fontStyle={ fontStyle }
+									onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
+									fontSubset={ fontSubset }
+									onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
+									textTransform={ textTransform }
+									onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'highlightSettings' ) && (
+							<PanelBody
+								title={ __( 'Highlight Settings' ) }
+								initialOpen={ false }
+							>
+								<h2>{ __( 'Highlight Color' ) }</h2>
+								<ColorPalette
+									value={ markColor }
+									onChange={ value => setAttributes( { markColor: value } ) }
+								/>
+								<h2>{ __( 'Highlight Background' ) }</h2>
+								<ColorPalette
+									value={ markBG }
+									onChange={ value => setAttributes( { markBG: value } ) }
+								/>
+								<RangeControl
+									label={ __( 'Highlight Background Opacity' ) }
+									value={ markBGOpacity }
+									onChange={ value => setAttributes( { markBGOpacity: value } ) }
+									min={ 0 }
+									max={ 1 }
+									step={ 0.01 }
+								/>
+								<h2>{ __( 'Highlight Border Color' ) }</h2>
+								<ColorPalette
+									value={ markBorder }
+									onChange={ value => setAttributes( { markBorder: value } ) }
+								/>
+								<RangeControl
+									label={ __( 'Highlight Border Opacity' ) }
+									value={ markBorderOpacity }
+									onChange={ value => setAttributes( { markBorderOpacity: value } ) }
+									min={ 0 }
+									max={ 1 }
+									step={ 0.01 }
+								/>
+								<SelectControl
+									label={ __( 'Highlight Border Style' ) }
+									value={ markBorderStyle }
+									options={ [
+										{ value: 'solid', label: __( 'Solid' ) },
+										{ value: 'dashed', label: __( 'Dashed' ) },
+										{ value: 'dotted', label: __( 'Dotted' ) },
+									] }
+									onChange={ value => setAttributes( { markBorderStyle: value } ) }
+								/>
+								<RangeControl
+									label={ __( 'Highlight Border Width' ) }
+									value={ markBorderWidth }
+									onChange={ value => setAttributes( { markBorderWidth: value } ) }
+									min={ 0 }
+									max={ 20 }
+									step={ 1 }
+								/>
+								<TypographyControls
+									fontSize={ markSize }
+									onFontSize={ ( value ) => setAttributes( { markSize: value } ) }
+									fontSizeType={ markSizeType }
+									onFontSizeType={ ( value ) => setAttributes( { markSizeType: value } ) }
+									lineHeight={ markLineHeight }
+									onLineHeight={ ( value ) => setAttributes( { markLineHeight: value } ) }
+									lineHeightType={ markLineType }
+									onLineHeightType={ ( value ) => setAttributes( { markLineType: value } ) }
+									letterSpacing={ markLetterSpacing }
+									onLetterSpacing={ ( value ) => setAttributes( { markLetterSpacing: value } ) }
+									fontFamily={ markTypography }
+									onFontFamily={ ( value ) => setAttributes( { markTypography: value } ) }
+									onFontChange={ ( select ) => {
+										setAttributes( {
+											markTypography: select.value,
+											markGoogleFont: select.google,
+										} );
+									} }
+									googleFont={ markGoogleFont }
+									onGoogleFont={ ( value ) => setAttributes( { markGoogleFont: value } ) }
+									loadGoogleFont={ markLoadGoogleFont }
+									onLoadGoogleFont={ ( value ) => setAttributes( { markLoadGoogleFont: value } ) }
+									fontVariant={ markFontVariant }
+									onFontVariant={ ( value ) => setAttributes( { markFontVariant: value } ) }
+									fontWeight={ markFontWeight }
+									onFontWeight={ ( value ) => setAttributes( { markFontWeight: value } ) }
+									fontStyle={ markFontStyle }
+									onFontStyle={ ( value ) => setAttributes( { markFontStyle: value } ) }
+									fontSubset={ markFontSubset }
+									onFontSubset={ ( value ) => setAttributes( { markFontSubset: value } ) }
+									padding={ markPadding }
+									onPadding={ ( value ) => setAttributes( { markPadding: value } ) }
+									paddingControl={ markPaddingControl }
+									onPaddingControl={ ( value ) => setAttributes( { markPaddingControl: value } ) }
+									textTransform={ markTextTransform }
+									onTextTransform={ ( value ) => setAttributes( { markTextTransform: value } ) }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'marginSettings' ) && (
+							<PanelBody
+								title={ __( 'Margin Settings' ) }
+								initialOpen={ false }
+							>
+								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
+									{ map( marginTypes, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-size-btn"
+											isSmall
+											isPrimary={ marginType === key }
+											aria-pressed={ marginType === key }
+											onClick={ () => setAttributes( { marginType: key } ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+								<RangeControl
+									label={ __( 'Top Margin' ) }
+									value={ ( topMargin ? topMargin : '' ) }
+									onChange={ ( value ) => setAttributes( { topMargin: value } ) }
+									min={ marginMin }
+									max={ marginMax }
+									step={ marginStep }
+								/>
+								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
+									{ map( marginTypes, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-size-btn"
+											isSmall
+											isPrimary={ marginType === key }
+											aria-pressed={ marginType === key }
+											onClick={ () => setAttributes( { marginType: key } ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+								<RangeControl
+									label={ __( 'Bottom Margin' ) }
+									value={ ( bottomMargin ? bottomMargin : '' ) }
+									onChange={ ( value ) => setAttributes( { bottomMargin: value } ) }
+									min={ marginMin }
+									max={ marginMax }
+									step={ marginStep }
+								/>
+							</PanelBody>
+						) }
+					</InspectorControls>
+				) }
 				<InspectorAdvancedControls>
 					<TextControl
 						label={ __( 'HTML Anchor' ) }

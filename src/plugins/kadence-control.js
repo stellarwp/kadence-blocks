@@ -30,6 +30,10 @@ import KadenceIconList from './block-defaults/icon-list-defaults';
 import KadenceIconListSettings from './block-settings/icon-list-settings';
 import KadenceTestimonials from './block-defaults/testimonial-defaults';
 import KadenceTestimonialsSettings from './block-settings/testimonial-settings';
+import KadenceHeadings from './block-defaults/advanced-heading-default';
+import KadenceHeadingsSettings from './block-settings/advanced-heading-settings';
+import KadenceRowLayout from './block-defaults/rowlayout-default';
+import KadenceRowLayoutSettings from './block-settings/rowlayout-settings';
 
 /*
  * Components
@@ -88,6 +92,14 @@ class KadenceConfig extends Component {
 						<KadenceTestimonials />
 						{ 'admin' === this.state.user && (
 							<KadenceTestimonialsSettings />
+						) }
+						<KadenceHeadings />
+						{ 'admin' === this.state.user && (
+							<KadenceHeadingsSettings />
+						) }
+						<KadenceRowLayout />
+						{ 'admin' === this.state.user && (
+							<KadenceRowLayoutSettings />
 						) }
 						{ map( this.state.controls, ( { Control } ) => (
 							<Control />

@@ -119,6 +119,9 @@ class KadenceAccordionComponent extends Component {
 					this.setState( { titleTag: blockConfigObject[ 'kadence/pane' ].titleTag } );
 				}
 			}
+			if ( this.props.attributes.showPresets ) {
+				this.setState( { showPreset: true } );
+			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
@@ -202,6 +205,164 @@ class KadenceAccordionComponent extends Component {
 	render() {
 		const { attributes: { uniqueID, paneCount, blockAlignment, openPane, titleStyles, contentPadding, minHeight, maxWidth, contentBorder, contentBorderColor, contentBorderRadius, contentBgColor, titleAlignment, startCollapsed, linkPaneCollapse, showIcon, iconStyle, iconSide }, className, setAttributes, clientId } = this.props;
 		const { titleBorderRadiusControl, titleBorderControl, titlePaddingControl, contentBorderControl, contentBorderRadiusControl, contentPaddingControl, titleBorderColorControl, titleBorderHoverColorControl, titleBorderActiveColorControl, titleTag } = this.state;
+		const startlayoutOptions = [
+			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
+			{ key: 'base', name: __( 'Base' ), icon: icons.accord01 },
+			{ key: 'highlight', name: __( 'Highlight' ), icon: icons.accord02 },
+			{ key: 'subtle', name: __( 'Subtle' ), icon: icons.accord03 },
+			{ key: 'bottom', name: __( 'Bottom Border' ), icon: icons.accord04 },
+		];
+		const setInitalLayout = ( key ) => {
+			if ( 'skip' === key ) {
+			} else if ( 'base' === key ) {
+				setAttributes( {
+					contentBorder: [ 0, 0, 0, 0 ],
+					titleAlignment: 'left',
+					showIcon: true,
+					iconStyle: 'basic',
+					iconSide: 'right',
+					titleStyles: [ {
+						size: titleStyles[ 0 ].size,
+						sizeType: titleStyles[ 0 ].sizeType,
+						lineHeight: titleStyles[ 0 ].lineHeight,
+						lineType: titleStyles[ 0 ].lineType,
+						letterSpacing: titleStyles[ 0 ].letterSpacing,
+						family: titleStyles[ 0 ].family,
+						google: titleStyles[ 0 ].google,
+						style: titleStyles[ 0 ].style,
+						weight: titleStyles[ 0 ].weight,
+						variant: titleStyles[ 0 ].variant,
+						subset: titleStyles[ 0 ].subset,
+						loadGoogle: titleStyles[ 0 ].loadGoogle,
+						padding: [ 10, 14, 10, 14 ],
+						marginTop: 0,
+						color: '#555555',
+						background: '#f2f2f2',
+						border: [ '#555555', '#555555', '#555555', '#555555' ],
+						borderRadius: [ 0, 0, 0, 0 ],
+						borderWidth: [ 0, 0, 0, 0 ],
+						colorHover: '#444444',
+						backgroundHover: '#eeeeee',
+						borderHover: [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
+						colorActive: '#ffffff',
+						backgroundActive: '#444444',
+						borderActive: [ '#444444', '#444444', '#444444', '#444444' ],
+						textTransform: titleStyles[ 0 ].textTransform,
+					} ],
+				} );
+			} else if ( 'highlight' === key ) {
+				setAttributes( {
+					contentBorder: [ 0, 0, 0, 0 ],
+					contentBgColor: '#ffffff',
+					titleAlignment: 'left',
+					showIcon: true,
+					iconStyle: 'basic',
+					iconSide: 'right',
+					titleStyles: [ {
+						size: titleStyles[ 0 ].size,
+						sizeType: titleStyles[ 0 ].sizeType,
+						lineHeight: titleStyles[ 0 ].lineHeight,
+						lineType: titleStyles[ 0 ].lineType,
+						letterSpacing: titleStyles[ 0 ].letterSpacing,
+						family: titleStyles[ 0 ].family,
+						google: titleStyles[ 0 ].google,
+						style: titleStyles[ 0 ].style,
+						weight: titleStyles[ 0 ].weight,
+						variant: titleStyles[ 0 ].variant,
+						subset: titleStyles[ 0 ].subset,
+						loadGoogle: titleStyles[ 0 ].loadGoogle,
+						padding: [ 14, 16, 14, 16 ],
+						marginTop: 10,
+						color: '#555555',
+						background: '#f2f2f2',
+						border: [ '#555555', '#555555', '#555555', '#555555' ],
+						borderRadius: [ 6, 6, 6, 6 ],
+						borderWidth: [ 0, 0, 0, 0 ],
+						colorHover: '#444444',
+						backgroundHover: '#eeeeee',
+						borderHover: [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
+						colorActive: '#ffffff',
+						backgroundActive: '#f3690e',
+						borderActive: [ '#f3690e', '#f3690e', '#f3690e', '#f3690e' ],
+						textTransform: titleStyles[ 0 ].textTransform,
+					} ],
+				} );
+			} else if ( 'subtle' === key ) {
+				setAttributes( {
+					contentBorder: [ 0, 1, 1, 1 ],
+					contentBgColor: '#ffffff',
+					titleAlignment: 'left',
+					showIcon: true,
+					iconStyle: 'arrow',
+					iconSide: 'right',
+					titleStyles: [ {
+						size: titleStyles[ 0 ].size,
+						sizeType: titleStyles[ 0 ].sizeType,
+						lineHeight: titleStyles[ 0 ].lineHeight,
+						lineType: titleStyles[ 0 ].lineType,
+						letterSpacing: titleStyles[ 0 ].letterSpacing,
+						family: titleStyles[ 0 ].family,
+						google: titleStyles[ 0 ].google,
+						style: titleStyles[ 0 ].style,
+						weight: titleStyles[ 0 ].weight,
+						variant: titleStyles[ 0 ].variant,
+						subset: titleStyles[ 0 ].subset,
+						loadGoogle: titleStyles[ 0 ].loadGoogle,
+						padding: [ 14, 16, 14, 16 ],
+						marginTop: 10,
+						color: '#444444',
+						background: '#ffffff',
+						border: [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
+						borderRadius: [ 0, 0, 0, 0 ],
+						borderWidth: [ 1, 1, 1, 2 ],
+						colorHover: '#444444',
+						backgroundHover: '#ffffff',
+						borderHover: [ '#d4d4d4', '#d4d4d4', '#d4d4d4', '#d4d4d4' ],
+						colorActive: '#444444',
+						backgroundActive: '#ffffff',
+						borderActive: [ '#eeeeee', '#eeeeee', '#eeeeee', '#0e9cd1' ],
+						textTransform: titleStyles[ 0 ].textTransform,
+					} ],
+				} );
+			} else if ( 'bottom' === key ) {
+				setAttributes( {
+					contentBorder: [ 0, 0, 0, 0 ],
+					contentBgColor: '#ffffff',
+					titleAlignment: 'left',
+					showIcon: false,
+					iconStyle: 'arrow',
+					iconSide: 'right',
+					titleStyles: [ {
+						size: titleStyles[ 0 ].size,
+						sizeType: titleStyles[ 0 ].sizeType,
+						lineHeight: titleStyles[ 0 ].lineHeight,
+						lineType: titleStyles[ 0 ].lineType,
+						letterSpacing: titleStyles[ 0 ].letterSpacing,
+						family: titleStyles[ 0 ].family,
+						google: titleStyles[ 0 ].google,
+						style: titleStyles[ 0 ].style,
+						weight: titleStyles[ 0 ].weight,
+						variant: titleStyles[ 0 ].variant,
+						subset: titleStyles[ 0 ].subset,
+						loadGoogle: titleStyles[ 0 ].loadGoogle,
+						padding: [ 14, 10, 6, 16 ],
+						marginTop: 8,
+						color: '#444444',
+						background: '#ffffff',
+						border: [ '#f2f2f2', '#f2f2f2', '#f2f2f2', '#f2f2f2' ],
+						borderRadius: [ 0, 0, 0, 0 ],
+						borderWidth: [ 0, 0, 4, 0 ],
+						colorHover: '#444444',
+						backgroundHover: '#ffffff',
+						borderHover: [ '#eeeeee', '#eeeeee', '#eeeeee', '#eeeeee' ],
+						colorActive: '#333333',
+						backgroundActive: '#ffffff',
+						borderActive: [ '#0e9cd1', '#0e9cd1', '#0e9cd1', '#0e9cd1' ],
+						textTransform: titleStyles[ 0 ].textTransform,
+					} ],
+				} );
+			}
+		};
 		const accordionBlock = wp.data.select( 'core/editor' ).getBlocksByClientId( clientId );
 		const realPaneCount = accordionBlock[ 0 ].innerBlocks.length;
 		const saveTitleStyles = ( value ) => {
@@ -722,46 +883,72 @@ class KadenceAccordionComponent extends Component {
 					</InspectorControls>
 				) }
 				<div className={ classes } >
-					<div className="kt-accordion-selecter">{ __( 'Accordion' ) }</div>
-					<div className="kt-accordion-wrap" style={ {
-						maxWidth: maxWidth + 'px',
-					} }>
-						{ titleStyles[ 0 ].google && (
-							<WebfontLoader config={ config }>
-							</WebfontLoader>
-						) }
-						<div className={ `kt-accordion-inner-wrap kt-accordion-${ uniqueID } kt-start-active-pane-${ openPane + 1 } kt-accodion-icon-style-${ ( iconStyle && showIcon ? iconStyle : 'none' ) } kt-accodion-icon-side-${ ( iconSide ? iconSide : 'right' ) }` }>
-							<InnerBlocks
-								template={ getPanesTemplate( ( 0 === realPaneCount ? paneCount : realPaneCount ) ) }
-								templateLock={ false }
-								allowedBlocks={ ALLOWED_BLOCKS } />
+					{ this.state.showPreset && (
+						<div className="kt-select-starter-style-tabs">
+							<div className="kt-select-starter-style-tabs-title">
+								{ __( 'Select Initial Style' ) }
+							</div>
+							<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Initial Style' ) }>
+								{ map( startlayoutOptions, ( { name, key, icon } ) => (
+									<Button
+										key={ key }
+										className="kt-inital-tabs-style-btn"
+										isSmall
+										onClick={ () => {
+											setInitalLayout( key );
+											this.setState( { showPreset: false } );
+										} }
+									>
+										{ icon }
+									</Button>
+								) ) }
+							</ButtonGroup>
 						</div>
-					</div>
-					<div className="kt-accordion-add-selecter">
-						<Button
-							className="kt-accordion-add"
-							isPrimary={ true }
-							onClick={ () => {
-								let newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
-								wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, realPaneCount, clientId );
-								setAttributes( { paneCount: paneCount + 1 } );
-							} }
-						>
-							<Dashicon icon="plus" />
-							{ __( 'Add Accordion Item' ) }
-						</Button>
-						{ realPaneCount > 1 && (
-							<IconButton
-								className="kt-accordion-remove"
-								label={ __( 'Remove Accordion Item' ) }
-								icon="minus"
-								onClick={ () => {
-									const removeClientId = accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId;
-									wp.data.dispatch( 'core/editor' ).removeBlocks( removeClientId );
-								} }
-							/>
-						) }
-					</div>
+					) }
+					{ ! this.state.showPreset && (
+						<Fragment>
+							<div className="kt-accordion-selecter">{ __( 'Accordion' ) }</div>
+							<div className="kt-accordion-wrap" style={ {
+								maxWidth: maxWidth + 'px',
+							} }>
+								{ titleStyles[ 0 ].google && (
+									<WebfontLoader config={ config }>
+									</WebfontLoader>
+								) }
+								<div className={ `kt-accordion-inner-wrap kt-accordion-${ uniqueID } kt-start-active-pane-${ openPane + 1 } kt-accodion-icon-style-${ ( iconStyle && showIcon ? iconStyle : 'none' ) } kt-accodion-icon-side-${ ( iconSide ? iconSide : 'right' ) }` }>
+									<InnerBlocks
+										template={ getPanesTemplate( ( 0 === realPaneCount ? paneCount : realPaneCount ) ) }
+										templateLock={ false }
+										allowedBlocks={ ALLOWED_BLOCKS } />
+								</div>
+							</div>
+							<div className="kt-accordion-add-selecter">
+								<Button
+									className="kt-accordion-add"
+									isPrimary={ true }
+									onClick={ () => {
+										let newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
+										wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, realPaneCount, clientId );
+										setAttributes( { paneCount: paneCount + 1 } );
+									} }
+								>
+									<Dashicon icon="plus" />
+									{ __( 'Add Accordion Item' ) }
+								</Button>
+								{ realPaneCount > 1 && (
+									<IconButton
+										className="kt-accordion-remove"
+										label={ __( 'Remove Accordion Item' ) }
+										icon="minus"
+										onClick={ () => {
+											const removeClientId = accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId;
+											wp.data.dispatch( 'core/editor' ).removeBlocks( removeClientId );
+										} }
+									/>
+								) }
+							</div>
+						</Fragment>
+					) }
 				</div>
 			</Fragment>
 		);

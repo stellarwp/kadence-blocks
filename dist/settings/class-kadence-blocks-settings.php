@@ -128,197 +128,9 @@ class Kadence_Blocks_Settings {
 				),
 			),
 			'kadence/rowlayout' => array(
-				'columnGutter' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'default',
-							'name' => __( 'Default: 30px', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'none',
-							'name' => __( 'No Gutter', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'skinny',
-							'name' => __( 'Skinny: 10px', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'narrow',
-							'name' => __( 'Narrow: 20px', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'wide',
-							'name' => __( 'Wide: 40px', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'wider',
-							'name' => __( 'Wider: 60px', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'widest',
-							'name' => __( 'Widest: 80px', 'kadence-blocks' ),
-						),
-					),
-					'default' => 'default',
-					'name' => __( 'Column Gutter', 'kadence-blocks' ),
-				),
-				'htmlTag' => array(
-					'type' => 'select',
-					'options' => array(
-						array(
-							'value' => 'div',
-							'name' => __( 'div', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'section',
-							'name' => __( 'section', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'article',
-							'name' => __( 'article', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'main',
-							'name' => __( 'main', 'kadence-blocks' ),
-						),
-						array(
-							'value' => 'aside',
-							'name' => __( 'aside', 'kadence-blocks' ),
-						),
-					),
-					'default' => 'div',
-					'name' => __( 'Container HTML tag', 'kadence-blocks' ),
-				),
-				'maxWidth' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 400,
-						'max' => 2000,
-						'step' => 1,
-					),
-					'name' => __( 'Row Content Max Width (px)', 'kadence-blocks' ),
-				),
-				'topPadding' => array(
-					'type' => 'number',
-					'default' => 25,
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'Top Padding (px)', 'kadence-blocks' ),
-				),
-				'bottomPadding' => array(
-					'type' => 'number',
-					'default' => 25,
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'Bottom Padding (px)', 'kadence-blocks' ),
-				),
-				'leftPadding' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'Left Padding (px)', 'kadence-blocks' ),
-				),
-				'rightPadding' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'Right Padding (px)', 'kadence-blocks' ),
-				),
-				'topPaddingM' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'MOBILE - Top Padding (px)', 'kadence-blocks' ),
-				),
-				'bottomPaddingM' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'MOBILE - Bottom Padding (px)', 'kadence-blocks' ),
-				),
-				'leftPaddingM' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'MOBILE - Left Padding (px)', 'kadence-blocks' ),
-				),
-				'rightPaddingM' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'MOBILE - Right Padding (px)', 'kadence-blocks' ),
-				),
-				'topMargin' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'Top Margin (px)', 'kadence-blocks' ),
-				),
-				'bottomMargin' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'Bottom Margin (px)', 'kadence-blocks' ),
-				),
-				'topMarginM' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'MOBILE - Top Margin (px)', 'kadence-blocks' ),
-				),
-				'bottomMarginM' => array(
-					'type' => 'number',
-					'default' => '',
-					'options' => array(
-						'min' => 0,
-						'max' => 500,
-						'step' => 1,
-					),
-					'name' => __( 'MOBILE - Bottom Margin (px)', 'kadence-blocks' ),
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
 				),
 			),
 			'kadence/advancedbtn' => array(
@@ -352,6 +164,18 @@ class Kadence_Blocks_Settings {
 				),
 			),
 			'kadence/testimonials' => array(
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
+				),
+			),
+			'kadence/advancedheading' => array(
+				'moved' => array(
+					'type' => 'info',
+					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),
+				),
+			),
+			'kadence/icon' => array(
 				'moved' => array(
 					'type' => 'info',
 					'name' => __( 'Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls', 'kadence-blocks' ),

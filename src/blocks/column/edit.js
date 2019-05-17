@@ -23,6 +23,7 @@ const {
 	InnerBlocks,
 	MediaUpload,
 	InspectorControls,
+	AlignmentToolbar,
 	ColorPalette,
 } = wp.editor;
 const {
@@ -76,7 +77,7 @@ class KadenceColumn extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg }, setAttributes } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign }, setAttributes, clientId } = this.props;
 		const { borderWidthControl, borderRadiusControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
@@ -346,8 +347,73 @@ class KadenceColumn extends Component {
 				}
 			</TabPanel>
 		);
+		const alignDeskControls = (
+			<AlignmentToolbar
+				value={ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ) }
+				onChange={ ( nextAlign ) => {
+					setAttributes( { textAlign: [ nextAlign, textAlign[ 1 ], textAlign[ 2 ] ] } );
+				} }
+			/>
+		);
+		const alignTabletControls = (
+			<AlignmentToolbar
+				value={ ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ) }
+				onChange={ ( nextAlign ) => {
+					setAttributes( { textAlign: [ textAlign[ 0 ], nextAlign, textAlign[ 2 ] ] } );
+				} }
+			/>
+		);
+		const alignMobileControls = (
+			<AlignmentToolbar
+				value={ ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) }
+				onChange={ ( nextAlign ) => {
+					setAttributes( { textAlign: [ textAlign[ 0 ], textAlign[ 1 ], nextAlign ] } );
+				} }
+			/>
+		);
+		const textAlignControls = (
+			<Fragment>
+				<h2 className="kt-heading-size-title">{ __( 'Text Alignment' ) }</h2>
+				<TabPanel className="kt-size-tabs"
+					activeClass="active-tab"
+					tabs={ [
+						{
+							name: 'desk',
+							title: <Dashicon icon="desktop" />,
+							className: 'kt-desk-tab',
+						},
+						{
+							name: 'tablet',
+							title: <Dashicon icon="tablet" />,
+							className: 'kt-tablet-tab',
+						},
+						{
+							name: 'mobile',
+							title: <Dashicon icon="smartphone" />,
+							className: 'kt-mobile-tab',
+						},
+					] }>
+					{
+						( tab ) => {
+							let tabout;
+							if ( tab.name ) {
+								if ( 'mobile' === tab.name ) {
+									tabout = alignMobileControls;
+								} else if ( 'tablet' === tab.name ) {
+									tabout = alignTabletControls;
+								} else {
+									tabout = alignDeskControls;
+								}
+							}
+							return <div>{ tabout }</div>;
+						}
+					}
+				</TabPanel>
+			</Fragment>
+		);
 		const backgroundString = ( background ? hexToRGBA( background, backgroundOpacity ) : 'transparent' );
 		const borderString = ( border ? hexToRGBA( border, borderOpacity ) : 'transparent' );
+		const hasChildBlocks = wp.data.select( 'core/editor' ).getBlockOrder( clientId ).length > 0;
 		return (
 			<div className={ `kadence-column inner-column-${ id } kadence-column-${ uniqueID }` } >
 				<InspectorControls>
@@ -487,6 +553,8 @@ class KadenceColumn extends Component {
 						thirdIcon={ icons.bottomright }
 						fourthIcon={ icons.bottomleft }
 					/>
+					{ textAlignControls }
+					<div className="kt-spacer-sidebar-15"></div>
 					<RangeControl
 						label={ __( 'Z Index Control' ) }
 						value={ zIndex }
@@ -510,6 +578,7 @@ class KadenceColumn extends Component {
 					marginTop: topMargin + 'px',
 					marginBottom: bottomMargin + 'px',
 					zIndex: zIndex,
+					textAlign: ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : undefined ),
 					backgroundColor: backgroundString,
 					backgroundImage: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? `url(${ backgroundImg[ 0 ].bgImg })` : undefined ),
 					backgroundSize: ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : undefined ),
@@ -520,7 +589,14 @@ class KadenceColumn extends Component {
 					borderWidth: ( borderWidth ? borderWidth[ 0 ] + 'px ' + borderWidth[ 1 ] + 'px ' + borderWidth[ 2 ] + 'px ' + borderWidth[ 3 ] + 'px' : '' ),
 					borderRadius: ( borderRadius ? borderRadius[ 0 ] + 'px ' + borderRadius[ 1 ] + 'px ' + borderRadius[ 2 ] + 'px ' + borderRadius[ 3 ] + 'px' : '' ),
 				} } >
-					<InnerBlocks templateLock={ false } />
+					<InnerBlocks
+						templateLock={ false }
+						renderAppender={ (
+							hasChildBlocks ?
+								undefined :
+								() => <InnerBlocks.ButtonBlockAppender />
+						) }
+					/>
 				</div>
 			</div>
 		);
