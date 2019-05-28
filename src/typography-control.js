@@ -503,7 +503,7 @@ class TypographyControls extends Component {
 				{ onLetterSpacing && (
 					<RangeControl
 						label={ __( 'Letter Spacing' ) }
-						value={ ( letterSpacing ? letterSpacing : '' ) }
+						value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
 						onChange={ ( value ) => onLetterSpacing( value ) }
 						min={ -5 }
 						max={ 15 }

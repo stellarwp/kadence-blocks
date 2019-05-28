@@ -956,6 +956,11 @@
     left: 0;
     right: 0;
 }
+.kt-block-defaults-modal .kt-inspect-tabs p.kt-measurement-label {
+    color: #23282d;
+    margin: 1em 0;
+    font-weight:bold
+}
 .wp-block.is-selected[data-type="kadence/rowlayout"] .editor-row-first-column__resizer .left-column-width-size {
 	z-index: 100;
 	opacity: 1;

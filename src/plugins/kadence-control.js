@@ -65,42 +65,60 @@ class KadenceConfig extends Component {
 					title={ __( 'Kadence Blocks Controls' ) }
 				>
 					<div className="kt-blocks-control-wrap">
-						<KadenceSpacer />
-						{ 'admin' === this.state.user && (
-							<KadenceSpacerSettings />
-						) }
-						<KadenceTabs />
-						{ 'admin' === this.state.user && (
-							<KadenceTabsSettings />
-						) }
-						<KadenceAccordion />
-						{ 'admin' === this.state.user && (
-							<KadenceAccordionSettings />
-						) }
-						<KadenceInfoBox />
-						{ 'admin' === this.state.user && (
-							<KadenceInfoBoxSettings />
-						) }
-						<KadenceAdvancedBtn />
-						{ 'admin' === this.state.user && (
-							<KadenceAdvancedSettings />
-						) }
-						<KadenceIconList />
-						{ 'admin' === this.state.user && (
-							<KadenceIconListSettings />
-						) }
-						<KadenceTestimonials />
-						{ 'admin' === this.state.user && (
-							<KadenceTestimonialsSettings />
-						) }
-						<KadenceHeadings />
-						{ 'admin' === this.state.user && (
-							<KadenceHeadingsSettings />
-						) }
-						<KadenceRowLayout />
-						{ 'admin' === this.state.user && (
-							<KadenceRowLayoutSettings />
-						) }
+						<div className="kt-blocks-control-row">
+							<KadenceSpacer />
+							{ 'admin' === this.state.user && (
+								<KadenceSpacerSettings />
+							) }
+						</div>
+						<div className="kt-blocks-control-row">
+							<KadenceTabs />
+							{ 'admin' === this.state.user && (
+								<KadenceTabsSettings />
+							) }
+						</div>
+						<div className="kt-blocks-control-row">	
+							<KadenceAccordion />
+							{ 'admin' === this.state.user && (
+								<KadenceAccordionSettings />
+							) }
+						</div>
+						<div className="kt-blocks-control-row">
+							<KadenceInfoBox />
+							{ 'admin' === this.state.user && (
+								<KadenceInfoBoxSettings />
+							) }
+						</div>
+						<div className="kt-blocks-control-row">
+							<KadenceAdvancedBtn />
+							{ 'admin' === this.state.user && (
+								<KadenceAdvancedSettings />
+							) }
+						</div>
+						<div className="kt-blocks-control-row">
+							<KadenceIconList />
+							{ 'admin' === this.state.user && (
+								<KadenceIconListSettings />
+							) }
+						</div>
+						<div className="kt-blocks-control-row">
+							<KadenceTestimonials />
+							{ 'admin' === this.state.user && (
+								<KadenceTestimonialsSettings />
+							) }
+						</div>
+						<div className="kt-blocks-control-row">
+							<KadenceHeadings />
+							{ 'admin' === this.state.user && (
+								<KadenceHeadingsSettings />
+							) }
+						</div>
+						<div className="kt-blocks-control-row">
+							<KadenceRowLayout />
+							{ 'admin' === this.state.user && (
+								<KadenceRowLayoutSettings />
+							) }
+						</div>
 						{ map( this.state.controls, ( { Control } ) => (
 							<Control />
 						) ) }

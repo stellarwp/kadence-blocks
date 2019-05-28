@@ -50,7 +50,7 @@ class KadenceTabsSettings extends Component {
 			<Fragment>
 				<Tooltip text="Block Settings Visibility">
 					<Button className="kt-block-settings" onClick={ () => this.setState( { isOpen: true } ) }>
-						<Dashicon icon="admin-settings" />
+						<Dashicon icon="visibility" />
 					</Button>
 				</Tooltip>
 				{ isOpen ?

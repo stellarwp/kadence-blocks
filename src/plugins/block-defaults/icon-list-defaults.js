@@ -4,6 +4,7 @@ import Ico from '../../svgicons';
 import IcoNames from '../../svgiconsnames';
 import FaIco from '../../faicons';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
+import MeasurementControls from '../../measurement-control';
 /**
  * Internal block libraries
  */
@@ -34,7 +35,18 @@ class KadenceIconListDefault extends Component {
 			isOpen: false,
 			isSaving: false,
 			configuration: ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} ),
+			marginControl: 'individual',
 		};
+	}
+	componentDidMount() {
+		const iconListConfig = ( this.state.configuration && this.state.configuration[ 'kadence/iconlist' ] ? this.state.configuration[ 'kadence/iconlist' ] : {} );
+		if ( undefined !== iconListConfig.listMargin && undefined !== iconListConfig.listMargin[ 0 ] ) {
+			if ( iconListConfig.listMargin[ 0 ] === iconListConfig.listMargin[ 1 ] && iconListConfig.listMargin[ 0 ] === iconListConfig.listMargin[ 2 ] && iconListConfig.listMargin[ 0 ] === iconListConfig.listMargin[ 3 ] ) {
+				this.setState( { marginControl: 'linked' } );
+			} else {
+				this.setState( { marginControl: 'individual' } );
+			}
+		}
 	}
 	saveConfig( blockID, settingArray ) {
 		this.setState( { isSaving: true } );
@@ -151,6 +163,16 @@ class KadenceIconListDefault extends Component {
 								onChange={ value => this.saveConfigState( 'listLabelGap', value ) }
 								min={ 0 }
 								max={ 60 }
+							/>
+							<MeasurementControls
+								label={ __( 'List Margin' ) }
+								measurement={ ( undefined !== iconListConfig.listMargin ? iconListConfig.listMargin : [ 0, 0, 10, 0 ] ) }
+								control={ this.state.marginControl }
+								onChange={ ( value ) => this.saveConfigState( 'listMargin', value ) }
+								onControl={ ( value ) => this.setState( { marginControl: value } ) }
+								min={ -200 }
+								max={ 200 }
+								step={ 1 }
 							/>
 						</PanelBody>
 						<PanelBody

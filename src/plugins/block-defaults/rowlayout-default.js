@@ -159,7 +159,7 @@ class KadenceRowLayoutDefault extends Component {
 			<Fragment>
 				<MeasurementControls
 					label={ __( 'Tablet Padding (px)' ) }
-					value={ ( undefined !== rowConfig.tabletPadding ? rowConfig.tabletPadding : [ '', '', '', '' ] ) }
+					measurement={ ( undefined !== rowConfig.tabletPadding ? rowConfig.tabletPadding : [ '', '', '', '' ] ) }
 					onChange={ ( value ) => this.saveConfigState( 'tabletPadding', value ) }
 					min={ 0 }
 					max={ 500 }

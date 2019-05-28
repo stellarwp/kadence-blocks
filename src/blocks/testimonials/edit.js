@@ -152,12 +152,12 @@ class KadenceTestimonials extends Component {
 		} else {
 			this.setState( { ratingMarginControl: 'individual' } );
 		}
-		if ( this.props.attributes.iconStyles[ 0 ].border[ 0 ] === this.props.attributes.iconStyles[ 0 ].border[ 1 ] && this.props.attributes.iconStyles[ 0 ].border[ 0 ] === this.props.attributes.iconStyles[ 0 ].border[ 2 ] && this.props.attributes.iconStyles[ 0 ].border[ 0 ] === this.props.attributes.iconStyles[ 0 ].border[ 3 ] ) {
+		if ( undefined !== this.props.attributes.iconStyles[ 0 ].borderWidth && undefined !== this.props.attributes.iconStyles[ 0 ].borderWidth[ 0 ] && this.props.attributes.iconStyles[ 0 ].borderWidth[ 0 ] === this.props.attributes.iconStyles[ 0 ].borderWidth[ 1 ] && this.props.attributes.iconStyles[ 0 ].borderWidth[ 0 ] === this.props.attributes.iconStyles[ 0 ].borderWidth[ 2 ] && this.props.attributes.iconStyles[ 0 ].borderWidth[ 0 ] === this.props.attributes.iconStyles[ 0 ].borderWidth[ 3 ] ) {
 			this.setState( { iconBorderControl: 'linked' } );
 		} else {
 			this.setState( { iconBorderControl: 'individual' } );
 		}
-		if ( this.props.attributes.iconStyles[ 0 ].padding[ 0 ] === this.props.attributes.iconStyles[ 0 ].padding[ 1 ] && this.props.attributes.iconStyles[ 0 ].padding[ 0 ] === this.props.attributes.iconStyles[ 0 ].padding[ 2 ] && this.props.attributes.iconStyles[ 0 ].padding[ 0 ] === this.props.attributes.iconStyles[ 0 ].padding[ 3 ] ) {
+		if ( undefined !== this.props.attributes.iconStyles[ 0 ].padding && undefined !== this.props.attributes.iconStyles[ 0 ].padding[ 0 ] && this.props.attributes.iconStyles[ 0 ].padding[ 0 ] === this.props.attributes.iconStyles[ 0 ].padding[ 1 ] && this.props.attributes.iconStyles[ 0 ].padding[ 0 ] === this.props.attributes.iconStyles[ 0 ].padding[ 2 ] && this.props.attributes.iconStyles[ 0 ].padding[ 0 ] === this.props.attributes.iconStyles[ 0 ].padding[ 3 ] ) {
 			this.setState( { iconPaddingControl: 'linked' } );
 		} else {
 			this.setState( { iconPaddingControl: 'individual' } );

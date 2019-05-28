@@ -7,6 +7,7 @@
  */
 import times from 'lodash/times';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
+import MeasurementControls from '../../measurement-control';
 import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
 import TypographyControls from '../../typography-control';
@@ -56,6 +57,7 @@ class KadenceIconLists extends Component {
 		this.state = {
 			focusIndex: null,
 			settings: {},
+			marginControl: 'individual',
 		};
 	}
 	componentDidMount() {
@@ -77,6 +79,11 @@ class KadenceIconLists extends Component {
 			kticonlistUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kticonlistUniqueIDs.push( this.props.attributes.uniqueID );
+		}
+		if ( undefined !== this.props.attributes.listMargin && undefined !== this.props.attributes.listMargin[ 0 ] && this.props.attributes.listMargin[ 0 ] === this.props.attributes.listMargin[ 1 ] && this.props.attributes.listMargin[ 0 ] === this.props.attributes.listMargin[ 2 ] && this.props.attributes.listMargin[ 0 ] === this.props.attributes.listMargin[ 3 ] ) {
+			this.setState( { marginControl: 'linked' } );
+		} else {
+			this.setState( { marginControl: 'individual' } );
 		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/iconlist' ] !== undefined && typeof blockSettings[ 'kadence/iconlist' ] === 'object' ) {
@@ -110,7 +117,8 @@ class KadenceIconLists extends Component {
 		} );
 	};
 	render() {
-		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID }, className, setAttributes } = this.props;
+		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin }, className, setAttributes } = this.props;
+		const { marginControl } = this.state;
 		const gconfig = {
 			google: {
 				families: [ listStyles[ 0 ].family + ( listStyles[ 0 ].variant ? ':' + listStyles[ 0 ].variant : '' ) ],
@@ -466,6 +474,16 @@ class KadenceIconLists extends Component {
 										min={ 0 }
 										max={ 60 }
 									/>
+									<MeasurementControls
+										label={ __( 'List Margin' ) }
+										measurement={ undefined !== listMargin ? listMargin : [ 0, 0, 10, 0 ] }
+										control={ marginControl }
+										onChange={ ( value ) => setAttributes( { listMargin: value } ) }
+										onControl={ ( value ) => this.setState( { marginControl: value } ) }
+										min={ -200 }
+										max={ 200 }
+										step={ 1 }
+									/>
 								</Fragment>
 							) }
 						</PanelBody>
@@ -659,7 +677,9 @@ class KadenceIconLists extends Component {
 					<WebfontLoader config={ config }>
 					</WebfontLoader>
 				) }
-				<div className={ `kt-svg-icon-list-container kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns }` }>
+				<div className={ `kt-svg-icon-list-container kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns }` } style={ {
+					margin: ( listMargin && undefined !== listMargin[ 0 ] && null !== listMargin[ 0 ] ? listMargin[ 0 ] + 'px ' + listMargin[ 1 ] + 'px ' + listMargin[ 2 ] + 'px ' + listMargin[ 3 ] + 'px' : '' ),
+				} } >
 					{ times( listCount, n => renderIconsPreview( n ) ) }
 				</div>
 			</div>

@@ -2,8 +2,11 @@ import TypographyControls from '../../typography-control';
 import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
 import IcoNames from '../../svgiconsnames';
+import map from 'lodash/map';
 import FaIco from '../../faicons';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
+import AdvancedColorControl from '../../advanced-color-control-default';
+import BoxShadowControl from '../../box-shadow-control';
 /**
  * Internal block libraries
  */
@@ -13,9 +16,6 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	ColorPalette,
-} = wp.editor;
-const {
 	Button,
 	TabPanel,
 	PanelBody,
@@ -23,6 +23,8 @@ const {
 	TextControl,
 	SelectControl,
 	ToggleControl,
+	ButtonGroup,
+	Dashicon,
 	Modal,
 } = wp.components;
 
@@ -78,16 +80,16 @@ class KadenceButtonDefault extends Component {
 			text: '',
 			link: '',
 			target: '_self',
-			size: 18,
+			size: '',
 			paddingBT: '',
 			paddingLR: '',
 			color: '#555555',
-			background: 'transparent',
+			background: '',
 			border: '#555555',
 			backgroundOpacity: 1,
 			borderOpacity: 1,
-			borderRadius: 3,
-			borderWidth: 2,
+			borderRadius: '',
+			borderWidth: '',
 			colorHover: '#ffffff',
 			backgroundHover: '#444444',
 			borderHover: '#444444',
@@ -98,8 +100,40 @@ class KadenceButtonDefault extends Component {
 			iconHover: false,
 			cssClass: '',
 			noFollow: false,
+			gap: 5,
+			responsiveSize: [ '', '' ],
+			gradient: [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ],
+			gradientHover: [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ],
+			btnStyle: 'basic',
+			btnSize: 'standard',
+			backgroundType: 'solid',
+			backgroundHoverType: 'solid',
+			width: [ '', '', '' ],
+			responsivePaddingBT: [ '', '' ],
+			responsivePaddingLR: [ '', '' ],
+			boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
+			boxShadowHover: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
 		} ];
 		const btns = ( undefined !== buttonConfig.btns && buttonConfig.btns[ 0 ] ? buttonConfig.btns : btnDefaultStyles );
+		const btnSizes = [
+			{ key: 'small', name: __( 'S' ) },
+			{ key: 'standard', name: __( 'M' ) },
+			{ key: 'large', name: __( 'L' ) },
+			{ key: 'custom', name: <Dashicon icon="admin-generic" /> },
+		];
+		const btnWidths = [
+			{ key: 'auto', name: __( 'Auto' ) },
+			{ key: 'fixed', name: __( 'Fixed' ) },
+			{ key: 'full', name: __( 'Full' ) },
+		];
+		const gradTypes = [
+			{ key: 'linear', name: __( 'Linear' ) },
+			{ key: 'radial', name: __( 'Radial' ) },
+		];
+		const bgType = [
+			{ key: 'solid', name: __( 'Solid' ) },
+			{ key: 'gradient', name: __( 'Gradient' ) },
+		];
 		const saveBtnArray = ( value ) => {
 			const newUpdate = btns.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -108,6 +142,24 @@ class KadenceButtonDefault extends Component {
 				return item;
 			} );
 			this.saveConfigState( 'btns', newUpdate );
+		};
+		const defineWidthType = ( type ) => {
+			if ( 'full' === type ) {
+				this.saveConfigState( 'forceFullwidth', true );
+				this.saveConfigState( 'widthType', type );
+			} else {
+				this.saveConfigState( 'forceFullwidth', false );
+				this.saveConfigState( 'widthType', type );
+			}
+		};
+		const defineWidthTypeToggle = ( value ) => {
+			if ( value ) {
+				this.saveConfigState( 'forceFullwidth', true )
+				this.saveConfigState( 'widthType', 'full' );
+			} else {
+				this.saveConfigState( 'forceFullwidth', false )
+				this.saveConfigState( 'widthType', 'full' );
+			}
 		};
 		const renderSVG = svg => (
 			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
@@ -141,58 +193,294 @@ class KadenceButtonDefault extends Component {
 								checked={ ( undefined !== btns[ 0 ].noFollow ? btns[ 0 ].noFollow : false ) }
 								onChange={ ( value ) => saveBtnArray( { noFollow: value } ) }
 							/>
-							<RangeControl
-								beforeIcon="editor-textcolor"
-								afterIcon="editor-textcolor"
-								label={ __( 'Button Text Size' ) }
-								value={ btns[ 0 ].size }
-								onChange={ value => {
-									saveBtnArray( { size: value } );
-								} }
-								min={ 10 }
-								max={ 100 }
-							/>
-							<RangeControl
-								label={ __( 'Top and Bottom Padding' ) }
-								value={ btns[ 0 ].paddingBT }
-								onChange={ value => {
-									saveBtnArray( { paddingBT: value } );
-								} }
-								min={ 0 }
-								max={ 100 }
-							/>
-							<RangeControl
-								label={ __( 'Left and Right Padding' ) }
-								value={ btns[ 0 ].paddingLR }
-								onChange={ value => {
-									saveBtnArray( { paddingLR: value } );
-								} }
-								min={ 0 }
-								max={ 100 }
-							/>
-							<RangeControl
-								label={ __( 'Border Thickness' ) }
-								value={ btns[ 0 ].borderWidth }
-								onChange={ value => {
-									saveBtnArray( { borderWidth: value } );
-								} }
-								min={ 0 }
-								max={ 20 }
-							/>
-							<RangeControl
-								label={ __( 'Border Radius' ) }
-								value={ btns[ 0 ].borderRadius }
-								onChange={ value => {
-									saveBtnArray( { borderRadius: value } );
-								} }
-								min={ 0 }
-								max={ 50 }
-							/>
+							<h2 className="kt-heading-size-title">{ __( 'Text Size' ) }</h2>
+							<TabPanel className="kt-size-tabs"
+								activeClass="active-tab"
+								tabs={ [
+									{
+										name: 'desk',
+										title: <Dashicon icon="desktop" />,
+										className: 'kt-desk-tab',
+									},
+									{
+										name: 'tablet',
+										title: <Dashicon icon="tablet" />,
+										className: 'kt-tablet-tab',
+									},
+									{
+										name: 'mobile',
+										title: <Dashicon icon="smartphone" />,
+										className: 'kt-mobile-tab',
+									},
+								] }>
+								{
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'mobile' === tab.name ) {
+												tabout = (
+													<RangeControl
+														className="btn-text-size-range"
+														beforeIcon="editor-textcolor"
+														afterIcon="editor-textcolor"
+														value={ ( undefined !== btns[ 0 ].responsiveSize && undefined !== btns[ 0 ].responsiveSize[ 1 ] ? btns[ 0 ].responsiveSize[ 1 ] : '' ) }
+														onChange={ value => {
+															saveBtnArray( { responsiveSize: [ ( undefined !== btns[ 0 ].responsiveSize && undefined !== btns[ 0 ].responsiveSize[ 0 ] ? btns[ 0 ].responsiveSize[ 0 ] : '' ), value ] } );
+														} }
+														min={ 4 }
+														max={ 100 }
+													/>
+												);
+											} else if ( 'tablet' === tab.name ) {
+												tabout = (
+													<RangeControl
+														className="btn-text-size-range"
+														beforeIcon="editor-textcolor"
+														afterIcon="editor-textcolor"
+														value={ ( undefined !== btns[ 0 ].responsiveSize && undefined !== btns[ 0 ].responsiveSize[ 0 ] ? btns[ 0 ].responsiveSize[ 0 ] : '' ) }
+														onChange={ value => {
+															saveBtnArray( { responsiveSize: [ value, ( undefined !== btns[ 0 ].responsiveSize && undefined !== btns[ 0 ].responsiveSize[ 1 ] ? btns[ 0 ].responsiveSize[ 1 ] : '' ) ] } );
+														} }
+														min={ 4 }
+														max={ 100 }
+													/>
+												);
+											} else {
+												tabout = (
+													<RangeControl
+														className="btn-text-size-range"
+														beforeIcon="editor-textcolor"
+														afterIcon="editor-textcolor"
+														value={ btns[ 0 ].size }
+														onChange={ value => {
+															saveBtnArray( { size: value } );
+														} }
+														min={ 4 }
+														max={ 100 }
+													/>
+												);
+											}
+										}
+										return <div>{ tabout }</div>;
+									}
+								}
+							</TabPanel>
+							<div className="kt-btn-size-settings-container">
+								<h2 className="kt-beside-btn-group">{ __( 'Button Size' ) }</h2>
+								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Size' ) }>
+									{ map( btnSizes, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-btn-size-btn"
+											isSmall
+											isPrimary={ btns[ 0 ].btnSize === key }
+											aria-pressed={ btns[ 0 ].btnSize === key }
+											onClick={ () => saveBtnArray( { btnSize: key } ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+							</div>
+							{ 'custom' === btns[ 0 ].btnSize && (
+								<div className="kt-inner-sub-section">
+									<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Padding' ) }</h2>
+									<TabPanel className="kt-size-tabs"
+										activeClass="active-tab"
+										tabs={ [
+											{
+												name: 'desk',
+												title: <Dashicon icon="desktop" />,
+												className: 'kt-desk-tab',
+											},
+											{
+												name: 'tablet',
+												title: <Dashicon icon="tablet" />,
+												className: 'kt-tablet-tab',
+											},
+											{
+												name: 'mobile',
+												title: <Dashicon icon="smartphone" />,
+												className: 'kt-mobile-tab',
+											},
+										] }>
+										{
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'mobile' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<RangeControl
+																	label={ __( 'Top and Bottom Padding' ) }
+																	value={ ( undefined !== btns[ 0 ].responsivePaddingBT && undefined !== btns[ 0 ].responsivePaddingBT[ 1 ] ? btns[ 0 ].responsivePaddingBT[ 1 ] : '' ) }
+																	onChange={ value => {
+																		saveBtnArray( { responsivePaddingBT: [ ( undefined !== btns[ 0 ].responsivePaddingBT && undefined !== btns[ 0 ].responsivePaddingBT[ 0 ] ? btns[ 0 ].responsivePaddingBT[ 0 ] : '' ), value ] } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+																<RangeControl
+																	label={ __( 'Left and Right Padding' ) }
+																	value={ ( undefined !== btns[ 0 ].responsivePaddingLR && undefined !== btns[ 0 ].responsivePaddingLR[ 1 ] ? btns[ 0 ].responsivePaddingLR[ 1 ] : '' ) }
+																	onChange={ value => {
+																		saveBtnArray( { responsivePaddingLR: [ ( undefined !== btns[ 0 ].responsivePaddingLR && undefined !== btns[ 0 ].responsivePaddingLR[ 0 ] ? btns[ 0 ].responsivePaddingLR[ 0 ] : '' ), value ] } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+															</Fragment>
+														);
+													} else if ( 'tablet' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<RangeControl
+																	label={ __( 'Top and Bottom Padding' ) }
+																	value={ ( undefined !== btns[ 0 ].responsivePaddingBT && undefined !== btns[ 0 ].responsivePaddingBT[ 0 ] ? btns[ 0 ].responsivePaddingBT[ 0 ] : '' ) }
+																	onChange={ value => {
+																		saveBtnArray( { responsivePaddingBT: [ value, ( undefined !== btns[ 0 ].responsivePaddingBT && undefined !== btns[ 0 ].responsivePaddingBT[ 1 ] ? btns[ 0 ].responsivePaddingBT[ 1 ] : '' ) ] } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+																<RangeControl
+																	label={ __( 'Left and Right Padding' ) }
+																	value={ ( undefined !== btns[ 0 ].responsivePaddingLR && undefined !== btns[ 0 ].responsivePaddingLR[ 0 ] ? btns[ 0 ].responsivePaddingLR[ 0 ] : '' ) }
+																	onChange={ value => {
+																		saveBtnArray( { responsivePaddingLR: [ value, ( undefined !== btns[ 0 ].responsivePaddingLR && undefined !== btns[ 0 ].responsivePaddingLR[ 1 ] ? btns[ 0 ].responsivePaddingLR[ 1 ] : '' ) ] } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+															</Fragment>
+														);
+													} else {
+														tabout = (
+															<Fragment>
+																<RangeControl
+																	label={ __( 'Top and Bottom Padding' ) }
+																	value={ btns[ 0 ].paddingBT }
+																	onChange={ value => {
+																		saveBtnArray( { paddingBT: value } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+																<RangeControl
+																	label={ __( 'Left and Right Padding' ) }
+																	value={ btns[ 0 ].paddingLR }
+																	onChange={ value => {
+																		saveBtnArray( { paddingLR: value } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+															</Fragment>
+														);
+													}
+												}
+												return <div>{ tabout }</div>;
+											}
+										}
+									</TabPanel>
+								</div>
+							) }
+							<div className="kt-btn-size-settings-container">
+								<h2 className="kt-beside-btn-group">{ __( 'Button Width' ) }</h2>
+								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Width' ) }>
+									{ map( btnWidths, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-btn-size-btn"
+											isSmall
+											isPrimary={ buttonConfig.widthType === key }
+											aria-pressed={ buttonConfig.widthType === key }
+											onClick={ () => defineWidthType( key ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+							</div>
+							{ 'fixed' === buttonConfig.widthType && (
+								<div className="kt-inner-sub-section">
+									<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Fixed Width' ) }</h2>
+									<TabPanel className="kt-size-tabs"
+										activeClass="active-tab"
+										tabs={ [
+											{
+												name: 'desk',
+												title: <Dashicon icon="desktop" />,
+												className: 'kt-desk-tab',
+											},
+											{
+												name: 'tablet',
+												title: <Dashicon icon="tablet" />,
+												className: 'kt-tablet-tab',
+											},
+											{
+												name: 'mobile',
+												title: <Dashicon icon="smartphone" />,
+												className: 'kt-mobile-tab',
+											},
+										] }>
+										{
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'mobile' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<RangeControl
+																	value={ ( btns[ 0 ].width && undefined !== btns[ 0 ].width[ 2 ] ? btns[ 0 ].width[ 2 ] : undefined ) }
+																	onChange={ value => {
+																		saveBtnArray( { width: [ ( undefined !== btns[ 0 ].width && undefined !== btns[ 0 ].width[ 0 ] ? btns[ 0 ].width[ 0 ] : '' ), ( undefined !== btns[ 0 ].width && undefined !== btns[ 0 ].width[ 1 ] ? btns[ 0 ].width[ 1 ] : '' ), value ] } );
+																	} }
+																	min={ 10 }
+																	max={ 500 }
+																/>
+															</Fragment>
+														);
+													} else if ( 'tablet' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<RangeControl
+																	value={ ( btns[ 0 ].width && undefined !== btns[ 0 ].width[ 1 ] ? btns[ 0 ].width[ 1 ] : undefined ) }
+																	onChange={ value => {
+																		saveBtnArray( { width: [ ( undefined !== btns[ 0 ].width && undefined !== btns[ 0 ].width[ 0 ] ? btns[ 0 ].width[ 0 ] : '' ), value, ( undefined !== btns[ 0 ].width && undefined !== btns[ 0 ].width[ 2 ] ? btns[ 0 ].width[ 2 ] : '' ) ] } );
+																	} }
+																	min={ 10 }
+																	max={ 500 }
+																/>
+															</Fragment>
+														);
+													} else {
+														tabout = (
+															<Fragment>
+																<RangeControl
+																	value={ ( btns[ 0 ].width && undefined !== btns[ 0 ].width[ 0 ] ? btns[ 0 ].width[ 0 ] : undefined ) }
+																	onChange={ value => {
+																		saveBtnArray( { width: [ value, ( undefined !== btns[ 0 ].width && undefined !== btns[ 0 ].width[ 1 ] ? btns[ 0 ].width[ 1 ] : '' ), ( undefined !== btns[ 0 ].width && undefined !== btns[ 0 ].width[ 2 ] ? btns[ 0 ].width[ 2 ] : '' ) ] } );
+																	} }
+																	min={ 10 }
+																	max={ 500 }
+																/>
+															</Fragment>
+														);
+													}
+												}
+												return <div>{ tabout }</div>;
+											}
+										}
+									</TabPanel>
+								</div>
+							) }
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Color Settings' ) }
+							title={ __( 'Design Settings' ) }
 							initialOpen={ false }
 						>
+							<h2 className="kt-tab-wrap-title kt-color-settings-title">{ __( 'Color Settings' ) }</h2>
 							<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 								activeClass="active-tab"
 								tabs={ [
@@ -214,92 +502,380 @@ class KadenceButtonDefault extends Component {
 											if ( 'hover' === tab.name ) {
 												tabout = (
 													<Fragment>
-														<p className="kt-setting-label">{ __( 'Hover Font Color' ) }</p>
-														<ColorPalette
-															value={ btns[ 0 ].colorHover }
-															onChange={ value => {
+														<AdvancedColorControl
+															label={ __( 'Hover Text Color' ) }
+															colorValue={ ( btns[ 0 ].colorHover ? btns[ 0 ].colorHover : '#ffffff' ) }
+															colorDefault={ '#ffffff' }
+															onColorChange={ value => {
 																saveBtnArray( { colorHover: value } );
 															} }
 														/>
-														<p className="kt-setting-label">{ __( 'Hover Background Color' ) }</p>
-														<ColorPalette
-															value={ btns[ 0 ].backgroundHover }
-															onChange={ value => {
-																saveBtnArray( { backgroundHover: value } );
-															} }
-														/>
-														<RangeControl
-															label={ __( 'Hover Background Opacity' ) }
-															value={ btns[ 0 ].backgroundHoverOpacity }
-															onChange={ value => {
-																saveBtnArray( { backgroundHoverOpacity: value } );
-															} }
-															min={ 0 }
-															max={ 1 }
-															step={ 0.01 }
-														/>
-														<p className="kt-setting-label">{ __( 'Hover Border Color' ) }</p>
-														<ColorPalette
-															value={ btns[ 0 ].borderHover }
-															onChange={ value => {
+														<div className="kt-btn-size-settings-container">
+															<h2 className="kt-beside-btn-group">{ __( 'Background Type' ) }</h2>
+															<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type' ) }>
+																{ map( bgType, ( { name, key } ) => (
+																	<Button
+																		key={ key }
+																		className="kt-btn-size-btn"
+																		isSmall
+																		isPrimary={ ( undefined !== btns[ 0 ].backgroundHoverType ? btns[ 0 ].backgroundHoverType : 'solid' ) === key }
+																		aria-pressed={ ( undefined !== btns[ 0 ].backgroundHoverType ? btns[ 0 ].backgroundHoverType : 'solid' ) === key }
+																		onClick={ () => saveBtnArray( { backgroundHoverType: key } ) }
+																	>
+																		{ name }
+																	</Button>
+																) ) }
+															</ButtonGroup>
+														</div>
+														{ 'gradient' !== btns[ 0 ].backgroundHoverType && (
+															<div className="kt-inner-sub-section">
+																<AdvancedColorControl
+																	label={ __( 'Background Color' ) }
+																	colorValue={ ( btns[ 0 ].backgroundHover ? btns[ 0 ].backgroundHover : '#444444' ) }
+																	colorDefault={ '#444444' }
+																	opacityValue={ btns[ 0 ].backgroundHoverOpacity }
+																	onColorChange={ value => {
+																		saveBtnArray( { backgroundHover: value } );
+																	} }
+																	onOpacityChange={ value => {
+																		saveBtnArray( { backgroundHoverOpacity: value } );
+																	} }
+																/>
+															</div>
+														) }
+														{ 'gradient' === btns[ 0 ].backgroundHoverType && (
+															<div className="kt-inner-sub-section">
+																<AdvancedColorControl
+																	label={ __( 'Gradient Color 1' ) }
+																	colorValue={ ( btns[ 0 ].backgroundHover ? btns[ 0 ].backgroundHover : '#444444' ) }
+																	colorDefault={ '#444444' }
+																	opacityValue={ btns[ 0 ].backgroundHoverOpacity }
+																	onColorChange={ value => {
+																		saveBtnArray( { backgroundHover: value } );
+																	} }
+																	onOpacityChange={ value => {
+																		saveBtnArray( { backgroundHoverOpacity: value } );
+																	} }
+																/>
+																<RangeControl
+																	label={ __( 'Location' ) }
+																	value={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 2 ] ? btns[ 0 ].gradientHover[ 2 ] : 0 ) }
+																	onChange={ ( value ) => {
+																		saveBtnArray( { gradientHover: [ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ), value, ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 3 ] ? btns[ 0 ].gradientHover[ 3 ] : 100 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 5 ] ? btns[ 0 ].gradientHover[ 5 ] : 180 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 6 ] ? btns[ 0 ].gradientHover[ 6 ] : 'center center' ) ] } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+																<AdvancedColorControl
+																	label={ __( 'Gradient Color 2' ) }
+																	colorValue={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ) }
+																	colorDefault={ '#777777' }
+																	opacityValue={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ) }
+																	onColorChange={ value => {
+																		saveBtnArray( { gradientHover: [ value, ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 2 ] ? btns[ 0 ].gradientHover[ 2 ] : 0 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 3 ] ? btns[ 0 ].gradientHover[ 3 ] : 100 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 5 ] ? btns[ 0 ].gradientHover[ 5 ] : 180 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 6 ] ? btns[ 0 ].gradientHover[ 6 ] : 'center center' ) ] } );
+																	} }
+																	onOpacityChange={ value => {
+																		saveBtnArray( { gradientHover: [ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ), value, ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 2 ] ? btns[ 0 ].gradientHover[ 2 ] : 0 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 3 ] ? btns[ 0 ].gradientHover[ 3 ] : 100 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 5 ] ? btns[ 0 ].gradientHover[ 5 ] : 180 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 6 ] ? btns[ 0 ].gradientHover[ 6 ] : 'center center' ) ] } );
+																	} }
+																/>
+																<RangeControl
+																	label={ __( 'Location' ) }
+																	value={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 3 ] ? btns[ 0 ].gradientHover[ 3 ] : 100 ) }
+																	onChange={ ( value ) => {
+																		saveBtnArray( { gradientHover: [ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 2 ] ? btns[ 0 ].gradientHover[ 2 ] : 0 ), value, ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 5 ] ? btns[ 0 ].gradientHover[ 5 ] : 180 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 6 ] ? btns[ 0 ].gradientHover[ 6 ] : 'center center' ) ] } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+																<div className="kt-btn-size-settings-container">
+																	<h2 className="kt-beside-btn-group">{ __( 'Gradient Type' ) }</h2>
+																	<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type' ) }>
+																		{ map( gradTypes, ( { name, key } ) => (
+																			<Button
+																				key={ key }
+																				className="kt-btn-size-btn"
+																				isSmall
+																				isPrimary={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ) === key }
+																				aria-pressed={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ) === key }
+																				onClick={ () => {
+																					saveBtnArray( { gradientHover: [ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 2 ] ? btns[ 0 ].gradientHover[ 2 ] : 0 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 3 ] ? btns[ 0 ].gradientHover[ 3 ] : 100 ), key, ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 5 ] ? btns[ 0 ].gradientHover[ 5 ] : 180 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 6 ] ? btns[ 0 ].gradientHover[ 6 ] : 'center center' ) ] } );
+																				} }
+																			>
+																				{ name }
+																			</Button>
+																		) ) }
+																	</ButtonGroup>
+																</div>
+																{ 'radial' !== ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ) && (
+																	<RangeControl
+																		label={ __( 'Gradient Angle' ) }
+																		value={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 5 ] ? btns[ 0 ].gradientHover[ 5 ] : 180 ) }
+																		onChange={ ( value ) => {
+																			saveBtnArray( { gradientHover: [ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 2 ] ? btns[ 0 ].gradientHover[ 2 ] : 0 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 3 ] ? btns[ 0 ].gradientHover[ 3 ] : 100 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ), value, ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 6 ] ? btns[ 0 ].gradientHover[ 6 ] : 'center center' ) ] } );
+																		} }
+																		min={ 0 }
+																		max={ 360 }
+																	/>
+																) }
+																{ 'radial' === ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ) && (
+																	<SelectControl
+																		label={ __( 'Gradient Position' ) }
+																		value={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 6 ] ? btns[ 0 ].gradientHover[ 6 ] : 'center center' ) }
+																		options={ [
+																			{ value: 'center top', label: __( 'Center Top' ) },
+																			{ value: 'center center', label: __( 'Center Center' ) },
+																			{ value: 'center bottom', label: __( 'Center Bottom' ) },
+																			{ value: 'left top', label: __( 'Left Top' ) },
+																			{ value: 'left center', label: __( 'Left Center' ) },
+																			{ value: 'left bottom', label: __( 'Left Bottom' ) },
+																			{ value: 'right top', label: __( 'Right Top' ) },
+																			{ value: 'right center', label: __( 'Right Center' ) },
+																			{ value: 'right bottom', label: __( 'Right Bottom' ) },
+																		] }
+																		onChange={ value => {
+																			saveBtnArray( { gradientHover: [ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 2 ] ? btns[ 0 ].gradientHover[ 2 ] : 0 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 3 ] ? btns[ 0 ].gradientHover[ 3 ] : 100 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 5 ] ? btns[ 0 ].gradientHover[ 5 ] : 180 ), value ] } );
+																		} }
+																	/>
+																) }
+															</div>
+														) }
+														<AdvancedColorControl
+															label={ __( 'Hover Border Color' ) }
+															colorValue={ ( btns[ 0 ].borderHover ? btns[ 0 ].borderHover : '#444444' ) }
+															colorDefault={ '#444444' }
+															opacityValue={ btns[ 0 ].borderHoverOpacity }
+															onColorChange={ value => {
 																saveBtnArray( { borderHover: value } );
 															} }
-														/>
-														<RangeControl
-															label={ __( 'Hover Border Opacity' ) }
-															value={ btns[ 0 ].borderHoverOpacity }
-															onChange={ value => {
+															onOpacityChange={ value => {
 																saveBtnArray( { borderHoverOpacity: value } );
 															} }
-															min={ 0 }
-															max={ 1 }
-															step={ 0.01 }
+														/>
+														<BoxShadowControl
+															label={ __( 'Hover Box Shadow' ) }
+															enable={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ) }
+															color={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ) }
+															colorDefault={ '#000000' }
+															opacity={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ) }
+															hOffset={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ) }
+															vOffset={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ) }
+															blur={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 5 ] ? btns[ 0 ].boxShadowHover[ 5 ] : 3 ) }
+															spread={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 6 ] ? btns[ 0 ].boxShadowHover[ 6 ] : 0 ) }
+															inset={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 7 ] ? btns[ 0 ].boxShadowHover[ 7 ] : false ) }
+															onEnableChange={ value => {
+																saveBtnArray( { boxShadowHover: [ value, ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 5 ] ? btns[ 0 ].boxShadowHover[ 5 ] : 3 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 6 ] ? btns[ 0 ].boxShadowHover[ 6 ] : 0 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 7 ] ? btns[ 0 ].boxShadowHover[ 7 ] : false ) ] } );
+															} }
+															onColorChange={ value => {
+																saveBtnArray( { boxShadowHover: [ ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ), value, ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 5 ] ? btns[ 0 ].boxShadowHover[ 5 ] : 3 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 6 ] ? btns[ 0 ].boxShadowHover[ 6 ] : 0 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 7 ] ? btns[ 0 ].boxShadowHover[ 7 ] : false ) ] } );
+															} }
+															onOpacityChange={ value => {
+																saveBtnArray( { boxShadowHover: [ ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ), value, ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 5 ] ? btns[ 0 ].boxShadowHover[ 5 ] : 3 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 6 ] ? btns[ 0 ].boxShadowHover[ 6 ] : 0 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 7 ] ? btns[ 0 ].boxShadowHover[ 7 ] : false ) ] } );
+															} }
+															onHOffsetChange={ value => {
+																saveBtnArray( { boxShadowHover: [ ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ), value, ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 5 ] ? btns[ 0 ].boxShadowHover[ 5 ] : 3 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 6 ] ? btns[ 0 ].boxShadowHover[ 6 ] : 0 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 7 ] ? btns[ 0 ].boxShadowHover[ 7 ] : false ) ] } );
+															} }
+															onVOffsetChange={ value => {
+																saveBtnArray( { boxShadowHover: [ ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ), value, ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 5 ] ? btns[ 0 ].boxShadowHover[ 5 ] : 3 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 6 ] ? btns[ 0 ].boxShadowHover[ 6 ] : 0 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 7 ] ? btns[ 0 ].boxShadowHover[ 7 ] : false ) ] } );
+															} }
+															onBlurChange={ value => {
+																saveBtnArray( { boxShadowHover: [ ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ), value, ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 6 ] ? btns[ 0 ].boxShadowHover[ 6 ] : 0 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 7 ] ? btns[ 0 ].boxShadowHover[ 7 ] : false ) ] } );
+															} }
+															onSpreadChange={ value => {
+																saveBtnArray( { boxShadowHover: [ ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 5 ] ? btns[ 0 ].boxShadowHover[ 5 ] : 3 ), value, ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 7 ] ? btns[ 0 ].boxShadowHover[ 7 ] : false ) ] } );
+															} }
+															onInsetChange={ value => {
+																saveBtnArray( { boxShadowHover: [ ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 5 ] ? btns[ 0 ].boxShadowHover[ 5 ] : 3 ), ( btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 6 ] ? btns[ 0 ].boxShadowHover[ 6 ] : 0 ), value ] } );
+															} }
 														/>
 													</Fragment>
 												);
 											} else {
 												tabout = (
 													<Fragment>
-														<p className="kt-setting-label">{ __( 'Font Color' ) }</p>
-														<ColorPalette
-															value={ btns[ 0 ].color }
-															onChange={ value => {
+														<AdvancedColorControl
+															label={ __( 'Text Color' ) }
+															colorValue={ btns[ 0 ].color }
+															colorDefault={ '#555555' }
+															onColorChange={ value => {
 																saveBtnArray( { color: value } );
 															} }
 														/>
-														<p className="kt-setting-label">{ __( 'Background Color' ) }</p>
-														<ColorPalette
-															value={ btns[ 0 ].background }
-															onChange={ value => {
-																saveBtnArray( { background: value } );
-															} }
-														/>
-														<RangeControl
-															label={ __( 'Background Opacity' ) }
-															value={ btns[ 0 ].backgroundOpacity }
-															onChange={ value => {
-																saveBtnArray( { backgroundOpacity: value } );
-															} }
-															min={ 0 }
-															max={ 1 }
-															step={ 0.01 }
-														/>
-														<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
-														<ColorPalette
-															value={ btns[ 0 ].border }
-															onChange={ value => {
+														<div className="kt-btn-size-settings-container">
+															<h2 className="kt-beside-btn-group">{ __( 'Background Type' ) }</h2>
+															<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type' ) }>
+																{ map( bgType, ( { name, key } ) => (
+																	<Button
+																		key={ key }
+																		className="kt-btn-size-btn"
+																		isSmall
+																		isPrimary={ ( undefined !== btns[ 0 ].backgroundType ? btns[ 0 ].backgroundType : 'solid' ) === key }
+																		aria-pressed={ ( undefined !== btns[ 0 ].backgroundType ? btns[ 0 ].backgroundType : 'solid' ) === key }
+																		onClick={ () => saveBtnArray( { backgroundType: key } ) }
+																	>
+																		{ name }
+																	</Button>
+																) ) }
+															</ButtonGroup>
+														</div>
+														{ 'gradient' !== btns[ 0 ].backgroundType && (
+															<div className="kt-inner-sub-section">
+																<AdvancedColorControl
+																	label={ __( 'Background Color' ) }
+																	colorValue={ btns[ 0 ].background }
+																	colorDefault={ '' }
+																	opacityValue={ btns[ 0 ].backgroundOpacity }
+																	onColorChange={ value => {
+																		saveBtnArray( { background: value } );
+																	} }
+																	onOpacityChange={ value => {
+																		saveBtnArray( { backgroundOpacity: value } );
+																	} }
+																/>
+															</div>
+														) }
+														{ 'gradient' === btns[ 0 ].backgroundType && (
+															<div className="kt-inner-sub-section">
+																<AdvancedColorControl
+																	label={ __( 'Gradient Color 1' ) }
+																	colorValue={ btns[ 0 ].background }
+																	colorDefault={ '' }
+																	opacityValue={ btns[ 0 ].backgroundOpacity }
+																	onColorChange={ value => {
+																		saveBtnArray( { background: value } );
+																	} }
+																	onOpacityChange={ value => {
+																		saveBtnArray( { backgroundOpacity: value } );
+																	} }
+																/>
+																<RangeControl
+																	label={ __( 'Location' ) }
+																	value={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 2 ] ? btns[ 0 ].gradient[ 2 ] : 0 ) }
+																	onChange={ ( value ) => {
+																		saveBtnArray( { gradient: [ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ), value, ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 3 ] ? btns[ 0 ].gradient[ 3 ] : 100 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 5 ] ? btns[ 0 ].gradient[ 5 ] : 180 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 6 ] ? btns[ 0 ].gradient[ 6 ] : 'center center' ) ] } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+																<AdvancedColorControl
+																	label={ __( 'Gradient Color 2' ) }
+																	colorValue={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ) }
+																	colorDefault={ '#999999' }
+																	opacityValue={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ) }
+																	onColorChange={ value => {
+																		saveBtnArray( { gradient: [ value, ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 2 ] ? btns[ 0 ].gradient[ 2 ] : 0 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 3 ] ? btns[ 0 ].gradient[ 3 ] : 100 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 5 ] ? btns[ 0 ].gradient[ 5 ] : 180 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 6 ] ? btns[ 0 ].gradient[ 6 ] : 'center center' ) ] } );
+																	} }
+																	onOpacityChange={ value => {
+																		saveBtnArray( { gradient: [ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ), value, ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 2 ] ? btns[ 0 ].gradient[ 2 ] : 0 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 3 ] ? btns[ 0 ].gradient[ 3 ] : 100 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 5 ] ? btns[ 0 ].gradient[ 5 ] : 180 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 6 ] ? btns[ 0 ].gradient[ 6 ] : 'center center' ) ] } );
+																	} }
+																/>
+																<RangeControl
+																	label={ __( 'Location' ) }
+																	value={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 3 ] ? btns[ 0 ].gradient[ 3 ] : 100 ) }
+																	onChange={ ( value ) => {
+																		saveBtnArray( { gradient: [ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 2 ] ? btns[ 0 ].gradient[ 2 ] : 0 ), value, ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 5 ] ? btns[ 0 ].gradient[ 5 ] : 180 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 6 ] ? btns[ 0 ].gradient[ 6 ] : 'center center' ) ] } );
+																	} }
+																	min={ 0 }
+																	max={ 100 }
+																/>
+																<div className="kt-btn-size-settings-container">
+																	<h2 className="kt-beside-btn-group">{ __( 'Gradient Type' ) }</h2>
+																	<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type' ) }>
+																		{ map( gradTypes, ( { name, key } ) => (
+																			<Button
+																				key={ key }
+																				className="kt-btn-size-btn"
+																				isSmall
+																				isPrimary={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ) === key }
+																				aria-pressed={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ) === key }
+																				onClick={ () => {
+																					saveBtnArray( { gradient: [ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 2 ] ? btns[ 0 ].gradient[ 2 ] : 0 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 3 ] ? btns[ 0 ].gradient[ 3 ] : 100 ), key, ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 5 ] ? btns[ 0 ].gradient[ 5 ] : 180 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 6 ] ? btns[ 0 ].gradient[ 6 ] : 'center center' ) ] } );
+																				} }
+																			>
+																				{ name }
+																			</Button>
+																		) ) }
+																	</ButtonGroup>
+																</div>
+																{ 'radial' !== ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ) && (
+																	<RangeControl
+																		label={ __( 'Gradient Angle' ) }
+																		value={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 5 ] ? btns[ 0 ].gradient[ 5 ] : 180 ) }
+																		onChange={ ( value ) => {
+																			saveBtnArray( { gradient: [ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 2 ] ? btns[ 0 ].gradient[ 2 ] : 0 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 3 ] ? btns[ 0 ].gradient[ 3 ] : 100 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ), value, ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 6 ] ? btns[ 0 ].gradient[ 6 ] : 'center center' ) ] } );
+																		} }
+																		min={ 0 }
+																		max={ 360 }
+																	/>
+																) }
+																{ 'radial' === ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ) && (
+																	<SelectControl
+																		label={ __( 'Gradient Position' ) }
+																		value={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 6 ] ? btns[ 0 ].gradient[ 6 ] : 'center center' ) }
+																		options={ [
+																			{ value: 'center top', label: __( 'Center Top' ) },
+																			{ value: 'center center', label: __( 'Center Center' ) },
+																			{ value: 'center bottom', label: __( 'Center Bottom' ) },
+																			{ value: 'left top', label: __( 'Left Top' ) },
+																			{ value: 'left center', label: __( 'Left Center' ) },
+																			{ value: 'left bottom', label: __( 'Left Bottom' ) },
+																			{ value: 'right top', label: __( 'Right Top' ) },
+																			{ value: 'right center', label: __( 'Right Center' ) },
+																			{ value: 'right bottom', label: __( 'Right Bottom' ) },
+																		] }
+																		onChange={ value => {
+																			saveBtnArray( { gradient: [ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 2 ] ? btns[ 0 ].gradient[ 2 ] : 0 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 3 ] ? btns[ 0 ].gradient[ 3 ] : 100 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 5 ] ? btns[ 0 ].gradient[ 5 ] : 180 ), value ] } );
+																		} }
+																	/>
+																) }
+															</div>
+														) }
+														<AdvancedColorControl
+															label={ __( 'Border Color' ) }
+															colorValue={ ( btns[ 0 ].border ? btns[ 0 ].border : '#555555' ) }
+															colorDefault={ '#555555' }
+															opacityValue={ btns[ 0 ].borderOpacity }
+															onColorChange={ value => {
 																saveBtnArray( { border: value } );
 															} }
-														/>
-														<RangeControl
-															label={ __( 'Border Opacity' ) }
-															value={ btns[ 0 ].borderOpacity }
-															onChange={ value => {
+															onOpacityChange={ value => {
 																saveBtnArray( { borderOpacity: value } );
 															} }
-															min={ 0 }
-															max={ 1 }
-															step={ 0.01 }
+														/>
+														<BoxShadowControl
+															label={ __( 'Box Shadow' ) }
+															enable={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ) }
+															color={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ) }
+															colorDefault={ '#000000' }
+															opacity={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ) }
+															hOffset={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ) }
+															vOffset={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ) }
+															blur={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 5 ] ? btns[ 0 ].boxShadow[ 5 ] : 2 ) }
+															spread={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 6 ] ? btns[ 0 ].boxShadow[ 6 ] : 0 ) }
+															inset={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 7 ] ? btns[ 0 ].boxShadow[ 7 ] : false ) }
+															onEnableChange={ value => {
+																saveBtnArray( { boxShadow: [ value, ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 5 ] ? btns[ 0 ].boxShadow[ 5 ] : 2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 6 ] ? btns[ 0 ].boxShadow[ 6 ] : 0 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 7 ] ? btns[ 0 ].boxShadow[ 7 ] : false ) ] } );
+															} }
+															onColorChange={ value => {
+																saveBtnArray( { boxShadow: [ ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ), value, ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 5 ] ? btns[ 0 ].boxShadow[ 5 ] : 2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 6 ] ? btns[ 0 ].boxShadow[ 6 ] : 0 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 7 ] ? btns[ 0 ].boxShadow[ 7 ] : false ) ] } );
+															} }
+															onOpacityChange={ value => {
+																saveBtnArray( { boxShadow: [ ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ), value, ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 5 ] ? btns[ 0 ].boxShadow[ 5 ] : 2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 6 ] ? btns[ 0 ].boxShadow[ 6 ] : 0 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 7 ] ? btns[ 0 ].boxShadow[ 7 ] : false ) ] } );
+															} }
+															onHOffsetChange={ value => {
+																saveBtnArray( { boxShadow: [ ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ), value, ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 5 ] ? btns[ 0 ].boxShadow[ 5 ] : 2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 6 ] ? btns[ 0 ].boxShadow[ 6 ] : 0 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 7 ] ? btns[ 0 ].boxShadow[ 7 ] : false ) ] } );
+															} }
+															onVOffsetChange={ value => {
+																saveBtnArray( { boxShadow: [ ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ), value, ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 5 ] ? btns[ 0 ].boxShadow[ 5 ] : 2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 6 ] ? btns[ 0 ].boxShadow[ 6 ] : 0 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 7 ] ? btns[ 0 ].boxShadow[ 7 ] : false ) ] } );
+															} }
+															onBlurChange={ value => {
+																saveBtnArray( { boxShadow: [ ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ), value, ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 6 ] ? btns[ 0 ].boxShadow[ 6 ] : 0 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 7 ] ? btns[ 0 ].boxShadow[ 7 ] : false ) ] } );
+															} }
+															onSpreadChange={ value => {
+																saveBtnArray( { boxShadow: [ ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 5 ] ? btns[ 0 ].boxShadow[ 5 ] : 2 ), value, ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 7 ] ? btns[ 0 ].boxShadow[ 7 ] : false ) ] } );
+															} }
+															onInsetChange={ value => {
+																saveBtnArray( { boxShadow: [ ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 5 ] ? btns[ 0 ].boxShadow[ 5 ] : 2 ), ( btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 6 ] ? btns[ 0 ].boxShadow[ 6 ] : 0 ), value ] } );
+															} }
 														/>
 													</Fragment>
 												);
@@ -309,6 +885,24 @@ class KadenceButtonDefault extends Component {
 									}
 								}
 							</TabPanel>
+							<RangeControl
+								label={ __( 'Border Width' ) }
+								value={ btns[ 0 ].borderWidth }
+								onChange={ value => {
+									saveBtnArray( { borderWidth: value } );
+								} }
+								min={ 0 }
+								max={ 20 }
+							/>
+							<RangeControl
+								label={ __( 'Border Radius' ) }
+								value={ btns[ 0 ].borderRadius }
+								onChange={ value => {
+									saveBtnArray( { borderRadius: value } );
+								} }
+								min={ 0 }
+								max={ 50 }
+							/>
 						</PanelBody>
 						<PanelBody
 							title={ __( 'Icons Settings' ) }

@@ -63,7 +63,11 @@
 	}
 }
 .kt-blocks-accordion-title-wrap {
-    display: flex;
+	display: flex;
+	padding-right: 10px;
+}
+.kt-accodion-icon-side-left .kt-blocks-accordion-title-wrap {
+	padding-right: 0px;
 }
 .kt-pane-header-alignment-center button.kt-blocks-accordion-header {
     text-align: center;
@@ -106,6 +110,8 @@
     position: relative;
     transition: all ease-in-out 0.2s;
 	width: 24px;
+	min-width: 24px;
+    box-sizing: content-box;
 }
 .kt-blocks-accordion-icon-trigger:after, .kt-blocks-accordion-icon-trigger:before {
 	background-color: #333;

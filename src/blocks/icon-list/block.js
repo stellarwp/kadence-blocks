@@ -125,6 +125,10 @@ registerBlockType( 'kadence/iconlist', {
 			type: 'string',
 			default: 'none',
 		},
+		listMargin: {
+			type: 'array',
+			default: [ 0, 0, 10, 0 ],
+		},
 	},
 	transforms: {
 		from: [

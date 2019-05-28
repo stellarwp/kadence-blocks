@@ -4,8 +4,176 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .kt-btn-link-input input {
+ .kt-block-defaults-modal h2.kt-beside-btn-group, .kt-block-defaults-modal h2.kt-beside-color-label {
+    font-size: 14px;
+    color: #555d66;
+}
+.kt-block-defaults-modal h2.kt-tab-wrap-title.kt-color-settings-title {
+    text-align: center;
+    background: #f2f2f2;
+    margin-bottom: 0;
+        font-size: 14px;
+    color: #555d66;
+}
+ .kt-btn-link-group .kt-btn-link-input input[type=text] {
+    max-width: 97%;
+    width: 100%;
+}
+.kt-btn-link-group {
+    display: flex;
     max-width: 100%;
+}
+.edit-post-sidebar h2.side-h2-label {
+	margin-bottom: 4px;
+}
+.kt-inspect-tabs .kt-btn-size-settings-container .kt-button-size-type-options {
+    margin-bottom: 0;
+}
+.kt-btn-size-settings-container .kt-button-size-type-options {
+    margin-bottom: 0;
+}
+.kt-box-shadow-label .components-base-control.components-toggle-control, .kt-box-shadow-label .components-toggle-control .components-base-control__field {
+    margin-bottom: 0 !important;
+}
+.kt-box-shadow-label h2.kt-beside-color-label {
+    flex-grow: 1;
+    margin: 12px 0;
+}
+.kt-box-shadow-label {
+    display: flex;
+    align-items: center;
+}
+.kt-select-icon-container .rfip {
+    margin: 0 0 15px 0;
+}
+.kt-inner-sub-section-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.kt-box-shadow-subset {
+    padding: 0 2px;
+    text-align: center;
+}
+.kt-box-shadow-subset .kt-box-shadow-title {
+    font-size:12px;
+}
+
+.kt-box-shadow-subset .kt-advanced-color-settings-container {
+    flex-direction: column-reverse;
+}
+.edit-post-sidebar h2.kt-tab-wrap-title.kt-color-settings-title {
+    text-align: center;
+    background: #f2f2f2;
+    margin-bottom: 0;
+}
+.kt-advanced-color-settings-container .kt-has-alpha {
+    background-image: linear-gradient(45deg, #ddd 25%, transparent 0), linear-gradient(-45deg, #ddd 25%, transparent 0), linear-gradient(45deg, transparent 75%, #ddd 0), linear-gradient(-45deg, transparent 75%, #ddd 0);
+    background-size: 10px 10px;
+    background-position: 0 0,0 5px,5px -5px,-5px 0;
+}
+.kt-advanced-color-settings-container .kt-color-icon-indicate {
+    position: relative;
+    transform: scale(1);
+	transition: transform .1s ease;
+	border-radius: 50%;
+    padding: 0;
+}
+.kt-advanced-color-settings-container .kt-color-icon-indicate:hover {
+    transform: scale(1.2);
+}
+.components-popover__content .components-range-control.kt-opacity-value {
+    padding: 0 12px 12px;
+}
+
+.components-popover__content .components-range-control.kt-opacity-value .components-base-control__field {
+    flex-wrap: nowrap;
+}
+
+.components-popover__content .components-range-control.kt-opacity-value .components-range-control__slider {
+    flex-grow: 10;
+}
+.components-popover__content .components-range-control.kt-opacity-value .components-base-control__label {
+    width: auto;
+    margin-right: 5px;
+}
+.kt-advanced-color-settings-container .components-color-palette__clear svg {
+	width:16px;
+}
+.kt-advanced-color-settings-container .components-color-palette__clear {
+    background: transparent;
+    padding: 4px;
+    height: auto;
+    box-shadow: none;
+    border: 1px solid transparent;
+}
+.kt-beside-color-click {
+    display: flex;
+    align-items: center;
+}
+.kt-advanced-color-settings-container .kt-color-icon-indicate .component-color-indicator.kt-advanced-color-indicate {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    margin: 0;
+}
+.components-popover__content .components-color-palette .components-color-palette__item-wrapper {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.components-popover__content .components-color-palette .components-color-palette__item-wrapper:last-child {
+    margin-right: 0;
+}
+.components-popover__content .components-color-palette {
+    margin: 0;
+    padding: 0px 16px 12px;
+    width: 100%;
+}
+.kt-advanced-color-settings-container {
+    display: flex;
+    align-items: center;
+}
+.kt-advanced-color-settings-container h2.kt-beside-color-label {
+    flex-grow: 1;
+}
+.kt-link-settings {
+    border: 1px solid #8d96a0;
+    margin: 2px 0;
+    height: 30px;
+    padding: 2px 8px;
+}
+.kt-inner-sub-section {
+    border: 1px solid #ddd;
+    border-top: 0;
+    padding: 25px 10px 10px 10px;
+    margin-bottom: 15px;
+    margin-top: -15px;
+}
+.kt-inner-sub-section .kt-size-tabs .components-tab-panel__tabs {
+    margin-bottom: 10px;
+}
+.kt-btn-size-settings-container .kt-beside-btn-group {
+    flex-grow: 1;
+    margin: 0;
+}
+.btn-text-size-range {
+    margin-top: 8px;
+}
+.edit-post-sidebar h2.kt-heading-size-title.kt-secondary-color-size {
+    margin-top: 0;
+    font-weight: normal;
+}
+.kt-btn-size-settings-container {
+    display: flex;
+	align-items: center;
+	margin: 20px 0;
+}
+.kt-link-settings .dashicon {
+    width: 16px;
+    height: 16px;
+}
+.kt-button-size-type-options .dashicon { 
+	width:14px;
 }
  // Controls
 .components-base-control__field .components-range-control__slider+.dashicon.dashicons-editor-textcolor {
@@ -107,12 +275,51 @@
     padding-bottom: 40px;
 }
 .kt-button {
+	z-index: 1;
+	position: relative;
     padding: 8px 16px;
     cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    border-style: solid;
+	font-size: 18px;
+	border-width:2px;
+	border-radius: 3px;
+	border-color:#555555;
+	background:transparent;
+	color:#555555;
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	border-style: solid;
+	overflow: hidden;
     transition: all .3s ease-in-out;
+}
+.kt-button::before {
+    position: absolute;
+	content: "";
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: -1;
+	opacity: 0;
+	background:#444444;
+	transition: all .3s ease-in-out;
+}
+.kt-button:hover {
+	border-color:#444444;
+	color:#ffffff;
+}
+.kt-button:hover::before {
+	opacity: 1;
+}
+.kt-btn-size-small {
+    font-size: 16px;
+    padding: 4px 8px;
+    border-width: 1px;
+}
+.kt-btn-size-large {
+    font-size: 20px;
+	padding: 12px 24px;
+	border-width: 3px;
 }
 .kt-btn-svg-icon.kt-btn-side-right {
     padding-left: 5px;

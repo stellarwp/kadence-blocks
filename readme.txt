@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.8
-Tested up to: 5.2.0
-Stable tag: 1.5.4
+Tested up to: 5.2.1
+Stable tag: 1.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.5.5 =
+* Update: Rewrite parts of Advanced Button. Add gradient background options, fixed width, preset sizes, responsive custom padding, responsive font sizes and box shadow.
+* Update: Prebuilt items ( Remove Kadence name from content )
+* Fix: Default Row settings, tablet padding issue.
+* Fix: Rich text button issue.
+* Fix: Accordion issue with long titles icons being warped.
+* Fix: Bug in Testimonials Block with specific settings.
+* Add: Margin for Icon list.
 
 = 1.5.4 =
 * Add: Two new Prebuilt items ( Accordion examples )
