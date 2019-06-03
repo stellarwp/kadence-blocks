@@ -368,5 +368,9 @@ const attributes = {
 			overlayBlendMod: 'none',
 		} ],
 	},
+	columnsInnerHeight: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

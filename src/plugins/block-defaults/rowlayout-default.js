@@ -3,14 +3,11 @@ import MeasurementControls from '../../measurement-control';
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+const { __ } = wp.i18n;
 const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
-	ColorPalette,
-} = wp.editor;
 const {
 	PanelBody,
 	RangeControl,
@@ -19,6 +16,7 @@ const {
 	TabPanel,
 	Dashicon,
 	Modal,
+	ToggleControl,
 	SelectControl,
 } = wp.components;
 
@@ -412,6 +410,11 @@ class KadenceRowLayoutDefault extends Component {
 								onChange={ ( value ) => this.saveConfigState( 'maxWidth', value ) }
 								min={ 0 }
 								max={ widthMax }
+							/>
+							<ToggleControl
+								label={ __( 'Inner Column Height 100%' ) }
+								checked={ ( undefined !== rowConfig.columnsInnerHeight ? rowConfig.columnsInnerHeight : false ) }
+								onChange={ ( value ) => this.saveConfigState( 'columnsInnerHeight', value ) }
 							/>
 						</PanelBody>
 						<Button className="kt-defaults-save" isDefault isPrimary onClick={ () => {

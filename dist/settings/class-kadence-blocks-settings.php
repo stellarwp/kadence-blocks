@@ -56,7 +56,68 @@ class Kadence_Blocks_Settings {
 		add_action( 'admin_init', array( $this, 'activation_redirect' ) );
 		add_action( 'admin_init', array( $this, 'load_settings' ) );
 		add_action( 'init', array( $this, 'load_api_settings' ) );
+		add_action( 'after_setup_theme', array( $this, 'load_color_palette' ), 999 );
 
+	}
+	/**
+	 * Load Gutenberg Palette
+	 */
+	public function load_color_palette() {
+		$palette = json_decode( get_option( 'kadence_blocks_colors' ) );
+		if ( $palette && is_object( $palette ) && isset( $palette->palette ) && is_array( $palette->palette ) ) {
+			$san_palette = array();
+			foreach ( $palette->palette as $item ) {
+				$san_palette[] = array(
+					'color' => $item->color,
+					'name'  => $item->name,
+					'slug'  => $item->slug,
+				);
+			}
+			if ( isset( $san_palette[0] ) ) {
+				if ( ( isset( $palette->override ) && true !== $palette->override ) || ! isset( $palette->override ) ) {
+					$theme_palette = get_theme_support( 'editor-color-palette' );
+					if ( is_array( $theme_palette ) ) {
+						$newpalette = array_merge( reset( $theme_palette ), $san_palette );
+					}
+				} else {
+					$newpalette = $san_palette;
+				}
+				add_theme_support( 'editor-color-palette', $newpalette );
+				add_action( 'wp_head', array( $this, 'print_gutenberg_style' ), 8 );
+				add_action( 'admin_print_styles', array( $this, 'print_gutenberg_style' ), 21 );
+			}
+		}
+	}
+	/**
+	 * Print Gutenberg Palette Styles
+	 */
+	public function print_gutenberg_style() {
+		if ( is_admin() ) {
+			$screen = get_current_screen();
+			if ( ! $screen || ! $screen->is_block_editor() ) {
+				return;
+			}
+		}
+		$palette = json_decode( get_option( 'kadence_blocks_colors' ) );
+		if ( $palette && is_object( $palette ) && isset( $palette->palette ) && is_array( $palette->palette ) ) {
+			$san_palette = array();
+			foreach ( $palette->palette as $item ) {
+				$san_palette[] = array(
+					'color' => $item->color,
+					'name' => $item->name,
+					'slug' => $item->slug,
+				);
+			}
+			if ( isset( $san_palette[0] ) ) {
+				echo '<style id="kadence_blocks_palette_css" type="text/css">';
+				foreach ( $san_palette as $set ) {
+					$slug = $set['slug'];
+					$color = $set['color'];
+					echo '.has-' . esc_attr( $slug ) . '-color{color:' . esc_attr( $color ) . '}.has-' . esc_attr( $slug ) . '-background-color{background-color:' . esc_attr( $color ) . '}';
+				}
+				echo '</style>';
+			}
+		}
 	}
 	/**
 	 * Redirect to the settings page on activation
@@ -201,7 +262,10 @@ class Kadence_Blocks_Settings {
 	 */
 	public function load_api_settings() {
 
-		register_setting( 'kadence_blocks_config_blocks', 'kadence_blocks_config_blocks', array(
+		register_setting(
+			'kadence_blocks_config_blocks',
+			'kadence_blocks_config_blocks',
+			array(
 				'type'              => 'string',
 				'description'       => __( 'Config Kadence Block Defaults', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
@@ -209,14 +273,28 @@ class Kadence_Blocks_Settings {
 				'default'           => '',
 			)
 		);
-		register_setting( 'kadence_blocks_settings_blocks', 'kadence_blocks_settings_blocks', array(
-			'type'              => 'string',
-			'description'       => __( 'Config Kadence Block Settings View', 'kadence-blocks' ),
-			'sanitize_callback' => 'sanitize_text_field',
-			'show_in_rest'      => true,
-			'default'           => '',
-		)
-	);
+		register_setting(
+			'kadence_blocks_settings_blocks',
+			'kadence_blocks_settings_blocks',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Block Settings View', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_colors',
+			'kadence_blocks_colors',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Blocks Color Palette', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
 	}
 	/**
 	 * Register settings

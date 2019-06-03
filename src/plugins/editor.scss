@@ -4,7 +4,48 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kt-block-default-palette .components-color-palette__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.kt-colors-add-new {
+    margin-bottom: 16px;
+}
+.kb-colors-show-notice {
+    background: #fef8ee;
+    padding: 10px;
+    color: #222;
+}
+.components-popover.kt-popover-color > .components-popover__content > .components-base-control {
+    padding: 0 10px;
+}
+.kt-block-default-palette .components-color-palette__item-wrapper {
+    transform: scale(1.1);
+}
+.kt-block-default-palette .components-color-palette__item-wrapper:hover {
+    transform: scale(1.1);
+}
+.kt-block-default-palette .components-color-palette__item svg {
+    color: rgba(100,100,100,1);
+}
+ .kt-colors-remove-last {
+    display: inline-block;
+    height: 28px;
+    width: 28px;
+    margin-right: 14px;
+    margin-bottom: 14px;
+}
 
+.kt-colors-remove-last .components-button {
+    border-radius: 50%;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
  // Button Groups
  .kt-blocks-width-control, .kt-blocks-control-wrap {
     padding:10px;

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.8
 Tested up to: 5.2.1
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.5.6 =
+* Add: Global Color Palette Control.
+* Move: Editor Width inside Kadence Blocks Controls.
+* Add: Option for columns to be height 100%.
+* Fix: Bug with three column resize.
 
 = 1.5.5 =
 * Update: Rewrite parts of Advanced Button. Add gradient background options, fixed width, preset sizes, responsive custom padding, responsive font sizes and box shadow.

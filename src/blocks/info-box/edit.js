@@ -17,6 +17,7 @@ import icons from '../../icons';
 import map from 'lodash/map';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
+import AdvancedColorControl from '../../advanced-color-control';
 import WebfontLoader from '../../fontloader';
 import hexToRGBA from '../../hex-to-rgba';
 import GenIcon from '../../genicon';
@@ -805,50 +806,42 @@ class KadenceInfoBox extends Component {
 												if ( 'hover' === tab.name ) {
 													tabout = (
 														<Fragment>
-															<h2>{ __( 'Container Hover Background' ) }</h2>
-															<ColorPalette
-																value={ containerHoverBackground }
-																onChange={ value => setAttributes( { containerHoverBackground: value } ) }
+															<AdvancedColorControl
+																label={ __( 'Hover Background' ) }
+																colorValue={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
+																colorDefault={ '#f2f2f2' }
+																opacityValue={ containerHoverBackgroundOpacity }
+																onColorChange={ value => setAttributes( { containerHoverBackground: value } ) }
+																onOpacityChange={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
 															/>
-															<OpacityControl
-																value={ containerHoverBackgroundOpacity }
-																onChanged={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
-																label={ __( 'Background Hover Opacity' ) }
-															/>
-															<h2>{ __( 'Container Hover Border' ) }</h2>
-															<ColorPalette
-																value={ containerHoverBorder }
-																onChange={ value => setAttributes( { containerHoverBorder: value } ) }
-															/>
-															<OpacityControl
-																value={ containerHoverBorderOpacity }
-																onChanged={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
-																label={ __( 'Border Hover Opacity' ) }
+															<AdvancedColorControl
+																label={ __( 'Hover Border' ) }
+																colorValue={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
+																colorDefault={ '#eeeeee' }
+																opacityValue={ containerHoverBorderOpacity }
+																onColorChange={ value => setAttributes( { containerHoverBorder: value } ) }
+																onOpacityChange={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
 															/>
 														</Fragment>
 													);
 												} else {
 													tabout = (
 														<Fragment>
-															<h2>{ __( 'Container Background' ) }</h2>
-															<ColorPalette
-																value={ containerBackground }
-																onChange={ value => setAttributes( { containerBackground: value } ) }
+															<AdvancedColorControl
+																label={ __( 'Container Background' ) }
+																colorValue={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
+																colorDefault={ '#f2f2f2' }
+																opacityValue={ containerBackgroundOpacity }
+																onColorChange={ value => setAttributes( { containerBackground: value } ) }
+																onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 															/>
-															<OpacityControl
-																value={ containerBackgroundOpacity }
-																onChanged={ value => setAttributes( { containerBackgroundOpacity: value } ) }
-																label={ __( 'Background Opacity' ) }
-															/>
-															<h2>{ __( 'Container Border' ) }</h2>
-															<ColorPalette
-																value={ containerBorder }
-																onChange={ value => setAttributes( { containerBorder: value } ) }
-															/>
-															<OpacityControl
-																value={ containerBorderOpacity }
-																onChanged={ value => setAttributes( { containerBorderOpacity: value } ) }
-																label={ __( 'Border Opacity' ) }
+															<AdvancedColorControl
+																label={ __( 'Container Border' ) }
+																colorValue={ ( containerBorder ? containerBorder : '#eeeeee' ) }
+																colorDefault={ '#eeeeee' }
+																opacityValue={ containerBorderOpacity }
+																onColorChange={ value => setAttributes( { containerBorder: value } ) }
+																onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 															/>
 														</Fragment>
 													);
@@ -976,23 +969,26 @@ class KadenceInfoBox extends Component {
 																<Fragment>
 																	{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
 																		<Fragment>
-																			<h2>{ __( 'SVG Hover Color' ) }</h2>
-																			<ColorPalette
-																				value={ mediaIcon[ 0 ].hoverColor }
-																				onChange={ value => saveMediaIcon( { hoverColor: value } ) }
+																			<AdvancedColorControl
+																				label={ __( 'SVG Hover Color' ) }
+																				colorValue={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
+																				colorDefault={ '#444444' }
+																				onColorChange={ value => saveMediaIcon( { hoverColor: value } ) }
 																			/>
 																			<small>{ __( '*you must force inline svg for this to have effect.' ) }</small>
 																		</Fragment>
 																	) }
-																	<h2>{ __( 'Image Hover Background' ) }</h2>
-																	<ColorPalette
-																		value={ mediaStyle[ 0 ].hoverBackground }
-																		onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Image Hover Background' ) }
+																		colorValue={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
+																		colorDefault={ 'transparent' }
+																		onColorChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																	/>
-																	<h2>{ __( 'Image Hover Border' ) }</h2>
-																	<ColorPalette
-																		value={ mediaStyle[ 0 ].hoverBorder }
-																		onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Image Hover Border' ) }
+																		colorValue={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaStyle( { hoverBorder: value } ) }
 																	/>
 																</Fragment>
 															);
@@ -1001,23 +997,26 @@ class KadenceInfoBox extends Component {
 																<Fragment>
 																	{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
 																		<Fragment>
-																			<h2>{ __( 'SVG Color' ) }</h2>
-																			<ColorPalette
-																				value={ mediaIcon[ 0 ].color }
-																				onChange={ value => saveMediaIcon( { color: value } ) }
+																			<AdvancedColorControl
+																				label={ __( 'SVG Color' ) }
+																				colorValue={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
+																				colorDefault={ '#444444' }
+																				onColorChange={ value => saveMediaIcon( { color: value } ) }
 																			/>
 																			<small>{ __( '*you must force inline svg for this to have effect.' ) }</small>
 																		</Fragment>
 																	) }
-																	<h2>{ __( 'Image Background' ) }</h2>
-																	<ColorPalette
-																		value={ mediaStyle[ 0 ].background }
-																		onChange={ value => saveMediaStyle( { background: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Image Background' ) }
+																		colorValue={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
+																		colorDefault={ 'transparent' }
+																		onColorChange={ value => saveMediaStyle( { background: value } ) }
 																	/>
-																	<h2>{ __( 'Image Border' ) }</h2>
-																	<ColorPalette
-																		value={ mediaStyle[ 0 ].border }
-																		onChange={ value => saveMediaStyle( { border: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Image Border' ) }
+																		colorValue={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaStyle( { border: value } ) }
 																	/>
 																</Fragment>
 															);
@@ -1118,40 +1117,46 @@ class KadenceInfoBox extends Component {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<Fragment>
-																	<h2>{ __( 'Icon Hover Color' ) }</h2>
-																	<ColorPalette
-																		value={ mediaIcon[ 0 ].hoverColor }
-																		onChange={ value => saveMediaIcon( { hoverColor: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Icon Hover Color' ) }
+																		colorValue={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaIcon( { hoverColor: value } ) }
 																	/>
-																	<h2>{ __( 'Icon Hover Background' ) }</h2>
-																	<ColorPalette
-																		value={ mediaStyle[ 0 ].hoverBackground }
-																		onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Icon Hover Background' ) }
+																		colorValue={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
+																		colorDefault={ 'transparent' }
+																		onColorChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																	/>
-																	<h2>{ __( 'Icon Hover Border Color' ) }</h2>
-																	<ColorPalette
-																		value={ mediaStyle[ 0 ].hoverBorder }
-																		onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Icon Hover Border' ) }
+																		colorValue={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaStyle( { hoverBorder: value } ) }
 																	/>
 																</Fragment>
 															);
 														} else {
 															tabout = (
 																<Fragment>
-																	<h2>{ __( 'Icon Color' ) }</h2>
-																	<ColorPalette
-																		value={ mediaIcon[ 0 ].color }
-																		onChange={ value => saveMediaIcon( { color: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Icon Color' ) }
+																		colorValue={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaIcon( { color: value } ) }
 																	/>
-																	<h2>{ __( 'Icon Background' ) }</h2>
-																	<ColorPalette
-																		value={ mediaStyle[ 0 ].background }
-																		onChange={ value => saveMediaStyle( { background: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Icon Background' ) }
+																		colorValue={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
+																		colorDefault={ 'transparent' }
+																		onColorChange={ value => saveMediaStyle( { background: value } ) }
 																	/>
-																	<h2>{ __( 'Icon Border Color' ) }</h2>
-																	<ColorPalette
-																		value={ mediaStyle[ 0 ].border }
-																		onChange={ value => saveMediaStyle( { border: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Icon Border Color' ) }
+																		colorValue={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaStyle( { border: value } ) }
 																	/>
 																</Fragment>
 															);
@@ -1223,16 +1228,20 @@ class KadenceInfoBox extends Component {
 													if ( tab.name ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
-																<ColorPalette
-																	value={ titleHoverColor }
-																	onChange={ value => setAttributes( { titleHoverColor: value } ) }
+																<AdvancedColorControl
+																	label={ __( 'Hover Color' ) }
+																	colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
+																	colorDefault={ '' }
+																	onColorChange={ value => setAttributes( { titleHoverColor: value } ) }
 																/>
 															);
 														} else {
 															tabout = (
-																<ColorPalette
-																	value={ titleColor }
-																	onChange={ value => setAttributes( { titleColor: value } ) }
+																<AdvancedColorControl
+																	label={ __( 'Title Color' ) }
+																	colorValue={ ( titleColor ? titleColor : '' ) }
+																	colorDefault={ '' }
+																	onColorChange={ value => setAttributes( { titleColor: value } ) }
 																/>
 															);
 														}
@@ -1321,16 +1330,20 @@ class KadenceInfoBox extends Component {
 													if ( tab.name ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
-																<ColorPalette
-																	value={ textHoverColor }
-																	onChange={ value => setAttributes( { textHoverColor: value } ) }
+																<AdvancedColorControl
+																	label={ __( 'Hover Color' ) }
+																	colorValue={ ( textHoverColor ? textHoverColor : '' ) }
+																	colorDefault={ '' }
+																	onColorChange={ value => setAttributes( { textHoverColor: value } ) }
 																/>
 															);
 														} else {
 															tabout = (
-																<ColorPalette
-																	value={ textColor }
-																	onChange={ value => setAttributes( { textColor: value } ) }
+																<AdvancedColorControl
+																	label={ __( 'Text Color' ) }
+																	colorValue={ ( textColor ? textColor : '' ) }
+																	colorDefault={ '' }
+																	onColorChange={ value => setAttributes( { textColor: value } ) }
 																/>
 															);
 														}
@@ -1410,40 +1423,46 @@ class KadenceInfoBox extends Component {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<Fragment>
-																	<h2>{ __( 'HOVER: Learn More Color' ) }</h2>
-																	<ColorPalette
-																		value={ learnMoreStyles[ 0 ].colorHover }
-																		onChange={ value => saveLearnMoreStyles( { colorHover: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'HOVER: Text Color' ) }
+																		colorValue={ ( learnMoreStyles[ 0 ].colorHover ? learnMoreStyles[ 0 ].colorHover : '#ffffff' ) }
+																		colorDefault={ '#ffffff' }
+																		onColorChange={ value => saveLearnMoreStyles( { colorHover: value } ) }
 																	/>
-																	<h2>{ __( 'HOVER: Learn More Background' ) }</h2>
-																	<ColorPalette
-																		value={ learnMoreStyles[ 0 ].backgroundHover }
-																		onChange={ value => saveLearnMoreStyles( { backgroundHover: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'HOVER: Background' ) }
+																		colorValue={ ( learnMoreStyles[ 0 ].backgroundHover ? learnMoreStyles[ 0 ].backgroundHover : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveLearnMoreStyles( { backgroundHover: value } ) }
 																	/>
-																	<h2>{ __( 'HOVER: Learn More Border Color' ) }</h2>
-																	<ColorPalette
-																		value={ learnMoreStyles[ 0 ].borderHover }
-																		onChange={ value => saveLearnMoreStyles( { borderHover: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'HOVER: Border Color' ) }
+																		colorValue={ ( learnMoreStyles[ 0 ].borderHover ? learnMoreStyles[ 0 ].borderHover : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveLearnMoreStyles( { borderHover: value } ) }
 																	/>
 																</Fragment>
 															);
 														} else {
 															tabout = (
 																<Fragment>
-																	<h2>{ __( 'Learn More Color' ) }</h2>
-																	<ColorPalette
-																		value={ learnMoreStyles[ 0 ].color }
-																		onChange={ value => saveLearnMoreStyles( { color: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Text Color' ) }
+																		colorValue={ ( learnMoreStyles[ 0 ].color ? learnMoreStyles[ 0 ].color : '' ) }
+																		colorDefault={ '' }
+																		onColorChange={ value => saveLearnMoreStyles( { color: value } ) }
 																	/>
-																	<h2>{ __( 'Learn More Background' ) }</h2>
-																	<ColorPalette
-																		value={ learnMoreStyles[ 0 ].background }
-																		onChange={ value => saveLearnMoreStyles( { background: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Background' ) }
+																		colorValue={ ( learnMoreStyles[ 0 ].background ? learnMoreStyles[ 0 ].background : '' ) }
+																		colorDefault={ 'transparent' }
+																		onColorChange={ value => saveLearnMoreStyles( { background: value } ) }
 																	/>
-																	<h2>{ __( 'Learn More Border Color' ) }</h2>
-																	<ColorPalette
-																		value={ learnMoreStyles[ 0 ].border }
-																		onChange={ value => saveLearnMoreStyles( { border: value } ) }
+																	<AdvancedColorControl
+																		label={ __( 'Border Color' ) }
+																		colorValue={ ( learnMoreStyles[ 0 ].border ? learnMoreStyles[ 0 ].border : '#555555' ) }
+																		colorDefault={ '#555555' }
+																		onColorChange={ value => saveLearnMoreStyles( { border: value } ) }
 																	/>
 																</Fragment>
 															);

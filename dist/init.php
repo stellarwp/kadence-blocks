@@ -88,6 +88,7 @@ function kadence_gutenberg_editor_assets() {
 			'configuration'  => get_option( 'kadence_blocks_config_blocks' ),
 			'settings'       => get_option( 'kadence_blocks_settings_blocks' ),
 			'userrole'       => $userrole,
+			'colors'         => get_option( 'kadence_blocks_colors' ),
 		)
 	);
 	// Styles.

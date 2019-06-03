@@ -6,6 +6,9 @@ const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 const { __ } = wp.i18n;
 const { applyFilters } = wp.hooks;
 const { registerPlugin } = wp.plugins;
+const {
+	PanelBody,
+} = wp.components;
 import map from 'lodash/map';
 import './editor.scss';
 /**
@@ -14,8 +17,9 @@ import './editor.scss';
 import icons from '../brand-icon';
 
 /**
- * Import Blocks
+ * Import Settings
  */
+import KadenceEditorWidth from './editor-width';
 import KadenceSpacer from './block-defaults/spacer-defaults';
 import KadenceSpacerSettings from './block-settings/spacer-settings';
 import KadenceTabs from './block-defaults/tabs-defaults';
@@ -34,6 +38,7 @@ import KadenceHeadings from './block-defaults/advanced-heading-default';
 import KadenceHeadingsSettings from './block-settings/advanced-heading-settings';
 import KadenceRowLayout from './block-defaults/rowlayout-default';
 import KadenceRowLayoutSettings from './block-settings/rowlayout-settings';
+import KadenceColors from './block-defaults/color-palette-defaults';
 
 /*
  * Components
@@ -60,71 +65,88 @@ class KadenceConfig extends Component {
 					{ __( 'Kadence Blocks Controls' ) }
 				</PluginSidebarMoreMenuItem>
 				<PluginSidebar
-					isPinnable={ false }
+					isPinnable={ true }
 					name="kadence-controls"
 					title={ __( 'Kadence Blocks Controls' ) }
 				>
-					<div className="kt-blocks-control-wrap">
-						<div className="kt-blocks-control-row">
-							<KadenceSpacer />
-							{ 'admin' === this.state.user && (
-								<KadenceSpacerSettings />
-							) }
+					<PanelBody
+						title={ __( 'Color Palette' ) }
+						initialOpen={ true }
+					>
+						<KadenceColors />
+					</PanelBody>
+					<PanelBody
+						title={ __( 'Block Defaults' ) }
+						initialOpen={ false }
+					>
+						<div className="kt-blocks-control-wrap">
+							<div className="kt-blocks-control-row">
+								<KadenceSpacer />
+								{ 'admin' === this.state.user && (
+									<KadenceSpacerSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceTabs />
+								{ 'admin' === this.state.user && (
+									<KadenceTabsSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">	
+								<KadenceAccordion />
+								{ 'admin' === this.state.user && (
+									<KadenceAccordionSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceInfoBox />
+								{ 'admin' === this.state.user && (
+									<KadenceInfoBoxSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceAdvancedBtn />
+								{ 'admin' === this.state.user && (
+									<KadenceAdvancedSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceIconList />
+								{ 'admin' === this.state.user && (
+									<KadenceIconListSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceTestimonials />
+								{ 'admin' === this.state.user && (
+									<KadenceTestimonialsSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceHeadings />
+								{ 'admin' === this.state.user && (
+									<KadenceHeadingsSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceRowLayout />
+								{ 'admin' === this.state.user && (
+									<KadenceRowLayoutSettings />
+								) }
+							</div>
+							{ map( this.state.controls, ( { Control } ) => (
+								<Control />
+							) ) }
+							<h3>{ __( 'Components' ) }</h3>
+							<KadenceFontFamily />
 						</div>
-						<div className="kt-blocks-control-row">
-							<KadenceTabs />
-							{ 'admin' === this.state.user && (
-								<KadenceTabsSettings />
-							) }
-						</div>
-						<div className="kt-blocks-control-row">	
-							<KadenceAccordion />
-							{ 'admin' === this.state.user && (
-								<KadenceAccordionSettings />
-							) }
-						</div>
-						<div className="kt-blocks-control-row">
-							<KadenceInfoBox />
-							{ 'admin' === this.state.user && (
-								<KadenceInfoBoxSettings />
-							) }
-						</div>
-						<div className="kt-blocks-control-row">
-							<KadenceAdvancedBtn />
-							{ 'admin' === this.state.user && (
-								<KadenceAdvancedSettings />
-							) }
-						</div>
-						<div className="kt-blocks-control-row">
-							<KadenceIconList />
-							{ 'admin' === this.state.user && (
-								<KadenceIconListSettings />
-							) }
-						</div>
-						<div className="kt-blocks-control-row">
-							<KadenceTestimonials />
-							{ 'admin' === this.state.user && (
-								<KadenceTestimonialsSettings />
-							) }
-						</div>
-						<div className="kt-blocks-control-row">
-							<KadenceHeadings />
-							{ 'admin' === this.state.user && (
-								<KadenceHeadingsSettings />
-							) }
-						</div>
-						<div className="kt-blocks-control-row">
-							<KadenceRowLayout />
-							{ 'admin' === this.state.user && (
-								<KadenceRowLayoutSettings />
-							) }
-						</div>
-						{ map( this.state.controls, ( { Control } ) => (
-							<Control />
-						) ) }
-						<h3>{ __( 'Components' ) }</h3>
-						<KadenceFontFamily />
-					</div>
+					</PanelBody>
+					<PanelBody
+						title={ __( 'Editor Width' ) }
+						initialOpen={ false }
+					>
+						<KadenceEditorWidth />
+					</PanelBody>
 				</PluginSidebar>
 			</Fragment>
 		);
@@ -132,6 +154,6 @@ class KadenceConfig extends Component {
 }
 
 registerPlugin( 'kadence-control', {
-	icon: false,
+	icon: icons.kadenceBW,
 	render: KadenceConfig,
 } );

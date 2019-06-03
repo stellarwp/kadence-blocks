@@ -49,42 +49,30 @@ function CustomComponent( { meta, oldMeta, onUpdateWidth } ) {
 		{ key: 'fullwidth', name: __( 'Full Screen Width' ) },
 	];
 	return (
-		<Fragment>
-			<PluginSidebarMoreMenuItem
-				target="kadence-editor-width"
-			>
-				Editor Max Width
-			</PluginSidebarMoreMenuItem>
-			<PluginSidebar
-				name="kadence-editor-width"
-				title="Editor Max Width"
-			>
-				<div className="kt-blocks-width-control">
-					<h2 className="kt-blocks-width-heading">{ __( 'Editor Max Width' ) }</h2>
-					<ButtonGroup aria-label={ __( 'Editor Max Width' ) }>
-						{ map( editorWidthOptions, ( { name, key } ) => (
-							<Button
-								key={ key }
-								className="kt-editor-width-btn"
-								isSmall
-								isPrimary={ meta.kt_blocks_editor_width === key || ( '' === meta.kt_blocks_editor_width && 'default' === key ) }
-								aria-pressed={ meta.kt_blocks_editor_width === key || ( '' === meta.kt_blocks_editor_width && 'default' === key ) }
-								onClick={ () => {
-									changeBodyClass( key );
-									onUpdateWidth( key, meta, oldMeta );
-								} }
-							>
-								{ name }
-							</Button>
-						) ) }
-					</ButtonGroup>
-					<p>{ __( '*note: You can define these widths in your Kadence Blocks settings.' ) }</p>
-				</div>
-			</PluginSidebar>
-		</Fragment>
+		<div className="kt-blocks-width-control">
+			<h2 className="kt-blocks-width-heading">{ __( 'Editor Max Width' ) }</h2>
+			<ButtonGroup aria-label={ __( 'Editor Max Width' ) }>
+				{ map( editorWidthOptions, ( { name, key } ) => (
+					<Button
+						key={ key }
+						className="kt-editor-width-btn"
+						isSmall
+						isPrimary={ meta.kt_blocks_editor_width === key || ( '' === meta.kt_blocks_editor_width && 'default' === key ) }
+						aria-pressed={ meta.kt_blocks_editor_width === key || ( '' === meta.kt_blocks_editor_width && 'default' === key ) }
+						onClick={ () => {
+							changeBodyClass( key );
+							onUpdateWidth( key, meta, oldMeta );
+						} }
+					>
+						{ name }
+					</Button>
+				) ) }
+			</ButtonGroup>
+			<p>{ __( '*Note: You can define these widths in your Kadence Blocks settings.' ) }</p>
+		</div>
 	);
 }
-const plugin = compose( [
+export default compose( [
 	withSelect( ( select ) => {
 		const postMeta = select( 'core/editor' ).getEditedPostAttribute( 'meta' );
 		const oldPostMeta = select( 'core/editor' ).getCurrentPostAttribute( 'meta' );
@@ -112,8 +100,3 @@ const plugin = compose( [
 		},
 	} ) ),
 ] )( CustomComponent );
-
-registerPlugin( 'kadence-editor-width', {
-	icon: icon,
-	render: plugin,
-} );

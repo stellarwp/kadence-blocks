@@ -15,7 +15,6 @@ import map from 'lodash/map';
  */
 const { __, sprintf } = wp.i18n;
 const {
-	Fragment,
 	Component,
 } = wp.element;
 const {
@@ -38,18 +37,26 @@ class AdvancedColorControl extends Component {
 			isVisible: false,
 			colors: [],
 			classSat: 'first',
+			currentColor: '',
 		};
 	}
 	componentDidMount() {
 		const settings = wp.data.select( 'core/block-editor' ).getSettings();
 		this.setState( { colors: get( settings, [ 'colors' ], [] ) } );
+		if ( 'transparent' === this.props.colorDefault ) {
+			this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? '' : this.props.colorValue ) } );
+		} else {
+			this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) } );
+		}
 	}
 	render() {
 		const toggleVisible = () => {
 			this.setState( { isVisible: true } );
 		};
 		const toggleClose = () => {
-			this.setState( { isVisible: false } );
+			if ( this.state.isVisible === true ) {
+				this.setState( { isVisible: false } );
+			}
 		};
 		return (
 			<div className="kt-color-popover-container">
@@ -62,7 +69,10 @@ class AdvancedColorControl extends Component {
 							<Button
 								className="components-color-palette__clear"
 								type="button"
-								onClick={ () => this.props.onColorChange( undefined ) }
+								onClick={ () => {
+									this.setState( { currentColor: this.props.colorDefault } );
+									this.props.onColorChange( undefined );
+								} }
 								isSmall
 							>
 								<Dashicon icon="redo" />
@@ -74,15 +84,21 @@ class AdvancedColorControl extends Component {
 							<Popover position="top left" className="kt-popover-color" onClose={ toggleClose }>
 								{ this.state.classSat === 'first' && (
 									<ColorPicker
-										color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) }
-										onChangeComplete={ ( color ) => this.props.onColorChange( color.hex ) }
+										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.props.colorDefault : this.state.currentColor ) }
+										onChangeComplete={ ( color ) => {
+											this.setState( { currentColor: color.hex } );
+											this.props.onColorChange( color.hex );
+										} }
 										disableAlpha
 									/>
 								) }
 								{ this.state.classSat !== 'first' && (
 									<ColorPicker
-										color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) }
-										onChangeComplete={ ( color ) => this.props.onColorChange( color.hex ) }
+										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.props.colorDefault : this.state.currentColor ) }
+										onChangeComplete={ ( color ) => {
+											this.setState( { currentColor: color.hex } );
+											this.props.onColorChange( color.hex );
+										} }
 										disableAlpha
 									/>
 								) }
@@ -102,6 +118,7 @@ class AdvancedColorControl extends Component {
 															className={ `components-color-palette__item ${ ( this.props.colorValue === color ? 'is-active' : '' ) }` }
 															style={ style }
 															onClick={ () => {
+																this.setState( { currentColor: color } );
 																this.props.onColorChange( color );
 																if ( 'first' === this.state.classSat ) {
 																	this.setState( { classSat: 'second' } );
@@ -138,14 +155,14 @@ class AdvancedColorControl extends Component {
 						) }
 						{ this.state.isVisible && (
 							<Tooltip text={ __( 'Select Color' ) }>
-								<Button className={ `kt-color-icon-indicate ${ ( this.props.onOpacityChange ? 'kt-has-alpha' : 'kt-no-alpha' ) }` } onClick={ toggleClose }>
+								<Button className={ `kt-color-icon-indicate ${ ( this.props.onOpacityChange || 'transparent' === this.props.colorDefault ? 'kt-has-alpha' : 'kt-no-alpha' ) }` } onClick={ toggleClose }>
 									<ColorIndicator className="kt-advanced-color-indicate" colorValue={ ( 'transparent' === this.props.colorValue || undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : hexToRGBA( this.props.colorValue, ( this.props.opacityValue !== undefined ? this.props.opacityValue : 1 ) ) ) } />
 								</Button>
 							</Tooltip>
 						) }
 						{ ! this.state.isVisible && (
 							<Tooltip text={ __( 'Select Color' ) }>
-								<Button className={ `kt-color-icon-indicate ${ ( this.props.onOpacityChange ? 'kt-has-alpha' : 'kt-no-alpha' ) }` } onClick={ toggleVisible }>
+								<Button className={ `kt-color-icon-indicate ${ ( this.props.onOpacityChange || 'transparent' === this.props.colorDefault ? 'kt-has-alpha' : 'kt-no-alpha' ) }` } onClick={ toggleVisible }>
 									<ColorIndicator className="kt-advanced-color-indicate" colorValue={ ( 'transparent' === this.props.colorValue || undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : hexToRGBA( this.props.colorValue, ( this.props.opacityValue !== undefined ? this.props.opacityValue : 1 ) ) ) } />
 								</Button>
 							</Tooltip>

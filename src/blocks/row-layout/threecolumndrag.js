@@ -122,11 +122,11 @@ export default function ThreeColumnDrag( {
 		let tempsecondWidth;
 		let tempsecondW;
 		if ( columnsUnlocked ) {
-			tempfirstW = ( ! firstColumnWidth ? widthNumberThirds : firstColumnWidth );
+			tempfirstW = ( ! firstColumnWidth ? parseFloat( widthNumberThirds ) : firstColumnWidth );
 			tempsecondW = Math.round( parseFloat( elt.style.width ) * 10 ) / 10;
 			tempsecondWidth = Math.round( ( tempsecondW - tempfirstW ) * 10 ) / 10;
 		} else {
-			tempfirstW = Math.round( ( ! firstColumnWidth ? widthNumberThirds : firstColumnWidth ) / 5 ) * 5;
+			tempfirstW = Math.round( ( ! firstColumnWidth ? parseFloat( widthNumberThirds ) : firstColumnWidth ) / 5 ) * 5;
 			tempsecondW = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
 			tempsecondWidth = Math.round( ( tempsecondW - tempfirstW ) / 5 ) * 5;
 		}
@@ -137,18 +137,18 @@ export default function ThreeColumnDrag( {
 		document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempfirstW + '%';
 		document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = ( tempsecondWidth ) + '%';
 		document.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = ( tempsecondWidth ) + '%';
-		document.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( ( tempsecondWidth + tempfirstW ) - 100 ) * 10 ) / 10 ) + '%';
+		document.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( parseFloat( tempsecondWidth ) + parseFloat( tempfirstW ) - 100 ) * 10 ) / 10 ) + '%';
 	};
 	const onResizeStopSecond = ( event, direction, elt ) => {
 		let tempfirstW;
 		let tempsecondWidth;
 		let tempsecondW;
 		if ( columnsUnlocked ) {
-			tempfirstW = ( ! firstColumnWidth ? widthNumberThirds : firstColumnWidth );
+			tempfirstW = ( ! firstColumnWidth ? parseFloat( widthNumberThirds ) : firstColumnWidth );
 			tempsecondW = Math.round( parseFloat( elt.style.width ) * 10 ) / 10;
 			tempsecondWidth = Math.round( ( tempsecondW - tempfirstW ) * 10 ) / 10;
 		} else {
-			tempfirstW = Math.round( ( ! firstColumnWidth ? widthNumberThirds : firstColumnWidth ) / 5 ) * 5;
+			tempfirstW = Math.round( ( ! firstColumnWidth ? parseFloat( widthNumberThirds ) : firstColumnWidth ) / 5 ) * 5;
 			tempsecondW = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
 			tempsecondWidth = Math.round( ( tempsecondW - tempfirstW ) / 5 ) * 5;
 		}
