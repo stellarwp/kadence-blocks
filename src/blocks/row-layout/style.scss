@@ -655,6 +655,13 @@
 		backface-visibility: hidden;
 		clip: rect(auto, auto, auto, auto);
 	}
+	@media not all and (min-resolution:.001dpcm) {
+		@supports (-webkit-appearance:none) {
+			.wp-block-kadence-rowlayout [id*="jarallax-container-"] {
+				clip: auto !important;
+			}
+		}
+	}
 }
 // Mobile specific
 @media (max-width: 767px) {
@@ -948,7 +955,7 @@
 .kt-row-layout-bottom-sep {
     position: absolute;
     height: 100px;
-    bottom: 0;
+    bottom: -1px;
     left: 0;
     overflow: hidden;
     right: 0;
@@ -966,7 +973,7 @@
 .kt-row-layout-top-sep {
     position: absolute;
     height: 100px;
-    top: 0;
+    top: -1px;
     left: 0;
     overflow: hidden;
     right: 0;

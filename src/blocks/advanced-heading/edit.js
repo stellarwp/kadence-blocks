@@ -135,7 +135,7 @@ class KadenceAdvancedHeading extends Component {
 			{ key: 'vh', name: __( 'vh' ) },
 		];
 		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
-		const marginMin = ( marginType === 'em' ? 0.1 : 1 );
+		const marginMin = ( marginType === 'em' ? 0 : 0 );
 		const marginMax = ( marginType === 'em' ? 12 : 100 );
 		const marginStep = ( marginType === 'em' ? 0.1 : 1 );
 		const fontMax = ( sizeType === 'em' ? 12 : 200 );
@@ -636,7 +636,7 @@ class KadenceAdvancedHeading extends Component {
 								</ButtonGroup>
 								<RangeControl
 									label={ __( 'Top Margin' ) }
-									value={ ( topMargin ? topMargin : '' ) }
+									value={ ( undefined !== topMargin ? topMargin : '' ) }
 									onChange={ ( value ) => setAttributes( { topMargin: value } ) }
 									min={ marginMin }
 									max={ marginMax }
@@ -658,7 +658,7 @@ class KadenceAdvancedHeading extends Component {
 								</ButtonGroup>
 								<RangeControl
 									label={ __( 'Bottom Margin' ) }
-									value={ ( bottomMargin ? bottomMargin : '' ) }
+									value={ ( undefined !== bottomMargin ? bottomMargin : '' ) }
 									onChange={ ( value ) => setAttributes( { bottomMargin: value } ) }
 									min={ marginMin }
 									max={ marginMax }

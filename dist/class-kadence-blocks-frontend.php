@@ -1797,7 +1797,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_iconlist_array( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['listMargin'] ) && is_array( $attr['listMargin'] ) && ! empty( $attr['listMargin'][0] ) ) {
+		if ( isset( $attr['listMargin'] ) && is_array( $attr['listMargin'] ) && isset( $attr['listMargin'][0] ) ) {
 			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list {';
 				$css .= 'margin:' . $attr['listMargin'][0] . 'px ' . $attr['listMargin'][1] . 'px ' . $attr['listMargin'][2] . 'px ' . $attr['listMargin'][3] . 'px;';
 			$css .= '}';
@@ -1880,7 +1880,7 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Adds Scripts and Google fonts for Tabs block.
 	 *
-	 * @param array  $attr the blocks attr.
+	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_tabs_scripts_gfonts( $attr ) {
 		wp_enqueue_script( 'kadence-blocks-tabs-js' );
@@ -1910,7 +1910,7 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Adds Scripts and Google fonts for Accordion block.
 	 *
-	 * @param array  $attr the blocks attr.
+	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_accordion_scripts_gfonts( $attr ) {
 		wp_enqueue_script( 'kadence-blocks-accordion-js' );
@@ -2239,8 +2239,7 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Adds Google fonts for Advanced Heading block.
 	 *
-	 * @param array  $attr the blocks attr.
-	 * @param string $unique_id the blocks attr ID.
+	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_advanced_heading_gfont( $attr ) {
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
@@ -2472,7 +2471,7 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Builds CSS for Advanced Button block.
 	 *
-	 * @param array  $attr the blocks attr.
+	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_advanced_btn_gfont( $attr ) {
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {

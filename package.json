@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@dr-kobros/react-webfont-loader": "^8.0.0",
-    "@fonticonpicker/react-fonticonpicker": "^1.1.0",
-    "cgb-scripts": "1.9.8",
+    "@fonticonpicker/react-fonticonpicker": "^1.2.0",
+    "cgb-scripts": "1.18.1",
     "classnames": "^2.2.6",
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",

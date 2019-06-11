@@ -410,7 +410,7 @@ class InlineTypographyControl extends Component {
 												<label className="components-base-control__label" htmlFor={ `kt-inline-spacing${ uniqueID }` }>{ __( 'Spacing' ) }</label>
 												<input
 													id={ `kt-inline-spacing${ uniqueID }` }
-													value={ ( letterSpacing ? letterSpacing : '' ) }
+													value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
 													onChange={ onLetterSpacingInput }
 													min={ -5 }
 													max={ 15 }

@@ -372,5 +372,17 @@ const attributes = {
 		type: 'bool',
 		default: false,
 	},
+	topSepWidth: {
+		type: 'number',
+		default: '',
+	},
+	topSepWidthTablet: {
+		type: 'number',
+		default: '',
+	},
+	topSepWidthMobile: {
+		type: 'number',
+		default: '',
+	},
 };
 export default attributes;
