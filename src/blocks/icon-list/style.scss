@@ -15,6 +15,7 @@
 		margin: 0 0 5px 0;
 		.kt-svg-icon-list-single {
 			margin-right: 10px;
+			padding: 4px 0;
 		}
 		.kt-svg-icon-link {
 			display: flex;
@@ -24,6 +25,12 @@
 	.kt-svg-icon-list-item-wrap:last-child {
 		margin-bottom: 0;
 	}
+}
+.kt-list-icon-aligntop .kt-svg-icon-list-item-wrap {
+	align-items: flex-start;
+}
+.kt-list-icon-alignbottom .kt-svg-icon-list-item-wrap {
+	align-items: flex-end;
 }
 .wp-block-kadence-iconlist.aligncenter .kt-svg-icon-list-item-wrap {
 	justify-content: center;

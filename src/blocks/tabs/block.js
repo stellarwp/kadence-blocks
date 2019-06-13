@@ -21,7 +21,7 @@ const {
 const {
 	InnerBlocks,
 	RichText,
-} = wp.editor;
+} = wp.blockEditor;
 /**
  * Import edit
  */

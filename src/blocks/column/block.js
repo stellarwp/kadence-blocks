@@ -20,7 +20,7 @@ const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const {
 	InnerBlocks,
-} = wp.editor;
+} = wp.blockEditor;
 
 /**
  * Register: a Gutenberg Block.

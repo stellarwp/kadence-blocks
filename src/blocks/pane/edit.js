@@ -14,7 +14,7 @@ const {
 	RichText,
 	InnerBlocks,
 	InspectorControls,
-} = wp.editor;
+} = wp.blockEditor;
 const { __ } = wp.i18n;
 const {
 	Component,

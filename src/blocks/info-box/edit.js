@@ -24,7 +24,6 @@ import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
 import IcoNames from '../../svgiconsnames';
 import FaIco from '../../faicons';
-import OpacityControl from '../../opacity-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 /**
  * Internal block libraries
@@ -43,7 +42,7 @@ const {
 	BlockControls,
 	ColorPalette,
 	MediaPlaceholder,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	Button,
 	IconButton,

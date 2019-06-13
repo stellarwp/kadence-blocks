@@ -2,6 +2,11 @@
  * BLOCK: Kadence Icon
  */
 
+ /**
+ * Import Icons
+ */
+import icons from '../../icons';
+
 /**
  * Import Icon stuff
  */
@@ -14,6 +19,8 @@ import TypographyControls from '../../typography-control';
 import FaIco from '../../faicons';
 import IcoNames from '../../svgiconsnames';
 import WebfontLoader from '../../fontloader';
+import map from 'lodash/map';
+import AdvancedColorControl from '../../advanced-color-control';
 
 /**
  * Import Css
@@ -32,8 +39,7 @@ const {
 	RichText,
 	BlockControls,
 	BlockAlignmentToolbar,
-	ColorPalette,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	Component,
 	Fragment,
@@ -41,9 +47,11 @@ const {
 const {
 	PanelBody,
 	RangeControl,
+	ButtonGroup,
+	Tooltip,
+	Button,
 	SelectControl,
 } = wp.components;
-
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -117,7 +125,7 @@ class KadenceIconLists extends Component {
 		} );
 	};
 	render() {
-		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin }, className, setAttributes } = this.props;
+		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign }, className, setAttributes } = this.props;
 		const { marginControl } = this.state;
 		const gconfig = {
 			google: {
@@ -145,7 +153,12 @@ class KadenceIconLists extends Component {
 				items: newUpdate,
 			} );
 		};
-		const createNewListItem = ( beforetext, aftertext, previousIndex ) => {
+		const iconAlignOptions = [
+			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },
+			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
+			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
+		];
+		const createNewListItem = ( value, previousIndex ) => {
 			const amount = Math.abs( 1 + this.props.attributes.listCount );
 			const currentItems = this.props.attributes.items;
 			const newItems = [ {
@@ -170,7 +183,7 @@ class KadenceIconLists extends Component {
 					let ind = n;
 					if ( n === 0 ) {
 						if ( 0 === previousIndex ) {
-							newItems[ 0 ].text = beforetext;
+							newItems[ 0 ].text = value;
 						}
 					} else if ( n === addin ) {
 						newItems.push( {
@@ -178,7 +191,7 @@ class KadenceIconLists extends Component {
 							link: currentItems[ previousIndex ].link,
 							target: currentItems[ previousIndex ].target,
 							size: currentItems[ previousIndex ].size,
-							text: aftertext,
+							text: value,
 							width: currentItems[ previousIndex ].width,
 							color: currentItems[ previousIndex ].color,
 							background: currentItems[ previousIndex ].background,
@@ -194,7 +207,7 @@ class KadenceIconLists extends Component {
 							link: currentItems[ previousIndex ].link,
 							target: currentItems[ previousIndex ].target,
 							size: currentItems[ previousIndex ].size,
-							text: beforetext,
+							text: value,
 							width: currentItems[ previousIndex ].width,
 							color: currentItems[ previousIndex ].color,
 							background: currentItems[ previousIndex ].background,
@@ -288,10 +301,11 @@ class KadenceIconLists extends Component {
 							max={ 4 }
 						/>
 					) }
-					<p className="kt-setting-label">{ __( 'Icon Color' ) }</p>
-					<ColorPalette
-						value={ items[ index ].color }
-						onChange={ value => {
+					<AdvancedColorControl
+						label={ __( 'Icon Color' ) }
+						colorValue={ ( items[ index ].color ? items[ index ].color : '' ) }
+						colorDefault={ '' }
+						onColorChange={ value => {
 							this.saveListItem( { color: value }, index );
 						} }
 					/>
@@ -307,26 +321,24 @@ class KadenceIconLists extends Component {
 						} }
 					/>
 					{ items[ index ].style !== 'default' && (
-						<Fragment>
-							<p className="kt-setting-label">{ __( 'Icon Background' ) }</p>
-							<ColorPalette
-								value={ items[ index ].background }
-								onChange={ value => {
-									this.saveListItem( { background: value }, index );
-								} }
-							/>
-						</Fragment>
+						<AdvancedColorControl
+							label={ __( 'Icon Background' ) }
+							colorValue={ ( items[ index ].background ? items[ index ].background : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => {
+								this.saveListItem( { background: value }, index );
+							} }
+						/>
 					) }
 					{ items[ index ].style !== 'default' && (
-						<Fragment>
-							<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
-							<ColorPalette
-								value={ items[ index ].border }
-								onChange={ value => {
-									this.saveListItem( { border: value }, index );
-								} }
-							/>
-						</Fragment>
+						<AdvancedColorControl
+							label={ __( 'Border Color' ) }
+							colorValue={ ( items[ index ].border ? items[ index ].border : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => {
+								this.saveListItem( { border: value }, index );
+							} }
+						/>
 					) }
 					{ items[ index ].style !== 'default' && (
 						<RangeControl
@@ -387,10 +399,6 @@ class KadenceIconLists extends Component {
 						value={ items[ index ].text }
 						onChange={ value => {
 							this.saveListItem( { text: value }, index );
-						} }
-						isSelected={ ( this.state.focusIndex === index ? true : false ) }
-						unstableOnSplit={ ( before, after ) => {
-							createNewListItem( before, after, index );
 						} }
 						className={ 'kt-svg-icon-list-text' }
 					/>
@@ -474,6 +482,25 @@ class KadenceIconLists extends Component {
 										min={ 0 }
 										max={ 60 }
 									/>
+									<div className="kt-btn-size-settings-container">
+										<h2 className="kt-beside-btn-group">{ __( 'Icon Align' ) }</h2>
+										<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Icon Align' ) }>
+											{ map( iconAlignOptions, ( { name, icon, key } ) => (
+												<Tooltip text={ name }>
+													<Button
+														key={ key }
+														className="kt-btn-size-btn"
+														isSmall
+														isPrimary={ iconAlign === key }
+														aria-pressed={ iconAlign === key }
+														onClick={ () => setAttributes( { iconAlign: key } ) }
+													>
+														{ icon }
+													</Button>
+												</Tooltip>
+											) ) }
+										</ButtonGroup>
+									</div>
 									<MeasurementControls
 										label={ __( 'List Margin' ) }
 										measurement={ undefined !== listMargin ? listMargin : [ 0, 0, 10, 0 ] }
@@ -492,10 +519,13 @@ class KadenceIconLists extends Component {
 								title={ __( 'List Text Styling' ) }
 								initialOpen={ false }
 							>
-								<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
-								<ColorPalette
-									value={ listStyles[ 0 ].color }
-									onChange={ value => saveListStyles( { color: value } ) }
+								<AdvancedColorControl
+									label={ __( 'Color Settings' ) }
+									colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => {
+										saveListStyles( { border: value } );
+									} }
 								/>
 								<TypographyControls
 									fontSize={ listStyles[ 0 ].size }
@@ -544,7 +574,9 @@ class KadenceIconLists extends Component {
 									icons={ IcoNames }
 									value={ items[ 0 ].icon }
 									onChange={ value => {
-										saveAllListItem( { icon: value } );
+										if ( value !== items[ 0 ].icon ) {
+											saveAllListItem( { icon: value } );
+										}
 									} }
 									appendTo="body"
 									renderFunc={ renderSVG }
@@ -572,10 +604,11 @@ class KadenceIconLists extends Component {
 										max={ 4 }
 									/>
 								) }
-								<p className="kt-setting-label">{ __( 'Icon Color' ) }</p>
-								<ColorPalette
-									value={ items[ 0 ].color }
-									onChange={ value => {
+								<AdvancedColorControl
+									label={ __( 'Icon Color' ) }
+									colorValue={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => {
 										saveAllListItem( { color: value } );
 									} }
 								/>
@@ -591,26 +624,24 @@ class KadenceIconLists extends Component {
 									} }
 								/>
 								{ items[ 0 ].style !== 'default' && (
-									<Fragment>
-										<p className="kt-setting-label">{ __( 'Icon Background' ) }</p>
-										<ColorPalette
-											value={ items[ 0 ].background }
-											onChange={ value => {
-												saveAllListItem( { background: value } );
-											} }
-										/>
-									</Fragment>
+									<AdvancedColorControl
+										label={ __( 'Icon Background' ) }
+										colorValue={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
+										colorDefault={ '' }
+										onColorChange={ value => {
+											saveAllListItem( { background: value } );
+										} }
+									/>
 								) }
 								{ items[ 0 ].style !== 'default' && (
-									<Fragment>
-										<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
-										<ColorPalette
-											value={ items[ 0 ].border }
-											onChange={ value => {
-												saveAllListItem( { border: value } );
-											} }
-										/>
-									</Fragment>
+									<AdvancedColorControl
+										label={ __( 'Border Color' ) }
+										colorValue={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
+										colorDefault={ '' }
+										onColorChange={ value => {
+											saveAllListItem( { border: value } );
+										} }
+									/>
 								) }
 								{ items[ 0 ].style !== 'default' && (
 									<RangeControl
@@ -677,7 +708,7 @@ class KadenceIconLists extends Component {
 					<WebfontLoader config={ config }>
 					</WebfontLoader>
 				) }
-				<div className={ `kt-svg-icon-list-container kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns }` } style={ {
+				<div className={ `kt-svg-icon-list-container kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns }${ ( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' ) }` } style={ {
 					margin: ( listMargin && undefined !== listMargin[ 0 ] && null !== listMargin[ 0 ] ? listMargin[ 0 ] + 'px ' + listMargin[ 1 ] + 'px ' + listMargin[ 2 ] + 'px ' + listMargin[ 3 ] + 'px' : '' ),
 				} } >
 					{ times( listCount, n => renderIconsPreview( n ) ) }

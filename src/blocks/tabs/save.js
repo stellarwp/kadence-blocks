@@ -13,7 +13,7 @@ const {
 const {
 	InnerBlocks,
 	RichText,
-} = wp.editor;
+} = wp.blockEditor;
 /**
  * Internal block libraries
  */

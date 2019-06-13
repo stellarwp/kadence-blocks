@@ -29,8 +29,8 @@ const {
 } = wp.blocks;
 const {
 	RichText,
-} = wp.editor;
-const{
+} = wp.blockEditor;
+const {
 	replace,
 	join,
 	split,
@@ -129,6 +129,10 @@ registerBlockType( 'kadence/iconlist', {
 			type: 'array',
 			default: [ 0, 0, 10, 0 ],
 		},
+		iconAlign: {
+			type: 'string',
+			default: 'middle',
+		},
 	},
 	transforms: {
 		from: [
@@ -192,7 +196,7 @@ registerBlockType( 'kadence/iconlist', {
 	edit,
 
 	save: props => {
-		const { attributes: { items, listCount, columns, blockAlignment, uniqueID } } = props;
+		const { attributes: { items, listCount, columns, blockAlignment, iconAlign, uniqueID } } = props;
 		const renderItems = ( index ) => {
 			return (
 				<li className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` }>
@@ -238,7 +242,7 @@ registerBlockType( 'kadence/iconlist', {
 			);
 		};
 		return (
-			<div className={ `kt-svg-icon-list-items kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns } align${ ( blockAlignment ? blockAlignment : 'none' ) }` }>
+			<div className={ `kt-svg-icon-list-items kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns } align${ ( blockAlignment ? blockAlignment : 'none' ) }${ ( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' ) }` }>
 				<ul className="kt-svg-icon-list">
 					{ times( listCount, n => renderItems( n ) ) }
 				</ul>

@@ -1,10 +1,7 @@
-const { Fragment } = wp.element;
-const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 const { __ } = wp.i18n;
 import map from 'lodash/map';
 const { withSelect, withDispatch } = wp.data;
 const { compose } = wp.compose;
-const { registerPlugin } = wp.plugins;
 const {
 	Button,
 	ButtonGroup,

@@ -36,7 +36,7 @@ const {
 	ColorPalette,
 	BlockControls,
 	BlockAlignmentToolbar,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	Button,
 	ButtonGroup,

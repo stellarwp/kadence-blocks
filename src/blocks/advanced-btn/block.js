@@ -24,7 +24,7 @@ const { __ } = wp.i18n;
 const { registerBlockType } = wp.blocks;
 const {
 	RichText,
-} = wp.editor;
+} = wp.blockEditor;
 /**
  * Register: a Gutenberg Block.
  *

@@ -7,7 +7,7 @@
 const {
 	RichText,
 	InnerBlocks,
-} = wp.editor;
+} = wp.blockEditor;
 
 /**
  * Import Icons

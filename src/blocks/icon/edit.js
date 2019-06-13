@@ -36,7 +36,7 @@ const {
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
 	ColorPalette,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	Component,
 	Fragment,

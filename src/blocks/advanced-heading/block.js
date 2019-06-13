@@ -29,8 +29,7 @@ const {
 } = wp.element;
 const {
 	RichText,
-} = wp.editor;
-
+} = wp.blockEditor;
 /**
  * Register: a Gutenberg Block.
  *
@@ -58,8 +57,8 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	attributes: {
 		content: {
-			type: 'array',
-			source: 'children',
+			type: 'string',
+			source: 'html',
 			selector: 'h1,h2,h3,h4,h5,h6',
 		},
 		level: {

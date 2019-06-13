@@ -25,7 +25,7 @@ const {
 	AlignmentToolbar,
 	ColorPalette,
 	BlockAlignmentToolbar,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	PanelBody,
 	ToggleControl,

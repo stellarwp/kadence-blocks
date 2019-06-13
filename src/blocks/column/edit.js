@@ -25,7 +25,7 @@ const {
 	InspectorControls,
 	AlignmentToolbar,
 	ColorPalette,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	TabPanel,
 	Dashicon,

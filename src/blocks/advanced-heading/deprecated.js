@@ -8,7 +8,7 @@ const {
 } = wp.element;
 const {
 	RichText,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	getBlockDefaultClassName,
 } = wp.blocks;

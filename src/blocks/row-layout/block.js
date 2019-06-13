@@ -25,7 +25,7 @@ const {
 } = wp.element;
 const {
 	InnerBlocks,
-} = wp.editor;
+} = wp.blockEditor;
 
 /**
  * Import Css

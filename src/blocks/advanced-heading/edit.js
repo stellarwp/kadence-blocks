@@ -30,7 +30,7 @@ const {
 	AlignmentToolbar,
 	InspectorAdvancedControls,
 	RichText,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	Component,
 	Fragment,
@@ -108,7 +108,8 @@ class KadenceAdvancedHeading extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions }, className, setAttributes, mergeBlocks, insertBlocksAfter, onReplace } = this.props;
+		const { attributes, className, setAttributes, mergeBlocks, onReplace } = this.props;
+		const { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions } = attributes;
 		const markBGString = ( markBG ? hexToRGBA( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? hexToRGBA( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -352,17 +353,16 @@ class KadenceAdvancedHeading extends Component {
 				value={ content }
 				onChange={ ( value ) => setAttributes( { content: value } ) }
 				onMerge={ mergeBlocks }
-				unstableOnSplit={
-					insertBlocksAfter ?
-						( before, after, ...blocks ) => {
-							setAttributes( { content: before } );
-							insertBlocksAfter( [
-								...blocks,
-								createBlock( 'core/paragraph', { content: after } ),
-							] );
-						} :
-						undefined
-				}
+				onSplit={ ( value ) => {
+					if ( ! value ) {
+						return createBlock( 'core/paragraph' );
+					}
+					return createBlock( 'kadence/advancedheading', {
+						...attributes,
+						content: value,
+					} );
+				} }
+				onReplace={ onReplace }
 				onRemove={ () => onReplace( [] ) }
 				style={ {
 					textAlign: align,
@@ -374,8 +374,8 @@ class KadenceAdvancedHeading extends Component {
 					letterSpacing: letterSpacing + 'px',
 					textTransform: ( textTransform ? textTransform : undefined ),
 					fontFamily: ( typography ? typography : '' ),
-					marginTop: ( topMargin ? topMargin + marginType : '' ),
-					marginBottom: ( bottomMargin ? bottomMargin + marginType : '' ),
+					marginTop: ( undefined !== topMargin ? topMargin + marginType : '' ),
+					marginBottom: ( undefined !== bottomMargin ? bottomMargin + marginType : '' ),
 				} }
 				className={ `kt-adv-heading${ uniqueID }` }
 				placeholder={ __( 'Write heading…' ) }

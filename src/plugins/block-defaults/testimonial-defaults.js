@@ -18,7 +18,7 @@ const {
 } = wp.element;
 const {
 	ColorPalette,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	Button,
 	PanelBody,

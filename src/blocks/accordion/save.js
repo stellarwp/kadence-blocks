@@ -7,7 +7,7 @@ const {
 } = wp.element;
 const {
 	InnerBlocks,
-} = wp.editor;
+} = wp.blockEditor;
 
 class KadenceTabsSave extends Component {
 	stripStringRender( string ) {

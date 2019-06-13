@@ -31,7 +31,7 @@ const {
 	BlockControls,
 	AlignmentToolbar,
 	InspectorAdvancedControls,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	Component,
 	Fragment,

@@ -32,7 +32,6 @@ const {
 const {
 	Button,
 	ButtonGroup,
-	IconButton,
 	TabPanel,
 	Dashicon,
 	PanelBody,

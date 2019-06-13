@@ -5,6 +5,8 @@ import IcoNames from '../../svgiconsnames';
 import FaIco from '../../faicons';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import MeasurementControls from '../../measurement-control';
+import AdvancedColorControl from '../../advanced-color-control-default';
+import map from 'lodash/map';
 /**
  * Internal block libraries
  */
@@ -14,14 +16,13 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	ColorPalette,
-} = wp.editor;
-const {
 	Button,
 	PanelBody,
 	RangeControl,
 	SelectControl,
 	Modal,
+	ButtonGroup,
+	Tooltip,
 } = wp.components;
 
 import icons from '../../icons';
@@ -87,6 +88,11 @@ class KadenceIconListDefault extends Component {
 			borderWidth: 1,
 			style: 'default',
 		} ];
+		const iconAlignOptions = [
+			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },
+			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
+			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
+		];
 		const items = ( undefined !== iconListConfig.items && iconListConfig.items[ 0 ] ? iconListConfig.items : itemDefaults );
 		const saveListItem = ( value ) => {
 			const newUpdate = items.map( ( item, index ) => {
@@ -164,6 +170,25 @@ class KadenceIconListDefault extends Component {
 								min={ 0 }
 								max={ 60 }
 							/>
+							<div className="kt-btn-size-settings-container">
+								<h2 className="kt-beside-btn-group">{ __( 'Icon Align' ) }</h2>
+								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Icon Align' ) }>
+									{ map( iconAlignOptions, ( { name, icon, key } ) => (
+										<Tooltip text={ name }>
+											<Button
+												key={ key }
+												className="kt-btn-size-btn"
+												isSmall
+												isPrimary={ ( undefined !== iconListConfig.iconAlign ? iconListConfig.iconAlign : 'middle' ) === key }
+												aria-pressed={ ( undefined !== iconListConfig.iconAlign ? iconListConfig.iconAlign : 'middle' ) === key }
+												onClick={ () => this.saveConfigState( 'iconAlign', key ) }
+											>
+												{ icon }
+											</Button>
+										</Tooltip>
+									) ) }
+								</ButtonGroup>
+							</div>
 							<MeasurementControls
 								label={ __( 'List Margin' ) }
 								measurement={ ( undefined !== iconListConfig.listMargin ? iconListConfig.listMargin : [ 0, 0, 10, 0 ] ) }
@@ -179,10 +204,11 @@ class KadenceIconListDefault extends Component {
 							title={ __( 'List Text Styling' ) }
 							initialOpen={ false }
 						>
-							<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
-							<ColorPalette
-								value={ listStyles[ 0 ].color }
-								onChange={ value => saveListStyles( { color: value } ) }
+							<AdvancedColorControl
+								label={ __( 'Color Settings' ) }
+								colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => saveListStyles( { color: value } ) }
 							/>
 							<TypographyControls
 								fontSize={ listStyles[ 0 ].size }
@@ -257,10 +283,11 @@ class KadenceIconListDefault extends Component {
 									max={ 4 }
 								/>
 							) }
-							<p className="kt-setting-label">{ __( 'Icon Color' ) }</p>
-							<ColorPalette
-								value={ items[ 0 ].color }
-								onChange={ value => {
+							<AdvancedColorControl
+								label={ __( 'Icon Color' ) }
+								colorValue={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
 									saveListItem( { color: value } );
 								} }
 							/>
@@ -276,26 +303,24 @@ class KadenceIconListDefault extends Component {
 								} }
 							/>
 							{ items[ 0 ].style !== 'default' && (
-								<Fragment>
-									<p className="kt-setting-label">{ __( 'Icon Background' ) }</p>
-									<ColorPalette
-										value={ items[ 0 ].background }
-										onChange={ value => {
-											saveListItem( { background: value } );
-										} }
-									/>
-								</Fragment>
+								<AdvancedColorControl
+									label={ __( 'Icon Background' ) }
+									colorValue={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => {
+										saveListItem( { background: value } );
+									} }
+								/>
 							) }
 							{ items[ 0 ].style !== 'default' && (
-								<Fragment>
-									<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
-									<ColorPalette
-										value={ items[ 0 ].border }
-										onChange={ value => {
-											saveListItem( { border: value } );
-										} }
-									/>
-								</Fragment>
+								<AdvancedColorControl
+									label={ __( 'Border Color' ) }
+									colorValue={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => {
+										saveListItem( { border: value } );
+									} }
+								/>
 							) }
 							{ items[ 0 ].style !== 'default' && (
 								<RangeControl

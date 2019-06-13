@@ -12,7 +12,7 @@ const {
 const {
 	ColorPalette,
 	AlignmentToolbar,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	PanelBody,
 	Toolbar,

@@ -42,7 +42,7 @@ const {
 	InspectorControls,
 	BlockControls,
 	ColorPalette,
-} = wp.editor;
+} = wp.blockEditor;
 const {
 	Button,
 	IconButton,
