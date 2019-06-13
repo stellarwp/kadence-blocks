@@ -21,7 +21,7 @@
 			<xpath>//div/a/@href</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/tabs" translate="1">
-			<xpath>//a[@class="kt-tab-title"]</xpath>
+			<xpath>//span[@class="kt-title-text"]</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/infobox" translate="1">
 			<xpath>//div/h1</xpath>
