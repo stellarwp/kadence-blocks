@@ -49,8 +49,8 @@ class AdvancedColorControlPalette extends Component {
 		};
 		const toggleClose = () => {
 			if ( this.state.isVisible === true ) {
-				this.props.onSave( this.state.color, this.state.name );
 				this.setState( { isVisible: false } );
+				this.props.onSave( this.state.color, this.state.name );
 			}
 		};
 		const changeColor = ( value ) => {

@@ -10,6 +10,7 @@
 import icons from '../../icons';
 import hexToRGBA from '../../hex-to-rgba';
 import MeasurementControls from '../../measurement-control';
+import AdvancedColorControl from '../../advanced-color-control';
 /**
  * Internal block libraries
  */
@@ -24,7 +25,6 @@ const {
 	MediaUpload,
 	InspectorControls,
 	AlignmentToolbar,
-	ColorPalette,
 } = wp.blockEditor;
 const {
 	TabPanel,
@@ -417,22 +417,13 @@ class KadenceColumn extends Component {
 		return (
 			<div className={ `kadence-column inner-column-${ id } kadence-column-${ uniqueID }` } >
 				<InspectorControls>
-					<h2>{ __( 'Background Color' ) }</h2>
-					<ColorPalette
-						value={ background }
-						onChange={ ( value ) => setAttributes( { background: value } ) }
-					/>
-					<RangeControl
-						label={ __( 'Background Opacity' ) }
-						value={ backgroundOpacity }
-						onChange={ ( value ) => {
-							setAttributes( {
-								backgroundOpacity: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 1 }
-						step={ 0.01 }
+					<AdvancedColorControl
+						label={ __( 'Background Color' ) }
+						colorValue={ ( background ? background : '' ) }
+						colorDefault={ '' }
+						opacityValue={ backgroundOpacity }
+						onColorChange={ value => setAttributes( { background: value } ) }
+						onOpacityChange={ value => setAttributes( { backgroundOpacity: value } ) }
 					/>
 					<MediaUpload
 						onSelect={ img => {
@@ -508,22 +499,13 @@ class KadenceColumn extends Component {
 							/>
 						</Fragment>
 					) }
-					<h2>{ __( 'Border Color' ) }</h2>
-					<ColorPalette
-						value={ border }
-						onChange={ ( value ) => setAttributes( { border: value } ) }
-					/>
-					<RangeControl
-						label={ __( 'Border Opacity' ) }
-						value={ borderOpacity }
-						onChange={ ( value ) => {
-							setAttributes( {
-								borderOpacity: value,
-							} );
-						} }
-						min={ 0 }
-						max={ 1 }
-						step={ 0.01 }
+					<AdvancedColorControl
+						label={ __( 'Border Color' ) }
+						colorValue={ ( border ? border : '' ) }
+						colorDefault={ '' }
+						opacityValue={ borderOpacity }
+						onColorChange={ value => setAttributes( { border: value } ) }
+						onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
 					/>
 					<MeasurementControls
 						label={ __( 'Border Width' ) }

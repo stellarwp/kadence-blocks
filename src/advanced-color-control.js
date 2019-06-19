@@ -51,6 +51,12 @@ class AdvancedColorControl extends Component {
 	}
 	render() {
 		const toggleVisible = () => {
+			if ( 'transparent' === this.props.colorDefault ) {
+				this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? '' : this.props.colorValue ) } );
+			} else {
+				this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) } );
+			}
+			this.setState( { classSat: 'first' } );
 			this.setState( { isVisible: true } );
 		};
 		const toggleClose = () => {
@@ -84,6 +90,16 @@ class AdvancedColorControl extends Component {
 							<Popover position="top left" className="kt-popover-color" onClose={ toggleClose }>
 								{ this.state.classSat === 'first' && (
 									<ColorPicker
+										color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) }
+										onChangeComplete={ ( color ) => {
+											this.setState( { currentColor: color.hex } );
+											this.props.onColorChange( color.hex );
+										} }
+										disableAlpha
+									/>
+								) }
+								{ this.state.classSat === 'second' && (
+									<ColorPicker
 										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.props.colorDefault : this.state.currentColor ) }
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
@@ -92,7 +108,7 @@ class AdvancedColorControl extends Component {
 										disableAlpha
 									/>
 								) }
-								{ this.state.classSat !== 'first' && (
+								{ this.state.classSat !== 'second' && this.state.classSat !== 'first' && (
 									<ColorPicker
 										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.props.colorDefault : this.state.currentColor ) }
 										onChangeComplete={ ( color ) => {
@@ -120,10 +136,10 @@ class AdvancedColorControl extends Component {
 															onClick={ () => {
 																this.setState( { currentColor: color } );
 																this.props.onColorChange( color );
-																if ( 'first' === this.state.classSat ) {
+																if ( 'third' === this.state.classSat ) {
 																	this.setState( { classSat: 'second' } );
 																} else {
-																	this.setState( { classSat: 'first' } );
+																	this.setState( { classSat: 'third' } );
 																}
 															} }
 															aria-label={ name ?

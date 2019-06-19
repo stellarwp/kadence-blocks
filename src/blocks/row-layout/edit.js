@@ -20,6 +20,7 @@ import ContainerDimensions from 'react-container-dimensions';
 import PrebuiltModal from './prebuilt_modal';
 import MeasurementControls from '../../measurement-control';
 import ThreeColumnDrag from './threecolumndrag';
+import AdvancedColorControl from '../../advanced-color-control';
 /**
  * Import Css
  */
@@ -644,10 +645,11 @@ class KadenceRowLayout extends Component {
 						/>
 						{ mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].enable && (
 							<Fragment>
-								<p>{ __( 'Background Color' ) }</p>
-								<ColorPalette
-									value={ mobileBackground[ 0 ].bgColor }
-									onChange={ value => saveMobileBackground( { bgColor: value } ) }
+								<AdvancedColorControl
+									label={ __( 'Background Color' ) }
+									colorValue={ ( mobileBackground[ 0 ].bgColor ? mobileBackground[ 0 ].bgColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => saveMobileBackground( { bgColor: value } ) }
 								/>
 								<MediaUpload
 									onSelect={ img => {
@@ -876,10 +878,11 @@ class KadenceRowLayout extends Component {
 						/>
 						{ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].enable && (
 							<Fragment>
-								<p>{ __( 'Background Color' ) }</p>
-								<ColorPalette
-									value={ tabletBackground[ 0 ].bgColor }
-									onChange={ value => saveTabletBackground( { bgColor: value } ) }
+								<AdvancedColorControl
+									label={ __( 'Background Color' ) }
+									colorValue={ ( tabletBackground[ 0 ].bgColor ? tabletBackground[ 0 ].bgColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => saveTabletBackground( { bgColor: value } ) }
 								/>
 								<MediaUpload
 									onSelect={ value => saveTabletBackground( { bgImgID: value.id, bgImg: value.url } ) }
@@ -1180,10 +1183,11 @@ class KadenceRowLayout extends Component {
 						title={ __( 'Background Settings' ) }
 						initialOpen={ false }
 					>
-						<p>{ __( 'Background Color' ) }</p>
-						<ColorPalette
-							value={ bgColor }
-							onChange={ value => setAttributes( { bgColor: value } ) }
+						<AdvancedColorControl
+							label={ __( 'Background Color' ) }
+							colorValue={ ( bgColor ? bgColor : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => setAttributes( { bgColor: value } ) }
 						/>
 						<MediaUpload
 							onSelect={ onSelectImage }
@@ -1319,10 +1323,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Overlay Color' ) }</p>
-				<ColorPalette
-					value={ overlay }
-					onChange={ value => setAttributes( { overlay: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Overlay Color' ) }
+					colorValue={ ( overlay ? overlay : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => setAttributes( {overlay: value } ) }
 				/>
 				<MediaUpload
 					onSelect={ onSelectOverlayImage }
@@ -1339,62 +1344,64 @@ class KadenceRowLayout extends Component {
 					) }
 				/>
 				{ overlayBgImg && (
-					<Tooltip text={ __( 'Remove Image' ) }>
-						<Button
-							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-							onClick={ onRemoveOverlayImage }
-						>
-							<Dashicon icon="no-alt" />
-						</Button>
-					</Tooltip>
+					<Fragment>
+						<Tooltip text={ __( 'Remove Image' ) }>
+							<Button
+								className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+								onClick={ onRemoveOverlayImage }
+							>
+								<Dashicon icon="no-alt" />
+							</Button>
+						</Tooltip>
+						<SelectControl
+							label={ __( 'Background Image Size' ) }
+							value={ overlayBgImgSize }
+							options={ [
+								{ value: 'cover', label: __( 'Cover' ) },
+								{ value: 'contain', label: __( 'Contain' ) },
+								{ value: 'auto', label: __( 'Auto' ) },
+							] }
+							onChange={ value => setAttributes( { overlayBgImgSize: value } ) }
+						/>
+						<SelectControl
+							label={ __( 'Background Image Position' ) }
+							value={ overlayBgImgPosition }
+							options={ [
+								{ value: 'center top', label: __( 'Center Top' ) },
+								{ value: 'center center', label: __( 'Center Center' ) },
+								{ value: 'center bottom', label: __( 'Center Bottom' ) },
+								{ value: 'left top', label: __( 'Left Top' ) },
+								{ value: 'left center', label: __( 'Left Center' ) },
+								{ value: 'left bottom', label: __( 'Left Bottom' ) },
+								{ value: 'right top', label: __( 'Right Top' ) },
+								{ value: 'right center', label: __( 'Right Center' ) },
+								{ value: 'right bottom', label: __( 'Right Bottom' ) },
+							] }
+							onChange={ value => setAttributes( { overlayBgImgPosition: value } ) }
+						/>
+						<SelectControl
+							label={ __( 'Background Image Repeat' ) }
+							value={ overlayBgImgRepeat }
+							options={ [
+								{ value: 'no-repeat', label: __( 'No Repeat' ) },
+								{ value: 'repeat', label: __( 'Repeat' ) },
+								{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+								{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+							] }
+							onChange={ value => setAttributes( { overlayBgImgRepeat: value } ) }
+						/>
+						<SelectControl
+							label={ __( 'Background Image Attachment' ) }
+							value={ overlayBgImgAttachment }
+							options={ [
+								{ value: 'scroll', label: __( 'Scroll' ) },
+								{ value: 'fixed', label: __( 'Fixed' ) },
+								{ value: 'parallax', label: __( 'Parallax' ) },
+							] }
+							onChange={ value => setAttributes( { overlayBgImgAttachment: value } ) }
+						/>
+					</Fragment>
 				) }
-				<SelectControl
-					label={ __( 'Background Image Size' ) }
-					value={ overlayBgImgSize }
-					options={ [
-						{ value: 'cover', label: __( 'Cover' ) },
-						{ value: 'contain', label: __( 'Contain' ) },
-						{ value: 'auto', label: __( 'Auto' ) },
-					] }
-					onChange={ value => setAttributes( { overlayBgImgSize: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Position' ) }
-					value={ overlayBgImgPosition }
-					options={ [
-						{ value: 'center top', label: __( 'Center Top' ) },
-						{ value: 'center center', label: __( 'Center Center' ) },
-						{ value: 'center bottom', label: __( 'Center Bottom' ) },
-						{ value: 'left top', label: __( 'Left Top' ) },
-						{ value: 'left center', label: __( 'Left Center' ) },
-						{ value: 'left bottom', label: __( 'Left Bottom' ) },
-						{ value: 'right top', label: __( 'Right Top' ) },
-						{ value: 'right center', label: __( 'Right Center' ) },
-						{ value: 'right bottom', label: __( 'Right Bottom' ) },
-					] }
-					onChange={ value => setAttributes( { overlayBgImgPosition: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Repeat' ) }
-					value={ overlayBgImgRepeat }
-					options={ [
-						{ value: 'no-repeat', label: __( 'No Repeat' ) },
-						{ value: 'repeat', label: __( 'Repeat' ) },
-						{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-						{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-					] }
-					onChange={ value => setAttributes( { overlayBgImgRepeat: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Attachment' ) }
-					value={ overlayBgImgAttachment }
-					options={ [
-						{ value: 'scroll', label: __( 'Scroll' ) },
-						{ value: 'fixed', label: __( 'Fixed' ) },
-						{ value: 'parallax', label: __( 'Parallax' ) },
-					] }
-					onChange={ value => setAttributes( { overlayBgImgAttachment: value } ) }
-				/>
 				<SelectControl
 					label={ __( 'Blend Mode' ) }
 					value={ overlayBlendMode }
@@ -1433,10 +1440,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Color' ) }</p>
-				<ColorPalette
-					value={ overlay }
-					onChange={ value => setAttributes( { overlay: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Color' ) }
+					colorValue={ ( overlay ? overlay : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => setAttributes( { overlay: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
@@ -1449,10 +1457,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Second Color' ) }</p>
-				<ColorPalette
-					value={ overlaySecond }
-					onChange={ value => setAttributes( { overlaySecond: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Second Color' ) }
+					colorValue={ ( overlaySecond ? overlaySecond : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => setAttributes( { overlaySecond: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
@@ -1543,10 +1552,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Overlay Color' ) }</p>
-				<ColorPalette
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
-					onChange={ value => saveTabletOverlay( { overlay: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Overlay Color' ) }
+					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => saveTabletOverlay( { overlay: value } ) }
 				/>
 				<MediaUpload
 					onSelect={ value => saveTabletOverlay( { overlayBgImg: value.url, overlayBgImgID: value.id } ) }
@@ -1657,10 +1667,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Color' ) }</p>
-				<ColorPalette
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
-					onChange={ value => saveTabletOverlay( { overlay: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Color' ) }
+					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => saveTabletOverlay( { overlay: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
@@ -1673,10 +1684,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Second Color' ) }</p>
-				<ColorPalette
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlaySecond : '' ) }
-					onChange={ value => saveTabletOverlay( { overlaySecond: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Second Color' ) }
+					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlaySecond : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => saveTabletOverlay( { overlaySecond: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
@@ -1767,10 +1779,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Overlay Color' ) }</p>
-				<ColorPalette
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
-					onChange={ value => saveMobileOverlay( { overlay: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Overlay Color' ) }
+					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => saveMobileOverlay( { overlay: value } ) }
 				/>
 				<MediaUpload
 					onSelect={ value => saveMobileOverlay( { overlayBgImg: value.url, overlayBgImgID: value.id } ) }
@@ -1881,10 +1894,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Color' ) }</p>
-				<ColorPalette
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
-					onChange={ value => saveMobileOverlay( { overlay: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Color' ) }
+					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => saveMobileOverlay( { overlay: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
@@ -1897,10 +1911,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<p>{ __( 'Second Color' ) }</p>
-				<ColorPalette
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlaySecond : '' ) }
-					onChange={ value => saveMobileOverlay( { overlaySecond: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Second Color' ) }
+					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlaySecond : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => saveMobileOverlay( { overlaySecond: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
@@ -1983,20 +1998,23 @@ class KadenceRowLayout extends Component {
 				title={ __( 'Text Color Settings' ) }
 				initialOpen={ false }
 			>
-				<p>{ __( 'Text Color' ) }</p>
-				<ColorPalette
-					value={ textColor }
-					onChange={ value => setAttributes( { textColor: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Text Color' ) }
+					colorValue={ ( textColor ? textColor : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => setAttributes( { textColor: value } ) }
 				/>
-				<p>{ __( 'Link Color' ) }</p>
-				<ColorPalette
-					value={ linkColor }
-					onChange={ value => setAttributes( { linkColor: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Link Color' ) }
+					colorValue={ ( linkColor ? linkColor : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => setAttributes( { linkColor: value } ) }
 				/>
-				<p>{ __( 'Link Hover Color' ) }</p>
-				<ColorPalette
-					value={ linkHoverColor }
-					onChange={ value => setAttributes( { linkHoverColor: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Link Hover Color' ) }
+					colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
 				/>
 			</PanelBody>
 		);
@@ -2228,10 +2246,11 @@ class KadenceRowLayout extends Component {
 					noSelectedPlaceholder={ __( 'Select Divider' ) }
 					isMulti={ false }
 				/>
-				<p>{ __( 'Divider Color' ) }</p>
-				<ColorPalette
-					value={ topSepColor }
-					onChange={ value => setAttributes( { topSepColor: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Divider Color' ) }
+					colorValue={ ( topSepColor ? topSepColor : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => setAttributes( { topSepColor: value } ) }
 				/>
 				<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
 				<TabPanel className="kt-size-tabs"
@@ -2304,10 +2323,11 @@ class KadenceRowLayout extends Component {
 					noSelectedPlaceholder={ __( 'Select Divider' ) }
 					isMulti={ false }
 				/>
-				<p>{ __( 'Divider Color' ) }</p>
-				<ColorPalette
-					value={ bottomSepColor }
-					onChange={ value => setAttributes( { bottomSepColor: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Divider Color' ) }
+					colorValue={ ( bottomSepColor ? bottomSepColor : '' ) }
+					colorDefault={ '' }
+					onColorChange={ value => setAttributes( { bottomSepColor: value } ) }
 				/>
 				<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
 				<TabPanel className="kt-size-tabs"

@@ -13,7 +13,10 @@ const {
 	Button,
 	Tooltip,
 } = wp.components;
-
+const { withSelect, withDispatch } = wp.data;
+const {
+	compose,
+} = wp.compose;
 const kbColorUniqueIDs = [];
 /**
  * Internal block libraries
@@ -23,17 +26,20 @@ class KadenceColorDefault extends Component {
 	constructor() {
 		super( ...arguments );
 		this.saveConfig = this.saveConfig.bind( this );
+		this.saveKadenceColors = this.saveKadenceColors.bind( this );
+		this.saveColors = this.saveColors.bind( this );
 		this.state = {
 			isSaving: false,
 			kadenceColors: ( kadence_blocks_params.colors ? JSON.parse( kadence_blocks_params.colors ) : { palette: [], override: false } ),
-			colors: [],
+			colors: '',
 			themeColors: [],
 			showMessage: false,
 		};
 	}
 	componentDidMount() {
-		const settings = wp.data.select( 'core/block-editor' ).getSettings();
-		this.setState( { colors: get( settings, [ 'colors' ], [] ) } );
+		if ( ! this.state.colors ) {
+			this.setState( { colors: this.props.baseColors } );
+		}
 		if ( undefined !== this.state.kadenceColors.palette && undefined !== this.state.kadenceColors.palette[ 0 ] ) {
 			map( this.state.kadenceColors.palette, ( { slug } ) => {
 				const theID = slug.substring( 11 );
@@ -50,27 +56,54 @@ class KadenceColorDefault extends Component {
 			const config = this.state.kadenceColors;
 			const settingModel = new wp.api.models.Settings( { kadence_blocks_colors: JSON.stringify( config ) } );
 			settingModel.save().then( response => {
-				this.setState( { isSaving: false, kadenceColors: config, isOpen: false } );
+				this.setState( { isSaving: false, kadenceColors: config } );
 				kadence_blocks_params.colors = JSON.stringify( config );
-				wp.data.dispatch( 'core/block-editor' ).updateEditorSettings( { colors: this.state.colors } );
+				this.props.updateEditorSettings( { colors: this.state.colors } );
 			} );
 		}
 	}
+	saveKadenceColors( value, index ) {
+		const { kadenceColors } = this.state;
+		const newItems = kadenceColors.palette.map( ( item, thisIndex ) => {
+			if ( parseInt( index ) === parseInt( thisIndex ) ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		const newPal = kadenceColors;
+		newPal.palette = newItems;
+		this.setState( {
+			kadenceColors: newPal,
+		} );
+	}
+	saveColors( value, index ) {
+		const { colors } = this.state;
+		const newItems = colors.map( ( item, thisIndex ) => {
+			if ( parseInt( index ) === parseInt( thisIndex ) ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		this.setState( { colors: newItems } );
+	}
 	render() {
-		const { kadenceColors, colors, themeColors } = this.state;
+		const { kadenceColors, colors } = this.state;
 		const colorRemove = ( undefined !== kadenceColors.override && true === kadenceColors.override ? 1 : 0 );
 		return (
 			<div className="kt-block-default-palette">
 				{ colors && (
 					<div className="components-color-palette">
-						{ map( colors, ( { color, name, slug }, index ) => {
+						{ Object.keys( colors ).map( ( index ) => {
 							let editable = false;
 							let theIndex;
+							const color = colors[ index ].color;
+							const name = colors[ index ].name;
+							const slug = colors[ index ].slug;
 							if ( undefined !== slug && slug.substr( 0, 10 ) === 'kb-palette' ) {
 								theIndex = findIndex( kadenceColors.palette, ( c ) => c.slug === slug );
 								editable = true;
-							} else if ( undefined === themeColors[ index ] ) {
-								themeColors.push( colors[ index ] );
 							}
 							const style = { color };
 							return (
@@ -80,20 +113,8 @@ class KadenceColorDefault extends Component {
 											nameValue={ ( kadenceColors.palette[ theIndex ].name ? kadenceColors.palette[ theIndex ].name : __( 'Color' ) + ' ' + theIndex + 1  ) }
 											colorValue={ ( kadenceColors.palette[ theIndex ].color ? kadenceColors.palette[ theIndex ].color : '#ffffff' ) }
 											onSave={ ( value, title ) => {
-												const newUpdate = kadenceColors;
-												newUpdate.palette[ theIndex ] = {
-													name: title,
-													slug: slug,
-													color: value,
-												};
-												const newColors = colors;
-												newColors[ index ] = {
-													name: title,
-													slug: slug,
-													color: value,
-												};
-												this.setState( { kadenceColors: newUpdate } );
-												this.setState( { colors: newColors } );
+												this.saveKadenceColors( { color: value, name: title, slug: slug }, theIndex );
+												this.saveColors( { color: value, name: title, slug: slug }, index );
 												this.saveConfig();
 											} }
 										/>
@@ -166,14 +187,14 @@ class KadenceColorDefault extends Component {
 							}
 							kbColorUniqueIDs.push( id );
 							kadenceColors.palette.push( {
+								color: '#888888',
 								name: __( 'Color' ) + ' ' + ( id ),
 								slug: 'kb-palette-' + id,
-								color: '#888888',
 							} );
 							colors.push( {
+								color: '#888888',
 								name: __( 'Color' ) + ' ' + ( id ),
 								slug: 'kb-palette-' + id,
-								color: '#888888',
 							} );
 							this.setState( { kadenceColors: kadenceColors } );
 							this.setState( { colors: colors } );
@@ -197,12 +218,8 @@ class KadenceColorDefault extends Component {
 									newKadenceColors.override = true;
 								} else {
 									newKadenceColors.override = false;
-									if ( undefined !== themeColors && undefined !== themeColors[ 0 ] && undefined !== themeColors[ 0 ].slug ) {
-										newColors = themeColors.concat( newKadenceColors.palette );
-									} else {
-										newColors = newKadenceColors.palette;
-										this.setState( { showMessage: true } );
-									}
+									newColors = newKadenceColors.palette;
+									this.setState( { showMessage: true } );
 								}
 								this.setState( { kadenceColors: newKadenceColors } );
 								this.setState( { colors: newColors } );
@@ -218,4 +235,20 @@ class KadenceColorDefault extends Component {
 		);
 	}
 }
-export default KadenceColorDefault;
+export default compose( [
+	withSelect( ( select ) => {
+		const { getSettings } = select( 'core/block-editor' );
+		const settings = getSettings();
+		return {
+			baseColors: get( settings, [ 'colors' ], [] ),
+		};
+	} ),
+	withDispatch( ( dispatch ) => {
+		const {
+			updateEditorSettings,
+		} = dispatch( 'core/editor' );
+		return {
+			updateEditorSettings,
+		};
+	} ),
+] )( KadenceColorDefault );
