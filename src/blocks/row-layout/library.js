@@ -97,7 +97,8 @@ class CustomComponent extends Component {
 
 export default compose(
 	withSelect( ( select, { clientId } ) => {
-		const { getBlock, canUserUseUnfilteredHTML } = select( 'core/block-editor' );
+		const { getBlock } = select( 'core/block-editor' );
+		const { canUserUseUnfilteredHTML } = select( 'core/editor' );
 		const block = getBlock( clientId );
 		return {
 			block,
