@@ -101,10 +101,10 @@ class KadenceAccordionComponent extends Component {
 			if ( blockConfigObject[ 'kadence/accordion' ] !== undefined && typeof blockConfigObject[ 'kadence/accordion' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/accordion' ] ).map( ( attribute ) => {
 					if ( 'titleTag' === attribute ) {
-						const accordionBlock = wp.data.select( 'core/editor' ).getBlocksByClientId( this.props.clientId );
+						const accordionBlock = wp.data.select( 'core/block-editor' ).getBlocksByClientId( this.props.clientId );
 						const realPaneCount = accordionBlock[ 0 ].innerBlocks.length;
 						times( realPaneCount, n => {
-							wp.data.dispatch( 'core/editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
+							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
 								titleTag: blockConfigObject[ 'kadence/accordion' ][ attribute ],
 							} );
 						} );
@@ -179,7 +179,7 @@ class KadenceAccordionComponent extends Component {
 		} else {
 			this.setState( { titleBorderActiveColorControl: 'individual' } );
 		}
-		const accordionBlock = wp.data.select( 'core/editor' ).getBlocksByClientId( this.props.clientId );
+		const accordionBlock = wp.data.select( 'core/block-editor' ).getBlocksByClientId( this.props.clientId );
 		if ( accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
 			this.setState( { titleTag: accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag } );
 		}
@@ -363,7 +363,7 @@ class KadenceAccordionComponent extends Component {
 				} );
 			}
 		};
-		const accordionBlock = wp.data.select( 'core/editor' ).getBlocksByClientId( clientId );
+		const accordionBlock = wp.data.select( 'core/block-editor' ).getBlocksByClientId( clientId );
 		const realPaneCount = accordionBlock[ 0 ].innerBlocks.length;
 		const saveTitleStyles = ( value ) => {
 			const newUpdate = titleStyles.map( ( item, index ) => {
@@ -842,7 +842,7 @@ class KadenceAccordionComponent extends Component {
 									] }
 									onChange={ value => {
 										times( realPaneCount, n => {
-											wp.data.dispatch( 'core/editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
+											wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
 												titleTag: value,
 											} );
 										} );
@@ -928,7 +928,7 @@ class KadenceAccordionComponent extends Component {
 									isPrimary={ true }
 									onClick={ () => {
 										let newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
-										wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, realPaneCount, clientId );
+										wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, realPaneCount, clientId );
 										setAttributes( { paneCount: paneCount + 1 } );
 									} }
 								>
@@ -942,7 +942,7 @@ class KadenceAccordionComponent extends Component {
 										icon="minus"
 										onClick={ () => {
 											const removeClientId = accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId;
-											wp.data.dispatch( 'core/editor' ).removeBlocks( removeClientId );
+											wp.data.dispatch( 'core/block-editor' ).removeBlocks( removeClientId );
 										} }
 									/>
 								) }

@@ -13,6 +13,7 @@ import map from 'lodash/map';
 import hexToRGBA from '../../hex-to-rgba';
 import TypographyControls from '../../typography-control';
 import InlineTypographyControls from '../../inline-typography-control';
+import AdvancedColorControl from '../../advanced-color-control';
 import WebfontLoader from '../../fontloader';
 
 import icons from '../../icons';
@@ -25,7 +26,6 @@ const {
 } = wp.blocks;
 const {
 	InspectorControls,
-	ColorPalette,
 	BlockControls,
 	AlignmentToolbar,
 	InspectorAdvancedControls,
@@ -473,13 +473,12 @@ class KadenceAdvancedHeading extends Component {
 								} }
 							/>
 							{ this.showSettings( 'colorSettings' ) && (
-								<Fragment>
-									<p className="kt-setting-label">{ __( 'Heading Color' ) }</p>
-									<ColorPalette
-										value={ color }
-										onChange={ ( value ) => setAttributes( { color: value } ) }
-									/>
-								</Fragment>
+								<AdvancedColorControl
+									label={ __( 'Heading Color' ) }
+									colorValue={ ( color ? color : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => setAttributes( { color: value } ) }
+								/>
 							) }
 							{ this.showSettings( 'sizeSettings' ) && (
 								<Fragment>
@@ -526,36 +525,27 @@ class KadenceAdvancedHeading extends Component {
 								title={ __( 'Highlight Settings' ) }
 								initialOpen={ false }
 							>
-								<h2>{ __( 'Highlight Color' ) }</h2>
-								<ColorPalette
-									value={ markColor }
-									onChange={ value => setAttributes( { markColor: value } ) }
+								<AdvancedColorControl
+									label={ __( 'Highlight Color' ) }
+									colorValue={ ( markColor ? markColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => setAttributes( { markColor: value } ) }
 								/>
-								<h2>{ __( 'Highlight Background' ) }</h2>
-								<ColorPalette
-									value={ markBG }
-									onChange={ value => setAttributes( { markBG: value } ) }
+								<AdvancedColorControl
+									label={ __( 'Highlight Background' ) }
+									colorValue={ ( markBG ? markBG : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => setAttributes( { markBG: value } ) }
+									opacityValue={ markBGOpacity }
+									onOpacityChange={ value => setAttributes( { markBGOpacity: value } ) }
 								/>
-								<RangeControl
-									label={ __( 'Highlight Background Opacity' ) }
-									value={ markBGOpacity }
-									onChange={ value => setAttributes( { markBGOpacity: value } ) }
-									min={ 0 }
-									max={ 1 }
-									step={ 0.01 }
-								/>
-								<h2>{ __( 'Highlight Border Color' ) }</h2>
-								<ColorPalette
-									value={ markBorder }
-									onChange={ value => setAttributes( { markBorder: value } ) }
-								/>
-								<RangeControl
-									label={ __( 'Highlight Border Opacity' ) }
-									value={ markBorderOpacity }
-									onChange={ value => setAttributes( { markBorderOpacity: value } ) }
-									min={ 0 }
-									max={ 1 }
-									step={ 0.01 }
+								<AdvancedColorControl
+									label={ __( 'Highlight Border Color' ) }
+									colorValue={ ( markBorder ? markBorder : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => setAttributes( { markBorder: value } ) }
+									opacityValue={ markBorderOpacity }
+									onOpacityChange={ value => setAttributes( { markBorderOpacity: value } ) }
 								/>
 								<SelectControl
 									label={ __( 'Highlight Border Style' ) }

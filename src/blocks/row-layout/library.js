@@ -97,7 +97,7 @@ class CustomComponent extends Component {
 
 export default compose(
 	withSelect( ( select, { clientId } ) => {
-		const { getBlock, canUserUseUnfilteredHTML } = select( 'core/editor' );
+		const { getBlock, canUserUseUnfilteredHTML } = select( 'core/block-editor' );
 		const block = getBlock( clientId );
 		return {
 			block,
@@ -105,7 +105,7 @@ export default compose(
 		};
 	} ),
 	withDispatch( ( dispatch, { block, canUserUseUnfilteredHTML } ) => ( {
-		import: ( blockcode ) => dispatch( 'core/editor' ).replaceBlocks(
+		import: ( blockcode ) => dispatch( 'core/block-editor' ).replaceBlocks(
 			block.clientId,
 			rawHandler( {
 				HTML: blockcode,

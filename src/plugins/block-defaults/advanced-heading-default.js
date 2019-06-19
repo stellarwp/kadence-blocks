@@ -1,6 +1,7 @@
 import TypographyControls from '../../typography-control';
 import range from 'lodash/range';
 import map from 'lodash/map';
+import AdvancedColorControl from '../../advanced-color-control-default';
 /**
  * Internal block libraries
  */
@@ -10,7 +11,6 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	ColorPalette,
 	AlignmentToolbar,
 } = wp.blockEditor;
 const {
@@ -115,10 +115,11 @@ class KadenceAdvancedHeadingDefault extends Component {
 								/>
 							</div>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Heading Color' ) }</p>
-								<ColorPalette
-									value={ ( undefined !== headingConfig.color ? headingConfig.color : '' ) }
-									onChange={ ( value ) => this.saveConfigState( 'color', value ) }
+								<AdvancedColorControl
+									label={ __( 'Heading Color' ) }
+									colorValue={ ( undefined !== headingConfig.color ? headingConfig.color : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => this.saveConfigState( 'color', value ) }
 								/>
 							</div>
 							<div className="components-base-control">
@@ -190,41 +191,30 @@ class KadenceAdvancedHeadingDefault extends Component {
 							initialOpen={ false }
 						>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Highlight Color' ) }</p>
-								<ColorPalette
-									value={ ( undefined !== headingConfig.markColor ? headingConfig.markColor : '#f76a0c' ) }
-									onChange={ value => this.saveConfigState( 'markColor', value ) }
+								<AdvancedColorControl
+									label={ __( 'Highlight Color' ) }
+									colorValue={ ( undefined !== headingConfig.markColor ? headingConfig.markColor : '#f76a0c' ) }
+									colorDefault={ '#f76a0c' }
+									onColorChange={ value => this.saveConfigState( 'markColor', value ) }
 								/>
 							</div>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Highlight Background' ) }</p>
-								<ColorPalette
-									value={ ( undefined !== headingConfig.markBG ? headingConfig.markBG : '' ) }
-									onChange={ value => this.saveConfigState( 'markBG', value ) }
+								<AdvancedColorControl
+									label={ __( 'Highlight Background' ) }
+									colorValue={ ( undefined !== headingConfig.markBG ? headingConfig.markBG : '' ) }
+									colorDefault={ '' }
+									onColorChange={ value => this.saveConfigState( 'markBG', value ) }
+									opacityValue={ ( undefined !== headingConfig.markBGOpacity ? headingConfig.markBGOpacity : 1 ) }
+									onOpacityChange={ value => this.saveConfigState( 'markBGOpacity', value ) }
 								/>
 							</div>
-							<RangeControl
-								label={ __( 'Highlight Background Opacity' ) }
-								value={ ( undefined !== headingConfig.markBGOpacity ? headingConfig.markBGOpacity : 1 ) }
-								onChange={ value => this.saveConfigState( 'markBGOpacity', value ) }
-								min={ 0 }
-								max={ 1 }
-								step={ 0.01 }
-							/>
-							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Highlight Border Color' ) }</p>
-								<ColorPalette
-									value={ ( undefined !== headingConfig.markBorder ? headingConfig.markBorder : '' ) }
-									onChange={ value => this.saveConfigState( 'markBorder', value ) }
-								/>
-							</div>
-							<RangeControl
-								label={ __( 'Highlight Border Opacity' ) }
-								value={ ( undefined !== headingConfig.markBorderOpacity ? headingConfig.markBorderOpacity : 1 ) }
-								onChange={ value => this.saveConfigState( 'markBorderOpacity', value ) }
-								min={ 0 }
-								max={ 1 }
-								step={ 0.01 }
+							<AdvancedColorControl
+								label={ __( 'Highlight Border Color' ) }
+								colorValue={ ( undefined !== headingConfig.markBorder ? headingConfig.markBorder : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => this.saveConfigState( 'markBorder', value ) }
+								opacityValue={ ( undefined !== headingConfig.markBorderOpacity ? headingConfig.markBorderOpacity : 1 ) }
+								onOpacityChange={ value => this.saveConfigState( 'markBorderOpacity', value ) }
 							/>
 							<SelectControl
 								label={ __( 'Highlight Border Style' ) }

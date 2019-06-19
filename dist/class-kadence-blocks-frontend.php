@@ -564,7 +564,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'magnific-popup', KT_BLOCKS_URL . 'dist/magnific.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-magnific-js', KT_BLOCKS_URL . 'dist/kt-init-video-popup.js', array( 'jquery', 'magnific-popup' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-accordion-js', KT_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KT_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs-min.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KT_BLOCKS_URL . 'dist/jarallax.min.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-parallax-js', KT_BLOCKS_URL . 'dist/kt-init-parallax.js', array( 'jarallax' ), KT_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-pro-slick', KT_BLOCKS_URL . 'dist/vendor/kt-blocks-slick.css', array(), KT_BLOCKS_VERSION );
@@ -2614,7 +2614,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['bgColor'] ) ) {
 				$css .= 'background-color:' . $attr['bgColor'] . ';';
 			}
-			if ( isset( $attr['bgImg'] ) ) {
+			if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) ) {
 				if ( isset( $attr['bgImgAttachment'] ) ) {
 					if ( 'parallax' === $attr['bgImgAttachment'] ) {
 						$bg_attach = 'fixed';
@@ -2630,6 +2630,11 @@ class Kadence_Blocks_Frontend {
 				$css .= 'background-attachment:' . $bg_attach . ';';
 				$css .= 'background-repeat:' . ( isset( $attr['bgImgRepeat'] ) ? $attr['bgImgRepeat'] : 'no-repeat' ) . ';';
 			}
+			$css .= '}';
+		}
+		if ( isset( $attr['zIndex'] ) ) {
+			$css .= '.kt-layout-id' . $unique_id . ' > .kt-row-column-wrap {';
+				$css .= 'z-index:' . $attr['zIndex'] . ';';
 			$css .= '}';
 		}
 		if ( isset( $attr['textColor'] ) ) {
@@ -2843,6 +2848,8 @@ class Kadence_Blocks_Frontend {
 						$css .= 'background-position:' . ( ! empty( $tablet_background['bgImgPosition'] ) ? $tablet_background['bgImgPosition'] : 'center center' ) . ';';
 						$css .= 'background-attachment:' . $bg_attach . ';';
 						$css .= 'background-repeat:' . ( ! empty( $tablet_background['bgImgRepeat'] ) ? $tablet_background['bgImgRepeat'] : 'no-repeat' ) . ';';
+					} else if ( isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
+						$css .= 'background-image:none;';
 					}
 				$css .= '}';
 			}
@@ -2942,13 +2949,20 @@ class Kadence_Blocks_Frontend {
 						} else {
 							$bg_attach = 'scroll';
 						}
-						$css .= 'background-image:url(' . $mobile_background['bgImg'] . ');';
+						$css .= 'background-image:url(' . $mobile_background['bgImg'] . ')' . ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ? '!important' : '' ) . ';';
 						$css .= 'background-size:' . ( ! empty( $mobile_background['bgImgSize'] ) ? $mobile_background['bgImgSize'] : 'cover' ) . ';';
 						$css .= 'background-position:' . ( ! empty( $mobile_background['bgImgPosition'] ) ? $mobile_background['bgImgPosition'] : 'center center' ) . ';';
 						$css .= 'background-attachment:' . $bg_attach . ';';
 						$css .= 'background-repeat:' . ( ! empty( $mobile_background['bgImgRepeat'] ) ? $mobile_background['bgImgRepeat'] : 'no-repeat' ) . ';';
+					} else if ( isset( $mobile_background['forceOverDesk'] ) && $mobile_background['forceOverDesk'] ) {
+						$css .= 'background-image:none;';
 					}
 				$css .= '}';
+				if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] &&  isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
+					$css .= '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"] {';
+						$css .= 'display:none !important;';
+					$css .= '}';
+				}
 			}
 			if ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) {
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay {';

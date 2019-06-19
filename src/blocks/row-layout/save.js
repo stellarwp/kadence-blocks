@@ -13,7 +13,7 @@ const {
 
 class KadenceRowLayoutSave extends Component {
 	render() {
-		const { attributes: { columns, blockAlignment, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight } } = this.props;
+		const { attributes: { columns, blockAlignment, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline } } = this.props;
 		let bottomSVGDivider;
 		if ( 'ct' === bottomSep ) {
 			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
@@ -118,7 +118,9 @@ class KadenceRowLayoutSave extends Component {
 
 		return (
 			<HtmlTagOut className={ classes }>
-				<div id={ `kt-layout-id${ uniqueID }` } className={ innerClasses }>
+				<div id={ `kt-layout-id${ uniqueID }` } className={ innerClasses } style={ {
+					backgroundImage: ( backgroundInline && undefined !== bgImg && '' !== bgImg ? 'url(' + bgImg + ')' : undefined ),
+				} }>
 					{ ( overlay || overlayBgImg ) && (
 						<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }${ overlayBgImg && 'gradient' !== overlayType && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` }></div>
 					) }

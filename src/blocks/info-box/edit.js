@@ -18,6 +18,7 @@ import map from 'lodash/map';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedColorControl from '../../advanced-color-control';
+import ImageSizeControl from '../../image-size-control';
 import WebfontLoader from '../../fontloader';
 import hexToRGBA from '../../hex-to-rgba';
 import GenIcon from '../../genicon';
@@ -558,6 +559,24 @@ class KadenceInfoBox extends Component {
 				subtype: media.subtype,
 			} );
 		};
+		const changeImageSize = img => {
+			saveMediaImage( {
+				url: img.value,
+				width: img.width,
+				height: img.height,
+			} );
+		};
+		const clearImage = () => {
+			saveMediaImage( {
+				id: '',
+				url: '',
+				alt: '',
+				width: '',
+				height: '',
+				maxWidth: '',
+				subtype: '',
+			} );
+		};
 		const onSelectFlipImage = media => {
 			saveMediaImage( {
 				flipId: media.id,
@@ -566,6 +585,23 @@ class KadenceInfoBox extends Component {
 				flipWidth: media.width,
 				flipHeight: media.height,
 				flipSubtype: media.subtype,
+			} );
+		};
+		const clearFlipImage = () => {
+			saveMediaImage( {
+				flipId: '',
+				flipUrl: '',
+				flipAlt: '',
+				flipWidth: '',
+				flipHeight: '',
+				flipSubtype: '',
+			} );
+		};
+		const changeFlipImageSize = img => {
+			saveMediaImage( {
+				flipUrl: img.value,
+				flipWidth: img.width,
+				flipHeight: img.height,
 			} );
 		};
 		const isSelectedClass = ( isSelected ? 'is-selected' : 'not-selected' );
@@ -661,7 +697,7 @@ class KadenceInfoBox extends Component {
 		const renderCSS = (
 			<style>
 				{ ( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon { color: ${ mediaIcon[ 0 ].hoverColor } !important; }` : '' ) }
-				{ ( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media img { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }` : '' ) }
+				{ ( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media img, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .editor-media-placeholder { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }` : '' ) }
 				{ ( titleHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${ titleHoverColor } !important; }` : '' ) }
 				{ ( textHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${ textHoverColor } !important; }` : '' ) }
 				{ ( learnMoreStyles[ 0 ].colorHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${ learnMoreStyles[ 0 ].colorHover } !important; }` : '' ) }
@@ -888,6 +924,39 @@ class KadenceInfoBox extends Component {
 								/>
 								{ 'image' === mediaType && (
 									<Fragment>
+										{ mediaImage[ 0 ].url && (
+											<div className="kb-image-edit-settings-container">
+												<MediaUpload
+													onSelect={ onSelectImage }
+													type="image"
+													value={ mediaImage[ 0 ].id }
+													allowedTypes={ ALLOWED_MEDIA_TYPES }
+													render={ ( { open } ) => (
+														<Button
+															className={ 'components-button components-icon-button kt-cta-upload-btn kb-upload-inline-btn' }
+															onClick={ open }
+														>
+															<Dashicon icon="format-image" />
+															{ __( 'Edit Media' ) }
+														</Button>
+													) }
+												/>
+												<IconButton
+													label={ __( 'clear' ) }
+													className="kb-clear-image-btn"
+													icon="no-alt"
+													onClick={ clearImage }
+												/>
+											</div>
+										) }
+										{ mediaImage[ 0 ].id && (
+											<ImageSizeControl
+												label={ __( 'Image File Size' ) }
+												id={ mediaImage[ 0 ].id }
+												url={ mediaImage[ 0 ].url }
+												onChange={ changeImageSize }
+											/>
+										) }
 										<RangeControl
 											label={ __( 'Max Image Width' ) }
 											value={ mediaImage[ 0 ].maxWidth }
@@ -911,20 +980,55 @@ class KadenceInfoBox extends Component {
 										{ 'flip' === mediaImage[ 0 ].hoverAnimation && (
 											<Fragment>
 												<h2>{ __( 'Flip Image (Use same size as start image' ) }</h2>
-												<MediaUpload
-													onSelect={ onSelectFlipImage }
-													type="image"
-													value={ mediaImage[ 0 ].flipId }
-													render={ ( { open } ) => (
-														<Button
-															className={ 'components-button components-icon-button kt-cta-upload-btn' }
-															onClick={ open }
-														>
-															<Dashicon icon="format-image" />
-															{ __( 'Select Image' ) }
-														</Button>
-													) }
-												/>
+												{ ! mediaImage[ 0 ].flipUrl && (
+													<MediaUpload
+														onSelect={ onSelectFlipImage }
+														type="image"
+														value={ '' }
+														render={ ( { open } ) => (
+															<Button
+																className={ 'components-button components-icon-button kt-cta-upload-btn' }
+																onClick={ open }
+															>
+																<Dashicon icon="format-image" />
+																{ __( 'Select Image' ) }
+															</Button>
+														) }
+													/>
+												) }
+												{ mediaImage[ 0 ].flipUrl && (
+													<div className="kb-image-edit-settings-container">
+														<MediaUpload
+															onSelect={ onSelectFlipImage }
+															type="image"
+															value={ mediaImage[ 0 ].flipId }
+															allowedTypes={ ALLOWED_MEDIA_TYPES }
+															render={ ( { open } ) => (
+																<Button
+																	className={ 'components-button components-icon-button kt-cta-upload-btn kb-upload-inline-btn' }
+																	onClick={ open }
+																>
+																	<Dashicon icon="format-image" />
+																	{ __( 'Edit Media' ) }
+																</Button>
+															) }
+														/>
+														<IconButton
+															label={ __( 'clear' ) }
+															className="kb-clear-image-btn"
+															icon="no-alt"
+															onClick={ clearFlipImage }
+														/>
+													</div>
+												) }
+												{ mediaImage[ 0 ].flipId && (
+													<ImageSizeControl
+														label={ __( 'Image File Size' ) }
+														id={ mediaImage[ 0 ].flipId }
+														url={ mediaImage[ 0 ].flipUrl }
+														onChange={ changeFlipImageSize }
+													/>
+												) }
 											</Fragment>
 										) }
 										<MeasurementControls

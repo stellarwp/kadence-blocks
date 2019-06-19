@@ -100,7 +100,7 @@
     padding: 20px;
     text-align: left;
 }
-.kt-tabs-wrap .wp-block-kadence-tab {
+.kt-tabs-wrap .wp-block-kadence-tab[role="tabpanel"] {
 	display: none;
 }
 .kt-tabs-wrap.kt-active-tab-1 > .kt-tabs-content-wrap > .kt-inner-tab-1 {

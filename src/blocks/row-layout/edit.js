@@ -139,7 +139,7 @@ class KadenceRowLayout extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -202,7 +202,7 @@ class KadenceRowLayout extends Component {
 		];
 		const heightMax = ( minHeightUnit === 'px' ? 2000 : 200 );
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
-		const marginMin = ( marginUnit === 'em' ? 0.1 : 1 );
+		const marginMin = ( marginUnit === 'em' ? 0 : 0 );
 		const marginMax = ( marginUnit === 'em' ? 24 : 200 );
 		const marginStep = ( marginUnit === 'em' ? 0.1 : 1 );
 		const onResize = ( event, direction, elt ) => {
@@ -351,6 +351,7 @@ class KadenceRowLayout extends Component {
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.twocol },
 				{ key: 'left-golden', name: __( 'Left Heavy 66/33' ), icon: icons.twoleftgolden },
 				{ key: 'right-golden', name: __( 'Right Heavy 33/66' ), icon: icons.tworightgolden },
+				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserow },
 			];
 		} else if ( 3 === columns ) {
 			layoutOptions = [
@@ -360,20 +361,24 @@ class KadenceRowLayout extends Component {
 				{ key: 'center-half', name: __( 'Center Heavy 25/50/25' ), icon: icons.centerhalf },
 				{ key: 'center-wide', name: __( 'Wide Center 20/60/20' ), icon: icons.widecenter },
 				{ key: 'center-exwide', name: __( 'Wider Center 15/70/15' ), icon: icons.exwidecenter },
+				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowthree },
 			];
 		} else if ( 4 === columns ) {
 			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.fourcol },
 				{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20' ), icon: icons.lfourforty },
 				{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40' ), icon: icons.rfourforty },
+				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowfour },
 			];
 		} else if ( 5 === columns ) {
 			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.fivecol },
+				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowfive },
 			];
 		} else if ( 6 === columns ) {
 			layoutOptions = [
 				{ key: 'equal', name: __( 'Equal' ), icon: icons.sixcol },
+				{ key: 'row', name: __( 'Collapse to Rows' ), icon: icons.collapserowsix },
 			];
 		} else {
 			layoutOptions = [
@@ -670,53 +675,64 @@ class KadenceRowLayout extends Component {
 										</Button>
 									</Tooltip>
 								) }
-								<SelectControl
-									label={ __( 'Background Image Size' ) }
-									value={ mobileBackground[ 0 ].bgImgSize }
-									options={ [
-										{ value: 'cover', label: __( 'Cover' ) },
-										{ value: 'contain', label: __( 'Contain' ) },
-										{ value: 'auto', label: __( 'Auto' ) },
-									] }
-									onChange={ value => saveMobileBackground( { bgImgSize: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Position' ) }
-									value={ mobileBackground[ 0 ].bgImgPosition }
-									options={ [
-										{ value: 'center top', label: __( 'Center Top' ) },
-										{ value: 'center center', label: __( 'Center Center' ) },
-										{ value: 'center bottom', label: __( 'Center Bottom' ) },
-										{ value: 'left top', label: __( 'Left Top' ) },
-										{ value: 'left center', label: __( 'Left Center' ) },
-										{ value: 'left bottom', label: __( 'Left Bottom' ) },
-										{ value: 'right top', label: __( 'Right Top' ) },
-										{ value: 'right center', label: __( 'Right Center' ) },
-										{ value: 'right bottom', label: __( 'Right Bottom' ) },
-									] }
-									onChange={ value => saveMobileBackground( { bgImgPosition: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Repeat' ) }
-									value={ mobileBackground[ 0 ].bgImgRepeat }
-									options={ [
-										{ value: 'no-repeat', label: __( 'No Repeat' ) },
-										{ value: 'repeat', label: __( 'Repeat' ) },
-										{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-										{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-									] }
-									onChange={ value => saveMobileBackground( { bgImgRepeat: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Attachment' ) }
-									value={ mobileBackground[ 0 ].bgImgAttachment }
-									options={ [
-										{ value: 'scroll', label: __( 'Scroll' ) },
-										{ value: 'fixed', label: __( 'Fixed' ) },
-										{ value: 'parallax', label: __( 'Parallax' ) },
-									] }
-									onChange={ value => saveMobileBackground( { bgImgAttachment: value } ) }
-								/>
+								{ '' === mobileBackground[ 0 ].bgImg && '' !== bgImg && (
+									<ToggleControl
+										label={ __( 'Force no image for mobile' ) }
+										checked={ ( mobileBackground && mobileBackground[ 0 ] ? mobileBackground[ 0 ].forceOverDesk : false ) }
+										onChange={ ( value ) => saveMobileBackground( { forceOverDesk: value } ) }
+									/>
+								) }
+								{ mobileBackground[ 0 ].bgImg && (
+									<Fragment>
+										<SelectControl
+											label={ __( 'Background Image Size' ) }
+											value={ mobileBackground[ 0 ].bgImgSize }
+											options={ [
+												{ value: 'cover', label: __( 'Cover' ) },
+												{ value: 'contain', label: __( 'Contain' ) },
+												{ value: 'auto', label: __( 'Auto' ) },
+											] }
+											onChange={ value => saveMobileBackground( { bgImgSize: value } ) }
+										/>
+										<SelectControl
+											label={ __( 'Background Image Position' ) }
+											value={ mobileBackground[ 0 ].bgImgPosition }
+											options={ [
+												{ value: 'center top', label: __( 'Center Top' ) },
+												{ value: 'center center', label: __( 'Center Center' ) },
+												{ value: 'center bottom', label: __( 'Center Bottom' ) },
+												{ value: 'left top', label: __( 'Left Top' ) },
+												{ value: 'left center', label: __( 'Left Center' ) },
+												{ value: 'left bottom', label: __( 'Left Bottom' ) },
+												{ value: 'right top', label: __( 'Right Top' ) },
+												{ value: 'right center', label: __( 'Right Center' ) },
+												{ value: 'right bottom', label: __( 'Right Bottom' ) },
+											] }
+											onChange={ value => saveMobileBackground( { bgImgPosition: value } ) }
+										/>
+										<SelectControl
+											label={ __( 'Background Image Repeat' ) }
+											value={ mobileBackground[ 0 ].bgImgRepeat }
+											options={ [
+												{ value: 'no-repeat', label: __( 'No Repeat' ) },
+												{ value: 'repeat', label: __( 'Repeat' ) },
+												{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+												{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+											] }
+											onChange={ value => saveMobileBackground( { bgImgRepeat: value } ) }
+										/>
+										<SelectControl
+											label={ __( 'Background Image Attachment' ) }
+											value={ mobileBackground[ 0 ].bgImgAttachment }
+											options={ [
+												{ value: 'scroll', label: __( 'Scroll' ) },
+												{ value: 'fixed', label: __( 'Fixed' ) },
+												{ value: 'parallax', label: __( 'Parallax' ) },
+											] }
+											onChange={ value => saveMobileBackground( { bgImgAttachment: value } ) }
+										/>
+									</Fragment>
+								) }
 							</Fragment>
 						) }
 					</PanelBody>
@@ -889,53 +905,64 @@ class KadenceRowLayout extends Component {
 										</Button>
 									</Tooltip>
 								) }
-								<SelectControl
-									label={ __( 'Background Image Size' ) }
-									value={ tabletBackground[ 0 ].bgImgSize }
-									options={ [
-										{ value: 'cover', label: __( 'Cover' ) },
-										{ value: 'contain', label: __( 'Contain' ) },
-										{ value: 'auto', label: __( 'Auto' ) },
-									] }
-									onChange={ value => saveTabletBackground( { bgImgSize: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Position' ) }
-									value={ tabletBackground[ 0 ].bgImgPosition }
-									options={ [
-										{ value: 'center top', label: __( 'Center Top' ) },
-										{ value: 'center center', label: __( 'Center Center' ) },
-										{ value: 'center bottom', label: __( 'Center Bottom' ) },
-										{ value: 'left top', label: __( 'Left Top' ) },
-										{ value: 'left center', label: __( 'Left Center' ) },
-										{ value: 'left bottom', label: __( 'Left Bottom' ) },
-										{ value: 'right top', label: __( 'Right Top' ) },
-										{ value: 'right center', label: __( 'Right Center' ) },
-										{ value: 'right bottom', label: __( 'Right Bottom' ) },
-									] }
-									onChange={ value => saveTabletBackground( { bgImgPosition: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Repeat' ) }
-									value={ tabletBackground[ 0 ].bgImgRepeat }
-									options={ [
-										{ value: 'no-repeat', label: __( 'No Repeat' ) },
-										{ value: 'repeat', label: __( 'Repeat' ) },
-										{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-										{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-									] }
-									onChange={ value => saveTabletBackground( { bgImgRepeat: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Attachment' ) }
-									value={ tabletBackground[ 0 ].bgImgAttachment }
-									options={ [
-										{ value: 'scroll', label: __( 'Scroll' ) },
-										{ value: 'fixed', label: __( 'Fixed' ) },
-										{ value: 'parallax', label: __( 'Parallax' ) },
-									] }
-									onChange={ value => saveTabletBackground( { bgImgAttachment: value } ) }
-								/>
+								{ '' === tabletBackground[ 0 ].bgImg && '' !== bgImg && (
+									<ToggleControl
+										label={ __( 'Force no image for tablet' ) }
+										checked={ ( tabletBackground && tabletBackground[ 0 ] ? tabletBackground[ 0 ].forceOverDesk : false ) }
+										onChange={ ( value ) => saveTabletBackground( { forceOverDesk: value } ) }
+									/>
+								) }
+								{ tabletBackground[ 0 ].bgImg && (
+									<Fragment>
+										<SelectControl
+											label={ __( 'Background Image Size' ) }
+											value={ tabletBackground[ 0 ].bgImgSize }
+											options={ [
+												{ value: 'cover', label: __( 'Cover' ) },
+												{ value: 'contain', label: __( 'Contain' ) },
+												{ value: 'auto', label: __( 'Auto' ) },
+											] }
+											onChange={ value => saveTabletBackground( { bgImgSize: value } ) }
+										/>
+										<SelectControl
+											label={ __( 'Background Image Position' ) }
+											value={ tabletBackground[ 0 ].bgImgPosition }
+											options={ [
+												{ value: 'center top', label: __( 'Center Top' ) },
+												{ value: 'center center', label: __( 'Center Center' ) },
+												{ value: 'center bottom', label: __( 'Center Bottom' ) },
+												{ value: 'left top', label: __( 'Left Top' ) },
+												{ value: 'left center', label: __( 'Left Center' ) },
+												{ value: 'left bottom', label: __( 'Left Bottom' ) },
+												{ value: 'right top', label: __( 'Right Top' ) },
+												{ value: 'right center', label: __( 'Right Center' ) },
+												{ value: 'right bottom', label: __( 'Right Bottom' ) },
+											] }
+											onChange={ value => saveTabletBackground( { bgImgPosition: value } ) }
+										/>
+										<SelectControl
+											label={ __( 'Background Image Repeat' ) }
+											value={ tabletBackground[ 0 ].bgImgRepeat }
+											options={ [
+												{ value: 'no-repeat', label: __( 'No Repeat' ) },
+												{ value: 'repeat', label: __( 'Repeat' ) },
+												{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+												{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+											] }
+											onChange={ value => saveTabletBackground( { bgImgRepeat: value } ) }
+										/>
+										<SelectControl
+											label={ __( 'Background Image Attachment' ) }
+											value={ tabletBackground[ 0 ].bgImgAttachment }
+											options={ [
+												{ value: 'scroll', label: __( 'Scroll' ) },
+												{ value: 'fixed', label: __( 'Fixed' ) },
+												{ value: 'parallax', label: __( 'Parallax' ) },
+											] }
+											onChange={ value => saveTabletBackground( { bgImgAttachment: value } ) }
+										/>
+									</Fragment>
+								) }
 							</Fragment>
 						) }
 					</PanelBody>
@@ -1173,62 +1200,71 @@ class KadenceRowLayout extends Component {
 							) }
 						/>
 						{ bgImg && (
-							<Tooltip text={ __( 'Remove Image' ) }>
-								<Button
-									className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-									onClick={ onRemoveImage }
-								>
-									<Dashicon icon="no-alt" />
-								</Button>
-							</Tooltip>
+							<Fragment>
+								<Tooltip text={ __( 'Remove Image' ) }>
+									<Button
+										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+										onClick={ onRemoveImage }
+									>
+										<Dashicon icon="no-alt" />
+									</Button>
+								</Tooltip>
+								<Tooltip text={ __( 'Some Lazyloads only support this type of background images.' ) }>
+									<ToggleControl
+										label={ __( 'Force Background Image inline?' ) }
+										checked={ ( undefined !== backgroundInline ? backgroundInline : false ) }
+										onChange={ ( value ) => setAttributes( { backgroundInline: value } ) }
+									/>
+								</Tooltip>
+								<SelectControl
+									label={ __( 'Background Image Size' ) }
+									value={ bgImgSize }
+									options={ [
+										{ value: 'cover', label: __( 'Cover' ) },
+										{ value: 'contain', label: __( 'Contain' ) },
+										{ value: 'auto', label: __( 'Auto' ) },
+									] }
+									onChange={ value => setAttributes( { bgImgSize: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Position' ) }
+									value={ bgImgPosition }
+									options={ [
+										{ value: 'center top', label: __( 'Center Top' ) },
+										{ value: 'center center', label: __( 'Center Center' ) },
+										{ value: 'center bottom', label: __( 'Center Bottom' ) },
+										{ value: 'left top', label: __( 'Left Top' ) },
+										{ value: 'left center', label: __( 'Left Center' ) },
+										{ value: 'left bottom', label: __( 'Left Bottom' ) },
+										{ value: 'right top', label: __( 'Right Top' ) },
+										{ value: 'right center', label: __( 'Right Center' ) },
+										{ value: 'right bottom', label: __( 'Right Bottom' ) },
+									] }
+									onChange={ value => setAttributes( { bgImgPosition: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Repeat' ) }
+									value={ bgImgRepeat }
+									options={ [
+										{ value: 'no-repeat', label: __( 'No Repeat' ) },
+										{ value: 'repeat', label: __( 'Repeat' ) },
+										{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+										{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+									] }
+									onChange={ value => setAttributes( { bgImgRepeat: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Attachment' ) }
+									value={ bgImgAttachment }
+									options={ [
+										{ value: 'scroll', label: __( 'Scroll' ) },
+										{ value: 'fixed', label: __( 'Fixed' ) },
+										{ value: 'parallax', label: __( 'Parallax' ) },
+									] }
+									onChange={ value => setAttributes( { bgImgAttachment: value } ) }
+								/>
+							</Fragment>
 						) }
-						<SelectControl
-							label={ __( 'Background Image Size' ) }
-							value={ bgImgSize }
-							options={ [
-								{ value: 'cover', label: __( 'Cover' ) },
-								{ value: 'contain', label: __( 'Contain' ) },
-								{ value: 'auto', label: __( 'Auto' ) },
-							] }
-							onChange={ value => setAttributes( { bgImgSize: value } ) }
-						/>
-						<SelectControl
-							label={ __( 'Background Image Position' ) }
-							value={ bgImgPosition }
-							options={ [
-								{ value: 'center top', label: __( 'Center Top' ) },
-								{ value: 'center center', label: __( 'Center Center' ) },
-								{ value: 'center bottom', label: __( 'Center Bottom' ) },
-								{ value: 'left top', label: __( 'Left Top' ) },
-								{ value: 'left center', label: __( 'Left Center' ) },
-								{ value: 'left bottom', label: __( 'Left Bottom' ) },
-								{ value: 'right top', label: __( 'Right Top' ) },
-								{ value: 'right center', label: __( 'Right Center' ) },
-								{ value: 'right bottom', label: __( 'Right Bottom' ) },
-							] }
-							onChange={ value => setAttributes( { bgImgPosition: value } ) }
-						/>
-						<SelectControl
-							label={ __( 'Background Image Repeat' ) }
-							value={ bgImgRepeat }
-							options={ [
-								{ value: 'no-repeat', label: __( 'No Repeat' ) },
-								{ value: 'repeat', label: __( 'Repeat' ) },
-								{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-								{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-							] }
-							onChange={ value => setAttributes( { bgImgRepeat: value } ) }
-						/>
-						<SelectControl
-							label={ __( 'Background Image Attachment' ) }
-							value={ bgImgAttachment }
-							options={ [
-								{ value: 'scroll', label: __( 'Scroll' ) },
-								{ value: 'fixed', label: __( 'Fixed' ) },
-								{ value: 'parallax', label: __( 'Parallax' ) },
-							] }
-							onChange={ value => setAttributes( { bgImgAttachment: value } ) }
-						/>
 					</PanelBody>
 				) }
 				{ this.showSettings( 'backgroundOverlay' ) && (
@@ -2495,6 +2531,17 @@ class KadenceRowLayout extends Component {
 									checked={ ( undefined !== columnsInnerHeight ? columnsInnerHeight : false ) }
 									onChange={ ( value ) => setAttributes( { columnsInnerHeight: value } ) }
 								/>
+								<RangeControl
+									label={ __( 'Z-Index Control' ) }
+									value={ zIndex }
+									onChange={ ( value ) => {
+										setAttributes( {
+											zIndex: value,
+										} );
+									} }
+									min={ -200 }
+									max={ 2000 }
+								/>
 							</PanelBody>
 						) }
 					</InspectorControls>
@@ -2612,6 +2659,7 @@ class KadenceRowLayout extends Component {
 							} }
 							className={ 'kt-top-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
+								event.preventDefault();
 								document.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( topPadding + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
@@ -2639,7 +2687,7 @@ class KadenceRowLayout extends Component {
 							paddingLeft: leftPadding + 'px',
 							paddingRight: rightPadding + 'px',
 						} }>
-							{ colLayout && columns && 2 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
+							{ colLayout && 'row' !== colLayout && columns && 2 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
 								<div className="kt-resizeable-column-container" style={ {
 									left: leftPadding + 'px',
 									right: rightPadding + 'px',
@@ -2707,7 +2755,7 @@ class KadenceRowLayout extends Component {
 									</ContainerDimensions>
 								</div>
 							) }
-							{ colLayout && columns && 3 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
+							{ colLayout && 'row' !== colLayout && columns && 3 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
 								<ThreeColumnDrag
 									uniqueID={ uniqueID }
 									onSetState={ value => this.setState( value ) }
@@ -2755,10 +2803,8 @@ class KadenceRowLayout extends Component {
 								setAttributes( {
 									bottomPadding: parseInt( bottomPadding + delta.height, 10 ),
 								} );
-								toggleSelection( true );
 							} }
 							onResizeStart={ () => {
-								toggleSelection( false );
 							} }
 						>
 							{ uniqueID && (

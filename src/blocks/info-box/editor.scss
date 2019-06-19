@@ -4,6 +4,29 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kb-upload-inline-btn.kt-cta-upload-btn {
+	 margin-bottom:0;
+ }
+ .kt-blocks-info-box-media-align-top .kt-blocks-info-box-media .editor-media-placeholder {
+    padding: 1em;
+    margin: 0;
+}
+.edit-post-sidebar .kb-image-size-select-form-row input[type=text], .kt-block-defaults-modal .kb-image-size-select-form-row input[type=text] {
+			box-shadow: none; 
+}
+.kb-image-size-container .kb-image-size-select-form-row {
+    margin-bottom: 10px;
+    z-index: 200;
+    position: relative;
+}
+.kb-image-size-container .kb-image-size-title {
+    font-weight: normal;
+    margin-bottom: 4px;
+}
+ .kb-image-edit-settings-container {
+    display: flex;
+    margin-bottom: 10px;
+}
 .kadence-info-box-image-intrisic {
     height: 0;
 }

@@ -643,6 +643,9 @@ function () {
 				panelToOpen.offsetHeight;
 				_header.classList.add(this.settings.activeClass); // 4. Set aria attrs
 				_header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
+				var resizeEvent = window.document.createEvent('UIEvents'); 
+				resizeEvent.initUIEvent('resize', true, false, window, 0); 
+				window.dispatchEvent(resizeEvent);
 				var _transDuration = ( 1000 * parseFloat(getComputedStyle(panelToOpen)['transitionDuration']) );
 				setTimeout(function(){
 					panelToOpen.classList.add(_this8.settings.activeClass);

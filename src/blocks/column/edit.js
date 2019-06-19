@@ -413,7 +413,7 @@ class KadenceColumn extends Component {
 		);
 		const backgroundString = ( background ? hexToRGBA( background, backgroundOpacity ) : 'transparent' );
 		const borderString = ( border ? hexToRGBA( border, borderOpacity ) : 'transparent' );
-		const hasChildBlocks = wp.data.select( 'core/editor' ).getBlockOrder( clientId ).length > 0;
+		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
 		return (
 			<div className={ `kadence-column inner-column-${ id } kadence-column-${ uniqueID }` } >
 				<InspectorControls>

@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 4.8
-Tested up to: 5.2.1
-Stable tag: 1.5.8
+Tested up to: 5.2.2
+Stable tag: 1.5.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.5.9 =
+* Fix: Icon list Block alignment issue.
+* Add: Image size options for info box.
+* Add: collapse columns for desktop layout.
+* Add: zIndex to Rows
+* Add: Background Image inline to support some lazy loads.
+* Update: Better support in accordion and tabs for dynamic content.
 
 = 1.5.8 =
 * Fix: Issues with Gutenberg 5.9

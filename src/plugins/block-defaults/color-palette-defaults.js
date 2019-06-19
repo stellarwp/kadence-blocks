@@ -52,7 +52,7 @@ class KadenceColorDefault extends Component {
 			settingModel.save().then( response => {
 				this.setState( { isSaving: false, kadenceColors: config, isOpen: false } );
 				kadence_blocks_params.colors = JSON.stringify( config );
-				wp.data.dispatch( 'core/editor' ).updateEditorSettings( { colors: this.state.colors } );
+				wp.data.dispatch( 'core/block-editor' ).updateEditorSettings( { colors: this.state.colors } );
 			} );
 		}
 	}

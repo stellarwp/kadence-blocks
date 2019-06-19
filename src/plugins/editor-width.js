@@ -71,8 +71,8 @@ function CustomComponent( { meta, oldMeta, onUpdateWidth } ) {
 }
 export default compose( [
 	withSelect( ( select ) => {
-		const postMeta = select( 'core/editor' ).getEditedPostAttribute( 'meta' );
-		const oldPostMeta = select( 'core/editor' ).getCurrentPostAttribute( 'meta' );
+		const postMeta = select( 'core/block-editor' ).getEditedPostAttribute( 'meta' );
+		const oldPostMeta = select( 'core/block-editor' ).getCurrentPostAttribute( 'meta' );
 		return {
 			meta: { ...oldPostMeta, ...postMeta },
 			oldMeta: oldPostMeta,
@@ -85,15 +85,15 @@ export default compose( [
 				kt_blocks_editor_width: value,
 			};
 			if ( 'default' === value ) {
-				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.default_size } );
+				dispatch( 'core/block-editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.default_size } );
 			} else if ( 'sidebar' === value ) {
-				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.sidebar_size } );
+				dispatch( 'core/block-editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.sidebar_size } );
 			} else if ( 'nosidebar' === value ) {
-				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.nosidebar_size } );
+				dispatch( 'core/block-editor' ).updateEditorSettings( { maxWidth: kadence_blocks_params.nosidebar_size } );
 			} else if ( 'fullwidth' === value ) {
-				dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: 2000 } );
+				dispatch( 'core/block-editor' ).updateEditorSettings( { maxWidth: 2000 } );
 			}
-			dispatch( 'core/editor' ).editPost( { meta } );
+			dispatch( 'core/block-editor' ).editPost( { meta } );
 		},
 	} ) ),
 ] )( CustomComponent );

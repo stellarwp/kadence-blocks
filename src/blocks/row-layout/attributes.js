@@ -311,6 +311,7 @@ const attributes = {
 			bgImgPosition: 'center center',
 			bgImgAttachment: 'scroll',
 			bgImgRepeat: 'no-repeat',
+			forceOverDesk: false,
 		} ],
 	},
 	tabletOverlay: {
@@ -345,6 +346,7 @@ const attributes = {
 			bgImgPosition: 'center center',
 			bgImgAttachment: 'scroll',
 			bgImgRepeat: 'no-repeat',
+			forceOverDesk: false,
 		} ],
 	},
 	mobileOverlay: {
@@ -381,6 +383,14 @@ const attributes = {
 		default: '',
 	},
 	topSepWidthMobile: {
+		type: 'number',
+		default: '',
+	},
+	backgroundInline: {
+		type: 'bool',
+		default: false,
+	},
+	zIndex: {
 		type: 'number',
 		default: '',
 	},
