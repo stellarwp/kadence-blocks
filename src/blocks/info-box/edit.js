@@ -41,7 +41,6 @@ const {
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
-	ColorPalette,
 	MediaPlaceholder,
 } = wp.blockEditor;
 const {
@@ -148,7 +147,7 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -555,7 +554,7 @@ class KadenceInfoBox extends Component {
 				alt: media.alt,
 				width: media.width,
 				height: media.height,
-				maxWidth: media.width,
+				maxWidth: ( media.width ? media.width : 50 ),
 				subtype: media.subtype,
 			} );
 		};
@@ -949,7 +948,7 @@ class KadenceInfoBox extends Component {
 												/>
 											</div>
 										) }
-										{ mediaImage[ 0 ].id && (
+										{ mediaImage[ 0 ].id && 'svg+xml' !== mediaImage[ 0 ].subtype && (
 											<ImageSizeControl
 												label={ __( 'Image File Size' ) }
 												id={ mediaImage[ 0 ].id }
@@ -1021,7 +1020,7 @@ class KadenceInfoBox extends Component {
 														/>
 													</div>
 												) }
-												{ mediaImage[ 0 ].flipId && (
+												{ mediaImage[ 0 ].flipId && 'svg+xml' !== mediaImage[ 0 ].flipSubtype && (
 													<ImageSizeControl
 														label={ __( 'Image File Size' ) }
 														id={ mediaImage[ 0 ].flipId }
@@ -1396,6 +1395,66 @@ class KadenceInfoBox extends Component {
 											marginControl={ titleFont[ 0 ].marginControl }
 											onMarginControl={ ( value ) => saveTitleFont( { marginControl: value } ) }
 										/>
+										<h2 className="kt-heading-size-title">{ __( 'Min Height' ) }</h2>
+										<TabPanel className="kt-size-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'desk',
+													title: <Dashicon icon="desktop" />,
+													className: 'kt-desk-tab',
+												},
+												{
+													name: 'tablet',
+													title: <Dashicon icon="tablet" />,
+													className: 'kt-tablet-tab',
+												},
+												{
+													name: 'mobile',
+													title: <Dashicon icon="smartphone" />,
+													className: 'kt-mobile-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'mobile' === tab.name ) {
+															tabout = (
+																<RangeControl
+																	value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) }
+																	onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } ) }
+																	step={ 1 }
+																	min={ 0 }
+																	max={ 600 }
+																/>
+															);
+														} else if ( 'tablet' === tab.name ) {
+															tabout = (
+																<RangeControl
+																	value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ) }
+																	onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
+																	step={ 1 }
+																	min={ 0 }
+																	max={ 600 }
+																/>
+															);
+														} else {
+															tabout = (
+																<RangeControl
+																	value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ) }
+																	onChange={ value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
+																	step={ 1 }
+																	min={ 0 }
+																	max={ 600 }
+																/>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
 									</Fragment>
 								) }
 							</PanelBody>
@@ -1488,6 +1547,66 @@ class KadenceInfoBox extends Component {
 											fontSubset={ textFont[ 0 ].subset }
 											onFontSubset={ ( value ) => saveTextFont( { subset: value } ) }
 										/>
+										<h2 className="kt-heading-size-title">{ __( 'Min Height' ) }</h2>
+										<TabPanel className="kt-size-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'desk',
+													title: <Dashicon icon="desktop" />,
+													className: 'kt-desk-tab',
+												},
+												{
+													name: 'tablet',
+													title: <Dashicon icon="tablet" />,
+													className: 'kt-tablet-tab',
+												},
+												{
+													name: 'mobile',
+													title: <Dashicon icon="smartphone" />,
+													className: 'kt-mobile-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'mobile' === tab.name ) {
+															tabout = (
+																<RangeControl
+																	value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) }
+																	onChange={ value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), value ] } ) }
+																	step={ 1 }
+																	min={ 0 }
+																	max={ 600 }
+																/>
+															);
+														} else if ( 'tablet' === tab.name ) {
+															tabout = (
+																<RangeControl
+																	value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ) }
+																	onChange={ value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } ) }
+																	step={ 1 }
+																	min={ 0 }
+																	max={ 600 }
+																/>
+															);
+														} else {
+															tabout = (
+																<RangeControl
+																	value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ) }
+																	onChange={ value => setAttributes( { textMinHeight: [ value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } ) }
+																	step={ 1 }
+																	min={ 0 }
+																	max={ 600 }
+																/>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
 									</Fragment>
 								) }
 							</PanelBody>
@@ -1670,18 +1789,13 @@ class KadenceInfoBox extends Component {
 													if ( 'hover' === tab.name ) {
 														tabout = (
 															<Fragment>
-																<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
-																<ColorPalette
-																	value={ shadowHover[ 0 ].color }
-																	onChange={ value => saveHoverShadow( { color: value } ) }
-																/>
-																<RangeControl
-																	label={ __( 'Shadow Opacity' ) }
-																	value={ shadowHover[ 0 ].opacity }
-																	onChange={ value => saveHoverShadow( { opacity: value } ) }
-																	min={ 0 }
-																	max={ 1 }
-																	step={ 0.1 }
+																<AdvancedColorControl
+																	label={ __( 'Shadow Color' ) }
+																	colorValue={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
+																	colorDefault={ '' }
+																	onColorChange={ value => saveHoverShadow( { color: value } ) }
+																	opacityValue={ shadowHover[ 0 ].opacity }
+																	onOpacityChange={ value => saveHoverShadow( { opacity: value } ) }
 																/>
 																<RangeControl
 																	label={ __( 'Shadow Blur' ) }
@@ -1720,18 +1834,13 @@ class KadenceInfoBox extends Component {
 													} else {
 														tabout = (
 															<Fragment>
-																<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
-																<ColorPalette
-																	value={ shadow[ 0 ].color }
-																	onChange={ value => saveShadow( { color: value } ) }
-																/>
-																<RangeControl
-																	label={ __( 'Shadow Opacity' ) }
-																	value={ shadow[ 0 ].opacity }
-																	onChange={ value => saveShadow( { opacity: value } ) }
-																	min={ 0 }
-																	max={ 1 }
-																	step={ 0.1 }
+																<AdvancedColorControl
+																	label={ __( 'Shadow Color' ) }
+																	colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
+																	colorDefault={ '' }
+																	onColorChange={ value => saveShadow( { color: value } ) }
+																	opacityValue={ shadow[ 0 ].opacity }
+																	onOpacityChange={ value => saveShadow( { opacity: value } ) }
 																/>
 																<RangeControl
 																	label={ __( 'Shadow Blur' ) }
@@ -1832,8 +1941,8 @@ class KadenceInfoBox extends Component {
 								<div className="kadence-info-box-image-inner-intrisic-container" style={ {
 									maxWidth: mediaImage[ 0 ].maxWidth + 'px',
 								} } >
-									<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }` } style={ {
-										paddingBottom: ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+									<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }` } style={ {
+										paddingBottom: isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
 									} } >
 										<div className="kadence-info-box-image-inner-intrisic">
 											<img
@@ -1895,6 +2004,7 @@ class KadenceInfoBox extends Component {
 										fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
 										padding: ( titleFont[ 0 ].padding ? titleFont[ 0 ].padding[ 0 ] + 'px ' + titleFont[ 0 ].padding[ 1 ] + 'px ' + titleFont[ 0 ].padding[ 2 ] + 'px ' + titleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
 										margin: ( titleFont[ 0 ].margin ? titleFont[ 0 ].margin[ 0 ] + 'px ' + titleFont[ 0 ].margin[ 1 ] + 'px ' + titleFont[ 0 ].margin[ 2 ] + 'px ' + titleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
+										minHeight: ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
 									} }
 									keepPlaceholderOnFocus
 								/>
@@ -1918,6 +2028,7 @@ class KadenceInfoBox extends Component {
 										lineHeight: ( textFont[ 0 ].lineHeight && textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] + textFont[ 0 ].lineType : undefined ),
 										letterSpacing: textFont[ 0 ].letterSpacing + 'px',
 										fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
+										minHeight: ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] + 'px' : undefined ),
 									} }
 									keepPlaceholderOnFocus
 								/>

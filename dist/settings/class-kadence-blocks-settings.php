@@ -78,6 +78,65 @@ class Kadence_Blocks_Settings {
 					$theme_palette = get_theme_support( 'editor-color-palette' );
 					if ( is_array( $theme_palette ) ) {
 						$newpalette = array_merge( reset( $theme_palette ), $san_palette );
+					} else {
+						$default_palette = array(
+							array(
+								'name' => __( 'Pale pink', 'kadence-blocks' ),
+								'slug' => 'pale-pink',
+								'color' => '#f78da7',
+							),
+							array(
+								'name' => __( 'Vivid red', 'kadence-blocks' ),
+								'slug' => 'vivid-red',
+								'color' => '#cf2e2e',
+							),
+							array(
+								'name' => __( 'Luminous vivid orange', 'kadence-blocks' ),
+								'slug' => 'luminous-vivid-orange',
+								'color' => '#ff6900',
+							),
+							array(
+								'name' => __( 'Luminous vivid amber', 'kadence-blocks' ),
+								'slug' => 'luminous-vivid-amber',
+								'color' => '#fcb900',
+							),
+							array(
+								'name' => __( 'Light green cyan', 'kadence-blocks' ),
+								'slug' => 'light-green-cyan',
+								'color' => '#7bdcb5',
+							),
+							array(
+								'name' => __( 'Vivid green cyan', 'kadence-blocks' ),
+								'slug' => 'vivid-green-cyan',
+								'color' => '#00d084',
+							),
+							array(
+								'name' => __( 'Pale cyan blue', 'kadence-blocks' ),
+								'slug' => 'pale-cyan-blue',
+								'color' => '#8ed1fc',
+							),
+							array(
+								'name' => __( 'Vivid cyan blue', 'kadence-blocks' ),
+								'slug' => 'vivid-cyan-blue',
+								'color' => '#0693e3',
+							),
+							array(
+								'name' => __( 'Very light gray', 'kadence-blocks' ),
+								'slug' => 'very-light-gray',
+								'color' => '#eeeeee',
+							),
+							array(
+								'name' => __( 'Cyan bluish gray', 'kadence-blocks' ),
+								'slug' => 'cyan-bluish-gray',
+								'color' => '#abb8c3',
+							),
+							array(
+								'name' => __( 'Very dark gray', 'kadence-blocks' ),
+								'slug' => 'very-dark-gray',
+								'color' => '#313131',
+							),
+						);
+						$newpalette = array_merge( $default_palette, $san_palette );
 					}
 				} else {
 					$newpalette = $san_palette;

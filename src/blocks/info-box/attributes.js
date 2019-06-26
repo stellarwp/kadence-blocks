@@ -143,6 +143,10 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	titleMinHeight: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
 	titleFont: {
 		type: 'array',
 		default: [ {
@@ -183,6 +187,10 @@ const attributes = {
 	textHoverColor: {
 		type: 'string',
 		default: '',
+	},
+	textMinHeight: {
+		type: 'array',
+		default: [ '', '', '' ],
 	},
 	textFont: {
 		type: 'array',

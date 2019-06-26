@@ -2,9 +2,9 @@
 Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencethemes.com/about-us/
-Requires at least: 4.8
+Requires at least: 5.2
 Tested up to: 5.2.2
-Stable tag: 1.5.11
+Stable tag: 1.5.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.5.12 =
+* Fix: SVG in info box.
+* Add: Min height settings for text and titles in info box.
+* Update: support negative margin for advanced heading.
+* Add: Subtitle for tab titles.
 
 = 1.5.11 =
 * Fix: issue with color Palette.

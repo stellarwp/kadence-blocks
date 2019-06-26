@@ -118,15 +118,16 @@
     margin: 0;
 }
 .components-popover__content .components-color-palette .components-color-palette__item-wrapper {
-    margin-right: 10px;
+	margin-right: 5px;
     margin-bottom: 10px;
+    margin-left: 5px;
 }
 .components-popover__content .components-color-palette .components-color-palette__item-wrapper:last-child {
     margin-right: 0;
 }
 .components-popover__content .components-color-palette {
     margin: 0;
-    padding: 0px 16px 12px;
+    padding: 0px 12px 12px;
     width: 100%;
 }
 .kt-advanced-color-settings-container {

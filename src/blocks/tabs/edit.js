@@ -22,6 +22,7 @@ import FaIco from '../../faicons';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
+import AdvancedColorControl from '../../advanced-color-control';
 /**
  * Import Css
  */
@@ -36,7 +37,6 @@ const {
 	InspectorControls,
 	RichText,
 	BlockControls,
-	ColorPalette,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
 } = wp.blockEditor;
@@ -148,7 +148,7 @@ class KadenceTabs extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab }, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont }, className, setAttributes } = this.props;
 		const layoutClass = ( ! layout ? 'tabs' : layout );
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
@@ -158,6 +158,23 @@ class KadenceTabs extends Component {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
 			},
+		};
+		const sgconfig = {
+			google: {
+				families: [ subtitleFont[ 0 ].family + ( subtitleFont[ 0 ].variant ? ':' + subtitleFont[ 0 ].variant : '' ) ],
+			},
+		};
+		const sconfig = ( subtitleFont[ 0 ].google ? sgconfig : '' );
+		const saveSubtitleFont = ( value ) => {
+			const newUpdate = subtitleFont.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				subtitleFont: newUpdate,
+			} );
 		};
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -467,7 +484,7 @@ class KadenceTabs extends Component {
 		const renderTitles = ( index ) => {
 			return (
 				<Fragment>
-					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }` } style={ {
+					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` } style={ {
 						margin: ( titleMargin ? titleMargin[ 0 ] + 'px ' + titleMargin[ 1 ] + 'px ' + titleMargin[ 2 ] + 'px ' + titleMargin[ 3 ] + 'px' : '' ),
 					} }>
 						<div className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
@@ -489,21 +506,64 @@ class KadenceTabs extends Component {
 							{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
 							) }
-							<RichText
-								tagName="div"
-								placeholder={ __( 'Tab Title' ) }
-								value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab%d' ), ( 1 + index ) ) ) }
-								unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
-								onChange={ value => {
-									this.saveArrayUpdate( { text: value }, index );
-								} }
-								formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
-								className={ 'kt-title-text' }
-								style={ {
-									lineHeight: lineHeight + lineType,
-								} }
-								keepPlaceholderOnFocus
-							/>
+							{ ( undefined === enableSubtitle || ! enableSubtitle ) && (
+								<RichText
+									tagName="div"
+									placeholder={ __( 'Tab Title' ) }
+									value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab%d' ), ( 1 + index ) ) ) }
+									unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
+									onChange={ value => {
+										this.saveArrayUpdate( { text: value }, index );
+									} }
+									formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
+									className={ 'kt-title-text' }
+									style={ {
+										lineHeight: lineHeight + lineType,
+									} }
+									keepPlaceholderOnFocus
+								/>
+							) }
+							{ enableSubtitle && (
+								<div className="kb-tab-titles-wrap">
+									<RichText
+										tagName="div"
+										placeholder={ __( 'Tab Title' ) }
+										value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab%d' ), ( 1 + index ) ) ) }
+										unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
+										onChange={ value => {
+											this.saveArrayUpdate( { text: value }, index );
+										} }
+										formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
+										className={ 'kt-title-text' }
+										style={ {
+											lineHeight: lineHeight + lineType,
+										} }
+										keepPlaceholderOnFocus
+									/>
+									<RichText
+										tagName="div"
+										placeholder={ __( 'Tab subtitle' ) }
+										value={ ( titles[ index ] && titles[ index ].subText ? titles[ index ].subText : '' ) }
+										unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
+										onChange={ value => {
+											this.saveArrayUpdate( { subText: value }, index );
+										} }
+										formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
+										className={ 'kt-title-sub-text' }
+										style={ {
+											fontWeight: subtitleFont[ 0 ].weight,
+											fontStyle: subtitleFont[ 0 ].style,
+											fontSize: subtitleFont[ 0 ].size[ 0 ] + subtitleFont[ 0 ].sizeType,
+											lineHeight: ( subtitleFont[ 0 ].lineHeight && subtitleFont[ 0 ].lineHeight[ 0 ] ? subtitleFont[ 0 ].lineHeight[ 0 ] + subtitleFont[ 0 ].lineType : undefined ),
+											letterSpacing: subtitleFont[ 0 ].letterSpacing + 'px',
+											fontFamily: ( subtitleFont[ 0 ].family ? subtitleFont[ 0 ].family : '' ),
+											padding: ( subtitleFont[ 0 ].padding ? subtitleFont[ 0 ].padding[ 0 ] + 'px ' + subtitleFont[ 0 ].padding[ 1 ] + 'px ' + subtitleFont[ 0 ].padding[ 2 ] + 'px ' + subtitleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
+											margin: ( subtitleFont[ 0 ].margin ? subtitleFont[ 0 ].margin[ 0 ] + 'px ' + subtitleFont[ 0 ].margin[ 1 ] + 'px ' + subtitleFont[ 0 ].margin[ 2 ] + 'px ' + subtitleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
+										} }
+										keepPlaceholderOnFocus
+									/>
+								</div>
+							) }
 							{ titles[ index ] && titles[ index ].icon && 'right' === titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
 							) }
@@ -558,58 +618,67 @@ class KadenceTabs extends Component {
 		};
 		const normalSettings = (
 			<Fragment>
-				<p className="kt-setting-label">{ __( 'Title Color' ) }</p>
-				<ColorPalette
-					value={ titleColor }
-					onChange={ ( value ) => setAttributes( { titleColor: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Title Color' ) }
+					colorValue={ ( titleColor ? titleColor : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleColor: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Title Background' ) }</p>
-				<ColorPalette
-					value={ titleBg }
-					onChange={ ( value ) => setAttributes( { titleBg: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Title Background' ) }
+					colorValue={ ( titleBg ? titleBg : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleBg: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Title Border Color' ) }</p>
-				<ColorPalette
-					value={ titleBorder }
-					onChange={ ( value ) => setAttributes( { titleBorder: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Title Border Color' ) }
+					colorValue={ ( titleBorder ? titleBorder : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleBorder: value } ) }
 				/>
 			</Fragment>
 		);
 		const hoverSettings = (
 			<Fragment>
-				<p className="kt-setting-label">{ __( 'Hover Color' ) }</p>
-				<ColorPalette
-					value={ titleColorHover }
-					onChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Hover Color' ) }
+					colorValue={ ( titleColorHover ? titleColorHover : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Hover Background' ) }</p>
-				<ColorPalette
-					value={ titleBgHover }
-					onChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Hover Background' ) }
+					colorValue={ ( titleBgHover ? titleBgHover : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Hover Border Color' ) }</p>
-				<ColorPalette
-					value={ titleBorderHover }
-					onChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Hover Border Color' ) }
+					colorValue={ ( titleBorderHover ? titleBorderHover : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
 				/>
 			</Fragment>
 		);
 		const activeSettings = (
 			<Fragment>
-				<p className="kt-setting-label">{ __( 'Active Color' ) }</p>
-				<ColorPalette
-					value={ titleColorActive }
-					onChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Active Color' ) }
+					colorValue={ ( titleColorActive ? titleColorActive : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Active Background' ) }</p>
-				<ColorPalette
-					value={ titleBgActive }
-					onChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Active Background' ) }
+					colorValue={ ( titleBgActive ? titleBgActive : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Active Border Color' ) }</p>
-				<ColorPalette
-					value={ titleBorderActive }
-					onChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
+				<AdvancedColorControl
+					label={ __( 'Active Border Color' ) }
+					colorValue={ ( titleBorderActive ? titleBorderActive : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
 				/>
 			</Fragment>
 		);
@@ -846,6 +915,7 @@ class KadenceTabs extends Component {
 													icon: titles[ 0 ].icon,
 													iconSide: titles[ 0 ].iconSide,
 													onlyIcon: titles[ 0 ].iconHover,
+													subText: '',
 												} );
 											} ); }
 											setAttributes( { titles: newtabs } );
@@ -880,10 +950,11 @@ class KadenceTabs extends Component {
 								title={ __( 'Content Settings' ) }
 								initialOpen={ false }
 							>
-								<p className="kt-setting-label">{ __( 'Content Background' ) }</p>
-								<ColorPalette
-									value={ contentBgColor }
-									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
+								<AdvancedColorControl
+									label={ __( 'Content Background' ) }
+									colorValue={ ( contentBgColor ? contentBgColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Inner Content Padding (px)' ) }
@@ -895,10 +966,11 @@ class KadenceTabs extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-								<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
-								<ColorPalette
-									value={ contentBorderColor }
-									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
+								<AdvancedColorControl
+									label={ __( 'Border Color' ) }
+									colorValue={ ( contentBorderColor ? contentBorderColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Content Border Width (px)' ) }
@@ -1064,6 +1136,63 @@ class KadenceTabs extends Component {
 								{ times( tabCount, n => renderTitleSettings( n ) ) }
 							</PanelBody>
 						) }
+						{ this.showSettings( 'subtitle' ) && (
+							<PanelBody
+								title={ __( 'Tab Subtitle Settings' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Show Subtitles?' ) }
+									checked={ ( undefined !== enableSubtitle ? enableSubtitle : false ) }
+									onChange={ value => {
+										setAttributes( { enableSubtitle: value } );
+									} }
+								/>
+								{ enableSubtitle && (
+									<TypographyControls
+										fontSize={ subtitleFont[ 0 ].size }
+										onFontSize={ ( value ) => saveSubtitleFont( { size: value } ) }
+										fontSizeType={ subtitleFont[ 0 ].sizeType }
+										onFontSizeType={ ( value ) => saveSubtitleFont( { sizeType: value } ) }
+										lineHeight={ subtitleFont[ 0 ].lineHeight }
+										onLineHeight={ ( value ) => saveSubtitleFont( { lineHeight: value } ) }
+										lineHeightType={ subtitleFont[ 0 ].lineType }
+										onLineHeightType={ ( value ) => saveSubtitleFont( { lineType: value } ) }
+										letterSpacing={ subtitleFont[ 0 ].letterSpacing }
+										onLetterSpacing={ ( value ) => saveSubtitleFont( { letterSpacing: value } ) }
+										fontFamily={ subtitleFont[ 0 ].family }
+										onFontFamily={ ( value ) => saveSubtitleFont( { family: value } ) }
+										onFontChange={ ( select ) => {
+											saveSubtitleFont( {
+												family: select.value,
+												google: select.google,
+											} );
+										} }
+										onFontArrayChange={ ( values ) => saveSubtitleFont( values ) }
+										googleFont={ subtitleFont[ 0 ].google }
+										onGoogleFont={ ( value ) => saveSubtitleFont( { google: value } ) }
+										loadGoogleFont={ subtitleFont[ 0 ].loadGoogle }
+										onLoadGoogleFont={ ( value ) => saveSubtitleFont( { loadGoogle: value } ) }
+										fontVariant={ subtitleFont[ 0 ].variant }
+										onFontVariant={ ( value ) => saveSubtitleFont( { variant: value } ) }
+										fontWeight={ subtitleFont[ 0 ].weight }
+										onFontWeight={ ( value ) => saveSubtitleFont( { weight: value } ) }
+										fontStyle={ subtitleFont[ 0 ].style }
+										onFontStyle={ ( value ) => saveSubtitleFont( { style: value } ) }
+										fontSubset={ subtitleFont[ 0 ].subset }
+										onFontSubset={ ( value ) => saveSubtitleFont( { subset: value } ) }
+										padding={ subtitleFont[ 0 ].padding }
+										onPadding={ ( value ) =>saveSubtitleFont( { padding: value } ) }
+										paddingControl={ subtitleFont[ 0 ].paddingControl }
+										onPaddingControl={ ( value ) =>saveSubtitleFont( { paddingControl: value } ) }
+										margin={ subtitleFont[ 0 ].margin }
+										onMargin={ ( value ) =>saveSubtitleFont( { margin: value } ) }
+										marginControl={ subtitleFont[ 0 ].marginControl }
+										onMarginControl={ ( value ) =>saveSubtitleFont( { marginControl: value } ) }
+									/>
+								) }
+							</PanelBody>
+						) }
 						{ this.showSettings( 'structure' ) && (
 							<PanelBody
 								title={ __( 'Structure Settings' ) }
@@ -1127,6 +1256,10 @@ class KadenceTabs extends Component {
 							</ul>
 							{ googleFont && (
 								<WebfontLoader config={ config }>
+								</WebfontLoader>
+							) }
+							{ enableSubtitle && subtitleFont && subtitleFont[ 0 ].google && (
+								<WebfontLoader config={ sconfig }>
 								</WebfontLoader>
 							) }
 							<div className="kt-tabs-content-wrap" style={ {

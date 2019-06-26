@@ -84,7 +84,10 @@ display: block;
 	justify-content: flex-start;
 	flex-direction: row-reverse;
 }
-
+.kadence-info-box-image-intrisic.kb-info-box-image-type-svg {
+    height: auto;
+    padding-bottom: 0;
+}
 .kt-info-animate-grayscale img, .kt-info-animate-grayscale-border-draw img {
 	-webkit-filter: grayscale(100%);
 	filter: grayscale(100%);

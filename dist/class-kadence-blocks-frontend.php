@@ -50,6 +50,7 @@ class Kadence_Blocks_Frontend {
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
 	}
+
 	/**
 	 * On init startup.
 	 */
@@ -118,7 +119,18 @@ class Kadence_Blocks_Frontend {
 				'render_callback' => array( $this, 'render_testimonials_css' ),
 			)
 		);
+		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 	}
+	/**
+	 * Allow Columns to be looked at for inner content.
+	 *
+	 * @param array $allowed inner blocks.
+	 */
+	public function add_blocks_to_excerpt( $allowed ) {
+		$allowed = array_merge( $allowed, apply_filters( 'kadence_blocks_allowed_excerpt_blocks', array( 'kadence/advancedheading' ) ) );
+		return $allowed;
+	}
+
 	/**
 	 * Render Inline CSS helper function
 	 *
@@ -1042,14 +1054,35 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) {
 			$css .= '@media (max-width: 767px) {';
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-title {';
-				if ( isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) {
-					$css .= 'font-size:' . $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
-				}
-				if ( isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) {
-					$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
-				}
+			if ( isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+			}
 			$css .= '}';
 			$css .= '}';
+		}
+		if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['titleMinHeight'][0] ) ) {
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['titleMinHeight'][2] ) && is_numeric( $attr['titleMinHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
 		}
 		if ( isset( $attr['textColor'] ) || isset( $attr['textFont'] ) ) {
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
@@ -1107,6 +1140,27 @@ class Kadence_Blocks_Frontend {
 				}
 			$css .= '}';
 			$css .= '}';
+		}
+		if ( isset( $attr['textMinHeight'] ) && is_array( $attr['textMinHeight'] ) && isset( $attr['textMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['textMinHeight'][0] ) ) {
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
+				$css .= 'min-height:' . $attr['textMinHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['textMinHeight'][1] ) && is_numeric( $attr['textMinHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
+				$css .= 'min-height:' . $attr['textMinHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['textMinHeight'][2] ) && is_numeric( $attr['textMinHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
+				$css .= 'min-height:' . $attr['textMinHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
 		}
 		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'][ 0 ] ) ) {
 			$learn_more_styles = $attr['learnMoreStyles'][ 0 ];
@@ -1180,12 +1234,12 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && ( ( isset( $attr['learnMoreStyles'][0]['size'] ) && is_array( $attr['learnMoreStyles'][0]['size'] ) && isset( $attr['learnMoreStyles'][0]['size'][2] ) && ! empty( $attr['learnMoreStyles'][0]['size'][2] ) ) || ( isset( $attr['learnMoreStyles'][0]['lineHeight'] ) && is_array( $attr['learnMoreStyles'][0]['lineHeight'] ) && isset( $attr['learnMoreStyles'][0]['lineHeight'][2] ) && ! empty( $attr['learnMoreStyles'][0]['lineHeight'][2] ) ) ) ) {
 			$css .= '@media (max-width: 767px) {';
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-learnmore {';
-				if ( isset( $attr['learnMoreStyles'][0]['size'][2] ) && ! empty( $attr['learnMoreStyles'][0]['size'][2] ) ) {
-					$css .= 'font-size:' . $attr['learnMoreStyles'][0]['size'][2] . ( ! isset( $attr['learnMoreStyles'][0]['sizeType'] ) ? 'px' : $attr['learnMoreStyles'][0]['sizeType'] ) . ';';
-				}
-				if ( isset( $attr['learnMoreStyles'][0]['lineHeight'][2] ) && ! empty( $attr['learnMoreStyles'][0]['lineHeight'][2] ) ) {
-					$css .= 'line-height:' . $attr['learnMoreStyles'][0]['lineHeight'][2] . ( ! isset( $attr['learnMoreStyles'][0]['lineType'] ) ? 'px' : $attr['learnMoreStyles'][0]['lineType'] ) . ';';
-				}
+			if ( isset( $attr['learnMoreStyles'][0]['size'][2] ) && ! empty( $attr['learnMoreStyles'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['learnMoreStyles'][0]['size'][2] . ( ! isset( $attr['learnMoreStyles'][0]['sizeType'] ) ? 'px' : $attr['learnMoreStyles'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['learnMoreStyles'][0]['lineHeight'][2] ) && ! empty( $attr['learnMoreStyles'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['learnMoreStyles'][0]['lineHeight'][2] . ( ! isset( $attr['learnMoreStyles'][0]['lineType'] ) ? 'px' : $attr['learnMoreStyles'][0]['lineType'] ) . ';';
+			}
 			$css .= '}';
 			$css .= '}';
 		}
@@ -1337,7 +1391,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-tabs-id_' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 			if ( isset( $attr['tabSize'] ) ) {
 				$css .= 'font-size:' . $attr['tabSize'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -1349,7 +1403,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['mobileSize'] ) || isset( $attr['mobileLineHeight'] ) ) {
 			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-tabs-id_' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title  {';
+			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title  {';
 			if ( isset( $attr['mobileSize'] ) ) {
 				$css .= 'font-size:' . $attr['mobileSize'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -1359,17 +1413,73 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 			$css .= '}';
 		}
+		if ( isset( $attr['enableSubtitle'] ) && true == $attr['enableSubtitle'] && isset( $attr['subtitleFont'] ) && is_array( $attr['subtitleFont'] ) && is_array( $attr['subtitleFont'][0] ) ) {
+			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-title-sub-text, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-title-sub-text {';
+			$subtitle_font = $attr['subtitleFont'][0];
+			if ( isset( $subtitle_font['size'] ) && is_array( $subtitle_font['size'] ) && ! empty( $subtitle_font['size'][0] ) ) {
+				$css .= 'font-size:' . $subtitle_font['size'][0] . ( ! isset( $subtitle_font['sizeType'] ) ? 'px' : $subtitle_font['sizeType'] ) . ';';
+			}
+			if ( isset( $subtitle_font['lineHeight'] ) && is_array( $subtitle_font['lineHeight'] ) && ! empty( $subtitle_font['lineHeight'][0] ) ) {
+				$css .= 'line-height:' . $subtitle_font['lineHeight'][0] . ( ! isset( $subtitle_font['lineType'] ) ? 'px' : $subtitle_font['lineType'] ) . ';';
+			}
+			if ( isset( $subtitle_font['letterSpacing'] ) && ! empty( $subtitle_font['letterSpacing'] ) ) {
+				$css .= 'letter-spacing:' . $subtitle_font['letterSpacing'] .  'px;';
+			}
+			if ( isset( $subtitle_font['textTransform'] ) && ! empty( $subtitle_font['textTransform'] ) ) {
+				$css .= 'text-transform:' . $subtitle_font['textTransform'] .  ';';
+			}
+			if ( isset( $subtitle_font['family'] ) && ! empty( $subtitle_font['family'] ) ) {
+				$css .= 'font-family:' . $subtitle_font['family'] .  ';';
+			}
+			if ( isset( $subtitle_font['style'] ) && ! empty( $subtitle_font['style'] ) ) {
+				$css .= 'font-style:' . $subtitle_font['style'] .  ';';
+			}
+			if ( isset( $subtitle_font['weight'] ) && ! empty( $subtitle_font['weight'] ) ) {
+				$css .= 'font-weight:' . $subtitle_font['weight'] .  ';';
+			}
+			if ( isset( $subtitle_font['padding'] ) && is_array( $subtitle_font['padding'] ) ) {
+				$css .= 'padding:' . $subtitle_font['padding'][0] . 'px ' . $subtitle_font['padding'][1] . 'px ' . $subtitle_font['padding'][2] . 'px ' . $subtitle_font['padding'][3] . 'px;';
+			}
+			if ( isset( $subtitle_font['margin'] ) && is_array( $subtitle_font['margin'] ) ) {
+				$css .= 'margin:' . $subtitle_font['margin'][0] . 'px ' . $subtitle_font['margin'][1] . 'px ' . $subtitle_font['margin'][2] . 'px ' . $subtitle_font['margin'][3] . 'px;';
+			}
+			$css .= '}';
+		}
+		if ( isset( $attr['subtitleFont'] ) && is_array( $attr['subtitleFont'] ) && isset( $attr['subtitleFont'][0] ) && is_array( $attr['subtitleFont'][0] ) && ( ( isset( $attr['subtitleFont'][0]['size'] ) && is_array( $attr['subtitleFont'][0]['size'] ) && isset( $attr['subtitleFont'][0]['size'][1] ) && ! empty( $attr['subtitleFont'][0]['size'][1] ) ) || ( isset( $attr['subtitleFont'][0]['lineHeight'] ) && is_array( $attr['subtitleFont'][0]['lineHeight'] ) && isset( $attr['subtitleFont'][0]['lineHeight'][1] ) && ! empty( $attr['subtitleFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-title-sub-text, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-title-sub-text {';
+			if ( isset( $attr['subtitleFont'][0]['size'][1] ) && ! empty( $attr['subtitleFont'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['subtitleFont'][0]['size'][1] . ( ! isset( $attr['subtitleFont'][0]['sizeType'] ) ? 'px' : $attr['subtitleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['subtitleFont'][0]['lineHeight'][1] ) && ! empty( $attr['subtitleFont'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['subtitleFont'][0]['lineHeight'][1] . ( ! isset( $attr['subtitleFont'][0]['lineType'] ) ? 'px' : $attr['subtitleFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['subtitleFont'] ) && is_array( $attr['subtitleFont'] ) && isset( $attr['subtitleFont'][0] ) && is_array( $attr['subtitleFont'][0] ) && ( ( isset( $attr['subtitleFont'][0]['size'] ) && is_array( $attr['subtitleFont'][0]['size'] ) && isset( $attr['subtitleFont'][0]['size'][2] ) && ! empty( $attr['subtitleFont'][0]['size'][2] ) ) || ( isset( $attr['subtitleFont'][0]['lineHeight'] ) && is_array( $attr['subtitleFont'][0]['lineHeight'] ) && isset( $attr['subtitleFont'][0]['lineHeight'][2] ) && ! empty( $attr['subtitleFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-title-sub-text, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-title-sub-text {';
+			if ( isset( $attr['subtitleFont'][0]['size'][2] ) && ! empty( $attr['subtitleFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['subtitleFont'][0]['size'][2] . ( ! isset( $attr['subtitleFont'][0]['sizeType'] ) ? 'px' : $attr['subtitleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['subtitleFont'][0]['lineHeight'][2] ) && ! empty( $attr['subtitleFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['subtitleFont'][0]['lineHeight'][2] . ( ! isset( $attr['subtitleFont'][0]['lineType'] ) ? 'px' : $attr['subtitleFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
 		return $css;
 	}
 	/**
 	 * Adds Google fonts for infobox block.
 	 *
-	 * @param array  $attr the blocks attr.
+	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_infobox_scripts_gfonts( $attr ) {
 		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
 			$title_font = $attr['titleFont'][0];
-			// Check if the font has been added yet
+			// Check if the font has been added yet.
 			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $title_font['family'],
@@ -1903,6 +2013,25 @@ class Kadence_Blocks_Frontend {
 					if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
 						array_push( self::$gfonts[ $attr['typography'] ]['fontsubsets'], $attr['fontSubset'] );
 					}
+				}
+			}
+		}
+		if ( isset( $attr['subtitleFont'] ) && is_array( $attr['subtitleFont'] ) && isset( $attr['subtitleFont'][0] ) && is_array( $attr['subtitleFont'][0] ) && isset( $attr['subtitleFont'][0]['google'] ) && $attr['subtitleFont'][0]['google'] && ( ! isset( $attr['subtitleFont'][0]['loadGoogle'] ) || true === $attr['subtitleFont'][0]['loadGoogle'] ) && isset( $attr['subtitleFont'][0]['family'] ) ) {
+			$subtitle_font = $attr['subtitleFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $subtitle_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $subtitle_font['family'],
+					'fontvariants' => ( isset( $subtitle_font['variant'] ) && ! empty( $subtitle_font['variant'] ) ? array( $subtitle_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $subtitle_font['subset'] ) && ! empty( $subtitle_font['subset'] ) ? array( $subtitle_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $subtitle_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $subtitle_font['variant'], self::$gfonts[ $subtitle_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $subtitle_font['family'] ]['fontvariants'], $subtitle_font['variant'] );
+				}
+				if ( ! in_array( $subtitle_font['subset'], self::$gfonts[ $subtitle_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $subtitle_font['family'] ]['fontsubsets'], $subtitle_font['subset'] );
 				}
 			}
 		}

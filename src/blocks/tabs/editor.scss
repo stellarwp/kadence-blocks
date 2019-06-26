@@ -300,6 +300,9 @@
 			.kt-tab-title {
 				justify-content: center;
 			}
+			.kb-tab-titles-wrap {
+				align-items: center;
+			}
 		}
 	}
 	&.kt-tab-alignment-right > .kt-tabs-wrap > .kt-tabs-title-list {
@@ -309,6 +312,9 @@
 			.kt-tab-title {
 				justify-content: flex-end;
 				align-items: center;
+			}
+			.kb-tab-titles-wrap {
+				align-items: flex-end;
 			}
 		}
 	}
@@ -330,4 +336,15 @@
 }
 .kt-tabs-wrap {
     margin: 0 auto;
+}
+.kt-tabs-layout-vtabs.kt-tab-alignment-center > .kt-tabs-wrap > .kt-tabs-title-list li .kb-tab-titles-wrap {
+	align-items: center;
+}
+.kb-tab-titles-wrap {
+    display: inline-flex;
+    flex-direction: column;
+}
+.kt-title-sub-text {
+	font-size: 14px;
+	line-height: 24px;
 }

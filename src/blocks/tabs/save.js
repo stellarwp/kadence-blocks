@@ -24,7 +24,7 @@ class KadenceTabsSave extends Component {
 		return string.toLowerCase().replace( /[^0-9a-z-]/g, '' );
 	}
 	render() {
-		const { attributes: { tabCount, blockAlignment, currentTab, mobileLayout, layout, tabletLayout, uniqueID, titles, iSize, maxWidth, tabAlignment, startTab } } = this.props;
+		const { attributes: { tabCount, blockAlignment, currentTab, mobileLayout, layout, tabletLayout, uniqueID, titles, iSize, maxWidth, tabAlignment, startTab, enableSubtitle } } = this.props;
 		const layoutClass = ( ! layout ? 'tabs' : layout );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
@@ -36,16 +36,32 @@ class KadenceTabsSave extends Component {
 		const renderTitles = ( index ) => {
 			return (
 				<Fragment>
-					<li id={ `tab-${ ( titles[ index ] && titles[ index ].text ? this.stripStringRender( titles[ index ].text.toString() ) : this.stripStringRender( __( 'Tab' ) + ( 1 + index ) ) ) }` } className={ `kt-title-item kt-title-item-${ 1 + index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tab-title-${ ( 1 + index === activeTab ? 'active' : 'inactive' ) }` }>
+					<li id={ `tab-${ ( titles[ index ] && titles[ index ].text ? this.stripStringRender( titles[ index ].text.toString() ) : this.stripStringRender( __( 'Tab' ) + ( 1 + index ) ) ) }` } className={ `kt-title-item kt-title-item-${ 1 + index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tab-title-${ ( 1 + index === activeTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` }>
 						<a href={ `#tab-${ ( titles[ index ] && titles[ index ].text ? this.stripStringRender( titles[ index ].text.toString() ) : this.stripStringRender( __( 'Tab' ) + ( 1 + index ) ) ) }` } data-tab={ 1 + index } className={ `kt-tab-title kt-tab-title-${ 1 + index } ` } >
 							{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
 							) }
-							<RichText.Content
-								tagName="span"
-								value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab %d' ), ( 1 + index ) ) ) }
-								className={ 'kt-title-text' }
-							/>
+							{ ( ! enableSubtitle || undefined === titles[ index ].subText || '' === titles[ index ].subText ) && (
+								<RichText.Content
+									tagName="span"
+									value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab %d' ), ( 1 + index ) ) ) }
+									className={ 'kt-title-text' }
+								/>
+							) }
+							{ enableSubtitle && titles[ index ] && undefined !== titles[ index ].subText && '' !== titles[ index ].subText && (
+								<div className="kb-tab-titles-wrap">
+									<RichText.Content
+										tagName="span"
+										value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab %d' ), ( 1 + index ) ) ) }
+										className={ 'kt-title-text' }
+									/>
+									<RichText.Content
+										tagName="span"
+										value={ titles[ index ].subText }
+										className={ 'kt-title-sub-text' }
+									/>
+								</div>
+							) }
 							{ titles[ index ] && titles[ index ].icon && 'right' === titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
 							) }

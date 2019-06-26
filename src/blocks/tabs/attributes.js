@@ -77,16 +77,19 @@ const attributes = {
 			icon: '',
 			iconSide: 'right',
 			onlyIcon: false,
+			subText: '',
 		}, {
 			text: __( 'Tab 2' ),
 			icon: '',
 			iconSide: 'right',
 			onlyIcon: false,
+			subText: '',
 		}, {
 			text: __( 'Tab 3' ),
 			icon: '',
 			iconSide: 'right',
 			onlyIcon: false,
+			subText: '',
 		} ],
 	},
 	iSize: {
@@ -213,6 +216,32 @@ const attributes = {
 	showPresets: {
 		type: 'bool',
 		default: true,
+	},
+	subtitleFont: {
+		type: 'array',
+		default: [ {
+			size: [ '', '', '' ],
+			sizeType: 'px',
+			lineHeight: [ '', '', '' ],
+			lineType: 'px',
+			letterSpacing: '',
+			textTransform: '',
+			family: '',
+			google: false,
+			style: '',
+			weight: '',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+			padding: [ 0, 0, 0, 0 ],
+			paddingControl: 'linked',
+			margin: [ 0, 0, 0, 0 ],
+			marginControl: 'linked',
+		} ],
+	},
+	enableSubtitle: {
+		type: 'bool',
+		default: false,
 	},
 };
 export default attributes;
