@@ -34,7 +34,6 @@ const {
 	MediaUpload,
 	InnerBlocks,
 	InspectorControls,
-	ColorPalette,
 	BlockControls,
 	BlockAlignmentToolbar,
 } = wp.blockEditor;
@@ -203,7 +202,7 @@ class KadenceRowLayout extends Component {
 		];
 		const heightMax = ( minHeightUnit === 'px' ? 2000 : 200 );
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
-		const marginMin = ( marginUnit === 'em' ? 0 : 0 );
+		const marginMin = ( marginUnit === 'em' ? -12 : -200 );
 		const marginMax = ( marginUnit === 'em' ? 24 : 200 );
 		const marginStep = ( marginUnit === 'em' ? 0.1 : 1 );
 		const onResize = ( event, direction, elt ) => {

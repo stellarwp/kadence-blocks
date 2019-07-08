@@ -26,6 +26,9 @@ const {
 	Tooltip,
 	Dashicon,
 } = wp.components;
+const {
+	withSelect,
+} = wp.data;
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -41,8 +44,6 @@ class AdvancedColorControl extends Component {
 		};
 	}
 	componentDidMount() {
-		const settings = wp.data.select( 'core/block-editor' ).getSettings();
-		this.setState( { colors: get( settings, [ 'colors' ], [] ) } );
 		if ( 'transparent' === this.props.colorDefault ) {
 			this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? '' : this.props.colorValue ) } );
 		} else {
@@ -88,7 +89,7 @@ class AdvancedColorControl extends Component {
 					<div className="kt-beside-color-click">
 						{ this.state.isVisible && (
 							<Popover position="top left" className="kt-popover-color" onClose={ toggleClose }>
-								{ this.state.classSat === 'first' && (
+								{ this.state.classSat === 'first' && ! this.props.disableCustomColors && (
 									<ColorPicker
 										color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) }
 										onChangeComplete={ ( color ) => {
@@ -98,7 +99,7 @@ class AdvancedColorControl extends Component {
 										disableAlpha
 									/>
 								) }
-								{ this.state.classSat === 'second' && (
+								{ this.state.classSat === 'second' && ! this.props.disableCustomColors && (
 									<ColorPicker
 										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.props.colorDefault : this.state.currentColor ) }
 										onChangeComplete={ ( color ) => {
@@ -108,7 +109,7 @@ class AdvancedColorControl extends Component {
 										disableAlpha
 									/>
 								) }
-								{ this.state.classSat !== 'second' && this.state.classSat !== 'first' && (
+								{ this.state.classSat !== 'second' && ! this.props.disableCustomColors && this.state.classSat !== 'first' && (
 									<ColorPicker
 										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.props.colorDefault : this.state.currentColor ) }
 										onChangeComplete={ ( color ) => {
@@ -118,9 +119,9 @@ class AdvancedColorControl extends Component {
 										disableAlpha
 									/>
 								) }
-								{ this.state.colors && (
+								{ this.props.colors && (
 									<div className="components-color-palette">
-										{ map( this.state.colors, ( { color, name } ) => {
+										{ map( this.props.colors, ( { color, name } ) => {
 											const style = { color };
 											return (
 												<div key={ color } className="components-color-palette__item-wrapper">
@@ -189,4 +190,12 @@ class AdvancedColorControl extends Component {
 		);
 	}
 }
-export default ( AdvancedColorControl );
+export default withSelect( ( select, ownProps ) => {
+	const settings = select( 'core/block-editor' ).getSettings();
+	const colors = get( settings, [ 'colors' ], [] );
+	const disableCustomColors = ownProps.disableCustomColors === undefined ? settings.disableCustomColors : ownProps.disableCustomColors;
+	return {
+		colors,
+		disableCustomColors,
+	};
+} )( AdvancedColorControl );

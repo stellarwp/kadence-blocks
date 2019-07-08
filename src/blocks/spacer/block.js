@@ -59,6 +59,9 @@ registerBlockType( 'kadence/spacer', {
 		__( 'divider' ),
 		__( 'KT' ),
 	],
+	supports: {
+		anchor: true,
+	},
 	attributes: {
 		blockAlignment: {
 			type: 'string',

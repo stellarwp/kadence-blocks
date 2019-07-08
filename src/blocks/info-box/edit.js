@@ -1990,6 +1990,7 @@ class KadenceInfoBox extends Component {
 							{ displayTitle && (
 								<RichText
 									className="kt-blocks-info-box-title"
+									formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
 									tagName={ titleTagName }
 									placeholder={ __( 'Title' ) }
 									onChange={ onChangeTitle }
@@ -2016,6 +2017,7 @@ class KadenceInfoBox extends Component {
 							{ displayText && (
 								<RichText
 									className="kt-blocks-info-box-text"
+									formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
 									tagName={ 'p' }
 									placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.' ) }
 									onChange={ ( value ) => setAttributes( { contentText: value } ) }
@@ -2042,6 +2044,7 @@ class KadenceInfoBox extends Component {
 									margin: ( learnMoreStyles[ 0 ].margin ? learnMoreStyles[ 0 ].margin[ 0 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 1 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 2 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 								} } >
 									<RichText
+										formattingControls={ [ 'bold', 'italic' ] }
 										className="kt-blocks-info-box-learnmore"
 										tagName={ 'div' }
 										placeholder={ __( 'Learn More' ) }

@@ -15,18 +15,19 @@ import map from 'lodash/map';
  */
 const { __, sprintf } = wp.i18n;
 const {
-	Fragment,
 	Component,
 } = wp.element;
 const {
 	Button,
-	Popover,
 	RangeControl,
 	ColorIndicator,
 	ColorPicker,
 	Tooltip,
 	Dashicon,
 } = wp.components;
+const {
+	withSelect,
+} = wp.data;
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -39,10 +40,6 @@ class AdvancedColorControl extends Component {
 			colors: [],
 			classSat: 'first',
 		};
-	}
-	componentDidMount() {
-		const settings = wp.data.select( 'core/block-editor' ).getSettings();
-		this.setState( { colors: get( settings, [ 'colors' ], [] ) } );
 	}
 	render() {
 		const toggleVisible = () => {
@@ -88,23 +85,23 @@ class AdvancedColorControl extends Component {
 				</div>
 				{ this.state.isVisible && (
 					<div className="kt-inner-sub-section">
-						{ this.state.classSat === 'first' && (
+						{ this.state.classSat === 'first' && ! this.props.disableCustomColors && (
 							<ColorPicker
 								color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) }
 								onChangeComplete={ ( color ) => this.props.onColorChange( color.hex ) }
 								disableAlpha
 							/>
 						) }
-						{ this.state.classSat !== 'first' && (
+						{ this.state.classSat !== 'first' && ! this.props.disableCustomColors && (
 							<ColorPicker
 								color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) }
 								onChangeComplete={ ( color ) => this.props.onColorChange( color.hex ) }
 								disableAlpha
 							/>
 						) }
-						{ this.state.colors && (
+						{ this.props.colors && (
 							<div className="components-color-palette">
-								{ map( this.state.colors, ( { color, name } ) => {
+								{ map( this.props.colors, ( { color, name } ) => {
 									const style = { color };
 									return (
 										<div key={ color } className="components-color-palette__item-wrapper">
@@ -156,4 +153,12 @@ class AdvancedColorControl extends Component {
 		);
 	}
 }
-export default ( AdvancedColorControl );
+export default withSelect( ( select, ownProps ) => {
+	const settings = select( 'core/block-editor' ).getSettings();
+	const colors = get( settings, [ 'colors' ], [] );
+	const disableCustomColors = ownProps.disableCustomColors === undefined ? settings.disableCustomColors : ownProps.disableCustomColors;
+	return {
+		colors,
+		disableCustomColors,
+	};
+} )( AdvancedColorControl );
