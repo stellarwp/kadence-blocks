@@ -642,6 +642,12 @@ class Kadence_Blocks_Settings {
 				'desc'  => __( 'Choose from over 1500+ SVG Icons to add into your page and style the size, colors, background, border, etc.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/icon.jpg',
 			),
+			'kadence/advnacedgallery' => array(
+				'slug'  => 'kadence/advnacedgallery',
+				'name'  => __( 'Advanced Gallery', 'kadence-blocks' ),
+				'desc'  => __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus you can select image sizes.', 'kadence-blocks' ),
+				'image' => KT_BLOCKS_URL . 'dist/settings/img/gallery-block.jpg',
+			),
 			'kadence/advancedbtn' => array(
 				'slug'  => 'kadence/advancedbtn',
 				'name'  => __( 'Advanced Button', 'kadence-blocks' ),

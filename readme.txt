@@ -12,13 +12,14 @@ Custom Blocks for for Gutenberg to help extend the editing capabilities.
 
 == Description ==
 
-This plugin adds custom blocks to extend Gutenberg's editing capabilities to better build custom layouts and make Gutenberg able to do more closely what popular page builders can do. With the [Kadence Row Layout Block](https://www.kadenceblocks.com/row-layout-block/) you can better control columns for different screen sizes plus it gives you full row editing tools like padding, backgrounds, overlays with gradients, vertical align and much more.
+This plugin adds custom blocks and options to extend Gutenberg's editing capabilities so you can create custom layouts and more engaging content. This plugin is meant to be a toolkit that makes the WordPress block editor capable of creating content usually only possible through popular page builder plugins. For example, with the [Kadence Row Layout Block](https://www.kadenceblocks.com/row-layout-block/) you can better control columns for different screen sizes plus it gives you full row editing tools like padding, backgrounds, overlays with gradients, vertical-align and much more.
 
 = Try Kadence Blocks =
 [Demo Testing](http://demo.kadencethemes.com/kadence-blocks/)
 
 = Custom Blocks Include =
 * Row Layout - [demo](https://www.kadenceblocks.com/row-layout-block/)
+* Advanced Gallery - [demo](https://www.kadenceblocks.com/custom-blocks/advanced-gallery/)
 * Advanced Heading - [demo](https://www.kadenceblocks.com/advanced-heading-block/) 
 * Advanced Button - [demo](https://www.kadenceblocks.com/advanced-button-block/)
 * Tabs - [demo](https://www.kadenceblocks.com/tabs-block/)
@@ -33,24 +34,28 @@ This plugin adds custom blocks to extend Gutenberg's editing capabilities to bet
 https://www.youtube.com/watch?v=pSrCYcOeuMc
 
 = Key Block Features =
-The Row Layout block can have 1-6 columns and any other blocks can be nested inside. So as a single column block it's a powerful wrapper because you can create very custom backgrounds and define padding and margin both for desktop and mobile layouts.
+The Row Layout block can have 1-6 columns, and any other blocks can be nested inside. So as a single column block, it's a robust wrapper because you can create very custom backgrounds and define padding, margin, and dividers both for desktop and mobile layouts.
 
-The Advanced Heading block provides full control for your heading, including font family (all google fonts), font weight, font style, font size (with tablet and mobile control), line height, color, letter spacing, alignment and margin.
+The Advanced Gallery block allows you to add photo galleries in a masonry, grid, carousel, fluid width carousel or slider style. Enjoy four different optional caption locations, each with options to style font, background, etc.  Within each gallery, you can define the thumbnail ratio, add an image filter, set a border radius, and add box shadows.  You can make each image a custom link to another page or website. Or you can easily enable a built-in lightbox.  Plus you can select which image size to use for your thumbnails, and lightbox image for ultimate performance.
 
-The Advanced Button block allows you to have up to 5 buttons side by side. Plus, you can control each individually, both with static and hover styles, and each button can have an added icon next to the text.
+The Advanced Heading block provides full control for your headings, including font family (all google fonts), font weight, font style, font size (with tablet and mobile options), line height, color, letter spacing, alignment, and margin. Plus you can define part of the heading as a highlight and style it uniquely.
 
-The Tabs Block is highly customizable with unique tab title settings for spacing, color, icons, and text. You can set up vertical or horizontal tabs, plus there are options to switch to an accordion setup for mobile. Each tab content is an empty canvas able to contain any other block within it. 
+The Advanced Button block allows you to have up to five buttons side by side. You can control each individually, both with static and hover styles, and each button can have an added icon next to the text. This block even supports video links that open in a popup all built in!
 
-The Icon block allows you to add an SVG icon right into you page. There are over 1500 icons to choose from and with each you can control the size, color, background, border and add a link.
+The Tabs block is highly customizable with unique tab title settings for spacing, color, icons, and text. You can set up vertical or horizontal tabs, plus there are options to switch to an accordion setup for mobile. Each tab content is an empty canvas able to contain any other block within it. 
+
+The Testimonial block has four built-in preset styles to choose from and allows you to add a carousel or grid of testimonials right into your page or post. You can then customize the colors, fonts, size, border, and shadow to your liking.
+
+The Icon block enables you to add an SVG icon right into your page. There are over 1500 icons to choose from, and with each, you can control the size, color, background, border and add a link.
 
 The Spacer / Divider block allows you to optionally show a divider inside an area with a drag-able height. The divider has style options allowing you to set the width, height, color, line style, and opacity.
 
-The Info Box Block is a box link containing an icon or image and optionally a title, description and learn more text. Configure padding, fonts, backgrounds, borders and style static and hover colors even show a box shadow.
+The Info Box Block is a box link containing an icon or image and optionally a title, description and "learn more" text. Configure padding, fonts, backgrounds, borders, and style static and hover colors even show a box shadow.
 
 = Editor Max Width =
-One of the challenges with creating custom column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don’t have a sidebar, it is a poor representation of what you are actually going to get on the front end of your site. Not to mention it makes for a cramped space to work in if you are trying to manage a row with three columns.
+One of the challenges with creating column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template, this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don't have a sidebar, it is a poor representation of what you are going to get on the front end of your site. Not to mention, it makes for a cramped space to work in if you are trying to manage a row with three columns.
 
-In an effort to create an easier way to use Gutenberg in a more “page building experience” we created a simple way that allows you to change the default max width for pages and for posts as well as individually change that through a page by page setting. 
+In an effort to create an easier way to use Gutenberg in a more "page building experience" we created a simple method that allows you to change the default max width for pages and posts, as well as individually through a page by page setting. 
 
 
 = Source files =
@@ -80,6 +85,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.6.0 =
+* Add: New Advanced Gallery Block.
+* Fix: Parallax issue with Ipad.
+* Fix: hex colors not showing if transparent.
+* Fix: IE bug with icon list icons.
+* Update: Better loading testimonial carousel.
+* Update: Better lazy loading info box image.
 
 = 1.5.13 =
 * Fix: Prevent adding a link inside a link with info box.

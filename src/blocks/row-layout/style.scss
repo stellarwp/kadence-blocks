@@ -687,8 +687,10 @@
 		backface-visibility: hidden;
 		clip: rect(auto, auto, auto, auto);
 	}
-	@media not all and (min-resolution:.001dpcm) {
-		@supports (-webkit-appearance:none) {
+}
+@media not all and (min-resolution:.001dpcm) {
+	@supports (-webkit-appearance:none) {
+		@media (min-width: 768px) and (max-width: 1024px) {
 			.wp-block-kadence-rowlayout [id*="jarallax-container-"] {
 				clip: auto !important;
 			}

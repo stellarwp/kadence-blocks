@@ -41,19 +41,22 @@ class AdvancedColorControl extends Component {
 			colors: [],
 			classSat: 'first',
 			currentColor: '',
+			defaultColor: '',
 		};
 	}
 	componentDidMount() {
 		if ( 'transparent' === this.props.colorDefault ) {
-			this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? '' : this.props.colorValue ) } );
+			this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue || 'transparent' === this.props.colorValue ? '' : this.props.colorValue ) } );
+			this.setState( { defaultColor: '' } );
 		} else {
 			this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) } );
+			this.setState( { defaultColor: this.props.colorDefault } );
 		}
 	}
 	render() {
 		const toggleVisible = () => {
 			if ( 'transparent' === this.props.colorDefault ) {
-				this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? '' : this.props.colorValue ) } );
+				this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue || 'transparent' === this.props.colorValue ? '' : this.props.colorValue ) } );
 			} else {
 				this.setState( { currentColor: ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) } );
 			}
@@ -91,7 +94,7 @@ class AdvancedColorControl extends Component {
 							<Popover position="top left" className="kt-popover-color" onClose={ toggleClose }>
 								{ this.state.classSat === 'first' && ! this.props.disableCustomColors && (
 									<ColorPicker
-										color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : this.props.colorValue ) }
+										color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.state.defaultColor : this.props.colorValue ) }
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
 											this.props.onColorChange( color.hex );
@@ -101,7 +104,7 @@ class AdvancedColorControl extends Component {
 								) }
 								{ this.state.classSat === 'second' && ! this.props.disableCustomColors && (
 									<ColorPicker
-										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.props.colorDefault : this.state.currentColor ) }
+										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.state.defaultColor : this.state.currentColor ) }
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
 											this.props.onColorChange( color.hex );
@@ -111,7 +114,7 @@ class AdvancedColorControl extends Component {
 								) }
 								{ this.state.classSat !== 'second' && ! this.props.disableCustomColors && this.state.classSat !== 'first' && (
 									<ColorPicker
-										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.props.colorDefault : this.state.currentColor ) }
+										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.state.defaultColor : this.state.currentColor ) }
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
 											this.props.onColorChange( color.hex );

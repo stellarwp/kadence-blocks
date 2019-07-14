@@ -119,6 +119,12 @@ class Kadence_Blocks_Frontend {
 				'render_callback' => array( $this, 'render_testimonials_css' ),
 			)
 		);
+		register_block_type(
+			'kadence/advancedgallery',
+			array(
+				'render_callback' => array( $this, 'render_advancedgallery_css' ),
+			)
+		);
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 	}
 	/**
@@ -523,6 +529,56 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
+	 * Render Gallery CSS in Head
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 */
+	public function render_advancedgallery_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedgallery', $unique_id ) ) {
+				$css = $this->blocks_advancedgallery_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Gallery CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_advancedgallery_css( $attributes, $content ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedgallery', $unique_id ) ) {
+				if ( isset( $attributes['type'] ) && ( 'carousel' === $attributes['type'] || 'fluidcarousel' === $attributes['type'] || 'slider' === $attributes['type'] ) ) {
+					wp_enqueue_style( 'kadence-blocks-pro-slick' );
+					wp_enqueue_script( 'kadence-blocks-slick-init' );
+				} elseif ( ! isset( $attributes['type'] ) || isset( $attributes['type'] ) && 'masonry' === $attributes['type'] ) {
+					wp_enqueue_script( 'kadence-blocks-masonry-init' );
+				}
+				if ( isset( $attributes['linkTo'] ) && 'media' == isset( $attributes['linkTo'] ) && isset( $attributes['lightbox'] ) && 'magnific' === $attributes['lightbox'] ) {
+					wp_enqueue_style( 'kadence-blocks-magnific-css' );
+					wp_enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+				}
+				$css = $this->blocks_advancedgallery_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
+	}
+	/**
 	 * Render Icon List CSS in Head
 	 *
 	 * @param array $attributes the blocks attribtues.
@@ -563,7 +619,8 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
-	 * Enqueue Gutenberg block assets
+	 * 
+	 * Register and Enqueue block assets
 	 *
 	 * @since 1.0.0
 	 */
@@ -575,6 +632,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_style( 'kadence-blocks-magnific-css', KT_BLOCKS_URL . 'dist/magnific.css', array(), KT_BLOCKS_VERSION );
 		wp_register_script( 'magnific-popup', KT_BLOCKS_URL . 'dist/magnific.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-magnific-js', KT_BLOCKS_URL . 'dist/kt-init-video-popup.js', array( 'jquery', 'magnific-popup' ), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-gallery-magnific-init', KT_BLOCKS_URL . 'dist/kb-gallery-magnific-init.js', array( 'jquery', 'magnific-popup' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-accordion-js', KT_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs-min.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KT_BLOCKS_URL . 'dist/jarallax.min.js', array(), KT_BLOCKS_VERSION, true );
@@ -582,8 +640,10 @@ class Kadence_Blocks_Frontend {
 		wp_register_style( 'kadence-blocks-pro-slick', KT_BLOCKS_URL . 'dist/vendor/kt-blocks-slick.css', array(), KT_BLOCKS_VERSION );
 		wp_register_script( 'kadence-slick', KT_BLOCKS_URL . 'dist/vendor/slick.min.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-slick-init', KT_BLOCKS_URL . 'dist/kt-slick-init.js', array( 'jquery', 'kadence-slick' ), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-masonry-init', KT_BLOCKS_URL . 'dist/kb-masonry-init.js', array( 'jquery', 'masonry' ), KT_BLOCKS_VERSION, true );
 		wp_enqueue_style( 'kadence-blocks-style-css', KT_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KT_BLOCKS_VERSION );
 	}
+
 	/**
 	 * Hex to RGBA
 	 *
@@ -735,6 +795,13 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_testimonials_scripts_gfonts( $blockattr );
 						}
 					}
+					if ( 'kadence/advancedgallery' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_advancedgallery_css_head( $blockattr );
+							$this->blocks_advancedgallery_scripts_gfonts( $blockattr );
+						}
+					}
 					if ( 'kadence/spacer' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -828,6 +895,13 @@ class Kadence_Blocks_Frontend {
 						$blockattr = $inner_block['attrs'];
 						$this->render_testimonials_css_head( $blockattr );
 						$this->blocks_testimonials_scripts_gfonts( $blockattr );
+					}
+				}
+				if ( 'kadence/advancedgallery' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_advancedgallery_css_head( $blockattr );
+						$this->blocks_advancedgallery_scripts_gfonts( $blockattr );
 					}
 				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
@@ -1657,10 +1731,10 @@ class Kadence_Blocks_Frontend {
 	public function blocks_testimonials_array( $attr, $unique_id ) {
 		$css = '';
 		if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] && isset( $attr['columnGap'] ) && ! empty( $attr['columnGap'] ) ) {
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-slide {';
+			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item {';
 				$css .= 'padding: 0 ' . ( $attr['columnGap'] / 2 ) . 'px;';
 			$css .= '}';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-slider {';
+			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init {';
 				$css .= 'margin: 0 -' . ( $attr['columnGap'] / 2 ) . 'px;';
 			$css .= '}';
 			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-prev {';
@@ -1897,6 +1971,201 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 			$css .= '}';
 		}
+		return $css;
+	}
+
+	/**
+	 * Grabs the Google Fonts that are needed so we can load in the head.
+	 * 
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_advancedgallery_scripts_gfonts( $attr ) {
+		if ( isset( $attr['type'] ) && ( 'carousel' === $attr['type'] || 'fluidcarousel' === $attr['type'] || 'slider' === $attr['type'] ) ) {
+			wp_enqueue_style( 'kadence-blocks-pro-slick' );
+			wp_enqueue_script( 'kadence-blocks-slick-init' );
+		} elseif ( ! isset( $attr['type'] ) || ( isset( $attr['type'] ) && 'masonry' === $attr['type'] ) ) {
+			wp_enqueue_script( 'kadence-blocks-masonry-init' );
+		}
+		if ( isset( $attr['linkTo'] ) && 'media' === $attr['linkTo'] && isset( $attr['lightbox'] ) && ! empty( $attr['lightbox'] ) && 'magnific' === $attr['lightbox'] ) {
+			wp_enqueue_style( 'kadence-blocks-magnific-css' );
+			wp_enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+		}
+		if ( isset( $attr['captionStyles'] ) && is_array( $attr['captionStyles'] ) && isset( $attr['captionStyles'][0] ) && is_array( $attr['captionStyles'][0] ) && isset( $attr['captionStyles'][0]['google'] ) && $attr['captionStyles'][0]['google'] && ( ! isset( $attr['captionStyles'][0]['loadGoogle'] ) || true === $attr['captionStyles'][0]['loadGoogle'] ) && isset( $attr['captionStyles'][0]['family'] ) ) {
+			$caption_font = $attr['captionStyles'][0];
+			// Check if the font has been added yet
+			if ( ! array_key_exists( $caption_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily' => $caption_font['family'],
+					'fontvariants' => ( isset( $caption_font['variant'] ) && ! empty( $caption_font['variant'] ) ? array( $caption_font['variant'] ) : array() ),
+					'fontsubsets' => ( isset( $caption_font['subset'] ) && !empty( $caption_font['subset'] ) ? array( $caption_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $caption_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $caption_font['variant'], self::$gfonts[ $caption_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $caption_font['family'] ]['fontvariants'], $caption_font['variant'] );
+				}
+				if ( ! in_array( $caption_font['subset'], self::$gfonts[ $caption_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $caption_font['family'] ]['fontsubsets'], $caption_font['subset'] );
+				}
+			}
+		}
+	}
+	/**
+	 * Builds CSS for Gallery block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_advancedgallery_array( $attr, $unique_id ) {
+		$css = '';
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][0] ) && is_numeric( $attr['gutter'][0] ) ) {
+			$css .= 'ul.kb-gallery-id-' . $unique_id . ' {';
+				$css .= 'margin: -' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item {';
+				$css .= 'padding:' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init {';
+				$css .= 'margin: 0 -' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item {';
+				$css .= 'padding: 4px ' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev {';
+				$css .= 'left:' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next {';
+				$css .= 'right:' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+		}
+		if ( isset( $attr['type'] ) && $attr['type'] === 'fluidcarousel' && isset( $attr['carouselHeight'] ) && is_array( $attr['carouselHeight'] ) ) {
+			if ( isset( $attr['carouselHeight'][0] ) && is_numeric( $attr['carouselHeight'][0] ) ) {
+				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius img {';
+				$css .= 'height:' . $attr['carouselHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['carouselHeight'][1] ) && is_numeric( $attr['carouselHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius img {';
+				$css .= 'height:' . $attr['carouselHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['carouselHeight'][2] ) && is_numeric( $attr['carouselHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius img {';
+				$css .= 'height:' . $attr['carouselHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr['margin'] ) && is_array( $attr['margin'] ) && is_array( $attr['margin'][0] ) ) {
+			$margin = $attr['margin'][0];
+			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) && is_numeric( $margin['desk'][0] ) ) {
+				$css .= '.kb-gallery-id-' . $unique_id . ' {';
+				$css .= 'margin:' . $margin['desk'][0] . 'px ' . $margin['desk'][1] . 'px ' . $margin['desk'][2] . 'px ' . $margin['desk'][3] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) && is_numeric( $margin['tablet'][0] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kb-gallery-id-' . $unique_id . ' {';
+				$css .= 'margin:' . $margin['tablet'][0] . 'px ' . $margin['tablet'][1] . 'px ' . $margin['tablet'][2] . 'px ' . $margin['tablet'][3] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) && is_numeric( $margin['mobile'][0] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kb-gallery-id-' . $unique_id . ' {';
+				$css .= 'margin:' . $margin['mobile'][0] . 'px ' . $margin['mobile'][1] . 'px ' . $margin['mobile'][2] . 'px ' . $margin['mobile'][3] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr['imageRadius'] ) && is_array( $attr['imageRadius'] ) && isset( $attr['imageRadius'][0] ) && is_numeric( $attr['imageRadius'][0] ) ) {
+			$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kb-gal-image-radius {';
+			$css .= 'border-radius: ' . $attr['imageRadius'][0] . 'px ' . ( is_numeric( $attr['imageRadius'][1] ) ? $attr['imageRadius'][1] : 0 ) . 'px ' . ( is_numeric( $attr['imageRadius'][2] ) ? $attr['imageRadius'][2] : 0 ) . 'px ' . ( is_numeric( $attr['imageRadius'][3] ) ? $attr['imageRadius'][3] : 0 ) . 'px;';
+			$css .= '}';
+		}
+		if ( isset( $attr['displayShadow'] ) && ! empty( $attr['displayShadow'] ) && true === $attr['displayShadow'] ) {
+			if ( isset( $attr['shadow'] ) && is_array( $attr['shadow'] ) && is_array( $attr['shadow'][ 0 ] ) ) {
+				$shadow = $attr['shadow'][ 0 ];
+				$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kb-gal-image-radius {';
+				$css .= 'box-shadow:' . $shadow['hOffset'] . 'px ' . $shadow['vOffset'] . 'px ' . $shadow['blur'] . 'px ' . $shadow['spread'] . 'px ' . $this->hex2rgba( $shadow['color'], $shadow['opacity'] ) . ';';
+				$css .= '}';
+			}
+			if ( isset( $attr['shadowHover'] ) && is_array( $attr['shadowHover'] ) && is_array( $attr['shadowHover'][ 0 ] ) ) {
+				$shadow_hover = $attr['shadowHover'][ 0 ];
+				$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item:hover .kb-gal-image-radius {';
+				$css .= 'box-shadow:' . $shadow_hover['hOffset'] . 'px ' . $shadow_hover['vOffset'] . 'px ' . $shadow_hover['blur'] . 'px ' . $shadow_hover['spread'] . 'px ' . $this->hex2rgba( $shadow_hover['color'], $shadow_hover['opacity'] ) . ';';
+				$css .= '}';
+			} else {
+				$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item:hover .kb-gal-image-radius {';
+				$css .= 'box-shadow:4px 2px 14px 0px rgba(0,0,0,0.2);';
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr['showCaption'] ) && true === $attr['showCaption'] && isset( $attr['captionStyles'] ) && is_array( $attr['captionStyles'] ) && is_array( $attr['captionStyles'][0] ) ) {
+			$caption_font = $attr['captionStyles'][0];
+			$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption {';
+			if ( isset( $caption_font['color'] ) && ! empty( $caption_font['color'] ) ) {
+				$css .= 'color:' . $caption_font['color'] . ';';
+			}
+			if ( isset( $caption_font['background'] ) && ! empty( $caption_font['background'] ) ) {
+				$css .= 'background:linear-gradient( 0deg, ' . $this->hex2rgba( $caption_font['background'], ( isset( $caption_font['backgroundOpacity'] ) && is_numeric(  $caption_font['backgroundOpacity'] ) ) ?  $caption_font['backgroundOpacity'] : '0.5' ) . ' 0, ' . $this->hex2rgba( $caption_font['background'], 0 ) . ' 100% );';
+			}
+			if ( isset( $caption_font['size'] ) && is_array( $caption_font['size'] ) && ! empty( $caption_font['size'][0] ) ) {
+				$css .= 'font-size:' . $caption_font['size'][0] . ( ! isset( $caption_font['sizeType'] ) ? 'px' : $caption_font['sizeType'] ) . ';';
+			}
+			if ( isset( $caption_font['lineHeight'] ) && is_array( $caption_font['lineHeight'] ) && ! empty( $caption_font['lineHeight'][0] ) ) {
+				$css .= 'line-height:' . $caption_font['lineHeight'][0] . ( ! isset( $caption_font['lineType'] ) ? 'px' : $caption_font['lineType'] ) . ';';
+			}
+			if ( isset( $caption_font['letterSpacing'] ) && ! empty( $caption_font['letterSpacing'] ) ) {
+				$css .= 'letter-spacing:' . $caption_font['letterSpacing'] . 'px;';
+			}
+			if ( isset( $caption_font['textTransform'] ) && ! empty( $caption_font['textTransform'] ) ) {
+				$css .= 'text-transform:' . $caption_font['textTransform'] . ';';
+			}
+			if ( isset( $caption_font['family'] ) && ! empty( $caption_font['family'] ) ) {
+				$css .= 'font-family:' . $caption_font['family'] . ';';
+			}
+			if ( isset( $caption_font['style'] ) && ! empty( $caption_font['style'] ) ) {
+				$css .= 'font-style:' . $caption_font['style'] . ';';
+			}
+			if ( isset( $caption_font['weight'] ) && ! empty( $caption_font['weight'] ) ) {
+				$css .= 'font-weight:' . $caption_font['weight'] . ';';
+			}
+			$css .= '}';
+			if ( isset( $caption_font['background'] ) && ! empty( $caption_font['background'] ) ) {
+				$css .= '.kb-gallery-caption-style-cover-hover.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption, .kb-gallery-caption-style-below.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner .kadence-blocks-gallery-item__caption {';
+				$css .= 'background:' . $this->hex2rgba( $caption_font['background'], ( isset( $caption_font['backgroundOpacity'] ) && is_numeric(  $caption_font['backgroundOpacity'] ) ) ?  $caption_font['backgroundOpacity'] : '0.5' ) . ';';
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr['showCaption'] ) && true === $attr['showCaption'] && isset( $attr['captionStyles'] ) && is_array( $attr['captionStyles'] ) && isset( $attr['captionStyles'][0] ) && is_array( $attr['captionStyles'][0] ) && ( ( isset( $attr['captionStyles'][0]['size'] ) && is_array( $attr['captionStyles'][0]['size'] ) && isset( $attr['captionStyles'][0]['size'][1] ) && ! empty( $attr['captionStyles'][0]['size'][1] ) ) || ( isset( $attr['captionStyles'][0]['lineHeight'] ) && is_array( $attr['captionStyles'][0]['lineHeight'] ) && isset( $attr['captionStyles'][0]['lineHeight'][1] ) && ! empty( $attr['captionStyles'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item__caption {';
+			if ( isset( $attr['captionStyles'][0]['size'][1] ) && ! empty( $attr['captionStyles'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['captionStyles'][0]['size'][1] . ( ! isset( $attr['captionStyles'][0]['sizeType'] ) ? 'px' : $attr['captionStyles'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['captionStyles'][0]['lineHeight'][1] ) && ! empty( $attr['captionStyles'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['captionStyles'][0]['lineHeight'][1] . ( ! isset( $attr['captionStyles'][0]['lineType'] ) ? 'px' : $attr['captionStyles'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['showCaption'] ) && true === $attr['showCaption'] && isset( $attr['captionStyles'] ) && is_array( $attr['captionStyles'] ) && isset( $attr['captionStyles'][0] ) && is_array( $attr['captionStyles'][0] ) && ( ( isset( $attr['captionStyles'][0]['size'] ) && is_array( $attr['captionStyles'][0]['size'] ) && isset( $attr['captionStyles'][0]['size'][2] ) && ! empty( $attr['captionStyles'][0]['size'][2] ) ) || ( isset( $attr['captionStyles'][0]['lineHeight'] ) && is_array( $attr['captionStyles'][0]['lineHeight'] ) && isset( $attr['captionStyles'][0]['lineHeight'][2] ) && ! empty( $attr['captionStyles'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kadence-blocks-gallery-item__caption {';
+			if ( isset( $attr['captionStyles'][0]['size'][2] ) && ! empty( $attr['captionStyles'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['captionStyles'][0]['size'][2] . ( ! isset( $attr['captionStyles'][0]['sizeType'] ) ? 'px' : $attr['captionStyles'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['captionStyles'][0]['lineHeight'][2] ) && ! empty( $attr['captionStyles'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['captionStyles'][0]['lineHeight'][2] . ( ! isset( $attr['captionStyles'][0]['lineType'] ) ? 'px' : $attr['captionStyles'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		
 		return $css;
 	}
 	/**

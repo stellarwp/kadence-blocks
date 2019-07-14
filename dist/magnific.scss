@@ -282,7 +282,9 @@
 	left: 0;
 	width: 100%;
 	cursor: auto; }
-  
+	.mfp-figure figcaption {
+		margin: 0;
+	}
   .mfp-title {
 	text-align: left;
 	line-height: 18px;

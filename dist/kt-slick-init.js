@@ -20,7 +20,8 @@ jQuery( document ).ready( function( $ ) {
 			sm = parseInt( container.attr( 'data-columns-sm' ) ),
 			xs = parseInt( container.attr( 'data-columns-xs' ) ),
 			ss = parseInt( container.attr( 'data-columns-ss' ) ),
-			scroll = parseInt( container.attr( 'data-slider-scroll' ) );
+			scroll = parseInt( container.attr( 'data-slider-scroll' ) ),
+			sliderType = container.attr('data-slider-type');
 		var slickRtl = false;
 		var scrollSxxl = xxl,
 			scrollSxl = xl,
@@ -42,55 +43,101 @@ jQuery( document ).ready( function( $ ) {
 		container.on( 'init', function() {
 			container.removeClass( 'kt-post-carousel-loading' );
 		} );
-		container.slick( {
-			slidesToScroll: scrollSxxl,
-			slidesToShow: xxl,
-			arrows: sliderArrows,
-			speed: sliderAnimationSpeed,
-			autoplay: sliderAuto,
-			autoplaySpeed: sliderSpeed,
-			fade: false,
-			pauseOnHover: sliderPause,
-			dots: sliderDots,
-			rtl: slickRtl,
-			responsive: [
-				{
-					breakpoint: 1499,
-					settings: {
-						slidesToShow: xl,
-						slidesToScroll: scrollSxl,
+		if ( sliderType && sliderType === 'fluidcarousel' ) {
+			container.find( '.kb-slide-item' ).each( function() {
+				$( this ).css( 'maxWidth', Math.floor( ( 80 / 100 ) * container.innerWidth() ) );
+			} );
+			container.slick( {
+				slidesToScroll: 1,
+				slidesToShow: 1,
+				centerMode: true,
+				variableWidth: true,
+				arrows: sliderArrows,
+				speed: sliderAnimationSpeed,
+				autoplay: sliderAuto,
+				autoplaySpeed: sliderSpeed,
+				fade: false,
+				pauseOnHover: sliderPause,
+				rtl: slickRtl,
+				dots: sliderDots,
+			} );
+			var resizeTimer;
+
+			$( window ).on('resize', function( e ) {
+				clearTimeout( resizeTimer );
+				resizeTimer = setTimeout(function() {
+
+					container.find( '.kb-slide-item' ).each( function() {
+						$( this ).css( 'maxWidth', Math.floor( ( 80 / 100 ) * container.innerWidth() ) );
+					} );
+							
+				}, 10 );
+			} );
+		} else if ( sliderType && sliderType === 'slider' ) {
+			container.slick( {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				arrows: sliderArrows,
+				speed: sliderAnimationSpeed,
+				autoplay: sliderAuto,
+				autoplaySpeed: sliderSpeed,
+				fade: true,
+				pauseOnHover: sliderPause,
+				rtl: slickRtl,
+				adaptiveHeight: true,
+				dots: sliderDots,
+			} );
+		} else {
+			container.slick( {
+				slidesToScroll: scrollSxxl,
+				slidesToShow: xxl,
+				arrows: sliderArrows,
+				speed: sliderAnimationSpeed,
+				autoplay: sliderAuto,
+				autoplaySpeed: sliderSpeed,
+				fade: false,
+				pauseOnHover: sliderPause,
+				dots: sliderDots,
+				rtl: slickRtl,
+				responsive: [
+					{
+						breakpoint: 1499,
+						settings: {
+							slidesToShow: xl,
+							slidesToScroll: scrollSxl,
+						},
 					},
-				},
-				{
-					breakpoint: 1199,
-					settings: {
-						slidesToShow: md,
-						slidesToScroll: scrollSmd,
+					{
+						breakpoint: 1199,
+						settings: {
+							slidesToShow: md,
+							slidesToScroll: scrollSmd,
+						},
 					},
-				},
-				{
-					breakpoint: 991,
-					settings: {
-						slidesToShow: sm,
-						slidesToScroll: scrollSsm,
+					{
+						breakpoint: 991,
+						settings: {
+							slidesToShow: sm,
+							slidesToScroll: scrollSsm,
+						},
 					},
-				},
-				{
-					breakpoint: 767,
-					settings: {
-						slidesToShow: xs,
-						slidesToScroll: scrollSxs,
+					{
+						breakpoint: 767,
+						settings: {
+							slidesToShow: xs,
+							slidesToScroll: scrollSxs,
+						},
 					},
-				},
-				{
-					breakpoint: 543,
-					settings: {
-						slidesToShow: ss,
-						slidesToScroll: scrollSss,
+					{
+						breakpoint: 543,
+						settings: {
+							slidesToShow: ss,
+							slidesToScroll: scrollSss,
+						},
 					},
-				},
-			],
-		} );
+				],
+			} );
+		}
 	}
 	$( '.kt-blocks-carousel-init' ).each( function() {
 		var container = $( this );
