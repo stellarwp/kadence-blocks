@@ -278,7 +278,7 @@ function () {
 	});
     //var children = Array.from(this.container.children); // Since the Accordions header button is nested inside an element with class
     // of `badger-accordion__header` it is a grandchild of the accordion instance.
-    // In order to have nested accordions we need each to only get all the button 
+    // In order to have nested accordions we need each to only get all the button
     // elements for this instance. Here an array is created to show all the children
     // of the element `badger-accordion__header`.
     var headerParent = children.filter(function (header) {
@@ -643,8 +643,8 @@ function () {
 				panelToOpen.offsetHeight;
 				_header.classList.add(this.settings.activeClass); // 4. Set aria attrs
 				_header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
-				var resizeEvent = window.document.createEvent('UIEvents'); 
-				resizeEvent.initUIEvent('resize', true, false, window, 0); 
+				var resizeEvent = window.document.createEvent('UIEvents');
+				resizeEvent.initUIEvent('resize', true, false, window, 0);
 				window.dispatchEvent(resizeEvent);
 				var _transDuration = ( 1000 * parseFloat(getComputedStyle(panelToOpen)['transitionDuration']) );
 				setTimeout(function(){
@@ -773,7 +773,7 @@ function () {
     value: function calculatePanelHeight(panel) {
       var panelInner = panel.querySelector(this.settings.panelInnerClass);
       var activeHeight = panelInner.getBoundingClientRect();
-	  return panel.setAttribute('data-panel-height', "".concat(activeHeight['height'], "px") ); 
+	  return panel.setAttribute('data-panel-height', "".concat(activeHeight['height'], "px") );
 	  //return panel.style.maxHeight = "".concat(activeHeight, "px");
 	  // panel.style.maxHeight = panel.getAttribute('data-panel-height');
     }
@@ -863,7 +863,7 @@ for (var i = 0, len = accordionsArray.length; i < len; i++) {
 			if (duration <= 0) return;
 			var difference = to - element.scrollTop;
 			var perTick = difference / duration * 10;
-		
+
 			setTimeout(function() {
 				element.scrollTop = element.scrollTop + perTick;
 				if (element.scrollTop === to) return;
@@ -886,7 +886,7 @@ for (var i = 0, len = accordionsArray.length; i < len; i++) {
 							child.click();
 						}
 						window.setTimeout(function() {
-							kt_accordion_scrollTo( document.body, element.offsetTop, 600 );
+							kt_accordion_scrollTo( document.body, document.getElementById( id ).offsetTop, 600 );
 						}, 500 );
 					}
 				}

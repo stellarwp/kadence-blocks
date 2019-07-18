@@ -191,10 +191,10 @@ class GalleryEdit extends Component {
 		};
 	}
 
-	onSelectImages( images ) {
-		const { lightSize, thumbSize, showTitle } = this.props.attributes;
+	onSelectImages( imgs ) {
+		const { lightSize, thumbSize, images } = this.props.attributes;
 		this.setAttributes( {
-			images: images.map( ( image ) => pickRelevantMediaFiles( image, lightSize, thumbSize, showTitle ) ),
+			images: imgs.map( ( image ) => pickRelevantMediaFiles( image, lightSize, thumbSize, images ) ),
 		} );
 	}
 

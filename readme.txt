@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.2.2
-Stable tag: 1.5.13
+Stable tag: 1.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,15 +20,15 @@ This plugin adds custom blocks and options to extend Gutenberg's editing capabil
 = Custom Blocks Include =
 * Row Layout - [demo](https://www.kadenceblocks.com/row-layout-block/)
 * Advanced Gallery - [demo](https://www.kadenceblocks.com/custom-blocks/advanced-gallery/)
-* Advanced Heading - [demo](https://www.kadenceblocks.com/advanced-heading-block/) 
+* Advanced Heading - [demo](https://www.kadenceblocks.com/advanced-heading-block/)
 * Advanced Button - [demo](https://www.kadenceblocks.com/advanced-button-block/)
 * Tabs - [demo](https://www.kadenceblocks.com/tabs-block/)
-* Accordion - [demo](https://www.kadenceblocks.com/accordion-block/) 
-* Testimonials - [demo](https://www.kadenceblocks.com/testimonial-block/) 
+* Accordion - [demo](https://www.kadenceblocks.com/accordion-block/)
+* Testimonials - [demo](https://www.kadenceblocks.com/testimonial-block/)
 * Icon - [demo](https://www.kadenceblocks.com/icon-block/)
-* Spacer / Divider - [demo](https://www.kadenceblocks.com/spacer-divider-block/) 
+* Spacer / Divider - [demo](https://www.kadenceblocks.com/spacer-divider-block/)
 * Info Box - [demo](https://www.kadenceblocks.com/info-box-block/)
-* Icon List - [demo](https://www.kadenceblocks.com/icon-list-block/) 
+* Icon List - [demo](https://www.kadenceblocks.com/icon-list-block/)
 
 = Overview Video =
 https://www.youtube.com/watch?v=pSrCYcOeuMc
@@ -42,7 +42,7 @@ The Advanced Heading block provides full control for your headings, including fo
 
 The Advanced Button block allows you to have up to five buttons side by side. You can control each individually, both with static and hover styles, and each button can have an added icon next to the text. This block even supports video links that open in a popup all built in!
 
-The Tabs block is highly customizable with unique tab title settings for spacing, color, icons, and text. You can set up vertical or horizontal tabs, plus there are options to switch to an accordion setup for mobile. Each tab content is an empty canvas able to contain any other block within it. 
+The Tabs block is highly customizable with unique tab title settings for spacing, color, icons, and text. You can set up vertical or horizontal tabs, plus there are options to switch to an accordion setup for mobile. Each tab content is an empty canvas able to contain any other block within it.
 
 The Testimonial block has four built-in preset styles to choose from and allows you to add a carousel or grid of testimonials right into your page or post. You can then customize the colors, fonts, size, border, and shadow to your liking.
 
@@ -55,7 +55,7 @@ The Info Box Block is a box link containing an icon or image and optionally a ti
 = Editor Max Width =
 One of the challenges with creating column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template, this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don't have a sidebar, it is a poor representation of what you are going to get on the front end of your site. Not to mention, it makes for a cramped space to work in if you are trying to manage a row with three columns.
 
-In an effort to create an easier way to use Gutenberg in a more "page building experience" we created a simple method that allows you to change the default max width for pages and posts, as well as individually through a page by page setting. 
+In an effort to create an easier way to use Gutenberg in a more "page building experience" we created a simple method that allows you to change the default max width for pages and posts, as well as individually through a page by page setting.
 
 
 = Source files =
@@ -85,6 +85,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.6.1 =
+* Tweak: Mobile Parallax.
+* Update: Prevent Custom Link loss in gallery.
+* Update: Heading highlight.
+* Tweak: Accordion scroll to pane.
 
 = 1.6.0 =
 * Add: New Advanced Gallery Block.
@@ -195,7 +201,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 1.4.6 =
 * Update: Add Opacity options to Info Box.
-* Add: New Icon List Block. 
+* Add: New Icon List Block.
 
 = 1.4.5 =
 * Fix: Issue with buttons if you cleared the colors.
@@ -273,7 +279,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 1.3.1 =
 * Fix: Pane Title not selectable in Firefox.
 * Add: VH unit options to Spacer.
-* Add: Kadence Blocks Control Plugin! 
+* Add: Kadence Blocks Control Plugin!
 You can now define which settings users see based on user role. Currently just added for Tabs and Spacer Block.
 You can also set the block defaults.
 
@@ -338,7 +344,7 @@ You can also set the block defaults.
 * Add: Visual Select for Dividers.
 * Add: Left and Right Margins for columns. Allow Negative Margins.
 * Add: Z-index option to columns.
-* Update: Move Heading Tag Level controls to dropdown. 
+* Update: Move Heading Tag Level controls to dropdown.
 
 = 1.1.9 =
 * Add: NEW Highlight options for Heading Block.

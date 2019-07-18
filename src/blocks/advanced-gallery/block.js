@@ -320,7 +320,6 @@ registerBlockType( 'kadence/advancedgallery', {
 				[ `kb-gallery-caption-style-${ captionStyle }` ]: captionStyle,
 				[ `kb-gallery-filter-${ imageFilter }` ]: imageFilter,
 				'kb-gallery-magnific-init': linkTo === 'media' && lightbox === 'magnific',
-				'kt-blocks-carousel-init': type === 'carousel',
 			}
 		);
 		const renderGalleryImages = ( image ) => {

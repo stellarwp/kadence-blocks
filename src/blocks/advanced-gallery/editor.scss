@@ -6,11 +6,14 @@
  .components-button-group.kt-style-btn-group.kb-gallery-type-select button.components-button.kt-style-btn {
 	width: 33%;
  }
- .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-container .components-form-file-upload {
+ .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-container > .components-form-file-upload {
 	margin-top: 10px;
 	.editor-media-placeholder {
 		margin: 0;
 	}
+ }
+ .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-container > .components-placeholder.wp-block-kadence-advancedgallery {
+	margin-top: 10px;
  }
  .kb-image-size-container .kb-gallery-type-select-form-row {
     margin-bottom: 10px;

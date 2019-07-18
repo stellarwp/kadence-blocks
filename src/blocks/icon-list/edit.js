@@ -21,6 +21,7 @@ import IcoNames from '../../svgiconsnames';
 import WebfontLoader from '../../fontloader';
 import map from 'lodash/map';
 import AdvancedColorControl from '../../advanced-color-control';
+import StepControl from '../../step-control';
 
 /**
  * Import Css
@@ -62,6 +63,7 @@ class KadenceIconLists extends Component {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
 		this.saveListItem = this.saveListItem.bind( this );
+		this.onSelectItem = this.onSelectItem.bind( this );
 		this.state = {
 			focusIndex: null,
 			settings: {},
@@ -97,6 +99,15 @@ class KadenceIconLists extends Component {
 		if ( blockSettings[ 'kadence/iconlist' ] !== undefined && typeof blockSettings[ 'kadence/iconlist' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/iconlist' ] } );
 		}
+	}
+	onSelectItem( index ) {
+		return () => {
+			if ( this.state.focusIndex !== index ) {
+				this.setState( {
+					focusIndex: index,
+				} );
+			}
+		};
 	}
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
@@ -420,7 +431,7 @@ class KadenceIconLists extends Component {
 							title={ __( 'List Controls' ) }
 							initialOpen={ true }
 						>
-							<RangeControl
+							<StepControl
 								label={ __( 'Number of Items' ) }
 								value={ listCount }
 								onChange={ newcount => {
@@ -450,6 +461,7 @@ class KadenceIconLists extends Component {
 								} }
 								min={ 1 }
 								max={ 40 }
+								step={ 1 }
 							/>
 							{ this.showSettings( 'column' ) && (
 								<RangeControl

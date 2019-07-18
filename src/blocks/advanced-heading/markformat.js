@@ -7,7 +7,6 @@ const icon = <svg viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg' fillRul
 const name = 'kadence/mark';
 
 const kadenceMarkHighlight = {
-	name,
 	title: __( 'Highlight' ),
 	tagName: 'mark',
 	className: 'kt-highlight',
@@ -22,7 +21,6 @@ const kadenceMarkHighlight = {
 					onUse={ onToggle }
 				/>
 				<RichTextToolbarButton
-					name="mark"
 					icon={ icon }
 					title={ __( 'Highlight' ) }
 					onClick={ onToggle }

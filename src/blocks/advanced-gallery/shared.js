@@ -3,18 +3,23 @@
  */
 import { get, pick } from 'lodash';
 
-export const pickRelevantMediaFiles = ( image, lightSize, thumbSize ) => {
+export const pickRelevantMediaFiles = ( image, lightSize, thumbSize, oldImages ) => {
 	const imageProps = pick( image, [ 'alt', 'id', 'link', 'caption' ] );
 	if ( image.id && ! image.sizes && ! image.media_details ) {
-		console.log('here?');
 		const theImage = wp.data.select( 'core' ).getMedia( image.id );
-		console.log(theImage);
 		if ( theImage && theImage.source_url === image.url ) {
-			console.log('herethough?');
 			image = theImage;
 		}
 	}
-	console.log( image );
+	if ( image.id && typeof oldImages === 'object' && oldImages !== null ) {
+		for ( let k in oldImages ) {
+			if ( parseInt( oldImages[ k ].id ) === image.id ) {
+				if ( oldImages[ k ].customLink ) {
+					imageProps.customLink = oldImages[ k ].customLink;
+				}
+			}
+		}
+	}
 	imageProps.url = image.url || image.source_url;
 	imageProps.thumbUrl = get( image, [ 'sizes', thumbSize, 'url' ] ) || get( image, [ 'media_details', 'sizes', thumbSize, 'source_url' ] ) || image.url || image.source_url;
 	imageProps.lightUrl = get( image, [ 'sizes', lightSize, 'url' ] ) || get( image, [ 'media_details', 'sizes', lightSize, 'source_url' ] ) || image.url || image.source_url;
@@ -37,6 +42,7 @@ export const pickRelevantMediaFilesUpdate = ( image, lightSize, thumbSize ) => {
 	const imageProps = pick( theImage, [ 'alt_text', 'id', 'link' ] );
 	imageProps.caption = get( theImage, [ 'caption', 'raw' ] ) || get( theImage, [ 'caption' ] ) || undefined;
 	imageProps.url = theImage.url;
+	imageProps.customLink = image.customLink;
 	imageProps.thumbUrl = get( theImage, [ 'sizes', thumbSize, 'url' ] ) || get( theImage, [ 'media_details', 'sizes', thumbSize, 'source_url' ] ) || theImage.url;
 	imageProps.lightUrl = get( theImage, [ 'sizes', lightSize, 'url' ] ) || get( theImage, [ 'media_details', 'sizes', lightSize, 'source_url' ] ) || theImage.url;
 	imageProps.width = get( theImage, [ 'sizes', thumbSize, 'width' ] ) || get( theImage, [ 'media_details', 'sizes', thumbSize, 'width' ] ) || undefined;
