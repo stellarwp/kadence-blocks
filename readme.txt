@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.2.2
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,8 +30,8 @@ This plugin adds custom blocks and options to extend Gutenberg's editing capabil
 * Info Box - [demo](https://www.kadenceblocks.com/info-box-block/)
 * Icon List - [demo](https://www.kadenceblocks.com/icon-list-block/)
 
-= Overview Video =
-https://www.youtube.com/watch?v=pSrCYcOeuMc
+= Video Tutorial =
+https://www.youtube.com/watch?v=SYb24ncjVsY
 
 = Key Block Features =
 The Row Layout block can have 1-6 columns, and any other blocks can be nested inside. So as a single column block, it's a robust wrapper because you can create very custom backgrounds and define padding, margin, and dividers both for desktop and mobile layouts.
@@ -85,6 +85,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.6.2 =
+* Fix: Info Box image issue.
+* Fix: Tablet Divider settings.
+* Update: Tablet Row Padding to allow individual changes without effecting all sides.
 
 = 1.6.1 =
 * Tweak: Mobile Parallax.

@@ -139,7 +139,7 @@ class KadenceRowLayout extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTablet, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTablet, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTablet, topSepWidth, topSepWidthMobile, topSepWidthTablet, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -821,6 +821,7 @@ class KadenceRowLayout extends Component {
 							min={ 0 }
 							max={ 500 }
 							step={ 1 }
+							allowEmpty={ true }
 						/>
 						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
 							{ map( marginTypes, ( { name, key } ) => (
@@ -2086,10 +2087,10 @@ class KadenceRowLayout extends Component {
 			<Fragment>
 				<RangeControl
 					label={ __( 'Tablet Height (px)' ) }
-					value={ ( bottomSepHeightTablet ? bottomSepHeightTablet : '' ) }
+					value={ ( bottomSepHeightTab ? bottomSepHeightTab : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
-							bottomSepHeightTablet: value,
+							bottomSepHeightTab: value,
 						} );
 					} }
 					min={ 0 }
@@ -2097,10 +2098,10 @@ class KadenceRowLayout extends Component {
 				/>
 				<RangeControl
 					label={ __( 'Tablet Width (%)' ) }
-					value={ ( bottomSepWidthTablet ? bottomSepWidthTablet : '' ) }
+					value={ ( bottomSepWidthTab ? bottomSepWidthTab : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
-							bottomSepWidthTablet: value,
+							bottomSepWidthTab: value,
 						} );
 					} }
 					min={ 100 }
@@ -2164,10 +2165,10 @@ class KadenceRowLayout extends Component {
 			<Fragment>
 				<RangeControl
 					label={ __( 'Tablet Height (px)' ) }
-					value={ ( topSepHeightTablet ? topSepHeightTablet : '' ) }
+					value={ ( topSepHeightTab ? topSepHeightTab : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
-							topSepHeightTablet: value,
+							topSepHeightTab: value,
 						} );
 					} }
 					min={ 0 }
@@ -2175,10 +2176,10 @@ class KadenceRowLayout extends Component {
 				/>
 				<RangeControl
 					label={ __( 'Tablet Width (%)' ) }
-					value={ ( topSepWidthTablet ? topSepWidthTablet : '' ) }
+					value={ ( topSepWidthTab ? topSepWidthTab : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
-							topSepWidthTablet: value,
+							topSepWidthTab: value,
 						} );
 					} }
 					min={ 100 }

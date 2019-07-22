@@ -48,7 +48,9 @@ export default function MeasurementControls( {
 	secondIcon = icons.outlineright,
 	thirdIcon = icons.outlinebottom,
 	fourthIcon = icons.outlineleft,
+	allowEmpty = false,
 } ) {
+	const zero = ( allowEmpty ? '' : 0 );
 	return [
 		onChange && onControl && (
 			<Fragment>
@@ -85,7 +87,7 @@ export default function MeasurementControls( {
 							className="kt-icon-rangecontrol"
 							label={ firstIcon }
 							value={ ( measurement ? measurement[ 0 ] : '' ) }
-							onChange={ ( value ) => onChange( [ value, ( measurement && measurement[ 1 ] ? measurement[ 1 ] : 0 ), ( measurement && measurement[ 2 ] ? measurement[ 2 ] : 0 ), ( measurement && measurement[ 3 ] ? measurement[ 3 ] : 0 ) ] ) }
+							onChange={ ( value ) => onChange( [ value, ( measurement && measurement[ 1 ] ? measurement[ 1 ] : zero ), ( measurement && measurement[ 2 ] ? measurement[ 2 ] : zero ), ( measurement && measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 							min={ min }
 							max={ max }
 							step={ step }
@@ -94,7 +96,7 @@ export default function MeasurementControls( {
 							className="kt-icon-rangecontrol"
 							label={ secondIcon }
 							value={ ( measurement ? measurement[ 1 ] : '' ) }
-							onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : 0 ), value, ( measurement && measurement[ 2 ] ? measurement[ 2 ] : 0 ), ( measurement && measurement[ 3 ] ? measurement[ 3 ] : 0 ) ] ) }
+							onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : zero ), value, ( measurement && measurement[ 2 ] ? measurement[ 2 ] : zero ), ( measurement && measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 							min={ min }
 							max={ max }
 							step={ step }
@@ -103,7 +105,7 @@ export default function MeasurementControls( {
 							className="kt-icon-rangecontrol"
 							label={ thirdIcon }
 							value={ ( measurement ? measurement[ 2 ] : '' ) }
-							onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : 0 ), ( measurement && measurement[ 1 ] ? measurement[ 1 ] : 0 ), value, ( measurement && measurement[ 3 ] ? measurement[ 3 ] : 0 ) ] ) }
+							onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : zero ), ( measurement && measurement[ 1 ] ? measurement[ 1 ] : zero ), value, ( measurement && measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 							min={ min }
 							max={ max }
 							step={ step }
@@ -112,7 +114,7 @@ export default function MeasurementControls( {
 							className="kt-icon-rangecontrol"
 							label={ fourthIcon }
 							value={ ( measurement ? measurement[ 3 ] : '' ) }
-							onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : 0 ), ( measurement && measurement[ 1 ] ? measurement[ 1 ] : 0 ), ( measurement && measurement[ 2 ] ? measurement[ 2 ] : 0 ), value ] ) }
+							onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : zero ), ( measurement && measurement[ 1 ] ? measurement[ 1 ] : zero ), ( measurement && measurement[ 2 ] ? measurement[ 2 ] : zero ), value ] ) }
 							min={ min }
 							max={ max }
 							step={ step }
@@ -128,7 +130,7 @@ export default function MeasurementControls( {
 					className="kt-icon-rangecontrol"
 					label={ firstIcon }
 					value={ ( measurement ? measurement[ 0 ] : '' ) }
-					onChange={ ( value ) => onChange( [ value, ( measurement && measurement[ 1 ] ? measurement[ 1 ] : 0 ), ( measurement && measurement[ 2 ] ? measurement[ 2 ] : 0 ), ( measurement && measurement[ 3 ] ? measurement[ 3 ] : 0 ) ] ) }
+					onChange={ ( value ) => onChange( [ value, ( measurement && measurement[ 1 ] ? measurement[ 1 ] : zero ), ( measurement && measurement[ 2 ] ? measurement[ 2 ] : zero ), ( measurement && measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 					min={ min }
 					max={ max }
 					step={ step }
@@ -137,7 +139,7 @@ export default function MeasurementControls( {
 					className="kt-icon-rangecontrol"
 					label={ secondIcon }
 					value={ ( measurement ? measurement[ 1 ] : '' ) }
-					onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : 0 ), value, ( measurement && measurement[ 2 ] ? measurement[ 2 ] : 0 ), ( measurement && measurement[ 3 ] ? measurement[ 3 ] : 0 ) ] ) }
+					onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : zero ), value, ( measurement && measurement[ 2 ] ? measurement[ 2 ] : zero ), ( measurement && measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 					min={ min }
 					max={ max }
 					step={ step }
@@ -146,7 +148,7 @@ export default function MeasurementControls( {
 					className="kt-icon-rangecontrol"
 					label={ thirdIcon }
 					value={ ( measurement ? measurement[ 2 ] : '' ) }
-					onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : 0 ), ( measurement && measurement[ 1 ] ? measurement[ 1 ] : 0 ), value, ( measurement && measurement[ 3 ] ? measurement[ 3 ] : 0 ) ] ) }
+					onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : zero ), ( measurement && measurement[ 1 ] ? measurement[ 1 ] : zero ), value, ( measurement && measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 					min={ min }
 					max={ max }
 					step={ step }
@@ -155,7 +157,7 @@ export default function MeasurementControls( {
 					className="kt-icon-rangecontrol"
 					label={ fourthIcon }
 					value={ ( measurement ? measurement[ 3 ] : '' ) }
-					onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : 0 ),( measurement && measurement[ 1 ] ? measurement[ 1 ] : 0 ), ( measurement && measurement[ 2 ] ? measurement[ 2 ] : 0 ), value ] ) }
+					onChange={ ( value ) => onChange( [ ( measurement && measurement[ 0 ] ? measurement[ 0 ] : zero ), ( measurement && measurement[ 1 ] ? measurement[ 1 ] : zero ), ( measurement && measurement[ 2 ] ? measurement[ 2 ] : zero ), value ] ) }
 					min={ min }
 					max={ max }
 					step={ step }

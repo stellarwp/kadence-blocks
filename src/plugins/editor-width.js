@@ -22,7 +22,7 @@ const icon = <svg width="20" height="20" viewBox="0 0 40 40" xmlns="http://www.w
 const reviseData = ( oldData, newData ) => Object
 	.keys( newData )
 	.reduce( ( prev, key ) => {
-		if ( oldData[ key ] === newData[ key ] ) {
+		if ( undefined !== oldData && oldData[ key ] === newData[ key ] ) {
 			return prev;
 		}
 
@@ -54,8 +54,8 @@ function CustomComponent( { meta, oldMeta, onUpdateWidth } ) {
 						key={ key }
 						className="kt-editor-width-btn"
 						isSmall
-						isPrimary={ meta.kt_blocks_editor_width === key || ( '' === meta.kt_blocks_editor_width && 'default' === key ) }
-						aria-pressed={ meta.kt_blocks_editor_width === key || ( '' === meta.kt_blocks_editor_width && 'default' === key ) }
+						isPrimary={ ( undefined !== meta && undefined !== meta.kt_blocks_editor_width && meta.kt_blocks_editor_width === key ) || ( undefined === meta && 'default' === key ) || ( undefined === meta.kt_blocks_editor_width && 'default' === key ) }
+						aria-pressed={ ( undefined !== meta && undefined !== meta.kt_blocks_editor_width && meta.kt_blocks_editor_width === key ) || ( undefined === meta && 'default' === key ) || ( undefined === meta.kt_blocks_editor_width && 'default' === key ) }
 						onClick={ () => {
 							changeBodyClass( key );
 							onUpdateWidth( key, meta, oldMeta );

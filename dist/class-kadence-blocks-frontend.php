@@ -619,7 +619,7 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
-	 * 
+	 *
 	 * Register and Enqueue block assets
 	 *
 	 * @since 1.0.0
@@ -1637,7 +1637,7 @@ class Kadence_Blocks_Frontend {
 	}
 	/**
 	 * Grabs the Google Fonts that are needed so we can load in the head.
-	 * 
+	 *
 	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_testimonials_scripts_gfonts( $attr ) {
@@ -1976,7 +1976,7 @@ class Kadence_Blocks_Frontend {
 
 	/**
 	 * Grabs the Google Fonts that are needed so we can load in the head.
-	 * 
+	 *
 	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_advancedgallery_scripts_gfonts( $attr ) {
@@ -2165,7 +2165,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 			$css .= '}';
 		}
-		
+
 		return $css;
 	}
 	/**
@@ -2190,7 +2190,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single {';
 				$css .= 'margin-right:' . $attr['listLabelGap'] . 'px;';
 			$css .= '}';
-		}		
+		}
 		if ( isset( $attr['listStyles'] ) && is_array( $attr['listStyles'] ) && is_array( $attr['listStyles'][ 0 ] ) ) {
 			$list_styles = $attr['listStyles'][ 0 ];
 			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap, .kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a {';
@@ -2359,7 +2359,7 @@ class Kadence_Blocks_Frontend {
 			}
 			$css .= '}';
 		}
-		
+
 		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && is_array( $attr['titleStyles'][ 0 ] ) ) {
 			$title_styles = $attr['titleStyles'][ 0 ];
 			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header {';
@@ -3063,16 +3063,16 @@ class Kadence_Blocks_Frontend {
 					$css .= '}';
 				}
 			}
-			if ( isset( $attr['bottomSepHeightTablet'] ) || isset( $attr['bottomSepWidthTablet'] ) ) {
+			if ( isset( $attr['bottomSepHeightTab'] ) || isset( $attr['bottomSepWidthTab'] ) ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-					if ( isset( $attr['bottomSepHeightTablet'] ) ) {
+					if ( isset( $attr['bottomSepHeightTab'] ) ) {
 						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep {';
-							$css .= 'height:' . $attr['bottomSepHeightTablet'] . 'px;';
+							$css .= 'height:' . $attr['bottomSepHeightTab'] . 'px;';
 						$css .= '}';
 					}
-					if ( isset( $attr['bottomSepWidthTablet'] ) ) {
+					if ( isset( $attr['bottomSepWidthTab'] ) ) {
 						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-bottom-sep svg {';
-							$css .= 'width:' . $attr['bottomSepWidthTablet'] . '%;';
+							$css .= 'width:' . $attr['bottomSepWidthTab'] . '%;';
 						$css .= '}';
 					}
 				$css .= '}';
@@ -3105,16 +3105,16 @@ class Kadence_Blocks_Frontend {
 					$css .= '}';
 				}
 			}
-			if ( isset( $attr['topSepHeightTablet'] ) || isset( $attr['topSepWidthTablet'] ) ) {
+			if ( isset( $attr['topSepHeightTab'] ) || isset( $attr['topSepWidthTab'] ) ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-					if ( isset( $attr['topSepHeightTablet'] ) ) {
+					if ( isset( $attr['topSepHeightTab'] ) ) {
 						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep {';
-							$css .= 'height:' . $attr['topSepHeightTablet'] . 'px;';
+							$css .= 'height:' . $attr['topSepHeightTab'] . 'px;';
 						$css .= '}';
 					}
-					if ( isset( $attr['topSepWidthTablet'] ) ) {
+					if ( isset( $attr['topSepWidthTab'] ) ) {
 						$css .= '#kt-layout-id' . $unique_id . ' .kt-row-layout-top-sep svg {';
-							$css .= 'width:' . $attr['topSepWidthTablet'] . '%;';
+							$css .= 'width:' . $attr['topSepWidthTab'] . '%;';
 						$css .= '}';
 					}
 				$css .= '}';
@@ -3223,7 +3223,18 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['tabletPadding'] ) && is_array( $attr['tabletPadding'] ) ) {
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap {';
-				$css .= 'padding:' . $attr['tabletPadding'][ 0 ] . 'px ' . $attr['tabletPadding'][ 1 ] . 'px ' . $attr['tabletPadding'][ 2 ] . 'px ' . $attr['tabletPadding'][ 3 ] . 'px;';
+					if ( isset( $attr['tabletPadding'][ 0 ] ) && is_numeric( $attr['tabletPadding'][ 0 ] ) ) {
+						$css .= 'padding-top:' . $attr['tabletPadding'][ 0 ] . 'px;';
+					}
+					if ( isset( $attr['tabletPadding'][ 1 ] ) && is_numeric( $attr['tabletPadding'][ 1 ] ) ) {
+						$css .= 'padding-right:' . $attr['tabletPadding'][ 1 ] . 'px;';
+					}
+					if ( isset( $attr['tabletPadding'][ 2 ] ) && is_numeric( $attr['tabletPadding'][ 2 ] ) ) {
+						$css .= 'padding-bottom:' . $attr['tabletPadding'][ 2 ] . 'px;';
+					}
+					if ( isset( $attr['tabletPadding'][ 3 ] ) && is_numeric( $attr['tabletPadding'][ 3 ] ) ) {
+						$css .= 'padding-left:' . $attr['tabletPadding'][ 3 ] . 'px;';
+					}
 				$css .= '}';
 			}
 			if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) {

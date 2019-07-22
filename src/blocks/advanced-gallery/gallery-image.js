@@ -176,11 +176,11 @@ class GalleryImage extends Component {
 						maxWidth: ( ( type === 'masonry' && width && height ) ? width + 'px' : undefined ),
 					} }>
 						{ img }
-						{ 'below' !== captionStyle && (
+						{ ( 'below' !== captionStyle || ! showCaption ) && (
 							figcap
 						) }
 					</div>
-					{ 'below' === captionStyle && (
+					{ 'below' === captionStyle && showCaption && (
 						figcap
 					) }
 					<div className="kadence-blocks-library-gallery-item__move-menu">
