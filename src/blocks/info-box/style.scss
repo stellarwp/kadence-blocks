@@ -101,6 +101,9 @@ display: block;
 .kt-blocks-info-box-media-align-right.kb-info-box-vertical-media-align-bottom, .kt-blocks-info-box-media-align-left.kb-info-box-vertical-media-align-bottom {
 	align-items: flex-end;
 }
+.kt-blocks-info-box-media .kt-info-box-image, .kt-blocks-info-box-media-container {
+	max-width: 100%;
+}
 .kadence-info-box-image-intrisic.kb-info-box-image-type-svg {
     height: auto;
     padding-bottom: 0;

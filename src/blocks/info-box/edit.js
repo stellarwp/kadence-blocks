@@ -1955,6 +1955,7 @@ class KadenceInfoBox extends Component {
 								} } >
 									<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }` } style={ {
 										paddingBottom: isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+										height: isNaN( mediaImage[ 0 ].height ) ? undefined : 0,
 									} } >
 										<div className="kadence-info-box-image-inner-intrisic">
 											<img
