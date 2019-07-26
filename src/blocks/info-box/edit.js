@@ -147,7 +147,7 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, mediaVAlign }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -912,6 +912,18 @@ class KadenceInfoBox extends Component {
 									] }
 									onChange={ value => setAttributes( { mediaAlign: value } ) }
 								/>
+								{ mediaAlign !== 'top' && (
+									<SelectControl
+										label={ __( 'Media Vertical Align' ) }
+										value={ mediaVAlign }
+										options={ [
+											{ value: 'top', label: __( 'Top' ) },
+											{ value: 'middle', label: __( 'Middle' ) },
+											{ value: 'bottom', label: __( 'Bottom' ) },
+										] }
+										onChange={ value => setAttributes( { mediaVAlign: value } ) }
+									/>
+								) }
 								<SelectControl
 									label={ __( 'Media Type' ) }
 									value={ mediaType }
@@ -1910,7 +1922,7 @@ class KadenceInfoBox extends Component {
 					</div>
 				) }
 				{ ! this.state.showPreset && (
-					<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } ${ isSelectedClass } kt-info-halign-${ hAlign }` } style={ {
+					<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } ${ isSelectedClass } kt-info-halign-${ hAlign } kb-info-box-vertical-media-align-${ mediaVAlign }` } style={ {
 						boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + hexToRGBA( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
 						borderColor: ( containerBorder ? hexToRGBA( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
 						background: ( containerBackground ? hexToRGBA( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),

@@ -34,6 +34,7 @@ class KadenceColorDefault extends Component {
 			colors: '',
 			themeColors: [],
 			showMessage: false,
+			classSat: 'first',
 		};
 	}
 	componentDidMount() {
@@ -94,45 +95,88 @@ class KadenceColorDefault extends Component {
 		return (
 			<div className="kt-block-default-palette">
 				{ colors && (
-					<div className="components-color-palette">
-						{ Object.keys( colors ).map( ( index ) => {
-							let editable = false;
-							let theIndex;
-							const color = colors[ index ].color;
-							const name = colors[ index ].name;
-							const slug = colors[ index ].slug;
-							if ( undefined !== slug && slug.substr( 0, 10 ) === 'kb-palette' ) {
-								theIndex = findIndex( kadenceColors.palette, ( c ) => c.slug === slug );
-								editable = true;
-							}
-							const style = { color };
-							return (
-								<div key={ color } className="components-color-palette__item-wrapper">
-									{ editable && undefined !== theIndex && (
-										<AdvancedColorControlPalette
-											nameValue={ ( kadenceColors.palette[ theIndex ].name ? kadenceColors.palette[ theIndex ].name : __( 'Color' ) + ' ' + theIndex + 1  ) }
-											colorValue={ ( kadenceColors.palette[ theIndex ].color ? kadenceColors.palette[ theIndex ].color : '#ffffff' ) }
-											onSave={ ( value, title ) => {
-												this.saveKadenceColors( { color: value, name: title, slug: slug }, theIndex );
-												this.saveColors( { color: value, name: title, slug: slug }, index );
-												this.saveConfig();
-											} }
-										/>
-									) }
-									{ ! editable && (
-										<Tooltip
-											text={ name ||
-											// translators: %s: color hex code e.g: "#f00".
-											sprintf( __( 'Color code: %s' ), color )
-											}>
-											<div className="components-color-palette__item" style={ style }>
-												<Dashicon icon="lock" />
-											</div>
-										</Tooltip>
-									) }
-								</div>
-							);
-						} ) }
+					<div className={ `components-color-palette palette-comp-${ this.state.classSat }` }>
+						{ this.state.classSat === 'first' && (
+							Object.keys( this.state.colors ).map( ( index ) => {
+								let editable = false;
+								let theIndex;
+								const color = colors[ index ].color;
+								const name = colors[ index ].name;
+								const slug = colors[ index ].slug;
+								if ( undefined !== slug && slug.substr( 0, 10 ) === 'kb-palette' ) {
+									theIndex = findIndex( kadenceColors.palette, ( c ) => c.slug === slug );
+									editable = true;
+								}
+								const style = { color };
+								return (
+									<div key={ color } className="components-color-palette__item-wrapper">
+										{ editable && undefined !== theIndex && kadenceColors.palette[ theIndex ].color && (
+											<AdvancedColorControlPalette
+												nameValue={ ( kadenceColors.palette[ theIndex ].name ? kadenceColors.palette[ theIndex ].name : __( 'Color' ) + ' ' + theIndex + 1  ) }
+												colorValue={ ( kadenceColors.palette[ theIndex ].color ? kadenceColors.palette[ theIndex ].color : '#ffffff' ) }
+												onSave={ ( value, title ) => {
+													this.saveKadenceColors( { color: value, name: title, slug: slug }, theIndex );
+													this.saveColors( { color: value, name: title, slug: slug }, index );
+													this.saveConfig();
+												} }
+											/>
+										) }
+										{ ! editable && (
+											<Tooltip
+												text={ name ||
+												// translators: %s: color hex code e.g: "#f00".
+												sprintf( __( 'Color code: %s' ), color )
+												}>
+												<div className="components-color-palette__item" style={ style }>
+													<Dashicon icon="lock" />
+												</div>
+											</Tooltip>
+										) }
+									</div>
+								);
+							} )
+						) }
+						{ this.state.classSat === 'second' && (
+							Object.keys( this.state.colors ).map( ( index ) => {
+								let editable = false;
+								let theIndex;
+								const color = colors[ index ].color;
+								const name = colors[ index ].name;
+								const slug = colors[ index ].slug;
+								if ( undefined !== slug && slug.substr( 0, 10 ) === 'kb-palette' ) {
+									theIndex = findIndex( kadenceColors.palette, ( c ) => c.slug === slug );
+									editable = true;
+								}
+								const style = { color };
+								return (
+									<div key={ color } className="components-color-palette__item-wrapper">
+										{ editable && undefined !== theIndex && kadenceColors.palette[ theIndex ].color && (
+											<AdvancedColorControlPalette
+												nameValue={ ( kadenceColors.palette[ theIndex ].name ? kadenceColors.palette[ theIndex ].name : __( 'Color' ) + ' ' + theIndex + 1  ) }
+												colorValue={ ( kadenceColors.palette[ theIndex ].color ? kadenceColors.palette[ theIndex ].color : '#ffffff' ) }
+												onSave={ ( value, title ) => {
+													this.saveKadenceColors( { color: value, name: title, slug: slug }, theIndex );
+													this.saveColors( { color: value, name: title, slug: slug }, index );
+													this.saveConfig();
+													this.setState( { classSat: 'first' } );
+												} }
+											/>
+										) }
+										{ ! editable && (
+											<Tooltip
+												text={ name ||
+												// translators: %s: color hex code e.g: "#f00".
+												sprintf( __( 'Color code: %s' ), color )
+												}>
+												<div className="components-color-palette__item" style={ style }>
+													<Dashicon icon="lock" />
+												</div>
+											</Tooltip>
+										) }
+									</div>
+								);
+							} )
+						) }
 						{ undefined !== kadenceColors.palette && undefined !== kadenceColors.palette[ colorRemove ] && (
 							<div className="kt-colors-remove-last">
 								<Tooltip text={ __( 'Remove Last Color' ) } >
@@ -161,8 +205,13 @@ class KadenceColorDefault extends Component {
 				<div className="kt-colors-add-new">
 					<Button
 						type="button"
+						className={ this.state.isSaving ? 'kb-add-btn-is-saving' : 'kb-add-btn-is-active' }
 						isPrimary
+						disabled={ this.state.isSaving }
 						onClick={ () => {
+							if ( this.state.isSaving ) {
+								return;
+							}
 							if ( undefined === kadenceColors.palette ) {
 								kadenceColors.palette = [];
 							}

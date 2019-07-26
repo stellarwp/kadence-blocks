@@ -280,5 +280,9 @@ const attributes = {
 		type: 'bool',
 		default: true,
 	},
+	mediaVAlign: {
+		type: 'string',
+		default: 'middle',
+	},
 };
 export default attributes;

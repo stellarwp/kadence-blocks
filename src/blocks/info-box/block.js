@@ -58,57 +58,59 @@ registerBlockType( 'kadence/infobox', {
 	edit,
 
 	save: props => {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore }, className } = props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign }, className } = props;
 		const titleTagName = 'h' + titleFont[ 0 ].level;
 		return (
 			<div id={ `kt-info-box${ uniqueID }` } className={ className }>
 				{ linkProperty !== 'learnmore' && (
-					<a className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }` } target={ ( '_blank' === target ? target : undefined ) } rel={ ( '_blank' === target ? 'noopener noreferrer' : undefined ) } href={ link }>
-						<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>
-							{ mediaImage[ 0 ].url && 'image' === mediaType && (
-								<div className="kadence-info-box-image-inner-intrisic-container" style={ {
-									maxWidth: mediaImage[ 0 ].maxWidth + 'px',
-								} } >
-									<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }` } style={ {
-										paddingBottom: isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
-										width: isNaN( mediaImage[ 0 ].height ) ? undefined : mediaImage[ 0 ].width + 'px',
-										maxWidth: isNaN( mediaImage[ 0 ].height ) ? undefined : '100%',
+					<a className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }` } target={ ( '_blank' === target ? target : undefined ) } rel={ ( '_blank' === target ? 'noopener noreferrer' : undefined ) } href={ link }>
+						<div className={ 'kt-blocks-info-box-media-container' }>
+							<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>
+								{ mediaImage[ 0 ].url && 'image' === mediaType && (
+									<div className="kadence-info-box-image-inner-intrisic-container" style={ {
+										maxWidth: mediaImage[ 0 ].maxWidth + 'px',
 									} } >
-										<div className="kadence-info-box-image-inner-intrisic">
-											<img
-												src={ mediaImage[ 0 ].url }
-												alt={ mediaImage[ 0 ].alt }
-												width={ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width ) }
-												height={ mediaImage[ 0 ].height }
-												className={ `${ ( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' ) } ${ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' ) }` }
-											/>
-											{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+										<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }` } style={ {
+											paddingBottom: isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+											width: isNaN( mediaImage[ 0 ].height ) ? undefined : mediaImage[ 0 ].width + 'px',
+											maxWidth: isNaN( mediaImage[ 0 ].height ) ? undefined : '100%',
+										} } >
+											<div className="kadence-info-box-image-inner-intrisic">
 												<img
-													src={ mediaImage[ 0 ].flipUrl }
-													alt={ mediaImage[ 0 ].flipAlt }
-													width={ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth ) }
-													height={ mediaImage[ 0 ].flipHeight }
-													className={ `${ ( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' ) } ${ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' ) }` }
+													src={ mediaImage[ 0 ].url }
+													alt={ mediaImage[ 0 ].alt }
+													width={ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width ) }
+													height={ mediaImage[ 0 ].height }
+													className={ `${ ( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' ) } ${ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' ) }` }
 												/>
+												{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+													<img
+														src={ mediaImage[ 0 ].flipUrl }
+														alt={ mediaImage[ 0 ].flipAlt }
+														width={ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth ) }
+														height={ mediaImage[ 0 ].flipHeight }
+														className={ `${ ( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' ) } ${ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' ) }` }
+													/>
+												) }
+											</div>
+										</div>
+									</div>
+								) }
+								{ 'icon' === mediaType && (
+									<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
+										<div className={ 'kadence-info-box-icon-inner-container' } >
+											<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+												display: 'block',
+											} } />
+											{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
+												<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+													display: 'block',
+												} } />
 											) }
 										</div>
 									</div>
-								</div>
-							) }
-							{ 'icon' === mediaType && (
-								<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
-									<div className={ 'kadence-info-box-icon-inner-container' } >
-										<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
-											display: 'block',
-										} } />
-										{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
-											<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
-												display: 'block',
-											} } />
-										) }
-									</div>
-								</div>
-							) }
+								) }
+							</div>
 						</div>
 						<div className={ 'kt-infobox-textcontent' } >
 							{ displayTitle && (
@@ -138,50 +140,52 @@ registerBlockType( 'kadence/infobox', {
 					</a>
 				) }
 				{ linkProperty === 'learnmore' && (
-					<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }` }>
-						<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>
-							{ mediaImage[ 0 ].url && 'image' === mediaType && (
-								<div className="kadence-info-box-image-inner-intrisic-container" style={ {
-									maxWidth: mediaImage[ 0 ].maxWidth + 'px',
-								} } >
-									<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }` } style={ {
-										paddingBottom: ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+					<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }` }>
+						<div className={ 'kt-blocks-info-box-media-container' }>
+							<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>
+								{ mediaImage[ 0 ].url && 'image' === mediaType && (
+									<div className="kadence-info-box-image-inner-intrisic-container" style={ {
+										maxWidth: mediaImage[ 0 ].maxWidth + 'px',
 									} } >
-										<div className="kadence-info-box-image-inner-intrisic">
-											<img
-												src={ mediaImage[ 0 ].url }
-												alt={ mediaImage[ 0 ].alt }
-												width={ mediaImage[ 0 ].width }
-												height={ mediaImage[ 0 ].height }
-												className={ mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' }
-											/>
-											{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+										<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }` } style={ {
+											paddingBottom: ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+										} } >
+											<div className="kadence-info-box-image-inner-intrisic">
 												<img
-													src={ mediaImage[ 0 ].flipUrl }
-													alt={ mediaImage[ 0 ].flipAlt }
-													width={ mediaImage[ 0 ].flipWidth }
-													height={ mediaImage[ 0 ].flipHeight }
-													className={ mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' }
+													src={ mediaImage[ 0 ].url }
+													alt={ mediaImage[ 0 ].alt }
+													width={ mediaImage[ 0 ].width }
+													height={ mediaImage[ 0 ].height }
+													className={ mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' }
 												/>
+												{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+													<img
+														src={ mediaImage[ 0 ].flipUrl }
+														alt={ mediaImage[ 0 ].flipAlt }
+														width={ mediaImage[ 0 ].flipWidth }
+														height={ mediaImage[ 0 ].flipHeight }
+														className={ mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' }
+													/>
+												) }
+											</div>
+										</div>
+									</div>
+								) }
+								{ 'icon' === mediaType && (
+									<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
+										<div className={ 'kadence-info-box-icon-inner-container' } >
+											<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+												display: 'block',
+											} } />
+											{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
+												<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+													display: 'block',
+												} } />
 											) }
 										</div>
 									</div>
-								</div>
-							) }
-							{ 'icon' === mediaType && (
-								<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
-									<div className={ 'kadence-info-box-icon-inner-container' } >
-										<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
-											display: 'block',
-										} } />
-										{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
-											<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
-												display: 'block',
-											} } />
-										) }
-									</div>
-								</div>
-							) }
+								) }
+							</div>
 						</div>
 						<div className={ 'kt-infobox-textcontent' } >
 							{ displayTitle && (
@@ -217,6 +221,168 @@ registerBlockType( 'kadence/infobox', {
 		);
 	},
 	deprecated: [
+		{
+			attributes,
+			save: ( { attributes } ) => {
+				const { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, className } = attributes;
+				const titleTagName = 'h' + titleFont[ 0 ].level;
+				return (
+					<div id={ `kt-info-box${ uniqueID }` } className={ className }>
+						{ linkProperty !== 'learnmore' && (
+							<a className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }` } target={ ( '_blank' === target ? target : undefined ) } rel={ ( '_blank' === target ? 'noopener noreferrer' : undefined ) } href={ link }>
+								<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>
+									{ mediaImage[ 0 ].url && 'image' === mediaType && (
+										<div className="kadence-info-box-image-inner-intrisic-container" style={ {
+											maxWidth: mediaImage[ 0 ].maxWidth + 'px',
+										} } >
+											<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }` } style={ {
+												paddingBottom: isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+												width: isNaN( mediaImage[ 0 ].height ) ? undefined : mediaImage[ 0 ].width + 'px',
+												maxWidth: isNaN( mediaImage[ 0 ].height ) ? undefined : '100%',
+											} } >
+												<div className="kadence-info-box-image-inner-intrisic">
+													<img
+														src={ mediaImage[ 0 ].url }
+														alt={ mediaImage[ 0 ].alt }
+														width={ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width ) }
+														height={ mediaImage[ 0 ].height }
+														className={ `${ ( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' ) } ${ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' ) }` }
+													/>
+													{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+														<img
+															src={ mediaImage[ 0 ].flipUrl }
+															alt={ mediaImage[ 0 ].flipAlt }
+															width={ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth ) }
+															height={ mediaImage[ 0 ].flipHeight }
+															className={ `${ ( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' ) } ${ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' ) }` }
+														/>
+													) }
+												</div>
+											</div>
+										</div>
+									) }
+									{ 'icon' === mediaType && (
+										<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
+											<div className={ 'kadence-info-box-icon-inner-container' } >
+												<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+													display: 'block',
+												} } />
+												{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
+													<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+														display: 'block',
+													} } />
+												) }
+											</div>
+										</div>
+									) }
+								</div>
+								<div className={ 'kt-infobox-textcontent' } >
+									{ displayTitle && (
+										<RichText.Content
+											className="kt-blocks-info-box-title"
+											tagName={ titleTagName }
+											value={ title }
+										/>
+									) }
+									{ displayText && (
+										<RichText.Content
+											className="kt-blocks-info-box-text"
+											tagName={ 'p' }
+											value={ contentText }
+										/>
+									) }
+									{ displayLearnMore && (
+										<div className="kt-blocks-info-box-learnmore-wrap">
+											<RichText.Content
+												className="kt-blocks-info-box-learnmore"
+												tagName={ 'span' }
+												value={ learnMore }
+											/>
+										</div>
+									) }
+								</div>
+							</a>
+						) }
+						{ linkProperty === 'learnmore' && (
+							<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }` }>
+								<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>
+									{ mediaImage[ 0 ].url && 'image' === mediaType && (
+										<div className="kadence-info-box-image-inner-intrisic-container" style={ {
+											maxWidth: mediaImage[ 0 ].maxWidth + 'px',
+										} } >
+											<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }` } style={ {
+												paddingBottom: ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+											} } >
+												<div className="kadence-info-box-image-inner-intrisic">
+													<img
+														src={ mediaImage[ 0 ].url }
+														alt={ mediaImage[ 0 ].alt }
+														width={ mediaImage[ 0 ].width }
+														height={ mediaImage[ 0 ].height }
+														className={ mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' }
+													/>
+													{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+														<img
+															src={ mediaImage[ 0 ].flipUrl }
+															alt={ mediaImage[ 0 ].flipAlt }
+															width={ mediaImage[ 0 ].flipWidth }
+															height={ mediaImage[ 0 ].flipHeight }
+															className={ mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' }
+														/>
+													) }
+												</div>
+											</div>
+										</div>
+									) }
+									{ 'icon' === mediaType && (
+										<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
+											<div className={ 'kadence-info-box-icon-inner-container' } >
+												<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+													display: 'block',
+												} } />
+												{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
+													<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+														display: 'block',
+													} } />
+												) }
+											</div>
+										</div>
+									) }
+								</div>
+								<div className={ 'kt-infobox-textcontent' } >
+									{ displayTitle && (
+										<RichText.Content
+											className="kt-blocks-info-box-title"
+											tagName={ titleTagName }
+											value={ title }
+										/>
+									) }
+									{ displayText && (
+										<RichText.Content
+											className="kt-blocks-info-box-text"
+											tagName={ 'p' }
+											value={ contentText }
+										/>
+									) }
+									{ displayLearnMore && (
+										<div className="kt-blocks-info-box-learnmore-wrap">
+											<RichText.Content
+												className="kt-blocks-info-box-learnmore"
+												tagName={ 'a' }
+												target={ ( '_blank' === target ? target : undefined ) }
+												rel={ ( '_blank' === target ? 'noopener noreferrer' : undefined ) }
+												value={ learnMore }
+												href={ link }
+											/>
+										</div>
+									) }
+								</div>
+							</div>
+						) }
+					</div>
+				);
+			}
+		},
 		{
 			attributes,
 			save: ( { attributes } ) => {
