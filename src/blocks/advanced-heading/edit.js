@@ -348,6 +348,7 @@ class KadenceAdvancedHeading extends Component {
 		const headingContent = (
 			<RichText
 				formattingControls={ [ 'bold', 'italic', 'link', 'mark' ] }
+				allowedFormats={ [ 'core/bold', 'core/italic', 'core/link', 'kadence/mark' ] }
 				wrapperClassName={ className }
 				tagName={ tagName }
 				value={ content }

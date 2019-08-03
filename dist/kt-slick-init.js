@@ -70,7 +70,7 @@ jQuery( document ).ready( function( $ ) {
 					container.find( '.kb-slide-item' ).each( function() {
 						$( this ).css( 'maxWidth', Math.floor( ( 80 / 100 ) * container.innerWidth() ) );
 					} );
-							
+
 				}, 10 );
 			} );
 		} else if ( sliderType && sliderType === 'slider' ) {
@@ -86,6 +86,9 @@ jQuery( document ).ready( function( $ ) {
 				rtl: slickRtl,
 				adaptiveHeight: true,
 				dots: sliderDots,
+			} );
+			$( window ).on( 'kadence-tabs-open', function( e ) {
+				container.slick( 'refresh' );
 			} );
 		} else {
 			container.slick( {
@@ -136,6 +139,9 @@ jQuery( document ).ready( function( $ ) {
 						},
 					},
 				],
+			} );
+			$( window ).on( 'kadence-tabs-open', function( e ) {
+				container.slick( 'refresh' );
 			} );
 		}
 	}

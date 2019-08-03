@@ -599,7 +599,7 @@ class GalleryEdit extends Component {
 				[ `kb-gallery-type-${ type }` ]: type,
 				[ `kb-gallery-id-${ uniqueID }` ]: uniqueID,
 				[ `kb-gallery-caption-style-${ captionStyle }` ]: captionStyle,
-				[ `kb-gallery-filter-${ imageFilter }` ] : imageFilter,
+				[ `kb-gallery-filter-${ imageFilter }` ]: imageFilter,
 			}
 		);
 		const renderGalleryImages = ( img, index ) => {
@@ -648,798 +648,812 @@ class GalleryEdit extends Component {
 			} } >
 				{ buildCSS }
 				{ controls }
-				<InspectorControls>
-					<PanelBody title={ __( 'Gallery Settings' ) }>
-						<h2>{ __( 'Gallery Type:' ) + ' ' + typeLabel[ 0 ].label }</h2>
-						<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type' ) }>
-							{ map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
-								<Tooltip text={ label }>
-									<Button
-										key={ value }
-										className={ `kt-style-btn${ ( isDisabled ? ' kb-disabled-btn' : '' ) }` }
-										isSmall
-										isDisabled={ isDisabled }
-										isPrimary={ type === value }
-										aria-pressed={ type === value }
-										onClick={ () => {
-											if ( ! isDisabled ) {
-												setAttributes( { type: value } );
+				{ this.showSettings( 'allSettings' ) && (
+					<InspectorControls>
+						<PanelBody title={ __( 'Gallery Settings' ) }>
+							<h2>{ __( 'Gallery Type:' ) + ' ' + typeLabel[ 0 ].label }</h2>
+							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type' ) }>
+								{ map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
+									<Tooltip text={ label }>
+										<Button
+											key={ value }
+											className={ `kt-style-btn${ ( isDisabled ? ' kb-disabled-btn' : '' ) }` }
+											isSmall
+											isDisabled={ isDisabled }
+											isPrimary={ type === value }
+											aria-pressed={ type === value }
+											onClick={ () => {
+												if ( ! isDisabled ) {
+													setAttributes( { type: value } );
+												}
+											} }
+										>
+											{ icon }
+										</Button>
+									</Tooltip>
+								) ) }
+							</ButtonGroup>
+							{ ( type === 'grid' || type === 'carousel' || type === 'slider' ) && (
+								<SelectControl
+									label={ __( 'Image ratio' ) }
+									options={ [
+										{
+											label: __( 'Landscape 4:3' ),
+											value: 'land43',
+										},
+										{
+											label: __( 'Landscape 3:2' ),
+											value: 'land32',
+										},
+										{
+											label: __( 'Landscape 2:1' ),
+											value: 'land21',
+										},
+										{
+											label: __( 'Landscape 3:1' ),
+											value: 'land31',
+										},
+										{
+											label: __( 'Landscape 4:1' ),
+											value: 'land41',
+										},
+										{
+											label: __( 'Portrait 3:4' ),
+											value: 'port34',
+										},
+										{
+											label: __( 'Portrait 2:3' ),
+											value: 'port23',
+										},
+										{
+											label: __( 'Square 1:1' ),
+											value: 'square',
+										},
+										{
+											label: __( 'Inherit' ),
+											value: 'inherit',
+										},
+									] }
+									value={ imageRatio }
+									onChange={ ( value ) => setAttributes( { imageRatio: value } ) }
+								/>
+							) }
+							{ type && ( type === 'carousel' || type === 'grid' || type === 'masonry' ) && (
+								<Fragment>
+									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type' ) }>
+										{ map( columnControlTypes, ( { name, key, icon } ) => (
+											<Tooltip text={ name }>
+												<Button
+													key={ key }
+													className="kt-size-btn"
+													isSmall
+													isPrimary={ columnControl === key }
+													aria-pressed={ columnControl === key }
+													onClick={ () => setAttributes( { columnControl: key } ) }
+												>
+													{ icon }
+												</Button>
+											</Tooltip>
+										) ) }
+									</ButtonGroup>
+									{ columnControl !== 'individual' && (
+										<RangeControl
+											label={ __( 'Columns' ) }
+											value={ columns[ 2 ] }
+											onChange={ onColumnChange }
+											min={ 1 }
+											max={ 8 }
+										/>
+									) }
+									{ columnControl && columnControl === 'individual' && (
+										<Fragment>
+											<h4>{ __( 'Columns' ) }</h4>
+											<RangeControl
+												label={ __( 'Screen Above 1500px' ) }
+												value={ columns[ 0 ] }
+												onChange={ ( value ) => setAttributes( { columns: [ value,columns[ 1 ],columns[ 2 ],columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen 1200px - 1499px' ) }
+												value={ columns[ 1 ] }
+												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ], value,columns[ 2 ],columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen 992px - 1199px' ) }
+												value={ columns[ 2 ] }
+												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ], value,columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen 768px - 991px' ) }
+												value={ columns[ 3 ] }
+												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ], value,columns[ 4 ],columns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen 544px - 767px' ) }
+												value={ columns[ 4 ] }
+												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ],columns[ 3 ], value,columns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen Below 543px' ) }
+												value={ columns[ 5 ] }
+												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ],columns[ 3 ],columns[ 4 ], value ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+										</Fragment>
+									) }
+								</Fragment>
+							) }
+							{ type !== 'slider' && this.showSettings( 'gutterSettings' ) && (
+								<Fragment>
+									<h2 className="kt-heading-size-title">{ __( 'Gutter' ) }</h2>
+									<TabPanel className="kt-size-tabs"
+										activeClass="active-tab"
+										tabs={ [
+											{
+												name: 'desk',
+												title: <Dashicon icon="desktop" />,
+												className: 'kt-desk-tab',
+											},
+											{
+												name: 'tablet',
+												title: <Dashicon icon="tablet" />,
+												className: 'kt-tablet-tab',
+											},
+											{
+												name: 'mobile',
+												title: <Dashicon icon="smartphone" />,
+												className: 'kt-mobile-tab',
+											},
+										] }>
+										{
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'mobile' === tab.name ) {
+														tabout = (
+															<RangeControl
+																value={ ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) }
+																onChange={ value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), value ] } ) }
+																step={ 2 }
+																min={ 0 }
+																max={ 100 }
+															/>
+														);
+													} else if ( 'tablet' === tab.name ) {
+														tabout = (
+															<RangeControl
+																value={ ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ) }
+																onChange={ value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), value, ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } ) }
+																step={ 2 }
+																min={ 0 }
+																max={ 100 }
+															/>
+														);
+													} else {
+														tabout = (
+															<RangeControl
+																value={ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ) }
+																onChange={ value => setAttributes( { gutter: [ value, ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } ) }
+																step={ 2 }
+																min={ 0 }
+																max={ 100 }
+															/>
+														);
+													}
+												}
+												return <div>{ tabout }</div>;
 											}
-										} }
-									>
-										{ icon }
-									</Button>
-								</Tooltip>
-							) ) }
-						</ButtonGroup>
-						{ ( type === 'grid' || type === 'carousel' || type === 'slider' ) && (
-							<SelectControl
-								label={ __( 'Image ratio' ) }
-								options={ [
-									{
-										label: __( 'Landscape 4:3' ),
-										value: 'land43',
-									},
-									{
-										label: __( 'Landscape 3:2' ),
-										value: 'land32',
-									},
-									{
-										label: __( 'Landscape 2:1' ),
-										value: 'land21',
-									},
-									{
-										label: __( 'Landscape 3:1' ),
-										value: 'land31',
-									},
-									{
-										label: __( 'Landscape 4:1' ),
-										value: 'land41',
-									},
-									{
-										label: __( 'Portrait 3:4' ),
-										value: 'port34',
-									},
-									{
-										label: __( 'Portrait 2:3' ),
-										value: 'port23',
-									},
-									{
-										label: __( 'Square 1:1' ),
-										value: 'square',
-									},
-									{
-										label: __( 'Inherit' ),
-										value: 'inherit',
-									},
-								] }
-								value={ imageRatio }
-								onChange={ ( value ) => setAttributes( { imageRatio: value } ) }
-							/>
-						) }
-						{ type && ( type === 'carousel' || type === 'grid' || type === 'masonry' ) && (
+										}
+									</TabPanel>
+								</Fragment>
+							) }
+							{ type === 'fluidcarousel' && (
+								<Fragment>
+									<h2 className="kt-heading-size-title">{ __( 'Carousel Height' ) }</h2>
+									<TabPanel className="kt-size-tabs"
+										activeClass="active-tab"
+										tabs={ [
+											{
+												name: 'desk',
+												title: <Dashicon icon="desktop" />,
+												className: 'kt-desk-tab',
+											},
+											{
+												name: 'tablet',
+												title: <Dashicon icon="tablet" />,
+												className: 'kt-tablet-tab',
+											},
+											{
+												name: 'mobile',
+												title: <Dashicon icon="smartphone" />,
+												className: 'kt-mobile-tab',
+											},
+										] }>
+										{
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'mobile' === tab.name ) {
+														tabout = (
+															<RangeControl
+																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) }
+																onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } ) }
+																step={ 1 }
+																min={ 120 }
+																max={ 500 }
+															/>
+														);
+													} else if ( 'tablet' === tab.name ) {
+														tabout = (
+															<RangeControl
+																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ) }
+																onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
+																step={ 1 }
+																min={ 120 }
+																max={ 500 }
+															/>
+														);
+													} else {
+														tabout = (
+															<RangeControl
+																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ) }
+																onChange={ value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
+																step={ 1 }
+																min={ 120 }
+																max={ 500 }
+															/>
+														);
+													}
+												}
+												return <div>{ tabout }</div>;
+											}
+										}
+									</TabPanel>
+								</Fragment>
+							) }
+							{ ids && undefined !== ids[ 0 ] && (
+								<ImageSizeControl
+									label={ __( 'Thumbnail Image Size' ) }
+									slug={ thumbSize }
+									id={ ids[ 0 ] }
+									fullSelection={ false }
+									selectByValue={ false }
+									onChange={ this.changeImageThumbSize }
+								/>
+							) }
+						</PanelBody>
+						{ type && ( type === 'carousel' || type === 'fluidcarousel' || type === 'slider' || type === 'thumbslider' ) && (
 							<Fragment>
-								<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type' ) }>
-									{ map( columnControlTypes, ( { name, key, icon } ) => (
-										<Tooltip text={ name }>
-											<Button
-												key={ key }
-												className="kt-size-btn"
-												isSmall
-												isPrimary={ columnControl === key }
-												aria-pressed={ columnControl === key }
-												onClick={ () => setAttributes( { columnControl: key } ) }
-											>
-												{ icon }
-											</Button>
-										</Tooltip>
-									) ) }
-								</ButtonGroup>
-								{ columnControl !== 'individual' && (
-									<RangeControl
-										label={ __( 'Columns' ) }
-										value={ columns[ 2 ] }
-										onChange={ onColumnChange }
-										min={ 1 }
-										max={ 8 }
+								{ this.showSettings( 'carouselSettings' ) && (
+									<PanelBody
+										title={ __( 'Carousel Settings' ) }
+										initialOpen={ false }
+									>
+										<ToggleControl
+											label={ __( 'Carousel Auto Play' ) }
+											checked={ autoPlay }
+											onChange={ ( value ) => setAttributes( { autoPlay: value } ) }
+										/>
+										{ autoPlay && (
+											<RangeControl
+												label={ __( 'Autoplay Speed' ) }
+												value={ autoSpeed }
+												onChange={ ( value ) => setAttributes( { autoSpeed: value } ) }
+												min={ 500 }
+												max={ 15000 }
+												step={ 10 }
+											/>
+										) }
+										<RangeControl
+											label={ __( 'Carousel Slide Transition Speed' ) }
+											value={ transSpeed }
+											onChange={ ( value ) => setAttributes( { transSpeed: value } ) }
+											min={ 100 }
+											max={ 2000 }
+											step={ 10 }
+										/>
+										{ type === 'carousel' && (
+											<SelectControl
+												label={ __( 'Slides to Scroll' ) }
+												options={ [
+													{
+														label: __( 'One' ),
+														value: '1',
+													},
+													{
+														label: __( 'All' ),
+														value: 'all',
+													},
+												] }
+												value={ slidesScroll }
+												onChange={ ( value ) => setAttributes( { slidesScroll: value } ) }
+											/>
+										) }
+										<SelectControl
+											label={ __( 'Arrow Style' ) }
+											options={ [
+												{
+													label: __( 'White on Dark' ),
+													value: 'whiteondark',
+												},
+												{
+													label: __( 'Black on Light' ),
+													value: 'blackonlight',
+												},
+												{
+													label: __( 'Outline Black' ),
+													value: 'outlineblack',
+												},
+												{
+													label: __( 'Outline White' ),
+													value: 'outlinewhite',
+												},
+												{
+													label: __( 'None' ),
+													value: 'none',
+												},
+											] }
+											value={ arrowStyle }
+											onChange={ ( value ) => setAttributes( { arrowStyle: value } ) }
+										/>
+										<SelectControl
+											label={ __( 'Dot Style' ) }
+											options={ [
+												{
+													label: __( 'Dark' ),
+													value: 'dark',
+												},
+												{
+													label: __( 'Light' ),
+													value: 'light',
+												},
+												{
+													label: __( 'Outline Dark' ),
+													value: 'outlinedark',
+												},
+												{
+													label: __( 'Outline Light' ),
+													value: 'outlinelight',
+												},
+												{
+													label: __( 'None' ),
+													value: 'none',
+												},
+											] }
+											value={ dotStyle }
+											onChange={ ( value ) => setAttributes( { dotStyle: value } ) }
+										/>
+									</PanelBody>
+								) }
+							</Fragment>
+						) }
+						<PanelBody
+							title={ __( 'Link Settings' ) }
+							initialOpen={ false }
+						>
+							<SelectControl
+								label={ __( 'Link To' ) }
+								value={ linkTo }
+								onChange={ this.setLinkTo }
+								options={ linkOptions }
+							/>
+							{ linkTo === 'media' && (
+								<Fragment>
+									{ ids && undefined !== ids[ 0 ] && (
+										<ImageSizeControl
+											label={ __( 'Link Image Size' ) }
+											slug={ lightSize }
+											id={ ids[ 0 ] }
+											fullSelection={ false }
+											selectByValue={ false }
+											onChange={ this.changeImageLightSize }
+										/>
+									) }
+									{ this.showSettings( 'lightboxSettings' ) && (
+										<Fragment>
+											<ToggleControl
+												label={ __( 'Lightbox' ) }
+												checked={ ( lightbox && lightbox === 'magnific' ? true : false ) }
+												onChange={ ( value ) => setAttributes( { lightbox: ( value ? 'magnific' : 'none' ) } ) }
+											/>
+											{ lightbox && lightbox === 'magnific' && (
+												<ToggleControl
+													label={ __( 'Show Caption in Lightbox' ) }
+													checked={ lightboxCaption }
+													onChange={ ( value ) => setAttributes( { lightboxCaption: value } ) }
+												/>
+											) }
+										</Fragment>
+									) }
+								</Fragment>
+							) }
+						</PanelBody>
+						{ this.showSettings( 'styleSettings' ) && (
+							<PanelBody
+								title={ __( 'Image Style' ) }
+								initialOpen={ false }
+							>
+								{ ! ( type === 'carousel' && imageRatio === 'inherit' ) && ! ( type === 'slider' && imageRatio === 'inherit' ) && (
+									<MeasurementControls
+										label={ __( 'Border Radius' ) }
+										measurement={ imageRadius }
+										control={ this.state.radiusControl }
+										onChange={ ( value ) => setAttributes( { imageRadius: value } ) }
+										onControl={ ( value ) => this.setState( { radiusControl: value } ) }
+										min={ 0 }
+										max={ 200 }
+										step={ 1 }
+										controlTypes={ [
+											{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
+											{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+										] }
+										firstIcon={ icons.topleft }
+										secondIcon={ icons.topright }
+										thirdIcon={ icons.bottomright }
+										fourthIcon={ icons.bottomleft }
 									/>
 								) }
-								{ columnControl && columnControl === 'individual' && (
+								<SelectControl
+									label={ __( 'Image Filter' ) }
+									help={ __( 'Not supported in Internet Explorer' ) }
+									options={ [
+										{
+											label: __( 'None' ),
+											value: 'none',
+										},
+										{
+											label: __( 'Grayscale' ),
+											value: 'grayscale',
+										},
+										{
+											label: __( 'Sepia' ),
+											value: 'sepia',
+										},
+										{
+											label: __( 'Saturation' ),
+											value: 'saturation',
+										},
+										{
+											label: __( 'Vintage' ),
+											value: 'vintage',
+										},
+										{
+											label: __( 'Earlybird' ),
+											value: 'earlybird',
+										},
+										{
+											label: __( 'Toaster' ),
+											value: 'toaster',
+										},
+										{
+											label: __( 'Mayfair' ),
+											value: 'mayfair',
+										},
+									] }
+									value={ imageFilter }
+									onChange={ ( value ) => setAttributes( { imageFilter: value } ) }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'captionSettings' ) && (
+							<PanelBody
+								title={ __( 'Caption Settings' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Show Captions' ) }
+									checked={ showCaption }
+									onChange={ this.setCaptions }
+								/>
+								{ showCaption && (
 									<Fragment>
-										<h4>{ __( 'Columns' ) }</h4>
-										<RangeControl
-											label={ __( 'Screen Above 1500px' ) }
-											value={ columns[ 0 ] }
-											onChange={ ( value ) => setAttributes( { columns: [ value,columns[ 1 ],columns[ 2 ],columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
-											min={ 1 }
-											max={ 8 }
+										<SelectControl
+											label={ __( 'Caption Placement' ) }
+											options={ [
+												{
+													label: __( 'Bottom of Image - Show on Hover' ),
+													value: 'bottom-hover',
+												},
+												{
+													label: __( 'Bottom of Image - Show always' ),
+													value: 'bottom',
+												},
+												{
+													label: __( 'Below Image - Show always' ),
+													value: 'below',
+												},
+												{
+													label: __( 'Cover Image - Show on Hover' ),
+													value: 'cover-hover',
+												},
+											] }
+											value={ captionStyle }
+											onChange={ ( value ) => setAttributes( { captionStyle: value } ) }
 										/>
-										<RangeControl
-											label={ __( 'Screen 1200px - 1499px' ) }
-											value={ columns[ 1 ] }
-											onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ], value,columns[ 2 ],columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
-											min={ 1 }
-											max={ 8 }
+										<AdvancedColorControl
+											label={ __( 'Caption Color' ) }
+											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
+											colorDefault={ '' }
+											onColorChange={ value => saveCaptionFont( { color: value } ) }
 										/>
-										<RangeControl
-											label={ __( 'Screen 992px - 1199px' ) }
-											value={ columns[ 2 ] }
-											onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ], value,columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
-											min={ 1 }
-											max={ 8 }
+										<AdvancedColorControl
+											label={ __( 'Caption Background' ) }
+											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
+											colorDefault={ '#000000' }
+											onColorChange={ value => saveCaptionFont( { background: value } ) }
+											opacityValue={ ( captionStyles && captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) }
+											onOpacityChange={ value => saveCaptionFont( { backgroundOpacity: value } ) }
 										/>
-										<RangeControl
-											label={ __( 'Screen 768px - 991px' ) }
-											value={ columns[ 3 ] }
-											onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ], value,columns[ 4 ],columns[ 5 ] ] } ) }
-											min={ 1 }
-											max={ 8 }
-										/>
-										<RangeControl
-											label={ __( 'Screen 544px - 767px' ) }
-											value={ columns[ 4 ] }
-											onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ],columns[ 3 ], value,columns[ 5 ] ] } ) }
-											min={ 1 }
-											max={ 8 }
-										/>
-										<RangeControl
-											label={ __( 'Screen Below 543px' ) }
-											value={ columns[ 5 ] }
-											onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ],columns[ 3 ],columns[ 4 ], value ] } ) }
-											min={ 1 }
-											max={ 8 }
+										<TypographyControls
+											fontSize={ captionStyles[ 0 ].size }
+											onFontSize={ ( value ) => saveCaptionFont( { size: value } ) }
+											fontSizeType={ captionStyles[ 0 ].sizeType }
+											onFontSizeType={ ( value ) => saveCaptionFont( { sizeType: value } ) }
+											lineHeight={ captionStyles[ 0 ].lineHeight }
+											onLineHeight={ ( value ) => saveCaptionFont( { lineHeight: value } ) }
+											lineHeightType={ captionStyles[ 0 ].lineType }
+											onLineHeightType={ ( value ) => saveCaptionFont( { lineType: value } ) }
+											letterSpacing={ captionStyles[ 0 ].letterSpacing }
+											onLetterSpacing={ ( value ) => saveCaptionFont( { letterSpacing: value } ) }
+											textTransform={ captionStyles[ 0 ].textTransform }
+											onTextTransform={ ( value ) => saveCaptionFont( { textTransform: value } ) }
+											fontFamily={ captionStyles[ 0 ].family }
+											onFontFamily={ ( value ) => saveCaptionFont( { family: value } ) }
+											onFontChange={ ( select ) => {
+												saveCaptionFont( {
+													family: select.value,
+													google: select.google,
+												} );
+											} }
+											onFontArrayChange={ ( values ) => saveCaptionFont( values ) }
+											googleFont={ captionStyles[ 0 ].google }
+											onGoogleFont={ ( value ) => saveCaptionFont( { google: value } ) }
+											loadGoogleFont={ captionStyles[ 0 ].loadGoogle }
+											onLoadGoogleFont={ ( value ) => saveCaptionFont( { loadGoogle: value } ) }
+											fontVariant={ captionStyles[ 0 ].variant }
+											onFontVariant={ ( value ) => saveCaptionFont( { variant: value } ) }
+											fontWeight={ captionStyles[ 0 ].weight }
+											onFontWeight={ ( value ) => saveCaptionFont( { weight: value } ) }
+											fontStyle={ captionStyles[ 0 ].style }
+											onFontStyle={ ( value ) => saveCaptionFont( { style: value } ) }
+											fontSubset={ captionStyles[ 0 ].subset }
+											onFontSubset={ ( value ) => saveCaptionFont( { subset: value } ) }
 										/>
 									</Fragment>
 								) }
-							</Fragment>
+							</PanelBody>
 						) }
-						{ type !== 'slider' && (
-							<Fragment>
-								<h2 className="kt-heading-size-title">{ __( 'Gutter' ) }</h2>
-								<TabPanel className="kt-size-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'desk',
-											title: <Dashicon icon="desktop" />,
-											className: 'kt-desk-tab',
-										},
-										{
-											name: 'tablet',
-											title: <Dashicon icon="tablet" />,
-											className: 'kt-tablet-tab',
-										},
-										{
-											name: 'mobile',
-											title: <Dashicon icon="smartphone" />,
-											className: 'kt-mobile-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'mobile' === tab.name ) {
-													tabout = (
-														<RangeControl
-															value={ ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) }
-															onChange={ value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), value ] } ) }
-															step={ 2 }
-															min={ 0 }
-															max={ 100 }
-														/>
-													);
-												} else if ( 'tablet' === tab.name ) {
-													tabout = (
-														<RangeControl
-															value={ ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ) }
-															onChange={ value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), value, ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } ) }
-															step={ 2 }
-															min={ 0 }
-															max={ 100 }
-														/>
-													);
-												} else {
-													tabout = (
-														<RangeControl
-															value={ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ) }
-															onChange={ value => setAttributes( { gutter: [ value, ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } ) }
-															step={ 2 }
-															min={ 0 }
-															max={ 100 }
-														/>
-													);
-												}
-											}
-											return <div>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-							</Fragment>
-						) }
-						{ type === 'fluidcarousel' && (
-							<Fragment>
-								<h2 className="kt-heading-size-title">{ __( 'Carousel Height' ) }</h2>
-								<TabPanel className="kt-size-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'desk',
-											title: <Dashicon icon="desktop" />,
-											className: 'kt-desk-tab',
-										},
-										{
-											name: 'tablet',
-											title: <Dashicon icon="tablet" />,
-											className: 'kt-tablet-tab',
-										},
-										{
-											name: 'mobile',
-											title: <Dashicon icon="smartphone" />,
-											className: 'kt-mobile-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'mobile' === tab.name ) {
-													tabout = (
-														<RangeControl
-															value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) }
-															onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } ) }
-															step={ 1 }
-															min={ 120 }
-															max={ 500 }
-														/>
-													);
-												} else if ( 'tablet' === tab.name ) {
-													tabout = (
-														<RangeControl
-															value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ) }
-															onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
-															step={ 1 }
-															min={ 120 }
-															max={ 500 }
-														/>
-													);
-												} else {
-													tabout = (
-														<RangeControl
-															value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ) }
-															onChange={ value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
-															step={ 1 }
-															min={ 120 }
-															max={ 500 }
-														/>
-													);
-												}
-											}
-											return <div>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
-							</Fragment>
-						) }
-						{ ids && undefined !== ids[ 0 ] && (
-							<ImageSizeControl
-								label={ __( 'Thumbnail Image Size' ) }
-								slug={ thumbSize }
-								id={ ids[ 0 ] }
-								fullSelection={ false }
-								selectByValue={ false }
-								onChange={ this.changeImageThumbSize }
-							/>
-						) }
-					</PanelBody>
-					{ type && ( type === 'carousel' || type === 'fluidcarousel' || type === 'slider' || type === 'thumbslider' ) && (
-						<Fragment>
-							{ this.showSettings( 'carouselSettings' ) && (
-								<PanelBody
-									title={ __( 'Carousel Settings' ) }
-									initialOpen={ false }
-								>
-									<ToggleControl
-										label={ __( 'Carousel Auto Play' ) }
-										checked={ autoPlay }
-										onChange={ ( value ) => setAttributes( { autoPlay: value } ) }
-									/>
-									{ autoPlay && (
-										<RangeControl
-											label={ __( 'Autoplay Speed' ) }
-											value={ autoSpeed }
-											onChange={ ( value ) => setAttributes( { autoSpeed: value } ) }
-											min={ 500 }
-											max={ 15000 }
-											step={ 10 }
-										/>
-									) }
-									<RangeControl
-										label={ __( 'Carousel Slide Transition Speed' ) }
-										value={ transSpeed }
-										onChange={ ( value ) => setAttributes( { transSpeed: value } ) }
-										min={ 100 }
-										max={ 2000 }
-										step={ 10 }
-									/>
-									{ type === 'carousel' && (
-										<SelectControl
-											label={ __( 'Slides to Scroll' ) }
-											options={ [
-												{
-													label: __( 'One' ),
-													value: '1',
-												},
-												{
-													label: __( 'All' ),
-													value: 'all',
-												},
-											] }
-											value={ slidesScroll }
-											onChange={ ( value ) => setAttributes( { slidesScroll: value } ) }
-										/>
-									) }
-									<SelectControl
-										label={ __( 'Arrow Style' ) }
-										options={ [
-											{
-												label: __( 'White on Dark' ),
-												value: 'whiteondark',
-											},
-											{
-												label: __( 'Black on Light' ),
-												value: 'blackonlight',
-											},
-											{
-												label: __( 'Outline Black' ),
-												value: 'outlineblack',
-											},
-											{
-												label: __( 'Outline White' ),
-												value: 'outlinewhite',
-											},
-											{
-												label: __( 'None' ),
-												value: 'none',
-											},
-										] }
-										value={ arrowStyle }
-										onChange={ ( value ) => setAttributes( { arrowStyle: value } ) }
-									/>
-									<SelectControl
-										label={ __( 'Dot Style' ) }
-										options={ [
-											{
-												label: __( 'Dark' ),
-												value: 'dark',
-											},
-											{
-												label: __( 'Light' ),
-												value: 'light',
-											},
-											{
-												label: __( 'Outline Dark' ),
-												value: 'outlinedark',
-											},
-											{
-												label: __( 'Outline Light' ),
-												value: 'outlinelight',
-											},
-											{
-												label: __( 'None' ),
-												value: 'none',
-											},
-										] }
-										value={ dotStyle }
-										onChange={ ( value ) => setAttributes( { dotStyle: value } ) }
-									/>
-								</PanelBody>
-							) }
-						</Fragment>
-					) }
-					<PanelBody
-						title={ __( 'Link Settings' ) }
-						initialOpen={ false }
-					>
-						<SelectControl
-							label={ __( 'Link To' ) }
-							value={ linkTo }
-							onChange={ this.setLinkTo }
-							options={ linkOptions }
-						/>
-						{ linkTo === 'media' && (
-							<Fragment>
-								{ ids && undefined !== ids[ 0 ] && (
-									<ImageSizeControl
-										label={ __( 'Link Image Size' ) }
-										slug={ lightSize }
-										id={ ids[ 0 ] }
-										fullSelection={ false }
-										selectByValue={ false }
-										onChange={ this.changeImageLightSize }
-									/>
-								) }
+						{ this.showSettings( 'shadowSettings' ) && (
+							<PanelBody
+								title={ __( 'Image Shadow' ) }
+								initialOpen={ false }
+							>
 								<ToggleControl
-									label={ __( 'Lightbox' ) }
-									checked={ ( lightbox && lightbox === 'magnific' ? true : false ) }
-									onChange={ ( value ) => setAttributes( { lightbox: ( value ? 'magnific' : 'none' ) } ) }
+									label={ __( 'Enable Shadow' ) }
+									checked={ displayShadow }
+									onChange={ value => setAttributes( { displayShadow: value } ) }
 								/>
-								{ lightbox && lightbox === 'magnific' && (
-									<ToggleControl
-										label={ __( 'Show Caption in Lightbox' ) }
-										checked={ lightboxCaption }
-										onChange={ ( value ) => setAttributes( { lightboxCaption: value } ) }
-									/>
-								) }
-							</Fragment>
-						) }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Image Style' ) }
-						initialOpen={ false }
-					>
-						{ ! ( type === 'carousel' && imageRatio === 'inherit' ) && ! ( type === 'slider' && imageRatio === 'inherit' ) && (
-							<MeasurementControls
-								label={ __( 'Border Radius' ) }
-								measurement={ imageRadius }
-								control={ this.state.radiusControl }
-								onChange={ ( value ) => setAttributes( { imageRadius: value } ) }
-								onControl={ ( value ) => this.setState( { radiusControl: value } ) }
-								min={ 0 }
-								max={ 200 }
-								step={ 1 }
-								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-									{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
-								] }
-								firstIcon={ icons.topleft }
-								secondIcon={ icons.topright }
-								thirdIcon={ icons.bottomright }
-								fourthIcon={ icons.bottomleft }
-							/>
-						) }
-						<SelectControl
-							label={ __( 'Image Filter' ) }
-							help={ __( 'Not supported in Internet Explorer' ) }
-							options={ [
-								{
-									label: __( 'None' ),
-									value: 'none',
-								},
-								{
-									label: __( 'Grayscale' ),
-									value: 'grayscale',
-								},
-								{
-									label: __( 'Sepia' ),
-									value: 'sepia',
-								},
-								{
-									label: __( 'Saturation' ),
-									value: 'saturation',
-								},
-								{
-									label: __( 'Vintage' ),
-									value: 'vintage',
-								},
-								{
-									label: __( 'Earlybird' ),
-									value: 'earlybird',
-								},
-								{
-									label: __( 'Toaster' ),
-									value: 'toaster',
-								},
-								{
-									label: __( 'Mayfair' ),
-									value: 'mayfair',
-								},
-							] }
-							value={ imageFilter }
-							onChange={ ( value ) => setAttributes( { imageFilter: value } ) }
-						/>
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Caption Settings' ) }
-						initialOpen={ false }
-					>
-						<ToggleControl
-							label={ __( 'Show Captions' ) }
-							checked={ showCaption }
-							onChange={ this.setCaptions }
-						/>
-						{ showCaption && (
-							<Fragment>
-								<SelectControl
-									label={ __( 'Caption Placement' ) }
-									options={ [
+								{ displayShadow && (
+									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+										activeClass="active-tab"
+										tabs={ [
+											{
+												name: 'normal',
+												title: __( 'Normal' ),
+												className: 'kt-normal-tab',
+											},
+											{
+												name: 'hover',
+												title: __( 'Hover' ),
+												className: 'kt-hover-tab',
+											},
+										] }>
 										{
-											label: __( 'Bottom of Image - Show on Hover' ),
-											value: 'bottom-hover',
-										},
-										{
-											label: __( 'Bottom of Image - Show always' ),
-											value: 'bottom',
-										},
-										{
-											label: __( 'Below Image - Show always' ),
-											value: 'below',
-										},
-										{
-											label: __( 'Cover Image - Show on Hover' ),
-											value: 'cover-hover',
-										},
-									] }
-									value={ captionStyle }
-									onChange={ ( value ) => setAttributes( { captionStyle: value } ) }
-								/>
-								<AdvancedColorControl
-									label={ __( 'Caption Color' ) }
-									colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => saveCaptionFont( { color: value } ) }
-								/>
-								<AdvancedColorControl
-									label={ __( 'Caption Background' ) }
-									colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
-									colorDefault={ '#000000' }
-									onColorChange={ value => saveCaptionFont( { background: value } ) }
-									opacityValue={ ( captionStyles && captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) }
-									onOpacityChange={ value => saveCaptionFont( { backgroundOpacity: value } ) }
-								/>
-								<TypographyControls
-									fontSize={ captionStyles[ 0 ].size }
-									onFontSize={ ( value ) => saveCaptionFont( { size: value } ) }
-									fontSizeType={ captionStyles[ 0 ].sizeType }
-									onFontSizeType={ ( value ) => saveCaptionFont( { sizeType: value } ) }
-									lineHeight={ captionStyles[ 0 ].lineHeight }
-									onLineHeight={ ( value ) => saveCaptionFont( { lineHeight: value } ) }
-									lineHeightType={ captionStyles[ 0 ].lineType }
-									onLineHeightType={ ( value ) => saveCaptionFont( { lineType: value } ) }
-									letterSpacing={ captionStyles[ 0 ].letterSpacing }
-									onLetterSpacing={ ( value ) => saveCaptionFont( { letterSpacing: value } ) }
-									textTransform={ captionStyles[ 0 ].textTransform }
-									onTextTransform={ ( value ) => saveCaptionFont( { textTransform: value } ) }
-									fontFamily={ captionStyles[ 0 ].family }
-									onFontFamily={ ( value ) => saveCaptionFont( { family: value } ) }
-									onFontChange={ ( select ) => {
-										saveCaptionFont( {
-											family: select.value,
-											google: select.google,
-										} );
-									} }
-									onFontArrayChange={ ( values ) => saveCaptionFont( values ) }
-									googleFont={ captionStyles[ 0 ].google }
-									onGoogleFont={ ( value ) => saveCaptionFont( { google: value } ) }
-									loadGoogleFont={ captionStyles[ 0 ].loadGoogle }
-									onLoadGoogleFont={ ( value ) => saveCaptionFont( { loadGoogle: value } ) }
-									fontVariant={ captionStyles[ 0 ].variant }
-									onFontVariant={ ( value ) => saveCaptionFont( { variant: value } ) }
-									fontWeight={ captionStyles[ 0 ].weight }
-									onFontWeight={ ( value ) => saveCaptionFont( { weight: value } ) }
-									fontStyle={ captionStyles[ 0 ].style }
-									onFontStyle={ ( value ) => saveCaptionFont( { style: value } ) }
-									fontSubset={ captionStyles[ 0 ].subset }
-									onFontSubset={ ( value ) => saveCaptionFont( { subset: value } ) }
-								/>
-							</Fragment>
-						) }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Image Shadow' ) }
-						initialOpen={ false }
-					>
-						<ToggleControl
-							label={ __( 'Enable Shadow' ) }
-							checked={ displayShadow }
-							onChange={ value => setAttributes( { displayShadow: value } ) }
-						/>
-						{ displayShadow && (
-							<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-								activeClass="active-tab"
-								tabs={ [
-									{
-										name: 'normal',
-										title: __( 'Normal' ),
-										className: 'kt-normal-tab',
-									},
-									{
-										name: 'hover',
-										title: __( 'Hover' ),
-										className: 'kt-hover-tab',
-									},
-								] }>
-								{
-									( tab ) => {
-										let tabout;
-										if ( tab.name ) {
-											if ( 'hover' === tab.name ) {
-												tabout = (
-													<Fragment>
-														<AdvancedColorControl
-															label={ __( 'Shadow Color' ) }
-															colorValue={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => saveShadowHover( { color: value } ) }
-															opacityValue={ shadowHover[ 0 ].opacity }
-															onOpacityChange={ value => saveShadowHover( { opacity: value } ) }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Blur' ) }
-															value={ shadowHover[ 0 ].blur }
-															onChange={ value => saveShadowHover( { blur: value } ) }
-															min={ 0 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Spread' ) }
-															value={ shadowHover[ 0 ].spread }
-															onChange={ value => saveShadowHover( { spread: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Vertical Offset' ) }
-															value={ shadowHover[ 0 ].vOffset }
-															onChange={ value => saveShadowHover( { vOffset: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Horizontal Offset' ) }
-															value={ shadowHover[ 0 ].hOffset }
-															onChange={ value => saveShadowHover( { hOffset: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-													</Fragment>
-												);
-											} else {
-												tabout = (
-													<Fragment>
-														<AdvancedColorControl
-															label={ __( 'Shadow Color' ) }
-															colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => saveShadow( { color: value } ) }
-															opacityValue={ shadow[ 0 ].opacity }
-															onOpacityChange={ value => saveShadow( { opacity: value } ) }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Blur' ) }
-															value={ shadow[ 0 ].blur }
-															onChange={ value => saveShadow( { blur: value } ) }
-															min={ 0 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Spread' ) }
-															value={ shadow[ 0 ].spread }
-															onChange={ value => saveShadow( { spread: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Vertical Offset' ) }
-															value={ shadow[ 0 ].vOffset }
-															onChange={ value => saveShadow( { vOffset: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-														<RangeControl
-															label={ __( 'Shadow Horizontal Offset' ) }
-															value={ shadow[ 0 ].hOffset }
-															onChange={ value => saveShadow( { hOffset: value } ) }
-															min={ -100 }
-															max={ 100 }
-															step={ 1 }
-														/>
-													</Fragment>
-												);
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'hover' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<AdvancedColorControl
+																	label={ __( 'Shadow Color' ) }
+																	colorValue={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
+																	colorDefault={ '' }
+																	onColorChange={ value => saveShadowHover( { color: value } ) }
+																	opacityValue={ shadowHover[ 0 ].opacity }
+																	onOpacityChange={ value => saveShadowHover( { opacity: value } ) }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Blur' ) }
+																	value={ shadowHover[ 0 ].blur }
+																	onChange={ value => saveShadowHover( { blur: value } ) }
+																	min={ 0 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Spread' ) }
+																	value={ shadowHover[ 0 ].spread }
+																	onChange={ value => saveShadowHover( { spread: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Vertical Offset' ) }
+																	value={ shadowHover[ 0 ].vOffset }
+																	onChange={ value => saveShadowHover( { vOffset: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Horizontal Offset' ) }
+																	value={ shadowHover[ 0 ].hOffset }
+																	onChange={ value => saveShadowHover( { hOffset: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+															</Fragment>
+														);
+													} else {
+														tabout = (
+															<Fragment>
+																<AdvancedColorControl
+																	label={ __( 'Shadow Color' ) }
+																	colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
+																	colorDefault={ '' }
+																	onColorChange={ value => saveShadow( { color: value } ) }
+																	opacityValue={ shadow[ 0 ].opacity }
+																	onOpacityChange={ value => saveShadow( { opacity: value } ) }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Blur' ) }
+																	value={ shadow[ 0 ].blur }
+																	onChange={ value => saveShadow( { blur: value } ) }
+																	min={ 0 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Spread' ) }
+																	value={ shadow[ 0 ].spread }
+																	onChange={ value => saveShadow( { spread: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Vertical Offset' ) }
+																	value={ shadow[ 0 ].vOffset }
+																	onChange={ value => saveShadow( { vOffset: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+																<RangeControl
+																	label={ __( 'Shadow Horizontal Offset' ) }
+																	value={ shadow[ 0 ].hOffset }
+																	onChange={ value => saveShadow( { hOffset: value } ) }
+																	min={ -100 }
+																	max={ 100 }
+																	step={ 1 }
+																/>
+															</Fragment>
+														);
+													}
+												}
+												return <div>{ tabout }</div>;
 											}
 										}
-										return <div>{ tabout }</div>;
-									}
-								}
-							</TabPanel>
+									</TabPanel>
+								) }
+							</PanelBody>
 						) }
-					</PanelBody>
-					<PanelBody
-						title={ __( 'Gallery Spacing' ) }
-						initialOpen={ false }
-					>
-						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
-							{ map( marginTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ marginUnit === key }
-									aria-pressed={ marginUnit === key }
-									onClick={ () => setAttributes( { marginUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<h2 className="kt-heading-size-title">{ __( 'Margin' ) }</h2>
-						<TabPanel className="kt-size-tabs"
-							activeClass="active-tab"
-							tabs={ [
-								{
-									name: 'desk',
-									title: <Dashicon icon="desktop" />,
-									className: 'kt-desk-tab',
-								},
-								{
-									name: 'tablet',
-									title: <Dashicon icon="tablet" />,
-									className: 'kt-tablet-tab',
-								},
-								{
-									name: 'mobile',
-									title: <Dashicon icon="smartphone" />,
-									className: 'kt-mobile-tab',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'mobile' === tab.name ) {
-											tabout = (
-												<MeasurementControls
-													label={ __( 'Mobile Margin' ) }
-													measurement={ margin[ 0 ].mobile }
-													control={ this.state.marginMobileControl }
-													onChange={ ( value ) => saveMargin( { mobile: value } ) }
-													onControl={ ( value ) => this.setState( { marginMobileControl: value } ) }
-													min={ marginMin }
-													max={ marginMax }
-													step={ marginStep }
-												/>
-											);
-										} else if ( 'tablet' === tab.name ) {
-											tabout = (
-												<MeasurementControls
-													label={ __( 'Tablet Margin' ) }
-													measurement={ margin[ 0 ].tablet }
-													control={ this.state.marginTabletControl }
-													onChange={ ( value ) => saveMargin( { tablet: value } ) }
-													onControl={ ( value ) => this.setState( { marginTabletControl: value } ) }
-													min={ marginMin }
-													max={ marginMax }
-													step={ marginStep }
-												/>
-											);
-										} else {
-											tabout = (
-												<MeasurementControls
-													label={ __( 'Margin' ) }
-													measurement={ margin[ 0 ].desk }
-													control={ this.state.marginDeskControl }
-													onChange={ ( value ) => saveMargin( { desk: value } ) }
-													onControl={ ( value ) => this.setState( { marginDeskControl: value } ) }
-													min={ marginMin }
-													max={ marginMax }
-													step={ marginStep }
-												/>
-											);
+						{ this.showSettings( 'spacingSettings' ) && (
+							<PanelBody
+								title={ __( 'Gallery Spacing' ) }
+								initialOpen={ false }
+							>
+								<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
+									{ map( marginTypes, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-size-btn"
+											isSmall
+											isPrimary={ marginUnit === key }
+											aria-pressed={ marginUnit === key }
+											onClick={ () => setAttributes( { marginUnit: key } ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+								<h2 className="kt-heading-size-title">{ __( 'Margin' ) }</h2>
+								<TabPanel className="kt-size-tabs"
+									activeClass="active-tab"
+									tabs={ [
+										{
+											name: 'desk',
+											title: <Dashicon icon="desktop" />,
+											className: 'kt-desk-tab',
+										},
+										{
+											name: 'tablet',
+											title: <Dashicon icon="tablet" />,
+											className: 'kt-tablet-tab',
+										},
+										{
+											name: 'mobile',
+											title: <Dashicon icon="smartphone" />,
+											className: 'kt-mobile-tab',
+										},
+									] }>
+									{
+										( tab ) => {
+											let tabout;
+											if ( tab.name ) {
+												if ( 'mobile' === tab.name ) {
+													tabout = (
+														<MeasurementControls
+															label={ __( 'Mobile Margin' ) }
+															measurement={ margin[ 0 ].mobile }
+															control={ this.state.marginMobileControl }
+															onChange={ ( value ) => saveMargin( { mobile: value } ) }
+															onControl={ ( value ) => this.setState( { marginMobileControl: value } ) }
+															min={ marginMin }
+															max={ marginMax }
+															step={ marginStep }
+														/>
+													);
+												} else if ( 'tablet' === tab.name ) {
+													tabout = (
+														<MeasurementControls
+															label={ __( 'Tablet Margin' ) }
+															measurement={ margin[ 0 ].tablet }
+															control={ this.state.marginTabletControl }
+															onChange={ ( value ) => saveMargin( { tablet: value } ) }
+															onControl={ ( value ) => this.setState( { marginTabletControl: value } ) }
+															min={ marginMin }
+															max={ marginMax }
+															step={ marginStep }
+														/>
+													);
+												} else {
+													tabout = (
+														<MeasurementControls
+															label={ __( 'Margin' ) }
+															measurement={ margin[ 0 ].desk }
+															control={ this.state.marginDeskControl }
+															onChange={ ( value ) => saveMargin( { desk: value } ) }
+															onControl={ ( value ) => this.setState( { marginDeskControl: value } ) }
+															min={ marginMin }
+															max={ marginMax }
+															step={ marginStep }
+														/>
+													);
+												}
+											}
+											return <div>{ tabout }</div>;
 										}
 									}
-									return <div>{ tabout }</div>;
-								}
-							}
-						</TabPanel>
-					</PanelBody>
-				</InspectorControls>
+								</TabPanel>
+							</PanelBody>
+						) }
+					</InspectorControls>
+				) }
 				{ noticeUI }
 				{ showCaption && captionStyles[ 0 ].google && (
 					<WebfontLoader config={ config }>

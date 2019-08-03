@@ -72,9 +72,12 @@ jQuery( document ).ready( function( $ ) {
 			tabindex: '0',
 			'aria-selected': 'true',
 		} );
-		var resizeEvent = window.document.createEvent('UIEvents'); 
-		resizeEvent.initUIEvent('resize', true, false, window, 0); 
-		window.dispatchEvent(resizeEvent);
+		var resizeEvent = window.document.createEvent( 'UIEvents' );
+		resizeEvent.initUIEvent( 'resize', true, false, window, 0 );
+		window.dispatchEvent( resizeEvent );
+		var tabEvent = window.document.createEvent( 'UIEvents' );
+		tabEvent.initUIEvent( 'kadence-tabs-open', true, false, window, 0 );
+		window.dispatchEvent( tabEvent );
 	} );
 	$( '.kt-create-accordion' ).find( '> .kt-tabs-title-list .kt-title-item' ).each( function() {
 		var tabId = $( this ).find( 'a' ).attr( 'data-tab' );
@@ -115,9 +118,12 @@ jQuery( document ).ready( function( $ ) {
 			//$( this ).closest( '.kt-tabs-wrap' ).find( 'ul .kt-title-item-' + tabId ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
 			$( this ).parent( '.kt-tabs-accordion-title' ).addClass( 'kt-tab-title-active' ).removeClass( 'kt-tab-title-inactive' );
 		}
-		var resizeEvent = window.document.createEvent('UIEvents'); 
-		resizeEvent.initUIEvent('resize', true, false, window, 0); 
-		window.dispatchEvent(resizeEvent);
+		var resizeEvent = window.document.createEvent( 'UIEvents' );
+		resizeEvent.initUIEvent( 'resize', true, false, window, 0 );
+		window.dispatchEvent( resizeEvent );
+		var tabEvent = window.document.createEvent( 'UIEvents' );
+		tabEvent.initUIEvent( 'kadence-tabs-open', true, false, window, 0 );
+		window.dispatchEvent( tabEvent );
 	} );
 	function kt_anchor_tabs() {
 		if ( window.location.hash != '' ) {

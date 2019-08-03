@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencethemes.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.2.2
-Stable tag: 1.6.4
+Stable tag: 1.6.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.6.5 =
+* Fix: Carousel in tabs issue.
+* Fix: Carousel lightbox count off.
+* Add: Gallery Default Settings.
+* Update: Icon list for Gutenberg 6.2
 
 = 1.6.4 =
 * Fix: Info Box image issue.

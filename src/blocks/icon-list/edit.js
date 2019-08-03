@@ -22,6 +22,7 @@ import WebfontLoader from '../../fontloader';
 import map from 'lodash/map';
 import AdvancedColorControl from '../../advanced-color-control';
 import StepControl from '../../step-control';
+import filter from 'lodash/filter';
 
 /**
  * Import Css
@@ -53,6 +54,9 @@ const {
 	Button,
 	SelectControl,
 } = wp.components;
+
+const { compose } = wp.compose;
+const { withDispatch } = wp.data;
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -75,7 +79,22 @@ class KadenceIconLists extends Component {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/iconlist' ] !== undefined && typeof blockConfigObject[ 'kadence/iconlist' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/iconlist' ] ).map( ( attribute ) => {
-					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/iconlist' ][ attribute ];
+					if ( attribute === 'items' ) {
+						this.props.attributes[ attribute ] = this.props.attributes[ attribute ].map( ( item, index ) => {
+							item.icon = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].icon;
+							item.size = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].size;
+							item.color = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].color;
+							item.background = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].background;
+							item.border = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].border;
+							item.borderRadius = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderRadius;
+							item.padding = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].padding;
+							item.borderWidth = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderWidth;
+							item.style = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].style;
+							return item;
+						} );
+					} else {
+						this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/iconlist' ][ attribute ];
+					}
 				} );
 			}
 			this.props.setAttributes( {
@@ -98,6 +117,14 @@ class KadenceIconLists extends Component {
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/iconlist' ] !== undefined && typeof blockSettings[ 'kadence/iconlist' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/iconlist' ] } );
+		}
+	}
+	componentDidUpdate( prevProps ) {
+		// Deselect images when deselecting the block
+		if ( ! this.props.isSelected && prevProps.isSelected ) {
+			this.setState( {
+				focusIndex: null,
+			} );
 		}
 	}
 	onSelectItem( index ) {
@@ -169,7 +196,27 @@ class KadenceIconLists extends Component {
 			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
 			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
 		];
-		const createNewListItem = ( value, previousIndex ) => {
+		const stopOnReplace = ( value ) => {
+			// DO NOTHING.
+		};
+		const removeListItem = ( value, previousIndex ) => {
+			const amount = Math.abs( this.props.attributes.listCount );
+			if ( amount === 1 ) {
+				// Remove Block.
+				this.props.onDelete();
+			} else {
+				const newAmount = Math.abs( amount - 1 );
+				const currentItems = filter( this.props.attributes.items, ( item, i ) => previousIndex !== i );
+				const addin = Math.abs( previousIndex - 1 );
+				this.setState( { focusIndex: addin } );
+				setAttributes( {
+					items: currentItems,
+					listCount: newAmount,
+				} );
+			}
+		};
+		const createNewListItem = ( value, entireOld, previousIndex ) => {
+			const previousValue = entireOld.replace( value, '' );
 			const amount = Math.abs( 1 + this.props.attributes.listCount );
 			const currentItems = this.props.attributes.items;
 			const newItems = [ {
@@ -188,13 +235,12 @@ class KadenceIconLists extends Component {
 				style: currentItems[ 0 ].style,
 			} ];
 			const addin = Math.abs( previousIndex + 1 );
-			this.setState( { focusIndex: addin } );
 			{
 				times( amount, n => {
 					let ind = n;
 					if ( n === 0 ) {
 						if ( 0 === previousIndex ) {
-							newItems[ 0 ].text = value;
+							newItems[ 0 ].text = previousValue;
 						}
 					} else if ( n === addin ) {
 						newItems.push( {
@@ -218,7 +264,7 @@ class KadenceIconLists extends Component {
 							link: currentItems[ previousIndex ].link,
 							target: currentItems[ previousIndex ].target,
 							size: currentItems[ previousIndex ].size,
-							text: value,
+							text: previousValue,
 							width: currentItems[ previousIndex ].width,
 							color: currentItems[ previousIndex ].color,
 							background: currentItems[ previousIndex ].background,
@@ -251,6 +297,7 @@ class KadenceIconLists extends Component {
 				} );
 				setAttributes( { items: newItems } );
 				setAttributes( { listCount: amount } );
+				this.setState( { focusIndex: addin } );
 			}
 		};
 		const renderSVG = svg => (
@@ -411,6 +458,18 @@ class KadenceIconLists extends Component {
 						onChange={ value => {
 							this.saveListItem( { text: value }, index );
 						} }
+						onSplit={ ( value ) => {
+							if ( ! value ) {
+								return createNewListItem( '', items[ index ].text, index );
+							}
+							return createNewListItem( value, items[ index ].text, index );
+						} }
+						onRemove={ ( value ) => {
+							removeListItem( value, index );
+						} }
+						isSelected={ this.state.focusIndex === index }
+						unstableOnFocus={ this.onSelectItem( index ) }
+						onReplace={ stopOnReplace }
 						className={ 'kt-svg-icon-list-text' }
 					/>
 				</div>
@@ -434,7 +493,7 @@ class KadenceIconLists extends Component {
 							<StepControl
 								label={ __( 'Number of Items' ) }
 								value={ listCount }
-								onChange={ newcount => {
+								onChange={ ( newcount ) => {
 									const newitems = items;
 									if ( newitems.length < newcount ) {
 										const amount = Math.abs( newcount - newitems.length );
@@ -729,5 +788,15 @@ class KadenceIconLists extends Component {
 		);
 	}
 }
-export default ( KadenceIconLists );
+//export default ( KadenceIconLists );
 
+export default compose( [
+	withDispatch( ( dispatch, { clientId, rootClientId } ) => {
+		const { removeBlock } = dispatch( 'core/block-editor' );
+		return {
+			onDelete: () => {
+				removeBlock( clientId, rootClientId );
+			},
+		};
+	} ),
+] )( KadenceIconLists );

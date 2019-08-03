@@ -2033,7 +2033,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init {';
 				$css .= 'margin: 0 -' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
-			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item {';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kt-blocks-carousel-init:not(.slick-initialized) .kb-slide-item {';
 				$css .= 'padding: 4px ' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
 			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev {';

@@ -870,7 +870,7 @@ clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
         />
     </g>
 </svg>;
-icons.gallery = <svg viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
+icons.gallery = <svg width="20px" height="20px" viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
 clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='2'>
     <g fill='#179cd4' fillRule='nonzero'>
         <path d='M46.652,11.743l-38.504,0c-0.414,0 -0.755,0.341 -0.755,0.755l0,28.023c0,0.414 0.341,0.755 0.755,0.755l38.504,0c0.414,0 0.755,-0.341 0.755,-0.755l0,-28.029c-0.003,-0.412 -0.344,-0.749 -0.755,-0.749Zm-0.754,28.017l-36.995,0l0,-26.508l36.995,0l0,26.508Z'

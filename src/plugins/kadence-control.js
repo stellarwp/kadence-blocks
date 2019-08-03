@@ -38,6 +38,8 @@ import KadenceHeadings from './block-defaults/advanced-heading-default';
 import KadenceHeadingsSettings from './block-settings/advanced-heading-settings';
 import KadenceRowLayout from './block-defaults/rowlayout-default';
 import KadenceRowLayoutSettings from './block-settings/rowlayout-settings';
+import KadenceGallery from './block-defaults/advanced-gallery-default';
+import KadenceGallerySettings from './block-settings/advanced-gallery-settings';
 import KadenceColors from './block-defaults/color-palette-defaults';
 
 /*
@@ -92,7 +94,7 @@ class KadenceConfig extends Component {
 									<KadenceTabsSettings />
 								) }
 							</div>
-							<div className="kt-blocks-control-row">	
+							<div className="kt-blocks-control-row">
 								<KadenceAccordion />
 								{ 'admin' === this.state.user && (
 									<KadenceAccordionSettings />
@@ -132,6 +134,12 @@ class KadenceConfig extends Component {
 								<KadenceRowLayout />
 								{ 'admin' === this.state.user && (
 									<KadenceRowLayoutSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceGallery />
+								{ 'admin' === this.state.user && (
+									<KadenceGallerySettings />
 								) }
 							</div>
 							{ map( this.state.controls, ( { Control } ) => (

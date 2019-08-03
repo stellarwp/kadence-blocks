@@ -36,7 +36,7 @@ const {
 	split,
 	create,
 	toHTMLString,
-	LINE_SEPARATOR
+	__UNSTABLE_LINE_SEPARATOR,
 } = wp.richText;
 const {
 	Fragment,
@@ -144,29 +144,45 @@ registerBlockType( 'kadence/iconlist', {
 						html: values,
 						multilineTag: 'li',
 						multilineWrapperTags: [ 'ul', 'ol' ],
-					} ), LINE_SEPARATOR );
-					const newitems = [];
+					} ), __UNSTABLE_LINE_SEPARATOR );
+					const newitems = [ {
+						icon: 'fe_checkCircle',
+						link: '',
+						target: '_self',
+						size: 20,
+						width: 2,
+						text: toHTMLString( { value: listArray[ 0 ] } ),
+						color: '',
+						background: '',
+						border: '',
+						borderRadius: 0,
+						padding: 5,
+						borderWidth: 1,
+						style: 'default',
+					} ];
 					const amount = Math.abs( listArray.length );
 					{ times( amount, n => {
-						newitems.push( {
-							icon: 'fe_checkCircle',
-							link: '',
-							target: '_self',
-							size: 20,
-							width: 2,
-							text: toHTMLString( { value: listArray[ n ] } ),
-							color: '',
-							background: '',
-							border: '',
-							borderRadius: 0,
-							padding: 5,
-							borderWidth: 1,
-							style: 'default',
-						} );
+						if ( n !== 0 ) {
+							newitems.push( {
+								icon: 'fe_checkCircle',
+								link: '',
+								target: '_self',
+								size: 20,
+								width: 2,
+								text: toHTMLString( { value: listArray[ n ] } ),
+								color: '',
+								background: '',
+								border: '',
+								borderRadius: 0,
+								padding: 5,
+								borderWidth: 1,
+								style: 'default',
+							} );
+						}
 					} ); }
 					return createBlock( 'kadence/iconlist', {
-						listCount: amount,
 						items: newitems,
+						listCount: amount,
 					} );
 				},
 			},
@@ -180,7 +196,7 @@ registerBlockType( 'kadence/iconlist', {
 						values: toHTMLString( {
 							value: join( blockAttributes.items.map( ( { text } ) => {
 								return create( { html: text } );
-							} ), LINE_SEPARATOR ),
+							} ), __UNSTABLE_LINE_SEPARATOR ),
 							multilineTag: 'li',
 						} ),
 					} );
