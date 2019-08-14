@@ -349,7 +349,7 @@ class GalleryEdit extends Component {
 	}
 	render() {
 		const { attributes, isSelected, className, noticeUI, setAttributes } = this.props;
-		const { uniqueID, images, columns, linkTo, ids, columnControl, showCaption, captionStyles, lightbox, lightSize, type, imageRatio, captionStyle, gutter, thumbSize, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, imageRadius, margin, marginUnit, displayShadow, shadow, shadowHover, carouselHeight, imageFilter, lightboxCaption } = attributes;
+		const { uniqueID, images, columns, linkTo, ids, columnControl, showCaption, captionStyles, lightbox, lightSize, type, imageRatio, captionStyle, gutter, thumbSize, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, imageRadius, margin, marginUnit, displayShadow, shadow, shadowHover, carouselHeight, imageFilter, lightboxCaption, carouselAlign } = attributes;
 		const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
 		const hasImages = !! images.length;
 		const onColumnChange = ( value ) => {
@@ -406,14 +406,15 @@ class GalleryEdit extends Component {
 				margin: newUpdate,
 			} );
 		};
-		const marginMin = ( marginUnit === 'em' ? -12 : -200 );
-		const marginMax = ( marginUnit === 'em' ? 24 : 200 );
-		const marginStep = ( marginUnit === 'em' ? 0.1 : 1 );
+		const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
+		const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
+		const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 		const marginTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
 			{ key: '%', name: __( '%' ) },
 			{ key: 'vh', name: __( 'vh' ) },
+			{ key: 'rem', name: __( 'rem' ) },
 		];
 		const gconfig = {
 			google: {
@@ -478,7 +479,7 @@ class GalleryEdit extends Component {
 			draggable: false,
 			autoplaySpeed: autoSpeed,
 			autoplay: autoPlay,
-			centerMode: true,
+			centerMode: ( carouselAlign === false ? false : true ),
 			variableWidth: true,
 			slidesToShow: 1,
 			slidesToScroll: 1,
@@ -560,6 +561,9 @@ class GalleryEdit extends Component {
 					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide,
 					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide {
 						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+					}
+					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel.kb-carousel-mode-align-left .slick-slider .slick-slide {
+						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] ) + 'px 4px 0;' : '' ) }
 					}
 					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-prev {
 						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'left:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
@@ -920,6 +924,11 @@ class GalleryEdit extends Component {
 											}
 										}
 									</TabPanel>
+									<ToggleControl
+										label={ __( 'Carousel Center Mode' ) }
+										checked={ carouselAlign }
+										onChange={ ( value ) => setAttributes( { carouselAlign: value } ) }
+									/>
 								</Fragment>
 							) }
 							{ ids && undefined !== ids[ 0 ] && (
@@ -1461,7 +1470,7 @@ class GalleryEdit extends Component {
 				) }
 				{ type && type === 'fluidcarousel' && (
 					<div id={ `kb-gallery-id-${ uniqueID }` } className={ galleryClassNames }>
-						<div className={ `kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${ dotStyle }` }>
+						<div className={ `kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${ dotStyle }${ ( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' ) }` }>
 							{ images.length !== 1 && (
 								<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } { ...fluidCarouselSettings }>
 									{ images.map( ( img, index ) => {

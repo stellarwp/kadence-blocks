@@ -225,7 +225,10 @@
 			user-select: auto;
 			touch-action: auto;
 			.kb-slide-item {
-				padding: 0 5px
+				padding: 4px 5px
+			}
+			&.kb-carousel-mode-align-left .kb-slide-item {
+				padding: 4px 10px 4px 0;
 			}
 		}
 		.slick-prev {

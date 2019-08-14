@@ -196,8 +196,10 @@ class KadenceIconLists extends Component {
 			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
 			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
 		];
-		const stopOnReplace = ( value ) => {
-			// DO NOTHING.
+		const stopOnReplace = ( value, index ) => {
+			if ( value && undefined !== value[ 0 ] && undefined !== value[ 0 ].attributes && value[ 0 ].attributes.content ) {
+				this.saveListItem( { text: value[ 0 ].attributes.content }, index );
+			}
 		};
 		const removeListItem = ( value, previousIndex ) => {
 			const amount = Math.abs( this.props.attributes.listCount );
@@ -452,26 +454,41 @@ class KadenceIconLists extends Component {
 							borderRadius: ( items[ index ].borderRadius && items[ index ].style !== 'default' ? items[ index ].borderRadius + '%' : undefined ),
 						} } />
 					) }
-					<RichText
-						tagName="div"
-						value={ items[ index ].text }
-						onChange={ value => {
-							this.saveListItem( { text: value }, index );
-						} }
-						onSplit={ ( value ) => {
-							if ( ! value ) {
-								return createNewListItem( '', items[ index ].text, index );
-							}
-							return createNewListItem( value, items[ index ].text, index );
-						} }
-						onRemove={ ( value ) => {
-							removeListItem( value, index );
-						} }
-						isSelected={ this.state.focusIndex === index }
-						unstableOnFocus={ this.onSelectItem( index ) }
-						onReplace={ stopOnReplace }
-						className={ 'kt-svg-icon-list-text' }
-					/>
+					{ 'true' === kadence_blocks_params.gutenberg && (
+						<RichText
+							tagName="div"
+							value={ items[ index ].text }
+							onChange={ value => {
+								this.saveListItem( { text: value }, index );
+							} }
+							onSplit={ ( value ) => {
+								if ( ! value ) {
+									return createNewListItem( '', items[ index ].text, index );
+								}
+								return createNewListItem( value, items[ index ].text, index );
+							} }
+							onRemove={ ( value ) => {
+								removeListItem( value, index );
+							} }
+							isSelected={ this.state.focusIndex === index }
+							unstableOnFocus={ this.onSelectItem( index ) }
+							onReplace={ ( value ) => {
+								stopOnReplace( value, index );
+							} }
+							className={ 'kt-svg-icon-list-text' }
+						/>
+					) }
+					{ 'true' !== kadence_blocks_params.gutenberg && (
+						<RichText
+							tagName="div"
+							value={ items[ index ].text }
+							onChange={ value => {
+								this.saveListItem( { text: value }, index );
+							} }
+							className={ 'kt-svg-icon-list-text' }
+						/>
+					) }
+
 				</div>
 			);
 		};

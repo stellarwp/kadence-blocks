@@ -89,6 +89,7 @@ function kadence_gutenberg_editor_assets() {
 			'settings'       => get_option( 'kadence_blocks_settings_blocks' ),
 			'userrole'       => $userrole,
 			'colors'         => get_option( 'kadence_blocks_colors' ),
+			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
 		)
 	);
 	// Styles.
@@ -198,7 +199,7 @@ function kadence_blocks_admin_editor_width() {
 			max-width: none;
 		}';
 		echo '</style>';
-		echo "<script> var kt_blocks_sidebar_size = " . $sidebar_size . "; var kt_blocks_nosidebar_size = " . $nosidebar_size . "; var kt_blocks_default_size = " . $jssize . ";</script>";
+		echo '<script> var kt_blocks_sidebar_size = ' . esc_attr( $sidebar_size ) . '; var kt_blocks_nosidebar_size = ' . esc_attr( $nosidebar_size ) . '; var kt_blocks_default_size = ' . esc_attr( $jssize ) . ';</script>';
 	}
 }
 add_action( 'admin_head-post.php', 'kadence_blocks_admin_editor_width', 100 );

@@ -189,6 +189,7 @@ class KadenceRowLayout extends Component {
 			{ key: 'em', name: __( 'em' ) },
 			{ key: '%', name: __( '%' ) },
 			{ key: 'vh', name: __( 'vh' ) },
+			{ key: 'rem', name: __( 'rem' ) },
 		];
 		const heightTypes = [
 			{ key: 'px', name: __( 'px' ) },
@@ -202,9 +203,9 @@ class KadenceRowLayout extends Component {
 		];
 		const heightMax = ( minHeightUnit === 'px' ? 2000 : 200 );
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
-		const marginMin = ( marginUnit === 'em' ? -12 : -200 );
-		const marginMax = ( marginUnit === 'em' ? 24 : 200 );
-		const marginStep = ( marginUnit === 'em' ? 0.1 : 1 );
+		const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
+		const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
+		const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 		const onResize = ( event, direction, elt ) => {
 			let firstCol;
 			let secondCol;

@@ -73,10 +73,11 @@ class KadenceRowLayoutDefault extends Component {
 			{ key: 'em', name: __( 'em' ) },
 			{ key: '%', name: __( '%' ) },
 			{ key: 'vh', name: __( 'vh' ) },
+			{ key: 'rem', name: __( 'rem' ) },
 		];
-		const marginMin = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' ? 0.1 : 1 );
-		const marginMax = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' ? 12 : 100 );
-		const marginStep = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' ? 0.1 : 1 );
+		const marginMin = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' || ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'rem' ? 0.1 : 1 );
+		const marginMax = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' || ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'rem' ? 12 : 100 );
+		const marginStep = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' || ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'rem' ? 0.1 : 1 );
 		const widthTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: '%', name: __( '%' ) },

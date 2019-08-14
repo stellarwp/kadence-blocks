@@ -1,10 +1,10 @@
 === Kadence Blocks – Gutenberg Page Builder Toolkit ===
 Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
-Donate link: https://www.kadencethemes.com/about-us/
+Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.2.2
-Stable tag: 1.6.6
+Stable tag: 1.6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,7 +60,7 @@ In an effort to create an easier way to use Gutenberg in a more "page building e
 
 = Source files =
 
-[github](https://github.com/kadencethemes/kadence-blocks)
+[github](https://github.com/kadencewp/kadence-blocks)
 
 = Support =
 
@@ -85,6 +85,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.6.7 =
+* Fix: Margin for fluid carousel.
+* Fix: Icon list if not using Gutenberg Plugin.
+* Fix: Testimonial empty inline styles.
+* Add: Option for fluid carousel gallery to be left aligned.
+* Add: rem units to row margin, heading margin and gallery margin.
 
 = 1.6.6 =
 * Fix: Updating not showing
@@ -192,7 +199,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Add: Prebuilt testimonial.
 
 = 1.5.2 =
-* Add: Fullwidth setting to Advanced Button.
+* Add: Full-width setting to Advanced Button.
 * Add: Text Transform to Testimonials.
 * Add: Image Ratio to Card Testimonial style.
 
@@ -232,7 +239,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Add: Video Popup target to Button!
 * Update: Button Defaults moved to Kadence Control Plugin.
 * Add: Button Settings visibility
-* Add: nofollow option to buttons.
+* Add: no-follow option to buttons.
 * Add: Opacity to Buttons Background and Border.
 * Add: Button Gap.
 * Add: Background Image option to columns.
@@ -262,8 +269,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Update: Block Icons.
 
 = 1.3.9 =
-* Add: Differnet size units to Margin, maxwidth and minheight controls in row layout.
-* Update: Add some fallback support for content imported to a muitisite where it strips html.
+* Add: Different size units to Margin, max-width and min0height controls in row layout.
+* Update: Add some fallback support for content imported to a muiltisite where it strips html.
 * Updates: Better Mobile Parallax.
 * Fix: Attempt fix for Tabs in widget area.
 
@@ -279,8 +286,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Fix: Much smoother accordion animation.
 * Fix: Info Box Prebuilt error.
 * Fix: Issue with parallax on mobile.
-* Update: Allow Accordion Panes to be rearanged.
-* Update: Move accodion wrap tag into main accordion settings panel.
+* Update: Allow Accordion Panes to be rearranged.
+* Update: Move accordion wrap tag into main accordion settings panel.
 
 = 1.3.5 =
 * Fix: Font Weight tab titles, remove underline if theme adding.

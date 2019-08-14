@@ -275,6 +275,10 @@ registerBlockType( 'kadence/advancedgallery', {
 			type: 'string',
 			default: 'px',
 		},
+		carouselAlign: {
+			type: 'bool',
+			default: true,
+		},
 	},
 	transforms: {
 		from: [
@@ -310,7 +314,7 @@ registerBlockType( 'kadence/advancedgallery', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { uniqueID, images, columns, type, linkTo, showCaption, captionStyle, imageRatio, imageFilter, lightbox, lightboxCaption, dotStyle, transSpeed, slidesScroll, autoPlay, arrowStyle, autoSpeed } } = props;
+		const { attributes: { uniqueID, images, columns, type, linkTo, showCaption, captionStyle, imageRatio, imageFilter, lightbox, lightboxCaption, dotStyle, transSpeed, slidesScroll, autoPlay, arrowStyle, autoSpeed, carouselAlign } } = props;
 		const galleryClassNames = classnames(
 			{
 				'kb-gallery-ul': true,
@@ -406,7 +410,7 @@ registerBlockType( 'kadence/advancedgallery', {
 						data-lightbox-caption={ ( lightboxCaption ? 'true' : false ) }
 					>
 						<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ dotStyle }` }>
-							<div className={ `kt-blocks-carousel-init kb-blocks-fluid-carousel kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } data-slider-anim-speed={ transSpeed } data-slider-type="fluidcarousel" data-slider-scroll="1" data-slider-arrows={ ( 'none' === arrowStyle ? false : true ) } data-slider-dots={ ( 'none' === dotStyle ? false : true ) } data-slider-hover-pause="false" data-slider-auto={ autoPlay } data-slider-speed={ autoSpeed }>
+							<div className={ `kt-blocks-carousel-init kb-blocks-fluid-carousel kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }${ ( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' ) }` } data-slider-anim-speed={ transSpeed } data-slider-type="fluidcarousel" data-slider-scroll="1" data-slider-arrows={ ( 'none' === arrowStyle ? false : true ) } data-slider-dots={ ( 'none' === dotStyle ? false : true ) } data-slider-hover-pause="false" data-slider-auto={ autoPlay } data-slider-speed={ autoSpeed } data-slider-center-mode={ ( carouselAlign === false ? 'false' : undefined ) }>
 								{ images.map( ( image, index ) => (
 									<div className="kb-slide-item kb-gallery-carousel-item" key={ index }>
 										{ renderGalleryImages( image ) }

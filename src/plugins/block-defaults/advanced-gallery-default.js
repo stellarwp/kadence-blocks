@@ -106,14 +106,15 @@ class KadenceAdvancedGalleryDefault extends Component {
 			} );
 			this.saveConfigState( 'margin', newUpdate );
 		};
-		const marginMin = ( ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'em' ? -12 : -200 );
-		const marginMax = ( ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'em' ? 24 : 200 );
-		const marginStep = ( ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'em' ? 0.1 : 1 );
+		const marginMin = ( ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'em' || ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'rem' ? -12 : -200 );
+		const marginMax = ( ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'em' || ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'rem' ? 24 : 200 );
+		const marginStep = ( ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'em' || ( undefined !== galleryConfig.marginUnit ? galleryConfig.marginUnit : 'px' ) === 'rem' ? 0.1 : 1 );
 		const marginTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
 			{ key: '%', name: __( '%' ) },
 			{ key: 'vh', name: __( 'vh' ) },
+			{ key: 'rem', name: __( 'rem' ) },
 		];
 		const galleryTypes = [
 			{ value: 'masonry', label: __( 'Masonry' ), icon: icons.galMasonry, isDisabled: false },

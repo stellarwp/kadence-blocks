@@ -36,11 +36,13 @@ const {
 	split,
 	create,
 	toHTMLString,
+	LINE_SEPARATOR,
 	__UNSTABLE_LINE_SEPARATOR,
 } = wp.richText;
 const {
 	Fragment,
 } = wp.element;
+const lineSep = 'true' === kadence_blocks_params.gutenberg ? __UNSTABLE_LINE_SEPARATOR : LINE_SEPARATOR;
 /**
  * Register: a Gutenberg Block.
  *
@@ -144,7 +146,7 @@ registerBlockType( 'kadence/iconlist', {
 						html: values,
 						multilineTag: 'li',
 						multilineWrapperTags: [ 'ul', 'ol' ],
-					} ), __UNSTABLE_LINE_SEPARATOR );
+					} ), lineSep );
 					const newitems = [ {
 						icon: 'fe_checkCircle',
 						link: '',
@@ -196,7 +198,7 @@ registerBlockType( 'kadence/iconlist', {
 						values: toHTMLString( {
 							value: join( blockAttributes.items.map( ( { text } ) => {
 								return create( { html: text } );
-							} ), __UNSTABLE_LINE_SEPARATOR ),
+							} ), lineSep ),
 							multilineTag: 'li',
 						} ),
 					} );

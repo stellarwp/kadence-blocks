@@ -21,7 +21,8 @@ jQuery( document ).ready( function( $ ) {
 			xs = parseInt( container.attr( 'data-columns-xs' ) ),
 			ss = parseInt( container.attr( 'data-columns-ss' ) ),
 			scroll = parseInt( container.attr( 'data-slider-scroll' ) ),
-			sliderType = container.attr('data-slider-type');
+			sliderType = container.attr('data-slider-type'),
+			slidercenter = container.attr( 'data-slider-center-mode' );
 		var slickRtl = false;
 		var scrollSxxl = xxl,
 			scrollSxl = xl,
@@ -47,10 +48,15 @@ jQuery( document ).ready( function( $ ) {
 			container.find( '.kb-slide-item' ).each( function() {
 				$( this ).css( 'maxWidth', Math.floor( ( 80 / 100 ) * container.innerWidth() ) );
 			} );
+			if ( '' !== slidercenter && 'false' === slidercenter ) {
+				slidercenter = false;
+			} else {
+				slidercenter = true;
+			}
 			container.slick( {
 				slidesToScroll: 1,
 				slidesToShow: 1,
-				centerMode: true,
+				centerMode: slidercenter,
 				variableWidth: true,
 				arrows: sliderArrows,
 				speed: sliderAnimationSpeed,
@@ -63,14 +69,12 @@ jQuery( document ).ready( function( $ ) {
 			} );
 			var resizeTimer;
 
-			$( window ).on('resize', function( e ) {
+			$( window ).on( 'resize', function( e ) {
 				clearTimeout( resizeTimer );
-				resizeTimer = setTimeout(function() {
-
+				resizeTimer = setTimeout( function() {
 					container.find( '.kb-slide-item' ).each( function() {
 						$( this ).css( 'maxWidth', Math.floor( ( 80 / 100 ) * container.innerWidth() ) );
 					} );
-
 				}, 10 );
 			} );
 		} else if ( sliderType && sliderType === 'slider' ) {
