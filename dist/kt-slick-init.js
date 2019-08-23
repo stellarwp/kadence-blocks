@@ -78,6 +78,12 @@ jQuery( document ).ready( function( $ ) {
 				}, 10 );
 			} );
 		} else if ( sliderType && sliderType === 'slider' ) {
+			var sliderFade = container.attr('data-slider-fade');
+			if ( 'false' == sliderFade ) {
+				sliderFade = false;
+			} else {
+				sliderFade = true;
+			}
 			container.slick( {
 				slidesToShow: 1,
 				slidesToScroll: 1,
@@ -85,7 +91,7 @@ jQuery( document ).ready( function( $ ) {
 				speed: sliderAnimationSpeed,
 				autoplay: sliderAuto,
 				autoplaySpeed: sliderSpeed,
-				fade: true,
+				fade: sliderFade,
 				pauseOnHover: sliderPause,
 				rtl: slickRtl,
 				adaptiveHeight: true,

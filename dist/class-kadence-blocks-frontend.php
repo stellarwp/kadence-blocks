@@ -640,6 +640,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_style( 'kadence-blocks-pro-slick', KT_BLOCKS_URL . 'dist/vendor/kt-blocks-slick.css', array(), KT_BLOCKS_VERSION );
 		wp_register_script( 'kadence-slick', KT_BLOCKS_URL . 'dist/vendor/slick.min.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-slick-init', KT_BLOCKS_URL . 'dist/kt-slick-init.js', array( 'jquery', 'kadence-slick' ), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-video-bg', KT_BLOCKS_URL . 'dist/kb-init-html-bg-video.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-masonry-init', KT_BLOCKS_URL . 'dist/kb-masonry-init.js', array( 'jquery', 'masonry' ), KT_BLOCKS_VERSION, true );
 		wp_enqueue_style( 'kadence-blocks-style-css', KT_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KT_BLOCKS_VERSION );
 	}
@@ -1163,6 +1164,71 @@ class Kadence_Blocks_Frontend {
 				$css .= '}';
 			}
 		}
+		if ( isset( $attr['mediaAlignTablet'] ) && ! empty( $attr['mediaAlignTablet'] ) ) {
+			if ( 'top' === $attr['mediaAlignTablet'] ) {
+				$display = 'block';
+				$align = '';
+				$ms_content = '';
+				$content = '';
+			} elseif ( 'left' === $attr['mediaAlignTablet'] ) {
+				$display = 'flex';
+				$align = 'center';
+				$ms_content = 'start';
+				$content = 'flex-start';
+			} else {
+				$display = 'flex';
+				$align = 'center';
+				$ms_content = 'end';
+				$content = 'flex-end';
+			}
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap {';
+			$css .= 'display: ' . $display . ';';
+			if ( ! empty( $align ) ) {
+				$css .= '-ms-flex-align:' . $align . ';';
+				$css .= 'align-items: ' . $align . ';';
+			}
+			if ( ! empty( $ms_content ) ) {
+				$css .= '-ms-flex-pack: ' . $ms_content . ';';
+			}
+			if ( ! empty( $content ) ) {
+				$css .= 'justify-content: ' . $content . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['mediaAlignMobile'] ) && ! empty( $attr['mediaAlignMobile'] ) ) {
+			if ( 'top' === $attr['mediaAlignMobile'] ) {
+				$display = 'block';
+				$ms_content = '';
+				$content = '';
+			} elseif ( 'left' === $attr['mediaAlignMobile'] ) {
+				$display = 'flex';
+				$ms_content = 'start';
+				$content = 'flex-start';
+				$direction = 'row';
+			} else {
+				$display = 'flex';
+				$ms_content = 'end';
+				$content = 'flex-end';
+				$direction = 'row-reverse';
+			}
+			$css .= '@media (max-width: 767px) {';
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap {';
+			$css .= 'display: ' . $display . ';';
+			if ( ! empty( $ms_content ) ) {
+				$css .= '-ms-flex-pack: ' . $ms_content . ';';
+			}
+			if ( ! empty( $content ) ) {
+				$css .= 'justify-content: ' . $content . ';';
+			}
+			if ( ! empty( $direction ) ) {
+				$css .= '-ms-flex-direction: ' . $direction . ';';
+				$css .= 'flex-direction: ' . $direction . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
 		if ( isset( $attr['textColor'] ) || isset( $attr['textFont'] ) ) {
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
 			if ( isset( $attr['textColor'] ) && ! empty( $attr['textColor'] ) ) {
@@ -1211,12 +1277,12 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && ( ( isset( $attr['textFont'][0]['size'] ) && is_array( $attr['textFont'][0]['size'] ) && isset( $attr['textFont'][0]['size'][2] ) && ! empty( $attr['textFont'][0]['size'][2] ) ) || ( isset( $attr['textFont'][0]['lineHeight'] ) && is_array( $attr['textFont'][0]['lineHeight'] ) && isset( $attr['textFont'][0]['lineHeight'][2] ) && ! empty( $attr['textFont'][0]['lineHeight'][2] ) ) ) ) {
 			$css .= '@media (max-width: 767px) {';
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text {';
-				if ( isset( $attr['textFont'][0]['size'][2] ) && ! empty( $attr['textFont'][0]['size'][2] ) ) {
-					$css .= 'font-size:' . $attr['textFont'][0]['size'][2] . ( ! isset( $attr['textFont'][0]['sizeType'] ) ? 'px' : $attr['textFont'][0]['sizeType'] ) . ';';
-				}
-				if ( isset( $attr['textFont'][0]['lineHeight'][2] ) && ! empty( $attr['textFont'][0]['lineHeight'][2] ) ) {
-					$css .= 'line-height:' . $attr['textFont'][0]['lineHeight'][2] . ( ! isset( $attr['textFont'][0]['lineType'] ) ? 'px' : $attr['textFont'][0]['lineType'] ) . ';';
-				}
+			if ( isset( $attr['textFont'][0]['size'][2] ) && ! empty( $attr['textFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['textFont'][0]['size'][2] . ( ! isset( $attr['textFont'][0]['sizeType'] ) ? 'px' : $attr['textFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['textFont'][0]['lineHeight'][2] ) && ! empty( $attr['textFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['textFont'][0]['lineHeight'][2] . ( ! isset( $attr['textFont'][0]['lineType'] ) ? 'px' : $attr['textFont'][0]['lineType'] ) . ';';
+			}
 			$css .= '}';
 			$css .= '}';
 		}
@@ -1263,16 +1329,16 @@ class Kadence_Blocks_Frontend {
 				$css .= 'line-height:' . $learn_more_styles['lineHeight'][0] . ( ! isset( $learn_more_styles['lineType'] ) ? 'px' : $learn_more_styles['lineType'] ) . ';';
 			}
 			if ( isset( $learn_more_styles['letterSpacing'] ) && ! empty( $learn_more_styles['letterSpacing'] ) ) {
-				$css .= 'letter-spacing:' . $learn_more_styles['letterSpacing'] .  'px;';
+				$css .= 'letter-spacing:' . $learn_more_styles['letterSpacing'] . 'px;';
 			}
 			if ( isset( $learn_more_styles['family'] ) && ! empty( $learn_more_styles['family'] ) ) {
-				$css .= 'font-family:' . $learn_more_styles['family'] .  ';';
+				$css .= 'font-family:' . $learn_more_styles['family'] . ';';
 			}
 			if ( isset( $learn_more_styles['style'] ) && ! empty( $learn_more_styles['style'] ) ) {
-				$css .= 'font-style:' . $learn_more_styles['style'] .  ';';
+				$css .= 'font-style:' . $learn_more_styles['style'] . ';';
 			}
 			if ( isset( $learn_more_styles['weight'] ) && ! empty( $learn_more_styles['weight'] ) ) {
-				$css .= 'font-weight:' . $learn_more_styles['weight'] .  ';';
+				$css .= 'font-weight:' . $learn_more_styles['weight'] . ';';
 			}
 			if ( isset( $learn_more_styles['borderWidth'] ) && is_array( $learn_more_styles['borderWidth'] ) ) {
 				$css .= 'border-width:' . $learn_more_styles['borderWidth'][0] . 'px ' . $learn_more_styles['borderWidth'][1] . 'px ' . $learn_more_styles['borderWidth'][2] . 'px ' . $learn_more_styles['borderWidth'][3] . 'px;';
@@ -1286,15 +1352,15 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 			if ( isset( $learn_more_styles['colorHover'] ) || isset( $learn_more_styles['colorHover'] ) || isset( $learn_more_styles['borderHover'] ) ) {
 				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore {';
-					if ( isset( $learn_more_styles['colorHover'] ) && ! empty( $learn_more_styles['colorHover'] ) ) {
-						$css .= 'color:' . $learn_more_styles['colorHover'] . ';';
-					}
-					if ( isset( $learn_more_styles['backgroundHover'] ) && ! empty( $learn_more_styles['backgroundHover'] ) ) {
-						$css .= 'background:' . $learn_more_styles['backgroundHover'] . ';';
-					}
-					if ( isset( $learn_more_styles['borderHover'] ) && ! empty( $learn_more_styles['borderHover'] ) ) {
-						$css .= 'border-color:' . $learn_more_styles['borderHover'] . ';';
-					}
+				if ( isset( $learn_more_styles['colorHover'] ) && ! empty( $learn_more_styles['colorHover'] ) ) {
+					$css .= 'color:' . $learn_more_styles['colorHover'] . ';';
+				}
+				if ( isset( $learn_more_styles['backgroundHover'] ) && ! empty( $learn_more_styles['backgroundHover'] ) ) {
+					$css .= 'background:' . $learn_more_styles['backgroundHover'] . ';';
+				}
+				if ( isset( $learn_more_styles['borderHover'] ) && ! empty( $learn_more_styles['borderHover'] ) ) {
+					$css .= 'border-color:' . $learn_more_styles['borderHover'] . ';';
+				}
 				$css .= '}';
 			}
 		}
@@ -1561,9 +1627,9 @@ class Kadence_Blocks_Frontend {
 			// Check if the font has been added yet.
 			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
 				$add_font = array(
-					'fontfamily' => $title_font['family'],
+					'fontfamily'   => $title_font['family'],
 					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $title_font['subset'] ) && !empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
 				);
 				self::$gfonts[ $title_font['family'] ] = $add_font;
 			} else {
@@ -1577,12 +1643,12 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && isset( $attr['textFont'][0]['google'] ) && $attr['textFont'][0]['google'] && ( ! isset( $attr['textFont'][0]['loadGoogle'] ) || true === $attr['textFont'][0]['loadGoogle'] ) &&  isset( $attr['textFont'][0]['family'] ) ) {
 			$text_font = $attr['textFont'][0];
-			// Check if the font has been added yet
+			// Check if the font has been added yet.
 			if ( ! array_key_exists( $text_font['family'], self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $text_font['family'],
 					'fontvariants' => ( isset( $text_font['variant'] ) && ! empty( $text_font['variant'] ) ? array( $text_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $text_font['subset'] ) && !empty( $text_font['subset'] ) ? array( $text_font['subset'] ) : array() ),
+					'fontsubsets' => ( isset( $text_font['subset'] ) && ! empty( $text_font['subset'] ) ? array( $text_font['subset'] ) : array() ),
 				);
 				self::$gfonts[ $text_font['family'] ] = $add_font;
 			} else {
@@ -1596,7 +1662,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && isset( $attr['learnMoreStyles'][0]['google'] ) && $attr['learnMoreStyles'][0]['google'] && ( ! isset( $attr['learnMoreStyles'][0]['loadGoogle'] ) || true === $attr['learnMoreStyles'][0]['loadGoogle'] ) &&  isset( $attr['learnMoreStyles'][0]['family'] ) ) {
 			$learn_more_font = $attr['learnMoreStyles'][0];
-			// Check if the font has been added yet
+			// Check if the font has been added yet.
 			if ( ! array_key_exists( $learn_more_font['family'], self::$gfonts ) ) {
 				$add_font = array(
 					'fontfamily' => $learn_more_font['family'],
@@ -1617,7 +1683,7 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Adds Google fonts for iconlist block.
 	 *
-	 * @param array  $attr the blocks attr.
+	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_iconlist_scripts_gfonts( $attr ) {
 		if ( isset( $attr['listStyles'] ) && is_array( $attr['listStyles'] ) && isset( $attr['listStyles'][0] ) && is_array( $attr['listStyles'][0] ) && isset( $attr['listStyles'][0]['google'] ) && $attr['listStyles'][0]['google'] && ( ! isset( $attr['listStyles'][0]['loadGoogle'] ) || true === $attr['listStyles'][0]['loadGoogle'] ) &&  isset( $attr['listStyles'][0]['family'] ) ) {
@@ -2257,11 +2323,18 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Adds Scripts for row block.
 	 *
-	 * @param array  $attr the blocks attr.
+	 * @param array $attr the blocks attr.
 	 */
 	public function render_row_layout_scripts( $attr ) {
 		if ( ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] ) || ( isset( $attr['overlayBgImg'] ) && ! empty( $attr['overlayBgImg']) && isset( $attr['overlayBgImgAttachment'] ) && 'parallax' === $attr['overlayBgImgAttachment'] ) ) {
 			wp_enqueue_script( 'kadence-blocks-parallax-js' );
+		}
+		if ( isset( $attr['backgroundSettingTab'] ) && 'slider' === $attr['backgroundSettingTab'] ) {
+			wp_enqueue_style( 'kadence-blocks-pro-slick' );
+			wp_enqueue_script( 'kadence-blocks-slick-init' );
+		}
+		if ( isset( $attr['backgroundSettingTab'] ) && 'video' === $attr['backgroundSettingTab'] && isset( $attr['backgroundVideo'] ) && isset( $attr['backgroundVideo'][0] ) && isset( $attr['backgroundVideo'][0]['btns'] ) && true === $attr['backgroundVideo'][0]['btns'] ) {
+			wp_enqueue_script( 'kadence-blocks-video-bg' );
 		}
 	}
 	/**
@@ -3020,7 +3093,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['bgColor'] ) ) {
 				$css .= 'background-color:' . $attr['bgColor'] . ';';
 			}
-			if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) ) {
+			if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && ( ! isset( $attr['backgroundSettingTab'] ) || empty( $attr['backgroundSettingTab'] ) || 'normal' === $attr['backgroundSettingTab'] ) ) {
 				if ( isset( $attr['bgImgAttachment'] ) ) {
 					if ( 'parallax' === $attr['bgImgAttachment'] ) {
 						$bg_attach = 'fixed';
@@ -3274,6 +3347,11 @@ class Kadence_Blocks_Frontend {
 						$css .= 'display:none !important;';
 					$css .= '}';
 				}
+				if ( isset( $attr['backgroundSettingTab'] ) && ! empty( $attr['backgroundSettingTab'] ) && 'normal' !== $attr['backgroundSettingTab'] ) {
+					$css .= '#kt-layout-id' . $unique_id . ' .kb-blocks-bg-video-container, #kt-layout-id' . $unique_id . ' .kb-blocks-bg-slider {';
+						$css .= 'display:none;';
+					$css .= '}';
+				}
 			}
 			if ( ! empty( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) {
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay {';
@@ -3383,6 +3461,11 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] &&  isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
 					$css .= '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"] {';
 						$css .= 'display:none !important;';
+					$css .= '}';
+				}
+				if ( isset( $attr['backgroundSettingTab'] ) && ! empty( $attr['backgroundSettingTab'] ) && 'normal' !== $attr['backgroundSettingTab'] ) {
+					$css .= '#kt-layout-id' . $unique_id . ' .kb-blocks-bg-video-container, #kt-layout-id' . $unique_id . ' .kb-blocks-bg-slider {';
+						$css .= 'display:none;';
 					$css .= '}';
 				}
 			}

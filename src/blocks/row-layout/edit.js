@@ -21,6 +21,7 @@ import PrebuiltModal from './prebuilt_modal';
 import MeasurementControls from '../../measurement-control';
 import ThreeColumnDrag from './threecolumndrag';
 import AdvancedColorControl from '../../advanced-color-control';
+import Slider from 'react-slick';
 /**
  * Import Css
  */
@@ -42,6 +43,7 @@ const {
 	ButtonGroup,
 	Tooltip,
 	TabPanel,
+	TextControl,
 	IconButton,
 	Dashicon,
 	PanelBody,
@@ -138,8 +140,20 @@ class KadenceRowLayout extends Component {
 		}
 		return false;
 	}
+	saveSlideItem = ( value, thisIndex ) => {
+		const currentItems = this.props.attributes.backgroundSlider;
+		const newUpdate = currentItems.map( ( item, index ) => {
+			if ( index === thisIndex ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+		this.props.setAttributes( {
+			backgroundSlider: newUpdate,
+		} );
+	};
 	render() {
-		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, blockAlignment, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, backgroundSliderSettings, backgroundVideo, backgroundVideoType }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -293,6 +307,80 @@ class KadenceRowLayout extends Component {
 			{ key: 'equal', col: 5, name: __( 'Five: Equal' ), icon: icons.fivecol },
 			{ key: 'equal', col: 6, name: __( 'Six: Equal' ), icon: icons.sixcol },
 		];
+		function CustomNextArrow( props ) {
+			const { className, style, onClick } = props;
+			return (
+				<button
+					className={ className }
+					style={ { ...style, display: 'block' } }
+					onClick={ onClick }
+				>
+					<Dashicon icon="arrow-right-alt2" />
+				</button>
+			);
+		}
+
+		function CustomPrevArrow( props ) {
+			const { className, style, onClick } = props;
+			return (
+				<button
+					className={ className }
+					style={ { ...style, display: 'block' } }
+					onClick={ onClick }
+				>
+					<Dashicon icon="arrow-left-alt2" />
+				</button>
+			);
+		}
+		const sliderSettings = {
+			dots: ( backgroundSliderSettings[ 0 ].dotStyle === 'none' ? false : true ),
+			arrows: ( backgroundSliderSettings[ 0 ].arrowStyle === 'none' ? false : true ),
+			infinite: true,
+			fade: backgroundSliderSettings[ 0 ].fade,
+			speed: backgroundSliderSettings[ 0 ].tranSpeed,
+			draggable: false,
+			autoplaySpeed: backgroundSliderSettings[ 0 ].speed,
+			autoplay: backgroundSliderSettings[ 0 ].autoPlay,
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			nextArrow: <CustomNextArrow />,
+			prevArrow: <CustomPrevArrow />,
+		};
+		const renderSliderImages = ( index ) => {
+			return (
+				<div className="kb-bg-slide-contain">
+					<div className={ `kb-bg-slide kb-bg-slide-${ index }` } style={ {
+						backgroundColor: backgroundSlider[ index ].bgColor,
+						backgroundImage: 'url("' + backgroundSlider[ index ].bgImg + '")',
+						backgroundSize: bgImgSize,
+						backgroundPosition: bgImgPosition,
+						backgroundRepeat: bgImgRepeat,
+					} }></div>
+				</div>
+			);
+		};
+		const saveSliderSettings = ( value ) => {
+			const newUpdate = backgroundSliderSettings.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				backgroundSliderSettings: newUpdate,
+			} );
+		};
+		const saveVideoSettings = ( value ) => {
+			const newUpdate = backgroundVideo.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				backgroundVideo: newUpdate,
+			} );
+		};
 		const bottomSVGDivider = {};
 		bottomSVGDivider.ct = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
 		bottomSVGDivider.cti = <path d="M500,2l500,98l-1000,0l500,-98Z" />;
@@ -430,6 +518,9 @@ class KadenceRowLayout extends Component {
 				{ key: 'row', name: __( 'Single Row' ), icon: icons.row },
 			];
 		}
+		const onTabBackgroundSelect = ( tabName ) => {
+			setAttributes( { backgroundSettingTab: tabName } );
+		};
 		const onTabSelect = ( tabName ) => {
 			setAttributes( { currentTab: tabName } );
 		};
@@ -1017,6 +1108,84 @@ class KadenceRowLayout extends Component {
 				) }
 			</Fragment>
 		);
+		const slideControls = ( index ) => {
+			return (
+				<Fragment>
+					<h2>{ __( 'Slide' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }</h2>
+					<div className="kt-inner-sub-section">
+						<AdvancedColorControl
+							label={ __( 'Slide Background Color' ) }
+							colorValue={ ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && backgroundSlider[ index ].bgColor ? backgroundSlider[ index ].bgColor : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => this.saveSlideItem( { bgColor: value }, index ) }
+						/>
+						{ ( undefined === backgroundSlider[ index ] || undefined === backgroundSlider[ index ].bgImg || '' === backgroundSlider[ index ].bgImg ) && (
+							<MediaUpload
+								onSelect={ img => {
+									this.saveSlideItem( {
+										bgImgID: img.id,
+										bgImg: img.url,
+									}, index );
+								} }
+								type="image"
+								value={ ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && backgroundSlider[ index ].bgImgID ? backgroundSlider[ index ].bgImgID : '' ) }
+								render={ ( { open } ) => (
+									<Button
+										className={ 'components-button components-icon-button kt-cta-upload-btn' }
+										onClick={ open }
+									>
+										<Dashicon icon="format-image" />
+										{ __( 'Slide Select Image' ) }
+									</Button>
+								) }
+							/>
+						) }
+						{ undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && backgroundSlider[ index ].bgImg && (
+							<Fragment>
+								<MediaUpload
+									onSelect={ media => {
+										this.saveSlideItem( {
+											bgImgID: media.id,
+											bgImg: media.url,
+										}, index );
+									} }
+									type="image"
+									value={ ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && backgroundSlider[ index ].bgImgID ? backgroundSlider[ index ].bgImgID : '' ) }
+									allowedTypes={ [ 'image' ] }
+									render={ ( { open } ) => (
+										<Tooltip text={ __( 'Edit Image' ) }>
+											<Button
+												style={ {
+													backgroundImage: 'url("' + backgroundSlider[ index ].bgImg + '")',
+													backgroundSize: 'cover',
+												} }
+												className={ 'kb-sidebar-image' }
+												onClick={ open }
+											>
+												{ __( 'Edit Image' ) }
+											</Button>
+										</Tooltip>
+									) }
+								/>
+								<Tooltip text={ __( 'Remove Image' ) }>
+									<Button
+										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+										onClick={ () => {
+											this.saveSlideItem( {
+												bgImgID: '',
+												bgImg: '',
+											}, index );
+										} }
+									>
+										<Dashicon icon="no-alt" />
+									</Button>
+								</Tooltip>
+							</Fragment>
+						) }
+					</div>
+				</Fragment>
+			);
+		};
 		const deskControls = (
 			<Fragment>
 				<PanelBody>
@@ -1184,92 +1353,427 @@ class KadenceRowLayout extends Component {
 						title={ __( 'Background Settings' ) }
 						initialOpen={ false }
 					>
-						<AdvancedColorControl
-							label={ __( 'Background Color' ) }
-							colorValue={ ( bgColor ? bgColor : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => setAttributes( { bgColor: value } ) }
-						/>
-						<MediaUpload
-							onSelect={ onSelectImage }
-							type="image"
-							value={ bgImgID }
-							render={ ( { open } ) => (
-								<Button
-									className={ 'components-button components-icon-button kt-cta-upload-btn' }
-									onClick={ open }
-								>
-									<Dashicon icon="format-image" />
-									{ __( 'Select Image' ) }
-								</Button>
-							) }
-						/>
-						{ bgImg && (
-							<Fragment>
-								<Tooltip text={ __( 'Remove Image' ) }>
-									<Button
-										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-										onClick={ onRemoveImage }
-									>
-										<Dashicon icon="no-alt" />
-									</Button>
-								</Tooltip>
-								<Tooltip text={ __( 'Some Lazyloads only support this type of background images.' ) }>
-									<ToggleControl
-										label={ __( 'Force Background Image inline?' ) }
-										checked={ ( undefined !== backgroundInline ? backgroundInline : false ) }
-										onChange={ ( value ) => setAttributes( { backgroundInline: value } ) }
-									/>
-								</Tooltip>
-								<SelectControl
-									label={ __( 'Background Image Size' ) }
-									value={ bgImgSize }
-									options={ [
-										{ value: 'cover', label: __( 'Cover' ) },
-										{ value: 'contain', label: __( 'Contain' ) },
-										{ value: 'auto', label: __( 'Auto' ) },
-									] }
-									onChange={ value => setAttributes( { bgImgSize: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Position' ) }
-									value={ bgImgPosition }
-									options={ [
-										{ value: 'center top', label: __( 'Center Top' ) },
-										{ value: 'center center', label: __( 'Center Center' ) },
-										{ value: 'center bottom', label: __( 'Center Bottom' ) },
-										{ value: 'left top', label: __( 'Left Top' ) },
-										{ value: 'left center', label: __( 'Left Center' ) },
-										{ value: 'left bottom', label: __( 'Left Bottom' ) },
-										{ value: 'right top', label: __( 'Right Top' ) },
-										{ value: 'right center', label: __( 'Right Center' ) },
-										{ value: 'right bottom', label: __( 'Right Bottom' ) },
-									] }
-									onChange={ value => setAttributes( { bgImgPosition: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Repeat' ) }
-									value={ bgImgRepeat }
-									options={ [
-										{ value: 'no-repeat', label: __( 'No Repeat' ) },
-										{ value: 'repeat', label: __( 'Repeat' ) },
-										{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-										{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-									] }
-									onChange={ value => setAttributes( { bgImgRepeat: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'Background Image Attachment' ) }
-									value={ bgImgAttachment }
-									options={ [
-										{ value: 'scroll', label: __( 'Scroll' ) },
-										{ value: 'fixed', label: __( 'Fixed' ) },
-										{ value: 'parallax', label: __( 'Parallax' ) },
-									] }
-									onChange={ value => setAttributes( { bgImgAttachment: value } ) }
-								/>
-							</Fragment>
-						) }
+						<TabPanel className="kt-inspect-tabs"
+							initialTabName={ backgroundSettingTab }
+							activeClass="active-tab"
+							onSelect={ onTabBackgroundSelect }
+							tabs={ [
+								{
+									name: 'normal',
+									title: <Dashicon icon="format-image" />,
+									className: 'kt-desk-tab',
+								},
+								{
+									name: 'slider',
+									title: <Dashicon icon="slides" />,
+									className: 'kt-tablet-tab',
+								},
+								{
+									name: 'video',
+									title: <Dashicon icon="format-video" />,
+									className: 'kt-mobile-tab',
+								},
+							] }>
+							{
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'slider' === tab.name ) {
+											tabout = (
+												<PanelBody>
+													<RangeControl
+														label={ __( 'Background Slider Image Count' ) }
+														value={ backgroundSliderCount }
+														onChange={ newcount => {
+															const newSlides = backgroundSlider;
+															if ( newSlides.length < newcount ) {
+																const amount = Math.abs( newcount - newSlides.length );
+																{ times( amount, n => {
+																	newSlides.push( {
+																		bgColor: '',
+																		bgImg: '',
+																		bgImgID: '',
+																	} );
+																} ); }
+																setAttributes( { backgroundSlider: newSlides } );
+															}
+															setAttributes( { backgroundSliderCount: newcount } );
+														} }
+														step={ 1 }
+														min={ 1 }
+														max={ 20 }
+													/>
+													{ times( backgroundSliderCount, n => slideControls( n ) ) }
+													<SelectControl
+														label={ __( 'Slider Image Size' ) }
+														value={ bgImgSize }
+														options={ [
+															{ value: 'cover', label: __( 'Cover' ) },
+															{ value: 'contain', label: __( 'Contain' ) },
+															{ value: 'auto', label: __( 'Auto' ) },
+														] }
+														onChange={ value => setAttributes( { bgImgSize: value } ) }
+													/>
+													<SelectControl
+														label={ __( 'Slider Image Position' ) }
+														value={ bgImgPosition }
+														options={ [
+															{ value: 'center top', label: __( 'Center Top' ) },
+															{ value: 'center center', label: __( 'Center Center' ) },
+															{ value: 'center bottom', label: __( 'Center Bottom' ) },
+															{ value: 'left top', label: __( 'Left Top' ) },
+															{ value: 'left center', label: __( 'Left Center' ) },
+															{ value: 'left bottom', label: __( 'Left Bottom' ) },
+															{ value: 'right top', label: __( 'Right Top' ) },
+															{ value: 'right center', label: __( 'Right Center' ) },
+															{ value: 'right bottom', label: __( 'Right Bottom' ) },
+														] }
+														onChange={ value => setAttributes( { bgImgPosition: value } ) }
+													/>
+													<SelectControl
+														label={ __( 'Slider Image Repeat' ) }
+														value={ bgImgRepeat }
+														options={ [
+															{ value: 'no-repeat', label: __( 'No Repeat' ) },
+															{ value: 'repeat', label: __( 'Repeat' ) },
+															{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+															{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+														] }
+														onChange={ value => setAttributes( { bgImgRepeat: value } ) }
+													/>
+													<ToggleControl
+														label={ __( 'Slider Auto Play' ) }
+														checked={ backgroundSliderSettings[ 0 ].autoPlay }
+														onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
+													/>
+													{ backgroundSliderSettings[ 0 ].autoPlay && (
+														<RangeControl
+															label={ __( 'Autoplay Speed' ) }
+															value={ backgroundSliderSettings[ 0 ].speed }
+															onChange={ ( value ) => saveSliderSettings( { speed: value } ) }
+															min={ 500 }
+															max={ 15000 }
+															step={ 10 }
+														/>
+													) }
+													<SelectControl
+														label={ __( 'Transition Style' ) }
+														options={ [
+															{
+																label: __( 'Fade' ),
+																value: 'fade',
+															},
+															{
+																label: __( 'Slide' ),
+																value: 'slide',
+															},
+														] }
+														value={ ( false === backgroundSliderSettings[ 0 ].fade ? 'slide' : 'fade' ) }
+														onChange={ ( value ) => {
+															if ( 'slide' === value ) {
+																saveSliderSettings( { fade: false } );
+															} else {
+																saveSliderSettings( { fade: true } );
+															}
+														} }
+													/>
+													<RangeControl
+														label={ __( 'Slider Transition Speed' ) }
+														value={ backgroundSliderSettings[ 0 ].tranSpeed }
+														onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
+														min={ 100 }
+														max={ 2000 }
+														step={ 10 }
+													/>
+													<SelectControl
+														label={ __( 'Arrow Style' ) }
+														options={ [
+															{
+																label: __( 'White on Dark' ),
+																value: 'whiteondark',
+															},
+															{
+																label: __( 'Black on Light' ),
+																value: 'blackonlight',
+															},
+															{
+																label: __( 'Outline Black' ),
+																value: 'outlineblack',
+															},
+															{
+																label: __( 'Outline White' ),
+																value: 'outlinewhite',
+															},
+															{
+																label: __( 'None' ),
+																value: 'none',
+															},
+														] }
+														value={ backgroundSliderSettings[ 0 ].arrowStyle }
+														onChange={ ( value ) => saveSliderSettings( { arrowStyle: value } ) }
+													/>
+													<SelectControl
+														label={ __( 'Dot Style' ) }
+														options={ [
+															{
+																label: __( 'Dark' ),
+																value: 'dark',
+															},
+															{
+																label: __( 'Light' ),
+																value: 'light',
+															},
+															{
+																label: __( 'Outline Dark' ),
+																value: 'outlinedark',
+															},
+															{
+																label: __( 'Outline Light' ),
+																value: 'outlinelight',
+															},
+															{
+																label: __( 'None' ),
+																value: 'none',
+															},
+														] }
+														value={ backgroundSliderSettings[ 0 ].dotStyle }
+														onChange={ ( value ) => saveSliderSettings( { dotStyle: value } ) }
+													/>
+												</PanelBody>
+											);
+										} else if ( 'video' === tab.name ) {
+											tabout = (
+												<PanelBody>
+													{/* <SelectControl
+														label={ __( 'Background Video Type' ) }
+														options={ [
+															{
+																label: __( 'Local (MP4)' ),
+																value: 'local',
+															},
+															{
+																label: __( 'YouTube' ),
+																value: 'youtube',
+															},
+															{
+																label: __( 'Vimeo' ),
+																value: 'vimeo',
+															},
+														] }
+														value={ backgroundVideoType }
+														onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
+													/> */}
+													{ 'local' === backgroundVideoType && (
+														<Fragment>
+															<MediaUpload
+																onSelect={ video => {
+																	saveVideoSettings( {
+																		localID: video.id,
+																		local: video.url,
+																	} );
+																} }
+																type="video"
+																allowedTypes={ [ 'video' ] }
+																value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? backgroundVideo[ 0 ].localID : '' ) }
+																render={ ( { open } ) => (
+																	<Button
+																		className={ 'components-button components-icon-button kt-cta-upload-btn' }
+																		onClick={ open }
+																	>
+																		<Dashicon icon="format-image" />
+																		{ __( 'Select Video' ) }
+																	</Button>
+																) }
+															/>
+															{ backgroundVideo[ 0 ].localID && (
+																<Tooltip text={ __( 'Remove Image' ) }>
+																	<Button
+																		className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+																		onClick={ () => {
+																			saveVideoSettings( {
+																				localID: '',
+																				local: '',
+																			} );
+																		} }
+																	>
+																		<Dashicon icon="no-alt" />
+																	</Button>
+																</Tooltip>
+															) }
+														</Fragment>
+													) }
+													{ 'youtube' === backgroundVideoType && (
+														<TextControl
+															label={ __( 'YouTube ID ( example: Sv_hGITmNuo ) ' ) }
+															value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
+															onChange={ value => saveVideoSettings( { youtube: value } ) }
+														/>
+													) }
+													{ 'local' !== backgroundVideoType && (
+														<SelectControl
+															label={ __( 'Background Video Ratio' ) }
+															options={ [
+																{
+																	label: __( '16 / 9' ),
+																	value: '16/9',
+																},
+																{
+																	label: __( '4 / 3' ),
+																	value: '4/3',
+																},
+																{
+																	label: __( '3 / 2' ),
+																	value: '3/2',
+																},
+															] }
+															value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].ratio ? backgroundVideo[ 0 ].ratio : '16/9' ) }
+															onChange={ ( value ) => saveVideoSettings( { ratio: value } ) }
+														/>
+													) }
+													<ToggleControl
+														label={ __( 'Mute Video' ) }
+														checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].mute ? backgroundVideo[ 0 ].mute : true ) }
+														onChange={ ( value ) => saveVideoSettings( { mute: value } ) }
+													/>
+													<ToggleControl
+														label={ __( 'Loop Video' ) }
+														checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
+														onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
+													/>
+													<ToggleControl
+														label={ __( 'Show Play Pause Buttons?' ) }
+														checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
+														onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
+													/>
+													<AdvancedColorControl
+														label={ __( 'Background Color' ) }
+														colorValue={ ( bgColor ? bgColor : '' ) }
+														colorDefault={ '' }
+														onColorChange={ value => setAttributes( { bgColor: value } ) }
+													/>
+													<MediaUpload
+														onSelect={ onSelectImage }
+														type="image"
+														value={ bgImgID }
+														render={ ( { open } ) => (
+															<Button
+																className={ 'components-button components-icon-button kt-cta-upload-btn' }
+																onClick={ open }
+															>
+																<Dashicon icon="format-image" />
+																{ __( 'Select Video Poster' ) }
+															</Button>
+														) }
+													/>
+													{ bgImg && (
+														<Tooltip text={ __( 'Remove Image' ) }>
+															<Button
+																className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+																onClick={ onRemoveImage }
+															>
+																<Dashicon icon="no-alt" />
+															</Button>
+														</Tooltip>
+													) }
+												</PanelBody>
+											);
+										} else {
+											tabout = (
+												<PanelBody>
+													<AdvancedColorControl
+														label={ __( 'Background Color' ) }
+														colorValue={ ( bgColor ? bgColor : '' ) }
+														colorDefault={ '' }
+														onColorChange={ value => setAttributes( { bgColor: value } ) }
+													/>
+													<MediaUpload
+														onSelect={ onSelectImage }
+														type="image"
+														value={ bgImgID }
+														render={ ( { open } ) => (
+															<Button
+																className={ 'components-button components-icon-button kt-cta-upload-btn' }
+																onClick={ open }
+															>
+																<Dashicon icon="format-image" />
+																{ __( 'Select Image' ) }
+															</Button>
+														) }
+													/>
+													{ bgImg && (
+														<Fragment>
+															<Tooltip text={ __( 'Remove Image' ) }>
+																<Button
+																	className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+																	onClick={ onRemoveImage }
+																>
+																	<Dashicon icon="no-alt" />
+																</Button>
+															</Tooltip>
+															<Tooltip text={ __( 'Some Lazyloads only support this type of background images.' ) }>
+																<ToggleControl
+																	label={ __( 'Force Background Image inline?' ) }
+																	checked={ ( undefined !== backgroundInline ? backgroundInline : false ) }
+																	onChange={ ( value ) => setAttributes( { backgroundInline: value } ) }
+																/>
+															</Tooltip>
+															<SelectControl
+																label={ __( 'Background Image Size' ) }
+																value={ bgImgSize }
+																options={ [
+																	{ value: 'cover', label: __( 'Cover' ) },
+																	{ value: 'contain', label: __( 'Contain' ) },
+																	{ value: 'auto', label: __( 'Auto' ) },
+																] }
+																onChange={ value => setAttributes( { bgImgSize: value } ) }
+															/>
+															<SelectControl
+																label={ __( 'Background Image Position' ) }
+																value={ bgImgPosition }
+																options={ [
+																	{ value: 'center top', label: __( 'Center Top' ) },
+																	{ value: 'center center', label: __( 'Center Center' ) },
+																	{ value: 'center bottom', label: __( 'Center Bottom' ) },
+																	{ value: 'left top', label: __( 'Left Top' ) },
+																	{ value: 'left center', label: __( 'Left Center' ) },
+																	{ value: 'left bottom', label: __( 'Left Bottom' ) },
+																	{ value: 'right top', label: __( 'Right Top' ) },
+																	{ value: 'right center', label: __( 'Right Center' ) },
+																	{ value: 'right bottom', label: __( 'Right Bottom' ) },
+																] }
+																onChange={ value => setAttributes( { bgImgPosition: value } ) }
+															/>
+															<SelectControl
+																label={ __( 'Background Image Repeat' ) }
+																value={ bgImgRepeat }
+																options={ [
+																	{ value: 'no-repeat', label: __( 'No Repeat' ) },
+																	{ value: 'repeat', label: __( 'Repeat' ) },
+																	{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+																	{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+																] }
+																onChange={ value => setAttributes( { bgImgRepeat: value } ) }
+															/>
+															<SelectControl
+																label={ __( 'Background Image Attachment' ) }
+																value={ bgImgAttachment }
+																options={ [
+																	{ value: 'scroll', label: __( 'Scroll' ) },
+																	{ value: 'fixed', label: __( 'Fixed' ) },
+																	{ value: 'parallax', label: __( 'Parallax' ) },
+																] }
+																onChange={ value => setAttributes( { bgImgAttachment: value } ) }
+															/>
+														</Fragment>
+													) }
+												</PanelBody>
+											);
+										}
+									}
+									return <div>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
 					</PanelBody>
 				) }
 				{ this.showSettings( 'backgroundOverlay' ) && (
@@ -2592,14 +3096,38 @@ class KadenceRowLayout extends Component {
 					marginTop: topMargin + marginUnit,
 					minHeight: minHeight + minHeightUnit,
 				} }>
-					<div className={ `kt-row-layout-background${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
-						backgroundColor: ( bgColor ? bgColor : undefined ),
-						backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
-						backgroundSize: bgImgSize,
-						backgroundPosition: bgImgPosition,
-						backgroundRepeat: bgImgRepeat,
-						backgroundAttachment: ( bgImgAttachment === 'parallax' ? 'fixed' : bgImgAttachment ),
-					} }></div>
+					{ ( 'slider' !== backgroundSettingTab && 'video' !== backgroundSettingTab ) && (
+						<div className={ `kt-row-layout-background${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
+							backgroundColor: ( bgColor ? bgColor : undefined ),
+							backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
+							backgroundSize: bgImgSize,
+							backgroundPosition: bgImgPosition,
+							backgroundRepeat: bgImgRepeat,
+							backgroundAttachment: ( bgImgAttachment === 'parallax' ? 'fixed' : bgImgAttachment ),
+						} }></div>
+					) }
+					{ ( 'slider' === backgroundSettingTab ) && (
+						<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ backgroundSliderSettings[ 0 ].dotStyle }` }>
+							{ backgroundSliderCount !== 1 && (
+								<Slider className={ `kt-carousel-arrowstyle-${ backgroundSliderSettings[ 0 ].arrowStyle } kt-carousel-dotstyle-${ backgroundSliderSettings[ 0 ].dotStyle }` } { ...sliderSettings }>
+									{ times( backgroundSliderCount, n => renderSliderImages( n ) ) }
+								</Slider>
+							) }
+							{ backgroundSliderCount === 1 && (
+								times( backgroundSliderCount, n => renderSliderImages( n ) )
+							) }
+						</div>
+					) }
+					{ ( 'video' === backgroundSettingTab ) && (
+						<div className={ 'kb-blocks-bg-video-container' }>
+							{ ( 'local' === backgroundVideoType ) && (
+								<video className="kb-blocks-bg-video" playsinline="" loop="" src={ backgroundVideo[ 0 ].local }></video>
+							) }
+							{ ( 'youtube' === backgroundVideoType ) && (
+								<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(http://img.youtube.com/vi/${ backgroundVideo[ 0 ].youtube }/maxresdefault.jpg)` } }></div>
+							) }
+						</div>
+					) }
 					{ ( ! currentOverlayTab || 'grad' !== currentOverlayTab ) && (
 						<div className={ `kt-row-layout-overlay kt-row-overlay-normal${ overlayBgImg && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ overlayBgImgID } style={ {
 							backgroundColor: ( overlay ? overlay : undefined ),

@@ -284,5 +284,13 @@ const attributes = {
 		type: 'string',
 		default: 'middle',
 	},
+	mediaAlignMobile: {
+		type: 'string',
+		default: '',
+	},
+	mediaAlignTablet: {
+		type: 'string',
+		default: '',
+	},
 };
 export default attributes;

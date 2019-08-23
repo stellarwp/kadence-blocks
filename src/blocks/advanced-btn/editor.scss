@@ -4,6 +4,15 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kt-button-text.is-selected {
+    min-width: 5px;
+}
+.block-editor-rich-text__editable.kt-button-text [data-rich-text-placeholder]:after {
+    display:inline-block;
+}
+.block-editor-rich-text__editable.kt-button-text.is-selected:focus [data-rich-text-placeholder]:after {
+    display:none;
+}
  .kt-block-defaults-modal h2.kt-beside-btn-group, .kt-block-defaults-modal h2.kt-beside-color-label {
     font-size: 14px;
     color: #555d66;
@@ -173,7 +182,7 @@
     width: 16px;
     height: 16px;
 }
-.kt-button-size-type-options .dashicon { 
+.kt-button-size-type-options .dashicon {
 	width:14px;
 }
  // Controls

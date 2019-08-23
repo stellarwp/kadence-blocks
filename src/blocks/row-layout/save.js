@@ -3,6 +3,8 @@
  */
 
 import classnames from 'classnames';
+import times from 'lodash/times';
+const { __ } = wp.i18n;
 const {
 	Component,
 	Fragment,
@@ -13,7 +15,7 @@ const {
 
 class KadenceRowLayoutSave extends Component {
 	render() {
-		const { attributes: { columns, blockAlignment, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline } } = this.props;
+		const { attributes: { columns, blockAlignment, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo } } = this.props;
 		let bottomSVGDivider;
 		if ( 'ct' === bottomSep ) {
 			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
@@ -115,12 +117,52 @@ class KadenceRowLayoutSave extends Component {
 		const classes = classnames( `align${ ( blockAlignment ? blockAlignment : 'none' ) }` );
 		const innerClasses = classnames( `kt-row-layout-inner ${ hasBG } kt-layout-id${ classId }${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` );
 		const innerColumnClasses = classnames( `kt-row-column-wrap kt-has-${ columns }-columns kt-gutter-${ columnGutter } kt-v-gutter-${ ( collapseGutter ? collapseGutter : 'default' ) } kt-row-valign-${ verticalAlignment } kt-row-layout-${ layoutClass } kt-tab-layout-${ tabLayoutClass } kt-m-colapse-${ collapseOrder } kt-mobile-layout-${ mobileLayoutClass }${ firstColumnClass }${ secondColumnClass }${ thirdColumnClass }${ ( undefined !== columnsInnerHeight && true === columnsInnerHeight ? ' kt-inner-column-height-full' : '' ) }` );
-
+		const renderSliderImages = ( index ) => {
+			return (
+				<div className="kb-bg-slide-contain">
+					<div className={ `kb-bg-slide kb-bg-slide-${ index }` } style={ {
+						backgroundColor: ( '' !== backgroundSlider[ index ].bgColor ? backgroundSlider[ index ].bgColor : undefined ),
+						backgroundImage: ( '' !== backgroundSlider[ index ].bgImg ? 'url("' + backgroundSlider[ index ].bgImg + '")' : undefined ),
+						backgroundSize: bgImgSize ? bgImgSize : undefined,
+						backgroundPosition: bgImgPosition ? bgImgPosition : undefined,
+						backgroundRepeat: bgImgRepeat ? bgImgRepeat : undefined,
+					} }></div>
+				</div>
+			);
+		};
 		return (
 			<HtmlTagOut className={ classes }>
 				<div id={ `kt-layout-id${ uniqueID }` } className={ innerClasses } style={ {
-					backgroundImage: ( backgroundInline && undefined !== bgImg && '' !== bgImg ? 'url(' + bgImg + ')' : undefined ),
+					backgroundImage: ( 'slider' !== backgroundSettingTab && 'video' !== backgroundSettingTab && backgroundInline && undefined !== bgImg && '' !== bgImg ? 'url(' + bgImg + ')' : undefined ),
 				} }>
+					{ ( 'slider' === backgroundSettingTab ) && (
+						<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ backgroundSliderSettings[ 0 ].dotStyle }` }>
+							<div className={ `kt-blocks-carousel-init kb-blocks-bg-slider-init kt-carousel-arrowstyle-${ backgroundSliderSettings[ 0 ].arrowStyle } kt-carousel-dotstyle-${ backgroundSliderSettings[ 0 ].dotStyle }` } data-slider-anim-speed={ backgroundSliderSettings[ 0 ].tranSpeed } data-slider-type="slider" data-slider-scroll="1" data-slider-arrows={ ( 'none' === backgroundSliderSettings[ 0 ].arrowStyle ? false : true ) } data-slider-fade={ backgroundSliderSettings[ 0 ].fade } data-slider-dots={ ( 'none' === backgroundSliderSettings[ 0 ].dotStyle ? false : true ) } data-slider-hover-pause="false" data-slider-auto={ backgroundSliderSettings[ 0 ].autoPlay } data-slider-speed={ backgroundSliderSettings[ 0 ].speed }>
+								{ times( backgroundSliderCount, n => renderSliderImages( n ) ) }
+							</div>
+						</div>
+					) }
+					{ ( 'video' === backgroundSettingTab ) && (
+						<div className={ 'kb-blocks-bg-video-container' }>
+							{ ( 'local' === backgroundVideoType ) && (
+								<Fragment>
+									<video className="kb-blocks-bg-video" poster={ ( undefined !== bgImg && '' !== bgImg ? bgImg : undefined ) } playsinline="" autoplay="" muted={ ( false === backgroundVideo[ 0 ].mute ? false : '' ) } loop={ ( false === backgroundVideo[ 0 ].loop ? false : '' ) } src={ backgroundVideo[ 0 ].local }></video>
+									{ true === backgroundVideo[ 0 ].btns && (
+										<div className="kb-background-video-buttons-wrapper kb-background-video-buttons-html5">
+											<button className="kb-background-video-play kb-toggle-video-btn" aria-label={ __( 'Play' ) } aria-hidden="true" style="display: none;"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M424.4 214.7L72.4 6.6C43.8-10.3 0 6.1 0 47.9V464c0 37.5 40.7 60.1 72.4 41.3l352-208c31.4-18.5 31.5-64.1 0-82.6z"></path></svg></button>
+											<button className="kb-background-video-pause kb-toggle-video-btn" aria-label={ __( 'Pause' ) } aria-hidden="false"><svg viewBox="0 0 448 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M144 479H48c-26.5 0-48-21.5-48-48V79c0-26.5 21.5-48 48-48h96c26.5 0 48 21.5 48 48v352c0 26.5-21.5 48-48 48zm304-48V79c0-26.5-21.5-48-48-48h-96c-26.5 0-48 21.5-48 48v352c0 26.5 21.5 48 48 48h96c26.5 0 48-21.5 48-48z"></path></svg></button>
+											{ false === backgroundVideo[ 0 ].mute && (
+												<Fragment>
+													<button className="kb-background-video-unmute kb-toggle-video-btn" aria-label={ __( 'Unmute' ) } aria-hidden="true" style="display: none;"><svg viewBox="0 0 256 512" height="16" width="16" fill="currentColor" xmlns="https://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971z"></path></svg></button>
+													<button className="kb-background-video-mute kb-toggle-video-btn" aria-label={ __( 'Mute' ) } aria-hidden="false"><svg viewBox="0 0 576 512" height="16" width="16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M256 88.017v335.964c0 21.438-25.943 31.998-40.971 16.971L126.059 352H24c-13.255 0-24-10.745-24-24V184c0-13.255 10.745-24 24-24h102.059l88.971-88.954c15.01-15.01 40.97-4.49 40.97 16.971zm182.056-77.876C422.982.92 403.283 5.668 394.061 20.745c-9.221 15.077-4.473 34.774 10.604 43.995C468.967 104.063 512 174.983 512 256c0 73.431-36.077 142.292-96.507 184.206-14.522 10.072-18.129 30.01-8.057 44.532 10.076 14.528 30.016 18.126 44.531 8.057C529.633 438.927 576 350.406 576 256c0-103.244-54.579-194.877-137.944-245.859zM480 256c0-68.547-36.15-129.777-91.957-163.901-15.076-9.22-34.774-4.471-43.994 10.607-9.22 15.078-4.471 34.774 10.607 43.994C393.067 170.188 416 211.048 416 256c0 41.964-20.62 81.319-55.158 105.276-14.521 10.073-18.128 30.01-8.056 44.532 6.216 8.96 16.185 13.765 26.322 13.765a31.862 31.862 0 0 0 18.21-5.709C449.091 377.953 480 318.938 480 256zm-96 0c0-33.717-17.186-64.35-45.972-81.944-15.079-9.214-34.775-4.463-43.992 10.616s-4.464 34.775 10.615 43.992C314.263 234.538 320 244.757 320 256a32.056 32.056 0 0 1-13.802 26.332c-14.524 10.069-18.136 30.006-8.067 44.53 10.07 14.525 30.008 18.136 44.53 8.067C368.546 316.983 384 287.478 384 256z"></path></svg></button>
+												</Fragment>
+											) }
+										</div>
+									) }
+								</Fragment>
+							) }
+						</div>
+					) }
 					{ ( overlay || overlayBgImg ) && (
 						<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }${ overlayBgImg && 'gradient' !== overlayType && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` }></div>
 					) }

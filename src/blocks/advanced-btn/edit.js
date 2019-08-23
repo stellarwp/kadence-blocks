@@ -250,7 +250,7 @@ class KadenceAdvancedButton extends Component {
 								onChange={ value => {
 									this.saveArrayUpdate( { text: value }, index );
 								} }
-								formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
+								allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
 								className={ 'kt-button-text' }
 								keepPlaceholderOnFocus
 							/>
@@ -326,10 +326,10 @@ class KadenceAdvancedButton extends Component {
 		};
 		const defineWidthTypeToggle = ( value ) => {
 			if ( value ) {
-				setAttributes( { forceFullwidth: true } )
+				setAttributes( { forceFullwidth: true } );
 				setAttributes( { widthType: 'full' } );
 			} else {
-				setAttributes( { forceFullwidth: false } )
+				setAttributes( { forceFullwidth: false } );
 				setAttributes( { widthType: 'full' } );
 			}
 		};

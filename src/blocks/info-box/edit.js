@@ -147,7 +147,7 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, mediaVAlign }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, mediaVAlign, mediaAlignMobile, mediaAlignTablet }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -902,27 +902,87 @@ class KadenceInfoBox extends Component {
 								title={ __( 'Media Settings' ) }
 								initialOpen={ false }
 							>
-								<SelectControl
-									label={ __( 'Media Align' ) }
-									value={ mediaAlign }
-									options={ [
-										{ value: 'top', label: __( 'Top' ) },
-										{ value: 'left', label: __( 'Left' ) },
-										{ value: 'right', label: __( 'Right' ) },
-									] }
-									onChange={ value => setAttributes( { mediaAlign: value } ) }
-								/>
+								<TabPanel className="kt-inspect-tabs kt-spacer-tabs"
+									activeClass="active-tab"
+									tabs={ [
+										{
+											name: 'desk',
+											title: <Dashicon icon="desktop" />,
+											className: 'kt-desk-tab',
+										},
+										{
+											name: 'tablet',
+											title: <Dashicon icon="tablet" />,
+											className: 'kt-tablet-tab',
+										},
+										{
+											name: 'mobile',
+											title: <Dashicon icon="smartphone" />,
+											className: 'kt-mobile-tab',
+										},
+									] }>
+									{
+										( tab ) => {
+											let tabout;
+											if ( tab.name ) {
+												if ( 'mobile' === tab.name ) {
+													tabout = (
+														<SelectControl
+															label={ __( 'Mobile Media Align' ) }
+															value={ ( mediaAlignMobile ? mediaAlignMobile : mediaAlign ) }
+															options={ [
+																{ value: 'top', label: __( 'Top' ) },
+																{ value: 'left', label: __( 'Left' ) },
+																{ value: 'right', label: __( 'Right' ) },
+															] }
+															onChange={ value => setAttributes( { mediaAlignMobile: value } ) }
+														/>
+													);
+												} else if ( 'tablet' === tab.name ) {
+													tabout = (
+														<SelectControl
+															label={ __( 'Tablet Media Align' ) }
+															value={ ( mediaAlignTablet ? mediaAlignTablet : mediaAlign ) }
+															options={ [
+																{ value: 'top', label: __( 'Top' ) },
+																{ value: 'left', label: __( 'Left' ) },
+																{ value: 'right', label: __( 'Right' ) },
+															] }
+															onChange={ value => setAttributes( { mediaAlignTablet: value } ) }
+														/>
+													);
+												} else {
+													tabout = (
+														<SelectControl
+															label={ __( 'Media Align' ) }
+															value={ mediaAlign }
+															options={ [
+																{ value: 'top', label: __( 'Top' ) },
+																{ value: 'left', label: __( 'Left' ) },
+																{ value: 'right', label: __( 'Right' ) },
+															] }
+															onChange={ value => setAttributes( { mediaAlign: value } ) }
+														/>
+													);
+												}
+											}
+											return <div>{ tabout }</div>;
+										}
+									}
+								</TabPanel>
 								{ mediaAlign !== 'top' && (
-									<SelectControl
-										label={ __( 'Media Vertical Align' ) }
-										value={ mediaVAlign }
-										options={ [
-											{ value: 'top', label: __( 'Top' ) },
-											{ value: 'middle', label: __( 'Middle' ) },
-											{ value: 'bottom', label: __( 'Bottom' ) },
-										] }
-										onChange={ value => setAttributes( { mediaVAlign: value } ) }
-									/>
+									<Fragment>
+										<SelectControl
+											label={ __( 'Media Vertical Align' ) }
+											value={ mediaVAlign }
+											options={ [
+												{ value: 'top', label: __( 'Top' ) },
+												{ value: 'middle', label: __( 'Middle' ) },
+												{ value: 'bottom', label: __( 'Bottom' ) },
+											] }
+											onChange={ value => setAttributes( { mediaVAlign: value } ) }
+										/>
+									</Fragment>
 								) }
 								<SelectControl
 									label={ __( 'Media Type' ) }

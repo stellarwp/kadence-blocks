@@ -390,6 +390,50 @@ const attributes = {
 		type: 'bool',
 		default: false,
 	},
+	backgroundSettingTab: {
+		type: 'string',
+		default: 'normal',
+	},
+	backgroundSliderCount: {
+		type: 'number',
+		default: 1,
+	},
+	backgroundSlider: {
+		type: 'array',
+		default: [ {
+			bgColor: '',
+			bgImg: '',
+			bgImgID: '',
+		} ],
+	},
+	backgroundSliderSettings: {
+		type: 'array',
+		default: [ {
+			arrowStyle: 'none',
+			dotStyle: 'dark',
+			autoPlay: true,
+			speed: 7000,
+			fade: true,
+			tranSpeed: 400,
+		} ],
+	},
+	backgroundVideoType: {
+		type: 'string',
+		default: 'local',
+	},
+	backgroundVideo: {
+		type: 'array',
+		default: [ {
+			youTube: '',
+			local: '',
+			localID: '',
+			vimeo: '',
+			ratio: '16/9',
+			btns: false,
+			loop: true,
+			mute: true,
+		} ],
+	},
 	zIndex: {
 		type: 'number',
 		default: '',
