@@ -90,6 +90,7 @@
 				max-width: 100%;
 				height: auto;
 				width: 100%;
+				margin:0;
 
 				// IE11 doesn't read rules inside this query. They are applied only to modern browsers.
 				@supports (position: sticky) {

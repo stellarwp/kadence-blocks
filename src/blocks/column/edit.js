@@ -77,7 +77,7 @@ class KadenceColumn extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign }, setAttributes, clientId } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor }, setAttributes, clientId } = this.props;
 		const { borderWidthControl, borderRadiusControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
@@ -416,6 +416,13 @@ class KadenceColumn extends Component {
 		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
 		return (
 			<div className={ `kadence-column inner-column-${ id } kadence-column-${ uniqueID }` } >
+				{ ( textColor || linkColor || linkHoverColor || columns ) && (
+					<style>
+						{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ textColor }; }` : '' ) }
+						{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ linkColor }; }` : '' ) }
+						{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ linkHoverColor }; }` : '' ) }
+					</style>
+				) }
 				<InspectorControls>
 					<AdvancedColorControl
 						label={ __( 'Background Color' ) }
@@ -536,6 +543,29 @@ class KadenceColumn extends Component {
 						fourthIcon={ icons.bottomleft }
 					/>
 					{ textAlignControls }
+					<PanelBody
+						title={ __( 'Text Color Settings' ) }
+						initialOpen={ false }
+					>
+						<AdvancedColorControl
+							label={ __( 'Text Color' ) }
+							colorValue={ ( textColor ? textColor : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => setAttributes( { textColor: value } ) }
+						/>
+						<AdvancedColorControl
+							label={ __( 'Link Color' ) }
+							colorValue={ ( linkColor ? linkColor : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => setAttributes( { linkColor: value } ) }
+						/>
+						<AdvancedColorControl
+							label={ __( 'Link Hover Color' ) }
+							colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
+						/>
+					</PanelBody>
 					<div className="kt-spacer-sidebar-15"></div>
 					<RangeControl
 						label={ __( 'Z Index Control' ) }

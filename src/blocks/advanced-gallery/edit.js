@@ -1566,7 +1566,9 @@ class GalleryEdit extends Component {
 						} ) }
 					</ul>
 				) }
-				{ mediaPlaceholder }
+				{ isSelected && (
+					mediaPlaceholder
+				) }
 			</div>
 		);
 	}

@@ -3624,6 +3624,21 @@ class Kadence_Blocks_Frontend {
 			$css .= 'text-align:' . $attr['textAlign'][ 0 ] . ';';
 			$css .= '}';
 		}
+		if ( isset( $attr['textColor'] ) ) {
+			$css .= '.kadence-column' . $unique_id . ', .kadence-column' . $unique_id . ' h1, .kadence-column' . $unique_id . ' h2, .kadence-column' . $unique_id . ' h3, .kadence-column' . $unique_id . ' h4, .kadence-column' . $unique_id . ' h5, .kadence-column' . $unique_id . ' h6 {';
+				$css .= 'color:' . $attr['textColor'] . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['linkColor'] ) ) {
+			$css .= '.kadence-column' . $unique_id . ' a {';
+				$css .= 'color:' . $attr['linkColor'] . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['linkHoverColor'] ) ) {
+			$css .= '.kadence-column' . $unique_id . ' a:hover {';
+				$css .= 'color:' . $attr['linkHoverColor'] . ';';
+			$css .= '}';
+		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 1 ] ) && ! empty( $attr['textAlign'][ 1 ] ) ) {
 			$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
 			$css .= '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' {';

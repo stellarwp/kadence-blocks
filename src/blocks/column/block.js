@@ -155,6 +155,18 @@ registerBlockType( 'kadence/column', {
 			type: 'array',
 			default: [ '', '', '' ],
 		},
+		textColor: {
+			type: 'string',
+			default: '',
+		},
+		linkColor: {
+			type: 'string',
+			default: '',
+		},
+		linkHoverColor: {
+			type: 'string',
+			default: '',
+		},
 	},
 	supports: {
 		inserter: false,

@@ -51,7 +51,9 @@ const {
 	RangeControl,
 	ButtonGroup,
 	Tooltip,
+	IconButton,
 	Button,
+	Dashicon,
 	SelectControl,
 } = wp.components;
 
@@ -68,6 +70,9 @@ class KadenceIconLists extends Component {
 		this.showSettings = this.showSettings.bind( this );
 		this.saveListItem = this.saveListItem.bind( this );
 		this.onSelectItem = this.onSelectItem.bind( this );
+		this.onMove = this.onMove.bind( this );
+		this.onMoveDown = this.onMoveDown.bind( this );
+		this.onMoveUp = this.onMoveUp.bind( this );
 		this.state = {
 			focusIndex: null,
 			settings: {},
@@ -136,6 +141,31 @@ class KadenceIconLists extends Component {
 			}
 		};
 	}
+	onMove( oldIndex, newIndex ) {
+		const items = [ ...this.props.attributes.items ];
+		items.splice( newIndex, 1, this.props.attributes.items[ oldIndex ] );
+		items.splice( oldIndex, 1, this.props.attributes.items[ newIndex ] );
+		this.setState( { focusIndex: newIndex } );
+		this.props.setAttributes( { items } );
+	}
+
+	onMoveDown( oldIndex ) {
+		return () => {
+			if ( oldIndex === this.props.attributes.items.length - 1 ) {
+				return;
+			}
+			this.onMove( oldIndex, oldIndex + 1 );
+		};
+	}
+
+	onMoveUp( oldIndex ) {
+		return () => {
+			if ( oldIndex === 0 ) {
+				return;
+			}
+			this.onMove( oldIndex, oldIndex - 1 );
+		};
+	}
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
 			return true;
@@ -163,7 +193,7 @@ class KadenceIconLists extends Component {
 		} );
 	};
 	render() {
-		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign }, className, setAttributes } = this.props;
+		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign }, className, setAttributes, isSelected } = this.props;
 		const { marginControl } = this.state;
 		const gconfig = {
 			google: {
@@ -488,7 +518,31 @@ class KadenceIconLists extends Component {
 							className={ 'kt-svg-icon-list-text' }
 						/>
 					) }
-
+					<div className="kadence-blocks-list-item__control-menu">
+						<IconButton
+							icon="arrow-up"
+							onClick={ index === 0 ? undefined : this.onMoveUp( index ) }
+							className="kadence-blocks-list-item__move-up"
+							label={ __( 'Move Item Up' ) }
+							aria-disabled={ index === 0 }
+							disabled={ ! this.state.focusIndex === index }
+						/>
+						<IconButton
+							icon="arrow-down"
+							onClick={ ( index + 1 ) === listCount ? undefined : this.onMoveDown( index ) }
+							className="kadence-blocks-list-item__move-down"
+							label={ __( 'Move Item Down' ) }
+							aria-disabled={ ( index + 1 ) === listCount }
+							disabled={ ! this.state.focusIndex === index }
+						/>
+						<IconButton
+							icon="no-alt"
+							onClick={ () => removeListItem( null, index ) }
+							className="kadence-blocks-list-item__remove"
+							label={ __( 'Remove Item' ) }
+							disabled={ ! this.state.focusIndex === index }
+						/>
+					</div>
 				</div>
 			);
 		};
@@ -800,6 +854,41 @@ class KadenceIconLists extends Component {
 					margin: ( listMargin && undefined !== listMargin[ 0 ] && null !== listMargin[ 0 ] ? listMargin[ 0 ] + 'px ' + listMargin[ 1 ] + 'px ' + listMargin[ 2 ] + 'px ' + listMargin[ 3 ] + 'px' : '' ),
 				} } >
 					{ times( listCount, n => renderIconsPreview( n ) ) }
+					{ isSelected && (
+						<Fragment>
+							<IconButton
+								isDefault={ true }
+								icon="plus"
+								onClick={ () => {
+									const newitems = items;
+									const newcount = listCount + 1;
+									if ( newitems.length < newcount ) {
+										const amount = Math.abs( newcount - newitems.length );
+										{ times( amount, n => {
+											newitems.push( {
+												icon: newitems[ 0 ].icon,
+												link: newitems[ 0 ].link,
+												target: newitems[ 0 ].target,
+												size: newitems[ 0 ].size,
+												width: newitems[ 0 ].width,
+												color: newitems[ 0 ].color,
+												background: newitems[ 0 ].background,
+												border: newitems[ 0 ].border,
+												borderRadius: newitems[ 0 ].borderRadius,
+												borderWidth: newitems[ 0 ].borderWidth,
+												padding: newitems[ 0 ].padding,
+												style: newitems[ 0 ].style,
+											} );
+										} ); }
+										setAttributes( { items: newitems } );
+										this.saveListItem( { size: items[ 0 ].size }, 0 );
+									}
+									setAttributes( { listCount: newcount } );
+								} }
+								label={ __( 'Add Item' ) }
+							/>
+						</Fragment>
+					) }
 				</div>
 			</div>
 		);
