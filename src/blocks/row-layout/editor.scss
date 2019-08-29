@@ -819,7 +819,9 @@ button.components-button.kb-sidebar-image {
 				display: flex;
 				flex-direction: column;
 				flex: 1;
-				width: 0;
+				min-width: 0;
+				word-break: break-word;
+				overflow-wrap: break-word;
 				max-width: none;
 				margin-top: -14px;
 				margin-bottom: -14px;

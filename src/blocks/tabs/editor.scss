@@ -6,6 +6,10 @@
  */
 
  // Controls
+ .kb-device-choice.kt-size-tabs > .components-tab-panel__tabs{
+	 margin-top:0;
+ }
+
  .kt-select-starter-style-tabs {
     padding: 20px;
     border: 2px dashed #ddd;
@@ -347,4 +351,44 @@
 .kt-title-sub-text {
 	font-size: 14px;
 	line-height: 24px;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-8 > li {
+    flex: 0 1 12.5%;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-7 > li {
+    flex: 0 1 14.28%;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-6 > li {
+    flex: 0 1 16.67%;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-5 > li {
+    flex: 0 1 20%;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-4 > li {
+    flex: 0 1 25%;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-3 > li {
+    flex: 0 1 33.33%;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-2 > li {
+    flex: 0 1 50%;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-1 > li {
+    flex: 0 1 100%;
+}
+ul.kt-tabs-title-list.kb-tab-title-columns-1 > li > .kt-tab-title {
+    margin-right: 0px !important;
+}
+ul.kt-tabs-title-list.kb-tabs-list-columns > li:last-child > .kt-tab-title {
+    margin-right: 0px !important;
+}
+ul.kt-tabs-title-list.kb-tabs-list-columns .kt-tab-title {
+	justify-content: center;
+	text-align: center;
+}
+.kt-tab-alignment-center ul.kt-tabs-title-list.kb-tabs-list-columns .kb-tab-titles-wrap {
+	align-items:center;
+}
+.kt-tab-alignment-right ul.kt-tabs-title-list.kb-tabs-list-columns .kb-tab-titles-wrap {
+	align-items:flex-end;
 }

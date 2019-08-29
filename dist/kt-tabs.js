@@ -127,9 +127,8 @@ jQuery( document ).ready( function( $ ) {
 	} );
 	function kt_anchor_tabs() {
 		if ( window.location.hash != '' ) {
-			var matches = window.location.hash.match( /\btab-\S+/g );
-			if ( matches !== null && matches.length === 1 ) {
-				var tabid = matches[ 0 ];
+			if ( $( window.location.hash + '.kt-title-item' ).length ) {
+				var tabid = window.location.hash.substring(1);
 				var tabnumber = $( '#' + tabid + ' a' ).attr( 'data-tab' );
 				$( '#' + tabid ).closest( '.kt-tabs-title-list' ).find( '.kt-tab-title-active' )
 					.addClass( 'kt-tab-title-inactive' )

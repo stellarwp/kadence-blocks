@@ -1460,12 +1460,49 @@ class Kadence_Blocks_Frontend {
 			}
 			$css .= '}';
 		}
+		$layout = isset( $attr['layout'] ) ? $attr['layout'] : 'tabs';
+		$widthType = isset( $attr['widthType'] ) ? $attr['widthType'] : 'normal';
 		if ( isset( $attr['titleMargin'] ) ) {
 			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li {';
 			if ( isset( $attr['titleMargin'] ) && ! empty( $attr['titleMargin'] ) && is_array( $attr['titleMargin'] ) ) {
-				$css .= 'margin:' . $attr['titleMargin'][0] . 'px ' . $attr['titleMargin'][1] . 'px ' . $attr['titleMargin'][2] . 'px ' . $attr['titleMargin'][3] . 'px;';
+				$css .= 'margin:' . $attr['titleMargin'][0] . 'px ' . ( 'vtabs' !== $layout && 'percent' === $widthType ? '0px ' : $attr['titleMargin'][1] . 'px ' ) . $attr['titleMargin'][2] . 'px ' . ( 'vtabs' !== $layout && 'percent' === $widthType ? '0px;' : $attr['titleMargin'][3] . 'px;' );
 			}
 			$css .= '}';
+		}
+		if ( 'vtabs' !== $layout && 'percent' === $widthType ) {
+			if ( isset( $attr['gutter'] ) && ! empty( $attr['gutter'] ) && is_array( $attr['gutter'] ) ) {
+				$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+					$css .= 'margin-right:' . $attr['gutter'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'] ) && is_array( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'][1] ) && '' !== $attr['tabWidth'][1] ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list.kb-tabs-list-columns > li {';
+				$css .= 'flex: 0 1 ' . round( 100 / $attr['tabWidth'][1], 2 ) . '%;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['gutter'] ) && ! empty( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][1] ) && is_numeric( $attr['gutter'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+				$css .= 'margin-right:' . $attr['gutter'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'] ) && is_array( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'][2] ) && '' !== $attr['tabWidth'][2] ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list.kb-tabs-list-columns > li {';
+				$css .= 'flex: 0 1 ' . round( 100 / $attr['tabWidth'][2], 2 ) . '%;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['gutter'] ) && ! empty( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][2] ) && is_numeric( $attr['gutter'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+					$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+						$css .= 'margin-right:' . $attr['gutter'][2] . 'px;';
+					$css .= '}';
+				$css .= '}';
+			}
 		}
 		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['titleBorderWidth'] ) || isset( $attr['titleBorderRadius'] ) || isset( $attr['titlePadding'] ) || isset( $attr['titleBorder'] ) || isset( $attr['titleColor'] ) || isset( $attr['titleBg'] ) ) {
 			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';

@@ -50,6 +50,7 @@ const {
 	RangeControl,
 	ToggleControl,
 	SelectControl,
+	TextControl,
 } = wp.components;
 /**
  * Internal block libraries
@@ -57,6 +58,14 @@ const {
 const { __, sprintf } = wp.i18n;
 
 const ALLOWED_BLOCKS = [ 'kadence/tab' ];
+
+/**
+ * Regular expression matching invalid anchor characters for replacement.
+ *
+ * @type {RegExp}
+ */
+const ANCHOR_REGEX = /[\s#]/g;
+
 /**
  * Returns the layouts configuration for a given number of panes.
  *
@@ -148,7 +157,7 @@ class KadenceTabs extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont }, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType }, className, setAttributes } = this.props;
 		const layoutClass = ( ! layout ? 'tabs' : layout );
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
@@ -313,9 +322,9 @@ class KadenceTabs extends Component {
 		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
 		const fontMax = ( sizeType === 'em' ? 12 : 200 );
 		const fontStep = ( sizeType === 'em' ? 0.1 : 1 );
-		const lineMin = ( lineType === 'em' ? 0.2 : 5 );
-		const lineMax = ( lineType === 'em' ? 12 : 200 );
-		const lineStep = ( lineType === 'em' ? 0.1 : 1 );
+		const lineMin = ( lineType === 'px' ? 5 : 0.2 );
+		const lineMax = ( lineType === 'px' ? 200 : 12 );
+		const lineStep = ( lineType === 'px' ? 1 : 0.1 );
 		const tabLayoutClass = ( ! tabletLayout ? 'inherit' : tabletLayout );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const classes = classnames( className, `kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
@@ -485,7 +494,7 @@ class KadenceTabs extends Component {
 			return (
 				<Fragment>
 					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` } style={ {
-						margin: ( titleMargin ? titleMargin[ 0 ] + 'px ' + titleMargin[ 1 ] + 'px ' + titleMargin[ 2 ] + 'px ' + titleMargin[ 3 ] + 'px' : '' ),
+						margin: ( titleMargin ? titleMargin[ 0 ] + 'px ' + ( 'tabs' === layout && widthType === 'percent' ? '0px ' : titleMargin[ 1 ] + 'px ' ) + titleMargin[ 2 ] + 'px ' + ( 'tabs' === layout && widthType === 'percent' ? '0px ' : titleMargin[ 3 ] + 'px ' ) : '' ),
 					} }>
 						<div className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
 							backgroundColor: titleBg,
@@ -502,6 +511,7 @@ class KadenceTabs extends Component {
 							borderRadius: ( titleBorderRadius ? titleBorderRadius[ 0 ] + 'px ' + titleBorderRadius[ 1 ] + 'px ' + titleBorderRadius[ 2 ] + 'px ' + titleBorderRadius[ 3 ] + 'px' : '' ),
 							padding: ( titlePadding ? titlePadding[ 0 ] + 'px ' + titlePadding[ 1 ] + 'px ' + titlePadding[ 2 ] + 'px ' + titlePadding[ 3 ] + 'px' : '' ),
 							borderColor: titleBorder,
+							marginRight: ( 'tabs' === layout && widthType === 'percent' ? gutter[ 0 ] + 'px' : undefined ),
 						} } onClick={ () => setAttributes( { currentTab: 1 + index } ) } onKeyPress={ () => setAttributes( { currentTab: 1 + index } ) } tabIndex="0" role="button">
 							{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
@@ -577,6 +587,23 @@ class KadenceTabs extends Component {
 				{ times( tabCount, n => renderTitles( n ) ) }
 			</Fragment>
 		);
+		const renderAnchorSettings = ( index ) => {
+			return (
+				<PanelBody
+					title={ __( 'Tab' ) + ' ' + ( index + 1 ) + ' ' + __( 'Anchor' ) }
+					initialOpen={ false }
+				>
+					<TextControl
+						label={ __( 'HTML Anchor' ) }
+						help={ __( 'Anchors lets you link directly to a tab.' ) }
+						value={ titles[ index ] && titles[ index ].anchor ? titles[ index ].anchor : '' }
+						onChange={ ( nextValue ) => {
+							nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
+							this.saveArrayUpdate( { anchor: nextValue }, index );
+						} } />
+				</PanelBody>
+			);
+		};
 		const renderTitleSettings = ( index ) => {
 			return (
 				<PanelBody
@@ -1028,29 +1055,212 @@ class KadenceTabs extends Component {
 						) }
 						{ this.showSettings( 'titleSpacing' ) && (
 							<PanelBody
-								title={ __( 'Tab Title Spacing/Border' ) }
+								title={ __( 'Tab Title Width/Spacing/Border' ) }
 								initialOpen={ false }
 							>
-								<MeasurementControls
-									label={ __( 'Title Padding (px)' ) }
-									measurement={ titlePadding }
-									control={ titlePaddingControl }
-									onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
-									onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
-									min={ 0 }
-									max={ 50 }
-									step={ 1 }
-								/>
-								<MeasurementControls
-									label={ __( 'Title Margin (px)' ) }
-									measurement={ titleMargin }
-									control={ titleMarginControl }
-									onChange={ ( value ) => setAttributes( { titleMargin: value } ) }
-									onControl={ ( value ) => setAttributes( { titleMarginControl: value } ) }
-									min={ -25 }
-									max={ 25 }
-									step={ 1 }
-								/>
+								{ 'tabs' === layout && (
+									<Fragment>
+										<h2>{ __( 'Tab Title Width' ) }</h2>
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											initialTabName={ widthType }
+											onSelect={ value => setAttributes( { widthType: value } ) }
+											tabs={ [
+												{
+													name: 'normal',
+													title: __( 'Normal' ),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'percent',
+													title: __( '% Width' ),
+													className: 'kt-hover-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'percent' === tab.name ) {
+															tabout = (
+																<Fragment>
+																	<TabPanel className="kt-size-tabs kb-device-choice"
+																		activeClass="active-tab"
+																		tabs={ [
+																			{
+																				name: 'desk',
+																				title: <Dashicon icon="desktop" />,
+																				className: 'kt-desk-tab',
+																			},
+																			{
+																				name: 'tablet',
+																				title: <Dashicon icon="tablet" />,
+																				className: 'kt-tablet-tab',
+																			},
+																			{
+																				name: 'mobile',
+																				title: <Dashicon icon="smartphone" />,
+																				className: 'kt-mobile-tab',
+																			},
+																		] }>
+																		{
+																			( innerTab ) => {
+																				let tabContentOut;
+																				if ( innerTab.name ) {
+																					if ( 'mobile' === innerTab.name ) {
+																						tabContentOut = (
+																							<Fragment>
+																								<RangeControl
+																									label={ __( 'Mobile Columns' ) }
+																									value={ ( tabWidth && undefined !== tabWidth[ 2 ] ? tabWidth[ 2 ] : '' ) }
+																									onChange={ ( value ) => setAttributes( { tabWidth: [ tabWidth[ 0 ], tabWidth[ 1 ], value ] } ) }
+																									min={ 1 }
+																									max={ 8 }
+																									step={ 1 }
+																								/>
+																								<RangeControl
+																									label={ __( 'Mobile Gutter' ) }
+																									value={ ( gutter && undefined !== gutter[ 2 ] ? gutter[ 2 ] : '' ) }
+																									onChange={ ( value ) => setAttributes( { gutter: [ gutter[ 0 ], gutter[ 1 ], value ] } ) }
+																									min={ 0 }
+																									max={ 50 }
+																									step={ 1 }
+																								/>
+																							</Fragment>
+																						);
+																					} else if ( 'tablet' === innerTab.name ) {
+																						tabContentOut = (
+																							<Fragment>
+																								<RangeControl
+																									label={ __( 'Tablet Columns' ) }
+																									value={ ( tabWidth && undefined !== tabWidth[ 1 ] ? tabWidth[ 1 ] : '' ) }
+																									onChange={ ( value ) => setAttributes( { tabWidth: [ tabWidth[ 0 ], value, tabWidth[ 2 ] ] } ) }
+																									min={ 1 }
+																									max={ 8 }
+																									step={ 1 }
+																								/>
+																								<RangeControl
+																									label={ __( 'Tablet Gutter' ) }
+																									value={ ( gutter && undefined !== gutter[ 1 ] ? gutter[ 1 ] : '' ) }
+																									onChange={ ( value ) => setAttributes( { gutter: [ gutter[ 0 ], value, gutter[ 2 ] ] } ) }
+																									min={ 0 }
+																									max={ 50 }
+																									step={ 1 }
+																								/>
+																							</Fragment>
+																						);
+																					} else {
+																						tabContentOut = (
+																							<Fragment>
+																								<RangeControl
+																									label={ __( 'Columns' ) }
+																									value={ ( tabWidth && undefined !== tabWidth[ 0 ] ? tabWidth[ 0 ] : '' ) }
+																									onChange={ ( value ) => setAttributes( { tabWidth: [ value, tabWidth[ 1 ], tabWidth[ 2 ] ] } ) }
+																									min={ 1 }
+																									max={ 8 }
+																									step={ 1 }
+																								/>
+																								<RangeControl
+																									label={ __( 'Gutter' ) }
+																									value={ ( gutter && undefined !== gutter[ 0 ] ? gutter[ 0 ] : '' ) }
+																									onChange={ ( value ) => setAttributes( { gutter: [ value, gutter[ 1 ], gutter[ 2 ] ] } ) }
+																									min={ 0 }
+																									max={ 50 }
+																									step={ 1 }
+																								/>
+																							</Fragment>
+																						);
+																					}
+																				}
+																				return <div>{ tabContentOut }</div>;
+																			}
+																		}
+																	</TabPanel>
+																	<MeasurementControls
+																		label={ __( 'Title Padding (px)' ) }
+																		measurement={ titlePadding }
+																		control={ titlePaddingControl }
+																		onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
+																		onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
+																		min={ 0 }
+																		max={ 50 }
+																		step={ 1 }
+																	/>
+																	<RangeControl
+																		label={ __( 'Top Margin (px)' ) }
+																		value={ ( titleMargin && undefined !== titleMargin[ 0 ] ? titleMargin[ 0 ] : '' ) }
+																		onChange={ ( value ) => setAttributes( { titleMargin: [ value, titleMargin[ 1 ], titleMargin[ 2 ], titleMargin[ 3 ] ] } ) }
+																		min={ -25 }
+																		max={ 25 }
+																		step={ 1 }
+																	/>
+																	<RangeControl
+																		label={ __( 'Bottom Margin (px)' ) }
+																		value={ ( titleMargin && undefined !== titleMargin[ 2 ] ? titleMargin[ 2 ] : '' ) }
+																		onChange={ ( value ) => setAttributes( { titleMargin: [ titleMargin[ 0 ], titleMargin[ 1 ], value, titleMargin[ 3 ] ] } ) }
+																		min={ -25 }
+																		max={ 25 }
+																		step={ 1 }
+																	/>
+																</Fragment>
+															);
+														} else {
+															tabout = (
+																<Fragment>
+																	<MeasurementControls
+																		label={ __( 'Title Padding (px)' ) }
+																		measurement={ titlePadding }
+																		control={ titlePaddingControl }
+																		onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
+																		onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
+																		min={ 0 }
+																		max={ 50 }
+																		step={ 1 }
+																	/>
+																	<MeasurementControls
+																		label={ __( 'Title Margin (px)' ) }
+																		measurement={ titleMargin }
+																		control={ titleMarginControl }
+																		onChange={ ( value ) => setAttributes( { titleMargin: value } ) }
+																		onControl={ ( value ) => setAttributes( { titleMarginControl: value } ) }
+																		min={ -25 }
+																		max={ 25 }
+																		step={ 1 }
+																	/>
+																</Fragment>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
+									</Fragment>
+								) }
+								{ 'tabs' !== layout && (
+									<Fragment>
+										<MeasurementControls
+											label={ __( 'Title Padding (px)' ) }
+											measurement={ titlePadding }
+											control={ titlePaddingControl }
+											onChange={ ( value ) => setAttributes( { titlePadding: value } ) }
+											onControl={ ( value ) => setAttributes( { titlePaddingControl: value } ) }
+											min={ 0 }
+											max={ 50 }
+											step={ 1 }
+										/>
+										<MeasurementControls
+											label={ __( 'Title Margin (px)' ) }
+											measurement={ titleMargin }
+											control={ titleMarginControl }
+											onChange={ ( value ) => setAttributes( { titleMargin: value } ) }
+											onControl={ ( value ) => setAttributes( { titleMarginControl: value } ) }
+											min={ -25 }
+											max={ 25 }
+											step={ 1 }
+										/>
+									</Fragment>
+								) }
 								<MeasurementControls
 									label={ __( 'Title Border Width (px)' ) }
 									measurement={ titleBorderWidth }
@@ -1193,6 +1403,14 @@ class KadenceTabs extends Component {
 								) }
 							</PanelBody>
 						) }
+						{ this.showSettings( 'titleAnchor' ) && (
+							<PanelBody
+								title={ __( 'Tab Anchor Settings' ) }
+								initialOpen={ false }
+							>
+								{ times( tabCount, n => renderAnchorSettings( n ) ) }
+							</PanelBody>
+						) }
 						{ this.showSettings( 'structure' ) && (
 							<PanelBody
 								title={ __( 'Structure Settings' ) }
@@ -1251,7 +1469,7 @@ class KadenceTabs extends Component {
 						<div className="kt-tabs-wrap" style={ {
 							maxWidth: maxWidth + 'px',
 						} }>
-							<ul className="kt-tabs-title-list">
+							<ul className={ `kt-tabs-title-list${ ( 'tabs' === layout && widthType === 'percent' ? ' kb-tabs-list-columns kb-tab-title-columns-' + tabWidth[ 0 ] : '' ) }` }>
 								{ renderPreviewArray }
 							</ul>
 							{ googleFont && (

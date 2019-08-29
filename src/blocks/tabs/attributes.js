@@ -78,18 +78,21 @@ const attributes = {
 			iconSide: 'right',
 			onlyIcon: false,
 			subText: '',
+			anchor: '',
 		}, {
 			text: __( 'Tab 2' ),
 			icon: '',
 			iconSide: 'right',
 			onlyIcon: false,
 			subText: '',
+			anchor: '',
 		}, {
 			text: __( 'Tab 3' ),
 			icon: '',
 			iconSide: 'right',
 			onlyIcon: false,
 			subText: '',
+			anchor: '',
 		} ],
 	},
 	iSize: {
@@ -242,6 +245,18 @@ const attributes = {
 	enableSubtitle: {
 		type: 'bool',
 		default: false,
+	},
+	widthType: {
+		type: 'string',
+		default: 'normal',
+	},
+	tabWidth: {
+		type: 'array',
+		default: [ 4, '', '' ],
+	},
+	gutter: {
+		type: 'array',
+		default: [ 10, '', '' ],
 	},
 };
 export default attributes;
