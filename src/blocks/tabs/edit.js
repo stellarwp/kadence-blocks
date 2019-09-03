@@ -23,11 +23,17 @@ import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedColorControl from '../../advanced-color-control';
+import filter from 'lodash/filter';
 /**
  * Import Css
  */
 import './style.scss';
 import './editor.scss';
+const {
+	createBlock,
+} = wp.blocks;
+const { withSelect, withDispatch } = wp.data;
+const { compose } = wp.compose;
 const {
 	Component,
 	Fragment,
@@ -45,6 +51,7 @@ const {
 	ButtonGroup,
 	Tooltip,
 	TabPanel,
+	IconButton,
 	Dashicon,
 	PanelBody,
 	RangeControl,
@@ -87,6 +94,8 @@ class KadenceTabs extends Component {
 	constructor() {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
+		this.onMoveForward = this.onMoveForward.bind( this );
+		this.onMoveBack = this.onMoveBack.bind( this );
 		this.state = {
 			hovered: 'false',
 			showPreset: false,
@@ -156,8 +165,40 @@ class KadenceTabs extends Component {
 			titles: newItems,
 		} );
 	}
+	onMove( oldIndex, newIndex ) {
+		const titles = [ ...this.props.attributes.titles ];
+		titles.splice( newIndex, 1, this.props.attributes.titles[ oldIndex ] );
+		titles.splice( oldIndex, 1, this.props.attributes.titles[ newIndex ] );
+		this.props.setAttributes( { titles: titles, currentTab: parseInt( newIndex + 1 ) } );
+		if ( this.props.attributes.startTab === ( oldIndex + 1 ) ) {
+			this.props.setAttributes( { startTab: ( newIndex + 1 ) } );
+		} else if ( this.props.attributes.startTab === ( newIndex + 1 ) ) {
+			this.props.setAttributes( { startTab: ( oldIndex + 1 ) } );
+		}
+		this.props.moveTab( this.props.tabsBlock.innerBlocks[ oldIndex ].clientId, newIndex );
+		this.props.resetOrder();
+		this.props.setAttributes( { currentTab: parseInt( newIndex + 1 ) } );
+	}
+
+	onMoveForward( oldIndex ) {
+		return () => {
+			if ( oldIndex === this.props.realTabsCount - 1 ) {
+				return;
+			}
+			this.onMove( oldIndex, oldIndex + 1 );
+		};
+	}
+
+	onMoveBack( oldIndex ) {
+		return () => {
+			if ( oldIndex === 0 ) {
+				return;
+			}
+			this.onMove( oldIndex, oldIndex - 1 );
+		};
+	}
 	render() {
-		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType }, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, tabCount, blockAlignment, mobileLayout, currentTab, tabletLayout, layout, innerPadding, minHeight, maxWidth, titles, titleColor, titleColorHover, titleColorActive, titleBg, titleBgHover, titleBgActive, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, borderRadius, titleBorderWidth, titleBorderControl, titleBorder, titleBorderHover, titleBorderActive, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, innerPaddingControl, contentBorder, contentBorderControl, contentBorderColor, titlePadding, titlePaddingControl, titleMargin, titleMarginControl, contentBgColor, tabAlignment, titleBorderRadiusControl, titleBorderRadius, iSize, startTab, enableSubtitle, subtitleFont, tabWidth, gutter, widthType }, clientId, className, setAttributes } = this.props;
 		const layoutClass = ( ! layout ? 'tabs' : layout );
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
@@ -388,32 +429,6 @@ class KadenceTabs extends Component {
 		const deskControls = (
 			<Fragment>
 				<PanelBody>
-					<RangeControl
-						label={ __( 'Tabs' ) }
-						value={ tabCount }
-						onChange={ ( nexttabs ) => {
-							const newtabs = titles;
-							if ( newtabs.length < nexttabs ) {
-								const amount = Math.abs( nexttabs - newtabs.length );
-								{ times( amount, n => {
-									const tabnumber = nexttabs - n;
-									newtabs.push( {
-										text: sprintf( __( 'Tab %d' ), tabnumber ),
-										icon: titles[ 0 ].icon,
-										iconSide: titles[ 0 ].iconSide,
-										onlyIcon: titles[ 0 ].onlyIcon,
-									} );
-								} ); }
-								setAttributes( { titles: newtabs } );
-								this.saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
-							}
-							setAttributes( {
-								tabCount: nexttabs,
-							} );
-						} }
-						min={ 1 }
-						max={ 24 }
-					/>
 					<p className="components-base-control__label">{ __( 'Layout' ) }</p>
 					<ButtonGroup aria-label={ __( 'Layout' ) }>
 						{ map( layoutOptions, ( { name, key, icon } ) => (
@@ -520,7 +535,7 @@ class KadenceTabs extends Component {
 								<RichText
 									tagName="div"
 									placeholder={ __( 'Tab Title' ) }
-									value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab%d' ), ( 1 + index ) ) ) }
+									value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : '' ) }
 									unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
 									onChange={ value => {
 										this.saveArrayUpdate( { text: value }, index );
@@ -538,7 +553,7 @@ class KadenceTabs extends Component {
 									<RichText
 										tagName="div"
 										placeholder={ __( 'Tab Title' ) }
-										value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : sprintf( __( 'Tab%d' ), ( 1 + index ) ) ) }
+										value={ ( titles[ index ] && titles[ index ].text ? titles[ index ].text : '' ) }
 										unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
 										onChange={ value => {
 											this.saveArrayUpdate( { text: value }, index );
@@ -576,6 +591,51 @@ class KadenceTabs extends Component {
 							) }
 							{ titles[ index ] && titles[ index ].icon && 'right' === titles[ index ].iconSide && (
 								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
+							) }
+						</div>
+						<div className="kadence-blocks-tab-item__control-menu">
+							{ index !== 0 && (
+								<IconButton
+									icon={ ( 'vtabs' === layout ? 'arrow-up' : 'arrow-left' ) }
+									onClick={ index === 0 ? undefined : this.onMoveBack( index ) }
+									className="kadence-blocks-tab-item__move-back"
+									label={ ( 'vtabs' === layout ? __( 'Move Item Up' ) : __( 'Move Item Back' ) ) }
+									aria-disabled={ index === 0 }
+									disabled={ index === 0 }
+								/>
+							) }
+							{ ( index + 1 ) !== tabCount && (
+								<IconButton
+									icon={ ( 'vtabs' === layout ? 'arrow-down' : 'arrow-right' ) }
+									onClick={ ( index + 1 ) === tabCount ? undefined : this.onMoveForward( index ) }
+									className="kadence-blocks-tab-item__move-forward"
+									label={ ( 'vtabs' === layout ? __( 'Move Item Down' ) : __( 'Move Item Forward' ) ) }
+									aria-disabled={ ( index + 1 ) === tabCount }
+									disabled={ ( index + 1 ) === tabCount }
+								/>
+							) }
+							{ tabCount > 1 && (
+								<IconButton
+									icon="no-alt"
+									onClick={ () => {
+										const removeClientId = this.props.tabsBlock.innerBlocks[ index ].clientId;
+										const currentItems = filter( this.props.attributes.titles, ( item, i ) => index !== i );
+										setAttributes( { titles: currentItems } );
+										this.props.removeTab( removeClientId );
+										const newCount = tabCount - 1;
+										if ( startTab === ( index + 1 ) ) {
+											setAttributes( { startTab: '' } );
+										} else if ( startTab > ( index + 1 ) ) {
+											setAttributes( { startTab: startTab - 1 } );
+										}
+										setAttributes( { currentTab: ( index === 0 ? 1 : index ) } );
+										setAttributes( { tabCount: newCount } );
+										this.props.resetOrder();
+									} }
+									className="kadence-blocks-tab-item__remove"
+									label={ __( 'Remove Item' ) }
+									disabled={ ! currentTab === ( index + 1 ) }
+								/>
 							) }
 						</div>
 					</li>
@@ -928,33 +988,6 @@ class KadenceTabs extends Component {
 						) }
 						{ ! this.showSettings( 'tabLayout' ) && (
 							<PanelBody>
-								<RangeControl
-									label={ __( 'Tabs' ) }
-									value={ tabCount }
-									onChange={ ( nexttabs ) => {
-										const newtabs = titles;
-										if ( newtabs.length < nexttabs ) {
-											const amount = Math.abs( nexttabs - newtabs.length );
-											{ times( amount, n => {
-												const tabnumber = nexttabs - n;
-												newtabs.push( {
-													text: sprintf( __( 'Tab %d' ), tabnumber ),
-													icon: titles[ 0 ].icon,
-													iconSide: titles[ 0 ].iconSide,
-													onlyIcon: titles[ 0 ].iconHover,
-													subText: '',
-												} );
-											} ); }
-											setAttributes( { titles: newtabs } );
-											this.saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
-										}
-										setAttributes( {
-											tabCount: nexttabs,
-										} );
-									} }
-									min={ 1 }
-									max={ 24 }
-								/>
 								<h2>{ __( 'Set Initial Open Tab' ) }</h2>
 								<ButtonGroup aria-label={ __( 'Initial Open Tab' ) }>
 									{ times( tabCount, n => (
@@ -1469,6 +1502,31 @@ class KadenceTabs extends Component {
 						<div className="kt-tabs-wrap" style={ {
 							maxWidth: maxWidth + 'px',
 						} }>
+							<div className="kb-add-new-tab-contain">
+								<Button
+									className="kt-tab-add"
+									isPrimary={ true }
+									onClick={ () => {
+										const newBlock = createBlock( 'kadence/tab', { id: tabCount + 1 } );
+										setAttributes( { tabCount: tabCount + 1 } );
+										this.props.insertTab( newBlock );
+										//wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, clientId );
+										const newtabs = titles;
+										newtabs.push( {
+											text: sprintf( __( 'Tab %d' ), tabCount + 1 ),
+											icon: titles[ 0 ].icon,
+											iconSide: titles[ 0 ].iconSide,
+											onlyIcon: titles[ 0 ].onlyIcon,
+											subText: '',
+										} );
+										setAttributes( { titles: newtabs } );
+										this.saveArrayUpdate( { iconSide: titles[ 0 ].iconSide }, 0 );
+									} }
+								>
+									<Dashicon icon="plus" />
+									{ __( 'Add Tab' ) }
+								</Button>
+							</div>
 							<ul className={ `kt-tabs-title-list${ ( 'tabs' === layout && widthType === 'percent' ? ' kb-tabs-list-columns kb-tab-title-columns-' + tabWidth[ 0 ] : '' ) }` }>
 								{ renderPreviewArray }
 							</ul>
@@ -1489,7 +1547,7 @@ class KadenceTabs extends Component {
 							} }>
 								<InnerBlocks
 									template={ getPanesTemplate( tabCount ) }
-									templateLock="all"
+									templateLock={ false }
 									allowedBlocks={ ALLOWED_BLOCKS } />
 							</div>
 						</div>
@@ -1499,4 +1557,48 @@ class KadenceTabs extends Component {
 		);
 	}
 }
-export default ( KadenceTabs );
+export default compose( [
+	withSelect( ( select, ownProps ) => {
+		const { clientId } = ownProps;
+		const {
+			getBlock,
+			getBlockOrder,
+		} = select( 'core/block-editor' );
+		const block = getBlock( clientId );
+		return {
+			tabsBlock: block,
+			realTabsCount: block.innerBlocks.length,
+			tabsInner: getBlockOrder( clientId ),
+		};
+	} ),
+	withDispatch( ( dispatch, { clientId }, { select } ) => {
+		const {
+			getBlock,
+		} = select( 'core/block-editor' );
+		const {
+			moveBlockToPosition,
+			removeBlock,
+			updateBlockAttributes,
+			insertBlock,
+		} = dispatch( 'core/block-editor' );
+		const block = getBlock( clientId );
+		return {
+			resetOrder() {
+				times( block.innerBlocks.length, n => {
+					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
+						id: n + 1,
+					} );
+				} );
+			},
+			moveTab( tabId, newIndex ) {
+				moveBlockToPosition( tabId, clientId, clientId, parseInt( newIndex ) );
+			},
+			insertTab( newBlock ) {
+				insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+			},
+			removeTab( tabId ) {
+				removeBlock( tabId, clientId );
+			},
+		};
+	} ),
+] )( KadenceTabs );

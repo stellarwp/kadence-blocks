@@ -86,6 +86,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.6.11 =
+* Fix: Default Colors update.
+* Update: Tabs allow moving and deleting.
+
 = 1.6.10 =
 * Fix: IE issue with testimonial grid.
 * Add: Column Color settings.

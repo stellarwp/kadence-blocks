@@ -59,7 +59,7 @@ class KadenceColorDefault extends Component {
 			settingModel.save().then( response => {
 				this.setState( { isSaving: false, kadenceColors: config } );
 				kadence_blocks_params.colors = JSON.stringify( config );
-				this.props.updateEditorSettings( { colors: this.state.colors } );
+				this.props.updateSettings( { colors: this.state.colors } );
 			} );
 		}
 	}
@@ -294,10 +294,10 @@ export default compose( [
 	} ),
 	withDispatch( ( dispatch ) => {
 		const {
-			updateEditorSettings,
-		} = dispatch( 'core/editor' );
+			updateSettings,
+		} = dispatch( 'core/block-editor' );
 		return {
-			updateEditorSettings,
+			updateSettings,
 		};
 	} ),
 ] )( KadenceColorDefault );
