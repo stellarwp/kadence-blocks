@@ -141,7 +141,14 @@ class KadenceRowLayout extends Component {
 		return false;
 	}
 	saveSlideItem = ( value, thisIndex ) => {
-		const currentItems = this.props.attributes.backgroundSlider;
+		let currentItems = this.props.attributes.backgroundSlider;
+		if ( undefined === currentItems || ( undefined !== currentItems && undefined === currentItems[ 0 ] ) ) {
+			currentItems = [ {
+				bgColor: '',
+				bgImg: '',
+				bgImgID: '',
+			} ];
+		}
 		const newUpdate = currentItems.map( ( item, index ) => {
 			if ( index === thisIndex ) {
 				item = { ...item, ...value };
@@ -333,14 +340,14 @@ class KadenceRowLayout extends Component {
 			);
 		}
 		const sliderSettings = {
-			dots: ( backgroundSliderSettings[ 0 ].dotStyle === 'none' ? false : true ),
-			arrows: ( backgroundSliderSettings[ 0 ].arrowStyle === 'none' ? false : true ),
+			dots: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].dotStyle === 'none' ? false : true ),
+			arrows: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].arrowStyle !== 'none' ? true : false ),
 			infinite: true,
-			fade: backgroundSliderSettings[ 0 ].fade,
-			speed: backgroundSliderSettings[ 0 ].tranSpeed,
+			fade: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade ? backgroundSliderSettings[ 0 ].fade : true ),
+			speed: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ),
 			draggable: false,
-			autoplaySpeed: backgroundSliderSettings[ 0 ].speed,
-			autoplay: backgroundSliderSettings[ 0 ].autoPlay,
+			autoplaySpeed: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].speed ? backgroundSliderSettings[ 0 ].speed : 7000 ),
+			autoplay: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ),
 			slidesToShow: 1,
 			slidesToScroll: 1,
 			nextArrow: <CustomNextArrow />,
@@ -350,8 +357,8 @@ class KadenceRowLayout extends Component {
 			return (
 				<div className="kb-bg-slide-contain">
 					<div className={ `kb-bg-slide kb-bg-slide-${ index }` } style={ {
-						backgroundColor: backgroundSlider[ index ].bgColor,
-						backgroundImage: 'url("' + backgroundSlider[ index ].bgImg + '")',
+						backgroundColor: ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && undefined !== backgroundSlider[ index ].bgColor ? backgroundSlider[ index ].bgColor : undefined ),
+						backgroundImage: ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && undefined !== backgroundSlider[ index ].bgImg ? 'url("' + backgroundSlider[ index ].bgImg + '")' : undefined ),
 						backgroundSize: bgImgSize,
 						backgroundPosition: bgImgPosition,
 						backgroundRepeat: bgImgRepeat,
@@ -360,7 +367,22 @@ class KadenceRowLayout extends Component {
 			);
 		};
 		const saveSliderSettings = ( value ) => {
-			const newUpdate = backgroundSliderSettings.map( ( item, index ) => {
+			let backgroundSlidSettings;
+			if ( undefined === backgroundSliderSettings || ( undefined !== backgroundSliderSettings && undefined === backgroundSliderSettings[ 0 ] ) ) {
+				backgroundSlidSettings = [ {
+					youTube: '',
+					local: '',
+					localID: '',
+					vimeo: '',
+					ratio: '16/9',
+					btns: false,
+					loop: true,
+					mute: true,
+				} ];
+			} else {
+				backgroundSlidSettings = backgroundSliderSettings;
+			}
+			const newUpdate = backgroundSlidSettings.map( ( item, index ) => {
 				if ( 0 === index ) {
 					item = { ...item, ...value };
 				}
@@ -371,7 +393,22 @@ class KadenceRowLayout extends Component {
 			} );
 		};
 		const saveVideoSettings = ( value ) => {
-			const newUpdate = backgroundVideo.map( ( item, index ) => {
+			let bgVideo;
+			if ( undefined === backgroundVideo || ( undefined !== backgroundVideo && undefined === backgroundVideo[ 0 ] ) ) {
+				bgVideo = [ {
+					youTube: '',
+					local: '',
+					localID: '',
+					vimeo: '',
+					ratio: '16/9',
+					btns: false,
+					loop: true,
+					mute: true,
+				} ];
+			} else {
+				bgVideo = backgroundVideo;
+			}
+			const newUpdate = bgVideo.map( ( item, index ) => {
 				if ( 0 === index ) {
 					item = { ...item, ...value };
 				}
@@ -1109,17 +1146,27 @@ class KadenceRowLayout extends Component {
 			</Fragment>
 		);
 		const slideControls = ( index ) => {
+			let bgSlider;
+			if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
+				bgSlider = [ {
+					bgColor: '',
+					bgImg: '',
+					bgImgID: '',
+				} ];
+			} else {
+				bgSlider = backgroundSlider;
+			}
 			return (
 				<Fragment>
 					<h2>{ __( 'Slide' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }</h2>
 					<div className="kt-inner-sub-section">
 						<AdvancedColorControl
 							label={ __( 'Slide Background Color' ) }
-							colorValue={ ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && backgroundSlider[ index ].bgColor ? backgroundSlider[ index ].bgColor : '' ) }
+							colorValue={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : '' ) }
 							colorDefault={ '' }
 							onColorChange={ value => this.saveSlideItem( { bgColor: value }, index ) }
 						/>
-						{ ( undefined === backgroundSlider[ index ] || undefined === backgroundSlider[ index ].bgImg || '' === backgroundSlider[ index ].bgImg ) && (
+						{ ( undefined === bgSlider[ index ] || undefined === bgSlider[ index ].bgImg || '' === bgSlider[ index ].bgImg ) && (
 							<MediaUpload
 								onSelect={ img => {
 									this.saveSlideItem( {
@@ -1128,7 +1175,7 @@ class KadenceRowLayout extends Component {
 									}, index );
 								} }
 								type="image"
-								value={ ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && backgroundSlider[ index ].bgImgID ? backgroundSlider[ index ].bgImgID : '' ) }
+								value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' ) }
 								render={ ( { open } ) => (
 									<Button
 										className={ 'components-button components-icon-button kt-cta-upload-btn' }
@@ -1140,7 +1187,7 @@ class KadenceRowLayout extends Component {
 								) }
 							/>
 						) }
-						{ undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && backgroundSlider[ index ].bgImg && (
+						{ undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImg && (
 							<Fragment>
 								<MediaUpload
 									onSelect={ media => {
@@ -1150,13 +1197,13 @@ class KadenceRowLayout extends Component {
 										}, index );
 									} }
 									type="image"
-									value={ ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && backgroundSlider[ index ].bgImgID ? backgroundSlider[ index ].bgImgID : '' ) }
+									value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' ) }
 									allowedTypes={ [ 'image' ] }
 									render={ ( { open } ) => (
 										<Tooltip text={ __( 'Edit Image' ) }>
 											<Button
 												style={ {
-													backgroundImage: 'url("' + backgroundSlider[ index ].bgImg + '")',
+													backgroundImage: 'url("' + bgSlider[ index ].bgImg + '")',
 													backgroundSize: 'cover',
 												} }
 												className={ 'kb-sidebar-image' }
@@ -1383,9 +1430,18 @@ class KadenceRowLayout extends Component {
 												<PanelBody>
 													<RangeControl
 														label={ __( 'Background Slider Image Count' ) }
-														value={ backgroundSliderCount }
+														value={ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) }
 														onChange={ newcount => {
-															const newSlides = backgroundSlider;
+															let newSlides;
+															if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
+																newSlides = [ {
+																	bgColor: '',
+																	bgImg: '',
+																	bgImgID: '',
+																} ];
+															} else {
+																newSlides = backgroundSlider;
+															}
 															if ( newSlides.length < newcount ) {
 																const amount = Math.abs( newcount - newSlides.length );
 																{ times( amount, n => {
@@ -1403,7 +1459,7 @@ class KadenceRowLayout extends Component {
 														min={ 1 }
 														max={ 20 }
 													/>
-													{ times( backgroundSliderCount, n => slideControls( n ) ) }
+													{ times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => slideControls( n ) ) }
 													<SelectControl
 														label={ __( 'Slider Image Size' ) }
 														value={ bgImgSize }
@@ -1443,10 +1499,10 @@ class KadenceRowLayout extends Component {
 													/>
 													<ToggleControl
 														label={ __( 'Slider Auto Play' ) }
-														checked={ backgroundSliderSettings[ 0 ].autoPlay }
+														checked={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ) }
 														onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
 													/>
-													{ backgroundSliderSettings[ 0 ].autoPlay && (
+													{ backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay && backgroundSliderSettings[ 0 ].autoPlay && (
 														<RangeControl
 															label={ __( 'Autoplay Speed' ) }
 															value={ backgroundSliderSettings[ 0 ].speed }
@@ -1468,7 +1524,7 @@ class KadenceRowLayout extends Component {
 																value: 'slide',
 															},
 														] }
-														value={ ( false === backgroundSliderSettings[ 0 ].fade ? 'slide' : 'fade' ) }
+														value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && false === backgroundSliderSettings[ 0 ].fade ? 'slide' : 'fade' ) }
 														onChange={ ( value ) => {
 															if ( 'slide' === value ) {
 																saveSliderSettings( { fade: false } );
@@ -1479,7 +1535,7 @@ class KadenceRowLayout extends Component {
 													/>
 													<RangeControl
 														label={ __( 'Slider Transition Speed' ) }
-														value={ backgroundSliderSettings[ 0 ].tranSpeed }
+														value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ) }
 														onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
 														min={ 100 }
 														max={ 2000 }
@@ -1509,7 +1565,7 @@ class KadenceRowLayout extends Component {
 																value: 'none',
 															},
 														] }
-														value={ backgroundSliderSettings[ 0 ].arrowStyle }
+														value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) }
 														onChange={ ( value ) => saveSliderSettings( { arrowStyle: value } ) }
 													/>
 													<SelectControl
@@ -1536,7 +1592,7 @@ class KadenceRowLayout extends Component {
 																value: 'none',
 															},
 														] }
-														value={ backgroundSliderSettings[ 0 ].dotStyle }
+														value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }
 														onChange={ ( value ) => saveSliderSettings( { dotStyle: value } ) }
 													/>
 												</PanelBody>
@@ -1563,7 +1619,7 @@ class KadenceRowLayout extends Component {
 														value={ backgroundVideoType }
 														onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
 													/> */}
-													{ 'local' === backgroundVideoType && (
+													{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
 														<Fragment>
 															<MediaUpload
 																onSelect={ video => {
@@ -1585,7 +1641,7 @@ class KadenceRowLayout extends Component {
 																	</Button>
 																) }
 															/>
-															{ backgroundVideo[ 0 ].localID && (
+															{ undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID && (
 																<Tooltip text={ __( 'Remove Image' ) }>
 																	<Button
 																		className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
@@ -1609,7 +1665,7 @@ class KadenceRowLayout extends Component {
 															onChange={ value => saveVideoSettings( { youtube: value } ) }
 														/>
 													) }
-													{ 'local' !== backgroundVideoType && (
+													{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
 														<SelectControl
 															label={ __( 'Background Video Ratio' ) }
 															options={ [
@@ -3107,21 +3163,21 @@ class KadenceRowLayout extends Component {
 						} }></div>
 					) }
 					{ ( 'slider' === backgroundSettingTab ) && (
-						<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ backgroundSliderSettings[ 0 ].dotStyle }` }>
+						<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` }>
 							{ backgroundSliderCount !== 1 && (
-								<Slider className={ `kt-carousel-arrowstyle-${ backgroundSliderSettings[ 0 ].arrowStyle } kt-carousel-dotstyle-${ backgroundSliderSettings[ 0 ].dotStyle }` } { ...sliderSettings }>
+								<Slider className={ `kt-carousel-arrowstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) } kt-carousel-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` } { ...sliderSettings }>
 									{ times( backgroundSliderCount, n => renderSliderImages( n ) ) }
 								</Slider>
 							) }
-							{ backgroundSliderCount === 1 && (
-								times( backgroundSliderCount, n => renderSliderImages( n ) )
+							{ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) === 1 && (
+								times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => renderSliderImages( n ) )
 							) }
 						</div>
 					) }
 					{ ( 'video' === backgroundSettingTab ) && (
-						<div className={ 'kb-blocks-bg-video-container' }>
-							{ ( 'local' === backgroundVideoType ) && (
-								<video className="kb-blocks-bg-video" playsinline="" loop="" src={ backgroundVideo[ 0 ].local }></video>
+						<div className={ 'kb-blocks-bg-video-container' } style={ { backgroundColor: ( bgColor ? bgColor : undefined ) } }>
+							{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
+								<video className="kb-blocks-bg-video" playsinline="" loop="" src={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : undefined ) }></video>
 							) }
 							{ ( 'youtube' === backgroundVideoType ) && (
 								<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(http://img.youtube.com/vi/${ backgroundVideo[ 0 ].youtube }/maxresdefault.jpg)` } }></div>

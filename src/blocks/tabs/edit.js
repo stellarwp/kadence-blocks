@@ -211,12 +211,36 @@ class KadenceTabs extends Component {
 		};
 		const sgconfig = {
 			google: {
-				families: [ subtitleFont[ 0 ].family + ( subtitleFont[ 0 ].variant ? ':' + subtitleFont[ 0 ].variant : '' ) ],
+				families: [ ( subtitleFont && subtitleFont[ 0 ] && subtitleFont[ 0 ].family ? subtitleFont[ 0 ].family : '' ) + ( subtitleFont && subtitleFont[ 0 ] && subtitleFont[ 0 ].variant ? ':' + subtitleFont[ 0 ].variant : '' ) ],
 			},
 		};
-		const sconfig = ( subtitleFont[ 0 ].google ? sgconfig : '' );
+		const sconfig = ( subtitleFont && subtitleFont[ 0 ] && subtitleFont[ 0 ].google ? sgconfig : '' );
 		const saveSubtitleFont = ( value ) => {
-			const newUpdate = subtitleFont.map( ( item, index ) => {
+			let tempSubFont;
+			if ( undefined === subtitleFont || ( undefined !== subtitleFont && undefined === subtitleFont[ 0 ] ) ) {
+				tempSubFont = [ {
+					size: [ '', '', '' ],
+					sizeType: 'px',
+					lineHeight: [ '', '', '' ],
+					lineType: 'px',
+					letterSpacing: '',
+					textTransform: '',
+					family: '',
+					google: false,
+					style: '',
+					weight: '',
+					variant: '',
+					subset: '',
+					loadGoogle: true,
+					padding: [ 0, 0, 0, 0 ],
+					paddingControl: 'linked',
+					margin: [ 0, 0, 0, 0 ],
+					marginControl: 'linked',
+				} ];
+			} else {
+				tempSubFont = subtitleFont;
+			}
+			const newUpdate = tempSubFont.map( ( item, index ) => {
 				if ( 0 === index ) {
 					item = { ...item, ...value };
 				}
@@ -506,6 +530,25 @@ class KadenceTabs extends Component {
 			</TabPanel>
 		);
 		const renderTitles = ( index ) => {
+			const subFont = ( subtitleFont && subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].sizeType ? subtitleFont : [ {
+				size: [ '', '', '' ],
+				sizeType: 'px',
+				lineHeight: [ '', '', '' ],
+				lineType: 'px',
+				letterSpacing: '',
+				textTransform: '',
+				family: '',
+				google: false,
+				style: '',
+				weight: '',
+				variant: '',
+				subset: '',
+				loadGoogle: true,
+				padding: [ 0, 0, 0, 0 ],
+				paddingControl: 'linked',
+				margin: [ 0, 0, 0, 0 ],
+				marginControl: 'linked',
+			} ] );
 			return (
 				<Fragment>
 					<li className={ `kt-title-item kt-title-item-${ index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tabs-has-icon-${ ( titles[ index ] && titles[ index ].icon ? 'true' : 'false' ) } kt-tab-title-${ ( 1 + index === currentTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` } style={ {
@@ -541,6 +584,7 @@ class KadenceTabs extends Component {
 										this.saveArrayUpdate( { text: value }, index );
 									} }
 									formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
+									allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
 									className={ 'kt-title-text' }
 									style={ {
 										lineHeight: lineHeight + lineType,
@@ -559,6 +603,7 @@ class KadenceTabs extends Component {
 											this.saveArrayUpdate( { text: value }, index );
 										} }
 										formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
+										allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
 										className={ 'kt-title-text' }
 										style={ {
 											lineHeight: lineHeight + lineType,
@@ -568,22 +613,23 @@ class KadenceTabs extends Component {
 									<RichText
 										tagName="div"
 										placeholder={ __( 'Tab subtitle' ) }
-										value={ ( titles[ index ] && titles[ index ].subText ? titles[ index ].subText : '' ) }
+										value={ ( undefined !== titles[ index ] && undefined !== titles[ index ].subText ? titles[ index ].subText : '' ) }
 										unstableOnFocus={ () => setAttributes( { currentTab: 1 + index } ) }
 										onChange={ value => {
 											this.saveArrayUpdate( { subText: value }, index );
 										} }
 										formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
+										allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
 										className={ 'kt-title-sub-text' }
 										style={ {
-											fontWeight: subtitleFont[ 0 ].weight,
-											fontStyle: subtitleFont[ 0 ].style,
-											fontSize: subtitleFont[ 0 ].size[ 0 ] + subtitleFont[ 0 ].sizeType,
-											lineHeight: ( subtitleFont[ 0 ].lineHeight && subtitleFont[ 0 ].lineHeight[ 0 ] ? subtitleFont[ 0 ].lineHeight[ 0 ] + subtitleFont[ 0 ].lineType : undefined ),
-											letterSpacing: subtitleFont[ 0 ].letterSpacing + 'px',
-											fontFamily: ( subtitleFont[ 0 ].family ? subtitleFont[ 0 ].family : '' ),
-											padding: ( subtitleFont[ 0 ].padding ? subtitleFont[ 0 ].padding[ 0 ] + 'px ' + subtitleFont[ 0 ].padding[ 1 ] + 'px ' + subtitleFont[ 0 ].padding[ 2 ] + 'px ' + subtitleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
-											margin: ( subtitleFont[ 0 ].margin ? subtitleFont[ 0 ].margin[ 0 ] + 'px ' + subtitleFont[ 0 ].margin[ 1 ] + 'px ' + subtitleFont[ 0 ].margin[ 2 ] + 'px ' + subtitleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
+											fontWeight: subFont[ 0 ].weight,
+											fontStyle: subFont[ 0 ].style,
+											fontSize: subFont[ 0 ].size[ 0 ] + subFont[ 0 ].sizeType,
+											lineHeight: ( subFont[ 0 ].lineHeight && subFont[ 0 ].lineHeight[ 0 ] ? subFont[ 0 ].lineHeight[ 0 ] + subFont[ 0 ].lineType : undefined ),
+											letterSpacing: subFont[ 0 ].letterSpacing + 'px',
+											fontFamily: ( subFont[ 0 ].family ? subFont[ 0 ].family : '' ),
+											padding: ( subFont[ 0 ].padding ? subFont[ 0 ].padding[ 0 ] + 'px ' + subFont[ 0 ].padding[ 1 ] + 'px ' + subFont[ 0 ].padding[ 2 ] + 'px ' + subFont[ 0 ].padding[ 3 ] + 'px' : '' ),
+											margin: ( subFont[ 0 ].margin ? subFont[ 0 ].margin[ 0 ] + 'px ' + subFont[ 0 ].margin[ 1 ] + 'px ' + subFont[ 0 ].margin[ 2 ] + 'px ' + subFont[ 0 ].margin[ 3 ] + 'px' : '' ),
 										} }
 										keepPlaceholderOnFocus
 									/>
@@ -620,16 +666,17 @@ class KadenceTabs extends Component {
 									onClick={ () => {
 										const removeClientId = this.props.tabsBlock.innerBlocks[ index ].clientId;
 										const currentItems = filter( this.props.attributes.titles, ( item, i ) => index !== i );
-										setAttributes( { titles: currentItems } );
-										this.props.removeTab( removeClientId );
 										const newCount = tabCount - 1;
+										let newStartTab;
 										if ( startTab === ( index + 1 ) ) {
-											setAttributes( { startTab: '' } );
+											newStartTab = '';
 										} else if ( startTab > ( index + 1 ) ) {
-											setAttributes( { startTab: startTab - 1 } );
+											newStartTab = startTab - 1;
+										} else {
+											newStartTab = startTab;
 										}
-										setAttributes( { currentTab: ( index === 0 ? 1 : index ) } );
-										setAttributes( { tabCount: newCount } );
+										setAttributes( { titles: currentItems, tabCount: newCount, currentTab: ( index === 0 ? 1 : index ), startTab: newStartTab } );
+										this.props.removeTab( removeClientId );
 										this.props.resetOrder();
 									} }
 									className="kadence-blocks-tab-item__remove"
@@ -1393,17 +1440,17 @@ class KadenceTabs extends Component {
 								/>
 								{ enableSubtitle && (
 									<TypographyControls
-										fontSize={ subtitleFont[ 0 ].size }
+										fontSize={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].size ? subtitleFont[ 0 ].size : [ '', '', '' ] ) }
 										onFontSize={ ( value ) => saveSubtitleFont( { size: value } ) }
-										fontSizeType={ subtitleFont[ 0 ].sizeType }
+										fontSizeType={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].sizeType ? subtitleFont[ 0 ].sizeType : 'px' ) }
 										onFontSizeType={ ( value ) => saveSubtitleFont( { sizeType: value } ) }
-										lineHeight={ subtitleFont[ 0 ].lineHeight }
+										lineHeight={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].lineHeight ? subtitleFont[ 0 ].lineHeight : [ '', '', '' ] ) }
 										onLineHeight={ ( value ) => saveSubtitleFont( { lineHeight: value } ) }
-										lineHeightType={ subtitleFont[ 0 ].lineType }
+										lineHeightType={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].lineType ? subtitleFont[ 0 ].lineType : 'px' ) }
 										onLineHeightType={ ( value ) => saveSubtitleFont( { lineType: value } ) }
-										letterSpacing={ subtitleFont[ 0 ].letterSpacing }
+										letterSpacing={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].letterSpacing ? subtitleFont[ 0 ].letterSpacing : '' ) }
 										onLetterSpacing={ ( value ) => saveSubtitleFont( { letterSpacing: value } ) }
-										fontFamily={ subtitleFont[ 0 ].family }
+										fontFamily={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].family ? subtitleFont[ 0 ].family : '' ) }
 										onFontFamily={ ( value ) => saveSubtitleFont( { family: value } ) }
 										onFontChange={ ( select ) => {
 											saveSubtitleFont( {
@@ -1412,26 +1459,26 @@ class KadenceTabs extends Component {
 											} );
 										} }
 										onFontArrayChange={ ( values ) => saveSubtitleFont( values ) }
-										googleFont={ subtitleFont[ 0 ].google }
+										googleFont={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].google ? subtitleFont[ 0 ].google : false ) }
 										onGoogleFont={ ( value ) => saveSubtitleFont( { google: value } ) }
-										loadGoogleFont={ subtitleFont[ 0 ].loadGoogle }
+										loadGoogleFont={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].loadGoogle ? subtitleFont[ 0 ].loadGoogle : true ) }
 										onLoadGoogleFont={ ( value ) => saveSubtitleFont( { loadGoogle: value } ) }
-										fontVariant={ subtitleFont[ 0 ].variant }
+										fontVariant={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].variant ? subtitleFont[ 0 ].variant : '' ) }
 										onFontVariant={ ( value ) => saveSubtitleFont( { variant: value } ) }
-										fontWeight={ subtitleFont[ 0 ].weight }
+										fontWeight={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].weight ? subtitleFont[ 0 ].weight : '' ) }
 										onFontWeight={ ( value ) => saveSubtitleFont( { weight: value } ) }
-										fontStyle={ subtitleFont[ 0 ].style }
+										fontStyle={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].style ? subtitleFont[ 0 ].style : '' ) }
 										onFontStyle={ ( value ) => saveSubtitleFont( { style: value } ) }
-										fontSubset={ subtitleFont[ 0 ].subset }
+										fontSubset={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].subset ? subtitleFont[ 0 ].subset : '' ) }
 										onFontSubset={ ( value ) => saveSubtitleFont( { subset: value } ) }
-										padding={ subtitleFont[ 0 ].padding }
-										onPadding={ ( value ) =>saveSubtitleFont( { padding: value } ) }
-										paddingControl={ subtitleFont[ 0 ].paddingControl }
-										onPaddingControl={ ( value ) =>saveSubtitleFont( { paddingControl: value } ) }
-										margin={ subtitleFont[ 0 ].margin }
-										onMargin={ ( value ) =>saveSubtitleFont( { margin: value } ) }
-										marginControl={ subtitleFont[ 0 ].marginControl }
-										onMarginControl={ ( value ) =>saveSubtitleFont( { marginControl: value } ) }
+										padding={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].padding ? subtitleFont[ 0 ].padding : [ 0, 0, 0, 0 ] ) }
+										onPadding={ ( value ) => saveSubtitleFont( { padding: value } ) }
+										paddingControl={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].paddingControl ? subtitleFont[ 0 ].paddingControl : 'linked' ) }
+										onPaddingControl={ ( value ) => saveSubtitleFont( { paddingControl: value } ) }
+										margin={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].margin ? subtitleFont[ 0 ].margin : [ 0, 0, 0, 0 ] ) }
+										onMargin={ ( value ) => saveSubtitleFont( { margin: value } ) }
+										marginControl={ ( subtitleFont && undefined !== subtitleFont[ 0 ] && undefined !== subtitleFont[ 0 ].marginControl ? subtitleFont[ 0 ].marginControl : 'linked' ) }
+										onMarginControl={ ( value ) => saveSubtitleFont( { marginControl: value } ) }
 									/>
 								) }
 							</PanelBody>
@@ -1534,7 +1581,7 @@ class KadenceTabs extends Component {
 								<WebfontLoader config={ config }>
 								</WebfontLoader>
 							) }
-							{ enableSubtitle && subtitleFont && subtitleFont[ 0 ].google && (
+							{ enableSubtitle && subtitleFont && subtitleFont[ 0 ] && subtitleFont[ 0 ].google && (
 								<WebfontLoader config={ sconfig }>
 								</WebfontLoader>
 							) }
@@ -1597,7 +1644,7 @@ export default compose( [
 				insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
 			},
 			removeTab( tabId ) {
-				removeBlock( tabId, clientId );
+				removeBlock( tabId );
 			},
 		};
 	} ),
