@@ -21,6 +21,9 @@
 	background:transparent;
 	color:#555555;
 }
+.wp-block-kadence-advancedbtn .kt-btn-wrap a.kt-button:not(.link) {
+    text-decoration: none;
+}
 .kt-button::before {
     position: absolute;
 	content: "";

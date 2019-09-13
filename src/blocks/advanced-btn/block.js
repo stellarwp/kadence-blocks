@@ -45,6 +45,11 @@ registerBlockType( 'kadence/advancedbtn', {
 		__( 'Icon' ),
 		__( 'KT' ),
 	],
+	supports: {
+		ktanimate: true,
+		ktanimateadd: true,
+		ktanimatepreview: true,
+	},
 	attributes: {
 		hAlign: {
 			type: 'string',

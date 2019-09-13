@@ -86,6 +86,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.6.13 =
+* Fix: Small CSS issue with some themes adding underline.
+* Fix: Small CSS issue with tabs.
+
 = 1.6.12 =
 * Fix: issue causing Cannot read property ‘0’ of undefined
 * Update: Tab move tools so no overlap.

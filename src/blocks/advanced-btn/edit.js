@@ -153,7 +153,7 @@ class KadenceAdvancedButton extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, kadenceAOSOptions, kadenceAnimation }, className, setAttributes, isSelected } = this.props;
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -1377,7 +1377,7 @@ class KadenceAdvancedButton extends Component {
 							</InspectorAdvancedControls>
 						</Fragment>
 					) }
-					<div className={ 'btn-inner-wrap' } >
+					<div id={ `animate-id${ uniqueID }` } className={ 'btn-inner-wrap aos-animate kt-animation-wrap' } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } >
 						{ renderPreviewArray }
 						{ googleFont && (
 							<WebfontLoader config={ config }>
