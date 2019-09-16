@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
-Tested up to: 5.2.2
-Stable tag: 1.6.12
+Tested up to: 5.2.3
+Stable tag: 1.6.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 1.6.13 =
 * Fix: Small CSS issue with some themes adding underline.
 * Fix: Small CSS issue with tabs.
+* Update: Gallery Margin.
+* Add: Option for no icon or image with info box.
+* Add: Mobile and Tablet text align for into box.
 
 = 1.6.12 =
 * Fix: issue causing Cannot read property ‘0’ of undefined

@@ -2173,20 +2173,20 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['margin'] ) && is_array( $attr['margin'] ) && is_array( $attr['margin'][0] ) ) {
 			$margin = $attr['margin'][0];
 			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) && is_numeric( $margin['desk'][0] ) ) {
-				$css .= '.kb-gallery-ul.kb-gallery-id-' . $unique_id . ' {';
+				$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
 				$css .= 'margin:' . $margin['desk'][0] . 'px ' . $margin['desk'][1] . 'px ' . $margin['desk'][2] . 'px ' . $margin['desk'][3] . 'px;';
 				$css .= '}';
 			}
 			if ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) && is_numeric( $margin['tablet'][0] ) ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-				$css .= '.kb-gallery-ul.kb-gallery-id-' . $unique_id . ' {';
+				$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
 				$css .= 'margin:' . $margin['tablet'][0] . 'px ' . $margin['tablet'][1] . 'px ' . $margin['tablet'][2] . 'px ' . $margin['tablet'][3] . 'px;';
 				$css .= '}';
 				$css .= '}';
 			}
 			if ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) && is_numeric( $margin['mobile'][0] ) ) {
 				$css .= '@media (max-width: 767px) {';
-				$css .= '.kb-gallery-ul.kb-gallery-id-' . $unique_id . ' {';
+				$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
 				$css .= 'margin:' . $margin['mobile'][0] . 'px ' . $margin['mobile'][1] . 'px ' . $margin['mobile'][2] . 'px ' . $margin['mobile'][3] . 'px;';
 				$css .= '}';
 				$css .= '}';

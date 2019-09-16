@@ -26,6 +26,7 @@ import IcoNames from '../../svgiconsnames';
 import FaIco from '../../faicons';
 import OpacityControl from '../../opacity-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
+import AdvancedColorControl from '../../advanced-color-control';
 import Slider from 'react-slick';
 /**
  * Internal block libraries
@@ -41,7 +42,6 @@ const {
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
-	ColorPalette,
 } = wp.blockEditor;
 const {
 	Button,
@@ -51,7 +51,6 @@ const {
 	PanelBody,
 	RangeControl,
 	Toolbar,
-	ColorIndicator,
 	TextControl,
 	ToggleControl,
 	SelectControl,
@@ -547,12 +546,11 @@ class KadenceTestimonials extends Component {
 									max={ 4 }
 								/>
 							) }
-							<p className="kt-setting-label">{ __( 'Icon Color' ) }</p>
-							<ColorPalette
-								value={ testimonials[ index ].color }
-								onChange={ value => {
-									saveTestimonials( { color: value }, index );
-								} }
+							<AdvancedColorControl
+								label={ __( 'Icon Color' ) }
+								colorValue={ ( testimonials[ index ].color ? testimonials[ index ].color : '#555555' ) }
+								colorDefault={ '#555555' }
+								onColorChange={ ( value ) => saveTestimonials( { color: value }, index ) }
 							/>
 						</Fragment>
 					) }
@@ -1113,27 +1111,21 @@ class KadenceTestimonials extends Component {
 										min={ 0 }
 										max={ 200 }
 									/>
-									<h2>{ __( 'Container Background' ) }</h2>
-									<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === containerBackground ? '' : hexToRGBA( containerBackground, ( containerBackgroundOpacity !== undefined ? containerBackgroundOpacity : 1 ) ) ) } />
-									<ColorPalette
-										value={ containerBackground }
-										onChange={ value => setAttributes( { containerBackground: value } ) }
+									<AdvancedColorControl
+										label={ __( 'Container Background' ) }
+										colorValue={ ( containerBackground ? containerBackground : '' ) }
+										colorDefault={ '' }
+										onColorChange={ value => setAttributes( { containerBackground: value } ) }
+										opacityValue={ containerBackgroundOpacity }
+										onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 									/>
-									<OpacityControl
-										value={ containerBackgroundOpacity }
-										onChanged={ value => setAttributes( { containerBackgroundOpacity: value } ) }
-										label={ __( 'Background Opacity' ) }
-									/>
-									<h2>{ __( 'Container Border' ) }</h2>
-									<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === containerBorder ? '' : hexToRGBA( containerBorder, ( containerBorderOpacity !== undefined ? containerBorderOpacity : 1 ) ) ) } />
-									<ColorPalette
-										value={ containerBorder }
-										onChange={ value => setAttributes( { containerBorder: value } ) }
-									/>
-									<OpacityControl
-										value={ containerBorderOpacity }
-										onChanged={ value => setAttributes( { containerBorderOpacity: value } ) }
-										label={ __( 'Border Opacity' ) }
+									<AdvancedColorControl
+										label={ __( 'Container Border' ) }
+										colorValue={ ( containerBorder ? containerBorder : '' ) }
+										colorDefault={ '' }
+										onColorChange={ value => setAttributes( { containerBorder: value } ) }
+										opacityValue={ containerBorderOpacity }
+										onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 									/>
 									<div className="kt-spacer-sidebar-15"></div>
 									<MeasurementControls
@@ -1199,10 +1191,11 @@ class KadenceTestimonials extends Component {
 													max={ 4 }
 												/>
 											) }
-											<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-											<ColorPalette
-												value={ iconStyles[ 0 ].color }
-												onChange={ ( value ) => saveIconStyles( { color: value } ) }
+											<AdvancedColorControl
+												label={ __( 'Color' ) }
+												colorValue={ ( iconStyles[ 0 ].color ? iconStyles[ 0 ].color : '' ) }
+												colorDefault={ '' }
+												onColorChange={ ( value ) => saveIconStyles( { color: value } ) }
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
@@ -1223,26 +1216,21 @@ class KadenceTestimonials extends Component {
 												min={ 0 }
 												max={ 200 }
 											/>
-											<h2>{ __( 'Icon Background' ) }</h2>
-											<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === iconStyles[ 0 ].background ? '' : hexToRGBA( iconStyles[ 0 ].background, ( iconStyles[ 0 ].backgroundOpacity !== undefined ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) ) } />
-											<ColorPalette
-												value={ iconStyles[ 0 ].background }
-												onChange={ value => saveIconStyles( { background: value } ) }
+											<AdvancedColorControl
+												label={ __( 'Icon Background' ) }
+												colorValue={ ( iconStyles[ 0 ].background ? iconStyles[ 0 ].background : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => saveIconStyles( { background: value } ) }
+												opacityValue={ iconStyles[ 0 ].backgroundOpacity }
+												onOpacityChange={ value => saveIconStyles( { backgroundOpacity: value } ) }
 											/>
-											<OpacityControl
-												value={ iconStyles[ 0 ].backgroundOpacity }
-												onChanged={ value => saveIconStyles( { backgroundOpacity: value } ) }
-												label={ __( 'Background Opacity' ) }
-											/>
-											<h2>{ __( 'Icon Border Color' ) }</h2>
-											<ColorPalette
-												value={ iconStyles[ 0 ].border }
-												onChange={ value => saveIconStyles( { border: value } ) }
-											/>
-											<OpacityControl
-												value={ iconStyles[ 0 ].borderOpacity }
-												onChanged={ value => saveIconStyles( { borderOpacity: value } ) }
-												label={ __( 'Border Opacity' ) }
+											<AdvancedColorControl
+												label={ __( 'Icon Border Color' ) }
+												colorValue={ ( iconStyles[ 0 ].border ? iconStyles[ 0 ].border : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => saveIconStyles( { border: value } ) }
+												opacityValue={ iconStyles[ 0 ].borderOpacity }
+												onOpacityChange={ value => saveIconStyles( { borderOpacity: value } ) }
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
@@ -1281,10 +1269,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayTitle && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
-											<ColorPalette
-												value={ titleFont[ 0 ].color }
-												onChange={ value => saveTitleFont( { color: value } ) }
+											<AdvancedColorControl
+												label={ __( 'Color Settings' ) }
+												colorValue={ ( titleFont[ 0 ].color ? titleFont[ 0 ].color : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => saveTitleFont( { color: value } ) }
 											/>
 											<TypographyControls
 												tagLevel={ titleFont[ 0 ].level }
@@ -1348,10 +1337,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayRating && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-											<ColorPalette
-												value={ ratingStyles[ 0 ].color }
-												onChange={ ( value ) => saveRatingStyles( { color: value } ) }
+											<AdvancedColorControl
+												label={ __( 'Color' ) }
+												colorValue={ ( ratingStyles[ 0 ].color ? ratingStyles[ 0 ].color : '' ) }
+												colorDefault={ '' }
+												onColorChange={ ( value ) => saveRatingStyles( { color: value } ) }
 											/>
 											<RangeControl
 												label={ __( 'Icon Size' ) }
@@ -1387,10 +1377,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayContent && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-											<ColorPalette
-												value={ contentFont[ 0 ].color }
-												onChange={ value => saveContentFont( { color: value } ) }
+											<AdvancedColorControl
+												label={ __( 'Color' ) }
+												colorValue={ ( contentFont[ 0 ].color ? contentFont[ 0 ].color : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => saveContentFont( { color: value } ) }
 											/>
 											<TypographyControls
 												fontSize={ contentFont[ 0 ].size }
@@ -1471,25 +1462,21 @@ class KadenceTestimonials extends Component {
 												min={ 0 }
 												max={ 200 }
 											/>
-											<h2>{ __( 'Media Background' ) }</h2>
-											<ColorPalette
-												value={ mediaStyles[ 0 ].background }
-												onChange={ value => savemediaStyles( { background: value } ) }
+											<AdvancedColorControl
+												label={ __( 'Media Background' ) }
+												colorValue={ ( mediaStyles[ 0 ].background ? mediaStyles[ 0 ].background : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => savemediaStyles( { background: value } ) }
+												opacityValue={ mediaStyles[ 0 ].backgroundOpacity }
+												onOpacityChange={ value => savemediaStyles( { backgroundOpacity: value } ) }
 											/>
-											<OpacityControl
-												value={ mediaStyles[ 0 ].backgroundOpacity }
-												onChanged={ value => savemediaStyles( { backgroundOpacity: value } ) }
-												label={ __( 'Background Opacity' ) }
-											/>
-											<h2>{ __( 'Media Border Color' ) }</h2>
-											<ColorPalette
-												value={ mediaStyles[ 0 ].border }
-												onChange={ value => savemediaStyles( { border: value } ) }
-											/>
-											<OpacityControl
-												value={ mediaStyles[ 0 ].borderOpacity }
-												onChanged={ value => savemediaStyles( { borderOpacity: value } ) }
-												label={ __( 'Border Opacity' ) }
+											<AdvancedColorControl
+												label={ __( 'Media Border Color' ) }
+												colorValue={ ( mediaStyles[ 0 ].border ? mediaStyles[ 0 ].border : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => savemediaStyles( { border: value } ) }
+												opacityValue={ mediaStyles[ 0 ].borderOpacity }
+												onOpacityChange={ value => savemediaStyles( { borderOpacity: value } ) }
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
@@ -1582,10 +1569,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayName && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-											<ColorPalette
-												value={ nameFont[ 0 ].color }
-												onChange={ ( value ) => saveNameFont( { color: value } ) }
+											<AdvancedColorControl
+												label={ __( 'Color' ) }
+												colorValue={ ( nameFont[ 0 ].color ? nameFont[ 0 ].color : '' ) }
+												colorDefault={ '' }
+												onColorChange={ ( value ) => saveNameFont( { color: value } ) }
 											/>
 											<TypographyControls
 												fontSize={ nameFont[ 0 ].size }
@@ -1638,10 +1626,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayOccupation && (
 										<Fragment>
-											<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-											<ColorPalette
-												value={ occupationFont[ 0 ].color }
-												onChange={ ( value ) => saveOccupationFont( { color: value } ) }
+											<AdvancedColorControl
+												label={ __( 'Color' ) }
+												colorValue={ ( occupationFont[ 0 ].color ? occupationFont[ 0 ].color : '' ) }
+												colorDefault={ '' }
+												onColorChange={ ( value ) => saveOccupationFont( { color: value } ) }
 											/>
 											<TypographyControls
 												fontSize={ occupationFont[ 0 ].size }
@@ -1694,18 +1683,13 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayShadow && (
 										<Fragment>
-											<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
-											<ColorPalette
-												value={ shadow[ 0 ].color }
-												onChange={ value => saveShadow( { color: value } ) }
-											/>
-											<RangeControl
-												label={ __( 'Shadow Opacity' ) }
-												value={ shadow[ 0 ].opacity }
-												onChange={ value => saveShadow( { opacity: value } ) }
-												min={ 0 }
-												max={ 1 }
-												step={ 0.1 }
+											<AdvancedColorControl
+												label={ __( 'Shadow Color' ) }
+												colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => saveShadow( { color: value } ) }
+												opacityValue={ shadow[ 0 ].opacity }
+												onOpacityChange={ value => saveShadow( { opacity: value } ) }
 											/>
 											<RangeControl
 												label={ __( 'Shadow Blur' ) }

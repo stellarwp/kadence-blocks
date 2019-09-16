@@ -28,6 +28,14 @@ const attributes = {
 		type: 'string',
 		default: 'center',
 	},
+	hAlignTablet: {
+		type: 'string',
+		default: '',
+	},
+	hAlignMobile: {
+		type: 'string',
+		default: '',
+	},
 	containerBackground: {
 		type: 'string',
 		default: '#f2f2f2',

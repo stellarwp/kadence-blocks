@@ -147,7 +147,7 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, mediaVAlign, mediaAlignMobile, mediaAlignTablet }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -785,16 +785,57 @@ class KadenceInfoBox extends Component {
 								] }
 								onChange={ value => setAttributes( { linkProperty: value } ) }
 							/>
-							<SelectControl
-								label={ __( 'Content Align' ) }
-								value={ hAlign }
-								options={ [
-									{ value: 'center', label: __( 'Center' ) },
-									{ value: 'left', label: __( 'Left' ) },
-									{ value: 'right', label: __( 'Right' ) },
-								] }
-								onChange={ value => setAttributes( { hAlign: value } ) }
-							/>
+							<h2 className="kt-heading-size-title">{ __( 'Content Align' ) }</h2>
+							<TabPanel className="kt-size-tabs"
+								activeClass="active-tab"
+								tabs={ [
+									{
+										name: 'desk',
+										title: <Dashicon icon="desktop" />,
+										className: 'kt-desk-tab',
+									},
+									{
+										name: 'tablet',
+										title: <Dashicon icon="tablet" />,
+										className: 'kt-tablet-tab',
+									},
+									{
+										name: 'mobile',
+										title: <Dashicon icon="smartphone" />,
+										className: 'kt-mobile-tab',
+									},
+								] }>
+								{
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'mobile' === tab.name ) {
+												tabout = (
+													<AlignmentToolbar
+														value={ hAlignMobile }
+														onChange={ ( value ) => setAttributes( { hAlignMobile: value } ) }
+													/>
+												);
+											} else if ( 'tablet' === tab.name ) {
+												tabout = (
+													<AlignmentToolbar
+														value={ hAlignTablet }
+														onChange={ ( value ) => setAttributes( { hAlignTablet: value } ) }
+													/>
+												);
+											} else {
+												tabout = (
+													<AlignmentToolbar
+														value={ hAlign }
+														onChange={ ( value ) => setAttributes( { hAlign: value } ) }
+													/>
+												);
+											}
+										}
+										return <div>{ tabout }</div>;
+									}
+								}
+							</TabPanel>
 						</PanelBody>
 						{ this.showSettings( 'containerSettings' ) && (
 							<PanelBody
@@ -990,6 +1031,7 @@ class KadenceInfoBox extends Component {
 									options={ [
 										{ value: 'icon', label: __( 'Icon' ) },
 										{ value: 'image', label: __( 'Image' ) },
+										{ value: 'none', label: __( 'None' ) },
 									] }
 									onChange={ value => setAttributes( { mediaType: value } ) }
 								/>
@@ -1990,71 +2032,73 @@ class KadenceInfoBox extends Component {
 						borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
 						padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
 					} } >
-						<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` } style={ {
-							borderColor: mediaStyle[ 0 ].border,
-							backgroundColor: mediaStyle[ 0 ].background,
-							borderRadius: mediaStyle[ 0 ].borderRadius + 'px',
-							borderWidth: ( mediaStyle[ 0 ].borderWidth ? mediaStyle[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
-							padding: ( mediaStyle[ 0 ].padding ? mediaStyle[ 0 ].padding[ 0 ] + 'px ' + mediaStyle[ 0 ].padding[ 1 ] + 'px ' + mediaStyle[ 0 ].padding[ 2 ] + 'px ' + mediaStyle[ 0 ].padding[ 3 ] + 'px' : '' ),
-							margin: ( mediaStyle[ 0 ].margin ? mediaStyle[ 0 ].margin[ 0 ] + 'px ' + mediaStyle[ 0 ].margin[ 1 ] + 'px ' + mediaStyle[ 0 ].margin[ 2 ] + 'px ' + mediaStyle[ 0 ].margin[ 3 ] + 'px' : '' ),
-						} } >
-							{ ! mediaImage[ 0 ].url && 'image' === mediaType && (
-								<MediaPlaceholder
-									icon="format-image"
-									labels={ {
-										title: __( 'Media area' ),
-									} }
-									onSelect={ onSelectImage }
-									accept="image/*"
-									allowedTypes={ ALLOWED_MEDIA_TYPES }
-								/>
-							) }
-							{ mediaImage[ 0 ].url && 'image' === mediaType && (
-								<div className="kadence-info-box-image-inner-intrisic-container" style={ {
-									maxWidth: mediaImage[ 0 ].maxWidth + 'px',
-								} } >
-									<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }` } style={ {
-										paddingBottom: isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
-										height: isNaN( mediaImage[ 0 ].height ) ? undefined : 0,
+						{ 'none' !== mediaType && (
+							<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` } style={ {
+								borderColor: mediaStyle[ 0 ].border,
+								backgroundColor: mediaStyle[ 0 ].background,
+								borderRadius: mediaStyle[ 0 ].borderRadius + 'px',
+								borderWidth: ( mediaStyle[ 0 ].borderWidth ? mediaStyle[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
+								padding: ( mediaStyle[ 0 ].padding ? mediaStyle[ 0 ].padding[ 0 ] + 'px ' + mediaStyle[ 0 ].padding[ 1 ] + 'px ' + mediaStyle[ 0 ].padding[ 2 ] + 'px ' + mediaStyle[ 0 ].padding[ 3 ] + 'px' : '' ),
+								margin: ( mediaStyle[ 0 ].margin ? mediaStyle[ 0 ].margin[ 0 ] + 'px ' + mediaStyle[ 0 ].margin[ 1 ] + 'px ' + mediaStyle[ 0 ].margin[ 2 ] + 'px ' + mediaStyle[ 0 ].margin[ 3 ] + 'px' : '' ),
+							} } >
+								{ ! mediaImage[ 0 ].url && 'image' === mediaType && (
+									<MediaPlaceholder
+										icon="format-image"
+										labels={ {
+											title: __( 'Media area' ),
+										} }
+										onSelect={ onSelectImage }
+										accept="image/*"
+										allowedTypes={ ALLOWED_MEDIA_TYPES }
+									/>
+								) }
+								{ mediaImage[ 0 ].url && 'image' === mediaType && (
+									<div className="kadence-info-box-image-inner-intrisic-container" style={ {
+										maxWidth: mediaImage[ 0 ].maxWidth + 'px',
 									} } >
-										<div className="kadence-info-box-image-inner-intrisic">
-											<img
-												src={ mediaImage[ 0 ].url }
-												alt={ mediaImage[ 0 ].alt }
-												width={ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width ) }
-												height={ mediaImage[ 0 ].height }
-												className={ `${ ( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' ) } ${ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' ) }` }
-											/>
-											{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+										<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }` } style={ {
+											paddingBottom: isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
+											height: isNaN( mediaImage[ 0 ].height ) ? undefined : 0,
+										} } >
+											<div className="kadence-info-box-image-inner-intrisic">
 												<img
-													src={ mediaImage[ 0 ].flipUrl }
-													alt={ mediaImage[ 0 ].flipAlt }
-													width={ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth ) }
-													height={ mediaImage[ 0 ].flipHeight }
-													className={ `${ ( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' ) } ${ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' ) }` }
+													src={ mediaImage[ 0 ].url }
+													alt={ mediaImage[ 0 ].alt }
+													width={ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].width ) }
+													height={ mediaImage[ 0 ].height }
+													className={ `${ ( mediaImage[ 0 ].id ? `kt-info-box-image wp-image-${ mediaImage[ 0 ].id }` : 'kt-info-box-image wp-image-offsite' ) } ${ ( mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype ? ' kt-info-svg-image' : '' ) }` }
 												/>
+												{ mediaImage[ 0 ].flipUrl && 'flip' === mediaImage[ 0 ].hoverAnimation && (
+													<img
+														src={ mediaImage[ 0 ].flipUrl }
+														alt={ mediaImage[ 0 ].flipAlt }
+														width={ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? mediaImage[ 0 ].maxWidth : mediaImage[ 0 ].flipWidth ) }
+														height={ mediaImage[ 0 ].flipHeight }
+														className={ `${ ( mediaImage[ 0 ].flipId ? `kt-info-box-image-flip wp-image-${ mediaImage[ 0 ].flipId }` : 'kt-info-box-image-flip wp-image-offsite' ) } ${ ( mediaImage[ 0 ].flipSubtype && 'svg+xml' === mediaImage[ 0 ].flipSubtype ? ' kt-info-svg-image' : '' ) }` }
+													/>
+												) }
+											</div>
+										</div>
+									</div>
+								) }
+								{ 'icon' === mediaType && (
+									<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
+										<div className={ 'kadence-info-box-icon-inner-container' } >
+											<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+												display: 'block',
+												color: ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : undefined ),
+											} } />
+											{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
+												<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+													display: 'block',
+													color: ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : undefined ),
+												} } />
 											) }
 										</div>
 									</div>
-								</div>
-							) }
-							{ 'icon' === mediaType && (
-								<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
-									<div className={ 'kadence-info-box-icon-inner-container' } >
-										<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
-											display: 'block',
-											color: ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : undefined ),
-										} } />
-										{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
-											<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
-												display: 'block',
-												color: ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : undefined ),
-											} } />
-										) }
-									</div>
-								</div>
-							) }
-						</div>
+								) }
+							</div>
+						) }
 						<div className={ 'kt-infobox-textcontent' } >
 							{ displayTitle && titleFont[ 0 ].google && (
 								<WebfontLoader config={ config }>
