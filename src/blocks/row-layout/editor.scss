@@ -4,7 +4,6 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
-
  .wp-block-kadence-rowlayout .kb-blocks-bg-slider, .wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-slider {
     position: absolute;
     left: 0;
@@ -443,32 +442,31 @@ button.components-button.kb-sidebar-image {
     color: white;
     box-shadow:none;
 }
-.kt-prebuilt-modal .components-button-group {
-    width: 680px;
+.components-modal__frame.kt-prebuilt-modal .components-button-group {
     padding-top: 10px;
     display: grid;
     grid-template-columns: 50% 50%;
     grid-gap: 0;
 }
-.kt-prebuilt-modal .components-modal__header .components-modal__header-heading {
+.components-modal__frame.kt-prebuilt-modal .components-modal__header .components-modal__header-heading {
     text-transform: uppercase;
     font-weight: bold;
 }
-.kt-prebuilt-modal .components-base-control .components-base-control__field .components-base-control__label {
+.components-modal__frame.kt-prebuilt-modal .components-base-control .components-base-control__field .components-base-control__label {
     font-weight: bold;
     line-height: 30px;
     padding-right: 10px;
 }
-.kt-prebuilt-modal .components-base-control .components-base-control__field {
+.components-modal__frame.kt-prebuilt-modal .components-base-control .components-base-control__field {
     display: flex;
 }
-.kt-prebuilt-modal .components-base-control .components-base-control__field select {
+.components-modal__frame.kt-prebuilt-modal .components-base-control .components-base-control__field select {
     max-width:200px;
 }
-.kt-prebuilt-modal .kt-prebuilt-item {
+.components-modal__frame.kt-prebuilt-modal .kt-prebuilt-item {
 	padding: 0 10px 20px;
 	.kt-import-btn {
-		padding-bottom: 61%;
+		padding-bottom: 61% !important;
 		border: 5px solid #fff;
 		border-radius: 0 !important;
 		height: 0;
@@ -488,6 +486,27 @@ button.components-button.kb-sidebar-image {
 		&:hover {
 			border: 5px solid #0085ba;
 		}
+	}
+}
+.components-modal__frame.kt-prebuilt-modal {
+	width: 100%;
+	max-width: 1000px;
+	.components-button-group {
+		width: auto;
+	}
+}
+ @media (min-width: 1440px) {
+	.components-modal__frame.kt-prebuilt-modal {
+		max-width: 1300px;
+		.components-button-group {
+			width: auto;
+			grid-template-columns: 33.33% 33.33% 33.33%;
+		}
+	}
+}
+@media (min-width: 1640px) {
+	.components-modal__frame.kt-prebuilt-modal {
+		max-width: 1500px;
 	}
 }
  // Controls
@@ -1160,6 +1179,12 @@ button.components-button.kb-sidebar-image {
 // }
 .wp-block-kadence-rowlayout .editor-block-list__layout .editor-block-list__block {
     backface-visibility: hidden;
+}
+@media (min-width: 600px) {
+.has-child-selected.wp-block[data-align=full] > .editor-block-list__block-edit > div > .wp-block-kadence-rowlayout>.innerblocks-wrap {
+    padding-left: 40px;
+    padding-right: 40px;
+}
 }
 // .wp-block-kadence-rowlayout .editor-block-list__layout .editor-block-list__block[data-type="kadence/column"] {
 // 	backface-visibility: hidden;
