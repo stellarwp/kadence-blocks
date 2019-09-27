@@ -100,14 +100,17 @@ class KadenceRowLayout extends Component {
 		if ( ! this.props.attributes.uniqueID ) {
 			const oldBlockConfig = kadence_blocks_params.config[ 'kadence/rowlayout' ];
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/rowlayout' ] !== undefined && typeof blockConfigObject[ 'kadence/rowlayout' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/rowlayout' ] ).map( ( attribute ) => {
-					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/rowlayout' ][ attribute ];
-				} );
-			} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
-				Object.keys( oldBlockConfig ).map( ( attribute ) => {
-					this.props.attributes[ attribute ] = oldBlockConfig[ attribute ];
-				} );
+			// Before applying defaults lets check to see if the user wants it.
+			if ( undefined === this.props.attributes.noCustomDefaults || ! this.props.attributes.noCustomDefaults ) {
+				if ( blockConfigObject[ 'kadence/rowlayout' ] !== undefined && typeof blockConfigObject[ 'kadence/rowlayout' ] === 'object' ) {
+					Object.keys( blockConfigObject[ 'kadence/rowlayout' ] ).map( ( attribute ) => {
+						this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/rowlayout' ][ attribute ];
+					} );
+				} else if ( oldBlockConfig !== undefined && typeof oldBlockConfig === 'object' ) {
+					Object.keys( oldBlockConfig ).map( ( attribute ) => {
+						this.props.attributes[ attribute ] = oldBlockConfig[ attribute ];
+					} );
+				}
 			}
 			this.props.setAttributes( {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),

@@ -438,5 +438,9 @@ const attributes = {
 		type: 'number',
 		default: '',
 	},
+	noCustomDefaults: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;
