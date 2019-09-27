@@ -91,6 +91,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Update: Add 4 more prebuilt sections.
 * Update: Add support for EditorsKit block navigator toolbar
 * Update: Add "noCustomDefaults" attribute to row block.
+* Update: Tweak row editor styles.
 
 = 1.6.13 =
 * Fix: Small CSS issue with some themes adding underline.
