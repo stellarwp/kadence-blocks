@@ -61,6 +61,8 @@ registerBlockType( 'kadence/rowlayout', {
 	],
 	supports: {
 		anchor: true,
+		// Add EditorsKit block navigator toolbar
+		editorsKitBlockNavigator: true,
 	},
 	attributes,
 	getEditWrapperProps( { blockAlignment } ) {
