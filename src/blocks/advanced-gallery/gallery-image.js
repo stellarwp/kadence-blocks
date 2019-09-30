@@ -107,8 +107,8 @@ class GalleryImage extends Component {
 		}
 		const imgContainClassName = classnames( {
 			'kb-gallery-image-contain': true,
-			'kadence-blocks-gallery-intrinsic': ( ( type === 'grid' && 'inherit' !== imageRatio ) || ( ( type === 'carousel' || type === 'slider' ) && imageRatio ) || ( type !== 'fluidcarousel' && width && height ) ),
-			[ `kb-gallery-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' ),
+			'kadence-blocks-gallery-intrinsic': ( ( type === 'grid' && 'inherit' !== imageRatio ) || ( ( type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && imageRatio ) || ( type !== 'fluidcarousel' && type !== 'tiles' && width && height ) ),
+			[ `kb-gallery-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ),
 		} );
 		const img = (
 			<button
@@ -166,7 +166,7 @@ class GalleryImage extends Component {
 			'is-transient': isBlobURL( thumbUrl || url ),
 			'kadence-blocks-gallery-item-has-caption': showCaption && caption,
 			'kadence-blocks-gallery-item-hide-caption': ! showCaption,
-			[ `kb-has-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' ),
+			[ `kb-has-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ),
 		} );
 
 		return (

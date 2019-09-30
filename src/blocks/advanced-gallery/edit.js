@@ -107,6 +107,8 @@ class GalleryEdit extends Component {
 		this.carouselSizeTrigger = debounce( this.carouselSizeTrigger.bind( this ), 250 );
 
 		this.state = {
+			slider: null,
+			thumbs: null,
 			selectedImage: null,
 			imageAttributes: {},
 			settings: {},
@@ -327,6 +329,10 @@ class GalleryEdit extends Component {
 		if ( blockSettings[ 'kadence/advancedgallery' ] !== undefined && typeof blockSettings[ 'kadence/advancedgallery' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/advancedgallery' ] } );
 		}
+		// this.setState( {
+		// 	slider: this.slider1,
+		// 	thumbs: this.slider2
+		// } );
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -502,6 +508,36 @@ class GalleryEdit extends Component {
 			nextArrow: <CustomNextArrow />,
 			prevArrow: <CustomPrevArrow />,
 		};
+		const thumbsliderSettings = {
+			dots: ( dotStyle === 'none' ? false : true ),
+			arrows: ( arrowStyle === 'none' ? false : true ),
+			infinite: true,
+			fade: true,
+			speed: transSpeed,
+			draggable: false,
+			autoplaySpeed: autoSpeed,
+			autoplay: autoPlay,
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			nextArrow: <CustomNextArrow />,
+			prevArrow: <CustomPrevArrow />,
+		};
+		const thumbsliderthumbsSettings = {
+			dots:false,
+			arrows: ( arrowStyle === 'none' ? false : true ),
+			infinite: true,
+			fade: true,
+			speed: transSpeed,
+			draggable: false,
+			autoplaySpeed: autoSpeed,
+			autoplay: autoPlay,
+			slidesToShow: 4,
+			slidesToScroll: 1,
+			nextArrow: <CustomNextArrow />,
+			prevArrow: <CustomPrevArrow />,
+			swipeToSlide: true,
+			focusOnSelect: true,
+		};
 		const controls = (
 			<BlockControls>
 				{ hasImages && (
@@ -579,7 +615,10 @@ class GalleryEdit extends Component {
 					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kb-gal-image-radius {
 						${ ( imageRadius && undefined !== imageRadius[ 0 ] && '' !== imageRadius[ 0 ] ? 'border-radius:' + imageRadius[ 0 ] + 'px ' + imageRadius[ 1 ] + 'px ' + imageRadius[ 2 ] + 'px ' + imageRadius[ 3 ] + 'px;' : '' ) }
 					}
-					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel .kt-blocks-carousel .slick-list figure .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-fluidcarousel .kt-blocks-carousel .slick-list figure .kb-gal-image-radius img {
+					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-list figure .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-list figure .kb-gal-image-radius img {
+						${ ( carouselHeight && undefined !== carouselHeight[ 0 ] && '' !== carouselHeight[ 0 ] ? 'height:' + carouselHeight[ 0 ] + 'px;' : '' ) }
+					}
+					.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${ uniqueID } > .kadence-blocks-gallery-item, .wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img {
 						${ ( carouselHeight && undefined !== carouselHeight[ 0 ] && '' !== carouselHeight[ 0 ] ? 'height:' + carouselHeight[ 0 ] + 'px;' : '' ) }
 					}
 			` }
@@ -862,9 +901,9 @@ class GalleryEdit extends Component {
 									</TabPanel>
 								</Fragment>
 							) }
-							{ type === 'fluidcarousel' && (
+							{ ( type === 'fluidcarousel' || type === 'tiles' ) && (
 								<Fragment>
-									<h2 className="kt-heading-size-title">{ __( 'Carousel Height' ) }</h2>
+									<h2 className="kt-heading-size-title">{ ( type === 'tiles' ? __( 'Row Height' ) : __( 'Carousel Height' ) ) }</h2>
 									<TabPanel className="kt-size-tabs"
 										activeClass="active-tab"
 										tabs={ [
@@ -924,11 +963,13 @@ class GalleryEdit extends Component {
 											}
 										}
 									</TabPanel>
-									<ToggleControl
-										label={ __( 'Carousel Center Mode' ) }
-										checked={ carouselAlign }
-										onChange={ ( value ) => setAttributes( { carouselAlign: value } ) }
-									/>
+									{ type === 'fluidcarousel' && (
+										<ToggleControl
+											label={ __( 'Carousel Center Mode' ) }
+											checked={ carouselAlign }
+											onChange={ ( value ) => setAttributes( { carouselAlign: value } ) }
+										/>
+									) }
 								</Fragment>
 							) }
 							{ ids && undefined !== ids[ 0 ] && (
@@ -1504,6 +1545,31 @@ class GalleryEdit extends Component {
 						</div>
 					</div>
 				) }
+				{ type && type === 'thumbslider' && (
+					<div className={ galleryClassNames }>
+						<div className={ `kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${ dotStyle }` }>
+							{ images.length !== 1 && (
+								<Fragment>
+									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } asNavFor={ this.state.thumbs } ref={ slider => ( this.slider1 = slider ) } { ...thumbsliderSettings }>
+										{ images.map( ( img, index ) => {
+											return renderGalleryImages( img, index );
+										} ) }
+									</Slider>
+									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-none` } asNavFor={ this.state.slider } ref={ slider => ( this.slider2 = slider ) } { ...thumbsliderthumbsSettings }>
+										{ images.map( ( img, index ) => {
+											return renderGalleryImages( img, index );
+										} ) }
+									</Slider>
+								</Fragment>
+							) }
+							{ images.length === 1 && (
+								images.map( ( img, index ) => {
+									return renderGalleryImages( img, index );
+								} )
+							) }
+						</div>
+					</div>
+				) }
 				{ type && type === 'carousel' && (
 					<div className={ galleryClassNames }
 						data-columns-xxl={ columns[ 0 ] }
@@ -1560,6 +1626,15 @@ class GalleryEdit extends Component {
 						data-columns-md={ columns[ 3 ] }
 						data-columns-sm={ columns[ 4 ] }
 						data-columns-xs={ columns[ 5 ] }
+					>
+						{ images.map( ( img, index ) => {
+							return renderGalleryImages( img, index );
+						} ) }
+					</ul>
+				) }
+				{ type && type === 'tiles' && (
+					<ul
+						className={ galleryClassNames }
 					>
 						{ images.map( ( img, index ) => {
 							return renderGalleryImages( img, index );

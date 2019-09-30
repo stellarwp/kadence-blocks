@@ -305,8 +305,8 @@ registerBlockType( 'kadence/advancedheading', {
 					textAlign: align,
 					color: color,
 					letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-					marginTop: ( topMargin ? topMargin + mType : undefined ),
-					marginBottom: ( bottomMargin ? bottomMargin + mType : undefined ),
+					marginTop: ( undefined !== topMargin && '' !== topMargin ? topMargin + mType : undefined ),
+					marginBottom: ( undefined !== bottomMargin && '' !== bottomMargin ? bottomMargin + mType : undefined ),
 				} }
 				value={ content }
 			/>

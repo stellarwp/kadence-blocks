@@ -94,11 +94,11 @@ function kadence_gutenberg_editor_assets() {
 	);
 	// Styles.
 	wp_enqueue_style( 'kadence-blocks-editor-css', KT_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KT_BLOCKS_VERSION );
-	// Limited Margins.
-	$editor_widths = get_option( 'kt_blocks_editor_width', array() );
-	if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
-		wp_enqueue_style( 'kadence-blocks-limited-margins-css', KT_BLOCKS_URL . 'dist/limited-margins.css', array( 'wp-edit-blocks' ), KT_BLOCKS_VERSION );
-	}
+	// Limited Margins removed
+	// $editor_widths = get_option( 'kt_blocks_editor_width', array() );
+	// if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
+	// 	wp_enqueue_style( 'kadence-blocks-limited-margins-css', KT_BLOCKS_URL . 'dist/limited-margins.css', array( 'wp-edit-blocks' ), KT_BLOCKS_VERSION );
+	// }
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_gutenberg_editor_assets' );
 

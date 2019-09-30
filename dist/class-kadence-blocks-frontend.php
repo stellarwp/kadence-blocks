@@ -2149,7 +2149,7 @@ class Kadence_Blocks_Frontend {
 				$css .= 'right:' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
 		}
-		if ( isset( $attr['type'] ) && $attr['type'] === 'fluidcarousel' && isset( $attr['carouselHeight'] ) && is_array( $attr['carouselHeight'] ) ) {
+		if ( isset( $attr['type'] ) && 'fluidcarousel' === $attr['type'] && isset( $attr['carouselHeight'] ) && is_array( $attr['carouselHeight'] ) ) {
 			if ( isset( $attr['carouselHeight'][0] ) && is_numeric( $attr['carouselHeight'][0] ) ) {
 				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius img {';
 				$css .= 'height:' . $attr['carouselHeight'][0] . 'px;';
@@ -2165,6 +2165,27 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['carouselHeight'][2] ) && is_numeric( $attr['carouselHeight'][2] ) ) {
 				$css .= '@media (max-width: 767px) {';
 				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius img {';
+				$css .= 'height:' . $attr['carouselHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+		if ( isset( $attr['type'] ) && 'tiles' === $attr['type'] && isset( $attr['carouselHeight'] ) && is_array( $attr['carouselHeight'] ) ) {
+			if ( isset( $attr['carouselHeight'][0] ) && is_numeric( $attr['carouselHeight'][0] ) ) {
+				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-tiles .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-tiles > .kadence-blocks-gallery-item {';
+				$css .= 'height:' . $attr['carouselHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['carouselHeight'][1] ) && is_numeric( $attr['carouselHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-tiles .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-tiles > .kadence-blocks-gallery-item {';
+				$css .= 'height:' . $attr['carouselHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['carouselHeight'][2] ) && is_numeric( $attr['carouselHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-tiles .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-tiles > .kadence-blocks-gallery-item {';
 				$css .= 'height:' . $attr['carouselHeight'][2] . 'px;';
 				$css .= '}';
 				$css .= '}';

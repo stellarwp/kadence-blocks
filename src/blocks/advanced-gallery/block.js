@@ -341,10 +341,10 @@ registerBlockType( 'kadence/advancedgallery', {
 			}
 			const imgContainClassName = classnames( {
 				'kb-gallery-image-contain': true,
-				'kadence-blocks-gallery-intrinsic': ( ( ( type === 'grid' || type === 'carousel' || type === 'slider' ) && imageRatio ) || ( type !== 'fluidcarousel' && image.width && image.height ) ),
+				'kadence-blocks-gallery-intrinsic': ( ( ( type === 'grid' || type === 'carousel' || type === 'slider' ) && imageRatio ) || ( type !== 'fluidcarousel' && type !== 'tiles' && image.width && image.height ) ),
 				[ `kb-gallery-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' ),
 			} );
-			const img = <div className={ imgContainClassName } style={ { paddingBottom: ( ( ( type !== 'grid' && type !== 'carousel' && type !== 'fluidcarousel' && type !== 'slider' ) && image.width && image.height ) || ( type === 'grid' && imageRatio === 'inherit' && image.width && image.height ) ? ( ( image.height / image.width ) * 100 ) + '%' : undefined ) } }><img src={ image.thumbUrl || image.url } width={ image.width } height={ image.height } alt={ image.alt } data-full-image={ image.url } data-light-image={ image.url } data-id={ image.id } data-link={ image.link } data-custom-link={ image.customLink } data-custom-link-target={ image.linkTarget } className={ image.id ? `wp-image-${ image.id }` : null } /></div>;
+			const img = <div className={ imgContainClassName } style={ { paddingBottom: ( ( ( type !== 'grid' && type !== 'carousel' && type !== 'fluidcarousel' && type !== 'tiles' && type !== 'slider' ) && image.width && image.height ) || ( type === 'grid' && imageRatio === 'inherit' && image.width && image.height ) ? ( ( image.height / image.width ) * 100 ) + '%' : undefined ) } }><img src={ image.thumbUrl || image.url } width={ image.width } height={ image.height } alt={ image.alt } data-full-image={ image.url } data-light-image={ image.url } data-id={ image.id } data-link={ image.link } data-custom-link={ image.customLink } data-custom-link-target={ image.linkTarget } className={ image.id ? `wp-image-${ image.id }` : null } /></div>;
 			const figClassName = classnames( {
 				'kb-gallery-figure': true,
 				'kb-gallery-item-has-link': href,
@@ -436,6 +436,17 @@ registerBlockType( 'kadence/advancedgallery', {
 							</div>
 						</div>
 					</div>
+				) }
+				{ ( type === 'tiles' ) && (
+					<ul
+						className={ galleryClassNames }
+						data-image-filter={ imageFilter }
+						data-lightbox-caption={ ( lightboxCaption ? 'true' : false ) }
+					>
+						{ images.map( ( image ) => {
+							return renderGalleryImages( image );
+						} ) }
+					</ul>
 				) }
 				{ ( type === 'masonry' || type === 'grid' ) && (
 					<ul

@@ -47,7 +47,7 @@ class KadenceInfoBoxDefault extends Component {
 	}
 	componentDidMount() {
 		const infoConfig = ( this.state.configuration && this.state.configuration[ 'kadence/infobox' ] ? this.state.configuration[ 'kadence/infobox' ] : {} );
-		if ( infoConfig.mediaStyle && infoConfig.mediaStyle[0] ) {
+		if ( infoConfig.mediaStyle && infoConfig.mediaStyle[ 0 ] ) {
 			if ( infoConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === infoConfig.mediaStyle[ 0 ].borderWidth[ 1 ] && infoConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === infoConfig.mediaStyle[ 0 ].borderWidth[ 2 ] && infoConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === infoConfig.mediaStyle[ 0 ].borderWidth[ 3 ] ) {
 				this.setState( { mediaBorderControl: 'linked' } );
 			} else {
@@ -63,11 +63,15 @@ class KadenceInfoBoxDefault extends Component {
 			} else {
 				this.setState( { mediaMarginControl: 'individual' } );
 			}
+		}
+		if ( infoConfig.containerBorderWidth && infoConfig.containerBorderWidth[ 0 ] ) {
 			if ( infoConfig.containerBorderWidth[ 0 ] === infoConfig.containerBorderWidth[ 1 ] && infoConfig.containerBorderWidth[ 0 ] === infoConfig.containerBorderWidth[ 2 ] && infoConfig.containerBorderWidth[ 0 ] === infoConfig.containerBorderWidth[ 3 ] ) {
 				this.setState( { containerBorderControl: 'linked' } );
 			} else {
 				this.setState( { containerBorderControl: 'individual' } );
 			}
+		}
+		if ( infoConfig.containerPadding && infoConfig.containerPadding[ 0 ] ) {
 			if ( infoConfig.containerPadding[ 0 ] === infoConfig.containerPadding[ 1 ] && infoConfig.containerPadding[ 0 ] === infoConfig.containerPadding[ 2 ] && infoConfig.containerPadding[ 0 ] === infoConfig.containerPadding[ 3 ] ) {
 				this.setState( { containerPaddingControl: 'linked' } );
 			} else {

@@ -369,7 +369,7 @@ class Kadence_Blocks_Settings {
 		// Defaults for Pages and posts.
 		add_settings_field( 'post_default', __( 'Post default', 'kadence-blocks' ), array( $this, 'post_default_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		add_settings_field( 'page_default', __( 'Page Default', 'kadence-blocks' ), array( $this, 'page_default_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
-		add_settings_field( 'limited_margins', __( 'Enable Less Margin CSS', 'kadence-blocks' ), array( $this, 'limited_margins_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
+		//add_settings_field( 'limited_margins', __( 'Enable Less Margin CSS', 'kadence-blocks' ), array( $this, 'limited_margins_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 		add_settings_field( 'enable_editor_width', __( 'Enable Editor Width', 'kadence-blocks' ), array( $this, 'enabled_editor_width_callback' ), 'kt_blocks_editor_width_section', 'kt_blocks_editor_width_sec' );
 
 	}
@@ -583,9 +583,9 @@ class Kadence_Blocks_Settings {
 												<svg class="kt-svg-icon kt-svg-icon-presentation"><use xlink:href="#kt-svg-icon-presentation"></use></svg>
 											</div>
 											<div class="kt-content-promo">
-												<h3><?php echo esc_html__( 'Tutorials', 'kadence-blocks' ); ?></h3>
-												<p><?php echo esc_html__( 'Are you not sure how to do something? Check out our tutorials for quick help with many topics.', 'kadence-blocks' ); ?></p>
-												<a href="https://www.kadencethemes.com/gutenberg-tutorials/?utm_source=blocks-settings&utm_medium=dashboard&utm_campaign=kadence-blocks" target="_blank"><?php echo esc_html__( 'View', 'kadence-blocks' ); ?></a>
+												<h3><?php echo esc_html__( 'Changelog Blog', 'kadence-blocks' ); ?></h3>
+												<p><?php echo esc_html__( 'Read through highlights of recent changes made to Kadence Blocks.', 'kadence-blocks' ); ?></p>
+												<a href="https://www.kadenceblocks.com/blog/?utm_source=blocks-settings&utm_medium=dashboard&utm_campaign=kadence-blocks" target="_blank"><?php echo esc_html__( 'View', 'kadence-blocks' ); ?></a>
 											</div>
 										</div>
 									</div>
@@ -595,7 +595,7 @@ class Kadence_Blocks_Settings {
 												<svg class="kt-svg-icon kt-svg-icon-documents"><use xlink:href="#kt-svg-icon-documents"></use></svg>
 											</div>
 											<div class="kt-content-promo">
-												<h3><?php echo esc_html__( 'Plugin Documentation', 'kadence-blocks' ); ?></h3>
+												<h3><?php echo esc_html__( 'Plugin Tutorials & Documentation', 'kadence-blocks' ); ?></h3>
 												<p><?php echo esc_html__( 'Kadence Blocks documentation is set up to help you create amazing content.', 'kadence-blocks' ); ?></p>
 												<?php echo '<a href="https://www.kadenceblocks.com/docs/?utm_source=blocks-settings&utm_medium=dashboard&utm_campaign=kadence-blocks">' . esc_html__( 'Browse Docs', 'kadence-blocks' ) . '</a>'; ?>
 											</div>
@@ -609,9 +609,9 @@ class Kadence_Blocks_Settings {
 												<svg class="kt-svg-icon kt-svg-icon-envelope"><use xlink:href="#kt-svg-icon-envelope"></use></svg>
 											</div>
 											<div class="kt-content-promo">
-												<h3><?php echo esc_html__( 'Kadence Themes Newsletter', 'kadence-blocks' ); ?></h3>
+												<h3><?php echo esc_html__( 'Kadence WP Newsletter', 'kadence-blocks' ); ?></h3>
 												<p><?php echo esc_html__( 'Get the latest news about product updates and new plugins right to your inbox.', 'kadence-blocks' ); ?></p>
-												<a href="https://www.kadencethemes.com/newsletter-subscribe/?utm_source=kadence-blocks&utm_medium=dashboard&utm_campaign=settings" target="_blank"><?php echo esc_html__( 'Subscribe', 'kadence-blocks' ); ?></a>
+												<a href="https://www.kadencewp.com/newsletter-subscribe/?utm_source=kadence-blocks&utm_medium=dashboard&utm_campaign=settings" target="_blank"><?php echo esc_html__( 'Subscribe', 'kadence-blocks' ); ?></a>
 											</div>
 										</div>
 									</div>
@@ -642,8 +642,8 @@ class Kadence_Blocks_Settings {
 				'desc'  => __( 'Choose from over 1500+ SVG Icons to add into your page and style the size, colors, background, border, etc.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/icon.jpg',
 			),
-			'kadence/advnacedgallery' => array(
-				'slug'  => 'kadence/advnacedgallery',
+			'kadence/advancedgallery' => array(
+				'slug'  => 'kadence/advancedgallery',
 				'name'  => __( 'Advanced Gallery', 'kadence-blocks' ),
 				'desc'  => __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus you can select image sizes.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/gallery-block.jpg',
