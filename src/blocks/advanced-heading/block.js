@@ -289,7 +289,7 @@ registerBlockType( 'kadence/advancedheading', {
 		const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
 		const wrapper = ( anchor || revealAnimation ? true : false );
 		tagId = ( revealAnimation && ! anchor ? `kt-adv-inner-heading${ uniqueID }` : tagId );
-		const classes = ( className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
+		const classes = ( ! wrapper && className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
 		const htmlItem = (
 			<RichText.Content
 				tagName={ tagName }
@@ -314,7 +314,7 @@ registerBlockType( 'kadence/advancedheading', {
 		return (
 			<Fragment>
 				{ wrapper && (
-					<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }` }>
+					<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
 						{ htmlItem }
 					</div>
 				) }
