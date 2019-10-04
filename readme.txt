@@ -86,6 +86,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.6.17 =
+* Fix: issue with turned off gallery block under typo.
+* Update: Button block now uses common 'button' class so it can inherit styles from themes.
+* Fix: empty styles if input box cleared for testimonial block.
+
+
 = 1.6.16 =
 * Fix: Header Block, Gutenberg doesn't allow className attribute to be added to an internal tag.
 

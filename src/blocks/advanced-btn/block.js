@@ -178,7 +178,7 @@ registerBlockType( 'kadence/advancedbtn', {
 			}
 			return (
 				<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-					<a className={ `kt-button kt-btn-${ index }-action kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) } kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) } kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( 'video' === btns[ index ].target ? ' ktblocksvideopop' : '' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
+					<a className={ `kt-button button kt-btn-${ index }-action kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) } kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) } kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( 'video' === btns[ index ].target ? ' ktblocksvideopop' : '' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
 						borderRadius: ( undefined !== btns[ index ].borderRadius && '' !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
 						borderWidth: ( undefined !== btns[ index ].borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
 						letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
@@ -205,6 +205,161 @@ registerBlockType( 'kadence/advancedbtn', {
 		);
 	},
 	deprecated: [
+		{
+			attributes: {
+				hAlign: {
+					type: 'string',
+					default: 'center',
+				},
+				thAlign: {
+					type: 'string',
+					default: '',
+				},
+				mhAlign: {
+					type: 'string',
+					default: '',
+				},
+				btnCount: {
+					type: 'number',
+					default: 1,
+				},
+				uniqueID: {
+					type: 'string',
+					default: '',
+				},
+				btns: {
+					type: 'array',
+					default: [ {
+						text: '',
+						link: '',
+						target: '_self',
+						size: '',
+						paddingBT: '',
+						paddingLR: '',
+						color: '#555555',
+						background: '',
+						border: '#555555',
+						backgroundOpacity: 1,
+						borderOpacity: 1,
+						borderRadius: '',
+						borderWidth: '',
+						colorHover: '#ffffff',
+						backgroundHover: '#444444',
+						borderHover: '#444444',
+						backgroundHoverOpacity: 1,
+						borderHoverOpacity: 1,
+						icon: '',
+						iconSide: 'right',
+						iconHover: false,
+						cssClass: '',
+						noFollow: false,
+						gap: 5,
+						responsiveSize: [ '', '' ],
+						gradient: [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ],
+						gradientHover: [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ],
+						btnStyle: 'basic',
+						btnSize: 'standard',
+						backgroundType: 'solid',
+						backgroundHoverType: 'solid',
+						width: [ '', '', '' ],
+						responsivePaddingBT: [ '', '' ],
+						responsivePaddingLR: [ '', '' ],
+						boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
+						boxShadowHover: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
+					} ],
+				},
+				letterSpacing: {
+					type: 'number',
+				},
+				typography: {
+					type: 'string',
+					default: '',
+				},
+				googleFont: {
+					type: 'boolean',
+					default: false,
+				},
+				loadGoogleFont: {
+					type: 'boolean',
+					default: true,
+				},
+				fontSubset: {
+					type: 'string',
+					default: '',
+				},
+				fontVariant: {
+					type: 'string',
+					default: '',
+				},
+				fontWeight: {
+					type: 'string',
+					default: 'regular',
+				},
+				fontStyle: {
+					type: 'string',
+					default: 'normal',
+				},
+				widthType: {
+					type: 'string',
+					default: 'auto',
+				},
+				widthUnit: {
+					type: 'string',
+					default: 'px',
+				},
+				forceFullwidth: {
+					type: 'bool',
+					default: false,
+				},
+			},
+			save: ( { attributes } ) => {
+				const { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth, thAlign, mhAlign } = attributes;
+				const renderSaveBtns = ( index ) => {
+					let relAttr;
+					if ( '_blank' === btns[ index ].target && true === btns[ index ].noFollow ) {
+						relAttr = 'noreferrer noopener nofollow';
+					} else if ( '_blank' === btns[ index ].target ) {
+						relAttr = 'noreferrer noopener';
+					} else if ( true === btns[ index ].noFollow ) {
+						relAttr = 'nofollow';
+					} else {
+						relAttr = undefined;
+					}
+					let btnSize;
+					if ( undefined !== btns[ index ].paddingLR || undefined !== btns[ index ].paddingBT ) {
+						btnSize = 'custom';
+					} else {
+						btnSize = 'standard';
+					}
+					return (
+						<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
+							<a className={ `kt-button kt-btn-${ index }-action kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) } kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) } kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( 'video' === btns[ index ].target ? ' ktblocksvideopop' : '' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
+								borderRadius: ( undefined !== btns[ index ].borderRadius && '' !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
+								borderWidth: ( undefined !== btns[ index ].borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
+								letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
+							} } >
+								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
+									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+								) }
+								<RichText.Content
+									tagName={ 'span' }
+									className="kt-btn-inner-text"
+									value={ btns[ index ].text }
+								/>
+								{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
+									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+								) }
+							</a>
+						</div>
+					);
+				};
+				return (
+					<div className={ `kt-btn-align-${ hAlign } kt-btn-tablet-align-${ ( thAlign ? thAlign : 'inherit' ) } kt-btn-mobile-align-${ ( mhAlign ? mhAlign : 'inherit' ) } kt-btns-wrap kt-btns${ uniqueID }${ ( forceFullwidth ? ' kt-force-btn-fullwidth' : '' ) }` }>
+						{ times( btnCount, n => renderSaveBtns( n ) ) }
+					</div>
+				);
+			},
+		},
 		{
 			attributes: {
 				hAlign: {

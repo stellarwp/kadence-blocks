@@ -211,12 +211,17 @@ class Kadence_Blocks_Settings {
 		} else {
 			$plugins = array();
 		}
+		$options = get_option( 'kt_blocks_unregistered_blocks' );
+		if ( isset( $options['kadence/advnacedgallery'] ) ) {
+			unset( $options['kadence/advnacedgallery'] );
+			update_option( 'kt_blocks_unregistered_blocks', $options );
+		}
 		wp_enqueue_script( 'kadence-blocks-deregister-js', KT_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KT_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-deregister-js',
 			'kt_deregister_params',
 			array(
-				'deregister'       => get_option( 'kt_blocks_unregistered_blocks' ),
+				'deregister'       => $options,
 				'dergisterplugins' => $plugins,
 			)
 		);
