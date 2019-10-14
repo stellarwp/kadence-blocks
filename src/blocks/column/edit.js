@@ -77,7 +77,7 @@ class KadenceColumn extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor }, setAttributes, clientId } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor }, setAttributes, clientId } = this.props;
 		const { borderWidthControl, borderRadiusControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
@@ -212,6 +212,111 @@ class KadenceColumn extends Component {
 				/>
 			</PanelBody>
 		);
+		const tabletControls = (
+			<PanelBody
+				title={ __( 'Tablet Padding/Margin' ) }
+				initialOpen={ false }
+			>
+				<h2>{ __( 'Tablet Padding (px)' ) }</h2>
+				<RangeControl
+					label={ icons.outlinetop }
+					value={ topPaddingT }
+					className="kt-icon-rangecontrol kt-top-padding"
+					onChange={ ( value ) => {
+						setAttributes( {
+							topPaddingT: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ icons.outlineright }
+					value={ rightPaddingT }
+					className="kt-icon-rangecontrol kt-right-padding"
+					onChange={ ( value ) => {
+						setAttributes( {
+							rightPaddingT: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ icons.outlinebottom }
+					value={ bottomPaddingT }
+					className="kt-icon-rangecontrol kt-bottom-padding"
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomPaddingT: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<RangeControl
+					label={ icons.outlineleft }
+					value={ leftPaddingT }
+					className="kt-icon-rangecontrol kt-left-padding"
+					onChange={ ( value ) => {
+						setAttributes( {
+							leftPaddingT: value,
+						} );
+					} }
+					min={ 0 }
+					max={ 500 }
+				/>
+				<h2>{ __( 'Tablet Margin (px)' ) }</h2>
+				<RangeControl
+					label={ icons.outlinetop }
+					value={ topMarginT }
+					className="kt-icon-rangecontrol kt-top-margin"
+					onChange={ ( value ) => {
+						setAttributes( {
+							topMarginT: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 200 }
+				/>
+				<RangeControl
+					label={ icons.outlineright }
+					value={ rightMarginT }
+					className="kt-icon-rangecontrol kt-right-margin"
+					onChange={ ( value ) => {
+						setAttributes( {
+							rightMarginT: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 200 }
+				/>
+				<RangeControl
+					label={ icons.outlinebottom }
+					value={ bottomMarginT }
+					className="kt-icon-rangecontrol kt-bottom-margin"
+					onChange={ ( value ) => {
+						setAttributes( {
+							bottomMarginT: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 200 }
+				/>
+				<RangeControl
+					label={ icons.outlineleft }
+					value={ leftMarginT }
+					className="kt-icon-rangecontrol kt-left-margin"
+					onChange={ ( value ) => {
+						setAttributes( {
+							leftMarginT: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 200 }
+				/>
+			</PanelBody>
+		);
 		const deskControls = (
 			<PanelBody
 				title={ __( 'Padding/Margin' ) }
@@ -327,6 +432,11 @@ class KadenceColumn extends Component {
 						className: 'kt-desk-tab',
 					},
 					{
+						name: 'tablet',
+						title: <Dashicon icon="tablet" />,
+						className: 'kt-tablet-tab',
+					},
+					{
 						name: 'mobile',
 						title: <Dashicon icon="smartphone" />,
 						className: 'kt-mobile-tab',
@@ -338,6 +448,8 @@ class KadenceColumn extends Component {
 						if ( tab.name ) {
 							if ( 'mobile' === tab.name ) {
 								tabout = mobileControls;
+							} else if ( 'tablet' === tab.name ) {
+								tabout = tabletControls;
 							} else {
 								tabout = deskControls;
 							}

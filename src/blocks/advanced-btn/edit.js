@@ -153,7 +153,7 @@ class KadenceAdvancedButton extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, kadenceAOSOptions, kadenceAnimation }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, kadenceAOSOptions, kadenceAnimation }, className, setAttributes, isSelected } = this.props;
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -1344,6 +1344,8 @@ class KadenceAdvancedButton extends Component {
 										<TypographyControls
 											letterSpacing={ letterSpacing }
 											onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
+											textTransform={ textTransform }
+											onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
 											fontFamily={ typography }
 											onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
 											onFontChange={ ( select ) => {

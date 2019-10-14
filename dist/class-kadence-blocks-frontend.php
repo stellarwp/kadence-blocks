@@ -2843,7 +2843,7 @@ class Kadence_Blocks_Frontend {
 		}
 		$css = '';
 		if ( isset( $attr['typography'] ) ) {
-			$css .= '.kt-btns' . $unique_id . ' {';
+			$css .= '.kt-btns' . $unique_id . ' .kt-button {';
 			if ( isset( $attr['typography'] ) && ! empty( $attr['typography'] ) ) {
 				$css .= 'font-family:' . $attr['typography'] . ';';
 			}
@@ -2852,6 +2852,9 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['fontStyle'] ) && ! empty( $attr['fontStyle'] ) ) {
 				$css .= 'font-style:' . $attr['fontStyle'] . ';';
+			}
+			if ( isset( $attr['textTransform'] ) && ! empty( $attr['textTransform'] ) ) {
+				$css .= 'text-transform:' . $attr['textTransform'] . ';';
 			}
 			$css .= '}';
 		}
@@ -3316,9 +3319,9 @@ class Kadence_Blocks_Frontend {
 						$angle = ( isset( $attr['overlayGradAngle'] ) ? $attr['overlayGradAngle'] . 'deg' : '180deg');
 					}
 					$loc = ( isset( $attr['overlayGradLoc'] ) ? $attr['overlayGradLoc'] : '0');
-					$color = ( isset( $attr['overlay'] ) ? $attr['overlay'] : 'transparent');
+					$color = ( isset( $attr['overlay'] ) ? $this->hex2rgba( $attr['overlay'], ( isset( $attr['overlayFirstOpacity'] ) && is_numeric( $attr['overlayFirstOpacity'] ) ? $attr['overlayFirstOpacity'] : 1 ) ) : 'transparent');
 					$locsecond = ( isset( $attr['overlayGradLocSecond'] ) ? $attr['overlayGradLocSecond'] : '100');
-					$colorsecond = ( isset( $attr['overlaySecond'] ) ? $attr['overlaySecond'] : '#00B5E2');
+					$colorsecond = ( isset( $attr['overlaySecond'] ) ? $this->hex2rgba( $attr['overlaySecond'], ( isset( $attr['overlaySecondOpacity'] ) && is_numeric( $attr['overlaySecondOpacity'] ) ? $attr['overlaySecondOpacity'] : 1 ) ) : '#00B5E2');
 					$css .= 'background-image: ' . $type . '-gradient(' . $angle. ', ' . $color . ' ' . $loc . '%, ' . $colorsecond . ' ' . $locsecond . '%);';
 				} else {
 					if ( isset( $attr['overlay'] ) ) {
@@ -3694,6 +3697,36 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $attr['collapseOrder'] ) ) {
 					$css .= 'order:' . $attr['collapseOrder'] . ';';
 				}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['topPaddingT'] ) || isset( $attr['bottomPaddingT'] ) || isset( $attr['leftPaddingT'] ) || isset( $attr['rightPaddingT'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || isset( $attr['rightMarginT'] ) || isset( $attr['leftMarginT'] ) ) {
+			$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
+			$css .= '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col {';
+			if ( isset( $attr['topPaddingT'] ) ) {
+				$css .= 'padding-top:' . $attr['topPaddingT'] . 'px;';
+			}
+			if ( isset( $attr['bottomPaddingT'] ) ) {
+				$css .= 'padding-bottom:' . $attr['bottomPaddingT'] . 'px;';
+			}
+			if ( isset( $attr['leftPaddingT'] ) ) {
+				$css .= 'padding-left:' . $attr['leftPaddingT'] . 'px;';
+			}
+			if ( isset( $attr['rightPaddingT'] ) ) {
+				$css .= 'padding-right:' . $attr['rightPaddingT'] . 'px;';
+			}
+			if ( isset( $attr['topMarginT'] ) ) {
+				$css .= 'margin-top:' . $attr['topMarginT'] . 'px;';
+			}
+			if ( isset( $attr['bottomMarginT'] ) ) {
+				$css .= 'margin-bottom:' . $attr['bottomMarginT'] . 'px;';
+			}
+			if ( isset( $attr['rightMarginT'] ) ) {
+				$css .= 'margin-right:' . $attr['rightMarginT'] . 'px;';
+			}
+			if ( isset( $attr['leftMarginT'] ) ) {
+				$css .= 'margin-left:' . $attr['leftMarginT'] . 'px;';
+			}
 			$css .= '}';
 			$css .= '}';
 		}

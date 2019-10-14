@@ -1,7 +1,17 @@
 /**
- * Gutenberg Blocks
+ * Kadence Blocks
  *
  */
+import TypographyControls from './typography-control.js';
+import AdvancedColorControl from './advanced-color-control.js';
+window.kb = {
+	// Sidebar controls.
+	controls: {
+		AdvancedColorControl,
+		TypographyControls,
+	},
+};
+
 import icons from './brand-icon';
 wp.i18n.setLocaleData( { '': {} }, 'kadence-blocks' );
 

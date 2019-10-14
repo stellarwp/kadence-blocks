@@ -143,6 +143,10 @@ registerBlockType( 'kadence/advancedbtn', {
 			type: 'string',
 			default: 'normal',
 		},
+		textTransform: {
+			type: 'string',
+			default: '',
+		},
 		widthType: {
 			type: 'string',
 			default: 'auto',

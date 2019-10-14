@@ -138,6 +138,14 @@ const attributes = {
 		type: 'string',
 		default: '#00B5E2',
 	},
+	overlayFirstOpacity: {
+		type: 'number',
+		default: '',
+	},
+	overlaySecondOpacity: {
+		type: 'number',
+		default: '',
+	},
 	overlayGradLoc: {
 		type: 'number',
 		default: 0,

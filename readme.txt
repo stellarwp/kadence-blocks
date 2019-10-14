@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.2.3
-Stable tag: 1.6.16
+Stable tag: 1.6.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,7 +90,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Fix: issue with turned off gallery block under typo.
 * Update: Button block now uses common 'button' class so it can inherit styles from themes.
 * Fix: empty styles if input box cleared for testimonial block.
-
+* Update: Add tablet padding/margin settings to columns block.
+* Fix: Default Color refresh issue.
+* Add: Text transform button option.
+* Add: Alpha channel to overlay gradient.
 
 = 1.6.16 =
 * Fix: Header Block, Gutenberg doesn't allow className attribute to be added to an internal tag.

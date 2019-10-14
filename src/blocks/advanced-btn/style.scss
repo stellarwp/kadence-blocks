@@ -1,25 +1,27 @@
 /**
  * #.# Styles
  */
- .kt-button {
-	padding: 8px 16px;
-	z-index: 1;
-	position: relative;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    line-height: 1.6;
-	text-decoration: none;
-	text-align: center;
-	justify-content: center;
-    border-style: solid;
-	transition: all .3s ease-in-out;
-	border-width:2px;
-	border-radius: 3px;
-	border-color:#555555;
-	overflow: hidden;
-	background:transparent;
-	color:#555555;
+ .kt-btn-wrap {
+	.kt-button {
+		padding: 8px 16px;
+		z-index: 1;
+		position: relative;
+		cursor: pointer;
+		font-size: 18px;
+		display: flex;
+		line-height: 1.6;
+		text-decoration: none;
+		text-align: center;
+		justify-content: center;
+		border-style: solid;
+		transition: all .3s ease-in-out;
+		border-width:2px;
+		border-radius: 3px;
+		border-color:#555555;
+		overflow: hidden;
+		background:transparent;
+		color:#555555;
+	}
 }
 .wp-block-kadence-advancedbtn .kt-btn-wrap a.kt-button:not(.link) {
     text-decoration: none;

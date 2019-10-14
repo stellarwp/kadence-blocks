@@ -167,6 +167,38 @@ registerBlockType( 'kadence/column', {
 			type: 'string',
 			default: '',
 		},
+		topPaddingT: {
+			type: 'number',
+			default: '',
+		},
+		bottomPaddingT: {
+			type: 'number',
+			default: '',
+		},
+		leftPaddingT: {
+			type: 'number',
+			default: '',
+		},
+		rightPaddingT: {
+			type: 'number',
+			default: '',
+		},
+		topMarginT: {
+			type: 'number',
+			default: '',
+		},
+		bottomMarginT: {
+			type: 'number',
+			default: '',
+		},
+		leftMarginT: {
+			type: 'number',
+			default: '',
+		},
+		rightMarginT: {
+			type: 'number',
+			default: '',
+		},
 	},
 	supports: {
 		inserter: false,

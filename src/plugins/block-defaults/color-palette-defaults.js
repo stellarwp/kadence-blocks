@@ -109,7 +109,7 @@ class KadenceColorDefault extends Component {
 								}
 								const style = { color };
 								return (
-									<div key={ color } className="components-color-palette__item-wrapper">
+									<div key={ index } className="components-color-palette__item-wrapper">
 										{ editable && undefined !== theIndex && kadenceColors.palette[ theIndex ].color && (
 											<AdvancedColorControlPalette
 												nameValue={ ( kadenceColors.palette[ theIndex ].name ? kadenceColors.palette[ theIndex ].name : __( 'Color' ) + ' ' + theIndex + 1  ) }
@@ -149,7 +149,7 @@ class KadenceColorDefault extends Component {
 								}
 								const style = { color };
 								return (
-									<div key={ color } className="components-color-palette__item-wrapper">
+									<div key={ index } className="components-color-palette__item-wrapper">
 										{ editable && undefined !== theIndex && kadenceColors.palette[ theIndex ].color && (
 											<AdvancedColorControlPalette
 												nameValue={ ( kadenceColors.palette[ theIndex ].name ? kadenceColors.palette[ theIndex ].name : __( 'Color' ) + ' ' + theIndex + 1  ) }

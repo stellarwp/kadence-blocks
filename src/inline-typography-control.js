@@ -112,13 +112,16 @@ class InlineTypographyControl extends Component {
 			{ value: 'normal', label: 'Normal' },
 			{ value: 'italic', label: 'Italic' },
 		];
-		const typographyWeights = ( this.props.googleFont && this.props.fontFamily ? gFonts[ this.props.fontFamily ].w.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : standardWeights );
-		const typographyStyles = ( this.props.googleFont && this.props.fontFamily ? gFonts[ this.props.fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : standardStyles );
+		const activeFont = ( typographySelectOptions ? typographySelectOptions.filter( ( { value } ) => value === this.props.fontFamily ) : '' );
+		const fontStandardWeights = ( '' !== activeFont && undefined !== activeFont[ 0 ] && undefined !== activeFont[ 0 ].weights ?activeFont[ 0 ].weights : standardWeights );
+		const fontStandardStyles = ( '' !== activeFont && undefined !== activeFont[ 0 ] && undefined !== activeFont[ 0 ].styles ? activeFont[ 0 ].styles : standardStyles );
+		const typographyWeights = ( this.props.googleFont && this.props.fontFamily ? gFonts[ this.props.fontFamily ].w.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : fontStandardWeights );
+		const typographyStyles = ( this.props.googleFont && this.props.fontFamily ? gFonts[ this.props.fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : fontStandardStyles );
 		const typographySubsets = ( this.props.googleFont && this.props.fontFamily ? gFonts[ this.props.fontFamily ].s.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
 		this.setState( { typographyWeights: typographyWeights } );
 		this.setState( { typographyStyles: typographyStyles } );
 		this.setState( { typographySubsets: typographySubsets } );
-		this.setState( { fontFamilyValue: ( typographySelectOptions ? typographySelectOptions.filter( ( { value } ) => value === this.props.fontFamily ) : '' ) } );
+		this.setState( { fontFamilyValue: activeFont } );
 	}
 	render() {
 		const { uniqueID, lineHeight, lineHeightType, fontSize, fontSizeType, googleFont, loadGoogleFont, fontFamily, fontVariant, fontWeight, fontStyle, fontSubset, letterSpacing, onLineHeight, onFontSize, onFontFamily, onFontVariant, onFontWeight, onFontStyle, onFontSubset, onFontChange, onFontArrayChange, onLoadGoogleFont, onGoogleFont, onLetterSpacing, onFontSizeType, onLineHeightType, textTransform, onTextTransform, fontSizeArray, tabSize, tabLineHeight, onTabLineHeight, onTabSize, mobileSize, mobileLineHeight, onMobileLineHeight, onMobileSize } = this.props;

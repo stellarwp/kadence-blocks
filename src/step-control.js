@@ -50,8 +50,8 @@ export default function StepControls( {
 	return [
 		onChange && (
 			<div className="components-base-control">
-				<div className="components-base-control__field">
-					<p className="components-base-control__label">{ label }</p>
+				<p className="components-base-control__label">{ label }</p>
+				<div className="components-base-control__field kb-flex-center">
 					<Button
 						className="kb-step-btn"
 						isDefault
