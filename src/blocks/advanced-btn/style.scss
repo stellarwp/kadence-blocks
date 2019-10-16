@@ -22,6 +22,20 @@
 		background:transparent;
 		color:#555555;
 	}
+	.kt-button:hover, .kt-button:focus {
+		border-color:#444444;
+		color:#ffffff;
+	}
+	.kt-btn-size-small {
+		font-size: 16px;
+		padding: 4px 8px;
+		border-width: 1px;
+	}
+	.kt-btn-size-large {
+		font-size: 20px;
+		padding: 12px 24px;
+		border-width: 3px;
+	}
 }
 .wp-block-kadence-advancedbtn .kt-btn-wrap a.kt-button:not(.link) {
     text-decoration: none;
@@ -38,22 +52,8 @@
 	background:#444444;
 	transition: all .3s ease-in-out;
 }
-.kt-button:hover, .kt-button:focus {
-	border-color:#444444;
-	color:#ffffff;
-}
 .kt-button:hover::before, .kt-button:focus::before {
 	opacity: 1;
-}
-.kt-btn-size-small {
-    font-size: 16px;
-    padding: 4px 8px;
-    border-width: 1px;
-}
-.kt-btn-size-large {
-    font-size: 20px;
-	padding: 12px 24px;
-	border-width: 3px;
 }
 .kt-btn-svg-icon.kt-btn-side-right {
     padding-left: 5px;

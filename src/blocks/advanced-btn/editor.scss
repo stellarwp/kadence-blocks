@@ -39,7 +39,8 @@
     margin-bottom: 0;
 }
 .kt-btn-size-settings-container .kt-button-size-type-options {
-    margin-bottom: 0;
+	margin-bottom: 0;
+	display: flex;
 }
 .kt-box-shadow-label .components-base-control.components-toggle-control, .kt-box-shadow-label .components-toggle-control .components-base-control__field {
     margin-bottom: 0 !important;

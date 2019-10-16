@@ -279,6 +279,18 @@ registerBlockType( 'kadence/advancedgallery', {
 			type: 'bool',
 			default: true,
 		},
+		thumbnailRatio: {
+			type: 'string',
+			default: 'land32',
+		},
+		thumbnailColumns: {
+			type: 'array',
+			default: [ 4, 4, 4, 4, 4, 4 ],
+		},
+		thumbnailControl: {
+			type: 'string',
+			default: 'linked',
+		},
 	},
 	transforms: {
 		from: [
@@ -314,7 +326,7 @@ registerBlockType( 'kadence/advancedgallery', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { uniqueID, images, columns, type, linkTo, showCaption, captionStyle, imageRatio, imageFilter, lightbox, lightboxCaption, dotStyle, transSpeed, slidesScroll, autoPlay, arrowStyle, autoSpeed, carouselAlign } } = props;
+		const { attributes: { uniqueID, images, columns, type, linkTo, showCaption, captionStyle, imageRatio, imageFilter, lightbox, lightboxCaption, dotStyle, transSpeed, slidesScroll, autoPlay, arrowStyle, autoSpeed, carouselAlign, thumbnailColumns, thumbnailRatio } } = props;
 		const galleryClassNames = classnames(
 			{
 				'kb-gallery-ul': true,
@@ -326,6 +338,36 @@ registerBlockType( 'kadence/advancedgallery', {
 				'kb-gallery-magnific-init': linkTo === 'media' && lightbox === 'magnific',
 			}
 		);
+		const renderThumbImages = ( image ) => {
+			const imgContainClassName = classnames( {
+				'kb-gallery-image-contain': true,
+				'kadence-blocks-gallery-intrinsic': ( ( ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && imageRatio ) || ( type !== 'fluidcarousel' && type !== 'tiles' && image.width && image.height ) ),
+				[ `kb-gallery-image-ratio-${ thumbnailRatio }` ]: thumbnailRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ),
+			} );
+			const img = <div className={ imgContainClassName } style={ { paddingBottom: ( ( ( type !== 'grid' && type !== 'carousel' && type !== 'fluidcarousel' && type !== 'tiles' && type !== 'slider' && type !== 'thumbslider' ) && image.width && image.height ) || ( type === 'grid' && thumbnailRatio === 'inherit' && image.width && image.height ) ? ( ( image.height / image.width ) * 100 ) + '%' : undefined ) } }><img src={ image.thumbUrl || image.url } width={ image.width } height={ image.height } alt={ image.alt } data-full-image={ image.url } data-light-image={ image.url } data-id={ image.id } data-link={ image.link } data-custom-link={ image.customLink } data-custom-link-target={ image.linkTarget } className={ image.id ? `wp-image-${ image.id }` : null } /></div>;
+			const figClassName = classnames( {
+				'kb-gallery-thumb-figure': true,
+				[ `kb-has-image-ratio-${ thumbnailRatio }` ]: thumbnailRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ),
+			} );
+			const imgPack = (
+				<Fragment>
+					<div className="kb-gal-image-radius" style={ {
+						maxWidth: ( ( type === 'masonry' && image.width && image.height ) || ( ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && thumbnailRatio === 'inherit' && image.width && image.height ) ? image.width + 'px' : undefined ),
+					} }>
+						{ img }
+					</div>
+				</Fragment>
+			);
+			return (
+				<li key={ image.id || image.url } className="kadence-blocks-gallery-thumb-item">
+					<div className="kadence-blocks-gallery-thumb-item-inner">
+						<figure className={ figClassName }>
+							{ imgPack }
+						</figure>
+					</div>
+				</li>
+			);
+		};
 		const renderGalleryImages = ( image ) => {
 			let href;
 			switch ( linkTo ) {
@@ -341,16 +383,16 @@ registerBlockType( 'kadence/advancedgallery', {
 			}
 			const imgContainClassName = classnames( {
 				'kb-gallery-image-contain': true,
-				'kadence-blocks-gallery-intrinsic': ( ( ( type === 'grid' || type === 'carousel' || type === 'slider' ) && imageRatio ) || ( type !== 'fluidcarousel' && type !== 'tiles' && image.width && image.height ) ),
-				[ `kb-gallery-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' ),
+				'kadence-blocks-gallery-intrinsic': ( ( ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && imageRatio ) || ( type !== 'fluidcarousel' && type !== 'tiles' && image.width && image.height ) ),
+				[ `kb-gallery-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ),
 			} );
-			const img = <div className={ imgContainClassName } style={ { paddingBottom: ( ( ( type !== 'grid' && type !== 'carousel' && type !== 'fluidcarousel' && type !== 'tiles' && type !== 'slider' ) && image.width && image.height ) || ( type === 'grid' && imageRatio === 'inherit' && image.width && image.height ) ? ( ( image.height / image.width ) * 100 ) + '%' : undefined ) } }><img src={ image.thumbUrl || image.url } width={ image.width } height={ image.height } alt={ image.alt } data-full-image={ image.url } data-light-image={ image.url } data-id={ image.id } data-link={ image.link } data-custom-link={ image.customLink } data-custom-link-target={ image.linkTarget } className={ image.id ? `wp-image-${ image.id }` : null } /></div>;
+			const img = <div className={ imgContainClassName } style={ { paddingBottom: ( ( ( type !== 'grid' && type !== 'carousel' && type !== 'fluidcarousel' && type !== 'tiles' && type !== 'slider' && type !== 'thumbslider' ) && image.width && image.height ) || ( type === 'grid' && imageRatio === 'inherit' && image.width && image.height ) ? ( ( image.height / image.width ) * 100 ) + '%' : undefined ) } }><img src={ image.thumbUrl || image.url } width={ image.width } height={ image.height } alt={ image.alt } data-full-image={ image.url } data-light-image={ image.url } data-id={ image.id } data-link={ image.link } data-custom-link={ image.customLink } data-custom-link-target={ image.linkTarget } className={ image.id ? `wp-image-${ image.id }` : null } /></div>;
 			const figClassName = classnames( {
 				'kb-gallery-figure': true,
 				'kb-gallery-item-has-link': href,
 				'kadence-blocks-gallery-item-has-caption': showCaption && ( image.caption && image.caption.length > 0 ),
 				'kadence-blocks-gallery-item-hide-caption': ! showCaption,
-				[ `kb-has-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' ),
+				[ `kb-has-image-ratio-${ imageRatio }` ]: imageRatio && ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ),
 			} );
 			const figcap = (
 				<RichText.Content
@@ -362,7 +404,7 @@ registerBlockType( 'kadence/advancedgallery', {
 			const imgPack = (
 				<Fragment>
 					<div className="kb-gal-image-radius" style={ {
-						maxWidth: ( ( type === 'masonry' && image.width && image.height ) || ( ( type === 'grid' || type === 'carousel' || type === 'slider' ) && imageRatio === 'inherit' && image.width && image.height ) ? image.width + 'px' : undefined ),
+						maxWidth: ( ( type === 'masonry' && image.width && image.height ) || ( ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && imageRatio === 'inherit' && image.width && image.height ) ? image.width + 'px' : undefined ),
 					} }>
 						{ img }
 						{ ( image.caption && image.caption.length > 0 ) && 'below' !== captionStyle && (
@@ -431,6 +473,30 @@ registerBlockType( 'kadence/advancedgallery', {
 								{ images.map( ( image, index ) => (
 									<div className="kb-slide-item kb-gallery-slide-item" key={ index }>
 										{ renderGalleryImages( image ) }
+									</div>
+								) ) }
+							</div>
+						</div>
+					</div>
+				) }
+				{ type === 'thumbslider' && (
+					<div
+						className={ galleryClassNames }
+						data-image-filter={ imageFilter }
+						data-lightbox-caption={ ( lightboxCaption ? 'true' : false ) }
+					>
+						<div className={ 'kt-blocks-carousel kt-carousel-container-dotstyle-none' }>
+							<div id={ `kb-slider-${ uniqueID }` } className={ `kt-blocks-carousel-init kb-gallery-carousel kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-none` } data-columns-xxl={ thumbnailColumns[ 0 ] } data-columns-xl={ thumbnailColumns[ 1 ] } data-columns-md={ thumbnailColumns[ 2 ] } data-columns-sm={ thumbnailColumns[ 3 ] } data-columns-xs={ thumbnailColumns[ 4 ] } data-columns-ss={ thumbnailColumns[ 5 ] } data-slider-anim-speed={ transSpeed } data-slider-type="thumbnail" data-slider-nav={ `kb-thumb-slider-${ uniqueID }` } data-slider-scroll={ slidesScroll } data-slider-arrows={ ( 'none' === arrowStyle ? false : true ) } data-slider-dots={ false } data-slider-hover-pause="false" data-slider-auto={ autoPlay } data-slider-speed={ autoSpeed }>
+								{ images.map( ( image, index ) => (
+									<div className="kb-slide-item kb-gallery-carousel-item" key={ index }>
+										{ renderGalleryImages( image ) }
+									</div>
+								) ) }
+							</div>
+							<div id={ `kb-thumb-slider-${ uniqueID }` } className={ `kb-gallery-carousel kb-gallery-slider-thumbnails kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-none` } data-slider-anim-speed={ transSpeed } data-slider-type="thumbnail" data-slider-nav={ `kb-slider-${ uniqueID }` } data-slider-scroll={ slidesScroll } data-slider-arrows={ ( 'none' === arrowStyle ? false : true ) } data-slider-dots={ false } data-slider-hover-pause="false" data-slider-auto={ autoPlay } data-slider-speed={ autoSpeed }>
+								{ images.map( ( image, index ) => (
+									<div className="kb-slide-item kb-gallery-carousel-item" key={ index }>
+										{ renderThumbImages( image ) }
 									</div>
 								) ) }
 							</div>

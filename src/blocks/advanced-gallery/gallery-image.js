@@ -92,7 +92,7 @@ class GalleryImage extends Component {
 	}
 
 	render() {
-		const { url, width, height, imageRatio, lightUrl, thumbUrl, customLink, linkTarget, alt, id, linkTo, link, isFirstItem, isLastItem, isSelected, showCaption, caption, captionStyle, captionStyles, onRemove, onMoveForward, onMoveBackward, setAttributes, setLinkAttributes, 'aria-label': ariaLabel, type } = this.props;
+		const { url, width, height, imageRatio, lightUrl, thumbUrl, customLink, linkTarget, alt, id, linkTo, link, isFirstItem, isLastItem, isSelected, showCaption, caption, captionStyle, captionStyles, onRemove, onMoveForward, onMoveBackward, setAttributes, setLinkAttributes, 'aria-label': ariaLabel, type, thumbnail } = this.props;
 		let href;
 		switch ( linkTo ) {
 			case 'media':
@@ -138,6 +138,28 @@ class GalleryImage extends Component {
 				{ isBlobURL( url ) && <Spinner /> }
 			</button>
 		);
+		const thumbImg = (
+			<div
+				className={ imgContainClassName }
+				style={ {
+					paddingBottom: ( ( type === 'masonry' && width && height ) || ( type === 'grid' && imageRatio === 'inherit' && width && height ) ? ( ( height / width ) * 100 ) + '%' : undefined ),
+				} }
+			>
+				<img
+					src={ thumbUrl || url }
+					alt={ alt }
+					width={ width }
+					height={ height }
+					data-id={ id }
+					data-full-image={ url }
+					data-light-image={ lightUrl }
+					data-link={ link }
+					data-custom-link={ customLink }
+					data-custom-link-target={ linkTarget }
+				/>
+				{ isBlobURL( url ) && <Spinner /> }
+			</div>
+		);
 		const figcap = (
 			<RichText
 				tagName="figcaption"
@@ -162,7 +184,7 @@ class GalleryImage extends Component {
 		);
 		const className = classnames( {
 			'kb-gallery-figure': true,
-			'is-selected': isSelected,
+			'is-selected': ! thumbnail && isSelected,
 			'is-transient': isBlobURL( thumbUrl || url ),
 			'kadence-blocks-gallery-item-has-caption': showCaption && caption,
 			'kadence-blocks-gallery-item-hide-caption': ! showCaption,
@@ -175,43 +197,52 @@ class GalleryImage extends Component {
 					<div className="kb-gal-image-radius" style={ {
 						maxWidth: ( ( type === 'masonry' && width && height ) ? width + 'px' : undefined ),
 					} }>
-						{ img }
-						{ ( 'below' !== captionStyle || ! showCaption ) && (
+						{ ! thumbnail &&
+							img
+						}
+						{ thumbnail &&
+							thumbImg
+						}
+						{ ! thumbnail && ( 'below' !== captionStyle || ! showCaption ) && (
 							figcap
 						) }
 					</div>
-					{ 'below' === captionStyle && showCaption && (
-						figcap
+					{ ! thumbnail && (
+						<Fragment>
+							{ 'below' === captionStyle && showCaption && (
+								figcap
+							) }
+							<div className="kadence-blocks-library-gallery-item__move-menu">
+								<IconButton
+									icon="arrow-left"
+									onClick={ isFirstItem ? undefined : onMoveBackward }
+									className="kadence-blocks-gallery-item__move-backward"
+									label={ __( 'Move Image Backward' ) }
+									aria-disabled={ isFirstItem }
+									disabled={ ! isSelected }
+								/>
+								<IconButton
+									icon="arrow-right"
+									onClick={ isLastItem ? undefined : onMoveForward }
+									className="kadence-blocks-gallery-item__move-forward"
+									label={ __( 'Move Image Forward' ) }
+									aria-disabled={ isLastItem }
+									disabled={ ! isSelected }
+								/>
+							</div>
+							<div className="kadence-blocks-library-gallery-item__inline-menu">
+								<IconButton
+									icon="no-alt"
+									onClick={ onRemove }
+									className="kadence-blocks-gallery-item__remove"
+									label={ __( 'Remove Image' ) }
+									disabled={ ! isSelected }
+								/>
+							</div>
+						</Fragment>
 					) }
-					<div className="kadence-blocks-library-gallery-item__move-menu">
-						<IconButton
-							icon="arrow-left"
-							onClick={ isFirstItem ? undefined : onMoveBackward }
-							className="kadence-blocks-gallery-item__move-backward"
-							label={ __( 'Move Image Backward' ) }
-							aria-disabled={ isFirstItem }
-							disabled={ ! isSelected }
-						/>
-						<IconButton
-							icon="arrow-right"
-							onClick={ isLastItem ? undefined : onMoveForward }
-							className="kadence-blocks-gallery-item__move-forward"
-							label={ __( 'Move Image Forward' ) }
-							aria-disabled={ isLastItem }
-							disabled={ ! isSelected }
-						/>
-					</div>
-					<div className="kadence-blocks-library-gallery-item__inline-menu">
-						<IconButton
-							icon="no-alt"
-							onClick={ onRemove }
-							className="kadence-blocks-gallery-item__remove"
-							label={ __( 'Remove Image' ) }
-							disabled={ ! isSelected }
-						/>
-					</div>
 				</figure>
-				{ linkTo === 'custom' && isSelected && (
+				{ ! thumbnail && linkTo === 'custom' && isSelected && (
 					<Fragment>
 						<div className="kb-gallery-custom-link block-editor-url-popover__row">
 							<URLInput

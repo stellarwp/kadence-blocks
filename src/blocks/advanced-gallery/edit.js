@@ -72,8 +72,8 @@ const typeOptions = [
 	{ value: 'carousel', label: __( 'Carousel' ), icon: icons.galCarousel, isDisabled: false },
 	{ value: 'fluidcarousel', label: __( 'Fluid Carousel' ), icon: icons.galFluid, isDisabled: false },
 	{ value: 'slider', label: __( 'Slider' ), icon: icons.galSlider, isDisabled: false },
-	// { value: 'tiles', label: __( 'Tiles (Pro only)' ), icon: icons.galSlider, isDisabled: true },
-	// { value: 'thumbslider', label: __( 'Thumbnail Slider (Pro only)' ), icon: icons.galSlider, isDisabled: true },
+	// { value: 'tiles', label: __( 'Tiles (Pro addon)' ), icon: icons.galtiles, isDisabled: true },
+	// { value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)' ), icon: icons.thumbslider, isDisabled: true },
 	// { value: 'mosaic', label: __( 'Mosaic (Pro only)' ), icon: icons.galSlider, isDisabled: true },
 ];
 /**
@@ -105,10 +105,10 @@ class GalleryEdit extends Component {
 		this.setAttributes = this.setAttributes.bind( this );
 		this.saveImageAttributes = debounce( this.saveImageAttributes.bind( this ), 1000 );
 		this.carouselSizeTrigger = debounce( this.carouselSizeTrigger.bind( this ), 250 );
+		this.bindSlider = this.bindSlider.bind( this );
+		this.bindThumbs = this.bindThumbs.bind( this );
 
 		this.state = {
-			slider: null,
-			thumbs: null,
 			selectedImage: null,
 			imageAttributes: {},
 			settings: {},
@@ -146,7 +146,12 @@ class GalleryEdit extends Component {
 
 		this.props.setAttributes( attributes );
 	}
-
+	bindSlider( ref ) {
+		this.sliderSlides = ref;
+	}
+	bindThumbs( ref ) {
+		this.sliderThumbs = ref;
+	}
 	onSelectImage( index ) {
 		return () => {
 			if ( this.state.selectedImage !== index ) {
@@ -329,10 +334,6 @@ class GalleryEdit extends Component {
 		if ( blockSettings[ 'kadence/advancedgallery' ] !== undefined && typeof blockSettings[ 'kadence/advancedgallery' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/advancedgallery' ] } );
 		}
-		// this.setState( {
-		// 	slider: this.slider1,
-		// 	thumbs: this.slider2
-		// } );
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -355,7 +356,7 @@ class GalleryEdit extends Component {
 	}
 	render() {
 		const { attributes, isSelected, className, noticeUI, setAttributes } = this.props;
-		const { uniqueID, images, columns, linkTo, ids, columnControl, showCaption, captionStyles, lightbox, lightSize, type, imageRatio, captionStyle, gutter, thumbSize, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, imageRadius, margin, marginUnit, displayShadow, shadow, shadowHover, carouselHeight, imageFilter, lightboxCaption, carouselAlign } = attributes;
+		const { uniqueID, images, columns, linkTo, ids, columnControl, showCaption, captionStyles, lightbox, lightSize, type, imageRatio, captionStyle, gutter, thumbSize, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, imageRadius, margin, marginUnit, displayShadow, shadow, shadowHover, carouselHeight, imageFilter, lightboxCaption, carouselAlign, thumbnailColumns, thumbnailControl, thumbnailRatio } = attributes;
 		const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
 		const hasImages = !! images.length;
 		const onColumnChange = ( value ) => {
@@ -378,6 +379,31 @@ class GalleryEdit extends Component {
 				columnArray = [ 8, 4, 4, 6, 4, 4 ];
 			}
 			setAttributes( { columns: columnArray } );
+		};
+		const onThumbColumnChange = ( value ) => {
+			let columnArray = [];
+			if ( 1 === value ) {
+				columnArray = [ 1, 1, 1, 1, 1, 1 ];
+			} else if ( 2 === value ) {
+				columnArray = [ 2, 2, 2, 2, 2, 2 ];
+			} else if ( 3 === value ) {
+				columnArray = [ 3, 3, 3, 3, 3, 3 ];
+			} else if ( 4 === value ) {
+				columnArray = [ 4, 4, 4, 4, 4, 4 ];
+			} else if ( 5 === value ) {
+				columnArray = [ 5, 5, 5, 4, 4, 4 ];
+			} else if ( 6 === value ) {
+				columnArray = [ 6, 6, 6, 4, 4, 4 ];
+			} else if ( 7 === value ) {
+				columnArray = [ 7, 7, 7, 5, 5, 4 ];
+			} else if ( 8 === value ) {
+				columnArray = [ 8, 8, 8, 6, 4, 4 ];
+			} else if ( 9 === value ) {
+				columnArray = [ 9, 9, 9, 7, 5, 5 ];
+			} else if ( 10 === value ) {
+				columnArray = [ 10, 10, 10, 8, 6, 6 ];
+			}
+			setAttributes( { thumbnailColumns: columnArray } );
 		};
 		const saveShadow = ( value ) => {
 			const newUpdate = shadow.map( ( item, index ) => {
@@ -509,7 +535,7 @@ class GalleryEdit extends Component {
 			prevArrow: <CustomPrevArrow />,
 		};
 		const thumbsliderSettings = {
-			dots: ( dotStyle === 'none' ? false : true ),
+			dots: false,
 			arrows: ( arrowStyle === 'none' ? false : true ),
 			infinite: true,
 			fade: true,
@@ -519,19 +545,20 @@ class GalleryEdit extends Component {
 			autoplay: autoPlay,
 			slidesToShow: 1,
 			slidesToScroll: 1,
+			onInit: this.onSelectImage( 0 ),
 			nextArrow: <CustomNextArrow />,
 			prevArrow: <CustomPrevArrow />,
 		};
 		const thumbsliderthumbsSettings = {
-			dots:false,
+			dots: false,
 			arrows: ( arrowStyle === 'none' ? false : true ),
 			infinite: true,
-			fade: true,
+			fade: false,
 			speed: transSpeed,
 			draggable: false,
 			autoplaySpeed: autoSpeed,
 			autoplay: autoPlay,
-			slidesToShow: 4,
+			slidesToShow: thumbnailColumns[ 0 ],
 			slidesToScroll: 1,
 			nextArrow: <CustomNextArrow />,
 			prevArrow: <CustomPrevArrow />,
@@ -591,20 +618,24 @@ class GalleryEdit extends Component {
 					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item {
 						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
 					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider {
+					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider,
+					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails.slick-slider {
 						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: 0 -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
 					}
 					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide,
-					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide {
+					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide,
+					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails.slick-slider .slick-slide {
 						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
 					}
 					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel.kb-carousel-mode-align-left .slick-slider .slick-slide {
 						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] ) + 'px 4px 0;' : '' ) }
 					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-prev {
+					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-prev,
+					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails .slick-prev {
 						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'left:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
 					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-next{
+					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-next,
+					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails .slick-next {
 						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'right:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
 					}
 					${ ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${ uniqueID }.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` + hexToRGBA( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ' 0, ' + hexToRGBA( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), 0 ) + ' 100% );}' : '' ) }
@@ -645,9 +676,10 @@ class GalleryEdit extends Component {
 				[ `kb-gallery-filter-${ imageFilter }` ]: imageFilter,
 			}
 		);
-		const renderGalleryImages = ( img, index ) => {
+		const renderGalleryImages = ( img, index, thumbnail = false ) => {
 			/* translators: %1$d is the order number of the image, %2$d is the total number of images. */
 			const ariaLabel = sprintf( __( 'image %1$d of %2$d in gallery' ), ( index + 1 ), images.length );
+			const ratio = ( thumbnail ? thumbnailRatio : imageRatio );
 			return (
 				<li className="kadence-blocks-gallery-item" key={ img.id || img.url }>
 					<div className="kadence-blocks-gallery-item-inner">
@@ -677,8 +709,9 @@ class GalleryEdit extends Component {
 							captionStyles={ captionStyles }
 							captionStyle={ captionStyle }
 							aria-label={ ariaLabel }
-							imageRatio={ imageRatio }
+							imageRatio={ ratio }
 							type={ type }
+							thumbnail={ thumbnail }
 						/>
 					</div>
 				</li>
@@ -716,7 +749,7 @@ class GalleryEdit extends Component {
 									</Tooltip>
 								) ) }
 							</ButtonGroup>
-							{ ( type === 'grid' || type === 'carousel' || type === 'slider' ) && (
+							{ ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && (
 								<SelectControl
 									label={ __( 'Image ratio' ) }
 									options={ [
@@ -761,6 +794,51 @@ class GalleryEdit extends Component {
 									onChange={ ( value ) => setAttributes( { imageRatio: value } ) }
 								/>
 							) }
+							{ ( type === 'thumbslider' ) && (
+								<SelectControl
+									label={ __( 'Thumbnail Image ratio' ) }
+									options={ [
+										{
+											label: __( 'Landscape 4:3' ),
+											value: 'land43',
+										},
+										{
+											label: __( 'Landscape 3:2' ),
+											value: 'land32',
+										},
+										{
+											label: __( 'Landscape 2:1' ),
+											value: 'land21',
+										},
+										{
+											label: __( 'Landscape 3:1' ),
+											value: 'land31',
+										},
+										{
+											label: __( 'Landscape 4:1' ),
+											value: 'land41',
+										},
+										{
+											label: __( 'Portrait 3:4' ),
+											value: 'port34',
+										},
+										{
+											label: __( 'Portrait 2:3' ),
+											value: 'port23',
+										},
+										{
+											label: __( 'Square 1:1' ),
+											value: 'square',
+										},
+										{
+											label: __( 'Inherit' ),
+											value: 'inherit',
+										},
+									] }
+									value={ thumbnailRatio }
+									onChange={ ( value ) => setAttributes( { thumbnailRatio: value } ) }
+								/>
+							) }
 							{ type && ( type === 'carousel' || type === 'grid' || type === 'masonry' ) && (
 								<Fragment>
 									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type' ) }>
@@ -794,42 +872,118 @@ class GalleryEdit extends Component {
 											<RangeControl
 												label={ __( 'Screen Above 1500px' ) }
 												value={ columns[ 0 ] }
-												onChange={ ( value ) => setAttributes( { columns: [ value,columns[ 1 ],columns[ 2 ],columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
+												onChange={ ( value ) => setAttributes( { columns: [ value, columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
 												label={ __( 'Screen 1200px - 1499px' ) }
 												value={ columns[ 1 ] }
-												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ], value,columns[ 2 ],columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
+												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], value, columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
 												label={ __( 'Screen 992px - 1199px' ) }
 												value={ columns[ 2 ] }
-												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ], value,columns[ 3 ],columns[ 4 ],columns[ 5 ] ] } ) }
+												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], value, columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
 												label={ __( 'Screen 768px - 991px' ) }
 												value={ columns[ 3 ] }
-												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ], value,columns[ 4 ],columns[ 5 ] ] } ) }
+												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], value, columns[ 4 ], columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
 												label={ __( 'Screen 544px - 767px' ) }
 												value={ columns[ 4 ] }
-												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ],columns[ 3 ], value,columns[ 5 ] ] } ) }
+												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], value, columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
 												label={ __( 'Screen Below 543px' ) }
 												value={ columns[ 5 ] }
-												onChange={ ( value ) => setAttributes( { columns: [columns[ 0 ],columns[ 1 ],columns[ 2 ],columns[ 3 ],columns[ 4 ], value ] } ) }
+												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], value ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+										</Fragment>
+									) }
+								</Fragment>
+							) }
+							{ type && ( type === 'thumbslider' ) && (
+								<Fragment>
+									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Thumb Column Control Type' ) }>
+										{ map( columnControlTypes, ( { name, key, icon } ) => (
+											<Tooltip text={ name }>
+												<Button
+													key={ key }
+													className="kt-size-btn"
+													isSmall
+													isPrimary={ thumbnailControl === key }
+													aria-pressed={ thumbnailControl === key }
+													onClick={ () => setAttributes( { thumbnailControl: key } ) }
+												>
+													{ icon }
+												</Button>
+											</Tooltip>
+										) ) }
+									</ButtonGroup>
+									{ thumbnailControl !== 'individual' && (
+										<RangeControl
+											label={ __( 'Thumbnail Columns' ) }
+											value={ thumbnailColumns[ 2 ] }
+											onChange={ onThumbColumnChange }
+											min={ 1 }
+											max={ 10 }
+										/>
+									) }
+									{ thumbnailControl && thumbnailControl === 'individual' && (
+										<Fragment>
+											<h4>{ __( 'Columns' ) }</h4>
+											<RangeControl
+												label={ __( 'Screen Above 1500px' ) }
+												value={ thumbnailColumns[ 0 ] }
+												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ value, thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen 1200px - 1499px' ) }
+												value={ thumbnailColumns[ 1 ] }
+												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], value, thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen 992px - 1199px' ) }
+												value={ thumbnailColumns[ 2 ] }
+												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], value, thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen 768px - 991px' ) }
+												value={ thumbnailColumns[ 3 ] }
+												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], value, thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen 544px - 767px' ) }
+												value={ thumbnailColumns[ 4 ] }
+												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], value, thumbnailColumns[ 5 ] ] } ) }
+												min={ 1 }
+												max={ 8 }
+											/>
+											<RangeControl
+												label={ __( 'Screen Below 543px' ) }
+												value={ thumbnailColumns[ 5 ] }
+												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], value ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
@@ -1057,33 +1211,35 @@ class GalleryEdit extends Component {
 											value={ arrowStyle }
 											onChange={ ( value ) => setAttributes( { arrowStyle: value } ) }
 										/>
-										<SelectControl
-											label={ __( 'Dot Style' ) }
-											options={ [
-												{
-													label: __( 'Dark' ),
-													value: 'dark',
-												},
-												{
-													label: __( 'Light' ),
-													value: 'light',
-												},
-												{
-													label: __( 'Outline Dark' ),
-													value: 'outlinedark',
-												},
-												{
-													label: __( 'Outline Light' ),
-													value: 'outlinelight',
-												},
-												{
-													label: __( 'None' ),
-													value: 'none',
-												},
-											] }
-											value={ dotStyle }
-											onChange={ ( value ) => setAttributes( { dotStyle: value } ) }
-										/>
+										{ type !== 'thumbslider' && (
+											<SelectControl
+												label={ __( 'Dot Style' ) }
+												options={ [
+													{
+														label: __( 'Dark' ),
+														value: 'dark',
+													},
+													{
+														label: __( 'Light' ),
+														value: 'light',
+													},
+													{
+														label: __( 'Outline Dark' ),
+														value: 'outlinedark',
+													},
+													{
+														label: __( 'Outline Light' ),
+														value: 'outlinelight',
+													},
+													{
+														label: __( 'None' ),
+														value: 'none',
+													},
+												] }
+												value={ dotStyle }
+												onChange={ ( value ) => setAttributes( { dotStyle: value } ) }
+											/>
+										) }
 									</PanelBody>
 								) }
 							</Fragment>
@@ -1550,14 +1706,14 @@ class GalleryEdit extends Component {
 						<div className={ `kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${ dotStyle }` }>
 							{ images.length !== 1 && (
 								<Fragment>
-									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } asNavFor={ this.state.thumbs } ref={ slider => ( this.slider1 = slider ) } { ...thumbsliderSettings }>
+									<Slider asNavFor={ this.sliderThumbs } className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } ref={ this.bindSlider } { ...thumbsliderSettings }>
 										{ images.map( ( img, index ) => {
 											return renderGalleryImages( img, index );
 										} ) }
 									</Slider>
-									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-none` } asNavFor={ this.state.slider } ref={ slider => ( this.slider2 = slider ) } { ...thumbsliderthumbsSettings }>
+									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-blocks-carousel-thumbnails kb-cloned-${ ( images.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' ) } kt-carousel-dotstyle-none` } asNavFor={ this.sliderSlides } ref={ this.bindThumbs } { ...thumbsliderthumbsSettings }>
 										{ images.map( ( img, index ) => {
-											return renderGalleryImages( img, index );
+											return renderGalleryImages( img, index, true );
 										} ) }
 									</Slider>
 								</Fragment>

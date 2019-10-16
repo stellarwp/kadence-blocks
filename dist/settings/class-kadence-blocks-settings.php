@@ -227,10 +227,27 @@ class Kadence_Blocks_Settings {
 		);
 	}
 	/**
+	 * Returns a base64 URL for the SVG for use in the menu.
+	 *
+	 * @param  bool $base64 Whether or not to return base64-encoded SVG.
+	 * @return string
+	 */
+	private function get_icon_svg( $base64 = true ) {
+		$svg = '<svg viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M43.522,45.567l-39.044,-43.134l0,43.134l39.044,0Z" style="fill:#fff;fill-rule:nonzero;"/><path d="M43.522,2.433l-18.258,20.171l-18.289,-20.171l36.547,0Z" style="fill:#fff;fill-rule:nonzero;"/></svg>';
+		$svg = '<svg viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg"><g><path d="M172.918,180.559l-145.836,-161.118l0,161.118l145.836,0Z" style="fill:#fff;fill-rule:nonzero;"/><path d="M172.918,19.441l-68.198,75.345l-68.311,-75.345l136.509,0Z" style="fill:#fff;fill-rule:nonzero;"/></g></svg>';
+
+		if ( $base64 ) {
+			return 'data:image/svg+xml;base64,' . base64_encode( $svg );
+		}
+
+		return $svg;
+	}
+	/**
 	 * Add option page menu
 	 */
 	public function add_menu() {
-		$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence_blocks', array( $this, 'config_page' ) );
+		//$page = add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence-blocks', array( $this, 'config_page' ), $this->get_icon_svg() );
+		$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence-blocks', array( $this, 'config_page' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'scripts' ) );
 	}
 	/**

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.2.3
-Stable tag: 1.6.17
+Stable tag: 1.6.18
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.6.18 =
+* Fix: issue with button large and small settings.
+* Fix: Testimonial container padding left and right switch.
+* Fix: Issue with info box when media set to none.
 
 = 1.6.17 =
 * Fix: issue with turned off gallery block under typo.

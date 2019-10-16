@@ -99,6 +99,9 @@ function kadence_gutenberg_editor_assets() {
 	// if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
 	// 	wp_enqueue_style( 'kadence-blocks-limited-margins-css', KT_BLOCKS_URL . 'dist/limited-margins.css', array( 'wp-edit-blocks' ), KT_BLOCKS_VERSION );
 	// }
+	if ( function_exists( 'wp_set_script_translations' ) ) {
+		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
+	}
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_gutenberg_editor_assets' );
 

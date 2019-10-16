@@ -556,7 +556,7 @@ class Kadence_Blocks_Frontend {
 			$unique_id = $attributes['uniqueID'];
 			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedgallery', $unique_id ) ) {
-				if ( isset( $attributes['type'] ) && ( 'carousel' === $attributes['type'] || 'fluidcarousel' === $attributes['type'] || 'slider' === $attributes['type'] ) ) {
+				if ( isset( $attributes['type'] ) && ( 'carousel' === $attributes['type'] || 'fluidcarousel' === $attributes['type'] || 'slider' === $attributes['type'] ) || 'thumbslider' === $attributes['type'] ) {
 					wp_enqueue_style( 'kadence-blocks-pro-slick' );
 					wp_enqueue_script( 'kadence-blocks-slick-init' );
 				} elseif ( ! isset( $attributes['type'] ) || isset( $attributes['type'] ) && 'masonry' === $attributes['type'] ) {
@@ -2088,7 +2088,7 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_advancedgallery_scripts_gfonts( $attr ) {
-		if ( isset( $attr['type'] ) && ( 'carousel' === $attr['type'] || 'fluidcarousel' === $attr['type'] || 'slider' === $attr['type'] ) ) {
+		if ( isset( $attr['type'] ) && ( 'carousel' === $attr['type'] || 'fluidcarousel' === $attr['type'] || 'slider' === $attr['type'] || 'thumbslider' === $attr['type'] ) ) {
 			wp_enqueue_style( 'kadence-blocks-pro-slick' );
 			wp_enqueue_script( 'kadence-blocks-slick-init' );
 		} elseif ( ! isset( $attr['type'] ) || ( isset( $attr['type'] ) && 'masonry' === $attr['type'] ) ) {
@@ -2842,7 +2842,7 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		$css = '';
-		if ( isset( $attr['typography'] ) ) {
+		if ( isset( $attr['typography'] ) || isset( $attr['textTransform'] ) ) {
 			$css .= '.kt-btns' . $unique_id . ' .kt-button {';
 			if ( isset( $attr['typography'] ) && ! empty( $attr['typography'] ) ) {
 				$css .= 'font-family:' . $attr['typography'] . ';';
@@ -2962,15 +2962,21 @@ class Kadence_Blocks_Frontend {
 						$css .= '}';
 					}
 					// Tablet CSS.
-					$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
-					$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
-					if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][0] ) && is_numeric( $btnvalue['responsiveSize'][0] ) ) {
-						$css .= 'font-size:' . $btnvalue['responsiveSize'][0] . 'px;';
+					if ( ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][0] ) && is_numeric( $btnvalue['responsiveSize'][0] ) ) || ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][1] ) && ! empty( $btnvalue['width'][1] ) ) ) {
+						$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
+						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][0] ) && is_numeric( $btnvalue['responsiveSize'][0] ) ) {
+							$css .= 'font-size:' . $btnvalue['responsiveSize'][0] . 'px;';
+						}
+						if ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][1] ) && ! empty( $btnvalue['width'][1] ) ) {
+							$css .= 'width:' . $btnvalue['width'][1] . 'px;';
+						}
+						$css .= '}';
+						$css .= '}';
 					}
-					if ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][1] ) && ! empty( $btnvalue['width'][1] ) ) {
-						$css .= 'width:' . $btnvalue['width'][1] . 'px;';
-					}
-					if ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] ) {
+					if ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][0] ) && is_numeric( $btnvalue['responsivePaddingBT'][0] ) ) || ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) ) ) {
+						$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
+						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) {
 							$css .= 'padding-left:' . $btnvalue['responsivePaddingLR'][0] . 'px;';
 							$css .= 'padding-right:' . $btnvalue['responsivePaddingLR'][0] . 'px;';
@@ -2979,19 +2985,25 @@ class Kadence_Blocks_Frontend {
 							$css .= 'padding-top:' . $btnvalue['responsivePaddingBT'][0] . 'px;';
 							$css .= 'padding-bottom:' . $btnvalue['responsivePaddingBT'][0] . 'px;';
 						}
+						$css .= '}';
+						$css .= '}';
 					}
-					$css .= '}';
-					$css .= '}';
 					// Mobile CSS.
-					$css .= '@media (max-width: 767px) {';
-					$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
-					if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][1] ) && is_numeric( $btnvalue['responsiveSize'][1] ) ) {
-						$css .= 'font-size:' . $btnvalue['responsiveSize'][1] . 'px;';
+					if ( ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][1] ) && is_numeric( $btnvalue['responsiveSize'][1] ) ) || ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][2] ) && ! empty( $btnvalue['width'][2] ) ) ) {
+						$css .= '@media (max-width: 767px) {';
+						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][1] ) && is_numeric( $btnvalue['responsiveSize'][1] ) ) {
+							$css .= 'font-size:' . $btnvalue['responsiveSize'][1] . 'px;';
+						}
+						if ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][2] ) && ! empty( $btnvalue['width'][2] ) ) {
+							$css .= 'width:' . $btnvalue['width'][2] . 'px;';
+						}
+						$css .= '}';
+						$css .= '}';
 					}
-					if ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][2] ) && ! empty( $btnvalue['width'][2] ) ) {
-						$css .= 'width:' . $btnvalue['width'][2] . 'px;';
-					}
-					if ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] ) {
+					if ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) || ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) ) ) {
+						$css .= '@media (max-width: 767px) {';
+						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) {
 							$css .= 'padding-left:' . $btnvalue['responsivePaddingLR'][1] . 'px;';
 							$css .= 'padding-right:' . $btnvalue['responsivePaddingLR'][1] . 'px;';
@@ -3000,9 +3012,9 @@ class Kadence_Blocks_Frontend {
 							$css .= 'padding-top:' . $btnvalue['responsivePaddingBT'][1] . 'px;';
 							$css .= 'padding-bottom:' . $btnvalue['responsivePaddingBT'][1] . 'px;';
 						}
+						$css .= '}';
+						$css .= '}';
 					}
-					$css .= '}';
-					$css .= '}';
 				}
 			}
 		}

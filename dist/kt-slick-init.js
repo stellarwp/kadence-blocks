@@ -100,6 +100,73 @@ jQuery( document ).ready( function( $ ) {
 			$( window ).on( 'kadence-tabs-open', function( e ) {
 				container.slick( 'refresh' );
 			} );
+		} else if ( sliderType && sliderType === 'thumbnail' ) {
+			var sliderFade = container.attr('data-slider-fade');
+			var sliderID = container.attr('id');
+			var sliderThumbID = container.attr('data-slider-nav');
+			if ( 'false' == sliderFade ) {
+				sliderFade = false;
+			} else {
+				sliderFade = true;
+			}
+			container.slick( {
+				slidesToShow: 1,
+				slidesToScroll: 1,
+				arrows: sliderArrows,
+				speed: sliderAnimationSpeed,
+				autoplay: sliderAuto,
+				autoplaySpeed: sliderSpeed,
+				fade: sliderFade,
+				pauseOnHover: sliderPause,
+				rtl: slickRtl,
+				adaptiveHeight: true,
+				dots: sliderDots,
+				asNavFor: '#' + sliderThumbID,
+			} );
+			$( '#' + sliderThumbID ).slick( {
+				slidesToShow: xxl,
+				slidesToScroll: 1,
+				asNavFor: '#' + sliderID,
+				dots: false,
+				rtl: slickRtl,
+				centerMode: false,
+				focusOnSelect: true,
+				responsive: [
+					{
+						breakpoint: 1499,
+						settings: {
+							slidesToShow: xl,
+						},
+					},
+					{
+						breakpoint: 1199,
+						settings: {
+							slidesToShow: md,
+						},
+					},
+					{
+						breakpoint: 991,
+						settings: {
+							slidesToShow: sm,
+						},
+					},
+					{
+						breakpoint: 767,
+						settings: {
+							slidesToShow: xs,
+						},
+					},
+					{
+						breakpoint: 543,
+						settings: {
+							slidesToShow: ss,
+						},
+					},
+				],
+			} );
+			$( window ).on( 'kadence-tabs-open', function( e ) {
+				container.slick( 'refresh' );
+			} );
 		} else {
 			container.slick( {
 				slidesToScroll: scrollSxxl,

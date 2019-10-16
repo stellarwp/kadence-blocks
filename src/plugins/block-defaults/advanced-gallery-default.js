@@ -133,7 +133,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 				{ isOpen ?
 					<Modal
 						className="kt-block-defaults-modal"
-						title={ __( 'Kadence Advanced GAllery' ) }
+						title={ __( 'Kadence Advanced Gallery' ) }
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/advancedgallery', galleryConfig );
 						} }>
