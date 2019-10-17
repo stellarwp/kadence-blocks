@@ -39,15 +39,16 @@ import { pickRelevantMediaFiles, pickRelevantMediaFilesCore, columnConvert } fro
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/advancedgallery', {
-	title: __( 'Advanced Gallery' ),
+	title: __( 'Advanced Gallery', 'kadence-blocks' ),
+	description: __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus, you can select image sizes.', 'kadence-blocks' ),
 	icon: {
 		src: icons.gallery,
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'Gallery' ),
-		__( 'Image' ),
-		__( 'KT' ),
+		__( 'Gallery', 'kadence-blocks' ),
+		__( 'Image', 'kadence-blocks' ),
+		'KB',
 	],
 	supports: {
 		anchor: true,

@@ -131,7 +131,7 @@ class ImageSizeControl extends Component {
 								isMulti={ false }
 								maxMenuHeight={ 300 }
 								isClearable={ false }
-								placeholder={ __( '' ) }
+								placeholder={ '' }
 								onChange={ this.props.onChange }
 							/>
 						</div>
@@ -147,7 +147,7 @@ class ImageSizeControl extends Component {
 								isMulti={ false }
 								maxMenuHeight={ 300 }
 								isClearable={ false }
-								placeholder={ __( '' ) }
+								placeholder={ '' }
 								onChange={ this.props.onChange }
 							/>
 						</div>

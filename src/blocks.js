@@ -13,7 +13,7 @@ window.kb = {
 };
 
 import icons from './brand-icon';
-wp.i18n.setLocaleData( { '': {} }, 'kadence-blocks' );
+//wp.i18n.setLocaleData( { '': {} }, 'kadence-blocks' );
 
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';

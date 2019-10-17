@@ -247,7 +247,7 @@ class Kadence_Blocks_Settings {
 	 */
 	public function add_menu() {
 		//$page = add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence-blocks', array( $this, 'config_page' ), $this->get_icon_svg() );
-		$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence-blocks', array( $this, 'config_page' ) );
+		$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence_blocks', array( $this, 'config_page' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'scripts' ) );
 	}
 	/**
@@ -667,7 +667,7 @@ class Kadence_Blocks_Settings {
 			'kadence/advancedgallery' => array(
 				'slug'  => 'kadence/advancedgallery',
 				'name'  => __( 'Advanced Gallery', 'kadence-blocks' ),
-				'desc'  => __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus you can select image sizes.', 'kadence-blocks' ),
+				'desc'  => __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus, you can select image sizes.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/gallery-block.jpg',
 			),
 			'kadence/advancedbtn' => array(
@@ -697,7 +697,7 @@ class Kadence_Blocks_Settings {
 			'kadence/infobox'      => array(
 				'slug'  => 'kadence/infobox',
 				'name'  => __( 'Info Box', 'kadence-blocks' ),
-				'desc'  => __( 'Create a box link containing an icon or image and optionally a title, description and learn more text. Style static and hover colors even show a box shadow.', 'kadence-blocks' ),
+				'desc'  => __( 'Create a box link containing an icon or image and optionally a title, description, and learn more text. Style static and hover colors even show a box-shadow.', 'kadence-blocks' ),
 				'image' => KT_BLOCKS_URL . 'dist/settings/img/infobox.jpg',
 			),
 			'kadence/accordion'      => array(

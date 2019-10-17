@@ -61,20 +61,20 @@ import icon from './icons';
 import { pickRelevantMediaFiles, pickRelevantMediaFilesUpdate } from './shared';
 
 const linkOptions = [
-	{ value: 'attachment', label: __( 'Attachment Page' ) },
-	{ value: 'media', label: __( 'Media File' ) },
-	{ value: 'custom', label: __( 'Custom' ) },
-	{ value: 'none', label: __( 'None' ) },
+	{ value: 'attachment', label: __( 'Attachment Page', 'kadence-blocks' ) },
+	{ value: 'media', label: __( 'Media File', 'kadence-blocks' ) },
+	{ value: 'custom', label: __( 'Custom', 'kadence-blocks' ) },
+	{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
 ];
 const typeOptions = [
-	{ value: 'masonry', label: __( 'Masonry' ), icon: icons.galMasonry, isDisabled: false },
-	{ value: 'grid', label: __( 'Grid' ), icon: icons.galGrid, isDisabled: false },
-	{ value: 'carousel', label: __( 'Carousel' ), icon: icons.galCarousel, isDisabled: false },
-	{ value: 'fluidcarousel', label: __( 'Fluid Carousel' ), icon: icons.galFluid, isDisabled: false },
-	{ value: 'slider', label: __( 'Slider' ), icon: icons.galSlider, isDisabled: false },
-	// { value: 'tiles', label: __( 'Tiles (Pro addon)' ), icon: icons.galtiles, isDisabled: true },
-	// { value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)' ), icon: icons.thumbslider, isDisabled: true },
-	// { value: 'mosaic', label: __( 'Mosaic (Pro only)' ), icon: icons.galSlider, isDisabled: true },
+	{ value: 'masonry', label: __( 'Masonry', 'kadence-blocks' ), icon: icons.galMasonry, isDisabled: false },
+	{ value: 'grid', label: __( 'Grid', 'kadence-blocks' ), icon: icons.galGrid, isDisabled: false },
+	{ value: 'carousel', label: __( 'Carousel', 'kadence-blocks' ), icon: icons.galCarousel, isDisabled: false },
+	{ value: 'fluidcarousel', label: __( 'Fluid Carousel', 'kadence-blocks' ), icon: icons.galFluid, isDisabled: false },
+	{ value: 'slider', label: __( 'Slider', 'kadence-blocks' ), icon: icons.galSlider, isDisabled: false },
+	// { value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: icons.galtiles, isDisabled: true },
+	// { value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: icons.thumbslider, isDisabled: true },
+	// { value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: icons.galSlider, isDisabled: true },
 ];
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -251,7 +251,7 @@ class GalleryEdit extends Component {
 	}
 
 	getImageCropHelp( checked ) {
-		return checked ? __( 'Thumbnails are cropped to align.' ) : __( 'Thumbnails are not cropped.' );
+		return checked ? __( 'Thumbnails are cropped to align.', 'kadence-blocks' ) : __( 'Thumbnails are not cropped.', 'kadence-blocks' );
 	}
 	saveImageAttributes( id, attributes ) {
 		const data = new window.FormData();
@@ -442,11 +442,11 @@ class GalleryEdit extends Component {
 		const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
 		const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 		const marginTypes = [
-			{ key: 'px', name: __( 'px' ) },
-			{ key: 'em', name: __( 'em' ) },
-			{ key: '%', name: __( '%' ) },
-			{ key: 'vh', name: __( 'vh' ) },
-			{ key: 'rem', name: __( 'rem' ) },
+			{ key: 'px', name: 'px' },
+			{ key: 'em', name: 'em' },
+			{ key: '%', name: '%' },
+			{ key: 'vh', name: 'vh' },
+			{ key: 'rem', name: 'rem' },
 		];
 		const gconfig = {
 			google: {
@@ -578,7 +578,7 @@ class GalleryEdit extends Component {
 							render={ ( { open } ) => (
 								<IconButton
 									className="components-toolbar__control"
-									label={ __( 'Edit gallery' ) }
+									label={ __( 'Edit gallery', 'kadence-blocks' ) }
 									icon="edit"
 									onClick={ open }
 								/>
@@ -597,8 +597,8 @@ class GalleryEdit extends Component {
 				dropZoneUIOnly={ hasImages && ! isSelected }
 				icon={ ! hasImages && <BlockIcon icon={ icon } /> }
 				labels={ {
-					title: ! hasImages && __( 'Gallery' ),
-					instructions: ! hasImages && __( 'Drag images, upload new ones or select files from your library.' ),
+					title: ! hasImages && __( 'Gallery', 'kadence-blocks' ),
+					instructions: ! hasImages && __( 'Drag images, upload new ones or select files from your library.', 'kadence-blocks' ),
 				} }
 				onSelect={ this.onSelectImages }
 				accept="image/*"
@@ -664,8 +664,8 @@ class GalleryEdit extends Component {
 			);
 		}
 		const columnControlTypes = [
-			{ key: 'linked', name: __( 'Linked' ), icon: __( 'Linked' ) },
-			{ key: 'individual', name: __( 'Individual' ), icon: __( 'Individual' ) },
+			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: __( 'Linked', 'kadence-blocks' ) },
+			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: __( 'Individual', 'kadence-blocks' ) },
 		];
 		const galleryClassNames = classnames(
 			'kb-gallery-main-contain',
@@ -678,7 +678,7 @@ class GalleryEdit extends Component {
 		);
 		const renderGalleryImages = ( img, index, thumbnail = false ) => {
 			/* translators: %1$d is the order number of the image, %2$d is the total number of images. */
-			const ariaLabel = sprintf( __( 'image %1$d of %2$d in gallery' ), ( index + 1 ), images.length );
+			const ariaLabel = sprintf( __( 'image %1$d of %2$d in gallery', 'kadence-blocks' ), ( index + 1 ), images.length );
 			const ratio = ( thumbnail ? thumbnailRatio : imageRatio );
 			return (
 				<li className="kadence-blocks-gallery-item" key={ img.id || img.url }>
@@ -726,9 +726,9 @@ class GalleryEdit extends Component {
 				{ controls }
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody title={ __( 'Gallery Settings' ) }>
+						<PanelBody title={ __( 'Gallery Settings', 'kadence-blocks' ) }>
 							<h2>{ __( 'Gallery Type:' ) + ' ' + typeLabel[ 0 ].label }</h2>
-							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type' ) }>
+							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type', 'kadence-blocks' ) }>
 								{ map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
 									<Tooltip text={ label }>
 										<Button
@@ -751,42 +751,42 @@ class GalleryEdit extends Component {
 							</ButtonGroup>
 							{ ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && (
 								<SelectControl
-									label={ __( 'Image ratio' ) }
+									label={ __( 'Image ratio', 'kadence-blocks' ) }
 									options={ [
 										{
-											label: __( 'Landscape 4:3' ),
+											label: __( 'Landscape 4:3', 'kadence-blocks' ),
 											value: 'land43',
 										},
 										{
-											label: __( 'Landscape 3:2' ),
+											label: __( 'Landscape 3:2', 'kadence-blocks' ),
 											value: 'land32',
 										},
 										{
-											label: __( 'Landscape 2:1' ),
+											label: __( 'Landscape 2:1', 'kadence-blocks' ),
 											value: 'land21',
 										},
 										{
-											label: __( 'Landscape 3:1' ),
+											label: __( 'Landscape 3:1', 'kadence-blocks' ),
 											value: 'land31',
 										},
 										{
-											label: __( 'Landscape 4:1' ),
+											label: __( 'Landscape 4:1', 'kadence-blocks' ),
 											value: 'land41',
 										},
 										{
-											label: __( 'Portrait 3:4' ),
+											label: __( 'Portrait 3:4', 'kadence-blocks' ),
 											value: 'port34',
 										},
 										{
-											label: __( 'Portrait 2:3' ),
+											label: __( 'Portrait 2:3', 'kadence-blocks' ),
 											value: 'port23',
 										},
 										{
-											label: __( 'Square 1:1' ),
+											label: __( 'Square 1:1', 'kadence-blocks' ),
 											value: 'square',
 										},
 										{
-											label: __( 'Inherit' ),
+											label: __( 'Inherit', 'kadence-blocks' ),
 											value: 'inherit',
 										},
 									] }
@@ -796,42 +796,42 @@ class GalleryEdit extends Component {
 							) }
 							{ ( type === 'thumbslider' ) && (
 								<SelectControl
-									label={ __( 'Thumbnail Image ratio' ) }
+									label={ __( 'Thumbnail Image ratio', 'kadence-blocks' ) }
 									options={ [
 										{
-											label: __( 'Landscape 4:3' ),
+											label: __( 'Landscape 4:3', 'kadence-blocks' ),
 											value: 'land43',
 										},
 										{
-											label: __( 'Landscape 3:2' ),
+											label: __( 'Landscape 3:2', 'kadence-blocks' ),
 											value: 'land32',
 										},
 										{
-											label: __( 'Landscape 2:1' ),
+											label: __( 'Landscape 2:1', 'kadence-blocks' ),
 											value: 'land21',
 										},
 										{
-											label: __( 'Landscape 3:1' ),
+											label: __( 'Landscape 3:1', 'kadence-blocks' ),
 											value: 'land31',
 										},
 										{
-											label: __( 'Landscape 4:1' ),
+											label: __( 'Landscape 4:1', 'kadence-blocks' ),
 											value: 'land41',
 										},
 										{
-											label: __( 'Portrait 3:4' ),
+											label: __( 'Portrait 3:4', 'kadence-blocks' ),
 											value: 'port34',
 										},
 										{
-											label: __( 'Portrait 2:3' ),
+											label: __( 'Portrait 2:3', 'kadence-blocks' ),
 											value: 'port23',
 										},
 										{
-											label: __( 'Square 1:1' ),
+											label: __( 'Square 1:1', 'kadence-blocks' ),
 											value: 'square',
 										},
 										{
-											label: __( 'Inherit' ),
+											label: __( 'Inherit', 'kadence-blocks' ),
 											value: 'inherit',
 										},
 									] }
@@ -841,7 +841,7 @@ class GalleryEdit extends Component {
 							) }
 							{ type && ( type === 'carousel' || type === 'grid' || type === 'masonry' ) && (
 								<Fragment>
-									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type' ) }>
+									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type', 'kadence-blocks' ) }>
 										{ map( columnControlTypes, ( { name, key, icon } ) => (
 											<Tooltip text={ name }>
 												<Button
@@ -868,44 +868,44 @@ class GalleryEdit extends Component {
 									) }
 									{ columnControl && columnControl === 'individual' && (
 										<Fragment>
-											<h4>{ __( 'Columns' ) }</h4>
+											<h4>{ __( 'Columns', 'kadence-blocks' ) }</h4>
 											<RangeControl
-												label={ __( 'Screen Above 1500px' ) }
+												label={ __( 'Screen Above 1500px', 'kadence-blocks' ) }
 												value={ columns[ 0 ] }
 												onChange={ ( value ) => setAttributes( { columns: [ value, columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen 1200px - 1499px' ) }
+												label={ __( 'Screen 1200px - 1499px', 'kadence-blocks' ) }
 												value={ columns[ 1 ] }
 												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], value, columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen 992px - 1199px' ) }
+												label={ __( 'Screen 992px - 1199px', 'kadence-blocks' ) }
 												value={ columns[ 2 ] }
 												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], value, columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen 768px - 991px' ) }
+												label={ __( 'Screen 768px - 991px', 'kadence-blocks' ) }
 												value={ columns[ 3 ] }
 												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], value, columns[ 4 ], columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen 544px - 767px' ) }
+												label={ __( 'Screen 544px - 767px', 'kadence-blocks' ) }
 												value={ columns[ 4 ] }
 												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], value, columns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen Below 543px' ) }
+												label={ __( 'Screen Below 543px', 'kadence-blocks' ) }
 												value={ columns[ 5 ] }
 												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], value ] } ) }
 												min={ 1 }
@@ -917,7 +917,7 @@ class GalleryEdit extends Component {
 							) }
 							{ type && ( type === 'thumbslider' ) && (
 								<Fragment>
-									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Thumb Column Control Type' ) }>
+									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Thumb Column Control Type', 'kadence-blocks' ) }>
 										{ map( columnControlTypes, ( { name, key, icon } ) => (
 											<Tooltip text={ name }>
 												<Button
@@ -935,7 +935,7 @@ class GalleryEdit extends Component {
 									</ButtonGroup>
 									{ thumbnailControl !== 'individual' && (
 										<RangeControl
-											label={ __( 'Thumbnail Columns' ) }
+											label={ __( 'Thumbnail Columns', 'kadence-blocks' ) }
 											value={ thumbnailColumns[ 2 ] }
 											onChange={ onThumbColumnChange }
 											min={ 1 }
@@ -946,42 +946,42 @@ class GalleryEdit extends Component {
 										<Fragment>
 											<h4>{ __( 'Columns' ) }</h4>
 											<RangeControl
-												label={ __( 'Screen Above 1500px' ) }
+												label={ __( 'Screen Above 1500px', 'kadence-blocks' ) }
 												value={ thumbnailColumns[ 0 ] }
 												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ value, thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen 1200px - 1499px' ) }
+												label={ __( 'Screen 1200px - 1499px', 'kadence-blocks' ) }
 												value={ thumbnailColumns[ 1 ] }
 												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], value, thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen 992px - 1199px' ) }
+												label={ __( 'Screen 992px - 1199px', 'kadence-blocks' ) }
 												value={ thumbnailColumns[ 2 ] }
 												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], value, thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen 768px - 991px' ) }
+												label={ __( 'Screen 768px - 991px', 'kadence-blocks' ) }
 												value={ thumbnailColumns[ 3 ] }
 												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], value, thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen 544px - 767px' ) }
+												label={ __( 'Screen 544px - 767px', 'kadence-blocks' ) }
 												value={ thumbnailColumns[ 4 ] }
 												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], value, thumbnailColumns[ 5 ] ] } ) }
 												min={ 1 }
 												max={ 8 }
 											/>
 											<RangeControl
-												label={ __( 'Screen Below 543px' ) }
+												label={ __( 'Screen Below 543px', 'kadence-blocks' ) }
 												value={ thumbnailColumns[ 5 ] }
 												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], value ] } ) }
 												min={ 1 }
@@ -993,7 +993,7 @@ class GalleryEdit extends Component {
 							) }
 							{ type !== 'slider' && this.showSettings( 'gutterSettings' ) && (
 								<Fragment>
-									<h2 className="kt-heading-size-title">{ __( 'Gutter' ) }</h2>
+									<h2 className="kt-heading-size-title">{ __( 'Gutter', 'kadence-blocks' ) }</h2>
 									<TabPanel className="kt-size-tabs"
 										activeClass="active-tab"
 										tabs={ [
@@ -1057,7 +1057,7 @@ class GalleryEdit extends Component {
 							) }
 							{ ( type === 'fluidcarousel' || type === 'tiles' ) && (
 								<Fragment>
-									<h2 className="kt-heading-size-title">{ ( type === 'tiles' ? __( 'Row Height' ) : __( 'Carousel Height' ) ) }</h2>
+									<h2 className="kt-heading-size-title">{ ( type === 'tiles' ? __( 'Row Height', 'kadence-blocks' ) : __( 'Carousel Height', 'kadence-blocks' ) ) }</h2>
 									<TabPanel className="kt-size-tabs"
 										activeClass="active-tab"
 										tabs={ [
@@ -1119,7 +1119,7 @@ class GalleryEdit extends Component {
 									</TabPanel>
 									{ type === 'fluidcarousel' && (
 										<ToggleControl
-											label={ __( 'Carousel Center Mode' ) }
+											label={ __( 'Carousel Center Mode', 'kadence-blocks' ) }
 											checked={ carouselAlign }
 											onChange={ ( value ) => setAttributes( { carouselAlign: value } ) }
 										/>
@@ -1128,7 +1128,7 @@ class GalleryEdit extends Component {
 							) }
 							{ ids && undefined !== ids[ 0 ] && (
 								<ImageSizeControl
-									label={ __( 'Thumbnail Image Size' ) }
+									label={ __( 'Thumbnail Image Size', 'kadence-blocks' ) }
 									slug={ thumbSize }
 									id={ ids[ 0 ] }
 									fullSelection={ false }
@@ -1141,17 +1141,17 @@ class GalleryEdit extends Component {
 							<Fragment>
 								{ this.showSettings( 'carouselSettings' ) && (
 									<PanelBody
-										title={ __( 'Carousel Settings' ) }
+										title={ __( 'Carousel Settings', 'kadence-blocks' ) }
 										initialOpen={ false }
 									>
 										<ToggleControl
-											label={ __( 'Carousel Auto Play' ) }
+											label={ __( 'Carousel Auto Play', 'kadence-blocks' ) }
 											checked={ autoPlay }
 											onChange={ ( value ) => setAttributes( { autoPlay: value } ) }
 										/>
 										{ autoPlay && (
 											<RangeControl
-												label={ __( 'Autoplay Speed' ) }
+												label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
 												value={ autoSpeed }
 												onChange={ ( value ) => setAttributes( { autoSpeed: value } ) }
 												min={ 500 }
@@ -1160,7 +1160,7 @@ class GalleryEdit extends Component {
 											/>
 										) }
 										<RangeControl
-											label={ __( 'Carousel Slide Transition Speed' ) }
+											label={ __( 'Carousel Slide Transition Speed', 'kadence-blocks' ) }
 											value={ transSpeed }
 											onChange={ ( value ) => setAttributes( { transSpeed: value } ) }
 											min={ 100 }
@@ -1169,7 +1169,7 @@ class GalleryEdit extends Component {
 										/>
 										{ type === 'carousel' && (
 											<SelectControl
-												label={ __( 'Slides to Scroll' ) }
+												label={ __( 'Slides to Scroll', 'kadence-blocks' ) }
 												options={ [
 													{
 														label: __( 'One' ),
@@ -1185,26 +1185,26 @@ class GalleryEdit extends Component {
 											/>
 										) }
 										<SelectControl
-											label={ __( 'Arrow Style' ) }
+											label={ __( 'Arrow Style', 'kadence-blocks' ) }
 											options={ [
 												{
-													label: __( 'White on Dark' ),
+													label: __( 'White on Dark', 'kadence-blocks' ),
 													value: 'whiteondark',
 												},
 												{
-													label: __( 'Black on Light' ),
+													label: __( 'Black on Light', 'kadence-blocks' ),
 													value: 'blackonlight',
 												},
 												{
-													label: __( 'Outline Black' ),
+													label: __( 'Outline Black', 'kadence-blocks' ),
 													value: 'outlineblack',
 												},
 												{
-													label: __( 'Outline White' ),
+													label: __( 'Outline White', 'kadence-blocks' ),
 													value: 'outlinewhite',
 												},
 												{
-													label: __( 'None' ),
+													label: __( 'None', 'kadence-blocks' ),
 													value: 'none',
 												},
 											] }
@@ -1213,26 +1213,26 @@ class GalleryEdit extends Component {
 										/>
 										{ type !== 'thumbslider' && (
 											<SelectControl
-												label={ __( 'Dot Style' ) }
+												label={ __( 'Dot Style', 'kadence-blocks' ) }
 												options={ [
 													{
-														label: __( 'Dark' ),
+														label: __( 'Dark', 'kadence-blocks' ),
 														value: 'dark',
 													},
 													{
-														label: __( 'Light' ),
+														label: __( 'Light', 'kadence-blocks' ),
 														value: 'light',
 													},
 													{
-														label: __( 'Outline Dark' ),
+														label: __( 'Outline Dark', 'kadence-blocks' ),
 														value: 'outlinedark',
 													},
 													{
-														label: __( 'Outline Light' ),
+														label: __( 'Outline Light', 'kadence-blocks' ),
 														value: 'outlinelight',
 													},
 													{
-														label: __( 'None' ),
+														label: __( 'None', 'kadence-blocks' ),
 														value: 'none',
 													},
 												] }
@@ -1245,11 +1245,11 @@ class GalleryEdit extends Component {
 							</Fragment>
 						) }
 						<PanelBody
-							title={ __( 'Link Settings' ) }
+							title={ __( 'Link Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
 							<SelectControl
-								label={ __( 'Link To' ) }
+								label={ __( 'Link To', 'kadence-blocks' ) }
 								value={ linkTo }
 								onChange={ this.setLinkTo }
 								options={ linkOptions }
@@ -1258,7 +1258,7 @@ class GalleryEdit extends Component {
 								<Fragment>
 									{ ids && undefined !== ids[ 0 ] && (
 										<ImageSizeControl
-											label={ __( 'Link Image Size' ) }
+											label={ __( 'Link Image Size', 'kadence-blocks' ) }
 											slug={ lightSize }
 											id={ ids[ 0 ] }
 											fullSelection={ false }
@@ -1269,13 +1269,13 @@ class GalleryEdit extends Component {
 									{ this.showSettings( 'lightboxSettings' ) && (
 										<Fragment>
 											<ToggleControl
-												label={ __( 'Lightbox' ) }
+												label={ __( 'Lightbox', 'kadence-blocks' ) }
 												checked={ ( lightbox && lightbox === 'magnific' ? true : false ) }
 												onChange={ ( value ) => setAttributes( { lightbox: ( value ? 'magnific' : 'none' ) } ) }
 											/>
 											{ lightbox && lightbox === 'magnific' && (
 												<ToggleControl
-													label={ __( 'Show Caption in Lightbox' ) }
+													label={ __( 'Show Caption in Lightbox', 'kadence-blocks' ) }
 													checked={ lightboxCaption }
 													onChange={ ( value ) => setAttributes( { lightboxCaption: value } ) }
 												/>
@@ -1287,12 +1287,12 @@ class GalleryEdit extends Component {
 						</PanelBody>
 						{ this.showSettings( 'styleSettings' ) && (
 							<PanelBody
-								title={ __( 'Image Style' ) }
+								title={ __( 'Image Style', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								{ ! ( type === 'carousel' && imageRatio === 'inherit' ) && ! ( type === 'slider' && imageRatio === 'inherit' ) && (
 									<MeasurementControls
-										label={ __( 'Border Radius' ) }
+										label={ __( 'Border Radius', 'kadence-blocks' ) }
 										measurement={ imageRadius }
 										control={ this.state.radiusControl }
 										onChange={ ( value ) => setAttributes( { imageRadius: value } ) }
@@ -1301,8 +1301,8 @@ class GalleryEdit extends Component {
 										max={ 200 }
 										step={ 1 }
 										controlTypes={ [
-											{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-											{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
+											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
 										] }
 										firstIcon={ icons.topleft }
 										secondIcon={ icons.topright }
@@ -1311,39 +1311,39 @@ class GalleryEdit extends Component {
 									/>
 								) }
 								<SelectControl
-									label={ __( 'Image Filter' ) }
-									help={ __( 'Not supported in Internet Explorer' ) }
+									label={ __( 'Image Filter', 'kadence-blocks' ) }
+									help={ __( 'Not supported in Internet Explorer', 'kadence-blocks' ) }
 									options={ [
 										{
-											label: __( 'None' ),
+											label: __( 'None', 'kadence-blocks' ),
 											value: 'none',
 										},
 										{
-											label: __( 'Grayscale' ),
+											label: __( 'Grayscale', 'kadence-blocks' ),
 											value: 'grayscale',
 										},
 										{
-											label: __( 'Sepia' ),
+											label: __( 'Sepia', 'kadence-blocks' ),
 											value: 'sepia',
 										},
 										{
-											label: __( 'Saturation' ),
+											label: __( 'Saturation', 'kadence-blocks' ),
 											value: 'saturation',
 										},
 										{
-											label: __( 'Vintage' ),
+											label: __( 'Vintage', 'kadence-blocks' ),
 											value: 'vintage',
 										},
 										{
-											label: __( 'Earlybird' ),
+											label: __( 'Earlybird', 'kadence-blocks' ),
 											value: 'earlybird',
 										},
 										{
-											label: __( 'Toaster' ),
+											label: __( 'Toaster', 'kadence-blocks' ),
 											value: 'toaster',
 										},
 										{
-											label: __( 'Mayfair' ),
+											label: __( 'Mayfair', 'kadence-blocks' ),
 											value: 'mayfair',
 										},
 									] }
@@ -1354,33 +1354,33 @@ class GalleryEdit extends Component {
 						) }
 						{ this.showSettings( 'captionSettings' ) && (
 							<PanelBody
-								title={ __( 'Caption Settings' ) }
+								title={ __( 'Caption Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<ToggleControl
-									label={ __( 'Show Captions' ) }
+									label={ __( 'Show Captions', 'kadence-blocks' ) }
 									checked={ showCaption }
 									onChange={ this.setCaptions }
 								/>
 								{ showCaption && (
 									<Fragment>
 										<SelectControl
-											label={ __( 'Caption Placement' ) }
+											label={ __( 'Caption Placement', 'kadence-blocks' ) }
 											options={ [
 												{
-													label: __( 'Bottom of Image - Show on Hover' ),
+													label: __( 'Bottom of Image - Show on Hover', 'kadence-blocks' ),
 													value: 'bottom-hover',
 												},
 												{
-													label: __( 'Bottom of Image - Show always' ),
+													label: __( 'Bottom of Image - Show always', 'kadence-blocks' ),
 													value: 'bottom',
 												},
 												{
-													label: __( 'Below Image - Show always' ),
+													label: __( 'Below Image - Show always', 'kadence-blocks' ),
 													value: 'below',
 												},
 												{
-													label: __( 'Cover Image - Show on Hover' ),
+													label: __( 'Cover Image - Show on Hover', 'kadence-blocks' ),
 													value: 'cover-hover',
 												},
 											] }
@@ -1388,13 +1388,13 @@ class GalleryEdit extends Component {
 											onChange={ ( value ) => setAttributes( { captionStyle: value } ) }
 										/>
 										<AdvancedColorControl
-											label={ __( 'Caption Color' ) }
+											label={ __( 'Caption Color', 'kadence-blocks' ) }
 											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
 											colorDefault={ '' }
 											onColorChange={ value => saveCaptionFont( { color: value } ) }
 										/>
 										<AdvancedColorControl
-											label={ __( 'Caption Background' ) }
+											label={ __( 'Caption Background', 'kadence-blocks' ) }
 											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
 											colorDefault={ '#000000' }
 											onColorChange={ value => saveCaptionFont( { background: value } ) }
@@ -1442,11 +1442,11 @@ class GalleryEdit extends Component {
 						) }
 						{ this.showSettings( 'shadowSettings' ) && (
 							<PanelBody
-								title={ __( 'Image Shadow' ) }
+								title={ __( 'Image Shadow', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<ToggleControl
-									label={ __( 'Enable Shadow' ) }
+									label={ __( 'Enable Shadow', 'kadence-blocks' ) }
 									checked={ displayShadow }
 									onChange={ value => setAttributes( { displayShadow: value } ) }
 								/>
@@ -1473,7 +1473,7 @@ class GalleryEdit extends Component {
 														tabout = (
 															<Fragment>
 																<AdvancedColorControl
-																	label={ __( 'Shadow Color' ) }
+																	label={ __( 'Shadow Color', 'kadence-blocks' ) }
 																	colorValue={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
 																	colorDefault={ '' }
 																	onColorChange={ value => saveShadowHover( { color: value } ) }
@@ -1481,7 +1481,7 @@ class GalleryEdit extends Component {
 																	onOpacityChange={ value => saveShadowHover( { opacity: value } ) }
 																/>
 																<RangeControl
-																	label={ __( 'Shadow Blur' ) }
+																	label={ __( 'Shadow Blur', 'kadence-blocks' ) }
 																	value={ shadowHover[ 0 ].blur }
 																	onChange={ value => saveShadowHover( { blur: value } ) }
 																	min={ 0 }
@@ -1489,7 +1489,7 @@ class GalleryEdit extends Component {
 																	step={ 1 }
 																/>
 																<RangeControl
-																	label={ __( 'Shadow Spread' ) }
+																	label={ __( 'Shadow Spread', 'kadence-blocks' ) }
 																	value={ shadowHover[ 0 ].spread }
 																	onChange={ value => saveShadowHover( { spread: value } ) }
 																	min={ -100 }
@@ -1497,7 +1497,7 @@ class GalleryEdit extends Component {
 																	step={ 1 }
 																/>
 																<RangeControl
-																	label={ __( 'Shadow Vertical Offset' ) }
+																	label={ __( 'Shadow Vertical Offset', 'kadence-blocks' ) }
 																	value={ shadowHover[ 0 ].vOffset }
 																	onChange={ value => saveShadowHover( { vOffset: value } ) }
 																	min={ -100 }
@@ -1505,7 +1505,7 @@ class GalleryEdit extends Component {
 																	step={ 1 }
 																/>
 																<RangeControl
-																	label={ __( 'Shadow Horizontal Offset' ) }
+																	label={ __( 'Shadow Horizontal Offset', 'kadence-blocks' ) }
 																	value={ shadowHover[ 0 ].hOffset }
 																	onChange={ value => saveShadowHover( { hOffset: value } ) }
 																	min={ -100 }
@@ -1518,7 +1518,7 @@ class GalleryEdit extends Component {
 														tabout = (
 															<Fragment>
 																<AdvancedColorControl
-																	label={ __( 'Shadow Color' ) }
+																	label={ __( 'Shadow Color', 'kadence-blocks' ) }
 																	colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
 																	colorDefault={ '' }
 																	onColorChange={ value => saveShadow( { color: value } ) }
@@ -1526,7 +1526,7 @@ class GalleryEdit extends Component {
 																	onOpacityChange={ value => saveShadow( { opacity: value } ) }
 																/>
 																<RangeControl
-																	label={ __( 'Shadow Blur' ) }
+																	label={ __( 'Shadow Blur', 'kadence-blocks' ) }
 																	value={ shadow[ 0 ].blur }
 																	onChange={ value => saveShadow( { blur: value } ) }
 																	min={ 0 }
@@ -1534,7 +1534,7 @@ class GalleryEdit extends Component {
 																	step={ 1 }
 																/>
 																<RangeControl
-																	label={ __( 'Shadow Spread' ) }
+																	label={ __( 'Shadow Spread', 'kadence-blocks' ) }
 																	value={ shadow[ 0 ].spread }
 																	onChange={ value => saveShadow( { spread: value } ) }
 																	min={ -100 }
@@ -1542,7 +1542,7 @@ class GalleryEdit extends Component {
 																	step={ 1 }
 																/>
 																<RangeControl
-																	label={ __( 'Shadow Vertical Offset' ) }
+																	label={ __( 'Shadow Vertical Offset', 'kadence-blocks' ) }
 																	value={ shadow[ 0 ].vOffset }
 																	onChange={ value => saveShadow( { vOffset: value } ) }
 																	min={ -100 }
@@ -1550,7 +1550,7 @@ class GalleryEdit extends Component {
 																	step={ 1 }
 																/>
 																<RangeControl
-																	label={ __( 'Shadow Horizontal Offset' ) }
+																	label={ __( 'Shadow Horizontal Offset', 'kadence-blocks' ) }
 																	value={ shadow[ 0 ].hOffset }
 																	onChange={ value => saveShadow( { hOffset: value } ) }
 																	min={ -100 }
@@ -1570,10 +1570,10 @@ class GalleryEdit extends Component {
 						) }
 						{ this.showSettings( 'spacingSettings' ) && (
 							<PanelBody
-								title={ __( 'Gallery Spacing' ) }
+								title={ __( 'Gallery Spacing', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
+								<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
 									{ map( marginTypes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -1587,7 +1587,7 @@ class GalleryEdit extends Component {
 										</Button>
 									) ) }
 								</ButtonGroup>
-								<h2 className="kt-heading-size-title">{ __( 'Margin' ) }</h2>
+								<h2 className="kt-heading-size-title">{ __( 'Margin', 'kadence-blocks' ) }</h2>
 								<TabPanel className="kt-size-tabs"
 									activeClass="active-tab"
 									tabs={ [
@@ -1614,7 +1614,7 @@ class GalleryEdit extends Component {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
 														<MeasurementControls
-															label={ __( 'Mobile Margin' ) }
+															label={ __( 'Mobile Margin', 'kadence-blocks' ) }
 															measurement={ margin[ 0 ].mobile }
 															control={ this.state.marginMobileControl }
 															onChange={ ( value ) => saveMargin( { mobile: value } ) }
@@ -1627,7 +1627,7 @@ class GalleryEdit extends Component {
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
 														<MeasurementControls
-															label={ __( 'Tablet Margin' ) }
+															label={ __( 'Tablet Margin', 'kadence-blocks' ) }
 															measurement={ margin[ 0 ].tablet }
 															control={ this.state.marginTabletControl }
 															onChange={ ( value ) => saveMargin( { tablet: value } ) }
@@ -1640,7 +1640,7 @@ class GalleryEdit extends Component {
 												} else {
 													tabout = (
 														<MeasurementControls
-															label={ __( 'Margin' ) }
+															label={ __( 'Margin', 'kadence-blocks' ) }
 															measurement={ margin[ 0 ].desk }
 															control={ this.state.marginDeskControl }
 															onChange={ ( value ) => saveMargin( { desk: value } ) }

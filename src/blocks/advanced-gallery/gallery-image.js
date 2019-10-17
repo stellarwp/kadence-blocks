@@ -164,7 +164,7 @@ class GalleryImage extends Component {
 			<RichText
 				tagName="figcaption"
 				className={ `kadence-blocks-gallery-item__caption${ ( this.state.captionSelected ? ' editing-caption' : '' ) }` }
-				placeholder={ isSelected ? __( 'Write caption…' ) : null }
+				placeholder={ isSelected ? __( 'Write caption…', 'kadence-blocks' ) : null }
 				value={ caption }
 				isSelected={ this.state.captionSelected }
 				onChange={ ( newCaption ) => setAttributes( { caption: newCaption } ) }
@@ -217,7 +217,7 @@ class GalleryImage extends Component {
 									icon="arrow-left"
 									onClick={ isFirstItem ? undefined : onMoveBackward }
 									className="kadence-blocks-gallery-item__move-backward"
-									label={ __( 'Move Image Backward' ) }
+									label={ __( 'Move Image Backward', 'kadence-blocks' ) }
 									aria-disabled={ isFirstItem }
 									disabled={ ! isSelected }
 								/>
@@ -225,7 +225,7 @@ class GalleryImage extends Component {
 									icon="arrow-right"
 									onClick={ isLastItem ? undefined : onMoveForward }
 									className="kadence-blocks-gallery-item__move-forward"
-									label={ __( 'Move Image Forward' ) }
+									label={ __( 'Move Image Forward', 'kadence-blocks' ) }
 									aria-disabled={ isLastItem }
 									disabled={ ! isSelected }
 								/>
@@ -235,7 +235,7 @@ class GalleryImage extends Component {
 									icon="no-alt"
 									onClick={ onRemove }
 									className="kadence-blocks-gallery-item__remove"
-									label={ __( 'Remove Image' ) }
+									label={ __( 'Remove Image', 'kadence-blocks' ) }
 									disabled={ ! isSelected }
 								/>
 							</div>
@@ -246,8 +246,8 @@ class GalleryImage extends Component {
 					<Fragment>
 						<div className="kb-gallery-custom-link block-editor-url-popover__row">
 							<URLInput
-								aria-label={ __( 'URL' ) }
-								placeholder={ __( 'Paste or type URL' ) }
+								aria-label={ __( 'URL', 'kadence-blocks' ) }
+								placeholder={ __( 'Paste or type URL', 'kadence-blocks' ) }
 								className="editor-media-placeholder__url-input-field block-editor-media-placeholder__url-input-field"
 								value={ customLink }
 								onChange={ value=> setLinkAttributes( { customLink: value } ) }
@@ -255,7 +255,7 @@ class GalleryImage extends Component {
 							<IconButton
 								className="editor-url-popover__settings-toggle block-editor-url-popover__settings-toggle"
 								icon="arrow-down-alt2"
-								label={ __( 'Link Settings' ) }
+								label={ __( 'Link Settings', 'kadence-blocks' ) }
 								onClick={ this.toggleSettingsVisibility }
 								aria-expanded={ this.state.showSettings }
 							/>
@@ -263,7 +263,7 @@ class GalleryImage extends Component {
 						{ this.state.showSettings && (
 							<div className="editor-url-popover__row block-editor-url-popover__row editor-url-popover__settings block-editor-url-popover__settings">
 								<ToggleControl
-									label={ __( 'Open in New Tab' ) }
+									label={ __( 'Open in New Tab', 'kadence-blocks' ) }
 									checked={ linkTarget === '_blank' }
 									onChange={ ( target ) => setLinkAttributes( { linkTarget: ( target ? '_blank' : '' ) } ) }
 								/>

@@ -2,10 +2,10 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2019-10-16 16:58-0600\n"
+"POT-Creation-Date: 2019-10-17 08:08-0600\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
-"Language-Team: Kadence Themes\n"
+"Language-Team: Kadence WP\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,10 +17,11 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: node_modules\n"
-"X-Poedit-SearchPathExcluded-1: src\n"
-"X-Poedit-SearchPathExcluded-2: dist/blocks\n"
+"X-Poedit-SearchPathExcluded-1: dist/blocks\n"
+"X-Poedit-SearchPathExcluded-2: dist/vendor\n"
+"X-Poedit-SearchPathExcluded-3: src\n"
 
-#: dist/init.php:239 dist/settings/class-kadence-blocks-settings.php:250
+#: dist/init.php:242 dist/settings/class-kadence-blocks-settings.php:250
 #: dist/settings/class-kadence-blocks-settings.php:495
 msgid "Kadence Blocks"
 msgstr ""
@@ -333,10 +334,10 @@ msgstr ""
 msgid "Advanced Gallery"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:670
+#: dist/settings/class-kadence-blocks-settings.php:670 dist/blocks.build.js:1
 msgid ""
 "Photo galleries, carousels, and sliders! Enable custom links, captions, and "
-"more. Plus you can select image sizes."
+"more. Plus, you can select image sizes."
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:675 dist/blocks.build.js:1
@@ -383,11 +384,11 @@ msgstr ""
 msgid "Info Box"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:700
+#: dist/settings/class-kadence-blocks-settings.php:700 dist/blocks.build.js:1
 msgid ""
 "Create a box link containing an icon or image and optionally a title, "
-"description and learn more text. Style static and hover colors even show a "
-"box shadow."
+"description, and learn more text. Style static and hover colors even show a "
+"box-shadow."
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:705 dist/blocks.build.js:1
@@ -2354,13 +2355,6 @@ msgid "Add Tab"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid ""
-"Create a box link containing an icon or image and optionally a title, "
-"description, and learn more text. Style static and hover colors even show a "
-"box-shadow."
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Info"
 msgstr ""
 
@@ -3170,6 +3164,10 @@ msgid "Thumbnails are cropped to align."
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Thumbnails are not cropped."
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Edit gallery"
 msgstr ""
 
@@ -3227,7 +3225,11 @@ msgid "Thumbnail Columns"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "tiles"
+msgid "Row Height"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Carousel Height"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -3823,7 +3825,7 @@ msgid "Enable Text Color Settings"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Kadence Advanced GAllery"
+msgid "Kadence Advanced Gallery"
 msgstr ""
 
 #: dist/blocks.build.js:1
