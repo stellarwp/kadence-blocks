@@ -125,6 +125,12 @@ class Kadence_Blocks_Frontend {
 				'render_callback' => array( $this, 'render_advancedgallery_css' ),
 			)
 		);
+		register_block_type(
+			'kadence/form',
+			array(
+				'render_callback' => array( $this, 'render_form_css' ),
+			)
+		);
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 	}
 	/**
@@ -529,6 +535,50 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
+	 * Render form CSS In Head
+	 *
+	 * @param array $attributes the blocks attributes.
+	 */
+	public function render_form_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_form_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render form CSS Inline
+	 *
+	 * @param array  $attributes the blocks attributes.
+	 * @param string $content the blocks content.
+	 */
+	public function render_form_css( $attributes, $content ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				wp_enqueue_script( 'kadence-blocks-form' );
+				if ( isset(  $attributes['recaptcha'] ) &&  $attributes['recaptcha'] ) {
+					wp_enqueue_script( 'google-recaptcha-v3' );
+				}
+				$css = $this->blocks_form_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
+	}
+	/**
 	 * Render Gallery CSS in Head
 	 *
 	 * @param array $attributes the blocks attribtues.
@@ -636,6 +686,28 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-accordion-js', KT_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KT_BLOCKS_URL . 'dist/kt-tabs-min.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KT_BLOCKS_URL . 'dist/jarallax.min.js', array(), KT_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-form', KT_BLOCKS_URL . 'dist/assets/js/kb-form.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
+		wp_localize_script(
+			'kadence-blocks-form',
+			'kadence_blocks_form_params',
+			array(
+				'ajaxurl'       => admin_url( 'admin-ajax.php' ),
+				'error_message' => __( 'Please fix the errors to proceed', 'kadence-blocks' ),
+				'nonce'         => wp_create_nonce( 'kb_form_nonce' ),
+				'required'      => __( 'is required', 'kadence-blocks' ),
+				'mismatch'      => __( 'does not match', 'kadence-blocks' ),
+				'validation'    => __( 'is not valid', 'kadence-blocks' ),
+				'duplicate'     => __( 'requires a unique entry and this value has already been used', 'kadence-blocks' ),
+				'item'          => __( 'Item', 'kadence-blocks' ),
+			),
+		);
+		$recaptcha_site_key = get_option( 'kadence_blocks_recaptcha_site_key' );
+		if ( ! $recaptcha_site_key ) {
+			$recaptcha_site_key = 'missingkey';
+		}
+		wp_register_script( 'google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ), array(), KT_BLOCKS_VERSION, true );
+		$recaptcha_script = "grecaptcha.ready(function () { grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { var recaptchaResponse = document.getElementById('kb_recaptcha_response'); recaptchaResponse.value = token; }); });";
+		wp_add_inline_script( 'google-recaptcha-v3', $recaptcha_script, 'after' );
 		wp_register_script( 'kadence-blocks-parallax-js', KT_BLOCKS_URL . 'dist/kt-init-parallax.js', array( 'jarallax' ), KT_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-pro-slick', KT_BLOCKS_URL . 'dist/vendor/kt-blocks-slick.css', array(), KT_BLOCKS_VERSION );
 		wp_register_script( 'kadence-slick', KT_BLOCKS_URL . 'dist/vendor/slick.min.js', array( 'jquery' ), KT_BLOCKS_VERSION, true );
@@ -809,6 +881,13 @@ class Kadence_Blocks_Frontend {
 							$this->render_spacer_css_head( $blockattr );
 						}
 					}
+					if ( 'kadence/form' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->blocks_form_scripts_check( $blockattr );
+							$this->render_form_css_head( $blockattr );
+						}
+					}
 					if ( 'core/block' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -911,6 +990,13 @@ class Kadence_Blocks_Frontend {
 						$this->render_spacer_css_head( $blockattr );
 					}
 				}
+				if ( 'kadence/form' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_form_css_head( $blockattr );
+						$this->blocks_form_scripts_check( $blockattr );
+					}
+				}
 				if ( 'core/block' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -928,6 +1014,42 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+	}
+	/**
+	 * Grabs the scripts that are needed so we can load in the head.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_form_scripts_check( $attr ) {
+		wp_enqueue_script( 'kadence-blocks-form' );
+		if ( isset( $attr['recaptcha'] ) && $attr['recaptcha'] ) {
+			wp_enqueue_script( 'google-recaptcha-v3' );
+		}
+	}
+	/**
+	 * Builds CSS for form block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_form_array( $attr, $unique_id ) {
+		$css = '';
+		if ( isset( $attr['textColor'] ) && ! empty( $attr['textColor'] ) ) {
+			$css .= '.wp-block-kadence-slider .kb-slide-' . $unique_id . ' h1, .wp-block-kadence-slider .kb-slide-' . $unique_id . ' h2, .wp-block-kadence-slider .kb-slide-' . $unique_id . ' h3, .wp-block-kadence-slider .kb-slide-' . $unique_id . ' h4, .wp-block-kadence-slider .kb-slide-' . $unique_id . ' h5, .wp-block-kadence-slider .kb-slide-' . $unique_id . ' h6, .wp-block-kadence-slider .kb-slide-' . $unique_id . ' {';
+			$css .= 'color:' . $attr['textColor'] . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['linkColor'] ) && ! empty( $attr['linkColor'] ) ) {
+			$css .= '.wp-block-kadence-slider .kb-slide-' . $unique_id . ' a {';
+			$css .= 'color:' . $attr['linkColor'] . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['linkHoverColor'] ) && ! empty( $attr['linkHoverColor'] ) ) {
+			$css .= '.wp-block-kadence-slider .kb-slide-' . $unique_id . ' a:hover {';
+			$css .= 'color:' . $attr['linkHoverColor'] . ';';
+			$css .= '}';
+		}
+		return $css;
 	}
 	/**
 	 * Builds CSS for InfoBox block.

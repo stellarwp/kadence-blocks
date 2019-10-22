@@ -1196,3 +1196,12 @@ button.components-button.kb-sidebar-image {
 .kt-row-layout-overlay, .kt-row-layout-background, .kt-row-layout-bottom-sep, .kt-row-layout-top-sep, .editor-block-list__block[data-type="kadence/rowlayout"] {
 	backface-visibility: hidden;
 }
+/* Astra Theme ??  this fixes */
+.wp-block-kadence-rowlayout > .innerblocks-wrap > .editor-inner-blocks > .editor-block-list__layout > [data-type="kadence/column"] .editor-block-list__block-edit {
+	margin-left: -28px;
+    margin-right: -28px;
+ }
+ .wp-block-kadence-rowlayout .editor-block-list__layout .editor-block-list__block {
+ 	padding-left: 43px;
+	padding-right: 43px;
+ }

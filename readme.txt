@@ -86,6 +86,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.7.0 =
+** Add: New Form Block!!
+* Fix: Translation strings all need text domain.
+* Add: CSS fixes for Gutenberg 6.7.
+
 = 1.6.19 =
 * Fix: settings link issue.
 

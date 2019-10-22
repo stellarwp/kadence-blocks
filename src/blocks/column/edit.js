@@ -30,6 +30,7 @@ const {
 	TabPanel,
 	Dashicon,
 	PanelBody,
+	Panel,
 	Button,
 	SelectControl,
 	Tooltip,
@@ -536,161 +537,165 @@ class KadenceColumn extends Component {
 					</style>
 				) }
 				<InspectorControls>
-					<AdvancedColorControl
-						label={ __( 'Background Color' ) }
-						colorValue={ ( background ? background : '' ) }
-						colorDefault={ '' }
-						opacityValue={ backgroundOpacity }
-						onColorChange={ value => setAttributes( { background: value } ) }
-						onOpacityChange={ value => setAttributes( { backgroundOpacity: value } ) }
-					/>
-					<MediaUpload
-						onSelect={ img => {
-							saveBackgroundImage( { bgImgID: img.id, bgImg: img.url } );
-						} }
-						type="image"
-						value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' ) }
-						render={ ( { open } ) => (
-							<Button
-								className={ 'components-button components-icon-button kt-cta-upload-btn' }
-								onClick={ open }
-							>
-								<Dashicon icon="format-image" />
-								{ __( 'Select Image' ) }
-							</Button>
-						) }
-					/>
-					{ backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg && (
-						<Fragment>
-							<Tooltip text={ __( 'Remove Image' ) }>
-								<Button
-									className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-									onClick={ onRemoveBGImage }
-								>
-									<Dashicon icon="no-alt" />
-								</Button>
-							</Tooltip>
-							<SelectControl
-								label={ __( 'Background Image Size' ) }
-								value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) }
-								options={ [
-									{ value: 'cover', label: __( 'Cover' ) },
-									{ value: 'contain', label: __( 'Contain' ) },
-									{ value: 'auto', label: __( 'Auto' ) },
-								] }
-								onChange={ value => saveBackgroundImage( { bgImgSize: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Position' ) }
-								value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' ) }
-								options={ [
-									{ value: 'center top', label: __( 'Center Top' ) },
-									{ value: 'center center', label: __( 'Center Center' ) },
-									{ value: 'center bottom', label: __( 'Center Bottom' ) },
-									{ value: 'left top', label: __( 'Left Top' ) },
-									{ value: 'left center', label: __( 'Left Center' ) },
-									{ value: 'left bottom', label: __( 'Left Bottom' ) },
-									{ value: 'right top', label: __( 'Right Top' ) },
-									{ value: 'right center', label: __( 'Right Center' ) },
-									{ value: 'right bottom', label: __( 'Right Bottom' ) },
-								] }
-								onChange={ value => saveBackgroundImage( { bgImgPosition: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Repeat' ) }
-								value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
-								options={ [
-									{ value: 'no-repeat', label: __( 'No Repeat' ) },
-									{ value: 'repeat', label: __( 'Repeat' ) },
-									{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-									{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-								] }
-								onChange={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
-							/>
-							<SelectControl
-								label={ __( 'Background Image Attachment' ) }
-								value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : 'scroll' ) }
-								options={ [
-									{ value: 'scroll', label: __( 'Scroll' ) },
-									{ value: 'fixed', label: __( 'Fixed' ) },
-								] }
-								onChange={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
-							/>
-						</Fragment>
-					) }
-					<AdvancedColorControl
-						label={ __( 'Border Color' ) }
-						colorValue={ ( border ? border : '' ) }
-						colorDefault={ '' }
-						opacityValue={ borderOpacity }
-						onColorChange={ value => setAttributes( { border: value } ) }
-						onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
-					/>
-					<MeasurementControls
-						label={ __( 'Border Width' ) }
-						measurement={ borderWidth }
-						control={ borderWidthControl }
-						onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
-						onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
-						min={ 0 }
-						max={ 40 }
-						step={ 1 }
-					/>
-					<MeasurementControls
-						label={ __( 'Border Radius' ) }
-						measurement={ borderRadius }
-						control={ borderRadiusControl }
-						onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-						onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
-						min={ 0 }
-						max={ 200 }
-						step={ 1 }
-						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-							{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
-						] }
-						firstIcon={ icons.topleft }
-						secondIcon={ icons.topright }
-						thirdIcon={ icons.bottomright }
-						fourthIcon={ icons.bottomleft }
-					/>
-					{ textAlignControls }
-					<PanelBody
-						title={ __( 'Text Color Settings' ) }
-						initialOpen={ false }
+					<Panel
+						className={ 'components-panel__body is-opened' }
 					>
 						<AdvancedColorControl
-							label={ __( 'Text Color' ) }
-							colorValue={ ( textColor ? textColor : '' ) }
+							label={ __( 'Background Color' ) }
+							colorValue={ ( background ? background : '' ) }
 							colorDefault={ '' }
-							onColorChange={ value => setAttributes( { textColor: value } ) }
+							opacityValue={ backgroundOpacity }
+							onColorChange={ value => setAttributes( { background: value } ) }
+							onOpacityChange={ value => setAttributes( { backgroundOpacity: value } ) }
 						/>
+						<MediaUpload
+							onSelect={ img => {
+								saveBackgroundImage( { bgImgID: img.id, bgImg: img.url } );
+							} }
+							type="image"
+							value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' ) }
+							render={ ( { open } ) => (
+								<Button
+									className={ 'components-button components-icon-button kt-cta-upload-btn' }
+									onClick={ open }
+								>
+									<Dashicon icon="format-image" />
+									{ __( 'Select Image' ) }
+								</Button>
+							) }
+						/>
+						{ backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg && (
+							<Fragment>
+								<Tooltip text={ __( 'Remove Image' ) }>
+									<Button
+										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+										onClick={ onRemoveBGImage }
+									>
+										<Dashicon icon="no-alt" />
+									</Button>
+								</Tooltip>
+								<SelectControl
+									label={ __( 'Background Image Size' ) }
+									value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) }
+									options={ [
+										{ value: 'cover', label: __( 'Cover' ) },
+										{ value: 'contain', label: __( 'Contain' ) },
+										{ value: 'auto', label: __( 'Auto' ) },
+									] }
+									onChange={ value => saveBackgroundImage( { bgImgSize: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Position' ) }
+									value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' ) }
+									options={ [
+										{ value: 'center top', label: __( 'Center Top' ) },
+										{ value: 'center center', label: __( 'Center Center' ) },
+										{ value: 'center bottom', label: __( 'Center Bottom' ) },
+										{ value: 'left top', label: __( 'Left Top' ) },
+										{ value: 'left center', label: __( 'Left Center' ) },
+										{ value: 'left bottom', label: __( 'Left Bottom' ) },
+										{ value: 'right top', label: __( 'Right Top' ) },
+										{ value: 'right center', label: __( 'Right Center' ) },
+										{ value: 'right bottom', label: __( 'Right Bottom' ) },
+									] }
+									onChange={ value => saveBackgroundImage( { bgImgPosition: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Repeat' ) }
+									value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
+									options={ [
+										{ value: 'no-repeat', label: __( 'No Repeat' ) },
+										{ value: 'repeat', label: __( 'Repeat' ) },
+										{ value: 'repeat-x', label: __( 'Repeat-x' ) },
+										{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+									] }
+									onChange={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Background Image Attachment' ) }
+									value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : 'scroll' ) }
+									options={ [
+										{ value: 'scroll', label: __( 'Scroll' ) },
+										{ value: 'fixed', label: __( 'Fixed' ) },
+									] }
+									onChange={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
+								/>
+							</Fragment>
+						) }
 						<AdvancedColorControl
-							label={ __( 'Link Color' ) }
-							colorValue={ ( linkColor ? linkColor : '' ) }
+							label={ __( 'Border Color' ) }
+							colorValue={ ( border ? border : '' ) }
 							colorDefault={ '' }
-							onColorChange={ value => setAttributes( { linkColor: value } ) }
+							opacityValue={ borderOpacity }
+							onColorChange={ value => setAttributes( { border: value } ) }
+							onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
 						/>
-						<AdvancedColorControl
-							label={ __( 'Link Hover Color' ) }
-							colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
+						<MeasurementControls
+							label={ __( 'Border Width' ) }
+							measurement={ borderWidth }
+							control={ borderWidthControl }
+							onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
+							onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
+							min={ 0 }
+							max={ 40 }
+							step={ 1 }
 						/>
-					</PanelBody>
-					<div className="kt-spacer-sidebar-15"></div>
-					<RangeControl
-						label={ __( 'Z Index Control' ) }
-						value={ zIndex }
-						onChange={ ( value ) => {
-							setAttributes( {
-								zIndex: value,
-							} );
-						} }
-						min={ -200 }
-						max={ 200 }
-					/>
-					{ tabControls }
+						<MeasurementControls
+							label={ __( 'Border Radius' ) }
+							measurement={ borderRadius }
+							control={ borderRadiusControl }
+							onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
+							onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
+							min={ 0 }
+							max={ 200 }
+							step={ 1 }
+							controlTypes={ [
+								{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
+								{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+							] }
+							firstIcon={ icons.topleft }
+							secondIcon={ icons.topright }
+							thirdIcon={ icons.bottomright }
+							fourthIcon={ icons.bottomleft }
+						/>
+						{ textAlignControls }
+						<PanelBody
+							title={ __( 'Text Color Settings' ) }
+							initialOpen={ false }
+						>
+							<AdvancedColorControl
+								label={ __( 'Text Color' ) }
+								colorValue={ ( textColor ? textColor : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => setAttributes( { textColor: value } ) }
+							/>
+							<AdvancedColorControl
+								label={ __( 'Link Color' ) }
+								colorValue={ ( linkColor ? linkColor : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => setAttributes( { linkColor: value } ) }
+							/>
+							<AdvancedColorControl
+								label={ __( 'Link Hover Color' ) }
+								colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
+							/>
+						</PanelBody>
+						<div className="kt-spacer-sidebar-15"></div>
+						<RangeControl
+							label={ __( 'Z Index Control' ) }
+							value={ zIndex }
+							onChange={ ( value ) => {
+								setAttributes( {
+									zIndex: value,
+								} );
+							} }
+							min={ -200 }
+							max={ 200 }
+						/>
+						{ tabControls }
+					</Panel>
 				</InspectorControls>
 				<div id={ `animate-id${ uniqueID }` } className="kadence-inner-column-inner aos-animate kt-animation-wrap" data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
 					paddingLeft: leftPadding + 'px',

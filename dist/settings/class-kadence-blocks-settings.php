@@ -185,7 +185,7 @@ class Kadence_Blocks_Settings {
 		if ( get_option( 'kadence_blocks_redirect_on_activation', false ) ) {
 			delete_option( 'kadence_blocks_redirect_on_activation' );
 			if ( ! isset( $_GET['activate-multi'] ) ) {
-				wp_safe_redirect( admin_url( 'options-general.php?page=kadence_blocks' ) );
+				wp_safe_redirect( $this->settings_link() );
 			}
 		}
 	}
@@ -233,7 +233,6 @@ class Kadence_Blocks_Settings {
 	 * @return string
 	 */
 	private function get_icon_svg( $base64 = true ) {
-		$svg = '<svg viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"><path d="M43.522,45.567l-39.044,-43.134l0,43.134l39.044,0Z" style="fill:#fff;fill-rule:nonzero;"/><path d="M43.522,2.433l-18.258,20.171l-18.289,-20.171l36.547,0Z" style="fill:#fff;fill-rule:nonzero;"/></svg>';
 		$svg = '<svg viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg"><g><path d="M172.918,180.559l-145.836,-161.118l0,161.118l145.836,0Z" style="fill:#fff;fill-rule:nonzero;"/><path d="M172.918,19.441l-68.198,75.345l-68.311,-75.345l136.509,0Z" style="fill:#fff;fill-rule:nonzero;"/></g></svg>';
 
 		if ( $base64 ) {
@@ -246,8 +245,12 @@ class Kadence_Blocks_Settings {
 	 * Add option page menu
 	 */
 	public function add_menu() {
-		//$page = add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence-blocks', array( $this, 'config_page' ), $this->get_icon_svg() );
-		$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence_blocks', array( $this, 'config_page' ) );
+		if ( apply_filters( 'kadence_blocks_admin_menu_options', true ) ) {
+			$page = add_options_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks' ), 'edit_pages', 'kadence_blocks', array( $this, 'config_page' ) );
+		} else {
+			add_menu_page( __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Kadence Blocks', 'kadence-blocks' ), 'edit_pages', 'kadence-blocks', null, $this->get_icon_svg() );
+			$page = add_submenu_page( 'kadence-blocks', __( 'Kadence Blocks -  Gutenberg Page Builder Blocks', 'kadence-blocks' ), __( 'Settings' ), 'edit_pages', 'kadence-blocks', array( $this, 'config_page' ) );
+		}
 		add_action( 'admin_print_styles-' . $page, array( $this, 'scripts' ) );
 	}
 	/**
@@ -371,6 +374,28 @@ class Kadence_Blocks_Settings {
 			array(
 				'type'              => 'string',
 				'description'       => __( 'Config Kadence Blocks Color Palette', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_recaptcha_site_key',
+			'kadence_blocks_recaptcha_site_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Google reCaptcha Site Key', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_recaptcha_secret_key',
+			'kadence_blocks_recaptcha_secret_key',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Google reCaptcha Secret Key', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',
@@ -843,11 +868,17 @@ class Kadence_Blocks_Settings {
 	}
 	/**
 	 * Add settings link
+	 */
+	public function settings_link() {
+		return apply_filters( 'kadence-blocks-settings-url', admin_url( 'options-general.php?page=kadence_blocks' ) );
+	}
+	/**
+	 * Add settings link
 	 *
 	 * @param array $links plugin activate/deactivate links array.
 	 */
 	public function add_settings_link( $links ) {
-		$settings_link = '<a href="' . admin_url( 'options-general.php?page=kadence_blocks' ) . '">' . __( 'Settings', 'kadence-blocks' ) . '</a>';
+		$settings_link = '<a href="' . esc_url( $this->settings_link() ) . '">' . __( 'Settings', 'kadence-blocks' ) . '</a>';
 		array_push( $links, $settings_link );
 		return $links;
 	}

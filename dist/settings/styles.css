@@ -1,4 +1,4 @@
-.settings_page_kadence_blocks #wpcontent {
+.settings_page_kadence_blocks #wpcontent, .toplevel_page_kadence-blocks #wpcontent {
     padding: 0;
 }
 .kt_plugin_welcome_title_head {
@@ -312,7 +312,6 @@ content: '';
     font-weight: 300;
     padding: 10px 20px;
     border: 0;
-    letter-spacing: -1px;
 }
 .kt_title_area {
     padding: 20px;
