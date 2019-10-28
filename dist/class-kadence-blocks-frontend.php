@@ -700,8 +700,8 @@ class Kadence_Blocks_Frontend {
 				'mismatch'      => __( 'does not match', 'kadence-blocks' ),
 				'validation'    => __( 'is not valid', 'kadence-blocks' ),
 				'duplicate'     => __( 'requires a unique entry and this value has already been used', 'kadence-blocks' ),
-				'item'          => __( 'Item', 'kadence-blocks' ),
-			),
+				'item'          => __( 'Item', 'kadence-blocks' )
+			)
 		);
 		$recaptcha_site_key = get_option( 'kadence_blocks_recaptcha_site_key' );
 		if ( ! $recaptcha_site_key ) {
