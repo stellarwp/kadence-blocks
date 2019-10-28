@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.2.3
-Stable tag: 1.6.19
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,9 +87,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 1.7.0 =
-** Add: New Form Block!!
-* Fix: Translation strings all need text domain.
-* Add: CSS fixes for Gutenberg 6.7.
+* Add: New Form Block!!
+* Fix: More Translation strings updated, all need text domain.
+* Fix: Gallery Block not setting link url correctly for media size.
+* Update: CSS fixes for Gutenberg 6.7.
+* Add: Offload Media support for backgrounds css.
 
 = 1.6.19 =
 * Fix: settings link issue.

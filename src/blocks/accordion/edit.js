@@ -555,19 +555,19 @@ class KadenceAccordionComponent extends Component {
 							{ this.showSettings( 'paneControl' ) && (
 								<Fragment>
 									<ToggleControl
-										label={ __( 'Panes close when another opens' ) }
+										label={ __( 'Panes close when another opens', 'kadence-blocks' ) }
 										checked={ linkPaneCollapse }
 										onChange={ ( value ) => setAttributes( { linkPaneCollapse: value } ) }
 									/>
 									<ToggleControl
-										label={ __( 'Start with all panes collapsed' ) }
+										label={ __( 'Start with all panes collapsed', 'kadence-blocks' ) }
 										checked={ startCollapsed }
 										onChange={ ( value ) => setAttributes( { startCollapsed: value } ) }
 									/>
 									{ ! startCollapsed && (
 										<Fragment>
-											<h2>{ __( 'Initial Open Accordion' ) }</h2>
-											<ButtonGroup aria-label={ __( 'Initial Open Accordion' ) }>
+											<h2>{ __( 'Initial Open Accordion', 'kadence-blocks' ) }</h2>
+											<ButtonGroup aria-label={ __( 'Initial Open Accordion', 'kadence-blocks' ) }>
 												{ map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
 													<Button
 														key={ attributes.id - 1 }
@@ -577,7 +577,7 @@ class KadenceAccordionComponent extends Component {
 														aria-pressed={ openPane === attributes.id - 1 }
 														onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
 													>
-														{ __( 'Accordion Pane' ) + ' ' + ( attributes.id ) }
+														{ __( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id ) }
 													</Button>
 												) ) }
 											</ButtonGroup>
@@ -588,7 +588,7 @@ class KadenceAccordionComponent extends Component {
 						</PanelBody>
 						{ this.showSettings( 'titleColors' ) && (
 							<PanelBody
-								title={ __( 'Pane Title Color Settings' ) }
+								title={ __( 'Pane Title Color Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
@@ -630,15 +630,15 @@ class KadenceAccordionComponent extends Component {
 						) }
 						{ this.showSettings( 'titleIcon' ) && (
 							<PanelBody
-								title={ __( 'Pane Title Trigger Icon' ) }
+								title={ __( 'Pane Title Trigger Icon', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<ToggleControl
-									label={ __( 'Show Icon' ) }
+									label={ __( 'Show Icon', 'kadence-blocks' ) }
 									checked={ showIcon }
 									onChange={ ( value ) => setAttributes( { showIcon: value } ) }
 								/>
-								<h2>{ __( 'Icon Style' ) }</h2>
+								<h2>{ __( 'Icon Style', 'kadence-blocks' ) }</h2>
 								<FontIconPicker
 									icons={ [
 										'basic',
@@ -654,11 +654,11 @@ class KadenceAccordionComponent extends Component {
 									renderFunc={ renderIconSet }
 									theme="accordion"
 									showSearch={ false }
-									noSelectedPlaceholder={ __( 'Select Icon Set' ) }
+									noSelectedPlaceholder={ __( 'Select Icon Set', 'kadence-blocks' ) }
 									isMulti={ false }
 								/>
 								<SelectControl
-									label={ __( 'Icon Side' ) }
+									label={ __( 'Icon Side', 'kadence-blocks' ) }
 									value={ iconSide }
 									options={ [
 										{ value: 'right', label: __( 'Right' ) },
@@ -670,11 +670,11 @@ class KadenceAccordionComponent extends Component {
 						) }
 						{ this.showSettings( 'titleSpacing' ) && (
 							<PanelBody
-								title={ __( 'Pane Title Spacing' ) }
+								title={ __( 'Pane Title Spacing', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<MeasurementControls
-									label={ __( 'Pane Title Padding (px)' ) }
+									label={ __( 'Pane Title Padding (px)', 'kadence-blocks' ) }
 									measurement={ titleStyles[ 0 ].padding }
 									control={ titlePaddingControl }
 									onChange={ ( value ) => saveTitleStyles( { padding: value } ) }
@@ -684,7 +684,7 @@ class KadenceAccordionComponent extends Component {
 									step={ 1 }
 								/>
 								<RangeControl
-									label={ __( 'Pane Spacer Between' ) }
+									label={ __( 'Pane Spacer Between', 'kadence-blocks' ) }
 									value={ titleStyles[ 0 ].marginTop }
 									onChange={ ( value ) => saveTitleStyles( { marginTop: value } ) }
 									min={ 1 }
@@ -694,11 +694,11 @@ class KadenceAccordionComponent extends Component {
 						) }
 						{ this.showSettings( 'titleBorder' ) && (
 							<PanelBody
-								title={ __( 'Pane Title Border' ) }
+								title={ __( 'Pane Title Border', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<MeasurementControls
-									label={ __( 'Pane Title Border Width (px)' ) }
+									label={ __( 'Pane Title Border Width (px)', 'kadence-blocks' ) }
 									measurement={ titleStyles[ 0 ].borderWidth }
 									control={ titleBorderControl }
 									onChange={ ( value ) => saveTitleStyles( { borderWidth: value } ) }
@@ -708,7 +708,7 @@ class KadenceAccordionComponent extends Component {
 									step={ 1 }
 								/>
 								<MeasurementControls
-									label={ __( 'Pane Title Border Radius (px)' ) }
+									label={ __( 'Pane Title Border Radius (px)', 'kadence-blocks' ) }
 									measurement={ titleStyles[ 0 ].borderRadius }
 									control={ titleBorderRadiusControl }
 									onChange={ ( value ) => saveTitleStyles( { borderRadius: value } ) }
@@ -729,7 +729,7 @@ class KadenceAccordionComponent extends Component {
 						) }
 						{ this.showSettings( 'titleFont' ) && (
 							<PanelBody
-								title={ __( 'Pane Title Font Settings' ) }
+								title={ __( 'Pane Title Font Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<TypographyControls
@@ -771,11 +771,11 @@ class KadenceAccordionComponent extends Component {
 						) }
 						{ this.showSettings( 'paneContent' ) && (
 							<PanelBody
-								title={ __( 'Inner Content Settings' ) }
+								title={ __( 'Inner Content Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<MeasurementControls
-									label={ __( 'Inner Content Padding (px)' ) }
+									label={ __( 'Inner Content Padding (px)', 'kadence-blocks' ) }
 									measurement={ contentPadding }
 									control={ contentPaddingControl }
 									onChange={ ( value ) => setAttributes( { contentPadding: value } ) }
@@ -784,18 +784,18 @@ class KadenceAccordionComponent extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-								<p className="kt-setting-label">{ __( 'Inner Content Background' ) }</p>
+								<p className="kt-setting-label">{ __( 'Inner Content Background', 'kadence-blocks' ) }</p>
 								<ColorPalette
 									value={ contentBgColor }
 									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
 								/>
-								<p className="kt-setting-label">{ __( 'Inner Content Border Color' ) }</p>
+								<p className="kt-setting-label">{ __( 'Inner Content Border Color', 'kadence-blocks' ) }</p>
 								<ColorPalette
 									value={ contentBorderColor }
 									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
 								/>
 								<MeasurementControls
-									label={ __( 'Inner Content Border Width (px)' ) }
+									label={ __( 'Inner Content Border Width (px)', 'kadence-blocks' ) }
 									measurement={ contentBorder }
 									control={ contentBorderControl }
 									onChange={ ( value ) => setAttributes( { contentBorder: value } ) }
@@ -805,7 +805,7 @@ class KadenceAccordionComponent extends Component {
 									step={ 1 }
 								/>
 								<MeasurementControls
-									label={ __( 'Inner Content Border Radius (px)' ) }
+									label={ __( 'Inner Content Border Radius (px)', 'kadence-blocks' ) }
 									measurement={ contentBorderRadius }
 									control={ contentBorderRadiusControl }
 									onChange={ ( value ) => setAttributes( { contentBorderRadius: value } ) }
@@ -814,8 +814,8 @@ class KadenceAccordionComponent extends Component {
 									max={ 100 }
 									step={ 1 }
 									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-										{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
+										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
 									] }
 									firstIcon={ icons.topleft }
 									secondIcon={ icons.topright }
@@ -826,11 +826,11 @@ class KadenceAccordionComponent extends Component {
 						) }
 						{ this.showSettings( 'titleTag' ) && (
 							<PanelBody
-								title={ __( 'Title Tag Settings' ) }
+								title={ __( 'Title Tag Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<SelectControl
-									label={ __( 'Title Tag' ) }
+									label={ __( 'Title Tag', 'kadence-blocks' ) }
 									value={ titleTag }
 									options={ [
 										{ value: 'div', label: __( 'div' ) },
@@ -853,11 +853,11 @@ class KadenceAccordionComponent extends Component {
 						) }
 						{ this.showSettings( 'structure' ) && (
 							<PanelBody
-								title={ __( 'Structure Settings' ) }
+								title={ __( 'Structure Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<RangeControl
-									label={ __( 'Content Minimium Height' ) }
+									label={ __( 'Content Minimum Height', 'kadence-blocks' ) }
 									value={ minHeight }
 									onChange={ ( value ) => {
 										setAttributes( {
@@ -868,7 +868,7 @@ class KadenceAccordionComponent extends Component {
 									max={ 1000 }
 								/>
 								<RangeControl
-									label={ __( 'Max Width' ) }
+									label={ __( 'Max Width', 'kadence-blocks' ) }
 									value={ maxWidth }
 									onChange={ ( value ) => {
 										setAttributes( {
@@ -888,7 +888,7 @@ class KadenceAccordionComponent extends Component {
 							<div className="kt-select-starter-style-tabs-title">
 								{ __( 'Select Initial Style' ) }
 							</div>
-							<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Initial Style' ) }>
+							<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Initial Style', 'kadence-blocks' ) }>
 								{ map( startlayoutOptions, ( { name, key, icon } ) => (
 									<Button
 										key={ key }
@@ -907,7 +907,7 @@ class KadenceAccordionComponent extends Component {
 					) }
 					{ ! this.state.showPreset && (
 						<Fragment>
-							<div className="kt-accordion-selecter">{ __( 'Accordion' ) }</div>
+							<div className="kt-accordion-selecter">{ __( 'Accordion', 'kadence-blocks' ) }</div>
 							<div className="kt-accordion-wrap" style={ {
 								maxWidth: maxWidth + 'px',
 							} }>
@@ -933,12 +933,12 @@ class KadenceAccordionComponent extends Component {
 									} }
 								>
 									<Dashicon icon="plus" />
-									{ __( 'Add Accordion Item' ) }
+									{ __( 'Add Accordion Item', 'kadence-blocks' ) }
 								</Button>
 								{ realPaneCount > 1 && (
 									<IconButton
 										className="kt-accordion-remove"
-										label={ __( 'Remove Accordion Item' ) }
+										label={ __( 'Remove Accordion Item', 'kadence-blocks' ) }
 										icon="minus"
 										onClick={ () => {
 											const removeClientId = accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId;

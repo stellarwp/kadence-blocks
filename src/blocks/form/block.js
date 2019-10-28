@@ -6,7 +6,7 @@
 
 import GenIcon from '../../genicon';
 import Ico from '../../svgicons';
-import FaIco from '../../faicons';
+import classnames from 'classnames';
 /**
  * Import Icons
  */
@@ -44,15 +44,16 @@ const { registerBlockType } = wp.blocks;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/form', {
-	title: __( 'Form' ),
+	title: __( 'Form', 'kadence-blocks' ),
+	description: __( 'Create a contact or marketing form for your website.', 'kadence-blocks' ),
 	icon: {
 		src: icons.formBlock,
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'Contact' ),
-		__( 'Marketing' ),
-		__( 'KT' ),
+		__( 'Contact', 'kadence-blocks' ),
+		__( 'Marketing', 'kadence-blocks' ),
+		__( 'KB', 'kadence-blocks' ),
 	],
 	supports: {
 		anchor: true,
@@ -71,7 +72,7 @@ registerBlockType( 'kadence/form', {
 			type: 'number',
 			default: '',
 		},
-		formName: {
+		hAlign: {
 			type: 'string',
 			default: '',
 		},
@@ -82,10 +83,15 @@ registerBlockType( 'kadence/form', {
 				showLabel: true,
 				placeholder: '',
 				default: '',
+				description: '',
 				rows: 4,
-				options: [],
+				options: [ {
+					value: '',
+					label: '',
+				} ],
 				multiSelect: false,
 				inline: false,
+				showLink: false,
 				min: '',
 				max: '',
 				type: 'text', // text, email, textarea, url, tel, radio, select, check, accept
@@ -98,10 +104,15 @@ registerBlockType( 'kadence/form', {
 				showLabel: true,
 				placeholder: '',
 				default: '',
+				description: '',
 				rows: 4,
-				options: [],
+				options: [ {
+					value: '',
+					label: '',
+				} ],
 				multiSelect: false,
 				inline: false,
+				showLink: false,
 				min: '',
 				max: '',
 				type: 'email', // text, email, textarea, url, tel, radio, select, check, accept
@@ -114,10 +125,15 @@ registerBlockType( 'kadence/form', {
 				showLabel: true,
 				placeholder: '',
 				default: '',
+				description: '',
 				rows: 4,
-				options: [],
+				options: [ {
+					value: '',
+					label: '',
+				} ],
 				multiSelect: false,
 				inline: false,
+				showLink: false,
 				min: '',
 				max: '',
 				type: 'textarea', // text, email, textarea, url, tel, radio, select, check, accept
@@ -143,8 +159,11 @@ registerBlockType( 'kadence/form', {
 				borderSuccess: '',
 				borderError: '',
 				backgroundSuccess: '',
+				backgroundSuccessOpacity: 1,
 				backgroundError: '',
+				backgroundErrorOpacity: 1,
 				borderWidth: [ '', '', '', '' ],
+				borderRadius: '',
 				size: [ '', '', '' ],
 				sizeType: 'px',
 				lineHeight: [ '', '', '' ],
@@ -158,6 +177,8 @@ registerBlockType( 'kadence/form', {
 				variant: '',
 				subset: '',
 				loadGoogle: true,
+				padding: [ '', '', '', '' ],
+				margin: [ '', '', '', '' ],
 			} ],
 		},
 		style: {
@@ -187,6 +208,14 @@ registerBlockType( 'kadence/form', {
 				backgroundActiveType: 'solid',
 				boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
 				boxShadowActive: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
+				fontSize: [ '', '', '' ],
+				fontSizeType: 'px',
+				lineHeight: [ '', '', '' ],
+				lineType: 'px',
+				rowGap: '',
+				rowGapType: 'px',
+				gutter: '',
+				gutterType: 'px',
 			} ],
 		},
 		labelFont: {
@@ -206,6 +235,8 @@ registerBlockType( 'kadence/form', {
 				variant: '',
 				subset: '',
 				loadGoogle: true,
+				padding: [ '', '', '', '' ],
+				margin: [ '', '', '', '' ],
 			} ],
 		},
 		submit: {
@@ -213,7 +244,9 @@ registerBlockType( 'kadence/form', {
 			default: [ {
 				label: '',
 				width: [ '100', '', '' ],
-				size: [ '', '', '' ],
+				size: 'standard',
+				widthType: 'auto',
+				fixedWidth: [ '', '', '' ],
 				align: [ '', '', '' ],
 				deskPadding: [ '', '', '', '' ],
 				tabletPadding: [ '', '', '', '' ],
@@ -224,7 +257,7 @@ registerBlockType( 'kadence/form', {
 				backgroundOpacity: 1,
 				borderOpacity: 1,
 				borderRadius: '',
-				borderWidth: '',
+				borderWidth: [ '', '', '', '' ],
 				colorHover: '',
 				backgroundHover: '',
 				borderHover: '',
@@ -279,20 +312,6 @@ registerBlockType( 'kadence/form', {
 				html: true,
 			} ],
 		},
-		autoEmail: {
-			type: 'array',
-			default: [ {
-				emailTo: '',
-				subject: '',
-				message: '',
-				fromEmail: '',
-				fromName: '',
-				replyTo: '',
-				cc: '',
-				bcc: '',
-				html: true,
-			} ],
-		},
 		redirect: {
 			type: 'string',
 			default: '',
@@ -305,18 +324,67 @@ registerBlockType( 'kadence/form', {
 	edit,
 
 	save: props => {
-		const { attributes: { uniqueID, fields, submit, postID, recaptcha } } = props;
+		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha } } = props;
 		const fieldOutput = ( index ) => {
+			const fieldClassName = classnames( {
+				'kadence-blocks-form-field': true,
+				[ `kb-form-field-${ index }` ]: index,
+				[ `kb-field-desk-width-${ fields[ index ].width[ 0 ] }` ]: fields[ index ].width && fields[ index ].width[ 0 ],
+				[ `kb-field-tablet-width-${ fields[ index ].width[ 1 ] }` ]: fields[ index ].width && fields[ index ].width[ 1 ],
+				[ `kb-field-mobile-width-${ fields[ index ].width[ 2 ] }` ]: fields[ index ].width && fields[ index ].width[ 2 ],
+				[ `kb-input-size-${ style[ 0 ].size }` ]: style[ 0 ].size,
+			} );
+			let acceptLabel;
+			let acceptLabelBefore;
+			let acceptLabelAfter;
+			if ( fields[ index ].label && fields[ index ].label.includes( '{privacy_policy}' ) ) {
+				acceptLabelBefore = fields[ index ].label.split( '{' )[ 0 ];
+				acceptLabelAfter = fields[ index ].label.split( '}' )[ 1 ];
+				acceptLabel = (
+					<Fragment>
+						{ acceptLabelBefore }<a href={ ( undefined !== kadence_blocks_params.privacy_link && '' !== kadence_blocks_params.privacy_link ? kadence_blocks_params.privacy_link : '#' ) } target="blank" rel="noopener noreferrer">{ ( undefined !== kadence_blocks_params.privacy_title && '' !== kadence_blocks_params.privacy_title ? kadence_blocks_params.privacy_title : 'Privacy policy' ) }</a>{ acceptLabelAfter }
+					</Fragment>
+				);
+			} else {
+				acceptLabel = fields[ index ].label;
+			}
 			return (
-				<div className={ 'kadence-blocks-form-field' } >
-					{ fields[ index ].showLabel && (
-						<label htmlFor={ `kb_field_${ index }` }>{ ( fields[ index ].label ? fields[ index ].label : '' ) } { ( fields[ index ].required ? <span className="required">*</span> : '' ) }</label>
+				<div className={ fieldClassName } >
+					{ 'accept' === fields[ index ].type && (
+						<Fragment>
+							{ fields[ index ].showLink && (
+								<a href={ ( undefined !== fields[ index ].default && '' !== fields[ index ].default ? fields[ index ].default : '#' ) } target="_blank" rel="noopener noreferrer" className={ 'kb-accept-link' }>{ ( undefined !== fields[ index ].placeholder && '' !== fields[ index ].placeholder ? fields[ index ].placeholder : 'View Privacy Policy' ) }</a>
+							) }
+							<input type="checkbox" name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } className={ `kb-field kb-checkbox-style kb-${ fields[ index ].type }` } value={ 'accept' } checked={ fields[ index ].inline ? true : false } data-type={ fields[ index ].type } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } />
+							<label htmlFor={ `kb_field_${ index }` }>{ ( fields[ index ].label ? acceptLabel : '' ) }{ ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required">*</span> : '' ) }</label>
+						</Fragment>
 					) }
-					{ 'textarea' === fields[ index ].type && (
-						<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } />
+					{ 'accept' !== fields[ index ].type && (
+						<Fragment>
+							{ fields[ index ].showLabel && (
+								<label htmlFor={ `kb_field_${ index }` }>{ ( fields[ index ].label ? fields[ index ].label : '' ) }{ ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required">*</span> : '' ) }</label>
+							) }
+							{ 'textarea' === fields[ index ].type && (
+								<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } />
+							) }
+							{ 'select' === fields[ index ].type && (
+								<select name={ ( fields[ index ].multiSelect ? `kb_field_${ index }[]` : `kb_field_${ index }` ) } id={ `kb_field_${ index }` } multiple={ ( fields[ index ].multiSelect ? true : false ) } data-label={ fields[ index ].label } type={ fields[ index ].type } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-select-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } data-required={ ( fields[ index ].required ? 'yes' : undefined ) }>
+									{ times( fields[ index ].options.length, n => (
+										<option
+											key={ n }
+											selected={ ( undefined !== fields[ index ].options[ n ].value && fields[ index ].options[ n ].value === fields[ index ].default ? true : false ) }
+											value={ ( undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '' ) }
+										>{ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }</option>
+									) ) }
+								</select>
+							) }
+							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && (
+								<input name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete={ ( '' !== fields[ index ].auto ? fields[ index ].auto : undefined ) } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } />
+							) }
+						</Fragment>
 					) }
-					{ 'textarea' !== fields[ index ].type && (
-						<input name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete={ ( '' !== fields[ index ].auto ? fields[ index ].auto : undefined ) } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } />
+					{ undefined !== fields[ index ].description && '' !== fields[ index ].description && (
+						<span className={ 'kb-field-help' }>{ ( fields[ index ].description ? fields[ index ].description : '' ) }</span>
 					) }
 				</div>
 			);
@@ -326,8 +394,15 @@ registerBlockType( 'kadence/form', {
 				{ times( fields.length, n => fieldOutput( n ) ) }
 			</Fragment>
 		);
+		const submitClassName = classnames( {
+			'kadence-blocks-form-field': true,
+			'kb-submit-field': true,
+			[ `kb-field-desk-width-${ submit[ 0 ].width[ 0 ] }` ]: submit[ 0 ].width && submit[ 0 ].width[ 0 ],
+			[ `kb-field-tablet-width-${ submit[ 0 ].width[ 1 ] }` ]: submit[ 0 ].width && submit[ 0 ].width[ 1 ],
+			[ `kb-field-mobile-width-${ submit[ 0 ].width[ 2 ] }` ]: submit[ 0 ].width && submit[ 0 ].width[ 2 ],
+		} );
 		return (
-			<div id={ `animate-id${ uniqueID }` } className={ `kadence-form-${ uniqueID } kb-form-wrap` }>
+			<div className={ `kadence-form-${ uniqueID } kb-form-wrap${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }` }>
 				<form className="kb-form" action="" method="post">
 					{ renderFieldOutput }
 					<input type="hidden" name="_kb_form_id" value={ uniqueID } />
@@ -337,11 +412,11 @@ registerBlockType( 'kadence/form', {
 						 <input type="hidden" name="recaptcha_response" id="kb_recaptcha_response" />
 					) }
 					<input className="kadence-blocks-field verify" type="email" name="_kb_verify_email" autoComplete="off" placeholder="Email" tabIndex="-1" />
-					<div className="kadence-blocks-form-field kb-submit-field" >
+					<div className={ submitClassName }>
 						<RichText.Content
 							tagName="button"
 							value={ ( '' !== submit[ 0 ].label ? submit[ 0 ].label : 'Submit' ) }
-							className={ 'kb-forms-submit' }
+							className={ `kb-forms-submit button kb-button-size-${ ( submit[ 0 ].size ? submit[ 0 ].size : 'standard' ) } kb-button-width-${ ( submit[ 0 ].widthType ? submit[ 0 ].widthType : 'auto' ) }` }
 						/>
 					</div>
 				</form>

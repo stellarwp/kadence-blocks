@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2019-10-17 08:08-0600\n"
+"POT-Creation-Date: 2019-10-28 17:38-0600\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence WP\n"
@@ -21,8 +21,90 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-2: dist/vendor\n"
 "X-Poedit-SearchPathExcluded-3: src\n"
 
-#: dist/init.php:242 dist/settings/class-kadence-blocks-settings.php:250
-#: dist/settings/class-kadence-blocks-settings.php:495
+#: dist/class-kadence-blocks-frontend.php:697
+msgid "Please fix the errors to proceed"
+msgstr ""
+
+#: dist/class-kadence-blocks-frontend.php:699
+msgid "is required"
+msgstr ""
+
+#: dist/class-kadence-blocks-frontend.php:700
+msgid "does not match"
+msgstr ""
+
+#: dist/class-kadence-blocks-frontend.php:701
+msgid "is not valid"
+msgstr ""
+
+#: dist/class-kadence-blocks-frontend.php:702
+msgid "requires a unique entry and this value has already been used"
+msgstr ""
+
+#: dist/class-kadence-blocks-frontend.php:703 dist/blocks.build.js:1
+msgid "Item"
+msgstr ""
+
+#: dist/form-ajax.php:50
+msgid "Submission Rejected"
+msgstr ""
+
+#: dist/form-ajax.php:50
+msgid "Spam Detected"
+msgstr ""
+
+#: dist/form-ajax.php:57 dist/form-ajax.php:76 dist/form-ajax.php:432
+#: dist/blocks.build.js:1
+msgid "Submission Failed"
+msgstr ""
+
+#: dist/form-ajax.php:57
+msgid "Data not Found"
+msgstr ""
+
+#: dist/form-ajax.php:67 dist/form-ajax.php:169
+msgid "Submission"
+msgstr ""
+
+#: dist/form-ajax.php:75 dist/blocks.build.js:1
+msgid "Submission Success, Thanks for getting in touch!"
+msgstr ""
+
+#: dist/form-ajax.php:85
+msgid "reCAPTCHA Failed"
+msgstr ""
+
+#: dist/form-ajax.php:151
+msgid "Required Field Empty"
+msgstr ""
+
+#: dist/form-ajax.php:241
+msgid "Submission rejected"
+msgstr ""
+
+#: dist/form-ajax.php:241
+msgid "Token invalid"
+msgstr ""
+
+#: dist/form-ajax.php:244
+msgid "Submission failed"
+msgstr ""
+
+#: dist/form-ajax.php:244
+msgid "No Data"
+msgstr ""
+
+#: dist/form-ajax.php:274 dist/blocks.build.js:1
+msgid "Accept"
+msgstr ""
+
+#: dist/form-ajax.php:432
+msgid "Data not found"
+msgstr ""
+
+#: dist/init.php:244 dist/settings/class-kadence-blocks-settings.php:249
+#: dist/settings/class-kadence-blocks-settings.php:251
+#: dist/settings/class-kadence-blocks-settings.php:520
 msgid "Kadence Blocks"
 msgstr ""
 
@@ -70,371 +152,397 @@ msgstr ""
 msgid "Very dark gray"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:250
+#: dist/settings/class-kadence-blocks-settings.php:249
+#: dist/settings/class-kadence-blocks-settings.php:251
+#: dist/settings/class-kadence-blocks-settings.php:252
 msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:258
-msgid "Close"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:259
-msgid "Save"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:260
-msgid "Updating"
+#: dist/settings/class-kadence-blocks-settings.php:252
+#: dist/settings/class-kadence-blocks-settings.php:887 dist/blocks.build.js:1
+msgid "Settings"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:261
-msgid "Updated"
+msgid "Close"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:262
-msgid "Config"
+#: dist/settings/class-kadence-blocks-settings.php:262 dist/blocks.build.js:1
+msgid "Save"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:263
+msgid "Updating"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:264
+msgid "Updated"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:265
+msgid "Config"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:266
 msgid "Default Settings"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:269
-#: dist/settings/class-kadence-blocks-settings.php:275
-#: dist/settings/class-kadence-blocks-settings.php:281
-#: dist/settings/class-kadence-blocks-settings.php:287
-#: dist/settings/class-kadence-blocks-settings.php:293
-#: dist/settings/class-kadence-blocks-settings.php:299
-#: dist/settings/class-kadence-blocks-settings.php:305
-#: dist/settings/class-kadence-blocks-settings.php:311
-#: dist/settings/class-kadence-blocks-settings.php:317
-#: dist/settings/class-kadence-blocks-settings.php:323
+#: dist/settings/class-kadence-blocks-settings.php:272
+#: dist/settings/class-kadence-blocks-settings.php:278
+#: dist/settings/class-kadence-blocks-settings.php:284
+#: dist/settings/class-kadence-blocks-settings.php:290
+#: dist/settings/class-kadence-blocks-settings.php:296
+#: dist/settings/class-kadence-blocks-settings.php:302
+#: dist/settings/class-kadence-blocks-settings.php:308
+#: dist/settings/class-kadence-blocks-settings.php:314
+#: dist/settings/class-kadence-blocks-settings.php:320
+#: dist/settings/class-kadence-blocks-settings.php:326
 msgid ""
 "Setting defaults has moved into Gutenberg, click on the top right corner "
 "settings and go to Kadence Blocks Controls"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:351
+#: dist/settings/class-kadence-blocks-settings.php:354
 msgid "Config Kadence Block Defaults"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:362
+#: dist/settings/class-kadence-blocks-settings.php:365
 msgid "Config Kadence Block Settings View"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:373
+#: dist/settings/class-kadence-blocks-settings.php:376
 msgid "Config Kadence Blocks Color Palette"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:389
+#: dist/settings/class-kadence-blocks-settings.php:387
+msgid "Google reCaptcha Site Key"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:398
+msgid "Google reCaptcha Secret Key"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:414
 msgid "Small Template"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:390
+#: dist/settings/class-kadence-blocks-settings.php:415
 msgid "Large Template"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:392
+#: dist/settings/class-kadence-blocks-settings.php:417
 msgid "Post default"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:393
+#: dist/settings/class-kadence-blocks-settings.php:418
 msgid "Page Default"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:395
+#: dist/settings/class-kadence-blocks-settings.php:420
 msgid "Enable Editor Width"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:404
+#: dist/settings/class-kadence-blocks-settings.php:429
 msgid ""
 "Allows for changes to the editor width on per page/post basis with preset "
 "defaults."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:406
-#: dist/settings/class-kadence-blocks-settings.php:419
+#: dist/settings/class-kadence-blocks-settings.php:431
+#: dist/settings/class-kadence-blocks-settings.php:444
 msgid "False"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:407
-#: dist/settings/class-kadence-blocks-settings.php:420
+#: dist/settings/class-kadence-blocks-settings.php:432
+#: dist/settings/class-kadence-blocks-settings.php:445
 msgid "True"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:417
+#: dist/settings/class-kadence-blocks-settings.php:442
 msgid ""
 "Experimental editor CSS for less excess margins in Gutenberg in an attempt "
 "to get a closer WYSIWYG editing experience."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:430
-#: dist/settings/class-kadence-blocks-settings.php:439 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:455
+#: dist/settings/class-kadence-blocks-settings.php:464 dist/blocks.build.js:1
 msgid "px"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:449
-#: dist/settings/class-kadence-blocks-settings.php:461 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:474
+#: dist/settings/class-kadence-blocks-settings.php:486 dist/blocks.build.js:1
 msgid "Small"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:450
-#: dist/settings/class-kadence-blocks-settings.php:462 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:475
+#: dist/settings/class-kadence-blocks-settings.php:487 dist/blocks.build.js:1
 msgid "Large"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:451
-#: dist/settings/class-kadence-blocks-settings.php:463
+#: dist/settings/class-kadence-blocks-settings.php:476
+#: dist/settings/class-kadence-blocks-settings.php:488
 msgid "Fullwidth"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:498
+#: dist/settings/class-kadence-blocks-settings.php:523
 msgid "Page Builder Toolkit"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:529
+#: dist/settings/class-kadence-blocks-settings.php:554
 msgid "Dashboard"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:530
+#: dist/settings/class-kadence-blocks-settings.php:555
 msgid "Help / Tutorials"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:532
+#: dist/settings/class-kadence-blocks-settings.php:557
 msgid "Pro"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:537
+#: dist/settings/class-kadence-blocks-settings.php:562
 msgid "Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:537
+#: dist/settings/class-kadence-blocks-settings.php:562
 msgid "Disable/Enable Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:557
-#: dist/settings/class-kadence-blocks-settings.php:561
+#: dist/settings/class-kadence-blocks-settings.php:582
+#: dist/settings/class-kadence-blocks-settings.php:586
 msgid "Activate"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:559
-#: dist/settings/class-kadence-blocks-settings.php:561
+#: dist/settings/class-kadence-blocks-settings.php:584
+#: dist/settings/class-kadence-blocks-settings.php:586
 msgid "Deactivate"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:561
+#: dist/settings/class-kadence-blocks-settings.php:586
 msgid "Activating..."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:561
+#: dist/settings/class-kadence-blocks-settings.php:586
 msgid "Activated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:561
+#: dist/settings/class-kadence-blocks-settings.php:586
 msgid "Deactivating..."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:561
+#: dist/settings/class-kadence-blocks-settings.php:586
 msgid "Deactivated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:570
+#: dist/settings/class-kadence-blocks-settings.php:595
 msgid "Editor Max Widths"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:570
+#: dist/settings/class-kadence-blocks-settings.php:595
 msgid "Match the editor width to your sites width."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:572
+#: dist/settings/class-kadence-blocks-settings.php:597
 msgid "Note: The current active themes \"$content_width\" is set to:"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:579
+#: dist/settings/class-kadence-blocks-settings.php:604
 msgid "Save Changes"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:588
+#: dist/settings/class-kadence-blocks-settings.php:613
 msgid "Helpful Links and Resources"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:596
+#: dist/settings/class-kadence-blocks-settings.php:621
 msgid "Support"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:597
+#: dist/settings/class-kadence-blocks-settings.php:622
 msgid ""
 "Are you having trouble getting things to look how you want? Or are you stuck "
 "and not sure what to do? We can help!"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:598
+#: dist/settings/class-kadence-blocks-settings.php:623
 msgid "Ask a question"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:608
+#: dist/settings/class-kadence-blocks-settings.php:633
 msgid "Changelog Blog"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:609
+#: dist/settings/class-kadence-blocks-settings.php:634
 msgid "Read through highlights of recent changes made to Kadence Blocks."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:610
+#: dist/settings/class-kadence-blocks-settings.php:635
 msgid "View"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:620
+#: dist/settings/class-kadence-blocks-settings.php:645
 msgid "Plugin Tutorials & Documentation"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:621
+#: dist/settings/class-kadence-blocks-settings.php:646
 msgid ""
 "Kadence Blocks documentation is set up to help you create amazing content."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:622
+#: dist/settings/class-kadence-blocks-settings.php:647
 msgid "Browse Docs"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:634
+#: dist/settings/class-kadence-blocks-settings.php:659
 msgid "Kadence WP Newsletter"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:635
+#: dist/settings/class-kadence-blocks-settings.php:660
 msgid ""
 "Get the latest news about product updates and new plugins right to your "
 "inbox."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:636
+#: dist/settings/class-kadence-blocks-settings.php:661
 msgid "Subscribe"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:657 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:682 dist/blocks.build.js:1
 msgid "Row Layout"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:658
+#: dist/settings/class-kadence-blocks-settings.php:683
 msgid ""
 "Create rows with nested blocks either in columns or as a container. Give "
 "style to your rows with background, overlay, padding, etc."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:663 dist/blocks.build.js:1
-msgid "Icon"
+#: dist/settings/class-kadence-blocks-settings.php:688 dist/blocks.build.js:1
+msgid "Form"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:664
+#: dist/settings/class-kadence-blocks-settings.php:689
 msgid ""
-"Choose from over 1500+ SVG Icons to add into your page and style the size, "
-"colors, background, border, etc."
+"Create a contact form or marketing form and style it within the block editor."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:669 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:694 dist/blocks.build.js:1
 msgid "Advanced Gallery"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:670 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:695
 msgid ""
 "Photo galleries, carousels, and sliders! Enable custom links, captions, and "
 "more. Plus, you can select image sizes."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:675 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:700 dist/blocks.build.js:1
 msgid "Advanced Button"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:676
+#: dist/settings/class-kadence-blocks-settings.php:701
 msgid ""
 "Create an advanced button or a row of buttons. Style each one including "
 "hover controls plus you can use an icon and display them side by side"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:681 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:706 dist/blocks.build.js:1
+msgid "Icon"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:707
+msgid ""
+"Choose from over 1500+ SVG Icons to add into your page and style the size, "
+"colors, background, border, etc."
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:712 dist/blocks.build.js:1
 msgid "Spacer/Divider"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:682
+#: dist/settings/class-kadence-blocks-settings.php:713
 msgid ""
 "Easily create a divider and determine the space around it or just create "
 "some space in your content."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:687 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:718 dist/blocks.build.js:1
 msgid "Advanced Heading"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:688
+#: dist/settings/class-kadence-blocks-settings.php:719
 msgid ""
 "Transform your headings to Advanced Headings and customize the font family "
 "(even google fonts), color, and size."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:693 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:724 dist/blocks.build.js:1
 msgid "Tabs"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:694
+#: dist/settings/class-kadence-blocks-settings.php:725
 msgid ""
 "Create custom vertical or horizontal tabs with advanced styling controls. "
 "Each tab content is an empty canvas able to contain any other blocks."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:699 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:730 dist/blocks.build.js:1
 msgid "Info Box"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:700 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:731 dist/blocks.build.js:1
 msgid ""
 "Create a box link containing an icon or image and optionally a title, "
 "description, and learn more text. Style static and hover colors even show a "
 "box-shadow."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:705 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:736 dist/blocks.build.js:1
 msgid "Accordion"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:706
+#: dist/settings/class-kadence-blocks-settings.php:737 dist/blocks.build.js:1
 msgid ""
-"Create beautiful accordions! Each pane is able to contain any other block, "
-"customize title styles, content background and borders."
+"Create beautiful accordions! Each pane can contain any other block, "
+"customize title styles, content background, and borders."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:711 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:742 dist/blocks.build.js:1
 msgid "Icon List"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:712
+#: dist/settings/class-kadence-blocks-settings.php:743
 msgid ""
 "Add beautiful icons to your lists and make them more engaging. Over 1500 "
 "icons to choose from and unlimited styles."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:717 dist/blocks.build.js:1
+#: dist/settings/class-kadence-blocks-settings.php:748 dist/blocks.build.js:1
 msgid "Testimonials"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:718
+#: dist/settings/class-kadence-blocks-settings.php:749
 msgid ""
 "Create confidence in your brand or product by showing off beautiful unique "
 "testimonials, add as a carousel or a grid."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:729
+#: dist/settings/class-kadence-blocks-settings.php:760
 msgid "Invalid nonce"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:732
+#: dist/settings/class-kadence-blocks-settings.php:763
 msgid "Missing Content"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:738
+#: dist/settings/class-kadence-blocks-settings.php:769
 msgid "Nothing to Save"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:850 dist/blocks.build.js:1
-msgid "Settings"
+#. translators: %s - link to a site.
+#: dist/templates/form-email.php:152
+#, php-format
+msgid "Sent from %s"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -681,7 +789,17 @@ msgid "Divider Width by %"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid ""
+"Create an advanced button or a row of buttons. Style each one, including "
+"hover controls!"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Button"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "KB"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -2793,6 +2911,10 @@ msgid "h6"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Content Minimum Height"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Add Accordion Item"
 msgstr ""
 
@@ -2822,10 +2944,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "list"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Item"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -3132,6 +3250,12 @@ msgid "kt-carousel-arrowstyle-"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid ""
+"Photo galleries, carousels, and sliders! Enable custom links, captions, and "
+"more."
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Gallery"
 msgstr ""
 
@@ -3157,6 +3281,14 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Slider"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Thumbnail Slider (Pro addon)"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Tiles (Pro addon)"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -3358,6 +3490,515 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Open in New Tab"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Create a contact or marketing form for your website."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Contact"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Marketing"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Email"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Redirect"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Auto Respond Email (Pro addon)"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Send instant response to form entrant"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Database Entry (Pro addon)"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Log each form submission"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Field"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Field Type"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Text"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Textarea"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Select"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Required?"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Textarea Rows"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Option"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Add Option"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Multi Select?"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Show inline?"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Show Policy Link"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Link Text"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "View Privacy Policy"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Link URL"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Start checked?"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Field Label"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Show Label"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Field Placeholder"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Default"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Help Text"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Field Auto Fill"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Name"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "First Name"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Last Name"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Organization"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Street Address"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Address Line 1"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Country Name"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Postal Code"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Telephone"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Off"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Column Width"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "20%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "25%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "33%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "40%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "50%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "66%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "75%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "80%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "100%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Unset"
+msgstr ""
+
+#: dist/blocks.build.js:1
+#, javascript-format
+msgid "Field %1$d of %2$d in form"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Move Field Up"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Move Field Down"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Duplicate Field"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Remove Field"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Add Field"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Actions After Submit"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Email Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Email To Address"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "name@example.com"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Email Subject"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "From Email"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "From Name"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Reply To"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Email Field"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Cc"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Bcc"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Send as HTMl email?"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "If off plain text is used."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Redirect Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Redirect to"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Google reCAPTCHA"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Enable Google reCAPTCHA V3"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Get keys"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Get help"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Site Key"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Secret Key"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Saving"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Remove"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Field Styles"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Size"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Padding"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Mobile Padding"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Tablet Padding"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Desktop Padding"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Colors"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Focus"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Focus Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Focus Background"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Focus Border"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Focus Box Shadow"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Background"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Border"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Input Box Shadow"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Field Row Gap"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Field Column Gutter"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Label Styles"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Label Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Show Required?"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "If off required asterisk is removed."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Required Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Advanced Label Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Button Styles"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Button Colors"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Button Hover Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Button Hover Background"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Button Hover Border"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Button Hover Box Shadow"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Button Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Button Background"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Advanced Button Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Message Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Success Message"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Success Message Colors"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Success Message Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Success Message Background"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Success Message Border"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Error Message"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Error Message Colors"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Error Message Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Error Message Background"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Error Message Border"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Advanced Message Font Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Submit"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -3622,10 +4263,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "CSS Class"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Advanced Button Settings"
 msgstr ""
 
 #: dist/blocks.build.js:1

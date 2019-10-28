@@ -40,15 +40,16 @@ const { registerBlockType } = wp.blocks;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/accordion', {
-	title: __( 'Accordion' ),
+	title: __( 'Accordion', 'kadence-blocks' ),
+	description: __( 'Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders.', 'kadence-blocks' ),
 	icon: {
 		src: icons.accordionBlock,
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'accordion' ),
-		__( 'pane' ),
-		__( 'KT' ),
+		__( 'accordion', 'kadence-blocks' ),
+		__( 'pane', 'kadence-blocks' ),
+		__( 'KB', 'kadence-blocks' ),
 	],
 	supports: {
 		anchor: true,

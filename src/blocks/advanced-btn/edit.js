@@ -232,7 +232,7 @@ class KadenceAdvancedButton extends Component {
 							) }
 							<RichText
 								tagName="div"
-								placeholder={ __( 'Button...' ) }
+								placeholder={ __( 'Button...', 'kadence-blocks'  ) }
 								value={ btns[ index ].text }
 								unstableOnFocus={ () => {
 									if ( 1 === index ) {
@@ -272,7 +272,7 @@ class KadenceAdvancedButton extends Component {
 							/>
 							<IconButton
 								icon={ 'editor-break' }
-								label={ __( 'Apply' ) }
+								label={ __( 'Apply', 'kadence-blocks'  ) }
 								type={ 'submit' }
 							/>
 						</form>
@@ -336,10 +336,10 @@ class KadenceAdvancedButton extends Component {
 		const tabControls = ( index ) => {
 			return (
 				<PanelBody
-					title={ __( 'Button' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }
+					title={ __( 'Button', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 				>
-					<h2 className="side-h2-label">{ __( 'Button Link' ) }</h2>
+					<h2 className="side-h2-label">{ __( 'Button Link', 'kadence-blocks' ) }</h2>
 					<div className="kt-btn-link-group">
 						<URLInput
 							value={ btns[ index ].link }
@@ -351,7 +351,7 @@ class KadenceAdvancedButton extends Component {
 						<IconButton
 							className="kt-link-settings"
 							icon={ 'arrow-down-alt2' }
-							label={ __( 'Link Settings' ) }
+							label={ __( 'Link Settings', 'kadence-blocks' ) }
 							onClick={ () => this.setState( { btnLink: ( this.state.btnLink ? false : true ) } ) }
 						/>
 					</div>
@@ -359,22 +359,22 @@ class KadenceAdvancedButton extends Component {
 						<Fragment>
 							<div className="kt-spacer-sidebar-15"></div>
 							<SelectControl
-								label={ __( 'Link Target' ) }
+								label={ __( 'Link Target', 'kadence-blocks' ) }
 								value={ btns[ index ].target }
 								options={ [
-									{ value: '_self', label: __( 'Same Window' ) },
-									{ value: '_blank', label: __( 'New Window' ) },
-									{ value: 'video', label: __( 'Video Popup' ) },
+									{ value: '_self', label: __( 'Same Window', 'kadence-blocks' ) },
+									{ value: '_blank', label: __( 'New Window', 'kadence-blocks' ) },
+									{ value: 'video', label: __( 'Video Popup', 'kadence-blocks' ) },
 								] }
 								onChange={ value => {
 									this.saveArrayUpdate( { target: value }, index );
 								} }
 							/>
 							{ btns[ index ].target === 'video' && (
-								<p>{ __( 'NOTE: Video popup only works with youtube and vimeo links.' ) }</p>
+								<p>{ __( 'NOTE: Video popup only works with youtube and vimeo links.', 'kadence-blocks' ) }</p>
 							) }
 							<ToggleControl
-								label={ __( 'Set link to nofollow?' ) }
+								label={ __( 'Set link to nofollow?', 'kadence-blocks' ) }
 								checked={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
 								onChange={ ( value ) => this.saveArrayUpdate( { noFollow: value }, index ) }
 							/>
@@ -382,7 +382,7 @@ class KadenceAdvancedButton extends Component {
 					) }
 					{ this.showSettings( 'sizeSettings' ) && (
 						<Fragment>
-							<h2 className="kt-heading-size-title">{ __( 'Text Size' ) }</h2>
+							<h2 className="kt-heading-size-title">{ __( 'Text Size', 'kadence-blocks' ) }</h2>
 							<TabPanel className="kt-size-tabs"
 								activeClass="active-tab"
 								tabs={ [
@@ -456,7 +456,7 @@ class KadenceAdvancedButton extends Component {
 							</TabPanel>
 							<div className="kt-btn-size-settings-container">
 								<h2 className="kt-beside-btn-group">{ __( 'Button Size' ) }</h2>
-								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Size' ) }>
+								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Size', 'kadence-blocks' ) }>
 									{ map( btnSizes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -473,7 +473,7 @@ class KadenceAdvancedButton extends Component {
 							</div>
 							{ 'custom' === btns[ index ].btnSize && (
 								<div className="kt-inner-sub-section">
-									<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Padding' ) }</h2>
+									<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Padding', 'kadence-blocks' ) }</h2>
 									<TabPanel className="kt-size-tabs"
 										activeClass="active-tab"
 										tabs={ [
@@ -501,7 +501,7 @@ class KadenceAdvancedButton extends Component {
 														tabout = (
 															<Fragment>
 																<RangeControl
-																	label={ __( 'Top and Bottom Padding' ) }
+																	label={ __( 'Top and Bottom Padding', 'kadence-blocks' ) }
 																	value={ ( undefined !== btns[ index ].responsivePaddingBT && undefined !== btns[ index ].responsivePaddingBT[ 1 ] ? btns[ index ].responsivePaddingBT[ 1 ] : '' ) }
 																	onChange={ value => {
 																		this.saveArrayUpdate( { responsivePaddingBT: [ ( undefined !== btns[ index ].responsivePaddingBT && undefined !== btns[ index ].responsivePaddingBT[ 0 ] ? btns[ index ].responsivePaddingBT[ 0 ] : '' ), value ] }, index );
@@ -510,7 +510,7 @@ class KadenceAdvancedButton extends Component {
 																	max={ 100 }
 																/>
 																<RangeControl
-																	label={ __( 'Left and Right Padding' ) }
+																	label={ __( 'Left and Right Padding', 'kadence-blocks' ) }
 																	value={ ( undefined !== btns[ index ].responsivePaddingLR && undefined !== btns[ index ].responsivePaddingLR[ 1 ] ? btns[ index ].responsivePaddingLR[ 1 ] : '' ) }
 																	onChange={ value => {
 																		this.saveArrayUpdate( { responsivePaddingLR: [ ( undefined !== btns[ index ].responsivePaddingLR && undefined !== btns[ index ].responsivePaddingLR[ 0 ] ? btns[ index ].responsivePaddingLR[ 0 ] : '' ), value ] }, index );
@@ -524,7 +524,7 @@ class KadenceAdvancedButton extends Component {
 														tabout = (
 															<Fragment>
 																<RangeControl
-																	label={ __( 'Top and Bottom Padding' ) }
+																	label={ __( 'Top and Bottom Padding', 'kadence-blocks' ) }
 																	value={ ( undefined !== btns[ index ].responsivePaddingBT && undefined !== btns[ index ].responsivePaddingBT[ 0 ] ? btns[ index ].responsivePaddingBT[ 0 ] : '' ) }
 																	onChange={ value => {
 																		this.saveArrayUpdate( { responsivePaddingBT: [ value, ( undefined !== btns[ index ].responsivePaddingBT && undefined !== btns[ index ].responsivePaddingBT[ 1 ] ? btns[ index ].responsivePaddingBT[ 1 ] : '' ) ] }, index );
@@ -533,7 +533,7 @@ class KadenceAdvancedButton extends Component {
 																	max={ 100 }
 																/>
 																<RangeControl
-																	label={ __( 'Left and Right Padding' ) }
+																	label={ __( 'Left and Right Padding', 'kadence-blocks' ) }
 																	value={ ( undefined !== btns[ index ].responsivePaddingLR && undefined !== btns[ index ].responsivePaddingLR[ 0 ] ? btns[ index ].responsivePaddingLR[ 0 ] : '' ) }
 																	onChange={ value => {
 																		this.saveArrayUpdate( { responsivePaddingLR: [ value, ( undefined !== btns[ index ].responsivePaddingLR && undefined !== btns[ index ].responsivePaddingLR[ 1 ] ? btns[ index ].responsivePaddingLR[ 1 ] : '' ) ] }, index );
@@ -547,7 +547,7 @@ class KadenceAdvancedButton extends Component {
 														tabout = (
 															<Fragment>
 																<RangeControl
-																	label={ __( 'Top and Bottom Padding' ) }
+																	label={ __( 'Top and Bottom Padding', 'kadence-blocks' ) }
 																	value={ btns[ index ].paddingBT }
 																	onChange={ value => {
 																		this.saveArrayUpdate( { paddingBT: value }, index );
@@ -556,7 +556,7 @@ class KadenceAdvancedButton extends Component {
 																	max={ 100 }
 																/>
 																<RangeControl
-																	label={ __( 'Left and Right Padding' ) }
+																	label={ __( 'Left and Right Padding', 'kadence-blocks' ) }
 																	value={ btns[ index ].paddingLR }
 																	onChange={ value => {
 																		this.saveArrayUpdate( { paddingLR: value }, index );
@@ -575,8 +575,8 @@ class KadenceAdvancedButton extends Component {
 								</div>
 							) }
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{ __( 'Button Width' ) }</h2>
-								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Width' ) }>
+								<h2 className="kt-beside-btn-group">{ __( 'Button Width', 'kadence-blocks' ) }</h2>
+								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Width', 'kadence-blocks' ) }>
 									{ map( btnWidths, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -593,7 +593,7 @@ class KadenceAdvancedButton extends Component {
 							</div>
 							{ 'fixed' === widthType && (
 								<div className="kt-inner-sub-section">
-									<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Fixed Width' ) }</h2>
+									<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Fixed Width', 'kadence-blocks' ) }</h2>
 									<TabPanel className="kt-size-tabs"
 										activeClass="active-tab"
 										tabs={ [
@@ -668,7 +668,7 @@ class KadenceAdvancedButton extends Component {
 					) }
 					{ this.showSettings( 'colorSettings' ) && (
 						<Fragment>
-							<h2 className="kt-tab-wrap-title kt-color-settings-title">{ __( 'Color Settings' ) }</h2>
+							<h2 className="kt-tab-wrap-title kt-color-settings-title">{ __( 'Color Settings', 'kadence-blocks' ) }</h2>
 							<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 								activeClass="active-tab"
 								tabs={ [
@@ -697,7 +697,7 @@ class KadenceAdvancedButton extends Component {
 									}
 								}
 							</TabPanel>
-							<h2>{ __( 'Border Settings' ) }</h2>
+							<h2>{ __( 'Border Settings', 'kadence-blocks' ) }</h2>
 							<RangeControl
 								label={ __( 'Border Width' ) }
 								value={ btns[ index ].borderWidth }
@@ -708,7 +708,7 @@ class KadenceAdvancedButton extends Component {
 								max={ 20 }
 							/>
 							<RangeControl
-								label={ __( 'Border Radius' ) }
+								label={ __( 'Border Radius', 'kadence-blocks' ) }
 								value={ btns[ index ].borderRadius }
 								onChange={ value => {
 									this.saveArrayUpdate( { borderRadius: value }, index );
@@ -720,7 +720,7 @@ class KadenceAdvancedButton extends Component {
 					) }
 					{ this.showSettings( 'iconSettings' ) && (
 						<Fragment>
-							<h2 className="kt-tool">{ __( 'Icon Settings' ) }</h2>
+							<h2 className="kt-tool">{ __( 'Icon Settings', 'kadence-blocks' ) }</h2>
 							<div className="kt-select-icon-container">
 								<FontIconPicker
 									icons={ IcoNames }
@@ -735,7 +735,7 @@ class KadenceAdvancedButton extends Component {
 								/>
 							</div>
 							<SelectControl
-								label={ __( 'Icon Location' ) }
+								label={ __( 'Icon Location', 'kadence-blocks' ) }
 								value={ btns[ index ].iconSide }
 								options={ [
 									{ value: 'right', label: __( 'Right' ) },
@@ -748,12 +748,12 @@ class KadenceAdvancedButton extends Component {
 						</Fragment>
 					) }
 					<TextControl
-						label={ __( 'Add Custom CSS Class' ) }
+						label={ __( 'Add Custom CSS Class', 'kadence-blocks' ) }
 						value={ ( btns[ index ].cssClass ? btns[ index ].cssClass : '' ) }
 						onChange={ ( value ) => this.saveArrayUpdate( { cssClass: value }, index ) }
 					/>
 					<RangeControl
-						label={ __( 'Space Between Next Button' ) }
+						label={ __( 'Space Between Next Button', 'kadence-blocks' ) }
 						value={ btns[ index ].gap }
 						onChange={ value => {
 							this.saveArrayUpdate( { gap: value }, index );
@@ -768,7 +768,7 @@ class KadenceAdvancedButton extends Component {
 			return (
 				<div>
 					<AdvancedColorControl
-						label={ __( 'Hover Text Color' ) }
+						label={ __( 'Hover Text Color', 'kadence-blocks' ) }
 						colorValue={ ( btns[ index ].colorHover ? btns[ index ].colorHover : '#ffffff' ) }
 						colorDefault={ '#ffffff' }
 						onColorChange={ value => {
@@ -776,8 +776,8 @@ class KadenceAdvancedButton extends Component {
 						} }
 					/>
 					<div className="kt-btn-size-settings-container">
-						<h2 className="kt-beside-btn-group">{ __( 'Background Type' ) }</h2>
-						<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type' ) }>
+						<h2 className="kt-beside-btn-group">{ __( 'Background Type', 'kadence-blocks' ) }</h2>
+						<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type', 'kadence-blocks' ) }>
 							{ map( bgType, ( { name, key } ) => (
 								<Button
 									key={ key }
@@ -795,7 +795,7 @@ class KadenceAdvancedButton extends Component {
 					{ 'gradient' !== btns[ index ].backgroundHoverType && (
 						<div className="kt-inner-sub-section">
 							<AdvancedColorControl
-								label={ __( 'Background Color' ) }
+								label={ __( 'Background Color', 'kadence-blocks' ) }
 								colorValue={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '#444444' ) }
 								colorDefault={ '#444444' }
 								opacityValue={ btns[ index ].backgroundHoverOpacity }
@@ -811,7 +811,7 @@ class KadenceAdvancedButton extends Component {
 					{ 'gradient' === btns[ index ].backgroundHoverType && (
 						<div className="kt-inner-sub-section">
 							<AdvancedColorControl
-								label={ __( 'Gradient Color 1' ) }
+								label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
 								colorValue={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '#444444' ) }
 								colorDefault={ '#444444' }
 								opacityValue={ btns[ index ].backgroundHoverOpacity }
@@ -823,7 +823,7 @@ class KadenceAdvancedButton extends Component {
 								} }
 							/>
 							<RangeControl
-								label={ __( 'Location' ) }
+								label={ __( 'Location', 'kadence-blocks' ) }
 								value={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 2 ] ? btns[ index ].gradientHover[ 2 ] : 0 ) }
 								onChange={ ( value ) => {
 									this.saveArrayUpdate( { gradientHover: [ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 0 ] ? btns[ index ].gradientHover[ 0 ] : '#777777' ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 1 ] ? btns[ index ].gradientHover[ 1 ] : 1 ), value, ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 3 ] ? btns[ index ].gradientHover[ 3 ] : 100 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 4 ] ? btns[ index ].gradientHover[ 4 ] : 'linear' ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 5 ] ? btns[ index ].gradientHover[ 5 ] : 180 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 6 ] ? btns[ index ].gradientHover[ 6 ] : 'center center' ) ] }, index );
@@ -832,7 +832,7 @@ class KadenceAdvancedButton extends Component {
 								max={ 100 }
 							/>
 							<AdvancedColorControl
-								label={ __( 'Gradient Color 2' ) }
+								label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
 								colorValue={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 0 ] ? btns[ index ].gradientHover[ 0 ] : '#777777' ) }
 								colorDefault={ '#777777' }
 								opacityValue={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 1 ] ? btns[ index ].gradientHover[ 1 ] : 1 ) }
@@ -844,7 +844,7 @@ class KadenceAdvancedButton extends Component {
 								} }
 							/>
 							<RangeControl
-								label={ __( 'Location' ) }
+								label={ __( 'Location', 'kadence-blocks' ) }
 								value={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 3 ] ? btns[ index ].gradientHover[ 3 ] : 100 ) }
 								onChange={ ( value ) => {
 									this.saveArrayUpdate( { gradientHover: [ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 0 ] ? btns[ index ].gradientHover[ 0 ] : '#777777' ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 1 ] ? btns[ index ].gradientHover[ 1 ] : 1 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 2 ] ? btns[ index ].gradientHover[ 2 ] : 0 ), value, ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 4 ] ? btns[ index ].gradientHover[ 4 ] : 'linear' ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 5 ] ? btns[ index ].gradientHover[ 5 ] : 180 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 6 ] ? btns[ index ].gradientHover[ 6 ] : 'center center' ) ] }, index );
@@ -853,8 +853,8 @@ class KadenceAdvancedButton extends Component {
 								max={ 100 }
 							/>
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{ __( 'Gradient Type' ) }</h2>
-								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type' ) }>
+								<h2 className="kt-beside-btn-group">{ __( 'Gradient Type', 'kadence-blocks' ) }</h2>
+								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type', 'kadence-blocks' ) }>
 									{ map( gradTypes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -873,7 +873,7 @@ class KadenceAdvancedButton extends Component {
 							</div>
 							{ 'radial' !== ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 4 ] ? btns[ index ].gradientHover[ 4 ] : 'linear' ) && (
 								<RangeControl
-									label={ __( 'Gradient Angle' ) }
+									label={ __( 'Gradient Angle', 'kadence-blocks' ) }
 									value={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 5 ] ? btns[ index ].gradientHover[ 5 ] : 180 ) }
 									onChange={ ( value ) => {
 										this.saveArrayUpdate( { gradientHover: [ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 0 ] ? btns[ index ].gradientHover[ 0 ] : '#777777' ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 1 ] ? btns[ index ].gradientHover[ 1 ] : 1 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 2 ] ? btns[ index ].gradientHover[ 2 ] : 0 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 3 ] ? btns[ index ].gradientHover[ 3 ] : 100 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 4 ] ? btns[ index ].gradientHover[ 4 ] : 'linear' ), value, ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 6 ] ? btns[ index ].gradientHover[ 6 ] : 'center center' ) ] }, index );
@@ -884,18 +884,18 @@ class KadenceAdvancedButton extends Component {
 							) }
 							{ 'radial' === ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 4 ] ? btns[ index ].gradientHover[ 4 ] : 'linear' ) && (
 								<SelectControl
-									label={ __( 'Gradient Position' ) }
+									label={ __( 'Gradient Position', 'kadence-blocks' ) }
 									value={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 6 ] ? btns[ index ].gradientHover[ 6 ] : 'center center' ) }
 									options={ [
-										{ value: 'center top', label: __( 'Center Top' ) },
-										{ value: 'center center', label: __( 'Center Center' ) },
-										{ value: 'center bottom', label: __( 'Center Bottom' ) },
-										{ value: 'left top', label: __( 'Left Top' ) },
-										{ value: 'left center', label: __( 'Left Center' ) },
-										{ value: 'left bottom', label: __( 'Left Bottom' ) },
-										{ value: 'right top', label: __( 'Right Top' ) },
-										{ value: 'right center', label: __( 'Right Center' ) },
-										{ value: 'right bottom', label: __( 'Right Bottom' ) },
+										{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+										{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+										{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+										{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+										{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+										{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+										{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+										{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+										{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
 									] }
 									onChange={ value => {
 										this.saveArrayUpdate( { gradientHover: [ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 0 ] ? btns[ index ].gradientHover[ 0 ] : '#777777' ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 1 ] ? btns[ index ].gradientHover[ 1 ] : 1 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 2 ] ? btns[ index ].gradientHover[ 2 ] : 0 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 3 ] ? btns[ index ].gradientHover[ 3 ] : 100 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 4 ] ? btns[ index ].gradientHover[ 4 ] : 'linear' ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 5 ] ? btns[ index ].gradientHover[ 5 ] : 180 ), value ] }, index );
@@ -905,7 +905,7 @@ class KadenceAdvancedButton extends Component {
 						</div>
 					) }
 					<AdvancedColorControl
-						label={ __( 'Hover Border Color' ) }
+						label={ __( 'Hover Border Color', 'kadence-blocks' ) }
 						colorValue={ ( btns[ index ].borderHover ? btns[ index ].borderHover : '#444444' ) }
 						colorDefault={ '#444444' }
 						opacityValue={ btns[ index ].borderHoverOpacity }
@@ -917,7 +917,7 @@ class KadenceAdvancedButton extends Component {
 						} }
 					/>
 					<BoxShadowControl
-						label={ __( 'Hover Box Shadow' ) }
+						label={ __( 'Hover Box Shadow', 'kadence-blocks' ) }
 						enable={ ( undefined !== btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 0 ] ? btns[ index ].boxShadowHover[ 0 ] : false ) }
 						color={ ( undefined !== btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 1 ] ? btns[ index ].boxShadowHover[ 1 ] : '#000000' ) }
 						colorDefault={ '#000000' }
@@ -962,7 +962,7 @@ class KadenceAdvancedButton extends Component {
 			return (
 				<div>
 					<AdvancedColorControl
-						label={ __( 'Text Color' ) }
+						label={ __( 'Text Color', 'kadence-blocks' ) }
 						colorValue={ btns[ index ].color }
 						colorDefault={ '#555555' }
 						onColorChange={ value => {
@@ -970,8 +970,8 @@ class KadenceAdvancedButton extends Component {
 						} }
 					/>
 					<div className="kt-btn-size-settings-container">
-						<h2 className="kt-beside-btn-group">{ __( 'Background Type' ) }</h2>
-						<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type' ) }>
+						<h2 className="kt-beside-btn-group">{ __( 'Background Type', 'kadence-blocks' ) }</h2>
+						<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type', 'kadence-blocks' ) }>
 							{ map( bgType, ( { name, key } ) => (
 								<Button
 									key={ key }
@@ -989,7 +989,7 @@ class KadenceAdvancedButton extends Component {
 					{ 'gradient' !== btns[ index ].backgroundType && (
 						<div className="kt-inner-sub-section">
 							<AdvancedColorControl
-								label={ __( 'Background Color' ) }
+								label={ __( 'Background Color', 'kadence-blocks' ) }
 								colorValue={ btns[ index ].background }
 								colorDefault={ '' }
 								opacityValue={ btns[ index ].backgroundOpacity }
@@ -1005,7 +1005,7 @@ class KadenceAdvancedButton extends Component {
 					{ 'gradient' === btns[ index ].backgroundType && (
 						<div className="kt-inner-sub-section">
 							<AdvancedColorControl
-								label={ __( 'Gradient Color 1' ) }
+								label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
 								colorValue={ btns[ index ].background }
 								colorDefault={ '' }
 								opacityValue={ btns[ index ].backgroundOpacity }
@@ -1017,7 +1017,7 @@ class KadenceAdvancedButton extends Component {
 								} }
 							/>
 							<RangeControl
-								label={ __( 'Location' ) }
+								label={ __( 'Location', 'kadence-blocks' ) }
 								value={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 2 ] ? btns[ index ].gradient[ 2 ] : 0 ) }
 								onChange={ ( value ) => {
 									this.saveArrayUpdate( { gradient: [ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] ? btns[ index ].gradient[ 0 ] : '#999999' ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 1 ] ? btns[ index ].gradient[ 1 ] : 1 ), value, ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 3 ] ? btns[ index ].gradient[ 3 ] : 100 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 4 ] ? btns[ index ].gradient[ 4 ] : 'linear' ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 5 ] ? btns[ index ].gradient[ 5 ] : 180 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 6 ] ? btns[ index ].gradient[ 6 ] : 'center center' ) ] }, index );
@@ -1026,7 +1026,7 @@ class KadenceAdvancedButton extends Component {
 								max={ 100 }
 							/>
 							<AdvancedColorControl
-								label={ __( 'Gradient Color 2' ) }
+								label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
 								colorValue={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] ? btns[ index ].gradient[ 0 ] : '#999999' ) }
 								colorDefault={ '#999999' }
 								opacityValue={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 1 ] ? btns[ index ].gradient[ 1 ] : 1 ) }
@@ -1038,7 +1038,7 @@ class KadenceAdvancedButton extends Component {
 								} }
 							/>
 							<RangeControl
-								label={ __( 'Location' ) }
+								label={ __( 'Location', 'kadence-blocks' ) }
 								value={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 3 ] ? btns[ index ].gradient[ 3 ] : 100 ) }
 								onChange={ ( value ) => {
 									this.saveArrayUpdate( { gradient: [ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] ? btns[ index ].gradient[ 0 ] : '#999999' ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 1 ] ? btns[ index ].gradient[ 1 ] : 1 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 2 ] ? btns[ index ].gradient[ 2 ] : 0 ), value, ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 4 ] ? btns[ index ].gradient[ 4 ] : 'linear' ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 5 ] ? btns[ index ].gradient[ 5 ] : 180 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 6 ] ? btns[ index ].gradient[ 6 ] : 'center center' ) ] }, index );
@@ -1047,8 +1047,8 @@ class KadenceAdvancedButton extends Component {
 								max={ 100 }
 							/>
 							<div className="kt-btn-size-settings-container">
-								<h2 className="kt-beside-btn-group">{ __( 'Gradient Type' ) }</h2>
-								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type' ) }>
+								<h2 className="kt-beside-btn-group">{ __( 'Gradient Type', 'kadence-blocks' ) }</h2>
+								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type', 'kadence-blocks' ) }>
 									{ map( gradTypes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -1067,7 +1067,7 @@ class KadenceAdvancedButton extends Component {
 							</div>
 							{ 'radial' !== ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 4 ] ? btns[ index ].gradient[ 4 ] : 'linear' ) && (
 								<RangeControl
-									label={ __( 'Gradient Angle' ) }
+									label={ __( 'Gradient Angle', 'kadence-blocks' ) }
 									value={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 5 ] ? btns[ index ].gradient[ 5 ] : 180 ) }
 									onChange={ ( value ) => {
 										this.saveArrayUpdate( { gradient: [ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] ? btns[ index ].gradient[ 0 ] : '#999999' ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 1 ] ? btns[ index ].gradient[ 1 ] : 1 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 2 ] ? btns[ index ].gradient[ 2 ] : 0 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 3 ] ? btns[ index ].gradient[ 3 ] : 100 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 4 ] ? btns[ index ].gradient[ 4 ] : 'linear' ), value, ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 6 ] ? btns[ index ].gradient[ 6 ] : 'center center' ) ] }, index );
@@ -1078,18 +1078,18 @@ class KadenceAdvancedButton extends Component {
 							) }
 							{ 'radial' === ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 4 ] ? btns[ index ].gradient[ 4 ] : 'linear' ) && (
 								<SelectControl
-									label={ __( 'Gradient Position' ) }
+									label={ __( 'Gradient Position', 'kadence-blocks' ) }
 									value={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 6 ] ? btns[ index ].gradient[ 6 ] : 'center center' ) }
 									options={ [
-										{ value: 'center top', label: __( 'Center Top' ) },
-										{ value: 'center center', label: __( 'Center Center' ) },
-										{ value: 'center bottom', label: __( 'Center Bottom' ) },
-										{ value: 'left top', label: __( 'Left Top' ) },
-										{ value: 'left center', label: __( 'Left Center' ) },
-										{ value: 'left bottom', label: __( 'Left Bottom' ) },
-										{ value: 'right top', label: __( 'Right Top' ) },
-										{ value: 'right center', label: __( 'Right Center' ) },
-										{ value: 'right bottom', label: __( 'Right Bottom' ) },
+										{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+										{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+										{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+										{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+										{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+										{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+										{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+										{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+										{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
 									] }
 									onChange={ value => {
 										this.saveArrayUpdate( { gradient: [ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] ? btns[ index ].gradient[ 0 ] : '#999999' ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 1 ] ? btns[ index ].gradient[ 1 ] : 1 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 2 ] ? btns[ index ].gradient[ 2 ] : 0 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 3 ] ? btns[ index ].gradient[ 3 ] : 100 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 4 ] ? btns[ index ].gradient[ 4 ] : 'linear' ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 5 ] ? btns[ index ].gradient[ 5 ] : 180 ), value ] }, index );
@@ -1099,7 +1099,7 @@ class KadenceAdvancedButton extends Component {
 						</div>
 					) }
 					<AdvancedColorControl
-						label={ __( 'Border Color' ) }
+						label={ __( 'Border Color', 'kadence-blocks' ) }
 						colorValue={ ( btns[ index ].border ? btns[ index ].border : '#555555' ) }
 						colorDefault={ '#555555' }
 						opacityValue={ btns[ index ].borderOpacity }
@@ -1111,7 +1111,7 @@ class KadenceAdvancedButton extends Component {
 						} }
 					/>
 					<BoxShadowControl
-						label={ __( 'Box Shadow' ) }
+						label={ __( 'Box Shadow', 'kadence-blocks' ) }
 						enable={ ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] ? btns[ index ].boxShadow[ 0 ] : false ) }
 						color={ ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ) }
 						colorDefault={ '#000000' }
@@ -1223,11 +1223,11 @@ class KadenceAdvancedButton extends Component {
 							<InspectorControls>
 								{ this.showSettings( 'countSettings' ) && (
 									<PanelBody
-										title={ __( 'Button Count' ) }
+										title={ __( 'Button Count', 'kadence-blocks' ) }
 										initialOpen={ true }
 									>
 										<RangeControl
-											label={ __( 'Number of Buttons' ) }
+											label={ __( 'Number of Buttons', 'kadence-blocks' ) }
 											value={ btnCount }
 											onChange={ newcount => {
 												const newbtns = btns;
@@ -1281,7 +1281,7 @@ class KadenceAdvancedButton extends Component {
 											min={ 1 }
 											max={ 5 }
 										/>
-										<h2 className="kt-heading-size-title">{ __( 'Button Alignment' ) }</h2>
+										<h2 className="kt-heading-size-title">{ __( 'Button Alignment', 'kadence-blocks' ) }</h2>
 										<TabPanel className="kt-size-tabs"
 											activeClass="active-tab"
 											tabs={ [
@@ -1337,7 +1337,7 @@ class KadenceAdvancedButton extends Component {
 								{ renderArray }
 								{ this.showSettings( 'fontSettings' ) && (
 									<PanelBody
-										title={ __( 'Font Family' ) }
+										title={ __( 'Font Family', 'kadence-blocks' ) }
 										initialOpen={ false }
 										className="kt-font-family-area"
 									>
@@ -1372,7 +1372,7 @@ class KadenceAdvancedButton extends Component {
 							</InspectorControls>
 							<InspectorAdvancedControls>
 								<ToggleControl
-									label={ __( 'Force Button Fullwidth' ) }
+									label={ __( 'Force Button Fullwidth', 'kadence-blocks' ) }
 									checked={ ( undefined !== forceFullwidth ? forceFullwidth : false ) }
 									onChange={ ( value ) => defineWidthTypeToggle( value ) }
 								/>

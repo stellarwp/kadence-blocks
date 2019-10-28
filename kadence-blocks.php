@@ -5,7 +5,7 @@
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 1.6.19
+ * Version: 1.7.0
  * Text Domain: kadence-blocks
  * License: GPL2+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
@@ -18,9 +18,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'KT_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
+define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KT_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KT_BLOCKS_VERSION', '1.6.20' );
+define( 'KADENCE_BLOCKS_VERSION', '1.7.0' );
 
 /**
  * Add a check before redirecting
@@ -35,10 +35,10 @@ register_activation_hook( __FILE__, 'kadence_blocks_activate' );
  * Load Plugin
  */
 function kadence_blocks_init() {
-	require_once KT_BLOCKS_PATH . 'dist/init.php';
-	require_once KT_BLOCKS_PATH . 'dist/form-ajax.php';
-	require_once KT_BLOCKS_PATH . 'dist/class-kadence-blocks-frontend.php';
-	require_once KT_BLOCKS_PATH . 'dist/settings/class-kadence-blocks-settings.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/init.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/form-ajax.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-frontend.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/settings/class-kadence-blocks-settings.php';
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );
 

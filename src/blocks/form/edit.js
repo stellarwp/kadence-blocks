@@ -10,11 +10,6 @@
 import map from 'lodash/map';
 
 /**
- * Import Icons
- */
-import icons from '../../icons';
-
-/**
  * Import External
  */
 import classnames from 'classnames';
@@ -22,11 +17,10 @@ import times from 'lodash/times';
 import filter from 'lodash/filter';
 import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../fontloader';
-import range from 'lodash/range';
 import TypographyControls from '../../typography-control';
 import hexToRGBA from '../../hex-to-rgba';
+import BoxShadowControl from '../../box-shadow-control';
 import AdvancedColorControl from '../../advanced-color-control';
-import Select from 'react-select';
 /**
  * Import Css
  */
@@ -43,13 +37,11 @@ const {
 } = wp.element;
 const {
 	RichText,
-	MediaUpload,
 	URLInput,
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
-	PlainText,
 } = wp.blockEditor;
 const {
 	Button,
@@ -72,6 +64,7 @@ const {
 const {
 	applyFilters,
 } = wp.hooks;
+const { DELETE } = wp.keycodes;
 
 const { getCurrentPostId } = wp.data.select( 'core/editor' );
 const RETRIEVE_KEY_URL = 'https://g.co/recaptcha/v3';
@@ -80,7 +73,7 @@ const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
 const actionOptionsList = [
 	{ value: 'email', label: __( 'Email', 'kadence-blocks' ), help: '', isDisabled: false },
 	{ value: 'redirect', label: __( 'Redirect', 'kadence-blocks' ), help: '', isDisabled: false },
-	//{ value: 'autoEmail', label: __( 'Auto Respond Email (Pro addon)', 'kadence-blocks' ), help: __( 'Send instant response to form entrant', 'kadence-blocks' ), isDisabled: true },
+	{ value: 'autoEmail', label: __( 'Auto Respond Email (Pro addon)', 'kadence-blocks' ), help: __( 'Send instant response to form entrant', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: true },
 ];
 /**
@@ -108,13 +101,21 @@ class KadenceForm extends Component {
 		this.bindContainer = this.bindContainer.bind( this );
 		this.onMoveBackward = this.onMoveBackward.bind( this );
 		this.onRemoveField = this.onRemoveField.bind( this );
+		this.onKeyRemoveField = this.onKeyRemoveField.bind( this );
 		this.onDuplicateField = this.onDuplicateField.bind( this );
 		this.deselectField = this.deselectField.bind( this );
 		this.saveFields = this.saveFields.bind( this );
+		this.saveFieldsOptions = this.saveFieldsOptions.bind( this );
 		this.saveSubmit = this.saveSubmit.bind( this );
 		this.saveEmail = this.saveEmail.bind( this );
 		this.saveStyle = this.saveStyle.bind( this );
-		this.saveAutoEmail = this.saveAutoEmail.bind( this );
+		this.saveStyleGradient = this.saveStyleGradient.bind( this );
+		this.saveStyleGradientActive = this.saveStyleGradientActive.bind( this );
+		this.saveStyleBoxShadow = this.saveStyleBoxShadow.bind( this );
+		this.saveStyleBoxShadowActive = this.saveStyleBoxShadowActive.bind( this );
+		this.saveLabelFont = this.saveLabelFont.bind( this );
+		this.saveMessageFont = this.saveMessageFont.bind( this );
+		this.saveMessages = this.saveMessages.bind( this );
 		this.removeAction = this.removeAction.bind( this );
 		this.addAction = this.addAction.bind( this );
 		this.saveKeys = this.saveKeys.bind( this );
@@ -123,20 +124,24 @@ class KadenceForm extends Component {
 		this.state = {
 			actionOptions: null,
 			selectedField: null,
-			marginDeskControl: 'linked',
-			marginTabletControl: 'linked',
-			marginMobileControl: 'linked',
-			radiusControl: 'linked',
 			deskPaddingControl: 'linked',
 			tabletPaddingControl: 'linked',
 			mobilePaddingControl: 'linked',
 			borderControl: 'linked',
+			labelPaddingControl: 'individual',
+			labelMarginControl: 'individual',
+			submitBorderControl: 'linked',
+			submitDeskPaddingControl: 'linked',
+			submitTabletPaddingControl: 'linked',
+			submitMobilePaddingControl: 'linked',
+			messageFontBorderControl: 'linked',
+			messagePaddingControl: 'individual',
+			messageMarginControl: 'individual',
 			siteKey: '',
 			secretKey: '',
 			isSavedKey: false,
 			isSaving: false,
 		};
-
 		settings.fetch().then( response => {
 			this.setState( {
 				siteKey: response.kadence_blocks_recaptcha_site_key,
@@ -185,6 +190,57 @@ class KadenceForm extends Component {
 			} );
 		}
 		this.setState( { actionOptions: applyFilters( 'kadence.actionOptions', actionOptionsList ) } );
+		if ( this.props.attributes.style && this.props.attributes.style[ 0 ] ) {
+			if ( this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 1 ] && this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 2 ] && this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 3 ] ) {
+				this.setState( { deskPaddingControl: 'linked' } );
+			} else {
+				this.setState( { deskPaddingControl: 'individual' } );
+			}
+			if ( this.props.attributes.style[ 0 ].tabletPadding[ 0 ] === this.props.attributes.style[ 0 ].tabletPadding[ 1 ] && this.props.attributes.style[ 0 ].tabletPadding[ 0 ] === this.props.attributes.style[ 0 ].tabletPadding[ 2 ] && this.props.attributes.style[ 0 ].tabletPadding[ 0 ] === this.props.attributes.style[ 0 ].tabletPadding[ 3 ] ) {
+				this.setState( { tabletPaddingControl: 'linked' } );
+			} else {
+				this.setState( { tabletPaddingControl: 'individual' } );
+			}
+			if ( this.props.attributes.style[ 0 ].mobilePadding[ 0 ] === this.props.attributes.style[ 0 ].mobilePadding[ 1 ] && this.props.attributes.style[ 0 ].mobilePadding[ 0 ] === this.props.attributes.style[ 0 ].mobilePadding[ 2 ] && this.props.attributes.style[ 0 ].mobilePadding[ 0 ] === this.props.attributes.style[ 0 ].mobilePadding[ 3 ] ) {
+				this.setState( { mobilePaddingControl: 'linked' } );
+			} else {
+				this.setState( { mobilePaddingControl: 'individual' } );
+			}
+			if ( this.props.attributes.style[ 0 ].borderWidth[ 0 ] === this.props.attributes.style[ 0 ].borderWidth[ 1 ] && this.props.attributes.style[ 0 ].borderWidth[ 0 ] === this.props.attributes.style[ 0 ].borderWidth[ 2 ] && this.props.attributes.style[ 0 ].borderWidth[ 0 ] === this.props.attributes.style[ 0 ].borderWidth[ 3 ] ) {
+				this.setState( { borderControl: 'linked' } );
+			} else {
+				this.setState( { borderControl: 'individual' } );
+			}
+		}
+		if ( this.props.attributes.submit && this.props.attributes.submit[ 0 ] ) {
+			if ( this.props.attributes.submit[ 0 ].deskPadding[ 0 ] === this.props.attributes.submit[ 0 ].deskPadding[ 1 ] && this.props.attributes.submit[ 0 ].deskPadding[ 0 ] === this.props.attributes.submit[ 0 ].deskPadding[ 2 ] && this.props.attributes.submit[ 0 ].deskPadding[ 0 ] === this.props.attributes.submit[ 0 ].deskPadding[ 3 ] ) {
+				this.setState( { submitDeskPaddingControl: 'linked' } );
+			} else {
+				this.setState( { submitDeskPaddingControl: 'individual' } );
+			}
+			if ( this.props.attributes.submit[ 0 ].tabletPadding[ 0 ] === this.props.attributes.submit[ 0 ].tabletPadding[ 1 ] && this.props.attributes.submit[ 0 ].tabletPadding[ 0 ] === this.props.attributes.submit[ 0 ].tabletPadding[ 2 ] && this.props.attributes.submit[ 0 ].tabletPadding[ 0 ] === this.props.attributes.submit[ 0 ].tabletPadding[ 3 ] ) {
+				this.setState( { submitTabletPaddingControl: 'linked' } );
+			} else {
+				this.setState( { submitTabletPaddingControl: 'individual' } );
+			}
+			if ( this.props.attributes.submit[ 0 ].mobilePadding[ 0 ] === this.props.attributes.submit[ 0 ].mobilePadding[ 1 ] && this.props.attributes.submit[ 0 ].mobilePadding[ 0 ] === this.props.attributes.submit[ 0 ].mobilePadding[ 2 ] && this.props.attributes.submit[ 0 ].mobilePadding[ 0 ] === this.props.attributes.submit[ 0 ].mobilePadding[ 3 ] ) {
+				this.setState( { submitMobilePaddingControl: 'linked' } );
+			} else {
+				this.setState( { submitMobilePaddingControl: 'individual' } );
+			}
+			if ( this.props.attributes.submit[ 0 ].borderWidth[ 0 ] === this.props.attributes.submit[ 0 ].borderWidth[ 1 ] && this.props.attributes.submit[ 0 ].borderWidth[ 0 ] === this.props.attributes.submit[ 0 ].borderWidth[ 2 ] && this.props.attributes.submit[ 0 ].borderWidth[ 0 ] === this.props.attributes.submit[ 0 ].borderWidth[ 3 ] ) {
+				this.setState( { submitBorderControl: 'linked' } );
+			} else {
+				this.setState( { submitBorderControl: 'individual' } );
+			}
+		}
+		if ( this.props.attributes.messageFont && this.props.attributes.messageFont[ 0 ] ) {
+			if ( this.props.attributes.messageFont[ 0 ].borderWidth[ 0 ] === this.props.attributes.messageFont[ 0 ].borderWidth[ 1 ] && this.props.attributes.messageFont[ 0 ].borderWidth[ 0 ] === this.props.attributes.messageFont[ 0 ].borderWidth[ 2 ] && this.props.attributes.messageFont[ 0 ].borderWidth[ 0 ] === this.props.attributes.messageFont[ 0 ].borderWidth[ 3 ] ) {
+				this.setState( { messageFontBorderControl: 'linked' } );
+			} else {
+				this.setState( { messageFontBorderControl: 'individual' } );
+			}
+		}
 	}
 	componentDidUpdate( prevProps ) {
 		// Deselect field when deselecting the block
@@ -248,6 +304,13 @@ class KadenceForm extends Component {
 			} );
 		};
 	}
+	onKeyRemoveField( index ) {
+		const fields = filter( this.props.attributes.fields, ( item, i ) => index !== i );
+		this.setState( { selectedField: null } );
+		this.props.setAttributes( {
+			fields: fields,
+		} );
+	}
 	onDuplicateField( index ) {
 		return () => {
 			const fields = this.props.attributes.fields;
@@ -275,12 +338,24 @@ class KadenceForm extends Component {
 			fields: newItems,
 		} );
 	}
-	saveSubmit( value, index ) {
+	saveFieldsOptions( value, index, subIndex ) {
+		const { attributes } = this.props;
+		const { fields } = attributes;
+		const newOptions = fields[ index ].options.map( ( item, thisIndex ) => {
+			if ( subIndex === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		this.saveFields( { options: newOptions }, index );
+	}
+	saveSubmit( value ) {
 		const { attributes, setAttributes } = this.props;
 		const { submit } = attributes;
 
 		const newItems = submit.map( ( item, thisIndex ) => {
-			if ( index === thisIndex ) {
+			if ( 0 === thisIndex ) {
 				item = { ...item, ...value };
 			}
 
@@ -288,6 +363,69 @@ class KadenceForm extends Component {
 		} );
 		setAttributes( {
 			submit: newItems,
+		} );
+	}
+	saveSubmitGradient( value, index ) {
+		const { attributes } = this.props;
+		const { submit } = attributes;
+		const newItems = submit[ 0 ].gradient.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+		this.saveSubmit( { gradient: newItems } );
+	}
+	saveSubmitGradientHover( value, index ) {
+		const { attributes } = this.props;
+		const { submit } = attributes;
+		const newItems = submit[ 0 ].gradientHover.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+		this.saveSubmit( { gradientHover: newItems } );
+	}
+	saveSubmitBoxShadow( value, index ) {
+		const { attributes } = this.props;
+		const { submit } = attributes;
+		const newItems = submit[ 0 ].boxShadow.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+		this.saveSubmit( { boxShadow: newItems } );
+	}
+	saveSubmitBoxShadowHover( value, index ) {
+		const { attributes } = this.props;
+		const { submit } = attributes;
+		const newItems = submit[ 0 ].boxShadowHover.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+		this.saveSubmit( { boxShadowHover: newItems } );
+	}
+	saveSubmitFont( value ) {
+		const { attributes, setAttributes } = this.props;
+		const { submitFont } = attributes;
+
+		const newItems = submitFont.map( ( item, thisIndex ) => {
+			if ( 0 === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		setAttributes( {
+			submitFont: newItems,
 		} );
 	}
 	saveEmail( value ) {
@@ -320,11 +458,59 @@ class KadenceForm extends Component {
 			style: newItems,
 		} );
 	}
-	saveAutoEmail( value ) {
-		const { attributes, setAttributes } = this.props;
-		const { autoEmail } = attributes;
+	saveStyleGradient( value, index ) {
+		const { attributes } = this.props;
+		const { style } = attributes;
+		const newItems = style[ 0 ].gradient.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
 
-		const newItems = autoEmail.map( ( item, thisIndex ) => {
+			return item;
+		} );
+		this.saveStyle( { gradient: newItems } );
+	}
+	saveStyleGradientActive( value, index ) {
+		const { attributes } = this.props;
+		const { style } = attributes;
+		const newItems = style[ 0 ].gradientActive.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+		this.saveStyle( { gradientActive: newItems } );
+	}
+	saveStyleBoxShadow( value, index ) {
+		const { attributes } = this.props;
+		const { style } = attributes;
+		const newItems = style[ 0 ].boxShadow.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+		this.saveStyle( { boxShadow: newItems } );
+	}
+	saveStyleBoxShadowActive( value, index ) {
+		const { attributes } = this.props;
+		const { style } = attributes;
+		const newItems = style[ 0 ].boxShadowActive.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+		this.saveStyle( { boxShadowActive: newItems } );
+	}
+	saveLabelFont( value ) {
+		const { attributes, setAttributes } = this.props;
+		const { labelFont } = attributes;
+
+		const newItems = labelFont.map( ( item, thisIndex ) => {
 			if ( 0 === thisIndex ) {
 				item = { ...item, ...value };
 			}
@@ -332,7 +518,37 @@ class KadenceForm extends Component {
 			return item;
 		} );
 		setAttributes( {
-			autoEmail: newItems,
+			labelFont: newItems,
+		} );
+	}
+	saveMessageFont( value ) {
+		const { attributes, setAttributes } = this.props;
+		const { messageFont } = attributes;
+
+		const newItems = messageFont.map( ( item, thisIndex ) => {
+			if ( 0 === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		setAttributes( {
+			messageFont: newItems,
+		} );
+	}
+	saveMessages( value ) {
+		const { attributes, setAttributes } = this.props;
+		const { messages } = attributes;
+
+		const newItems = messages.map( ( item, thisIndex ) => {
+			if ( 0 === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		setAttributes( {
+			messages: newItems,
 		} );
 	}
 	addAction( value ) {
@@ -382,42 +598,97 @@ class KadenceForm extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, postID, style, formName, fields, submit, actions, align, recaptcha, redirect, autoEmail, email, hAlign, kadenceAnimation, kadenceAOSOptions }, className, isSelected, setAttributes } = this.props;
-		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl } = this.state;
+		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, submitFont, kadenceAnimation, kadenceAOSOptions }, className, isSelected, setAttributes } = this.props;
+		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl } = this.state;
 		const btnSizes = [
-			{ key: 'small', name: __( 'S' ) },
-			{ key: 'standard', name: __( 'M' ) },
-			{ key: 'large', name: __( 'L' ) },
+			{ key: 'small', name: __( 'S', 'kadence-blocks' ) },
+			{ key: 'standard', name: __( 'M', 'kadence-blocks' ) },
+			{ key: 'large', name: __( 'L', 'kadence-blocks' ) },
 			{ key: 'custom', name: <Dashicon icon="admin-generic" /> },
 		];
+		const btnWidths = [
+			{ key: 'auto', name: __( 'Auto' ) },
+			{ key: 'fixed', name: __( 'Fixed' ) },
+			{ key: 'full', name: __( 'Full' ) },
+		];
+		const gradTypes = [
+			{ key: 'linear', name: __( 'Linear', 'kadence-blocks' ) },
+			{ key: 'radial', name: __( 'Radial', 'kadence-blocks' ) },
+		];
+		const bgType = [
+			{ key: 'solid', name: __( 'Solid', 'kadence-blocks' ) },
+			{ key: 'gradient', name: __( 'Gradient', 'kadence-blocks' ) },
+		];
+		const lgconfig = {
+			google: {
+				families: [ labelFont[ 0 ].family + ( labelFont[ 0 ].variant ? ':' + labelFont[ 0 ].variant : '' ) ],
+			},
+		};
+		const lconfig = ( labelFont[ 0 ].google ? lgconfig : '' );
+		const bgconfig = {
+			google: {
+				families: [ submitFont[ 0 ].family + ( submitFont[ 0 ].variant ? ':' + submitFont[ 0 ].variant : '' ) ],
+			},
+		};
+		const bconfig = ( submitFont[ 0 ].google ? bgconfig : '' );
+		let btnBG;
+		let btnGrad;
+		let btnGrad2;
+		if ( undefined !== submit[ 0 ].backgroundType && 'gradient' === submit[ 0 ].backgroundType ) {
+			btnGrad = ( undefined === submit[ 0 ].background ? 'rgba(255,255,255,0)' : hexToRGBA( submit[ 0 ].background, ( submit[ 0 ].backgroundOpacity !== undefined ? submit[ 0 ].backgroundOpacity : 1 ) ) );
+			btnGrad2 = ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 0 ] && '' !== submit[ 0 ].gradient[ 0 ] ? hexToRGBA( submit[ 0 ].gradient[ 0 ], ( undefined !== submit[ 0 ].gradient && submit[ 0 ].gradient[ 1 ] !== undefined ? submit[ 0 ].gradient[ 1 ] : 1 ) ) : hexToRGBA( '#999999', ( undefined !== submit[ 0 ].gradient && submit[ 0 ].gradient[ 1 ] !== undefined ? submit[ 0 ].gradient[ 1 ] : 1 ) ) );
+			if ( undefined !== submit[ 0 ].gradient && 'radial' === submit[ 0 ].gradient[ 4 ] ) {
+				btnBG = `radial-gradient(at ${ ( undefined === submit[ 0 ].gradient[ 6 ] ? 'center center' : submit[ 0 ].gradient[ 6 ] ) }, ${ btnGrad } ${ ( undefined === submit[ 0 ].gradient[ 2 ] ? '0' : submit[ 0 ].gradient[ 2 ] ) }%, ${ btnGrad2 } ${ ( undefined === submit[ 0 ].gradient[ 3 ] ? '100' : submit[ 0 ].gradient[ 3 ] ) }%)`;
+			} else if ( undefined === submit[ 0 ].gradient || 'radial' !== submit[ 0 ].gradient[ 4 ] ) {
+				btnBG = `linear-gradient(${ ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 5 ] ? submit[ 0 ].gradient[ 5 ] : '180' ) }deg, ${ btnGrad } ${ ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 2 ] ? submit[ 0 ].gradient[ 2 ] : '0' ) }%, ${ btnGrad2 } ${ ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 3 ] ? submit[ 0 ].gradient[ 3 ] : '100' ) }%)`;
+			}
+		} else {
+			btnBG = ( undefined === submit[ 0 ].background ? undefined : hexToRGBA( submit[ 0 ].background, ( submit[ 0 ].backgroundOpacity !== undefined ? submit[ 0 ].backgroundOpacity : 1 ) ) );
+		}
+		let inputBG;
+		let inputGrad;
+		let inputGrad2;
+		if ( undefined !== style[ 0 ].backgroundType && 'gradient' === style[ 0 ].backgroundType ) {
+			inputGrad = ( undefined === style[ 0 ].background ? 'rgba(255,255,255,0)' : hexToRGBA( style[ 0 ].background, ( style[ 0 ].backgroundOpacity !== undefined ? style[ 0 ].backgroundOpacity : 1 ) ) );
+			inputGrad2 = ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 0 ] && '' !== style[ 0 ].gradient[ 0 ] ? hexToRGBA( style[ 0 ].gradient[ 0 ], ( undefined !== style[ 0 ].gradient && style[ 0 ].gradient[ 1 ] !== undefined ? style[ 0 ].gradient[ 1 ] : 1 ) ) : hexToRGBA( '#999999', ( undefined !== style[ 0 ].gradient && style[ 0 ].gradient[ 1 ] !== undefined ? style[ 0 ].gradient[ 1 ] : 1 ) ) );
+			if ( undefined !== style[ 0 ].gradient && 'radial' === style[ 0 ].gradient[ 4 ] ) {
+				inputBG = `radial-gradient(at ${ ( undefined === style[ 0 ].gradient[ 6 ] ? 'center center' : style[ 0 ].gradient[ 6 ] ) }, ${ inputGrad } ${ ( undefined === style[ 0 ].gradient[ 2 ] ? '0' : style[ 0 ].gradient[ 2 ] ) }%, ${ inputGrad2 } ${ ( undefined === style[ 0 ].gradient[ 3 ] ? '100' : style[ 0 ].gradient[ 3 ] ) }%)`;
+			} else if ( undefined === style[ 0 ].gradient || 'radial' !== style[ 0 ].gradient[ 4 ] ) {
+				inputBG = `linear-gradient(${ ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 5 ] ? style[ 0 ].gradient[ 5 ] : '180' ) }deg, ${ inputGrad } ${ ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 2 ] ? style[ 0 ].gradient[ 2 ] : '0' ) }%, ${ inputGrad2 } ${ ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 3 ] ? style[ 0 ].gradient[ 3 ] : '100' ) }%)`;
+			}
+		} else {
+			inputBG = ( undefined === style[ 0 ].background ? undefined : hexToRGBA( style[ 0 ].background, ( style[ 0 ].backgroundOpacity !== undefined ? style[ 0 ].backgroundOpacity : 1 ) ) );
+		}
 		const fieldControls = ( index ) => {
 			const isFieldSelected = ( isSelected && this.state.selectedField === index );
 			return (
 				<PanelBody
-					title={ ( undefined !== fields[ index ].label && null !== fields[ index ].label && '' !== fields[ index ].label ? fields[ index ].label : __( 'Field' ) + ' ' + ( index + 1 ) ) + ' ' + __( 'Settings' ) }
+					title={ ( undefined !== fields[ index ].label && null !== fields[ index ].label && '' !== fields[ index ].label ? fields[ index ].label : __( 'Field', 'kadence-blocks' ) + ' ' + ( index + 1 ) ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 					opened={ ( true === isFieldSelected ? true : undefined ) }
 				>
 					<SelectControl
-						label={ __( 'Field Type' ) }
+						label={ __( 'Field Type', 'kadence-blocks' ) }
 						value={ fields[ index ].type }
 						options={ [
-							{ value: 'text', label: __( 'Text' ) },
-							{ value: 'email', label: __( 'Email' ) },
-							{ value: 'textarea', label: __( 'Textarea' ) },
+							{ value: 'text', label: __( 'Text', 'kadence-blocks' ) },
+							{ value: 'email', label: __( 'Email', 'kadence-blocks' ) },
+							{ value: 'textarea', label: __( 'Textarea', 'kadence-blocks' ) },
+							{ value: 'accept', label: __( 'Accept', 'kadence-blocks' ) },
+							{ value: 'select', label: __( 'Select', 'kadence-blocks' ) },
 						] }
 						onChange={ value => {
 							this.saveFields( { type: value }, index );
 						} }
 					/>
 					<ToggleControl
-						label={ __( 'Required?' ) }
+						label={ __( 'Required?', 'kadence-blocks' ) }
 						checked={ ( undefined !== fields[ index ].required ? fields[ index ].required : false ) }
 						onChange={ ( value ) => this.saveFields( { required: value }, index ) }
 					/>
 					{ 'textarea' === fields[ index ].type && (
 						<RangeControl
-							label={ __( 'Textarea Rows' ) }
+							label={ __( 'Textarea Rows', 'kadence-blocks' ) }
 							value={ ( undefined !== fields[ index ].rows ? fields[ index ].rows : '4' ) }
 							onChange={ value => this.saveFields( { rows: value }, index ) }
 							min={ 1 }
@@ -426,41 +697,136 @@ class KadenceForm extends Component {
 						/>
 					) }
 					{ 'select' === fields[ index ].type && (
+						<Fragment>
+							<Fragment>
+								{ times( fields[ index ].options.length, n => (
+									<TextControl
+										className={ 'kb-option-text-control' }
+										key={ n }
+										label={ __( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) }
+										placeholder={ __( 'Option', 'kadence-blocks' ) }
+										value={ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }
+										onChange={ ( text ) => this.saveFieldsOptions( { label: text, value: text }, index, n ) }
+									/>
+								) ) }
+							</Fragment>
+							<Button
+								className="kb-add-option"
+								isPrimary={ true }
+								onClick={ () => {
+									const newOptions = fields[ index ].options;
+									newOptions.push( {
+										value: '',
+										label: '',
+									} );
+									this.saveFields( { options: newOptions }, index );
+								} }
+							>
+								<Dashicon icon="plus" />
+								{ __( 'Add Option', 'kadence-blocks' ) }
+							</Button>
+						</Fragment>
+					) }
+					{ 'select' === fields[ index ].type && (
 						<ToggleControl
-							label={ __( 'Multi?' ) }
+							label={ __( 'Multi Select?' ) }
 							checked={ ( undefined !== fields[ index ].multiSelect ? fields[ index ].multiSelect : false ) }
 							onChange={ ( value ) => this.saveFields( { multiSelect: value }, index ) }
 						/>
 					) }
 					{ ( 'checkbox' === fields[ index ].type || 'radio' === fields[ index ].type ) && (
 						<ToggleControl
-							label={ __( 'showLabel?' ) }
+							label={ __( 'Show inline?', 'kadence-blocks' ) }
+							checked={ ( undefined !== fields[ index ].inline ? fields[ index ].inline : false ) }
+							onChange={ ( value ) => this.saveFields( { inline: value }, index ) }
+						/>
+					) }
+					{ ( 'accept' === fields[ index ].type ) && (
+						<ToggleControl
+							label={ __( 'Show Policy Link', 'kadence-blocks' ) }
+							checked={ ( undefined !== fields[ index ].showLink ? fields[ index ].showLink : false ) }
+							onChange={ ( value ) => this.saveFields( { showLink: value }, index ) }
+						/>
+					) }
+					{ ( 'accept' === fields[ index ].type && fields[ index ].showLink ) && (
+						<Fragment>
+							<TextControl
+								label={ __( 'Link Text', 'kadence-blocks' ) }
+								placeholder={ __( 'View Privacy Policy', 'kadence-blocks' ) }
+								value={ ( undefined !== fields[ index ].placeholder ? fields[ index ].placeholder : '' ) }
+								onChange={ ( value ) => this.saveFields( { placeholder: value }, index ) }
+							/>
+							<div className="components-base-control">
+								<p className="components-base-control__label">{ __( 'Link URL', 'kadence-blocks' ) }</p>
+								<URLInput
+									value={ ( undefined !== fields[ index ].default ? fields[ index ].default : '' ) }
+									onChange={ ( value ) => this.saveFields( { default: value }, index ) }
+								/>
+							</div>
+						</Fragment>
+					) }
+					{ ( 'accept' === fields[ index ].type ) && (
+						<ToggleControl
+							label={ __( 'Start checked?', 'kadence-blocks' ) }
 							checked={ ( undefined !== fields[ index ].inline ? fields[ index ].inline : false ) }
 							onChange={ ( value ) => this.saveFields( { inline: value }, index ) }
 						/>
 					) }
 					<TextControl
-						label={ __( 'Field Label' ) }
-						placeholder={ __( 'Field Label' ) }
+						label={ __( 'Field Label', 'kadence-blocks' ) }
+						placeholder={ __( 'Field Label', 'kadence-blocks' ) }
 						value={ ( undefined !== fields[ index ].label ? fields[ index ].label : '' ) }
 						onChange={ ( value ) => this.saveFields( { label: value }, index ) }
 					/>
 					<ToggleControl
-						label={ __( 'Show Label' ) }
+						label={ __( 'Show Label', 'kadence-blocks' ) }
 						checked={ ( undefined !== fields[ index ].showLabel ? fields[ index ].showLabel : true ) }
 						onChange={ ( value ) => this.saveFields( { showLabel: value }, index ) }
 					/>
+					{ ( 'accept' !== fields[ index ].type || 'select' !== fields[ index ].type ) && (
+						<TextControl
+							label={ __( 'Field Placeholder', 'kadence-blocks' ) }
+							value={ ( undefined !== fields[ index ].placeholder ? fields[ index ].placeholder : '' ) }
+							onChange={ ( value ) => this.saveFields( { placeholder: value }, index ) }
+						/>
+					) }
+					{ ( 'accept' !== fields[ index ].type ) && (
+						<TextControl
+							label={ __( 'Input Default', 'kadence-blocks' ) }
+							value={ ( undefined !== fields[ index ].default ? fields[ index ].default : '' ) }
+							onChange={ ( value ) => this.saveFields( { default: value }, index ) }
+						/>
+					) }
 					<TextControl
-						label={ __( 'Field Placeholder' ) }
-						value={ ( undefined !== fields[ index ].placeholder ? fields[ index ].placeholder : '' ) }
-						onChange={ ( value ) => this.saveFields( { placeholder: value }, index ) }
+						label={ __( 'Help Text', 'kadence-blocks' ) }
+						value={ ( undefined !== fields[ index ].description ? fields[ index ].description : '' ) }
+						onChange={ ( value ) => this.saveFields( { description: value }, index ) }
 					/>
-					<TextControl
-						label={ __( 'Input Default' ) }
-						value={ ( undefined !== fields[ index ].default ? fields[ index ].default : '' ) }
-						onChange={ ( value ) => this.saveFields( { default: value }, index ) }
-					/>
-					<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Column Width' ) }</h2>
+					{ ( 'text' === fields[ index ].type || 'email' === fields[ index ].type ) && (
+						<SelectControl
+							label={ __( 'Field Auto Fill', 'kadence-blocks' ) }
+							value={ fields[ index ].auto }
+							options={ [
+								{ value: '', label: __( 'Default', 'kadence-blocks' ) },
+								{ value: 'name', label: __( 'Name', 'kadence-blocks' ) },
+								{ value: 'given-name', label: __( 'First Name', 'kadence-blocks' ) },
+								{ value: 'family-name', label: __( 'Last Name', 'kadence-blocks' ) },
+								{ value: 'email', label: __( 'Email', 'kadence-blocks' ) },
+								{ value: 'organization', label: __( 'Organization', 'kadence-blocks' ) },
+								{ value: 'street-address', label: __( 'Street Address', 'kadence-blocks' ) },
+								{ value: 'address-line1', label: __( 'Address Line 1', 'kadence-blocks' ) },
+								{ value: 'address-line2', label: __( 'Address Line 1', 'kadence-blocks' ) },
+								{ value: 'country-name', label: __( 'Country Name', 'kadence-blocks' ) },
+								{ value: 'postal-code', label: __( 'Postal Code', 'kadence-blocks' ) },
+								{ value: 'tel', label: __( 'Telephone', 'kadence-blocks' ) },
+								{ value: 'off', label: __( 'Off', 'kadence-blocks' ) },
+							] }
+							onChange={ value => {
+								this.saveFields( { auto: value }, index );
+							} }
+						/>
+					) }
+					<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Column Width', 'kadence-blocks' ) }</h2>
 					<TabPanel className="kt-size-tabs"
 						activeClass="active-tab"
 						tabs={ [
@@ -490,17 +856,17 @@ class KadenceForm extends Component {
 												<SelectControl
 													value={ fields[ index ].width[ 2 ] }
 													options={ [
-														{ value: '20', label: __( '20%' ) },
-														{ value: '25', label: __( '25%' ) },
-														{ value: '33', label: __( '33%' ) },
-														{ value: '40', label: __( '40%' ) },
-														{ value: '50', label: __( '50%' ) },
-														{ value: '60', label: __( '33%' ) },
-														{ value: '66', label: __( '66%' ) },
-														{ value: '75', label: __( '75%' ) },
-														{ value: '80', label: __( '80%' ) },
-														{ value: '100', label: __( '100%' ) },
-														{ value: 'unset', label: __( 'Unset' ) },
+														{ value: '20', label: __( '20%', 'kadence-blocks' ) },
+														{ value: '25', label: __( '25%', 'kadence-blocks' ) },
+														{ value: '33', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '40', label: __( '40%', 'kadence-blocks' ) },
+														{ value: '50', label: __( '50%', 'kadence-blocks' ) },
+														{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '66', label: __( '66%', 'kadence-blocks' ) },
+														{ value: '75', label: __( '75%', 'kadence-blocks' ) },
+														{ value: '80', label: __( '80%', 'kadence-blocks' ) },
+														{ value: '100', label: __( '100%', 'kadence-blocks' ) },
+														{ value: 'unset', label: __( 'Unset', 'kadence-blocks' ) },
 													] }
 													onChange={ value => {
 														this.saveFields( { width: [ ( fields[ index ].width[ 0 ] ? fields[ index ].width[ 0 ] : '100' ), ( fields[ index ].width[ 1 ] ? fields[ index ].width[ 1 ] : '' ), value ] }, index );
@@ -514,17 +880,17 @@ class KadenceForm extends Component {
 												<SelectControl
 													value={ fields[ index ].width[ 1 ] }
 													options={ [
-														{ value: '20', label: __( '20%' ) },
-														{ value: '25', label: __( '25%' ) },
-														{ value: '33', label: __( '33%' ) },
-														{ value: '40', label: __( '40%' ) },
-														{ value: '50', label: __( '50%' ) },
-														{ value: '60', label: __( '33%' ) },
-														{ value: '66', label: __( '66%' ) },
-														{ value: '75', label: __( '75%' ) },
-														{ value: '80', label: __( '80%' ) },
-														{ value: '100', label: __( '100%' ) },
-														{ value: 'unset', label: __( 'Unset' ) },
+														{ value: '20', label: __( '20%', 'kadence-blocks' ) },
+														{ value: '25', label: __( '25%', 'kadence-blocks' ) },
+														{ value: '33', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '40', label: __( '40%', 'kadence-blocks' ) },
+														{ value: '50', label: __( '50%', 'kadence-blocks' ) },
+														{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '66', label: __( '66%', 'kadence-blocks' ) },
+														{ value: '75', label: __( '75%', 'kadence-blocks' ) },
+														{ value: '80', label: __( '80%', 'kadence-blocks' ) },
+														{ value: '100', label: __( '100%', 'kadence-blocks' ) },
+														{ value: 'unset', label: __( 'Unset', 'kadence-blocks' ) },
 													] }
 													onChange={ value => {
 														this.saveFields( { width: [ ( fields[ index ].width[ 0 ] ? fields[ index ].width[ 0 ] : '100' ), value, ( fields[ index ].width[ 2 ] ? fields[ index ].width[ 2 ] : '' ) ] }, index );
@@ -538,17 +904,17 @@ class KadenceForm extends Component {
 												<SelectControl
 													value={ fields[ index ].width[ 0 ] }
 													options={ [
-														{ value: '20', label: __( '20%' ) },
-														{ value: '25', label: __( '25%' ) },
-														{ value: '33', label: __( '33%' ) },
-														{ value: '40', label: __( '40%' ) },
-														{ value: '50', label: __( '50%' ) },
-														{ value: '60', label: __( '33%' ) },
-														{ value: '66', label: __( '66%' ) },
-														{ value: '75', label: __( '75%' ) },
-														{ value: '80', label: __( '80%' ) },
-														{ value: '100', label: __( '100%' ) },
-														{ value: 'unset', label: __( 'Unset' ) },
+														{ value: '20', label: __( '20%', 'kadence-blocks' ) },
+														{ value: '25', label: __( '25%', 'kadence-blocks' ) },
+														{ value: '33', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '40', label: __( '40%', 'kadence-blocks' ) },
+														{ value: '50', label: __( '50%', 'kadence-blocks' ) },
+														{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '66', label: __( '66%', 'kadence-blocks' ) },
+														{ value: '75', label: __( '75%', 'kadence-blocks' ) },
+														{ value: '80', label: __( '80%', 'kadence-blocks' ) },
+														{ value: '100', label: __( '100%', 'kadence-blocks' ) },
+														{ value: 'unset', label: __( 'Unset', 'kadence-blocks' ) },
 													] }
 													onChange={ value => {
 														this.saveFields( { width: [ value, ( fields[ index ].width[ 1 ] ? fields[ index ].width[ 1 ] : '' ), ( fields[ index ].width[ 2 ] ? fields[ index ].width[ 2 ] : '' ) ] }, index );
@@ -575,14 +941,31 @@ class KadenceForm extends Component {
 			const fieldClassName = classnames( {
 				'kadence-blocks-form-field': true,
 				'is-selected': isFieldSelected,
-				[ `input-size-${ style[ 0 ].size }` ]: style[ 0 ].size,
+				[ `kb-input-size-${ style[ 0 ].size }` ]: style[ 0 ].size,
 			} );
-			const ariaLabel = sprintf( __( 'Feild %1$d of %2$d in form' ), ( index + 1 ), fields.length );
+			const ariaLabel = sprintf( __( 'Field %1$d of %2$d in form', 'kadence-blocks' ), ( index + 1 ), fields.length );
+			let acceptLabel;
+			let acceptLabelBefore;
+			let acceptLabelAfter;
+			if ( fields[ index ].label && fields[ index ].label.includes( '{privacy_policy}' ) ) {
+				acceptLabelBefore = fields[ index ].label.split( '{' )[ 0 ];
+				acceptLabelAfter = fields[ index ].label.split( '}' )[ 1 ];
+				acceptLabel = (
+					<Fragment>
+						{ acceptLabelBefore }<a href={ ( '' !== kadence_blocks_params.privacy_link ? kadence_blocks_params.privacy_link : '#' ) } target="blank" rel="noopener noreferrer">{ ( '' !== kadence_blocks_params.privacy_title ? kadence_blocks_params.privacy_title : 'Privacy policy' ) }</a>{ acceptLabelAfter }
+					</Fragment>
+				);
+			} else {
+				acceptLabel = fields[ index ].label;
+			}
 			return (
 				<div
 					className={ fieldClassName }
 					style={ {
 						width: fields[ index ].width[ 0 ] + '%',
+						marginBottom: ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : undefined ),
+						paddingRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
+						paddingLeft: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
 					} }
 					tabIndex="0"
 					ref={ this.bindContainer }
@@ -590,16 +973,126 @@ class KadenceForm extends Component {
 					role="button"
 					onClick={ this.onSelectField( index ) }
 					unstableOnFocus={ this.onSelectField( index ) }
-					onKeyDown={ this.onRemoveField( index ) }
+					onKeyDown={ ( event ) => {
+						const { keyCode } = event;
+						if ( keyCode === DELETE ) {
+							this.onKeyRemoveField( index );
+						}
+					} }
 				>
-					{ fields[ index ].showLabel && (
-						<label htmlFor={ `kb_field_${ index }` }>{ ( fields[ index ].label ? fields[ index ].label : 'Field Label' ) } { ( fields[ index ].required ? <span className="required">*</span> : '' ) }</label>
+					{ 'accept' === fields[ index ].type && (
+						<Fragment>
+							{ fields[ index ].showLink && (
+								<a href={ ( undefined !== fields[ index ].default && '' !== fields[ index ].default ? fields[ index ].default : '#' ) } className={ 'kb-accept-link' }>{ ( undefined !== fields[ index ].placeholder && '' !== fields[ index ].placeholder ? fields[ index ].placeholder : <span className="kb-placeholder">{ 'View Privacy Policy' }</span> ) }</a>
+							) }
+							<input type="checkbox" name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } className={ `kb-field kb-checkbox-style kb-${ fields[ index ].type }` }value="accept" checked={ fields[ index ].inline ? true : false } style={ {
+								borderColor: ( undefined === style[ 0 ].border ? undefined : hexToRGBA( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+							} } />
+							<label htmlFor={ `kb_field_${ index }` } style={ {
+								fontWeight: labelFont[ 0 ].weight,
+								fontStyle: labelFont[ 0 ].style,
+								color: labelFont[ 0 ].color,
+								fontSize: labelFont[ 0 ].size[ 0 ] + labelFont[ 0 ].sizeType,
+								lineHeight: ( labelFont[ 0 ].lineHeight && labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] + labelFont[ 0 ].lineType : undefined ),
+								letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
+								fontFamily: ( labelFont[ 0 ].family ? labelFont[ 0 ].family : undefined ),
+								paddingTop: ( '' !== labelFont[ 0 ].padding[ 0 ] ? labelFont[ 0 ].padding[ 0 ] + 'px' : undefined ),
+								paddingRight: ( '' !== labelFont[ 0 ].padding[ 1 ] ? labelFont[ 0 ].padding[ 1 ] + 'px' : undefined ),
+								paddingBottom: ( '' !== labelFont[ 0 ].padding[ 2 ] ? labelFont[ 0 ].padding[ 2 ] + 'px' : undefined ),
+								paddingLeft: ( '' !== labelFont[ 0 ].padding[ 3 ] ? labelFont[ 0 ].padding[ 3 ] + 'px' : undefined ),
+								marginTop: ( '' !== labelFont[ 0 ].margin[ 0 ] ? labelFont[ 0 ].margin[ 0 ] + 'px' : undefined ),
+								marginRight: ( '' !== labelFont[ 0 ].margin[ 1 ] ? labelFont[ 0 ].margin[ 1 ] + 'px' : undefined ),
+								marginBottom: ( '' !== labelFont[ 0 ].margin[ 2 ] ? labelFont[ 0 ].margin[ 2 ] + 'px' : undefined ),
+								marginLeft: ( '' !== labelFont[ 0 ].margin[ 3 ] ? labelFont[ 0 ].margin[ 3 ] + 'px' : undefined ),
+							} }>{ ( fields[ index ].label ? acceptLabel : <span className="kb-placeholder">{ 'Field Label' }</span> ) } { ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required" style={ { color: style[ 0 ].requiredColor } }>*</span> : '' ) }</label>
+						</Fragment>
 					) }
-					{ 'textarea' === fields[ index ].type && (
-						<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } />
+					{ 'accept' !== fields[ index ].type && (
+						<Fragment>
+							{ fields[ index ].showLabel && (
+								<label htmlFor={ `kb_field_${ index }` } style={ {
+									fontWeight: labelFont[ 0 ].weight,
+									fontStyle: labelFont[ 0 ].style,
+									color: labelFont[ 0 ].color,
+									fontSize: labelFont[ 0 ].size[ 0 ] + labelFont[ 0 ].sizeType,
+									lineHeight: ( labelFont[ 0 ].lineHeight && labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] + labelFont[ 0 ].lineType : undefined ),
+									letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
+									fontFamily: ( labelFont[ 0 ].family ? labelFont[ 0 ].family : undefined ),
+									paddingTop: ( '' !== labelFont[ 0 ].padding[ 0 ] ? labelFont[ 0 ].padding[ 0 ] + 'px' : undefined ),
+									paddingRight: ( '' !== labelFont[ 0 ].padding[ 1 ] ? labelFont[ 0 ].padding[ 1 ] + 'px' : undefined ),
+									paddingBottom: ( '' !== labelFont[ 0 ].padding[ 2 ] ? labelFont[ 0 ].padding[ 2 ] + 'px' : undefined ),
+									paddingLeft: ( '' !== labelFont[ 0 ].padding[ 3 ] ? labelFont[ 0 ].padding[ 3 ] + 'px' : undefined ),
+									marginTop: ( '' !== labelFont[ 0 ].margin[ 0 ] ? labelFont[ 0 ].margin[ 0 ] + 'px' : undefined ),
+									marginRight: ( '' !== labelFont[ 0 ].margin[ 1 ] ? labelFont[ 0 ].margin[ 1 ] + 'px' : undefined ),
+									marginBottom: ( '' !== labelFont[ 0 ].margin[ 2 ] ? labelFont[ 0 ].margin[ 2 ] + 'px' : undefined ),
+									marginLeft: ( '' !== labelFont[ 0 ].margin[ 3 ] ? labelFont[ 0 ].margin[ 3 ] + 'px' : undefined ),
+								} }>{ ( fields[ index ].label ? fields[ index ].label : <span className="kb-placeholder">{ 'Field Label' }</span> ) } { ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required" style={ { color: style[ 0 ].requiredColor } }>*</span> : '' ) }</label>
+							) }
+							{ 'textarea' === fields[ index ].type && (
+								<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } style={ {
+									paddingTop: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 0 ] ? style[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
+									paddingRight: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 1 ] ? style[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
+									paddingBottom: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 2 ] ? style[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
+									paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
+									background: ( undefined !== inputBG ? inputBG : undefined ),
+									color: ( undefined !== style[ 0 ].color ? style[ 0 ].color : undefined ),
+									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
+									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
+									borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
+									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
+									borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
+									borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
+									borderColor: ( undefined === style[ 0 ].border ? undefined : hexToRGBA( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+								} } />
+							) }
+							{ 'select' === fields[ index ].type && (
+								<select name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } data-type={ fields[ index ].type } multiple={ ( fields[ index ].multiSelect ? true : false ) } className={ `kb-field kb-select-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } style={ {
+									background: ( undefined !== inputBG ? inputBG : undefined ),
+									color: ( undefined !== style[ 0 ].color ? style[ 0 ].color : undefined ),
+									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
+									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
+									borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
+									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
+									borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
+									borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
+									borderColor: ( undefined === style[ 0 ].border ? undefined : hexToRGBA( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+								} } >
+									{ times( fields[ index ].options.length, n => (
+										<option
+											key={ n }
+											selected={ ( undefined !== fields[ index ].options[ n ].value && fields[ index ].options[ n ].value === fields[ index ].default ? true : false ) }
+											value={ ( undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '' ) }
+										>{ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }</option>
+									) ) }
+								</select>
+							) }
+							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && (
+								<input name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete="off" data-required={ ( fields[ index ].required ? 'yes' : undefined ) } style={ {
+									paddingTop: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 0 ] ? style[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
+									paddingRight: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 1 ] ? style[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
+									paddingBottom: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 2 ] ? style[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
+									paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
+									background: ( undefined !== inputBG ? inputBG : undefined ),
+									color: ( undefined !== style[ 0 ].color ? style[ 0 ].color : undefined ),
+									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
+									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
+									borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
+									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
+									borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
+									borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
+									borderColor: ( undefined === style[ 0 ].border ? undefined : hexToRGBA( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+								} } />
+							) }
+						</Fragment>
 					) }
-					{ 'textarea' !== fields[ index ].type && (
-						<input name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete={ ( '' !== fields[ index ].auto ? fields[ index ].auto : undefined ) } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } />
+					{ undefined !== fields[ index ].description && '' !== fields[ index ].description && (
+						<span className={ 'kb-field-help' }>{ ( fields[ index ].description ? fields[ index ].description : '' ) }</span>
 					) }
 					{ isFieldSelected && (
 						<Fragment>
@@ -608,7 +1101,7 @@ class KadenceForm extends Component {
 									icon="arrow-up"
 									onClick={ index === 0 ? undefined : this.onMoveBackward( index ) }
 									className="kadence-blocks-field-item__move-backward"
-									label={ __( 'Move Field Up' ) }
+									label={ __( 'Move Field Up', 'kadence-blocks' ) }
 									aria-disabled={ index === 0 }
 									disabled={ ! isFieldSelected || index === 0 }
 								/>
@@ -616,7 +1109,7 @@ class KadenceForm extends Component {
 									icon="arrow-down"
 									onClick={ ( index + 1 ) === fields.length ? undefined : this.onMoveForward( index ) }
 									className="kadence-blocks-field-item__move-forward"
-									label={ __( 'Move Field Down' ) }
+									label={ __( 'Move Field Down', 'kadence-blocks' ) }
 									aria-disabled={ ( index + 1 ) === fields.length }
 									disabled={ ! isFieldSelected || ( index + 1 ) === fields.length }
 								/>
@@ -626,14 +1119,14 @@ class KadenceForm extends Component {
 									icon="admin-page"
 									onClick={ this.onDuplicateField( index ) }
 									className="kadence-blocks-field-item__duplicate"
-									label={ __( 'Duplicate Field' ) }
+									label={ __( 'Duplicate Field', 'kadence-blocks' ) }
 									disabled={ ! isFieldSelected }
 								/>
 								<IconButton
 									icon="no-alt"
 									onClick={ this.onRemoveField( index ) }
 									className="kadence-blocks-field-item__remove"
-									label={ __( 'Remove Field' ) }
+									label={ __( 'Remove Field', 'kadence-blocks' ) }
 									disabled={ ! isFieldSelected || 1 === fields.length }
 								/>
 							</div>
@@ -665,25 +1158,98 @@ class KadenceForm extends Component {
 				/>
 			);
 		};
+		const renderCSS = () => {
+			let inputBGA = '';
+			let inputGradA;
+			let inputGradA2;
+			let inputBox = '';
+			let btnHBG = '';
+			let btnHBGnorm;
+			let btnHGrad;
+			let btnHGrad2;
+			let btnHBox = '';
+			let btnRad = '0';
+			let btnBox2 = '';
+			if ( undefined !== style[ 0 ].backgroundActiveType && 'gradient' === style[ 0 ].backgroundActiveType && undefined !== style[ 0 ].gradientActive ) {
+				inputGradA = ( undefined === style[ 0 ].backgroundActive ? hexToRGBA( '#ffffff', ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) ) : hexToRGBA( style[ 0 ].backgroundActive, ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) ) );
+				inputGradA2 = ( undefined === style[ 0 ].gradientActive[ 0 ] ? hexToRGBA( '#777777', ( style[ 0 ].gradientActive[ 1 ] !== undefined ? style[ 0 ].gradientActive[ 1 ] : 1 ) ) : hexToRGBA( style[ 0 ].gradientActive[ 0 ], ( style[ 0 ].gradientActive[ 1 ] !== undefined ? style[ 0 ].gradientActive[ 1 ] : 1 ) ) );
+				if ( 'radial' === style[ 0 ].gradientActive[ 4 ] ) {
+					inputBGA = `radial-gradient(at ${ ( undefined === style[ 0 ].gradientActive[ 6 ] ? 'center center' : style[ 0 ].gradientActive[ 6 ] ) }, ${ inputGradA } ${ ( undefined === style[ 0 ].gradientActive[ 2 ] ? '0' : style[ 0 ].gradientActive[ 2 ] ) }%, ${ inputGradA2 } ${ ( undefined === style[ 0 ].gradientActive[ 3 ] ? '100' : style[ 0 ].gradientActive[ 3 ] ) }%)`;
+				} else if ( 'linear' === style[ 0 ].gradientActive[ 4 ] ) {
+					inputBGA = `linear-gradient(${ ( undefined === style[ 0 ].gradientActive[ 5 ] ? '180' : style[ 0 ].gradientActive[ 5 ] ) }deg, ${ inputGradA } ${ ( undefined === style[ 0 ].gradientActive[ 2 ] ? '0' : style[ 0 ].gradientActive[ 2 ] ) }%, ${ inputGradA2 } ${ ( undefined === style[ 0 ].gradientActive[ 3 ] ? '100' : style[ 0 ].gradientActive[ 3 ] ) }%)`;
+				}
+			} else if ( undefined !== style[ 0 ].backgroundActive && '' !== style[ 0 ].backgroundActive ) {
+				inputBGA = hexToRGBA( style[ 0 ].backgroundActive, ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) );
+			}
+			if ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 0 ] && style[ 0 ].boxShadowActive[ 0 ] ) {
+				inputBox = `${ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 0 ] && style[ 0 ].boxShadowActive[ 0 ] ? ( undefined !== style[ 0 ].boxShadowActive[ 7 ] && style[ 0 ].boxShadowActive[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadowActive[ 3 ] ? style[ 0 ].boxShadowActive[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 4 ] ? style[ 0 ].boxShadowActive[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 5 ] ? style[ 0 ].boxShadowActive[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 6 ] ? style[ 0 ].boxShadowActive[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== style[ 0 ].boxShadowActive[ 1 ] ? style[ 0 ].boxShadowActive[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadowActive[ 2 ] ? style[ 0 ].boxShadowActive[ 2 ] : 1 ) ) : undefined ) }`;
+			}
+			if ( undefined !== submit[ 0 ].backgroundHoverType && 'gradient' === submit[ 0 ].backgroundHoverType && undefined !== submit[ 0 ].gradientHover ) {
+				btnHGrad = ( undefined === submit[ 0 ].backgroundHover ? hexToRGBA( '#ffffff', ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) ) : hexToRGBA( submit[ 0 ].backgroundHover, ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) ) );
+				btnHGrad2 = ( undefined === submit[ 0 ].gradientHover[ 0 ] ? hexToRGBA( '#777777', ( submit[ 0 ].gradientHover[ 1 ] !== undefined ? submit[ 0 ].gradientHover[ 1 ] : 1 ) ) : hexToRGBA( submit[ 0 ].gradientHover[ 0 ], ( submit[ 0 ].gradientHover[ 1 ] !== undefined ? submit[ 0 ].gradientHover[ 1 ] : 1 ) ) );
+				if ( 'radial' === submit[ 0 ].gradientHover[ 4 ] ) {
+					btnHBG = `radial-gradient(at ${ ( undefined === submit[ 0 ].gradientHover[ 6 ] ? 'center center' : submit[ 0 ].gradientHover[ 6 ] ) }, ${ btnHGrad } ${ ( undefined === submit[ 0 ].gradientHover[ 2 ] ? '0' : submit[ 0 ].gradientHover[ 2 ] ) }%, ${ btnHGrad2 } ${ ( undefined === submit[ 0 ].gradientHover[ 3 ] ? '100' : submit[ 0 ].gradientHover[ 3 ] ) }%)`;
+				} else if ( 'linear' === submit[ 0 ].gradientHover[ 4 ] ) {
+					btnHBG = `linear-gradient(${ ( undefined === submit[ 0 ].gradientHover[ 5 ] ? '180' : submit[ 0 ].gradientHover[ 5 ] ) }deg, ${ btnHGrad } ${ ( undefined === submit[ 0 ].gradientHover[ 2 ] ? '0' : submit[ 0 ].gradientHover[ 2 ] ) }%, ${ btnHGrad2 } ${ ( undefined === submit[ 0 ].gradientHover[ 3 ] ? '100' : submit[ 0 ].gradientHover[ 3 ] ) }%)`;
+				}
+			} else if ( undefined !== submit[ 0 ].backgroundHover && '' !== submit[ 0 ].backgroundHover ) {
+				btnHBGnorm = hexToRGBA( submit[ 0 ].backgroundHover, ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) );
+			}
+			if ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] && undefined !== submit[ 0 ].boxShadowHover[ 7 ] && false === submit[ 0 ].boxShadowHover[ 7 ] ) {
+				btnHBox = `${ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] ? ( undefined !== submit[ 0 ].boxShadowHover[ 7 ] && submit[ 0 ].boxShadowHover[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadowHover[ 3 ] ? submit[ 0 ].boxShadowHover[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 4 ] ? submit[ 0 ].boxShadowHover[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 5 ] ? submit[ 0 ].boxShadowHover[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 6 ] ? submit[ 0 ].boxShadowHover[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== submit[ 0 ].boxShadowHover[ 1 ] ? submit[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadowHover[ 2 ] ? submit[ 0 ].boxShadowHover[ 2 ] : 1 ) ) : undefined ) }`;
+				btnBox2 = 'none';
+				btnRad = '0';
+			}
+			if ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] && undefined !== submit[ 0 ].boxShadowHover[ 7 ] && true === submit[ 0 ].boxShadowHover[ 7 ] ) {
+				btnBox2 = `${ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] ? ( undefined !== submit[ 0 ].boxShadowHover[ 7 ] && submit[ 0 ].boxShadowHover[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadowHover[ 3 ] ? submit[ 0 ].boxShadowHover[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 4 ] ? submit[ 0 ].boxShadowHover[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 5 ] ? submit[ 0 ].boxShadowHover[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 6 ] ? submit[ 0 ].boxShadowHover[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== submit[ 0 ].boxShadowHover[ 1 ] ? submit[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadowHover[ 2 ] ? submit[ 0 ].boxShadowHover[ 2 ] : 1 ) ) : undefined ) }`;
+				btnRad = ( undefined !== submit[ 0 ].borderRadius ? submit[ 0 ].borderRadius : undefined );
+				btnHBox = 'none';
+			}
+			return (
+				`#kb-form-${ uniqueID } .kadence-blocks-form-field input.kb-field:focus, #kb-form-${ uniqueID } .kadence-blocks-form-field textarea:focus {
+					${ ( style[ 0 ].colorActive ? 'color:' + style[ 0 ].colorActive + '!important;' : '' ) }
+					${ ( inputBGA ? 'background:' + inputBGA + '!important;' : '' ) }
+					${ ( inputBox ? 'box-shadow:' + inputBox + '!important;' : '' ) }
+					${ ( style[ 0 ].borderActive ? 'border-color:' + style[ 0 ].borderActive + '!important;' : '' ) }
+				}
+				#kb-form-${ uniqueID } .kadence-blocks-form-field .kb-forms-submit:hover {
+					${ ( submit[ 0 ].colorHover ? 'color:' + submit[ 0 ].colorHover + '!important;' : '' ) }
+					${ ( btnHBGnorm ? 'background:' + btnHBGnorm + '!important;' : '' ) }
+					${ ( btnHBox ? 'box-shadow:' + btnHBox + '!important;' : '' ) }
+					${ ( submit[ 0 ].borderHover ? 'border-color:' + submit[ 0 ].borderHover + '!important;' : '' ) }
+				}
+				#kb-form-${ uniqueID } .kadence-blocks-form-field .kb-forms-submit::before {
+					${ ( btnHBG ? 'background:' + btnHBG + ';' : '' ) }
+					${ ( btnBox2 ? 'box-shadow:' + btnBox2 + ';' : '' ) }
+					${ ( btnRad ? 'border-radius:' + btnRad + 'px;' : '' ) }
+				}`
+			);
+		};
 		return (
 			<div className={ className }>
+				<style>
+					{ renderCSS() }
+				</style>
+				{ labelFont[ 0 ].google && (
+					<WebfontLoader config={ lconfig }>
+					</WebfontLoader>
+				) }
+				{ submitFont[ 0 ].google && (
+					<WebfontLoader config={ bconfig }>
+					</WebfontLoader>
+				) }
 				<BlockControls key="controls">
+					<BlockAlignmentToolbar
+						value={ align }
+						controls={ [ 'center', 'wide', 'full' ] }
+						onChange={ value => setAttributes( { align: value } ) }
+					/>
 					<AlignmentToolbar
 						value={ hAlign }
 						onChange={ value => setAttributes( { hAlign: value } ) }
 					/>
 				</BlockControls>
 				<InspectorControls>
-					<div className={ 'components-panel__row' } style={ {
-						padding: '0 16px',
-					} }
-					>
-						<TextControl
-							label={ __( 'Form Name' ) }
-							value={ ( undefined !== formName ? formName : '' ) }
-							onChange={ ( value ) => setAttributes( { formName: value } ) }
-						/>
-					</div>
 					{ renderFieldControls }
 					<PanelRow>
 						<Button
@@ -700,6 +1266,7 @@ class KadenceForm extends Component {
 									options: [],
 									multiSelect: false,
 									inline: false,
+									showLink: false,
 									min: '',
 									max: '',
 									type: 'text',
@@ -712,11 +1279,11 @@ class KadenceForm extends Component {
 							} }
 						>
 							<Dashicon icon="plus" />
-							{ __( 'Add Field' ) }
+							{ __( 'Add Field', 'kadence-blocks' ) }
 						</Button>
 					</PanelRow>
 					<PanelBody
-						title={ __( 'Actions After Submit' ) }
+						title={ __( 'Actions After Submit', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
 						{ this.state.actionOptions &&
@@ -725,120 +1292,65 @@ class KadenceForm extends Component {
 					</PanelBody>
 					{ actions.includes( 'email' ) && (
 						<PanelBody
-							title={ __( 'Email Settings' ) }
+							title={ __( 'Email Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
 							<TextControl
-								label={ __( 'Email To Address' ) }
-								placeholder={ __( 'name@example.com' ) }
+								label={ __( 'Email To Address', 'kadence-blocks' ) }
+								placeholder={ __( 'name@example.com', 'kadence-blocks' ) }
 								value={ ( undefined !== email[ 0 ].emailTo ? email[ 0 ].emailTo : '' ) }
 								onChange={ ( value ) => this.saveEmail( { emailTo: value } ) }
 							/>
 							<TextControl
-								label={ __( 'Email Subject' ) }
+								label={ __( 'Email Subject', 'kadence-blocks' ) }
 								value={ ( undefined !== email[ 0 ].subject ? email[ 0 ].subject : '' ) }
 								onChange={ ( value ) => this.saveEmail( { subject: value } ) }
 							/>
 							<TextControl
-								label={ __( 'From Email' ) }
+								label={ __( 'From Email', 'kadence-blocks' ) }
 								value={ ( undefined !== email[ 0 ].fromEmail ? email[ 0 ].fromEmail : '' ) }
 								onChange={ ( value ) => this.saveEmail( { fromEmail: value } ) }
 							/>
 							<TextControl
-								label={ __( 'From Name' ) }
+								label={ __( 'From Name', 'kadence-blocks' ) }
 								value={ ( undefined !== email[ 0 ].fromName ? email[ 0 ].fromName : '' ) }
 								onChange={ ( value ) => this.saveEmail( { fromName: value } ) }
 							/>
 							<SelectControl
-								label={ __( 'Reply To' ) }
+								label={ __( 'Reply To', 'kadence-blocks' ) }
 								value={ email[ 0 ].replyTo }
 								options={ [
-									{ value: 'email_field', label: __( 'Email Field' ) },
-									{ value: 'from_email', label: __( 'From Email' ) },
+									{ value: 'email_field', label: __( 'Email Field', 'kadence-blocks' ) },
+									{ value: 'from_email', label: __( 'From Email', 'kadence-blocks' ) },
 								] }
 								onChange={ value => {
 									this.saveEmail( { replyTo: value } );
 								} }
 							/>
 							<TextControl
-								label={ __( 'Cc' ) }
+								label={ __( 'Cc', 'kadence-blocks' ) }
 								value={ ( undefined !== email[ 0 ].cc ? email[ 0 ].cc : '' ) }
 								onChange={ ( value ) => this.saveEmail( { cc: value } ) }
 							/>
 							<TextControl
-								label={ __( 'Bcc' ) }
+								label={ __( 'Bcc', 'kadence-blocks' ) }
 								value={ ( undefined !== email[ 0 ].bcc ? email[ 0 ].bcc : '' ) }
 								onChange={ ( value ) => this.saveEmail( { bcc: value } ) }
 							/>
 							<ToggleControl
-								label={ __( 'Send as HTMl email?' ) }
-								help={ __( 'If off plain text is used.' ) }
+								label={ __( 'Send as HTMl email?', 'kadence-blocks' ) }
+								help={ __( 'If off plain text is used.', 'kadence-blocks' ) }
 								checked={ ( undefined !== email[ 0 ].html ? email[ 0 ].html : true ) }
 								onChange={ ( value ) => this.saveEmail( { html: value } ) }
 							/>
 						</PanelBody>
 					) }
-					{ actions.includes( 'email2' ) && (
-						<PanelBody
-							title={ __( 'Auto Response Settings' ) }
-							initialOpen={ false }
-						>
-							<TextControl
-								label={ __( 'Email Subject' ) }
-								value={ ( undefined !== autoEmail[ 0 ].subject ? autoEmail[ 0 ].subject : '' ) }
-								onChange={ ( value ) => this.saveAutoEmail( { subject: value } ) }
-							/>
-							<TextareaControl
-								label={ __( 'Email Message' ) }
-								placeholder={ __( 'Thanks for getting in touch, we will respond within the next 24 hours.' ) }
-								value={ ( undefined !== autoEmail[ 0 ].message ? autoEmail[ 0 ].message : '' ) }
-								onChange={ ( value ) => this.saveAutoEmail( { message: value } ) }
-							/>
-							<TextControl
-								label={ __( 'From Email' ) }
-								value={ ( undefined !== autoEmail[ 0 ].fromEmail ? autoEmail[ 0 ].fromEmail : '' ) }
-								onChange={ ( value ) => this.saveAutoEmail( { fromEmail: value } ) }
-							/>
-							<TextControl
-								label={ __( 'From Name' ) }
-								value={ ( undefined !== autoEmail[ 0 ].fromName ? autoEmail[ 0 ].fromName : '' ) }
-								onChange={ ( value ) => this.saveAutoEmail( { fromName: value } ) }
-							/>
-							<TextControl
-								label={ __( 'Reply To' ) }
-								value={ ( undefined !== autoEmail[ 0 ].replyTo ? autoEmail[ 0 ].replyTo : '' ) }
-								onChange={ ( value ) => this.saveAutoEmail( { replyTo: value } ) }
-							/>
-							<TextControl
-								label={ __( 'Cc' ) }
-								value={ ( undefined !== autoEmail[ 0 ].cc ? autoEmail[ 0 ].cc : '' ) }
-								onChange={ ( value ) => this.saveAutoEmail( { cc: value } ) }
-							/>
-							<TextControl
-								label={ __( 'Bcc' ) }
-								value={ ( undefined !== autoEmail[ 0 ].bcc ? autoEmail[ 0 ].bcc : '' ) }
-								onChange={ ( value ) => this.saveAutoEmail( { bcc: value } ) }
-							/>
-							<ToggleControl
-								label={ __( 'Send as HTMl email?' ) }
-								help={ __( 'If off plain text is used.' ) }
-								checked={ ( undefined !== autoEmail[ 0 ].html ? autoEmail[ 0 ].html : true ) }
-								onChange={ ( value ) => this.saveAutoEmail( { html: value } ) }
-							/>
-							<TextControl
-								label={ __( 'Override Email to Address' ) }
-								help={ __( 'By default email is sent to the email field, you can use this to override.' ) }
-								value={ ( undefined !== autoEmail[ 0 ].emailTo ? autoEmail[ 0 ].emailTo : '' ) }
-								onChange={ ( value ) => this.saveAutoEmail( { emailTo: value } ) }
-							/>
-						</PanelBody>
-					) }
 					{ actions.includes( 'redirect' ) && (
 						<PanelBody
-							title={ __( 'Redirect Settings' ) }
+							title={ __( 'Redirect Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
-							<p className="components-base-control__label">{ __( 'Redirect to' ) }</p>
+							<p className="components-base-control__label">{ __( 'Redirect to', 'kadence-blocks' ) }</p>
 							<URLInput
 								value={ redirect }
 								onChange={ value=> setAttributes( { redirect: value } ) }
@@ -846,11 +1358,11 @@ class KadenceForm extends Component {
 						</PanelBody>
 					) }
 					<PanelBody
-						title={ __( 'Google reCAPTCHA' ) }
+						title={ __( 'Google reCAPTCHA', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
 						<ToggleControl
-							label={ __( 'Enable Google reCAPTCHA V3' ) }
+							label={ __( 'Enable Google reCAPTCHA V3', 'kadence-blocks' ) }
 							checked={ recaptcha }
 							onChange={ ( value ) => setAttributes( { recaptcha: value } ) }
 						/>
@@ -858,18 +1370,18 @@ class KadenceForm extends Component {
 							<Fragment>
 								<p>
 									<Fragment>
-										<ExternalLink href={ RETRIEVE_KEY_URL }>{ __( 'Get keys' ) }</ExternalLink>
+										<ExternalLink href={ RETRIEVE_KEY_URL }>{ __( 'Get keys', 'kadence-blocks' ) }</ExternalLink>
 										|&nbsp;
-										<ExternalLink href={ HELP_URL }>{ __( 'Get help' ) }</ExternalLink>
+										<ExternalLink href={ HELP_URL }>{ __( 'Get help', 'kadence-blocks' ) }</ExternalLink>
 									</Fragment>
 								</p>
 								<TextControl
-									label={ __( 'Site Key' ) }
+									label={ __( 'Site Key', 'kadence-blocks' ) }
 									value={ this.state.siteKey }
 									onChange={ value => this.setState( { siteKey: value } ) }
 								/>
 								<TextControl
-									label={ __( 'Secret Key' ) }
+									label={ __( 'Secret Key', 'kadence-blocks' ) }
 									value={ this.state.secretKey }
 									onChange={ value => this.setState( { secretKey: value } ) }
 								/>
@@ -879,7 +1391,7 @@ class KadenceForm extends Component {
 										onClick={ this.saveKeys }
 										disabled={ '' === this.state.siteKey || '' === this.state.secretKey }
 									>
-										{ this.state.isSaving ? __( 'Saving' ) : __( 'Save' ) }
+										{ this.state.isSaving ? __( 'Saving', 'kadence-blocks' ) : __( 'Save', 'kadence-blocks' ) }
 									</Button>
 									{ this.state.isSavedKey && (
 										<Fragment>
@@ -888,7 +1400,7 @@ class KadenceForm extends Component {
 												isDefault
 												onClick={ this.removeKeys }
 											>
-												{ __( 'Remove' ) }
+												{ __( 'Remove', 'kadence-blocks' ) }
 											</Button>
 										</Fragment>
 									) }
@@ -897,18 +1409,22 @@ class KadenceForm extends Component {
 						) }
 					</PanelBody>
 					<PanelBody
-						title={ __( 'Input Styles' ) }
+						title={ __( 'Field Styles', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
-						<ToggleControl
-							label={ __( 'Show Required?' ) }
-							help={ __( 'If off required asterisk is removed.' ) }
-							checked={ ( undefined !== style[ 0 ].showRequired ? style[ 0 ].showRequired : true ) }
-							onChange={ ( value ) => this.saveStyle( { showRequired: value } ) }
+						<TypographyControls
+							fontSize={ style[ 0 ].fontSize }
+							onFontSize={ ( value ) => this.saveStyle( { fontSize: value } ) }
+							fontSizeType={ style[ 0 ].fontSizeType }
+							onFontSizeType={ ( value ) => this.saveStyle( { fontSizeType: value } ) }
+							lineHeight={ style[ 0 ].lineHeight }
+							onLineHeight={ ( value ) => this.saveStyle( { lineHeight: value } ) }
+							lineHeightType={ style[ 0 ].lineType }
+							onLineHeightType={ ( value ) => this.saveStyle( { lineType: value } ) }
 						/>
 						<div className="kt-btn-size-settings-container">
 							<h2 className="kt-beside-btn-group">{ __( 'Input Size' ) }</h2>
-							<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Input Size' ) }>
+							<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Input Size', 'kadence-blocks' ) }>
 								{ map( btnSizes, ( { name, key } ) => (
 									<Button
 										key={ key }
@@ -925,7 +1441,7 @@ class KadenceForm extends Component {
 						</div>
 						{ 'custom' === style[ 0 ].size && (
 							<div className="kt-inner-sub-section">
-								<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Input Padding' ) }</h2>
+								<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Input Padding', 'kadence-blocks' ) }</h2>
 								<TabPanel className="kt-size-tabs"
 									activeClass="active-tab"
 									tabs={ [
@@ -953,7 +1469,7 @@ class KadenceForm extends Component {
 													tabout = (
 														<Fragment>
 															<MeasurementControls
-																label={ __( 'Mobile Padding' ) }
+																label={ __( 'Mobile Padding', 'kadence-blocks' ) }
 																measurement={ style[ 0 ].mobilePadding }
 																control={ mobilePaddingControl }
 																onChange={ ( value ) => this.saveStyle( { mobilePadding: value } ) }
@@ -967,7 +1483,7 @@ class KadenceForm extends Component {
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
 														<MeasurementControls
-															label={ __( 'Tablet Padding' ) }
+															label={ __( 'Tablet Padding', 'kadence-blocks' ) }
 															measurement={ style[ 0 ].tabletPadding }
 															control={ tabletPaddingControl }
 															onChange={ ( value ) => this.saveStyle( { tabletPadding: value } ) }
@@ -980,7 +1496,7 @@ class KadenceForm extends Component {
 												} else {
 													tabout = (
 														<MeasurementControls
-															label={ __( 'Desktop Padding' ) }
+															label={ __( 'Desktop Padding', 'kadence-blocks' ) }
 															measurement={ style[ 0 ].deskPadding }
 															control={ deskPaddingControl }
 															onChange={ ( value ) => this.saveStyle( { deskPadding: value } ) }
@@ -998,7 +1514,7 @@ class KadenceForm extends Component {
 								</TabPanel>
 							</div>
 						) }
-						<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Input Colors' ) }</h2>
+						<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Input Colors', 'kadence-blocks' ) }</h2>
 						<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 							activeClass="active-tab"
 							tabs={ [
@@ -1021,25 +1537,140 @@ class KadenceForm extends Component {
 											tabout = (
 												<Fragment>
 													<AdvancedColorControl
-														label={ __( 'Input Focus Color' ) }
+														label={ __( 'Input Focus Color', 'kadence-blocks' ) }
 														colorValue={ ( style[ 0 ].colorActive ? style[ 0 ].colorActive : '' ) }
 														colorDefault={ '' }
 														onColorChange={ value => {
 															this.saveStyle( { colorActive: value } );
 														} }
 													/>
+													<div className="kt-btn-size-settings-container">
+														<h2 className="kt-beside-btn-group">{ __( 'Background Type', 'kadence-blocks' ) }</h2>
+														<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type', 'kadence-blocks' ) }>
+															{ map( bgType, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-btn-size-btn"
+																	isSmall
+																	isPrimary={ ( undefined !== style[ 0 ].backgroundActiveType ? style[ 0 ].backgroundActiveType : 'solid' ) === key }
+																	aria-pressed={ ( undefined !== style[ 0 ].backgroundActiveType ? style[ 0 ].backgroundActiveType : 'solid' ) === key }
+																	onClick={ () => this.saveStyle( { backgroundActiveType: key } ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+													</div>
+													{ 'gradient' !== style[ 0 ].backgroundActiveType && (
+														<div className="kt-inner-sub-section">
+															<AdvancedColorControl
+																label={ __( 'Input Focus Background', 'kadence-blocks' ) }
+																colorValue={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
+																colorDefault={ '' }
+																onColorChange={ value => {
+																	this.saveStyle( { backgroundActive: value } );
+																} }
+																opacityValue={ style[ 0 ].backgroundActiveOpacity }
+																onOpacityChange={ value => this.saveStyle( { backgroundActiveOpacity: value } ) }
+															/>
+														</div>
+													) }
+													{ 'gradient' === style[ 0 ].backgroundActiveType && (
+														<div className="kt-inner-sub-section">
+															<AdvancedColorControl
+																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
+																colorValue={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
+																colorDefault={ '' }
+																onColorChange={ value => {
+																	this.saveStyle( { backgroundActive: value } );
+																} }
+																opacityValue={ style[ 0 ].backgroundActiveOpacity }
+																onOpacityChange={ value => this.saveStyle( { backgroundActiveOpacity: value } ) }
+															/>
+															<RangeControl
+																label={ __( 'Location', 'kadence-blocks' ) }
+																value={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 2 ] ? style[ 0 ].gradientActive[ 2 ] : 0 ) }
+																onChange={ ( value ) => {
+																	this.saveStyleGradientActive( value, 2 );
+																} }
+																min={ 0 }
+																max={ 100 }
+															/>
+															<AdvancedColorControl
+																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
+																colorValue={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 0 ] ? style[ 0 ].gradientActive[ 0 ] : '#999999' ) }
+																colorDefault={ '#999999' }
+																opacityValue={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 1 ] ? style[ 0 ].gradientActive[ 1 ] : 1 ) }
+																onColorChange={ value => {
+																	this.saveStyleGradientActive( value, 0 );
+																} }
+																onOpacityChange={ value => {
+																	this.saveStyleGradientActive( value, 1 );
+																} }
+															/>
+															<RangeControl
+																label={ __( 'Location' ) }
+																value={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 3 ] ? style[ 0 ].gradientActive[ 3 ] : 100 ) }
+																onChange={ ( value ) => {
+																	this.saveStyleGradientActive( value, 3 );
+																} }
+																min={ 0 }
+																max={ 100 }
+															/>
+															<div className="kt-btn-size-settings-container">
+																<h2 className="kt-beside-btn-group">{ __( 'Gradient Type', 'kadence-blocks' ) }</h2>
+																<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type', 'kadence-blocks' ) }>
+																	{ map( gradTypes, ( { name, key } ) => (
+																		<Button
+																			key={ key }
+																			className="kt-btn-size-btn"
+																			isSmall
+																			isPrimary={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 4 ] ? style[ 0 ].gradientActive[ 4 ] : 'linear' ) === key }
+																			aria-pressed={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 4 ] ? style[ 0 ].gradientActive[ 4 ] : 'linear' ) === key }
+																			onClick={ () => {
+																				this.saveStyleGradientActive( key, 4 );
+																			} }
+																		>
+																			{ name }
+																		</Button>
+																	) ) }
+																</ButtonGroup>
+															</div>
+															{ 'radial' !== ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 4 ] ? style[ 0 ].gradientActive[ 4 ] : 'linear' ) && (
+																<RangeControl
+																	label={ __( 'Gradient Angle', 'kadence-blocks' ) }
+																	value={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 5 ] ? style[ 0 ].gradientActive[ 5 ] : 180 ) }
+																	onChange={ ( value ) => {
+																		this.saveStyleGradientActive( value, 5 );
+																	} }
+																	min={ 0 }
+																	max={ 360 }
+																/>
+															) }
+															{ 'radial' === ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 4 ] ? style[ 0 ].gradientActive[ 4 ] : 'linear' ) && (
+																<SelectControl
+																	label={ __( 'Gradient Position', 'kadence-blocks' ) }
+																	value={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 6 ] ? style[ 0 ].gradientActive[ 6 ] : 'center center' ) }
+																	options={ [
+																		{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+																		{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+																		{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+																		{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+																		{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+																		{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+																		{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+																		{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+																		{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
+																	] }
+																	onChange={ value => {
+																		this.saveStyleGradientActive( value, 6 );
+																	} }
+																/>
+															) }
+														</div>
+													) }
 													<AdvancedColorControl
-														label={ __( 'Input Focus Background' ) }
-														colorValue={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
-															this.saveStyle( { backgroundActive: value } );
-														} }
-														opacityValue={ style[ 0 ].backgroundActiveOpacity }
-														onOpacityChange={ value => this.saveStyle( { backgroundActiveOpacity: value } ) }
-													/>
-													<AdvancedColorControl
-														label={ __( 'Input Focus Border' ) }
+														label={ __( 'Input Focus Border', 'kadence-blocks' ) }
 														colorValue={ ( style[ 0 ].borderActive ? style[ 0 ].borderActive : '' ) }
 														colorDefault={ '' }
 														onColorChange={ value => {
@@ -1048,31 +1679,182 @@ class KadenceForm extends Component {
 														opacityValue={ style[ 0 ].borderActiveOpacity }
 														onOpacityChange={ value => this.saveStyle( { borderActiveOpacity: value } ) }
 													/>
+													<BoxShadowControl
+														label={ __( 'Input Focus Box Shadow', 'kadence-blocks' ) }
+														enable={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 0 ] ? style[ 0 ].boxShadowActive[ 0 ] : false ) }
+														color={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 1 ] ? style[ 0 ].boxShadowActive[ 1 ] : '#000000' ) }
+														colorDefault={ '#000000' }
+														opacity={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 2 ] ? style[ 0 ].boxShadowActive[ 2 ] : 0.4 ) }
+														hOffset={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 3 ] ? style[ 0 ].boxShadowActive[ 3 ] : 2 ) }
+														vOffset={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 4 ] ? style[ 0 ].boxShadowActive[ 4 ] : 2 ) }
+														blur={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 5 ] ? style[ 0 ].boxShadowActive[ 5 ] : 3 ) }
+														spread={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 6 ] ? style[ 0 ].boxShadowActive[ 6 ] : 0 ) }
+														inset={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 7 ] ? style[ 0 ].boxShadowActive[ 7 ] : false ) }
+														onEnableChange={ value => {
+															this.saveStyleBoxShadowActive( value, 0 );
+														} }
+														onColorChange={ value => {
+															this.saveStyleBoxShadowActive( value, 1 );
+														} }
+														onOpacityChange={ value => {
+															this.saveStyleBoxShadowActive( value, 2 );
+														} }
+														onHOffsetChange={ value => {
+															this.saveStyleBoxShadowActive( value, 3 );
+														} }
+														onVOffsetChange={ value => {
+															this.saveStyleBoxShadowActive( value, 4 );
+														} }
+														onBlurChange={ value => {
+															this.saveStyleBoxShadowActive( value, 5 );
+														} }
+														onSpreadChange={ value => {
+															this.saveStyleBoxShadowActive( value, 6 );
+														} }
+														onInsetChange={ value => {
+															this.saveStyleBoxShadowActive( value, 7 );
+														} }
+													/>
 												</Fragment>
 											);
 										} else {
 											tabout = (
 												<Fragment>
 													<AdvancedColorControl
-														label={ __( 'Input Color' ) }
+														label={ __( 'Input Color', 'kadence-blocks' ) }
 														colorValue={ ( style[ 0 ].color ? style[ 0 ].color : '' ) }
 														colorDefault={ '' }
 														onColorChange={ value => {
 															this.saveStyle( { color: value } );
 														} }
 													/>
+													<div className="kt-btn-size-settings-container">
+														<h2 className="kt-beside-btn-group">{ __( 'Background Type', 'kadence-blocks' ) }</h2>
+														<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type', 'kadence-blocks' ) }>
+															{ map( bgType, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-btn-size-btn"
+																	isSmall
+																	isPrimary={ ( undefined !== style[ 0 ].backgroundType ? style[ 0 ].backgroundType : 'solid' ) === key }
+																	aria-pressed={ ( undefined !== style[ 0 ].backgroundType ? style[ 0 ].backgroundType : 'solid' ) === key }
+																	onClick={ () => this.saveStyle( { backgroundType: key } ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+													</div>
+													{ 'gradient' !== style[ 0 ].backgroundType && (
+														<div className="kt-inner-sub-section">
+															<AdvancedColorControl
+																label={ __( 'Input Background', 'kadence-blocks' ) }
+																colorValue={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
+																colorDefault={ '' }
+																onColorChange={ value => {
+																	this.saveStyle( { background: value } );
+																} }
+																opacityValue={ style[ 0 ].backgroundOpacity }
+																onOpacityChange={ value => this.saveStyle( { backgroundOpacity: value } ) }
+															/>
+														</div>
+													) }
+													{ 'gradient' === style[ 0 ].backgroundType && (
+														<div className="kt-inner-sub-section">
+															<AdvancedColorControl
+																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
+																colorValue={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
+																colorDefault={ '' }
+																onColorChange={ value => {
+																	this.saveStyle( { background: value } );
+																} }
+																opacityValue={ style[ 0 ].backgroundOpacity }
+																onOpacityChange={ value => this.saveStyle( { backgroundOpacity: value } ) }
+															/>
+															<RangeControl
+																label={ __( 'Location', 'kadence-blocks' ) }
+																value={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 2 ] ? style[ 0 ].gradient[ 2 ] : 0 ) }
+																onChange={ ( value ) => {
+																	this.saveStyleGradient( value, 2 );
+																} }
+																min={ 0 }
+																max={ 100 }
+															/>
+															<AdvancedColorControl
+																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
+																colorValue={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 0 ] ? style[ 0 ].gradient[ 0 ] : '#999999' ) }
+																colorDefault={ '#999999' }
+																opacityValue={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 1 ] ? style[ 0 ].gradient[ 1 ] : 1 ) }
+																onColorChange={ value => {
+																	this.saveStyleGradient( value, 0 );
+																} }
+																onOpacityChange={ value => {
+																	this.saveStyleGradient( value, 1 );
+																} }
+															/>
+															<RangeControl
+																label={ __( 'Location', 'kadence-blocks' ) }
+																value={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 3 ] ? style[ 0 ].gradient[ 3 ] : 100 ) }
+																onChange={ ( value ) => {
+																	this.saveStyleGradient( value, 3 );
+																} }
+																min={ 0 }
+																max={ 100 }
+															/>
+															<div className="kt-btn-size-settings-container">
+																<h2 className="kt-beside-btn-group">{ __( 'Gradient Type', 'kadence-blocks' ) }</h2>
+																<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type', 'kadence-blocks' ) }>
+																	{ map( gradTypes, ( { name, key } ) => (
+																		<Button
+																			key={ key }
+																			className="kt-btn-size-btn"
+																			isSmall
+																			isPrimary={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 4 ] ? style[ 0 ].gradient[ 4 ] : 'linear' ) === key }
+																			aria-pressed={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 4 ] ? style[ 0 ].gradient[ 4 ] : 'linear' ) === key }
+																			onClick={ () => {
+																				this.saveStyleGradient( key, 4 );
+																			} }
+																		>
+																			{ name }
+																		</Button>
+																	) ) }
+																</ButtonGroup>
+															</div>
+															{ 'radial' !== ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 4 ] ? style[ 0 ].gradient[ 4 ] : 'linear' ) && (
+																<RangeControl
+																	label={ __( 'Gradient Angle', 'kadence-blocks' ) }
+																	value={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 5 ] ? style[ 0 ].gradient[ 5 ] : 180 ) }
+																	onChange={ ( value ) => {
+																		this.saveStyleGradient( value, 5 );
+																	} }
+																	min={ 0 }
+																	max={ 360 }
+																/>
+															) }
+															{ 'radial' === ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 4 ] ? style[ 0 ].gradient[ 4 ] : 'linear' ) && (
+																<SelectControl
+																	label={ __( 'Gradient Position', 'kadence-blocks' ) }
+																	value={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 6 ] ? style[ 0 ].gradient[ 6 ] : 'center center' ) }
+																	options={ [
+																		{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+																		{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+																		{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+																		{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+																		{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+																		{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+																		{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+																		{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+																		{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
+																	] }
+																	onChange={ value => {
+																		this.saveStyleGradient( value, 6 );
+																	} }
+																/>
+															) }
+														</div>
+													) }
 													<AdvancedColorControl
-														label={ __( 'Input Background' ) }
-														colorValue={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
-															this.saveStyle( { background: value } );
-														} }
-														opacityValue={ style[ 0 ].backgroundOpacity }
-														onOpacityChange={ value => this.saveStyle( { backgroundOpacity: value } ) }
-													/>
-													<AdvancedColorControl
-														label={ __( 'Input Border' ) }
+														label={ __( 'Input Border', 'kadence-blocks' ) }
 														colorValue={ ( style[ 0 ].border ? style[ 0 ].border : '' ) }
 														colorDefault={ '' }
 														onColorChange={ value => {
@@ -1080,6 +1862,42 @@ class KadenceForm extends Component {
 														} }
 														opacityValue={ style[ 0 ].borderOpacity }
 														onOpacityChange={ value => this.saveStyle( { borderOpacity: value } ) }
+													/>
+													<BoxShadowControl
+														label={ __( 'Input Box Shadow', 'kadence-blocks' ) }
+														enable={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] ? style[ 0 ].boxShadow[ 0 ] : false ) }
+														color={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ) }
+														colorDefault={ '#000000' }
+														opacity={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 0.4 ) }
+														hOffset={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 2 ) }
+														vOffset={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 2 ) }
+														blur={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 3 ) }
+														spread={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) }
+														inset={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 7 ] ? style[ 0 ].boxShadow[ 7 ] : false ) }
+														onEnableChange={ value => {
+															this.saveStyleBoxShadow( value, 0 );
+														} }
+														onColorChange={ value => {
+															this.saveStyleBoxShadow( value, 1 );
+														} }
+														onOpacityChange={ value => {
+															this.saveStyleBoxShadow( value, 2 );
+														} }
+														onHOffsetChange={ value => {
+															this.saveStyleBoxShadow( value, 3 );
+														} }
+														onVOffsetChange={ value => {
+															this.saveStyleBoxShadow( value, 4 );
+														} }
+														onBlurChange={ value => {
+															this.saveStyleBoxShadow( value, 5 );
+														} }
+														onSpreadChange={ value => {
+															this.saveStyleBoxShadow( value, 6 );
+														} }
+														onInsetChange={ value => {
+															this.saveStyleBoxShadow( value, 7 );
+														} }
 													/>
 												</Fragment>
 											);
@@ -1089,9 +1907,9 @@ class KadenceForm extends Component {
 								}
 							}
 						</TabPanel>
-						<h2>{ __( 'Border Settings' ) }</h2>
+						<h2>{ __( 'Border Settings', 'kadence-blocks' ) }</h2>
 						<MeasurementControls
-							label={ __( 'Border Width' ) }
+							label={ __( 'Border Width', 'kadence-blocks' ) }
 							measurement={ style[ 0 ].borderWidth }
 							control={ borderControl }
 							onChange={ ( value ) => this.saveStyle( { borderWidth: value } ) }
@@ -1101,7 +1919,7 @@ class KadenceForm extends Component {
 							step={ 1 }
 						/>
 						<RangeControl
-							label={ __( 'Border Radius' ) }
+							label={ __( 'Border Radius', 'kadence-blocks' ) }
 							value={ style[ 0 ].borderRadius }
 							onChange={ value => {
 								this.saveStyle( { borderRadius: value } );
@@ -1109,58 +1927,1007 @@ class KadenceForm extends Component {
 							min={ 0 }
 							max={ 50 }
 						/>
-												{/*
-					requiredColor: '',
-					gradient: [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ],
-					gradientActive: [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ],
-					backgroundType: 'solid',
-					backgroundActiveType: 'solid',
-					boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
-					boxShadowActive: [ false, '#000000', 0.4, 2, 2, 3, 0, false ], */}
-						<AdvancedColorControl
-							label={ __( 'Input Color' ) }
-							colorValue={ ( style[ 0 ].colorHover ? style[ 0 ].colorHover : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => {
-								this.saveStyle( { colorHover: value } );
-							} }
-						/>
-						<SelectControl
-							label={ __( 'Reply To' ) }
-							value={ email[ 0 ].replyTo }
-							options={ [
-								{ value: 'email_field', label: __( 'Email Field' ) },
-								{ value: 'from_email', label: __( 'From Email' ) },
-							] }
+						<RangeControl
+							label={ __( 'Field Row Gap', 'kadence-blocks' ) }
+							value={ style[ 0 ].rowGap }
 							onChange={ value => {
-								this.saveEmail( { replyTo: value } );
+								this.saveStyle( { rowGap: value } );
 							} }
+							min={ 0 }
+							max={ 100 }
 						/>
-						<TextControl
-							label={ __( 'Cc' ) }
-							value={ ( undefined !== email[ 0 ].cc ? email[ 0 ].cc : '' ) }
-							onChange={ ( value ) => this.saveEmail( { cc: value } ) }
-						/>
-						<TextControl
-							label={ __( 'Bcc' ) }
-							value={ ( undefined !== email[ 0 ].bcc ? email[ 0 ].bcc : '' ) }
-							onChange={ ( value ) => this.saveEmail( { bcc: value } ) }
-						/>
-						<ToggleControl
-							label={ __( 'Send as HTMl email?' ) }
-							help={ __( 'If off plain text is used.' ) }
-							checked={ ( undefined !== email[ 0 ].html ? email[ 0 ].html : true ) }
-							onChange={ ( value ) => this.saveEmail( { html: value } ) }
+						<RangeControl
+							label={ __( 'Field Column Gutter', 'kadence-blocks' ) }
+							value={ style[ 0 ].gutter }
+							onChange={ value => {
+								this.saveStyle( { gutter: value } );
+							} }
+							step={ 2 }
+							min={ 0 }
+							max={ 50 }
 						/>
 					</PanelBody>
+					<PanelBody
+						title={ __( 'Label Styles', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<AdvancedColorControl
+							label={ __( 'Label Color', 'kadence-blocks' ) }
+							colorValue={ ( labelFont[ 0 ].color ? labelFont[ 0 ].color : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => {
+								this.saveLabelFont( { color: value } );
+							} }
+						/>
+						<ToggleControl
+							label={ __( 'Show Required?', 'kadence-blocks' ) }
+							help={ __( 'If off required asterisk is removed.', 'kadence-blocks' ) }
+							checked={ ( undefined !== style[ 0 ].showRequired ? style[ 0 ].showRequired : true ) }
+							onChange={ ( value ) => this.saveStyle( { showRequired: value } ) }
+						/>
+						{ style[ 0 ].showRequired && (
+							<AdvancedColorControl
+								label={ __( 'Required Color', 'kadence-blocks' ) }
+								colorValue={ ( style[ 0 ].requiredColor ? style[ 0 ].requiredColor : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
+									this.saveStyle( { requiredColor: value } );
+								} }
+							/>
+						) }
+						<TypographyControls
+							fontSize={ labelFont[ 0 ].size }
+							onFontSize={ ( value ) => this.saveLabelFont( { size: value } ) }
+							fontSizeType={ labelFont[ 0 ].sizeType }
+							onFontSizeType={ ( value ) => this.saveLabelFont( { sizeType: value } ) }
+							lineHeight={ labelFont[ 0 ].lineHeight }
+							onLineHeight={ ( value ) => this.saveLabelFont( { lineHeight: value } ) }
+							lineHeightType={ labelFont[ 0 ].lineType }
+							onLineHeightType={ ( value ) => this.saveLabelFont( { lineType: value } ) }
+						/>
+						<PanelBody
+							title={ __( 'Advanced Label Settings', 'kadence-blocks' ) }
+							initialOpen={ false }
+						>
+							<TypographyControls
+								letterSpacing={ labelFont[ 0 ].letterSpacing }
+								onLetterSpacing={ ( value ) => this.saveLabelFont( { letterSpacing: value } ) }
+								fontFamily={ labelFont[ 0 ].family }
+								onFontFamily={ ( value ) => this.saveLabelFont( { family: value } ) }
+								onFontChange={ ( select ) => {
+									this.saveLabelFont( {
+										family: select.value,
+										google: select.google,
+									} );
+								} }
+								onFontArrayChange={ ( values ) => this.saveLabelFont( values ) }
+								googleFont={ labelFont[ 0 ].google }
+								onGoogleFont={ ( value ) => this.saveLabelFont( { google: value } ) }
+								loadGoogleFont={ labelFont[ 0 ].loadGoogle }
+								onLoadGoogleFont={ ( value ) => this.saveLabelFont( { loadGoogle: value } ) }
+								fontVariant={ labelFont[ 0 ].variant }
+								onFontVariant={ ( value ) => this.saveLabelFont( { variant: value } ) }
+								fontWeight={ labelFont[ 0 ].weight }
+								onFontWeight={ ( value ) => this.saveLabelFont( { weight: value } ) }
+								fontStyle={ labelFont[ 0 ].style }
+								onFontStyle={ ( value ) => this.saveLabelFont( { style: value } ) }
+								fontSubset={ labelFont[ 0 ].subset }
+								onFontSubset={ ( value ) => this.saveLabelFont( { subset: value } ) }
+								padding={ labelFont[ 0 ].padding }
+								onPadding={ ( value ) => this.saveLabelFont( { padding: value } ) }
+								paddingControl={ labelPaddingControl }
+								onPaddingControl={ ( value ) => this.setState( { labelPaddingControl: value } ) }
+								margin={ labelFont[ 0 ].margin }
+								onMargin={ ( value ) => this.saveLabelFont( { margin: value } ) }
+								marginControl={ labelMarginControl }
+								onMarginControl={ ( value ) => this.setState( { labelMarginControl: value } ) }
+							/>
+						</PanelBody>
+					</PanelBody>
+					<PanelBody
+						title={ __( 'Button Styles', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Column Width', 'kadence-blocks' ) }</h2>
+						<TabPanel className="kt-size-tabs"
+							activeClass="active-tab"
+							tabs={ [
+								{
+									name: 'desk',
+									title: <Dashicon icon="desktop" />,
+									className: 'kt-desk-tab',
+								},
+								{
+									name: 'tablet',
+									title: <Dashicon icon="tablet" />,
+									className: 'kt-tablet-tab',
+								},
+								{
+									name: 'mobile',
+									title: <Dashicon icon="smartphone" />,
+									className: 'kt-mobile-tab',
+								},
+							] }>
+							{
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'mobile' === tab.name ) {
+											tabout = (
+												<Fragment>
+													<SelectControl
+														value={ submit[ 0 ].width[ 2 ] }
+														options={ [
+															{ value: '20', label: __( '20%', 'kadence-blocks' ) },
+															{ value: '25', label: __( '25%', 'kadence-blocks' ) },
+															{ value: '33', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '40', label: __( '40%', 'kadence-blocks' ) },
+															{ value: '50', label: __( '50%', 'kadence-blocks' ) },
+															{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '66', label: __( '66%', 'kadence-blocks' ) },
+															{ value: '75', label: __( '75%', 'kadence-blocks' ) },
+															{ value: '80', label: __( '80%', 'kadence-blocks' ) },
+															{ value: '100', label: __( '100%', 'kadence-blocks' ) },
+															{ value: 'unset', label: __( 'Unset', 'kadence-blocks' ) },
+														] }
+														onChange={ value => {
+															this.saveSubmit( { width: [ ( submit[ 0 ].width[ 0 ] ? submit[ 0 ].width[ 0 ] : '100' ), ( submit[ 0 ].width[ 1 ] ? submit[ 0 ].width[ 1 ] : '' ), value ] } );
+														} }
+													/>
+												</Fragment>
+											);
+										} else if ( 'tablet' === tab.name ) {
+											tabout = (
+												<Fragment>
+													<SelectControl
+														value={ submit[ 0 ].width[ 1 ] }
+														options={ [
+															{ value: '20', label: __( '20%', 'kadence-blocks' ) },
+															{ value: '25', label: __( '25%', 'kadence-blocks' ) },
+															{ value: '33', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '40', label: __( '40%', 'kadence-blocks' ) },
+															{ value: '50', label: __( '50%', 'kadence-blocks' ) },
+															{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '66', label: __( '66%', 'kadence-blocks' ) },
+															{ value: '75', label: __( '75%', 'kadence-blocks' ) },
+															{ value: '80', label: __( '80%', 'kadence-blocks' ) },
+															{ value: '100', label: __( '100%', 'kadence-blocks' ) },
+															{ value: 'unset', label: __( 'Unset', 'kadence-blocks' ) },
+														] }
+														onChange={ value => {
+															this.saveSubmit( { width: [ ( submit[ 0 ].width[ 0 ] ? submit[ 0 ].width[ 0 ] : '100' ), value, ( submit[ 0 ].width[ 2 ] ? submit[ 0 ].width[ 2 ] : '' ) ] } );
+														} }
+													/>
+												</Fragment>
+											);
+										} else {
+											tabout = (
+												<Fragment>
+													<SelectControl
+														value={ submit[ 0 ].width[ 0 ] }
+														options={ [
+															{ value: '20', label: __( '20%', 'kadence-blocks' ) },
+															{ value: '25', label: __( '25%', 'kadence-blocks' ) },
+															{ value: '33', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '40', label: __( '40%', 'kadence-blocks' ) },
+															{ value: '50', label: __( '50%', 'kadence-blocks' ) },
+															{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '66', label: __( '66%', 'kadence-blocks' ) },
+															{ value: '75', label: __( '75%', 'kadence-blocks' ) },
+															{ value: '80', label: __( '80%', 'kadence-blocks' ) },
+															{ value: '100', label: __( '100%', 'kadence-blocks' ) },
+															{ value: 'unset', label: __( 'Unset', 'kadence-blocks' ) },
+														] }
+														onChange={ value => {
+															this.saveSubmit( { width: [ value, ( submit[ 0 ].width[ 1 ] ? submit[ 0 ].width[ 1 ] : '' ), ( submit[ 0 ].width[ 2 ] ? submit[ 0 ].width[ 2 ] : '' ) ] } );
+														} }
+													/>
+												</Fragment>
+											);
+										}
+									}
+									return <div>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
+						<div className="kt-btn-size-settings-container">
+							<h2 className="kt-beside-btn-group">{ __( 'Button Size' ) }</h2>
+							<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Size', 'kadence-blocks' ) }>
+								{ map( btnSizes, ( { name, key } ) => (
+									<Button
+										key={ key }
+										className="kt-btn-size-btn"
+										isSmall
+										isPrimary={ submit[ 0 ].size === key }
+										aria-pressed={ submit[ 0 ].size === key }
+										onClick={ () => this.saveSubmit( { size: key } ) }
+									>
+										{ name }
+									</Button>
+								) ) }
+							</ButtonGroup>
+						</div>
+						{ 'custom' === submit[ 0 ].size && (
+							<div className="kt-inner-sub-section">
+								<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Input Padding', 'kadence-blocks' ) }</h2>
+								<TabPanel className="kt-size-tabs"
+									activeClass="active-tab"
+									tabs={ [
+										{
+											name: 'desk',
+											title: <Dashicon icon="desktop" />,
+											className: 'kt-desk-tab',
+										},
+										{
+											name: 'tablet',
+											title: <Dashicon icon="tablet" />,
+											className: 'kt-tablet-tab',
+										},
+										{
+											name: 'mobile',
+											title: <Dashicon icon="smartphone" />,
+											className: 'kt-mobile-tab',
+										},
+									] }>
+									{
+										( tab ) => {
+											let tabout;
+											if ( tab.name ) {
+												if ( 'mobile' === tab.name ) {
+													tabout = (
+														<Fragment>
+															<MeasurementControls
+																label={ __( 'Mobile Padding', 'kadence-blocks' ) }
+																measurement={ submit[ 0 ].mobilePadding }
+																control={ submitMobilePaddingControl }
+																onChange={ ( value ) => this.saveSubmit( { mobilePadding: value } ) }
+																onControl={ ( value ) => this.setState( { submitMobilePaddingControl: value } ) }
+																min={ 0 }
+																max={ 100 }
+																step={ 1 }
+															/>
+														</Fragment>
+													);
+												} else if ( 'tablet' === tab.name ) {
+													tabout = (
+														<MeasurementControls
+															label={ __( 'Tablet Padding', 'kadence-blocks' ) }
+															measurement={ submit[ 0 ].tabletPadding }
+															control={ submitTabletPaddingControl }
+															onChange={ ( value ) => this.saveSubmit( { tabletPadding: value } ) }
+															onControl={ ( value ) => this.setState( { submitTabletPaddingControl: value } ) }
+															min={ 0 }
+															max={ 100 }
+															step={ 1 }
+														/>
+													);
+												} else {
+													tabout = (
+														<MeasurementControls
+															label={ __( 'Desktop Padding', 'kadence-blocks' ) }
+															measurement={ submit[ 0 ].deskPadding }
+															control={ submitDeskPaddingControl }
+															onChange={ ( value ) => this.saveSubmit( { deskPadding: value } ) }
+															onControl={ ( value ) => this.setState( { submitDeskPaddingControl: value } ) }
+															min={ 0 }
+															max={ 100 }
+															step={ 1 }
+														/>
+													);
+												}
+											}
+											return <div>{ tabout }</div>;
+										}
+									}
+								</TabPanel>
+							</div>
+						) }
+						<div className="kt-btn-size-settings-container">
+							<h2 className="kt-beside-btn-group">{ __( 'Button Width' ) }</h2>
+							<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Width' ) }>
+								{ map( btnWidths, ( { name, key } ) => (
+									<Button
+										key={ key }
+										className="kt-btn-size-btn"
+										isSmall
+										isPrimary={ submit[ 0 ].widthType === key }
+										aria-pressed={ submit[ 0 ].widthType === key }
+										onClick={ () => this.saveSubmit( { widthType: key } ) }
+									>
+										{ name }
+									</Button>
+								) ) }
+							</ButtonGroup>
+						</div>
+						{ 'fixed' === submit[ 0 ].widthType && (
+							<div className="kt-inner-sub-section">
+								<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Fixed Width' ) }</h2>
+								<TabPanel className="kt-size-tabs"
+									activeClass="active-tab"
+									tabs={ [
+										{
+											name: 'desk',
+											title: <Dashicon icon="desktop" />,
+											className: 'kt-desk-tab',
+										},
+										{
+											name: 'tablet',
+											title: <Dashicon icon="tablet" />,
+											className: 'kt-tablet-tab',
+										},
+										{
+											name: 'mobile',
+											title: <Dashicon icon="smartphone" />,
+											className: 'kt-mobile-tab',
+										},
+									] }>
+									{
+										( tab ) => {
+											let tabout;
+											if ( tab.name ) {
+												if ( 'mobile' === tab.name ) {
+													tabout = (
+														<Fragment>
+															<RangeControl
+																value={ ( submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 2 ] ? submit[ 0 ].fixedWidth[ 2 ] : undefined ) }
+																onChange={ value => {
+																	this.saveSubmit( { fixedWidth: [ ( undefined !== submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 0 ] ? submit[ 0 ].fixedWidth[ 0 ] : '' ), ( undefined !== submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 1 ] ? submit[ 0 ].fixedWidth[ 1 ] : '' ), value ] } );
+																} }
+																min={ 10 }
+																max={ 500 }
+															/>
+														</Fragment>
+													);
+												} else if ( 'tablet' === tab.name ) {
+													tabout = (
+														<Fragment>
+															<RangeControl
+																value={ ( submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 1 ] ? submit[ 0 ].fixedWidth[ 1 ] : undefined ) }
+																onChange={ value => {
+																	this.saveSubmit( { fixedWidth: [ ( undefined !== submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 0 ] ? submit[ 0 ].fixedWidth[ 0 ] : '' ), value, ( undefined !== submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 2 ] ? submit[ 0 ].fixedWidth[ 2 ] : '' ) ] } );
+																} }
+																min={ 10 }
+																max={ 500 }
+															/>
+														</Fragment>
+													);
+												} else {
+													tabout = (
+														<Fragment>
+															<RangeControl
+																value={ ( submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 0 ] ? submit[ 0 ].fixedWidth[ 0 ] : undefined ) }
+																onChange={ value => {
+																	this.saveSubmit( { fixedWidth: [ value, ( undefined !== submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 1 ] ? submit[ 0 ].fixedWidth[ 1 ] : '' ), ( undefined !== submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 2 ] ? submit[ 0 ].fixedWidth[ 2 ] : '' ) ] } );
+																} }
+																min={ 10 }
+																max={ 500 }
+															/>
+														</Fragment>
+													);
+												}
+											}
+											return <div>{ tabout }</div>;
+										}
+									}
+								</TabPanel>
+							</div>
+						) }
+						<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Button Colors', 'kadence-blocks' ) }</h2>
+						<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+							activeClass="active-tab"
+							tabs={ [
+								{
+									name: 'normal',
+									title: __( 'Normal', 'kadence-blocks' ),
+									className: 'kt-normal-tab',
+								},
+								{
+									name: 'hover',
+									title: __( 'Hover', 'kadence-blocks' ),
+									className: 'kt-hover-tab',
+								},
+							] }>
+							{
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'hover' === tab.name ) {
+											tabout = (
+												<Fragment>
+													<AdvancedColorControl
+														label={ __( 'Button Hover Color', 'kadence-blocks' ) }
+														colorValue={ ( submit[ 0 ].colorHover ? submit[ 0 ].colorHover : '' ) }
+														colorDefault={ '' }
+														onColorChange={ value => {
+															this.saveSubmit( { colorHover: value } );
+														} }
+													/>
+													<div className="kt-btn-size-settings-container">
+														<h2 className="kt-beside-btn-group">{ __( 'Background Type', 'kadence-blocks' ) }</h2>
+														<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type', 'kadence-blocks' ) }>
+															{ map( bgType, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-btn-size-btn"
+																	isSmall
+																	isPrimary={ ( undefined !== submit[ 0 ].backgroundHoverType ? submit[ 0 ].backgroundHoverType : 'solid' ) === key }
+																	aria-pressed={ ( undefined !== submit[ 0 ].backgroundHoverType ? submit[ 0 ].backgroundHoverType : 'solid' ) === key }
+																	onClick={ () => this.saveSubmit( { backgroundHoverType: key } ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+													</div>
+													{ 'gradient' !== submit[ 0 ].backgroundHoverType && (
+														<div className="kt-inner-sub-section">
+															<AdvancedColorControl
+																label={ __( 'Button Hover Background', 'kadence-blocks' ) }
+																colorValue={ ( submit[ 0 ].backgroundHover ? submit[ 0 ].backgroundHover : '' ) }
+																colorDefault={ '' }
+																onColorChange={ value => {
+																	this.saveSubmit( { backgroundHover: value } );
+																} }
+																opacityValue={ submit[ 0 ].backgroundHoverOpacity }
+																onOpacityChange={ value => this.saveSubmit( { backgroundHoverOpacity: value } ) }
+															/>
+														</div>
+													) }
+													{ 'gradient' === submit[ 0 ].backgroundHoverType && (
+														<div className="kt-inner-sub-section">
+															<AdvancedColorControl
+																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
+																colorValue={ ( submit[ 0 ].backgroundHover ? submit[ 0 ].backgroundHover : '' ) }
+																colorDefault={ '' }
+																onColorChange={ value => {
+																	this.saveSubmit( { backgroundHover: value } );
+																} }
+																opacityValue={ submit[ 0 ].backgroundHoverOpacity }
+																onOpacityChange={ value => this.saveSubmit( { backgroundHoverOpacity: value } ) }
+															/>
+															<RangeControl
+																label={ __( 'Location', 'kadence-blocks' ) }
+																value={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 2 ] ? submit[ 0 ].gradientHover[ 2 ] : 0 ) }
+																onChange={ ( value ) => {
+																	this.saveSubmitGradientHover( value, 2 );
+																} }
+																min={ 0 }
+																max={ 100 }
+															/>
+															<AdvancedColorControl
+																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
+																colorValue={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 0 ] ? submit[ 0 ].gradientHover[ 0 ] : '#999999' ) }
+																colorDefault={ '#999999' }
+																opacityValue={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 1 ] ? submit[ 0 ].gradientHover[ 1 ] : 1 ) }
+																onColorChange={ value => {
+																	this.saveSubmitGradientHover( value, 0 );
+																} }
+																onOpacityChange={ value => {
+																	this.saveSubmitGradientHover( value, 1 );
+																} }
+															/>
+															<RangeControl
+																label={ __( 'Location' ) }
+																value={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 3 ] ? submit[ 0 ].gradientHover[ 3 ] : 100 ) }
+																onChange={ ( value ) => {
+																	this.saveSubmitGradientHover( value, 3 );
+																} }
+																min={ 0 }
+																max={ 100 }
+															/>
+															<div className="kt-btn-size-settings-container">
+																<h2 className="kt-beside-btn-group">{ __( 'Gradient Type', 'kadence-blocks' ) }</h2>
+																<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type', 'kadence-blocks' ) }>
+																	{ map( gradTypes, ( { name, key } ) => (
+																		<Button
+																			key={ key }
+																			className="kt-btn-size-btn"
+																			isSmall
+																			isPrimary={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 4 ] ? submit[ 0 ].gradientHover[ 4 ] : 'linear' ) === key }
+																			aria-pressed={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 4 ] ? submit[ 0 ].gradientHover[ 4 ] : 'linear' ) === key }
+																			onClick={ () => {
+																				this.saveSubmitGradientHover( key, 4 );
+																			} }
+																		>
+																			{ name }
+																		</Button>
+																	) ) }
+																</ButtonGroup>
+															</div>
+															{ 'radial' !== ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 4 ] ? submit[ 0 ].gradientHover[ 4 ] : 'linear' ) && (
+																<RangeControl
+																	label={ __( 'Gradient Angle', 'kadence-blocks' ) }
+																	value={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 5 ] ? submit[ 0 ].gradientHover[ 5 ] : 180 ) }
+																	onChange={ ( value ) => {
+																		this.saveSubmitGradientHover( value, 5 );
+																	} }
+																	min={ 0 }
+																	max={ 360 }
+																/>
+															) }
+															{ 'radial' === ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 4 ] ? submit[ 0 ].gradientHover[ 4 ] : 'linear' ) && (
+																<SelectControl
+																	label={ __( 'Gradient Position', 'kadence-blocks' ) }
+																	value={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 6 ] ? submit[ 0 ].gradientHover[ 6 ] : 'center center' ) }
+																	options={ [
+																		{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+																		{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+																		{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+																		{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+																		{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+																		{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+																		{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+																		{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+																		{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
+																	] }
+																	onChange={ value => {
+																		this.saveSubmitGradientHover( value, 6 );
+																	} }
+																/>
+															) }
+														</div>
+													) }
+													<AdvancedColorControl
+														label={ __( 'Button Hover Border', 'kadence-blocks' ) }
+														colorValue={ ( submit[ 0 ].borderHover ? submit[ 0 ].borderHover : '' ) }
+														colorDefault={ '' }
+														onColorChange={ value => {
+															this.saveSubmit( { borderHover: value } );
+														} }
+														opacityValue={ submit[ 0 ].borderHoverOpacity }
+														onOpacityChange={ value => this.saveSubmit( { borderHoverOpacity: value } ) }
+													/>
+													<BoxShadowControl
+														label={ __( 'Button Hover Box Shadow', 'kadence-blocks' ) }
+														enable={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] ? submit[ 0 ].boxShadowHover[ 0 ] : false ) }
+														color={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 1 ] ? submit[ 0 ].boxShadowHover[ 1 ] : '#000000' ) }
+														colorDefault={ '#000000' }
+														opacity={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 2 ] ? submit[ 0 ].boxShadowHover[ 2 ] : 0.4 ) }
+														hOffset={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 3 ] ? submit[ 0 ].boxShadowHover[ 3 ] : 2 ) }
+														vOffset={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 4 ] ? submit[ 0 ].boxShadowHover[ 4 ] : 2 ) }
+														blur={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 5 ] ? submit[ 0 ].boxShadowHover[ 5 ] : 3 ) }
+														spread={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 6 ] ? submit[ 0 ].boxShadowHover[ 6 ] : 0 ) }
+														inset={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 7 ] ? submit[ 0 ].boxShadowHover[ 7 ] : false ) }
+														onEnableChange={ value => {
+															this.saveSubmitBoxShadowHover( value, 0 );
+														} }
+														onColorChange={ value => {
+															this.saveSubmitBoxShadowHover( value, 1 );
+														} }
+														onOpacityChange={ value => {
+															this.saveSubmitBoxShadowHover( value, 2 );
+														} }
+														onHOffsetChange={ value => {
+															this.saveSubmitBoxShadowHover( value, 3 );
+														} }
+														onVOffsetChange={ value => {
+															this.saveSubmitBoxShadowHover( value, 4 );
+														} }
+														onBlurChange={ value => {
+															this.saveSubmitBoxShadowHover( value, 5 );
+														} }
+														onSpreadChange={ value => {
+															this.saveSubmitBoxShadowHover( value, 6 );
+														} }
+														onInsetChange={ value => {
+															this.saveSubmitBoxShadowHover( value, 7 );
+														} }
+													/>
+												</Fragment>
+											);
+										} else {
+											tabout = (
+												<Fragment>
+													<AdvancedColorControl
+														label={ __( 'Button Color', 'kadence-blocks' ) }
+														colorValue={ ( submit[ 0 ].color ? submit[ 0 ].color : '' ) }
+														colorDefault={ '' }
+														onColorChange={ value => {
+															this.saveSubmit( { color: value } );
+														} }
+													/>
+													<div className="kt-btn-size-settings-container">
+														<h2 className="kt-beside-btn-group">{ __( 'Background Type', 'kadence-blocks' ) }</h2>
+														<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Background Type', 'kadence-blocks' ) }>
+															{ map( bgType, ( { name, key } ) => (
+																<Button
+																	key={ key }
+																	className="kt-btn-size-btn"
+																	isSmall
+																	isPrimary={ ( undefined !== submit[ 0 ].backgroundType ? submit[ 0 ].backgroundType : 'solid' ) === key }
+																	aria-pressed={ ( undefined !== submit[ 0 ].backgroundType ? submit[ 0 ].backgroundType : 'solid' ) === key }
+																	onClick={ () => this.saveSubmit( { backgroundType: key } ) }
+																>
+																	{ name }
+																</Button>
+															) ) }
+														</ButtonGroup>
+													</div>
+													{ 'gradient' !== submit[ 0 ].backgroundType && (
+														<div className="kt-inner-sub-section">
+															<AdvancedColorControl
+																label={ __( 'Button Background', 'kadence-blocks' ) }
+																colorValue={ ( submit[ 0 ].background ? submit[ 0 ].background : '' ) }
+																colorDefault={ '' }
+																onColorChange={ value => {
+																	this.saveSubmit( { background: value } );
+																} }
+																opacityValue={ submit[ 0 ].backgroundOpacity }
+																onOpacityChange={ value => this.saveSubmit( { backgroundOpacity: value } ) }
+															/>
+														</div>
+													) }
+													{ 'gradient' === submit[ 0 ].backgroundType && (
+														<div className="kt-inner-sub-section">
+															<AdvancedColorControl
+																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
+																colorValue={ ( submit[ 0 ].background ? submit[ 0 ].background : '' ) }
+																colorDefault={ '' }
+																onColorChange={ value => {
+																	this.saveSubmit( { background: value } );
+																} }
+																opacityValue={ submit[ 0 ].backgroundOpacity }
+																onOpacityChange={ value => this.saveSubmit( { backgroundOpacity: value } ) }
+															/>
+															<RangeControl
+																label={ __( 'Location', 'kadence-blocks' ) }
+																value={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 2 ] ? submit[ 0 ].gradient[ 2 ] : 0 ) }
+																onChange={ ( value ) => {
+																	this.saveSubmitGradient( value, 2 );
+																} }
+																min={ 0 }
+																max={ 100 }
+															/>
+															<AdvancedColorControl
+																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
+																colorValue={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 0 ] ? submit[ 0 ].gradient[ 0 ] : '#999999' ) }
+																colorDefault={ '#999999' }
+																opacityValue={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 1 ] ? submit[ 0 ].gradient[ 1 ] : 1 ) }
+																onColorChange={ value => {
+																	this.saveSubmitGradient( value, 0 );
+																} }
+																onOpacityChange={ value => {
+																	this.saveSubmitGradient( value, 1 );
+																} }
+															/>
+															<RangeControl
+																label={ __( 'Location', 'kadence-blocks' ) }
+																value={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 3 ] ? submit[ 0 ].gradient[ 3 ] : 100 ) }
+																onChange={ ( value ) => {
+																	this.saveSubmitGradient( value, 3 );
+																} }
+																min={ 0 }
+																max={ 100 }
+															/>
+															<div className="kt-btn-size-settings-container">
+																<h2 className="kt-beside-btn-group">{ __( 'Gradient Type', 'kadence-blocks' ) }</h2>
+																<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Gradient Type', 'kadence-blocks' ) }>
+																	{ map( gradTypes, ( { name, key } ) => (
+																		<Button
+																			key={ key }
+																			className="kt-btn-size-btn"
+																			isSmall
+																			isPrimary={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 4 ] ? submit[ 0 ].gradient[ 4 ] : 'linear' ) === key }
+																			aria-pressed={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 4 ] ? submit[ 0 ].gradient[ 4 ] : 'linear' ) === key }
+																			onClick={ () => {
+																				this.saveSubmitGradient( key, 4 );
+																			} }
+																		>
+																			{ name }
+																		</Button>
+																	) ) }
+																</ButtonGroup>
+															</div>
+															{ 'radial' !== ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 4 ] ? submit[ 0 ].gradient[ 4 ] : 'linear' ) && (
+																<RangeControl
+																	label={ __( 'Gradient Angle', 'kadence-blocks' ) }
+																	value={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 5 ] ? submit[ 0 ].gradient[ 5 ] : 180 ) }
+																	onChange={ ( value ) => {
+																		this.saveSubmitGradient( value, 5 );
+																	} }
+																	min={ 0 }
+																	max={ 360 }
+																/>
+															) }
+															{ 'radial' === ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 4 ] ? submit[ 0 ].gradient[ 4 ] : 'linear' ) && (
+																<SelectControl
+																	label={ __( 'Gradient Position', 'kadence-blocks' ) }
+																	value={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 6 ] ? submit[ 0 ].gradient[ 6 ] : 'center center' ) }
+																	options={ [
+																		{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+																		{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+																		{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+																		{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+																		{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+																		{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+																		{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+																		{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+																		{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
+																	] }
+																	onChange={ value => {
+																		this.saveSubmitGradient( value, 6 );
+																	} }
+																/>
+															) }
+														</div>
+													) }
+													<AdvancedColorControl
+														label={ __( 'Input Border', 'kadence-blocks' ) }
+														colorValue={ ( submit[ 0 ].border ? submit[ 0 ].border : '' ) }
+														colorDefault={ '' }
+														onColorChange={ value => {
+															this.saveSubmit( { border: value } );
+														} }
+														opacityValue={ submit[ 0 ].borderOpacity }
+														onOpacityChange={ value => this.saveSubmit( { borderOpacity: value } ) }
+													/>
+													<BoxShadowControl
+														label={ __( 'Input Box Shadow', 'kadence-blocks' ) }
+														enable={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 0 ] ? submit[ 0 ].boxShadow[ 0 ] : false ) }
+														color={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 1 ] ? submit[ 0 ].boxShadow[ 1 ] : '#000000' ) }
+														colorDefault={ '#000000' }
+														opacity={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 2 ] ? submit[ 0 ].boxShadow[ 2 ] : 0.4 ) }
+														hOffset={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 3 ] ? submit[ 0 ].boxShadow[ 3 ] : 2 ) }
+														vOffset={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 4 ] ? submit[ 0 ].boxShadow[ 4 ] : 2 ) }
+														blur={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 5 ] ? submit[ 0 ].boxShadow[ 5 ] : 3 ) }
+														spread={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 6 ] ? submit[ 0 ].boxShadow[ 6 ] : 0 ) }
+														inset={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 7 ] ? submit[ 0 ].boxShadow[ 7 ] : false ) }
+														onEnableChange={ value => {
+															this.saveSubmitBoxShadow( value, 0 );
+														} }
+														onColorChange={ value => {
+															this.saveSubmitBoxShadow( value, 1 );
+														} }
+														onOpacityChange={ value => {
+															this.saveSubmitBoxShadow( value, 2 );
+														} }
+														onHOffsetChange={ value => {
+															this.saveSubmitBoxShadow( value, 3 );
+														} }
+														onVOffsetChange={ value => {
+															this.saveSubmitBoxShadow( value, 4 );
+														} }
+														onBlurChange={ value => {
+															this.saveSubmitBoxShadow( value, 5 );
+														} }
+														onSpreadChange={ value => {
+															this.saveSubmitBoxShadow( value, 6 );
+														} }
+														onInsetChange={ value => {
+															this.saveSubmitBoxShadow( value, 7 );
+														} }
+													/>
+												</Fragment>
+											);
+										}
+									}
+									return <div>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
+						<h2>{ __( 'Border Settings', 'kadence-blocks' ) }</h2>
+						<MeasurementControls
+							label={ __( 'Border Width', 'kadence-blocks' ) }
+							measurement={ submit[ 0 ].borderWidth }
+							control={ submitBorderControl }
+							onChange={ ( value ) => this.saveSubmit( { borderWidth: value } ) }
+							onControl={ ( value ) => this.setState( { submitBorderControl: value } ) }
+							min={ 0 }
+							max={ 20 }
+							step={ 1 }
+						/>
+						<RangeControl
+							label={ __( 'Border Radius', 'kadence-blocks' ) }
+							value={ submit[ 0 ].borderRadius }
+							onChange={ value => {
+								this.saveSubmit( { borderRadius: value } );
+							} }
+							min={ 0 }
+							max={ 50 }
+						/>
+						<TypographyControls
+							fontSize={ submitFont[ 0 ].size }
+							onFontSize={ ( value ) => this.saveSubmitFont( { size: value } ) }
+							fontSizeType={ submitFont[ 0 ].sizeType }
+							onFontSizeType={ ( value ) => this.saveSubmitFont( { sizeType: value } ) }
+							lineHeight={ submitFont[ 0 ].lineHeight }
+							onLineHeight={ ( value ) => this.saveSubmitFont( { lineHeight: value } ) }
+							lineHeightType={ submitFont[ 0 ].lineType }
+							onLineHeightType={ ( value ) => this.saveSubmitFont( { lineType: value } ) }
+						/>
+						<PanelBody
+							title={ __( 'Advanced Button Settings', 'kadence-blocks' ) }
+							initialOpen={ false }
+						>
+							<TypographyControls
+								letterSpacing={ submitFont[ 0 ].letterSpacing }
+								onLetterSpacing={ ( value ) => this.saveSubmitFont( { letterSpacing: value } ) }
+								fontFamily={ submitFont[ 0 ].family }
+								onFontFamily={ ( value ) => this.saveSubmitFont( { family: value } ) }
+								onFontChange={ ( select ) => {
+									this.saveSubmitFont( {
+										family: select.value,
+										google: select.google,
+									} );
+								} }
+								onFontArrayChange={ ( values ) => this.saveSubmitFont( values ) }
+								googleFont={ submitFont[ 0 ].google }
+								onGoogleFont={ ( value ) => this.saveSubmitFont( { google: value } ) }
+								loadGoogleFont={ submitFont[ 0 ].loadGoogle }
+								onLoadGoogleFont={ ( value ) => this.saveSubmitFont( { loadGoogle: value } ) }
+								fontVariant={ submitFont[ 0 ].variant }
+								onFontVariant={ ( value ) => this.saveSubmitFont( { variant: value } ) }
+								fontWeight={ submitFont[ 0 ].weight }
+								onFontWeight={ ( value ) => this.saveSubmitFont( { weight: value } ) }
+								fontStyle={ submitFont[ 0 ].style }
+								onFontStyle={ ( value ) => this.saveSubmitFont( { style: value } ) }
+								fontSubset={ submitFont[ 0 ].subset }
+								onFontSubset={ ( value ) => this.saveSubmitFont( { subset: value } ) }
+							/>
+						</PanelBody>
+					</PanelBody>
+					<PanelBody
+						title={ __( 'Message Settings', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<TextControl
+							label={ __( 'Success Message', 'kadence-blocks' ) }
+							placeholder={ __( 'Submission Success, Thanks for getting in touch!', 'kadence-blocks' ) }
+							value={ ( undefined !== messages[ 0 ].success ? messages[ 0 ].success : '' ) }
+							onChange={ ( value ) => this.saveMessages( { success: value } ) }
+						/>
+						<PanelBody
+							title={ __( 'Success Message Colors', 'kadence-blocks' ) }
+							initialOpen={ false }
+						>
+							<AdvancedColorControl
+								label={ __( 'Success Message Color', 'kadence-blocks' ) }
+								colorValue={ ( messageFont[ 0 ].colorSuccess ? messageFont[ 0 ].colorSuccess : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
+									this.saveMessageFont( { colorSuccess: value } );
+								} }
+							/>
+							<AdvancedColorControl
+								label={ __( 'Success Message Background', 'kadence-blocks' ) }
+								colorValue={ ( messageFont[ 0 ].backgroundSuccess ? messageFont[ 0 ].backgroundSuccess : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
+									this.saveMessageFont( { backgroundSuccess: value } );
+								} }
+								opacityValue={ messageFont[ 0 ].backgroundSuccessOpacity }
+								onOpacityChange={ value => this.saveMessageFont( { backgroundSuccessOpacity: value } ) }
+							/>
+							<AdvancedColorControl
+								label={ __( 'Success Message Border', 'kadence-blocks' ) }
+								colorValue={ ( messageFont[ 0 ].borderSuccess ? messageFont[ 0 ].borderSuccess : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
+									this.saveMessageFont( { borderSuccess: value } );
+								} }
+							/>
+						</PanelBody>
+						<PanelRow>
+							<TextControl
+								label={ __( 'Error Message', 'kadence-blocks' ) }
+								placeholder={ __( 'Submission Failed', 'kadence-blocks' ) }
+								value={ ( undefined !== messages[ 0 ].error ? messages[ 0 ].error : '' ) }
+								onChange={ ( value ) => this.saveMessages( { error: value } ) }
+							/>
+						</PanelRow>
+						<PanelBody
+							title={ __( 'Error Message Colors', 'kadence-blocks' ) }
+							initialOpen={ false }
+						>
+							<AdvancedColorControl
+								label={ __( 'Error Message Color', 'kadence-blocks' ) }
+								colorValue={ ( messageFont[ 0 ].colorError ? messageFont[ 0 ].colorError : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
+									this.saveMessageFont( { colorError: value } );
+								} }
+							/>
+							<AdvancedColorControl
+								label={ __( 'Error Message Background', 'kadence-blocks' ) }
+								colorValue={ ( messageFont[ 0 ].backgroundError ? messageFont[ 0 ].backgroundError : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
+									this.saveMessageFont( { backgroundError: value } );
+								} }
+								opacityValue={ messageFont[ 0 ].backgroundErrorOpacity }
+								onOpacityChange={ value => this.saveMessageFont( { backgroundErrorOpacity: value } ) }
+							/>
+							<AdvancedColorControl
+								label={ __( 'Error Message Border', 'kadence-blocks' ) }
+								colorValue={ ( messageFont[ 0 ].borderError ? messageFont[ 0 ].borderError : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
+									this.saveMessageFont( { borderError: value } );
+								} }
+							/>
+						</PanelBody>
+						<TypographyControls
+							fontSize={ messageFont[ 0 ].size }
+							onFontSize={ ( value ) => this.saveMessageFont( { size: value } ) }
+							fontSizeType={ messageFont[ 0 ].sizeType }
+							onFontSizeType={ ( value ) => this.saveMessageFont( { sizeType: value } ) }
+							lineHeight={ messageFont[ 0 ].lineHeight }
+							onLineHeight={ ( value ) => this.saveMessageFont( { lineHeight: value } ) }
+							lineHeightType={ messageFont[ 0 ].lineType }
+							onLineHeightType={ ( value ) => this.saveMessageFont( { lineType: value } ) }
+						/>
+						<h2>{ __( 'Border Settings', 'kadence-blocks' ) }</h2>
+						<MeasurementControls
+							label={ __( 'Border Width', 'kadence-blocks' ) }
+							measurement={ messageFont[ 0 ].borderWidth }
+							control={ messageFontBorderControl }
+							onChange={ ( value ) => this.saveMessageFont( { borderWidth: value } ) }
+							onControl={ ( value ) => this.setState( { messageFontBorderControl: value } ) }
+							min={ 0 }
+							max={ 20 }
+							step={ 1 }
+						/>
+						<RangeControl
+							label={ __( 'Border Radius', 'kadence-blocks' ) }
+							value={ messageFont[ 0 ].borderRadius }
+							onChange={ value => {
+								this.saveMessageFont( { borderRadius: value } );
+							} }
+							min={ 0 }
+							max={ 50 }
+						/>
+						<PanelBody
+							title={ __( 'Advanced Message Font Settings', 'kadence-blocks' ) }
+							initialOpen={ false }
+						>
+							<TypographyControls
+								letterSpacing={ messageFont[ 0 ].letterSpacing }
+								onLetterSpacing={ ( value ) => this.saveMessageFont( { letterSpacing: value } ) }
+								fontFamily={ messageFont[ 0 ].family }
+								onFontFamily={ ( value ) => this.saveMessageFont( { family: value } ) }
+								onFontChange={ ( select ) => {
+									this.saveMessageFont( {
+										family: select.value,
+										google: select.google,
+									} );
+								} }
+								onFontArrayChange={ ( values ) => this.saveMessageFont( values ) }
+								googleFont={ messageFont[ 0 ].google }
+								onGoogleFont={ ( value ) => this.saveMessageFont( { google: value } ) }
+								loadGoogleFont={ messageFont[ 0 ].loadGoogle }
+								onLoadGoogleFont={ ( value ) => this.saveMessageFont( { loadGoogle: value } ) }
+								fontVariant={ messageFont[ 0 ].variant }
+								onFontVariant={ ( value ) => this.saveMessageFont( { variant: value } ) }
+								fontWeight={ messageFont[ 0 ].weight }
+								onFontWeight={ ( value ) => this.saveMessageFont( { weight: value } ) }
+								fontStyle={ messageFont[ 0 ].style }
+								onFontStyle={ ( value ) => this.saveMessageFont( { style: value } ) }
+								fontSubset={ messageFont[ 0 ].subset }
+								onFontSubset={ ( value ) => this.saveMessageFont( { subset: value } ) }
+								padding={ messageFont[ 0 ].padding }
+								onPadding={ ( value ) => this.saveMessageFont( { padding: value } ) }
+								paddingControl={ messagePaddingControl }
+								onPaddingControl={ ( value ) => this.setState( { messagePaddingControl: value } ) }
+								margin={ messageFont[ 0 ].margin }
+								onMargin={ ( value ) => this.saveMessageFont( { margin: value } ) }
+								marginControl={ messageMarginControl }
+								onMarginControl={ ( value ) => this.setState( { messageMarginControl: value } ) }
+							/>
+						</PanelBody>
+					</PanelBody>
 				</InspectorControls>
-				<div id={ `animate-id${ uniqueID }` } className={ 'kb-form-wrap aos-animate' } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }>
-					<div className={ 'kb-form' }>
+				<div id={ `animate-id${ uniqueID }` } className={ `kb-form-wrap aos-animate${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }>
+					<div id={ `kb-form-${ uniqueID }` } className={ 'kb-form' } style={ {
+						marginRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? '-' + ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
+						marginLeft: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? '-' + ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
+					} }>
 						{ renderFieldOutput }
 						<div
 							className="kadence-blocks-form-field kb-submit-field"
 							style={ {
 								width: submit[ 0 ].width[ 0 ] + '%',
+								paddingRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
+								paddingLeft: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
 							} }
 							tabIndex="0"
 							role="button"
@@ -1174,10 +2941,32 @@ class KadenceForm extends Component {
 								unstableOnFocus={ this.deselectField }
 								value={ submit[ 0 ].label }
 								onChange={ value => {
-									this.saveSubmit( { label: value }, 0 );
+									this.saveSubmit( { label: value } );
 								} }
 								allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
-								className={ 'kb-forms-submit' }
+								className={ `kb-forms-submit kb-button-size-${ submit[ 0 ].size } kb-button-width-${ submit[ 0 ].widthType }` }
+								style={ {
+									background: ( undefined !== btnBG ? btnBG : undefined ),
+									color: ( undefined !== submit[ 0 ].color ? submit[ 0 ].color : undefined ),
+									fontSize: ( submitFont[ 0 ].size && submitFont[ 0 ].size[ 0 ] ? submitFont[ 0 ].size[ 0 ] + submitFont[ 0 ].sizeType : undefined ),
+									lineHeight: ( submitFont[ 0 ].lineHeight && submitFont[ 0 ].lineHeight[ 0 ] ? submitFont[ 0 ].lineHeight[ 0 ] + submitFont[ 0 ].lineType : undefined ),
+									fontWeight: submitFont[ 0 ].weight,
+									fontStyle: submitFont[ 0 ].style,
+									letterSpacing: submitFont[ 0 ].letterSpacing + 'px',
+									fontFamily: ( submitFont[ 0 ].family ? submitFont[ 0 ].family : '' ),
+									borderRadius: ( undefined !== submit[ 0 ].borderRadius ? submit[ 0 ].borderRadius + 'px' : undefined ),
+									borderColor: ( undefined === submit[ 0 ].border ? undefined : hexToRGBA( submit[ 0 ].border, ( submit[ 0 ].borderOpacity !== undefined ? submit[ 0 ].borderOpacity : 1 ) ) ),
+									width: ( undefined !== submit[ 0 ].widthType && 'fixed' === submit[ 0 ].widthType && undefined !== submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 0 ] ? submit[ 0 ].fixedWidth[ 0 ] + 'px' : undefined ),
+									paddingTop: ( 'custom' === submit[ 0 ].size && '' !== submit[ 0 ].deskPadding[ 0 ] ? submit[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
+									paddingRight: ( 'custom' === submit[ 0 ].size && '' !== submit[ 0 ].deskPadding[ 1 ] ? submit[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
+									paddingBottom: ( 'custom' === submit[ 0 ].size && '' !== submit[ 0 ].deskPadding[ 2 ] ? submit[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
+									paddingLeft: ( 'custom' === submit[ 0 ].size && '' !== submit[ 0 ].deskPadding[ 3 ] ? submit[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
+									borderTopWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 0 ] ? submit[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
+									borderRightWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 1 ] ? submit[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
+									borderBottomWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 2 ] ? submit[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
+									borderLeftWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 3 ] ? submit[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
+									boxShadow: ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 0 ] && submit[ 0 ].boxShadow[ 0 ] ? ( undefined !== submit[ 0 ].boxShadow[ 7 ] && submit[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadow[ 3 ] ? submit[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 4 ] ? submit[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 5 ] ? submit[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 6 ] ? submit[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== submit[ 0 ].boxShadow[ 1 ] ? submit[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadow[ 2 ] ? submit[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+								} }
 							/>
 						</div>
 					</div>

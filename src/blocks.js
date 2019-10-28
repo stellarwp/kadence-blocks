@@ -4,11 +4,13 @@
  */
 import TypographyControls from './typography-control.js';
 import AdvancedColorControl from './advanced-color-control.js';
+import BoxShadowControl from './box-shadow-control';
 window.kb = {
 	// Sidebar controls.
 	controls: {
 		AdvancedColorControl,
 		TypographyControls,
+		BoxShadowControl,
 	},
 };
 

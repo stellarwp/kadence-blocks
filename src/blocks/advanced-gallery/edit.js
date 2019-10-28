@@ -72,8 +72,8 @@ const typeOptions = [
 	{ value: 'carousel', label: __( 'Carousel', 'kadence-blocks' ), icon: icons.galCarousel, isDisabled: false },
 	{ value: 'fluidcarousel', label: __( 'Fluid Carousel', 'kadence-blocks' ), icon: icons.galFluid, isDisabled: false },
 	{ value: 'slider', label: __( 'Slider', 'kadence-blocks' ), icon: icons.galSlider, isDisabled: false },
-	// { value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: icons.galtiles, isDisabled: true },
-	// { value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: icons.thumbslider, isDisabled: true },
+	{ value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: icons.thumbslider, isDisabled: true },
+	{ value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: icons.galtiles, isDisabled: true },
 	// { value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: icons.galSlider, isDisabled: true },
 ];
 /**

@@ -100,6 +100,7 @@ class KB_Ajax_Form {
 							'options'     => array(),
 							'multiSelect' => false,
 							'inline'      => false,
+							'showLink'    => false,
 							'min'         => '',
 							'max'         => '',
 							'type'        => 'text',
@@ -116,6 +117,7 @@ class KB_Ajax_Form {
 							'options'     => array(),
 							'multiSelect' => false,
 							'inline'      => false,
+							'showLink'    => false,
 							'min'         => '',
 							'max'         => '',
 							'type'        => 'email',
@@ -132,6 +134,7 @@ class KB_Ajax_Form {
 							'options'     => array(),
 							'multiSelect' => false,
 							'inline'      => false,
+							'showLink'    => false,
 							'min'         => '',
 							'max'         => '',
 							'type'        => 'textarea',
@@ -141,16 +144,17 @@ class KB_Ajax_Form {
 						),
 					);
 				}
+				$privacy_title = ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' );
 				foreach ( $form_args['fields'] as $key => $data ) {
 					// check for required.
 					if ( $data['required'] && ( ! isset( $_POST[ 'kb_field_' . $key ] ) || empty( $_POST[ 'kb_field_' . $key ] ) ) ) {
-						$this->process_bail( $messages[0]['error'], __( 'Required Field Empty', 'kadence-blocks' ) );
+						$this->process_bail( $messages[0]['error'], __( 'Required Field Empty', 'kadence-blocks' ), 'kb_field_' . $key );
 					}
 					if ( isset( $_POST[ 'kb_field_' . $key ] ) ) {
 						$fields[ $key ] = array(
 							'type'  => $data['type'],
-							'label' => $data['label'],
-							'value' => $this->sanitize_field( $data['type'], wp_unslash( $_POST[ 'kb_field_' . $key ] ) ),
+							'label' => str_replace( '{privacy_policy}', $privacy_title, $data['label'] ),
+							'value' => $this->sanitize_field( $data['type'], wp_unslash( $_POST[ 'kb_field_' . $key ] ), $data['multiSelect'] ),
 						);
 						unset( $_POST[ 'kb_field_' . $key ] );
 					}
@@ -161,29 +165,34 @@ class KB_Ajax_Form {
 				foreach ( $form_args['actions'] as $data ) {
 					switch ( $data ) {
 						case 'email':
-							$to               = isset( $form_args['email'][0]['emailTo'] ) && ! empty( trim( $form_args['email'][0]['emailTo'] ) ) ? sanitize_email( trim( $form_args['email'][0]['emailTo'] ) ) : get_option( 'admin_email' );
-							$subject          = isset( $form_args['email'][0]['subject'] ) && ! empty( trim( $form_args['email'][0]['subject'] ) ) ? $form_args['email'][0]['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
-							$email_content    = '';
+							$to            = isset( $form_args['email'][0]['emailTo'] ) && ! empty( trim( $form_args['email'][0]['emailTo'] ) ) ? sanitize_email( trim( $form_args['email'][0]['emailTo'] ) ) : get_option( 'admin_email' );
+							$subject       = isset( $form_args['email'][0]['subject'] ) && ! empty( trim( $form_args['email'][0]['subject'] ) ) ? $form_args['email'][0]['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
+							if ( strpos( $subject, '{field_' ) !== false ) {
+								if ( preg_match( '/{field_(.*?)}/', $subject, $match) == 1 ) {
+									$field_id = $match[1];
+									if ( isset( $field_id ) ) {
+										$real_id =  absint( $field_id ) - 1;
+										if ( isset( $fields[ $real_id ] ) && is_array( $fields[ $real_id ] ) && isset( $fields[ $real_id ]['value'] ) ) {
+											$subject = str_replace( '{field_' . $field_id . '}' , $fields[ $real_id ]['value'], $subject );
+										}
+									}
+								}
+							}
+							$email_content = '';
+							$reply_email   = false;
+							foreach ( $fields as $key => $data ) {
+								if ( 'email' === $data['type'] ) {
+									$reply_email = $data['value'];
+								}
+							}
 							if ( isset( $form_args['email'][0]['replyTo'] ) && 'from_email' === $form_args['email'][0]['replyTo'] ) {
 								$reply_email = isset( $form_args['email'][0]['fromEmail'] ) && ! empty( trim( $form_args['email'][0]['fromEmail'] ) ) ? sanitize_email( trim( $form_args['email'][0]['fromEmail'] ) ) : false;
-							} else {
-								$reply_email = false;
 							}
 							if ( $form_args['email'][0]['html'] ) {
-								ob_start();
 								$args = array( 'fields' => $fields );
-								$action_args = array(
-									'located' => KT_BLOCKS_PATH . 'dist/templates/default.php',
-									'args'    => $fields,
-								);
-								extract( $args );
-								include $action_args['located'];
-								$email_content = ob_get_clean();
+								$email_content = kadence_blocks_get_template_html( 'form-email.php', $args );
 							} else {
 								foreach ( $fields as $key => $data ) {
-									if ( 'email' === $data['type'] ) {
-										$reply_email = $data['value'];
-									}
 									if ( is_array( $data['value'] ) ) {
 										$data['value'] = explode( ', ', $data['value'] );
 									}
@@ -199,9 +208,6 @@ class KB_Ajax_Form {
 							$headers .= 'Content-Transfer-Encoding: 8bit' . "\r\n";
 							if ( $reply_email ) {
 								$headers .= 'Reply-To: <' . $reply_email . '>' . "\r\n";
-							}
-							if ( isset( $form_args['email'][0]['fromEmail'] ) && ! empty( trim( $form_args['email'][0]['fromEmail'] ) ) ) {
-								$headers .= 'From: ' . ( isset( $form_args['email'][0]['fromName'] ) && ! empty( trim( $form_args['email'][0]['fromName'] ) ) ? trim( $form_args['email'][0]['fromName'] ) . ' ' : '' ) . '<' . sanitize_email( trim( $form_args['email'][0]['fromEmail'] ) ) . '>' . "\r\n";
 							}
 							if ( isset( $form_args['email'][0]['fromEmail'] ) && ! empty( trim( $form_args['email'][0]['fromEmail'] ) ) ) {
 								$headers .= 'From: ' . ( isset( $form_args['email'][0]['fromName'] ) && ! empty( trim( $form_args['email'][0]['fromName'] ) ) ? trim( $form_args['email'][0]['fromName'] ) . ' ' : '' ) . '<' . sanitize_email( trim( $form_args['email'][0]['fromEmail'] ) ) . '>' . "\r\n";
@@ -244,7 +250,7 @@ class KB_Ajax_Form {
 	 * @param string $field_type the field type.
 	 * @param mixed  $value the field value.
 	 */
-	private function sanitize_field( $field_type, $value ) {
+	private function sanitize_field( $field_type, $value, $multi_select = false ) {
 		switch ( $field_type ) {
 			case 'text':
 			case 'password':
@@ -253,7 +259,7 @@ class KB_Ajax_Form {
 			case 'checkbox':
 			case 'radio':
 			case 'select':
-				$value = sanitize_text_field( $value );
+				$value = ( $multi_select && is_array( $value ) ? sanitize_text_field( implode( ', ', $value ) ) : sanitize_text_field( $value ) );
 				break;
 			case 'url':
 				$value = esc_url_raw( trim( $value ) );
@@ -263,6 +269,9 @@ class KB_Ajax_Form {
 				break;
 			case 'email':
 				$value = sanitize_email( trim( $value ) );
+				break;
+			case 'accept':
+				$value = esc_html__( 'Accept', 'kadence-blocks' );
 				break;
 			default:
 				/**
@@ -282,13 +291,15 @@ class KB_Ajax_Form {
 	 *
 	 * @param string $error Error to display.
 	 * @param string $note Note to show in console.
+	 * @param string $action action to take if any.
 	 */
-	public function process_bail( $error, $note ) {
+	public function process_bail( $error, $note, $required = null ) {
 		$notices = array();
 		$notices['error']['note'] = $error;
 		$out = array(
 			'html'    => $this->html_from_notices( $notices ),
 			'console' => $note,
+			'required'  => $required,
 		);
 		$this->send_json( $out, true );
 	}

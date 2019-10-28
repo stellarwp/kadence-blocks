@@ -15,7 +15,7 @@ jQuery( function( $ ) {
 
 			if ( form_data ) {
 				// send the request.
-				form.find( '.kadence-blocks-form-message' ).slideUp( 'fast', function() {
+				form.parent( '.wp-block-kadence-form' ).find( '.kadence-blocks-form-message' ).slideUp( 'fast', function() {
 					$(this).remove();
 				} );
 				form.append('<div class="kb-form-loading"><div class="kb-form-loading-spin"><div></div><div></div><div></div><div></div></div></div>' );
@@ -40,7 +40,13 @@ jQuery( function( $ ) {
 							grecaptcha.reset();
 						}
 						form.after( res.data.html );
+						if ( res.data.required ) {
+							if ( form.find( '#' + res.data.required ).length > 0 ) {
+								kadence_blocks_form.markError( form.find( '#' + res.data.required ), 'required' );
+							}
+						}
 						console.log( res.data.console );
+						//console.log( res.data );
 
 						submitButton.removeAttr( 'disabled' );
 					}
@@ -50,6 +56,7 @@ jQuery( function( $ ) {
 			}
 		},
 		removeErrors: function( item ) {
+			$( item ).parents('.kb-form').removeClass('kb-form-has-error');
 			$( item ).find( '.has-error' ).removeClass( 'has-error' );
 			$( '.kb-form-error-msg' ).remove();
 		},
@@ -62,6 +69,7 @@ jQuery( function( $ ) {
 		},
 		markError: function( item, error_type ) {
 			var error_string = '';
+			$( item ).parents('.kb-form').addClass( 'kb-form-has-error' );
 			$( item ).addClass( 'has-error' );
 
 			if ( error_type ) {
@@ -82,7 +90,11 @@ jQuery( function( $ ) {
 						break
 				}
 				$(item).siblings('.kb-form-error-msg').remove();
-				$(item).after('<div class="kb-form-error-msg">'+ error_string +'</div>')
+				if ( $(item).hasClass( 'kb-checkbox-style' ) ) {
+					$(item).parent('.kadence-blocks-form-field').append('<div class="kb-form-error-msg kadence-blocks-form-warning">'+ error_string +'</div>');
+				} else {
+					$(item).after('<div class="kb-form-error-msg kadence-blocks-form-warning">'+ error_string +'</div>');
+				}
 			}
 
 			$(item).focus();
@@ -144,29 +156,37 @@ jQuery( function( $ ) {
 							kadence_blocks_form.markError( item, error_type );
 						}
 						break;
-
-					case 'select':
-						val = $(item).val();
-
-						// console.log(val);
-						if ( !val || val === '-1' ) {
-							error = true;
-							error_type = 'required';
-
-							// make it warn collor
-							kadence_blocks_form.markError( item, error_type );
-						}
-						break;
-
-					case 'multiselect':
-						val = $(item).val();
-
-						if ( val === null || val.length === 0 ) {
+					case 'accept':
+						if ( $(item).prop("checked") == false ){
 							error = true;
 							error_type = 'required';
 
 							// make it warn collor
 							kadence_blocks_form.markError( item,  error_type );
+						}
+						break;
+
+					case 'select':
+						val = $(item).val();
+						//console.log(val );
+						if ( $(item).prop('multiple') ) {
+							if ( val === null || val.length === 0 ) {
+								error = true;
+								error_type = 'required';
+
+								// make it warn collor
+								kadence_blocks_form.markError( item,  error_type );
+							}
+						} else {
+
+							// console.log(val);
+							if ( !val || val === '-1' ) {
+								error = true;
+								error_type = 'required';
+
+								// make it warn collor
+								kadence_blocks_form.markError( item, error_type );
+							}
 						}
 						break;
 

@@ -35,15 +35,16 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/advancedbtn', {
-	title: __( 'Advanced Button' ), // Block title.
+	title: __( 'Advanced Button', 'kadence-blocks' ), // Block title.
+	description: __( 'Create an advanced button or a row of buttons. Style each one, including hover controls!', 'kadence-blocks' ),
 	icon: {
 		src: icons.block,
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'Button' ),
-		__( 'Icon' ),
-		__( 'KT' ),
+		__( 'Button', 'kadence-blocks' ),
+		__( 'Icon', 'kadence-blocks' ),
+		__( 'KB', 'kadence-blocks' ),
 	],
 	supports: {
 		ktanimate: true,

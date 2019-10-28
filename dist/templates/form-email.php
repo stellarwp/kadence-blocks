@@ -2,7 +2,7 @@
 /**
  * Default email template.
  *
- * This template can be overridden by copying it to yourtheme/kadence-blocks/emails/default.php.
+ * This template can be overridden by copying it to yourtheme/kadence-blocks/form-email.php.
  *
  * @version 1.7.0
  */
@@ -149,7 +149,7 @@ defined( 'ABSPATH' ) || exit;
 					<td class="content-block powered-by" style="font-family: sans-serif; vertical-align: top; padding-bottom: 10px; padding-top: 10px; font-size: 12px; color: #999999; text-align: center;">
 					<?php
 					/* translators: %s - link to a site. */
-					$footer = sprintf( esc_html__( 'Sent from %s', 'everest-forms' ), '<a href="' . esc_url( home_url() ) . '" style="color: #999999; font-size: 12px; text-align: center; text-decoration: none;">' . wp_specialchars_decode( get_bloginfo( 'name' ) ) . '</a>' );
+					$footer = sprintf( esc_html__( 'Sent from %s', 'kadence-blocks' ), '<a href="' . esc_url( home_url() ) . '" style="color: #999999; font-size: 12px; text-align: center; text-decoration: none;">' . wp_specialchars_decode( get_bloginfo( 'name' ) ) . '</a>' );
 					echo apply_filters( 'kadence_blocks_form_email_footer_text', $footer );
 					?>
 					</td>

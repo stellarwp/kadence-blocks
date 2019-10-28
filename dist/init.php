@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function kadence_gutenberg_editor_assets() {
 	// Scripts.
-	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KT_BLOCKS_VERSION, true );
+	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KADENCE_BLOCKS_VERSION, true );
 	$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
 	$sidebar_size   = 750;
 	$nosidebar_size = 1140;
@@ -90,14 +90,16 @@ function kadence_gutenberg_editor_assets() {
 			'userrole'       => $userrole,
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
+			'privacy_link'   => get_privacy_policy_url(),
+			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
 		)
 	);
 	// Styles.
-	wp_enqueue_style( 'kadence-blocks-editor-css', KT_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KT_BLOCKS_VERSION );
+	wp_enqueue_style( 'kadence-blocks-editor-css', KT_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
 	// Limited Margins removed
 	// $editor_widths = get_option( 'kt_blocks_editor_width', array() );
 	// if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
-	// 	wp_enqueue_style( 'kadence-blocks-limited-margins-css', KT_BLOCKS_URL . 'dist/limited-margins.css', array( 'wp-edit-blocks' ), KT_BLOCKS_VERSION );
+	// 	wp_enqueue_style( 'kadence-blocks-limited-margins-css', KT_BLOCKS_URL . 'dist/limited-margins.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
 	// }
 	if ( function_exists( 'wp_set_script_translations' ) ) {
 		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
@@ -247,3 +249,105 @@ function kadence_blocks_block_category( $categories, $post ) {
 }
 add_filter( 'block_categories', 'kadence_blocks_block_category', 10, 2 );
 
+/**
+ * Get other templates (e.g. product attributes) passing attributes and including the file.
+ *
+ * @param string $template_name Template name.
+ * @param array  $args          Arguments. (default: array).
+ * @param string $template_path Template path. (default: '').
+ * @param string $default_path  Default path. (default: '').
+ */
+function kadence_blocks_get_template( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
+	$cache_key = sanitize_key( implode( '-', array( 'template', $template_name, $template_path, $default_path, KADENCE_BLOCKS_VERSION ) ) );
+	$template  = (string) wp_cache_get( $cache_key, 'kadence-blocks' );
+
+	if ( ! $template ) {
+		$template = kadence_blocks_locate_template( $template_name, $template_path, $default_path );
+		wp_cache_set( $cache_key, $template, 'kadence-blocks' );
+	}
+
+	// Allow 3rd party plugin filter template file from their plugin.
+	$filter_template = apply_filters( 'kadence_blocks_get_template', $template, $template_name, $args, $template_path, $default_path );
+
+	if ( $filter_template !== $template ) {
+		if ( ! file_exists( $filter_template ) ) {
+			return;
+		}
+		$template = $filter_template;
+	}
+
+	$action_args = array(
+		'template_name' => $template_name,
+		'template_path' => $template_path,
+		'located'       => $template,
+		'args'          => $args,
+	);
+
+	if ( ! empty( $args ) && is_array( $args ) ) {
+		if ( isset( $args['action_args'] ) ) {
+			unset( $args['action_args'] );
+		}
+		extract( $args ); // @codingStandardsIgnoreLine
+	}
+
+	do_action( 'kadence_blocks_before_template_part', $action_args['template_name'], $action_args['template_path'], $action_args['located'], $action_args['args'] );
+
+	include $action_args['located'];
+
+	do_action( 'kadence_blocks_before_template_part', $action_args['template_name'], $action_args['template_path'], $action_args['located'], $action_args['args'] );
+}
+/**
+ * Like kadence_blocks_get_template, but returns the HTML instead of outputting.
+ *
+ * @see kadence_blocks_get_template
+ * @param string $template_name Template name.
+ * @param array  $args          Arguments. (default: array).
+ * @param string $template_path Template path. (default: '').
+ * @param string $default_path  Default path. (default: '').
+ *
+ * @return string
+ */
+function kadence_blocks_get_template_html( $template_name, $args = array(), $template_path = '', $default_path = '' ) {
+	ob_start();
+	kadence_blocks_get_template( $template_name, $args, $template_path, $default_path );
+	return ob_get_clean();
+}
+/**
+ * Locate a template and return the path for inclusion.
+ *
+ * This is the load order:
+ *
+ * yourtheme/$template_path/$template_name
+ * yourtheme/$template_name
+ * $default_path/$template_name
+ *
+ * @param string $template_name Template name.
+ * @param string $template_path Template path. (default: '').
+ * @param string $default_path  Default path. (default: '').
+ * @return string
+ */
+function kadence_blocks_locate_template( $template_name, $template_path = '', $default_path = '' ) {
+	if ( ! $template_path ) {
+		$template_path = apply_filters( 'kadence_blocks_template_path', 'kadenceblocks/' );
+	}
+
+	if ( ! $default_path ) {
+		$default_path = KADENCE_BLOCKS_PATH . 'dist/templates/';
+	}
+
+	// Look within passed path within the theme - this is priority.
+	$template = locate_template(
+		array(
+			trailingslashit( $template_path ) . $template_name,
+			$template_name,
+		)
+	);
+
+	// Get default template/.
+	if ( ! $template ) {
+		$template = $default_path . $template_name;
+	}
+
+	// Return what we found.
+	return apply_filters( 'kadence_blocks_locate_template', $template, $template_name, $template_path );
+}
