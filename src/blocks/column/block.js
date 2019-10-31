@@ -199,6 +199,22 @@ registerBlockType( 'kadence/column', {
 			type: 'number',
 			default: '',
 		},
+		displayShadow: {
+			type: 'bool',
+			default: false,
+		},
+		shadow: {
+			type: 'array',
+			default: [ {
+				color: '#000000',
+				opacity: 0.2,
+				spread: 0,
+				blur: 14,
+				hOffset: 0,
+				vOffset: 0,
+				inset: false,
+			} ],
+		},
 	},
 	supports: {
 		inserter: false,

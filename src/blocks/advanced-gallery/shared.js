@@ -39,7 +39,8 @@ export const pickRelevantMediaFilesUpdate = ( image, lightSize, thumbSize ) => {
 	if ( ! theImage ) {
 		theImage = image;
 	}
-	const imageProps = pick( theImage, [ 'alt_text', 'id', 'link' ] );
+	const imageProps = pick( theImage, [ 'id', 'link' ] );
+	imageProps.alt = get( theImage, [ 'alt_text' ] ) || get( theImage, [ 'alt' ] ) || undefined;
 	imageProps.caption = get( theImage, [ 'caption', 'raw' ] ) || get( theImage, [ 'caption' ] ) || undefined;
 	imageProps.url = theImage.source_url || image.url;
 	imageProps.customLink = image.customLink;

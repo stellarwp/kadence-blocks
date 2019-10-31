@@ -11,6 +11,7 @@ import icons from '../../icons';
 import hexToRGBA from '../../hex-to-rgba';
 import MeasurementControls from '../../measurement-control';
 import AdvancedColorControl from '../../advanced-color-control';
+import BoxShadowControl from '../../box-shadow-control';
 /**
  * Internal block libraries
  */
@@ -23,6 +24,7 @@ const {
 const {
 	InnerBlocks,
 	MediaUpload,
+	InspectorAdvancedControls,
 	InspectorControls,
 	AlignmentToolbar,
 } = wp.blockEditor;
@@ -47,6 +49,7 @@ const ktcolumnUniqueIDs = [];
 class KadenceColumn extends Component {
 	constructor() {
 		super( ...arguments );
+		this.saveShadow = this.saveShadow.bind( this );
 		this.state = {
 			borderWidthControl: 'linked',
 			borderRadiusControl: 'linked',
@@ -77,8 +80,23 @@ class KadenceColumn extends Component {
 			this.setState( { borderRadiusControl: 'individual' } );
 		}
 	}
+	saveShadow( value ) {
+		const { attributes, setAttributes } = this.props;
+		const { shadow } = attributes;
+
+		const newItems = shadow.map( ( item, thisIndex ) => {
+			if ( 0 === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		setAttributes( {
+			shadow: newItems,
+		} );
+	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor }, setAttributes, clientId } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow }, setAttributes, clientId } = this.props;
 		const { borderWidthControl, borderRadiusControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
@@ -658,6 +676,44 @@ class KadenceColumn extends Component {
 							thirdIcon={ icons.bottomright }
 							fourthIcon={ icons.bottomleft }
 						/>
+						<BoxShadowControl
+							label={ __( 'Box Shadow', 'kadence-blocks' ) }
+							enable={ ( undefined !== displayShadow ? displayShadow : false ) }
+							color={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ) }
+							colorDefault={ '#000000' }
+							opacity={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) }
+							hOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) }
+							vOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) }
+							blur={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) }
+							spread={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) }
+							inset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false ) }
+							onEnableChange={ value => {
+								setAttributes( {
+									displayShadow: value,
+								} );
+							} }
+							onColorChange={ value => {
+								this.saveShadow( { color: value } );
+							} }
+							onOpacityChange={ value => {
+								this.saveShadow( { opacity: value } );
+							} }
+							onHOffsetChange={ value => {
+								this.saveShadow( { hOffset: value } );
+							} }
+							onVOffsetChange={ value => {
+								this.saveShadow( { vOffset: value } );
+							} }
+							onBlurChange={ value => {
+								this.saveShadow( { blur: value } );
+							} }
+							onSpreadChange={ value => {
+								this.saveShadow( { spread: value } );
+							} }
+							onInsetChange={ value => {
+								this.saveShadow( { inset: value } );
+							} }
+						/>
 						{ textAlignControls }
 						<PanelBody
 							title={ __( 'Text Color Settings' ) }
@@ -683,20 +739,22 @@ class KadenceColumn extends Component {
 							/>
 						</PanelBody>
 						<div className="kt-spacer-sidebar-15"></div>
-						<RangeControl
-							label={ __( 'Z Index Control' ) }
-							value={ zIndex }
-							onChange={ ( value ) => {
-								setAttributes( {
-									zIndex: value,
-								} );
-							} }
-							min={ -200 }
-							max={ 200 }
-						/>
 						{ tabControls }
 					</Panel>
 				</InspectorControls>
+				<InspectorAdvancedControls>
+					<RangeControl
+						label={ __( 'Z Index Control' ) }
+						value={ zIndex }
+						onChange={ ( value ) => {
+							setAttributes( {
+								zIndex: value,
+							} );
+						} }
+						min={ -200 }
+						max={ 200 }
+					/>
+				</InspectorAdvancedControls>
 				<div id={ `animate-id${ uniqueID }` } className="kadence-inner-column-inner aos-animate kt-animation-wrap" data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
 					paddingLeft: leftPadding + 'px',
 					paddingRight: rightPadding + 'px',
@@ -717,6 +775,7 @@ class KadenceColumn extends Component {
 					borderColor: borderString,
 					borderWidth: ( borderWidth ? borderWidth[ 0 ] + 'px ' + borderWidth[ 1 ] + 'px ' + borderWidth[ 2 ] + 'px ' + borderWidth[ 3 ] + 'px' : '' ),
 					borderRadius: ( borderRadius ? borderRadius[ 0 ] + 'px ' + borderRadius[ 1 ] + 'px ' + borderRadius[ 2 ] + 'px ' + borderRadius[ 3 ] + 'px' : '' ),
+					boxShadow: ( undefined !== displayShadow && displayShadow && undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? ( undefined !== shadow[ 0 ].inset && shadow[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) + 'px ' + hexToRGBA( ( undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 1 ) ) : undefined ),
 				} } >
 					<InnerBlocks
 						templateLock={ false }

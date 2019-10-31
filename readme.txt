@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.2.3
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,6 +20,7 @@ This plugin adds custom blocks and options to extend Gutenberg's editing capabil
 = Custom Blocks Include =
 * Row Layout - [demo](https://www.kadenceblocks.com/row-layout-block/)
 * Advanced Gallery - [demo](https://www.kadenceblocks.com/custom-blocks/advanced-gallery/)
+* Form - [demo](https://www.kadenceblocks.com/form-block/)
 * Advanced Heading - [demo](https://www.kadenceblocks.com/advanced-heading-block/)
 * Advanced Button - [demo](https://www.kadenceblocks.com/advanced-button-block/)
 * Tabs - [demo](https://www.kadenceblocks.com/tabs-block/)
@@ -85,6 +86,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.7.1 =
+* Fix: Update gallery to collect new alt text.
+* Fix: Possible fetch error in form block admin.
+* Add: Box Shadow to Column
 
 = 1.7.0 =
 * Add: New Form Block!!

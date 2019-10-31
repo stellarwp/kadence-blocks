@@ -80,13 +80,7 @@ const actionOptionsList = [
  * This allows for checking to see if the block needs to generate a new ID.
  */
 const kbFormIDs = [];
-/**
- * Get settings
- */
-let settings;
-wp.api.loadPromise.then( () => {
-	settings = new wp.api.models.Settings();
-} );
+
 /**
  * Build the overlay edit
  */
@@ -142,15 +136,6 @@ class KadenceForm extends Component {
 			isSavedKey: false,
 			isSaving: false,
 		};
-		settings.fetch().then( response => {
-			this.setState( {
-				siteKey: response.kadence_blocks_recaptcha_site_key,
-				secretKey: response.kadence_blocks_recaptcha_secret_key,
-			} );
-			if ( '' !== this.state.siteKey && '' !== this.state.secretKey ) {
-				this.setState( { isSavedKey: true } );
-			}
-		} );
 	}
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
@@ -241,6 +226,22 @@ class KadenceForm extends Component {
 				this.setState( { messageFontBorderControl: 'individual' } );
 			}
 		}
+		/**
+		 * Get settings
+		 */
+		let settings;
+		wp.api.loadPromise.then( () => {
+			settings = new wp.api.models.Settings();
+			settings.fetch().then( response => {
+				this.setState( {
+					siteKey: response.kadence_blocks_recaptcha_site_key,
+					secretKey: response.kadence_blocks_recaptcha_secret_key,
+				} );
+				if ( '' !== this.state.siteKey && '' !== this.state.secretKey ) {
+					this.setState( { isSavedKey: true } );
+				}
+			} );
+		} );
 	}
 	componentDidUpdate( prevProps ) {
 		// Deselect field when deselecting the block
