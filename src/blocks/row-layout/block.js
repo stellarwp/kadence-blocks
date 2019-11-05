@@ -57,7 +57,7 @@ registerBlockType( 'kadence/rowlayout', {
 	keywords: [
 		__( 'row' ),
 		__( 'layout' ),
-		__( 'KT' ),
+		__( 'KB' ),
 	],
 	supports: {
 		anchor: true,

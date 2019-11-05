@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function kadence_gutenberg_editor_assets() {
 	// Scripts.
-	wp_enqueue_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KADENCE_BLOCKS_VERSION, true );
+	wp_register_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KADENCE_BLOCKS_VERSION, true );
 	$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
 	$sidebar_size   = 750;
 	$nosidebar_size = 1140;
@@ -95,7 +95,7 @@ function kadence_gutenberg_editor_assets() {
 		)
 	);
 	// Styles.
-	wp_enqueue_style( 'kadence-blocks-editor-css', KT_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
+	wp_register_script( 'kadence-blocks-editor-css', KT_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
 	// Limited Margins removed
 	// $editor_widths = get_option( 'kt_blocks_editor_width', array() );
 	// if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
@@ -105,7 +105,7 @@ function kadence_gutenberg_editor_assets() {
 		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
 	}
 }
-add_action( 'enqueue_block_editor_assets', 'kadence_gutenberg_editor_assets' );
+add_action( 'init', 'kadence_gutenberg_editor_assets' );
 
 
 /**

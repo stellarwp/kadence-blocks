@@ -862,7 +862,7 @@ class KadenceForm extends Component {
 														{ value: '33', label: __( '33%', 'kadence-blocks' ) },
 														{ value: '40', label: __( '40%', 'kadence-blocks' ) },
 														{ value: '50', label: __( '50%', 'kadence-blocks' ) },
-														{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '60', label: __( '60%', 'kadence-blocks' ) },
 														{ value: '66', label: __( '66%', 'kadence-blocks' ) },
 														{ value: '75', label: __( '75%', 'kadence-blocks' ) },
 														{ value: '80', label: __( '80%', 'kadence-blocks' ) },
@@ -886,7 +886,7 @@ class KadenceForm extends Component {
 														{ value: '33', label: __( '33%', 'kadence-blocks' ) },
 														{ value: '40', label: __( '40%', 'kadence-blocks' ) },
 														{ value: '50', label: __( '50%', 'kadence-blocks' ) },
-														{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '60', label: __( '60%', 'kadence-blocks' ) },
 														{ value: '66', label: __( '66%', 'kadence-blocks' ) },
 														{ value: '75', label: __( '75%', 'kadence-blocks' ) },
 														{ value: '80', label: __( '80%', 'kadence-blocks' ) },
@@ -910,7 +910,7 @@ class KadenceForm extends Component {
 														{ value: '33', label: __( '33%', 'kadence-blocks' ) },
 														{ value: '40', label: __( '40%', 'kadence-blocks' ) },
 														{ value: '50', label: __( '50%', 'kadence-blocks' ) },
-														{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+														{ value: '60', label: __( '60%', 'kadence-blocks' ) },
 														{ value: '66', label: __( '66%', 'kadence-blocks' ) },
 														{ value: '75', label: __( '75%', 'kadence-blocks' ) },
 														{ value: '80', label: __( '80%', 'kadence-blocks' ) },
@@ -963,7 +963,7 @@ class KadenceForm extends Component {
 				<div
 					className={ fieldClassName }
 					style={ {
-						width: fields[ index ].width[ 0 ] + '%',
+						width: ( '33' === fields[ index ].width[ 0 ] ? '33.33' : fields[ index ].width[ 0 ] ) + '%',
 						marginBottom: ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : undefined ),
 						paddingRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
 						paddingLeft: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
@@ -996,6 +996,7 @@ class KadenceForm extends Component {
 								fontSize: labelFont[ 0 ].size[ 0 ] + labelFont[ 0 ].sizeType,
 								lineHeight: ( labelFont[ 0 ].lineHeight && labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] + labelFont[ 0 ].lineType : undefined ),
 								letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
+								textTransform: ( labelFont[ 0 ].textTransform ? labelFont[ 0 ].textTransform  : undefined ),
 								fontFamily: ( labelFont[ 0 ].family ? labelFont[ 0 ].family : undefined ),
 								paddingTop: ( '' !== labelFont[ 0 ].padding[ 0 ] ? labelFont[ 0 ].padding[ 0 ] + 'px' : undefined ),
 								paddingRight: ( '' !== labelFont[ 0 ].padding[ 1 ] ? labelFont[ 0 ].padding[ 1 ] + 'px' : undefined ),
@@ -1018,6 +1019,7 @@ class KadenceForm extends Component {
 									fontSize: labelFont[ 0 ].size[ 0 ] + labelFont[ 0 ].sizeType,
 									lineHeight: ( labelFont[ 0 ].lineHeight && labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] + labelFont[ 0 ].lineType : undefined ),
 									letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
+									textTransform: ( labelFont[ 0 ].textTransform ? labelFont[ 0 ].textTransform  : undefined ),
 									fontFamily: ( labelFont[ 0 ].family ? labelFont[ 0 ].family : undefined ),
 									paddingTop: ( '' !== labelFont[ 0 ].padding[ 0 ] ? labelFont[ 0 ].padding[ 0 ] + 'px' : undefined ),
 									paddingRight: ( '' !== labelFont[ 0 ].padding[ 1 ] ? labelFont[ 0 ].padding[ 1 ] + 'px' : undefined ),
@@ -1993,6 +1995,8 @@ class KadenceForm extends Component {
 							<TypographyControls
 								letterSpacing={ labelFont[ 0 ].letterSpacing }
 								onLetterSpacing={ ( value ) => this.saveLabelFont( { letterSpacing: value } ) }
+								textTransform={ labelFont[ 0 ].textTransform }
+								onTextTransform={ ( value ) => this.saveLabelFont( { textTransform: value } ) }
 								fontFamily={ labelFont[ 0 ].family }
 								onFontFamily={ ( value ) => this.saveLabelFont( { family: value } ) }
 								onFontChange={ ( select ) => {
@@ -2743,6 +2747,8 @@ class KadenceForm extends Component {
 							<TypographyControls
 								letterSpacing={ submitFont[ 0 ].letterSpacing }
 								onLetterSpacing={ ( value ) => this.saveSubmitFont( { letterSpacing: value } ) }
+								textTransform={ submitFont[ 0 ].textTransform }
+								onTextTransform={ ( value ) => this.saveSubmitFont( { textTransform: value } ) }
 								fontFamily={ submitFont[ 0 ].family }
 								onFontFamily={ ( value ) => this.saveSubmitFont( { family: value } ) }
 								onFontChange={ ( select ) => {
@@ -2954,6 +2960,7 @@ class KadenceForm extends Component {
 									fontWeight: submitFont[ 0 ].weight,
 									fontStyle: submitFont[ 0 ].style,
 									letterSpacing: submitFont[ 0 ].letterSpacing + 'px',
+									textTransform: ( submitFont[ 0 ].textTransform ? submitFont[ 0 ].textTransform  : undefined ),
 									fontFamily: ( submitFont[ 0 ].family ? submitFont[ 0 ].family : '' ),
 									borderRadius: ( undefined !== submit[ 0 ].borderRadius ? submit[ 0 ].borderRadius + 'px' : undefined ),
 									borderColor: ( undefined === submit[ 0 ].border ? undefined : hexToRGBA( submit[ 0 ].border, ( submit[ 0 ].borderOpacity !== undefined ? submit[ 0 ].borderOpacity : 1 ) ) ),

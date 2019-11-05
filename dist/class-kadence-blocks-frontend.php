@@ -50,7 +50,6 @@ class Kadence_Blocks_Frontend {
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
 	}
-
 	/**
 	 * On init startup.
 	 */
@@ -63,12 +62,18 @@ class Kadence_Blocks_Frontend {
 			'kadence/rowlayout',
 			array(
 				'render_callback' => array( $this, 'render_row_layout_css' ),
+				'style'           => 'kadence-blocks-style-css',
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
 			)
 		);
 		register_block_type(
 			'kadence/column',
 			array(
 				'render_callback' => array( $this, 'render_column_layout_css' ),
+				'style'           => 'kadence-blocks-style-css',
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
 			)
 		);
 		register_block_type(
@@ -1118,12 +1123,12 @@ class Kadence_Blocks_Frontend {
 				$css .= 'color:' . $style['requiredColor'] . ';';
 				$css .= '}';
 			}
-			if ( ( isset( $style['color'] ) && ! empty( $style['color'] ) ) || ( isset( $style['background'] ) && ! empty( $style['background'] ) ) || ( isset( $style['border'] ) && ! empty( $style['border'] ) ) || ( isset( $style['backgroundType'] ) && 'gradient' === $style['backgroundType'] ) || ( isset( $style['boxShadow'] ) && is_array( $style['boxShadow'] ) && isset( $style['boxShadow'][0] ) && true === $style['boxShadow'][0] ) || ( isset( $style['borderRadius'] ) && ! empty( $style['borderRadius'] ) ) || ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][0] ) ) || ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][0] ) ) || ( isset( $style['borderWidth'] ) && is_array( $style['borderWidth'] ) && is_numeric( $style['borderWidth'][0] ) ) ) {
+			if ( ( isset( $style['color'] ) && ! empty( $style['color'] ) ) || ( isset( $style['background'] ) && ! empty( $style['background'] ) ) || ( isset( $style['border'] ) && ! empty( $style['border'] ) ) || ( isset( $style['backgroundType'] ) && 'gradient' === $style['backgroundType'] ) || ( isset( $style['boxShadow'] ) && is_array( $style['boxShadow'] ) && isset( $style['boxShadow'][0] ) && true === $style['boxShadow'][0] ) || ( isset( $style['borderRadius'] ) && is_numeric( $style['borderRadius'] ) ) || ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][0] ) ) || ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][0] ) ) || ( isset( $style['borderWidth'] ) && is_array( $style['borderWidth'] ) && is_numeric( $style['borderWidth'][0] ) ) ) {
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field, .kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-select-style-field {';
 				if ( isset( $style['color'] ) && ! empty( $style['color'] ) ) {
 					$css .= 'color:' . $style['color'] . ';';
 				}
-				if ( isset( $style['borderRadius'] ) && ! empty( $style['borderRadius'] ) ) {
+				if ( isset( $style['borderRadius'] ) && is_numeric( $style['borderRadius'] ) ) {
 					$css .= 'border-radius:' . $style['borderRadius'] . 'px;';
 				}
 				if ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][0] ) ) {
