@@ -677,6 +677,7 @@ class KadenceForm extends Component {
 							{ value: 'textarea', label: __( 'Textarea', 'kadence-blocks' ) },
 							{ value: 'accept', label: __( 'Accept', 'kadence-blocks' ) },
 							{ value: 'select', label: __( 'Select', 'kadence-blocks' ) },
+							{ value: 'tel', label: __( 'Telephone', 'kadence-blocks' ) },
 						] }
 						onChange={ value => {
 							this.saveFields( { type: value }, index );
@@ -867,7 +868,7 @@ class KadenceForm extends Component {
 														{ value: '75', label: __( '75%', 'kadence-blocks' ) },
 														{ value: '80', label: __( '80%', 'kadence-blocks' ) },
 														{ value: '100', label: __( '100%', 'kadence-blocks' ) },
-														{ value: 'unset', label: __( 'Unset', 'kadence-blocks' ) },
+														{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
 													] }
 													onChange={ value => {
 														this.saveFields( { width: [ ( fields[ index ].width[ 0 ] ? fields[ index ].width[ 0 ] : '100' ), ( fields[ index ].width[ 1 ] ? fields[ index ].width[ 1 ] : '' ), value ] }, index );
@@ -891,7 +892,7 @@ class KadenceForm extends Component {
 														{ value: '75', label: __( '75%', 'kadence-blocks' ) },
 														{ value: '80', label: __( '80%', 'kadence-blocks' ) },
 														{ value: '100', label: __( '100%', 'kadence-blocks' ) },
-														{ value: 'unset', label: __( 'Unset', 'kadence-blocks' ) },
+														{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
 													] }
 													onChange={ value => {
 														this.saveFields( { width: [ ( fields[ index ].width[ 0 ] ? fields[ index ].width[ 0 ] : '100' ), value, ( fields[ index ].width[ 2 ] ? fields[ index ].width[ 2 ] : '' ) ] }, index );

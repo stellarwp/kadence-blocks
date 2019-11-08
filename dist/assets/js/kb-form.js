@@ -120,6 +120,10 @@ jQuery( function( $ ) {
 			var urlregex = new RegExp("^(http:\/\/www.|https:\/\/www.|ftp:\/\/www.|www.|http:\/\/|https:\/\/){1}([0-9A-Za-z]+\.)");
 			return urlregex.test( url );
 		},
+		isValidTel: function( tel ) {
+			var telregex = new RegExp("/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im");
+			return telregex.test( tel );
+		},
 		validateForm: function( self ) {
 
 			var temp,
@@ -148,6 +152,17 @@ jQuery( function( $ ) {
 
 						val = $.trim( $(item).val() );
 
+						if ( val === '') {
+							error = true;
+							error_type = 'required';
+
+							// make it warn collor
+							kadence_blocks_form.markError( item, error_type );
+						}
+						break;
+					case 'tel':
+
+						val = $.trim( $(item).val() );
 						if ( val === '') {
 							error = true;
 							error_type = 'required';

@@ -253,6 +253,7 @@ class KB_Ajax_Form {
 	private function sanitize_field( $field_type, $value, $multi_select = false ) {
 		switch ( $field_type ) {
 			case 'text':
+			case 'tel':
 			case 'password':
 			case 'hidden':
 			case 'search':

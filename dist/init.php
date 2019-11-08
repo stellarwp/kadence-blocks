@@ -22,17 +22,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function kadence_gutenberg_editor_assets() {
 	// Scripts.
-	wp_register_script( 'kadence-blocks-js', KT_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KADENCE_BLOCKS_VERSION, true );
+	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KADENCE_BLOCKS_VERSION, true );
 	$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
 	$sidebar_size   = 750;
 	$nosidebar_size = 1140;
 	$jssize         = 2000;
 	if ( ! isset( $editor_widths['enable_editor_width'] ) || 'true' === $editor_widths['enable_editor_width'] ) {
-		if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
-			$add_size = 10;
-		} else {
-			$add_size = 30;
-		}
+		$add_size = 30;
 		$post_type = get_post_type();
 		if ( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
 			if ( isset( $post_type ) && 'page' === $post_type ) {
@@ -95,11 +91,11 @@ function kadence_gutenberg_editor_assets() {
 		)
 	);
 	// Styles.
-	wp_register_script( 'kadence-blocks-editor-css', KT_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
+	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
 	// Limited Margins removed
 	// $editor_widths = get_option( 'kt_blocks_editor_width', array() );
 	// if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
-	// 	wp_enqueue_style( 'kadence-blocks-limited-margins-css', KT_BLOCKS_URL . 'dist/limited-margins.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
+	// 	wp_enqueue_style( 'kadence-blocks-limited-margins-css', KADENCE_BLOCKS_URL . 'dist/limited-margins.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
 	// }
 	if ( function_exists( 'wp_set_script_translations' ) ) {
 		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );

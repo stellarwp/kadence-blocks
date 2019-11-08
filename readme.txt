@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
-Tested up to: 5.2.3
-Stable tag: 1.7.2
+Tested up to: 5.3.0
+Stable tag: 1.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.7.3 =
+* Update: Change how Blocks CSS is loaded, now only loads for blocks used on page.
+* Fix: Form Button Border Radius when 0.
+* Add: telephone field to form field options.
+* Fix: Small css styling when custom colors off.
 
 = 1.7.2 =
 * Small Tweek: Form CSS
