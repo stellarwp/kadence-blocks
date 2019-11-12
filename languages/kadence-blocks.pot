@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2019-10-28 17:38-0600\n"
+"POT-Creation-Date: 2019-11-08 11:11-0700\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence WP\n"
@@ -21,27 +21,27 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-2: dist/vendor\n"
 "X-Poedit-SearchPathExcluded-3: src\n"
 
-#: dist/class-kadence-blocks-frontend.php:697
+#: dist/class-kadence-blocks-frontend.php:803
 msgid "Please fix the errors to proceed"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:699
+#: dist/class-kadence-blocks-frontend.php:805
 msgid "is required"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:700
+#: dist/class-kadence-blocks-frontend.php:806
 msgid "does not match"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:701
+#: dist/class-kadence-blocks-frontend.php:807
 msgid "is not valid"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:702
+#: dist/class-kadence-blocks-frontend.php:808
 msgid "requires a unique entry and this value has already been used"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:703 dist/blocks.build.js:1
+#: dist/class-kadence-blocks-frontend.php:809 dist/blocks.build.js:1
 msgid "Item"
 msgstr ""
 
@@ -53,7 +53,7 @@ msgstr ""
 msgid "Spam Detected"
 msgstr ""
 
-#: dist/form-ajax.php:57 dist/form-ajax.php:76 dist/form-ajax.php:432
+#: dist/form-ajax.php:57 dist/form-ajax.php:76 dist/form-ajax.php:433
 #: dist/blocks.build.js:1
 msgid "Submission Failed"
 msgstr ""
@@ -94,15 +94,15 @@ msgstr ""
 msgid "No Data"
 msgstr ""
 
-#: dist/form-ajax.php:274 dist/blocks.build.js:1
+#: dist/form-ajax.php:275 dist/blocks.build.js:1
 msgid "Accept"
 msgstr ""
 
-#: dist/form-ajax.php:432
+#: dist/form-ajax.php:433
 msgid "Data not found"
 msgstr ""
 
-#: dist/init.php:244 dist/settings/class-kadence-blocks-settings.php:249
+#: dist/init.php:240 dist/settings/class-kadence-blocks-settings.php:249
 #: dist/settings/class-kadence-blocks-settings.php:251
 #: dist/settings/class-kadence-blocks-settings.php:520
 msgid "Kadence Blocks"
@@ -1075,14 +1075,6 @@ msgid "layout"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "rem"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "vw"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Row"
 msgstr ""
 
@@ -1503,7 +1495,7 @@ msgid "Select Video"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "YouTube ID ( example: Sv_hGITmNuo ) "
+msgid "YouTube ID ( example: Sv_hGITmNuo )"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -2113,6 +2105,10 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "heading"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "rem"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -3549,6 +3545,10 @@ msgid "Select"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Telephone"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Required?"
 msgstr ""
 
@@ -3649,10 +3649,6 @@ msgid "Postal Code"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Telephone"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Off"
 msgstr ""
 
@@ -3678,6 +3674,10 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "50%"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "60%"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -4403,6 +4403,10 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Enable Margin Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "vw"
 msgstr ""
 
 #: dist/blocks.build.js:1

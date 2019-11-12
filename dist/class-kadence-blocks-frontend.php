@@ -115,6 +115,14 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
+			'kadence/icon',
+			array(
+				'render_callback' => array( $this, 'render_icon_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
+		register_block_type(
 			'kadence/accordion',
 			array(
 				'render_callback' => array( $this, 'render_accordion_css' ),
@@ -461,6 +469,28 @@ class Kadence_Blocks_Frontend {
 					$this->render_inline_css( $css, $style_id, true );
 				}
 			}
+		}
+		return $content;
+	}
+	/**
+	 * Render Info Block CSS in Head
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 */
+	public function render_icon_css_head( $attributes ) {
+		if ( ! wp_style_is( 'kadence-blocks-icon', 'enqueued' ) ) {
+			wp_enqueue_style( 'kadence-blocks-icon' );
+		}
+	}
+	/**
+	 * Render Icon CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_icon_css( $attributes, $content ) {
+		if ( ! wp_style_is( 'kadence-blocks-icon', 'enqueued' ) ) {
+			wp_enqueue_style( 'kadence-blocks-icon' );
 		}
 		return $content;
 	}
@@ -968,6 +998,12 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_iconlist_scripts_gfonts( $blockattr );
 						}
 					}
+					if ( 'kadence/icon' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_icon_css_head( $blockattr );
+						}
+					}
 					if ( 'kadence/testimonials' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -1075,6 +1111,12 @@ class Kadence_Blocks_Frontend {
 						$blockattr = $inner_block['attrs'];
 						$this->render_iconlist_css_head( $blockattr );
 						$this->blocks_iconlist_scripts_gfonts( $blockattr );
+					}
+				}
+				if ( 'kadence/icon' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_icon_css_head( $blockattr );
 					}
 				}
 				if ( 'kadence/testimonials' === $inner_block['blockName'] ) {
