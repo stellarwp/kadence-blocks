@@ -24,7 +24,8 @@ const {
 	ToggleControl,
 	SelectControl,
 } = wp.components;
-
+const { withSelect, withDispatch } = wp.data;
+const { compose } = wp.compose;
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -48,37 +49,32 @@ class KadencePane extends Component {
 		} else {
 			ktpaneUniqueIDs.push( this.props.attributes.uniqueID );
 		}
-		const rootID = wp.data.select( 'core/block-editor' ).getBlockRootClientId( this.props.clientId );
 		if ( ! this.props.attributes.id ) {
-			const accordionBlock = wp.data.select( 'core/block-editor' ).getBlocksByClientId( rootID );
+			const accordionBlock = this.props.accordionBlock;
 			const newPaneCount = accordionBlock[ 0 ].attributes.paneCount + 1;
 			this.props.setAttributes( {
 				id: newPaneCount,
 			} );
-			if ( undefined === ktpaneUniqueIDsCount[ rootID ] ) {
-				ktpaneUniqueIDsCount.push( rootID );
-				ktpaneUniqueIDsCount[ rootID ].push( newPaneCount );
-			} else if ( undefined !== ktpaneUniqueIDsCount[ rootID ] ) {
-				ktpaneUniqueIDsCount[ rootID ].push( newPaneCount );
+			if ( undefined === ktpaneUniqueIDsCount[ this.props.rootID ] ) {
+				ktpaneUniqueIDsCount.push( this.props.rootID );
+				ktpaneUniqueIDsCount[ this.props.rootID ].push( newPaneCount );
+			} else if ( undefined !== ktpaneUniqueIDsCount[ this.props.rootID ] ) {
+				ktpaneUniqueIDsCount[ this.props.rootID ].push( newPaneCount );
 			}
-			wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( rootID, {
-				paneCount: newPaneCount,
-			} );
-		} else if ( undefined === ktpaneUniqueIDsCount[ rootID ] ) {
-			ktpaneUniqueIDsCount[ rootID ] = [ this.props.attributes.id ];
-		} else if ( undefined !== ktpaneUniqueIDsCount[ rootID ] ) {
-			if ( ktpaneUniqueIDsCount[ rootID ].includes( this.props.attributes.id ) ) {
-				const accordionBlock = wp.data.select( 'core/block-editor' ).getBlocksByClientId( rootID );
+			this.props.updatePaneCount( newPaneCount );
+		} else if ( undefined === ktpaneUniqueIDsCount[ this.props.rootID ] ) {
+			ktpaneUniqueIDsCount[ this.props.rootID ] = [ this.props.attributes.id ];
+		} else if ( undefined !== ktpaneUniqueIDsCount[ this.props.rootID ] ) {
+			if ( ktpaneUniqueIDsCount[ this.props.rootID ].includes( this.props.attributes.id ) ) {
+				const accordionBlock = this.props.accordionBlock;
 				const newPaneCount = accordionBlock[ 0 ].attributes.paneCount + 1;
 				this.props.setAttributes( {
 					id: newPaneCount,
 				} );
-				wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( rootID, {
-					paneCount: newPaneCount,
-				} );
-				ktpaneUniqueIDsCount[ rootID ].push( newPaneCount );
+				this.props.updatePaneCount( newPaneCount );
+				ktpaneUniqueIDsCount[ this.props.rootID ].push( newPaneCount );
 			} else {
-				ktpaneUniqueIDsCount[ rootID ].push( this.props.attributes.id );
+				ktpaneUniqueIDsCount[ this.props.rootID ].push( this.props.attributes.id );
 			}
 		}
 	}
@@ -150,4 +146,35 @@ class KadencePane extends Component {
 		);
 	}
 }
-export default ( KadencePane );
+//export default ( KadencePane );
+export default compose( [
+	withSelect( ( select, ownProps ) => {
+		const { clientId } = ownProps;
+		const {
+			getBlockRootClientId,
+			getBlocksByClientId,
+		} = select( 'core/block-editor' );
+		const rootID = getBlockRootClientId( clientId );
+		const accordionBlock = getBlocksByClientId( rootID );
+		return {
+			accordionBlock: accordionBlock,
+			rootID: rootID,
+		};
+	} ),
+	withDispatch( ( dispatch, { clientId }, { select } ) => {
+		const {
+			getBlockRootClientId,
+		} = select( 'core/block-editor' );
+		const {
+			updateBlockAttributes,
+		} = dispatch( 'core/block-editor' );
+		const rootID = getBlockRootClientId( clientId );
+		return {
+			updatePaneCount( value ) {
+				updateBlockAttributes( rootID, {
+					paneCount: value,
+				} );
+			},
+		};
+	} ),
+] )( KadencePane );

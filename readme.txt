@@ -89,6 +89,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 1.7.4 =
 * Fix: Icon css not loading correctly.
+* Fix Accordion issue with reusable.
 
 = 1.7.3 =
 * Update: Change how Blocks CSS is loaded, now only loads for blocks used on page.

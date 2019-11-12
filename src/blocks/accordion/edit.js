@@ -55,6 +55,8 @@ const {
 	SelectControl,
 	IconButton,
 } = wp.components;
+const { withSelect, withDispatch } = wp.data;
+const { compose } = wp.compose;
 /**
  * Internal block libraries
  */
@@ -179,8 +181,8 @@ class KadenceAccordionComponent extends Component {
 		} else {
 			this.setState( { titleBorderActiveColorControl: 'individual' } );
 		}
-		const accordionBlock = wp.data.select( 'core/block-editor' ).getBlocksByClientId( this.props.clientId );
-		if ( accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
+		const accordionBlock = this.props.accordionBlock;
+		if ( accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
 			this.setState( { titleTag: accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag } );
 		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
@@ -203,7 +205,7 @@ class KadenceAccordionComponent extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, paneCount, blockAlignment, openPane, titleStyles, contentPadding, minHeight, maxWidth, contentBorder, contentBorderColor, contentBorderRadius, contentBgColor, titleAlignment, startCollapsed, linkPaneCollapse, showIcon, iconStyle, iconSide }, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, paneCount, blockAlignment, openPane, titleStyles, contentPadding, minHeight, maxWidth, contentBorder, contentBorderColor, contentBorderRadius, contentBgColor, titleAlignment, startCollapsed, linkPaneCollapse, showIcon, iconStyle, iconSide }, className, setAttributes, clientId, realPaneCount, accordionBlock } = this.props;
 		const { titleBorderRadiusControl, titleBorderControl, titlePaddingControl, contentBorderControl, contentBorderRadiusControl, contentPaddingControl, titleBorderColorControl, titleBorderHoverColorControl, titleBorderActiveColorControl, titleTag } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -363,8 +365,6 @@ class KadenceAccordionComponent extends Component {
 				} );
 			}
 		};
-		const accordionBlock = wp.data.select( 'core/block-editor' ).getBlocksByClientId( clientId );
-		const realPaneCount = accordionBlock[ 0 ].innerBlocks.length;
 		const saveTitleStyles = ( value ) => {
 			const newUpdate = titleStyles.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -568,18 +568,22 @@ class KadenceAccordionComponent extends Component {
 										<Fragment>
 											<h2>{ __( 'Initial Open Accordion', 'kadence-blocks' ) }</h2>
 											<ButtonGroup aria-label={ __( 'Initial Open Accordion', 'kadence-blocks' ) }>
-												{ map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
-													<Button
-														key={ attributes.id - 1 }
-														className="kt-init-open-pane"
-														isSmall
-														isPrimary={ openPane === attributes.id - 1 }
-														aria-pressed={ openPane === attributes.id - 1 }
-														onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
-													>
-														{ __( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id ) }
-													</Button>
-												) ) }
+												{ accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks && (
+													<Fragment>
+														{ map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
+															<Button
+																key={ attributes.id - 1 }
+																className="kt-init-open-pane"
+																isSmall
+																isPrimary={ openPane === attributes.id - 1 }
+																aria-pressed={ openPane === attributes.id - 1 }
+																onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
+															>
+																{ __( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id ) }
+															</Button>
+														) ) }
+													</Fragment>
+												) }
 											</ButtonGroup>
 										</Fragment>
 									) }
@@ -841,6 +845,7 @@ class KadenceAccordionComponent extends Component {
 										{ value: 'h6', label: __( 'h6' ) },
 									] }
 									onChange={ value => {
+										this.props.updatePaneTag( value );
 										times( realPaneCount, n => {
 											wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
 												titleTag: value,
@@ -927,9 +932,9 @@ class KadenceAccordionComponent extends Component {
 									className="kt-accordion-add"
 									isPrimary={ true }
 									onClick={ () => {
-										let newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
-										wp.data.dispatch( 'core/block-editor' ).insertBlock( newBlock, realPaneCount, clientId );
+										const newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
 										setAttributes( { paneCount: paneCount + 1 } );
+										this.props.insertPane( newBlock );
 									} }
 								>
 									<Dashicon icon="plus" />
@@ -942,7 +947,7 @@ class KadenceAccordionComponent extends Component {
 										icon="minus"
 										onClick={ () => {
 											const removeClientId = accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId;
-											wp.data.dispatch( 'core/block-editor' ).removeBlocks( removeClientId );
+											this.props.removePane( removeClientId );
 										} }
 									/>
 								) }
@@ -954,4 +959,43 @@ class KadenceAccordionComponent extends Component {
 		);
 	}
 }
-export default ( KadenceAccordionComponent );
+//export default ( KadenceAccordionComponent );
+export default compose( [
+	withSelect( ( select, ownProps ) => {
+		const { clientId } = ownProps;
+		const {
+			getBlock,
+		} = select( 'core/block-editor' );
+		const block = getBlock( clientId );
+		return {
+			accordionBlock: block,
+			realPaneCount: block.innerBlocks.length,
+		};
+	} ),
+	withDispatch( ( dispatch, { clientId }, { select } ) => {
+		const {
+			getBlock,
+		} = select( 'core/block-editor' );
+		const {
+			removeBlock,
+			updateBlockAttributes,
+			insertBlock,
+		} = dispatch( 'core/block-editor' );
+		const block = getBlock( clientId );
+		return {
+			updatePaneTag( value ) {
+				times( block.innerBlocks.length, n => {
+					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
+						titleTag: value,
+					} );
+				} );
+			},
+			insertPane( newBlock ) {
+				insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
+			},
+			removePane( paneId ) {
+				removeBlock( paneId );
+			},
+		};
+	} ),
+] )( KadenceAccordionComponent );
