@@ -1809,10 +1809,11 @@ export default compose( [
 		const { getSettings } = select( 'core/block-editor' );
 		const {
 			__experimentalMediaUpload,
+			mediaUpload,
 		} = getSettings();
 
 		return {
-			mediaUpload: __experimentalMediaUpload,
+			mediaUpload: mediaUpload ? mediaUpload : __experimentalMediaUpload,
 		};
 	} ),
 	withNotices,

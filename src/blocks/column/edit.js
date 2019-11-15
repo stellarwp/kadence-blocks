@@ -547,7 +547,7 @@ class KadenceColumn extends Component {
 		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
 		return (
 			<div className={ `kadence-column inner-column-${ id } kadence-column-${ uniqueID }` } >
-				{ ( textColor || linkColor || linkHoverColor || columns ) && (
+				{ ( textColor || linkColor || linkHoverColor ) && (
 					<style>
 						{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ textColor }; }` : '' ) }
 						{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ linkColor }; }` : '' ) }

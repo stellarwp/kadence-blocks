@@ -666,7 +666,7 @@ class KadenceIconLists extends Component {
 									colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => {
-										saveListStyles( { border: value } );
+										saveListStyles( { color: value } );
 									} }
 								/>
 								<TypographyControls

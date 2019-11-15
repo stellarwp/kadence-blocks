@@ -49,7 +49,7 @@ const { registerBlockType } = wp.blocks;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/rowlayout', {
-	title: __( 'Row Layout' ), // Block title.
+	title: __( 'Row Layout', 'kadence-blocks' ), // Block title.
 	icon: {
 		src: icons.blockRow,
 	},
