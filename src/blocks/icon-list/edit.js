@@ -77,6 +77,7 @@ class KadenceIconLists extends Component {
 			focusIndex: null,
 			settings: {},
 			marginControl: 'individual',
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
 	}
 	componentDidMount() {

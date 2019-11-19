@@ -62,6 +62,7 @@ class KadenceIcons extends Component {
 		this.saveArrayUpdate = this.saveArrayUpdate.bind( this );
 		this.state = {
 			marginControl: 'linked',
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
 	}
 	componentDidMount() {

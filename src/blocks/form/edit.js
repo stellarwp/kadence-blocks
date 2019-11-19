@@ -135,6 +135,7 @@ class KadenceForm extends Component {
 			secretKey: '',
 			isSavedKey: false,
 			isSaving: false,
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
 	}
 	showSettings( key ) {

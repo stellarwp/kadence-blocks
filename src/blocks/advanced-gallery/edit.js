@@ -116,6 +116,7 @@ class GalleryEdit extends Component {
 			marginTabletControl: 'linked',
 			marginMobileControl: 'linked',
 			radiusControl: 'linked',
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
 	}
 	showSettings( key ) {

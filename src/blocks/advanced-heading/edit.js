@@ -64,7 +64,7 @@ class KadenceAdvancedHeading extends Component {
 		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			isVisible: false,
-			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
 	}

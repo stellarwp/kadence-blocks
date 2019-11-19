@@ -93,7 +93,7 @@ class KadenceRowLayout extends Component {
 			firstWidth: null,
 			secondWidth: null,
 			showPreset: false,
-			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
 	}

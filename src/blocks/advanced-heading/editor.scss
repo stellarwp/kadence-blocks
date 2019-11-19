@@ -9,6 +9,17 @@
  .edit-post-sidebar .typography-family-select-form-row input[type=text], .kt-block-defaults-modal .typography-family-select-form-row input[type=text], .components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row input[type=text] {
 	box-shadow:none;
 }
+.components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row .kt-typography__control input {
+    min-height: 18px;
+}
+.components-popover.kt-popover-font-family .components-popover__content input.components-text-control__input {
+    min-height: 28px;
+    padding: 5px 4px;
+}
+.components-popover.kt-popover-font-family .components-popover__content  .components-select-control__input {
+    padding-right: 10px;
+    background-size: 10px 10px;
+}
 .edit-post-sidebar .typography-family-select-form-row, .kt-block-defaults-modal .typography-family-select-form-row {
 	margin-bottom: 10px;
 	z-index: 200;
@@ -364,7 +375,7 @@ button.components-button.components-icon-button.kt-font-clear-btn {
 		color: #616b74;
 		line-height: 30px;
 		margin-bottom: 0;
-		padding: 0px 10px;	
+		padding: 0px 10px;
         border-top: 1px solid #eee;
         cursor: pointer;
         white-space: nowrap;

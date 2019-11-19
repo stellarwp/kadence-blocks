@@ -62,7 +62,7 @@ class KadenceAdvancedButton extends Component {
 		this.state = {
 			btnFocused: 'false',
 			btnLink: false,
-			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
 	}

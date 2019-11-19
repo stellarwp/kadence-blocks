@@ -53,7 +53,7 @@ class KadenceConfig extends Component {
 	constructor() {
 		super( ...arguments );
 		this.state = {
-			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			controls: applyFilters( 'kadence.block_controls_sidebar', [] ),
 		};
 	}

@@ -84,7 +84,7 @@ class KadenceTestimonials extends Component {
 			iconMarginControl: 'linked',
 			iconPaddingControl: 'linked',
 			showPreset: false,
-			user: ( kadence_blocks_params.user ? kadence_blocks_params.user : 'admin' ),
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
 	}

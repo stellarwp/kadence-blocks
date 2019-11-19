@@ -1100,6 +1100,13 @@
 	width: 100%;
 	height: 100%;
 }
+.kb-blocks-bg-video-container .kb-blocks-bg-video {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	height: auto;
+}
 .kb-background-video-buttons-wrapper {
     position: absolute;
     z-index: 11;
