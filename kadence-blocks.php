@@ -49,10 +49,3 @@ function kadence_blocks_lang() {
 	load_plugin_textdomain( 'kadence-blocks', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
 add_action( 'init', 'kadence_blocks_lang' );
-/**
- * Disable the custom color picker.
- */
-function tabor_gutenberg_disable_custom_colors() {
-	add_theme_support( 'disable-custom-colors' );
-}
-add_action( 'after_setup_theme', 'tabor_gutenberg_disable_custom_colors' );
