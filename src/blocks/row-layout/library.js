@@ -12,6 +12,7 @@ const {
 	Tooltip,
 	TextControl,
 	SelectControl,
+	ExternalLink,
 } = wp.components;
 const {
 	applyFilters,
@@ -69,7 +70,7 @@ class CustomComponent extends Component {
 					/>
 				</div>
 				<ButtonGroup aria-label={ __( 'Prebuilt Options' ) }>
-					{ map( blockOutput, ( { name, key, image, content, background, category, keywords } ) => {
+					{ map( blockOutput, ( { name, key, image, content, background, category, keywords, pro } ) => {
 						if ( ( 'all' === this.state.category || category.includes( this.state.category ) ) && ( ! this.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( this.state.search.toLowerCase() ) ) ) ) ) {
 							return (
 								<div className="kt-prebuilt-item" data-background-style={ background }>
@@ -78,13 +79,25 @@ class CustomComponent extends Component {
 											key={ key }
 											className="kt-import-btn"
 											isSmall
-											onClick={ () => this.onInsertContent( content )  }
+											isDisabled={ undefined !== pro && pro && 'true' !== kadence_blocks_params.pro }
+											onClick={ () => this.onInsertContent( content ) }
 										>
 											<LazyLoad>
 												<img src={ image } alt={ name } />
 											</LazyLoad>
 										</Button>
 									</Tooltip>
+									{ undefined !== pro && pro && (
+										<Fragment>
+											<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
+											{ 'true' !== kadence_blocks_params.pro && (
+												<div className="kt-popover-pro-notice">
+													<h2>{ __( 'Kadence Blocks Pro required for this item' ) } </h2>
+													<ExternalLink href={ 'https://www.kadenceblocks.com/pro/' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
+												</div>
+											) }
+										</Fragment>
+									) }
 								</div>
 							);
 						}

@@ -1,15 +1,4 @@
 /* Slider */
-@font-face {
-	font-family: 'kadence-blocks-slick';
-	src:  url('fonts/kadence-blocks-slick.eot?ks62go');
-	src:  url('fonts/kadence-blocks-slick.eot?ks62go#iefix') format('embedded-opentype'),
-	url('fonts/kadence-blocks-slick.woff2?ks62go') format('woff2'),
-	url('fonts/kadence-blocks-slick.ttf?ks62go') format('truetype'),
-	url('fonts/kadence-blocks-slick.woff?ks62go') format('woff'),
-	url('fonts/kadence-blocks-slick.svg?ks62go#kadence-blocks-slick') format('svg');
-	font-weight: normal;
-	font-style: normal;
-}
 .kt-blocks-carousel {
 	padding: 0 0 25px 0;
 	.slick-slider {
@@ -117,9 +106,6 @@
 	$slick-arrow-color: white !default;
 	$slick-dot-color: black !default;
 	$slick-dot-color-active: $slick-dot-color !default;
-	$slick-prev-character: "\2190" !default;
-	$slick-next-character: "\2192" !default;
-	$slick-dot-character: "\2022" !default;
 	$slick-dot-size: 10px !default;
 	$slick-opacity-default: .25 !default;
 	$slick-opacity-on-slider: .75 !default;
@@ -167,13 +153,6 @@
 		&.slick-disabled {
 			opacity: $slick-opacity-not-active;
 		}
-		&:before {
-			font-family: 'kadence-blocks-slick' !important;
-			font-size: 20px;
-        	line-height: 1;
-			-webkit-font-smoothing: antialiased;
-			-moz-osx-font-smoothing: grayscale;
-		}
 	}
 	[dir="rtl"] .slick-prev {
 		left: auto;
@@ -183,7 +162,17 @@
 	.slick-prev {
 		left: 15px;
 		&:before {
-			content: $slick-prev-character;
+			border-style: solid;
+			border-width: 2px 2px 0 0;
+			content: '';
+			display: inline-block;
+			height: 10px;
+			position: relative;
+			top: 0px;
+			left: 2px;
+			transform: rotate(-135deg);
+			vertical-align: top;
+			width: 10px;
 		}
 	}
 	[dir="rtl"] .slick-next {
@@ -194,7 +183,17 @@
 	.slick-next {
 		right: 15px;
 		&:before {
-			content: $slick-next-character;
+			border-style: solid;
+			border-width: 2px 2px 0 0;
+			content: '';
+			display: inline-block;
+			height: 10px;
+			position: relative;
+			top: 0px;
+			left: -2px;
+			transform: rotate(45deg);
+			vertical-align: top;
+			width: 10px;
 		}
 	}
 	.kt-carousel-arrowstyle-blackonlight {
@@ -263,24 +262,21 @@
 					}
 				}
 				&:before {
-					position: absolute;
-					top: 0;
-					left: 0;
-					font-family: 'kadence-blocks-slick' !important;
-					content: $slick-dot-character;
-					width: 20px;
-					height: 20px;
-					font-size: $slick-dot-size;
-					line-height: 20px;
-					text-align: center;
-					color: $slick-dot-color;
+					top: 5px;
+					left: 5px;
+					width: 10px;
+					height: 10px;
+					outline: none;
+					border-radius: 50%;
+					background-color: $slick-dot-color;
 					opacity: $slick-opacity-not-active-hover;
-					-webkit-font-smoothing: antialiased;
-					-moz-osx-font-smoothing: grayscale;
+					text-indent: -999em;
+					cursor: pointer;
+					position: absolute;
 				}
 			}
 			&.slick-active button:before {
-				color: $slick-dot-color-active;
+				background-color: $slick-dot-color;
 				opacity: $slick-opacity-on-slider;
 			}
 		}
@@ -288,33 +284,36 @@
 	.kt-carousel-dotstyle-light .slick-dots li {
 		button {
 			&:before {
-				color: white;
+				background-color: white;
 			}
 		}
 		&.slick-active button:before {
-			color: white;
+			background-color: white;
 		}
 	}
 	.kt-carousel-dotstyle-outlinedark .slick-dots li {
 		button {
 			&:before {
-				content: "\25CB";
+				background-color: transparent;
+				box-shadow: inset 0 0 0 1px #000;
+				transition: box-shadow 0.3s ease;
 			}
 		}
 		&.slick-active button:before {
-			content: $slick-dot-character;
+			box-shadow: inset 0 0 0 8px #000;
 		}
 	}
 	.kt-carousel-dotstyle-outlinelight .slick-dots li {
 		button {
 			&:before {
-				content: "\25CB";
-				color: white;
+				background-color: transparent;
+				box-shadow: inset 0 0 0 1px #fff;
+				transition: box-shadow 0.3s ease;
 			}
 		}
 		&.slick-active button:before {
-			color: white;
-			content: $slick-dot-character;
+			box-shadow: inset 0 0 0 8px #fff;
+			background-color: #fff;
 		}
 	}
 }

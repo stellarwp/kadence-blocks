@@ -6,7 +6,7 @@ jQuery( document ).ready( function( $ ) {
 		if ( $( 'html[dir="rtl"]' ).length ) {
 			masRtl = false;
 		}
-		$( this ).masonry( {
+		var masGrid = $( this ).masonry( {
 			itemSelector: itemSelector,
 			isOriginLeft: masRtl,
 		} );
@@ -15,6 +15,9 @@ jQuery( document ).ready( function( $ ) {
 			setTimeout( function( ) {
 				item.addClass( 'kt-masonry-trigger-animation' );
 			}, i * 75 );
+		} );
+		masGrid.imagesLoaded().progress( function() {
+			masGrid.masonry( 'layout' );
 		} );
 	} );
 } );

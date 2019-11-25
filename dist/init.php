@@ -84,6 +84,7 @@ function kadence_gutenberg_editor_assets() {
 			'configuration'  => get_option( 'kadence_blocks_config_blocks' ),
 			'settings'       => get_option( 'kadence_blocks_settings_blocks' ),
 			'userrole'       => $userrole,
+			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
 			'privacy_link'   => get_privacy_policy_url(),

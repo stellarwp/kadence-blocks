@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.3.0
-Stable tag: 1.7.6
+Stable tag: 1.7.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.7.7 =
+* Fix: Mobile Background video not filling height.
+* Fix: Masonry catch if width and height data missing.
+* Add: First Starter package template.
+* Update: slider css, remove icon font.
+
 = 1.7.6 =
 * Fix: styling issue with inline advanced typography.
 * Fix: visibility setting issue.
@@ -107,7 +113,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Fix: Small css styling when custom colors off.
 
 = 1.7.2 =
-* Small Tweek: Form CSS
+* Small Tweak: Form CSS
 * Update: Admin Gallery Block CSS for GB update.
 * Add: Text transform option to Form Button.
 

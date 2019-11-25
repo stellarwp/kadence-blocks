@@ -4,6 +4,78 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kb-prebuilt-header {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    left: 0;
+	top: 0;
+	height: 60px;
+}
+.kb-templates-header-top {
+    display: flex;
+    justify-content: space-between;
+}
+.kb-template-top-credit {
+    text-align: right;
+}
+.kb-prebuilt-header-logo {
+    padding-right: 10px;
+    padding-top: 4px;
+}
+.kb-prebuilt-section {
+    position: relative;
+}
+.kb-prebuilt-header-close {
+	position: absolute;
+    right: 0px;
+    top: 12px;
+}
+.kt-prebuilt-modal .components-modal__header {
+    display: none;
+}
+h2.kb-template-name {
+    color: #4A5568;
+    padding:0;
+    margin:0;
+    line-height:1.6;
+}
+.kb-top-designed-by-credit, .kb-top-designed-by-credit a {
+    color: #A0AEC0;
+}
+.kt-inspect-tabs.kb-prebuilt-tabs {
+    padding-top: 0;
+    margin-left: -24px;
+	margin-right: -24px;
+	.components-tab-panel__tabs {
+		border: 0;
+		text-align: center;
+		background: #edf2f7;
+		button {
+			font-size: 18px;
+			padding: 0 20px;
+			height: 60px;
+			color: #4a5568;
+			margin: 0;
+			border: 0;
+			background: transparent;
+		}
+		button.active-tab {
+			background: #fff;
+			border: 0;
+			color: #4a5568;
+			outline: 0;
+		}
+		button:focus:not(:disabled){
+			box-shadow: none;
+		}
+	}
+	.components-tab-panel__tab-content {
+		padding-top: 20px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+}
  .wp-block-kadence-rowlayout .kb-blocks-bg-slider, .wp-block-kadence-rowlayout .kb-blocks-bg-slider .slick-slider {
     position: absolute;
     left: 0;
@@ -422,6 +494,7 @@ button.components-button.kb-sidebar-image {
 		}
 	}
 }
+
 .kt-select-layout > button.components-button.kt-prebuilt {
     background: #0085ba;
     color: white;
@@ -468,6 +541,7 @@ button.components-button.kb-sidebar-image {
 }
 .components-modal__frame.kt-prebuilt-modal .kt-prebuilt-item {
 	padding: 0 10px 20px;
+	position: relative;
 	.kt-import-btn {
 		padding-bottom: 61% !important;
 		border: 5px solid #fff;
@@ -491,9 +565,63 @@ button.components-button.kb-sidebar-image {
 		}
 	}
 }
+.kt-return-templates-btn {
+    font-size: 16px;
+    color: #A0AEC0;
+}
+.kt-popover-pro-notice {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right:10px;
+    bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(14, 156, 209, .9);
+    color: white;
+    opacity:0;
+    transition: all 0.3s ease;
+}
+.kt-popover-pro-notice h2, .kt-popover-pro-notice a {
+    color:#fff;
+}
+
+.kt-prebuilt-item:hover .kt-popover-pro-notice {
+    opacity:1;
+}
+.kt-prebuilt-item .kb-pro-template {
+    position: absolute;
+    z-index: 10000;
+    top: 20px;
+    right: 20px;
+    background: #C53030;
+    border-radius: 10px;
+    width: 40px;
+	line-height: 20px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 11px;
+    text-align: center;
+}
+.kb-template-packs-scroll .kt-prebuilt-item .kt-import-btn img {
+    transform: translateY(0);
+    transition: transform 2s ease;
+}
+.kb-template-packs-scroll .kt-prebuilt-item .kt-import-btn:hover img {
+    transform: translateY(calc(-100% + 300px));
+}
+.components-modal__frame.kt-prebuilt-modal .kb-template-packs-scroll .kt-prebuilt-item .kt-import-btn {
+    padding-bottom: 300px !important;
+    transition: all 2s ease;
+}
+
 .components-modal__frame.kt-prebuilt-modal {
 	width: 100%;
 	max-width: 1000px;
+	height: 86%;
 	.components-button-group {
 		width: auto;
 	}
