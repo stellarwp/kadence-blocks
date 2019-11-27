@@ -3160,6 +3160,7 @@ class KadenceRowLayout extends Component {
 					marginBottom: bottomMargin + marginUnit,
 					marginTop: topMargin + marginUnit,
 					minHeight: minHeight + minHeightUnit,
+					zIndex: ( zIndex ? zIndex : undefined ),
 				} }>
 					{ ( 'slider' !== backgroundSettingTab && 'video' !== backgroundSettingTab ) && (
 						<div className={ `kt-row-layout-background${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
