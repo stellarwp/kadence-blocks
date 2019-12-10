@@ -129,7 +129,7 @@ class ImageSizeControl extends Component {
 								options={ imageSizeOptions }
 								value={ imageSizeOptions.filter( ( { value } ) => value === this.props.url ) }
 								isMulti={ false }
-								maxMenuHeight={ 300 }
+								maxMenuHeight={ 250 }
 								isClearable={ false }
 								placeholder={ '' }
 								onChange={ this.props.onChange }
@@ -145,7 +145,7 @@ class ImageSizeControl extends Component {
 								options={ imageSizeOptions }
 								value={ imageSizeOptions.filter( ( { slug } ) => slug === this.props.slug ) }
 								isMulti={ false }
-								maxMenuHeight={ 300 }
+								maxMenuHeight={ 250 }
 								isClearable={ false }
 								placeholder={ '' }
 								onChange={ this.props.onChange }

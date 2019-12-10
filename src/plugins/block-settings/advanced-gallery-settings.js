@@ -24,7 +24,7 @@ class KadenceGallerySettings extends Component {
 	}
 	saveConfig( blockID, settingArray ) {
 		this.setState( { isSaving: true } );
-		const config = this.state.settings;
+		const config = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( ! config[ blockID ] ) {
 			config[ blockID ] = {};
 		}
@@ -153,7 +153,7 @@ class KadenceGallerySettings extends Component {
 							] }
 							onChange={ value => this.saveConfigState( 'spacingSettings', value ) }
 						/>
-						<Button className="kt-settings-save" isDefault isPrimary onClick={ () => {
+						<Button className="kt-settings-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/advancedgallery', gallerySettings );
 						} }>
 							{ __( 'Save/Close' ) }

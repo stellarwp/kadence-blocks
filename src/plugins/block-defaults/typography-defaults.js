@@ -41,7 +41,7 @@ class KadenceTypographyDefault extends Component {
 	}
 	saveConfig( blockID, settingArray ) {
 		this.setState( { isSaving: true } );
-		const config = this.state.configuration;
+		const config = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} );
 		if ( ! config[ blockID ] ) {
 			config[ blockID ] = {};
 		}
@@ -110,7 +110,7 @@ class KadenceTypographyDefault extends Component {
 						title={ __( 'Kadence Font Family Options' ) }
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/typography', typoConfig );
-						} }>						
+						} }>
 						<ToggleControl
 							label={ __( 'Show All Font Family Options' ) }
 							checked={ ( undefined !== typoConfig.showAll ? typoConfig.showAll : true ) }
@@ -130,7 +130,7 @@ class KadenceTypographyDefault extends Component {
 								</div>
 							</Fragment>
 						) }
-						<Button className="kt-defaults-save" isDefault isPrimary onClick={ () => {
+						<Button className="kt-defaults-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/typography', typoConfig );
 						} }>
 							{ __( 'Save/Close' ) }

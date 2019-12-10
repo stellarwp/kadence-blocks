@@ -49,7 +49,7 @@ class KadenceTabsDefault extends Component {
 	}
 	saveConfig( blockID, settingArray ) {
 		this.setState( { isSaving: true } );
-		const config = this.state.configuration;
+		const config = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} );
 		if ( ! config[ blockID ] ) {
 			config[ blockID ] = {};
 		}
@@ -629,7 +629,7 @@ class KadenceTabsDefault extends Component {
 								max={ 2000 }
 							/>
 						</PanelBody>
-						<Button className="kt-defaults-save" isDefault isPrimary onClick={ () => {
+						<Button className="kt-defaults-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/tabs', tabsConfig );
 						} }>
 							{ __( 'Save/Close' ) }

@@ -465,8 +465,10 @@ class KadenceAdvancedHeading extends Component {
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
 						<PanelBody title={ __( 'Heading Settings' ) }>
-							<p>{ __( 'HTML Tag' ) }</p>
-							<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
+							<div className="kb-tag-level-control">
+								<p>{ __( 'HTML Tag' ) }</p>
+								<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
+							</div>
 							<p>{ __( 'Text Alignment' ) }</p>
 							<AlignmentToolbar
 								value={ align }

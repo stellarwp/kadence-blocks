@@ -24,7 +24,7 @@ class KadenceButtonSettings extends Component {
 	}
 	saveConfig( blockID, settingArray ) {
 		this.setState( { isSaving: true } );
-		const config = this.state.settings;
+		const config = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( ! config[ blockID ] ) {
 			config[ blockID ] = {};
 		}
@@ -140,7 +140,7 @@ class KadenceButtonSettings extends Component {
 							] }
 							onChange={ value => this.saveConfigState( 'fontSettings', value ) }
 						/>
-						<Button className="kt-settings-save" isDefault isPrimary onClick={ () => {
+						<Button className="kt-settings-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/advancedbtn', btnSettings );
 						} }>
 							{ __( 'Save/Close' ) }

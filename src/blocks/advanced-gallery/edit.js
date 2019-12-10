@@ -1132,7 +1132,7 @@ class GalleryEdit extends Component {
 									label={ __( 'Thumbnail Image Size', 'kadence-blocks' ) }
 									slug={ thumbSize }
 									id={ ids[ 0 ] }
-									fullSelection={ false }
+									fullSelection={ true }
 									selectByValue={ false }
 									onChange={ this.changeImageThumbSize }
 								/>
@@ -1262,7 +1262,7 @@ class GalleryEdit extends Component {
 											label={ __( 'Link Image Size', 'kadence-blocks' ) }
 											slug={ lightSize }
 											id={ ids[ 0 ] }
-											fullSelection={ false }
+											fullSelection={ true }
 											selectByValue={ false }
 											onChange={ this.changeImageLightSize }
 										/>

@@ -46,7 +46,7 @@ class KadenceRowLayoutDefault extends Component {
 	}
 	saveConfig( blockID, settingArray ) {
 		this.setState( { isSaving: true } );
-		const config = this.state.configuration;
+		const config = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} );
 		if ( ! config[ blockID ] ) {
 			config[ blockID ] = {};
 		}
@@ -418,7 +418,7 @@ class KadenceRowLayoutDefault extends Component {
 								onChange={ ( value ) => this.saveConfigState( 'columnsInnerHeight', value ) }
 							/>
 						</PanelBody>
-						<Button className="kt-defaults-save" isDefault isPrimary onClick={ () => {
+						<Button className="kt-defaults-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/rowlayout', rowConfig );
 						} }>
 							{ __( 'Save/Close' ) }

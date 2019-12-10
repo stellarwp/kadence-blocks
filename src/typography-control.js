@@ -272,25 +272,25 @@ class TypographyControls extends Component {
 			return [ {
 				icon: 'heading',
 				// translators: %s: heading level e.g: "1", "2", "3"
-				title: sprintf( __( 'Heading %d' ), targetLevel ),
+				title: sprintf( __( 'Heading %d', 'kadence-blocks' ), targetLevel ),
 				isActive: targetLevel === tagLevel,
 				onClick: () => onTagLevel( targetLevel ),
 				subscript: String( targetLevel ),
 			} ];
 		};
 		const textTransformOptions = [
-			{ value: 'none', label: 'None' },
-			{ value: 'capitalize', label: 'Capitalize' },
-			{ value: 'uppercase', label: 'Uppercase' },
-			{ value: 'lowercase', label: 'Lowercase' },
+			{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+			{ value: 'capitalize', label: __( 'Capitalize', 'kadence-blocks' ) },
+			{ value: 'uppercase', label: __( 'Uppercase', 'kadence-blocks' ) },
+			{ value: 'lowercase', label: __( 'Lowercase', 'kadence-blocks' ) },
 		];
 		const sizeTypes = [
-			{ key: 'px', name: __( 'px' ) },
-			{ key: 'em', name: __( 'em' ) },
+			{ key: 'px', name: 'px' },
+			{ key: 'em', name: 'em' },
 		];
 		const borderTypes = [
-			{ key: 'linked', name: __( 'Linked' ), icon: icons.linked },
-			{ key: 'individual', name: __( 'Individual' ), icon: icons.individual },
+			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.linked },
+			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.individual },
 		];
 		const fontMin = ( fontSizeType === 'em' ? 0.2 : 5 );
 		const fontMax = ( fontSizeType === 'em' ? 12 : 200 );
@@ -300,7 +300,7 @@ class TypographyControls extends Component {
 		const lineStep = ( lineHeightType === 'em' ? 0.1 : 1 );
 		const sizeDeskControls = (
 			<PanelBody>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 					{ map( sizeTypes, ( { name, key } ) => (
 						<Button
 							key={ key }
@@ -315,7 +315,7 @@ class TypographyControls extends Component {
 					) ) }
 				</ButtonGroup>
 				<RangeControl
-					label={ __( 'Font Size' ) }
+					label={ __( 'Font Size', 'kadence-blocks' ) }
 					value={ ( fontSize ? fontSize[ 0 ] : '' ) }
 					onChange={ ( value ) => onFontSize( [ value, ( ! fontSize[ 1 ] ? fontSize[ 1 ] : '' ), ( ! fontSize[ 2 ] ? fontSize[ 2 ] : '' ) ] ) }
 					min={ fontMin }
@@ -324,7 +324,7 @@ class TypographyControls extends Component {
 				/>
 				{ onLineHeight && onLineHeightType && (
 					<Fragment>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 							{ map( sizeTypes, ( { name, key } ) => (
 								<Button
 									key={ key }
@@ -339,7 +339,7 @@ class TypographyControls extends Component {
 							) ) }
 						</ButtonGroup>
 						<RangeControl
-							label={ __( 'Line Height' ) }
+							label={ __( 'Line Height', 'kadence-blocks' ) }
 							value={ ( lineHeight ? lineHeight[ 0 ] : '' ) }
 							onChange={ ( value ) => onLineHeight( [ value, lineHeight[ 1 ], lineHeight[ 2 ] ] ) }
 							min={ lineMin }
@@ -352,7 +352,7 @@ class TypographyControls extends Component {
 		);
 		const sizeTabletControls = (
 			<PanelBody>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 					{ map( sizeTypes, ( { name, key } ) => (
 						<Button
 							key={ key }
@@ -367,7 +367,7 @@ class TypographyControls extends Component {
 					) ) }
 				</ButtonGroup>
 				<RangeControl
-					label={ __( 'Tablet Font Size' ) }
+					label={ __( 'Tablet Font Size', 'kadence-blocks' ) }
 					value={ ( fontSize ? fontSize[ 1 ] : '' ) }
 					onChange={ ( value ) => onFontSize( [ fontSize[ 0 ], value, fontSize[ 2 ] ] ) }
 					min={ fontMin }
@@ -376,7 +376,7 @@ class TypographyControls extends Component {
 				/>
 				{ onLineHeight && onLineHeightType && (
 					<Fragment>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 							{ map( sizeTypes, ( { name, key } ) => (
 								<Button
 									key={ key }
@@ -391,7 +391,7 @@ class TypographyControls extends Component {
 							) ) }
 						</ButtonGroup>
 						<RangeControl
-							label={ __( 'Tablet Line Height' ) }
+							label={ __( 'Tablet Line Height', 'kadence-blocks' ) }
 							value={ ( lineHeight ? lineHeight[ 1 ] : '' ) }
 							onChange={ ( value ) => onLineHeight( [ lineHeight[ 0 ], value, lineHeight[ 2 ] ] ) }
 							min={ lineMin }
@@ -404,7 +404,7 @@ class TypographyControls extends Component {
 		);
 		const sizeMobileControls = (
 			<PanelBody>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 					{ map( sizeTypes, ( { name, key } ) => (
 						<Button
 							key={ key }
@@ -419,7 +419,7 @@ class TypographyControls extends Component {
 					) ) }
 				</ButtonGroup>
 				<RangeControl
-					label={ __( 'Mobile Font Size' ) }
+					label={ __( 'Mobile Font Size', 'kadence-blocks' ) }
 					value={ ( fontSize ? fontSize[ 2 ] : '' ) }
 					onChange={ ( value ) => onFontSize( [ fontSize[ 0 ], fontSize[ 1 ], value ] ) }
 					min={ fontMin }
@@ -428,7 +428,7 @@ class TypographyControls extends Component {
 				/>
 				{ onLineHeight && onLineHeightType && (
 					<Fragment>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
+						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 							{ map( sizeTypes, ( { name, key } ) => (
 								<Button
 									key={ key }
@@ -443,7 +443,7 @@ class TypographyControls extends Component {
 							) ) }
 						</ButtonGroup>
 						<RangeControl
-							label={ __( 'Mobile Line Height' ) }
+							label={ __( 'Mobile Line Height', 'kadence-blocks' ) }
 							value={ ( lineHeight ? lineHeight[ 2 ] : '' ) }
 							onChange={ ( value ) => onLineHeight( [ lineHeight[ 0 ], lineHeight[ 1 ], value ] ) }
 							min={ lineMin }
@@ -457,14 +457,14 @@ class TypographyControls extends Component {
 		return (
 			<Fragment>
 				{ onTagLevel && (
-					<Fragment>
-						<p>{ __( 'HTML Tag' ) }</p>
+					<div className="kb-tag-level-control">
+						<p>{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
 						<Toolbar controls={ range( tagLowLevel, tagHighLevel ).map( createLevelControl ) } />
-					</Fragment>
+					</div>
 				) }
 				{ onFontSize && onFontSizeType && (
 					<Fragment>
-						<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+						<h2 className="kt-heading-size-title">{ __( 'Size Controls', 'kadence-blocks' ) }</h2>
 						<TabPanel className="kt-size-tabs"
 							activeClass="active-tab"
 							tabs={ [
@@ -504,7 +504,7 @@ class TypographyControls extends Component {
 				) }
 				{ onLetterSpacing && (
 					<RangeControl
-						label={ __( 'Letter Spacing' ) }
+						label={ __( 'Letter Spacing', 'kadence-blocks' ) }
 						value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
 						onChange={ ( value ) => onLetterSpacing( value ) }
 						min={ -5 }
@@ -514,7 +514,7 @@ class TypographyControls extends Component {
 				) }
 				{ onTextTransform && (
 					<SelectControl
-						label={ __( 'Text Transform' ) }
+						label={ __( 'Text Transform', 'kadence-blocks' ) }
 						value={ textTransform }
 						options={ textTransformOptions }
 						onChange={ ( value ) => onTextTransform( value ) }
@@ -522,7 +522,7 @@ class TypographyControls extends Component {
 				) }
 				{ onFontFamily && onTypoFontClear && (
 					<Fragment>
-						<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family' ) }</h2>
+						<h2 className="kt-heading-fontfamily-title">{ __( 'Font Family', 'kadence-blocks' ) }</h2>
 						<div className="typography-family-select-form-row">
 							<Select
 								options={ typographyOptions }
@@ -530,13 +530,13 @@ class TypographyControls extends Component {
 								isMulti={ false }
 								maxMenuHeight={ 300 }
 								isClearable={ true }
-								placeholder={ __( 'Select a font family' ) }
+								placeholder={ __( 'Select a font family', 'kadence-blocks' ) }
 								onChange={ onTypoFontChange }
 							/>
 						</div>
 						{ onFontWeight && (
 							<SelectControl
-								label={ __( 'Font Weight' ) }
+								label={ __( 'Font Weight', 'kadence-blocks' ) }
 								value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
 								options={ typographyWeights }
 								onChange={ onTypoFontWeightChange }
@@ -544,7 +544,7 @@ class TypographyControls extends Component {
 						) }
 						{ fontFamily && onFontStyle && (
 							<SelectControl
-								label={ __( 'Font Style' ) }
+								label={ __( 'Font Style', 'kadence-blocks' ) }
 								value={ fontStyle }
 								options={ typographyStyles }
 								onChange={ onTypoFontStyleChange }
@@ -552,7 +552,7 @@ class TypographyControls extends Component {
 						) }
 						{ fontFamily && googleFont && onFontSubset && (
 							<SelectControl
-								label={ __( 'Font Subset' ) }
+								label={ __( 'Font Subset', 'kadence-blocks' ) }
 								value={ fontSubset }
 								options={ typographySubsets }
 								onChange={ ( value ) => onFontSubset( value ) }
@@ -560,7 +560,7 @@ class TypographyControls extends Component {
 						) }
 						{ fontFamily && googleFont && onLoadGoogleFont && (
 							<ToggleControl
-								label={ __( 'Load Google Font on Frontend' ) }
+								label={ __( 'Load Google Font on Frontend', 'kadence-blocks' ) }
 								checked={ loadGoogleFont }
 								onChange={ onLoadGoogleFont }
 							/>
@@ -569,7 +569,7 @@ class TypographyControls extends Component {
 				) }
 				{ onPadding && onPaddingControl && (
 					<Fragment>
-						<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Padding Control Type' ) }>
+						<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Padding Control Type', 'kadence-blocks' ) }>
 							{ map( borderTypes, ( { name, key, icon } ) => (
 								<Tooltip text={ name }>
 									<Button
@@ -587,7 +587,7 @@ class TypographyControls extends Component {
 						</ButtonGroup>
 						{ paddingControl && paddingControl !== 'individual' && (
 							<RangeControl
-								label={ __( 'Padding (px)' ) }
+								label={ __( 'Padding (px)', 'kadence-blocks' ) }
 								value={ ( padding ? padding[ 0 ] : '' ) }
 								onChange={ ( value ) => onPadding( [ value, value, value, value ] ) }
 								min={ 0 }
@@ -597,7 +597,7 @@ class TypographyControls extends Component {
 						) }
 						{ paddingControl && paddingControl === 'individual' && (
 							<Fragment>
-								<p>{ __( 'Padding (px)' ) }</p>
+								<p>{ __( 'Padding (px)', 'kadence-blocks' ) }</p>
 								<RangeControl
 									className="kt-icon-rangecontrol"
 									label={ icons.outlinetop }
@@ -640,7 +640,7 @@ class TypographyControls extends Component {
 				) }
 				{ onMargin && onMarginControl && (
 					<Fragment>
-						<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Margin Control Type' ) }>
+						<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Margin Control Type', 'kadence-blocks' ) }>
 							{ map( borderTypes, ( { name, key, icon } ) => (
 								<Tooltip text={ name }>
 									<Button
@@ -658,7 +658,7 @@ class TypographyControls extends Component {
 						</ButtonGroup>
 						{ marginControl && marginControl !== 'individual' && (
 							<RangeControl
-								label={ __( 'Margin (px)' ) }
+								label={ __( 'Margin (px)', 'kadence-blocks' ) }
 								value={ ( margin ? margin[ 0 ] : '' ) }
 								onChange={ ( value ) => onMargin( [ value, value, value, value ] ) }
 								min={ -100 }
@@ -668,7 +668,7 @@ class TypographyControls extends Component {
 						) }
 						{ marginControl && marginControl === 'individual' && (
 							<Fragment>
-								<p>{ __( 'Margin (px)' ) }</p>
+								<p>{ __( 'Margin (px)', 'kadence-blocks' ) }</p>
 								<RangeControl
 									className="kt-icon-rangecontrol"
 									label={ icons.outlinetop }

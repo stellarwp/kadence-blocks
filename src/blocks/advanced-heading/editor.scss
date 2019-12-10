@@ -9,6 +9,19 @@
  .edit-post-sidebar .typography-family-select-form-row input[type=text], .kt-block-defaults-modal .typography-family-select-form-row input[type=text], .components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row input[type=text] {
 	box-shadow:none;
 }
+.kb-tag-level-control .components-toolbar__control.components-button[data-subscript]:after {
+    line-height: 15px;
+    font-size: 12px;
+}
+.kb-tag-level-control .components-icon-button:not(:disabled).is-active:hover:after {
+    color:#191e23;
+}
+.kb-tag-level-control .components-icon-button.is-active {
+    outline: none;
+    color: #fff;
+    box-shadow: none;
+    background: #555d66;
+}
 .components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row .kt-typography__control input {
     min-height: 18px;
 }

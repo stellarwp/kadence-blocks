@@ -44,11 +44,6 @@ class KB_Ajax_Form {
 			$this->start_buffer();
 			$valid = wp_verify_nonce( ( isset( $_POST['_kb_form_verify'] ) ? sanitize_text_field( wp_unslash( $_POST['_kb_form_verify'] ) ) : '' ), 'kb_form_nonce' );
 			if ( $valid ) {
-				// Check Honey Pot.
-				$honeypot_check = filter_input( INPUT_POST, '_kb_verify_email', FILTER_SANITIZE_STRING );
-				if ( ! empty( $honeypot_check ) ) {
-					$this->process_bail( __( 'Submission Rejected', 'kadence-blocks' ), __( 'Spam Detected', 'kadence-blocks' ) );
-				}
 				// Lets get form data.
 				$form_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_id'] ) );
 				$post_id = absint( wp_unslash( $_POST['_kb_form_post_id'] ) );
@@ -70,6 +65,7 @@ class KB_Ajax_Form {
 						),
 					);
 				}
+				// Check for Message strings.
 				$messages = array(
 					0 => array(
 						'success' => esc_html__( 'Submission Success, Thanks for getting in touch!', 'kadence-blocks' ),
@@ -78,6 +74,13 @@ class KB_Ajax_Form {
 				);
 				if ( isset( $form_args['messages'] ) ) {
 					$messages = wp_parse_args( $messages, $form_args['messages'] );
+				}
+				// Check Honey Pot.
+				if ( isset( $form_args['honeyPot'] ) && true === $form_args['honeyPot'] ) {
+					$honeypot_check = filter_input( INPUT_POST, '_kb_verify_email', FILTER_SANITIZE_STRING );
+					if ( ! empty( $honeypot_check ) ) {
+						$this->process_bail( __( 'Submission Rejected', 'kadence-blocks' ), __( 'Spam Detected', 'kadence-blocks' ) );
+					}
 				}
 				// Check Recaptcha.
 				if ( isset( $form_args['recaptcha'] ) && true === $form_args['recaptcha'] ) {

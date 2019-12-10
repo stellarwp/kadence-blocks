@@ -89,6 +89,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 1.7.8 =
 * Fix: Tablet Padding not keeping 0.
+* Add: Make form honey pot optional.
+* Fix: Issue with settings modal save button color.
+* Fix: visibility settings not always saving correctly if more then one block set at a time.
+* Update: Recaptcha so multiple can be on the same page.
+* Update: Add all sizes for gallery image settings.
 
 = 1.7.7 =
 * Fix: Mobile Background video not filling height.

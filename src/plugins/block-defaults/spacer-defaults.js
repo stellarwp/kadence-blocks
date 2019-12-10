@@ -45,7 +45,7 @@ class KadenceSpacerDefault extends Component {
 	}
 	saveConfig( blockID, settingArray ) {
 		this.setState( { isSaving: true } );
-		const config = this.state.configuration;
+		const config = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} );
 		if ( ! config[ blockID ] ) {
 			config[ blockID ] = {};
 		}
@@ -198,7 +198,7 @@ class KadenceSpacerDefault extends Component {
 								/>
 							</Fragment>
 						) }
-						<Button className="kt-defaults-save" isDefault isPrimary onClick={ () => {
+						<Button className="kt-defaults-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/spacer', spacerConfig );
 						} }>
 							{ __( 'Save/Close' ) }

@@ -600,7 +600,7 @@ class KadenceForm extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, submitFont, kadenceAnimation, kadenceAOSOptions }, className, isSelected, setAttributes } = this.props;
+		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions }, className, isSelected, setAttributes } = this.props;
 		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl } = this.state;
 		const btnSizes = [
 			{ key: 'small', name: __( 'S', 'kadence-blocks' ) },
@@ -1362,6 +1362,17 @@ class KadenceForm extends Component {
 							/>
 						</PanelBody>
 					) }
+					<PanelBody
+						title={ __( 'Basic Spam Check', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<ToggleControl
+							label={ __( 'Enable Basic Honey Pot Spam Check', 'kadence-blocks' ) }
+							help={ __( 'This adds a hidden field that if filled out prevents the form from submitting.', 'kadence-blocks' ) }
+							checked={ honeyPot }
+							onChange={ ( value ) => setAttributes( { honeyPot: value } ) }
+						/>
+					</PanelBody>
 					<PanelBody
 						title={ __( 'Google reCAPTCHA', 'kadence-blocks' ) }
 						initialOpen={ false }
