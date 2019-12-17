@@ -11,6 +11,11 @@ jQuery( document ).ready( function( $ ) {
 			role: 'tabpanel',
 			'aria-hidden': 'true',
 		} );
+		$( this ).find( '> .kt-tabs-title-list a' ).each( function( b ) {
+			var tabId = $( this ).attr( 'data-tab' );
+			var tabName = $( this ).parent().attr( 'id' );
+			$( this ).closest( '.kt-tabs-wrap' ).find( '.kt-tabs-content-wrap > .kt-inner-tab-' + tabId ).attr( 'aria-labelledby', tabName );
+		} );
 		$( this ).find( '.kt-tabs-content-wrap > .kt-inner-tab-' + ktStartTab ).attr( 'aria-hidden', 'false' );
 		$( this ).find( '> .kt-tabs-title-list li:not(.kt-tab-title-active) a' ).each( function() {
 			$( this ).attr( {
@@ -100,6 +105,7 @@ jQuery( document ).ready( function( $ ) {
 			iconsideclass = '';
 		}
 		$( this ).closest( '.kt-tabs-wrap' ).find( '> .kt-tabs-content-wrap > .kt-inner-tab-' + tabId ).before( '<div class="kt-tabs-accordion-title kt-tabs-accordion-title-' + tabId + ' ' + activeclass + ' ' + iconclass + ' ' + iconsideclass + '">' + $( this ).html() + '</div>' );
+		$( this ).closest( '.kt-tabs-wrap' ).find( '> .kt-tabs-content-wrap > .kt-tabs-accordion-title-' + tabId + '  a' ).removeAttr( 'role' );
 	} );
 	$( '.kt-tabs-accordion-title a' ).click( function( e ) {
 		e.preventDefault();

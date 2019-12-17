@@ -40,6 +40,8 @@ import KadenceRowLayout from './block-defaults/rowlayout-default';
 import KadenceRowLayoutSettings from './block-settings/rowlayout-settings';
 import KadenceGallery from './block-defaults/advanced-gallery-default';
 import KadenceGallerySettings from './block-settings/advanced-gallery-settings';
+import KadenceColumn from './block-defaults/column-defaults';
+import KadenceColumnSettings from './block-settings/column-settings';
 import KadenceColors from './block-defaults/color-palette-defaults';
 
 /*
@@ -134,6 +136,12 @@ class KadenceConfig extends Component {
 								<KadenceRowLayout />
 								{ 'admin' === this.state.user && (
 									<KadenceRowLayoutSettings />
+								) }
+							</div>
+							<div className="kt-blocks-control-row">
+								<KadenceColumn />
+								{ 'admin' === this.state.user && (
+									<KadenceColumnSettings />
 								) }
 							</div>
 							<div className="kt-blocks-control-row">

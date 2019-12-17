@@ -89,6 +89,7 @@ class KadenceRowLayout extends Component {
 	constructor() {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
+		this.saveSlideItem = this.saveSlideItem.bind( this );
 		this.state = {
 			firstWidth: null,
 			secondWidth: null,
@@ -619,56 +620,58 @@ class KadenceRowLayout extends Component {
 		};
 		const mobileControls = (
 			<Fragment>
-				<PanelBody>
-					{ columns > 1 && (
-						<Fragment>
-							<p className="components-base-control__label">{ __( 'Mobile Layout', 'kadence-blocks' ) }</p>
-							<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
-								{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
-									<Tooltip text={ name }>
-										<Button
-											key={ key }
-											className="kt-layout-btn"
-											isSmall
-											isPrimary={ mobileLayout === key }
-											aria-pressed={ mobileLayout === key }
-											onClick={ () => setAttributes( { mobileLayout: key } ) }
-										>
-											{ icon }
-										</Button>
-									</Tooltip>
-								) ) }
-							</ButtonGroup>
-						</Fragment>
-					) }
-					{ columns > 1 && (
-						<SelectControl
-							label={ __( 'Column Collapse Vertical Gutter' ) }
-							value={ collapseGutter }
-							options={ [
-								{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
-								{ value: 'none', label: __( 'No Gutter', 'kadence-blocks' ) },
-								{ value: 'skinny', label: __( 'Skinny: 10px', 'kadence-blocks' ) },
-								{ value: 'narrow', label: __( 'Narrow: 20px', 'kadence-blocks' ) },
-								{ value: 'wide', label: __( 'Wide: 40px', 'kadence-blocks' ) },
-								{ value: 'wider', label: __( 'Wider: 60px', 'kadence-blocks' ) },
-								{ value: 'widest', label: __( 'Widest: 80px', 'kadence-blocks' ) },
-							] }
-							onChange={ ( value ) => setAttributes( { collapseGutter: value } ) }
-						/>
-					) }
-					{ columns > 1 && (
-						<SelectControl
-							label={ __( 'Collapse Order' ) }
-							value={ collapseOrder }
-							options={ [
-								{ value: 'left-to-right', label: __( 'Left to Right', 'kadence-blocks' ) },
-								{ value: 'right-to-left', label: __( 'Right to Left', 'kadence-blocks' ) },
-							] }
-							onChange={ value => setAttributes( { collapseOrder: value } ) }
-						/>
-					) }
-				</PanelBody>
+				{ this.showSettings( 'basicLayout' ) && (
+					<PanelBody>
+						{ columns > 1 && (
+							<Fragment>
+								<p className="components-base-control__label">{ __( 'Mobile Layout', 'kadence-blocks' ) }</p>
+								<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
+									{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
+										<Tooltip text={ name }>
+											<Button
+												key={ key }
+												className="kt-layout-btn"
+												isSmall
+												isPrimary={ mobileLayout === key }
+												aria-pressed={ mobileLayout === key }
+												onClick={ () => setAttributes( { mobileLayout: key } ) }
+											>
+												{ icon }
+											</Button>
+										</Tooltip>
+									) ) }
+								</ButtonGroup>
+							</Fragment>
+						) }
+						{ columns > 1 && (
+							<SelectControl
+								label={ __( 'Column Collapse Vertical Gutter' ) }
+								value={ collapseGutter }
+								options={ [
+									{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
+									{ value: 'none', label: __( 'No Gutter', 'kadence-blocks' ) },
+									{ value: 'skinny', label: __( 'Skinny: 10px', 'kadence-blocks' ) },
+									{ value: 'narrow', label: __( 'Narrow: 20px', 'kadence-blocks' ) },
+									{ value: 'wide', label: __( 'Wide: 40px', 'kadence-blocks' ) },
+									{ value: 'wider', label: __( 'Wider: 60px', 'kadence-blocks' ) },
+									{ value: 'widest', label: __( 'Widest: 80px', 'kadence-blocks' ) },
+								] }
+								onChange={ ( value ) => setAttributes( { collapseGutter: value } ) }
+							/>
+						) }
+						{ columns > 1 && (
+							<SelectControl
+								label={ __( 'Collapse Order' ) }
+								value={ collapseOrder }
+								options={ [
+									{ value: 'left-to-right', label: __( 'Left to Right', 'kadence-blocks' ) },
+									{ value: 'right-to-left', label: __( 'Right to Left', 'kadence-blocks' ) },
+								] }
+								onChange={ value => setAttributes( { collapseOrder: value } ) }
+							/>
+						) }
+					</PanelBody>
+				) }
 				{ this.showSettings( 'paddingMargin' ) && (
 					<PanelBody
 						title={ __( 'Mobile Padding/Margin', 'kadence-blocks' ) }
@@ -920,29 +923,31 @@ class KadenceRowLayout extends Component {
 		);
 		const tabletControls = (
 			<Fragment>
-				<PanelBody>
-					{ columns > 1 && (
-						<Fragment>
-							<p className="components-base-control__label">{ __( 'Tablet Layout', 'kadence-blocks' ) }</p>
-							<ButtonGroup aria-label={ __( 'Tablet Layout', 'kadence-blocks' ) }>
-								{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
-									<Tooltip text={ name }>
-										<Button
-											key={ key }
-											className="kt-layout-btn"
-											isSmall
-											isPrimary={ tabletLayout === key }
-											aria-pressed={ tabletLayout === key }
-											onClick={ () => setAttributes( { tabletLayout: key } ) }
-										>
-											{ icon }
-										</Button>
-									</Tooltip>
-								) ) }
-							</ButtonGroup>
-						</Fragment>
-					) }
-				</PanelBody>
+				{ this.showSettings( 'basicLayout' ) && (
+					<PanelBody>
+						{ columns > 1 && (
+							<Fragment>
+								<p className="components-base-control__label">{ __( 'Tablet Layout', 'kadence-blocks' ) }</p>
+								<ButtonGroup aria-label={ __( 'Tablet Layout', 'kadence-blocks' ) }>
+									{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
+										<Tooltip text={ name }>
+											<Button
+												key={ key }
+												className="kt-layout-btn"
+												isSmall
+												isPrimary={ tabletLayout === key }
+												aria-pressed={ tabletLayout === key }
+												onClick={ () => setAttributes( { tabletLayout: key } ) }
+											>
+												{ icon }
+											</Button>
+										</Tooltip>
+									) ) }
+								</ButtonGroup>
+							</Fragment>
+						) }
+					</PanelBody>
+				) }
 				{ this.showSettings( 'paddingMargin' ) && (
 					<PanelBody
 						title={ __( 'Tablet Padding/Margin', 'kadence-blocks' ) }
@@ -1240,69 +1245,71 @@ class KadenceRowLayout extends Component {
 		};
 		const deskControls = (
 			<Fragment>
-				<PanelBody>
-					<RangeControl
-						label={ __( 'Columns', 'kadence-blocks' ) }
-						value={ columns }
-						onChange={ ( nextColumns ) => {
-							setAttributes( {
-								columns: nextColumns,
-								colLayout: 'equal',
-								firstColumnWidth: undefined,
-								secondColumnWidth: undefined,
-								tabletLayout: 'inherit',
-								mobileLayout: 'row',
-							} );
-						} }
-						min={ 1 }
-						max={ 6 }
-					/>
-					{ columns > 1 && (
-						<Fragment>
-							<p className="components-base-control__label">{ __( 'Layout', 'kadence-blocks' ) }</p>
-							<ButtonGroup aria-label={ __( 'Column Layout', 'kadence-blocks' ) }>
-								{ map( layoutOptions, ( { name, key, icon } ) => (
-									<Tooltip text={ name }>
-										<Button
-											key={ key }
-											className="kt-layout-btn"
-											isSmall
-											isPrimary={ selectColLayout === key }
-											aria-pressed={ selectColLayout === key }
-											onClick={ () => {
-												setAttributes( {
-													colLayout: key,
-												} );
-												setAttributes( {
-													firstColumnWidth: undefined,
-													secondColumnWidth: undefined,
-												} );
-											} }
-										>
-											{ icon }
-										</Button>
-									</Tooltip>
-								) ) }
-							</ButtonGroup>
-						</Fragment>
-					) }
-					{ columns > 1 && (
-						<SelectControl
-							label={ __( 'Column Gutter', 'kadence-blocks' ) }
-							value={ columnGutter }
-							options={ [
-								{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
-								{ value: 'none', label: __( 'No Gutter', 'kadence-blocks' ) },
-								{ value: 'skinny', label: __( 'Skinny: 10px', 'kadence-blocks' ) },
-								{ value: 'narrow', label: __( 'Narrow: 20px', 'kadence-blocks' ) },
-								{ value: 'wide', label: __( 'Wide: 40px', 'kadence-blocks' ) },
-								{ value: 'wider', label: __( 'Wider: 60px', 'kadence-blocks' ) },
-								{ value: 'widest', label: __( 'Widest: 80px', 'kadence-blocks' ) },
-							] }
-							onChange={ ( value ) => setAttributes( { columnGutter: value } ) }
+				{ this.showSettings( 'basicLayout' ) && (
+					<PanelBody>
+						<RangeControl
+							label={ __( 'Columns', 'kadence-blocks' ) }
+							value={ columns }
+							onChange={ ( nextColumns ) => {
+								setAttributes( {
+									columns: nextColumns,
+									colLayout: 'equal',
+									firstColumnWidth: undefined,
+									secondColumnWidth: undefined,
+									tabletLayout: 'inherit',
+									mobileLayout: 'row',
+								} );
+							} }
+							min={ 1 }
+							max={ 6 }
 						/>
-					) }
-				</PanelBody>
+						{ columns > 1 && (
+							<Fragment>
+								<p className="components-base-control__label">{ __( 'Layout', 'kadence-blocks' ) }</p>
+								<ButtonGroup aria-label={ __( 'Column Layout', 'kadence-blocks' ) }>
+									{ map( layoutOptions, ( { name, key, icon } ) => (
+										<Tooltip text={ name }>
+											<Button
+												key={ key }
+												className="kt-layout-btn"
+												isSmall
+												isPrimary={ selectColLayout === key }
+												aria-pressed={ selectColLayout === key }
+												onClick={ () => {
+													setAttributes( {
+														colLayout: key,
+													} );
+													setAttributes( {
+														firstColumnWidth: undefined,
+														secondColumnWidth: undefined,
+													} );
+												} }
+											>
+												{ icon }
+											</Button>
+										</Tooltip>
+									) ) }
+								</ButtonGroup>
+							</Fragment>
+						) }
+						{ columns > 1 && (
+							<SelectControl
+								label={ __( 'Column Gutter', 'kadence-blocks' ) }
+								value={ columnGutter }
+								options={ [
+									{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
+									{ value: 'none', label: __( 'No Gutter', 'kadence-blocks' ) },
+									{ value: 'skinny', label: __( 'Skinny: 10px', 'kadence-blocks' ) },
+									{ value: 'narrow', label: __( 'Narrow: 20px', 'kadence-blocks' ) },
+									{ value: 'wide', label: __( 'Wide: 40px', 'kadence-blocks' ) },
+									{ value: 'wider', label: __( 'Wider: 60px', 'kadence-blocks' ) },
+									{ value: 'widest', label: __( 'Widest: 80px', 'kadence-blocks' ) },
+								] }
+								onChange={ ( value ) => setAttributes( { columnGutter: value } ) }
+							/>
+						) }
+					</PanelBody>
+				) }
 				{ this.showSettings( 'paddingMargin' ) && (
 					<PanelBody
 						title={ __( 'Padding/Margin', 'kadence-blocks' ) }

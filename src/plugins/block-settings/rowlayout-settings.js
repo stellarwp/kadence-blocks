@@ -89,6 +89,19 @@ class KadenceRowLayoutSettings extends Component {
 							onChange={ value => this.saveConfigState( 'columnResize', value ) }
 						/>
 						<SelectControl
+							label={ __( 'Enable Basic Layout Controls' ) }
+							value={ ( rowSettings.basicLayout ? rowSettings.basicLayout : 'all' ) }
+							options={ [
+								{ value: 'all', label: __( 'All Users' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
+								{ value: 'none', label: __( 'No Users' ) },
+							] }
+							onChange={ value => this.saveConfigState( 'basicLayout', value ) }
+						/>
+						<SelectControl
 							label={ __( 'Enable Padding/Margin Settings' ) }
 							value={ ( rowSettings.paddingMargin ? rowSettings.paddingMargin : 'all' ) }
 							options={ [

@@ -320,8 +320,18 @@ class Kadence_Blocks_Frontend {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedbtn', $unique_id ) ) {
-				wp_enqueue_style( 'kadence-blocks-magnific-css' );
-				wp_enqueue_script( 'kadence-blocks-magnific-js' );
+				if ( $this->it_is_not_amp() ) {
+					if ( isset( $attributes['btns'] ) && is_array( $attributes['btns'] ) ) {
+						foreach ( $attributes['btns'] as $btnkey => $btnvalue ) {
+							if ( is_array( $btnvalue ) ) {
+								if ( isset( $btnvalue['target'] ) && ! empty( $btnvalue['target'] ) && 'video' == $btnvalue['target'] ) {
+									wp_enqueue_style( 'kadence-blocks-magnific-css' );
+									wp_enqueue_script( 'kadence-blocks-magnific-js' );
+								}
+							}
+						}
+					}
+				}
 				$css = $this->blocks_advanced_btn_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					// This only runs if the content if loaded via the rest API. Normally the css would already be added in the head.
@@ -407,6 +417,19 @@ class Kadence_Blocks_Frontend {
 	 * @param array  $attributes the blocks attribtues.
 	 * @param string $content the blocks content.
 	 */
+	public function it_is_not_amp() {
+		$not_amp = true;
+		if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) {
+			$not_amp = false;
+		}
+		return $not_amp;
+	}
+	/**
+	 * Render Tabs Block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
 	public function render_tabs_css( $attributes, $content ) {
 		if ( ! wp_style_is( 'kadence-blocks-tabs', 'enqueued' ) ) {
 			wp_enqueue_style( 'kadence-blocks-tabs' );
@@ -415,7 +438,9 @@ class Kadence_Blocks_Frontend {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'tabs', $unique_id ) ) {
-				wp_enqueue_script( 'kadence-blocks-tabs-js' );
+				if ( $this->it_is_not_amp() ) {
+					wp_enqueue_script( 'kadence-blocks-tabs-js' );
+				}
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
@@ -574,7 +599,9 @@ class Kadence_Blocks_Frontend {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
-				wp_enqueue_script( 'kadence-blocks-accordion-js' );
+				if ( $this->it_is_not_amp() ) {
+					wp_enqueue_script( 'kadence-blocks-accordion-js' );
+				}
 				$css = $this->blocks_accordion_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
@@ -622,8 +649,10 @@ class Kadence_Blocks_Frontend {
 			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'testimonials', $unique_id ) ) {
 				if ( isset( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
-					wp_enqueue_style( 'kadence-blocks-pro-slick' );
-					wp_enqueue_script( 'kadence-blocks-slick-init' );
+					if ( $this->it_is_not_amp() ) {
+						wp_enqueue_style( 'kadence-blocks-pro-slick' );
+						wp_enqueue_script( 'kadence-blocks-slick-init' );
+					}
 				}
 				$css = $this->blocks_testimonials_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -721,15 +750,17 @@ class Kadence_Blocks_Frontend {
 			$unique_id = $attributes['uniqueID'];
 			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedgallery', $unique_id ) ) {
-				if ( isset( $attributes['type'] ) && ( 'carousel' === $attributes['type'] || 'fluidcarousel' === $attributes['type'] || 'slider' === $attributes['type'] || 'thumbslider' === $attributes['type'] ) ) {
-					wp_enqueue_style( 'kadence-blocks-pro-slick' );
-					wp_enqueue_script( 'kadence-blocks-slick-init' );
-				} elseif ( ! isset( $attributes['type'] ) || ( isset( $attributes['type'] ) && 'masonry' === $attributes['type'] ) ) {
-					wp_enqueue_script( 'kadence-blocks-masonry-init' );
-				}
-				if ( isset( $attributes['linkTo'] ) && 'media' == isset( $attributes['linkTo'] ) && isset( $attributes['lightbox'] ) && 'magnific' === $attributes['lightbox'] ) {
-					wp_enqueue_style( 'kadence-blocks-magnific-css' );
-					wp_enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+				if ( $this->it_is_not_amp() ) {
+					if ( isset( $attributes['type'] ) && ( 'carousel' === $attributes['type'] || 'fluidcarousel' === $attributes['type'] || 'slider' === $attributes['type'] || 'thumbslider' === $attributes['type'] ) ) {
+						wp_enqueue_style( 'kadence-blocks-pro-slick' );
+						wp_enqueue_script( 'kadence-blocks-slick-init' );
+					} elseif ( ! isset( $attributes['type'] ) || ( isset( $attributes['type'] ) && 'masonry' === $attributes['type'] ) ) {
+						wp_enqueue_script( 'kadence-blocks-masonry-init' );
+					}
+					if ( isset( $attributes['linkTo'] ) && 'media' == isset( $attributes['linkTo'] ) && isset( $attributes['lightbox'] ) && 'magnific' === $attributes['lightbox'] ) {
+						wp_enqueue_style( 'kadence-blocks-magnific-css' );
+						wp_enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+					}
 				}
 				$css = $this->blocks_advancedgallery_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -850,7 +881,7 @@ class Kadence_Blocks_Frontend {
 			$recaptcha_site_key = 'missingkey';
 		}
 		wp_register_script( 'google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ), array(), KADENCE_BLOCKS_VERSION, true );
-		$recaptcha_script = "grecaptcha.ready(function () { var recaptchaResponse = document.getElementById('kb_recaptcha_response'); if ( recaptchaResponse ) {  grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { recaptchaResponse.value = token; }); } var kb_recaptcha_inputs = document.getElementsByClassName('kb_recaptcha_response'); var item = undefined; if ( ! kb_recaptcha_inputs.length ) { return; }  for (var i = 0; i < kb_recaptcha_inputs.length; i++) { item = kb_recaptcha_inputs[i]; grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { item.setAttribute('value', token); }); } });";
+		$recaptcha_script = "grecaptcha.ready(function () { var recaptchaResponse = document.getElementById('kb_recaptcha_response'); if ( recaptchaResponse ) { grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { recaptchaResponse.value = token; }); } var kb_recaptcha_inputs = document.getElementsByClassName('kb_recaptcha_response'); if ( ! kb_recaptcha_inputs.length ) { return; } for (var i = 0; i < kb_recaptcha_inputs.length; i++) { const e = i; grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { kb_recaptcha_inputs[e].setAttribute('value', token); }); } });";
 		wp_add_inline_script( 'google-recaptcha-v3', $recaptcha_script, 'after' );
 		wp_register_script( 'kadence-blocks-parallax-js', KADENCE_BLOCKS_URL . 'dist/kt-init-parallax.js', array( 'jarallax' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'dist/vendor/kt-blocks-slick.css', array(), KADENCE_BLOCKS_VERSION );
@@ -2948,15 +2979,17 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_advancedgallery_scripts_gfonts( $attr ) {
-		if ( isset( $attr['type'] ) && ( 'carousel' === $attr['type'] || 'fluidcarousel' === $attr['type'] || 'slider' === $attr['type'] || 'thumbslider' === $attr['type'] ) ) {
-			wp_enqueue_style( 'kadence-blocks-pro-slick' );
-			wp_enqueue_script( 'kadence-blocks-slick-init' );
-		} elseif ( ! isset( $attr['type'] ) || ( isset( $attr['type'] ) && 'masonry' === $attr['type'] ) ) {
-			wp_enqueue_script( 'kadence-blocks-masonry-init' );
-		}
-		if ( isset( $attr['linkTo'] ) && 'media' === $attr['linkTo'] && isset( $attr['lightbox'] ) && ! empty( $attr['lightbox'] ) && 'magnific' === $attr['lightbox'] ) {
-			wp_enqueue_style( 'kadence-blocks-magnific-css' );
-			wp_enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+		if ( $this->it_is_not_amp() ) {
+			if ( isset( $attr['type'] ) && ( 'carousel' === $attr['type'] || 'fluidcarousel' === $attr['type'] || 'slider' === $attr['type'] || 'thumbslider' === $attr['type'] ) ) {
+				wp_enqueue_style( 'kadence-blocks-pro-slick' );
+				wp_enqueue_script( 'kadence-blocks-slick-init' );
+			} elseif ( ! isset( $attr['type'] ) || ( isset( $attr['type'] ) && 'masonry' === $attr['type'] ) ) {
+				wp_enqueue_script( 'kadence-blocks-masonry-init' );
+			}
+			if ( isset( $attr['linkTo'] ) && 'media' === $attr['linkTo'] && isset( $attr['lightbox'] ) && ! empty( $attr['lightbox'] ) && 'magnific' === $attr['lightbox'] ) {
+				wp_enqueue_style( 'kadence-blocks-magnific-css' );
+				wp_enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+			}
 		}
 		if ( isset( $attr['captionStyles'] ) && is_array( $attr['captionStyles'] ) && isset( $attr['captionStyles'][0] ) && is_array( $attr['captionStyles'][0] ) && isset( $attr['captionStyles'][0]['google'] ) && $attr['captionStyles'][0]['google'] && ( ! isset( $attr['captionStyles'][0]['loadGoogle'] ) || true === $attr['captionStyles'][0]['loadGoogle'] ) && isset( $attr['captionStyles'][0]['family'] ) ) {
 			$caption_font = $attr['captionStyles'][0];
@@ -3261,7 +3294,9 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_tabs_scripts_gfonts( $attr ) {
-		wp_enqueue_script( 'kadence-blocks-tabs-js' );
+		if ( $this->it_is_not_amp() ) {
+			wp_enqueue_script( 'kadence-blocks-tabs-js' );
+		}
 		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
 			// Check if the font has been added yet.
 			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {

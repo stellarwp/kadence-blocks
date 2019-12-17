@@ -215,6 +215,10 @@ registerBlockType( 'kadence/column', {
 				inset: false,
 			} ],
 		},
+		noCustomDefaults: {
+			type: 'bool',
+			default: false,
+		},
 	},
 	supports: {
 		inserter: false,

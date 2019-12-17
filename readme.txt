@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.3.0
-Stable tag: 1.7.8
+Stable tag: 1.7.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.7.9 =
+* Update: Recaptcha so multiple can be on the same page.
+* Update: Tabs block for better accessibility.
+* Add: Visibility and default options for columns.
+* Add: Basic layout section for row block Visibility.
+* Add: Form block submission results filter.
+* Update: Better AMP support for scripts.
 
 = 1.7.8 =
 * Fix: Tablet Padding not keeping 0.

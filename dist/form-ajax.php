@@ -174,12 +174,16 @@ class KB_Ajax_Form {
 								if ( preg_match( '/{field_(.*?)}/', $subject, $match) == 1 ) {
 									$field_id = $match[1];
 									if ( isset( $field_id ) ) {
-										$real_id =  absint( $field_id ) - 1;
+										$real_id = absint( $field_id ) - 1;
 										if ( isset( $fields[ $real_id ] ) && is_array( $fields[ $real_id ] ) && isset( $fields[ $real_id ]['value'] ) ) {
 											$subject = str_replace( '{field_' . $field_id . '}' , $fields[ $real_id ]['value'], $subject );
 										}
 									}
 								}
+							}
+							if ( strpos( $subject, '{page_title}' ) !== false ) {
+								global $post;
+								$subject = str_replace( '{page_title}', get_the_title( $post->$ID ), $subject );
 							}
 							$email_content = '';
 							$reply_email   = false;
@@ -238,8 +242,14 @@ class KB_Ajax_Form {
 
 				do_action( 'kadence_blocks_form_submission', $form_args, $fields, $form_id, $post_id );
 
-				$final_data['html'] = '<div class="kadence-blocks-form-message kadence-blocks-form-success">' . $messages[0]['success'] . '</div>';
-				$this->send_json( $final_data );
+				$success = apply_filters( 'kadence_blocks_form_submission_success', true, $form_args, $fields, $form_id, $post_id );
+				$messages = apply_filters( 'kadence_blocks_form_submission_messages', $messages );
+				if ( ! $success ) {
+					$this->process_bail( $messages[0]['error'], __( 'Third Party Failed', 'kadence-blocks' ) );
+				} else {
+					$final_data['html'] = '<div class="kadence-blocks-form-message kadence-blocks-form-success">' . $messages[0]['success'] . '</div>';
+					$this->send_json( $final_data );
+				}
 			} else {
 				$this->process_bail( __( 'Submission rejected', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
 			}
