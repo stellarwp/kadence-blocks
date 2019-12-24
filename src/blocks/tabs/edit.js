@@ -15,15 +15,12 @@ import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
 import WebfontLoader from '../../fontloader';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import IcoNames from '../../svgiconsnames';
-import FaIco from '../../faicons';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedColorControl from '../../advanced-color-control';
 import filter from 'lodash/filter';
+import IconControl from '../../icon-control';
+import IconRender from '../../icon-render';
 /**
  * Import Css
  */
@@ -402,9 +399,6 @@ class KadenceTabs extends Component {
 			{ key: 'tabs', name: __( 'Tabs' ), icon: icons.tabs },
 			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: icons.vtabs },
 		];
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		const mobileControls = (
 			<div>
 				<PanelBody>
@@ -572,7 +566,7 @@ class KadenceTabs extends Component {
 							marginRight: ( 'tabs' === layout && widthType === 'percent' ? gutter[ 0 ] + 'px' : undefined ),
 						} } onClick={ () => setAttributes( { currentTab: 1 + index } ) } onKeyPress={ () => setAttributes( { currentTab: 1 + index } ) } tabIndex="0" role="button">
 							{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
-								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
+								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } htmltag="span" />
 							) }
 							{ ( undefined === enableSubtitle || ! enableSubtitle ) && (
 								<RichText
@@ -636,7 +630,7 @@ class KadenceTabs extends Component {
 								</div>
 							) }
 							{ titles[ index ] && titles[ index ].icon && 'right' === titles[ index ].iconSide && (
-								<GenIcon className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } icon={ ( 'fa' === titles[ index ].icon.substring( 0, 2 ) ? FaIco[ titles[ index ].icon ] : Ico[ titles[ index ].icon ] ) } htmltag="span" />
+								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } htmltag="span" />
 							) }
 						</div>
 						<div className="kadence-blocks-tab-item__control-menu">
@@ -717,16 +711,11 @@ class KadenceTabs extends Component {
 					title={ __( 'Tab' ) + ' ' + ( index + 1 ) + ' ' + __( 'Icon' ) }
 					initialOpen={ false }
 				>
-					<FontIconPicker
-						icons={ IcoNames }
+					<IconControl
 						value={ titles[ index ] && titles[ index ].icon ? titles[ index ].icon : '' }
 						onChange={ value => {
 							this.saveArrayUpdate( { icon: value }, index );
 						} }
-						appendTo="body"
-						renderFunc={ renderSVG }
-						theme="default"
-						isMulti={ false }
 					/>
 					<SelectControl
 						label={ __( 'Icon Location' ) }

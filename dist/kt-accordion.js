@@ -333,22 +333,18 @@ function () {
   _createClass(KadenceAccordion, [{
     key: "init",
     value: function init() {
-      // Sets up ID, aria attrs & data-attrs
-      this._setupAttributes(); // Setting up the inital view of the accordion
+		// Sets up ID, aria attrs & data-attrs
+		this._setupAttributes(); // Setting up the inital view of the accordion
 
+		this._initalState(); // Setting the height of each panel
 
-      this._initalState(); // Setting the height of each panel
+		this.calculateAllPanelsHeight(); // Inserting data-attribute onto each `header`
 
+		this._insertDataAttrs(); // Adding listeners to headers
 
-      this.calculateAllPanelsHeight(); // Inserting data-attribute onto each `header`
+		this._addListeners(); // Adds class to accordion for initalisation
 
-      this._insertDataAttrs(); // Adding listeners to headers
-
-
-      this._addListeners(); // Adds class to accordion for initalisation
-
-
-      this._finishInitialization();
+		this._finishInitialization();
     }
     /**
      * CHECK ROLES ETTING
@@ -438,7 +434,7 @@ function () {
           // const clickedEl = event.target;
           _this.handleClick(header, index);
         });
-      });
+	  });
     }
     /**
      *  HANDLE CLICK
@@ -609,7 +605,8 @@ function () {
 			var header = this.headers[headerIndex];
 			var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
 			if ( ! panelToClose.classList.contains(this.settings.hiddenClass) ) {
-				panelToClose.style.height = panelToClose.getAttribute('data-panel-height');
+				panelToClose.setAttribute( 'data-panel-height', panelToClose.scrollHeight + 'px' );
+				panelToClose.style.height = panelToClose.scrollHeight + 'px';
 				//reflow
 				panelToClose.offsetHeight;
 				panelToClose.style.height = '';
@@ -632,13 +629,13 @@ function () {
           // 1. Getting ID of panel that we want to open
           var _header = this.headers[headerIndex];
 		  var panelToOpen = this.panels[headerIndex]; // 2. Opening panel
-		  if ( ! panelToOpen.classList.contains(this.settings.activeClass) ) {
-				panelToOpen.classList.remove(this.settings.hiddenClass);
+		  if ( ! panelToOpen.classList.contains( this.settings.activeClass ) ) {
+				panelToOpen.classList.remove( this.settings.hiddenClass );
 				panelToOpen.style.height = 0;
 				//reflow
 				panelToOpen.offsetHeight;
 				panelToOpen.classList.add('kt-panel-is-expanding');
-				panelToOpen.style.height = panelToOpen.getAttribute('data-panel-height');
+				panelToOpen.style.height = ( panelToOpen.scrollHeight < parseInt( panelToOpen.getAttribute('data-panel-height') ) ? parseInt( panelToOpen.getAttribute('data-panel-height') ) + 'px' : panelToOpen.scrollHeight + 'px' );
 				//reflow
 				panelToOpen.offsetHeight;
 				_header.classList.add(this.settings.activeClass); // 4. Set aria attrs
@@ -772,7 +769,7 @@ function () {
     key: "calculatePanelHeight",
     value: function calculatePanelHeight(panel) {
       var panelInner = panel.querySelector(this.settings.panelInnerClass);
-      var activeHeight = panelInner.getBoundingClientRect();
+	  var activeHeight = panelInner.getBoundingClientRect();
 	  return panel.setAttribute('data-panel-height', "".concat(activeHeight['height'], "px") );
 	  //return panel.style.maxHeight = "".concat(activeHeight, "px");
 	  // panel.style.maxHeight = panel.getAttribute('data-panel-height');

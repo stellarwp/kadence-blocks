@@ -5,12 +5,16 @@
 import TypographyControls from './typography-control.js';
 import AdvancedColorControl from './advanced-color-control.js';
 import BoxShadowControl from './box-shadow-control';
+import IconControl from './icon-control';
+import IconRender from './icon-render';
 window.kb = {
 	// Sidebar controls.
 	controls: {
 		AdvancedColorControl,
 		TypographyControls,
 		BoxShadowControl,
+		IconControl,
+		IconRender,
 	},
 };
 

@@ -168,7 +168,7 @@ class KB_Ajax_Form {
 				foreach ( $form_args['actions'] as $data ) {
 					switch ( $data ) {
 						case 'email':
-							$to            = isset( $form_args['email'][0]['emailTo'] ) && ! empty( trim( $form_args['email'][0]['emailTo'] ) ) ? sanitize_email( trim( $form_args['email'][0]['emailTo'] ) ) : get_option( 'admin_email' );
+							$to            = isset( $form_args['email'][0]['emailTo'] ) && ! empty( trim( $form_args['email'][0]['emailTo'] ) ) ? trim( $form_args['email'][0]['emailTo'] ) : get_option( 'admin_email' );
 							$subject       = isset( $form_args['email'][0]['subject'] ) && ! empty( trim( $form_args['email'][0]['subject'] ) ) ? $form_args['email'][0]['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
 							if ( strpos( $subject, '{field_' ) !== false ) {
 								if ( preg_match( '/{field_(.*?)}/', $subject, $match) == 1 ) {

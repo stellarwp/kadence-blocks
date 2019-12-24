@@ -137,8 +137,8 @@ class KadenceAdvancedHeading extends Component {
 			{ key: 'rem', name: __( 'rem' ) },
 		];
 		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
-		const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -100 );
-		const marginMax = ( marginType === 'em' || marginType === 'rem' ? 12 : 100 );
+		const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -200 );
+		const marginMax = ( marginType === 'em' || marginType === 'rem' ? 12 : 200 );
 		const marginStep = ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 );
 		const fontMax = ( sizeType === 'em' ? 12 : 200 );
 		const fontStep = ( sizeType === 'em' ? 0.1 : 1 );

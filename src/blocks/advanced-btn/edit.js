@@ -5,16 +5,14 @@
  */
 import times from 'lodash/times';
 import map from 'lodash/map';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import FaIco from '../../faicons';
-import IcoNames from '../../svgiconsnames';
+import IconControl from '../../icon-control';
+import IconRender from '../../icon-render';
 import TypographyControls from '../../typography-control';
 import AdvancedColorControl from '../../advanced-color-control';
 import BoxShadowControl from '../../box-shadow-control';
 import WebfontLoader from '../../fontloader';
 import hexToRGBA from '../../hex-to-rgba';
+import StepControl from '../../step-control';
 
 /**
  * Import Css
@@ -216,6 +214,7 @@ class KadenceAdvancedButton extends Component {
 							fontWeight: fontWeight,
 							fontStyle: fontStyle,
 							letterSpacing: letterSpacing + 'px',
+							textTransform: ( textTransform ? textTransform : undefined ),
 							fontFamily: ( typography ? typography : '' ),
 							borderRadius: ( undefined !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
 							borderWidth: ( undefined !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
@@ -228,11 +227,11 @@ class KadenceAdvancedButton extends Component {
 							boxShadow: ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] && btns[ index ].boxShadow[ 0 ] ? ( undefined !== btns[ index ].boxShadow[ 7 ] && btns[ index ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ), ( undefined !== btns[ index ].boxShadow[ 2 ] ? btns[ index ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 						} } >
 							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 							) }
 							<RichText
 								tagName="div"
-								placeholder={ __( 'Button...', 'kadence-blocks'  ) }
+								placeholder={ __( 'Button...', 'kadence-blocks' ) }
 								value={ btns[ index ].text }
 								unstableOnFocus={ () => {
 									if ( 1 === index ) {
@@ -255,7 +254,7 @@ class KadenceAdvancedButton extends Component {
 								keepPlaceholderOnFocus
 							/>
 							{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 							) }
 						</span>
 					</span>
@@ -722,16 +721,11 @@ class KadenceAdvancedButton extends Component {
 						<Fragment>
 							<h2 className="kt-tool">{ __( 'Icon Settings', 'kadence-blocks' ) }</h2>
 							<div className="kt-select-icon-container">
-								<FontIconPicker
-									icons={ IcoNames }
+								<IconControl
 									value={ btns[ index ].icon }
 									onChange={ value => {
 										this.saveArrayUpdate( { icon: value }, index );
 									} }
-									appendTo="body"
-									renderFunc={ renderSVG }
-									theme="default"
-									isMulti={ false }
 								/>
 							</div>
 							<SelectControl
@@ -955,9 +949,6 @@ class KadenceAdvancedButton extends Component {
 				</div>
 			);
 		};
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		const buttonSettings = ( index ) => {
 			return (
 				<div>
@@ -1226,10 +1217,10 @@ class KadenceAdvancedButton extends Component {
 										title={ __( 'Button Count', 'kadence-blocks' ) }
 										initialOpen={ true }
 									>
-										<RangeControl
+										<StepControl
 											label={ __( 'Number of Buttons', 'kadence-blocks' ) }
 											value={ btnCount }
-											onChange={ newcount => {
+											onChange={ ( newcount ) => {
 												const newbtns = btns;
 												if ( newbtns.length < newcount ) {
 													const amount = Math.abs( newcount - newbtns.length );
@@ -1280,6 +1271,7 @@ class KadenceAdvancedButton extends Component {
 											} }
 											min={ 1 }
 											max={ 5 }
+											step={ 1 }
 										/>
 										<h2 className="kt-heading-size-title">{ __( 'Button Alignment', 'kadence-blocks' ) }</h2>
 										<TabPanel className="kt-size-tabs"

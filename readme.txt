@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.3.0
-Stable tag: 1.7.9
+Stable tag: 1.7.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,18 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.7.10 =
+* Update: Margin range for advanced heading.
+* Add: rem to font size.
+* Add: Row layout padding unit options.
+* Add: rem to row layout margins.
+* Add: Filter for settings capabilities.
+* Update: Form to allow sending to multiple email accounts.
+* Update: Icons add filter for custom icons.
+* Update: Infobox, Add max width.
+* Add: Option to copy and Paste styles from info box to info box.
+* Fix: Bug where accordion animation could be off.
 
 = 1.7.9 =
 * Update: Recaptcha so multiple can be on the same page.

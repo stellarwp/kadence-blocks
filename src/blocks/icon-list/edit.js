@@ -11,15 +11,12 @@ import icons from '../../icons';
  * Import Icon stuff
  */
 import times from 'lodash/times';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import MeasurementControls from '../../measurement-control';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
 import TypographyControls from '../../typography-control';
-import FaIco from '../../faicons';
-import IcoNames from '../../svgiconsnames';
 import WebfontLoader from '../../fontloader';
 import map from 'lodash/map';
+import IconControl from '../../icon-control';
+import IconRender from '../../icon-render';
 import AdvancedColorControl from '../../advanced-color-control';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
@@ -333,9 +330,6 @@ class KadenceIconLists extends Component {
 				this.setState( { focusIndex: addin } );
 			}
 		};
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		const renderIconSettings = ( index ) => {
 			return (
 				<PanelBody
@@ -360,16 +354,11 @@ class KadenceIconLists extends Component {
 							this.saveListItem( { target: value }, index );
 						} }
 					/>
-					<FontIconPicker
-						icons={ IcoNames }
+					<IconControl
 						value={ items[ index ].icon }
 						onChange={ value => {
 							this.saveListItem( { icon: value }, index );
 						} }
-						appendTo="body"
-						renderFunc={ renderSVG }
-						theme="default"
-						isMulti={ false }
 					/>
 					<RangeControl
 						label={ __( 'Icon Size' ) }
@@ -476,7 +465,7 @@ class KadenceIconLists extends Component {
 			return (
 				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` } >
 					{ items[ index ].icon && (
-						<GenIcon className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } icon={ ( 'fa' === items[ index ].icon.substring( 0, 2 ) ? FaIco[ items[ index ].icon ] : Ico[ items[ index ].icon ] ) } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
+						<IconRender className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
 							color: ( items[ index ].color ? items[ index ].color : undefined ),
 							backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? items[ index ].background : undefined ),
 							padding: ( items[ index ].padding && items[ index ].style !== 'default' ? items[ index ].padding + 'px' : undefined ),
@@ -713,18 +702,13 @@ class KadenceIconLists extends Component {
 								initialOpen={ false }
 							>
 								<p>{ __( 'PLEASE NOTE: This will override individual list item settings.' ) }</p>
-								<FontIconPicker
-									icons={ IcoNames }
+								<IconControl
 									value={ items[ 0 ].icon }
 									onChange={ value => {
 										if ( value !== items[ 0 ].icon ) {
 											saveAllListItem( { icon: value } );
 										}
 									} }
-									appendTo="body"
-									renderFunc={ renderSVG }
-									theme="default"
-									isMulti={ false }
 								/>
 								<RangeControl
 									label={ __( 'Icon Size' ) }

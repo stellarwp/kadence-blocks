@@ -85,7 +85,7 @@ h2.kb-template-name {
 	padding:0;
 }
 .kt-popover-color > .components-popover__content > .components-color-palette {
-	padding: 12px;
+	padding: 12px 3px;
 }
 .wp-block-kadence-rowlayout .kb-blocks-bg-slider {
 	top: -16px;
@@ -1336,3 +1336,20 @@ button.components-button.kb-sidebar-image {
  	padding-left: 43px;
 	padding-right: 43px;
  }
+ .kt-row-padding.kb-static-row-padding {
+    height: 0;
+	position: relative;
+	&:hover {
+		opacity: 1;
+	}
+	.kb-row-padding-container {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+}

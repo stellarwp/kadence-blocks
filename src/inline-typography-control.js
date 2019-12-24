@@ -339,12 +339,12 @@ class InlineTypographyControl extends Component {
 			{ value: 'uppercase', label: 'Uppercase' },
 			{ value: 'lowercase', label: 'Lowercase' },
 		];
-		const fontMin = ( fontSizeType === 'em' ? 0.2 : 5 );
-		const fontMax = ( fontSizeType === 'em' ? 12 : 200 );
-		const fontStep = ( fontSizeType === 'em' ? 0.1 : 1 );
-		const lineMin = ( lineHeightType === 'em' ? 0.2 : 5 );
-		const lineMax = ( lineHeightType === 'em' ? 12 : 200 );
-		const lineStep = ( lineHeightType === 'em' ? 0.1 : 1 );
+		const fontMin = ( fontSizeType !== 'px' ? 0.2 : 5 );
+		const fontMax = ( fontSizeType !== 'px' ? 12 : 200 );
+		const fontStep = ( fontSizeType !== 'px' ? 0.1 : 1 );
+		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
+		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
+		const lineStep = ( lineHeightType !== 'px' ? 0.1 : 1 );
 		return (
 			<Fragment>
 				<Dropdown
@@ -517,6 +517,7 @@ class InlineTypographyControl extends Component {
 													options={ [
 														{ value: 'px', label: __( 'px' ) },
 														{ value: 'em', label: __( 'em' ) },
+														{ value: 'rem', label: __( 'rem' ) },
 													] }
 													onChange={ ( value ) => onFontSizeType( value ) }
 												/>
@@ -598,6 +599,7 @@ class InlineTypographyControl extends Component {
 													options={ [
 														{ value: 'px', label: __( 'px' ) },
 														{ value: 'em', label: __( 'em' ) },
+														{ value: 'rem', label: __( 'rem' ) },
 													] }
 													onChange={ ( value ) => onLineHeightType( value ) }
 												/>

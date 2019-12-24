@@ -4,11 +4,8 @@
  * Registering a basic block with Gutenberg.
  */
 
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import IcoNames from '../../svgiconsnames';
-import FaIco from '../../faicons';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
+import IconControl from '../../icon-control';
+import IconRender from '../../icon-render';
 
 const {
 	RichText,
@@ -80,9 +77,6 @@ class KadencePane extends Component {
 	}
 	render() {
 		const { attributes: { id, uniqueID, title, icon, iconSide, hideLabel, titleTag }, setAttributes } = this.props;
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
 		return (
 			<div className={ `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }` }>
@@ -91,14 +85,9 @@ class KadencePane extends Component {
 						title={ __( 'Title Icon Settings' ) }
 						initialOpen={ false }
 					>
-						<FontIconPicker
-							icons={ IcoNames }
+						<IconControl
 							value={ icon }
 							onChange={ value => setAttributes( { icon: value } ) }
-							appendTo="body"
-							renderFunc={ renderSVG }
-							theme="default"
-							isMulti={ false }
 						/>
 						<SelectControl
 							label={ __( 'Icon Side' ) }
@@ -120,7 +109,7 @@ class KadencePane extends Component {
 					<div className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
 						<div className="kt-blocks-accordion-title-wrap">
 							{ icon && 'left' === iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } icon={ ( 'fa' === icon.substring( 0, 2 ) ? FaIco[ icon ] : Ico[ icon ] ) } />
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
 							) }
 							<RichText
 								className="kt-blocks-accordion-title"
@@ -131,7 +120,7 @@ class KadencePane extends Component {
 								keepPlaceholderOnFocus
 							/>
 							{ icon && 'right' === iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } icon={ ( 'fa' === icon.substring( 0, 2 ) ? FaIco[ icon ] : Ico[ icon ] ) } />
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
 							) }
 						</div>
 						<div className="kt-blocks-accordion-icon-trigger"></div>

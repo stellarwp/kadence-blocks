@@ -1828,7 +1828,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_infobox_array( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) ) {
+		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap {';
 			if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
 				$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
@@ -1846,6 +1846,10 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['containerBorderWidth'] ) && is_array( $attr['containerBorderWidth'] ) ) {
 				$css .= 'border-width:' . $attr['containerBorderWidth'][ 0 ] . 'px ' . $attr['containerBorderWidth'][ 1 ] . 'px ' . $attr['containerBorderWidth'][ 2 ] . 'px ' . $attr['containerBorderWidth'][ 3 ] . 'px;';
+			}
+			if ( isset( $attr['maxWidth'] ) && ! empty( $attr['maxWidth'] ) ) {
+				$unit = ( isset( $attr['maxWidthUnit'] ) && ! empty( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' );
+				$css .= 'max-width:' . $attr['maxWidth'] . $unit . ';';
 			}
 			$css .= '}';
 		}
@@ -4186,16 +4190,16 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['minHeight'] ) ||  isset( $attr['maxWidth'] ) ) {
 			$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap {';
 				if ( isset( $attr['topPadding'] ) ) {
-					$css .= 'padding-top:' . $attr['topPadding'] . 'px;';
+					$css .= 'padding-top:' . $attr['topPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['bottomPadding'] ) ) {
-					$css .= 'padding-bottom:' . $attr['bottomPadding'] . 'px;';
+					$css .= 'padding-bottom:' . $attr['bottomPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['leftPadding'] ) ) {
-					$css .= 'padding-left:' . $attr['leftPadding'] . 'px;';
+					$css .= 'padding-left:' . $attr['leftPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['rightPadding'] ) ) {
-					$css .= 'padding-right:' . $attr['rightPadding'] . 'px;';
+					$css .= 'padding-right:' . $attr['rightPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['minHeight'] ) ) {
 					$css .= 'min-height:' . $attr['minHeight'] . ( isset( $attr['minHeightUnit'] ) && ! empty( $attr['minHeightUnit'] ) ? $attr['minHeightUnit'] : 'px') . ';';
@@ -4273,16 +4277,16 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['tabletPadding'] ) && is_array( $attr['tabletPadding'] ) ) {
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap {';
 					if ( isset( $attr['tabletPadding'][ 0 ] ) && is_numeric( $attr['tabletPadding'][ 0 ] ) ) {
-						$css .= 'padding-top:' . $attr['tabletPadding'][ 0 ] . 'px;';
+						$css .= 'padding-top:' . $attr['tabletPadding'][ 0 ] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 					}
 					if ( isset( $attr['tabletPadding'][ 1 ] ) && is_numeric( $attr['tabletPadding'][ 1 ] ) ) {
-						$css .= 'padding-right:' . $attr['tabletPadding'][ 1 ] . 'px;';
+						$css .= 'padding-right:' . $attr['tabletPadding'][ 1 ] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 					}
 					if ( isset( $attr['tabletPadding'][ 2 ] ) && is_numeric( $attr['tabletPadding'][ 2 ] ) ) {
-						$css .= 'padding-bottom:' . $attr['tabletPadding'][ 2 ] . 'px;';
+						$css .= 'padding-bottom:' . $attr['tabletPadding'][ 2 ] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 					}
 					if ( isset( $attr['tabletPadding'][ 3 ] ) && is_numeric( $attr['tabletPadding'][ 3 ] ) ) {
-						$css .= 'padding-left:' . $attr['tabletPadding'][ 3 ] . 'px;';
+						$css .= 'padding-left:' . $attr['tabletPadding'][ 3 ] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 					}
 				$css .= '}';
 			}
@@ -4389,16 +4393,16 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) ) {
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap {';
 				if ( isset( $attr['topPaddingM'] ) ) {
-					$css .= 'padding-top:' . $attr['topPaddingM'] . 'px;';
+					$css .= 'padding-top:' . $attr['topPaddingM'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['bottomPaddingM'] ) ) {
-					$css .= 'padding-bottom:' . $attr['bottomPaddingM'] . 'px;';
+					$css .= 'padding-bottom:' . $attr['bottomPaddingM'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['leftPaddingM'] ) ) {
-					$css .= 'padding-left:' . $attr['leftPaddingM'] . 'px;';
+					$css .= 'padding-left:' . $attr['leftPaddingM'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 				}
 				if ( isset( $attr['rightPaddingM'] ) ) {
-					$css .= 'padding-right:' . $attr['rightPaddingM'] . 'px;';
+					$css .= 'padding-right:' . $attr['rightPaddingM'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px') . ';';
 				}
 				$css .= '}';
 			}

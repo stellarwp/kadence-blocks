@@ -30,8 +30,8 @@
     padding: 0 10px;
 }
 .kt-block-default-palette .components-color-palette, .components-popover.kt-popover-color .components-color-palette {
-    margin-right: -14px;
-    width: calc(100% + 14px);
+    margin-right: 0;
+    width: auto;
 }
 .kt-block-defaults-modal .components-panel__body .components-base-control.components-color-picker__inputs-field {
     margin-bottom: 0;
@@ -41,7 +41,8 @@
 		display: inline-block;
 		height: 28px;
 		width: 28px;
-		margin-right: 14px;
+		margin-right: 7px;
+    	margin-left: 7px;
 		margin-bottom: 14px;
 		vertical-align: top;
 		transform: scale(1);

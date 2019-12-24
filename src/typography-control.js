@@ -287,17 +287,18 @@ class TypographyControls extends Component {
 		const sizeTypes = [
 			{ key: 'px', name: 'px' },
 			{ key: 'em', name: 'em' },
+			{ key: 'rem', name: 'rem' },
 		];
 		const borderTypes = [
 			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.linked },
 			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.individual },
 		];
-		const fontMin = ( fontSizeType === 'em' ? 0.2 : 5 );
-		const fontMax = ( fontSizeType === 'em' ? 12 : 200 );
-		const fontStep = ( fontSizeType === 'em' ? 0.1 : 1 );
-		const lineMin = ( lineHeightType === 'em' ? 0.2 : 5 );
-		const lineMax = ( lineHeightType === 'em' ? 12 : 200 );
-		const lineStep = ( lineHeightType === 'em' ? 0.1 : 1 );
+		const fontMin = ( fontSizeType !== 'px' ? 0.2 : 5 );
+		const fontMax = ( fontSizeType !== 'px' ? 12 : 200 );
+		const fontStep = ( fontSizeType !== 'px' ? 0.1 : 1 );
+		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
+		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
+		const lineStep = ( lineHeightType !== 'px' ? 0.1 : 1 );
 		const sizeDeskControls = (
 			<PanelBody>
 				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>

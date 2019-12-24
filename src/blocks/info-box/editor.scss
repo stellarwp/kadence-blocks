@@ -75,6 +75,10 @@
 	border: 0 solid transparent;
 	transition: all 0.3s cubic-bezier(.17,.67,.35,.95);
 }
+.kt-blocks-info-box-link-wrap {
+	margin-left:auto;
+	margin-right:auto;
+}
 .kt-blocks-info-box-title, .kt-blocks-info-box-text, .kt-blocks-info-box-learnmore {
 	transition: all 0.3s cubic-bezier(.17,.67,.35,.95);
 }

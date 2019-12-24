@@ -2,9 +2,7 @@
  * BLOCK: Kadence Advanced Btn
  */
 import times from 'lodash/times';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import FaIco from '../../faicons';
+import IconRender from '../../icon-render';
 /**
  * Import Icons
  */
@@ -189,7 +187,7 @@ registerBlockType( 'kadence/advancedbtn', {
 						letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 					} } >
 						{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-							<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+							<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 						) }
 						<RichText.Content
 							tagName={ 'span' }
@@ -197,7 +195,7 @@ registerBlockType( 'kadence/advancedbtn', {
 							value={ btns[ index ].text }
 						/>
 						{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-							<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+							<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 						) }
 					</a>
 				</div>
@@ -344,7 +342,7 @@ registerBlockType( 'kadence/advancedbtn', {
 								letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 							} } >
 								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 								<RichText.Content
 									tagName={ 'span' }
@@ -352,7 +350,7 @@ registerBlockType( 'kadence/advancedbtn', {
 									value={ btns[ index ].text }
 								/>
 								{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 							</a>
 						</div>
@@ -470,13 +468,13 @@ registerBlockType( 'kadence/advancedbtn', {
 								letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
 							} } >
 								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 								<span className="kt-btn-inner-text">
 									{ btns[ index ].text }
 								</span>
 								{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 							</a>
 						</div>
@@ -574,13 +572,13 @@ registerBlockType( 'kadence/advancedbtn', {
 								letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
 							} } >
 								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 								<span className="kt-btn-inner-text">
 									{ btns[ index ].text }
 								</span>
 								{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 							</a>
 						</div>
@@ -678,13 +676,13 @@ registerBlockType( 'kadence/advancedbtn', {
 								letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
 							} } >
 								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 								<span className="kt-btn-inner-text">
 									{ btns[ index ].text }
 								</span>
 								{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 							</a>
 						</div>
@@ -781,13 +779,13 @@ registerBlockType( 'kadence/advancedbtn', {
 								letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
 							} } >
 								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 								<span className="kt-btn-inner-text">
 									{ btns[ index ].text }
 								</span>
 								{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 							</a>
 						</div>
@@ -855,13 +853,13 @@ registerBlockType( 'kadence/advancedbtn', {
 								paddingBottom: ( btns[ index ].paddingTB ? btns[ index ].paddingTB + 'px' : undefined ),
 							} } onMouseOver={ `this.style.background='${ btns[ index ].backgroundHover }',this.style.color='${ btns[ index ].colorHover }',this.style.borderColor='${ btns[ index ].borderHover }'` } onFocus={ `this.style.background='${ btns[ index ].backgroundHover }',this.style.color='${ btns[ index ].colorHover }',this.style.borderColor='${ btns[ index ].borderHover }'` } onBlur={ `this.style.background='${ ( btns[ index ].background ? btns[ index ].background : 'transparent' ) }',this.style.color='${ btns[ index ].color }',this.style.borderColor='${ btns[ index ].border }'` } onMouseOut={ `this.style.background='${ ( btns[ index ].background ? btns[ index ].background : 'transparent' ) }',this.style.color='${ btns[ index ].color }',this.style.borderColor='${ btns[ index ].border }'` }>
 								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 								<span className="kt-btn-inner-text">
 									{ btns[ index ].text }
 								</span>
 								{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 							</a>
 						</div>
@@ -929,13 +927,13 @@ registerBlockType( 'kadence/advancedbtn', {
 								paddingBottom: ( btns[ index ].paddingTB ? btns[ index ].paddingTB + 'px' : undefined ),
 							} } onMouseOver={ `this.style.background='${ btns[ index ].backgroundHover }',this.style.color='${ btns[ index ].colorHover }',this.style.borderColor='${ btns[ index ].borderHover }'` } onFocus={ `this.style.background='${ btns[ index ].backgroundHover }',this.style.color='${ btns[ index ].colorHover }',this.style.borderColor='${ btns[ index ].borderHover }'` } onBlur={ `this.style.background='${ ( btns[ index ].background ? btns[ index ].background : 'transparent' ) }',this.style.color='${ btns[ index ].color }',this.style.borderColor='${ btns[ index ].border }'` } onMouseOut={ `this.style.background='${ ( btns[ index ].background ? btns[ index ].background : 'transparent' ) }',this.style.color='${ btns[ index ].color }',this.style.borderColor='${ btns[ index ].border }'` }>
 								{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 								<span className="kt-btn-inner-text">
 									{ btns[ index ].text }
 								</span>
 								{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-									<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } icon={ ( 'fa' === btns[ index ].icon.substring( 0, 2 ) ? FaIco[ btns[ index ].icon ] : Ico[ btns[ index ].icon ] ) } />
+									<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
 								) }
 							</a>
 						</div>

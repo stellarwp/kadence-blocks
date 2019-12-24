@@ -446,6 +446,10 @@ const attributes = {
 		type: 'number',
 		default: '',
 	},
+	paddingUnit: {
+		type: 'string',
+		default: 'px',
+	},
 	noCustomDefaults: {
 		type: 'bool',
 		default: false,

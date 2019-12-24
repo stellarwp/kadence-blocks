@@ -21,11 +21,9 @@ import AdvancedColorControl from '../../advanced-color-control';
 import ImageSizeControl from '../../image-size-control';
 import WebfontLoader from '../../fontloader';
 import hexToRGBA from '../../hex-to-rgba';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import IcoNames from '../../svgiconsnames';
-import FaIco from '../../faicons';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
+import IconRender from '../../icon-render';
+import IconControl from '../../icon-control';
+import InfoBoxStyleCopyPaste from './copy-paste-style';
 /**
  * Internal block libraries
  */
@@ -147,8 +145,14 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl } = this.state;
+		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
+		const widthTypes = [
+			{ key: 'px', name: 'px' },
+			{ key: '%', name: '%' },
+			{ key: 'vw', name: 'vw' },
+		];
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
 			{ key: 'simple', name: __( 'Simple' ), icon: icons.infoSimple },
@@ -726,9 +730,6 @@ class KadenceInfoBox extends Component {
 				) }
 			</style>
 		);
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		return (
 			<div id={ `kt-info-box${ uniqueID }` } className={ className }>
 				{ renderCSS }
@@ -754,6 +755,12 @@ class KadenceInfoBox extends Component {
 					<AlignmentToolbar
 						value={ hAlign }
 						onChange={ value => setAttributes( { hAlign: value } ) }
+					/>
+					<InfoBoxStyleCopyPaste
+						onPaste={ value => setAttributes( value ) }
+						onPasteMediaImage={ value => saveMediaImage( value ) }
+						onPasteMediaIcon={ value => saveMediaIcon( value ) }
+						blockAttributes={ this.props.attributes }
 					/>
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
@@ -935,6 +942,31 @@ class KadenceInfoBox extends Component {
 									min={ 0 }
 									max={ 100 }
 									step={ 1 }
+								/>
+								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
+									{ map( widthTypes, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-size-btn"
+											isSmall
+											isPrimary={ maxWidthUnit === key }
+											aria-pressed={ maxWidthUnit === key }
+											onClick={ () => setAttributes( { maxWidthUnit: key } ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+								<RangeControl
+									label={ __( 'Container Max Width' ) }
+									value={ maxWidth }
+									onChange={ ( value ) => {
+										setAttributes( {
+											maxWidth: value,
+										} );
+									} }
+									min={ 0 }
+									max={ widthMax }
 								/>
 							</PanelBody>
 						) }
@@ -1246,14 +1278,9 @@ class KadenceInfoBox extends Component {
 								) }
 								{ 'icon' === mediaType && (
 									<Fragment>
-										<FontIconPicker
-											icons={ IcoNames }
+										<IconControl
 											value={ mediaIcon[ 0 ].icon }
 											onChange={ value => saveMediaIcon( { icon: value } ) }
-											appendTo="body"
-											renderFunc={ renderSVG }
-											theme="default"
-											isMulti={ false }
 										/>
 										<RangeControl
 											label={ __( 'Icon Size' ) }
@@ -1302,14 +1329,9 @@ class KadenceInfoBox extends Component {
 											onChange={ value => saveMediaIcon( { hoverAnimation: value } ) }
 										/>
 										{ mediaIcon[ 0 ].hoverAnimation === 'flip' && (
-											<FontIconPicker
-												icons={ IcoNames }
+											<IconControl
 												value={ mediaIcon[ 0 ].flipIcon }
 												onChange={ value => saveMediaIcon( { flipIcon: value } ) }
-												appendTo="body"
-												renderFunc={ renderSVG }
-												theme="default"
-												isMulti={ false }
 											/>
 										) }
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
@@ -2031,6 +2053,7 @@ class KadenceInfoBox extends Component {
 						borderRadius: containerBorderRadius + 'px',
 						borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
 						padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
+						maxWidth: ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
 					} } >
 						{ 'none' !== mediaType && (
 							<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` } style={ {
@@ -2084,12 +2107,12 @@ class KadenceInfoBox extends Component {
 								{ 'icon' === mediaType && (
 									<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
 										<div className={ 'kadence-info-box-icon-inner-container' } >
-											<GenIcon className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].icon ] : Ico[ mediaIcon[ 0 ].icon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+											<IconRender className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
 												display: 'block',
 												color: ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : undefined ),
 											} } />
 											{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
-												<GenIcon className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } icon={ ( 'fa' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? FaIco[ mediaIcon[ 0 ].flipIcon ] : Ico[ mediaIcon[ 0 ].flipIcon ] ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+												<IconRender className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
 													display: 'block',
 													color: ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : undefined ),
 												} } />

@@ -12,12 +12,9 @@ import editorIcons from '../../icons';
  */
 import times from 'lodash/times';
 import map from 'lodash/map';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import FaIco from '../../faicons';
-import IcoNames from '../../svgiconsnames';
-
+import IconControl from '../../icon-control';
+import IconRender from '../../icon-render';
+import AdvancedColorControl from '../../advanced-color-control';
 /**
  * Import Css
  */
@@ -35,7 +32,6 @@ const {
 	BlockControls,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
-	ColorPalette,
 } = wp.blockEditor;
 const {
 	Component,
@@ -102,25 +98,17 @@ class KadenceIcons extends Component {
 			{ key: 'linked', name: __( 'Linked' ), micon: editorIcons.linked },
 			{ key: 'individual', name: __( 'Individual' ), micon: editorIcons.individual },
 		];
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		const renderIconSettings = ( index ) => {
 			return (
 				<PanelBody
 					title={ __( 'Icon' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }
 					initialOpen={ ( 1 === iconCount ? true : false ) }
 				>
-					<FontIconPicker
-						icons={ IcoNames }
+					<IconControl
 						value={ icons[ index ].icon }
 						onChange={ value => {
 							this.saveArrayUpdate( { icon: value }, index );
 						} }
-						appendTo="body"
-						renderFunc={ renderSVG }
-						theme="default"
-						isMulti={ false }
 					/>
 					<RangeControl
 						label={ __( 'Icon Size' ) }
@@ -143,10 +131,11 @@ class KadenceIcons extends Component {
 							max={ 4 }
 						/>
 					) }
-					<p className="kt-setting-label">{ __( 'Icon Color' ) }</p>
-					<ColorPalette
-						value={ icons[ index ].color }
-						onChange={ value => {
+					<AdvancedColorControl
+						label={ __( 'Icon Color' ) }
+						colorValue={ ( icons[ index ].color ? icons[ index ].color : '' ) }
+						colorDefault={ '' }
+						onColorChange={ value => {
 							this.saveArrayUpdate( { color: value }, index );
 						} }
 					/>
@@ -163,10 +152,11 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<p className="kt-setting-label">{ __( 'Icon Background' ) }</p>
-							<ColorPalette
-								value={ icons[ index ].background }
-								onChange={ value => {
+							<AdvancedColorControl
+								label={ __( 'background Color' ) }
+								colorValue={ ( icons[ index ].background ? icons[ index ].background : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
 									this.saveArrayUpdate( { background: value }, index );
 								} }
 							/>
@@ -174,10 +164,11 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<p className="kt-setting-label">{ __( 'Border Color' ) }</p>
-							<ColorPalette
-								value={ icons[ index ].border }
-								onChange={ value => {
+							<AdvancedColorControl
+								label={ __( 'Border Color' ) }
+								colorValue={ ( icons[ index ].border ? icons[ index ].border : '' ) }
+								colorDefault={ '' }
+								onColorChange={ value => {
 									this.saveArrayUpdate( { border: value }, index );
 								} }
 							/>
@@ -300,6 +291,7 @@ class KadenceIcons extends Component {
 					) }
 					<p className="components-base-control__label">{ __( 'Link' ) }</p>
 					<URLInput
+						autoFocus={ false }
 						value={ icons[ index ].link }
 						className="kt-btn-link-input"
 						onChange={ value => {
@@ -336,7 +328,7 @@ class KadenceIcons extends Component {
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` } >
 					{ icons[ index ].icon && (
-						<GenIcon className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } icon={ ( 'fa' === icons[ index ].icon.substring( 0, 2 ) ? FaIco[ icons[ index ].icon ] : Ico[ icons[ index ].icon ] ) } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
+						<IconRender className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
 							color: ( icons[ index ].color ? icons[ index ].color : undefined ),
 							backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? icons[ index ].background : undefined ),
 							padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),

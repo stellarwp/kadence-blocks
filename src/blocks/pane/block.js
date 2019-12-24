@@ -13,9 +13,7 @@ const {
  * Import Icons
  */
 import icons from '../../icons';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import FaIco from '../../faicons';
+import IconRender from '../../icon-render';
 /**
  * Import edit
  */
@@ -91,7 +89,7 @@ registerBlockType( 'kadence/pane', {
 					<button className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
 						<div className="kt-blocks-accordion-title-wrap">
 							{ icon && 'left' === iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } icon={ ( 'fa' === icon.substring( 0, 2 ) ? FaIco[ icon ] : Ico[ icon ] ) } />
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
 							) }
 							<RichText.Content
 								className={ 'kt-blocks-accordion-title' }
@@ -99,7 +97,7 @@ registerBlockType( 'kadence/pane', {
 								value={ title }
 							/>
 							{ icon && 'right' === iconSide && (
-								<GenIcon className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } icon={ ( 'fa' === icon.substring( 0, 2 ) ? FaIco[ icon ] : Ico[ icon ] ) } />
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
 							) }
 						</div>
 						<div className="kt-blocks-accordion-icon-trigger"></div>

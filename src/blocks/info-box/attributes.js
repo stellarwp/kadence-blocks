@@ -300,5 +300,13 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	maxWidth: {
+		type: 'string',
+		default: '',
+	},
+	maxWidthUnit: {
+		type: 'string',
+		default: 'px',
+	},
 };
 export default attributes;
