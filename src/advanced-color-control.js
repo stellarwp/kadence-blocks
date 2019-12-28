@@ -34,7 +34,7 @@ const {
  * @returns {object} Measure settings.
  */
 class AdvancedColorControl extends Component {
-	constructor( label, colorValue, colorDefault, opacityValue, onColorChange, onOpacityChange ) {
+	constructor( label, colorValue, colorDefault, opacityValue, onColorChange, onOpacityChange, opacityUnit=1 ) {
 		super( ...arguments );
 		this.state = {
 			isVisible: false,
@@ -68,6 +68,16 @@ class AdvancedColorControl extends Component {
 				this.setState( { isVisible: false } );
 			}
 		};
+		const convertOpactiy = ( value ) => {
+			let val = 1;
+			if ( value ) {
+				val = value / 100;
+			}
+			return val;
+		};
+		const opacityMax = ( 100 === this.props.opacityUnit ? 100 : 1 );
+		const opacityStep = ( 100 === this.props.opacityUnit ? 1 : 0.01 );
+		const convertedOpacityValue = ( 100 === this.props.opacityUnit ? convertOpactiy( this.props.opacityValue ) : this.props.opacityValue );
 		return (
 			<div className="kt-color-popover-container">
 				<div className="kt-advanced-color-settings-container">
@@ -167,8 +177,8 @@ class AdvancedColorControl extends Component {
 										value={ this.props.opacityValue }
 										onChange={ this.props.onOpacityChange }
 										min={ 0 }
-										max={ 1 }
-										step={ 0.01 }
+										max={ opacityMax }
+										step={ opacityStep }
 									/>
 								) }
 							</Popover>
@@ -176,14 +186,14 @@ class AdvancedColorControl extends Component {
 						{ this.state.isVisible && (
 							<Tooltip text={ __( 'Select Color' ) }>
 								<Button className={ `kt-color-icon-indicate ${ ( this.props.onOpacityChange || 'transparent' === this.props.colorDefault ? 'kt-has-alpha' : 'kt-no-alpha' ) }` } onClick={ toggleClose }>
-									<ColorIndicator className="kt-advanced-color-indicate" colorValue={ ( 'transparent' === this.props.colorValue || undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : hexToRGBA( this.props.colorValue, ( this.props.opacityValue !== undefined ? this.props.opacityValue : 1 ) ) ) } />
+									<ColorIndicator className="kt-advanced-color-indicate" colorValue={ ( 'transparent' === this.props.colorValue || undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : hexToRGBA( this.props.colorValue, ( this.props.opacityValue !== undefined ? convertedOpacityValue : 1 ) ) ) } />
 								</Button>
 							</Tooltip>
 						) }
 						{ ! this.state.isVisible && (
 							<Tooltip text={ __( 'Select Color' ) }>
 								<Button className={ `kt-color-icon-indicate ${ ( this.props.onOpacityChange || 'transparent' === this.props.colorDefault ? 'kt-has-alpha' : 'kt-no-alpha' ) }` } onClick={ toggleVisible }>
-									<ColorIndicator className="kt-advanced-color-indicate" colorValue={ ( 'transparent' === this.props.colorValue || undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : hexToRGBA( this.props.colorValue, ( this.props.opacityValue !== undefined ? this.props.opacityValue : 1 ) ) ) } />
+									<ColorIndicator className="kt-advanced-color-indicate" colorValue={ ( 'transparent' === this.props.colorValue || undefined === this.props.colorValue || '' === this.props.colorValue ? this.props.colorDefault : hexToRGBA( this.props.colorValue, ( this.props.opacityValue !== undefined ? convertedOpacityValue : 1 ) ) ) } />
 								</Button>
 							</Tooltip>
 						) }

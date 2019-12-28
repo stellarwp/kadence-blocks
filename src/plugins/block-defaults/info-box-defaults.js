@@ -1,10 +1,6 @@
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import IcoNames from '../../svgiconsnames';
-import FaIco from '../../faicons';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
+import IconControl from '../../icon-control';
 /**
  * Internal block libraries
  */
@@ -297,9 +293,6 @@ class KadenceInfoBoxDefault extends Component {
 			} );
 			this.saveConfigState( 'shadowHover', newUpdate );
 		};
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
@@ -576,15 +569,9 @@ class KadenceInfoBoxDefault extends Component {
 							) }
 							{ ( undefined === infoConfig.mediaAlign || 'icon' === infoConfig.mediaAlign ) && (
 								<Fragment>
-									<FontIconPicker
-										icons={ IcoNames }
+									<IconControl
 										value={ mediaIcon[ 0 ].icon }
 										onChange={ value => saveMediaIcon( { icon: value } ) }
-										renderFunc={ renderSVG }
-										theme="default"
-										isMulti={ false }
-										appendTo={ false }
-										closeOnSelect={ true }
 									/>
 									<RangeControl
 										label={ __( 'Icon Size' ) }
@@ -633,14 +620,9 @@ class KadenceInfoBoxDefault extends Component {
 										onChange={ value => saveMediaIcon( { hoverAnimation: value } ) }
 									/>
 									{ mediaIcon[ 0 ].hoverAnimation === 'flip' && (
-										<FontIconPicker
-											icons={ IcoNames }
+										<IconControl
 											value={ mediaIcon[ 0 ].flipIcon }
 											onChange={ value => saveMediaIcon( { flipIcon: value } ) }
-											appendTo="body"
-											renderFunc={ renderSVG }
-											theme="default"
-											isMulti={ false }
 										/>
 									) }
 									<TabPanel className="kt-inspect-tabs kt-hover-tabs"

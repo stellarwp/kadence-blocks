@@ -377,6 +377,11 @@ class KadenceAdvancedButton extends Component {
 								checked={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
 								onChange={ ( value ) => this.saveArrayUpdate( { noFollow: value }, index ) }
 							/>
+							<ToggleControl
+								label={ __( 'Set link attribute Sponsored?', 'kadence-blocks' ) }
+								checked={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
+								onChange={ ( value ) => this.saveArrayUpdate( { sponsored: value }, index ) }
+							/>
 						</Fragment>
 					) }
 					{ this.showSettings( 'sizeSettings' ) && (
@@ -1262,6 +1267,7 @@ class KadenceAdvancedButton extends Component {
 															responsivePaddingLR: ( newbtns[ 0 ].responsivePaddingLR ? newbtns[ 0 ].responsivePaddingLR : [ '', '' ] ),
 															boxShadow: ( newbtns[ 0 ].boxShadow ? newbtns[ 0 ].boxShadow : [ false, '#000000', 0.2, 1, 1, 2, 0, false ] ),
 															boxShadowHover: ( newbtns[ 0 ].boxShadowHover ? newbtns[ 0 ].boxShadowHover : [ false, '#000000', 0.4, 2, 2, 3, 0, false ] ),
+															sponsored: ( newbtns[ 0 ].sponsored ? newbtns[ 0 ].sponsored : false ),
 														} );
 													} ); }
 													setAttributes( { btns: newbtns } );
@@ -1300,6 +1306,7 @@ class KadenceAdvancedButton extends Component {
 														if ( 'mobile' === tab.name ) {
 															tabout = (
 																<AlignmentToolbar
+																	isCollapsed={ false }
 																	value={ mhAlign }
 																	onChange={ ( value ) => setAttributes( { mhAlign: value } ) }
 																/>
@@ -1307,6 +1314,7 @@ class KadenceAdvancedButton extends Component {
 														} else if ( 'tablet' === tab.name ) {
 															tabout = (
 																<AlignmentToolbar
+																	isCollapsed={ false }
 																	value={ thAlign }
 																	onChange={ ( value ) => setAttributes( { thAlign: value } ) }
 																/>
@@ -1314,6 +1322,7 @@ class KadenceAdvancedButton extends Component {
 														} else {
 															tabout = (
 																<AlignmentToolbar
+																	isCollapsed={ false }
 																	value={ hAlign }
 																	onChange={ ( value ) => setAttributes( { hAlign: value } ) }
 																/>

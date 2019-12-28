@@ -442,3 +442,14 @@ button.components-button.components-icon-button.kt-font-clear-btn {
 	color: #f76a0c;
 	background:transparent;
 }
+.kb-global-typography-label {
+    display: flex;
+	align-items: center;
+	h2.kt-beside-color-label {
+		flex-grow: 1;
+		margin: 12px 0;
+	}
+	.components-base-control.components-toggle-control, .components-toggle-control .components-base-control__field {
+		margin-bottom: 0 !important;
+	}
+}

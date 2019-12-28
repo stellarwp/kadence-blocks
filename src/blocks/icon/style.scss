@@ -5,8 +5,18 @@
  */
 // Item
 .kt-svg-style-stacked .kt-svg-icon {
-    border: 0px solid #444444;
+	border: 0px solid #444444;
+	transition: all .3s ease-in-out;
 }
 .kt-svg-icon-wrap {
-    display: inline-block;
+	display: inline-block;
+	a.kt-svg-icon-link {
+		display: block;
+		border: 0;
+		text-decoration: none;
+		box-shadow: none;
+		&:hover {
+			box-shadow: none;
+		}
+	}
 }

@@ -1,12 +1,8 @@
 import TypographyControls from '../../typography-control';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import IcoNames from '../../svgiconsnames';
 import map from 'lodash/map';
-import FaIco from '../../faicons';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import AdvancedColorControl from '../../advanced-color-control-default';
 import BoxShadowControl from '../../box-shadow-control';
+import IconControl from '../../icon-control';
 /**
  * Internal block libraries
  */
@@ -161,9 +157,6 @@ class KadenceButtonDefault extends Component {
 				this.saveConfigState( 'widthType', 'full' );
 			}
 		};
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
@@ -909,17 +902,11 @@ class KadenceButtonDefault extends Component {
 							initialOpen={ false }
 						>
 							<h2 className="kt-tool">{ __( 'Icon Settings' ) }</h2>
-							<FontIconPicker
-								icons={ IcoNames }
+							<IconControl
 								value={ btns[ 0 ].icon }
 								onChange={ value => {
 									saveBtnArray( { icon: value } );
 								} }
-								appendTo={ false }
-								closeOnSelect={ true }
-								renderFunc={ renderSVG }
-								theme="default"
-								isMulti={ false }
 							/>
 							<SelectControl
 								label={ __( 'Icon Location' ) }

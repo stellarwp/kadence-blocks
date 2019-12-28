@@ -181,6 +181,7 @@ class Kadence_Blocks_Settings {
 	/**
 	 * Redirect to the settings page on activation
 	 */
+
 	public function activation_redirect() {
 		if ( get_option( 'kadence_blocks_redirect_on_activation', false ) ) {
 			delete_option( 'kadence_blocks_redirect_on_activation' );
@@ -381,6 +382,17 @@ class Kadence_Blocks_Settings {
 			array(
 				'type'              => 'string',
 				'description'       => __( 'Config Kadence Blocks Color Palette', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
+		register_setting(
+			'kadence_blocks_global',
+			'kadence_blocks_global',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Blocks Global Settings', 'kadence-blocks' ),
 				'sanitize_callback' => 'sanitize_text_field',
 				'show_in_rest'      => true,
 				'default'           => '',

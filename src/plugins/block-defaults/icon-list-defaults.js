@@ -1,12 +1,9 @@
 import TypographyControls from '../../typography-control';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import IcoNames from '../../svgiconsnames';
-import FaIco from '../../faicons';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import MeasurementControls from '../../measurement-control';
 import AdvancedColorControl from '../../advanced-color-control-default';
 import map from 'lodash/map';
+import IconControl from '../../icon-control';
+
 /**
  * Internal block libraries
  */
@@ -129,9 +126,6 @@ class KadenceIconListDefault extends Component {
 			} );
 			this.saveConfigState( 'listStyles', newUpdate );
 		};
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
@@ -250,17 +244,11 @@ class KadenceIconListDefault extends Component {
 							title={ __( 'List Icon Styles' ) }
 							initialOpen={ false }
 						>
-							<FontIconPicker
-								icons={ IcoNames }
+							<IconControl
 								value={ items[ 0 ].icon }
 								onChange={ value => {
 									saveListItem( { icon: value } );
 								} }
-								renderFunc={ renderSVG }
-								theme="default"
-								isMulti={ false }
-								appendTo={ false }
-								closeOnSelect={ true }
 							/>
 							<RangeControl
 								label={ __( 'Icon Size' ) }

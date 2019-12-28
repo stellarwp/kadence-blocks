@@ -128,6 +128,7 @@ class KadenceAdvancedHeading extends Component {
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
+			{ key: 'rem', name: __( 'rem' ) },
 		];
 		const marginTypes = [
 			{ key: 'px', name: __( 'px' ) },

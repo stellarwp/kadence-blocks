@@ -21,6 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.0.0
  */
 function kadence_gutenberg_editor_assets() {
+	// If in the frontend, bail out.
+	if ( ! is_admin() ) {
+		return;
+	}
+
 	// Scripts.
 	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KADENCE_BLOCKS_VERSION, true );
 	$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
@@ -86,6 +91,7 @@ function kadence_gutenberg_editor_assets() {
 			'userrole'       => $userrole,
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
+			'global'         => get_option( 'kadence_blocks_global' ),
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
 			'privacy_link'   => get_privacy_policy_url(),
 			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),

@@ -21,13 +21,11 @@ import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../fontloader';
 import hexToRGBA from '../../hex-to-rgba';
 import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import IcoNames from '../../svgiconsnames';
 import FaIco from '../../faicons';
-import OpacityControl from '../../opacity-control';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import AdvancedColorControl from '../../advanced-color-control';
 import Slider from 'react-slick';
+import IconControl from '../../icon-control';
+import IconRender from '../../icon-render';
 /**
  * Internal block libraries
  */
@@ -494,9 +492,6 @@ class KadenceTestimonials extends Component {
 				ratingStyles: newUpdate,
 			} );
 		};
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		const renderTestimonialSettings = ( index ) => {
 			return (
 				<PanelBody
@@ -514,16 +509,11 @@ class KadenceTestimonials extends Component {
 					/>
 					{ 'icon' === testimonials[ index ].media && (
 						<Fragment>
-							<FontIconPicker
-								icons={ IcoNames }
+							<IconControl
 								value={ testimonials[ index ].icon }
 								onChange={ value => {
 									saveTestimonials( { icon: value }, index );
 								} }
-								appendTo="body"
-								renderFunc={ renderSVG }
-								theme="default"
-								isMulti={ false }
 							/>
 							<RangeControl
 								label={ __( 'Icon Size' ) }
@@ -577,7 +567,7 @@ class KadenceTestimonials extends Component {
 				<div className="kt-svg-testimonial-global-icon-wrap" style={ {
 					margin: ( iconStyles[ 0 ].margin ? iconStyles[ 0 ].margin[ 0 ] + 'px ' + iconStyles[ 0 ].margin[ 1 ] + 'px ' + iconStyles[ 0 ].margin[ 2 ] + 'px ' + iconStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 				} } >
-					<GenIcon className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } icon={ ( 'fa' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? FaIco[ iconStyles[ 0 ].icon ] : Ico[ iconStyles[ 0 ].icon ] ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
+					<IconRender className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
 						color: ( iconStyles[ 0 ].color ? iconStyles[ 0 ].color : undefined ),
 						borderRadius: iconStyles[ 0 ].borderRadius + 'px',
 						borderTopWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 0 ] ? iconStyles[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -644,7 +634,7 @@ class KadenceTestimonials extends Component {
 							paddingBottom: ( 'card' === style && ( undefined !== mediaStyles[ 0 ].ratio || '' !== mediaStyles[ 0 ].ratio ) ? mediaStyles[ 0 ].ratio + '%' : undefined ),
 						} }>
 							{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
-								<GenIcon className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } icon={ ( 'fa' === testimonials[ index ].icon.substring( 0, 2 ) ? FaIco[ testimonials[ index ].icon ] : Ico[ testimonials[ index ].icon ] ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
+								<IconRender className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
 									display: 'flex',
 									color: ( testimonials[ index ].color ? testimonials[ index ].color : undefined ),
 								} } />
@@ -1160,16 +1150,11 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayIcon && (
 										<Fragment>
-											<FontIconPicker
-												icons={ IcoNames }
+											<IconControl
 												value={ iconStyles[ 0 ].icon }
 												onChange={ value => {
 													saveIconStyles( { icon: value } );
 												} }
-												appendTo="body"
-												renderFunc={ renderSVG }
-												theme="default"
-												isMulti={ false }
 											/>
 											<RangeControl
 												label={ __( 'Icon Size' ) }

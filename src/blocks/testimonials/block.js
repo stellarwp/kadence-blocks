@@ -11,6 +11,7 @@ import Ico from '../../svgicons';
 import FaIco from '../../faicons';
 import times from 'lodash/times';
 import hexToRGBA from '../../hex-to-rgba';
+import IconRender from '../../icon-render';
 /**
  * Import attributes
  */
@@ -84,7 +85,7 @@ registerBlockType( 'kadence/testimonials', {
 				<div className="kt-svg-testimonial-global-icon-wrap" style={ {
 					margin: ( iconStyles[ 0 ].margin ? iconStyles[ 0 ].margin[ 0 ] + 'px ' + iconStyles[ 0 ].margin[ 1 ] + 'px ' + iconStyles[ 0 ].margin[ 2 ] + 'px ' + iconStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 				} } >
-					<GenIcon className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } icon={ ( 'fa' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? FaIco[ iconStyles[ 0 ].icon ] : Ico[ iconStyles[ 0 ].icon ] ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
+					<IconRender className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
 						color: ( iconStyles[ 0 ].color ? iconStyles[ 0 ].color : undefined ),
 						borderRadius: ( undefined !== iconStyles[ 0 ].borderRadius ? iconStyles[ 0 ].borderRadius + 'px' : undefined ),
 						borderTopWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 0 ] && null !== iconStyles[ 0 ].borderWidth[ 0 ] ? iconStyles[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -151,7 +152,7 @@ registerBlockType( 'kadence/testimonials', {
 							paddingBottom: ( 'card' === style && ( undefined !== mediaStyles[ 0 ].ratio || '' !== mediaStyles[ 0 ].ratio ) ? mediaStyles[ 0 ].ratio + '%' : undefined ),
 						} }>
 							{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
-								<GenIcon className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } icon={ ( 'fa' === testimonials[ index ].icon.substring( 0, 2 ) ? FaIco[ testimonials[ index ].icon ] : Ico[ testimonials[ index ].icon ] ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
+								<IconRender className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
 									display: 'flex',
 									color: ( testimonials[ index ].color ? testimonials[ index ].color : undefined ),
 								} } />

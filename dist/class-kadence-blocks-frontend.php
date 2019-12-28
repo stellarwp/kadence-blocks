@@ -47,6 +47,7 @@ class Kadence_Blocks_Frontend {
 	public function __construct() {
 		add_action( 'init', array( $this, 'on_init' ), 20 );
 		add_action( 'enqueue_block_assets', array( $this, 'blocks_assets' ) );
+		//add_action( 'wp_enqueue_scripts', array( $this, 'global_inline_css' ), 101 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
 	}
@@ -506,6 +507,16 @@ class Kadence_Blocks_Frontend {
 		if ( ! wp_style_is( 'kadence-blocks-icon', 'enqueued' ) ) {
 			wp_enqueue_style( 'kadence-blocks-icon' );
 		}
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'icon', $unique_id ) ) {
+				$css = $this->blocks_icon_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
 	}
 	/**
 	 * Render Icon CSS
@@ -516,6 +527,20 @@ class Kadence_Blocks_Frontend {
 	public function render_icon_css( $attributes, $content ) {
 		if ( ! wp_style_is( 'kadence-blocks-icon', 'enqueued' ) ) {
 			wp_enqueue_style( 'kadence-blocks-icon' );
+		}
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'icon', $unique_id ) ) {
+				$css = $this->blocks_icon_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
 		}
 		return $content;
 	}
@@ -838,7 +863,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_style( 'kadence-blocks-gallery', KADENCE_BLOCKS_URL . 'dist/blocks/gallery.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		//wp_register_style( 'kadence-blocks-icon', KADENCE_BLOCKS_URL . 'dist/blocks/icon.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-icon', false );
-		$icon_css = '.kt-svg-style-stacked .kt-svg-icon{border:0px solid #444444}.kt-svg-icon-wrap{display:inline-block}';
+		$icon_css = '.kt-svg-style-stacked .kt-svg-icon{border:0px solid #444444;-webkit-transition:all .3s ease-in-out;-o-transition:all .3s ease-in-out;transition:all .3s ease-in-out}.kt-svg-icon-wrap{display:inline-block}.kt-svg-icon-wrap a.kt-svg-icon-link{display:block;border:0;text-decoration:none;-webkit-box-shadow:none;box-shadow:none}.kt-svg-icon-wrap a.kt-svg-icon-link:hover{-webkit-box-shadow:none;box-shadow:none}';
 		wp_add_inline_style( 'kadence-blocks-icon', $icon_css );
 		wp_register_style( 'kadence-blocks-iconlist', KADENCE_BLOCKS_URL . 'dist/blocks/iconlist.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-tabs', KADENCE_BLOCKS_URL . 'dist/blocks/tabs.style.build.css', array(), KADENCE_BLOCKS_VERSION );
@@ -873,7 +898,7 @@ class Kadence_Blocks_Frontend {
 				'mismatch'      => __( 'does not match', 'kadence-blocks' ),
 				'validation'    => __( 'is not valid', 'kadence-blocks' ),
 				'duplicate'     => __( 'requires a unique entry and this value has already been used', 'kadence-blocks' ),
-				'item'          => __( 'Item', 'kadence-blocks' )
+				'item'          => __( 'Item', 'kadence-blocks' ),
 			)
 		);
 		$recaptcha_site_key = get_option( 'kadence_blocks_recaptcha_site_key' );
@@ -962,6 +987,160 @@ class Kadence_Blocks_Frontend {
 			return gutenberg_parse_blocks( $content );
 		} else {
 			return false;
+		}
+	}
+	/**
+	 * Outputs extra css for blocks.
+	 */
+	public function global_inline_css() {
+		$print_global_styles = apply_filters( 'kadence_blocks_print_global_styles', true );
+		if ( ! $print_global_styles ) {
+			return;
+		}
+		$global_styles = json_decode( get_option( 'kadence_blocks_global' ) );
+		if ( $global_styles && is_object( $global_styles ) && isset( $global_styles->typography ) && is_object( $global_styles->typography ) ) {
+			$css = '';
+			foreach ( $global_styles->typography as $fontkey => $fontarray ) {
+				if ( is_array( $fontarray ) ) {
+					$font = $fontarray[0];
+				}
+				if ( isset( $font ) && is_object( $font ) && isset( $font->enable ) && true === $font->enable && isset( $font->loadGoogle ) && true === $font->loadGoogle && isset( $font->family ) && ! empty( $font->family ) ) {
+					// Check if the font has been added yet.
+					if ( isset( $font->family ) && ! array_key_exists( $font->family, self::$gfonts ) ) {
+						$add_font = array(
+							'fontfamily'   => $font->family,
+							'fontvariants' => ( isset( $font->variant ) && ! empty( $font->variant ) ? array( $font->variant ) : array() ),
+							'fontsubsets'  => ( isset( $font->subset ) && ! empty( $font->subset ) ? array( $font->subset ) : array() ),
+						);
+						self::$gfonts[ $font->family ] = $add_font;
+					} else {
+						if ( ! in_array( $font->variant, self::$gfonts[ $font->family ]['fontvariants'], true ) ) {
+							array_push( self::$gfonts[ $font->family ]['fontvariants'], $font->variant );
+						}
+						if ( ! in_array( $font->subset, self::$gfonts[ $font->family ]['fontsubsets'], true ) ) {
+							array_push( self::$gfonts[ $font->family ]['fontsubsets'], $font->subset );
+						}
+					}
+				}
+				if ( isset( $font ) && is_object( $font ) && isset( $font->enable ) && true === $font->enable ) {
+					$add_css = false;
+					$new_css = '';
+					if ( 'p' === $fontkey ) {
+						$new_css .= 'body {';
+					} else {
+						$new_css .= $fontkey .' {';
+					}
+					if ( isset( $font->color ) && ! empty( $font->color ) ) {
+						$add_css = true;
+						$new_css .= 'color:' . $font->color . ';';
+					}
+					if ( isset( $font->size ) && is_array( $font->size ) && is_numeric( $font->size[0] ) ) {
+						$add_css = true;
+						$new_css .= 'font-size:' . $font->size[0] . ( ! isset( $font->sizeType ) ? 'px' : $font->sizeType ) . ';';
+					}
+					if ( isset( $font->lineHeight ) && is_array( $font->lineHeight ) && is_numeric( $font->lineHeight[0] ) ) {
+						$add_css = true;
+						$new_css .= 'line-height:' . $font->lineHeight[0] . ( ! isset( $font->lineType ) ? 'px' : $font->lineType ) . ';';
+					}
+					if ( isset( $font->letterSpacing ) && is_numeric( $font->letterSpacing ) ) {
+						$add_css = true;
+						$new_css .= 'letter-spacing:' . $font->letterSpacing . 'px;';
+					}
+					if ( isset( $font->textTransform ) && ! empty( $font->textTransform ) ) {
+						$add_css = true;
+						$new_css .= 'text-transform:' . $font->textTransform . ';';
+					}
+					if ( isset( $font->family ) && ! empty( $font->family) ) {
+						$add_css = true;
+						$new_css .= 'font-family:' . $font->family. ';';
+					}
+					if ( isset( $font->style ) && ! empty( $font->style ) ) {
+						$add_css = true;
+						$new_css .= 'font-style:' . $font->style . ';';
+					}
+					if ( isset( $font->weight ) && ! empty( $font->weight ) ) {
+						$add_css = true;
+						$new_css .= 'font-weight:' . $font->weight . ';';
+					}
+					if ( 'p' === $fontkey ) {
+						$new_css .= '}';
+						$new_css .= 'p {';
+					}
+					if ( isset( $font->padding ) && is_array( $font->padding ) && is_numeric( $font->padding[0] ) ) {
+						$add_css = true;
+						$new_css .= 'padding-top:' . $font->padding[0] . ( ! isset( $font->paddingType ) ? 'px' : $font->paddingType ) . ';';
+					}
+					if ( isset( $font->padding ) && is_array( $font->padding ) && is_numeric( $font->padding[1] ) ) {
+						$add_css = true;
+						$new_css .= 'padding-right:' . $font->padding[1] . ( ! isset( $font->paddingType ) ? 'px' : $font->paddingType ) . ';';
+					}
+					if ( isset( $font->padding ) && is_array( $font->padding ) && is_numeric( $font->padding[2] ) ) {
+						$add_css = true;
+						$new_css .= 'padding-bottom:' . $font->padding[2] . ( ! isset( $font->paddingType ) ? 'px' : $font->paddingType ) . ';';
+					}
+					if ( isset( $font->padding ) && is_array( $font->padding ) && is_numeric( $font->padding[3] ) ) {
+						$add_css = true;
+						$new_css .= 'padding-left:' . $font->padding[3] . ( ! isset( $font->paddingType ) ? 'px' : $font->paddingType ) . ';';
+					}
+					if ( isset( $font->margin ) && is_array( $font->margin ) && is_numeric( $font->margin[0] ) ) {
+						$add_css = true;
+						$new_css .= 'margin-top:' . $font->margin[0] . ( ! isset( $font->marginType ) ? 'px' : $font->marginType ) . ';';
+					}
+					if ( isset( $font->margin ) && is_array( $font->margin ) && is_numeric( $font->margin[1] ) ) {
+						$add_css = true;
+						$new_css .= 'margin-right:' . $font->margin[1] . ( ! isset( $font->marginType ) ? 'px' : $font->marginType ) . ';';
+					}
+					if ( isset( $font->margin ) && is_array( $font->margin ) && is_numeric( $font->margin[2] ) ) {
+						$add_css = true;
+						$new_css .= 'margin-bottom:' . $font->margin[2] . ( ! isset( $font->marginType ) ? 'px' : $font->marginType ) . ';';
+					}
+					if ( isset( $font->margin ) && is_array( $font->margin ) && is_numeric( $font->margin[3] ) ) {
+						$add_css = true;
+						$new_css .= 'margin-left:' . $font->margin[3] . ( ! isset( $font->marginType ) ? 'px' : $font->marginType ) . ';';
+					}
+					$new_css .= '}';
+					if ( ( isset( $font->size ) && is_array( $font->size ) && is_numeric( $font->size[1] ) ) || ( isset( $font->lineHeight ) && is_array( $font->lineHeight ) && is_numeric( $font->lineHeight[1] ) ) ) {
+						$add_css = true;
+						$new_css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+						if ( 'p' === $fontkey ) {
+							$new_css .= 'body {';
+						} else {
+							$new_css .= $fontkey .' {';
+						}
+						if ( isset( $font->size ) && is_array( $font->size ) && is_numeric( $font->size[1] ) ) {
+							$new_css .= 'font-size:' . $font->size[1] . ( isset( $font->sizeType ) && ! empty( $font->sizeType ) ? $font->sizeType : 'px' ) . ';';
+						}
+						if ( isset( $font->lineHeight ) && is_array( $font->lineHeight ) && is_numeric( $font->lineHeight[1] ) ) {
+							$new_css .= 'line-height:' . $font->lineHeight[1] . ( isset( $font->lineType ) && ! empty( $font->lineType ) ? $font->lineType : 'px' ) . ';';
+						}
+						$new_css .= '}';
+						$new_css .= '}';
+					}
+					if ( ( isset( $font->size ) && is_array( $font->size ) && is_numeric( $font->size[2] ) ) || ( isset( $font->lineHeight ) && is_array( $font->lineHeight ) && is_numeric( $font->lineHeight[2] ) ) ) {
+						$add_css = true;
+						$new_css .= '@media (max-width: 767px) {';
+						if ( 'p' === $fontkey ) {
+							$new_css .= 'body {';
+						} else {
+							$new_css .= $fontkey .' {';
+						}
+						if ( isset( $font->size ) && is_array( $font->size ) && is_numeric( $font->size[2] ) ) {
+							$new_css .= 'font-size:' . $font->size[2] . ( isset( $font->sizeType ) && ! empty( $font->sizeType ) ? $font->sizeType : 'px' ) . ';';
+						}
+						if ( isset( $font->lineHeight ) && is_array( $font->lineHeight ) && is_numeric( $font->lineHeight[2] ) ) {
+							$new_css .= 'line-height:' . $font->lineHeight[2] . ( isset( $font->lineType ) && ! empty( $font->lineType ) ? $font->lineType : 'px' ) . ';';
+						}
+						$new_css .= '}';
+						$new_css .= '}';
+					}
+					if ( $add_css ) {
+						$css .= $new_css;
+					}
+				}
+			}
+			if ( ! empty( $css ) ) {
+				$this->render_inline_css( $css, 'kadence-blocks-global-styles' );
+			}
 		}
 	}
 	/**
@@ -1529,7 +1708,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $submit['color'] ) && ! empty( $submit['color'] ) ) {
 				$css .= 'color:' . $submit['color'] . ';';
 			}
-			if ( isset( $submit['borderRadius'] ) && ! empty( $submit['borderRadius'] ) ) {
+			if ( isset( $submit['borderRadius'] ) && is_numeric( $submit['borderRadius'] ) ) {
 				$css .= 'border-radius:' . $submit['borderRadius'] . 'px;';
 			}
 			if ( isset( $submit['borderWidth'] ) && is_array( $submit['borderWidth'] ) && is_numeric( $submit['borderWidth'][0] ) ) {
@@ -1818,6 +1997,35 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 
+		return $css;
+	}
+	/**
+	 * Builds CSS for Icon block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_icon_array( $attr, $unique_id ) {
+		$css = '';
+		if ( isset( $attr['icons'] ) && is_array( $attr['icons'] ) ) {
+			foreach ( $attr['icons'] as $icon_key => $icon_value ) {
+				if ( is_array( $icon_value ) ) {
+					if ( ( isset( $icon_value['hColor'] ) && ! empty( $icon_value['hColor'] ) ) || ( isset( $icon_value['hBackground'] ) && ! empty( $icon_value['hBackground'] ) ) || ( isset( $icon_value['hBorder'] ) && ! empty( $icon_value['hBorder'] ) ) ) {
+						$css .= '.kt-svg-icons' . $unique_id . ' .kt-svg-item-' . $icon_key . ':hover .kt-svg-icon {';
+						if ( isset( $icon_value['hColor'] ) && ! empty( $icon_value['hColor'] ) ) {
+							$css .= 'color:' . $icon_value['hColor'] . '!important;';
+						}
+						if ( isset( $icon_value['hBackground'] ) && ! empty( $icon_value['hBackground'] ) ) {
+							$css .= 'background:' . $icon_value['hBackground'] . '!important;';
+						}
+						if ( isset( $icon_value['hBorder'] ) && ! empty( $icon_value['hBorder'] ) ) {
+							$css .= 'border-color:' . $icon_value['hBorder'] . '!important;';
+						}
+						$css .= '}';
+					}
+				}
+			}
+		}
 		return $css;
 	}
 	/**

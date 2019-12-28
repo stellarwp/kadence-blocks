@@ -5,7 +5,8 @@
  */
 
 import ResizableBox from 're-resizable';
-
+import SvgPattern from './svg-pattern';
+import AdvancedColorControl from '../../advanced-color-control';
 /**
  * Import Css
  */
@@ -18,6 +19,7 @@ const { __ } = wp.i18n;
 const {
 	Component,
 	Fragment,
+	renderToString,
 } = wp.element;
 const {
 	InspectorControls,
@@ -107,7 +109,7 @@ class KadenceSpacerDivider extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits }, className, setAttributes, toggleSelection } = this.props;
+		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap }, className, setAttributes, toggleSelection } = this.props;
 		const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
 		const deskControls = (
 			<RangeControl
@@ -136,6 +138,14 @@ class KadenceSpacerDivider extends Component {
 				max={ 600 }
 			/>
 		);
+		let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ dividerColor } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
+		svgStringPre = svgStringPre.replace( 'patterntransform', 'patternTransform' );
+		svgStringPre = svgStringPre.replace( 'patternunits', 'patternUnits' );
+		//const svgString = encodeURIComponent( svgStringPre );
+		//const dataUri = `url("data:image/svg+xml,${ svgString }")`;
+		const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
+		const minD = ( dividerStyle !== 'stripe' ? 1 : 10 );
+		const maxD = ( dividerStyle !== 'stripe' ? 40 : 60 );
 		return (
 			<div className={ className }>
 				{ this.showSettings( 'spacerDivider' ) && (
@@ -225,27 +235,50 @@ class KadenceSpacerDivider extends Component {
 												{ value: 'solid', label: __( 'Solid' ) },
 												{ value: 'dashed', label: __( 'Dashed' ) },
 												{ value: 'dotted', label: __( 'Dotted' ) },
+												{ value: 'stripe', label: __( 'Stripe' ) },
 											] }
 											onChange={ value => setAttributes( { dividerStyle: value } ) }
 										/>
-										<p className="kt-setting-label">{ __( 'Divider Color' ) }</p>
-										<ColorPalette
-											value={ dividerColor }
-											onChange={ value => setAttributes( { dividerColor: value } ) }
+										<AdvancedColorControl
+											label={ __( 'Divider Color' ) }
+											colorValue={ ( dividerColor ? dividerColor : '' ) }
+											colorDefault={ '' }
+											opacityValue={ dividerOpacity }
+											onColorChange={ value => setAttributes( { dividerColor: value } ) }
+											onOpacityChange={ value => setAttributes( { dividerOpacity: value } ) }
+											opacityUnit={ 100 }
 										/>
-										<RangeControl
-											label={ __( 'Divider Opacity' ) }
-											value={ dividerOpacity }
-											onChange={ value => setAttributes( { dividerOpacity: value } ) }
-											min={ 0 }
-											max={ 100 }
-										/>
+										{ 'stripe' === dividerStyle && (
+											<Fragment>
+												<RangeControl
+													label={ __( 'Stripe Angle' ) }
+													value={ rotate }
+													onChange={ value => setAttributes( { rotate: value } ) }
+													min={ 0 }
+													max={ 135 }
+												/>
+												<RangeControl
+													label={ __( 'Stripe Width' ) }
+													value={ strokeWidth }
+													onChange={ value => setAttributes( { strokeWidth: value } ) }
+													min={ 1 }
+													max={ 30 }
+												/>
+												<RangeControl
+													label={ __( 'Stripe Gap' ) }
+													value={ strokeGap }
+													onChange={ value => setAttributes( { strokeGap: value } ) }
+													min={ 1 }
+													max={ 30 }
+												/>
+											</Fragment>
+										) }
 										<RangeControl
 											label={ __( 'Divider Height in px' ) }
 											value={ dividerHeight }
 											onChange={ value => setAttributes( { dividerHeight: value } ) }
-											min={ 0 }
-											max={ 40 }
+											min={ minD }
+											max={ maxD }
 										/>
 										<RangeControl
 											label={ __( 'Divider Width by %' ) }
@@ -262,12 +295,24 @@ class KadenceSpacerDivider extends Component {
 				) }
 				<div className={ `kt-block-spacer kt-block-spacer-halign-${ hAlign }` }>
 					{ dividerEnable && (
-						<hr className="kt-divider" style={ {
-							borderTopColor: dividerBorderColor,
-							borderTopWidth: dividerHeight + 'px',
-							width: dividerWidth + '%',
-							borderTopStyle: dividerStyle,
-						} } />
+						<Fragment>
+							{ dividerStyle === 'stripe' && (
+								<span className="kt-divider-stripe" style={ {
+									height: ( dividerHeight < 10 ? 10 : dividerHeight ) + 'px',
+									width: dividerWidth + '%',
+								} }>
+									<SvgPattern uniqueID={ uniqueID } color={ dividerColor } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
+								</span>
+							) }
+							{ dividerStyle !== 'stripe' && (
+								<hr className="kt-divider" style={ {
+									borderTopColor: dividerBorderColor,
+									borderTopWidth: dividerHeight + 'px',
+									width: dividerWidth + '%',
+									borderTopStyle: dividerStyle,
+								} } />
+							) }
+						</Fragment>
 					) }
 					{ spacerHeightUnits && 'vh' === spacerHeightUnits && (
 						<div className="kt-spacer-height-preview" style={ {

@@ -2,10 +2,6 @@
  * Copy and Paste Block Styles Component
  *
  */
-
-const {
-	applyFilters,
-} = wp.hooks;
 import flow from 'lodash/flow';
 const { __ } = wp.i18n;
 const {
@@ -13,12 +9,6 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	Button,
-	ButtonGroup,
-	IconButton,
-	Dashicon,
-	Tooltip,
-	Dropdown,
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,

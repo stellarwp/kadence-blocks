@@ -109,6 +109,7 @@ registerBlockType( 'kadence/advancedbtn', {
 				responsivePaddingLR: [ '', '' ],
 				boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
 				boxShadowHover: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
+				sponsored: false,
 			} ],
 		},
 		letterSpacing: {
@@ -164,14 +165,14 @@ registerBlockType( 'kadence/advancedbtn', {
 		const { attributes: { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth, thAlign, mhAlign } } = props;
 		const renderSaveBtns = ( index ) => {
 			let relAttr;
-			if ( '_blank' === btns[ index ].target && true === btns[ index ].noFollow ) {
-				relAttr = 'noreferrer noopener nofollow';
-			} else if ( '_blank' === btns[ index ].target ) {
+			if ( '_blank' === btns[ index ].target ) {
 				relAttr = 'noreferrer noopener';
-			} else if ( true === btns[ index ].noFollow ) {
-				relAttr = 'nofollow';
-			} else {
-				relAttr = undefined;
+			}
+			if ( true === btns[ index ].noFollow ) {
+				relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+			}
+			if ( undefined !== btns[ index ].sponsored && true === btns[ index ].sponsored ) {
+				relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 			}
 			let btnSize;
 			if ( undefined !== btns[ index ].paddingLR || undefined !== btns[ index ].paddingBT ) {

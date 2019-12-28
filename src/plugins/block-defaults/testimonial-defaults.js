@@ -1,13 +1,9 @@
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import IcoNames from '../../svgiconsnames';
-import FaIco from '../../faicons';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import map from 'lodash/map';
 import OpacityControl from '../../opacity-control';
 import hexToRGBA from '../../hex-to-rgba';
+import IconControl from '../../icon-control';
 /**
  * Internal block libraries
  */
@@ -506,9 +502,6 @@ class KadenceTestimonialDefault extends Component {
 			} );
 			this.saveConfigState( 'ratingStyles', newUpdate );
 		};
-		const renderSVG = svg => (
-			<GenIcon name={ svg } icon={ ( 'fa' === svg.substring( 0, 2 ) ? FaIco[ svg ] : Ico[ svg ] ) } />
-		);
 		const style = ( undefined !== testimonialConfig.style ? testimonialConfig.style : 'basic' );
 		return (
 			<Fragment>
@@ -761,16 +754,11 @@ class KadenceTestimonialDefault extends Component {
 											checked={ ( undefined !== testimonialConfig.displayIcon ? testimonialConfig.displayIcon : false ) }
 											onChange={ ( value ) => this.saveConfigState( 'displayIcon', value ) }
 										/>
-										<FontIconPicker
-											icons={ IcoNames }
+										<IconControl
 											value={ iconStyles[ 0 ].icon }
 											onChange={ value => {
 												saveIconStyles( { icon: value } );
 											} }
-											appendTo="body"
-											renderFunc={ renderSVG }
-											theme="default"
-											isMulti={ false }
 										/>
 										<RangeControl
 											label={ __( 'Icon Size' ) }

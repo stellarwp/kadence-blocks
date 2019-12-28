@@ -66,11 +66,22 @@
     left: 50%;
     transform: perspective(1px) translate(-50%, -50%);
 }
-.kt-block-spacer.kt-block-spacer-halign-left .kt-divider {
+.kt-divider-stripe {
+	width: 100%;
+    border: 0;
+    position: absolute;
+    top: 50%;
+	margin: 0;
+	height:20px;
+    padding: 0;
+    left: 50%;
+	transform: perspective(1px) translate(-50%, -50%);
+}
+.kt-block-spacer.kt-block-spacer-halign-left .kt-divider, .kt-block-spacer.kt-block-spacer-halign-left .kt-divider-stripe {
     left: 0;
     transform: perspective(1px) translate(0%, -50%);
 }
-.kt-block-spacer.kt-block-spacer-halign-right .kt-divider {
+.kt-block-spacer.kt-block-spacer-halign-right .kt-divider, .kt-block-spacer.kt-block-spacer-halign-right .kt-divider-stripe  {
     left: auto;
     right:0;
     transform: perspective(1px) translate(0%, -50%);

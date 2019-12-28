@@ -43,6 +43,7 @@ import KadenceGallerySettings from './block-settings/advanced-gallery-settings';
 import KadenceColumn from './block-defaults/column-defaults';
 import KadenceColumnSettings from './block-settings/column-settings';
 import KadenceColors from './block-defaults/color-palette-defaults';
+//import KadenceGlobalTypography from './block-globals/typography';
 
 /*
  * Components
@@ -163,6 +164,14 @@ class KadenceConfig extends Component {
 					>
 						<KadenceEditorWidth />
 					</PanelBody>
+					{/* <PanelBody
+						title={ __( 'Global Styles' ) }
+						initialOpen={ false }
+					>
+						{ 'admin' === this.state.user && (
+							<KadenceGlobalTypography />
+						) }
+					</PanelBody> */}
 				</PluginSidebar>
 			</Fragment>
 		);
