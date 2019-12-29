@@ -26,6 +26,7 @@ const walkChildren = ( children ) => {
 export const GenIcon = ( props ) => {
 	const { style, className, icon, name, htmltag, ...others } = props;
 	const type = name.substring( 0, 2 );
+	const typeL = name.substring( 0, 3 );
 	const lineIcon = ( type && 'fe' == type ? true : false );
 	const fill = ( lineIcon ? 'none' : 'currentColor' );
 	const strokeWidth = ( lineIcon ? props.strokeWidth : undefined );
@@ -36,7 +37,7 @@ export const GenIcon = ( props ) => {
 	const viewB = ( props.icon && props.icon.vB ? props.icon.vB.split( ' ' ) : false );
 	return (
 		<HtmlTagOut style={ { display: 'inline-flex', justifyContent: 'center', alignItems: 'center', ...style } } className={ className }>
-			<svg style={ { display: 'inline-block', verticalAlign: 'middle' } } viewBox={ ( ! props.icon ? '0 0 24 24' : props.icon.vB ) } height={ props.size } width={ props.size } fill={ fill } stroke={ stroke } xmlns={ props.xmlns } preserveAspectRatio={ ( viewB && undefined !== viewB[ 2 ] && undefined !== viewB[ 3 ] && viewB[ 2 ] !== viewB[ 3 ] ? 'xMinYMin meet' : undefined ) } stroke-width={ strokeWidth } stroke-linecap={ strokeLinecap } stroke-linejoin={ strokeLinejoin } >
+			<svg style={ { display: 'inline-block', verticalAlign: 'middle' } } viewBox={ ( ! props.icon ? '0 0 24 24' : props.icon.vB ) } height={ props.size } width={ props.size } fill={ fill } stroke={ stroke } xmlns={ props.xmlns } preserveAspectRatio={ ( typeL && 'fas' !== typeL && viewB && undefined !== viewB[ 2 ] && undefined !== viewB[ 3 ] && viewB[ 2 ] !== viewB[ 3 ] ? 'xMinYMin meet' : undefined ) } stroke-width={ strokeWidth } stroke-linecap={ strokeLinecap } stroke-linejoin={ strokeLinejoin } >
 				{ props.title ? <title>{ props.title }</title> : null }
 				{ props.icon && (
 					walkChildren( props.icon.cD )
