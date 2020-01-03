@@ -17,7 +17,6 @@ window.kb = {
 		IconRender,
 	},
 };
-
 import icons from './brand-icon';
 //wp.i18n.setLocaleData( { '': {} }, 'kadence-blocks' );
 

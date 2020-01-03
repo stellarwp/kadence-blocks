@@ -104,7 +104,7 @@ class AdvancedColorControl extends Component {
 							<Popover position="top left" className="kt-popover-color" onClose={ toggleClose }>
 								{ this.state.classSat === 'first' && ! this.props.disableCustomColors && (
 									<ColorPicker
-										color={ ( undefined === this.props.colorValue || '' === this.props.colorValue ? this.state.defaultColor : this.props.colorValue ) }
+										color={ ( undefined === this.props.colorValue || '' === this.props.colorValue || 'transparent' === this.props.colorValue ? this.state.defaultColor : this.props.colorValue ) }
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
 											this.props.onColorChange( color.hex );
@@ -114,7 +114,7 @@ class AdvancedColorControl extends Component {
 								) }
 								{ this.state.classSat === 'second' && ! this.props.disableCustomColors && (
 									<ColorPicker
-										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor ? this.state.defaultColor : this.state.currentColor ) }
+										color={ ( undefined === this.state.currentColor || '' === this.state.currentColor || 'transparent' === this.props.colorValue ? this.state.defaultColor : this.state.currentColor ) }
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
 											this.props.onColorChange( color.hex );

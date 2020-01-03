@@ -308,5 +308,13 @@ const attributes = {
 		type: 'string',
 		default: 'px',
 	},
+	containerMargin: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	containerMarginUnit: {
+		type: 'string',
+		default: 'px',
+	},
 };
 export default attributes;

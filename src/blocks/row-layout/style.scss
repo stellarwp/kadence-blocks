@@ -5,6 +5,9 @@
  */
 // Item
 // Defaults
+.entry-content .wp-block-kadence-rowlayout:not(.somemadeupclass) {
+	margin-bottom:0;
+}
 .kt-row-layout-inner {
     position: relative;
 }

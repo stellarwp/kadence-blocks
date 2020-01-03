@@ -44,6 +44,7 @@ const {
 const {
 	Button,
 	IconButton,
+	Dropdown,
 	ButtonGroup,
 	TabPanel,
 	Dashicon,
@@ -69,6 +70,7 @@ class KadenceInfoBox extends Component {
 		this.state = {
 			containerPaddingControl: 'linked',
 			containerBorderControl: 'linked',
+			containerMarginControl: 'linked',
 			mediaBorderControl: 'linked',
 			mediaPaddingControl: 'linked',
 			mediaMarginControl: 'linked',
@@ -125,6 +127,11 @@ class KadenceInfoBox extends Component {
 		} else {
 			this.setState( { containerPaddingControl: 'individual' } );
 		}
+		if ( this.props.attributes.containerMargin && this.props.attributes.containerMargin[ 0 ] && this.props.attributes.containerMargin[ 0 ] === this.props.attributes.containerMargin[ 1 ] && this.props.attributes.containerMargin[ 0 ] === this.props.attributes.containerMargin[ 2 ] && this.props.attributes.containerMargin[ 0 ] === this.props.attributes.containerMargin[ 3 ] ) {
+			this.setState( { containerMarginControl: 'linked' } );
+		} else {
+			this.setState( { containerMarginControl: 'individual' } );
+		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/infobox' ] !== undefined && typeof blockSettings[ 'kadence/infobox' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/infobox' ] } );
@@ -145,14 +152,24 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet }, className, setAttributes, isSelected } = this.props;
-		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl } = this.state;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit }, className, setAttributes, isSelected } = this.props;
+		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, containerMarginControl } = this.state;
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 		const widthTypes = [
 			{ key: 'px', name: 'px' },
 			{ key: '%', name: '%' },
 			{ key: 'vw', name: 'vw' },
 		];
+		const marginTypes = [
+			{ key: 'px', name: 'px' },
+			{ key: 'em', name: 'em' },
+			{ key: '%', name: '%' },
+			{ key: 'vh', name: 'vh' },
+			{ key: 'rem', name: 'rem' },
+		];
+		const marginMin = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -12 : -200 );
+		const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 24 : 200 );
+		const marginStep = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 );
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
 			{ key: 'simple', name: __( 'Simple' ), icon: icons.infoSimple },
@@ -160,6 +177,413 @@ class KadenceInfoBox extends Component {
 			{ key: 'bold', name: __( 'Bold Background' ), icon: icons.infoBackground },
 			{ key: 'image', name: __( 'Circle Image' ), icon: icons.infoImage },
 		];
+		const layoutPresetOptions = [
+			{ key: 'simple', name: __( 'Basic' ), icon: icons.infoStart },
+			{ key: 'basic', name: __( 'Basic' ), icon: icons.infoBasic },
+			{ key: 'leftabove', name: __( 'Left Above' ), icon: icons.infoLeftAbove },
+			{ key: 'left', name: __( 'Left' ), icon: icons.infoLeft },
+			{ key: 'overlay', name: __( 'Overlay' ), icon: icons.infoTopOverlay },
+			{ key: 'overlayleft', name: __( 'Overlay Left' ), icon: icons.infoLeftOverlay },
+		];
+		const setPresetLayout = ( key ) => {
+			if ( 'simple' === key ) {
+				setAttributes( {
+					hAlign: 'center',
+					containerBackground: ( '#ffffff' === containerBackground ? '#f2f2f2' : containerBackground ),
+					containerHoverBackground: ( '#ffffff' === containerBackground ? '#f2f2f2' : containerBackground ),
+					containerBorderWidth: [ 0, 0, 0, 0 ],
+					containerBorderRadius: 0,
+					containerPadding: [ 20, 20, 20, 20 ],
+					containerMargin: [ '', '', '', '' ],
+					mediaAlign: 'top',
+					mediaIcon: [ {
+						icon: mediaIcon[ 0 ].icon,
+						size: 50,
+						width: mediaIcon[ 0 ].width,
+						title: mediaIcon[ 0 ].title,
+						color: mediaIcon[ 0 ].color,
+						hoverColor: mediaIcon[ 0 ].hoverColor,
+						hoverAnimation: mediaIcon[ 0 ].hoverAnimation,
+						flipIcon: mediaIcon[ 0 ].flipIcon,
+					} ],
+					mediaStyle: [ {
+						background: mediaIcon[ 0 ].background,
+						hoverBackground: mediaIcon[ 0 ].hoverBackground,
+						border: mediaIcon[ 0 ].border,
+						hoverBorder: mediaIcon[ 0 ].hoverBorder,
+						borderRadius: 0,
+						borderWidth: [ 0, 0, 0, 0 ],
+						padding: [ 10, 10, 10, 10 ],
+						margin: [ 0, 15, 0, 15 ],
+					} ],
+					titleFont: [ {
+						level: titleFont[ 0 ].level,
+						size: titleFont[ 0 ].size,
+						sizeType: titleFont[ 0 ].sizeType,
+						lineHeight: titleFont[ 0 ].lineHeight,
+						lineType: titleFont[ 0 ].lineType,
+						letterSpacing: titleFont[ 0 ].letterSpacing,
+						textTransform: titleFont[ 0 ].textTransform,
+						family: titleFont[ 0 ].family,
+						google: titleFont[ 0 ].google,
+						style: titleFont[ 0 ].style,
+						weight: titleFont[ 0 ].weight,
+						variant: titleFont[ 0 ].variant,
+						subset: titleFont[ 0 ].subset,
+						loadGoogle: titleFont[ 0 ].loadGoogle,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+				} );
+			} else if ( 'basic' === key ) {
+				setAttributes( {
+					hAlign: 'center',
+					containerBackground: ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
+					containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
+					containerBorder: ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
+					containerHoverBorder: ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
+					containerBorderWidth: [ 5, 5, 5, 5 ],
+					containerBorderRadius: 30,
+					containerPadding: [ 20, 20, 20, 20 ],
+					containerMargin: [ '', '', '', '' ],
+					mediaAlign: 'top',
+					mediaIcon: [ {
+						icon: mediaIcon[ 0 ].icon,
+						size: 50,
+						width: mediaIcon[ 0 ].width,
+						title: mediaIcon[ 0 ].title,
+						color: mediaIcon[ 0 ].color,
+						hoverColor: mediaIcon[ 0 ].hoverColor,
+						hoverAnimation: mediaIcon[ 0 ].hoverAnimation,
+						flipIcon: mediaIcon[ 0 ].flipIcon,
+					} ],
+					mediaStyle: [ {
+						background: ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#eeeeee' : mediaIcon[ 0 ].background ),
+						hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#eeeeee' : mediaIcon[ 0 ].hoverBackground ),
+						border: mediaIcon[ 0 ].border,
+						hoverBorder: mediaIcon[ 0 ].hoverBorder,
+						borderRadius: 200,
+						borderWidth: [ 0, 0, 0, 0 ],
+						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						margin: [ 0, 15, 10, 15 ],
+					} ],
+					mediaImage: [ {
+						url: mediaImage[ 0 ].url,
+						id: mediaImage[ 0 ].id,
+						alt: mediaImage[ 0 ].alt,
+						width: mediaImage[ 0 ].width,
+						height: mediaImage[ 0 ].height,
+						maxWidth: 100,
+						hoverAnimation: mediaImage[ 0 ].hoverAnimation,
+						flipUrl: mediaImage[ 0 ].flipUrl,
+						flipId: mediaImage[ 0 ].flipId,
+						flipAlt: mediaImage[ 0 ].flipAlt,
+						flipWidth: mediaImage[ 0 ].flipWidth,
+						flipHeight: mediaImage[ 0 ].flipHeight,
+						subtype: mediaImage[ 0 ].subtype,
+						flipSubtype: mediaImage[ 0 ].flipSubtype,
+					} ],
+					titleFont: [ {
+						level: titleFont[ 0 ].level,
+						size: titleFont[ 0 ].size,
+						sizeType: titleFont[ 0 ].sizeType,
+						lineHeight: titleFont[ 0 ].lineHeight,
+						lineType: titleFont[ 0 ].lineType,
+						letterSpacing: titleFont[ 0 ].letterSpacing,
+						textTransform: titleFont[ 0 ].textTransform,
+						family: titleFont[ 0 ].family,
+						google: titleFont[ 0 ].google,
+						style: titleFont[ 0 ].style,
+						weight: titleFont[ 0 ].weight,
+						variant: titleFont[ 0 ].variant,
+						subset: titleFont[ 0 ].subset,
+						loadGoogle: titleFont[ 0 ].loadGoogle,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+				} );
+			} else if ( 'leftabove' === key ) {
+				setAttributes( {
+					hAlign: 'left',
+					containerBackground: ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
+					containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
+					containerBorder: ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
+					containerHoverBorder: ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
+					containerBorderWidth: [ 5, 5, 5, 5 ],
+					containerBorderRadius: 0,
+					containerPadding: [ 24, 24, 24, 24 ],
+					containerMargin: [ '', '', '', '' ],
+					mediaAlign: 'top',
+					mediaIcon: [ {
+						icon: mediaIcon[ 0 ].icon,
+						size: 50,
+						width: mediaIcon[ 0 ].width,
+						title: mediaIcon[ 0 ].title,
+						color: mediaIcon[ 0 ].color,
+						hoverColor: mediaIcon[ 0 ].hoverColor,
+						hoverAnimation: mediaIcon[ 0 ].hoverAnimation,
+						flipIcon: mediaIcon[ 0 ].flipIcon,
+					} ],
+					mediaStyle: [ {
+						background: ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#eeeeee' : mediaIcon[ 0 ].background ),
+						hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#eeeeee' : mediaIcon[ 0 ].hoverBackground ),
+						border: mediaIcon[ 0 ].border,
+						hoverBorder: mediaIcon[ 0 ].hoverBorder,
+						borderRadius: 0,
+						borderWidth: [ 0, 0, 0, 0 ],
+						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						margin: [ 0, 0, 16, 0 ],
+					} ],
+					mediaImage: [ {
+						url: mediaImage[ 0 ].url,
+						id: mediaImage[ 0 ].id,
+						alt: mediaImage[ 0 ].alt,
+						width: mediaImage[ 0 ].width,
+						height: mediaImage[ 0 ].height,
+						maxWidth: 100,
+						hoverAnimation: mediaImage[ 0 ].hoverAnimation,
+						flipUrl: mediaImage[ 0 ].flipUrl,
+						flipId: mediaImage[ 0 ].flipId,
+						flipAlt: mediaImage[ 0 ].flipAlt,
+						flipWidth: mediaImage[ 0 ].flipWidth,
+						flipHeight: mediaImage[ 0 ].flipHeight,
+						subtype: mediaImage[ 0 ].subtype,
+						flipSubtype: mediaImage[ 0 ].flipSubtype,
+					} ],
+					titleFont: [ {
+						level: titleFont[ 0 ].level,
+						size: titleFont[ 0 ].size,
+						sizeType: titleFont[ 0 ].sizeType,
+						lineHeight: titleFont[ 0 ].lineHeight,
+						lineType: titleFont[ 0 ].lineType,
+						letterSpacing: titleFont[ 0 ].letterSpacing,
+						textTransform: titleFont[ 0 ].textTransform,
+						family: titleFont[ 0 ].family,
+						google: titleFont[ 0 ].google,
+						style: titleFont[ 0 ].style,
+						weight: titleFont[ 0 ].weight,
+						variant: titleFont[ 0 ].variant,
+						subset: titleFont[ 0 ].subset,
+						loadGoogle: titleFont[ 0 ].loadGoogle,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+				} );
+			} else if ( 'left' === key ) {
+				setAttributes( {
+					hAlign: 'left',
+					containerBackground: ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
+					containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
+					containerBorder: ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
+					containerHoverBorder: ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
+					containerBorderWidth: [ 5, 5, 5, 5 ],
+					containerBorderRadius: 20,
+					containerPadding: [ 24, 24, 24, 24 ],
+					containerMargin: [ '', '', '', '' ],
+					mediaAlign: 'left',
+					mediaIcon: [ {
+						icon: mediaIcon[ 0 ].icon,
+						size: 50,
+						width: mediaIcon[ 0 ].width,
+						title: mediaIcon[ 0 ].title,
+						color: mediaIcon[ 0 ].color,
+						hoverColor: mediaIcon[ 0 ].hoverColor,
+						hoverAnimation: mediaIcon[ 0 ].hoverAnimation,
+						flipIcon: mediaIcon[ 0 ].flipIcon,
+					} ],
+					mediaStyle: [ {
+						background: ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
+						hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
+						border: ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
+						hoverBorder: ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+						borderRadius: 200,
+						borderWidth: ( 'icon' === mediaType ? [ 5, 5, 5, 5 ] : [ 0, 0, 0, 0 ] ),
+						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						margin: [ 0, 20, 0, 0 ],
+					} ],
+					mediaImage: [ {
+						url: mediaImage[ 0 ].url,
+						id: mediaImage[ 0 ].id,
+						alt: mediaImage[ 0 ].alt,
+						width: mediaImage[ 0 ].width,
+						height: mediaImage[ 0 ].height,
+						maxWidth: 100,
+						hoverAnimation: mediaImage[ 0 ].hoverAnimation,
+						flipUrl: mediaImage[ 0 ].flipUrl,
+						flipId: mediaImage[ 0 ].flipId,
+						flipAlt: mediaImage[ 0 ].flipAlt,
+						flipWidth: mediaImage[ 0 ].flipWidth,
+						flipHeight: mediaImage[ 0 ].flipHeight,
+						subtype: mediaImage[ 0 ].subtype,
+						flipSubtype: mediaImage[ 0 ].flipSubtype,
+					} ],
+					titleFont: [ {
+						level: titleFont[ 0 ].level,
+						size: titleFont[ 0 ].size,
+						sizeType: titleFont[ 0 ].sizeType,
+						lineHeight: titleFont[ 0 ].lineHeight,
+						lineType: titleFont[ 0 ].lineType,
+						letterSpacing: titleFont[ 0 ].letterSpacing,
+						textTransform: titleFont[ 0 ].textTransform,
+						family: titleFont[ 0 ].family,
+						google: titleFont[ 0 ].google,
+						style: titleFont[ 0 ].style,
+						weight: titleFont[ 0 ].weight,
+						variant: titleFont[ 0 ].variant,
+						subset: titleFont[ 0 ].subset,
+						loadGoogle: titleFont[ 0 ].loadGoogle,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+				} );
+			} else if ( 'overlay' === key ) {
+				setAttributes( {
+					hAlign: 'center',
+					containerBackground: ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
+					containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
+					containerBorder: ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
+					containerHoverBorder: ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
+					containerBorderWidth: [ 5, 5, 5, 5 ],
+					containerBorderRadius: 20,
+					containerPadding: [ 24, 24, 24, 24 ],
+					containerMargin: [ 50, '', '', '' ],
+					mediaAlign: 'top',
+					mediaIcon: [ {
+						icon: mediaIcon[ 0 ].icon,
+						size: 50,
+						width: mediaIcon[ 0 ].width,
+						title: mediaIcon[ 0 ].title,
+						color: mediaIcon[ 0 ].color,
+						hoverColor: mediaIcon[ 0 ].hoverColor,
+						hoverAnimation: mediaIcon[ 0 ].hoverAnimation,
+						flipIcon: mediaIcon[ 0 ].flipIcon,
+					} ],
+					mediaStyle: [ {
+						background: ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
+						hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
+						border: ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
+						hoverBorder: ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+						borderRadius: 200,
+						borderWidth: [ 5, 5, 5, 5 ],
+						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						margin: [ -75, 0, 20, 0 ],
+					} ],
+					mediaImage: [ {
+						url: mediaImage[ 0 ].url,
+						id: mediaImage[ 0 ].id,
+						alt: mediaImage[ 0 ].alt,
+						width: mediaImage[ 0 ].width,
+						height: mediaImage[ 0 ].height,
+						maxWidth: 100,
+						hoverAnimation: mediaImage[ 0 ].hoverAnimation,
+						flipUrl: mediaImage[ 0 ].flipUrl,
+						flipId: mediaImage[ 0 ].flipId,
+						flipAlt: mediaImage[ 0 ].flipAlt,
+						flipWidth: mediaImage[ 0 ].flipWidth,
+						flipHeight: mediaImage[ 0 ].flipHeight,
+						subtype: mediaImage[ 0 ].subtype,
+						flipSubtype: mediaImage[ 0 ].flipSubtype,
+					} ],
+					titleFont: [ {
+						level: titleFont[ 0 ].level,
+						size: titleFont[ 0 ].size,
+						sizeType: titleFont[ 0 ].sizeType,
+						lineHeight: titleFont[ 0 ].lineHeight,
+						lineType: titleFont[ 0 ].lineType,
+						letterSpacing: titleFont[ 0 ].letterSpacing,
+						textTransform: titleFont[ 0 ].textTransform,
+						family: titleFont[ 0 ].family,
+						google: titleFont[ 0 ].google,
+						style: titleFont[ 0 ].style,
+						weight: titleFont[ 0 ].weight,
+						variant: titleFont[ 0 ].variant,
+						subset: titleFont[ 0 ].subset,
+						loadGoogle: titleFont[ 0 ].loadGoogle,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+				} );
+			} else if ( 'overlayleft' === key ) {
+				setAttributes( {
+					hAlign: 'left',
+					containerBackground: ( '#f2f2f2' === containerBackground ? '#ffffff' : containerBackground ),
+					containerHoverBackground: ( '#f2f2f2' === containerHoverBackground ? '#ffffff' : containerHoverBackground ),
+					containerBorder: ( '#f2f2f2' === containerBorder ? '#ffffff' : containerBorder ),
+					containerHoverBorder: ( '#f2f2f2' === containerHoverBorder ? '#eeeeee' : containerHoverBorder ),
+					containerBorderWidth: [ 5, 5, 5, 5 ],
+					containerBorderRadius: 0,
+					containerPadding: [ 24, 24, 24, 24 ],
+					containerMargin: [ 50, '', '', '' ],
+					mediaAlign: 'top',
+					mediaIcon: [ {
+						icon: mediaIcon[ 0 ].icon,
+						size: 50,
+						width: mediaIcon[ 0 ].width,
+						title: mediaIcon[ 0 ].title,
+						color: mediaIcon[ 0 ].color,
+						hoverColor: mediaIcon[ 0 ].hoverColor,
+						hoverAnimation: mediaIcon[ 0 ].hoverAnimation,
+						flipIcon: mediaIcon[ 0 ].flipIcon,
+					} ],
+					mediaStyle: [ {
+						background: ( undefined === mediaIcon[ 0 ].background || 'transparent' === mediaIcon[ 0 ].background ? '#ffffff' : mediaIcon[ 0 ].background ),
+						hoverBackground: ( undefined === mediaIcon[ 0 ].hoverBackground || 'transparent' === mediaIcon[ 0 ].hoverBackground ? '#ffffff' : mediaIcon[ 0 ].hoverBackground ),
+						border: ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
+						hoverBorder: ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
+						borderRadius: 0,
+						borderWidth: [ 5, 5, 5, 5 ],
+						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						margin: [ -75, 0, 20, 0 ],
+					} ],
+					mediaImage: [ {
+						url: mediaImage[ 0 ].url,
+						id: mediaImage[ 0 ].id,
+						alt: mediaImage[ 0 ].alt,
+						width: mediaImage[ 0 ].width,
+						height: mediaImage[ 0 ].height,
+						maxWidth: 100,
+						hoverAnimation: mediaImage[ 0 ].hoverAnimation,
+						flipUrl: mediaImage[ 0 ].flipUrl,
+						flipId: mediaImage[ 0 ].flipId,
+						flipAlt: mediaImage[ 0 ].flipAlt,
+						flipWidth: mediaImage[ 0 ].flipWidth,
+						flipHeight: mediaImage[ 0 ].flipHeight,
+						subtype: mediaImage[ 0 ].subtype,
+						flipSubtype: mediaImage[ 0 ].flipSubtype,
+					} ],
+					titleFont: [ {
+						level: titleFont[ 0 ].level,
+						size: titleFont[ 0 ].size,
+						sizeType: titleFont[ 0 ].sizeType,
+						lineHeight: titleFont[ 0 ].lineHeight,
+						lineType: titleFont[ 0 ].lineType,
+						letterSpacing: titleFont[ 0 ].letterSpacing,
+						textTransform: titleFont[ 0 ].textTransform,
+						family: titleFont[ 0 ].family,
+						google: titleFont[ 0 ].google,
+						style: titleFont[ 0 ].style,
+						weight: titleFont[ 0 ].weight,
+						variant: titleFont[ 0 ].variant,
+						subset: titleFont[ 0 ].subset,
+						loadGoogle: titleFont[ 0 ].loadGoogle,
+						padding: [ 0, 0, 0, 0 ],
+						paddingControl: 'linked',
+						margin: [ 5, 0, 10, 0 ],
+						marginControl: 'individual',
+					} ],
+				} );
+			}
+		};
 		const setInitalLayout = ( key ) => {
 			if ( 'skip' === key ) {
 			} else if ( 'simple' === key ) {
@@ -752,6 +1176,38 @@ class KadenceInfoBox extends Component {
 							/>
 						</Toolbar>
 					) }
+					{ 'icon' === mediaType && (
+						<Dropdown
+							className="kb-popover-inline-icon-container components-dropdown-menu components-toolbar"
+							contentClassName="kb-popover-inline-icon"
+							position="top center"
+							renderToggle={ ( { isOpen, onToggle } ) => (
+								<Fragment>
+									<IconButton className="components-dropdown-menu__toggle kb-inline-icon-toolbar-icon" label={ __( 'Icon Settings' ) } tooltip={ __( 'Icon Settings' ) } icon={ 'star-filled' } onClick={ onToggle } aria-expanded={ isOpen }>
+										<span className="components-dropdown-menu__indicator" />
+									</IconButton>
+								</Fragment>
+							) }
+							renderContent={ () => (
+								<Fragment>
+									<div className="kb-inline-icon-control">
+										<IconControl
+											value={ mediaIcon[ 0 ].icon }
+											onChange={ value => saveMediaIcon( { icon: value } ) }
+										/>
+										<RangeControl
+											label={ __( 'Icon Size' ) }
+											value={ mediaIcon[ 0 ].size }
+											onChange={ value => saveMediaIcon( { size: value } ) }
+											min={ 5 }
+											max={ 250 }
+											step={ 1 }
+										/>
+									</div>
+								</Fragment>
+							) }
+						/>
+					) }
 					<AlignmentToolbar
 						value={ hAlign }
 						onChange={ value => setAttributes( { hAlign: value } ) }
@@ -766,6 +1222,25 @@ class KadenceInfoBox extends Component {
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
 						<PanelBody>
+							<Fragment>
+								<h2>{ __( 'InfoBox Quick Layout Presets' ) }</h2>
+								<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={ __( 'InfoBox Style' ) }>
+									{ map( layoutPresetOptions, ( { name, key, icon } ) => (
+										<Button
+											key={ key }
+											className="kt-style-btn"
+											isSmall
+											isPrimary={ false }
+											aria-pressed={ false }
+											onClick={ () => {
+												setPresetLayout( key );
+											} }
+										>
+											{ icon }
+										</Button>
+									) ) }
+								</ButtonGroup>
+							</Fragment>
 							<div className="kt-controls-link-wrap">
 								<h2>{ __( 'Link' ) }</h2>
 								<URLInput
@@ -793,7 +1268,7 @@ class KadenceInfoBox extends Component {
 								onChange={ value => setAttributes( { linkProperty: value } ) }
 							/>
 							<h2 className="kt-heading-size-title">{ __( 'Content Align' ) }</h2>
-							<TabPanel className="kt-size-tabs"
+							<TabPanel className="kt-size-tabs kb-sidebar-alignment"
 								activeClass="active-tab"
 								tabs={ [
 									{
@@ -819,6 +1294,7 @@ class KadenceInfoBox extends Component {
 											if ( 'mobile' === tab.name ) {
 												tabout = (
 													<AlignmentToolbar
+														isCollapsed={ false }
 														value={ hAlignMobile }
 														onChange={ ( value ) => setAttributes( { hAlignMobile: value } ) }
 													/>
@@ -826,6 +1302,7 @@ class KadenceInfoBox extends Component {
 											} else if ( 'tablet' === tab.name ) {
 												tabout = (
 													<AlignmentToolbar
+														isCollapsed={ false }
 														value={ hAlignTablet }
 														onChange={ ( value ) => setAttributes( { hAlignTablet: value } ) }
 													/>
@@ -833,6 +1310,7 @@ class KadenceInfoBox extends Component {
 											} else {
 												tabout = (
 													<AlignmentToolbar
+														isCollapsed={ false }
 														value={ hAlign }
 														onChange={ ( value ) => setAttributes( { hAlign: value } ) }
 													/>
@@ -942,6 +1420,31 @@ class KadenceInfoBox extends Component {
 									min={ 0 }
 									max={ 100 }
 									step={ 1 }
+								/>
+								<ButtonGroup className="kt-size-type-options kt-row-size-type-options kb-typo-when-linked-individual-avail" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
+									{ map( marginTypes, ( { name, key } ) => (
+										<Button
+											key={ key }
+											className="kt-size-btn"
+											isSmall
+											isPrimary={ containerMarginUnit === key }
+											aria-pressed={ containerMarginUnit === key }
+											onClick={ () => setAttributes( { containerMarginUnit: key } ) }
+										>
+											{ name }
+										</Button>
+									) ) }
+								</ButtonGroup>
+								<MeasurementControls
+									label={ __( 'Margin', 'kadence-blocks' ) }
+									measurement={ containerMargin }
+									onChange={ ( value ) => setAttributes( { containerMargin: value } ) }
+									control={ containerMarginControl }
+									onControl={ ( value ) => this.setState( { containerMarginControl: value } ) }
+									min={ marginMin }
+									max={ marginMax }
+									step={ marginStep }
+									allowEmpty={ true }
 								/>
 								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
 									{ map( widthTypes, ( { name, key } ) => (
@@ -2023,46 +2526,29 @@ class KadenceInfoBox extends Component {
 						) }
 					</InspectorControls>
 				) }
-				{ this.state.showPreset && (
-					<div className="kt-select-starter-style-tabs kt-select-starter-style-infobox">
-						<div className="kt-select-starter-style-tabs-title">
-							{ __( 'Select Initial Style' ) }
-						</div>
-						<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Initial Style' ) }>
-							{ map( startlayoutOptions, ( { name, key, icon } ) => (
-								<Button
-									key={ key }
-									className="kt-inital-tabs-style-btn"
-									isSmall
-									onClick={ () => {
-										setInitalLayout( key );
-										this.setState( { showPreset: false } );
-									} }
-								>
-									{ icon }
-								</Button>
-							) ) }
-						</ButtonGroup>
-					</div>
-				) }
-				{ ! this.state.showPreset && (
-					<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } ${ isSelectedClass } kt-info-halign-${ hAlign } kb-info-box-vertical-media-align-${ mediaVAlign }` } style={ {
-						boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + hexToRGBA( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
-						borderColor: ( containerBorder ? hexToRGBA( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
-						background: ( containerBackground ? hexToRGBA( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
-						borderRadius: containerBorderRadius + 'px',
-						borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
-						padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
-						maxWidth: ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
-					} } >
-						{ 'none' !== mediaType && (
+				<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } ${ isSelectedClass } kt-info-halign-${ hAlign } kb-info-box-vertical-media-align-${ mediaVAlign }` } style={ {
+					boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + hexToRGBA( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
+					borderColor: ( containerBorder ? hexToRGBA( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
+					background: ( containerBackground ? hexToRGBA( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
+					borderRadius: containerBorderRadius + 'px',
+					borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
+					padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
+					maxWidth: ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
+					marginTop: ( containerMargin && '' !== containerMargin[ 0 ] ? containerMargin[ 0 ] + containerMarginUnit : undefined ),
+					marginRight: ( containerMargin && '' !== containerMargin[ 1 ] ? containerMargin[ 1 ] + containerMarginUnit : undefined ),
+					marginBottom: ( containerMargin && '' !== containerMargin[ 2 ] ? containerMargin[ 2 ] + containerMarginUnit : undefined ),
+					marginLeft: ( containerMargin && '' !== containerMargin[ 3 ] ? containerMargin[ 3 ] + containerMarginUnit : undefined ),
+				} } >
+					{ 'none' !== mediaType && (
+						<div className={ 'kt-blocks-info-box-media-container' } style={ {
+							margin: ( mediaStyle[ 0 ].margin ? mediaStyle[ 0 ].margin[ 0 ] + 'px ' + mediaStyle[ 0 ].margin[ 1 ] + 'px ' + mediaStyle[ 0 ].margin[ 2 ] + 'px ' + mediaStyle[ 0 ].margin[ 3 ] + 'px' : '' ),
+						} }>
 							<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` } style={ {
 								borderColor: mediaStyle[ 0 ].border,
 								backgroundColor: mediaStyle[ 0 ].background,
 								borderRadius: mediaStyle[ 0 ].borderRadius + 'px',
 								borderWidth: ( mediaStyle[ 0 ].borderWidth ? mediaStyle[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
 								padding: ( mediaStyle[ 0 ].padding ? mediaStyle[ 0 ].padding[ 0 ] + 'px ' + mediaStyle[ 0 ].padding[ 1 ] + 'px ' + mediaStyle[ 0 ].padding[ 2 ] + 'px ' + mediaStyle[ 0 ].padding[ 3 ] + 'px' : '' ),
-								margin: ( mediaStyle[ 0 ].margin ? mediaStyle[ 0 ].margin[ 0 ] + 'px ' + mediaStyle[ 0 ].margin[ 1 ] + 'px ' + mediaStyle[ 0 ].margin[ 2 ] + 'px ' + mediaStyle[ 0 ].margin[ 3 ] + 'px' : '' ),
 							} } >
 								{ ! mediaImage[ 0 ].url && 'image' === mediaType && (
 									<MediaPlaceholder
@@ -2121,96 +2607,96 @@ class KadenceInfoBox extends Component {
 									</div>
 								) }
 							</div>
-						) }
-						<div className={ 'kt-infobox-textcontent' } >
-							{ displayTitle && titleFont[ 0 ].google && (
-								<WebfontLoader config={ config }>
-								</WebfontLoader>
-							) }
-							{ displayTitle && (
-								<RichText
-									className="kt-blocks-info-box-title"
-									formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
-									tagName={ titleTagName }
-									placeholder={ __( 'Title' ) }
-									onChange={ onChangeTitle }
-									value={ title }
-									style={ {
-										fontWeight: titleFont[ 0 ].weight,
-										fontStyle: titleFont[ 0 ].style,
-										color: titleColor,
-										fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
-										lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
-										letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
-										fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
-										padding: ( titleFont[ 0 ].padding ? titleFont[ 0 ].padding[ 0 ] + 'px ' + titleFont[ 0 ].padding[ 1 ] + 'px ' + titleFont[ 0 ].padding[ 2 ] + 'px ' + titleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
-										margin: ( titleFont[ 0 ].margin ? titleFont[ 0 ].margin[ 0 ] + 'px ' + titleFont[ 0 ].margin[ 1 ] + 'px ' + titleFont[ 0 ].margin[ 2 ] + 'px ' + titleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
-										minHeight: ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
-									} }
-									keepPlaceholderOnFocus
-								/>
-							) }
-							{ displayText && textFont[ 0 ].google && (
-								<WebfontLoader config={ tconfig }>
-								</WebfontLoader>
-							) }
-							{ displayText && (
-								<RichText
-									className="kt-blocks-info-box-text"
-									formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
-									tagName={ 'p' }
-									placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.' ) }
-									onChange={ ( value ) => setAttributes( { contentText: value } ) }
-									value={ contentText }
-									style={ {
-										fontWeight: textFont[ 0 ].weight,
-										fontStyle: textFont[ 0 ].style,
-										color: textColor,
-										fontSize: textFont[ 0 ].size[ 0 ] + textFont[ 0 ].sizeType,
-										lineHeight: ( textFont[ 0 ].lineHeight && textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] + textFont[ 0 ].lineType : undefined ),
-										letterSpacing: textFont[ 0 ].letterSpacing + 'px',
-										fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
-										minHeight: ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] + 'px' : undefined ),
-									} }
-									keepPlaceholderOnFocus
-								/>
-							) }
-							{ displayLearnMore && learnMoreStyles[ 0 ].google && (
-								<WebfontLoader config={ lconfig }>
-								</WebfontLoader>
-							) }
-							{ displayLearnMore && (
-								<div className="kt-blocks-info-box-learnmore-wrap" style={ {
-									margin: ( learnMoreStyles[ 0 ].margin ? learnMoreStyles[ 0 ].margin[ 0 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 1 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 2 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
-								} } >
-									<RichText
-										formattingControls={ [ 'bold', 'italic' ] }
-										className="kt-blocks-info-box-learnmore"
-										tagName={ 'div' }
-										placeholder={ __( 'Learn More' ) }
-										onChange={ value => setAttributes( { learnMore: value } ) }
-										value={ learnMore }
-										style={ {
-											fontWeight: learnMoreStyles[ 0 ].weight,
-											fontStyle: learnMoreStyles[ 0 ].style,
-											color: learnMoreStyles[ 0 ].color,
-											borderRadius: learnMoreStyles[ 0 ].borderRadius + 'px',
-											background: learnMoreStyles[ 0 ].background,
-											borderColor: learnMoreStyles[ 0 ].border,
-											fontSize: learnMoreStyles[ 0 ].size[ 0 ] + learnMoreStyles[ 0 ].sizeType,
-											lineHeight: ( learnMoreStyles[ 0 ].lineHeight && learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] + learnMoreStyles[ 0 ].lineType : undefined ),
-											letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
-											fontFamily: ( learnMoreStyles[ 0 ].family ? learnMoreStyles[ 0 ].family : '' ),
-											borderWidth: ( learnMoreStyles[ 0 ].borderWidth ? learnMoreStyles[ 0 ].borderWidth[ 0 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 1 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 2 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
-											padding: ( learnMoreStyles[ 0 ].padding ? learnMoreStyles[ 0 ].padding[ 0 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 1 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 2 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
-										} }
-										keepPlaceholderOnFocus
-									/>
-								</div>
-							) }
 						</div>
+					) }
+					<div className={ 'kt-infobox-textcontent' } >
+						{ displayTitle && titleFont[ 0 ].google && (
+							<WebfontLoader config={ config }>
+							</WebfontLoader>
+						) }
+						{ displayTitle && (
+							<RichText
+								className="kt-blocks-info-box-title"
+								formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
+								tagName={ titleTagName }
+								placeholder={ __( 'Title' ) }
+								onChange={ onChangeTitle }
+								value={ title }
+								style={ {
+									fontWeight: titleFont[ 0 ].weight,
+									fontStyle: titleFont[ 0 ].style,
+									color: titleColor,
+									fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
+									lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
+									letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
+									fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
+									padding: ( titleFont[ 0 ].padding ? titleFont[ 0 ].padding[ 0 ] + 'px ' + titleFont[ 0 ].padding[ 1 ] + 'px ' + titleFont[ 0 ].padding[ 2 ] + 'px ' + titleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
+									margin: ( titleFont[ 0 ].margin ? titleFont[ 0 ].margin[ 0 ] + 'px ' + titleFont[ 0 ].margin[ 1 ] + 'px ' + titleFont[ 0 ].margin[ 2 ] + 'px ' + titleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
+									minHeight: ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
+								} }
+								keepPlaceholderOnFocus
+							/>
+						) }
+						{ displayText && textFont[ 0 ].google && (
+							<WebfontLoader config={ tconfig }>
+							</WebfontLoader>
+						) }
+						{ displayText && (
+							<RichText
+								className="kt-blocks-info-box-text"
+								formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
+								tagName={ 'p' }
+								placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.' ) }
+								onChange={ ( value ) => setAttributes( { contentText: value } ) }
+								value={ contentText }
+								style={ {
+									fontWeight: textFont[ 0 ].weight,
+									fontStyle: textFont[ 0 ].style,
+									color: textColor,
+									fontSize: textFont[ 0 ].size[ 0 ] + textFont[ 0 ].sizeType,
+									lineHeight: ( textFont[ 0 ].lineHeight && textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] + textFont[ 0 ].lineType : undefined ),
+									letterSpacing: textFont[ 0 ].letterSpacing + 'px',
+									fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
+									minHeight: ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] + 'px' : undefined ),
+								} }
+								keepPlaceholderOnFocus
+							/>
+						) }
+						{ displayLearnMore && learnMoreStyles[ 0 ].google && (
+							<WebfontLoader config={ lconfig }>
+							</WebfontLoader>
+						) }
+						{ displayLearnMore && (
+							<div className="kt-blocks-info-box-learnmore-wrap" style={ {
+								margin: ( learnMoreStyles[ 0 ].margin ? learnMoreStyles[ 0 ].margin[ 0 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 1 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 2 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
+							} } >
+								<RichText
+									formattingControls={ [ 'bold', 'italic' ] }
+									className="kt-blocks-info-box-learnmore"
+									tagName={ 'div' }
+									placeholder={ __( 'Learn More' ) }
+									onChange={ value => setAttributes( { learnMore: value } ) }
+									value={ learnMore }
+									style={ {
+										fontWeight: learnMoreStyles[ 0 ].weight,
+										fontStyle: learnMoreStyles[ 0 ].style,
+										color: learnMoreStyles[ 0 ].color,
+										borderRadius: learnMoreStyles[ 0 ].borderRadius + 'px',
+										background: learnMoreStyles[ 0 ].background,
+										borderColor: learnMoreStyles[ 0 ].border,
+										fontSize: learnMoreStyles[ 0 ].size[ 0 ] + learnMoreStyles[ 0 ].sizeType,
+										lineHeight: ( learnMoreStyles[ 0 ].lineHeight && learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] + learnMoreStyles[ 0 ].lineType : undefined ),
+										letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
+										fontFamily: ( learnMoreStyles[ 0 ].family ? learnMoreStyles[ 0 ].family : '' ),
+										borderWidth: ( learnMoreStyles[ 0 ].borderWidth ? learnMoreStyles[ 0 ].borderWidth[ 0 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 1 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 2 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
+										padding: ( learnMoreStyles[ 0 ].padding ? learnMoreStyles[ 0 ].padding[ 0 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 1 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 2 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
+									} }
+									keepPlaceholderOnFocus
+								/>
+							</div>
+						) }
 					</div>
-				) }
+				</div>
 			</div>
 		);
 	}

@@ -835,7 +835,7 @@ class KadenceAccordionComponent extends Component {
 							>
 								<SelectControl
 									label={ __( 'Title Tag', 'kadence-blocks' ) }
-									value={ titleTag }
+									value={ this.state.titleTag }
 									options={ [
 										{ value: 'div', label: __( 'div' ) },
 										{ value: 'h2', label: __( 'h2' ) },
@@ -846,11 +846,6 @@ class KadenceAccordionComponent extends Component {
 									] }
 									onChange={ value => {
 										this.props.updatePaneTag( value );
-										times( realPaneCount, n => {
-											wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
-												titleTag: value,
-											} );
-										} );
 										this.setState( { titleTag: value } );
 									} }
 								/>

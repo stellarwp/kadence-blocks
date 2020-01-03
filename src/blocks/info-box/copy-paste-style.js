@@ -209,6 +209,12 @@ class InfoBoxStyleCopyPaste extends Component {
 			if ( blockAttributes.maxWidthUnit ) {
 				copyStyles.maxWidthUnit = blockAttributes.maxWidthUnit;
 			}
+			if ( blockAttributes.containerMargin ) {
+				copyStyles.containerMargin = blockAttributes.containerMargin;
+			}
+			if ( blockAttributes.containerMarginUnit ) {
+				copyStyles.containerMarginUnit = blockAttributes.containerMarginUnit;
+			}
 			localStorage.setItem( 'kadenceInfoboxStyle', JSON.stringify( copyStyles ) );
 		};
 		const pasteAction = () => {

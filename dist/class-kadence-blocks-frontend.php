@@ -2036,7 +2036,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_infobox_array( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
+		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerMargin'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap {';
 			if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
 				$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
@@ -2051,6 +2051,22 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['containerPadding'] ) && is_array( $attr['containerPadding'] ) ) {
 				$css .= 'padding:' . $attr['containerPadding'][ 0 ] . 'px ' . $attr['containerPadding'][ 1 ] . 'px ' . $attr['containerPadding'][ 2 ] . 'px ' . $attr['containerPadding'][ 3 ] . 'px;';
+			}
+			if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][0] ) && is_numeric( $attr['containerMargin'][0] ) ) {
+				$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+				$css .= 'margin-top:' . $attr['containerMargin'][0] . $unit . ';';
+			}
+			if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][1] ) && is_numeric( $attr['containerMargin'][1] ) ) {
+				$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+				$css .= 'margin-right:' . $attr['containerMargin'][1] . $unit . ';';
+			}
+			if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][2] ) && is_numeric( $attr['containerMargin'][2] ) ) {
+				$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+				$css .= 'margin-bottom:' . $attr['containerMargin'][2] . $unit . ';';
+			}
+			if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][3] ) && is_numeric( $attr['containerMargin'][3] ) ) {
+				$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+				$css .= 'margin-left:' . $attr['containerMargin'][3] . $unit . ';';
 			}
 			if ( isset( $attr['containerBorderWidth'] ) && is_array( $attr['containerBorderWidth'] ) ) {
 				$css .= 'border-width:' . $attr['containerBorderWidth'][ 0 ] . 'px ' . $attr['containerBorderWidth'][ 1 ] . 'px ' . $attr['containerBorderWidth'][ 2 ] . 'px ' . $attr['containerBorderWidth'][ 3 ] . 'px;';
@@ -4167,10 +4183,12 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['firstColumnWidth'] ) && ! empty( $attr['firstColumnWidth'] ) && ( ! isset( $attr['columns'] ) || 2 === $attr['columns'] ) ) {
 			$css .= '@media (min-width: 767px) {';
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+					$css .= '-webkit-flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
 					$css .= '-ms-flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
 					$css .= 'flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
 				$css .= '}';
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+					$css .= '-webkit-flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
 					$css .= '-ms-flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
 					$css .= 'flex: 0 1 ' . abs( $attr['firstColumnWidth'] - 100 ) . '%;';
 				$css .= '}';
@@ -4191,10 +4209,12 @@ class Kadence_Blocks_Frontend {
 				}
 				$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
 					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+						$css .= '-webkit-flex: 0 1 ' . $tabCol1 . '%;';
 						$css .= '-ms-flex: 0 1 ' . $tabCol1 . '%;';
 						$css .= 'flex: 0 1 ' . $tabCol1 . '%;';
 					$css .= '}';
 					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+						$css .= '-webkit-flex: 0 1 ' . $tabCol2 . '%;';
 						$css .= '-ms-flex: 0 1 ' . $tabCol2 . '%;';
 						$css .= 'flex: 0 1 ' . $tabCol2 . '%;';
 					$css .= '}';
@@ -4204,14 +4224,17 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['firstColumnWidth'] ) && ! empty( $attr['firstColumnWidth'] ) &&  isset( $attr['secondColumnWidth'] ) && ! empty( $attr['secondColumnWidth'] ) && ( isset( $attr['columns'] ) && 3 === $attr['columns'] ) ) {
 			$css .= '@media (min-width: 767px) {';
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+					$css .= '-webkit-flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
 					$css .= '-ms-flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
 					$css .= 'flex: 0 1 ' . $attr['firstColumnWidth'] . '%;';
 				$css .= '}';
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+					$css .= '-webkit-flex: 0 1 ' . $attr['secondColumnWidth'] . '%;';
 					$css .= '-ms-flex: 0 1 ' . $attr['secondColumnWidth'] . '%;';
 					$css .= 'flex: 0 1 ' . $attr['secondColumnWidth'] . '%;';
 				$css .= '}';
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-3 {';
+					$css .= '-webkit-flex: 0 1 ' . abs( ( $attr['firstColumnWidth'] + $attr['secondColumnWidth'] ) - 100 ) . '%;';
 					$css .= '-ms-flex: 0 1 ' . abs( ( $attr['firstColumnWidth'] + $attr['secondColumnWidth'] ) - 100 ) . '%;';
 					$css .= 'flex: 0 1 ' . abs( ( $attr['firstColumnWidth'] + $attr['secondColumnWidth'] ) - 100 ) . '%;';
 				$css .= '}';
@@ -4248,14 +4271,17 @@ class Kadence_Blocks_Frontend {
 				}
 				$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
 					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';
+						$css .= '-webkit-flex: 0 1 ' . $tabCol1 . '%;';
 						$css .= '-ms-flex: 0 1 ' . $tabCol1 . '%;';
 						$css .= 'flex: 0 1 ' . $tabCol1 . '%;';
 					$css .= '}';
 					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-2 {';
+						$css .= '-webkit-flex: 0 1 ' . $tabCol2 . '%;';
 						$css .= '-ms-flex: 0 1 ' . $tabCol2 . '%;';
 						$css .= 'flex: 0 1 ' . $tabCol2 . '%;';
 					$css .= '}';
 					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-3 {';
+						$css .= '-webkit-flex: 0 1 ' . $tabCol3 . '%;';
 						$css .= '-ms-flex: 0 1 ' . $tabCol3 . '%;';
 						$css .= 'flex: 0 1 ' . $tabCol3 . '%;';
 					$css .= '}';

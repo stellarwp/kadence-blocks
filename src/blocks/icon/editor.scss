@@ -56,6 +56,16 @@ i.fipicon-angle-down:before {
 	content: "\f140";
 	font-family: dashicons;
 }
+.rfipcategory i.fipicon-angle-down:before {
+	display:none;
+}
+.kb-icon-picker-container .rfip {
+    margin: 0 0 10px;
+    width: 100%;
+}
+.kb-icon-picker-container .rfip .rfipbtn {
+    width:100%;
+}
 i.fipicon-angle-up:before {
    content: "\f142";
    font-family: dashicons;

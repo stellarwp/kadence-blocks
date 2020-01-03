@@ -42,15 +42,17 @@ class IconControl extends Component {
 		return (
 			<Fragment>
 				{ onChange && (
-					<FontIconPicker
-						icons={ iconOptionsNames }
-						value={ value }
-						onChange={ ( select ) => onChange( select ) }
-						appendTo="body"
-						renderFunc={ renderSVG }
-						theme="default"
-						isMulti={ false }
-					/>
+					<div className="kb-icon-picker-container">
+						<FontIconPicker
+							icons={ iconOptionsNames }
+							value={ value }
+							onChange={ ( select ) => onChange( select ) }
+							appendTo="body"
+							renderFunc={ renderSVG }
+							theme="default"
+							isMulti={ false }
+						/>
+					</div>
 				) }
 			</Fragment>
 		);

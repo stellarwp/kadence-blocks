@@ -43,7 +43,7 @@ const {
  */
 registerBlockType( 'kadence/infobox', {
 	title: __( 'Info Box' ),
-	description: __( 'Create a box link containing an icon or image and optionally a title, description, and learn more text. Style static and hover colors even show a box-shadow.' ),
+	description: __( 'Create beautiful information boxes using icons or images.' ),
 	icon: {
 		src: icons.infobox,
 	},
@@ -51,7 +51,7 @@ registerBlockType( 'kadence/infobox', {
 	keywords: [
 		__( 'Info' ),
 		__( 'Icon' ),
-		__( 'KT' ),
+		__( 'KB' ),
 	],
 	attributes,
 	edit,
