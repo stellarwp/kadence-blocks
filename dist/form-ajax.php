@@ -212,7 +212,6 @@ class KB_Ajax_Form {
 							} else {
 								$headers  = 'Content-Type: text/plain; charset=UTF-8' . "\r\n";
 							}
-							$headers .= 'Content-Transfer-Encoding: 8bit' . "\r\n";
 							if ( $reply_email ) {
 								$headers .= 'Reply-To: <' . $reply_email . '>' . "\r\n";
 							}

@@ -83,13 +83,14 @@
     background-position: 0 0,0 5px,5px -5px,-5px 0;
 }
 .kt-advanced-color-settings-container .kt-color-icon-indicate {
+    height:auto;
     position: relative;
     transform: scale(1);
 	transition: transform .1s ease;
 	border-radius: 50%;
     padding: 0;
 }
-.kt-advanced-color-settings-container .kt-color-icon-indicate:hover {
+.kt-advanced-color-settings-container :hover {
     transform: scale(1.2);
 }
 .components-popover__content .components-range-control.kt-opacity-value {
@@ -201,7 +202,7 @@
 .components-popover.kt-popover-opacity .components-popover__content .components-base-control .components-base-control__field {
     margin:0;
 }
-.kt-popover-container .components-button.is-button {
+.kt-popover-container .components-button {
     background: transparent;
     height: 20px;
     padding: 0;
@@ -209,11 +210,11 @@
     border: 0;
     box-shadow: none !important;
 }
-.kt-popover-container .components-button.is-button svg {
+.kt-popover-container .components-button svg {
 	opacity:1;
 	transition: all .3s ease-in-out;
 }
-.kt-popover-container .components-button.is-button:hover svg {
+.kt-popover-container .components-button:hover svg {
     opacity:0.7;
 }
 .wp-block-kadence-advancedbtn form.blocks-button__inline-link {

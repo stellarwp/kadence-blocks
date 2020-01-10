@@ -6,6 +6,10 @@
  */
 
  // Controls
+ .components-button.components-color-palette__item:not(:disabled):not([aria-disabled=true]):not(.is-secondary):not(.is-primary):not(.is-tertiary):not(.is-link):hover {
+    background: transparent;
+    box-shadow: inset 0 0 0 14px;
+}
  .edit-post-sidebar .typography-family-select-form-row input[type=text], .kt-block-defaults-modal .typography-family-select-form-row input[type=text], .components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row input[type=text] {
 	box-shadow:none;
 }
@@ -13,10 +17,10 @@
     line-height: 15px;
     font-size: 12px;
 }
-.kb-tag-level-control .components-icon-button:not(:disabled).is-active:hover:after {
+.kb-tag-level-control .components-icon-button:not(:disabled).is-active:hover:after, .kb-tag-level-control .components-button:not(:disabled).is-active:hover:after {
     color:#191e23;
 }
-.kb-tag-level-control .components-icon-button.is-active {
+.kb-tag-level-control .components-icon-button.is-active, .kb-tag-level-control .components-button.is-active {
     outline: none;
     color: #fff;
     box-shadow: none;
@@ -262,7 +266,7 @@ h2.kt-heading-fontfamily-title {
     font-size: 14px;
     color: #555d66;
 }
-button.components-button.components-icon-button.kt-font-clear-btn {
+button.components-button.components-icon-button.kt-font-clear-btn, button.components-button.kt-font-clear-btn {
     display: block;
     margin-right: 0;
     margin-left: auto;

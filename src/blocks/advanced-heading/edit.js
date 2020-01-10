@@ -18,6 +18,10 @@ import WebfontLoader from '../../fontloader';
 
 import icons from '../../icons';
 /**
+ * Internal dependencies
+ */
+import HeadingLevelIcon from './heading-icons';
+/**
  * Internal block libraries
  */
 const { __, sprintf } = wp.i18n;
@@ -148,22 +152,20 @@ class KadenceAdvancedHeading extends Component {
 		const lineStep = ( lineType === 'em' ? 0.1 : 1 );
 		const createLevelControl = ( targetLevel ) => {
 			return [ {
-				icon: 'heading',
+				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ targetLevel === level } />,
 				// translators: %s: heading level e.g: "1", "2", "3"
 				title: sprintf( __( 'Heading %d' ), targetLevel ),
 				isActive: targetLevel === level,
 				onClick: () => setAttributes( { level: targetLevel } ),
-				subscript: String( targetLevel ),
 			} ];
 		};
 		const createLevelControlToolbar = ( targetLevel ) => {
 			return [ {
-				icon: icons[ 'h' + targetLevel ],
+				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ targetLevel === level } />,
 				// translators: %s: heading level e.g: "1", "2", "3"
 				title: sprintf( __( 'Heading %d' ), targetLevel ),
 				isActive: targetLevel === level,
 				onClick: () => setAttributes( { level: targetLevel } ),
-				subscript: String( targetLevel ),
 			} ];
 		};
 		const deskControls = (
@@ -406,7 +408,7 @@ class KadenceAdvancedHeading extends Component {
 				<BlockControls>
 					<Toolbar
 						isCollapsed={ true }
-						icon={ icons[ 'h' + level ] }
+						icon={ <HeadingLevelIcon level={ level } /> }
 						label={ __( 'Change Heading Level' ) }
 						controls={ range( 1, 7 ).map( createLevelControlToolbar ) }
 					/>
@@ -466,13 +468,14 @@ class KadenceAdvancedHeading extends Component {
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
 						<PanelBody title={ __( 'Heading Settings' ) }>
-							<div className="kb-tag-level-control">
+							<div className="kb-tag-level-control components-base-control">
 								<p>{ __( 'HTML Tag' ) }</p>
 								<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
 							</div>
 							<p>{ __( 'Text Alignment' ) }</p>
 							<AlignmentToolbar
 								value={ align }
+								isCollapsed={ false }
 								onChange={ ( nextAlign ) => {
 									setAttributes( { align: nextAlign } );
 								} }

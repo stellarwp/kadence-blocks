@@ -195,6 +195,7 @@ class KadenceInfoBox extends Component {
 					containerBorderRadius: 0,
 					containerPadding: [ 20, 20, 20, 20 ],
 					containerMargin: [ '', '', '', '' ],
+					containerMarginUnit: 'px',
 					mediaAlign: 'top',
 					mediaIcon: [ {
 						icon: mediaIcon[ 0 ].icon,
@@ -248,6 +249,7 @@ class KadenceInfoBox extends Component {
 					containerBorderRadius: 30,
 					containerPadding: [ 20, 20, 20, 20 ],
 					containerMargin: [ '', '', '', '' ],
+					containerMarginUnit: 'px',
 					mediaAlign: 'top',
 					mediaIcon: [ {
 						icon: mediaIcon[ 0 ].icon,
@@ -317,6 +319,7 @@ class KadenceInfoBox extends Component {
 					containerBorderRadius: 0,
 					containerPadding: [ 24, 24, 24, 24 ],
 					containerMargin: [ '', '', '', '' ],
+					containerMarginUnit: 'px',
 					mediaAlign: 'top',
 					mediaIcon: [ {
 						icon: mediaIcon[ 0 ].icon,
@@ -386,6 +389,7 @@ class KadenceInfoBox extends Component {
 					containerBorderRadius: 20,
 					containerPadding: [ 24, 24, 24, 24 ],
 					containerMargin: [ '', '', '', '' ],
+					containerMarginUnit: 'px',
 					mediaAlign: 'left',
 					mediaIcon: [ {
 						icon: mediaIcon[ 0 ].icon,
@@ -455,6 +459,7 @@ class KadenceInfoBox extends Component {
 					containerBorderRadius: 20,
 					containerPadding: [ 24, 24, 24, 24 ],
 					containerMargin: [ 50, '', '', '' ],
+					containerMarginUnit: 'px',
 					mediaAlign: 'top',
 					mediaIcon: [ {
 						icon: mediaIcon[ 0 ].icon,
@@ -524,6 +529,7 @@ class KadenceInfoBox extends Component {
 					containerBorderRadius: 0,
 					containerPadding: [ 24, 24, 24, 24 ],
 					containerMargin: [ 50, '', '', '' ],
+					containerMarginUnit: 'px',
 					mediaAlign: 'top',
 					mediaIcon: [ {
 						icon: mediaIcon[ 0 ].icon,

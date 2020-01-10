@@ -4,7 +4,7 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .components-panel__row button.components-button.kb-add-field.is-button {
+ .components-panel__row button.components-button.kb-add-field {
     margin: 0 auto;
     min-width: 60%;
     text-align: center;
@@ -13,19 +13,19 @@
     align-items: center;
     justify-content: center;
 }
-.components-panel__row button.components-button.kb-add-field.is-button svg {
+.components-panel__row button.components-button.kb-add-field svg {
     width: 16px;
     height: 16px;
     margin-top: 2px;
     margin-right: 4px;
 }
-.edit-post-sidebar button.kb-add-option.is-button svg {
+.edit-post-sidebar button.kb-add-option svg {
     width: 16px;
     height: 16px;
     margin-top: 2px;
     margin-right: 4px;
 }
-.edit-post-sidebar button.kb-add-option.is-button {
+.edit-post-sidebar button.kb-add-option {
      -ms-flex-align: center;
     align-items: center;
     -ms-flex-pack: center;
