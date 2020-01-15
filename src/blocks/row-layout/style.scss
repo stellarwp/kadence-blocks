@@ -37,6 +37,14 @@
 .kt-inner-column-height-full > .wp-block-kadence-column > .kt-inside-inner-col {
     height: 100%;
 }
+.kt-row-valign-middle.kt-inner-column-height-full>.wp-block-kadence-column > .kt-inside-inner-col {
+    display: flex;
+    align-items: center;
+}
+.kt-row-valign-bottom.kt-inner-column-height-full>.wp-block-kadence-column > .kt-inside-inner-col {
+    display: flex;
+    align-items: flex-end;
+}
 .wp-block-kadence-rowlayout:before {
     clear: both;
     content: '';

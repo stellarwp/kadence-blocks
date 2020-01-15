@@ -229,3 +229,6 @@ display: block;
 .wp-block-kadence-infobox a.kt-blocks-info-box-link-wrap {
     text-decoration: none !important;
 }
+.kt-info-icon-animate-flip .kadence-info-box-icon-inner-container {
+backface-visibility: hidden;
+}
