@@ -217,6 +217,15 @@ const attributes = {
 			loadGoogle: true,
 		} ],
 	},
+	textSpacing: {
+		type: 'array',
+		default: [ {
+			padding: [ '', '', '', '' ],
+			paddingControl: 'linked',
+			margin: [ '', '', '', '' ],
+			marginControl: 'linked',
+		} ],
+	},
 	displayLearnMore: {
 		type: 'bool',
 		default: false,

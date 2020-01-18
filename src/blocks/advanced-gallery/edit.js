@@ -728,7 +728,7 @@ class GalleryEdit extends Component {
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
 						<PanelBody title={ __( 'Gallery Settings', 'kadence-blocks' ) }>
-							<h2>{ __( 'Gallery Type:' ) + ' ' + typeLabel[ 0 ].label }</h2>
+							<h2>{ __( 'Gallery Type:' ) + ' ' + ( undefined !== typeLabel && undefined !== typeLabel[ 0 ] && typeLabel[ 0 ].label ? typeLabel[ 0 ].label : 'Masonry' ) }</h2>
 							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type', 'kadence-blocks' ) }>
 								{ map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
 									<Tooltip text={ label }>

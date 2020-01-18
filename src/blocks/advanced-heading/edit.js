@@ -20,7 +20,7 @@ import icons from '../../icons';
 /**
  * Internal dependencies
  */
-import HeadingLevelIcon from './heading-icons';
+import HeadingLevelIcon from '../../heading-icons';
 /**
  * Internal block libraries
  */

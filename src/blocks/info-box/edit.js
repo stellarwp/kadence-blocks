@@ -152,7 +152,7 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, containerMarginControl } = this.state;
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 		const widthTypes = [
@@ -1091,6 +1091,28 @@ class KadenceInfoBox extends Component {
 			} );
 			setAttributes( {
 				textFont: newUpdate,
+			} );
+		};
+		const saveTextSpacing = ( value ) => {
+			let tSpacing;
+			if ( undefined === textSpacing || ( undefined !== textSpacing && undefined === textSpacing[ 0 ] ) ) {
+				tSpacing = [ {
+					padding: [ '', '', '', '' ],
+					paddingControl: 'linked',
+					margin: [ '', '', '', '' ],
+					marginControl: 'linked',
+				} ];
+			} else {
+				tSpacing = textSpacing;
+			}
+			const newUpdate = tSpacing.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				textSpacing: newUpdate,
 			} );
 		};
 		const saveLearnMoreStyles = ( value ) => {
@@ -2192,6 +2214,16 @@ class KadenceInfoBox extends Component {
 											fontSubset={ textFont[ 0 ].subset }
 											onFontSubset={ ( value ) => saveTextFont( { subset: value } ) }
 										/>
+										<TypographyControls
+											padding={ ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].padding ? textSpacing[ 0 ].padding : [ '', '', '', '' ] ) }
+											onPadding={ ( value ) => saveTextSpacing( { padding: value } ) }
+											paddingControl={ ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].paddingControl ? textSpacing[ 0 ].paddingControl : 'linked' ) }
+											onPaddingControl={ ( value ) => saveTextSpacing( { paddingControl: value } ) }
+											margin={ ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].margin ? textSpacing[ 0 ].margin : [ '', '', '', '' ] ) }
+											onMargin={ ( value ) => saveTextSpacing( { margin: value } ) }
+											marginControl={ ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].marginControl ? textSpacing[ 0 ].marginControl : 'linked' ) }
+											onMarginControl={ ( value ) => saveTextSpacing( { marginControl: value } ) }
+										/>
 										<h2 className="kt-heading-size-title">{ __( 'Min Height' ) }</h2>
 										<TabPanel className="kt-size-tabs"
 											activeClass="active-tab"
@@ -2663,6 +2695,8 @@ class KadenceInfoBox extends Component {
 									lineHeight: ( textFont[ 0 ].lineHeight && textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] + textFont[ 0 ].lineType : undefined ),
 									letterSpacing: textFont[ 0 ].letterSpacing + 'px',
 									fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
+									padding: ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].padding ? textSpacing[ 0 ].padding[ 0 ] + 'px ' + textSpacing[ 0 ].padding[ 1 ] + 'px ' + textSpacing[ 0 ].padding[ 2 ] + 'px ' + textSpacing[ 0 ].padding[ 3 ] + 'px' : '' ),
+									margin: ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].margin ? textSpacing[ 0 ].margin[ 0 ] + 'px ' + textSpacing[ 0 ].margin[ 1 ] + 'px ' + textSpacing[ 0 ].margin[ 2 ] + 'px ' + textSpacing[ 0 ].margin[ 3 ] + 'px' : '' ),
 									minHeight: ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] + 'px' : undefined ),
 								} }
 								keepPlaceholderOnFocus

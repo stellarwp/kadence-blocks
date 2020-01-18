@@ -16,6 +16,7 @@ import capitalizeFirstLetter from './capitalfirst';
 import Select from 'react-select';
 import map from 'lodash/map';
 import range from 'lodash/range';
+import HeadingLevelIcon from './heading-icons';
 
 const {
 	applyFilters,
@@ -268,14 +269,23 @@ class TypographyControls extends Component {
 				onFontStyle( select );
 			}
 		};
+		// const createLevelControl = ( targetLevel ) => {
+		// 	return [ {
+		// 		icon: 'heading',
+		// 		// translators: %s: heading level e.g: "1", "2", "3"
+		// 		title: sprintf( __( 'Heading %d', 'kadence-blocks' ), targetLevel ),
+		// 		isActive: targetLevel === tagLevel,
+		// 		onClick: () => onTagLevel( targetLevel ),
+		// 		subscript: String( targetLevel ),
+		// 	} ];
+		// };
 		const createLevelControl = ( targetLevel ) => {
 			return [ {
-				icon: 'heading',
+				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ targetLevel === tagLevel } />,
 				// translators: %s: heading level e.g: "1", "2", "3"
 				title: sprintf( __( 'Heading %d', 'kadence-blocks' ), targetLevel ),
 				isActive: targetLevel === tagLevel,
 				onClick: () => onTagLevel( targetLevel ),
-				subscript: String( targetLevel ),
 			} ];
 		};
 		const textTransformOptions = [

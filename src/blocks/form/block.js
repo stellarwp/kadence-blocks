@@ -275,6 +275,16 @@ registerBlockType( 'kadence/form', {
 				boxShadowHover: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
 			} ],
 		},
+		submitMargin: {
+			type: 'array',
+			default: [ {
+				desk: [ '', '', '', '' ],
+				tablet: [ '', '', '', '' ],
+				mobile: [ '', '', '', '' ],
+				unit: 'px',
+				control: 'linked',
+			} ],
+		},
 		submitFont: {
 			type: 'array',
 			default: [ {

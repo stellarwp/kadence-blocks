@@ -101,6 +101,7 @@ class KadenceForm extends Component {
 		this.saveFields = this.saveFields.bind( this );
 		this.saveFieldsOptions = this.saveFieldsOptions.bind( this );
 		this.saveSubmit = this.saveSubmit.bind( this );
+		this.saveSubmitMargin = this.saveSubmitMargin.bind( this );
 		this.saveEmail = this.saveEmail.bind( this );
 		this.saveStyle = this.saveStyle.bind( this );
 		this.saveStyleGradient = this.saveStyleGradient.bind( this );
@@ -367,6 +368,32 @@ class KadenceForm extends Component {
 			submit: newItems,
 		} );
 	}
+	saveSubmitMargin( value ) {
+		const { attributes, setAttributes } = this.props;
+		const { submitMargin } = attributes;
+		let margin;
+		if ( undefined === submitMargin || ( undefined !== submitMargin && undefined === submitMargin[ 0 ] ) ) {
+			margin = [ {
+				desk: [ '', '', '', '' ],
+				tablet: [ '', '', '', '' ],
+				mobile: [ '', '', '', '' ],
+				unit: 'px',
+				control: 'linked',
+			} ];
+		} else {
+			margin = submitMargin;
+		}
+		const newItems = margin.map( ( item, thisIndex ) => {
+			if ( 0 === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		setAttributes( {
+			submitMargin: newItems,
+		} );
+	}
 	saveSubmitGradient( value, index ) {
 		const { attributes } = this.props;
 		const { submit } = attributes;
@@ -600,7 +627,7 @@ class KadenceForm extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions }, className, isSelected, setAttributes } = this.props;
+		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin }, className, isSelected, setAttributes } = this.props;
 		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl } = this.state;
 		const btnSizes = [
 			{ key: 'small', name: __( 'S', 'kadence-blocks' ) },
@@ -621,6 +648,17 @@ class KadenceForm extends Component {
 			{ key: 'solid', name: __( 'Solid', 'kadence-blocks' ) },
 			{ key: 'gradient', name: __( 'Gradient', 'kadence-blocks' ) },
 		];
+		const marginTypes = [
+			{ key: 'px', name: 'px' },
+			{ key: 'em', name: 'em' },
+			{ key: '%', name: '%' },
+			{ key: 'vh', name: 'vh' },
+			{ key: 'rem', name: 'rem' },
+		];
+		const marginUnit = ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].unit ? submitMargin[ 0 ].unit : 'px' )
+		const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -100 );
+		const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 12 : 100 );
+		const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 		const lgconfig = {
 			google: {
 				families: [ labelFont[ 0 ].family + ( labelFont[ 0 ].variant ? ':' + labelFont[ 0 ].variant : '' ) ],
@@ -2082,7 +2120,7 @@ class KadenceForm extends Component {
 															{ value: '33', label: __( '33%', 'kadence-blocks' ) },
 															{ value: '40', label: __( '40%', 'kadence-blocks' ) },
 															{ value: '50', label: __( '50%', 'kadence-blocks' ) },
-															{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '60', label: __( '60%', 'kadence-blocks' ) },
 															{ value: '66', label: __( '66%', 'kadence-blocks' ) },
 															{ value: '75', label: __( '75%', 'kadence-blocks' ) },
 															{ value: '80', label: __( '80%', 'kadence-blocks' ) },
@@ -2106,7 +2144,7 @@ class KadenceForm extends Component {
 															{ value: '33', label: __( '33%', 'kadence-blocks' ) },
 															{ value: '40', label: __( '40%', 'kadence-blocks' ) },
 															{ value: '50', label: __( '50%', 'kadence-blocks' ) },
-															{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '60', label: __( '60%', 'kadence-blocks' ) },
 															{ value: '66', label: __( '66%', 'kadence-blocks' ) },
 															{ value: '75', label: __( '75%', 'kadence-blocks' ) },
 															{ value: '80', label: __( '80%', 'kadence-blocks' ) },
@@ -2130,7 +2168,7 @@ class KadenceForm extends Component {
 															{ value: '33', label: __( '33%', 'kadence-blocks' ) },
 															{ value: '40', label: __( '40%', 'kadence-blocks' ) },
 															{ value: '50', label: __( '50%', 'kadence-blocks' ) },
-															{ value: '60', label: __( '33%', 'kadence-blocks' ) },
+															{ value: '60', label: __( '60%', 'kadence-blocks' ) },
 															{ value: '66', label: __( '66%', 'kadence-blocks' ) },
 															{ value: '75', label: __( '75%', 'kadence-blocks' ) },
 															{ value: '80', label: __( '80%', 'kadence-blocks' ) },
@@ -2785,6 +2823,99 @@ class KadenceForm extends Component {
 								fontSubset={ submitFont[ 0 ].subset }
 								onFontSubset={ ( value ) => this.saveSubmitFont( { subset: value } ) }
 							/>
+							<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
+								{ map( marginTypes, ( { name, key } ) => (
+									<Button
+										key={ key }
+										className="kt-size-btn"
+										isSmall
+										isPrimary={ marginUnit === key }
+										aria-pressed={ marginUnit === key }
+										onClick={ () => this.saveSubmitMargin( { unit: key } ) }
+									>
+										{ name }
+									</Button>
+								) ) }
+							</ButtonGroup>
+							<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Margin Unit', 'kadence-blocks' ) }</h2>
+							<h2 className="kt-heading-size-title">{ __( 'Margin', 'kadence-blocks' ) }</h2>
+							<TabPanel className="kt-size-tabs"
+								activeClass="active-tab"
+								tabs={ [
+									{
+										name: 'desk',
+										title: <Dashicon icon="desktop" />,
+										className: 'kt-desk-tab',
+									},
+									{
+										name: 'tablet',
+										title: <Dashicon icon="tablet" />,
+										className: 'kt-tablet-tab',
+									},
+									{
+										name: 'mobile',
+										title: <Dashicon icon="smartphone" />,
+										className: 'kt-mobile-tab',
+									},
+								] }>
+								{
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'mobile' === tab.name ) {
+												tabout = (
+													<Fragment>
+														<MeasurementControls
+															label={ __( 'Mobile Margin', 'kadence-blocks' ) }
+															measurement={ ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].mobile ? submitMargin[ 0 ].mobile : [ '', '', '', '' ] ) }
+															control={ ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].control ? submitMargin[ 0 ].control : 'linked' ) }
+															onChange={ ( value ) => this.saveSubmitMargin( { mobile: value } ) }
+															onControl={ ( value ) => this.saveSubmitMargin( { control: value } ) }
+															min={ marginMin }
+															max={ marginMax }
+															step={ marginStep }
+															allowEmpty={ true }
+														/>
+													</Fragment>
+												);
+											} else if ( 'tablet' === tab.name ) {
+												tabout = (
+													<Fragment>
+														<MeasurementControls
+															label={ __( 'Tablet Margin', 'kadence-blocks' ) }
+															measurement={ ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].tablet ? submitMargin[ 0 ].tablet : [ '', '', '', '' ] ) }
+															control={ ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].control ? submitMargin[ 0 ].control : 'linked' ) }
+															onChange={ ( value ) => this.saveSubmitMargin( { tablet: value } ) }
+															onControl={ ( value ) => this.saveSubmitMargin( { control: value } ) }
+															min={ marginMin }
+															max={ marginMax }
+															step={ marginStep }
+															allowEmpty={ true }
+														/>
+													</Fragment>
+												);
+											} else {
+												tabout = (
+													<Fragment>
+														<MeasurementControls
+															label={ __( 'Desktop Margin', 'kadence-blocks' ) }
+															measurement={ ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].desk ? submitMargin[ 0 ].desk : [ '', '', '', '' ] ) }
+															control={ ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].control ? submitMargin[ 0 ].control : 'linked' ) }
+															onChange={ ( value ) => this.saveSubmitMargin( { desk: value } ) }
+															onControl={ ( value ) => this.saveSubmitMargin( { control: value } ) }
+															min={ marginMin }
+															max={ marginMax }
+															step={ marginStep }
+															allowEmpty={ true }
+														/>
+													</Fragment>
+												);
+											}
+										}
+										return <div>{ tabout }</div>;
+									}
+								}
+							</TabPanel>
 						</PanelBody>
 					</PanelBody>
 					<PanelBody
@@ -2988,6 +3119,10 @@ class KadenceForm extends Component {
 									borderBottomWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 2 ] ? submit[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 									borderLeftWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 3 ] ? submit[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
 									boxShadow: ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 0 ] && submit[ 0 ].boxShadow[ 0 ] ? ( undefined !== submit[ 0 ].boxShadow[ 7 ] && submit[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadow[ 3 ] ? submit[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 4 ] ? submit[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 5 ] ? submit[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 6 ] ? submit[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== submit[ 0 ].boxShadow[ 1 ] ? submit[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadow[ 2 ] ? submit[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+									marginTop: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 0 ] ? submitMargin[ 0 ].desk[ 0 ] + marginUnit : undefined ),
+									marginRight: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 1 ] ? submitMargin[ 0 ].desk[ 1 ] + marginUnit : undefined ),
+									marginBottom: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 2 ] ? submitMargin[ 0 ].desk[ 2 ] + marginUnit : undefined ),
+									marginLeft: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 3 ] ? submitMargin[ 0 ].desk[ 3 ] + marginUnit : undefined ),
 								} }
 							/>
 						</div>

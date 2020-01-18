@@ -90,13 +90,12 @@
 	border-radius: 50%;
     padding: 0;
 }
-.kt-advanced-color-settings-container :hover {
-    transform: scale(1.2);
+.kt-advanced-color-settings-container .kt-color-icon-indicate:hover {
+    transform: scale(1.1);
 }
 .components-popover__content .components-range-control.kt-opacity-value {
     padding: 0 12px 12px;
 }
-
 .components-popover__content .components-range-control.kt-opacity-value .components-base-control__field {
     flex-wrap: nowrap;
 }

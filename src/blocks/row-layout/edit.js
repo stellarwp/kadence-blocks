@@ -1715,7 +1715,7 @@ class KadenceRowLayout extends Component {
 																) }
 															/>
 															{ undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID && (
-																<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
+																<Tooltip text={ __( 'Remove Video', 'kadence-blocks' ) }>
 																	<Button
 																		className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
 																		onClick={ () => {
@@ -1729,6 +1729,11 @@ class KadenceRowLayout extends Component {
 																	</Button>
 																</Tooltip>
 															) }
+															<TextControl
+																label={ __( 'HTML5 Video File URL' ) }
+																value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
+																onChange={ value => saveVideoSettings( { local: value } ) }
+															/>
 														</Fragment>
 													) }
 													{ 'youtube' === backgroundVideoType && (

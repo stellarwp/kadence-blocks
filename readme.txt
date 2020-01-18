@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.3.2
-Stable tag: 1.7.15
+Stable tag: 1.7.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,8 +87,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 1.7.15 =
-* Add: Margin Controls for desk and mobile for form fields. 
+= 1.7.16 =
+* Fix: Bug in Firefox with Icon Flip.
+* Fix: Possible issue with Gallery not rendering.
+* Tweak: Styling in Row layout for inside column alignment.
+* Fix: More admin CSS for Gutenberg 7.2.
+* Add: InfoBox text Padding and Margin.
+* Add: Background Video URL input for when you want to use from another source.
+* Add: Margin Controls for desk, tablet and mobile for form submit. 
 
 = 1.7.15 =
 * Fix: Update issue.
