@@ -151,7 +151,7 @@ class KadenceAdvancedButton extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, kadenceAOSOptions, kadenceAnimation }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, kadenceAOSOptions, kadenceAnimation, collapseFullwidth }, className, setAttributes, isSelected } = this.props;
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -595,6 +595,13 @@ class KadenceAdvancedButton extends Component {
 									) ) }
 								</ButtonGroup>
 							</div>
+							{ 'full' === widthType && (
+								<ToggleControl
+									label={ __( 'Collapse on mobile', 'kadence-blocks' ) }
+									checked={ ( undefined !== collapseFullwidth ? collapseFullwidth : false ) }
+									onChange={ ( value ) => setAttributes( { collapseFullwidth: value } ) }
+								/>
+							) }
 							{ 'fixed' === widthType && (
 								<div className="kt-inner-sub-section">
 									<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Fixed Width', 'kadence-blocks' ) }</h2>
@@ -1377,6 +1384,13 @@ class KadenceAdvancedButton extends Component {
 									checked={ ( undefined !== forceFullwidth ? forceFullwidth : false ) }
 									onChange={ ( value ) => defineWidthTypeToggle( value ) }
 								/>
+								{ undefined !== forceFullwidth && forceFullwidth && (
+									<ToggleControl
+										label={ __( 'Collapse on mobile', 'kadence-blocks' ) }
+										checked={ ( undefined !== collapseFullwidth ? collapseFullwidth : false ) }
+										onChange={ ( value ) => setAttributes( { collapseFullwidth: value } ) }
+									/>
+								) }
 							</InspectorAdvancedControls>
 						</Fragment>
 					) }

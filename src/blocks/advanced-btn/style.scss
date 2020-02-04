@@ -115,4 +115,10 @@
 .kt-btn-mobile-align-right {
 	text-align: right;
 }
+.wp-block-kadence-advancedbtn.kt-force-btn-fullwidth.kt-mobile-collapse-btn-fullwidth {
+    flex-direction: column;
+}
+.wp-block-kadence-advancedbtn.kt-force-btn-fullwidth.kt-mobile-collapse-btn-fullwidth .kt-btn-wrap {
+    margin-right: 0;
+}
 }

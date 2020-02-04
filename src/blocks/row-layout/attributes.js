@@ -198,6 +198,10 @@ const attributes = {
 		type: 'string',
 		default: 'none',
 	},
+	align: {
+		type: 'string',
+		default: 'none',
+	},
 	verticalAlignment: {
 		type: 'string',
 		default: 'top',

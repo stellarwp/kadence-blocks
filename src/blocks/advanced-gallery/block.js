@@ -421,7 +421,7 @@ registerBlockType( 'kadence/advancedgallery', {
 				<li key={ image.id || image.url } className="kadence-blocks-gallery-item">
 					<div className="kadence-blocks-gallery-item-inner">
 						<figure className={ figClassName }>
-							{ href ? <a href={ href } className="kb-gallery-item-link" target={ linkTo === 'custom' && image.linkTarget === '_blank' ? '_blank' : undefined } rel={ ( linkTo === 'custom' && '_blank' === image.linkTarget ? 'noopener noreferrer' : undefined ) } >{ imgPack }</a> : imgPack }
+							{ href ? <a href={ href } className="kb-gallery-item-link" target={ ( linkTo === 'custom' && image.linkTarget === '_blank' ) || ( linkTo === 'media' && lightbox === 'new_tab' ) ? '_blank' : undefined } rel={ ( linkTo === 'custom' && '_blank' === image.linkTarget ? 'noopener noreferrer' : undefined ) } >{ imgPack }</a> : imgPack }
 						</figure>
 					</div>
 				</li>

@@ -175,6 +175,7 @@ display: block;
 }
 .kt-info-animate-flip  .kt-info-box-image-flip, .kt-info-icon-animate-flip  .kt-info-svg-icon-flip {
 	backface-visibility: hidden;
+	transform-style: preserve-3d;
 	position: absolute;
 	top: 0;
 	left: 0;

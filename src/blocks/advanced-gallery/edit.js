@@ -1269,10 +1269,24 @@ class GalleryEdit extends Component {
 									) }
 									{ this.showSettings( 'lightboxSettings' ) && (
 										<Fragment>
-											<ToggleControl
-												label={ __( 'Lightbox', 'kadence-blocks' ) }
-												checked={ ( lightbox && lightbox === 'magnific' ? true : false ) }
-												onChange={ ( value ) => setAttributes( { lightbox: ( value ? 'magnific' : 'none' ) } ) }
+											<SelectControl
+												label={ __( 'Link Triggers?', 'kadence-blocks' ) }
+												value={ lightbox }
+												onChange={ ( value ) => setAttributes( { lightbox: value } ) }
+												options={ [
+													{
+														label: __( 'None', 'kadence-blocks' ),
+														value: 'none',
+													},
+													{
+														label: __( 'Lightbox', 'kadence-blocks' ),
+														value: 'magnific',
+													},
+													{
+														label: __( 'New Tab', 'kadence-blocks' ),
+														value: 'new_tab',
+													},
+												] }
 											/>
 											{ lightbox && lightbox === 'magnific' && (
 												<ToggleControl

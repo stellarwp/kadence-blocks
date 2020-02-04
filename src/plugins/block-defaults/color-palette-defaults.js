@@ -158,7 +158,6 @@ class KadenceColorDefault extends Component {
 													this.saveKadenceColors( { color: value, name: title, slug: slug }, theIndex );
 													this.saveColors( { color: value, name: title, slug: slug }, index );
 													this.saveConfig();
-													this.setState( { classSat: 'first' } );
 												} }
 											/>
 										) }

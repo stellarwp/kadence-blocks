@@ -159,10 +159,14 @@ registerBlockType( 'kadence/advancedbtn', {
 			type: 'bool',
 			default: false,
 		},
+		collapseFullwidth: {
+			type: 'bool',
+			default: false,
+		},
 	},
 	edit,
 	save: props => {
-		const { attributes: { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth, thAlign, mhAlign } } = props;
+		const { attributes: { btnCount, btns, hAlign, uniqueID, letterSpacing, forceFullwidth, thAlign, mhAlign, collapseFullwidth } } = props;
 		const renderSaveBtns = ( index ) => {
 			let relAttr;
 			if ( '_blank' === btns[ index ].target ) {
@@ -203,7 +207,7 @@ registerBlockType( 'kadence/advancedbtn', {
 			);
 		};
 		return (
-			<div className={ `kt-btn-align-${ hAlign } kt-btn-tablet-align-${ ( thAlign ? thAlign : 'inherit' ) } kt-btn-mobile-align-${ ( mhAlign ? mhAlign : 'inherit' ) } kt-btns-wrap kt-btns${ uniqueID }${ ( forceFullwidth ? ' kt-force-btn-fullwidth' : '' ) }` }>
+			<div className={ `kt-btn-align-${ hAlign } kt-btn-tablet-align-${ ( thAlign ? thAlign : 'inherit' ) } kt-btn-mobile-align-${ ( mhAlign ? mhAlign : 'inherit' ) } kt-btns-wrap kt-btns${ uniqueID }${ ( forceFullwidth ? ' kt-force-btn-fullwidth' : '' ) }${ ( collapseFullwidth ? ' kt-mobile-collapse-btn-fullwidth' : '' ) }` }>
 				{ times( btnCount, n => renderSaveBtns( n ) ) }
 			</div>
 		);

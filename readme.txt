@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.3.2
-Stable tag: 1.7.16
+Stable tag: 1.7.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.7.17 =
+* Clean up editor column padding for Gutenberg 7.3
+* Move attribute blockAlignment to align for better gutenberg support.
+* Add: Open in new tab for galleries with media file link.
+* Add: Mobile Collapse Option for Fullwidth Buttons.
 
 = 1.7.16 =
 * Fix: Bug in Firefox with Icon Flip.
