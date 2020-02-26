@@ -8,6 +8,9 @@
 	&.kb-disabled-btn{
 		opacity: 0.6;
 	}
+	&.is-primary {
+		border-color: #000;
+	}
  }
  .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-container > .components-form-file-upload {
 	margin-top: 10px;

@@ -3041,7 +3041,9 @@ class KadenceRowLayout extends Component {
 								className={ classnames(
 									'components-icon-button',
 									'components-toolbar__control',
+									'kadence-vertical-align',
 									{ 'is-active': verticalAlignment === 'top' },
+									{ 'is-pressed': verticalAlignment === 'top' },
 								) }
 								onClick={ () => setAttributes( { verticalAlignment: 'top' } ) }
 							>
@@ -3055,7 +3057,9 @@ class KadenceRowLayout extends Component {
 								className={ classnames(
 									'components-icon-button',
 									'components-toolbar__control',
+									'kadence-vertical-align',
 									{ 'is-active': verticalAlignment === 'middle' },
+									{ 'is-pressed': verticalAlignment === 'middle' },
 								) }
 								onClick={ () => setAttributes( { verticalAlignment: 'middle' } ) }
 							>
@@ -3069,7 +3073,9 @@ class KadenceRowLayout extends Component {
 								className={ classnames(
 									'components-icon-button',
 									'components-toolbar__control',
+									'kadence-vertical-align',
 									{ 'is-active': verticalAlignment === 'bottom' },
+									{ 'is-pressed': verticalAlignment === 'bottom' },
 								) }
 								onClick={ () => setAttributes( { verticalAlignment: 'bottom' } ) }
 							>

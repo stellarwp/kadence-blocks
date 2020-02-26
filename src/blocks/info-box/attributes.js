@@ -310,7 +310,7 @@ const attributes = {
 		default: '',
 	},
 	maxWidth: {
-		type: 'string',
+		type: 'number',
 		default: '',
 	},
 	maxWidthUnit: {

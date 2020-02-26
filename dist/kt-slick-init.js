@@ -97,7 +97,7 @@ jQuery( document ).ready( function( $ ) {
 				adaptiveHeight: true,
 				dots: sliderDots,
 			} );
-			$( window ).on( 'kadence-tabs-open', function( e ) {
+			$( window ).on( 'resize', function( e ) {
 				container.slick( 'refresh' );
 			} );
 		} else if ( sliderType && sliderType === 'thumbnail' ) {
@@ -164,7 +164,7 @@ jQuery( document ).ready( function( $ ) {
 					},
 				],
 			} );
-			$( window ).on( 'kadence-tabs-open', function( e ) {
+			$( window ).on( 'resize', function( e ) {
 				container.slick( 'refresh' );
 			} );
 		} else {
@@ -217,7 +217,7 @@ jQuery( document ).ready( function( $ ) {
 					},
 				],
 			} );
-			$( window ).on( 'kadence-tabs-open', function( e ) {
+			$( window ).on( 'resize', function( e ) {
 				container.slick( 'refresh' );
 			} );
 		}

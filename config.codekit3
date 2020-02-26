@@ -656,7 +656,7 @@
 		"oA": 0,
 		"oAP": "/dist/vendor/kt-blocks-slick.css",
 		"oF": 0,
-		"oS": 0,
+		"oS": 3,
 		"uL": 1
 		},
 	"/dist/vendor/slick.min.js": {
@@ -2145,6 +2145,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/image-size-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/inline-link-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/inline-link-control-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

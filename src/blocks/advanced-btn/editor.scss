@@ -4,8 +4,14 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .kt-button-text.is-selected {
+.kt-button-text.is-selected {
     min-width: 5px;
+}
+.components-base-control.block-editor-url-input.kt-btn-link-input {
+    margin-bottom: 0;
+}
+.kb-step-control input.components-step-control__number {
+    height:36px;
 }
 .block-editor-rich-text__editable.kt-button-text [data-rich-text-placeholder]:after {
     display:inline-block;

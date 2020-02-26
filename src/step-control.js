@@ -1,33 +1,20 @@
 /**
- * Measure Component
+ * Step Component
  *
  */
-
-/**
- * Import Icons
- */
-import icons from './icons';
-
-/**
- * Import External
- */
-import map from 'lodash/map';
 
 /**
  * Internal block libraries
  */
 const { __ } = wp.i18n;
 const {
-	Fragment,
-} = wp.element;
-const {
 	Button,
 	Dashicon,
 } = wp.components;
 
 /**
- * Build the Measure controls
- * @returns {object} Measure settings.
+ * Build the Step controls
+ * @returns {object} Step settings.
  */
 export default function StepControls( {
 	label,
@@ -51,7 +38,7 @@ export default function StepControls( {
 		onChange && (
 			<div className="components-base-control">
 				<p className="components-base-control__label">{ label }</p>
-				<div className="components-base-control__field kb-flex-center">
+				<div className="components-base-control__field kb-flex-center kb-step-control">
 					<Button
 						className="kb-step-btn"
 						isDefault

@@ -37,11 +37,11 @@
 .kt-inner-column-height-full > .wp-block-kadence-column > .kt-inside-inner-col {
     height: 100%;
 }
-.kt-row-valign-middle.kt-inner-column-height-full>.wp-block-kadence-column > .kt-inside-inner-col {
+.kt-row-valign-middle.kt-inner-column-height-full:not(.kt-has-1-columns)>.wp-block-kadence-column > .kt-inside-inner-col {
     display: flex;
     align-items: center;
 }
-.kt-row-valign-bottom.kt-inner-column-height-full>.wp-block-kadence-column > .kt-inside-inner-col {
+.kt-row-valign-bottom.kt-inner-column-height-full:not(.kt-has-1-columns)>.wp-block-kadence-column > .kt-inside-inner-col {
     display: flex;
     align-items: flex-end;
 }
@@ -103,7 +103,10 @@
 		&.kt-v-gutter-widest > .wp-block-kadence-column {
 			margin-bottom: 80px;
 		}
-		&:not(.kt-v-gutter-none) > .wp-block-kadence-column:last-child {
+		&.kt-m-colapse-right-to-left:not(.kt-v-gutter-none) > .wp-block-kadence-column:first-child {
+			margin-bottom: 0px;
+		}
+		&:not(.kt-v-gutter-none):not(.kt-m-colapse-right-to-left) > .wp-block-kadence-column:last-child {
 			margin-bottom: 0px;
 		}
 	}
@@ -432,8 +435,11 @@
     .kt-tab-layout-row.kt-v-gutter-widest > .wp-block-kadence-column {
         margin-bottom: 80px;
     }
-    .kt-tab-layout-row:not(.kt-v-gutter-none) > .wp-block-kadence-column:last-child {
-        margin-bottom: 0px;
+	.kt-tab-layout-row.kt-m-colapse-right-to-left:not(.kt-v-gutter-none) > .wp-block-kadence-column:first-child {
+		margin-bottom: 0px;
+	}
+	.kt-tab-layout-row:not(.kt-v-gutter-none):not(.kt-m-colapse-right-to-left) > .wp-block-kadence-column:last-child {
+		margin-bottom: 0px;
 	}
     .kt-tab-layout-left-golden {
         > .wp-block-kadence-column {
@@ -744,8 +750,11 @@
     .kt-mobile-layout-row.kt-v-gutter-widest > .wp-block-kadence-column {
         margin-bottom: 80px;
     }
-    .kt-mobile-layout-row:not(.kt-v-gutter-none) > .wp-block-kadence-column:last-child {
-        margin-bottom: 0px;
+	.kt-mobile-layout-row.kt-m-colapse-right-to-left:not(.kt-v-gutter-none) > .wp-block-kadence-column:first-child {
+		margin-bottom: 0px;
+	}
+	.kt-mobile-layout-row:not(.kt-v-gutter-none):not(.kt-m-colapse-right-to-left) > .wp-block-kadence-column:last-child {
+		margin-bottom: 0px;
 	}
 	.kt-has-1-columns.kt-mobile-layout-row > .wp-block-kadence-column.inner-column-1 {
 		flex: 1;

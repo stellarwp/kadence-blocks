@@ -13,6 +13,7 @@ import BoxShadowControl from '../../box-shadow-control';
 import WebfontLoader from '../../fontloader';
 import hexToRGBA from '../../hex-to-rgba';
 import StepControl from '../../step-control';
+import URLInputInline from '../../inline-link-control';
 
 /**
  * Import Css
@@ -259,22 +260,32 @@ class KadenceAdvancedButton extends Component {
 						</span>
 					</span>
 					{ isSelected && ( ( this.state.btnFocused && 'btn' + [ index ] === this.state.btnFocused ) || ( this.state.btnFocused && 'false' === this.state.btnFocused && '0' === index ) ) && (
-						<form
-							key={ 'form-link' }
-							onSubmit={ ( event ) => event.preventDefault() }
-							className="blocks-button__inline-link">
-							<URLInput
-								value={ btns[ index ].link }
-								onChange={ value => {
-									this.saveArrayUpdate( { link: value }, index );
-								} }
-							/>
-							<IconButton
-								icon={ 'editor-break' }
-								label={ __( 'Apply', 'kadence-blocks'  ) }
-								type={ 'submit' }
-							/>
-						</form>
+						<URLInputInline
+							url={ btns[ index ].link || '' }
+							onChangeUrl={ value => {
+								this.saveArrayUpdate( { link: value }, index );
+							} }
+							opensInNewTab={ ( undefined !== btns[ index ].target && '_blank' === btns[ index ].target ? true : false ) }
+							onChangeTarget={ value => {
+								if ( true === value ) {
+									this.saveArrayUpdate( { target: '_blank' }, index );
+								} else {
+									this.saveArrayUpdate( { target: '_self' }, index );
+								}
+							} }
+							linkNoFollow={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
+							onChangeFollow={ value => {
+								this.saveArrayUpdate( { noFollow: value }, index );
+							} }
+							linkSponsored={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
+							onChangeSponsored={ value => {
+								this.saveArrayUpdate( { sponsored: value }, index );
+							} }
+							linkDownload={ ( undefined !== btns[ index ].download ? btns[ index ].download : false ) }
+							onChangeDownload={ value => {
+								this.saveArrayUpdate( { download: value }, index );
+							} }
+						/>
 					) }
 				</div>
 			);
@@ -381,6 +392,11 @@ class KadenceAdvancedButton extends Component {
 								label={ __( 'Set link attribute Sponsored?', 'kadence-blocks' ) }
 								checked={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
 								onChange={ ( value ) => this.saveArrayUpdate( { sponsored: value }, index ) }
+							/>
+							<ToggleControl
+								label={ __( 'Set link to Download?', 'kadence-blocks' ) }
+								checked={ ( undefined !== btns[ index ].download ? btns[ index ].download : false ) }
+								onChange={ ( value ) => this.saveArrayUpdate( { download: value }, index ) }
 							/>
 						</Fragment>
 					) }
@@ -1287,7 +1303,7 @@ class KadenceAdvancedButton extends Component {
 											step={ 1 }
 										/>
 										<h2 className="kt-heading-size-title">{ __( 'Button Alignment', 'kadence-blocks' ) }</h2>
-										<TabPanel className="kt-size-tabs"
+										<TabPanel className="kt-size-tabs kb-sidebar-alignment"
 											activeClass="active-tab"
 											tabs={ [
 												{

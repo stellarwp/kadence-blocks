@@ -273,6 +273,7 @@
 					text-indent: -999em;
 					cursor: pointer;
 					position: absolute;
+					content:'',
 				}
 			}
 			&.slick-active button:before {

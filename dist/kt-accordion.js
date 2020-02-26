@@ -647,7 +647,7 @@ function () {
 				setTimeout(function(){
 					panelToOpen.classList.add(_this8.settings.activeClass);
 					panelToOpen.style.height = '';
-					panelToOpen.classList.remove('kt-panel-is-expanding');
+          panelToOpen.classList.remove('kt-panel-is-expanding');
 				return _this8.toggling = false;
 				}, _transDuration );
 			}
