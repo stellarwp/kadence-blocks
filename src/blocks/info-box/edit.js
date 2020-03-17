@@ -15,6 +15,7 @@ import './editor.scss';
  */
 import icons from '../../icons';
 import map from 'lodash/map';
+import get from 'lodash/get';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedColorControl from '../../advanced-color-control';
@@ -982,13 +983,27 @@ class KadenceInfoBox extends Component {
 		const titleTagName = 'h' + titleFont[ 0 ].level;
 		const ALLOWED_MEDIA_TYPES = [ 'image' ];
 		const onSelectImage = media => {
+			let url;
+			const size = ( mediaImage[ 0 ] && mediaImage[ 0 ].size && '' !== mediaImage[ 0 ].size ? mediaImage[ 0 ].size : 'full' );
+			if ( size !== 'full' ) {
+				url =
+				get( media, [ 'sizes', size, 'url' ] ) ||
+				get( media, [
+					'media_details',
+					'sizes',
+					size,
+					'source_url',
+				] );
+			}
+			const width = get( media, [ 'sizes', size, 'width' ] ) || get( media, [ 'media_details', 'sizes', size, 'width' ] ) || get( media, [ 'width' ] ) || get( media, [ 'media_details', 'width' ] );
+			const height = get( media, [ 'sizes', size, 'height' ] ) || get( media, [ 'media_details', 'sizes', size, 'height' ] ) || get( media, [ 'height' ] ) || get( media, [ 'media_details', 'height' ] );
 			saveMediaImage( {
 				id: media.id,
-				url: media.url,
+				url: url || media.url,
 				alt: media.alt,
-				width: media.width,
-				height: media.height,
-				maxWidth: ( media.width ? media.width : 50 ),
+				width: width,
+				height: height,
+				maxWidth: ( media.width && media.width < 800 ? media.width : 50 ),
 				subtype: media.subtype,
 			} );
 		};
@@ -1011,12 +1026,22 @@ class KadenceInfoBox extends Component {
 			} );
 		};
 		const onSelectFlipImage = media => {
+			const width = get( media, [ 'width' ] ) ||
+				get( media, [
+					'media_details',
+					'width',
+				] );
+			const height = get( media, [ 'height' ] ) ||
+			get( media, [
+				'media_details',
+				'height',
+			] );
 			saveMediaImage( {
 				flipId: media.id,
 				flipUrl: media.url,
 				flipAlt: media.alt,
-				flipWidth: media.width,
-				flipHeight: media.height,
+				flipWidth: width,
+				flipHeight: height,
 				flipSubtype: media.subtype,
 			} );
 		};

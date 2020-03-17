@@ -397,10 +397,10 @@
 		"dS": 0,
 		"ft": 4,
 		"ma": 0,
-		"oA": 1,
+		"oA": 0,
 		"oAP": "/dist/magnific.css",
 		"oF": 1,
-		"oS": 0,
+		"oS": 3,
 		"uL": 1
 		},
 	"/dist/settings/blocks-deregister.js": {

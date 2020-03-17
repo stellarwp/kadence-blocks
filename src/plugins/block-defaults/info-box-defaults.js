@@ -444,15 +444,27 @@ class KadenceInfoBoxDefault extends Component {
 							/>
 							<SelectControl
 								label={ __( 'Media Type' ) }
-								value={ ( undefined !== infoConfig.mediaAlign ? infoConfig.mediaAlign : 'icon' ) }
+								value={ ( undefined !== infoConfig.mediaType ? infoConfig.mediaType : 'icon' ) }
 								options={ [
 									{ value: 'icon', label: __( 'Icon' ) },
 									{ value: 'image', label: __( 'Image' ) },
 								] }
 								onChange={ value => this.saveConfigState( 'mediaType', value ) }
 							/>
-							{ infoConfig.mediaAlign && 'image' === infoConfig.mediaAlign && (
+							{ infoConfig.mediaType && 'image' === infoConfig.mediaType && (
 								<Fragment>
+									<SelectControl
+										label={ __( 'Image Size' ) }
+										value={ mediaImage[ 0 ].size }
+										options={ [
+											{ value: 'full', label: __( 'Full', 'kadence' ) },
+											{ value: 'large', label: __( 'Large', 'kadence' ) },
+											{ value: 'medium_large', label: __( 'Medium Large', 'kadence' ) },
+											{ value: 'medium', label: __( 'Medium', 'kadence' ) },
+											{ value: 'thumbnail', label: __( 'Thumbnail', 'kadence' ) },
+										] }
+										onChange={ value => saveMediaImage( { size: value } ) }
+									/>
 									<RangeControl
 										label={ __( 'Max Image Width' ) }
 										value={ mediaImage[ 0 ].maxWidth }
@@ -567,7 +579,7 @@ class KadenceInfoBoxDefault extends Component {
 									</TabPanel>
 								</Fragment>
 							) }
-							{ ( undefined === infoConfig.mediaAlign || 'icon' === infoConfig.mediaAlign ) && (
+							{ ( undefined === infoConfig.mediaType || 'icon' === infoConfig.mediaType ) && (
 								<Fragment>
 									<IconControl
 										value={ mediaIcon[ 0 ].icon }

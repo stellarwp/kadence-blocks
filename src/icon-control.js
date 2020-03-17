@@ -1,5 +1,5 @@
 /**
- * Typography Component
+ * Icon Component
  *
  */
 
@@ -16,8 +16,8 @@ const {
 } = wp.element;
 
 /**
- * Build the typography controls
- * @returns {object} typography settings.
+ * Build the Icon controls
+ * @returns {object} Icon settings.
  */
 class IconControl extends Component {
 	constructor() {

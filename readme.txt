@@ -87,6 +87,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.7.19 =
+* Add: skip-lazy class to carousel images to fix lazy load issue.
+* Fix: CSS for gutenberg updates.
+* Fix: CSS for lightbox in some situations.
+* Fix: Issue with infobox image width and height not getting set.
+* Add: option to set info box image size as a default.
+* Add: option to force hover effect to always so for gallery on mobile.
+
 = 1.7.18 =
 * Update Css to prevent issue with some settings conflict.
 * Update: Gallery Slider js within accordion not rendering correclty.

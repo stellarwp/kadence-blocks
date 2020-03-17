@@ -884,7 +884,8 @@ button.components-button.kb-sidebar-image {
 
 // Tabs
 .kt-inspect-tabs .components-button-group {
-    margin-bottom: 1em;
+	margin-bottom: 1em;
+	border:0;
 }
 // Tab Controls
 .edit-post-block-sidebar__panel .kt-inspect-tabs .components-panel__body {
@@ -1546,4 +1547,7 @@ button.components-button.kb-sidebar-image {
 		justify-content: center;
 		align-items: center;
 	}
+}
+.kt-select-layout .components-button-group {
+    border: 0;
 }

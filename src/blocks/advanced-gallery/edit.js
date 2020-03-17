@@ -357,7 +357,7 @@ class GalleryEdit extends Component {
 	}
 	render() {
 		const { attributes, isSelected, className, noticeUI, setAttributes } = this.props;
-		const { uniqueID, images, columns, linkTo, ids, columnControl, showCaption, captionStyles, lightbox, lightSize, type, imageRatio, captionStyle, gutter, thumbSize, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, imageRadius, margin, marginUnit, displayShadow, shadow, shadowHover, carouselHeight, imageFilter, lightboxCaption, carouselAlign, thumbnailColumns, thumbnailControl, thumbnailRatio } = attributes;
+		const { uniqueID, images, columns, linkTo, ids, columnControl, showCaption, captionStyles, lightbox, lightSize, type, imageRatio, captionStyle, gutter, thumbSize, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, imageRadius, margin, marginUnit, displayShadow, shadow, shadowHover, carouselHeight, imageFilter, lightboxCaption, carouselAlign, thumbnailColumns, thumbnailControl, thumbnailRatio, mobileForceHover } = attributes;
 		const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
 		const hasImages = !! images.length;
 		const onColumnChange = ( value ) => {
@@ -1402,6 +1402,13 @@ class GalleryEdit extends Component {
 											value={ captionStyle }
 											onChange={ ( value ) => setAttributes( { captionStyle: value } ) }
 										/>
+										{ ( 'cover-hover' === captionStyle || 'bottom-hover' === captionStyle ) && (
+											<ToggleControl
+												label={ __( 'Force hover effect always for mobile', 'kadence-blocks' ) }
+												checked={ mobileForceHover }
+												onChange={ value => setAttributes( { mobileForceHover: value } ) }
+											/>
+										) }
 										<AdvancedColorControl
 											label={ __( 'Caption Color', 'kadence-blocks' ) }
 											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }

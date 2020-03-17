@@ -168,8 +168,13 @@
 	opacity: 0;
 	transition: opacity 0.3s ease-in-out;
 }
-.kb-gallery-caption-style-bottom-hover .kadence-blocks-gallery-item:hover figcaption, .kb-gallery-caption-style-bottom-hover .kadence-blocks-gallery-item .is-selected figcaption {
+.kb-gallery-caption-style-bottom-hover .kadence-blocks-gallery-item:hover figcaption, .kb-gallery-caption-style-bottom-hover .kadence-blocks-gallery-item:focus-within figcaption {
     opacity: 1;
+}
+@media (max-width: 767px) {
+.kb-mobile-force-hover.kb-gallery-caption-style-bottom-hover .kadence-blocks-gallery-item figcaption {
+	opacity: 1;
+}
 }
 .kb-gallery-ul.kb-gallery-caption-style-cover-hover .kadence-blocks-gallery-item {
 	.kadence-blocks-gallery-item-inner figcaption {
@@ -188,8 +193,13 @@
 		background: rgba( 0,0,0, 0.5 );
 	}
 }
-.kb-gallery-ul.kb-gallery-caption-style-cover-hover .kadence-blocks-gallery-item:hover figcaption {
+.kb-gallery-ul.kb-gallery-caption-style-cover-hover .kadence-blocks-gallery-item:hover figcaption, .kb-gallery-ul.kb-gallery-caption-style-cover-hover .kadence-blocks-gallery-item:focus-within figcaption {
     opacity: 1;
+}
+@media (max-width: 767px) {
+	.kb-gallery-ul.kb-mobile-force-hover.kb-gallery-caption-style-cover-hover .kadence-blocks-gallery-item figcaption {
+		opacity: 1;
+	}
 }
 .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-ul.kb-gallery-type-carousel, .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-ul.kb-gallery-type-fluidcarousel, .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-ul.kb-gallery-type-slider, .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-ul.kb-gallery-type-thumbslider {
 	margin:0;

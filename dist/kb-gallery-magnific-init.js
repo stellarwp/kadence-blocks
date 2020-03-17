@@ -14,6 +14,7 @@ jQuery( document ).ready( function( $ ) {
 					if ( 'true' == showCaption && item.el.find( 'figcaption' ).length ) {
 						return item.el.find( 'figcaption' ).html();
 					}
+					return '';
 				},
 			},
 		} );
@@ -28,6 +29,7 @@ jQuery( document ).ready( function( $ ) {
 					if ( 'true' == showCaption && item.el.find( 'figcaption' ).length ) {
 						return item.el.find( 'figcaption' ).html();
 					}
+					return '';
 				},
 			},
 		} );

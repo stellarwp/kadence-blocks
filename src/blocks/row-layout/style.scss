@@ -8,6 +8,9 @@
 .entry-content .wp-block-kadence-rowlayout:not(.fixforgeneratepress) {
 	margin-bottom:0;
 }
+.site-navigation-fixed.navigation-top {
+    z-index: 100;
+}
 .kt-row-layout-inner {
     position: relative;
 }

@@ -190,7 +190,9 @@
 	  top: 0;
 	  margin-top: 35px;
 	  margin-left: 35px;
-	  border: medium inset transparent; }
+	  border: medium inset transparent;
+	  transform: none;
+	}
 	.mfp-arrow:after {
 	  border-top-width: 13px;
 	  border-bottom-width: 13px;

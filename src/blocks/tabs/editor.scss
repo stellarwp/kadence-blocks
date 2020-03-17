@@ -163,6 +163,11 @@ li.kt-tab-title-active .kadence-blocks-tab-item__control-menu {
 .components-range-control.kt-icon-rangecontrol .components-base-control__label {
     width: 30px;
 }
+.kt-icon-rangecontrol  .components-base-control__field {
+	display: flex;
+	align-items: center;
+	width: 100%;
+}
 
 .kt-inspect-tabs.kt-hover-tabs.kt-no-ho-ac-tabs .components-tab-panel__tabs button {
     width: 33.33%;
