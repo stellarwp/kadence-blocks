@@ -57,17 +57,17 @@ class KadenceTestimonialDefault extends Component {
 	componentDidMount() {
 		const testimonialConfig = ( this.state.configuration && this.state.configuration[ 'kadence/testimonials' ] ? this.state.configuration[ 'kadence/testimonials' ] : {} );
 		if ( testimonialConfig.mediaStyle && testimonialConfig.mediaStyle[0] ) {
-			if ( testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 1 ] && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 2 ] && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 3 ] ) {
+			if ( testimonialConfig.mediaStyle[ 0 ].borderWidth && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 1 ] && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 2 ] && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 3 ] ) {
 				this.setState( { mediaBorderControl: 'linked' } );
 			} else {
 				this.setState( { mediaBorderControl: 'individual' } );
 			}
-			if ( testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 1 ] && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 2 ] && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 3 ] ) {
+			if ( testimonialConfig.mediaStyle[ 0 ].padding && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 1 ] && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 2 ] && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 3 ] ) {
 				this.setState( { mediaPaddingControl: 'linked' } );
 			} else {
 				this.setState( { mediaPaddingControl: 'individual' } );
 			}
-			if ( testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 1 ] && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 2 ] && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 3 ] ) {
+			if ( testimonialConfig.mediaStyle[ 0 ].margin && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 1 ] && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 2 ] && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 3 ] ) {
 				this.setState( { mediaMarginControl: 'linked' } );
 			} else {
 				this.setState( { mediaMarginControl: 'individual' } );
@@ -84,29 +84,29 @@ class KadenceTestimonialDefault extends Component {
 			}
 		}
 		if ( testimonialConfig.mediaStyle && testimonialConfig.mediaStyle[ 0 ] ) {
-			if ( testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 1 ] && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 2 ] && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 3 ] ) {
+			if ( testimonialConfig.mediaStyle[ 0 ].borderWidth && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 1 ] && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 2 ] && testimonialConfig.mediaStyle[ 0 ].borderWidth[ 0 ] === testimonialConfig.mediaStyle[ 0 ].borderWidth[ 3 ] ) {
 				this.setState( { mediaBorderControl: 'linked' } );
 			} else {
 				this.setState( { mediaBorderControl: 'individual' } );
 			}
-			if ( testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 1 ] && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 2 ] && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 3 ] ) {
+			if ( testimonialConfig.mediaStyle[ 0 ].padding && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 1 ] && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 2 ] && testimonialConfig.mediaStyle[ 0 ].padding[ 0 ] === testimonialConfig.mediaStyle[ 0 ].padding[ 3 ] ) {
 				this.setState( { mediaPaddingControl: 'linked' } );
 			} else {
 				this.setState( { mediaPaddingControl: 'individual' } );
 			}
-			if ( testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 1 ] && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 2 ] && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 3 ] ) {
+			if ( testimonialConfig.mediaStyle[ 0 ].margin && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 1 ] && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 2 ] && testimonialConfig.mediaStyle[ 0 ].margin[ 0 ] === testimonialConfig.mediaStyle[ 0 ].margin[ 3 ] ) {
 				this.setState( { mediaMarginControl: 'linked' } );
 			} else {
 				this.setState( { mediaMarginControl: 'individual' } );
 			}
 		}
 		if ( testimonialConfig.titleFont && testimonialConfig.titleFont[ 0 ] ) {
-			if ( testimonialConfig.titleFont[ 0 ].padding[ 0 ] === testimonialConfig.titleFont[ 0 ].padding[ 1 ] && testimonialConfig.titleFont[ 0 ].padding[ 0 ] === testimonialConfig.titleFont[ 0 ].padding[ 2 ] && testimonialConfig.titleFont[ 0 ].padding[ 0 ] === testimonialConfig.titleFont[ 0 ].padding[ 3 ] ) {
+			if ( testimonialConfig.titleFont[ 0 ].padding && testimonialConfig.titleFont[ 0 ].padding[ 0 ] === testimonialConfig.titleFont[ 0 ].padding[ 1 ] && testimonialConfig.titleFont[ 0 ].padding[ 0 ] === testimonialConfig.titleFont[ 0 ].padding[ 2 ] && testimonialConfig.titleFont[ 0 ].padding[ 0 ] === testimonialConfig.titleFont[ 0 ].padding[ 3 ] ) {
 				this.setState( { titlePaddingControl: 'linked' } );
 			} else {
 				this.setState( { titlePaddingControl: 'individual' } );
 			}
-			if ( testimonialConfig.titleFont[ 0 ].margin[ 0 ] === testimonialConfig.titleFont[ 0 ].margin[ 1 ] && testimonialConfig.titleFont[ 0 ].margin[ 0 ] === testimonialConfig.titleFont[ 0 ].margin[ 2 ] && testimonialConfig.titleFont[ 0 ].margin[ 0 ] === testimonialConfig.titleFont[ 0 ].margin[ 3 ] ) {
+			if ( testimonialConfig.titleFont[ 0 ].margin && testimonialConfig.titleFont[ 0 ].margin[ 0 ] === testimonialConfig.titleFont[ 0 ].margin[ 1 ] && testimonialConfig.titleFont[ 0 ].margin[ 0 ] === testimonialConfig.titleFont[ 0 ].margin[ 2 ] && testimonialConfig.titleFont[ 0 ].margin[ 0 ] === testimonialConfig.titleFont[ 0 ].margin[ 3 ] ) {
 				this.setState( { titleMarginControl: 'linked' } );
 			} else {
 				this.setState( { titleMarginControl: 'individual' } );
@@ -127,24 +127,24 @@ class KadenceTestimonialDefault extends Component {
 			}
 		}
 		if ( testimonialConfig.ratingStyles && testimonialConfig.ratingStyles[ 0 ] ) {
-			if ( testimonialConfig.ratingStyles[ 0 ].margin[ 0 ] === testimonialConfig.ratingStyles[ 0 ].margin[ 1 ] && testimonialConfig.ratingStyles[ 0 ].margin[ 0 ] === testimonialConfig.ratingStyles[ 0 ].margin[ 2 ] && testimonialConfig.ratingStyles[ 0 ].margin[ 0 ] === testimonialConfig.ratingStyles[ 0 ].margin[ 3 ] ) {
+			if ( testimonialConfig.ratingStyles[ 0 ].margin && testimonialConfig.ratingStyles[ 0 ].margin[ 0 ] === testimonialConfig.ratingStyles[ 0 ].margin[ 1 ] && testimonialConfig.ratingStyles[ 0 ].margin[ 0 ] === testimonialConfig.ratingStyles[ 0 ].margin[ 2 ] && testimonialConfig.ratingStyles[ 0 ].margin[ 0 ] === testimonialConfig.ratingStyles[ 0 ].margin[ 3 ] ) {
 				this.setState( { ratingMarginControl: 'linked' } );
 			} else {
 				this.setState( { ratingMarginControl: 'individual' } );
 			}
 		}
 		if ( testimonialConfig.iconStyles && testimonialConfig.iconStyles[ 0 ] ) {
-			if ( testimonialConfig.iconStyles[ 0 ].border[ 0 ] === testimonialConfig.iconStyles[ 0 ].border[ 1 ] && testimonialConfig.iconStyles[ 0 ].border[ 0 ] === testimonialConfig.iconStyles[ 0 ].border[ 2 ] && testimonialConfig.iconStyles[ 0 ].border[ 0 ] === testimonialConfig.iconStyles[ 0 ].border[ 3 ] ) {
+			if ( testimonialConfig.iconStyles[ 0 ].border && testimonialConfig.iconStyles[ 0 ].border[ 0 ] === testimonialConfig.iconStyles[ 0 ].border[ 1 ] && testimonialConfig.iconStyles[ 0 ].border[ 0 ] === testimonialConfig.iconStyles[ 0 ].border[ 2 ] && testimonialConfig.iconStyles[ 0 ].border[ 0 ] === testimonialConfig.iconStyles[ 0 ].border[ 3 ] ) {
 				this.setState( { iconBorderControl: 'linked' } );
 			} else {
 				this.setState( { iconBorderControl: 'individual' } );
 			}
-			if ( testimonialConfig.iconStyles[ 0 ].padding[ 0 ] === testimonialConfig.iconStyles[ 0 ].padding[ 1 ] && testimonialConfig.iconStyles[ 0 ].padding[ 0 ] === testimonialConfig.iconStyles[ 0 ].padding[ 2 ] && testimonialConfig.iconStyles[ 0 ].padding[ 0 ] === testimonialConfig.iconStyles[ 0 ].padding[ 3 ] ) {
+			if ( testimonialConfig.iconStyles[ 0 ].padding && testimonialConfig.iconStyles[ 0 ].padding[ 0 ] === testimonialConfig.iconStyles[ 0 ].padding[ 1 ] && testimonialConfig.iconStyles[ 0 ].padding[ 0 ] === testimonialConfig.iconStyles[ 0 ].padding[ 2 ] && testimonialConfig.iconStyles[ 0 ].padding[ 0 ] === testimonialConfig.iconStyles[ 0 ].padding[ 3 ] ) {
 				this.setState( { iconPaddingControl: 'linked' } );
 			} else {
 				this.setState( { iconPaddingControl: 'individual' } );
 			}
-			if ( testimonialConfig.iconStyles[ 0 ].margin[ 0 ] === testimonialConfig.iconStyles[ 0 ].margin[ 1 ] && testimonialConfig.iconStyles[ 0 ].margin[ 0 ] === testimonialConfig.iconStyles[ 0 ].margin[ 2 ] && testimonialConfig.iconStyles[ 0 ].margin[ 0 ] === testimonialConfig.iconStyles[ 0 ].margin[ 3 ] ) {
+			if ( testimonialConfig.iconStyles[ 0 ].margin && testimonialConfig.iconStyles[ 0 ].margin[ 0 ] === testimonialConfig.iconStyles[ 0 ].margin[ 1 ] && testimonialConfig.iconStyles[ 0 ].margin[ 0 ] === testimonialConfig.iconStyles[ 0 ].margin[ 2 ] && testimonialConfig.iconStyles[ 0 ].margin[ 0 ] === testimonialConfig.iconStyles[ 0 ].margin[ 3 ] ) {
 				this.setState( { iconMarginControl: 'linked' } );
 			} else {
 				this.setState( { iconMarginControl: 'individual' } );

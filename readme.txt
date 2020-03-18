@@ -94,6 +94,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Fix: Issue with infobox image width and height not getting set.
 * Add: option to set info box image size as a default.
 * Add: option to force hover effect to always so for gallery on mobile.
+* Add: Filter to remove Editor Width. ( More and more themes are doing better at handling this so it is going to be depreciated )
 
 = 1.7.18 =
 * Update Css to prevent issue with some settings conflict.

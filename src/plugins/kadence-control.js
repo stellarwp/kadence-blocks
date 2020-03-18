@@ -158,12 +158,14 @@ class KadenceConfig extends Component {
 							<KadenceFontFamily />
 						</div>
 					</PanelBody>
-					<PanelBody
-						title={ __( 'Editor Width' ) }
-						initialOpen={ false }
-					>
-						<KadenceEditorWidth />
-					</PanelBody>
+					{ ( ( undefined === kadence_blocks_params ) || ( undefined !== kadence_blocks_params && undefined === kadence_blocks_params.editor_width ) || ( undefined !== kadence_blocks_params && undefined !== kadence_blocks_params.editor_width && kadence_blocks_params.editor_width ) ) && (
+						<PanelBody
+							title={ __( 'Editor Width' ) }
+							initialOpen={ false }
+						>
+							<KadenceEditorWidth />
+						</PanelBody>
+					) }
 					{/* <PanelBody
 						title={ __( 'Global Styles' ) }
 						initialOpen={ false }

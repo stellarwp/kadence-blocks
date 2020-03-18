@@ -78,6 +78,11 @@ function kadence_gutenberg_editor_assets() {
 	} else {
 		$userrole = 'none';
 	}
+	if ( isset( $editor_widths['enable_editor_width'] ) && 'false' === $editor_widths['enable_editor_width'] ) {
+		$enable_editor_width = false;
+	} else {
+		$enable_editor_width = true;
+	}
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -95,6 +100,7 @@ function kadence_gutenberg_editor_assets() {
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
 			'privacy_link'   => get_privacy_policy_url(),
 			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
+			'editor_width'   => apply_filters( 'kadence_blocks_editor_width', $enable_editor_width ),
 		)
 	);
 	// Styles.
@@ -133,7 +139,7 @@ add_action( 'init', 'kt_blocks_init_post_meta' );
  */
 function kadence_blocks_admin_editor_width() {
 	$editor_widths = get_option( 'kt_blocks_editor_width', array() );
-	if ( ! isset( $editor_widths['enable_editor_width'] ) || 'true' === $editor_widths['enable_editor_width'] ) {
+	if ( ( ! isset( $editor_widths['enable_editor_width'] ) || 'true' === $editor_widths['enable_editor_width'] ) && apply_filters( 'kadence_blocks_editor_width', true ) ) {
 		if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
 			$add_size = 10;
 		} else {

@@ -206,26 +206,21 @@ class Kadence_Blocks_Settings {
 	 */
 	public function deregister_blocks() {
 		// Scripts.
-		$editor_widths = get_option( 'kt_blocks_editor_width', array() );
-		if ( isset( $editor_widths['enable_editor_width'] ) && 'false' === $editor_widths['enable_editor_width'] ) {
-			$plugins = array( 'kadence-editor-width' );
-		} else {
-			$plugins = array();
-		}
 		$options = get_option( 'kt_blocks_unregistered_blocks' );
 		if ( isset( $options['kadence/advnacedgallery'] ) ) {
 			unset( $options['kadence/advnacedgallery'] );
 			update_option( 'kt_blocks_unregistered_blocks', $options );
 		}
-		wp_enqueue_script( 'kadence-blocks-deregister-js', KADENCE_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KADENCE_BLOCKS_VERSION, true );
-		wp_localize_script(
-			'kadence-blocks-deregister-js',
-			'kt_deregister_params',
-			array(
-				'deregister'       => $options,
-				'dergisterplugins' => $plugins,
-			)
-		);
+		if ( $options ) {
+			wp_enqueue_script( 'kadence-blocks-deregister-js', KADENCE_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KADENCE_BLOCKS_VERSION, true );
+			wp_localize_script(
+				'kadence-blocks-deregister-js',
+				'kt_deregister_params',
+				array(
+					'deregister'       => $options,
+				)
+			);
+		}
 	}
 	/**
 	 * Returns a base64 URL for the SVG for use in the menu.
@@ -611,20 +606,22 @@ class Kadence_Blocks_Settings {
 									?>
 								</div>
 								<div class="kt-dashboard-spacer"></div>
-								<h2><?php echo esc_html__( 'Editor Max Widths', 'kadence-blocks' ); ?><span class="kt-main-subtitle"><?php echo esc_html__( 'Match the editor width to your sites width.', 'kadence-blocks' ); ?></span></h2>
-								<?php global $content_width; ?>
-									<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
-									<div class="kt-promo-row">
-									<?php
-									echo '<form action="options.php" method="post">';
-										settings_fields( 'kt_blocks_editor_width' );
-										do_settings_sections( 'kt_blocks_editor_width_section' );
-										do_settings_sections( 'kt_blocks_editor_defaults_section' );
-										submit_button( __( 'Save Changes', 'kadence-blocks' ) );
-									echo '</form>';
-									?>
-								</div>
-								<div class="kt-dashboard-spacer"></div>
+								<?php if ( apply_filters( 'kadence_blocks_editor_width', true ) ) { ?>
+									<h2><?php echo esc_html__( 'Editor Max Widths', 'kadence-blocks' ); ?><span class="kt-main-subtitle"><?php echo esc_html__( 'Match the editor width to your sites width.', 'kadence-blocks' ); ?></span></h2>
+									<?php global $content_width; ?>
+										<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
+										<div class="kt-promo-row">
+										<?php
+										echo '<form action="options.php" method="post">';
+											settings_fields( 'kt_blocks_editor_width' );
+											do_settings_sections( 'kt_blocks_editor_width_section' );
+											do_settings_sections( 'kt_blocks_editor_defaults_section' );
+											submit_button( __( 'Save Changes', 'kadence-blocks' ) );
+										echo '</form>';
+										?>
+									</div>
+									<div class="kt-dashboard-spacer"></div>
+								<?php } ?>
 							</div>
 						</div>
 						<div id="kt-help" class="nav-tab-content kt-admin-clearfix">
