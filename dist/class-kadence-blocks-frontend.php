@@ -2370,6 +2370,9 @@ class Kadence_Blocks_Frontend {
 				$css .= 'justify-content: ' . $content . ';';
 			}
 			$css .= '}';
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media {';
+			$css .= 'display: inline-block;';
+			$css .= '}';
 			$css .= '}';
 		}
 		if ( isset( $attr['mediaAlignMobile'] ) && ! empty( $attr['mediaAlignMobile'] ) ) {
@@ -2401,6 +2404,9 @@ class Kadence_Blocks_Frontend {
 				$css .= '-ms-flex-direction: ' . $direction . ';';
 				$css .= 'flex-direction: ' . $direction . ';';
 			}
+			$css .= '}';
+			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media {';
+			$css .= 'display: inline-block;';
 			$css .= '}';
 			$css .= '}';
 		}

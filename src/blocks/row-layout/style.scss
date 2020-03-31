@@ -42,11 +42,13 @@
 }
 .kt-row-valign-middle.kt-inner-column-height-full:not(.kt-has-1-columns)>.wp-block-kadence-column > .kt-inside-inner-col {
     display: flex;
-    align-items: center;
+	flex-direction: column;
+    justify-content: center;
 }
 .kt-row-valign-bottom.kt-inner-column-height-full:not(.kt-has-1-columns)>.wp-block-kadence-column > .kt-inside-inner-col {
-    display: flex;
-    align-items: flex-end;
+	display: flex;
+	flex-direction: column;
+    justify-content: flex-end;
 }
 .wp-block-kadence-rowlayout:before {
     clear: both;
