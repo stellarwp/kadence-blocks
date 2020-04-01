@@ -538,7 +538,7 @@ class KadenceColumn extends Component {
 		const textAlignControls = (
 			<Fragment>
 				<h2 className="kt-heading-size-title">{ __( 'Text Alignment' ) }</h2>
-				<TabPanel className="kt-size-tabs"
+				<TabPanel className="kt-size-tabs kb-sidebar-alignment"
 					activeClass="active-tab"
 					tabs={ [
 						{
@@ -758,29 +758,32 @@ class KadenceColumn extends Component {
 								</Fragment>
 							) }
 							{ this.showSettings( 'textColor' ) && (
-								<PanelBody
-									title={ __( 'Text Color Settings' ) }
-									initialOpen={ false }
-								>
-									<AdvancedColorControl
-										label={ __( 'Text Color' ) }
-										colorValue={ ( textColor ? textColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { textColor: value } ) }
-									/>
-									<AdvancedColorControl
-										label={ __( 'Link Color' ) }
-										colorValue={ ( linkColor ? linkColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { linkColor: value } ) }
-									/>
-									<AdvancedColorControl
-										label={ __( 'Link Hover Color' ) }
-										colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
-									/>
-								</PanelBody>
+								<Fragment>
+									<div className="kt-spacer-sidebar-15"></div>
+									<PanelBody
+										title={ __( 'Text Color Settings' ) }
+										initialOpen={ false }
+									>
+										<AdvancedColorControl
+											label={ __( 'Text Color' ) }
+											colorValue={ ( textColor ? textColor : '' ) }
+											colorDefault={ '' }
+											onColorChange={ value => setAttributes( { textColor: value } ) }
+										/>
+										<AdvancedColorControl
+											label={ __( 'Link Color' ) }
+											colorValue={ ( linkColor ? linkColor : '' ) }
+											colorDefault={ '' }
+											onColorChange={ value => setAttributes( { linkColor: value } ) }
+										/>
+										<AdvancedColorControl
+											label={ __( 'Link Hover Color' ) }
+											colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
+											colorDefault={ '' }
+											onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
+										/>
+									</PanelBody>
+								</Fragment>
 							) }
 							{ this.showSettings( 'paddingMargin' ) && (
 								<Fragment>

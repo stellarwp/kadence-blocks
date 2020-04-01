@@ -879,6 +879,9 @@ class Kadence_Blocks_Frontend {
 		//wp_enqueue_style( 'kadence-blocks-style-css', KADENCE_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
 		// Next all the extras that are shared.
+		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'dist/assets/css/simplelightbox.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'dist/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'dist/magnific.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'magnific-popup', KADENCE_BLOCKS_URL . 'dist/magnific.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-magnific-js', KADENCE_BLOCKS_URL . 'dist/kt-init-video-popup.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
@@ -4029,8 +4032,11 @@ class Kadence_Blocks_Frontend {
 			foreach ( $attr['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
 					if ( isset( $btnvalue['target'] ) && ! empty( $btnvalue['target'] ) && 'video' == $btnvalue['target'] ) {
-						wp_enqueue_style( 'kadence-blocks-magnific-css' );
-						wp_enqueue_script( 'kadence-blocks-magnific-js' );
+						wp_enqueue_style( 'kadence-simplelightbox-css' );
+						wp_enqueue_script( 'kadence-blocks-videolight-js' );
+
+						// wp_enqueue_style( 'kadence-blocks-magnific-css' );
+						// wp_enqueue_script( 'kadence-blocks-magnific-js' );
 					}
 				}
 			}

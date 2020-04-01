@@ -90,6 +90,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 1.7.20 =
 * Update: Declare 5.4 support.
 * Fix: CSS issue with some row vertical alignment settings.
+* Fix: Issue with info box icon border on mobile when switched to above.
+* Update: Button Video Popup, none jQuery lightbox, better handling of different youtube urls including nocookie.
 
 = 1.7.19 =
 * Add: skip-lazy class to carousel images to fix lazy load issue.

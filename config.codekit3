@@ -41,6 +41,42 @@
 		"oAP": "/.gitignore",
 		"oF": 0
 		},
+	"/dist/assets/css/simplelightbox.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/dist/assets/css/simplelightbox-min.css",
+		"oF": 0,
+		"oS": 3
+		},
+	"/dist/assets/css/src/simplelightbox.scss": {
+		"aP": 1,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 4,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/dist/assets/css/simplelightbox.css",
+		"oF": 2,
+		"oS": 3,
+		"uL": 1
+		},
+	"/dist/assets/css/src/tiny-slider.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 4,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/dist/assets/css/src/tiny-slider.css",
+		"oF": 0,
+		"oS": 0,
+		"uL": 1
+		},
 	"/dist/assets/js/kb-form-min.js": {
 		"bF": 0,
 		"ft": 64,
@@ -60,6 +96,72 @@
 		"oA": 0,
 		"oAP": "/dist/assets/js/kb-form-min.js",
 		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/assets/js/kb-init-video-popup.min.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/dist/assets/js/kb-init-video-popup.min-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/assets/js/simplelightbox.min.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/dist/assets/js/simplelightbox.min-min.js",
+		"oF": 1,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/assets/js/src/kb-init-video-popup.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/dist/assets/js/kb-init-video-popup.min.js",
+		"oF": 2,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/assets/js/src/simplelightbox.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/dist/assets/js/simplelightbox.min.js",
+		"oF": 2,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/assets/js/src/tiny-slider.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/dist/assets/js/src/tiny-slider-min.js",
+		"oF": 1,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/assets/js/tiny-slider.min.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/dist/assets/js/tiny-slider.min-min.js",
+		"oF": 1,
 		"sC": 0,
 		"tS": 0
 		},
