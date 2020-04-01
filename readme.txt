@@ -87,6 +87,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.8.0 =
+* Fix: CSS Box Shadow issue on buttons.
+
 = 1.7.20 =
 * Update: Declare 5.4 support.
 * Fix: CSS issue with some row vertical alignment settings.
