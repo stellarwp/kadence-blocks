@@ -325,5 +325,13 @@ const attributes = {
 		type: 'string',
 		default: 'px',
 	},
+	linkNoFollow: {
+		type: 'bool',
+		default: false,
+	},
+	linkSponsored: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

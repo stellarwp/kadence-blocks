@@ -57,8 +57,18 @@ registerBlockType( 'kadence/infobox', {
 	edit,
 
 	save: props => {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet }, className } = props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored }, className } = props;
 		const titleTagName = 'h' + titleFont[ 0 ].level;
+		let relAttr;
+		if ( '_blank' === target ) {
+			relAttr = 'noopener noreferrer';
+		}
+		if ( undefined !== linkNoFollow && true === linkNoFollow ) {
+			relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+		}
+		if ( undefined !== linkSponsored && true === linkSponsored ) {
+			relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+		}
 		const image = (
 			<div className="kadence-info-box-image-inner-intrisic-container" style={ {
 				maxWidth: mediaImage[ 0 ].maxWidth + 'px',
@@ -119,7 +129,7 @@ registerBlockType( 'kadence/infobox', {
 					className="kt-blocks-info-box-learnmore"
 					tagName={ 'a' }
 					target={ ( '_blank' === target ? target : undefined ) }
-					rel={ ( '_blank' === target ? 'noopener noreferrer' : undefined ) }
+					rel={ relAttr }
 					value={ learnMore }
 					href={ link }
 				/>
@@ -152,7 +162,7 @@ registerBlockType( 'kadence/infobox', {
 		return (
 			<div id={ `kt-info-box${ uniqueID }` } className={ className }>
 				{ linkProperty !== 'learnmore' && (
-					<a className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }${ ( hAlignTablet && '' !== hAlignTablet ? ' kb-info-tablet-halign-' + hAlignTablet : '' ) }${ ( hAlignMobile && '' !== hAlignMobile ? ' kb-info-mobile-halign-' + hAlignMobile : '' ) }` } target={ ( '_blank' === target ? target : undefined ) } rel={ ( '_blank' === target ? 'noopener noreferrer' : undefined ) } href={ link }>
+					<a className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }${ ( hAlignTablet && '' !== hAlignTablet ? ' kb-info-tablet-halign-' + hAlignTablet : '' ) }${ ( hAlignMobile && '' !== hAlignMobile ? ' kb-info-mobile-halign-' + hAlignMobile : '' ) }` } target={ ( '_blank' === target ? target : undefined ) } rel={ relAttr } href={ link }>
 						{ 'none' !== mediaType && (
 							<div className={ 'kt-blocks-info-box-media-container' }>
 								<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>

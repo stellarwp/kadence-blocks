@@ -104,12 +104,20 @@ class KadenceAccordionComponent extends Component {
 				Object.keys( blockConfigObject[ 'kadence/accordion' ] ).map( ( attribute ) => {
 					if ( 'titleTag' === attribute ) {
 						const accordionBlock = wp.data.select( 'core/block-editor' ).getBlocksByClientId( this.props.clientId );
-						const realPaneCount = accordionBlock[ 0 ].innerBlocks.length;
-						times( realPaneCount, n => {
-							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
-								titleTag: blockConfigObject[ 'kadence/accordion' ][ attribute ],
+						const realPaneCount = accordionBlock[ 0 ] ? accordionBlock[ 0 ].innerBlocks.length : accordionBlock.innerBlocks.length;
+						if ( accordionBlock[ 0 ] ) {
+							times( realPaneCount, n => {
+								wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( accordionBlock[ 0 ].innerBlocks[ n ].clientId, {
+									titleTag: blockConfigObject[ 'kadence/accordion' ][ attribute ],
+								} );
 							} );
-						} );
+						} else {
+							times( realPaneCount, n => {
+								wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( accordionBlock.innerBlocks[ n ].clientId, {
+									titleTag: blockConfigObject[ 'kadence/accordion' ][ attribute ],
+								} );
+							} );
+						}
 						this.setState( { titleTag: blockConfigObject[ 'kadence/accordion' ][ attribute ] } );
 					} else {
 						this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/accordion' ][ attribute ];
@@ -184,6 +192,9 @@ class KadenceAccordionComponent extends Component {
 		const accordionBlock = this.props.accordionBlock;
 		if ( accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ] && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes && accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag ) {
 			this.setState( { titleTag: accordionBlock[ 0 ].innerBlocks[ 0 ].attributes.titleTag } );
+		}
+		if ( accordionBlock && accordionBlock.innerBlocks[ 0 ] && accordionBlock.innerBlocks[ 0 ].attributes && accordionBlock.innerBlocks[ 0 ].attributes.titleTag ) {
+			this.setState( { titleTag: accordionBlock.innerBlocks[ 0 ].attributes.titleTag } );
 		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/accordion' ] !== undefined && typeof blockSettings[ 'kadence/accordion' ] === 'object' ) {
@@ -584,6 +595,22 @@ class KadenceAccordionComponent extends Component {
 														) ) }
 													</Fragment>
 												) }
+												{ accordionBlock && accordionBlock.innerBlocks && (
+													<Fragment>
+														{ map( accordionBlock.innerBlocks, ( { attributes } ) => (
+															<Button
+																key={ attributes.id - 1 }
+																className="kt-init-open-pane"
+																isSmall
+																isPrimary={ openPane === attributes.id - 1 }
+																aria-pressed={ openPane === attributes.id - 1 }
+																onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
+															>
+																{ __( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id ) }
+															</Button>
+														) ) }
+													</Fragment>
+												) }
 											</ButtonGroup>
 										</Fragment>
 									) }
@@ -941,7 +968,7 @@ class KadenceAccordionComponent extends Component {
 										label={ __( 'Remove Accordion Item', 'kadence-blocks' ) }
 										icon="minus"
 										onClick={ () => {
-											const removeClientId = accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId;
+											const removeClientId = ( accordionBlock[ 0 ] ? accordionBlock[ 0 ].innerBlocks[ realPaneCount - 1 ].clientId : accordionBlock.innerBlocks[ realPaneCount - 1 ].clientId );
 											this.props.removePane( removeClientId );
 										} }
 									/>

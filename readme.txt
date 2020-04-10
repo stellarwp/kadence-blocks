@@ -87,8 +87,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 1.8.0 =
+= 1.7.21 =
 * Fix: CSS Box Shadow issue on buttons.
+** Add: more link controls for infobox learn more.
+* Fix: Accordion not showing intial open options.
+* Fix: Accordion validator issue.
 
 = 1.7.20 =
 * Update: Declare 5.4 support.

@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Tabs
+ * BLOCK: Kadence Accordion
  */
 import classnames from 'classnames';
 const {
@@ -9,7 +9,7 @@ const {
 	InnerBlocks,
 } = wp.blockEditor;
 
-class KadenceTabsSave extends Component {
+class KadenceAccordionSave extends Component {
 	stripStringRender( string ) {
 		return string.toLowerCase().replace( /[^0-9a-z-]/g, '' );
 	}
@@ -30,4 +30,4 @@ class KadenceTabsSave extends Component {
 		);
 	}
 }
-export default KadenceTabsSave;
+export default KadenceAccordionSave;

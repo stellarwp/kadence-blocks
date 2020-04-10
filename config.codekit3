@@ -64,6 +64,16 @@
 		"oS": 3,
 		"uL": 1
 		},
+	"/dist/assets/css/src/tiny-slider.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/dist/assets/css/src/tiny-slider-min.css",
+		"oF": 0,
+		"oS": 3
+		},
 	"/dist/assets/css/src/tiny-slider.scss": {
 		"aP": 0,
 		"bl": 0,

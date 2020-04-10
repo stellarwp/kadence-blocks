@@ -76,6 +76,7 @@ class KadenceInfoBox extends Component {
 			mediaPaddingControl: 'linked',
 			mediaMarginControl: 'linked',
 			showPreset: false,
+			btnLink: false,
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
@@ -153,7 +154,7 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, containerMarginControl } = this.state;
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 		const widthTypes = [
@@ -1294,23 +1295,44 @@ class KadenceInfoBox extends Component {
 									) ) }
 								</ButtonGroup>
 							</Fragment>
-							<div className="kt-controls-link-wrap">
-								<h2>{ __( 'Link' ) }</h2>
+							<h2 className="side-h2-label">{ __( 'Link', 'kadence-blocks' ) }</h2>
+							<div className="kt-btn-link-group">
 								<URLInput
 									className="kt-btn-link-input"
 									value={ link }
 									onChange={ value => setAttributes( { link: value } ) }
 								/>
+								<IconButton
+									className="kt-link-settings"
+									icon={ 'arrow-down-alt2' }
+									label={ __( 'Link Settings', 'kadence-blocks' ) }
+									onClick={ () => this.setState( { btnLink: ( this.state.btnLink ? false : true ) } ) }
+								/>
 							</div>
-							<SelectControl
-								label={ __( 'Link Target' ) }
-								value={ target }
-								options={ [
-									{ value: '_self', label: __( 'Same Window' ) },
-									{ value: '_blank', label: __( 'New Window' ) },
-								] }
-								onChange={ value => setAttributes( { target: value } ) }
-							/>
+							{ this.state.btnLink && (
+								<Fragment>
+									<div className="kt-spacer-sidebar-15"></div>
+									<SelectControl
+										label={ __( 'Link Target' ) }
+										value={ target }
+										options={ [
+											{ value: '_self', label: __( 'Same Window' ) },
+											{ value: '_blank', label: __( 'New Window' ) },
+										] }
+										onChange={ value => setAttributes( { target: value } ) }
+									/>
+									<ToggleControl
+										label={ __( 'Set link to nofollow?', 'kadence-blocks' ) }
+										checked={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
+										onChange={ ( value ) => setAttributes( { linkNoFollow: value } ) }
+									/>
+									<ToggleControl
+										label={ __( 'Set link attribute Sponsored?', 'kadence-blocks' ) }
+										checked={ ( undefined !== linkSponsored ? linkSponsored : false ) }
+										onChange={ ( value ) => setAttributes( { linkSponsored: value } ) }
+									/>
+								</Fragment>
+							) }
 							<SelectControl
 								label={ __( 'Link Content' ) }
 								value={ linkProperty }
