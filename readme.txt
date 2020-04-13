@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.4.0
-Stable tag: 1.7.20
+Stable tag: 1.7.21
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,7 +89,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 1.7.21 =
 * Fix: CSS Box Shadow issue on buttons.
-** Add: more link controls for infobox learn more.
+* Add: more link controls for infobox learn more.
 * Fix: Accordion not showing intial open options.
 * Fix: Accordion validator issue.
 

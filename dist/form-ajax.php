@@ -250,7 +250,7 @@ class KB_Ajax_Form {
 					$this->send_json( $final_data );
 				}
 			} else {
-				$this->process_bail( __( 'Submission rejected', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
+				$this->process_bail( __( 'Submission rejected, invalid security token. Reload the page and try again.', 'kadence-blocks' ), __( 'Token invalid', 'kadence-blocks' ) );
 			}
 		} else {
 			$this->process_bail( __( 'Submission failed', 'kadence-blocks' ), __( 'No Data', 'kadence-blocks' ) );

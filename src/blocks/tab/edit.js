@@ -37,11 +37,18 @@ class KadenceTab extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, uniqueID } } = this.props;
+		const { attributes: { id, uniqueID }, clientId } = this.props;
+		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
 		return (
 			<Fragment>
 				<div className={ `kt-tab-inner-content kt-inner-tab-${ id } kt-inner-tab${ uniqueID }` } >
-					<InnerBlocks templateLock={ false } />
+					<InnerBlocks
+						templateLock={ false }
+						renderAppender={ (
+							hasChildBlocks ?
+								undefined :
+								() => <InnerBlocks.ButtonBlockAppender />
+						) } />
 				</div>
 			</Fragment>
 		);
