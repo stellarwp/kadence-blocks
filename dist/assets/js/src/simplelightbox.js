@@ -111,7 +111,6 @@
         afterClose: null,
         beforeDestroy: null,
         afterDestroy: null,
-
 		videoRegex: new RegExp(/youtube.com|youtu.be|vimeo.com/) // regex which tests load url for iframe content
 
     };

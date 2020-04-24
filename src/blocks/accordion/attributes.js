@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Tabs Attributes
+ * BLOCK: Kadence Accordion Attributes
  */
 const attributes = {
 	uniqueID: {
@@ -104,6 +104,10 @@ const attributes = {
 	iconSide: {
 		type: 'string',
 		default: 'right',
+	},
+	faqSchema: {
+		type: 'bool',
+		default: false,
 	},
 };
 export default attributes;

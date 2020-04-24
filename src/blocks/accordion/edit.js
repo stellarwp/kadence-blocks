@@ -216,7 +216,7 @@ class KadenceAccordionComponent extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, paneCount, blockAlignment, openPane, titleStyles, contentPadding, minHeight, maxWidth, contentBorder, contentBorderColor, contentBorderRadius, contentBgColor, titleAlignment, startCollapsed, linkPaneCollapse, showIcon, iconStyle, iconSide }, className, setAttributes, clientId, realPaneCount, accordionBlock } = this.props;
+		const { attributes: { uniqueID, paneCount, blockAlignment, openPane, titleStyles, contentPadding, minHeight, maxWidth, contentBorder, contentBorderColor, contentBorderRadius, contentBgColor, titleAlignment, startCollapsed, faqSchema, linkPaneCollapse, showIcon, iconStyle, iconSide }, className, setAttributes, clientId, realPaneCount, accordionBlock } = this.props;
 		const { titleBorderRadiusControl, titleBorderControl, titlePaddingControl, contentBorderControl, contentBorderRadiusControl, contentPaddingControl, titleBorderColorControl, titleBorderHoverColorControl, titleBorderActiveColorControl, titleTag } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -905,6 +905,14 @@ class KadenceAccordionComponent extends Component {
 									min={ 0 }
 									max={ 2000 }
 								/>
+								<ToggleControl
+									label={ __( 'Enable FAQ Schema', 'kadence-blocks' ) }
+									checked={ faqSchema }
+									onChange={ ( value ) => {
+										this.props.updateFaqSchema( value );
+										setAttributes( { faqSchema: value } );
+									} }
+								/>
 							</PanelBody>
 						) }
 					</InspectorControls>
@@ -1009,6 +1017,13 @@ export default compose( [
 				times( block.innerBlocks.length, n => {
 					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
 						titleTag: value,
+					} );
+				} );
+			},
+			updateFaqSchema( value ) {
+				times( block.innerBlocks.length, n => {
+					updateBlockAttributes( block.innerBlocks[ n ].clientId, {
+						faqSchema: value,
 					} );
 				} );
 			},

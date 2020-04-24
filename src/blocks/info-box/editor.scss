@@ -21,10 +21,32 @@
 .components-popover.kb-popover-inline-icon .components-popover__content {
     padding: 10px;
 }
-.kb-sidebar-alignment .components-toolbar>div, .kb-sidebar-alignment .components-toolbar>div>button, .kb-sidebar-alignment .components-toolbar>div>button>svg {
-	width: 100%!important;
-	margin: 0;
+.kb-sidebar-alignment .components-toolbar {
+	width: 100%;
+	display:flex;
+	>div {
+		flex: 1;
+		justify-content: center;
+		> button.components-button.components-button.has-icon{
+			width: 100%!important;
+			margin: 0;
+			padding-left: 5px;
+			padding-right: 5px;
+			justify-content: center;
+		}
+	}
 }
+.kb-component-label {
+    font-weight: 600;
+    font-size: 13px;
+}
+.kb-responsive-label {
+	margin-bottom:0;
+}
+// .kb-sidebar-alignment .components-toolbar>div, .kb-sidebar-alignment .components-toolbar>div>button, .kb-sidebar-alignment .components-toolbar>div>button>svg {
+// 	width: 100%!important;
+// 	margin: 0;
+// }
 .components-button-group.kt-size-type-options.kt-row-size-type-options.kb-typo-when-linked-individual-avail {
     float: none;
     margin-bottom: 0;

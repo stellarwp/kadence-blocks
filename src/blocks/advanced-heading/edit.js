@@ -2,7 +2,7 @@
  * BLOCK: Kadence Advanced Heading
  *
  */
-
+/* global kadence_blocks_params */
 /**
  * Import Css
  */
@@ -10,13 +10,15 @@ import './editor.scss';
 import './markformat';
 import range from 'lodash/range';
 import map from 'lodash/map';
-import hexToRGBA from '../../hex-to-rgba';
+import classnames from 'classnames';
 import TypographyControls from '../../typography-control';
 import InlineTypographyControls from '../../inline-typography-control';
-import AdvancedColorControl from '../../advanced-color-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import InlineAdvancedPopColorControl from '../../advanced-inline-pop-color-control';
+import KadenceColorOutput from '../../kadence-color-output';
 import WebfontLoader from '../../fontloader';
+import TextShadowControl from '../../text-shadow-control';
 
-import icons from '../../icons';
 /**
  * Internal dependencies
  */
@@ -66,6 +68,7 @@ class KadenceAdvancedHeading extends Component {
 	constructor() {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
+		this.saveShadow = this.saveShadow.bind( this );
 		this.state = {
 			isVisible: false,
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
@@ -97,6 +100,21 @@ class KadenceAdvancedHeading extends Component {
 			this.setState( { settings: blockSettings[ 'kadence/advancedheading' ] } );
 		}
 	}
+	saveShadow( value ) {
+		const { attributes, setAttributes } = this.props;
+		const { textShadow } = attributes;
+
+		const newItems = textShadow.map( ( item, thisIndex ) => {
+			if ( 0 === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		setAttributes( {
+			textShadow: newItems,
+		} );
+	}
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
 			return true;
@@ -113,9 +131,9 @@ class KadenceAdvancedHeading extends Component {
 	}
 	render() {
 		const { attributes, className, setAttributes, mergeBlocks, onReplace } = this.props;
-		const { uniqueID, align, level, content, color, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions } = attributes;
-		const markBGString = ( markBG ? hexToRGBA( markBG, markBGOpacity ) : '' );
-		const markBorderString = ( markBorder ? hexToRGBA( markBorder, markBorderOpacity ) : '' );
+		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions } = attributes;
+		const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
+		const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -349,6 +367,71 @@ class KadenceAdvancedHeading extends Component {
 				}
 			</TabPanel>
 		);
+		const tabAlignControls = (
+			<TabPanel className="kt-size-tabs"
+				activeClass="active-tab"
+				tabs={ [
+					{
+						name: 'desk',
+						title: <Dashicon icon="desktop" />,
+						className: 'kt-desk-tab',
+					},
+					{
+						name: 'tablet',
+						title: <Dashicon icon="tablet" />,
+						className: 'kt-tablet-tab',
+					},
+					{
+						name: 'mobile',
+						title: <Dashicon icon="smartphone" />,
+						className: 'kt-mobile-tab',
+					},
+				] }>
+				{
+					( tab ) => {
+						let tabout;
+						if ( tab.name ) {
+							if ( 'mobile' === tab.name ) {
+								tabout = (
+									<AlignmentToolbar
+										value={ mobileAlign }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { mobileAlign: nextAlign } );
+										} }
+									/>
+								);
+							} else if ( 'tablet' === tab.name ) {
+								tabout = (
+									<AlignmentToolbar
+										value={ tabletAlign }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { tabletAlign: nextAlign } );
+										} }
+									/>
+								);
+							} else {
+								tabout = (
+									<AlignmentToolbar
+										value={ align }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { align: nextAlign } );
+										} }
+									/>
+								);
+							}
+						}
+						return <div>{ tabout }</div>;
+					}
+				}
+			</TabPanel>
+		);
+		const classes = classnames( {
+			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
+			[ className ]: className,
+		} );
 		const headingContent = (
 			<RichText
 				formattingControls={ [ 'bold', 'italic', 'link', 'mark' ] }
@@ -371,7 +454,7 @@ class KadenceAdvancedHeading extends Component {
 				onRemove={ () => onReplace( [] ) }
 				style={ {
 					textAlign: align,
-					color: color,
+					color: color ? KadenceColorOutput( color ) : undefined,
 					fontWeight: fontWeight,
 					fontStyle: fontStyle,
 					fontSize: size + sizeType,
@@ -381,16 +464,17 @@ class KadenceAdvancedHeading extends Component {
 					fontFamily: ( typography ? typography : '' ),
 					marginTop: ( undefined !== topMargin ? topMargin + marginType : '' ),
 					marginBottom: ( undefined !== bottomMargin ? bottomMargin + marginType : '' ),
+					textShadow: ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
 				} }
-				className={ `kt-adv-heading${ uniqueID }` }
-				placeholder={ __( 'Write heading…' ) }
+				className={ classes }
+				placeholder={ __( 'Write heading…', 'kadence-blocks' ) }
 			/>
 		);
 		return (
 			<Fragment>
 				<style>
 					{ `.kt-adv-heading${ uniqueID } mark {
-						color: ${ markColor };
+						color: ${ KadenceColorOutput( markColor ) };
 						background: ${ ( markBG ? markBGString : 'transparent' ) };
 						font-weight: ${ ( markTypography && markFontWeight ? markFontWeight : 'inherit' ) };
 						font-style: ${ ( markTypography && markFontStyle ? markFontStyle : 'inherit' ) };
@@ -409,7 +493,7 @@ class KadenceAdvancedHeading extends Component {
 					<Toolbar
 						isCollapsed={ true }
 						icon={ <HeadingLevelIcon level={ level } /> }
-						label={ __( 'Change Heading Level' ) }
+						label={ __( 'Change Heading Level', 'kadence-blocks' ) }
 						controls={ range( 1, 7 ).map( createLevelControlToolbar ) }
 					/>
 					{ this.showSettings( 'allSettings' ) && this.showSettings( 'toolbarTypography' ) && (
@@ -458,6 +542,13 @@ class KadenceAdvancedHeading extends Component {
 							onMobileLineHeight={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
 						/>
 					) }
+					<InlineAdvancedPopColorControl
+						label={ __( 'Heading Color', 'kadence-blocks' ) }
+						colorValue={ ( color ? color : '' ) }
+						colorDefault={ '' }
+						onColorChange={ value => setAttributes( { color: value } ) }
+						onColorClassChange={ value => setAttributes( { colorClass: value } ) }
+					/>
 					<AlignmentToolbar
 						value={ align }
 						onChange={ ( nextAlign ) => {
@@ -467,37 +558,34 @@ class KadenceAdvancedHeading extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody title={ __( 'Heading Settings' ) }>
+						<PanelBody title={ __( 'Heading Settings', 'kadence-blocks' ) }>
 							<div className="kb-tag-level-control components-base-control">
-								<p>{ __( 'HTML Tag' ) }</p>
+								<p className="kb-component-label">{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
 								<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
 							</div>
-							<p>{ __( 'Text Alignment' ) }</p>
-							<AlignmentToolbar
-								value={ align }
-								isCollapsed={ false }
-								onChange={ ( nextAlign ) => {
-									setAttributes( { align: nextAlign } );
-								} }
-							/>
+							<div className="kb-sidebar-alignment components-base-control">
+								<p className="kb-component-label kb-responsive-label">{ __( 'Text Alignment', 'kadence-blocks' ) }</p>
+								{ tabAlignControls }
+							</div>
 							{ this.showSettings( 'colorSettings' ) && (
-								<AdvancedColorControl
-									label={ __( 'Heading Color' ) }
+								<AdvancedPopColorControl
+									label={ __( 'Heading Color', 'kadence-blocks' ) }
 									colorValue={ ( color ? color : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => setAttributes( { color: value } ) }
+									onColorClassChange={ value => setAttributes( { colorClass: value } ) }
 								/>
 							) }
 							{ this.showSettings( 'sizeSettings' ) && (
 								<Fragment>
-									<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+									<h2 className="kt-heading-size-title">{ __( 'Size Controls', 'kadence-blocks' ) }</h2>
 									{ tabControls }
 								</Fragment>
 							) }
 						</PanelBody>
 						{ this.showSettings( 'advancedSettings' ) && (
 							<PanelBody
-								title={ __( 'Advanced Typography Settings' ) }
+								title={ __( 'Advanced Typography Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<TypographyControls
@@ -528,27 +616,27 @@ class KadenceAdvancedHeading extends Component {
 								/>
 							</PanelBody>
 						) }
-						{ this.showSettings( 'highlightSettings' ) && (
+						{ this.showSettings( 'highlightSettings', 'kadence-blocks' ) && (
 							<PanelBody
-								title={ __( 'Highlight Settings' ) }
+								title={ __( 'Highlight Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<AdvancedColorControl
-									label={ __( 'Highlight Color' ) }
+								<AdvancedPopColorControl
+									label={ __( 'Highlight Color', 'kadence-blocks' ) }
 									colorValue={ ( markColor ? markColor : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => setAttributes( { markColor: value } ) }
 								/>
-								<AdvancedColorControl
-									label={ __( 'Highlight Background' ) }
+								<AdvancedPopColorControl
+									label={ __( 'Highlight Background', 'kadence-blocks' ) }
 									colorValue={ ( markBG ? markBG : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => setAttributes( { markBG: value } ) }
 									opacityValue={ markBGOpacity }
 									onOpacityChange={ value => setAttributes( { markBGOpacity: value } ) }
 								/>
-								<AdvancedColorControl
-									label={ __( 'Highlight Border Color' ) }
+								<AdvancedPopColorControl
+									label={ __( 'Highlight Border Color', 'kadence-blocks' ) }
 									colorValue={ ( markBorder ? markBorder : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => setAttributes( { markBorder: value } ) }
@@ -556,7 +644,7 @@ class KadenceAdvancedHeading extends Component {
 									onOpacityChange={ value => setAttributes( { markBorderOpacity: value } ) }
 								/>
 								<SelectControl
-									label={ __( 'Highlight Border Style' ) }
+									label={ __( 'Highlight Border Style', 'kadence-blocks' ) }
 									value={ markBorderStyle }
 									options={ [
 										{ value: 'solid', label: __( 'Solid' ) },
@@ -566,7 +654,7 @@ class KadenceAdvancedHeading extends Component {
 									onChange={ value => setAttributes( { markBorderStyle: value } ) }
 								/>
 								<RangeControl
-									label={ __( 'Highlight Border Width' ) }
+									label={ __( 'Highlight Border Width', 'kadence-blocks' ) }
 									value={ markBorderWidth }
 									onChange={ value => setAttributes( { markBorderWidth: value } ) }
 									min={ 0 }
@@ -615,10 +703,10 @@ class KadenceAdvancedHeading extends Component {
 						) }
 						{ this.showSettings( 'marginSettings' ) && (
 							<PanelBody
-								title={ __( 'Margin Settings' ) }
+								title={ __( 'Margin Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
+								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
 									{ map( marginTypes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -633,14 +721,14 @@ class KadenceAdvancedHeading extends Component {
 									) ) }
 								</ButtonGroup>
 								<RangeControl
-									label={ __( 'Top Margin' ) }
+									label={ __( 'Top Margin', 'kadence-blocks' ) }
 									value={ ( undefined !== topMargin ? topMargin : '' ) }
 									onChange={ ( value ) => setAttributes( { topMargin: value } ) }
 									min={ marginMin }
 									max={ marginMax }
 									step={ marginStep }
 								/>
-								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
+								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
 									{ map( marginTypes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -655,7 +743,7 @@ class KadenceAdvancedHeading extends Component {
 									) ) }
 								</ButtonGroup>
 								<RangeControl
-									label={ __( 'Bottom Margin' ) }
+									label={ __( 'Bottom Margin', 'kadence-blocks' ) }
 									value={ ( undefined !== bottomMargin ? bottomMargin : '' ) }
 									onChange={ ( value ) => setAttributes( { bottomMargin: value } ) }
 									min={ marginMin }
@@ -664,6 +752,35 @@ class KadenceAdvancedHeading extends Component {
 								/>
 							</PanelBody>
 						) }
+						<PanelBody
+							title={ __( 'Text Shadow Settings' ) }
+							initialOpen={ false }
+						>
+							<TextShadowControl
+								label={ __( 'Text Shadow', 'kadence-blocks' ) }
+								enable={ ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable ? textShadow[ 0 ].enable : false ) }
+								color={ ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].color ? textShadow[ 0 ].color : 'rgba(0, 0, 0, 0.2)' ) }
+								colorDefault={ 'rgba(0, 0, 0, 0.2)' }
+								hOffset={ ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) }
+								vOffset={ ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) }
+								blur={ ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) }
+								onEnableChange={ value => {
+									this.saveShadow( { enable: value } );
+								} }
+								onColorChange={ value => {
+									this.saveShadow( { color: value } );
+								} }
+								onHOffsetChange={ value => {
+									this.saveShadow( { hOffset: value } );
+								} }
+								onVOffsetChange={ value => {
+									this.saveShadow( { vOffset: value } );
+								} }
+								onBlurChange={ value => {
+									this.saveShadow( { blur: value } );
+								} }
+							/>
+						</PanelBody>
 					</InspectorControls>
 				) }
 				<InspectorAdvancedControls>

@@ -1002,6 +1002,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/node_modules/react-color/lib/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/react-color/lib/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/node_modules/react-container-dimensions/lib/index.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1130,6 +1141,28 @@
 		"oA": 1,
 		"oAP": "/src/advanced-color-control-min.js",
 		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/advanced-inline-pop-color-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/advanced-inline-pop-color-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/advanced-pop-color-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/advanced-pop-color-control-min.js",
+		"oF": 1,
 		"sC": 0,
 		"tS": 0
 		},
@@ -2283,6 +2316,63 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/kadence-color-icons.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/kadence-color-icons-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/kadence-color-output.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/kadence-color-output-min.js",
+		"oF": 1,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/kadence-color-picker-fields.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/kadence-color-picker-fields-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/kadence-color-picker.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/kadence-color-picker-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/kadence-colors.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 4,
+		"ma": 0,
+		"oA": 1,
+		"oAP": "/src/kadence-colors.css",
+		"oF": 1,
+		"oS": 0,
+		"uL": 1
+		},
 	"/src/measurement-control.js": {
 		"bF": 0,
 		"ft": 64,
@@ -2657,6 +2747,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/svgiconsnames-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/text-shadow-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/text-shadow-control-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
@@ -4580,7 +4681,7 @@
 		"quality": 100
 		},
 	"languageDefaultsJS": {
-		"autoOutputAction": 0,
+		"autoOutputAction": 1,
 		"autoOutputPathFilenamePattern": "*-min.js",
 		"autoOutputPathRelativePath": "/min",
 		"autoOutputPathReplace1": "",

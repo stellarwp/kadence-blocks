@@ -627,13 +627,17 @@ class KadenceForm extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin }, className, isSelected, setAttributes } = this.props;
+		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion }, className, isSelected, setAttributes } = this.props;
 		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl } = this.state;
 		const btnSizes = [
 			{ key: 'small', name: __( 'S', 'kadence-blocks' ) },
 			{ key: 'standard', name: __( 'M', 'kadence-blocks' ) },
 			{ key: 'large', name: __( 'L', 'kadence-blocks' ) },
 			{ key: 'custom', name: <Dashicon icon="admin-generic" /> },
+		];
+		const recaptchaVersions = [
+			{ key: 'v3', name: __( 'V3', 'kadence-blocks' ) },
+			{ key: 'v2', name: __( 'V2', 'kadence-blocks' ) },
 		];
 		const btnWidths = [
 			{ key: 'auto', name: __( 'Auto' ) },
@@ -1417,12 +1421,29 @@ class KadenceForm extends Component {
 						initialOpen={ false }
 					>
 						<ToggleControl
-							label={ __( 'Enable Google reCAPTCHA V3', 'kadence-blocks' ) }
+							label={ __( 'Enable Google reCAPTCHA', 'kadence-blocks' ) }
 							checked={ recaptcha }
 							onChange={ ( value ) => setAttributes( { recaptcha: value } ) }
 						/>
 						{ recaptcha && (
 							<Fragment>
+								<div className="kt-btn-recaptch-settings-container components-base-control">
+									<p className="kb-component-label">{ __( 'Recaptcha Version', 'kadence-blocks' ) }</p>
+									<ButtonGroup className="kb-radio-button-flex-fill" aria-label={ __( 'Recaptcha Version', 'kadence-blocks' ) }>
+										{ map( recaptchaVersions, ( { name, key } ) => (
+											<Button
+												key={ key }
+												className="kt-btn-size-btn"
+												isSmall
+												isPrimary={ recaptchaVersion === key }
+												aria-pressed={ recaptchaVersion === key }
+												onClick={ () => setAttributes( { recaptchaVersion: key } ) }
+											>
+												{ name }
+											</Button>
+										) ) }
+									</ButtonGroup>
+								</div>
 								<p>
 									<Fragment>
 										<ExternalLink href={ RETRIEVE_KEY_URL }>{ __( 'Get keys', 'kadence-blocks' ) }</ExternalLink>
@@ -2967,6 +2988,16 @@ class KadenceForm extends Component {
 								onChange={ ( value ) => this.saveMessages( { error: value } ) }
 							/>
 						</PanelRow>
+						{ recaptcha && (
+							<PanelRow>
+								<TextControl
+									label={ __( 'Recapcha Error Message', 'kadence-blocks' ) }
+									placeholder={ __( 'Submission Failed, reCaptcha spam prevention.', 'kadence-blocks' ) }
+									value={ ( undefined !== messages[ 0 ].recaptchaerror ? messages[ 0 ].recaptchaerror : '' ) }
+									onChange={ ( value ) => this.saveMessages( { recaptchaerror: value } ) }
+								/>
+							</PanelRow>
+						) }
 						<PanelBody
 							title={ __( 'Error Message Colors', 'kadence-blocks' ) }
 							initialOpen={ false }

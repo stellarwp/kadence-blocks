@@ -68,6 +68,10 @@ registerBlockType( 'kadence/pane', {
 			type: 'string',
 			default: '',
 		},
+		faqSchema: {
+			type: 'bool',
+			default: false,
+		},
 	},
 	supports: {
 		inserter: false,

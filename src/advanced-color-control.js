@@ -92,6 +92,9 @@ class AdvancedColorControl extends Component {
 								onClick={ () => {
 									this.setState( { currentColor: this.props.colorDefault } );
 									this.props.onColorChange( undefined );
+									if ( this.props.onColorClassChange ) {
+										this.props.onColorClassChange( '' );
+									}
 								} }
 								isSmall
 							>
@@ -108,6 +111,9 @@ class AdvancedColorControl extends Component {
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
 											this.props.onColorChange( color.hex );
+											if ( this.props.onColorClassChange ) {
+												this.props.onColorClassChange( '' );
+											}
 										} }
 										disableAlpha
 									/>
@@ -118,6 +124,9 @@ class AdvancedColorControl extends Component {
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
 											this.props.onColorChange( color.hex );
+											if ( this.props.onColorClassChange ) {
+												this.props.onColorClassChange( '' );
+											}
 										} }
 										disableAlpha
 									/>
@@ -128,13 +137,16 @@ class AdvancedColorControl extends Component {
 										onChangeComplete={ ( color ) => {
 											this.setState( { currentColor: color.hex } );
 											this.props.onColorChange( color.hex );
+											if ( this.props.onColorClassChange ) {
+												this.props.onColorClassChange( '' );
+											}
 										} }
 										disableAlpha
 									/>
 								) }
 								{ this.props.colors && (
 									<div className="components-color-palette">
-										{ map( this.props.colors, ( { color, name } ) => {
+										{ map( this.props.colors, ( { color, slug, name } ) => {
 											const style = { color };
 											return (
 												<div key={ color } className="components-color-palette__item-wrapper">
@@ -150,6 +162,9 @@ class AdvancedColorControl extends Component {
 															onClick={ () => {
 																this.setState( { currentColor: color } );
 																this.props.onColorChange( color );
+																if ( this.props.onColorClassChange ) {
+																	this.props.onColorClassChange( slug );
+																}
 																if ( 'third' === this.state.classSat ) {
 																	this.setState( { classSat: 'second' } );
 																} else {

@@ -147,6 +147,7 @@ registerBlockType( 'kadence/form', {
 				error: '',
 				required: '',
 				invalid: '',
+				recaptchaerror: '',
 			} ],
 		},
 		messageFont: {
@@ -328,6 +329,10 @@ registerBlockType( 'kadence/form', {
 			type: 'bool',
 			default: false,
 		},
+		recaptchaVersion: {
+			type: 'string',
+			default: 'v3',
+		},
 		honeyPot: {
 			type: 'bool',
 			default: true,
@@ -336,7 +341,7 @@ registerBlockType( 'kadence/form', {
 	edit,
 
 	save: props => {
-		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha, honeyPot } } = props;
+		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha, recaptchaVersion, honeyPot } } = props;
 		const fieldOutput = ( index ) => {
 			const fieldClassName = classnames( {
 				'kadence-blocks-form-field': true,
@@ -421,7 +426,21 @@ registerBlockType( 'kadence/form', {
 					<input type="hidden" name="_kb_form_post_id" value={ postID } />
 					<input type="hidden" name="action" value="kb_process_ajax_submit" />
 					{ recaptcha && (
-						<input type="hidden" name="recaptcha_response" className={ `kb_recaptcha_response kb_recaptcha_${ uniqueID }` } />
+						<Fragment>
+							{ recaptchaVersion === 'v2' && (
+								<div className="kadence-blocks-form-field google-recaptcha-checkout-wrap">
+									<p id="kb-container-g-recaptcha" className="google-recaptcha-container">
+										<span id={ `kb_recaptcha_${ uniqueID }` } className={ `kadence-blocks-g-recaptcha-v2 g-recaptcha kb_recaptcha_${ uniqueID }` } style={ {
+											display: 'inline-block',
+										} }>
+										</span>
+									</p>
+								</div>
+							) }
+							{ recaptchaVersion !== 'v2' && (
+								<input type="hidden" name="recaptcha_response" className={ `kb_recaptcha_response kb_recaptcha_${ uniqueID }` } />
+							) }
+						</Fragment>
 					) }
 					{ honeyPot && (
 						<input className="kadence-blocks-field verify" type="text" name="_kb_verify_email" autoComplete="off" placeholder="Email" tabIndex="-1" />

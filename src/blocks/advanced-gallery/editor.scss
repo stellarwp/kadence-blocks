@@ -520,3 +520,8 @@
 .kb-gallery-main-contain.kb-gallery-type-thumbslider .kb-cloned-hide .slick-slide.slick-cloned {
 	display:none !important;
 }
+@media (max-width: 782px) {
+.block-editor-editor-skeleton__content {
+    max-width: 100%;
+}
+}

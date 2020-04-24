@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.4.0
-Stable tag: 1.7.21
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,19 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.8.0 =
+* Add: new inline color selector to Advanced Heading Block.
+* Add: support for color classes in Advanced Heading Block
+* Add: new text shadow options to Advanced Heading Block
+* Add: tablet and mobile text alignment to Advanced Heading Block
+* Add: FAQ schema option to accordion.
+* Add: tablet and mobile text alignment to Icon Block
+* Fix: Tablet Collapse with row layout bug
+* Fix: Admin issue with gallery slider overflowing on smaller screens.
+* Fix: Custom icon issue in tabs.
+* Fix: Single column testimonial block spacing issue.
+* Update: Form Block WPML support.
 
 = 1.7.21 =
 * Fix: CSS Box Shadow issue on buttons.

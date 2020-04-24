@@ -1,0 +1,67 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+ span.color-indicator-icon {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+	bottom: 0;
+	.dashicons-admin-site {
+		position: absolute;
+		left: 6px;
+		top: 6px;
+		color: #444;
+		background: white;
+		width: 16px;
+		height: 16px;
+		border: 1px solid white;
+		border-radius: 100%;
+		box-sizing: border-box;
+		padding-left: 1px;
+		padding-top: 1px;
+	}
+	svg:not(.dashicon) {
+		width: 16px;
+		height: 16px;
+		top: 5px;
+		position: absolute;
+		left: 6px;
+	}
+}
+.components-popover.kt-popover-color .components-color-palette__item-wrapper .components-color-palette__item.is-active + .dashicons-admin-site {
+	position: absolute;
+    left: 6px;
+    top: 6px;
+    width: 18px;
+    height: 18px;
+}
+.new-kadence-advanced-colors-pop.components-popover.kt-popover-color .components-color-palette {
+    padding: 2px 0 10px;
+    display: flex;
+	justify-content: flex-start;
+    flex-wrap: wrap;
+}
+.new-kadence-advanced-colors-pop.components-popover.kt-popover-color .components-color-palette__item-wrapper {
+	margin-right: 2px;
+    margin-left: 2px;
+    margin-bottom: 4px;
+	transform: scale(1);
+}
+.new-kadence-advanced-colors-pop.components-popover.kt-popover-color .components-color-palette__item-wrapper:hover {
+    transform: scale(1.1);
+}
+.components-popover.kt-popover-color.new-kadence-advanced-colors-pop .components-popover__content {
+    padding:10px 10px 0
+}
+.components-popover.kt-popover-color.new-kadence-advanced-colors-pop .components-button.components-color-palette__item.is-active:not(:disabled):not([aria-disabled=true]):not(.is-secondary):not(.is-primary):not(.is-tertiary):not(.is-link):hover {
+	box-shadow: inset 0 0 0 4px;
+}
+.inline-color-popup-inner-wrap.block-editor-block-toolbar {
+    display: block;
+    border: 0;
+    box-shadow: none;
+}

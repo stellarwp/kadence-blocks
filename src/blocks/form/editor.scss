@@ -13,6 +13,15 @@
     align-items: center;
     justify-content: center;
 }
+.components-button-group.kb-radio-button-flex-fill {
+    display: flex;
+    width: 100%;
+}
+.components-button-group.kb-radio-button-flex-fill button {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+}
 .components-panel__row button.components-button.kb-add-field svg {
     width: 16px;
     height: 16px;

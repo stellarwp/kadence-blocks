@@ -422,6 +422,9 @@
 	.kt-has-1-columns.kt-tab-layout-row > .wp-block-kadence-column.inner-column-1 {
 		flex: 1;
 	}
+	.kt-tab-layout-row > .wp-block-kadence-column {
+		flex-basis: auto !important;
+	}
 	.kt-tab-layout-row.kt-v-gutter-default > .wp-block-kadence-column {
         margin-bottom: 30px;
     }

@@ -101,6 +101,7 @@ function kadence_gutenberg_editor_assets() {
 			'privacy_link'   => get_privacy_policy_url(),
 			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
 			'editor_width'   => apply_filters( 'kadence_blocks_editor_width', $enable_editor_width ),
+			'isKadenceT'     => class_exists( 'Kadence\Theme' ),
 		)
 	);
 	// Styles.
@@ -360,3 +361,41 @@ function kadence_blocks_locate_template( $template_name, $template_path = '', $d
 	// Return what we found.
 	return apply_filters( 'kadence_blocks_locate_template', $template, $template_name, $template_path );
 }
+
+/**
+ * Convert the post ID in Kadence Form's block.
+ *
+ * @see https://onthegosystems.myjetbrains.com/youtrack/issue/wpmlcore-7207
+ *
+ * @param array $block the filtered block.
+ */
+function wpmlcore_7207_fix_kadence_form_block( array $block ) {
+	if ( 'kadence/form' === $block['blockName'] && class_exists( 'WPML\PB\Gutenberg\ConvertIdsInBlock\Composite' ) && class_exists( 'WPML\PB\Gutenberg\ConvertIdsInBlock\TagAttributes' ) && class_exists( 'WPML\PB\Gutenberg\ConvertIdsInBlock\BlockAttributes' ) ) {
+		$slug      = get_post_type();
+		$converter = new WPML\PB\Gutenberg\ConvertIdsInBlock\Composite(
+			array(
+				new WPML\PB\Gutenberg\ConvertIdsInBlock\TagAttributes(
+					array(
+						array(
+							'xpath' => '//*[@name="_kb_form_post_id"]/@value',
+							'slug' => $slug,
+							'type' => 'post',
+						),
+					)
+				),
+				new WPML\PB\Gutenberg\ConvertIdsInBlock\BlockAttributes(
+					array(
+						array(
+							'name' => 'postID',
+							'slug' => $slug,
+							'type' => 'post',
+						),
+					)
+				),
+			)
+		);
+		return $converter->convert( $block );
+	}
+	return $block;
+}
+add_filter( 'render_block_data', 'wpmlcore_7207_fix_kadence_form_block' );

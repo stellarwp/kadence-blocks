@@ -26,6 +26,13 @@ class Kadence_Blocks_Frontend {
 	public static $gfonts = array();
 
 	/**
+	 * Google schema to add to head
+	 *
+	 * @var null
+	 */
+	public static $faq_schema = null;
+
+	/**
 	 * Instance of this class
 	 *
 	 * @var null
@@ -50,6 +57,7 @@ class Kadence_Blocks_Frontend {
 		//add_action( 'wp_enqueue_scripts', array( $this, 'global_inline_css' ), 101 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
+		add_action( 'wp_head', array( $this, 'faq_schema' ), 91 );
 	}
 	/**
 	 * On init startup.
@@ -601,12 +609,43 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
+			if ( isset( $attributes['faqSchema'] ) && $attributes['faqSchema'] ) {
+				$faq_script_id = 'kb-faq' . esc_attr( $unique_id );
+				if ( is_null( self::$faq_schema ) ) {
+					self::$faq_schema = '<script type="application/ld+json" class="kadence-faq-schema-graph kadence-faq-schema-graph--' . $faq_script_id . '">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[]}</script>';
+				}
+			}
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
 				$css = $this->blocks_accordion_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
 				}
+			}
+		}
+	}
+	/**
+	 * Render Pane Schema in Head
+	 *
+	 * @param array $block the blocks object.
+	 */
+	public function render_pane_scheme_head( $block ) {
+		if ( ! is_null( self::$faq_schema ) ) {
+			if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
+				$answer = '';
+				foreach ( $block['innerBlocks'] as $inner_key => $inner_block ) {
+					$answer .= strip_tags( $inner_block['innerHTML'], '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>' );
+				}
+				preg_match( '/<span class="kt-blocks-accordion-title">(.*?)<\/span>/s', $block['innerHTML'], $match );
+				$question = ( $match && isset( $match[1] ) && ! empty( $match[1] ) ? $match[1] : '' );
+				if ( strpos( self::$faq_schema, '}]}</script>' ) !== false ) {
+					$schema = ',';
+				} else {
+					$schema = '';
+				}
+				$schema .= '{"@type":"Question","name": "' . esc_attr( $question ) . '","acceptedAnswer":{"@type": "Answer","text": "' . str_replace( '"', '&quot;', $answer ) . '"}}';
+				$question_schema = ( ! empty( $question ) && ! empty( $answer ) ? $schema .']}</script>' : ']}</script>' );
+				self::$faq_schema = str_replace( "]}</script>", $question_schema, self::$faq_schema );
 			}
 		}
 	}
@@ -726,8 +765,12 @@ class Kadence_Blocks_Frontend {
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				wp_enqueue_script( 'kadence-blocks-form' );
-				if ( isset(  $attributes['recaptcha'] ) &&  $attributes['recaptcha'] ) {
-					wp_enqueue_script( 'google-recaptcha-v3' );
+				if ( isset( $attributes['recaptcha'] ) && $attributes['recaptcha'] ) {
+					if ( isset( $attributes['recaptchaVersion'] ) && 'v2' === $attributes['recaptchaVersion'] ) {
+						wp_enqueue_script( 'google-recaptcha-v2' );
+					} else {
+						wp_enqueue_script( 'google-recaptcha-v3' );
+					}
 				}
 				$css = $this->blocks_form_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -911,6 +954,19 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ), array(), KADENCE_BLOCKS_VERSION, true );
 		$recaptcha_script = "grecaptcha.ready(function () { var recaptchaResponse = document.getElementById('kb_recaptcha_response'); if ( recaptchaResponse ) { grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { recaptchaResponse.value = token; }); } var kb_recaptcha_inputs = document.getElementsByClassName('kb_recaptcha_response'); if ( ! kb_recaptcha_inputs.length ) { return; } for (var i = 0; i < kb_recaptcha_inputs.length; i++) { const e = i; grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { kb_recaptcha_inputs[e].setAttribute('value', token); }); } });";
 		wp_add_inline_script( 'google-recaptcha-v3', $recaptcha_script, 'after' );
+		//?render=explicit&onload=kbOnloadV2Callback
+		wp_register_script( 'google-recaptcha-v2', 'https://www.google.com/recaptcha/api.js?render=explicit&onload=kbOnloadV2Callback', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
+		//wp_register_script( 'kadence-blocks-recaptcha-v2-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form-recaptcha-v2.js', array( 'jquery', 'google-recaptcha-v2' ), KADENCE_BLOCKS_VERSION, true );
+		// wp_localize_script(
+		// 	'kadence-blocks-recaptcha-v2-form',
+		// 	'kadence_blocks_recaptcha_v2_form_params',
+		// 	array(
+		// 		'sitekey' => $recaptcha_site_key,
+		// 	)
+		// );
+		$recaptcha_v2_script = "var kbOnloadV2Callback = function(){jQuery( '.wp-block-kadence-form' ).find( '.kadence-blocks-g-recaptcha-v2' ).each( function() {grecaptcha.render( jQuery( this ).attr( 'id' ), {'sitekey' : '" . esc_attr( $recaptcha_site_key ) . "',});});}";
+		wp_add_inline_script( 'google-recaptcha-v2', $recaptcha_v2_script, 'before' );
+
 		wp_register_script( 'kadence-blocks-parallax-js', KADENCE_BLOCKS_URL . 'dist/kt-init-parallax.js', array( 'jarallax' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'dist/vendor/kt-blocks-slick.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-slick', KADENCE_BLOCKS_URL . 'dist/vendor/slick.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
@@ -939,6 +995,19 @@ class Kadence_Blocks_Frontend {
 		}
 		$rgba = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
 		return $rgba;
+	}
+	/**
+	 * Load the faq schema in head.
+	 */
+	public function faq_schema() {
+		if ( is_null( self::$faq_schema ) ) {
+			return;
+		}
+		$print_faq_schema = apply_filters( 'kadence_blocks_print_faq_schema', true );
+		if ( ! $print_faq_schema ) {
+			return;
+		}
+		echo self::$faq_schema;
 	}
 	/**
 	 * Load the front end Google Fonts
@@ -1196,6 +1265,13 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_accordion_scripts_gfonts( $blockattr );
 						}
 					}
+					if ( 'kadence/pane' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							if ( isset( $block['attrs']['faqSchema'] ) && $block['attrs']['faqSchema'] ) {
+								$this->render_pane_scheme_head( $block );
+							}
+						}
+					}
 					if ( 'kadence/tabs' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -1304,6 +1380,13 @@ class Kadence_Blocks_Frontend {
 						$this->blocks_accordion_scripts_gfonts( $blockattr );
 					}
 				}
+				if ( 'kadence/pane' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						if ( isset( $inner_block['attrs']['faqSchema'] ) && $inner_block['attrs']['faqSchema'] ) {
+							$this->render_pane_scheme_head( $inner_block );
+						}
+					}
+				}
 				if ( 'kadence/advancedbtn' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -1391,7 +1474,11 @@ class Kadence_Blocks_Frontend {
 	public function blocks_form_scripts_check( $attr ) {
 		wp_enqueue_script( 'kadence-blocks-form' );
 		if ( isset( $attr['recaptcha'] ) && $attr['recaptcha'] ) {
-			wp_enqueue_script( 'google-recaptcha-v3' );
+			if ( isset( $attr['recaptchaVersion'] ) && 'v2' === $attr['recaptchaVersion'] ) {
+				wp_enqueue_script( 'google-recaptcha-v2' );
+			} else {
+				wp_enqueue_script( 'google-recaptcha-v3' );
+			}
 		}
 		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
 			$label_font = $attr['labelFont'][0];
@@ -2084,6 +2171,24 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
+		}
+		if ( isset( $attr['tabletTextAlignment'] ) && ! empty( $attr['tabletTextAlignment'] ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.wp-block-kadence-icon.kt-svg-icons' . $unique_id . ' {';
+			if ( isset( $attr['tabletTextAlignment'] ) ) {
+				$css .= 'text-align:' . $attr['tabletTextAlignment'] . '!important;';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['mobileTextAlignment'] ) && ! empty( $attr['mobileTextAlignment'] ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.wp-block-kadence-icon.kt-svg-icons' . $unique_id . ' {';
+			if ( isset( $attr['mobileTextAlignment'] ) ) {
+				$css .= 'text-align:' . $attr['mobileTextAlignment'] . '!important;';
+			}
+			$css .= '}';
+			$css .= '}';
 		}
 		return $css;
 	}
@@ -3896,18 +4001,18 @@ class Kadence_Blocks_Frontend {
 				$css .= 'font-style:' . $attr['markFontStyle'] . ';';
 			}
 			if ( isset( $attr['markColor'] ) && ! empty( $attr['markColor'] ) ) {
-				$css .= 'color:' . $attr['markColor'] . ';';
+				$css .= 'color:' . $this->kadence_color_output( $attr['markColor'] ) . ';';
 			}
 			if ( isset( $attr['markTextTransform'] ) && ! empty( $attr['markTextTransform'] ) ) {
 				$css .= 'text-transform:' . $attr['markTextTransform'] . ';';
 			}
 			if ( isset( $attr['markBG'] ) && ! empty( $attr['markBG'] ) ) {
 				$alpha = ( isset( $attr['markBGOpacity'] ) && ! empty( $attr['markBGOpacity'] ) ? $attr['markBGOpacity'] : 1 );
-				$css .= 'background:' . $this->hex2rgba( $attr['markBG'], $alpha ) . ';';
+				$css .= 'background:' . $this->kadence_color_output( $attr['markBG'], $alpha ) . ';';
 			}
 			if ( isset( $attr['markBorder'] ) && ! empty( $attr['markBorder'] ) ) {
 				$alpha = ( isset( $attr['markBorderOpacity'] ) && ! empty( $attr['markBorderOpacity'] ) ? $attr['markBorderOpacity'] : 1 );
-				$css .= 'border-color:' . $this->hex2rgba( $attr['markBorder'], $alpha ) . ';';
+				$css .= 'border-color:' . $this->kadence_color_output( $attr['markBorder'], $alpha ) . ';';
 			}
 			if ( isset( $attr['markBorderWidth'] ) && ! empty( $attr['markBorderWidth'] ) ) {
 				$css .= 'border-width:' . $attr['markBorderWidth'] . 'px;';
@@ -3920,7 +4025,7 @@ class Kadence_Blocks_Frontend {
 			}
 			$css .= '}';
 		}
-		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) ) {
+		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) || isset( $attr['tabletAlign'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
 			$css .= '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading {';
 			if ( isset( $attr['tabSize'] ) ) {
@@ -3928,6 +4033,9 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['tabLineHeight'] ) ) {
 				$css .= 'line-height:' . $attr['tabLineHeight'] . ( ! isset( $attr['lineType'] ) ? 'px' : $attr['lineType'] ) . ';';
+			}
+			if ( isset( $attr['tabletAlign'] ) ) {
+				$css .= 'text-align:' . $attr['tabletAlign'] . '!important;';
 			}
 			$css .= '}';
 			$css .= '}';
@@ -3944,7 +4052,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 			$css .= '}';
 		}
-		if ( isset( $attr['mobileSize'] ) || isset( $attr['mobileLineHeight'] ) ) {
+		if ( isset( $attr['mobileSize'] ) || isset( $attr['mobileLineHeight'] ) || isset( $attr['mobileAlign'] ) ) {
 			$css .= '@media (max-width: 767px) {';
 			$css .= '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading {';
 			if ( isset( $attr['mobileSize'] ) ) {
@@ -3952,6 +4060,9 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['mobileLineHeight'] ) ) {
 				$css .= 'line-height:' . $attr['mobileLineHeight'] . ( ! isset( $attr['lineType'] ) ? 'px' : $attr['lineType'] ) . ';';
+			}
+			if ( isset( $attr['mobileAlign'] ) ) {
+				$css .= 'text-align:' . $attr['mobileAlign'] . ' !important;';
 			}
 			$css .= '}';
 			$css .= '}';
@@ -5062,6 +5173,19 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		return $css;
+	}
+	/**
+	 * Adds var to color output if needed.
+	 *
+	 * @param string $color the output color.
+	 */
+	public function kadence_color_output( $color, $opacity = null ) {
+		if ( strpos( $color, 'palette' ) === 0 ) {
+			$color = 'var(--global-' . $color . ')';
+		} else if ( isset( $opacity ) && is_numeric( $opacity ) ) {
+			$color = $this->hex2rgba( $color, $opacity );
+		}
+		return $color;
 	}
 }
 Kadence_Blocks_Frontend::get_instance();

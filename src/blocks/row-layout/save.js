@@ -11,6 +11,7 @@ const {
 } = wp.element;
 const {
 	InnerBlocks,
+	getColorClassName,
 } = wp.blockEditor;
 
 class KadenceRowLayoutSave extends Component {
@@ -112,10 +113,13 @@ class KadenceRowLayoutSave extends Component {
 		const HtmlTagOut = ( ! htmlTag ? 'div' : htmlTag );
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const classId = ( ! uniqueID ? 'notset' : uniqueID );
-		const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
 		const overlayType = ( ! currentOverlayTab || 'grad' !== currentOverlayTab ? 'normal' : 'gradient' );
 		const classes = classnames( `align${ ( align ? align : 'none' ) }` );
-		const innerClasses = classnames( `kt-row-layout-inner ${ hasBG } kt-layout-id${ classId }${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` );
+		const innerClasses = classnames( 'kt-row-layout-inner', {
+			'kt-row-has-bg': bgColor || bgImg || overlay || overlayBgImg,
+			[ 'kt-layout-id' + classId ]: classId,
+			'kt-jarallax': bgImg && bgImgAttachment === 'parallax',
+		} );
 		const innerColumnClasses = classnames( `kt-row-column-wrap kt-has-${ columns }-columns kt-gutter-${ columnGutter } kt-v-gutter-${ ( collapseGutter ? collapseGutter : 'default' ) } kt-row-valign-${ verticalAlignment } kt-row-layout-${ layoutClass } kt-tab-layout-${ tabLayoutClass } kt-m-colapse-${ collapseOrder } kt-mobile-layout-${ mobileLayoutClass }${ firstColumnClass }${ secondColumnClass }${ thirdColumnClass }${ ( undefined !== columnsInnerHeight && true === columnsInnerHeight ? ' kt-inner-column-height-full' : '' ) }` );
 		const renderSliderImages = ( index ) => {
 			let bgSlider;

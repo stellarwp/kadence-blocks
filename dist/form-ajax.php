@@ -42,7 +42,8 @@ class KB_Ajax_Form {
 	public function process_ajax() {
 		if ( isset( $_POST['_kb_form_id'] ) && ! empty( $_POST['_kb_form_id'] ) && isset( $_POST['_kb_form_post_id'] ) && ! empty( $_POST['_kb_form_post_id'] ) ) {
 			$this->start_buffer();
-			$valid = wp_verify_nonce( ( isset( $_POST['_kb_form_verify'] ) ? sanitize_text_field( wp_unslash( $_POST['_kb_form_verify'] ) ) : '' ), 'kb_form_nonce' );
+			$valid = check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false );
+			//$valid = wp_verify_nonce( ( isset( $_POST['_kb_form_verify'] ) ? sanitize_text_field( wp_unslash( $_POST['_kb_form_verify'] ) ) : '' ), 'kb_form_nonce' );
 			if ( $valid ) {
 				// Lets get form data.
 				$form_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_id'] ) );
@@ -68,8 +69,9 @@ class KB_Ajax_Form {
 				// Check for Message strings.
 				$messages = array(
 					0 => array(
-						'success' => esc_html__( 'Submission Success, Thanks for getting in touch!', 'kadence-blocks' ),
-						'error'   => esc_html__( 'Submission Failed', 'kadence-blocks' ),
+						'success'          => esc_html__( 'Submission Success, Thanks for getting in touch!', 'kadence-blocks' ),
+						'error'            => esc_html__( 'Submission Failed', 'kadence-blocks' ),
+						'recaptchaerror'   => esc_html__( 'Submission Failed, reCaptcha spam prevention.', 'kadence-blocks' ),
 					),
 				);
 				if ( isset( $form_args['messages'] ) ) {
@@ -84,8 +86,17 @@ class KB_Ajax_Form {
 				}
 				// Check Recaptcha.
 				if ( isset( $form_args['recaptcha'] ) && true === $form_args['recaptcha'] ) {
-					if ( ! $this->verify_recaptcha( $_POST['recaptcha_response'] ) ) {
-						$this->process_bail( $messages[0]['error'], __( 'reCAPTCHA Failed', 'kadence-blocks' ) );
+					if ( isset( $form_args['recaptchaVersion'] ) && 'v2' === $form_args['recaptchaVersion'] ) {
+						if ( ! isset( $_POST['g-recaptcha-response'] ) || empty( $_POST['g-recaptcha-response'] ) ) {
+							$this->process_bail( $messages[0]['recaptchaerror'], __( 'reCAPTCHA Failed', 'kadence-blocks' ) );
+						}
+						if ( ! $this->verify_recaptcha_v2( $_POST['g-recaptcha-response'] ) ) {
+							$this->process_bail( $messages[0]['recaptchaerror'], __( 'reCAPTCHA Failed', 'kadence-blocks' ) );
+						}
+					} else {
+						if ( ! $this->verify_recaptcha( $_POST['recaptcha_response'] ) ) {
+							$this->process_bail( $messages[0]['recaptchaerror'], __( 'reCAPTCHA Failed', 'kadence-blocks' ) );
+						}
 					}
 					unset( $_POST['recaptcha_response'] );
 				}
@@ -350,6 +361,51 @@ class KB_Ajax_Form {
 		}
 		return $response['success'];
 
+	}
+
+	/**
+	 * Check Recaptcha V2
+	 *
+	 * @param string $token Recaptcha token.
+	 *
+	 * @return bool
+	 */
+	private function verify_recaptcha_v2( $token ) {
+
+		$recaptcha_url = 'https://www.google.com/recaptcha/api/siteverify';
+		$secret        = get_option( 'kadence_blocks_recaptcha_secret_key' );
+		if ( ! $secret ) {
+			return false;
+		}
+		$args = array(
+			'body' => array(
+				'secret'   => $secret,
+				'response' => $token,
+				'remoteip' => $_SERVER['REMOTE_ADDR'],
+			),
+		);
+		$verify_request = wp_remote_post( $recaptcha_url, $args );
+		if ( is_wp_error( $verify_request ) ) {
+			return false;
+		}
+		$response = wp_remote_retrieve_body( $verify_request );
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+		$response = json_decode( $response, true );
+
+		if ( ! isset( $response['success'] ) ) {
+			return false;
+		}
+		if ( isset( $response['success'] ) && true === $response['success'] ) {
+			return $response['success'];
+		}
+		if ( isset( $response['error-codes'] ) && is_array( $response['error-codes'] ) ) {
+			if ( isset( $response['error-codes'][0] ) && $response['error-codes'][0] === 'timeout-or-duplicate' ) {
+				return true;
+			}
+		}
+		return false;
 	}
 	/**
 	 * Create HTML string from notices

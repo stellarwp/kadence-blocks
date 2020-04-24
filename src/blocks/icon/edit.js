@@ -44,6 +44,7 @@ const {
 	TextControl,
 	SelectControl,
 	Button,
+	Dashicon,
 	TabPanel,
 	ButtonGroup,
 	Tooltip,
@@ -94,12 +95,73 @@ class KadenceIcons extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { iconCount, icons, blockAlignment, textAlignment, uniqueID }, className, setAttributes, clientId } = this.props;
+		const { attributes: { iconCount, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID }, className, setAttributes, clientId } = this.props;
 		const { marginControl } = this.state;
 		const controlTypes = [
 			{ key: 'linked', name: __( 'Linked' ), micon: editorIcons.linked },
 			{ key: 'individual', name: __( 'Individual' ), micon: editorIcons.individual },
 		];
+		const tabAlignControls = (
+			<TabPanel className="kt-size-tabs"
+				activeClass="active-tab"
+				tabs={ [
+					{
+						name: 'desk',
+						title: <Dashicon icon="desktop" />,
+						className: 'kt-desk-tab',
+					},
+					{
+						name: 'tablet',
+						title: <Dashicon icon="tablet" />,
+						className: 'kt-tablet-tab',
+					},
+					{
+						name: 'mobile',
+						title: <Dashicon icon="smartphone" />,
+						className: 'kt-mobile-tab',
+					},
+				] }>
+				{
+					( tab ) => {
+						let tabout;
+						if ( tab.name ) {
+							if ( 'mobile' === tab.name ) {
+								tabout = (
+									<AlignmentToolbar
+										value={ mobileTextAlignment }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { mobileTextAlignment: nextAlign } );
+										} }
+									/>
+								);
+							} else if ( 'tablet' === tab.name ) {
+								tabout = (
+									<AlignmentToolbar
+										value={ tabletTextAlignment }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { tabletTextAlignment: nextAlign } );
+										} }
+									/>
+								);
+							} else {
+								tabout = (
+									<AlignmentToolbar
+										value={ textAlignment }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { textAlignment: nextAlign } );
+										} }
+									/>
+								);
+							}
+						}
+						return <div>{ tabout }</div>;
+					}
+				}
+			</TabPanel>
+		);
 		const hoverSettings = ( index ) => {
 			return (
 				<Fragment>
@@ -502,6 +564,10 @@ class KadenceIcons extends Component {
 							min={ 1 }
 							max={ 10 }
 						/>
+						<div className="kb-sidebar-alignment components-base-control">
+							<p className="kb-component-label kb-responsive-label">{ __( 'Text Alignment', 'kadence-blocks' ) }</p>
+							{ tabAlignControls }
+						</div>
 					</PanelBody>
 					{ renderSettings }
 				</InspectorControls>

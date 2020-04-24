@@ -8,6 +8,8 @@
  * Import Icons
  */
 import icons from './icon';
+
+import classnames from 'classnames';
 /**
  * Import Css
  */
@@ -15,6 +17,7 @@ import './style.scss';
 import './editor.scss';
 import edit from './edit';
 import backwardCompatibility from './deprecated';
+import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Internal block libraries
  */
@@ -29,6 +32,7 @@ const {
 } = wp.element;
 const {
 	RichText,
+	getColorClassName,
 } = wp.blockEditor;
 /**
  * Register: a Gutenberg Block.
@@ -235,6 +239,25 @@ registerBlockType( 'kadence/advancedheading', {
 		anchor: {
 			type: 'string',
 		},
+		colorClass: {
+			type: 'string',
+		},
+		tabletAlign: {
+			type: 'string',
+		},
+		mobileAlign: {
+			type: 'string',
+		},
+		textShadow: {
+			type: 'array',
+			default: [ {
+				enable: false,
+				color: 'rgba(0, 0, 0, 0.2)',
+				blur: 1,
+				hOffset: 1,
+				vOffset: 1,
+			} ],
+		},
 	},
 	transforms: {
 		from: [
@@ -282,19 +305,26 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { anchor, align, level, content, color, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions } } = props;
+		const { attributes: { anchor, align, level, content, color, colorClass, textShadow, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions } } = props;
 		const tagName = 'h' + level;
+		const textColorClass = getColorClassName( 'color', colorClass );
 		const mType = ( marginType ? marginType : 'px' );
 		let tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
 		const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
 		const wrapper = ( anchor || revealAnimation ? true : false );
 		tagId = ( revealAnimation && ! anchor ? `kt-adv-inner-heading${ uniqueID }` : tagId );
-		const classes = ( ! wrapper && className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
+		//const classes = ( ! wrapper && className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
+		const classes = classnames( {
+			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
+			[ className ]: ! wrapper && className,
+			[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
+			[ textColorClass ]: textColorClass,
+		} );
 		const htmlItem = (
 			<RichText.Content
 				tagName={ tagName }
 				id={ tagId }
-				className={ `kt-adv-heading${ uniqueID } ${ classes }` }
+				className={ classes }
 				data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
 				data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
 				data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
@@ -303,10 +333,11 @@ registerBlockType( 'kadence/advancedheading', {
 				data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
 				style={ {
 					textAlign: align,
-					color: color,
+					color: ! textColorClass && color ? KadenceColorOutput( color ) : undefined,
 					letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
 					marginTop: ( undefined !== topMargin && '' !== topMargin ? topMargin + mType : undefined ),
 					marginBottom: ( undefined !== bottomMargin && '' !== bottomMargin ? bottomMargin + mType : undefined ),
+					textShadow: ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
 				} }
 				value={ content }
 			/>

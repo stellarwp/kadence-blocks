@@ -25,6 +25,7 @@
     position: absolute;
 	right: 0;
 	top:0;
+	z-index: 100;
 }
 .kt-testimonial-item-wrap:hover .kt-testimonial-item__move-menu {
     display:inline-flex;
@@ -73,7 +74,7 @@
     grid-gap: 30px 30px;
 }
 .kt-testimonial-columns-1 .kt-testimonial-grid-wrap {
-    display: block;
+    grid-template-columns: 1fr;
 }
 .kt-testimonial-columns-3 .kt-testimonial-grid-wrap {
     grid-template-columns: 1fr 1fr 1fr;
@@ -116,6 +117,8 @@
 		border-radius: 100%;
 		justify-content: center;
 		position: absolute;
+		left:0;
+		top:0;
 	}
 	.kt-svg-testimonial-icon {
 		position: absolute;

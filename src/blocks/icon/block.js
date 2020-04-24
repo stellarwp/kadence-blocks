@@ -87,6 +87,12 @@ registerBlockType( 'kadence/icon', {
 			type: 'string',
 			default: 'center',
 		},
+		tabletTextAlignment: {
+			type: 'string',
+		},
+		mobileTextAlignment: {
+			type: 'string',
+		},
 	},
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {

@@ -1050,7 +1050,7 @@ class KadenceInfoBoxDefault extends Component {
 							) }
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Container Shaddow' ) }
+							title={ __( 'Container Shadow' ) }
 							initialOpen={ false }
 						>
 							<ToggleControl
