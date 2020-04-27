@@ -14,6 +14,14 @@
     display: table;
     content: '';
 }
+.wp-block-kadence-advancedgallery .kb-gallery-ul {
+	display: flex;
+	flex-wrap: wrap;
+	list-style-type: none;
+	padding: 0;
+	box-sizing: border-box;
+	margin:-5px;
+}
 .kb-gallery-ul {
 	display: flex;
 	flex-wrap: wrap;

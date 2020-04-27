@@ -1089,7 +1089,7 @@ class GalleryEdit extends Component {
 																onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } ) }
 																step={ 1 }
 																min={ 120 }
-																max={ 500 }
+																max={ 800 }
 															/>
 														);
 													} else if ( 'tablet' === tab.name ) {
@@ -1099,7 +1099,7 @@ class GalleryEdit extends Component {
 																onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
 																step={ 1 }
 																min={ 120 }
-																max={ 500 }
+																max={ 800 }
 															/>
 														);
 													} else {
@@ -1109,7 +1109,7 @@ class GalleryEdit extends Component {
 																onChange={ value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
 																step={ 1 }
 																min={ 120 }
-																max={ 500 }
+																max={ 800 }
 															/>
 														);
 													}

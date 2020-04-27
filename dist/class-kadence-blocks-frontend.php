@@ -3427,7 +3427,7 @@ class Kadence_Blocks_Frontend {
 	public function blocks_advancedgallery_array( $attr, $unique_id ) {
 		$css = '';
 		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][0] ) && is_numeric( $attr['gutter'][0] ) ) {
-			$css .= 'ul.kb-gallery-id-' . $unique_id . ' {';
+			$css .= '.wp-block-kadence-advancedgallery ul.kb-gallery-id-' . $unique_id . ' {';
 				$css .= 'margin: -' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
 			$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item {';

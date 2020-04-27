@@ -42,8 +42,10 @@ class KB_Ajax_Form {
 	public function process_ajax() {
 		if ( isset( $_POST['_kb_form_id'] ) && ! empty( $_POST['_kb_form_id'] ) && isset( $_POST['_kb_form_post_id'] ) && ! empty( $_POST['_kb_form_post_id'] ) ) {
 			$this->start_buffer();
-			$valid = check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false );
-			//$valid = wp_verify_nonce( ( isset( $_POST['_kb_form_verify'] ) ? sanitize_text_field( wp_unslash( $_POST['_kb_form_verify'] ) ) : '' ), 'kb_form_nonce' );
+			$valid = true;
+			if ( apply_filters( 'kadence_blocks_form_verify_nonce', false ) ) {
+				$valid = check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false );
+			}
 			if ( $valid ) {
 				// Lets get form data.
 				$form_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_id'] ) );

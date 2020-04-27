@@ -87,6 +87,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.8.1 =
+* Update: Few tweaks for Gallery Block CSS
+* Update: Allow galley carousel max height to go to 800px.
+* Add: Nouce verify to false by default to form block. ( this prevents caching issues ).
+** Update: Gallery default options - Image thumbnail size, Image link size, Link type.  Carousel height
+- Caption (for image and lightbox)
+- Link Triggers?
+- Image Filter
+
 = 1.8.0 =
 * Add: new inline color selector to Advanced Heading Block.
 * Add: support for color classes in Advanced Heading Block

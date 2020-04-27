@@ -133,16 +133,16 @@ class KadenceAdvancedGalleryDefault extends Component {
 				{ isOpen ?
 					<Modal
 						className="kt-block-defaults-modal"
-						title={ __( 'Kadence Advanced Gallery' ) }
+						title={ __( 'Kadence Advanced Gallery', 'kadence-blocks' ) }
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/advancedgallery', galleryConfig );
 						} }>
 						<PanelBody
-							title={ __( 'Gallery Settings' ) }
+							title={ __( 'Gallery Settings', 'kadence-blocks' ) }
 							initialOpen={ true }
 						>
 							<h2>{ __( 'Default Gallery Type:' ) + ' ' + typeLabel[ 0 ].label }</h2>
-							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type' ) }>
+							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type', 'kadence-blocks' ) }>
 								{ map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
 									<Tooltip text={ label }>
 										<Button
@@ -163,35 +163,35 @@ class KadenceAdvancedGalleryDefault extends Component {
 								label={ __( 'Default Image ratio' ) }
 								options={ [
 									{
-										label: __( 'Landscape 4:3' ),
+										label: __( 'Landscape 4:3', 'kadence-blocks' ),
 										value: 'land43',
 									},
 									{
-										label: __( 'Landscape 3:2' ),
+										label: __( 'Landscape 3:2', 'kadence-blocks' ),
 										value: 'land32',
 									},
 									{
-										label: __( 'Landscape 2:1' ),
+										label: __( 'Landscape 2:1', 'kadence-blocks' ),
 										value: 'land21',
 									},
 									{
-										label: __( 'Landscape 3:1' ),
+										label: __( 'Landscape 3:1', 'kadence-blocks' ),
 										value: 'land31',
 									},
 									{
-										label: __( 'Landscape 4:1' ),
+										label: __( 'Landscape 4:1', 'kadence-blocks' ),
 										value: 'land41',
 									},
 									{
-										label: __( 'Portrait 3:4' ),
+										label: __( 'Portrait 3:4', 'kadence-blocks' ),
 										value: 'port34',
 									},
 									{
-										label: __( 'Portrait 2:3' ),
+										label: __( 'Portrait 2:3', 'kadence-blocks' ),
 										value: 'port23',
 									},
 									{
-										label: __( 'Square 1:1' ),
+										label: __( 'Square 1:1', 'kadence-blocks' ),
 										value: 'square',
 									},
 									{
@@ -221,7 +221,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 								</ButtonGroup>
 								{ ( galleryConfig.columnControl ? galleryConfig.columnControl : 'linked' ) !== 'individual' && (
 									<RangeControl
-										label={ __( 'Columns' ) }
+										label={ __( 'Columns', 'kadence-blocks' ) }
 										value={ columns[ 2 ] }
 										onChange={ onColumnChange }
 										min={ 1 }
@@ -230,7 +230,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 								) }
 								{ ( galleryConfig.columnControl ? galleryConfig.columnControl : 'linked' ) === 'individual' && (
 									<Fragment>
-										<h4>{ __( 'Columns' ) }</h4>
+										<h4>{ __( 'Columns', 'kadence-blocks' ) }</h4>
 										<RangeControl
 											label={ __( 'Screen Above 1500px' ) }
 											value={ columns[ 0 ] }
@@ -338,24 +338,59 @@ class KadenceAdvancedGalleryDefault extends Component {
 									}
 								</TabPanel>
 							</Fragment>
+							<SelectControl
+								label={ __( 'Thumbnail Image Size', 'kadence-blocks' ) }
+								value={ ( undefined !== galleryConfig.thumbSize ? galleryConfig.thumbSize : 'large' ) }
+								options={ [
+									{ value: 'full', label: __( 'Full', 'kadence-blocks' ) },
+									{ value: 'large', label: __( 'Large', 'kadence-blocks' ) },
+									{ value: 'medium_large', label: __( 'Medium Large', 'kadence-blocks' ) },
+									{ value: 'medium', label: __( 'Medium', 'kadence-blocks' ) },
+									{ value: 'thumbnail', label: __( 'Thumbnail', 'kadence-blocks' ) },
+								] }
+								onChange={ value => this.saveConfigState( 'thumbSize', value ) }
+							/>
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Lightbox Settings' ) }
+							title={ __( 'Link Settings' ) }
 							initialOpen={ false }
 						>
+							<SelectControl
+								label={ __( 'Link To', 'kadence-blocks' ) }
+								value={ ( undefined !== galleryConfig.linkTo ? galleryConfig.linkTo : 'none' ) }
+								options={ [
+									{ value: 'attachment', label: __( 'Attachment Page', 'kadence-blocks' ) },
+									{ value: 'media', label: __( 'Media File', 'kadence-blocks' ) },
+									{ value: 'custom', label: __( 'Custom', 'kadence-blocks' ) },
+									{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+								] }
+								onChange={ value => this.saveConfigState( 'linkTo', value ) }
+							/>
+							<SelectControl
+								label={ __( 'Link Image Size', 'kadence-blocks' ) }
+								value={ ( undefined !== galleryConfig.lightSize ? galleryConfig.lightSize : 'full' ) }
+								options={ [
+									{ value: 'full', label: __( 'Full', 'kadence-blocks' ) },
+									{ value: 'large', label: __( 'Large', 'kadence-blocks' ) },
+									{ value: 'medium_large', label: __( 'Medium Large', 'kadence-blocks' ) },
+									{ value: 'medium', label: __( 'Medium', 'kadence-blocks' ) },
+									{ value: 'thumbnail', label: __( 'Thumbnail', 'kadence-blocks' ) },
+								] }
+								onChange={ value => this.saveConfigState( 'lightSize', value ) }
+							/>
 							<ToggleControl
-								label={ __( 'Lightbox' ) }
+								label={ __( 'Lightbox', 'kadence-blocks' ) }
 								checked={ ( undefined !== galleryConfig.lightbox && galleryConfig.lightbox === 'magnific' ? true : false ) }
 								onChange={ ( value ) => this.saveConfigState( 'lightbox', ( value ? 'magnific' : 'none' ) ) }
 							/>
 							<ToggleControl
-								label={ __( 'Show Caption in Lightbox' ) }
+								label={ __( 'Show Caption in Lightbox', 'kadence-blocks' ) }
 								checked={ ( undefined !== galleryConfig.lightboxCaption ? galleryConfig.lightboxCaption : false ) }
 								onChange={ ( value ) => this.saveConfigState( 'lightboxCaption', value ) }
 							/>
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Gallery Spacing' ) }
+							title={ __( 'Gallery Spacing', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
 							<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
@@ -372,7 +407,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 									</Button>
 								) ) }
 							</ButtonGroup>
-							<h2 className="kt-heading-size-title">{ __( 'Margin' ) }</h2>
+							<h2 className="kt-heading-size-title">{ __( 'Margin', 'kadence-blocks' ) }</h2>
 							<TabPanel className="kt-size-tabs"
 								activeClass="active-tab"
 								tabs={ [
@@ -399,7 +434,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 											if ( 'mobile' === tab.name ) {
 												tabout = (
 													<MeasurementControls
-														label={ __( 'Mobile Margin' ) }
+														label={ __( 'Mobile Margin', 'kadence-blocks' ) }
 														measurement={ margin[ 0 ].mobile }
 														control={ this.state.marginMobileControl }
 														onChange={ ( value ) => saveMargin( { mobile: value } ) }
@@ -412,7 +447,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 											} else if ( 'tablet' === tab.name ) {
 												tabout = (
 													<MeasurementControls
-														label={ __( 'Tablet Margin' ) }
+														label={ __( 'Tablet Margin', 'kadence-blocks' ) }
 														measurement={ margin[ 0 ].tablet }
 														control={ this.state.marginTabletControl }
 														onChange={ ( value ) => saveMargin( { tablet: value } ) }
@@ -425,7 +460,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 											} else {
 												tabout = (
 													<MeasurementControls
-														label={ __( 'Margin' ) }
+														label={ __( 'Margin', 'kadence-blocks' ) }
 														measurement={ margin[ 0 ].desk }
 														control={ this.state.marginDeskControl }
 														onChange={ ( value ) => saveMargin( { desk: value } ) }
@@ -445,7 +480,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 						<Button className="kt-defaults-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/advancedgallery', galleryConfig );
 						} }>
-							{ __( 'Save/Close' ) }
+							{ __( 'Save/Close', 'kadence-blocks' ) }
 						</Button>
 					</Modal>
 					: null }
