@@ -18,11 +18,11 @@ import map from 'lodash/map';
 const { __, sprintf } = wp.i18n;
 const {
 	Component,
+	Fragment,
 } = wp.element;
 const {
 	Button,
-	Popover,
-	ColorIndicator,
+	IconButton,
 	Tooltip,
 	Dashicon,
 	Dropdown,
@@ -81,15 +81,15 @@ class InlineAdvancedPopColorControl extends Component {
 			};
 			return (
 				<ToolbarGroup>
-					<Button
-						className="components-toolbar__control block-library-colors-selector__toggle"
+					<IconButton
+						className="components-toolbar__control kb-colors-selector__toggle"
 						label={ this.props.label }
 						onClick={ onToggle }
 						onKeyDown={ openOnArrowDown }
 						icon={
-							<div className="block-library-colors-selector__icon-container">
+							<div className="kb-colors-selector__icon-container">
 								<div
-									className={ 'block-library-colors-selector__state-selection' }
+									className={ 'kb-colors-selector__state-selection' }
 									style={ { color: currentColorString } }
 								>
 									<ColorSelectorSVGIcon />
@@ -103,9 +103,30 @@ class InlineAdvancedPopColorControl extends Component {
 		return (
 			<Dropdown
 				position="top right"
-				className="block-library-colors-selector new-kadence-advanced-colors"
+				className="kb-colors-selector components-dropdown-menu components-toolbar new-kadence-advanced-colors"
 				contentClassName="block-library-colors-selector__popover kt-popover-color new-kadence-advanced-colors-pop"
-				renderToggle={ renderToggleComponent( currentColorString ) }
+				//renderToggle={ renderToggleComponent() }
+				renderToggle={ ( { isOpen, onToggle } ) => (
+					<Fragment>
+						<IconButton
+							className="components-toolbar__control components-dropdown-menu__toggle kb-colors-selector__toggle"
+							label={ this.props.label }
+							tooltip={ this.props.label }
+							icon={
+								<div className="kb-colors-selector__icon-container">
+									<div
+										className={ 'kb-colors-selector__state-selection' }
+										style={ { color: currentColorString } }
+									>
+										<ColorSelectorSVGIcon />
+									</div>
+								</div>
+							}
+							onClick={ onToggle }
+							aria-expanded={ isOpen }>
+						</IconButton>
+					</Fragment>
+				) }
 				renderContent={ () => (
 					<div className="inline-color-popup-inner-wrap block-editor-block-toolbar">
 						{ this.state.classSat === 'first' && ! this.props.disableCustomColors && (

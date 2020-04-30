@@ -353,7 +353,7 @@ class InlineTypographyControl extends Component {
 					position="top center"
 					renderToggle={ ( { isOpen, onToggle } ) => (
 						<Fragment>
-							<Button
+							<IconButton
 								className="components-dropdown-menu__toggle kt-font-family-icon"
 								label={ __( 'Typography Settings' ) }
 								tooltip={ __( 'Typography Settings' ) }
@@ -361,7 +361,7 @@ class InlineTypographyControl extends Component {
 								onClick={ onToggle }
 								aria-expanded={ isOpen }>
 								<span className="components-dropdown-menu__indicator" />
-							</Button>
+							</IconButton>
 						</Fragment>
 					) }
 					renderContent={ () => (

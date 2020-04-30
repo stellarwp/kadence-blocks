@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.4.0
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,11 +90,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 1.8.1 =
 * Update: Few tweaks for Gallery Block CSS
 * Update: Allow galley carousel max height to go to 800px.
+* Update: Fix issue with wordpress 5.3 and heading block.
 * Add: Nouce verify to false by default to form block. ( this prevents caching issues ).
-** Update: Gallery default options - Image thumbnail size, Image link size, Link type.  Carousel height
-- Caption (for image and lightbox)
-- Link Triggers?
-- Image Filter
+* Update: Gallery default options - Image thumbnail size, Image link size, Link type
 
 = 1.8.0 =
 * Add: new inline color selector to Advanced Heading Block.

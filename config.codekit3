@@ -7,7 +7,7 @@
 		"uuidString": "4A0AC384-49F1-4908-A230-491BE3A9C306"
 		}
 	],
-"creatorBuild": "31934",
+"creatorBuild": "32137",
 "files": {
 	"/.editorconfig": {
 		"cB": 0,
@@ -55,14 +55,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/assets/css/simplelightbox.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/dist/assets/css/src/tiny-slider.css": {
 		"aP": 1,
@@ -78,14 +78,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/assets/css/src/tiny-slider.css",
 		"oF": 0,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/dist/assets/js/kb-form-min.js": {
 		"bF": 0,
@@ -506,14 +506,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/magnific.css",
 		"oF": 1,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/dist/settings/blocks-deregister.js": {
 		"bF": 0,
@@ -762,14 +762,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/vendor/kt-blocks-slick.css",
 		"oF": 0,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/dist/vendor/slick.min.js": {
 		"bF": 0,
@@ -1214,14 +1214,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/accordion/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/accordion/save.js": {
 		"bF": 0,
@@ -1238,14 +1238,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/accordion.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/advanced-btn/block.js": {
 		"bF": 0,
@@ -1273,14 +1273,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/advanced-btn/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/advanced-btn/icon.js": {
 		"bF": 0,
@@ -1297,14 +1297,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/btn.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/advanced-gallery/block.js": {
 		"bF": 0,
@@ -1332,14 +1332,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/advanced-gallery/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/advanced-gallery/gallery-image.js": {
 		"bF": 0,
@@ -1378,14 +1378,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/gallery.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/advanced-heading/block.js": {
 		"bF": 0,
@@ -1424,14 +1424,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/advanced-heading/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/advanced-heading/icon.js": {
 		"bF": 0,
@@ -1459,14 +1459,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/heading.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/column/block.js": {
 		"bF": 0,
@@ -1516,27 +1516,27 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/form/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/form/style.scss": {
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/form.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/header/block.js": {
 		"bF": 0,
@@ -1575,27 +1575,27 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/icon-list/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/icon-list/style.scss": {
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/iconlist.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/icon/block.js": {
 		"bF": 0,
@@ -1623,14 +1623,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/icon/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/icon/icon.js": {
 		"bF": 0,
@@ -1647,14 +1647,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/icon.style.build.css",
 		"oF": 3,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/info-box/attributes.js": {
 		"bF": 0,
@@ -1704,27 +1704,27 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/info-box/editor.css",
 		"oF": 1,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/info-box/style.scss": {
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/infobox.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/pane/block.js": {
 		"bF": 0,
@@ -1785,14 +1785,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/row-layout/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/row-layout/library.js": {
 		"bF": 0,
@@ -1853,14 +1853,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/row.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/row-layout/template-library.js": {
 		"bF": 0,
@@ -1910,14 +1910,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/spacer/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/spacer/icon.js": {
 		"bF": 0,
@@ -1934,14 +1934,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/spacer.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/spacer/svg-pattern.js": {
 		"bF": 0,
@@ -2024,14 +2024,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/tabs/editor.css",
 		"oF": 1,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/tabs/save.js": {
 		"bF": 0,
@@ -2048,14 +2048,14 @@
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/tabs.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/testimonials/attributes.js": {
 		"bF": 0,
@@ -2094,27 +2094,27 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/blocks/testimonials/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/blocks/testimonials/style.scss": {
 		"aP": 1,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/testimonials.style.build.css",
 		"oF": 2,
 		"oS": 3,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/border-color-control.js": {
 		"bF": 0,
@@ -2164,14 +2164,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/common.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/faicons.js": {
 		"bF": 0,
@@ -2364,14 +2364,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/kadence-colors.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/measurement-control.js": {
 		"bF": 0,
@@ -2685,14 +2685,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/plugins/editor.css",
 		"oF": 1,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/plugins/kadence-control.js": {
 		"bF": 0,
@@ -2709,14 +2709,14 @@
 		"aP": 0,
 		"bl": 0,
 		"dP": 10,
-		"dS": 0,
+		"ec": 1,
 		"ft": 4,
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/src/slick.css",
 		"oF": 0,
 		"oS": 0,
-		"uL": 1
+		"sct": 1
 		},
 	"/src/step-control.js": {
 		"bF": 0,
@@ -3387,6 +3387,10 @@
 			"active": 0,
 			"optionString": ""
 			},
+		"grouped-accessor-pairs": {
+			"active": 0,
+			"optionString": "'anyOrder'"
+			},
 		"guard-for-in": {
 			"active": 0,
 			"optionString": ""
@@ -3563,6 +3567,10 @@
 			"active": 1,
 			"optionString": "{'checkLoops': true}"
 			},
+		"no-constructor-return": {
+			"active": 0,
+			"optionString": ""
+			},
 		"no-continue": {
 			"active": 0,
 			"optionString": ""
@@ -3588,6 +3596,10 @@
 			"optionString": ""
 			},
 		"no-dupe-class-members": {
+			"active": 1,
+			"optionString": ""
+			},
+		"no-dupe-else-if": {
 			"active": 1,
 			"optionString": ""
 			},
@@ -3891,6 +3903,10 @@
 			"active": 0,
 			"optionString": ""
 			},
+		"no-setter-return": {
+			"active": 1,
+			"optionString": ""
+			},
 		"no-shadow": {
 			"active": 0,
 			"optionString": "{'builtinGlobals': false, 'hoist': 'functions', 'allow': []}"
@@ -4094,6 +4110,10 @@
 		"prefer-destructuring": {
 			"active": 0,
 			"optionString": "{'array': true, 'object': true}, {'enforceForRenamedProperties': false}"
+			},
+		"prefer-exponentiation-operator": {
+			"active": 0,
+			"optionString": ""
 			},
 		"prefer-named-capture-group": {
 			"active": 0,
@@ -4791,13 +4811,13 @@
 		"autoOutputPathReplace1": "sass",
 		"autoOutputPathReplace2": "css",
 		"autoOutputPathStyle": 0,
+		"compilerType": 1,
 		"createSourceMap": 0,
-		"debugStyle": 0,
 		"decimalPrecision": 10,
+		"emitCharset": 1,
 		"outputStyle": 0,
 		"shouldRunAutoprefixer": 0,
-		"shouldRunBless": 0,
-		"useLibsass": 1
+		"shouldRunBless": 0
 		},
 	"languageDefaultsSLIM": {
 		"autoOutputAction": 0,
