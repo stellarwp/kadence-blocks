@@ -138,6 +138,21 @@ add_action( 'init', 'kt_blocks_init_post_meta' );
 /**
  * Add inline css editor width
  */
+function kadence_blocks_admin_theme_content_width() {
+	global $content_width;
+	if ( isset( $content_width ) ) {
+		echo '<style type="text/css" id="kt-block-content-width">';
+		echo '.wp-block-kadence-rowlayout > .innerblocks-wrap.kb-theme-content-width {
+			max-width:' . esc_attr( $content_width ) . 'px;
+		}';
+		echo '</style>';
+	}
+}
+add_action( 'admin_head-post.php', 'kadence_blocks_admin_theme_content_width', 100 );
+add_action( 'admin_head-post-new.php', 'kadence_blocks_admin_theme_content_width', 100 );
+/**
+ * Add inline css editor width
+ */
 function kadence_blocks_admin_editor_width() {
 	$editor_widths = get_option( 'kt_blocks_editor_width', array() );
 	if ( ( ! isset( $editor_widths['enable_editor_width'] ) || 'true' === $editor_widths['enable_editor_width'] ) && apply_filters( 'kadence_blocks_editor_width', true ) ) {

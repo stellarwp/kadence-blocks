@@ -454,6 +454,10 @@ const attributes = {
 		type: 'string',
 		default: 'px',
 	},
+	inheritMaxWidth: {
+		type: 'bool',
+		default: false,
+	},
 	noCustomDefaults: {
 		type: 'bool',
 		default: false,

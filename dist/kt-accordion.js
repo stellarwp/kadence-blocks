@@ -381,6 +381,7 @@ function () {
       var headersToOpen = this.settings.openHeadersOnLoad;
 
       if (headersToOpen.length) {
+        this.toggling = true;
         this._openHeadersOnLoad(headersToOpen);
       } // Render DOM as per the updates `this.states` object
 
@@ -412,8 +413,7 @@ function () {
     key: "_finishInitialization",
     value: function _finishInitialization() {
       this.container.classList.add(this.settings.initializedClass);
-
-      this._setRole('presentation', this.container);
+      this._setRole( 'presentation', this.container );
     }
     /**
      *  ADD LISTENERS
@@ -446,17 +446,27 @@ function () {
   }, {
     key: "handleClick",
     value: function handleClick(targetHeader, headerIndex) {
+      var _this10 = this;
       // Removing current `.` from `this.settings.headerClass` class so it can
       // be checked against the `targetHeader` classList
       var targetHeaderClass = this.settings.headerClass.substr(1); // Checking that the thing that was clicked on was the accordions header
 
       if (targetHeader.classList.contains(targetHeaderClass) && this.toggling === false) {
         this.toggling = true; // Updating states
-
         this.setState(headerIndex); // Render DOM as per the updates `this.states` object
 
         this._renderDom();
-      }
+      } else {
+				var initLoadDelay = setInterval( function(){ 
+          if ( _this10.toggling === false ) { 
+            _this10.toggling = true; // Updating states
+            _this10.setState( headerIndex ); // Render DOM as per the updates `this.states` object
+
+            _this10._renderDom();
+            clearInterval(initLoadDelay);
+          }
+        }, 50 );
+			}
     }
     /**
      *  SET STATES
@@ -502,7 +512,6 @@ function () {
     key: "_renderDom",
     value: function _renderDom() {
       var _this5 = this;
-
       // Filter through all open headers and open them
       this.states.filter(function (state, index) {
         if (state.state === 'open') {
@@ -598,59 +607,58 @@ function () {
     key: "togglePanel",
     value: function togglePanel(animationAction, headerIndex) {
       var _this8 = this;
-
       if (animationAction !== undefined && headerIndex !== undefined) {
-        if (animationAction === 'closed') {
-			// 1. Getting ID of panel that we want to close
-			var header = this.headers[headerIndex];
-			var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
-			if ( ! panelToClose.classList.contains(this.settings.hiddenClass) ) {
-				panelToClose.setAttribute( 'data-panel-height', panelToClose.scrollHeight + 'px' );
-				panelToClose.style.height = panelToClose.scrollHeight + 'px';
-				//reflow
-				panelToClose.offsetHeight;
-				panelToClose.style.height = '';
-				panelToClose.classList.add('kt-panel-is-collapsing');
-				panelToClose.classList.remove(this.settings.activeClass);
-				header.classList.remove(this.settings.activeClass);
-				header.setAttribute('aria-expanded', false);
-				var transDuration = ( 1000 * parseFloat(getComputedStyle(panelToClose)['transitionDuration']) );
-				setTimeout(function(){
-					panelToClose.classList.add(_this8.settings.hiddenClass);
-					panelToClose.classList.remove('kt-panel-is-collapsing');
-					return _this8.toggling = false;
-				}, transDuration );
-			}
-        //   panelToClose.onCSSTransitionEnd(function () {
-		// 	panelToClose.classList.remove('kt-panel-is-collapsing');
-        //     return _this8.toggling = false;
-        //   });
+        if ( animationAction === 'closed' ) {
+          // 1. Getting ID of panel that we want to close
+          var header = this.headers[headerIndex];
+          var panelToClose = this.panels[headerIndex]; // 2. Closeing panel
+          if ( ! panelToClose.classList.contains(this.settings.hiddenClass) ) {
+            panelToClose.setAttribute( 'data-panel-height', panelToClose.scrollHeight + 'px' );
+            panelToClose.style.height = panelToClose.scrollHeight + 'px';
+            //reflow
+            panelToClose.offsetHeight;
+            panelToClose.style.height = '';
+            panelToClose.classList.add('kt-panel-is-collapsing');
+            panelToClose.classList.remove(this.settings.activeClass);
+            header.classList.remove(this.settings.activeClass);
+            header.setAttribute('aria-expanded', false);
+            var transDuration = ( 1000 * parseFloat(getComputedStyle(panelToClose)['transitionDuration']) );
+            setTimeout(function(){
+              panelToClose.classList.add(_this8.settings.hiddenClass);
+              panelToClose.classList.remove('kt-panel-is-collapsing');
+              return _this8.toggling = false;
+            }, transDuration );
+          }
+          //   panelToClose.onCSSTransitionEnd(function () {
+          // 	panelToClose.classList.remove('kt-panel-is-collapsing');
+          //     return _this8.toggling = false;
+          //   });
         } else if (animationAction === 'open') {
           // 1. Getting ID of panel that we want to open
           var _header = this.headers[headerIndex];
-		  var panelToOpen = this.panels[headerIndex]; // 2. Opening panel
-		  if ( ! panelToOpen.classList.contains( this.settings.activeClass ) ) {
-				panelToOpen.classList.remove( this.settings.hiddenClass );
-				panelToOpen.style.height = 0;
-				//reflow
-				panelToOpen.offsetHeight;
-				panelToOpen.classList.add('kt-panel-is-expanding');
-				panelToOpen.style.height = ( panelToOpen.scrollHeight < parseInt( panelToOpen.getAttribute('data-panel-height') ) ? parseInt( panelToOpen.getAttribute('data-panel-height') ) + 'px' : panelToOpen.scrollHeight + 'px' );
-				//reflow
-				panelToOpen.offsetHeight;
-				_header.classList.add(this.settings.activeClass); // 4. Set aria attrs
-				_header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
-				var resizeEvent = window.document.createEvent('UIEvents');
-				resizeEvent.initUIEvent('resize', true, false, window, 0);
-				window.dispatchEvent(resizeEvent);
-				var _transDuration = ( 1000 * parseFloat(getComputedStyle(panelToOpen)['transitionDuration']) );
-				setTimeout(function(){
-					panelToOpen.classList.add(_this8.settings.activeClass);
-					panelToOpen.style.height = '';
-          panelToOpen.classList.remove('kt-panel-is-expanding');
-				return _this8.toggling = false;
-				}, _transDuration );
-			}
+          var panelToOpen = this.panels[headerIndex]; // 2. Opening panel
+          if ( ! panelToOpen.classList.contains( this.settings.activeClass ) ) {
+            panelToOpen.classList.remove( this.settings.hiddenClass );
+            panelToOpen.style.height = 0;
+            //reflow
+            panelToOpen.offsetHeight;
+            panelToOpen.classList.add('kt-panel-is-expanding');
+            panelToOpen.style.height = ( panelToOpen.scrollHeight < parseInt( panelToOpen.getAttribute('data-panel-height') ) ? parseInt( panelToOpen.getAttribute('data-panel-height') ) + 'px' : panelToOpen.scrollHeight + 'px' );
+            //reflow
+            panelToOpen.offsetHeight;
+            _header.classList.add(this.settings.activeClass); // 4. Set aria attrs
+            _header.setAttribute('aria-expanded', true); // 5. Resetting toggling so a new event can be fired
+            var resizeEvent = window.document.createEvent('UIEvents');
+            resizeEvent.initUIEvent('resize', true, false, window, 0);
+            window.dispatchEvent(resizeEvent);
+            var _transDuration = ( 1000 * parseFloat(getComputedStyle(panelToOpen)['transitionDuration']) );
+            setTimeout(function(){
+              panelToOpen.classList.add(_this8.settings.activeClass);
+              panelToOpen.style.height = '';
+              panelToOpen.classList.remove('kt-panel-is-expanding');
+            return _this8.toggling = false;
+            }, _transDuration );
+          }
         //   panelToOpen.onCSSTransitionEnd(function () {
 		// 	panelToOpen.style.height = '';
 		// 	panelToOpen.classList.remove('kt-panel-is-expanding');
@@ -867,7 +875,7 @@ for (var i = 0, len = accordionsArray.length; i < len; i++) {
 				scrollTo(element, to, duration - 10);
 			}, 10);
 		}
-		function kt_anchor_accordion() {
+		function kt_anchor_accordion( e ) {
 			if ( window.location.hash != '' ) {
 				var id = location.hash.substring( 1 ),
 					element;
@@ -884,12 +892,13 @@ for (var i = 0, len = accordionsArray.length; i < len; i++) {
 						}
 						window.setTimeout(function() {
 							kt_accordion_scrollTo( document.body, document.getElementById( id ).offsetTop, 600 );
-						}, 500 );
+						}, 350 );
 					}
 				}
 			}
 		}
 		window.addEventListener( 'hashchange', kt_anchor_accordion, false );
-		window.addEventListener( 'load', kt_anchor_accordion, false );
+    window.addEventListener( 'DOMContentLoaded', kt_anchor_accordion, false );
+    //window.addEventListener( 'load', kt_anchor_accordion, false );
 	}
 } )();

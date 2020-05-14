@@ -3186,7 +3186,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $title_font['style'] ) && ! empty( $title_font['style'] ) ) {
 				$css .= 'font-style:' . $title_font['style'] . ';';
 			}
-			if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) ) {
+			if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) && 'regular' !== $title_font['weight'] ) {
 				$css .= 'font-weight:' . $title_font['weight'] . ';';
 			}
 			$css .= '}';
@@ -3240,7 +3240,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $content_font['style'] ) && ! empty( $content_font['style'] ) ) {
 				$css .= 'font-style:' . $content_font['style'] . ';';
 			}
-			if ( isset( $content_font['weight'] ) && ! empty( $content_font['weight'] ) ) {
+			if ( isset( $content_font['weight'] ) && ! empty( $content_font['weight'] ) && 'regular' !== $content_font['weight'] ) {
 				$css .= 'font-weight:' . $content_font['weight'] . ';';
 			}
 			$css .= '}';
@@ -3294,7 +3294,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $name_font['style'] ) && ! empty( $name_font['style'] ) ) {
 				$css .= 'font-style:' . $name_font['style'] . ';';
 			}
-			if ( isset( $name_font['weight'] ) && ! empty( $name_font['weight'] ) ) {
+			if ( isset( $name_font['weight'] ) && ! empty( $name_font['weight'] ) && 'regular' !== $name_font['weight'] ) {
 				$css .= 'font-weight:' . $name_font['weight'] . ';';
 			}
 			$css .= '}';
@@ -3348,7 +3348,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $occupation_font['style'] ) && ! empty( $occupation_font['style'] ) ) {
 				$css .= 'font-style:' . $occupation_font['style'] . ';';
 			}
-			if ( isset( $occupation_font['weight'] ) && ! empty( $occupation_font['weight'] ) ) {
+			if ( isset( $occupation_font['weight'] ) && ! empty( $occupation_font['weight'] ) && 'regular' !== $occupation_font['weight'] ) {
 				$css .= 'font-weight:' . $occupation_font['weight'] . ';';
 			}
 			$css .= '}';
@@ -3405,7 +3405,7 @@ class Kadence_Blocks_Frontend {
 				$add_font = array(
 					'fontfamily' => $caption_font['family'],
 					'fontvariants' => ( isset( $caption_font['variant'] ) && ! empty( $caption_font['variant'] ) ? array( $caption_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $caption_font['subset'] ) && !empty( $caption_font['subset'] ) ? array( $caption_font['subset'] ) : array() ),
+					'fontsubsets' => ( isset( $caption_font['subset'] ) && ! empty( $caption_font['subset'] ) ? array( $caption_font['subset'] ) : array() ),
 				);
 				self::$gfonts[ $caption_font['family'] ] = $add_font;
 			} else {
@@ -3803,7 +3803,7 @@ class Kadence_Blocks_Frontend {
 
 		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && is_array( $attr['titleStyles'][ 0 ] ) ) {
 			$title_styles = $attr['titleStyles'][ 0 ];
-			$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header {';
+			$css .= '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-blocks-accordion-header {';
 			if ( isset( $title_styles['color'] ) && ! empty( $title_styles['color'] ) ) {
 				$css .= 'color:' . $title_styles['color'] .  ';';
 			}
@@ -4368,6 +4368,14 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function row_layout_array_css( $attr, $unique_id ) {
 		$css = '';
+		if ( isset( $attr['inheritMaxWidth'] ) && $attr['inheritMaxWidth'] ) {
+			global $content_width;
+			if ( isset( $content_width ) ) {
+				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap.kb-theme-content-width {';
+					$css .= 'max-width:' . absint( $content_width ) . 'px;';
+				$css .= '}';
+			}
+		}
 		if ( isset( $attr['firstColumnWidth'] ) && ! empty( $attr['firstColumnWidth'] ) && ( ! isset( $attr['columns'] ) || 2 === $attr['columns'] ) ) {
 			$css .= '@media (min-width: 767px) {';
 				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap > .inner-column-1 {';

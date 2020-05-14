@@ -22,6 +22,10 @@
     position: relative;
     z-index: 10;
 }
+.wp-block-kadence-rowlayout .kt-row-column-wrap.kb-theme-content-width {
+	margin-left: auto;
+	margin-right: auto;
+}
 .kt-row-has-bg > .kt-row-column-wrap {
     padding-left: 15px;
     padding-right: 15px;

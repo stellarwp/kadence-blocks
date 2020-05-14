@@ -16,7 +16,7 @@ const {
 
 class KadenceRowLayoutSave extends Component {
 	render() {
-		const { attributes: { columns, blockAlignment, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo } } = this.props;
+		const { attributes: { columns, blockAlignment, inheritMaxWidth, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo } } = this.props;
 		let bottomSVGDivider;
 		if ( 'ct' === bottomSep ) {
 			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
@@ -120,7 +120,23 @@ class KadenceRowLayoutSave extends Component {
 			[ 'kt-layout-id' + classId ]: classId,
 			'kt-jarallax': bgImg && bgImgAttachment === 'parallax',
 		} );
-		const innerColumnClasses = classnames( `kt-row-column-wrap kt-has-${ columns }-columns kt-gutter-${ columnGutter } kt-v-gutter-${ ( collapseGutter ? collapseGutter : 'default' ) } kt-row-valign-${ verticalAlignment } kt-row-layout-${ layoutClass } kt-tab-layout-${ tabLayoutClass } kt-m-colapse-${ collapseOrder } kt-mobile-layout-${ mobileLayoutClass }${ firstColumnClass }${ secondColumnClass }${ thirdColumnClass }${ ( undefined !== columnsInnerHeight && true === columnsInnerHeight ? ' kt-inner-column-height-full' : '' ) }` );
+		//const innerColumnClasses = classnames( `kt-row-column-wrap kt-has-${ columns }-columns kt-gutter-${ columnGutter } kt-v-gutter-${ ( collapseGutter ? collapseGutter : 'default' ) } kt-row-valign-${ verticalAlignment } kt-row-layout-${ layoutClass } kt-tab-layout-${ tabLayoutClass } kt-m-colapse-${ collapseOrder } kt-mobile-layout-${ mobileLayoutClass }${ firstColumnClass }${ secondColumnClass }${ thirdColumnClass }${ ( undefined !== columnsInnerHeight && true === columnsInnerHeight ? ' kt-inner-column-height-full' : '' ) }` );
+		const innerColumnClasses = classnames( {
+			'kt-row-column-wrap': true,
+			[ `kt-has-${ columns }-columns` ]: columns,
+			[ `kt-gutter-${ columnGutter }`]: columnGutter,
+			[ `kt-v-gutter-${ ( collapseGutter ? collapseGutter : 'default' ) }`]: true,
+			[ `kt-row-valign-${ verticalAlignment }`]: verticalAlignment,
+			[ `kt-row-layout-${ layoutClass }` ]: layoutClass,
+			[ `kt-tab-layout-${ tabLayoutClass }` ]: tabLayoutClass,
+			[ `kt-m-colapse-${ collapseOrder }` ]: collapseOrder,
+			[ `kt-mobile-layout-${ mobileLayoutClass }` ]: mobileLayoutClass,
+			[ firstColumnClass ]: firstColumnClass,
+			[ secondColumnClass ]: secondColumnClass,
+			[ thirdColumnClass ]: thirdColumnClass,
+			'kt-inner-column-height-full': ( undefined !== columnsInnerHeight && true === columnsInnerHeight ),
+			'kb-theme-content-width': inheritMaxWidth,
+		} );
 		const renderSliderImages = ( index ) => {
 			let bgSlider;
 			if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {

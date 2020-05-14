@@ -1,40 +1,62 @@
 <wpml-config>
 	<gutenberg-blocks>
-		<gutenberg-block type="kadence/spacer" translate="0"></gutenberg-block>
-		<gutenberg-block type="kadence/rowlayout" translate="0"></gutenberg-block>
-		<gutenberg-block type="kadence/column" translate="0"></gutenberg-block>
-		<gutenberg-block type="kadence/icon" translate="1">
-			<xpath>//div/a/@href</xpath>
-		</gutenberg-block>
-		<gutenberg-block type="kadence/tab" translate="0"></gutenberg-block>
-		<gutenberg-block type="kadence/accordion" translate="0"></gutenberg-block>
-		<gutenberg-block type="kadence/advancedheading" translate="1">
-			<xpath>//div/h1</xpath>
-			<xpath>//div/h2</xpath>
-			<xpath>//div/h3</xpath>
-			<xpath>//div/h4</xpath>
-			<xpath>//div/h5</xpath>
-			<xpath>//div/h6</xpath>
-		</gutenberg-block>
 		<gutenberg-block type="kadence/advancedbtn" translate="1">
 			<xpath>//div/a/span</xpath>
 			<xpath>//div/a/@href</xpath>
 		</gutenberg-block>
+		<gutenberg-block type="kadence/icon" translate="1">
+			<xpath>//div/a/@href</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/advancedheading" translate="1">
+			<xpath>//div//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]</xpath>
+		</gutenberg-block>
 		<gutenberg-block type="kadence/tabs" translate="1">
-			<xpath>//span[@class="kt-title-text"]</xpath>
+			<xpath>//div[@class="kb-tab-titles-wrap"]//span</xpath>
+			<xpath>//div[@class="kt-tab-inner-content-inner"]//p</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/infobox" translate="1">
-			<xpath>//div/h1</xpath>
-			<xpath>//div/h2</xpath>
-			<xpath>//div/h3</xpath>
-			<xpath>//div/h4</xpath>
-			<xpath>//div/h5</xpath>
-			<xpath>//div/h6</xpath>
-			<xpath>//div/p</xpath>
 			<xpath>//div/a/@href</xpath>
+			<xpath>//div[@class="kt-infobox-textcontent"]//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p]</xpath>
+			<xpath>//span[@class="kt-blocks-info-box-learnmore"]</xpath>
 		</gutenberg-block>
 		<gutenberg-block type="kadence/pane" translate="1">
 			<xpath>//span[@class="kt-blocks-accordion-title"]</xpath>
 		</gutenberg-block>
+		<gutenberg-block type="kadence/iconlist" translate="1">
+			<xpath>//li[contains(@class, "kt-svg-icon-list-item-wrap")]//span</xpath>
+			<xpath>//li[contains(@class, "kt-svg-icon-list-item-wrap")]//a/@href</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/testimonials" translate="1">
+			<xpath>//div[@class="kt-testimonial-title-wrap"]//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6 or self::p]</xpath>
+			<xpath>//div[@class="kt-testimonial-content"]</xpath>
+			<xpath>//div[@class="kt-testimonial-name"]</xpath>
+			<xpath>//div[@class="kt-testimonial-occupation"]</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/form" translate="1">
+			<key name="messages">
+				<key name="*">
+					<key name="success"/>
+					<key name="error"/>
+				</key>
+			</key>
+			<key name="redirect"/>
+			<key name="email">
+				<key name="*">
+					<key name="subject"/>
+					<key name="fromName"/>
+				</key>
+			</key>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/label/text()</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/input/@*[name()='data-label' or name()='placeholder' or name()='value']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea/@*[name()='data-label' or name()='placeholder']</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/textarea</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/span</xpath>
+			<xpath>//div[contains(@class, "kadence-blocks-form-field")]/button</xpath>
+		</gutenberg-block>
+		<gutenberg-block type="kadence/spacer" translate="0"/>
+		<gutenberg-block type="kadence/rowlayout" translate="0"/>
+		<gutenberg-block type="kadence/column" translate="0"/>
+		<gutenberg-block type="kadence/tab" translate="0"/>
+		<gutenberg-block type="kadence/accordion" translate="0"/>
 	</gutenberg-blocks>
 </wpml-config>

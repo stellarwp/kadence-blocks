@@ -172,7 +172,7 @@ class Kadence_Blocks_Settings {
 				foreach ( $san_palette as $set ) {
 					$slug = $set['slug'];
 					$color = $set['color'];
-					echo '.has-' . esc_attr( $slug ) . '-color{color:' . esc_attr( $color ) . '}.has-' . esc_attr( $slug ) . '-background-color{background-color:' . esc_attr( $color ) . '}';
+					echo ':root .has-' . esc_attr( $slug ) . '-color{color:' . esc_attr( $color ) . '}:root .has-' . esc_attr( $slug ) . '-background-color{background-color:' . esc_attr( $color ) . '}';
 				}
 				echo '</style>';
 			}

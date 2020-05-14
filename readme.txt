@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
-Tested up to: 5.4.0
-Stable tag: 1.8.1
+Tested up to: 5.4.1
+Stable tag: 1.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.8.2 =
+* Update: New toggle for row inner content to follow theme settings.
+* Update: WPML intergration.
+* Update: Allow row defaults to use theme width.
+* Update: Allow padding unit setting in row defaults.
+* Fix: Accordion issue with margin.
+* Fix: Accordion issue when linking to custom anchor.
+* Fix: Testimonial issue with boxshadow cleared.
 
 = 1.8.1 =
 * Update: Few tweaks for Gallery Block CSS

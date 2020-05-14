@@ -166,7 +166,7 @@ class KadenceRowLayout extends Component {
 		} );
 	};
 	render() {
-		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -3170,31 +3170,40 @@ class KadenceRowLayout extends Component {
 									min={ 0 }
 									max={ heightMax }
 								/>
-								<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
-									{ map( widthTypes, ( { name, key } ) => (
-										<Button
-											key={ key }
-											className="kt-size-btn"
-											isSmall
-											isPrimary={ maxWidthUnit === key }
-											aria-pressed={ maxWidthUnit === key }
-											onClick={ () => setAttributes( { maxWidthUnit: key } ) }
-										>
-											{ name }
-										</Button>
-									) ) }
-								</ButtonGroup>
-								<RangeControl
-									label={ __( 'Content Max Width' ) }
-									value={ maxWidth }
-									onChange={ ( value ) => {
-										setAttributes( {
-											maxWidth: value,
-										} );
-									} }
-									min={ 0 }
-									max={ widthMax }
+								<ToggleControl
+									label={ __( 'Content Max Width Inherit from Theme?' ) }
+									checked={ ( undefined !== inheritMaxWidth ? inheritMaxWidth : false ) }
+									onChange={ ( value ) => setAttributes( { inheritMaxWidth: value } ) }
 								/>
+								{ inheritMaxWidth !== true && (
+									<Fragment>
+										<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
+											{ map( widthTypes, ( { name, key } ) => (
+												<Button
+													key={ key }
+													className="kt-size-btn"
+													isSmall
+													isPrimary={ maxWidthUnit === key }
+													aria-pressed={ maxWidthUnit === key }
+													onClick={ () => setAttributes( { maxWidthUnit: key } ) }
+												>
+													{ name }
+												</Button>
+											) ) }
+										</ButtonGroup>
+										<RangeControl
+											label={ __( 'Content Max Width' ) }
+											value={ maxWidth }
+											onChange={ ( value ) => {
+												setAttributes( {
+													maxWidth: value,
+												} );
+											} }
+											min={ 0 }
+											max={ widthMax }
+										/>
+									</Fragment>
+								) }
 								<ToggleControl
 									label={ __( 'Inner Column Height 100%' ) }
 									checked={ ( undefined !== columnsInnerHeight ? columnsInnerHeight : false ) }
@@ -3391,8 +3400,8 @@ class KadenceRowLayout extends Component {
 						</Fragment>
 					) }
 					{ colLayout && (
-						<div className="innerblocks-wrap" id={ `kt-layout-id${ uniqueID }` } style={ {
-							maxWidth: maxWidth + maxWidthUnit,
+						<div className={ `innerblocks-wrap${ ( inheritMaxWidth ? ' kb-theme-content-width' : '' ) }` } id={ `kt-layout-id${ uniqueID }` } style={ {
+							maxWidth: ! inheritMaxWidth ? maxWidth + maxWidthUnit : undefined,
 							paddingLeft: leftPadding + ( paddingUnit ? paddingUnit : 'px' ),
 							paddingRight: rightPadding + ( paddingUnit ? paddingUnit : 'px' ),
 						} }>

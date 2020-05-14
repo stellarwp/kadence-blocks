@@ -75,9 +75,20 @@ class KadenceRowLayoutDefault extends Component {
 			{ key: 'vh', name: __( 'vh' ) },
 			{ key: 'rem', name: __( 'rem' ) },
 		];
+		const paddingTypes = [
+			{ key: 'px', name: 'px' },
+			{ key: 'em', name: 'em' },
+			{ key: '%', name: '%' },
+			{ key: 'vw', name: 'vw' },
+			{ key: 'vh', name: 'vh' },
+			{ key: 'rem', name: 'rem' },
+		];
 		const marginMin = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' || ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'rem' ? 0.1 : 1 );
 		const marginMax = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' || ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'rem' ? 12 : 100 );
 		const marginStep = ( ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'em' || ( undefined !== rowConfig.marginType ? rowConfig.marginType : 'px' ) === 'rem' ? 0.1 : 1 );
+		const paddingMin = ( ( undefined !== rowConfig.paddingUnit ? rowConfig.paddingUnit : 'px' ) === 'em' || ( undefined !== rowConfig.paddingUnit ? rowConfig.paddingUnit : 'px' ) === 'rem' ? 0 : 0 );
+		const paddingMax = ( ( undefined !== rowConfig.paddingUnit ? rowConfig.paddingUnit : 'px' ) === 'em' || ( undefined !== rowConfig.paddingUnit ? rowConfig.paddingUnit : 'px' ) === 'rem' ? 24 : 500 );
+		const paddingStep = ( ( undefined !== rowConfig.paddingUnit ? rowConfig.paddingUnit : 'px' ) === 'em' || ( undefined !== rowConfig.paddingUnit ? rowConfig.paddingUnit : 'px' ) === 'rem' ? 0.1 : 1 );
 		const widthTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: '%', name: __( '%' ) },
@@ -86,38 +97,56 @@ class KadenceRowLayoutDefault extends Component {
 		const widthMax = ( ( undefined !== rowConfig.maxWidthUnit ? rowConfig.maxWidthUnit : 'px' ) === 'px' ? 2000 : 100 );
 		const mobileControls = (
 			<Fragment>
-				<h2>{ __( 'Mobile Padding (px)' ) }</h2>
+				<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Padding Type', 'kadence-blocks' ) }>
+					{ map( paddingTypes, ( { name, key } ) => (
+						<Button
+							key={ key }
+							className="kt-size-btn"
+							isSmall
+							isPrimary={ undefined !== rowConfig.paddingUnit && rowConfig.paddingUnit === key }
+							aria-pressed={ undefined !== rowConfig.paddingUnit && rowConfig.paddingUnit === key }
+							onClick={ () => this.saveConfigState( 'paddingUnit', key ) }
+						>
+							{ name }
+						</Button>
+					) ) }
+				</ButtonGroup>
+				<h2>{ __( 'Mobile Padding' ) }</h2>
 				<RangeControl
 					label={ icons.outlinetop }
 					value={ ( undefined !== rowConfig.topPaddingM ? rowConfig.topPaddingM : '' ) }
 					className="kt-icon-rangecontrol kt-top-padding"
 					onChange={ ( value ) => this.saveConfigState( 'topPaddingM', value ) }
-					min={ 0 }
-					max={ 500 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<RangeControl
 					label={ icons.outlineright }
 					value={ ( undefined !== rowConfig.rightPaddingM ? rowConfig.rightPaddingM : '' ) }
 					className="kt-icon-rangecontrol kt-right-padding"
 					onChange={ ( value ) => this.saveConfigState( 'rightPaddingM', value ) }
-					min={ 0 }
-					max={ 500 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<RangeControl
 					label={ icons.outlinebottom }
 					value={ ( undefined !== rowConfig.bottomPaddingM ? rowConfig.bottomPaddingM : '' ) }
 					className="kt-icon-rangecontrol kt-bottom-padding"
 					onChange={ ( value ) => this.saveConfigState( 'bottomPaddingM', value ) }
-					min={ 0 }
-					max={ 500 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<RangeControl
 					label={ icons.outlineleft }
 					value={ ( undefined !== rowConfig.leftPaddingM ? rowConfig.leftPaddingM : '' ) }
 					className="kt-icon-rangecontrol kt-left-padding"
 					onChange={ ( value ) => this.saveConfigState( 'leftPaddingM', value ) }
-					min={ 0 }
-					max={ 500 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
 					{ map( marginTypes, ( { name, key } ) => (
@@ -156,13 +185,27 @@ class KadenceRowLayoutDefault extends Component {
 		);
 		const tabletControls = (
 			<Fragment>
+				<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Padding Type', 'kadence-blocks' ) }>
+					{ map( paddingTypes, ( { name, key } ) => (
+						<Button
+							key={ key }
+							className="kt-size-btn"
+							isSmall
+							isPrimary={ undefined !== rowConfig.paddingUnit && rowConfig.paddingUnit === key }
+							aria-pressed={ undefined !== rowConfig.paddingUnit && rowConfig.paddingUnit === key }
+							onClick={ () => this.saveConfigState( 'paddingUnit', key ) }
+						>
+							{ name }
+						</Button>
+					) ) }
+				</ButtonGroup>
 				<MeasurementControls
-					label={ __( 'Tablet Padding (px)' ) }
+					label={ __( 'Tablet Padding' ) }
 					measurement={ ( undefined !== rowConfig.tabletPadding ? rowConfig.tabletPadding : [ '', '', '', '' ] ) }
 					onChange={ ( value ) => this.saveConfigState( 'tabletPadding', value ) }
-					min={ 0 }
-					max={ 500 }
-					step={ 1 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
 					{ map( marginTypes, ( { name, key } ) => (
@@ -201,38 +244,56 @@ class KadenceRowLayoutDefault extends Component {
 		);
 		const deskControls = (
 			<Fragment>
-				<h2>{ __( 'Desktop Padding (px)' ) }</h2>
+				<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Padding Type', 'kadence-blocks' ) }>
+					{ map( paddingTypes, ( { name, key } ) => (
+						<Button
+							key={ key }
+							className="kt-size-btn"
+							isSmall
+							isPrimary={ undefined !== rowConfig.paddingUnit && rowConfig.paddingUnit === key }
+							aria-pressed={ undefined !== rowConfig.paddingUnit && rowConfig.paddingUnit === key }
+							onClick={ () => this.saveConfigState( 'paddingUnit', key ) }
+						>
+							{ name }
+						</Button>
+					) ) }
+				</ButtonGroup>
+				<h2>{ __( 'Desktop Padding' ) }</h2>
 				<RangeControl
 					label={ icons.outlinetop }
 					value={ ( undefined !== rowConfig.topPadding ? rowConfig.topPadding : 25 ) }
 					className="kt-icon-rangecontrol"
 					onChange={ ( value ) => this.saveConfigState( 'topPadding', value ) }
-					min={ 0 }
-					max={ 500 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<RangeControl
 					label={ icons.outlineright }
 					value={ ( undefined !== rowConfig.rightPadding ? rowConfig.rightPadding : '' ) }
 					className="kt-icon-rangecontrol"
 					onChange={ ( value ) => this.saveConfigState( 'rightPadding', value ) }
-					min={ 0 }
-					max={ 500 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<RangeControl
 					label={ icons.outlinebottom }
 					value={ ( undefined !== rowConfig.bottomPadding ? rowConfig.bottomPadding : 25 ) }
 					className="kt-icon-rangecontrol"
 					onChange={ ( value ) => this.saveConfigState( 'bottomPadding', value ) }
-					min={ 0 }
-					max={ 500 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<RangeControl
 					label={ icons.outlineleft }
 					value={ ( undefined !== rowConfig.leftPadding ? rowConfig.leftPadding : '' ) }
 					className="kt-icon-rangecontrol"
 					onChange={ ( value ) => this.saveConfigState( 'leftPadding', value ) }
-					min={ 0 }
-					max={ 500 }
+					min={ paddingMin }
+					max={ paddingMax }
+					step={ paddingStep }
 				/>
 				<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type' ) }>
 					{ map( marginTypes, ( { name, key } ) => (
@@ -391,27 +452,36 @@ class KadenceRowLayoutDefault extends Component {
 								] }
 								onChange={ ( value ) => this.saveConfigState( 'htmlTag', value ) }
 							/>
-							<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
-								{ map( widthTypes, ( { name, key } ) => (
-									<Button
-										key={ key }
-										className="kt-size-btn"
-										isSmall
-										isPrimary={ ( undefined !== rowConfig.maxWidthUnit ? rowConfig.maxWidthUnit : 'px' ) === key }
-										aria-pressed={ ( undefined !== rowConfig.maxWidthUnit ? rowConfig.maxWidthUnit : 'px' ) === key }
-										onClick={ () => this.saveConfigState( 'maxWidthUnit', key ) }
-									>
-										{ name }
-									</Button>
-								) ) }
-							</ButtonGroup>
-							<RangeControl
-								label={ __( 'Content Max Width' ) }
-								value={ ( undefined !== rowConfig.maxWidth ? rowConfig.maxWidth : '' ) }
-								onChange={ ( value ) => this.saveConfigState( 'maxWidth', value ) }
-								min={ 0 }
-								max={ widthMax }
+							<ToggleControl
+								label={ __( 'Content Max Width Inherit from Theme?' ) }
+								checked={ ( undefined !== rowConfig.inheritMaxWidth ? rowConfig.inheritMaxWidth : false ) }
+								onChange={ ( value ) => this.saveConfigState( 'inheritMaxWidth', value ) }
 							/>
+							{ undefined !== rowConfig.inheritMaxWidth && rowConfig.inheritMaxWidth !== true && (
+								<Fragment>
+									<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
+										{ map( widthTypes, ( { name, key } ) => (
+											<Button
+												key={ key }
+												className="kt-size-btn"
+												isSmall
+												isPrimary={ ( undefined !== rowConfig.maxWidthUnit ? rowConfig.maxWidthUnit : 'px' ) === key }
+												aria-pressed={ ( undefined !== rowConfig.maxWidthUnit ? rowConfig.maxWidthUnit : 'px' ) === key }
+												onClick={ () => this.saveConfigState( 'maxWidthUnit', key ) }
+											>
+												{ name }
+											</Button>
+										) ) }
+									</ButtonGroup>
+									<RangeControl
+										label={ __( 'Content Max Width' ) }
+										value={ ( undefined !== rowConfig.maxWidth ? rowConfig.maxWidth : '' ) }
+										onChange={ ( value ) => this.saveConfigState( 'maxWidth', value ) }
+										min={ 0 }
+										max={ widthMax }
+									/>
+								</Fragment>
+							) }
 							<ToggleControl
 								label={ __( 'Inner Column Height 100%' ) }
 								checked={ ( undefined !== rowConfig.columnsInnerHeight ? rowConfig.columnsInnerHeight : false ) }
