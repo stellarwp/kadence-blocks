@@ -396,6 +396,7 @@ class KadenceTestimonials extends Component {
 			arrows: ( arrowStyle === 'none' ? false : true ),
 			infinite: true,
 			speed: transSpeed,
+			draggable: false,
 			autoplaySpeed: autoSpeed,
 			autoplay: autoPlay,
 			slidesToShow: columns[ 0 ],

@@ -87,6 +87,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.8.3 =
+* Update: Fix issue in safari not being able to edit testimonials.
+
 = 1.8.2 =
 * Update: New toggle for row inner content to follow theme settings.
 * Update: WPML intergration.
