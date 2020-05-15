@@ -268,14 +268,14 @@ function () {
     this.settings = _extends({}, defaults, options); // Setting getting elements
 
     this.container = container; // Selecting children of the current accordion instance
-	// Kadence Edit
-	var panes = Array.from(this.container.children);
-	var children = [];
-	Array.from( panes ).forEach(function ( pane ) {
-		Array.from( pane.children ).forEach(function ( item ) {
-			children.push( item );
-		});
-	});
+	  // Kadence Edit
+    var panes = Array.from(this.container.children);
+    var children = [];
+    Array.from( panes ).forEach(function ( pane ) {
+      Array.from( pane.children ).forEach(function ( item ) {
+        children.push( item );
+      });
+    });
     //var children = Array.from(this.container.children); // Since the Accordions header button is nested inside an element with class
     // of `badger-accordion__header` it is a grandchild of the accordion instance.
     // In order to have nested accordions we need each to only get all the button
@@ -286,15 +286,20 @@ function () {
     }); // Creating an array of all DOM nodes that are Accordion headers
     this.headers = headerParent.reduce(function (acc, header) {
       var _ref;
-
       // Gets all the elements that have the headerClass
       var a = Array.from(header.children).filter(function (child) {
         return child.classList.contains(_this2.settings.headerClass.substr(1));
       }); // Merges the current `badger-accordion__header` accordion triggers
+      if( ! a.length && header.children[0] && header.children[0].children && header.children[0].children.length ) {
+        a = Array.from(header.children[0].children).filter(function (child) {
+          return child.classList.contains(_this2.settings.headerClass.substr(1));
+        });
+      }
       // with all the others.
       acc = (_ref = []).concat.apply(_ref, _toConsumableArray(acc).concat([a]));
       return acc;
     }, []); // Creates an array of all panel elements for this instance of the accordion
+
     this.panels = children.filter(function (panel) {
       return panel.classList.contains(_this2.settings.panelClass.substr(1));
     });
@@ -819,10 +824,9 @@ function () {
     key: "_setupPanels",
     value: function _setupPanels() {
       var _this13 = this;
-
       this.panels.forEach(function (panel, index) {
-        panel.setAttribute('id', "kt-accordion-panel-".concat(_this13.ids[index].id));
-        panel.setAttribute('aria-labelledby', "kt-accordion-header-".concat(_this13.ids[index].id));
+        panel.setAttribute( 'id', 'kt-accordion-panel-'.concat(_this13.ids[index].id) );
+        panel.setAttribute( 'aria-labelledby', 'kt-accordion-header-'.concat(_this13.ids[index].id) );
 
         if (_this13.settings.roles === true || _this13.settings.roles.region !== false) {
           _this13._setRole('region', panel);
@@ -889,10 +893,12 @@ for (var i = 0, len = accordionsArray.length; i < len; i++) {
 						var child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
 						if ( ! child.classList.contains( 'kt-accordion-panel-active' ) ) {
 							child.click();
-						}
-						window.setTimeout(function() {
-							kt_accordion_scrollTo( document.body, document.getElementById( id ).offsetTop, 600 );
-						}, 350 );
+            }
+            if ( e.type && e.type === 'DOMContentLoaded' ) {
+              window.setTimeout(function() {
+                kt_accordion_scrollTo( document.body, document.getElementById( id ).offsetTop, 600 );
+              }, 350 );
+            }
 					}
 				}
 			}
