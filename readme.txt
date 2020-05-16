@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.4.1
-Stable tag: 1.8.2
+Stable tag: 1.8.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -90,7 +90,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 1.8.3 =
 * Update: Fix issue in safari not being able to edit testimonials.
 * Update: Tweak js for accordion inner page link.
-** Fix: Issue with table of contents plus plugin.
+* Fix: Issue with table of contents plus plugin.
+* Update: When switching media in infor box try to keep the same media size settings.
 
 = 1.8.2 =
 * Update: New toggle for row inner content to follow theme settings.

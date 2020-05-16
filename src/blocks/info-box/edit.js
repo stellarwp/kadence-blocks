@@ -985,7 +985,36 @@ class KadenceInfoBox extends Component {
 		const ALLOWED_MEDIA_TYPES = [ 'image' ];
 		const onSelectImage = media => {
 			let url;
-			const size = ( mediaImage[ 0 ] && mediaImage[ 0 ].size && '' !== mediaImage[ 0 ].size ? mediaImage[ 0 ].size : 'full' );
+			let itemSize;
+			if ( mediaImage[ 0 ] && mediaImage[ 0 ].width && mediaImage[ 0 ].height ) {
+				const sizes = ( undefined !== media.sizes ? media.sizes : [] );
+				const imgSizes = Object.keys( sizes ).map( ( item ) => {
+					return { slug: item, name: item };
+				} );
+				map( imgSizes, ( { name, slug } ) => {
+					const type = get( media, [ 'mime_type' ] );
+					if ( 'image/svg+xml' === type ) {
+						return null;
+					}
+					const sizeUrl = get( media, [ 'sizes', slug, 'url' ] );
+					if ( ! sizeUrl ) {
+						return null;
+					}
+					const sizeWidth = get( media, [ 'sizes', slug, 'width' ] );
+					if ( ! sizeWidth ) {
+						return null;
+					}
+					const sizeHeight = get( media, [ 'sizes', slug, 'height' ] );
+					if ( ! sizeHeight ) {
+						return null;
+					}
+					if ( sizeHeight === mediaImage[ 0 ].height && sizeWidth === mediaImage[ 0 ].width ) {
+						itemSize = slug;
+						return null;
+					}
+				} );
+			}
+			const size = ( itemSize && '' !== itemSize ? itemSize : 'full' );
 			if ( size !== 'full' ) {
 				url =
 				get( media, [ 'sizes', size, 'url' ] ) ||
@@ -998,13 +1027,14 @@ class KadenceInfoBox extends Component {
 			}
 			const width = get( media, [ 'sizes', size, 'width' ] ) || get( media, [ 'media_details', 'sizes', size, 'width' ] ) || get( media, [ 'width' ] ) || get( media, [ 'media_details', 'width' ] );
 			const height = get( media, [ 'sizes', size, 'height' ] ) || get( media, [ 'media_details', 'sizes', size, 'height' ] ) || get( media, [ 'height' ] ) || get( media, [ 'media_details', 'height' ] );
+			const maxwidth = ( mediaImage[ 0 ] && mediaImage[ 0 ].maxWidth ? mediaImage[ 0 ].maxWidth : media.width );
 			saveMediaImage( {
 				id: media.id,
 				url: url || media.url,
 				alt: media.alt,
 				width: width,
 				height: height,
-				maxWidth: ( media.width && media.width < 800 ? media.width : 50 ),
+				maxWidth: ( maxwidth ? maxwidth : 50 ),
 				subtype: media.subtype,
 			} );
 		};
