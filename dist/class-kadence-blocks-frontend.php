@@ -767,9 +767,9 @@ class Kadence_Blocks_Frontend {
 				wp_enqueue_script( 'kadence-blocks-form' );
 				if ( isset( $attributes['recaptcha'] ) && $attributes['recaptcha'] ) {
 					if ( isset( $attributes['recaptchaVersion'] ) && 'v2' === $attributes['recaptchaVersion'] ) {
-						wp_enqueue_script( 'google-recaptcha-v2' );
+						wp_enqueue_script( 'kadence-blocks-google-recaptcha-v2' );
 					} else {
-						wp_enqueue_script( 'google-recaptcha-v3' );
+						wp_enqueue_script( 'kadence-blocks-google-recaptcha-v3' );
 					}
 				}
 				$css = $this->blocks_form_array( $attributes, $unique_id );
@@ -951,12 +951,12 @@ class Kadence_Blocks_Frontend {
 		if ( ! $recaptcha_site_key ) {
 			$recaptcha_site_key = 'missingkey';
 		}
-		wp_register_script( 'google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ), array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ), array(), KADENCE_BLOCKS_VERSION, true );
 		$recaptcha_script = "grecaptcha.ready(function () { var recaptchaResponse = document.getElementById('kb_recaptcha_response'); if ( recaptchaResponse ) { grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { recaptchaResponse.value = token; }); } var kb_recaptcha_inputs = document.getElementsByClassName('kb_recaptcha_response'); if ( ! kb_recaptcha_inputs.length ) { return; } for (var i = 0; i < kb_recaptcha_inputs.length; i++) { const e = i; grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { kb_recaptcha_inputs[e].setAttribute('value', token); }); } });";
-		wp_add_inline_script( 'google-recaptcha-v3', $recaptcha_script, 'after' );
+		wp_add_inline_script( 'kadence-blocks-google-recaptcha-v3', $recaptcha_script, 'after' );
 		//?render=explicit&onload=kbOnloadV2Callback
-		wp_register_script( 'google-recaptcha-v2', 'https://www.google.com/recaptcha/api.js?render=explicit&onload=kbOnloadV2Callback', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
-		//wp_register_script( 'kadence-blocks-recaptcha-v2-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form-recaptcha-v2.js', array( 'jquery', 'google-recaptcha-v2' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-google-recaptcha-v2', 'https://www.google.com/recaptcha/api.js?render=explicit&onload=kbOnloadV2Callback', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
+		//wp_register_script( 'kadence-blocks-recaptcha-v2-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form-recaptcha-v2.js', array( 'jquery', 'kadence-blocks-google-recaptcha-v2' ), KADENCE_BLOCKS_VERSION, true );
 		// wp_localize_script(
 		// 	'kadence-blocks-recaptcha-v2-form',
 		// 	'kadence_blocks_recaptcha_v2_form_params',
@@ -965,7 +965,7 @@ class Kadence_Blocks_Frontend {
 		// 	)
 		// );
 		$recaptcha_v2_script = "var kbOnloadV2Callback = function(){jQuery( '.wp-block-kadence-form' ).find( '.kadence-blocks-g-recaptcha-v2' ).each( function() {grecaptcha.render( jQuery( this ).attr( 'id' ), {'sitekey' : '" . esc_attr( $recaptcha_site_key ) . "',});});}";
-		wp_add_inline_script( 'google-recaptcha-v2', $recaptcha_v2_script, 'before' );
+		wp_add_inline_script( 'kadence-blocks-google-recaptcha-v2', $recaptcha_v2_script, 'before' );
 
 		wp_register_script( 'kadence-blocks-parallax-js', KADENCE_BLOCKS_URL . 'dist/kt-init-parallax.js', array( 'jarallax' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'dist/vendor/kt-blocks-slick.css', array(), KADENCE_BLOCKS_VERSION );
@@ -1475,9 +1475,9 @@ class Kadence_Blocks_Frontend {
 		wp_enqueue_script( 'kadence-blocks-form' );
 		if ( isset( $attr['recaptcha'] ) && $attr['recaptcha'] ) {
 			if ( isset( $attr['recaptchaVersion'] ) && 'v2' === $attr['recaptchaVersion'] ) {
-				wp_enqueue_script( 'google-recaptcha-v2' );
+				wp_enqueue_script( 'kadence-blocks-google-recaptcha-v2' );
 			} else {
-				wp_enqueue_script( 'google-recaptcha-v3' );
+				wp_enqueue_script( 'kadence-blocks-google-recaptcha-v3' );
 			}
 		}
 		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
