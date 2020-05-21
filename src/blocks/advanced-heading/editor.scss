@@ -19,7 +19,8 @@
         margin: 0 auto;
         padding: 3px;
         width: auto;
-        height: 36px;
+        height: auto;
+        min-height: 36px;
         border: 0;
     }
     .kb-colors-selector__icon-container {
@@ -105,7 +106,7 @@
     width: 100%;
 }
 .kt-font-family-icon svg path {
-	fill: #555d66;
+    fill: currentColor;
 }
 .components-popover.kt-popover-font-family .components-popover__content {
 	min-height: 240px;

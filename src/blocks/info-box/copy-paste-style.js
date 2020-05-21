@@ -105,7 +105,7 @@ class InfoBoxStyleCopyPaste extends Component {
 			if ( blockAttributes.containerBorderWidth ) {
 				copyStyles.containerBorderWidth = blockAttributes.containerBorderWidth;
 			}
-			if ( blockAttributes.containerBorderRadius ) {
+			if ( undefined !== blockAttributes.containerBorderRadius && ! isNaN( blockAttributes.containerBorderRadius ) ) {
 				copyStyles.containerBorderRadius = blockAttributes.containerBorderRadius;
 			}
 			if ( blockAttributes.containerPadding ) {

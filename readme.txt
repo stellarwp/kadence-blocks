@@ -87,6 +87,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.8.4 =
+* Fix: issue with icon list block.
+* Update: Padding Control for row layout block.
+* Update: Copy Styles in infobox.
+
 = 1.8.3 =
 * Update: Fix issue in safari not being able to edit testimonials.
 * Update: Tweak js for accordion inner page link.
