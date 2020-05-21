@@ -58,6 +58,7 @@ class KadenceConfig extends Component {
 		this.state = {
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			controls: applyFilters( 'kadence.block_controls_sidebar', [] ),
+			blocks: applyFilters( 'kadence.block_blocks_sidebar', [] ),
 		};
 	}
 	render() {
@@ -151,11 +152,14 @@ class KadenceConfig extends Component {
 									<KadenceGallerySettings />
 								) }
 							</div>
-							{ map( this.state.controls, ( { Control } ) => (
+							{ map( this.state.blocks, ( { Control } ) => (
 								<Control />
 							) ) }
 							<h3>{ __( 'Components' ) }</h3>
 							<KadenceFontFamily />
+							{ map( this.state.controls, ( { Control } ) => (
+								<Control />
+							) ) }
 						</div>
 					</PanelBody>
 					{ ( ( undefined === kadence_blocks_params ) || ( undefined !== kadence_blocks_params && undefined === kadence_blocks_params.editor_width ) || ( undefined !== kadence_blocks_params && undefined !== kadence_blocks_params.editor_width && kadence_blocks_params.editor_width ) ) && (
