@@ -473,7 +473,7 @@ class KadenceAdvancedHeading extends Component {
 		return (
 			<Fragment>
 				<style>
-					{ `.kt-adv-heading${ uniqueID } mark {
+					{ `.kt-adv-heading${ uniqueID } mark, .kt-adv-heading${ uniqueID }.rich-text:focus mark[data-rich-text-format-boundary] {
 						color: ${ KadenceColorOutput( markColor ) };
 						background: ${ ( markBG ? markBGString : 'transparent' ) };
 						font-weight: ${ ( markTypography && markFontWeight ? markFontWeight : 'inherit' ) };
