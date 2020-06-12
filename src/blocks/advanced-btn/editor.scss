@@ -286,6 +286,7 @@
 // Item
 .wp-block-kadence-advancedbtn .btn-area-wrap {
     position: relative;
+    vertical-align: middle;
     display:inline-block;
 }
 [data-type="kadence/advancedbtn"].is-selected .wp-block-kadence-advancedbtn, [data-type="kadence/advancedbtn"].is-typing .wp-block-kadence-advancedbtn {
