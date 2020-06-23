@@ -4,6 +4,45 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kadence-radio-container-control {
+    display: flex;
+}
+
+.kadence-radio-container-control.components-button-group .components-button {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    font-style: normal;
+    text-transform: uppercase;
+    height: 40px;
+	line-height: 1.2;
+	border: 1px solid #CBD5E0;
+    border-radius: 2px;
+    background: transparent;
+    color: #4A5568;
+	padding: 4px;
+	box-shadow: none;
+    white-space: normal;
+}
+.kadence-radio-container-control.components-button-group .components-button:not(:first-child) {
+    margin-left: 4px;
+}
+.kadence-radio-container-control.components-button-group .components-button.is-primary {
+	border-color: #007cba;
+	background: #007cba;
+	color: #fff;
+	box-shadow: none;
+}
+.kadence-radio-buttons-wrap {
+    margin-bottom: 1.4em;
+}
+.kadence-radio-buttons-wrap h2 {
+    margin: 1.4em 0 0.6em;
+    font-weight: 500;
+}
  .kb-prebuilt-header {
     position: absolute;
     display: flex;

@@ -914,6 +914,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/node_modules/@wordpress/icons/build-module/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/@wordpress/icons/build-module/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/node_modules/classnames/index.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1024,6 +1035,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/node_modules/react-dom/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/react-dom/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/node_modules/react-input-autosize/lib/AutosizeInput.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1072,6 +1094,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/node_modules/react-transition-group/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/node_modules/react/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/react/index-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
@@ -1144,6 +1177,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/advanced-inline-background-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/advanced-inline-background-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/advanced-inline-pop-color-control.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1151,6 +1195,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/advanced-inline-pop-color-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/advanced-pop-background-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/advanced-pop-background-control-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
@@ -2372,6 +2427,39 @@
 		"oF": 1,
 		"oS": 0,
 		"sct": 1
+		},
+	"/src/kadence-focal-picker.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/kadence-focal-picker-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/kadence-media-placeholder.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/kadence-media-placeholder-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/kadence-radio-buttons.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/kadence-radio-buttons-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
 		},
 	"/src/measurement-control.js": {
 		"bF": 0,

@@ -462,5 +462,17 @@ const attributes = {
 		type: 'bool',
 		default: false,
 	},
+	minHeightTablet: {
+		type: 'number',
+		default: '',
+	},
+	minHeightMobile: {
+		type: 'number',
+		default: '',
+	},
+	bgColorClass: {
+		type: 'string',
+		default: '',
+	},
 };
 export default attributes;

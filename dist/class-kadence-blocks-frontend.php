@@ -4492,8 +4492,10 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['bottomMargin'] ) ) {
 				$css .= 'margin-bottom:' . $attr['bottomMargin'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px') . ';';
 			}
-			if ( isset( $attr['bgColor'] ) ) {
-				$css .= 'background-color:' . $attr['bgColor'] . ';';
+			if ( isset( $attr['bgColor'] ) && !empty( $attr['bgColor'] ) ) {
+				if ( isset( $attr['bgColorClass'] ) && empty( $attr['bgColorClass'] ) || ! isset( $attr['bgColorClass'] ) ) {
+					$css .= 'background-color:' . $this->kadence_color_output( $attr['bgColor'] ) . ';';
+				}
 			}
 			if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && ( ! isset( $attr['backgroundSettingTab'] ) || empty( $attr['backgroundSettingTab'] ) || 'normal' === $attr['backgroundSettingTab'] ) ) {
 				if ( isset( $attr['bgImgAttachment'] ) ) {

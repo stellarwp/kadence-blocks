@@ -377,7 +377,7 @@ class GalleryEdit extends Component {
 			} else if ( 7 === value ) {
 				columnArray = [ 7, 7, 7, 5, 5, 4 ];
 			} else if ( 8 === value ) {
-				columnArray = [ 8, 4, 4, 6, 4, 4 ];
+				columnArray = [ 8, 8, 8, 6, 4, 4 ];
 			}
 			setAttributes( { columns: columnArray } );
 		};
