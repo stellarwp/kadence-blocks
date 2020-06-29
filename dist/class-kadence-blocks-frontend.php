@@ -1042,6 +1042,9 @@ class Kadence_Blocks_Frontend {
 		if ( ! empty( $subsets ) ) {
 			$link .= '&amp;subset=' . implode( ',', $subsets );
 		}
+		if ( apply_filters( 'kadence_display_swap_google_fonts', true ) ) {
+			$link .= '&amp;display=swap';
+		}
 		echo '<link href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
 
 	}

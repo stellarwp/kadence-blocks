@@ -1802,11 +1802,12 @@ class KadenceRowLayout extends Component {
 														checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
 														onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
 													/>
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Background Color', 'kadence-blocks' ) }
 														colorValue={ ( bgColor ? bgColor : '' ) }
 														colorDefault={ '' }
 														onColorChange={ value => setAttributes( { bgColor: value } ) }
+														onColorClassChange={ value => setAttributes( { bgColorClass: value } ) }
 													/>
 													<MediaUpload
 														onSelect={ onSelectImage }
@@ -3375,7 +3376,7 @@ class KadenceRowLayout extends Component {
 				} }>
 					{ ( 'slider' !== backgroundSettingTab && 'video' !== backgroundSettingTab ) && (
 						<div className={ `kt-row-layout-background${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
-							backgroundColor: ( bgColor ? bgColor : undefined ),
+							backgroundColor: ( bgColor ? KadenceColorOutput( bgColor ) : undefined ),
 							backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
 							backgroundSize: bgImgSize,
 							backgroundPosition: bgImgPosition,
@@ -3396,7 +3397,7 @@ class KadenceRowLayout extends Component {
 						</div>
 					) }
 					{ ( 'video' === backgroundSettingTab ) && (
-						<div className={ 'kb-blocks-bg-video-container' } style={ { backgroundColor: ( bgColor ? bgColor : undefined ) } }>
+						<div className={ 'kb-blocks-bg-video-container' } style={ { backgroundColor: ( bgColor ? KadenceColorOutput( bgColor ) : undefined ) } }>
 							{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
 								<video className="kb-blocks-bg-video" playsinline="" loop="" src={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : undefined ) }></video>
 							) }

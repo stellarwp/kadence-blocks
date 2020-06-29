@@ -90,13 +90,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 1.8.6 =
 ** How to Block: https://secure.helpscout.net/conversation/1180126020/2615?folderId=2070869
 ** Spacing between buttons (add responsive controls)
-** Update: Button color settings.
+** Update: Button color settings sync with global colors.
 ** Update: Info box you can now use a number.
-** Update: Row Background Color settings
+** Update: Row Background Color settings sync with global colors.
 ** Add: Responsive visibility settings to row layout.
 ** Add: Advanced heading Copy and Paste Styling.
 ** Add: Button Copy and Paste styling.
 ** Add: Responsive controls for min height.
+** Add: Mailer Lite.
+** Add: Checkbox to forms.
+** Add: UPload to forms.
 
 = 1.8.5 =
 * Fix: Update not showing.

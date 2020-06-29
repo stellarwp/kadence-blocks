@@ -47,6 +47,7 @@ class AdvancedPopColorControl extends Component {
 			colors: [],
 			classSat: 'first',
 			currentColor: '',
+			inherit: false,
 			currentOpacity: this.props.opacityValue !== undefined ? this.props.opacityValue : 1,
 			isPalette: ( ( isKadenceT && this.props.colorValue && this.props.colorValue.startsWith( 'palette' ) ) || ( isKadenceT && this.props.colorDefault && this.props.colorDefault.startsWith( 'palette' ) ) ? true : false ),
 		};
@@ -171,7 +172,7 @@ class AdvancedPopColorControl extends Component {
 							<Tooltip text={ __( 'Select Color' ) }>
 								<Button className={ `kt-color-icon-indicate ${ ( this.state.alpha ? 'kt-has-alpha' : 'kt-no-alpha' ) }` } onClick={ toggleClose }>
 									<ColorIndicator className="kt-advanced-color-indicate" colorValue={ currentColorString } />
-									{ '' === currentColorString && (
+									{ '' === currentColorString && this.state.inherit && (
 										<span className="color-indicator-icon">{ cIcons.inherit }</span>
 									) }
 									{ this.state.isPalette && (
@@ -184,7 +185,7 @@ class AdvancedPopColorControl extends Component {
 							<Tooltip text={ __( 'Select Color' ) }>
 								<Button className={ `kt-color-icon-indicate ${ ( this.state.alpha ? 'kt-has-alpha' : 'kt-no-alpha' ) }` } onClick={ toggleVisible }>
 									<ColorIndicator className="kt-advanced-color-indicate" colorValue={ currentColorString } />
-									{ '' === currentColorString && (
+									{ '' === currentColorString && this.state.inherit && (
 										<span className="color-indicator-icon">{ cIcons.inherit }</span>
 									) }
 									{ this.state.isPalette && (
