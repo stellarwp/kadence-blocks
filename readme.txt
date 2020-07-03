@@ -88,18 +88,26 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 1.8.6 =
-** How to Block: https://secure.helpscout.net/conversation/1180126020/2615?folderId=2070869
-** Spacing between buttons (add responsive controls)
-** Update: Button color settings sync with global colors.
-** Update: Info box you can now use a number.
-** Update: Row Background Color settings sync with global colors.
-** Add: Responsive visibility settings to row layout.
+* Spacing between buttons (add responsive controls)
+* Add: Margin option for Buttons container.
+* Update: Button color settings sync with kadence theme global colors.
+* Update: Row and Column Color settings sync with kadence theme global colors.
+* Update: Row and column image background to allow for focus point position control.
+* Add: Responsive visibility settings to row layout and columns.
+* Add: Responsive controls for min height.
+* Fix: Small lazy load issue with testimonials.
+* Update: Testimonials color settings.
+* Add: Option for testimonials to use url instead of hosted image.
 ** Add: Advanced heading Copy and Paste Styling.
-** Add: Button Copy and Paste styling.
-** Add: Responsive controls for min height.
+* Add: Button Copy and Paste styling.
+* Add: Move options for buttons.
+* Add: Duplicate and delete options for buttons.
+* Update: Button focus for better settings control.
+** Update: Info box you can now use a number.
 ** Add: Mailer Lite.
 ** Add: Checkbox to forms.
-** Add: UPload to forms.
+** Add: Upload to forms.
+** How to Block: https://secure.helpscout.net/conversation/1180126020/2615?folderId=2070869
 
 = 1.8.5 =
 * Fix: Update not showing.

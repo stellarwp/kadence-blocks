@@ -219,6 +219,18 @@ registerBlockType( 'kadence/column', {
 			type: 'bool',
 			default: false,
 		},
+		vsdesk: {
+			type: 'bool',
+			default: false,
+		},
+		vstablet: {
+			type: 'bool',
+			default: false,
+		},
+		vsmobile: {
+			type: 'bool',
+			default: false,
+		},
 	},
 	supports: {
 		inserter: false,

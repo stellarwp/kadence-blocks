@@ -111,6 +111,8 @@ registerBlockType( 'kadence/advancedbtn', {
 				boxShadowHover: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
 				sponsored: false,
 				download: false,
+				tabletGap: '',
+				mobileGap: '',
 			} ],
 		},
 		letterSpacing: {
@@ -163,6 +165,18 @@ registerBlockType( 'kadence/advancedbtn', {
 		collapseFullwidth: {
 			type: 'bool',
 			default: false,
+		},
+		margin: {
+			type: 'array',
+			default: [ {
+				desk: [ '', '', '', '' ],
+				tablet: [ '', '', '', '' ],
+				mobile: [ '', '', '', '' ],
+			} ],
+		},
+		marginUnit: {
+			type: 'string',
+			default: 'px',
 		},
 	},
 	edit,

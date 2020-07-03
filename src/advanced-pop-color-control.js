@@ -29,9 +29,6 @@ const {
 const {
 	withSelect,
 } = wp.data;
-/* global kadence_blocks_params */
-// eslint-disable-next-line camelcase
-const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -49,7 +46,7 @@ class AdvancedPopColorControl extends Component {
 			currentColor: '',
 			inherit: false,
 			currentOpacity: this.props.opacityValue !== undefined ? this.props.opacityValue : 1,
-			isPalette: ( ( isKadenceT && this.props.colorValue && this.props.colorValue.startsWith( 'palette' ) ) || ( isKadenceT && this.props.colorDefault && this.props.colorDefault.startsWith( 'palette' ) ) ? true : false ),
+			isPalette: ( ( this.props.colorValue && this.props.colorValue.startsWith( 'palette' ) ) || ( this.props.colorDefault && this.props.colorDefault.startsWith( 'palette' ) ) ? true : false ),
 		};
 	}
 	render() {
@@ -80,8 +77,8 @@ class AdvancedPopColorControl extends Component {
 								className="components-color-palette__clear"
 								type="button"
 								onClick={ () => {
-									this.setState( { currentColor: this.props.colorDefault, isPalette: ( isKadenceT && this.props.colorDefault && this.props.colorDefault.startsWith( 'palette' ) ? true : false ) } );
-									this.props.onColorChange( undefined );
+									this.setState( { currentColor: this.props.colorDefault, isPalette: ( this.props.colorDefault && this.props.colorDefault.startsWith( 'palette' ) ? true : false ) } );
+									this.props.onColorChange( this.props.colorDefault ? this.props.colorDefault : undefined );
 									if ( this.props.onColorClassChange ) {
 										this.props.onColorClassChange( '' );
 									}
@@ -124,7 +121,7 @@ class AdvancedPopColorControl extends Component {
 										{ map( this.props.colors, ( { color, slug, name } ) => {
 											const style = { color };
 											const palette = slug.replace( 'theme-', '' );
-											const isActive = ( ( isKadenceT && palette === this.props.colorValue ) || ( ! slug.startsWith( 'theme-palette' ) && this.props.colorValue === color ) );
+											const isActive = ( ( palette === this.props.colorValue ) || ( ! slug.startsWith( 'theme-palette' ) && this.props.colorValue === color ) );
 											return (
 												<div key={ color } className="components-color-palette__item-wrapper">
 													<Tooltip
@@ -137,7 +134,7 @@ class AdvancedPopColorControl extends Component {
 															className={ `components-color-palette__item ${ ( isActive ? 'is-active' : '' ) }` }
 															style={ style }
 															onClick={ () => {
-																if ( isKadenceT && slug.startsWith( 'theme-palette' ) ) {
+																if ( slug.startsWith( 'theme-palette' ) ) {
 																	this.onChangeComplete( color, palette );
 																} else {
 																	this.onChangeComplete( color, false );
@@ -159,7 +156,7 @@ class AdvancedPopColorControl extends Component {
 															aria-pressed={ isActive }
 														/>
 													</Tooltip>
-													{ isKadenceT && palette === this.props.colorValue && <Dashicon icon="admin-site" /> }
+													{ palette === this.props.colorValue && <Dashicon icon="admin-site" /> }
 													{ ! slug.startsWith( 'theme-palette' ) && this.props.colorValue === color && <Dashicon icon="saved" /> }
 												</div>
 											);
@@ -175,7 +172,7 @@ class AdvancedPopColorControl extends Component {
 									{ '' === currentColorString && this.state.inherit && (
 										<span className="color-indicator-icon">{ cIcons.inherit }</span>
 									) }
-									{ this.state.isPalette && (
+									{ ( ( this.props.colorValue && this.props.colorValue.startsWith( 'palette' ) ) || ( this.props.colorDefault && this.props.colorDefault.startsWith( 'palette' ) ) ) && (
 										<span className="color-indicator-icon">{ <Dashicon icon="admin-site" /> }</span>
 									) }
 								</Button>
@@ -188,7 +185,7 @@ class AdvancedPopColorControl extends Component {
 									{ '' === currentColorString && this.state.inherit && (
 										<span className="color-indicator-icon">{ cIcons.inherit }</span>
 									) }
-									{ this.state.isPalette && (
+									{ ( ( this.props.colorValue && this.props.colorValue.startsWith( 'palette' ) ) || ( this.props.colorDefault && this.props.colorDefault.startsWith( 'palette' ) ) ) && (
 										<span className="color-indicator-icon">{ <Dashicon icon="admin-site" /> }</span>
 									) }
 								</Button>
@@ -241,7 +238,9 @@ class AdvancedPopColorControl extends Component {
 		this.setState( { currentColor: newColor, currentOpacity: opacity, isPalette: ( palette ? true : false ) } );
 		this.props.onColorChange( newColor );
 		if ( undefined !== this.props.onOpacityChange ) {
-			this.props.onOpacityChange( opacity );
+			setTimeout( () => {
+				this.props.onOpacityChange( opacity );
+			}, 50 );
 		}
 	}
 }

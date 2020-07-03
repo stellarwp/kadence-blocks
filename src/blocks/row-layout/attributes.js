@@ -474,5 +474,17 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	vsdesk: {
+		type: 'bool',
+		default: false,
+	},
+	vstablet: {
+		type: 'bool',
+		default: false,
+	},
+	vsmobile: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

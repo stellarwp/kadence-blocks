@@ -12,6 +12,13 @@ import hexToRGBA from '../../hex-to-rgba';
 import MeasurementControls from '../../measurement-control';
 import AdvancedColorControl from '../../advanced-color-control';
 import BoxShadowControl from '../../box-shadow-control';
+import classnames from 'classnames';
+import KadenceFocalPicker from '../../kadence-focal-picker';
+import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import KadenceRadioButtons from '../../kadence-radio-buttons';
+import KadenceColorOutput from '../../kadence-color-output';
+import kadenceColorOutput from '../../kadence-color-output';
 /**
  * Internal block libraries
  */
@@ -33,12 +40,13 @@ const {
 	Dashicon,
 	PanelBody,
 	Panel,
+	ToggleControl,
 	Button,
 	SelectControl,
 	Tooltip,
 	RangeControl,
 } = wp.components;
-
+const ALLOWED_MEDIA_TYPES = [ 'image' ];
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -126,7 +134,7 @@ class KadenceColumn extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow }, setAttributes, clientId } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile }, setAttributes, clientId } = this.props;
 		const { borderWidthControl, borderRadiusControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
@@ -575,16 +583,25 @@ class KadenceColumn extends Component {
 				</TabPanel>
 			</Fragment>
 		);
-		const backgroundString = ( background ? hexToRGBA( background, backgroundOpacity ) : 'transparent' );
-		const borderString = ( border ? hexToRGBA( border, borderOpacity ) : 'transparent' );
+		const backgroundString = ( background ? kadenceColorOutput( background, backgroundOpacity ) : 'transparent' );
+		const borderString = ( border ? kadenceColorOutput( border, borderOpacity ) : 'transparent' );
 		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
+		const classes = classnames( {
+			'kadence-column': true,
+			[ `inner-column-${ id }` ]: id,
+			[ `kadence-column-${ uniqueID }` ]: uniqueID,
+			'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
+			'kvs-md-false': vstablet !== 'undefined' && vstablet,
+			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
+		} );
+		const hasBackgroundImage = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? true : false );
 		return (
-			<div className={ `kadence-column inner-column-${ id } kadence-column-${ uniqueID }` } >
+			<div className={ classes } >
 				{ ( textColor || linkColor || linkHoverColor ) && (
 					<style>
-						{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ textColor }; }` : '' ) }
-						{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ linkColor }; }` : '' ) }
-						{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ linkHoverColor }; }` : '' ) }
+						{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ kadenceColorOutput( textColor ) }; }` : '' ) }
+						{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ kadenceColorOutput( linkColor ) }; }` : '' ) }
+						{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ kadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 					</style>
 				) }
 				{ this.showSettings( 'allSettings' ) && (
@@ -594,7 +611,7 @@ class KadenceColumn extends Component {
 						>
 							{ this.showSettings( 'container' ) && (
 								<Fragment>
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Background Color' ) }
 										colorValue={ ( background ? background : '' ) }
 										colorDefault={ '' }
@@ -602,24 +619,47 @@ class KadenceColumn extends Component {
 										onColorChange={ value => setAttributes( { background: value } ) }
 										onOpacityChange={ value => setAttributes( { backgroundOpacity: value } ) }
 									/>
-									<MediaUpload
-										onSelect={ img => {
-											saveBackgroundImage( { bgImgID: img.id, bgImg: img.url } );
-										} }
-										type="image"
-										value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' ) }
-										render={ ( { open } ) => (
-											<Button
-												className={ 'components-button components-icon-button kt-cta-upload-btn' }
-												onClick={ open }
-											>
-												<Dashicon icon="format-image" />
-												{ __( 'Select Image' ) }
-											</Button>
-										) }
-									/>
-									{ backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg && (
+									{ ! hasBackgroundImage && (
+										<KadenceMediaPlaceholder
+											labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
+											onSelect={ ( img ) => {
+												saveBackgroundImage( {
+													bgImgID: img.id,
+													bgImg: img.url,
+												} );
+											} }
+											onSelectURL={ ( newURL ) => {
+												if ( newURL !== ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) ) {
+													saveBackgroundImage( {
+														bgImgID: undefined,
+														bgImg: newURL,
+													} );
+												}
+											} }
+											accept="image/*"
+											className={ 'kadence-image-upload' }
+											allowedTypes={ ALLOWED_MEDIA_TYPES }
+											disableMediaButtons={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
+										/>
+									) }
+									{ hasBackgroundImage && (
 										<Fragment>
+											<MediaUpload
+												onSelect={ img => {
+													saveBackgroundImage( { bgImgID: img.id, bgImg: img.url } );
+												} }
+												type="image"
+												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' ) }
+												render={ ( { open } ) => (
+													<Button
+														className={ 'components-button components-icon-button kt-cta-upload-btn' }
+														onClick={ open }
+													>
+														<Dashicon icon="format-image" />
+														{ __( 'Edit Image' ) }
+													</Button>
+												) }
+											/>
 											<Tooltip text={ __( 'Remove Image' ) }>
 												<Button
 													className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
@@ -628,55 +668,46 @@ class KadenceColumn extends Component {
 													<Dashicon icon="no-alt" />
 												</Button>
 											</Tooltip>
-											<SelectControl
-												label={ __( 'Background Image Size' ) }
+											<KadenceFocalPicker
+												url={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
+												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' ) }
+												onChange={ value => saveBackgroundImage( { bgImgPosition: value } ) }
+											/>
+											<KadenceRadioButtons
+												label={ __( 'Background Image Size', 'kadence-blocks' ) }
 												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) }
 												options={ [
-													{ value: 'cover', label: __( 'Cover' ) },
-													{ value: 'contain', label: __( 'Contain' ) },
-													{ value: 'auto', label: __( 'Auto' ) },
+													{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
+													{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
+													{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
 												] }
 												onChange={ value => saveBackgroundImage( { bgImgSize: value } ) }
 											/>
-											<SelectControl
-												label={ __( 'Background Image Position' ) }
-												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' ) }
-												options={ [
-													{ value: 'center top', label: __( 'Center Top' ) },
-													{ value: 'center center', label: __( 'Center Center' ) },
-													{ value: 'center bottom', label: __( 'Center Bottom' ) },
-													{ value: 'left top', label: __( 'Left Top' ) },
-													{ value: 'left center', label: __( 'Left Center' ) },
-													{ value: 'left bottom', label: __( 'Left Bottom' ) },
-													{ value: 'right top', label: __( 'Right Top' ) },
-													{ value: 'right center', label: __( 'Right Center' ) },
-													{ value: 'right bottom', label: __( 'Right Bottom' ) },
-												] }
-												onChange={ value => saveBackgroundImage( { bgImgPosition: value } ) }
-											/>
-											<SelectControl
-												label={ __( 'Background Image Repeat' ) }
-												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
-												options={ [
-													{ value: 'no-repeat', label: __( 'No Repeat' ) },
-													{ value: 'repeat', label: __( 'Repeat' ) },
-													{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-													{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-												] }
-												onChange={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
-											/>
-											<SelectControl
-												label={ __( 'Background Image Attachment' ) }
+											{ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) !== 'cover' && (
+												<KadenceRadioButtons
+													label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
+													value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
+													options={ [
+														{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
+														{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
+														{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
+														{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
+													] }
+													onChange={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
+												/>
+											) }
+											<KadenceRadioButtons
+												label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
 												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : 'scroll' ) }
 												options={ [
-													{ value: 'scroll', label: __( 'Scroll' ) },
-													{ value: 'fixed', label: __( 'Fixed' ) },
+													{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
+													{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
 												] }
 												onChange={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
 											/>
 										</Fragment>
 									) }
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Border Color' ) }
 										colorValue={ ( border ? border : '' ) }
 										colorDefault={ '' }
@@ -764,19 +795,19 @@ class KadenceColumn extends Component {
 										title={ __( 'Text Color Settings' ) }
 										initialOpen={ false }
 									>
-										<AdvancedColorControl
+										<AdvancedPopColorControl
 											label={ __( 'Text Color' ) }
 											colorValue={ ( textColor ? textColor : '' ) }
 											colorDefault={ '' }
 											onColorChange={ value => setAttributes( { textColor: value } ) }
 										/>
-										<AdvancedColorControl
+										<AdvancedPopColorControl
 											label={ __( 'Link Color' ) }
 											colorValue={ ( linkColor ? linkColor : '' ) }
 											colorDefault={ '' }
 											onColorChange={ value => setAttributes( { linkColor: value } ) }
 										/>
-										<AdvancedColorControl
+										<AdvancedPopColorControl
 											label={ __( 'Link Hover Color' ) }
 											colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
 											colorDefault={ '' }
@@ -792,6 +823,26 @@ class KadenceColumn extends Component {
 								</Fragment>
 							) }
 						</Panel>
+						<PanelBody
+							title={ __( 'Visibility Settings', 'kadence-blocks' ) }
+							initialOpen={ false }
+						>
+							<ToggleControl
+								label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
+								checked={ ( undefined !== vsdesk ? vsdesk : false ) }
+								onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
+							/>
+							<ToggleControl
+								label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
+								checked={ ( undefined !== vstablet ? vstablet : false ) }
+								onChange={ ( value ) => setAttributes( { vstablet: value } ) }
+							/>
+							<ToggleControl
+								label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
+								checked={ ( undefined !== vsmobile ? vsmobile : false ) }
+								onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
+							/>
+						</PanelBody>
 					</InspectorControls>
 				) }
 				<InspectorAdvancedControls>

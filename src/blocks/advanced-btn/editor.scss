@@ -4,6 +4,64 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .wp-block-kadence-advancedbtn {
+	.btn-area-wrap {
+		padding-top: 14px;
+	}
+}
+ .wp-block-kadence-advancedbtn {
+	.btn-area-wrap.is-selected {
+		position:relative;
+		min-width: 100px;
+		&:before {
+			content: '';
+			position: absolute;
+			border: 4px solid #0085ba;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			z-index: 1;
+		}
+		&:after {
+			content: '';
+			left: 0;
+			right: 0;
+			position: absolute;
+			top: -10px;
+			height: 24px;
+			background: #0085ba;
+		}
+	}
+}
+.kadence-blocks-button-item-controls {
+	display:flex;
+	position:absolute;
+	top: -8px;
+	left:2px;
+	z-index: 10;
+	background: #0085ba;
+	.components-button {
+		padding: 0;
+		height:auto;
+		color:#f4f4f4;
+		min-width: 25px;
+		width: 25px;
+        height: 20px;
+        svg {
+            width: 14px;
+        }
+	}
+	&.kadence-blocks-button-item__inline-menu {
+		left:auto;
+		right:2px;
+    }
+    .components-dropdown.components-dropdown-menu {
+        height: 20px;
+        width: 25px;
+        min-width: 25px;
+    }
+}
 .kt-button-text.is-selected {
     min-width: 5px;
 }

@@ -26,6 +26,9 @@ import AdvancedColorControl from '../../advanced-color-control';
 import Slider from 'react-slick';
 import IconControl from '../../icon-control';
 import IconRender from '../../icon-render';
+import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Internal block libraries
  */
@@ -537,7 +540,7 @@ class KadenceTestimonials extends Component {
 									max={ 4 }
 								/>
 							) }
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Icon Color' ) }
 								colorValue={ ( testimonials[ index ].color ? testimonials[ index ].color : '#555555' ) }
 								colorDefault={ '#555555' }
@@ -569,14 +572,14 @@ class KadenceTestimonials extends Component {
 					margin: ( iconStyles[ 0 ].margin ? iconStyles[ 0 ].margin[ 0 ] + 'px ' + iconStyles[ 0 ].margin[ 1 ] + 'px ' + iconStyles[ 0 ].margin[ 2 ] + 'px ' + iconStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 				} } >
 					<IconRender className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
-						color: ( iconStyles[ 0 ].color ? iconStyles[ 0 ].color : undefined ),
+						color: ( iconStyles[ 0 ].color ? KadenceColorOutput( iconStyles[ 0 ].color ) : undefined ),
 						borderRadius: iconStyles[ 0 ].borderRadius + 'px',
 						borderTopWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 0 ] ? iconStyles[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
 						borderRightWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 1 ] ? iconStyles[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
 						borderBottomWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 2 ] ? iconStyles[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 						borderLeftWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 3 ] ? iconStyles[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
-						background: ( iconStyles[ 0 ].background ? hexToRGBA( iconStyles[ 0 ].background, ( undefined !== iconStyles[ 0 ].backgroundOpacity ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
-						borderColor: ( iconStyles[ 0 ].border ? hexToRGBA( iconStyles[ 0 ].border, ( undefined !== iconStyles[ 0 ].borderOpacity ? iconStyles[ 0 ].borderOpacity : 1 ) ) : undefined ),
+						background: ( iconStyles[ 0 ].background ? KadenceColorOutput( iconStyles[ 0 ].background, ( undefined !== iconStyles[ 0 ].backgroundOpacity ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
+						borderColor: ( iconStyles[ 0 ].border ? KadenceColorOutput( iconStyles[ 0 ].border, ( undefined !== iconStyles[ 0 ].borderOpacity ? iconStyles[ 0 ].borderOpacity : 1 ) ) : undefined ),
 						padding: ( iconStyles[ 0 ].padding ? iconStyles[ 0 ].padding[ 0 ] + 'px ' + iconStyles[ 0 ].padding[ 1 ] + 'px ' + iconStyles[ 0 ].padding[ 2 ] + 'px ' + iconStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
 					} } />
 				</div>
@@ -621,8 +624,8 @@ class KadenceTestimonials extends Component {
 				<div className="kt-testimonial-media-wrap">
 					<div className="kt-testimonial-media-inner-wrap" style={ {
 						width: 'card' !== style ? mediaStyles[ 0 ].width + 'px' : undefined,
-						borderColor: mediaStyles[ 0 ].border,
-						backgroundColor: ( mediaStyles[ 0 ].background ? hexToRGBA( mediaStyles[ 0 ].background, ( undefined !== mediaStyles[ 0 ].backgroundOpacity ? mediaStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
+						borderColor: KadenceColorOutput( mediaStyles[ 0 ].border ),
+						backgroundColor: ( mediaStyles[ 0 ].background ? KadenceColorOutput( mediaStyles[ 0 ].background, ( undefined !== mediaStyles[ 0 ].backgroundOpacity ? mediaStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
 						borderRadius: mediaStyles[ 0 ].borderRadius + 'px',
 						borderWidth: ( mediaStyles[ 0 ].borderWidth ? mediaStyles[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
 						padding: ( mediaStyles[ 0 ].padding ? mediaStyles[ 0 ].padding[ 0 ] + 'px ' + mediaStyles[ 0 ].padding[ 1 ] + 'px ' + mediaStyles[ 0 ].padding[ 2 ] + 'px ' + mediaStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
@@ -637,64 +640,113 @@ class KadenceTestimonials extends Component {
 							{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
 								<IconRender className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
 									display: 'flex',
-									color: ( testimonials[ index ].color ? testimonials[ index ].color : undefined ),
+									color: ( testimonials[ index ].color ? KadenceColorOutput( testimonials[ index ].color ) : undefined ),
 								} } />
 							) }
 							{ 'icon' !== testimonials[ index ].media && testimonials[ index ].url && (
-								<MediaUpload
-									onSelect={ media => {
-										saveTestimonials( {
-											id: media.id,
-											url: media.url,
-											alt: media.alt,
-											subtype: media.subtype,
-											sizes: media.sizes,
-										}, index );
-									} }
-									type="image"
-									value={ ( testimonials[ index ].id ? testimonials[ index ].id : '' ) }
-									allowedTypes={ ALLOWED_MEDIA_TYPES }
-									render={ ( { open } ) => (
-										<Tooltip text={ __( 'Edit Image' ) }>
-											<Button
-												style={ {
-													backgroundImage: 'url("' + urlOutput + '")',
-													backgroundSize: ( 'card' === style ? mediaStyles[ 0 ].backgroundSize : undefined ),
-													borderRadius: mediaStyles[ 0 ].borderRadius + 'px',
-												} }
-												className={ 'kt-testimonial-image' }
-												onClick={ open }
-											/>
-										</Tooltip>
-									) }
-								/>
+								<Fragment>
+									<MediaUpload
+										onSelect={ media => {
+											saveTestimonials( {
+												id: media.id,
+												url: media.url,
+												alt: media.alt,
+												subtype: media.subtype,
+												sizes: media.sizes,
+											}, index );
+										} }
+										type="image"
+										value={ ( testimonials[ index ].id ? testimonials[ index ].id : '' ) }
+										allowedTypes={ ALLOWED_MEDIA_TYPES }
+										render={ ( { open } ) => (
+											<Tooltip text={ __( 'Edit Image' ) }>
+												<Button
+													style={ {
+														backgroundImage: 'url("' + urlOutput + '")',
+														backgroundSize: ( 'card' === style ? mediaStyles[ 0 ].backgroundSize : undefined ),
+														borderRadius: mediaStyles[ 0 ].borderRadius + 'px',
+													} }
+													className={ 'kt-testimonial-image' }
+													onClick={ open }
+												/>
+											</Tooltip>
+										) }
+									/>
+									<Button
+										label={ __( 'Remove Image', 'kadence-blocks' ) }
+										className={ 'kt-remove-img kt-testimonial-remove-image' }
+										onClick={ () => {
+											saveTestimonials( {
+												id: null,
+												url: null,
+												alt: null,
+												subtype: null,
+												sizes: null,
+											}, index );
+										} }
+										icon="no-alt"
+										showTooltip={ true }
+									/>
+								</Fragment>
 							) }
 							{ 'icon' !== testimonials[ index ].media && ! testimonials[ index ].url && (
-								<MediaUpload
-									onSelect={ media => {
-										saveTestimonials( {
-											id: media.id,
-											url: media.url,
-											alt: media.alt,
-											sizes: media.sizes,
-											subtype: media.subtype,
-										}, index );
-									} }
-									type="image"
-									value={ '' }
-									allowedTypes={ ALLOWED_MEDIA_TYPES }
-									render={ ( { open } ) => (
-										<IconButton
-											className="kt-testimonial-image-placeholder"
-											label={ __( 'Add Image' ) }
-											icon="format-image"
-											style={ {
-												borderRadius: mediaStyles[ 0 ].borderRadius + 'px',
+								<Fragment>
+									{ 'card' === style && (
+										<KadenceMediaPlaceholder
+											onSelect={ media => {
+												saveTestimonials( {
+													id: media.id,
+													url: media.url,
+													alt: media.alt,
+													sizes: media.sizes,
+													subtype: media.subtype,
+												}, index );
 											} }
-											onClick={ open }
+											value={ '' }
+											allowedTypes={ ALLOWED_MEDIA_TYPES }
+											onSelectURL={ ( media ) => {
+												if ( media !== testimonials[ index ].url ) {
+													saveTestimonials( {
+														id: null,
+														url: media,
+														alt: null,
+														sizes: null,
+														subtype: null,
+													}, index );
+												}
+											} }
+											accept="image/*"
+											className={ 'kadence-image-upload' }
 										/>
 									) }
-								/>
+									{ 'card' !== style && (
+										<MediaUpload
+											onSelect={ media => {
+												saveTestimonials( {
+													id: media.id,
+													url: media.url,
+													alt: media.alt,
+													sizes: media.sizes,
+													subtype: media.subtype,
+												}, index );
+											} }
+											type="image"
+											value={ '' }
+											allowedTypes={ ALLOWED_MEDIA_TYPES }
+											render={ ( { open } ) => (
+												<IconButton
+													className="kt-testimonial-image-placeholder"
+													label={ __( 'Add Image' ) }
+													icon="format-image"
+													style={ {
+														borderRadius: mediaStyles[ 0 ].borderRadius + 'px',
+													} }
+													onClick={ open }
+												/>
+											) }
+										/>
+									) }
+								</Fragment>
 							) }
 						</div>
 					</div>
@@ -702,9 +754,9 @@ class KadenceTestimonials extends Component {
 			);
 		};
 		const containerStyles = {
-			boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + hexToRGBA( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
-			borderColor: ( containerBorder ? hexToRGBA( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
-			background: ( containerBackground ? hexToRGBA( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
+			boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
+			borderColor: ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
+			background: ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
 			borderRadius: containerBorderRadius + 'px',
 			borderTopWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 0 ] ? containerBorderWidth[ 0 ] + 'px' : undefined ),
 			borderRightWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 1 ] ? containerBorderWidth[ 1 ] + 'px' : undefined ),
@@ -759,7 +811,7 @@ class KadenceTestimonials extends Component {
 									style={ {
 										fontWeight: titleFont[ 0 ].weight,
 										fontStyle: titleFont[ 0 ].style,
-										color: titleFont[ 0 ].color,
+										color: KadenceColorOutput( titleFont[ 0 ].color ),
 										fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
 										lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
 										letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
@@ -776,18 +828,18 @@ class KadenceTestimonials extends Component {
 							<div className={ `kt-testimonial-rating-wrap kt-testimonial-rating-${ testimonials[ index ].rating }` } style={ {
 								margin: ( ratingStyles[ 0 ].margin ? ratingStyles[ 0 ].margin[ 0 ] + 'px ' + ratingStyles[ 0 ].margin[ 1 ] + 'px ' + ratingStyles[ 0 ].margin[ 2 ] + 'px ' + ratingStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 							} }>
-								<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: ratingStyles[ 0 ].color } } />
+								<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								{ testimonials[ index ].rating > 1 && (
-									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: ratingStyles[ 0 ].color } } />
+									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 2 && (
-									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: ratingStyles[ 0 ].color } } />
+									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 3 && (
-									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: ratingStyles[ 0 ].color } } />
+									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 4 && (
-									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: ratingStyles[ 0 ].color } } />
+									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 							</div>
 						) }
@@ -803,7 +855,7 @@ class KadenceTestimonials extends Component {
 									style={ {
 										fontWeight: contentFont[ 0 ].weight,
 										fontStyle: contentFont[ 0 ].style,
-										color: contentFont[ 0 ].color,
+										color: KadenceColorOutput( contentFont[ 0 ].color ),
 										fontSize: contentFont[ 0 ].size[ 0 ] + contentFont[ 0 ].sizeType,
 										lineHeight: ( contentFont[ 0 ].lineHeight && contentFont[ 0 ].lineHeight[ 0 ] ? contentFont[ 0 ].lineHeight[ 0 ] + contentFont[ 0 ].lineType : undefined ),
 										textTransform: ( contentFont[ 0 ].textTransform ? contentFont[ 0 ].textTransform : undefined ),
@@ -833,7 +885,7 @@ class KadenceTestimonials extends Component {
 											style={ {
 												fontWeight: nameFont[ 0 ].weight,
 												fontStyle: nameFont[ 0 ].style,
-												color: nameFont[ 0 ].color,
+												color: KadenceColorOutput( nameFont[ 0 ].color ),
 												fontSize: nameFont[ 0 ].size[ 0 ] + nameFont[ 0 ].sizeType,
 												lineHeight: ( nameFont[ 0 ].lineHeight && nameFont[ 0 ].lineHeight[ 0 ] ? nameFont[ 0 ].lineHeight[ 0 ] + nameFont[ 0 ].lineType : undefined ),
 												textTransform: ( nameFont[ 0 ].textTransform ? nameFont[ 0 ].textTransform : undefined ),
@@ -856,7 +908,7 @@ class KadenceTestimonials extends Component {
 											style={ {
 												fontWeight: occupationFont[ 0 ].weight,
 												fontStyle: occupationFont[ 0 ].style,
-												color: occupationFont[ 0 ].color,
+												color: KadenceColorOutput( occupationFont[ 0 ].color ),
 												fontSize: occupationFont[ 0 ].size[ 0 ] + occupationFont[ 0 ].sizeType,
 												lineHeight: ( occupationFont[ 0 ].lineHeight && occupationFont[ 0 ].lineHeight[ 0 ] ? occupationFont[ 0 ].lineHeight[ 0 ] + occupationFont[ 0 ].lineType : undefined ),
 												textTransform: ( occupationFont[ 0 ].textTransform ? occupationFont[ 0 ].textTransform : undefined ),
@@ -881,7 +933,7 @@ class KadenceTestimonials extends Component {
 					{ ( layout === 'carousel' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-blocks-carousel .slick-prev { left: ${ columnGap / 2 }px; }` : '' ) }
 					{ ( layout === 'carousel' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-blocks-carousel .slick-next { right: ${ columnGap / 2 }px; }` : '' ) }
 					{ ( style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-testimonial-text-wrap:after { margin-top: ${ containerBorderWidth && undefined !== containerBorderWidth[ 2 ] ? containerBorderWidth[ 2 ] : '1' }px; }` : '' ) }
-					{ ( style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-testimonial-text-wrap:after { border-top-color: ${ ( containerBorder ? hexToRGBA( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ) } }` : '' ) }
+					{ ( style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-testimonial-text-wrap:after { border-top-color: ${ ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ) } }` : '' ) }
 				</style>
 				{ this.showSettings( 'allSettings' ) && (
 					<Fragment>
@@ -1102,7 +1154,7 @@ class KadenceTestimonials extends Component {
 										min={ 0 }
 										max={ 200 }
 									/>
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Container Background' ) }
 										colorValue={ ( containerBackground ? containerBackground : '' ) }
 										colorDefault={ '' }
@@ -1110,7 +1162,7 @@ class KadenceTestimonials extends Component {
 										opacityValue={ containerBackgroundOpacity }
 										onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 									/>
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Container Border' ) }
 										colorValue={ ( containerBorder ? containerBorder : '' ) }
 										colorDefault={ '' }
@@ -1177,7 +1229,7 @@ class KadenceTestimonials extends Component {
 													max={ 4 }
 												/>
 											) }
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Color' ) }
 												colorValue={ ( iconStyles[ 0 ].color ? iconStyles[ 0 ].color : '' ) }
 												colorDefault={ '' }
@@ -1202,7 +1254,7 @@ class KadenceTestimonials extends Component {
 												min={ 0 }
 												max={ 200 }
 											/>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Icon Background' ) }
 												colorValue={ ( iconStyles[ 0 ].background ? iconStyles[ 0 ].background : '' ) }
 												colorDefault={ '' }
@@ -1210,7 +1262,7 @@ class KadenceTestimonials extends Component {
 												opacityValue={ iconStyles[ 0 ].backgroundOpacity }
 												onOpacityChange={ value => saveIconStyles( { backgroundOpacity: value } ) }
 											/>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Icon Border Color' ) }
 												colorValue={ ( iconStyles[ 0 ].border ? iconStyles[ 0 ].border : '' ) }
 												colorDefault={ '' }
@@ -1255,7 +1307,7 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayTitle && (
 										<Fragment>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Color Settings' ) }
 												colorValue={ ( titleFont[ 0 ].color ? titleFont[ 0 ].color : '' ) }
 												colorDefault={ '' }
@@ -1323,7 +1375,7 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayRating && (
 										<Fragment>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Color' ) }
 												colorValue={ ( ratingStyles[ 0 ].color ? ratingStyles[ 0 ].color : '' ) }
 												colorDefault={ '' }
@@ -1363,7 +1415,7 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayContent && (
 										<Fragment>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Color' ) }
 												colorValue={ ( contentFont[ 0 ].color ? contentFont[ 0 ].color : '' ) }
 												colorDefault={ '' }
@@ -1448,7 +1500,7 @@ class KadenceTestimonials extends Component {
 												min={ 0 }
 												max={ 200 }
 											/>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Media Background' ) }
 												colorValue={ ( mediaStyles[ 0 ].background ? mediaStyles[ 0 ].background : '' ) }
 												colorDefault={ '' }
@@ -1456,7 +1508,7 @@ class KadenceTestimonials extends Component {
 												opacityValue={ mediaStyles[ 0 ].backgroundOpacity }
 												onOpacityChange={ value => savemediaStyles( { backgroundOpacity: value } ) }
 											/>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Media Border Color' ) }
 												colorValue={ ( mediaStyles[ 0 ].border ? mediaStyles[ 0 ].border : '' ) }
 												colorDefault={ '' }
@@ -1555,7 +1607,7 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayName && (
 										<Fragment>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Color' ) }
 												colorValue={ ( nameFont[ 0 ].color ? nameFont[ 0 ].color : '' ) }
 												colorDefault={ '' }
@@ -1612,7 +1664,7 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayOccupation && (
 										<Fragment>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Color' ) }
 												colorValue={ ( occupationFont[ 0 ].color ? occupationFont[ 0 ].color : '' ) }
 												colorDefault={ '' }
@@ -1669,7 +1721,7 @@ class KadenceTestimonials extends Component {
 									/>
 									{ displayShadow && (
 										<Fragment>
-											<AdvancedColorControl
+											<AdvancedPopColorControl
 												label={ __( 'Shadow Color' ) }
 												colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
 												colorDefault={ '' }

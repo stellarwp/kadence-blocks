@@ -1313,6 +1313,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/blocks/advanced-btn/copy-paste-style.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/advanced-btn/copy-paste-style-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/blocks/advanced-btn/edit.js": {
 		"bF": 0,
 		"ft": 64,

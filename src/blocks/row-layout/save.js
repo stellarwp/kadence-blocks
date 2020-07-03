@@ -16,7 +16,7 @@ const {
 } = wp.blockEditor;
 class KadenceRowLayoutSave extends Component {
 	render() {
-		const { attributes: { columns, blockAlignment, inheritMaxWidth, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo, bgColorClass } } = this.props;
+		const { attributes: { columns, blockAlignment, inheritMaxWidth, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo, bgColorClass, vsdesk, vstablet, vsmobile } } = this.props;
 		let bottomSVGDivider;
 		if ( 'ct' === bottomSep ) {
 			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
@@ -114,7 +114,13 @@ class KadenceRowLayoutSave extends Component {
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const classId = ( ! uniqueID ? 'notset' : uniqueID );
 		const overlayType = ( ! currentOverlayTab || 'grad' !== currentOverlayTab ? 'normal' : 'gradient' );
-		const classes = classnames( `align${ ( align ? align : 'none' ) }` );
+		//const classes = classnames( `align${ ( align ? align : 'none' ) }` );
+		const classes = classnames( {
+			[ `align${ ( align ? align : 'none' ) }` ]: true,
+			'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
+			'kvs-md-false': vstablet !== 'undefined' && vstablet,
+			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
+		} );
 		const backgroundColorClass = getColorClassName( 'background-color', bgColorClass );
 		const innerClasses = classnames( 'kt-row-layout-inner', {
 			'kt-row-has-bg': bgColor || bgImg || overlay || overlayBgImg,
@@ -153,7 +159,7 @@ class KadenceRowLayoutSave extends Component {
 			return (
 				<div className="kb-bg-slide-contain">
 					<div className={ `kb-bg-slide kb-bg-slide-${ index }` } style={ {
-						backgroundColor: ( '' !== bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : undefined ),
+						backgroundColor: ( '' !== bgSlider[ index ].bgColor ? KadenceColorOutput( bgSlider[ index ].bgColor ) : undefined ),
 						backgroundImage: ( '' !== bgSlider[ index ].bgImg ? 'url("' + bgSlider[ index ].bgImg + '")' : undefined ),
 						backgroundSize: bgImgSize ? bgImgSize : undefined,
 						backgroundPosition: bgImgPosition ? bgImgPosition : undefined,
@@ -233,7 +239,7 @@ class KadenceRowLayoutSave extends Component {
 					) }
 					{ topSep && 'none' !== topSep && '' !== topSep && (
 						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` }>
-							<svg style={ { fill: topSepColor } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+							<svg style={ { fill: KadenceColorOutput( topSepColor ) } } viewBox="0 0 1000 100" preserveAspectRatio="none">
 								{ topSVGDivider }
 							</svg>
 						</div>
@@ -243,7 +249,7 @@ class KadenceRowLayoutSave extends Component {
 					</div>
 					{ bottomSep && 'none' !== bottomSep && '' !== bottomSep && (
 						<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` }>
-							<svg style={ { fill: bottomSepColor } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+							<svg style={ { fill: KadenceColorOutput( bottomSepColor ) } } viewBox="0 0 1000 100" preserveAspectRatio="none">
 								{ bottomSVGDivider }
 							</svg>
 						</div>
