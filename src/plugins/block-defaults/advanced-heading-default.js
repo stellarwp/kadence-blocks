@@ -1,7 +1,7 @@
 import TypographyControls from '../../typography-control';
 import range from 'lodash/range';
 import map from 'lodash/map';
-import AdvancedColorControl from '../../advanced-color-control-default';
+import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
 /**
  * Internal block libraries
  */
@@ -116,7 +116,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 								/>
 							</div>
 							<div className="components-base-control">
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Heading Color' ) }
 									colorValue={ ( undefined !== headingConfig.color ? headingConfig.color : '' ) }
 									colorDefault={ '' }
@@ -192,7 +192,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 							initialOpen={ false }
 						>
 							<div className="components-base-control">
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Highlight Color' ) }
 									colorValue={ ( undefined !== headingConfig.markColor ? headingConfig.markColor : '#f76a0c' ) }
 									colorDefault={ '#f76a0c' }
@@ -200,7 +200,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 								/>
 							</div>
 							<div className="components-base-control">
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Highlight Background' ) }
 									colorValue={ ( undefined !== headingConfig.markBG ? headingConfig.markBG : '' ) }
 									colorDefault={ '' }
@@ -209,7 +209,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 									onOpacityChange={ value => this.saveConfigState( 'markBGOpacity', value ) }
 								/>
 							</div>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Highlight Border Color' ) }
 								colorValue={ ( undefined !== headingConfig.markBorder ? headingConfig.markBorder : '' ) }
 								colorDefault={ '' }

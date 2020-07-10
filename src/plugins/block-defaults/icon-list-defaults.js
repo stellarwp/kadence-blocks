@@ -1,6 +1,6 @@
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
-import AdvancedColorControl from '../../advanced-color-control-default';
+import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
 import map from 'lodash/map';
 import IconControl from '../../icon-control';
 
@@ -198,7 +198,7 @@ class KadenceIconListDefault extends Component {
 							title={ __( 'List Text Styling' ) }
 							initialOpen={ false }
 						>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Color Settings' ) }
 								colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
 								colorDefault={ '' }
@@ -271,7 +271,7 @@ class KadenceIconListDefault extends Component {
 									max={ 4 }
 								/>
 							) }
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Icon Color' ) }
 								colorValue={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
 								colorDefault={ '' }
@@ -291,7 +291,7 @@ class KadenceIconListDefault extends Component {
 								} }
 							/>
 							{ items[ 0 ].style !== 'default' && (
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Icon Background' ) }
 									colorValue={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
 									colorDefault={ '' }
@@ -301,7 +301,7 @@ class KadenceIconListDefault extends Component {
 								/>
 							) }
 							{ items[ 0 ].style !== 'default' && (
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Border Color' ) }
 									colorValue={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
 									colorDefault={ '' }

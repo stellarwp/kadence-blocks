@@ -1,3 +1,4 @@
+import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
 const {
 	Component,
 	Fragment,
@@ -170,17 +171,14 @@ class KadenceSpacerDefault extends Component {
 										{ value: 'dotted', label: __( 'Dotted' ) },
 									] }
 								/>
-								<p className="kt-setting-label">{ __( 'Divider Color' ) }</p>
-								<ColorPalette
-									value={ ( spacerConfig.dividerColor ? spacerConfig.dividerColor : '#eeeeee' ) }
-									onChange={ value => this.saveConfigState( 'dividerColor', value ) }
-								/>
-								<RangeControl
-									label={ __( 'Divider Opacity' ) }
-									value={ ( spacerConfig.dividerOpacity ? spacerConfig.dividerOpacity : 100 ) }
-									onChange={ value => this.saveConfigState( 'dividerOpacity', value ) }
-									min={ 0 }
-									max={ 100 }
+								<AdvancedPopColorControl
+									label={ __( 'Divider Color' ) }
+									colorValue={ ( spacerConfig.dividerColor ? spacerConfig.dividerColor : '#eeeeee' ) }
+									colorDefault={ '#eeeeee' }
+									opacityValue={ ( spacerConfig.dividerOpacity ? spacerConfig.dividerOpacity : 100 ) }
+									onColorChange={ value => this.saveConfigState( 'dividerColor', value ) }
+									onOpacityChange={ value => this.saveConfigState( 'dividerOpacity', value ) }
+									opacityUnit={ 100 }
 								/>
 								<RangeControl
 									label={ __( 'Divider Height in px' ) }

@@ -18,9 +18,9 @@ import filter from 'lodash/filter';
 import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../fontloader';
 import TypographyControls from '../../typography-control';
-import hexToRGBA from '../../hex-to-rgba';
 import BoxShadowControl from '../../box-shadow-control';
-import AdvancedColorControl from '../../advanced-color-control';
+import KadenceColorOutput from '../../kadence-color-output';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
 /**
  * Import Css
  */
@@ -115,6 +115,9 @@ class KadenceForm extends Component {
 		this.addAction = this.addAction.bind( this );
 		this.saveKeys = this.saveKeys.bind( this );
 		this.removeKeys = this.removeKeys.bind( this );
+		this.onOptionMove = this.onOptionMove.bind( this );
+		this.onOptionMoveUp = this.onOptionMoveUp.bind( this );
+		this.onOptionMoveDown = this.onOptionMoveDown.bind( this );
 
 		this.state = {
 			actionOptions: null,
@@ -626,6 +629,34 @@ class KadenceForm extends Component {
 			this.setState( { isSaving: false, isSavedKey: true } );
 		} );
 	}
+	onOptionMove( oldIndex, newIndex, fieldIndex ) {
+		const fields = this.props.attributes.fields;
+		const options = fields[ fieldIndex ] && fields[ fieldIndex ].options ? [ ...fields[ fieldIndex ].options ] : [];
+		if ( ! options ) {
+			return;
+		}
+		options.splice( newIndex, 1, this.props.attributes.fields[ fieldIndex ].options[ oldIndex ] );
+		options.splice( oldIndex, 1, this.props.attributes.fields[ fieldIndex ].options[ newIndex ] );
+		this.saveFields( { options: options }, fieldIndex );
+	}
+
+	onOptionMoveDown( oldIndex, fieldIndex ) {
+		return () => {
+			if ( oldIndex === this.props.attributes.fields[ fieldIndex ].options.length - 1 ) {
+				return;
+			}
+			this.onOptionMove( oldIndex, oldIndex + 1, fieldIndex );
+		};
+	}
+
+	onOptionMoveUp( oldIndex, fieldIndex ) {
+		return () => {
+			if ( oldIndex === 0 ) {
+				return;
+			}
+			this.onOptionMove( oldIndex, oldIndex - 1, fieldIndex );
+		};
+	}
 	render() {
 		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion }, className, isSelected, setAttributes } = this.props;
 		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl } = this.state;
@@ -679,30 +710,38 @@ class KadenceForm extends Component {
 		let btnGrad;
 		let btnGrad2;
 		if ( undefined !== submit[ 0 ].backgroundType && 'gradient' === submit[ 0 ].backgroundType ) {
-			btnGrad = ( undefined === submit[ 0 ].background ? 'rgba(255,255,255,0)' : hexToRGBA( submit[ 0 ].background, ( submit[ 0 ].backgroundOpacity !== undefined ? submit[ 0 ].backgroundOpacity : 1 ) ) );
-			btnGrad2 = ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 0 ] && '' !== submit[ 0 ].gradient[ 0 ] ? hexToRGBA( submit[ 0 ].gradient[ 0 ], ( undefined !== submit[ 0 ].gradient && submit[ 0 ].gradient[ 1 ] !== undefined ? submit[ 0 ].gradient[ 1 ] : 1 ) ) : hexToRGBA( '#999999', ( undefined !== submit[ 0 ].gradient && submit[ 0 ].gradient[ 1 ] !== undefined ? submit[ 0 ].gradient[ 1 ] : 1 ) ) );
+			btnGrad = ( undefined === submit[ 0 ].background ? 'rgba(255,255,255,0)' : KadenceColorOutput( submit[ 0 ].background, ( submit[ 0 ].backgroundOpacity !== undefined ? submit[ 0 ].backgroundOpacity : 1 ) ) );
+			btnGrad2 = ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 0 ] && '' !== submit[ 0 ].gradient[ 0 ] ? KadenceColorOutput( submit[ 0 ].gradient[ 0 ], ( undefined !== submit[ 0 ].gradient && submit[ 0 ].gradient[ 1 ] !== undefined ? submit[ 0 ].gradient[ 1 ] : 1 ) ) : KadenceColorOutput( '#999999', ( undefined !== submit[ 0 ].gradient && submit[ 0 ].gradient[ 1 ] !== undefined ? submit[ 0 ].gradient[ 1 ] : 1 ) ) );
 			if ( undefined !== submit[ 0 ].gradient && 'radial' === submit[ 0 ].gradient[ 4 ] ) {
 				btnBG = `radial-gradient(at ${ ( undefined === submit[ 0 ].gradient[ 6 ] ? 'center center' : submit[ 0 ].gradient[ 6 ] ) }, ${ btnGrad } ${ ( undefined === submit[ 0 ].gradient[ 2 ] ? '0' : submit[ 0 ].gradient[ 2 ] ) }%, ${ btnGrad2 } ${ ( undefined === submit[ 0 ].gradient[ 3 ] ? '100' : submit[ 0 ].gradient[ 3 ] ) }%)`;
 			} else if ( undefined === submit[ 0 ].gradient || 'radial' !== submit[ 0 ].gradient[ 4 ] ) {
 				btnBG = `linear-gradient(${ ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 5 ] ? submit[ 0 ].gradient[ 5 ] : '180' ) }deg, ${ btnGrad } ${ ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 2 ] ? submit[ 0 ].gradient[ 2 ] : '0' ) }%, ${ btnGrad2 } ${ ( undefined !== submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 3 ] ? submit[ 0 ].gradient[ 3 ] : '100' ) }%)`;
 			}
 		} else {
-			btnBG = ( undefined === submit[ 0 ].background ? undefined : hexToRGBA( submit[ 0 ].background, ( submit[ 0 ].backgroundOpacity !== undefined ? submit[ 0 ].backgroundOpacity : 1 ) ) );
+			btnBG = ( undefined === submit[ 0 ].background ? undefined : KadenceColorOutput( submit[ 0 ].background, ( submit[ 0 ].backgroundOpacity !== undefined ? submit[ 0 ].backgroundOpacity : 1 ) ) );
 		}
 		let inputBG;
 		let inputGrad;
 		let inputGrad2;
 		if ( undefined !== style[ 0 ].backgroundType && 'gradient' === style[ 0 ].backgroundType ) {
-			inputGrad = ( undefined === style[ 0 ].background ? 'rgba(255,255,255,0)' : hexToRGBA( style[ 0 ].background, ( style[ 0 ].backgroundOpacity !== undefined ? style[ 0 ].backgroundOpacity : 1 ) ) );
-			inputGrad2 = ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 0 ] && '' !== style[ 0 ].gradient[ 0 ] ? hexToRGBA( style[ 0 ].gradient[ 0 ], ( undefined !== style[ 0 ].gradient && style[ 0 ].gradient[ 1 ] !== undefined ? style[ 0 ].gradient[ 1 ] : 1 ) ) : hexToRGBA( '#999999', ( undefined !== style[ 0 ].gradient && style[ 0 ].gradient[ 1 ] !== undefined ? style[ 0 ].gradient[ 1 ] : 1 ) ) );
+			inputGrad = ( undefined === style[ 0 ].background ? 'rgba(255,255,255,0)' : KadenceColorOutput( style[ 0 ].background, ( style[ 0 ].backgroundOpacity !== undefined ? style[ 0 ].backgroundOpacity : 1 ) ) );
+			inputGrad2 = ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 0 ] && '' !== style[ 0 ].gradient[ 0 ] ? KadenceColorOutput( style[ 0 ].gradient[ 0 ], ( undefined !== style[ 0 ].gradient && style[ 0 ].gradient[ 1 ] !== undefined ? style[ 0 ].gradient[ 1 ] : 1 ) ) : KadenceColorOutput( '#999999', ( undefined !== style[ 0 ].gradient && style[ 0 ].gradient[ 1 ] !== undefined ? style[ 0 ].gradient[ 1 ] : 1 ) ) );
 			if ( undefined !== style[ 0 ].gradient && 'radial' === style[ 0 ].gradient[ 4 ] ) {
 				inputBG = `radial-gradient(at ${ ( undefined === style[ 0 ].gradient[ 6 ] ? 'center center' : style[ 0 ].gradient[ 6 ] ) }, ${ inputGrad } ${ ( undefined === style[ 0 ].gradient[ 2 ] ? '0' : style[ 0 ].gradient[ 2 ] ) }%, ${ inputGrad2 } ${ ( undefined === style[ 0 ].gradient[ 3 ] ? '100' : style[ 0 ].gradient[ 3 ] ) }%)`;
 			} else if ( undefined === style[ 0 ].gradient || 'radial' !== style[ 0 ].gradient[ 4 ] ) {
 				inputBG = `linear-gradient(${ ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 5 ] ? style[ 0 ].gradient[ 5 ] : '180' ) }deg, ${ inputGrad } ${ ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 2 ] ? style[ 0 ].gradient[ 2 ] : '0' ) }%, ${ inputGrad2 } ${ ( undefined !== style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 3 ] ? style[ 0 ].gradient[ 3 ] : '100' ) }%)`;
 			}
 		} else {
-			inputBG = ( undefined === style[ 0 ].background ? undefined : hexToRGBA( style[ 0 ].background, ( style[ 0 ].backgroundOpacity !== undefined ? style[ 0 ].backgroundOpacity : 1 ) ) );
+			inputBG = ( undefined === style[ 0 ].background ? undefined : KadenceColorOutput( style[ 0 ].background, ( style[ 0 ].backgroundOpacity !== undefined ? style[ 0 ].backgroundOpacity : 1 ) ) );
 		}
+		const removeOptionItem = ( previousIndex, fieldIndex ) => {
+			const amount = Math.abs( fields[ fieldIndex ].options.length );
+			if ( amount === 1 ) {
+				return;
+			}
+			const currentItems = filter( fields[ fieldIndex ].options, ( item, i ) => previousIndex !== i );
+			this.saveFields( { options: currentItems }, fieldIndex );
+		};
 		const fieldControls = ( index ) => {
 			const isFieldSelected = ( isSelected && this.state.selectedField === index );
 			return (
@@ -721,6 +760,8 @@ class KadenceForm extends Component {
 							{ value: 'accept', label: __( 'Accept', 'kadence-blocks' ) },
 							{ value: 'select', label: __( 'Select', 'kadence-blocks' ) },
 							{ value: 'tel', label: __( 'Telephone', 'kadence-blocks' ) },
+							{ value: 'checkbox', label: __( 'CheckBoxes', 'kadence-blocks' ) },
+							{ value: 'radio', label: __( 'Radio', 'kadence-blocks' ) },
 						] }
 						onChange={ value => {
 							this.saveFields( { type: value }, index );
@@ -741,18 +782,46 @@ class KadenceForm extends Component {
 							step={ 1 }
 						/>
 					) }
-					{ 'select' === fields[ index ].type && (
+					{ ( 'select' === fields[ index ].type || 'radio' === fields[ index ].type || 'checkbox' === fields[ index ].type ) && (
 						<Fragment>
 							<Fragment>
 								{ times( fields[ index ].options.length, n => (
-									<TextControl
-										className={ 'kb-option-text-control' }
-										key={ n }
-										label={ __( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) }
-										placeholder={ __( 'Option', 'kadence-blocks' ) }
-										value={ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }
-										onChange={ ( text ) => this.saveFieldsOptions( { label: text, value: text }, index, n ) }
-									/>
+									<div className="field-options-wrap">
+										
+										<TextControl
+											className={ 'kb-option-text-control' }
+											key={ n }
+											label={ __( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) }
+											placeholder={ __( 'Option', 'kadence-blocks' ) }
+											value={ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }
+											onChange={ ( text ) => this.saveFieldsOptions( { label: text, value: text }, index, n ) }
+										/>
+										<div className="kadence-blocks-list-item__control-menu">
+											<IconButton
+												icon="arrow-up"
+												onClick={ n === 0 ? undefined : this.onOptionMoveUp( n, index ) }
+												className="kadence-blocks-list-item__move-up"
+												label={ __( 'Move Item Up' ) }
+												aria-disabled={ n === 0 }
+												disabled={ n === 0 }
+											/>
+											<IconButton
+												icon="arrow-down"
+												onClick={ ( n + 1 ) === fields[ index ].options.length ? undefined : this.onOptionMoveDown( n, index ) }
+												className="kadence-blocks-list-item__move-down"
+												label={ __( 'Move Item Down' ) }
+												aria-disabled={ ( n + 1 ) === fields[ index ].options.length }
+												disabled={ ( n + 1 ) === fields[ index ].options.length }
+											/>
+											<IconButton
+												icon="no-alt"
+												onClick={ () => removeOptionItem( n, index ) }
+												className="kadence-blocks-list-item__remove"
+												label={ __( 'Remove Item' ) }
+												disabled={ 1 === fields[ index ].options.length }
+											/>
+										</div>
+									</div>
 								) ) }
 							</Fragment>
 							<Button
@@ -1031,12 +1100,12 @@ class KadenceForm extends Component {
 								<a href={ ( undefined !== fields[ index ].default && '' !== fields[ index ].default ? fields[ index ].default : '#' ) } className={ 'kb-accept-link' }>{ ( undefined !== fields[ index ].placeholder && '' !== fields[ index ].placeholder ? fields[ index ].placeholder : <span className="kb-placeholder">{ 'View Privacy Policy' }</span> ) }</a>
 							) }
 							<input type="checkbox" name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } className={ `kb-field kb-checkbox-style kb-${ fields[ index ].type }` }value="accept" checked={ fields[ index ].inline ? true : false } style={ {
-								borderColor: ( undefined === style[ 0 ].border ? undefined : hexToRGBA( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+								borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
 							} } />
 							<label htmlFor={ `kb_field_${ index }` } style={ {
 								fontWeight: labelFont[ 0 ].weight,
 								fontStyle: labelFont[ 0 ].style,
-								color: labelFont[ 0 ].color,
+								color: KadenceColorOutput( labelFont[ 0 ].color ),
 								fontSize: labelFont[ 0 ].size[ 0 ] + labelFont[ 0 ].sizeType,
 								lineHeight: ( labelFont[ 0 ].lineHeight && labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] + labelFont[ 0 ].lineType : undefined ),
 								letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
@@ -1059,7 +1128,7 @@ class KadenceForm extends Component {
 								<label htmlFor={ `kb_field_${ index }` } style={ {
 									fontWeight: labelFont[ 0 ].weight,
 									fontStyle: labelFont[ 0 ].style,
-									color: labelFont[ 0 ].color,
+									color: KadenceColorOutput( labelFont[ 0 ].color ),
 									fontSize: labelFont[ 0 ].size[ 0 ] + labelFont[ 0 ].sizeType,
 									lineHeight: ( labelFont[ 0 ].lineHeight && labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] + labelFont[ 0 ].lineType : undefined ),
 									letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
@@ -1082,7 +1151,7 @@ class KadenceForm extends Component {
 									paddingBottom: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 2 ] ? style[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
 									paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 									background: ( undefined !== inputBG ? inputBG : undefined ),
-									color: ( undefined !== style[ 0 ].color ? style[ 0 ].color : undefined ),
+									color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
 									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
 									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
 									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
@@ -1090,14 +1159,14 @@ class KadenceForm extends Component {
 									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
 									borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 									borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
-									borderColor: ( undefined === style[ 0 ].border ? undefined : hexToRGBA( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
-									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+									borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 								} } />
 							) }
 							{ 'select' === fields[ index ].type && (
 								<select name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } data-type={ fields[ index ].type } multiple={ ( fields[ index ].multiSelect ? true : false ) } className={ `kb-field kb-select-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } style={ {
 									background: ( undefined !== inputBG ? inputBG : undefined ),
-									color: ( undefined !== style[ 0 ].color ? style[ 0 ].color : undefined ),
+									color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
 									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
 									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
 									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
@@ -1105,8 +1174,8 @@ class KadenceForm extends Component {
 									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
 									borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 									borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
-									borderColor: ( undefined === style[ 0 ].border ? undefined : hexToRGBA( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
-									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+									borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 								} } >
 									{ times( fields[ index ].options.length, n => (
 										<option
@@ -1117,14 +1186,26 @@ class KadenceForm extends Component {
 									) ) }
 								</select>
 							) }
-							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && (
+							{ 'checkbox' === fields[ index ].type && (
+								<div data-type={ fields[ index ].type } className={ `kb-field kb-checkbox-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` }>
+									{ times( fields[ index ].options.length, n => (
+										<div key={ n } data-type={ fields[ index ].type } className={ `kb-checkbox-item kb-checkbox-item-${ n }` }>
+											<input type="checkbox" name={ `kb_field_${ index }[]${ n }` } id={ `kb_field_${ index }[]${ n }` } className={ 'kb-sub-field kb-checkbox-style' } value={ ( undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '' ) } checked={ ( undefined !== fields[ index ].options[ n ].value && fields[ index ].options[ n ].value === fields[ index ].default ? true : false ) } style={ {
+												borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+											} } />
+											<label htmlFor={ `kb_field_${ index }[]${ n }` }>{ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }</label>
+										</div>
+									) ) }
+								</div>
+							) }
+							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && 'checkbox' !== fields[ index ].type && 'radio' !== fields[ index ].type && (
 								<input name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete="off" data-required={ ( fields[ index ].required ? 'yes' : undefined ) } style={ {
 									paddingTop: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 0 ] ? style[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
 									paddingRight: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 1 ] ? style[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
 									paddingBottom: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 2 ] ? style[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
 									paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 									background: ( undefined !== inputBG ? inputBG : undefined ),
-									color: ( undefined !== style[ 0 ].color ? style[ 0 ].color : undefined ),
+									color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
 									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
 									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
 									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
@@ -1132,8 +1213,8 @@ class KadenceForm extends Component {
 									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
 									borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 									borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
-									borderColor: ( undefined === style[ 0 ].border ? undefined : hexToRGBA( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
-									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+									borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 								} } />
 							) }
 						</Fragment>
@@ -1218,37 +1299,37 @@ class KadenceForm extends Component {
 			let btnRad = '0';
 			let btnBox2 = '';
 			if ( undefined !== style[ 0 ].backgroundActiveType && 'gradient' === style[ 0 ].backgroundActiveType && undefined !== style[ 0 ].gradientActive ) {
-				inputGradA = ( undefined === style[ 0 ].backgroundActive ? hexToRGBA( '#ffffff', ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) ) : hexToRGBA( style[ 0 ].backgroundActive, ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) ) );
-				inputGradA2 = ( undefined === style[ 0 ].gradientActive[ 0 ] ? hexToRGBA( '#777777', ( style[ 0 ].gradientActive[ 1 ] !== undefined ? style[ 0 ].gradientActive[ 1 ] : 1 ) ) : hexToRGBA( style[ 0 ].gradientActive[ 0 ], ( style[ 0 ].gradientActive[ 1 ] !== undefined ? style[ 0 ].gradientActive[ 1 ] : 1 ) ) );
+				inputGradA = ( undefined === style[ 0 ].backgroundActive ? KadenceColorOutput( '#ffffff', ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) ) : KadenceColorOutput( style[ 0 ].backgroundActive, ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) ) );
+				inputGradA2 = ( undefined === style[ 0 ].gradientActive[ 0 ] ? KadenceColorOutput( '#777777', ( style[ 0 ].gradientActive[ 1 ] !== undefined ? style[ 0 ].gradientActive[ 1 ] : 1 ) ) : KadenceColorOutput( style[ 0 ].gradientActive[ 0 ], ( style[ 0 ].gradientActive[ 1 ] !== undefined ? style[ 0 ].gradientActive[ 1 ] : 1 ) ) );
 				if ( 'radial' === style[ 0 ].gradientActive[ 4 ] ) {
 					inputBGA = `radial-gradient(at ${ ( undefined === style[ 0 ].gradientActive[ 6 ] ? 'center center' : style[ 0 ].gradientActive[ 6 ] ) }, ${ inputGradA } ${ ( undefined === style[ 0 ].gradientActive[ 2 ] ? '0' : style[ 0 ].gradientActive[ 2 ] ) }%, ${ inputGradA2 } ${ ( undefined === style[ 0 ].gradientActive[ 3 ] ? '100' : style[ 0 ].gradientActive[ 3 ] ) }%)`;
 				} else if ( 'linear' === style[ 0 ].gradientActive[ 4 ] ) {
 					inputBGA = `linear-gradient(${ ( undefined === style[ 0 ].gradientActive[ 5 ] ? '180' : style[ 0 ].gradientActive[ 5 ] ) }deg, ${ inputGradA } ${ ( undefined === style[ 0 ].gradientActive[ 2 ] ? '0' : style[ 0 ].gradientActive[ 2 ] ) }%, ${ inputGradA2 } ${ ( undefined === style[ 0 ].gradientActive[ 3 ] ? '100' : style[ 0 ].gradientActive[ 3 ] ) }%)`;
 				}
 			} else if ( undefined !== style[ 0 ].backgroundActive && '' !== style[ 0 ].backgroundActive ) {
-				inputBGA = hexToRGBA( style[ 0 ].backgroundActive, ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) );
+				inputBGA = KadenceColorOutput( style[ 0 ].backgroundActive, ( style[ 0 ].backgroundActiveOpacity !== undefined ? style[ 0 ].backgroundActiveOpacity : 1 ) );
 			}
 			if ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 0 ] && style[ 0 ].boxShadowActive[ 0 ] ) {
-				inputBox = `${ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 0 ] && style[ 0 ].boxShadowActive[ 0 ] ? ( undefined !== style[ 0 ].boxShadowActive[ 7 ] && style[ 0 ].boxShadowActive[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadowActive[ 3 ] ? style[ 0 ].boxShadowActive[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 4 ] ? style[ 0 ].boxShadowActive[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 5 ] ? style[ 0 ].boxShadowActive[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 6 ] ? style[ 0 ].boxShadowActive[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== style[ 0 ].boxShadowActive[ 1 ] ? style[ 0 ].boxShadowActive[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadowActive[ 2 ] ? style[ 0 ].boxShadowActive[ 2 ] : 1 ) ) : undefined ) }`;
+				inputBox = `${ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 0 ] && style[ 0 ].boxShadowActive[ 0 ] ? ( undefined !== style[ 0 ].boxShadowActive[ 7 ] && style[ 0 ].boxShadowActive[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadowActive[ 3 ] ? style[ 0 ].boxShadowActive[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 4 ] ? style[ 0 ].boxShadowActive[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 5 ] ? style[ 0 ].boxShadowActive[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadowActive[ 6 ] ? style[ 0 ].boxShadowActive[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== style[ 0 ].boxShadowActive[ 1 ] ? style[ 0 ].boxShadowActive[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadowActive[ 2 ] ? style[ 0 ].boxShadowActive[ 2 ] : 1 ) ) : undefined ) }`;
 			}
 			if ( undefined !== submit[ 0 ].backgroundHoverType && 'gradient' === submit[ 0 ].backgroundHoverType && undefined !== submit[ 0 ].gradientHover ) {
-				btnHGrad = ( undefined === submit[ 0 ].backgroundHover ? hexToRGBA( '#ffffff', ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) ) : hexToRGBA( submit[ 0 ].backgroundHover, ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) ) );
-				btnHGrad2 = ( undefined === submit[ 0 ].gradientHover[ 0 ] ? hexToRGBA( '#777777', ( submit[ 0 ].gradientHover[ 1 ] !== undefined ? submit[ 0 ].gradientHover[ 1 ] : 1 ) ) : hexToRGBA( submit[ 0 ].gradientHover[ 0 ], ( submit[ 0 ].gradientHover[ 1 ] !== undefined ? submit[ 0 ].gradientHover[ 1 ] : 1 ) ) );
+				btnHGrad = ( undefined === submit[ 0 ].backgroundHover ? KadenceColorOutput( '#ffffff', ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) ) : KadenceColorOutput( submit[ 0 ].backgroundHover, ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) ) );
+				btnHGrad2 = ( undefined === submit[ 0 ].gradientHover[ 0 ] ? KadenceColorOutput( '#777777', ( submit[ 0 ].gradientHover[ 1 ] !== undefined ? submit[ 0 ].gradientHover[ 1 ] : 1 ) ) : KadenceColorOutput( submit[ 0 ].gradientHover[ 0 ], ( submit[ 0 ].gradientHover[ 1 ] !== undefined ? submit[ 0 ].gradientHover[ 1 ] : 1 ) ) );
 				if ( 'radial' === submit[ 0 ].gradientHover[ 4 ] ) {
 					btnHBG = `radial-gradient(at ${ ( undefined === submit[ 0 ].gradientHover[ 6 ] ? 'center center' : submit[ 0 ].gradientHover[ 6 ] ) }, ${ btnHGrad } ${ ( undefined === submit[ 0 ].gradientHover[ 2 ] ? '0' : submit[ 0 ].gradientHover[ 2 ] ) }%, ${ btnHGrad2 } ${ ( undefined === submit[ 0 ].gradientHover[ 3 ] ? '100' : submit[ 0 ].gradientHover[ 3 ] ) }%)`;
 				} else if ( 'linear' === submit[ 0 ].gradientHover[ 4 ] ) {
 					btnHBG = `linear-gradient(${ ( undefined === submit[ 0 ].gradientHover[ 5 ] ? '180' : submit[ 0 ].gradientHover[ 5 ] ) }deg, ${ btnHGrad } ${ ( undefined === submit[ 0 ].gradientHover[ 2 ] ? '0' : submit[ 0 ].gradientHover[ 2 ] ) }%, ${ btnHGrad2 } ${ ( undefined === submit[ 0 ].gradientHover[ 3 ] ? '100' : submit[ 0 ].gradientHover[ 3 ] ) }%)`;
 				}
 			} else if ( undefined !== submit[ 0 ].backgroundHover && '' !== submit[ 0 ].backgroundHover ) {
-				btnHBGnorm = hexToRGBA( submit[ 0 ].backgroundHover, ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) );
+				btnHBGnorm = KadenceColorOutput( submit[ 0 ].backgroundHover, ( submit[ 0 ].backgroundHoverOpacity !== undefined ? submit[ 0 ].backgroundHoverOpacity : 1 ) );
 			}
 			if ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] && undefined !== submit[ 0 ].boxShadowHover[ 7 ] && false === submit[ 0 ].boxShadowHover[ 7 ] ) {
-				btnHBox = `${ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] ? ( undefined !== submit[ 0 ].boxShadowHover[ 7 ] && submit[ 0 ].boxShadowHover[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadowHover[ 3 ] ? submit[ 0 ].boxShadowHover[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 4 ] ? submit[ 0 ].boxShadowHover[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 5 ] ? submit[ 0 ].boxShadowHover[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 6 ] ? submit[ 0 ].boxShadowHover[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== submit[ 0 ].boxShadowHover[ 1 ] ? submit[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadowHover[ 2 ] ? submit[ 0 ].boxShadowHover[ 2 ] : 1 ) ) : undefined ) }`;
+				btnHBox = `${ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] ? ( undefined !== submit[ 0 ].boxShadowHover[ 7 ] && submit[ 0 ].boxShadowHover[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadowHover[ 3 ] ? submit[ 0 ].boxShadowHover[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 4 ] ? submit[ 0 ].boxShadowHover[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 5 ] ? submit[ 0 ].boxShadowHover[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 6 ] ? submit[ 0 ].boxShadowHover[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== submit[ 0 ].boxShadowHover[ 1 ] ? submit[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadowHover[ 2 ] ? submit[ 0 ].boxShadowHover[ 2 ] : 1 ) ) : undefined ) }`;
 				btnBox2 = 'none';
 				btnRad = '0';
 			}
 			if ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] && undefined !== submit[ 0 ].boxShadowHover[ 7 ] && true === submit[ 0 ].boxShadowHover[ 7 ] ) {
-				btnBox2 = `${ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] ? ( undefined !== submit[ 0 ].boxShadowHover[ 7 ] && submit[ 0 ].boxShadowHover[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadowHover[ 3 ] ? submit[ 0 ].boxShadowHover[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 4 ] ? submit[ 0 ].boxShadowHover[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 5 ] ? submit[ 0 ].boxShadowHover[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 6 ] ? submit[ 0 ].boxShadowHover[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== submit[ 0 ].boxShadowHover[ 1 ] ? submit[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadowHover[ 2 ] ? submit[ 0 ].boxShadowHover[ 2 ] : 1 ) ) : undefined ) }`;
+				btnBox2 = `${ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] && submit[ 0 ].boxShadowHover[ 0 ] ? ( undefined !== submit[ 0 ].boxShadowHover[ 7 ] && submit[ 0 ].boxShadowHover[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadowHover[ 3 ] ? submit[ 0 ].boxShadowHover[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 4 ] ? submit[ 0 ].boxShadowHover[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 5 ] ? submit[ 0 ].boxShadowHover[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadowHover[ 6 ] ? submit[ 0 ].boxShadowHover[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== submit[ 0 ].boxShadowHover[ 1 ] ? submit[ 0 ].boxShadowHover[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadowHover[ 2 ] ? submit[ 0 ].boxShadowHover[ 2 ] : 1 ) ) : undefined ) }`;
 				btnRad = ( undefined !== submit[ 0 ].borderRadius ? submit[ 0 ].borderRadius : undefined );
 				btnHBox = 'none';
 			}
@@ -1257,13 +1338,13 @@ class KadenceForm extends Component {
 					${ ( style[ 0 ].colorActive ? 'color:' + style[ 0 ].colorActive + '!important;' : '' ) }
 					${ ( inputBGA ? 'background:' + inputBGA + '!important;' : '' ) }
 					${ ( inputBox ? 'box-shadow:' + inputBox + '!important;' : '' ) }
-					${ ( style[ 0 ].borderActive ? 'border-color:' + style[ 0 ].borderActive + '!important;' : '' ) }
+					${ ( style[ 0 ].borderActive ? 'border-color:' + KadenceColorOutput( style[ 0 ].borderActive ) + '!important;' : '' ) }
 				}
 				#kb-form-${ uniqueID } .kadence-blocks-form-field .kb-forms-submit:hover {
 					${ ( submit[ 0 ].colorHover ? 'color:' + submit[ 0 ].colorHover + '!important;' : '' ) }
 					${ ( btnHBGnorm ? 'background:' + btnHBGnorm + '!important;' : '' ) }
 					${ ( btnHBox ? 'box-shadow:' + btnHBox + '!important;' : '' ) }
-					${ ( submit[ 0 ].borderHover ? 'border-color:' + submit[ 0 ].borderHover + '!important;' : '' ) }
+					${ ( submit[ 0 ].borderHover ? 'border-color:' + KadenceColorOutput( submit[ 0 ].borderHover ) + '!important;' : '' ) }
 				}
 				#kb-form-${ uniqueID } .kadence-blocks-form-field .kb-forms-submit::before {
 					${ ( btnHBG ? 'background:' + btnHBG + ';' : '' ) }
@@ -1612,7 +1693,7 @@ class KadenceForm extends Component {
 										if ( 'focus' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Input Focus Color', 'kadence-blocks' ) }
 														colorValue={ ( style[ 0 ].colorActive ? style[ 0 ].colorActive : '' ) }
 														colorDefault={ '' }
@@ -1639,7 +1720,7 @@ class KadenceForm extends Component {
 													</div>
 													{ 'gradient' !== style[ 0 ].backgroundActiveType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Input Focus Background', 'kadence-blocks' ) }
 																colorValue={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
 																colorDefault={ '' }
@@ -1648,12 +1729,13 @@ class KadenceForm extends Component {
 																} }
 																opacityValue={ style[ 0 ].backgroundActiveOpacity }
 																onOpacityChange={ value => this.saveStyle( { backgroundActiveOpacity: value } ) }
+																onArrayChange={ ( color, opacity ) => this.saveStyle( { backgroundActive: color, backgroundActiveOpacity: opacity } ) }
 															/>
 														</div>
 													) }
 													{ 'gradient' === style[ 0 ].backgroundActiveType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
 																colorValue={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
 																colorDefault={ '' }
@@ -1662,6 +1744,7 @@ class KadenceForm extends Component {
 																} }
 																opacityValue={ style[ 0 ].backgroundActiveOpacity }
 																onOpacityChange={ value => this.saveStyle( { backgroundActiveOpacity: value } ) }
+																onArrayChange={ ( color, opacity ) => this.saveStyle( { backgroundActive: color, backgroundActiveOpacity: opacity } ) }
 															/>
 															<RangeControl
 																label={ __( 'Location', 'kadence-blocks' ) }
@@ -1672,7 +1755,7 @@ class KadenceForm extends Component {
 																min={ 0 }
 																max={ 100 }
 															/>
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
 																colorValue={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 0 ] ? style[ 0 ].gradientActive[ 0 ] : '#999999' ) }
 																colorDefault={ '#999999' }
@@ -1745,7 +1828,7 @@ class KadenceForm extends Component {
 															) }
 														</div>
 													) }
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Input Focus Border', 'kadence-blocks' ) }
 														colorValue={ ( style[ 0 ].borderActive ? style[ 0 ].borderActive : '' ) }
 														colorDefault={ '' }
@@ -1754,6 +1837,7 @@ class KadenceForm extends Component {
 														} }
 														opacityValue={ style[ 0 ].borderActiveOpacity }
 														onOpacityChange={ value => this.saveStyle( { borderActiveOpacity: value } ) }
+														onArrayChange={ ( color, opacity ) => this.saveStyle( { borderActive: color, borderActiveOpacity: opacity } ) }
 													/>
 													<BoxShadowControl
 														label={ __( 'Input Focus Box Shadow', 'kadence-blocks' ) }
@@ -1796,7 +1880,7 @@ class KadenceForm extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Input Color', 'kadence-blocks' ) }
 														colorValue={ ( style[ 0 ].color ? style[ 0 ].color : '' ) }
 														colorDefault={ '' }
@@ -1823,7 +1907,7 @@ class KadenceForm extends Component {
 													</div>
 													{ 'gradient' !== style[ 0 ].backgroundType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Input Background', 'kadence-blocks' ) }
 																colorValue={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
 																colorDefault={ '' }
@@ -1832,12 +1916,13 @@ class KadenceForm extends Component {
 																} }
 																opacityValue={ style[ 0 ].backgroundOpacity }
 																onOpacityChange={ value => this.saveStyle( { backgroundOpacity: value } ) }
+																onArrayChange={ ( color, opacity ) => this.saveStyle( { background: color, backgroundOpacity: opacity } ) }
 															/>
 														</div>
 													) }
 													{ 'gradient' === style[ 0 ].backgroundType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
 																colorValue={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
 																colorDefault={ '' }
@@ -1846,6 +1931,7 @@ class KadenceForm extends Component {
 																} }
 																opacityValue={ style[ 0 ].backgroundOpacity }
 																onOpacityChange={ value => this.saveStyle( { backgroundOpacity: value } ) }
+																onArrayChange={ ( color, opacity ) => this.saveStyle( { background: color, backgroundOpacity: opacity } ) }
 															/>
 															<RangeControl
 																label={ __( 'Location', 'kadence-blocks' ) }
@@ -1856,7 +1942,7 @@ class KadenceForm extends Component {
 																min={ 0 }
 																max={ 100 }
 															/>
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
 																colorValue={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 0 ] ? style[ 0 ].gradient[ 0 ] : '#999999' ) }
 																colorDefault={ '#999999' }
@@ -1929,7 +2015,7 @@ class KadenceForm extends Component {
 															) }
 														</div>
 													) }
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Input Border', 'kadence-blocks' ) }
 														colorValue={ ( style[ 0 ].border ? style[ 0 ].border : '' ) }
 														colorDefault={ '' }
@@ -1938,6 +2024,7 @@ class KadenceForm extends Component {
 														} }
 														opacityValue={ style[ 0 ].borderOpacity }
 														onOpacityChange={ value => this.saveStyle( { borderOpacity: value } ) }
+														onArrayChange={ ( color, opacity ) => this.saveStyle( { border: color, borderOpacity: opacity } ) }
 													/>
 													<BoxShadowControl
 														label={ __( 'Input Box Shadow', 'kadence-blocks' ) }
@@ -2027,7 +2114,7 @@ class KadenceForm extends Component {
 						title={ __( 'Label Styles', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
-						<AdvancedColorControl
+						<AdvancedPopColorControl
 							label={ __( 'Label Color', 'kadence-blocks' ) }
 							colorValue={ ( labelFont[ 0 ].color ? labelFont[ 0 ].color : '' ) }
 							colorDefault={ '' }
@@ -2042,7 +2129,7 @@ class KadenceForm extends Component {
 							onChange={ ( value ) => this.saveStyle( { showRequired: value } ) }
 						/>
 						{ style[ 0 ].showRequired && (
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Required Color', 'kadence-blocks' ) }
 								colorValue={ ( style[ 0 ].requiredColor ? style[ 0 ].requiredColor : '' ) }
 								colorDefault={ '' }
@@ -2412,7 +2499,7 @@ class KadenceForm extends Component {
 										if ( 'hover' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Button Hover Color', 'kadence-blocks' ) }
 														colorValue={ ( submit[ 0 ].colorHover ? submit[ 0 ].colorHover : '' ) }
 														colorDefault={ '' }
@@ -2439,7 +2526,7 @@ class KadenceForm extends Component {
 													</div>
 													{ 'gradient' !== submit[ 0 ].backgroundHoverType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Button Hover Background', 'kadence-blocks' ) }
 																colorValue={ ( submit[ 0 ].backgroundHover ? submit[ 0 ].backgroundHover : '' ) }
 																colorDefault={ '' }
@@ -2448,12 +2535,13 @@ class KadenceForm extends Component {
 																} }
 																opacityValue={ submit[ 0 ].backgroundHoverOpacity }
 																onOpacityChange={ value => this.saveSubmit( { backgroundHoverOpacity: value } ) }
+																onArrayChange={ ( color, opacity ) => this.saveSubmit( { backgroundHover: color, backgroundHoverOpacity: opacity } ) }
 															/>
 														</div>
 													) }
 													{ 'gradient' === submit[ 0 ].backgroundHoverType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
 																colorValue={ ( submit[ 0 ].backgroundHover ? submit[ 0 ].backgroundHover : '' ) }
 																colorDefault={ '' }
@@ -2462,6 +2550,7 @@ class KadenceForm extends Component {
 																} }
 																opacityValue={ submit[ 0 ].backgroundHoverOpacity }
 																onOpacityChange={ value => this.saveSubmit( { backgroundHoverOpacity: value } ) }
+																onArrayChange={ ( color, opacity ) => this.saveSubmit( { backgroundHover: color, backgroundHoverOpacity: opacity } ) }
 															/>
 															<RangeControl
 																label={ __( 'Location', 'kadence-blocks' ) }
@@ -2472,7 +2561,7 @@ class KadenceForm extends Component {
 																min={ 0 }
 																max={ 100 }
 															/>
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
 																colorValue={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 0 ] ? submit[ 0 ].gradientHover[ 0 ] : '#999999' ) }
 																colorDefault={ '#999999' }
@@ -2545,7 +2634,7 @@ class KadenceForm extends Component {
 															) }
 														</div>
 													) }
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Button Hover Border', 'kadence-blocks' ) }
 														colorValue={ ( submit[ 0 ].borderHover ? submit[ 0 ].borderHover : '' ) }
 														colorDefault={ '' }
@@ -2554,6 +2643,7 @@ class KadenceForm extends Component {
 														} }
 														opacityValue={ submit[ 0 ].borderHoverOpacity }
 														onOpacityChange={ value => this.saveSubmit( { borderHoverOpacity: value } ) }
+														onArrayChange={ ( color, opacity ) => this.saveSubmit( { borderHover: color, borderHoverOpacity: opacity } ) }
 													/>
 													<BoxShadowControl
 														label={ __( 'Button Hover Box Shadow', 'kadence-blocks' ) }
@@ -2596,7 +2686,7 @@ class KadenceForm extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Button Color', 'kadence-blocks' ) }
 														colorValue={ ( submit[ 0 ].color ? submit[ 0 ].color : '' ) }
 														colorDefault={ '' }
@@ -2623,7 +2713,7 @@ class KadenceForm extends Component {
 													</div>
 													{ 'gradient' !== submit[ 0 ].backgroundType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Button Background', 'kadence-blocks' ) }
 																colorValue={ ( submit[ 0 ].background ? submit[ 0 ].background : '' ) }
 																colorDefault={ '' }
@@ -2632,12 +2722,13 @@ class KadenceForm extends Component {
 																} }
 																opacityValue={ submit[ 0 ].backgroundOpacity }
 																onOpacityChange={ value => this.saveSubmit( { backgroundOpacity: value } ) }
+																onArrayChange={ ( color, opacity ) => this.saveSubmit( { background: color, backgroundOpacity: opacity } ) }
 															/>
 														</div>
 													) }
 													{ 'gradient' === submit[ 0 ].backgroundType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
 																colorValue={ ( submit[ 0 ].background ? submit[ 0 ].background : '' ) }
 																colorDefault={ '' }
@@ -2646,6 +2737,7 @@ class KadenceForm extends Component {
 																} }
 																opacityValue={ submit[ 0 ].backgroundOpacity }
 																onOpacityChange={ value => this.saveSubmit( { backgroundOpacity: value } ) }
+																onArrayChange={ ( color, opacity ) => this.saveSubmit( { background: color, backgroundOpacity: opacity } ) }
 															/>
 															<RangeControl
 																label={ __( 'Location', 'kadence-blocks' ) }
@@ -2656,7 +2748,7 @@ class KadenceForm extends Component {
 																min={ 0 }
 																max={ 100 }
 															/>
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
 																colorValue={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 0 ] ? submit[ 0 ].gradient[ 0 ] : '#999999' ) }
 																colorDefault={ '#999999' }
@@ -2729,7 +2821,7 @@ class KadenceForm extends Component {
 															) }
 														</div>
 													) }
-													<AdvancedColorControl
+													<AdvancedPopColorControl
 														label={ __( 'Input Border', 'kadence-blocks' ) }
 														colorValue={ ( submit[ 0 ].border ? submit[ 0 ].border : '' ) }
 														colorDefault={ '' }
@@ -2738,6 +2830,7 @@ class KadenceForm extends Component {
 														} }
 														opacityValue={ submit[ 0 ].borderOpacity }
 														onOpacityChange={ value => this.saveSubmit( { borderOpacity: value } ) }
+														onArrayChange={ ( color, opacity ) => this.saveSubmit( { border: color, borderOpacity: opacity } ) }
 													/>
 													<BoxShadowControl
 														label={ __( 'Input Box Shadow', 'kadence-blocks' ) }
@@ -2953,7 +3046,7 @@ class KadenceForm extends Component {
 							title={ __( 'Success Message Colors', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Success Message Color', 'kadence-blocks' ) }
 								colorValue={ ( messageFont[ 0 ].colorSuccess ? messageFont[ 0 ].colorSuccess : '' ) }
 								colorDefault={ '' }
@@ -2961,7 +3054,7 @@ class KadenceForm extends Component {
 									this.saveMessageFont( { colorSuccess: value } );
 								} }
 							/>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Success Message Background', 'kadence-blocks' ) }
 								colorValue={ ( messageFont[ 0 ].backgroundSuccess ? messageFont[ 0 ].backgroundSuccess : '' ) }
 								colorDefault={ '' }
@@ -2971,7 +3064,7 @@ class KadenceForm extends Component {
 								opacityValue={ messageFont[ 0 ].backgroundSuccessOpacity }
 								onOpacityChange={ value => this.saveMessageFont( { backgroundSuccessOpacity: value } ) }
 							/>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Success Message Border', 'kadence-blocks' ) }
 								colorValue={ ( messageFont[ 0 ].borderSuccess ? messageFont[ 0 ].borderSuccess : '' ) }
 								colorDefault={ '' }
@@ -3002,7 +3095,7 @@ class KadenceForm extends Component {
 							title={ __( 'Error Message Colors', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Error Message Color', 'kadence-blocks' ) }
 								colorValue={ ( messageFont[ 0 ].colorError ? messageFont[ 0 ].colorError : '' ) }
 								colorDefault={ '' }
@@ -3010,7 +3103,7 @@ class KadenceForm extends Component {
 									this.saveMessageFont( { colorError: value } );
 								} }
 							/>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Error Message Background', 'kadence-blocks' ) }
 								colorValue={ ( messageFont[ 0 ].backgroundError ? messageFont[ 0 ].backgroundError : '' ) }
 								colorDefault={ '' }
@@ -3020,7 +3113,7 @@ class KadenceForm extends Component {
 								opacityValue={ messageFont[ 0 ].backgroundErrorOpacity }
 								onOpacityChange={ value => this.saveMessageFont( { backgroundErrorOpacity: value } ) }
 							/>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Error Message Border', 'kadence-blocks' ) }
 								colorValue={ ( messageFont[ 0 ].borderError ? messageFont[ 0 ].borderError : '' ) }
 								colorDefault={ '' }
@@ -3130,7 +3223,7 @@ class KadenceForm extends Component {
 								className={ `kb-forms-submit kb-button-size-${ submit[ 0 ].size } kb-button-width-${ submit[ 0 ].widthType }` }
 								style={ {
 									background: ( undefined !== btnBG ? btnBG : undefined ),
-									color: ( undefined !== submit[ 0 ].color ? submit[ 0 ].color : undefined ),
+									color: ( undefined !== submit[ 0 ].color ? KadenceColorOutput( submit[ 0 ].color ) : undefined ),
 									fontSize: ( submitFont[ 0 ].size && submitFont[ 0 ].size[ 0 ] ? submitFont[ 0 ].size[ 0 ] + submitFont[ 0 ].sizeType : undefined ),
 									lineHeight: ( submitFont[ 0 ].lineHeight && submitFont[ 0 ].lineHeight[ 0 ] ? submitFont[ 0 ].lineHeight[ 0 ] + submitFont[ 0 ].lineType : undefined ),
 									fontWeight: submitFont[ 0 ].weight,
@@ -3139,7 +3232,7 @@ class KadenceForm extends Component {
 									textTransform: ( submitFont[ 0 ].textTransform ? submitFont[ 0 ].textTransform  : undefined ),
 									fontFamily: ( submitFont[ 0 ].family ? submitFont[ 0 ].family : '' ),
 									borderRadius: ( undefined !== submit[ 0 ].borderRadius ? submit[ 0 ].borderRadius + 'px' : undefined ),
-									borderColor: ( undefined === submit[ 0 ].border ? undefined : hexToRGBA( submit[ 0 ].border, ( submit[ 0 ].borderOpacity !== undefined ? submit[ 0 ].borderOpacity : 1 ) ) ),
+									borderColor: ( undefined === submit[ 0 ].border ? undefined : KadenceColorOutput( submit[ 0 ].border, ( submit[ 0 ].borderOpacity !== undefined ? submit[ 0 ].borderOpacity : 1 ) ) ),
 									width: ( undefined !== submit[ 0 ].widthType && 'fixed' === submit[ 0 ].widthType && undefined !== submit[ 0 ].fixedWidth && undefined !== submit[ 0 ].fixedWidth[ 0 ] ? submit[ 0 ].fixedWidth[ 0 ] + 'px' : undefined ),
 									paddingTop: ( 'custom' === submit[ 0 ].size && '' !== submit[ 0 ].deskPadding[ 0 ] ? submit[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
 									paddingRight: ( 'custom' === submit[ 0 ].size && '' !== submit[ 0 ].deskPadding[ 1 ] ? submit[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
@@ -3149,7 +3242,7 @@ class KadenceForm extends Component {
 									borderRightWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 1 ] ? submit[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
 									borderBottomWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 2 ] ? submit[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 									borderLeftWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 3 ] ? submit[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
-									boxShadow: ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 0 ] && submit[ 0 ].boxShadow[ 0 ] ? ( undefined !== submit[ 0 ].boxShadow[ 7 ] && submit[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadow[ 3 ] ? submit[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 4 ] ? submit[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 5 ] ? submit[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 6 ] ? submit[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + hexToRGBA( ( undefined !== submit[ 0 ].boxShadow[ 1 ] ? submit[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadow[ 2 ] ? submit[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+									boxShadow: ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 0 ] && submit[ 0 ].boxShadow[ 0 ] ? ( undefined !== submit[ 0 ].boxShadow[ 7 ] && submit[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadow[ 3 ] ? submit[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 4 ] ? submit[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 5 ] ? submit[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 6 ] ? submit[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== submit[ 0 ].boxShadow[ 1 ] ? submit[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadow[ 2 ] ? submit[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 									marginTop: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 0 ] ? submitMargin[ 0 ].desk[ 0 ] + marginUnit : undefined ),
 									marginRight: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 1 ] ? submitMargin[ 0 ].desk[ 1 ] + marginUnit : undefined ),
 									marginBottom: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 2 ] ? submitMargin[ 0 ].desk[ 2 ] + marginUnit : undefined ),

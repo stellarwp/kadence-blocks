@@ -1,6 +1,6 @@
 import map from 'lodash/map';
 import MeasurementControls from '../../measurement-control';
-import AdvancedColorControl from '../../advanced-color-control-default';
+import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
 /**
  * Internal block libraries
  */
@@ -15,13 +15,10 @@ const {
 const {
 	PanelBody,
 	RangeControl,
-	ButtonGroup,
 	Button,
 	TabPanel,
 	Dashicon,
 	Modal,
-	ToggleControl,
-	SelectControl,
 } = wp.components;
 
 import icons from '../../icons';
@@ -465,7 +462,7 @@ class KadenceColumnDefault extends Component {
 							initialOpen={ true }
 						>
 							<div className="components-base-control">
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Background Color' ) }
 									colorValue={ ( undefined !== columnConfig.background ? columnConfig.background : '' ) }
 									colorDefault={ '' }
@@ -475,7 +472,7 @@ class KadenceColumnDefault extends Component {
 								/>
 							</div>
 							<div className="components-base-control">
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Border Color' ) }
 									colorValue={ ( undefined !== columnConfig.border ? columnConfig.border : '' ) }
 									colorDefault={ '' }
@@ -518,7 +515,7 @@ class KadenceColumnDefault extends Component {
 								initialOpen={ false }
 							>
 								<div className="components-base-control">
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Text Color' ) }
 										colorValue={ ( columnConfig.textColor ? columnConfig.textColor : '' ) }
 										colorDefault={ '' }
@@ -526,7 +523,7 @@ class KadenceColumnDefault extends Component {
 									/>
 								</div>
 								<div className="components-base-control">
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Link Color' ) }
 										colorValue={ ( columnConfig.linkColor ? columnConfig.linkColor : '' ) }
 										colorDefault={ '' }
@@ -534,7 +531,7 @@ class KadenceColumnDefault extends Component {
 									/>
 								</div>
 								<div className="components-base-control">
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Link Hover Color' ) }
 										colorValue={ ( columnConfig.linkHoverColor ? columnConfig.linkHoverColor : '' ) }
 										colorDefault={ '' }

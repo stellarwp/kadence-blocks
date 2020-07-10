@@ -18,6 +18,7 @@ import InlineAdvancedPopColorControl from '../../advanced-inline-pop-color-contr
 import KadenceColorOutput from '../../kadence-color-output';
 import WebfontLoader from '../../fontloader';
 import TextShadowControl from '../../text-shadow-control';
+import HeadingStyleCopyPaste from './copy-paste-style';
 
 /**
  * Internal dependencies
@@ -553,6 +554,10 @@ class KadenceAdvancedHeading extends Component {
 						onChange={ ( nextAlign ) => {
 							setAttributes( { align: nextAlign } );
 						} }
+					/>
+					<HeadingStyleCopyPaste
+						onPaste={ value => setAttributes( value ) }
+						blockAttributes={ this.props.attributes }
 					/>
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (

@@ -9,6 +9,7 @@
  */
 import icons from '../../icons';
 import hexToRGBA from '../../hex-to-rgba';
+import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Import edit
  */
@@ -248,7 +249,7 @@ registerBlockType( 'kadence/column', {
 	save( { attributes } ) {
 		const { id, background, backgroundOpacity, backgroundImg, uniqueID } = attributes;
 		const bgImg = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' );
-		const backgroundString = ( background && '' === bgImg ? hexToRGBA( background, backgroundOpacity ) : undefined );
+		const backgroundString = ( background && '' === bgImg ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
 		return (
 			<div className={ `inner-column-${ id } kadence-column${ uniqueID }` }>
 				<div className={ 'kt-inside-inner-col' } style={ {

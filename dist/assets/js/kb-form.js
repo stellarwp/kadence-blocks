@@ -217,6 +217,18 @@ jQuery( function( $ ) {
 						}
 						break;
 
+					case 'checkbox':
+						var length = $(item).find('input:checked').length;
+
+						if ( !length ) {
+							error = true;
+							error_type = 'required';
+
+							// make it warn collor
+							kadence_blocks_form.markError( item,  error_type );
+						}
+						break;
+	
 					case 'email':
 						var val = $(item).val();
 

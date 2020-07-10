@@ -1210,6 +1210,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/advanced-pop-color-control-default.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/advanced-pop-color-control-default-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/advanced-pop-color-control.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1464,6 +1475,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/blocks/advanced-heading/copy-paste-style.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/advanced-heading/copy-paste-style-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/blocks/advanced-heading/deprecated.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1541,6 +1563,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/blocks/column/block-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/column/copy-paste-style.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/column/copy-paste-style-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
@@ -1791,6 +1824,17 @@
 		"oF": 2,
 		"oS": 3,
 		"sct": 1
+		},
+	"/src/blocks/lottie/block.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/lottie/block-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
 		},
 	"/src/blocks/pane/block.js": {
 		"bF": 0,
@@ -2800,6 +2844,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/plugins/kadence-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/responsive-range-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/responsive-range-control-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

@@ -129,6 +129,18 @@
 			padding: 10px 12px;
 			border-radius: 3px;
 		}
+		.kb-checkbox-style-field {
+			flex-basis: 100%;
+			max-width: 100%;
+			width: 100%;
+			flex-grow: 1;
+			margin-top: 0.3em;
+		}
+		.kb-checkbox-item {
+			display: flex;
+			margin: 0;
+			align-items: center;
+		}
 		&.kb-input-size-custom {
 			.kb-text-style-field {
 				min-height: 0;

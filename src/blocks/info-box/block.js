@@ -57,7 +57,7 @@ registerBlockType( 'kadence/infobox', {
 	edit,
 
 	save: props => {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored }, className } = props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored, mediaNumber, number }, className } = props;
 		const titleTagName = 'h' + titleFont[ 0 ].level;
 		let relAttr;
 		if ( '_blank' === target ) {
@@ -114,6 +114,17 @@ registerBlockType( 'kadence/infobox', {
 				</div>
 			</div>
 		);
+		const numberOut = (
+			<div className={ `kadence-info-box-number-container kt-info-number-animate-${ mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none' }` } >
+				<div className={ 'kadence-info-box-number-inner-container' } >
+					<RichText.Content
+						className="kt-blocks-info-box-number"
+						tagName={ 'div' }
+						value={ number ? number : '' }
+					/>
+				</div>
+			</div>
+		);
 		const learMoreOutput = (
 			<div className="kt-blocks-info-box-learnmore-wrap">
 				<RichText.Content
@@ -165,12 +176,15 @@ registerBlockType( 'kadence/infobox', {
 					<a className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }${ ( hAlignTablet && '' !== hAlignTablet ? ' kb-info-tablet-halign-' + hAlignTablet : '' ) }${ ( hAlignMobile && '' !== hAlignMobile ? ' kb-info-mobile-halign-' + hAlignMobile : '' ) }` } target={ ( '_blank' === target ? target : undefined ) } rel={ relAttr } href={ link }>
 						{ 'none' !== mediaType && (
 							<div className={ 'kt-blocks-info-box-media-container' }>
-								<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>
+								<div className={ `kt-blocks-info-box-media ${ 'number' === mediaType ? 'kt-info-media-animate-' + mediaNumber[ 0 ].hoverAnimation : '' }${ 'image' === mediaType ? 'kt-info-media-animate-' + mediaImage[ 0 ].hoverAnimation : '' }${ 'image' !== mediaType && 'number' !== mediaType ? 'kt-info-media-animate-' + mediaIcon[ 0 ].hoverAnimation : '' }` }>
 									{ mediaImage[ 0 ].url && 'image' === mediaType && (
 										image
 									) }
 									{ 'icon' === mediaType && (
 										icon
+									) }
+									{ 'number' === mediaType && (
+										numberOut
 									) }
 								</div>
 							</div>
@@ -182,12 +196,15 @@ registerBlockType( 'kadence/infobox', {
 					<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } kt-info-halign-${ hAlign }${ ( mediaVAlign && 'middle' !== mediaVAlign ? ' kb-info-box-vertical-media-align-' + mediaVAlign : '' ) }` }>
 						{ 'none' !== mediaType && (
 							<div className={ 'kt-blocks-info-box-media-container' }>
-								<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` }>
+								<div className={ `kt-blocks-info-box-media ${ 'number' === mediaType ? 'kt-info-media-animate-' + mediaNumber[ 0 ].hoverAnimation : '' }${ 'image' === mediaType ? 'kt-info-media-animate-' + mediaImage[ 0 ].hoverAnimation : '' }${ 'image' !== mediaType && 'number' !== mediaType ? 'kt-info-media-animate-' + mediaIcon[ 0 ].hoverAnimation : '' }` }>
 									{ mediaImage[ 0 ].url && 'image' === mediaType && (
 										image
 									) }
 									{ 'icon' === mediaType && (
 										icon
+									) }
+									{ 'number' === mediaType && (
+										numberOut
 									) }
 								</div>
 							</div>

@@ -10,6 +10,7 @@
 import icons from '../../icons';
 import edit from './edit';
 import SvgPattern from './svg-pattern';
+import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Import Css
  */
@@ -27,22 +28,6 @@ const {
 	registerBlockType,
 	createBlock,
 } = wp.blocks;
-
-function kadenceHexToRGB( hex, alpha ) {
-	hex = hex.replace( '#', '' );
-	const r = parseInt( hex.length === 3 ? hex.slice( 0, 1 ).repeat( 2 ) : hex.slice( 0, 2 ), 16 );
-	const g = parseInt( hex.length === 3 ? hex.slice( 1, 2 ).repeat( 2 ) : hex.slice( 2, 4 ), 16 );
-	const b = parseInt( hex.length === 3 ? hex.slice( 2, 3 ).repeat( 2 ) : hex.slice( 4, 6 ), 16 );
-	let alp;
-	if ( alpha < 10 ) {
-		alp = '0.0' + alpha;
-	} else if ( alpha >= 100 ) {
-		alp = '1';
-	} else {
-		alp = '0.' + alpha;
-	}
-	return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alp + ')';
-}
 /**
  * Register: a Gutenberg Block.
  *
@@ -182,9 +167,17 @@ registerBlockType( 'kadence/spacer', {
 	edit,
 	save: props => {
 		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap } } = props;
-		const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
+		let alp;
+		if ( dividerOpacity < 10 ) {
+			alp = '0.0' + dividerOpacity;
+		} else if ( dividerOpacity >= 100 ) {
+			alp = '1';
+		} else {
+			alp = '0.' + dividerOpacity;
+		}
+		const dividerBorderColor = ( ! dividerColor ? KadenceColorOutput( '#eeeeee', alp ) : KadenceColorOutput( dividerColor, alp ) );
 		const getDataUri = () => {
-			let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ dividerColor } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
+			let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
 			svgStringPre = svgStringPre.replace( 'patterntransform', 'patternTransform' );
 			svgStringPre = svgStringPre.replace( 'patternunits', 'patternUnits' );
 			const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
@@ -202,7 +195,7 @@ registerBlockType( 'kadence/spacer', {
 									height: ( dividerHeight < 10 ? 10 : dividerHeight ) + 'px',
 									width: dividerWidth + '%',
 								} }>
-									<SvgPattern uniqueID={ uniqueID } color={ dividerColor } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
+									<SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
 								</span>
 							) }
 							{ dividerStyle !== 'stripe' && (
@@ -339,7 +332,7 @@ registerBlockType( 'kadence/spacer', {
 			},
 			save: ( { attributes } ) => {
 				const { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth } = attributes;
-				const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
+				const dividerBorderColor = ( ! dividerColor ? KadenceColorOutput( '#eeeeee', dividerOpacity ) : KadenceColorOutput( dividerColor, dividerOpacity ) );
 				return (
 					<div className={ `align${ blockAlignment }` }>
 						<div className={ `kt-block-spacer kt-block-spacer-halign-${ hAlign }` } style={ {
@@ -399,7 +392,7 @@ registerBlockType( 'kadence/spacer', {
 			},
 			save: ( { attributes } ) => {
 				const { blockAlignment, spacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth } = attributes;
-				const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
+				const dividerBorderColor = ( ! dividerColor ? KadenceColorOutput( '#eee', dividerOpacity ) : KadenceColorOutput( dividerColor, dividerOpacity ) );
 				return (
 					<div className={ `align${ blockAlignment }` }>
 						<div className="kt-block-spacer" style={ {

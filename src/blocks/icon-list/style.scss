@@ -4,6 +4,13 @@
  * CSS for both Frontend+Backend.
  */
 // Item
+.wp-block-kadence-iconlist ul.kt-svg-icon-list:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
+    list-style: none;
+    padding: 0;
+}
+.wp-block-kadence-iconlist ul.kt-svg-icon-list li.kt-svg-icon-list-item-wrap:not(.this-prevents-issues):not(.this-stops-third-party-issues):not(.tijsloc) {
+    display: flex;
+}
 .wp-block-kadence-iconlist ul.kt-svg-icon-list {
     padding: 0;
     list-style: none;

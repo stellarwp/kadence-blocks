@@ -115,7 +115,10 @@
 }
 .components-popover.kt-popover-font-family .components-popover__content {
 	padding:10px;
-	z-index: 1;
+    z-index: 1;
+    > div {
+        padding:0;
+    }
 	.kt-heading-fontfamily-title {
 		margin: 0;
 		line-height: 10px;

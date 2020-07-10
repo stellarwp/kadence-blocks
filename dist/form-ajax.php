@@ -47,6 +47,7 @@ class KB_Ajax_Form {
 				$valid = check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false );
 			}
 			if ( $valid ) {
+				error_log( print_r( $_POST, true ) );
 				// Lets get form data.
 				$form_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_id'] ) );
 				$post_id = absint( wp_unslash( $_POST['_kb_form_post_id'] ) );
@@ -282,10 +283,12 @@ class KB_Ajax_Form {
 			case 'password':
 			case 'hidden':
 			case 'search':
-			case 'checkbox':
 			case 'radio':
 			case 'select':
 				$value = ( $multi_select && is_array( $value ) ? sanitize_text_field( implode( ', ', $value ) ) : sanitize_text_field( $value ) );
+				break;
+			case 'checkbox':
+				$value = ( is_array( $value ) ? sanitize_text_field( implode( ', ', $value ) ) : sanitize_text_field( $value ) );
 				break;
 			case 'url':
 				$value = esc_url_raw( trim( $value ) );

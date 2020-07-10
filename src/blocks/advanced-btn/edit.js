@@ -356,7 +356,8 @@ class KadenceAdvancedButton extends Component {
 			} else {
 				btnbg = ( 'transparent' === btns[ index ].background || undefined === btns[ index ].background ? undefined : KadenceColorOutput( btns[ index ].background, ( btns[ index ].backgroundOpacity !== undefined ? btns[ index ].backgroundOpacity : 1 ) ) );
 			}
-			const ariaLabel = sprintf( __( 'Button %1$d of %2$d', 'kadence-blocks' ), ( index + 1 ), btns.length );
+			//const ariaLabel = sprintf( __( 'Button %1$d of %2$d', 'kadence-blocks' ), ( index + 1 ), btns.length );
+			const ariaLabel =  __( 'Button', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' );
 			const moveable = ( index === 0 && ( ( index + 1 ) === btns.length ) ? false : true );
 			return (
 				<div
@@ -1118,6 +1119,7 @@ class KadenceAdvancedButton extends Component {
 								onOpacityChange={ value => {
 									this.saveArrayUpdate( { backgroundHoverOpacity: value }, index );
 								} }
+								onArrayChange={ ( color, opacity ) => this.saveArrayUpdate( { backgroundHover: color, backgroundHoverOpacity: opacity }, index ) }
 							/>
 						</div>
 					) }
@@ -1134,6 +1136,7 @@ class KadenceAdvancedButton extends Component {
 								onOpacityChange={ value => {
 									this.saveArrayUpdate( { backgroundHoverOpacity: value }, index );
 								} }
+								onArrayChange={ ( color, opacity ) => this.saveArrayUpdate( { backgroundHover: color, backgroundHoverOpacity: opacity }, index ) }
 							/>
 							<RangeControl
 								label={ __( 'Location', 'kadence-blocks' ) }
@@ -1228,6 +1231,7 @@ class KadenceAdvancedButton extends Component {
 						onOpacityChange={ value => {
 							this.saveArrayUpdate( { borderHoverOpacity: value }, index );
 						} }
+						onArrayChange={ ( color, opacity ) => this.saveArrayUpdate( { borderHover: color, borderHoverOpacity: opacity }, index ) }
 					/>
 					<BoxShadowControl
 						label={ __( 'Hover Box Shadow', 'kadence-blocks' ) }
@@ -1309,6 +1313,7 @@ class KadenceAdvancedButton extends Component {
 								onOpacityChange={ value => {
 									this.saveArrayUpdate( { backgroundOpacity: value }, index );
 								} }
+								onArrayChange={ ( color, opacity ) => this.saveArrayUpdate( { background: color, backgroundOpacity: opacity }, index ) }
 							/>
 						</div>
 					) }
@@ -1325,6 +1330,7 @@ class KadenceAdvancedButton extends Component {
 								onOpacityChange={ value => {
 									this.saveArrayUpdate( { backgroundOpacity: value }, index );
 								} }
+								onArrayChange={ ( color, opacity ) => this.saveArrayUpdate( { background: color, backgroundOpacity: opacity }, index ) }
 							/>
 							<RangeControl
 								label={ __( 'Location', 'kadence-blocks' ) }
@@ -1419,6 +1425,7 @@ class KadenceAdvancedButton extends Component {
 						onOpacityChange={ value => {
 							this.saveArrayUpdate( { borderOpacity: value }, index );
 						} }
+						onArrayChange={ ( color, opacity ) => this.saveArrayUpdate( { border: color, borderOpacity: opacity }, index ) }
 					/>
 					<BoxShadowControl
 						label={ __( 'Box Shadow', 'kadence-blocks' ) }

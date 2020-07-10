@@ -22,7 +22,6 @@ import WebfontLoader from '../../fontloader';
 import hexToRGBA from '../../hex-to-rgba';
 import GenIcon from '../../genicon';
 import FaIco from '../../faicons';
-import AdvancedColorControl from '../../advanced-color-control';
 import Slider from 'react-slick';
 import IconControl from '../../icon-control';
 import IconRender from '../../icon-render';
@@ -1261,6 +1260,7 @@ class KadenceTestimonials extends Component {
 												onColorChange={ value => saveIconStyles( { background: value } ) }
 												opacityValue={ iconStyles[ 0 ].backgroundOpacity }
 												onOpacityChange={ value => saveIconStyles( { backgroundOpacity: value } ) }
+												onArrayChange={ ( color, opacity ) => saveIconStyles( { background: color, backgroundOpacity: opacity } ) }
 											/>
 											<AdvancedPopColorControl
 												label={ __( 'Icon Border Color' ) }
@@ -1269,6 +1269,7 @@ class KadenceTestimonials extends Component {
 												onColorChange={ value => saveIconStyles( { border: value } ) }
 												opacityValue={ iconStyles[ 0 ].borderOpacity }
 												onOpacityChange={ value => saveIconStyles( { borderOpacity: value } ) }
+												onArrayChange={ ( color, opacity ) => saveIconStyles( { border: color, borderOpacity: opacity } ) }
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
@@ -1507,6 +1508,7 @@ class KadenceTestimonials extends Component {
 												onColorChange={ value => savemediaStyles( { background: value } ) }
 												opacityValue={ mediaStyles[ 0 ].backgroundOpacity }
 												onOpacityChange={ value => savemediaStyles( { backgroundOpacity: value } ) }
+												onArrayChange={ ( color, opacity ) => savemediaStyles( { background: color, backgroundOpacity: opacity } ) }
 											/>
 											<AdvancedPopColorControl
 												label={ __( 'Media Border Color' ) }
@@ -1515,6 +1517,7 @@ class KadenceTestimonials extends Component {
 												onColorChange={ value => savemediaStyles( { border: value } ) }
 												opacityValue={ mediaStyles[ 0 ].borderOpacity }
 												onOpacityChange={ value => savemediaStyles( { borderOpacity: value } ) }
+												onArrayChange={ ( color, opacity ) => savemediaStyles( { border: color, borderOpacity: opacity } ) }
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
@@ -1728,6 +1731,7 @@ class KadenceTestimonials extends Component {
 												onColorChange={ value => saveShadow( { color: value } ) }
 												opacityValue={ shadow[ 0 ].opacity }
 												onOpacityChange={ value => saveShadow( { opacity: value } ) }
+												onArrayChange={ ( color, opacity ) => saveShadow( { color: color, opacity: opacity } ) }
 											/>
 											<RangeControl
 												label={ __( 'Shadow Blur' ) }

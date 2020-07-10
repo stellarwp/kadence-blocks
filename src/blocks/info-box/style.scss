@@ -63,6 +63,8 @@
 	img {
 		padding:0;
 		margin:0;
+		max-width: 100%;
+		height: auto;
 	}
 }
 .kt-blocks-info-box-media-align-top .kt-blocks-info-box-media {
@@ -93,7 +95,7 @@ text-decoration: none;
 .kt-blocks-info-box-media-align-left {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+	justify-content: flex-start;
 }
 .kt-blocks-info-box-media-align-right {
     display: flex;
@@ -234,4 +236,14 @@ text-decoration: none;
 }
 .kt-info-icon-animate-flip .kadence-info-box-icon-inner-container {
 backface-visibility: hidden;
+}
+.wp-block-kadence-infobox .kt-info-svg-icon, .wp-block-kadence-infobox .kt-blocks-info-box-number {
+	font-size:50px;
+	line-height: 1em;
+	min-width: 1em;
+	svg {
+		display: block !important;
+		width: 1em !important;
+		height: 1em !important;
+	}
 }

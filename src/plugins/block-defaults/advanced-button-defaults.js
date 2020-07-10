@@ -1,6 +1,6 @@
 import TypographyControls from '../../typography-control';
 import map from 'lodash/map';
-import AdvancedColorControl from '../../advanced-color-control-default';
+import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
 import BoxShadowControl from '../../box-shadow-control';
 import IconControl from '../../icon-control';
 /**
@@ -495,7 +495,7 @@ class KadenceButtonDefault extends Component {
 											if ( 'hover' === tab.name ) {
 												tabout = (
 													<Fragment>
-														<AdvancedColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Hover Text Color' ) }
 															colorValue={ ( btns[ 0 ].colorHover ? btns[ 0 ].colorHover : '#ffffff' ) }
 															colorDefault={ '#ffffff' }
@@ -522,7 +522,7 @@ class KadenceButtonDefault extends Component {
 														</div>
 														{ 'gradient' !== btns[ 0 ].backgroundHoverType && (
 															<div className="kt-inner-sub-section">
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Background Color' ) }
 																	colorValue={ ( btns[ 0 ].backgroundHover ? btns[ 0 ].backgroundHover : '#444444' ) }
 																	colorDefault={ '#444444' }
@@ -538,7 +538,7 @@ class KadenceButtonDefault extends Component {
 														) }
 														{ 'gradient' === btns[ 0 ].backgroundHoverType && (
 															<div className="kt-inner-sub-section">
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Gradient Color 1' ) }
 																	colorValue={ ( btns[ 0 ].backgroundHover ? btns[ 0 ].backgroundHover : '#444444' ) }
 																	colorDefault={ '#444444' }
@@ -559,7 +559,7 @@ class KadenceButtonDefault extends Component {
 																	min={ 0 }
 																	max={ 100 }
 																/>
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Gradient Color 2' ) }
 																	colorValue={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ) }
 																	colorDefault={ '#777777' }
@@ -632,7 +632,7 @@ class KadenceButtonDefault extends Component {
 																) }
 															</div>
 														) }
-														<AdvancedColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Hover Border Color' ) }
 															colorValue={ ( btns[ 0 ].borderHover ? btns[ 0 ].borderHover : '#444444' ) }
 															colorDefault={ '#444444' }
@@ -685,7 +685,7 @@ class KadenceButtonDefault extends Component {
 											} else {
 												tabout = (
 													<Fragment>
-														<AdvancedColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Text Color' ) }
 															colorValue={ btns[ 0 ].color }
 															colorDefault={ '#555555' }
@@ -712,7 +712,7 @@ class KadenceButtonDefault extends Component {
 														</div>
 														{ 'gradient' !== btns[ 0 ].backgroundType && (
 															<div className="kt-inner-sub-section">
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Background Color' ) }
 																	colorValue={ btns[ 0 ].background }
 																	colorDefault={ '' }
@@ -728,7 +728,7 @@ class KadenceButtonDefault extends Component {
 														) }
 														{ 'gradient' === btns[ 0 ].backgroundType && (
 															<div className="kt-inner-sub-section">
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Gradient Color 1' ) }
 																	colorValue={ btns[ 0 ].background }
 																	colorDefault={ '' }
@@ -749,7 +749,7 @@ class KadenceButtonDefault extends Component {
 																	min={ 0 }
 																	max={ 100 }
 																/>
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Gradient Color 2' ) }
 																	colorValue={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ) }
 																	colorDefault={ '#999999' }
@@ -822,7 +822,7 @@ class KadenceButtonDefault extends Component {
 																) }
 															</div>
 														) }
-														<AdvancedColorControl
+														<AdvancedPopColorControl
 															label={ __( 'Border Color' ) }
 															colorValue={ ( btns[ 0 ].border ? btns[ 0 ].border : '#555555' ) }
 															colorDefault={ '#555555' }

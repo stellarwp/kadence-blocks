@@ -8,6 +8,7 @@
 import itemicons from '../../icons';
 import times from 'lodash/times';
 import IconRender from '../../icon-render';
+import KadenceColorOutput from '../../kadence-color-output';
 
 import edit from './edit';
 /**
@@ -219,10 +220,10 @@ registerBlockType( 'kadence/iconlist', {
 					{ items[ index ].icon && items[ index ].link && (
 						<a href={ items[ index ].link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === items[ index ].target ? items[ index ].target : undefined ) } rel={ '_blank' === items[ index ].target ? 'noopener noreferrer' : undefined }>
 							<IconRender className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
-								color: ( items[ index ].color ? items[ index ].color : undefined ),
-								backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? items[ index ].background : undefined ),
+								color: ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
+								backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].background ) : undefined ),
 								padding: ( items[ index ].padding && items[ index ].style !== 'default' ? items[ index ].padding + 'px' : undefined ),
-								borderColor: ( items[ index ].border && items[ index ].style !== 'default' ? items[ index ].border : undefined ),
+								borderColor: ( items[ index ].border && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].border ) : undefined ),
 								borderWidth: ( items[ index ].borderWidth && items[ index ].style !== 'default' ? items[ index ].borderWidth + 'px' : undefined ),
 								borderRadius: ( items[ index ].borderRadius && items[ index ].style !== 'default' ? items[ index ].borderRadius + '%' : undefined ),
 							} } />
@@ -236,10 +237,10 @@ registerBlockType( 'kadence/iconlist', {
 					{ items[ index ].icon && ! items[ index ].link && (
 						<Fragment>
 							<IconRender className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
-								color: ( items[ index ].color ? items[ index ].color : undefined ),
-								backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? items[ index ].background : undefined ),
+								color: ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
+								backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].background ) : undefined ),
 								padding: ( items[ index ].padding && items[ index ].style !== 'default' ? items[ index ].padding + 'px' : undefined ),
-								borderColor: ( items[ index ].border && items[ index ].style !== 'default' ? items[ index ].border : undefined ),
+								borderColor: ( items[ index ].border && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].border ) : undefined ),
 								borderWidth: ( items[ index ].borderWidth && items[ index ].style !== 'default' ? items[ index ].borderWidth + 'px' : undefined ),
 								borderRadius: ( items[ index ].borderRadius && items[ index ].style !== 'default' ? items[ index ].borderRadius + '%' : undefined ),
 								marginTop: ( items[ index ].marginTop ? items[ index ].marginTop + 'px' : undefined ),

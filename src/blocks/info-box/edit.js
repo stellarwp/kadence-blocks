@@ -18,13 +18,14 @@ import map from 'lodash/map';
 import get from 'lodash/get';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
-import AdvancedColorControl from '../../advanced-color-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ImageSizeControl from '../../image-size-control';
 import WebfontLoader from '../../fontloader';
-import hexToRGBA from '../../hex-to-rgba';
 import IconRender from '../../icon-render';
 import IconControl from '../../icon-control';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
+import ResponsiveRangeControl from '../../responsive-range-control';
+import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Internal block libraries
  */
@@ -154,7 +155,7 @@ class KadenceInfoBox extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored, number, mediaNumber }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, containerMarginControl } = this.state;
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 		const widthTypes = [
@@ -270,7 +271,7 @@ class KadenceInfoBox extends Component {
 						hoverBorder: mediaIcon[ 0 ].hoverBorder,
 						borderRadius: 200,
 						borderWidth: [ 0, 0, 0, 0 ],
-						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						padding: ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
 						margin: [ 0, 15, 10, 15 ],
 					} ],
 					mediaImage: [ {
@@ -340,7 +341,7 @@ class KadenceInfoBox extends Component {
 						hoverBorder: mediaIcon[ 0 ].hoverBorder,
 						borderRadius: 0,
 						borderWidth: [ 0, 0, 0, 0 ],
-						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						padding: ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
 						margin: [ 0, 0, 16, 0 ],
 					} ],
 					mediaImage: [ {
@@ -409,8 +410,8 @@ class KadenceInfoBox extends Component {
 						border: ( undefined === mediaIcon[ 0 ].border || '#444444' === mediaIcon[ 0 ].border ? '#eeeeee' : mediaIcon[ 0 ].border ),
 						hoverBorder: ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
 						borderRadius: 200,
-						borderWidth: ( 'icon' === mediaType ? [ 5, 5, 5, 5 ] : [ 0, 0, 0, 0 ] ),
-						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						borderWidth: ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 5, 5, 5, 5 ] : [ 0, 0, 0, 0 ] ),
+						padding: ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
 						margin: [ 0, 20, 0, 0 ],
 					} ],
 					mediaImage: [ {
@@ -550,7 +551,7 @@ class KadenceInfoBox extends Component {
 						hoverBorder: ( undefined === mediaIcon[ 0 ].hoverBorder || '#444444' === mediaIcon[ 0 ].hoverBorder ? '#eeeeee' : mediaIcon[ 0 ].hoverBorder ),
 						borderRadius: 0,
 						borderWidth: [ 5, 5, 5, 5 ],
-						padding: ( 'icon' === mediaType ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
+						padding: ( ( 'icon' === mediaType || 'number' === mediaType ) ? [ 20, 20, 20, 20 ] : [ 0, 0, 0, 0 ] ),
 						margin: [ -75, 0, 20, 0 ],
 					} ],
 					mediaImage: [ {
@@ -963,6 +964,9 @@ class KadenceInfoBox extends Component {
 		const onChangeTitle = value => {
 			setAttributes( { title: value } );
 		};
+		const onChangeNumber = value => {
+			setAttributes( { number: value } );
+		};
 		const gconfig = {
 			google: {
 				families: [ titleFont[ 0 ].family + ( titleFont[ 0 ].variant ? ':' + titleFont[ 0 ].variant : '' ) ],
@@ -978,9 +982,15 @@ class KadenceInfoBox extends Component {
 				families: [ learnMoreStyles[ 0 ].family + ( learnMoreStyles[ 0 ].variant ? ':' + learnMoreStyles[ 0 ].variant : '' ) ],
 			},
 		};
+		const ngconfig = {
+			google: {
+				families: [ mediaNumber[ 0 ].family + ( mediaNumber[ 0 ].variant ? ':' + mediaNumber[ 0 ].variant : '' ) ],
+			},
+		};
 		const config = ( titleFont[ 0 ].google ? gconfig : '' );
 		const tconfig = ( textFont[ 0 ].google ? tgconfig : '' );
 		const lconfig = ( learnMoreStyles[ 0 ].google ? lgconfig : '' );
+		const nconfig = ( mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].google ? ngconfig : '' );
 		const titleTagName = 'h' + titleFont[ 0 ].level;
 		const ALLOWED_MEDIA_TYPES = [ 'image' ];
 		const onSelectImage = media => {
@@ -1116,6 +1126,39 @@ class KadenceInfoBox extends Component {
 				mediaIcon: newUpdate,
 			} );
 		};
+		const saveMediaNumber = ( value ) => {
+			if ( undefined === mediaNumber ) {
+				const tempMediaNumber = [ {
+					family: '',
+					google: false,
+					hoverAnimation: 'none',
+					style: '',
+					weight: '',
+					variant: '',
+					subset: '',
+					loadGoogle: true,
+				} ];
+				const tempNewUpdate = tempMediaNumber.map( ( item, index ) => {
+					if ( 0 === index ) {
+						item = { ...item, ...value };
+					}
+					return item;
+				} );
+				setAttributes( {
+					mediaNumber: tempNewUpdate,
+				} );
+			} else {
+				const newUpdate = this.props.attributes.mediaNumber.map( ( item, index ) => {
+					if ( 0 === index ) {
+						item = { ...item, ...value };
+					}
+					return item;
+				} );
+				setAttributes( {
+					mediaNumber: newUpdate,
+				} );
+			}
+		};
 		const saveMediaStyle = ( value ) => {
 			const newUpdate = mediaStyle.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -1207,34 +1250,43 @@ class KadenceInfoBox extends Component {
 		const mediaImagedraw = ( 'drawborder' === mediaImage[ 0 ].hoverAnimation || 'grayscale-border-draw' === mediaImage[ 0 ].hoverAnimation ? true : false );
 		const renderCSS = (
 			<style>
-				{ ( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon { color: ${ mediaIcon[ 0 ].hoverColor } !important; }` : '' ) }
+				{ ( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${ KadenceColorOutput( mediaIcon[ 0 ].hoverColor ) } !important; }` : '' ) }
 				{ ( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media img, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .editor-media-placeholder { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }` : '' ) }
-				{ ( titleHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${ titleHoverColor } !important; }` : '' ) }
-				{ ( textHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${ textHoverColor } !important; }` : '' ) }
-				{ ( learnMoreStyles[ 0 ].colorHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${ learnMoreStyles[ 0 ].colorHover } !important; }` : '' ) }
-				{ ( learnMoreStyles[ 0 ].borderHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${ learnMoreStyles[ 0 ].borderHover } !important; }` : '' ) }
-				{ ( learnMoreStyles[ 0 ].backgroundHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${ learnMoreStyles[ 0 ].backgroundHover } !important; }` : '' ) }
-				{ ( containerHoverBackground ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { background: ${ ( containerHoverBackground ? hexToRGBA( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) ) } !important; }` : '' ) }
-				{ ( containerHoverBorder ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { border-color: ${ ( containerHoverBorder ? hexToRGBA( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) ) } !important; }` : '' ) }
-				{ ( displayShadow ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { box-shadow: ${ shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + hexToRGBA( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity ) } !important; }` : '' ) }
+				{ ( titleHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${ KadenceColorOutput( titleHoverColor ) } !important; }` : '' ) }
+				{ ( textHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${ KadenceColorOutput( textHoverColor ) } !important; }` : '' ) }
+				{ ( learnMoreStyles[ 0 ].colorHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${ KadenceColorOutput( learnMoreStyles[ 0 ].colorHover ) } !important; }` : '' ) }
+				{ ( learnMoreStyles[ 0 ].borderHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { border-color: ${ KadenceColorOutput( learnMoreStyles[ 0 ].borderHover ) } !important; }` : '' ) }
+				{ ( learnMoreStyles[ 0 ].backgroundHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { background-color: ${ KadenceColorOutput( learnMoreStyles[ 0 ].backgroundHover ) } !important; }` : '' ) }
+				{ ( containerHoverBackground ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { background: ${ ( containerHoverBackground ? KadenceColorOutput( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) ) } !important; }` : '' ) }
+				{ ( containerHoverBorder ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { border-color: ${ ( containerHoverBorder ? KadenceColorOutput( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) ) } !important; }` : '' ) }
+				{ ( displayShadow ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover { box-shadow: ${ shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity ) } !important; }` : '' ) }
 				{ ( mediaStyle[ 0 ].hoverBackground ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { background: ${ mediaStyle[ 0 ].hoverBackground } !important; }` : '' ) }
-				{ ( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${ mediaStyle[ 0 ].hoverBorder } !important; }` : '' ) }
-				{ ( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${ mediaStyle[ 0 ].hoverBorder } !important; }` : '' ) }
+				{ ( mediaStyle[ 0 ].hoverBorder && 'icon' === mediaType && 'drawborder' !== mediaIcon[ 0 ].hoverAnimation ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } !important; }` : '' ) }
+				{ ( mediaStyle[ 0 ].hoverBorder && 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' !== mediaNumber[ 0 ].hoverAnimation ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } !important; }` : '' ) }
+				{ ( mediaStyle[ 0 ].hoverBorder && 'image' === mediaType && true !== mediaImagedraw ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media { border-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } !important; }` : '' ) }
 				{ 'icon' === mediaType && 'drawborder' === mediaIcon[ 0 ].hoverAnimation && (
 					`#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ mediaStyle[ 0 ].border }; }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
-					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${ mediaStyle[ 0 ].hoverBorder } ; border-right-color: ${ mediaStyle[ 0 ].hoverBorder }; border-bottom-color: ${ mediaStyle[ 0 ].hoverBorder } }
-					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${ mediaStyle[ 0 ].hoverBorder }; border-right-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-bottom-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-top-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }`
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } ; border-right-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) }; border-bottom-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } }
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) }; border-right-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-bottom-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-top-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }`
+				) }
+				{ 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' === mediaNumber[ 0 ].hoverAnimation && (
+					`#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ mediaStyle[ 0 ].border }; }
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } ; border-right-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) }; border-bottom-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } }
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) }; border-right-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-bottom-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-top-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }`
 				) }
 				{ 'image' === mediaType && true === mediaImagedraw && (
 					`#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ mediaStyle[ 0 ].border }; }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-width: 0; }
-					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${ mediaStyle[ 0 ].hoverBorder } ; border-right-color: ${ mediaStyle[ 0 ].hoverBorder }; border-bottom-color: ${ mediaStyle[ 0 ].hoverBorder } }
-					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${ mediaStyle[ 0 ].hoverBorder }; border-right-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-bottom-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-top-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }`
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } ; border-right-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) }; border-bottom-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } }
+					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) }; border-right-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-bottom-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-top-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }`
 				) }
 			</style>
 		);
@@ -1471,7 +1523,7 @@ class KadenceInfoBox extends Component {
 												if ( 'hover' === tab.name ) {
 													tabout = (
 														<Fragment>
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Hover Background' ) }
 																colorValue={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
 																colorDefault={ '#f2f2f2' }
@@ -1479,7 +1531,7 @@ class KadenceInfoBox extends Component {
 																onColorChange={ value => setAttributes( { containerHoverBackground: value } ) }
 																onOpacityChange={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
 															/>
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Hover Border' ) }
 																colorValue={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
 																colorDefault={ '#eeeeee' }
@@ -1492,7 +1544,7 @@ class KadenceInfoBox extends Component {
 												} else {
 													tabout = (
 														<Fragment>
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Container Background' ) }
 																colorValue={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
 																colorDefault={ '#f2f2f2' }
@@ -1500,7 +1552,7 @@ class KadenceInfoBox extends Component {
 																onColorChange={ value => setAttributes( { containerBackground: value } ) }
 																onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 															/>
-															<AdvancedColorControl
+															<AdvancedPopColorControl
 																label={ __( 'Container Border' ) }
 																colorValue={ ( containerBorder ? containerBorder : '#eeeeee' ) }
 																colorDefault={ '#eeeeee' }
@@ -1671,6 +1723,7 @@ class KadenceInfoBox extends Component {
 									options={ [
 										{ value: 'icon', label: __( 'Icon' ) },
 										{ value: 'image', label: __( 'Image' ) },
+										{ value: 'number', label: __( 'Number' ) },
 										{ value: 'none', label: __( 'None' ) },
 									] }
 									onChange={ value => setAttributes( { mediaType: value } ) }
@@ -1825,7 +1878,7 @@ class KadenceInfoBox extends Component {
 																<Fragment>
 																	{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
 																		<Fragment>
-																			<AdvancedColorControl
+																			<AdvancedPopColorControl
 																				label={ __( 'SVG Hover Color' ) }
 																				colorValue={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
 																				colorDefault={ '#444444' }
@@ -1834,13 +1887,13 @@ class KadenceInfoBox extends Component {
 																			<small>{ __( '*you must force inline svg for this to have effect.' ) }</small>
 																		</Fragment>
 																	) }
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Image Hover Background' ) }
 																		colorValue={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
 																		colorDefault={ 'transparent' }
 																		onColorChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Image Hover Border' ) }
 																		colorValue={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
 																		colorDefault={ '#444444' }
@@ -1853,7 +1906,7 @@ class KadenceInfoBox extends Component {
 																<Fragment>
 																	{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
 																		<Fragment>
-																			<AdvancedColorControl
+																			<AdvancedPopColorControl
 																				label={ __( 'SVG Color' ) }
 																				colorValue={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
 																				colorDefault={ '#444444' }
@@ -1862,13 +1915,13 @@ class KadenceInfoBox extends Component {
 																			<small>{ __( '*you must force inline svg for this to have effect.' ) }</small>
 																		</Fragment>
 																	) }
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Image Background' ) }
 																		colorValue={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
 																		colorDefault={ 'transparent' }
 																		onColorChange={ value => saveMediaStyle( { background: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Image Border' ) }
 																		colorValue={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
 																		colorDefault={ '#444444' }
@@ -1889,6 +1942,18 @@ class KadenceInfoBox extends Component {
 										<IconControl
 											value={ mediaIcon[ 0 ].icon }
 											onChange={ value => saveMediaIcon( { icon: value } ) }
+										/>
+										<ResponsiveRangeControl
+											label={ __( 'Icon Size' ) }
+											value={ mediaIcon[ 0 ].size }
+											mobileValue={ mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : '' }
+											tabletValue={ mediaIcon[ 0 ].tabletSize ? mediaIcon[ 0 ].tabletSize : '' }
+											onChange={ ( value ) => saveMediaIcon( { size: value } ) }
+											onChangeTablet={ ( value ) => saveMediaIcon( { tabletSize: value } ) }
+											onChangeMobile={ ( value ) => saveMediaIcon( { mobileSize: value } ) }
+											min={ 5 }
+											max={ 250 }
+											step={ 1 }
 										/>
 										<RangeControl
 											label={ __( 'Icon Size' ) }
@@ -1963,19 +2028,19 @@ class KadenceInfoBox extends Component {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<Fragment>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Icon Hover Color' ) }
 																		colorValue={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
 																		colorDefault={ '#444444' }
 																		onColorChange={ value => saveMediaIcon( { hoverColor: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Icon Hover Background' ) }
 																		colorValue={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
 																		colorDefault={ 'transparent' }
 																		onColorChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Icon Hover Border' ) }
 																		colorValue={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
 																		colorDefault={ '#444444' }
@@ -1986,19 +2051,19 @@ class KadenceInfoBox extends Component {
 														} else {
 															tabout = (
 																<Fragment>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Icon Color' ) }
 																		colorValue={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
 																		colorDefault={ '#444444' }
 																		onColorChange={ value => saveMediaIcon( { color: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Icon Background' ) }
 																		colorValue={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
 																		colorDefault={ 'transparent' }
 																		onColorChange={ value => saveMediaStyle( { background: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Icon Border Color' ) }
 																		colorValue={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
 																		colorDefault={ '#444444' }
@@ -2017,6 +2082,141 @@ class KadenceInfoBox extends Component {
 											value={ mediaIcon[ 0 ].title }
 											onChange={ value => saveMediaIcon( { title: value } ) }
 										/>
+									</Fragment>
+								) }
+								{ 'number' === mediaType && (
+									<Fragment>
+										<ResponsiveRangeControl
+											label={ __( 'Size' ) }
+											value={ mediaIcon[ 0 ].size }
+											mobileValue={ mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : '' }
+											tabletValue={ mediaIcon[ 0 ].tabletSize ? mediaIcon[ 0 ].tabletSize : '' }
+											onChange={ ( value ) => saveMediaIcon( { size: value } ) }
+											onChangeTablet={ ( value ) => saveMediaIcon( { tabletSize: value } ) }
+											onChangeMobile={ ( value ) => saveMediaIcon( { mobileSize: value } ) }
+											min={ 5 }
+											max={ 250 }
+											step={ 1 }
+										/>
+										<TypographyControls
+											fontFamily={ mediaNumber[ 0 ].family }
+											onFontFamily={ ( value ) => saveMediaNumber( { family: value } ) }
+											onFontChange={ ( select ) => {
+												saveMediaNumber( {
+													family: select.value,
+													google: select.google,
+												} );
+											} }
+											googleFont={ undefined !== mediaNumber[ 0 ].google ? mediaNumber[ 0 ].google : false }
+											onGoogleFont={ ( value ) => saveMediaNumber( { google: value } ) }
+											loadGoogleFont={ undefined !== mediaNumber[ 0 ].loadGoogle ? mediaNumber[ 0 ].loadGoogle : true }
+											onLoadGoogleFont={ ( value ) => saveMediaNumber( { loadGoogle: value } ) }
+											fontVariant={ mediaNumber[ 0 ].variant ? mediaNumber[ 0 ].variant : '' }
+											onFontVariant={ ( value ) => saveMediaNumber( { variant: value } ) }
+											fontWeight={ mediaNumber[ 0 ].weight ? mediaNumber[ 0 ].weight : '' }
+											onFontWeight={ ( value ) => saveMediaNumber( { weight: value } ) }
+											fontStyle={ mediaNumber[ 0 ].style ? mediaNumber[ 0 ].style : '' }
+											onFontStyle={ ( value ) => saveMediaNumber( { style: value } ) }
+											fontSubset={ mediaNumber[ 0 ].subset ? mediaNumber[ 0 ].subset : '' }
+											onFontSubset={ ( value ) => saveMediaNumber( { subset: value } ) }
+										/>
+										<MeasurementControls
+											label={ __( 'Number Border' ) }
+											measurement={ mediaStyle[ 0 ].borderWidth }
+											control={ mediaBorderControl }
+											onChange={ ( value ) => saveMediaStyle( { borderWidth: value } ) }
+											onControl={ ( value ) => this.setState( { mediaBorderControl: value } ) }
+											min={ 0 }
+											max={ 40 }
+											step={ 1 }
+										/>
+										<RangeControl
+											label={ __( 'Number Border Radius (px)' ) }
+											value={ mediaStyle[ 0 ].borderRadius }
+											onChange={ value => saveMediaStyle( { borderRadius: value } ) }
+											step={ 1 }
+											min={ 0 }
+											max={ 200 }
+										/>
+										<SelectControl
+											label={ __( 'Number Hover Animation' ) }
+											value={ mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none' }
+											options={ [
+												{ value: 'none', label: __( 'None' ) },
+												{ value: 'drawborder', label: __( 'Border Spin In' ) },
+											] }
+											onChange={ value => saveMediaNumber( { hoverAnimation: value } ) }
+										/>
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'normal',
+													title: __( 'Normal' ),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'hover',
+													title: __( 'Hover' ),
+													className: 'kt-hover-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															tabout = (
+																<Fragment>
+																	<AdvancedPopColorControl
+																		label={ __( 'Number Hover Color' ) }
+																		colorValue={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaIcon( { hoverColor: value } ) }
+																	/>
+																	<AdvancedPopColorControl
+																		label={ __( 'Number Hover Background' ) }
+																		colorValue={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
+																		colorDefault={ 'transparent' }
+																		onColorChange={ value => saveMediaStyle( { hoverBackground: value } ) }
+																	/>
+																	<AdvancedPopColorControl
+																		label={ __( 'Number Hover Border' ) }
+																		colorValue={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaStyle( { hoverBorder: value } ) }
+																	/>
+																</Fragment>
+															);
+														} else {
+															tabout = (
+																<Fragment>
+																	<AdvancedPopColorControl
+																		label={ __( 'Number Color' ) }
+																		colorValue={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaIcon( { color: value } ) }
+																	/>
+																	<AdvancedPopColorControl
+																		label={ __( 'Number Background' ) }
+																		colorValue={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
+																		colorDefault={ 'transparent' }
+																		onColorChange={ value => saveMediaStyle( { background: value } ) }
+																	/>
+																	<AdvancedPopColorControl
+																		label={ __( 'Number Border Color' ) }
+																		colorValue={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
+																		colorDefault={ '#444444' }
+																		onColorChange={ value => saveMediaStyle( { border: value } ) }
+																	/>
+																</Fragment>
+															);
+														}
+													}
+													return <div>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
 									</Fragment>
 								) }
 								<MeasurementControls
@@ -2074,7 +2274,7 @@ class KadenceInfoBox extends Component {
 													if ( tab.name ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Hover Color' ) }
 																	colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
 																	colorDefault={ '' }
@@ -2083,7 +2283,7 @@ class KadenceInfoBox extends Component {
 															);
 														} else {
 															tabout = (
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Title Color' ) }
 																	colorValue={ ( titleColor ? titleColor : '' ) }
 																	colorDefault={ '' }
@@ -2236,7 +2436,7 @@ class KadenceInfoBox extends Component {
 													if ( tab.name ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Hover Color' ) }
 																	colorValue={ ( textHoverColor ? textHoverColor : '' ) }
 																	colorDefault={ '' }
@@ -2245,7 +2445,7 @@ class KadenceInfoBox extends Component {
 															);
 														} else {
 															tabout = (
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Text Color' ) }
 																	colorValue={ ( textColor ? textColor : '' ) }
 																	colorDefault={ '' }
@@ -2399,19 +2599,19 @@ class KadenceInfoBox extends Component {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<Fragment>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'HOVER: Text Color' ) }
 																		colorValue={ ( learnMoreStyles[ 0 ].colorHover ? learnMoreStyles[ 0 ].colorHover : '#ffffff' ) }
 																		colorDefault={ '#ffffff' }
 																		onColorChange={ value => saveLearnMoreStyles( { colorHover: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'HOVER: Background' ) }
 																		colorValue={ ( learnMoreStyles[ 0 ].backgroundHover ? learnMoreStyles[ 0 ].backgroundHover : '#444444' ) }
 																		colorDefault={ '#444444' }
 																		onColorChange={ value => saveLearnMoreStyles( { backgroundHover: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'HOVER: Border Color' ) }
 																		colorValue={ ( learnMoreStyles[ 0 ].borderHover ? learnMoreStyles[ 0 ].borderHover : '#444444' ) }
 																		colorDefault={ '#444444' }
@@ -2422,19 +2622,19 @@ class KadenceInfoBox extends Component {
 														} else {
 															tabout = (
 																<Fragment>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Text Color' ) }
 																		colorValue={ ( learnMoreStyles[ 0 ].color ? learnMoreStyles[ 0 ].color : '' ) }
 																		colorDefault={ '' }
 																		onColorChange={ value => saveLearnMoreStyles( { color: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Background' ) }
 																		colorValue={ ( learnMoreStyles[ 0 ].background ? learnMoreStyles[ 0 ].background : '' ) }
 																		colorDefault={ 'transparent' }
 																		onColorChange={ value => saveLearnMoreStyles( { background: value } ) }
 																	/>
-																	<AdvancedColorControl
+																	<AdvancedPopColorControl
 																		label={ __( 'Border Color' ) }
 																		colorValue={ ( learnMoreStyles[ 0 ].border ? learnMoreStyles[ 0 ].border : '#555555' ) }
 																		colorDefault={ '#555555' }
@@ -2543,7 +2743,7 @@ class KadenceInfoBox extends Component {
 													if ( 'hover' === tab.name ) {
 														tabout = (
 															<Fragment>
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Shadow Color' ) }
 																	colorValue={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
 																	colorDefault={ '' }
@@ -2588,7 +2788,7 @@ class KadenceInfoBox extends Component {
 													} else {
 														tabout = (
 															<Fragment>
-																<AdvancedColorControl
+																<AdvancedPopColorControl
 																	label={ __( 'Shadow Color' ) }
 																	colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
 																	colorDefault={ '' }
@@ -2642,9 +2842,9 @@ class KadenceInfoBox extends Component {
 					</InspectorControls>
 				) }
 				<div className={ `kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${ mediaAlign } ${ isSelectedClass } kt-info-halign-${ hAlign } kb-info-box-vertical-media-align-${ mediaVAlign }` } style={ {
-					boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + hexToRGBA( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
-					borderColor: ( containerBorder ? hexToRGBA( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
-					background: ( containerBackground ? hexToRGBA( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : hexToRGBA( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
+					boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
+					borderColor: ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
+					background: ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
 					borderRadius: containerBorderRadius + 'px',
 					borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
 					padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
@@ -2658,9 +2858,9 @@ class KadenceInfoBox extends Component {
 						<div className={ 'kt-blocks-info-box-media-container' } style={ {
 							margin: ( mediaStyle[ 0 ].margin ? mediaStyle[ 0 ].margin[ 0 ] + 'px ' + mediaStyle[ 0 ].margin[ 1 ] + 'px ' + mediaStyle[ 0 ].margin[ 2 ] + 'px ' + mediaStyle[ 0 ].margin[ 3 ] + 'px' : '' ),
 						} }>
-							<div className={ `kt-blocks-info-box-media kt-info-media-animate-${ 'image' === mediaType ? mediaImage[ 0 ].hoverAnimation : mediaIcon[ 0 ].hoverAnimation }` } style={ {
-								borderColor: mediaStyle[ 0 ].border,
-								backgroundColor: mediaStyle[ 0 ].background,
+							<div className={ `kt-blocks-info-box-media ${ 'number' === mediaType ? 'kt-info-media-animate-' + mediaNumber[ 0 ].hoverAnimation : '' }${ 'image' === mediaType ? 'kt-info-media-animate-' + mediaImage[ 0 ].hoverAnimation : '' }${ 'icon' === mediaType ? 'kt-info-media-animate-' + mediaIcon[ 0 ].hoverAnimation : '' }` } style={ {
+								borderColor: KadenceColorOutput( mediaStyle[ 0 ].border ),
+								backgroundColor: KadenceColorOutput( mediaStyle[ 0 ].background ),
 								borderRadius: mediaStyle[ 0 ].borderRadius + 'px',
 								borderWidth: ( mediaStyle[ 0 ].borderWidth ? mediaStyle[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyle[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
 								padding: ( mediaStyle[ 0 ].padding ? mediaStyle[ 0 ].padding[ 0 ] + 'px ' + mediaStyle[ 0 ].padding[ 1 ] + 'px ' + mediaStyle[ 0 ].padding[ 2 ] + 'px ' + mediaStyle[ 0 ].padding[ 3 ] + 'px' : '' ),
@@ -2710,15 +2910,41 @@ class KadenceInfoBox extends Component {
 										<div className={ 'kadence-info-box-icon-inner-container' } >
 											<IconRender className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
 												display: 'block',
-												color: ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : undefined ),
+												color: ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
 											} } />
 											{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
 												<IconRender className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
 													display: 'block',
-													color: ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : undefined ),
+													color: ( mediaIcon[ 0 ].hoverColor ? KadenceColorOutput( mediaIcon[ 0 ].hoverColor ) : undefined ),
 												} } />
 											) }
 										</div>
+									</div>
+								) }
+								{ 'number' === mediaType && (
+									<div className={ `kadence-info-box-number-container kt-info-number-animate-${ mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none' }` } >
+										<div className={ 'kadence-info-box-number-inner-container' } >
+											<RichText
+												className="kt-blocks-info-box-number"
+												formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
+												allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
+												tagName={ 'div' }
+												placeholder={ __( '1' ) }
+												onChange={ onChangeNumber }
+												value={ number }
+												style={ {
+													fontWeight: mediaNumber[ 0 ].weight,
+													fontStyle: mediaNumber[ 0 ].style,
+													color: ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
+													fontSize: mediaIcon[ 0 ].size + 'px',
+													fontFamily: ( mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : '' ),
+												} }
+											/>
+										</div>
+										{ mediaNumber[ 0 ].google && (
+											<WebfontLoader config={ nconfig }>
+											</WebfontLoader>
+										) }
 									</div>
 								) }
 							</div>
@@ -2733,6 +2959,7 @@ class KadenceInfoBox extends Component {
 							<RichText
 								className="kt-blocks-info-box-title"
 								formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
+								allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
 								tagName={ titleTagName }
 								placeholder={ __( 'Title' ) }
 								onChange={ onChangeTitle }
@@ -2740,7 +2967,7 @@ class KadenceInfoBox extends Component {
 								style={ {
 									fontWeight: titleFont[ 0 ].weight,
 									fontStyle: titleFont[ 0 ].style,
-									color: titleColor,
+									color: KadenceColorOutput( titleColor ),
 									fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
 									lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
 									letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
@@ -2760,6 +2987,7 @@ class KadenceInfoBox extends Component {
 							<RichText
 								className="kt-blocks-info-box-text"
 								formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
+								allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
 								tagName={ 'p' }
 								placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.' ) }
 								onChange={ ( value ) => setAttributes( { contentText: value } ) }
@@ -2767,7 +2995,7 @@ class KadenceInfoBox extends Component {
 								style={ {
 									fontWeight: textFont[ 0 ].weight,
 									fontStyle: textFont[ 0 ].style,
-									color: textColor,
+									color: KadenceColorOutput( textColor ),
 									fontSize: textFont[ 0 ].size[ 0 ] + textFont[ 0 ].sizeType,
 									lineHeight: ( textFont[ 0 ].lineHeight && textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] + textFont[ 0 ].lineType : undefined ),
 									letterSpacing: textFont[ 0 ].letterSpacing + 'px',
@@ -2789,6 +3017,7 @@ class KadenceInfoBox extends Component {
 							} } >
 								<RichText
 									formattingControls={ [ 'bold', 'italic' ] }
+									allowedFormats={ [ 'core/bold', 'core/italic' ] }
 									className="kt-blocks-info-box-learnmore"
 									tagName={ 'div' }
 									placeholder={ __( 'Learn More' ) }
@@ -2797,10 +3026,10 @@ class KadenceInfoBox extends Component {
 									style={ {
 										fontWeight: learnMoreStyles[ 0 ].weight,
 										fontStyle: learnMoreStyles[ 0 ].style,
-										color: learnMoreStyles[ 0 ].color,
+										color: KadenceColorOutput( learnMoreStyles[ 0 ].color ),
 										borderRadius: learnMoreStyles[ 0 ].borderRadius + 'px',
-										background: learnMoreStyles[ 0 ].background,
-										borderColor: learnMoreStyles[ 0 ].border,
+										background: KadenceColorOutput( learnMoreStyles[ 0 ].background ),
+										borderColor: KadenceColorOutput( learnMoreStyles[ 0 ].border ),
 										fontSize: learnMoreStyles[ 0 ].size[ 0 ] + learnMoreStyles[ 0 ].sizeType,
 										lineHeight: ( learnMoreStyles[ 0 ].lineHeight && learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] + learnMoreStyles[ 0 ].lineType : undefined ),
 										letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',

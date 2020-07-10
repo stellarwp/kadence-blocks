@@ -191,6 +191,9 @@ class InfoBoxStyleCopyPaste extends Component {
 			if ( blockAttributes.displayShadow ) {
 				copyStyles.displayShadow = blockAttributes.displayShadow;
 			}
+			if ( blockAttributes.shadow ) {
+				copyStyles.shadow = blockAttributes.shadow;
+			}
 			if ( blockAttributes.shadowHover ) {
 				copyStyles.shadowHover = blockAttributes.shadowHover;
 			}

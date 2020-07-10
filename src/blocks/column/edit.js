@@ -10,7 +10,6 @@
 import icons from '../../icons';
 import hexToRGBA from '../../hex-to-rgba';
 import MeasurementControls from '../../measurement-control';
-import AdvancedColorControl from '../../advanced-color-control';
 import BoxShadowControl from '../../box-shadow-control';
 import classnames from 'classnames';
 import KadenceFocalPicker from '../../kadence-focal-picker';
@@ -18,7 +17,7 @@ import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import KadenceColorOutput from '../../kadence-color-output';
-import kadenceColorOutput from '../../kadence-color-output';
+import ColumnStyleCopyPaste from './copy-paste-style';
 /**
  * Internal block libraries
  */
@@ -31,6 +30,7 @@ const {
 const {
 	InnerBlocks,
 	MediaUpload,
+	BlockControls,
 	InspectorAdvancedControls,
 	InspectorControls,
 	AlignmentToolbar,
@@ -583,8 +583,8 @@ class KadenceColumn extends Component {
 				</TabPanel>
 			</Fragment>
 		);
-		const backgroundString = ( background ? kadenceColorOutput( background, backgroundOpacity ) : 'transparent' );
-		const borderString = ( border ? kadenceColorOutput( border, borderOpacity ) : 'transparent' );
+		const backgroundString = ( background ? KadenceColorOutput( background, backgroundOpacity ) : 'transparent' );
+		const borderString = ( border ? KadenceColorOutput( border, borderOpacity ) : 'transparent' );
 		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
 		const classes = classnames( {
 			'kadence-column': true,
@@ -599,251 +599,259 @@ class KadenceColumn extends Component {
 			<div className={ classes } >
 				{ ( textColor || linkColor || linkHoverColor ) && (
 					<style>
-						{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ kadenceColorOutput( textColor ) }; }` : '' ) }
-						{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ kadenceColorOutput( linkColor ) }; }` : '' ) }
-						{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ kadenceColorOutput( linkHoverColor ) }; }` : '' ) }
+						{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
+						{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
+						{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 					</style>
 				) }
 				{ this.showSettings( 'allSettings' ) && (
-					<InspectorControls>
-						<Panel
-							className={ 'components-panel__body is-opened' }
-						>
-							{ this.showSettings( 'container' ) && (
-								<Fragment>
-									<AdvancedPopColorControl
-										label={ __( 'Background Color' ) }
-										colorValue={ ( background ? background : '' ) }
-										colorDefault={ '' }
-										opacityValue={ backgroundOpacity }
-										onColorChange={ value => setAttributes( { background: value } ) }
-										onOpacityChange={ value => setAttributes( { backgroundOpacity: value } ) }
-									/>
-									{ ! hasBackgroundImage && (
-										<KadenceMediaPlaceholder
-											labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
-											onSelect={ ( img ) => {
-												saveBackgroundImage( {
-													bgImgID: img.id,
-													bgImg: img.url,
+					<Fragment>
+						<BlockControls>
+							<ColumnStyleCopyPaste
+								onPaste={ value => setAttributes( value ) }
+								blockAttributes={ this.props.attributes }
+							/>
+						</BlockControls>
+						<InspectorControls>
+							<Panel
+								className={ 'components-panel__body is-opened' }
+							>
+								{ this.showSettings( 'container' ) && (
+									<Fragment>
+										<AdvancedPopColorControl
+											label={ __( 'Background Color' ) }
+											colorValue={ ( background ? background : '' ) }
+											colorDefault={ '' }
+											opacityValue={ backgroundOpacity }
+											onColorChange={ value => setAttributes( { background: value } ) }
+											onOpacityChange={ value => setAttributes( { backgroundOpacity: value } ) }
+										/>
+										{ ! hasBackgroundImage && (
+											<KadenceMediaPlaceholder
+												labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
+												onSelect={ ( img ) => {
+													saveBackgroundImage( {
+														bgImgID: img.id,
+														bgImg: img.url,
+													} );
+												} }
+												onSelectURL={ ( newURL ) => {
+													if ( newURL !== ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) ) {
+														saveBackgroundImage( {
+															bgImgID: undefined,
+															bgImg: newURL,
+														} );
+													}
+												} }
+												accept="image/*"
+												className={ 'kadence-image-upload' }
+												allowedTypes={ ALLOWED_MEDIA_TYPES }
+												disableMediaButtons={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
+											/>
+										) }
+										{ hasBackgroundImage && (
+											<Fragment>
+												<MediaUpload
+													onSelect={ img => {
+														saveBackgroundImage( { bgImgID: img.id, bgImg: img.url } );
+													} }
+													type="image"
+													value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' ) }
+													render={ ( { open } ) => (
+														<Button
+															className={ 'components-button components-icon-button kt-cta-upload-btn' }
+															onClick={ open }
+														>
+															<Dashicon icon="format-image" />
+															{ __( 'Edit Image' ) }
+														</Button>
+													) }
+												/>
+												<Tooltip text={ __( 'Remove Image' ) }>
+													<Button
+														className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+														onClick={ onRemoveBGImage }
+													>
+														<Dashicon icon="no-alt" />
+													</Button>
+												</Tooltip>
+												<KadenceFocalPicker
+													url={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
+													value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' ) }
+													onChange={ value => saveBackgroundImage( { bgImgPosition: value } ) }
+												/>
+												<KadenceRadioButtons
+													label={ __( 'Background Image Size', 'kadence-blocks' ) }
+													value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) }
+													options={ [
+														{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
+														{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
+														{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
+													] }
+													onChange={ value => saveBackgroundImage( { bgImgSize: value } ) }
+												/>
+												{ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) !== 'cover' && (
+													<KadenceRadioButtons
+														label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
+														value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
+														options={ [
+															{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
+															{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
+															{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
+															{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
+														] }
+														onChange={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
+													/>
+												) }
+												<KadenceRadioButtons
+													label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
+													value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : 'scroll' ) }
+													options={ [
+														{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
+														{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
+													] }
+													onChange={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
+												/>
+											</Fragment>
+										) }
+										<AdvancedPopColorControl
+											label={ __( 'Border Color' ) }
+											colorValue={ ( border ? border : '' ) }
+											colorDefault={ '' }
+											opacityValue={ borderOpacity }
+											onColorChange={ value => setAttributes( { border: value } ) }
+											onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
+										/>
+										<MeasurementControls
+											label={ __( 'Border Width' ) }
+											measurement={ borderWidth }
+											control={ borderWidthControl }
+											onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
+											onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
+											min={ 0 }
+											max={ 40 }
+											step={ 1 }
+										/>
+										<MeasurementControls
+											label={ __( 'Border Radius' ) }
+											measurement={ borderRadius }
+											control={ borderRadiusControl }
+											onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
+											onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
+											min={ 0 }
+											max={ 200 }
+											step={ 1 }
+											controlTypes={ [
+												{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
+												{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+											] }
+											firstIcon={ icons.topleft }
+											secondIcon={ icons.topright }
+											thirdIcon={ icons.bottomright }
+											fourthIcon={ icons.bottomleft }
+										/>
+										<BoxShadowControl
+											label={ __( 'Box Shadow', 'kadence-blocks' ) }
+											enable={ ( undefined !== displayShadow ? displayShadow : false ) }
+											color={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ) }
+											colorDefault={ '#000000' }
+											opacity={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) }
+											hOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) }
+											vOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) }
+											blur={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) }
+											spread={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) }
+											inset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false ) }
+											onEnableChange={ value => {
+												setAttributes( {
+													displayShadow: value,
 												} );
 											} }
-											onSelectURL={ ( newURL ) => {
-												if ( newURL !== ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) ) {
-													saveBackgroundImage( {
-														bgImgID: undefined,
-														bgImg: newURL,
-													} );
-												}
+											onColorChange={ value => {
+												this.saveShadow( { color: value } );
 											} }
-											accept="image/*"
-											className={ 'kadence-image-upload' }
-											allowedTypes={ ALLOWED_MEDIA_TYPES }
-											disableMediaButtons={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
+											onOpacityChange={ value => {
+												this.saveShadow( { opacity: value } );
+											} }
+											onHOffsetChange={ value => {
+												this.saveShadow( { hOffset: value } );
+											} }
+											onVOffsetChange={ value => {
+												this.saveShadow( { vOffset: value } );
+											} }
+											onBlurChange={ value => {
+												this.saveShadow( { blur: value } );
+											} }
+											onSpreadChange={ value => {
+												this.saveShadow( { spread: value } );
+											} }
+											onInsetChange={ value => {
+												this.saveShadow( { inset: value } );
+											} }
 										/>
-									) }
-									{ hasBackgroundImage && (
-										<Fragment>
-											<MediaUpload
-												onSelect={ img => {
-													saveBackgroundImage( { bgImgID: img.id, bgImg: img.url } );
-												} }
-												type="image"
-												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' ) }
-												render={ ( { open } ) => (
-													<Button
-														className={ 'components-button components-icon-button kt-cta-upload-btn' }
-														onClick={ open }
-													>
-														<Dashicon icon="format-image" />
-														{ __( 'Edit Image' ) }
-													</Button>
-												) }
+									</Fragment>
+								) }
+								{ this.showSettings( 'textAlign' ) && (
+									<Fragment>
+										{ textAlignControls }
+									</Fragment>
+								) }
+								{ this.showSettings( 'textColor' ) && (
+									<Fragment>
+										<div className="kt-spacer-sidebar-15"></div>
+										<PanelBody
+											title={ __( 'Text Color Settings' ) }
+											initialOpen={ false }
+										>
+											<AdvancedPopColorControl
+												label={ __( 'Text Color' ) }
+												colorValue={ ( textColor ? textColor : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => setAttributes( { textColor: value } ) }
 											/>
-											<Tooltip text={ __( 'Remove Image' ) }>
-												<Button
-													className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-													onClick={ onRemoveBGImage }
-												>
-													<Dashicon icon="no-alt" />
-												</Button>
-											</Tooltip>
-											<KadenceFocalPicker
-												url={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
-												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' ) }
-												onChange={ value => saveBackgroundImage( { bgImgPosition: value } ) }
+											<AdvancedPopColorControl
+												label={ __( 'Link Color' ) }
+												colorValue={ ( linkColor ? linkColor : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => setAttributes( { linkColor: value } ) }
 											/>
-											<KadenceRadioButtons
-												label={ __( 'Background Image Size', 'kadence-blocks' ) }
-												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) }
-												options={ [
-													{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-													{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-													{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-												] }
-												onChange={ value => saveBackgroundImage( { bgImgSize: value } ) }
+											<AdvancedPopColorControl
+												label={ __( 'Link Hover Color' ) }
+												colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
+												colorDefault={ '' }
+												onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
 											/>
-											{ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) !== 'cover' && (
-												<KadenceRadioButtons
-													label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
-													value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
-													options={ [
-														{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-														{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-														{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-														{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-													] }
-													onChange={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
-												/>
-											) }
-											<KadenceRadioButtons
-												label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
-												value={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : 'scroll' ) }
-												options={ [
-													{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-													{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-												] }
-												onChange={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
-											/>
-										</Fragment>
-									) }
-									<AdvancedPopColorControl
-										label={ __( 'Border Color' ) }
-										colorValue={ ( border ? border : '' ) }
-										colorDefault={ '' }
-										opacityValue={ borderOpacity }
-										onColorChange={ value => setAttributes( { border: value } ) }
-										onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
-									/>
-									<MeasurementControls
-										label={ __( 'Border Width' ) }
-										measurement={ borderWidth }
-										control={ borderWidthControl }
-										onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
-										onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
-										min={ 0 }
-										max={ 40 }
-										step={ 1 }
-									/>
-									<MeasurementControls
-										label={ __( 'Border Radius' ) }
-										measurement={ borderRadius }
-										control={ borderRadiusControl }
-										onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-										onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
-										min={ 0 }
-										max={ 200 }
-										step={ 1 }
-										controlTypes={ [
-											{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-											{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
-										] }
-										firstIcon={ icons.topleft }
-										secondIcon={ icons.topright }
-										thirdIcon={ icons.bottomright }
-										fourthIcon={ icons.bottomleft }
-									/>
-									<BoxShadowControl
-										label={ __( 'Box Shadow', 'kadence-blocks' ) }
-										enable={ ( undefined !== displayShadow ? displayShadow : false ) }
-										color={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ) }
-										colorDefault={ '#000000' }
-										opacity={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) }
-										hOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) }
-										vOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) }
-										blur={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) }
-										spread={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) }
-										inset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false ) }
-										onEnableChange={ value => {
-											setAttributes( {
-												displayShadow: value,
-											} );
-										} }
-										onColorChange={ value => {
-											this.saveShadow( { color: value } );
-										} }
-										onOpacityChange={ value => {
-											this.saveShadow( { opacity: value } );
-										} }
-										onHOffsetChange={ value => {
-											this.saveShadow( { hOffset: value } );
-										} }
-										onVOffsetChange={ value => {
-											this.saveShadow( { vOffset: value } );
-										} }
-										onBlurChange={ value => {
-											this.saveShadow( { blur: value } );
-										} }
-										onSpreadChange={ value => {
-											this.saveShadow( { spread: value } );
-										} }
-										onInsetChange={ value => {
-											this.saveShadow( { inset: value } );
-										} }
-									/>
-								</Fragment>
-							) }
-							{ this.showSettings( 'textAlign' ) && (
-								<Fragment>
-									{ textAlignControls }
-								</Fragment>
-							) }
-							{ this.showSettings( 'textColor' ) && (
-								<Fragment>
-									<div className="kt-spacer-sidebar-15"></div>
-									<PanelBody
-										title={ __( 'Text Color Settings' ) }
-										initialOpen={ false }
-									>
-										<AdvancedPopColorControl
-											label={ __( 'Text Color' ) }
-											colorValue={ ( textColor ? textColor : '' ) }
-											colorDefault={ '' }
-											onColorChange={ value => setAttributes( { textColor: value } ) }
-										/>
-										<AdvancedPopColorControl
-											label={ __( 'Link Color' ) }
-											colorValue={ ( linkColor ? linkColor : '' ) }
-											colorDefault={ '' }
-											onColorChange={ value => setAttributes( { linkColor: value } ) }
-										/>
-										<AdvancedPopColorControl
-											label={ __( 'Link Hover Color' ) }
-											colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
-											colorDefault={ '' }
-											onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
-										/>
-									</PanelBody>
-								</Fragment>
-							) }
-							{ this.showSettings( 'paddingMargin' ) && (
-								<Fragment>
-									<div className="kt-spacer-sidebar-15"></div>
-									{ tabControls }
-								</Fragment>
-							) }
-						</Panel>
-						<PanelBody
-							title={ __( 'Visibility Settings', 'kadence-blocks' ) }
-							initialOpen={ false }
-						>
-							<ToggleControl
-								label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
-								checked={ ( undefined !== vsdesk ? vsdesk : false ) }
-								onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
-							/>
-							<ToggleControl
-								label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
-								checked={ ( undefined !== vstablet ? vstablet : false ) }
-								onChange={ ( value ) => setAttributes( { vstablet: value } ) }
-							/>
-							<ToggleControl
-								label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
-								checked={ ( undefined !== vsmobile ? vsmobile : false ) }
-								onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
-							/>
-						</PanelBody>
-					</InspectorControls>
+										</PanelBody>
+									</Fragment>
+								) }
+								{ this.showSettings( 'paddingMargin' ) && (
+									<Fragment>
+										<div className="kt-spacer-sidebar-15"></div>
+										{ tabControls }
+									</Fragment>
+								) }
+							</Panel>
+							<PanelBody
+								title={ __( 'Visibility Settings', 'kadence-blocks' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
+									checked={ ( undefined !== vsdesk ? vsdesk : false ) }
+									onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
+								/>
+								<ToggleControl
+									label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
+									checked={ ( undefined !== vstablet ? vstablet : false ) }
+									onChange={ ( value ) => setAttributes( { vstablet: value } ) }
+								/>
+								<ToggleControl
+									label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
+									checked={ ( undefined !== vsmobile ? vsmobile : false ) }
+									onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
+								/>
+							</PanelBody>
+						</InspectorControls>
+					</Fragment>
 				) }
 				<InspectorAdvancedControls>
 					<RangeControl

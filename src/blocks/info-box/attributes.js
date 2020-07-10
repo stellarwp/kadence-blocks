@@ -118,6 +118,8 @@ const attributes = {
 			hoverColor: '#444444',
 			hoverAnimation: 'none',
 			flipIcon: '',
+			tabletSize: '',
+			mobileSize: '',
 		} ],
 	},
 	mediaStyle: {
@@ -332,6 +334,25 @@ const attributes = {
 	linkSponsored: {
 		type: 'bool',
 		default: false,
+	},
+	number: {
+		type: 'array',
+		source: 'children',
+		selector: 'div.kt-blocks-info-box-number',
+		default: '',
+	},
+	mediaNumber: {
+		type: 'array',
+		default: [ {
+			family: '',
+			google: false,
+			hoverAnimation: 'none',
+			style: '',
+			weight: '',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+		} ],
 	},
 };
 export default attributes;

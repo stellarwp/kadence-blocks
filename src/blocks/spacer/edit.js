@@ -6,7 +6,8 @@
 
 import ResizableBox from 're-resizable';
 import SvgPattern from './svg-pattern';
-import AdvancedColorControl from '../../advanced-color-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Import Css
  */
@@ -25,7 +26,6 @@ const {
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
-	ColorPalette,
 	BlockAlignmentToolbar,
 } = wp.blockEditor;
 const {
@@ -37,21 +37,6 @@ const {
 	SelectControl,
 } = wp.components;
 
-function kadenceHexToRGB( hex, alpha ) {
-	hex = hex.replace( '#', '' );
-	const r = parseInt( hex.length === 3 ? hex.slice( 0, 1 ).repeat( 2 ) : hex.slice( 0, 2 ), 16 );
-	const g = parseInt( hex.length === 3 ? hex.slice( 1, 2 ).repeat( 2 ) : hex.slice( 2, 4 ), 16 );
-	const b = parseInt( hex.length === 3 ? hex.slice( 2, 3 ).repeat( 2 ) : hex.slice( 4, 6 ), 16 );
-	let alp;
-	if ( alpha < 10 ) {
-		alp = '0.0' + alpha;
-	} else if ( alpha >= 100 ) {
-		alp = '1';
-	} else {
-		alp = '0.' + alpha;
-	}
-	return 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alp + ')';
-}
 const ktspacerUniqueIDs = [];
 /**
  * Build the spacer edit
@@ -110,7 +95,15 @@ class KadenceSpacerDivider extends Component {
 	}
 	render() {
 		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap }, className, setAttributes, toggleSelection } = this.props;
-		const dividerBorderColor = ( ! dividerColor ? kadenceHexToRGB( '#eee', dividerOpacity ) : kadenceHexToRGB( dividerColor, dividerOpacity ) );
+		let alp;
+		if ( dividerOpacity < 10 ) {
+			alp = '0.0' + dividerOpacity;
+		} else if ( dividerOpacity >= 100 ) {
+			alp = '1';
+		} else {
+			alp = '0.' + dividerOpacity;
+		}
+		const dividerBorderColor = ( ! dividerColor ? KadenceColorOutput( '#eeeeee', alp ) : KadenceColorOutput( dividerColor, alp ) );
 		const deskControls = (
 			<RangeControl
 				label={ __( 'Height' ) }
@@ -138,7 +131,7 @@ class KadenceSpacerDivider extends Component {
 				max={ 600 }
 			/>
 		);
-		let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ dividerColor } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
+		let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
 		svgStringPre = svgStringPre.replace( 'patterntransform', 'patternTransform' );
 		svgStringPre = svgStringPre.replace( 'patternunits', 'patternUnits' );
 		//const svgString = encodeURIComponent( svgStringPre );
@@ -239,7 +232,7 @@ class KadenceSpacerDivider extends Component {
 											] }
 											onChange={ value => setAttributes( { dividerStyle: value } ) }
 										/>
-										<AdvancedColorControl
+										<AdvancedPopColorControl
 											label={ __( 'Divider Color' ) }
 											colorValue={ ( dividerColor ? dividerColor : '' ) }
 											colorDefault={ '' }
@@ -301,7 +294,7 @@ class KadenceSpacerDivider extends Component {
 									height: ( dividerHeight < 10 ? 10 : dividerHeight ) + 'px',
 									width: dividerWidth + '%',
 								} }>
-									<SvgPattern uniqueID={ uniqueID } color={ dividerColor } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
+									<SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
 								</span>
 							) }
 							{ dividerStyle !== 'stripe' && (

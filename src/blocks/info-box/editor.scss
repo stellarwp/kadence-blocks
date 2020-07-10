@@ -52,7 +52,7 @@
     margin-bottom: 0;
 }
 .edit-post-sidebar .kb-image-size-select-form-row input[type=text], .kt-block-defaults-modal .kb-image-size-select-form-row input[type=text] {
-			box-shadow: none;
+	box-shadow: none;
 }
 .wp-block-kadence-infobox {
     display: flex;
@@ -128,7 +128,7 @@
 	transition: all 0.3s cubic-bezier(.17,.67,.35,.95);
 }
 .kt-blocks-info-box-learnmore {
-border: 0 solid transparent;
+	border: 0 solid transparent;
 }
 .kt-blocks-info-box-text {
     color: #555555;
@@ -231,4 +231,8 @@ border: 0 solid transparent;
 		transform 0.4s linear 0s,
 		border-bottom-width 0s linear 0.35s,
 	}
+}
+.kt-blocks-info-box-number {
+    min-width: 1em;
+    line-height: 1em;
 }

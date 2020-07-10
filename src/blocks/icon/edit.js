@@ -14,7 +14,8 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import IconControl from '../../icon-control';
 import IconRender from '../../icon-render';
-import AdvancedColorControl from '../../advanced-color-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import KadenceColorOutput from '../../kadence-color-output';
 import StepControl from '../../step-control';
 /**
  * Import Css
@@ -165,7 +166,7 @@ class KadenceIcons extends Component {
 		const hoverSettings = ( index ) => {
 			return (
 				<Fragment>
-					<AdvancedColorControl
+					<AdvancedPopColorControl
 						label={ __( 'Icon Hover Color' ) }
 						colorValue={ ( icons[ index ].hColor ? icons[ index ].hColor : '' ) }
 						colorDefault={ '' }
@@ -186,7 +187,7 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Hover Background Color' ) }
 								colorValue={ ( icons[ index ].hBackground ? icons[ index ].hBackground : '' ) }
 								colorDefault={ '' }
@@ -198,7 +199,7 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Hover Border Color' ) }
 								colorValue={ ( icons[ index ].hBorder ? icons[ index ].hBorder : '' ) }
 								colorDefault={ '' }
@@ -214,7 +215,7 @@ class KadenceIcons extends Component {
 		const normalSettings = ( index ) => {
 			return (
 				<Fragment>
-					<AdvancedColorControl
+					<AdvancedPopColorControl
 						label={ __( 'Icon Color' ) }
 						colorValue={ ( icons[ index ].color ? icons[ index ].color : '' ) }
 						colorDefault={ '' }
@@ -235,7 +236,7 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'background Color' ) }
 								colorValue={ ( icons[ index ].background ? icons[ index ].background : '' ) }
 								colorDefault={ '' }
@@ -247,7 +248,7 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedColorControl
+							<AdvancedPopColorControl
 								label={ __( 'Border Color' ) }
 								colorValue={ ( icons[ index ].border ? icons[ index ].border : '' ) }
 								colorDefault={ '' }
@@ -477,10 +478,10 @@ class KadenceIcons extends Component {
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` } >
 					{ icons[ index ].icon && (
 						<IconRender className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
-							color: ( icons[ index ].color ? icons[ index ].color : undefined ),
-							backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? icons[ index ].background : undefined ),
+							color: ( icons[ index ].color ? KadenceColorOutput( icons[ index ].color ) : undefined ),
+							backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].background ) : undefined ),
 							padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
-							borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? icons[ index ].border : undefined ),
+							borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].border ) : undefined ),
 							borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
 							borderRadius: ( icons[ index ].borderRadius && icons[ index ].style !== 'default' ? icons[ index ].borderRadius + '%' : undefined ),
 							marginTop: ( icons[ index ].marginTop ? icons[ index ].marginTop + 'px' : undefined ),
@@ -495,9 +496,9 @@ class KadenceIcons extends Component {
 		const renderIconCSS = ( index ) => {
 			return (
 				`.kt-svg-icons-${ uniqueID } .kt-svg-item-${ index }:hover .kt-svg-icon {
-					${ ( undefined !== icons[ index ].hColor && icons[ index ].hColor ? 'color:' + icons[ index ].hColor + '!important;' : '' ) }
-					${ ( undefined !== icons[ index ].hBackground && icons[ index ].hBackground ? 'background:' + icons[ index ].hBackground + '!important;' : '' ) }
-					${ ( undefined !== icons[ index ].hBorder && icons[ index ].hBorder ? 'border-color:' + icons[ index ].hBorder + '!important;' : '' ) }
+					${ ( undefined !== icons[ index ].hColor && icons[ index ].hColor ? 'color:' + KadenceColorOutput( icons[ index ].hColor ) + '!important;' : '' ) }
+					${ ( undefined !== icons[ index ].hBackground && icons[ index ].hBackground ? 'background:' + KadenceColorOutput( icons[ index ].hBackground ) + '!important;' : '' ) }
+					${ ( undefined !== icons[ index ].hBorder && icons[ index ].hBorder ? 'border-color:' + KadenceColorOutput( icons[ index ].hBorder ) + '!important;' : '' ) }
 				}`
 			);
 		};

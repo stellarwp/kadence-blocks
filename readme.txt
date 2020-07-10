@@ -1,10 +1,10 @@
-=== Kadence Blocks – Gutenberg Page Builder Toolkit ===
+=== Gutenberg Blocks by Kadence Blocks – Page Builder Features ===
 Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
-Tested up to: 5.4.1
-Stable tag: 1.8.5
+Tested up to: 5.4.2
+Stable tag: 1.8.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 1.8.6 =
 * Spacing between buttons (add responsive controls)
+* Update: Change fonts to load display swap by default.
 * Add: Margin option for Buttons container.
 * Update: Button color settings sync with kadence theme global colors.
 * Update: Row and Column Color settings sync with kadence theme global colors.
@@ -98,16 +99,20 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 * Fix: Small lazy load issue with testimonials.
 * Update: Testimonials color settings.
 * Add: Option for testimonials to use url instead of hosted image.
-** Add: Advanced heading Copy and Paste Styling.
+* Add: Advanced heading Copy and Paste Styling.
 * Add: Button Copy and Paste styling.
+* add: Column Copy and Paste styling.
 * Add: Move options for buttons.
 * Add: Duplicate and delete options for buttons.
 * Update: Button focus for better settings control.
-** Update: Info box you can now use a number.
-** Add: Mailer Lite.
-** Add: Checkbox to forms.
-** Add: Upload to forms.
-** How to Block: https://secure.helpscout.net/conversation/1180126020/2615?folderId=2070869
+* Update: Info box you can now use a number.
+* Add: Start adding basic support for tablet and mobile previews in the editor.
+* Fix: Issue with info box copy styling not pulling in box shadow.
+* Update: Allow global settings to pull in color palette.
+* Fix: Left Align image on mobile not looking good in info box.
+* Update: Allow Form field sub options to be rearranged.
+* Update: Add Checkbox field to form.
+* Fix: validator issues with gallery.
 
 = 1.8.5 =
 * Fix: Update not showing.

@@ -395,7 +395,17 @@ registerBlockType( 'kadence/form', {
 									) ) }
 								</select>
 							) }
-							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && (
+							{ 'checkbox' === fields[ index ].type && (
+								<div data-type={ fields[ index ].type } data-label={ fields[ index ].label } id={ `kb_field_${ uniqueID }_${ index }` } className={ `kb-field kb-checkbox-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } data-required={ ( fields[ index ].required ? 'yes' : undefined ) }>
+									{ times( fields[ index ].options.length, n => (
+										<div key={ n } data-type={ fields[ index ].type } className={ `kb-checkbox-item kb-checkbox-item-${ n }` }>
+											<input type="checkbox" name={ `kb_field_${ index }[]` } id={ `kb_field_${ index }_${ n }` } className={ 'kb-sub-field kb-checkbox-style' } value={ ( undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '' ) } checked={ ( undefined !== fields[ index ].options[ n ].value && fields[ index ].options[ n ].value === fields[ index ].default ? true : false ) } />
+											<label htmlFor={ `kb_field_${ index }_${ n }` }>{ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }</label>
+										</div>
+									) ) }
+								</div>
+							) }
+							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && 'checkbox' !== fields[ index ].type && (
 								<input name={ `kb_field_${ index }` } id={ `kb_field_${ uniqueID }_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete={ ( '' !== fields[ index ].auto ? fields[ index ].auto : undefined ) } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } />
 							) }
 						</Fragment>

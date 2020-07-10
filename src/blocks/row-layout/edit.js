@@ -328,6 +328,7 @@ class KadenceRowLayout extends Component {
 		const hasBG = ( bgColor || bgImg || overlay || overlayBgImg ? 'kt-row-has-bg' : '' );
 		const classes = classnames( {
 			[ className ]: className,
+			'kt-row-column-wrap': true,
 			[ `kt-has-${ columns }-columns` ]: columns,
 			[ `kt-row-layout-${ layoutClass }` ]: layoutClass,
 			[ `kt-row-valign-${ verticalAlignment }` ]: verticalAlignment,
@@ -336,6 +337,7 @@ class KadenceRowLayout extends Component {
 			[ `current-tab-${ currentTab }` ]: currentTab,
 			[ `kt-gutter-${ columnGutter }` ]: columnGutter,
 			[ `kt-v-gutter-${ collapseGutter }` ]: collapseGutter,
+			[ `kt-m-colapse-${ collapseOrder }` ]: collapseOrder,
 			[ `kt-custom-first-width-${ widthString }` ]: widthString,
 			[ `kt-custom-second-width-${ secondWidthString }` ]: secondWidthString,
 			[ `kt-custom-third-width-${ thirdWidthString }` ]: thirdWidthString,

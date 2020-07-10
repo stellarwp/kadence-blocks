@@ -47,7 +47,12 @@
 .kb-form .kadence-blocks-form-field .kb-forms-submit.is-selected {
 	min-width: 70px;
 }
-
+.field-options-wrap {
+    position: relative;
+}
+.field-options-wrap .kadence-blocks-list-item__control-menu {
+    top:0;
+}
 // Controls
 .kb-form-align-center .kb-form {
     justify-content: center;
@@ -148,6 +153,18 @@
 			&:focus {
 				outline:0;
 			}
+		}
+		.kb-checkbox-style-field {
+			flex-basis: 100%;
+			max-width: 100%;
+			width: 100%;
+			flex-grow: 1;
+			margin-top: 0.3em;
+		}
+		.kb-checkbox-item {
+			display: flex;
+			margin: 0;
+			align-items: center;
 		}
 		&.kb-input-size-custom {
 			.kb-text-style-field {

@@ -38,6 +38,7 @@ class AdvancedPopColorControl extends Component {
 		super( ...arguments );
 		this.onChangeState = this.onChangeState.bind( this );
 		this.onChangeComplete = this.onChangeComplete.bind( this );
+		this.unConvertOpacity = this.unConvertOpacity.bind( this );
 		this.state = {
 			alpha: false === this.props.alpha ? false : true,
 			isVisible: false,
@@ -58,12 +59,21 @@ class AdvancedPopColorControl extends Component {
 				this.setState( { isVisible: false } );
 			}
 		};
-		let currentColorString = ( this.state.isPalette && this.props.colors && this.props.colors[ parseInt( this.props.colorValue.slice( -1 ), 10 ) - 1 ] ? this.props.colors[ parseInt( this.props.colorValue.slice( -1 ), 10 ) - 1 ].color : this.props.colorValue );
+		const convertOpacity = ( value ) => {
+			let val = 1;
+			if ( value ) {
+				val = value / 100;
+			}
+			return val;
+		};
+		const convertedOpacityValue = ( 100 === this.props.opacityUnit ? convertOpacity( this.props.opacityValue ) : this.props.opacityValue );
+		const colorVal = ( this.state.currentColor ? this.state.currentColor : this.props.colorValue );
+		let currentColorString = ( this.state.isPalette && this.props.colors && this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ] ? this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ].color : colorVal );
 		if ( '' === currentColorString ) {
 			currentColorString = this.props.colorDefault;
 		}
 		if ( this.props.onOpacityChange && ! this.state.isPalette ) {
-			currentColorString = hexToRGBA( currentColorString, ( this.props.opacityValue !== undefined ? this.props.opacityValue : 1 ) );
+			currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
 		}
 		return (
 			<div className="kt-color-popover-container new-kadence-advanced-colors">
@@ -142,11 +152,11 @@ class AdvancedPopColorControl extends Component {
 																if ( this.props.onColorClassChange ) {
 																	this.props.onColorClassChange( slug );
 																}
-																if ( 'first' === this.state.classSat ) {
-																	this.setState( { classSat: 'second' } );
-																} else {
-																	this.setState( { classSat: 'first' } );
-																}
+																// if ( 'first' === this.state.classSat ) {
+																// 	this.setState( { classSat: 'second' } );
+																// } else {
+																// 	this.setState( { classSat: 'first' } );
+																// }
 															} }
 															aria-label={ name ?
 																// translators: %s: The name of the color e.g: "vivid red".
@@ -196,15 +206,22 @@ class AdvancedPopColorControl extends Component {
 			</div>
 		);
 	}
+	unConvertOpacity = ( value ) => {
+		let val = 100;
+		if ( value ) {
+			val = value * 100;
+		}
+		return val;
+	}
 	onChangeState( color, palette ) {
-		let opacity = 1;
+		let opacity = ( 100 === this.props.opacityUnit ? 100 : 1 );
 		let newColor;
 		if ( palette ) {
 			newColor = palette;
 		} else if ( undefined !== color.rgb && undefined !== color.rgb.a && 1 !== color.rgb.a ) {
 			if ( this.props.onOpacityChange ) {
 				newColor = color.hex;
-				opacity = color.rgb.a;
+				opacity = ( 100 === this.props.opacityUnit ? this.unConvertOpacity( color.rgb.a ) : color.rgb.a );
 			} else {
 				newColor = 'rgba(' + color.rgb.r + ',' + color.rgb.g + ',' + color.rgb.b + ',' + color.rgb.a + ')';
 			}
@@ -219,14 +236,14 @@ class AdvancedPopColorControl extends Component {
 		}
 	}
 	onChangeComplete( color, palette ) {
-		let opacity = 1;
+		let opacity = ( 100 === this.props.opacityUnit ? 100 : 1 );
 		let newColor;
 		if ( palette ) {
 			newColor = palette;
 		} else if ( undefined !== color.rgb && undefined !== color.rgb.a && 1 !== color.rgb.a ) {
 			if ( this.props.onOpacityChange ) {
 				newColor = color.hex;
-				opacity = color.rgb.a;
+				opacity = ( 100 === this.props.opacityUnit ? this.unConvertOpacity( color.rgb.a ) : color.rgb.a );
 			} else {
 				newColor = 'rgba(' + color.rgb.r + ',' + color.rgb.g + ',' + color.rgb.b + ',' + color.rgb.a + ')';
 			}
@@ -236,11 +253,15 @@ class AdvancedPopColorControl extends Component {
 			newColor = color;
 		}
 		this.setState( { currentColor: newColor, currentOpacity: opacity, isPalette: ( palette ? true : false ) } );
-		this.props.onColorChange( newColor );
-		if ( undefined !== this.props.onOpacityChange ) {
-			setTimeout( () => {
-				this.props.onOpacityChange( opacity );
-			}, 50 );
+		if ( undefined !== this.props.onArrayChange ) {
+			this.props.onArrayChange( newColor, opacity );
+		} else {
+			this.props.onColorChange( newColor );
+			if ( undefined !== this.props.onOpacityChange ) {
+				setTimeout( () => {
+					this.props.onOpacityChange( opacity );
+				}, 50 );
+			}
 		}
 	}
 }

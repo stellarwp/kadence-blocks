@@ -17,10 +17,10 @@ import WebfontLoader from '../../fontloader';
 import map from 'lodash/map';
 import IconControl from '../../icon-control';
 import IconRender from '../../icon-render';
-import AdvancedColorControl from '../../advanced-color-control';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
-
+import KadenceColorOutput from '../../kadence-color-output';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
 /**
  * Import Css
  */
@@ -50,7 +50,6 @@ const {
 	Tooltip,
 	IconButton,
 	Button,
-	Dashicon,
 	SelectControl,
 } = wp.components;
 
@@ -381,7 +380,7 @@ class KadenceIconLists extends Component {
 							max={ 4 }
 						/>
 					) }
-					<AdvancedColorControl
+					<AdvancedPopColorControl
 						label={ __( 'Icon Color' ) }
 						colorValue={ ( items[ index ].color ? items[ index ].color : '' ) }
 						colorDefault={ '' }
@@ -401,7 +400,7 @@ class KadenceIconLists extends Component {
 						} }
 					/>
 					{ items[ index ].style !== 'default' && (
-						<AdvancedColorControl
+						<AdvancedPopColorControl
 							label={ __( 'Icon Background' ) }
 							colorValue={ ( items[ index ].background ? items[ index ].background : '' ) }
 							colorDefault={ '' }
@@ -411,7 +410,7 @@ class KadenceIconLists extends Component {
 						/>
 					) }
 					{ items[ index ].style !== 'default' && (
-						<AdvancedColorControl
+						<AdvancedPopColorControl
 							label={ __( 'Border Color' ) }
 							colorValue={ ( items[ index ].border ? items[ index ].border : '' ) }
 							colorDefault={ '' }
@@ -466,48 +465,36 @@ class KadenceIconLists extends Component {
 				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` } >
 					{ items[ index ].icon && (
 						<IconRender className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
-							color: ( items[ index ].color ? items[ index ].color : undefined ),
-							backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? items[ index ].background : undefined ),
+							color: ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
+							backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].background ) : undefined ),
 							padding: ( items[ index ].padding && items[ index ].style !== 'default' ? items[ index ].padding + 'px' : undefined ),
-							borderColor: ( items[ index ].border && items[ index ].style !== 'default' ? items[ index ].border : undefined ),
+							borderColor: ( items[ index ].border && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].border ) : undefined ),
 							borderWidth: ( items[ index ].borderWidth && items[ index ].style !== 'default' ? items[ index ].borderWidth + 'px' : undefined ),
 							borderRadius: ( items[ index ].borderRadius && items[ index ].style !== 'default' ? items[ index ].borderRadius + '%' : undefined ),
 						} } />
 					) }
-					{ 'true' === kadence_blocks_params.gutenberg && (
-						<RichText
-							tagName="div"
-							value={ items[ index ].text }
-							onChange={ value => {
-								this.saveListItem( { text: value }, index );
-							} }
-							onSplit={ ( value ) => {
-								if ( ! value ) {
-									return createNewListItem( '', items[ index ].text, index );
-								}
-								return createNewListItem( value, items[ index ].text, index );
-							} }
-							onRemove={ ( value ) => {
-								removeListItem( value, index );
-							} }
-							isSelected={ this.state.focusIndex === index }
-							unstableOnFocus={ this.onSelectItem( index ) }
-							onReplace={ ( value ) => {
-								stopOnReplace( value, index );
-							} }
-							className={ 'kt-svg-icon-list-text' }
-						/>
-					) }
-					{ 'true' !== kadence_blocks_params.gutenberg && (
-						<RichText
-							tagName="div"
-							value={ items[ index ].text }
-							onChange={ value => {
-								this.saveListItem( { text: value }, index );
-							} }
-							className={ 'kt-svg-icon-list-text' }
-						/>
-					) }
+					<RichText
+						tagName="div"
+						value={ items[ index ].text }
+						onChange={ value => {
+							this.saveListItem( { text: value }, index );
+						} }
+						onSplit={ ( value ) => {
+							if ( ! value ) {
+								return createNewListItem( '', items[ index ].text, index );
+							}
+							return createNewListItem( value, items[ index ].text, index );
+						} }
+						onRemove={ ( value ) => {
+							removeListItem( value, index );
+						} }
+						isSelected={ this.state.focusIndex === index }
+						unstableOnFocus={ this.onSelectItem( index ) }
+						onReplace={ ( value ) => {
+							stopOnReplace( value, index );
+						} }
+						className={ 'kt-svg-icon-list-text' }
+					/>
 					<div className="kadence-blocks-list-item__control-menu">
 						<IconButton
 							icon="arrow-up"
@@ -651,7 +638,7 @@ class KadenceIconLists extends Component {
 								title={ __( 'List Text Styling' ) }
 								initialOpen={ false }
 							>
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Color Settings' ) }
 									colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
 									colorDefault={ '' }
@@ -731,7 +718,7 @@ class KadenceIconLists extends Component {
 										max={ 4 }
 									/>
 								) }
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Icon Color' ) }
 									colorValue={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
 									colorDefault={ '' }
@@ -751,7 +738,7 @@ class KadenceIconLists extends Component {
 									} }
 								/>
 								{ items[ 0 ].style !== 'default' && (
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Icon Background' ) }
 										colorValue={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
 										colorDefault={ '' }
@@ -761,7 +748,7 @@ class KadenceIconLists extends Component {
 									/>
 								) }
 								{ items[ 0 ].style !== 'default' && (
-									<AdvancedColorControl
+									<AdvancedPopColorControl
 										label={ __( 'Border Color' ) }
 										colorValue={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
 										colorDefault={ '' }
@@ -822,7 +809,7 @@ class KadenceIconLists extends Component {
 					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap {
 							font-weight: ${ ( listStyles[ 0 ].weight ? listStyles[ 0 ].weight : '' ) };
 							font-style: ${ ( listStyles[ 0 ].style ? listStyles[ 0 ].style : '' ) };
-							color:  ${ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) };
+							color:  ${ ( listStyles[ 0 ].color ? KadenceColorOutput( listStyles[ 0 ].color ) : '' ) };
 							font-size: ${ ( listStyles[ 0 ].size && listStyles[ 0 ].size[ 0 ] ? listStyles[ 0 ].size[ 0 ] + listStyles[ 0 ].sizeType : '' ) };
 							line-height: ${ ( listStyles[ 0 ].lineHeight && listStyles[ 0 ].lineHeight[ 0 ] ? listStyles[ 0 ].lineHeight[ 0 ] + listStyles[ 0 ].lineType : '' ) };
 							letter-spacing: ${ ( listStyles[ 0 ].letterSpacing ? listStyles[ 0 ].letterSpacing + 'px' : '' ) };
@@ -835,7 +822,7 @@ class KadenceIconLists extends Component {
 					<WebfontLoader config={ config }>
 					</WebfontLoader>
 				) }
-				<div className={ `kt-svg-icon-list-container kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns }${ ( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' ) }` } style={ {
+				<div ref={ this.container } className={ `kt-svg-icon-list-container kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns }${ ( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' ) }` } style={ {
 					margin: ( listMargin && undefined !== listMargin[ 0 ] && null !== listMargin[ 0 ] ? listMargin[ 0 ] + 'px ' + listMargin[ 1 ] + 'px ' + listMargin[ 2 ] + 'px ' + listMargin[ 3 ] + 'px' : '' ),
 				} } >
 					{ times( listCount, n => renderIconsPreview( n ) ) }
