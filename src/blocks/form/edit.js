@@ -1177,6 +1177,15 @@ class KadenceForm extends Component {
 									borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
 									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 								} } >
+									{ undefined !== fields[ index ].placeholder && '' !== fields[ index ].placeholder && (
+										<option
+											value=""
+											disabled={ true }
+											selected={ '' === fields[ index ].default ? true : false }
+										>
+											{ fields[ index ].placeholder }
+										</option>
+									) }
 									{ times( fields[ index ].options.length, n => (
 										<option
 											key={ n }

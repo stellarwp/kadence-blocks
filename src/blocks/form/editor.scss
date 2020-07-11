@@ -104,7 +104,7 @@
 			border: 1px solid #818a91;
 			border-radius: 3px;
 			padding: 10px 12px;
-			height: 40px;
+			min-height: 40px;
 			flex-basis: 100%;
 			max-width: 100%;
 			width: 100%;
@@ -122,12 +122,12 @@
 		}
 		&.kb-input-size-small {
 			.kb-select-style-field {
-				height: 28px;
+				min-height: 28px;
 			}
 		}
 		&.kb-input-size-large {
 			.kb-select-style-field {
-				height: 60px;
+				min-height: 60px;
 			}
 		}
 		.kb-select-style-field[multiple] {
