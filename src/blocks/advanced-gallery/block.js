@@ -126,7 +126,7 @@ registerBlockType( 'kadence/advancedgallery', {
 				caption: {
 					type: 'string',
 					source: 'html',
-					selector: 'figcaption',
+					selector: '.kadence-blocks-gallery-item__caption',
 				},
 			},
 		},

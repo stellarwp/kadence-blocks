@@ -390,6 +390,44 @@ class KadenceAdvancedGalleryDefault extends Component {
 							/>
 						</PanelBody>
 						<PanelBody
+							title={ __( 'Caption Settings' ) }
+							initialOpen={ false }
+						>
+							<ToggleControl
+								label={ __( 'Show Captions', 'kadence-blocks' ) }
+								checked={ ( undefined !== galleryConfig.showCaption ? galleryConfig.showCaption : false ) }
+								onChange={ value => this.saveConfigState( 'showCaption', value ) }
+							/>
+							<SelectControl
+								label={ __( 'Caption Placement', 'kadence-blocks' ) }
+								options={ [
+									{
+										label: __( 'Bottom of Image - Show on Hover', 'kadence-blocks' ),
+										value: 'bottom-hover',
+									},
+									{
+										label: __( 'Bottom of Image - Show always', 'kadence-blocks' ),
+										value: 'bottom',
+									},
+									{
+										label: __( 'Below Image - Show always', 'kadence-blocks' ),
+										value: 'below',
+									},
+									{
+										label: __( 'Cover Image - Show on Hover', 'kadence-blocks' ),
+										value: 'cover-hover',
+									},
+								] }
+								value={ ( undefined !== galleryConfig.captionStyle ? galleryConfig.captionStyle : 'bottom-hover' ) }
+								onChange={ ( value ) => this.saveConfigState( 'captionStyle', value ) }
+							/>
+							<ToggleControl
+								label={ __( 'Force hover effect always for mobile', 'kadence-blocks' ) }
+								checked={ ( undefined !== galleryConfig.mobileForceHover ? galleryConfig.mobileForceHover : false ) }
+								onChange={ value => this.saveConfigState( 'mobileForceHover', value ) }
+							/>
+						</PanelBody>
+						<PanelBody
 							title={ __( 'Gallery Spacing', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
