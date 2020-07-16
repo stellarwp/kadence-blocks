@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2020-04-30 14:05-0600\n"
+"POT-Creation-Date: 2020-07-16 14:53-0600\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence WP\n"
@@ -10,7 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.3.1\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;esc_attr_e;esc_attr__;esc_html__;"
 "esc_html_e;esc_attr_x;_x;esc_html_x\n"
 "X-Poedit-Basepath: ..\n"
@@ -20,6 +20,18 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-1: dist/blocks\n"
 "X-Poedit-SearchPathExcluded-2: dist/vendor\n"
 "X-Poedit-SearchPathExcluded-3: src\n"
+
+#: dist/blocks.build.js:1
+msgid "Linked"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Individual"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Measurement Control Type"
+msgstr ""
 
 #: dist/blocks.build.js:1
 #, javascript-format
@@ -40,14 +52,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Lowercase"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Linked"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Individual"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -135,10 +139,6 @@ msgid "Margin (px)"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Measurement Control Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Clear"
 msgstr ""
 
@@ -178,6 +178,71 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Inset"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "URL"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Paste or type URL"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Apply"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "To edit this block, you need permission to upload media."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Upload a media file or pick one from your media library."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid ""
+"Upload an audio file, pick one from your media library, or add one with a "
+"URL."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid ""
+"Upload an image file, pick one from your media library, or add one with a "
+"URL."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid ""
+"Upload a video file, pick one from your media library, or add one with a URL."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Media"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Audio"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Image"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Video"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Cancel"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Insert from URL"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Select Image"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -261,6 +326,10 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Enable Divider"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Alignment"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -369,13 +438,33 @@ msgstr ""
 msgid "Gradient"
 msgstr ""
 
+#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:255
+#: dist/settings/class-kadence-blocks-settings.php:903
+msgid "Settings"
+msgstr ""
+
 #: dist/blocks.build.js:1
 msgid "Button..."
 msgstr ""
 
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:255
-#: dist/settings/class-kadence-blocks-settings.php:903
-msgid "Settings"
+#: dist/blocks.build.js:1
+msgid "Move Button"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Move Left"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Move Right"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Duplicate Button"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Remove Button"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -495,7 +584,7 @@ msgid "Add Custom CSS Class"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Space Between Next Button"
+msgid "Gap Between Next"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -595,11 +684,31 @@ msgid "Button Count"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Number of Buttons"
+msgid "Add Button"
 msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Button Alignment"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Container Margin"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Margin Type"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Margin"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Mobile Margin"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Tablet Margin"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -624,6 +733,18 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Remove link"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Copy/Paste Styles"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Copy Styles"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Paste Styles"
 msgstr ""
 
 #: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:698
@@ -652,6 +773,14 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Mute"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Cover"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Contain"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -835,14 +964,6 @@ msgid "Padding Type"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Margin Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Mobile Background"
 msgstr ""
 
@@ -851,7 +972,15 @@ msgid "Set custom background for Mobile?"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Select Image"
+msgid "Force no image for mobile"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Background Image"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Edit Image"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -859,23 +988,7 @@ msgid "Remove Image"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Force no image for mobile"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Background Image Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Cover"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Contain"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Image Position"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -927,10 +1040,6 @@ msgid "Tablet Padding/Margin"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Tablet Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Tablet Background"
 msgstr ""
 
@@ -963,10 +1072,6 @@ msgid "Slide Select Image"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Edit Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Columns"
 msgstr ""
 
@@ -984,10 +1089,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Padding/Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Margin"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -1119,10 +1220,6 @@ msgid "Select Video Poster"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Some Lazyloads only support this type of background images."
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Force Background Image inline?"
 msgstr ""
 
@@ -1199,6 +1296,10 @@ msgid "Second Color"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Background Image Position"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Text Color Settings"
 msgstr ""
 
@@ -1236,10 +1337,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Select Divider"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Image"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -1311,6 +1408,22 @@ msgid "Minimium Height"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Mobile Min Height"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Tablet Min Height"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Min Height"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Content Max Width Inherit from Theme?"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Max Width Type"
 msgstr ""
 
@@ -1324,6 +1437,22 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Z-Index Control"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Visibility Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Hide on Desktop"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Hide on Tablet"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Hide on Mobile"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -1769,14 +1898,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "rem"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "kadence/advancedheading"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "core/paragraph"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -2291,7 +2412,7 @@ msgid "Media Type"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Image"
+msgid "Number"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -2403,6 +2524,42 @@ msgid "Icon Title for Accessibility"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Number Border"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Number Border Radius (px)"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Number Hover Animation"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Number Hover Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Number Hover Background"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Number Hover Border"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Number Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Number Background"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Number Border Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Media Padding"
 msgstr ""
 
@@ -2416,10 +2573,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Show Title"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Min Height"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -2495,15 +2648,7 @@ msgid "Media area"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Copy/Paste Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Copy Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Paste Styles"
+msgid "1"
 msgstr ""
 
 #: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:753
@@ -2987,6 +3132,10 @@ msgstr ""
 msgid "Individual Settings"
 msgstr ""
 
+#: dist/blocks.build.js:1
+msgid "kt-carousel-arrowstyle-"
+msgstr ""
+
 #: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:710
 msgid "Advanced Gallery"
 msgstr ""
@@ -3234,14 +3383,6 @@ msgstr ""
 msgid "Move Image Forward"
 msgstr ""
 
-#: dist/blocks.build.js:1
-msgid "URL"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Paste or type URL"
-msgstr ""
-
 #: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:704
 msgid "Form"
 msgstr ""
@@ -3302,7 +3443,7 @@ msgstr ""
 msgid "Textarea"
 msgstr ""
 
-#: dist/blocks.build.js:1 dist/form-ajax.php:300
+#: dist/blocks.build.js:1 dist/form-ajax.php:303
 msgid "Accept"
 msgstr ""
 
@@ -3312,6 +3453,14 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Telephone"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "CheckBoxes"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Radio"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -3757,7 +3906,7 @@ msgstr ""
 msgid "Success Message"
 msgstr ""
 
-#: dist/blocks.build.js:1 dist/form-ajax.php:74
+#: dist/blocks.build.js:1 dist/form-ajax.php:75
 msgid "Submission Success, Thanks for getting in touch!"
 msgstr ""
 
@@ -3781,8 +3930,8 @@ msgstr ""
 msgid "Error Message"
 msgstr ""
 
-#: dist/blocks.build.js:1 dist/form-ajax.php:55 dist/form-ajax.php:75
-#: dist/form-ajax.php:503
+#: dist/blocks.build.js:1 dist/form-ajax.php:56 dist/form-ajax.php:76
+#: dist/form-ajax.php:506
 msgid "Submission Failed"
 msgstr ""
 
@@ -3790,7 +3939,7 @@ msgstr ""
 msgid "Recapcha Error Message"
 msgstr ""
 
-#: dist/blocks.build.js:1 dist/form-ajax.php:76
+#: dist/blocks.build.js:1 dist/form-ajax.php:77
 msgid "Submission Failed, reCaptcha spam prevention."
 msgstr ""
 
@@ -3840,10 +3989,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Kadence Spacer/Divider"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Divider Opacity"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -4239,10 +4384,6 @@ msgid "vw"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Desktop Padding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Kadence Row Layout"
 msgstr ""
 
@@ -4426,56 +4567,56 @@ msgstr ""
 msgid "requires a unique entry and this value has already been used"
 msgstr ""
 
-#: dist/form-ajax.php:55
+#: dist/form-ajax.php:56
 msgid "Data not Found"
 msgstr ""
 
-#: dist/form-ajax.php:65 dist/form-ajax.php:185
+#: dist/form-ajax.php:66 dist/form-ajax.php:186
 msgid "Submission"
 msgstr ""
 
-#: dist/form-ajax.php:86
+#: dist/form-ajax.php:87
 msgid "Submission Rejected"
 msgstr ""
 
-#: dist/form-ajax.php:86
+#: dist/form-ajax.php:87
 msgid "Spam Detected"
 msgstr ""
 
-#: dist/form-ajax.php:93 dist/form-ajax.php:96 dist/form-ajax.php:100
+#: dist/form-ajax.php:94 dist/form-ajax.php:97 dist/form-ajax.php:101
 msgid "reCAPTCHA Failed"
 msgstr ""
 
-#: dist/form-ajax.php:167
+#: dist/form-ajax.php:168
 msgid "Required Field Empty"
 msgstr ""
 
-#: dist/form-ajax.php:260
+#: dist/form-ajax.php:261
 msgid "Third Party Failed"
 msgstr ""
 
-#: dist/form-ajax.php:266
+#: dist/form-ajax.php:267
 msgid ""
 "Submission rejected, invalid security token. Reload the page and try again."
 msgstr ""
 
-#: dist/form-ajax.php:266
+#: dist/form-ajax.php:267
 msgid "Token invalid"
 msgstr ""
 
-#: dist/form-ajax.php:269
+#: dist/form-ajax.php:270
 msgid "Submission failed"
 msgstr ""
 
-#: dist/form-ajax.php:269
+#: dist/form-ajax.php:270
 msgid "No Data"
 msgstr ""
 
-#: dist/form-ajax.php:503
+#: dist/form-ajax.php:506
 msgid "Data not found"
 msgstr ""
 
-#: dist/init.php:254 dist/settings/class-kadence-blocks-settings.php:252
+#: dist/init.php:269 dist/settings/class-kadence-blocks-settings.php:252
 #: dist/settings/class-kadence-blocks-settings.php:254
 #: dist/settings/class-kadence-blocks-settings.php:534
 msgid "Kadence Blocks"
