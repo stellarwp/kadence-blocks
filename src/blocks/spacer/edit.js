@@ -94,7 +94,7 @@ class KadenceSpacerDivider extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap }, className, setAttributes, toggleSelection } = this.props;
+		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, mobileHAlign, tabletHAlign }, className, setAttributes, toggleSelection } = this.props;
 		let alp;
 		if ( dividerOpacity < 10 ) {
 			alp = '0.0' + dividerOpacity;
@@ -139,6 +139,67 @@ class KadenceSpacerDivider extends Component {
 		const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
 		const minD = ( dividerStyle !== 'stripe' ? 1 : 10 );
 		const maxD = ( dividerStyle !== 'stripe' ? 40 : 60 );
+		const tabAlignControls = (
+			<TabPanel className="kt-size-tabs"
+				activeClass="active-tab"
+				tabs={ [
+					{
+						name: 'desk',
+						title: <Dashicon icon="desktop" />,
+						className: 'kt-desk-tab',
+					},
+					{
+						name: 'tablet',
+						title: <Dashicon icon="tablet" />,
+						className: 'kt-tablet-tab',
+					},
+					{
+						name: 'mobile',
+						title: <Dashicon icon="smartphone" />,
+						className: 'kt-mobile-tab',
+					},
+				] }>
+				{
+					( tab ) => {
+						let tabout;
+						if ( tab.name ) {
+							if ( 'mobile' === tab.name ) {
+								tabout = (
+									<AlignmentToolbar
+										value={ mobileHAlign }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { mobileHAlign: nextAlign } );
+										} }
+									/>
+								);
+							} else if ( 'tablet' === tab.name ) {
+								tabout = (
+									<AlignmentToolbar
+										value={ tabletHAlign }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { tabletHAlign: nextAlign } );
+										} }
+									/>
+								);
+							} else {
+								tabout = (
+									<AlignmentToolbar
+										value={ hAlign }
+										isCollapsed={ false }
+										onChange={ ( nextAlign ) => {
+											setAttributes( { hAlign: nextAlign } );
+										} }
+									/>
+								);
+							}
+						}
+						return <div>{ tabout }</div>;
+					}
+				}
+			</TabPanel>
+		);
 		return (
 			<div className={ className }>
 				{ this.showSettings( 'spacerDivider' ) && (
@@ -221,6 +282,10 @@ class KadenceSpacerDivider extends Component {
 								) }
 								{ dividerEnable && this.showSettings( 'dividerStyles' ) && (
 									<Fragment>
+										<div className="kb-sidebar-alignment components-base-control">
+											<p className="kb-component-label kb-responsive-label">{ __( 'Alignment', 'kadence-blocks' ) }</p>
+											{ tabAlignControls }
+										</div>
 										<SelectControl
 											label={ __( 'Divider Style' ) }
 											value={ dividerStyle }

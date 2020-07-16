@@ -160,15 +160,15 @@ class KadenceAdvancedHeading extends Component {
 			{ key: 'vh', name: __( 'vh' ) },
 			{ key: 'rem', name: __( 'rem' ) },
 		];
-		const fontMin = ( sizeType === 'em' ? 0.2 : 5 );
+		const fontMin = ( sizeType !== 'px' ? 0.2 : 5 );
 		const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -200 );
 		const marginMax = ( marginType === 'em' || marginType === 'rem' ? 12 : 200 );
 		const marginStep = ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 );
-		const fontMax = ( sizeType === 'em' ? 12 : 200 );
-		const fontStep = ( sizeType === 'em' ? 0.1 : 1 );
-		const lineMin = ( lineType === 'em' ? 0.2 : 5 );
-		const lineMax = ( lineType === 'em' ? 12 : 200 );
-		const lineStep = ( lineType === 'em' ? 0.1 : 1 );
+		const fontMax = ( sizeType !== 'px' ? 12 : 200 );
+		const fontStep = ( sizeType !== 'px' ? 0.1 : 1 );
+		const lineMin = ( lineType !== 'px' ? 0.2 : 5 );
+		const lineMax = ( lineType !== 'px' ? 12 : 200 );
+		const lineStep = ( lineType !== 'px' ? 0.1 : 1 );
 		const createLevelControl = ( targetLevel ) => {
 			return [ {
 				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ targetLevel === level } />,
@@ -457,9 +457,9 @@ class KadenceAdvancedHeading extends Component {
 					color: color ? KadenceColorOutput( color ) : undefined,
 					fontWeight: fontWeight,
 					fontStyle: fontStyle,
-					fontSize: size + sizeType,
-					lineHeight: lineHeight + lineType,
-					letterSpacing: letterSpacing + 'px',
+					fontSize: ( size ? size + sizeType : undefined ),
+					lineHeight: ( lineHeight ? lineHeight + lineType : undefined ),
+					letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
 					textTransform: ( textTransform ? textTransform : undefined ),
 					fontFamily: ( typography ? typography : '' ),
 					marginTop: ( undefined !== topMargin ? topMargin + marginType : '' ),

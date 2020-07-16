@@ -11,6 +11,7 @@ import icons from '../../icons';
 import edit from './edit';
 import SvgPattern from './svg-pattern';
 import KadenceColorOutput from '../../kadence-color-output';
+import classnames from 'classnames';
 /**
  * Import Css
  */
@@ -116,6 +117,14 @@ registerBlockType( 'kadence/spacer', {
 			type: 'number',
 			default: 5,
 		},
+		tabletHAlign: {
+			type: 'string',
+			default: '',
+		},
+		mobileHAlign: {
+			type: 'string',
+			default: '',
+		},
 	},
 	transforms: {
 		from: [
@@ -166,7 +175,7 @@ registerBlockType( 'kadence/spacer', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap } } = props;
+		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, tabletHAlign, mobileHAlign } } = props;
 		let alp;
 		if ( dividerOpacity < 10 ) {
 			alp = '0.0' + dividerOpacity;
@@ -183,9 +192,15 @@ registerBlockType( 'kadence/spacer', {
 			const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
 			return dataUri;
 		};
+		const innerSpacerClasses = classnames( {
+			'kt-block-spacer': true,
+			[ `kt-block-spacer-halign-${ hAlign }` ]: hAlign,
+			[ `kt-block-spacer-thalign-${ tabletHAlign }` ]: tabletHAlign,
+			[ `kt-block-spacer-malign-${ mobileHAlign }` ]: mobileHAlign,
+		} );
 		return (
 			<div className={ `align${ ( blockAlignment ? blockAlignment : 'none' ) } kt-block-spacer-${ uniqueID }` }>
-				<div className={ `kt-block-spacer kt-block-spacer-halign-${ hAlign }` } style={ {
+				<div className={ innerSpacerClasses } style={ {
 					height: spacerHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ),
 				} } >
 					{ dividerEnable && (

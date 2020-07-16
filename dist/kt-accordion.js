@@ -892,9 +892,9 @@ for (var i = 0, len = accordionsArray.length; i < len; i++) {
 					if ( element.classList.contains('wp-block-kadence-pane') ) {
 						var child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
 						if ( ! child.classList.contains( 'kt-accordion-panel-active' ) ) {
-							child.click();
+              child.click();
             }
-            if ( e.type && e.type === 'DOMContentLoaded' ) {
+            if ( e.type && e.type === 'load' ) {
               window.setTimeout(function() {
                 kt_accordion_scrollTo( document.body, document.getElementById( id ).offsetTop, 600 );
               }, 350 );
@@ -904,7 +904,7 @@ for (var i = 0, len = accordionsArray.length; i < len; i++) {
 			}
 		}
 		window.addEventListener( 'hashchange', kt_anchor_accordion, false );
-    window.addEventListener( 'DOMContentLoaded', kt_anchor_accordion, false );
-    //window.addEventListener( 'load', kt_anchor_accordion, false );
+    //window.addEventListener( 'DOMContentLoaded', kt_anchor_accordion, false );
+    window.addEventListener( 'load', kt_anchor_accordion, false );
 	}
 } )();

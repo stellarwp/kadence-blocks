@@ -78,6 +78,7 @@
 }
 .components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row .kt-typography__control input {
     min-height: 18px;
+    line-height: 1.6;
 }
 .components-popover.kt-popover-font-family .components-popover__content input.components-text-control__input {
     min-height: 28px;
@@ -86,6 +87,9 @@
 .components-popover.kt-popover-font-family .components-popover__content  .components-select-control__input {
     padding-right: 10px;
     background-size: 10px 10px;
+    min-height: 28px;
+    line-height: 1.6;
+    padding-left: 8px;
 }
 .edit-post-sidebar .typography-family-select-form-row, .kt-block-defaults-modal .typography-family-select-form-row {
 	margin-bottom: 10px;
@@ -146,7 +150,7 @@
 		flex-direction: column-reverse;
 	}
 	.typography-row-settings {
-		margin-top: 10px;
+		margin-top: 8px;
 		display: flex;
 		.components-base-control {
 			flex: 0 1 33.33%;
