@@ -1837,7 +1837,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 			$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit:hover, .kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit:focus  {';
 			if ( isset( $submit['colorHover'] ) && ! empty( $submit['colorHover'] ) ) {
-				$css .= 'color:' . $submit['colorHover'] . ';';
+				$css .= 'color:' . $this->kadence_color_output( $submit['colorHover'] ) . ';';
 			}
 			if ( isset( $submit['borderHover'] ) && ! empty( $submit['borderHover'] ) ) {
 				$alpha = ( isset( $submit['borderHoverOpacity'] ) && is_numeric( $submit['borderHoverOpacity'] ) ? $submit['borderHoverOpacity'] : 1 );
