@@ -3518,6 +3518,56 @@ class Kadence_Blocks_Frontend {
 				$css .= 'right:' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
 		}
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][1] ) && is_numeric( $attr['gutter'][1] ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.wp-block-kadence-advancedgallery ul.kb-gallery-id-' . $unique_id . ' {';
+				$css .= 'margin: -' . ( $attr['gutter'][1] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item {';
+				$css .= 'padding:' . ( $attr['gutter'][1] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init {';
+				$css .= 'margin: 0 -' . ( $attr['gutter'][1] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kt-blocks-carousel-init:not(.slick-initialized) .kb-slide-item {';
+				$css .= 'padding: 4px ' . ( $attr['gutter'][1] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init.kb-carousel-mode-align-left .kb-slide-item {';
+				$css .= 'padding: 4px ' . ( $attr['gutter'][1] ) . 'px 4px 0;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev {';
+				$css .= 'left:' . ( $attr['gutter'][1] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next {';
+				$css .= 'right:' . ( $attr['gutter'][1] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][2] ) && is_numeric( $attr['gutter'][2] ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.wp-block-kadence-advancedgallery ul.kb-gallery-id-' . $unique_id . ' {';
+				$css .= 'margin: -' . ( $attr['gutter'][2] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item {';
+				$css .= 'padding:' . ( $attr['gutter'][2] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init {';
+				$css .= 'margin: 0 -' . ( $attr['gutter'][2] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kt-blocks-carousel-init:not(.slick-initialized) .kb-slide-item {';
+				$css .= 'padding: 4px ' . ( $attr['gutter'][2] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init.kb-carousel-mode-align-left .kb-slide-item {';
+				$css .= 'padding: 4px ' . ( $attr['gutter'][2] ) . 'px 4px 0;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-prev {';
+				$css .= 'left:' . ( $attr['gutter'][2] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .slick-next {';
+				$css .= 'right:' . ( $attr['gutter'][2] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '}';
+		}
 		if ( isset( $attr['type'] ) && 'fluidcarousel' === $attr['type'] && isset( $attr['carouselHeight'] ) && is_array( $attr['carouselHeight'] ) ) {
 			if ( isset( $attr['carouselHeight'][0] ) && is_numeric( $attr['carouselHeight'][0] ) ) {
 				$css .= '.kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius, .kb-gallery-id-' . $unique_id . '.kb-gallery-ul.kb-gallery-type-fluidcarousel .kt-blocks-carousel figure .kb-gal-image-radius img {';
@@ -5045,7 +5095,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function column_layout_css( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) || isset( $attr['border'] ) || isset( $attr['borderWidth'] ) || ( isset( $attr['displayShadow'] ) && true == $attr['displayShadow'] ) ) {
+		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) || isset( $attr['border'] ) || isset( $attr['borderRadius'] ) || isset( $attr['borderWidth'] ) || ( isset( $attr['displayShadow'] ) && true == $attr['displayShadow'] ) ) {
 			$css .= '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col {';
 			if ( isset( $attr['topPadding'] ) ) {
 				$css .= 'padding-top:' . $attr['topPadding'] . 'px;';

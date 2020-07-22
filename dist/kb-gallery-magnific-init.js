@@ -11,8 +11,8 @@ jQuery( document ).ready( function( $ ) {
 			},
 			image: {
 				titleSrc: function( item ) {
-					if ( 'true' == showCaption && item.el.find( 'figcaption' ).length ) {
-						return item.el.find( 'figcaption' ).html();
+					if ( 'true' == showCaption && item.el.find( '.kadence-blocks-gallery-item__caption' ).length ) {
+						return item.el.find( '.kadence-blocks-gallery-item__caption' ).html();
 					}
 					return '';
 				},
@@ -26,8 +26,8 @@ jQuery( document ).ready( function( $ ) {
 			},
 			image: {
 				titleSrc: function( item ) {
-					if ( 'true' == showCaption && item.el.find( 'figcaption' ).length ) {
-						return item.el.find( 'figcaption' ).html();
+					if ( 'true' == showCaption && item.el.find( '.kadence-blocks-gallery-item__caption' ).length ) {
+						return item.el.find( '.kadence-blocks-gallery-item__caption' ).html();
 					}
 					return '';
 				},

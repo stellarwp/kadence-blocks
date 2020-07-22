@@ -1190,3 +1190,7 @@
 		display:none !important;
 	}
 }
+// Fix issue with cover block.
+.kt-inside-inner-col> .wp-block-cover {
+    height: auto;
+}

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.4.2
-Stable tag: 1.8.9
+Stable tag: 1.8.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.8.10 =
+* Fix: Gallery Tablet and Mobile Gutter not working.
+* Fix: Border radius issue with column.
+* Fix: Cover Block over extending inside row.
+* Fix: Hover Text color for Form Button not working with global styles.
+* Fix: Gallery Caption not showing in lightbox.
 
 = 1.8.9 =
 * Add: Responsive align options for spacer block.
