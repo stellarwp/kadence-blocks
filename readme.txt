@@ -87,6 +87,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.9.0 =
+* New: Post Block
+
 = 1.8.10 =
 * Fix: Gallery Tablet and Mobile Gutter not working.
 * Fix: Border radius issue with column.

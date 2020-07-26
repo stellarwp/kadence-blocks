@@ -23,6 +23,8 @@ import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import BorderColorControls from '../../border-color-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import KadenceColorOutput from '../../kadence-color-output';
 
 /**
  * Import Css
@@ -396,15 +398,17 @@ class KadenceAccordionComponent extends Component {
 		const classes = classnames( className, `kt-accordion-wrap kt-accordion-id${ uniqueID } kt-accordion-has-${ paneCount }-panes kt-accordion-block kt-pane-header-alignment-${ titleAlignment }` );
 		const normalSettings = (
 			<Fragment>
-				<p className="kt-setting-label">{ __( 'Title Color' ) }</p>
-				<ColorPalette
-					value={ titleStyles[ 0 ].color }
-					onChange={ ( value ) => saveTitleStyles( { color: value } ) }
+				<AdvancedPopColorControl
+					label={ __( 'Title Color', 'kadence-blocks' ) }
+					colorValue={ ( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => saveTitleStyles( { color: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Title Background' ) }</p>
-				<ColorPalette
-					value={ titleStyles[ 0 ].background }
-					onChange={ ( value ) => saveTitleStyles( { background: value } ) }
+				<AdvancedPopColorControl
+					label={ __( 'Title Background', 'kadence-blocks' ) }
+					colorValue={ ( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => saveTitleStyles( { background: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Title Border Color' ) }
@@ -417,15 +421,17 @@ class KadenceAccordionComponent extends Component {
 		);
 		const hoverSettings = (
 			<Fragment>
-				<p className="kt-setting-label">{ __( 'Hover Color' ) }</p>
-				<ColorPalette
-					value={ titleStyles[ 0 ].colorHover }
-					onChange={ ( value ) => saveTitleStyles( { colorHover: value } ) }
+				<AdvancedPopColorControl
+					label={ __( 'Hover Color', 'kadence-blocks' ) }
+					colorValue={ ( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => saveTitleStyles( { colorHover: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Hover Background' ) }</p>
-				<ColorPalette
-					value={ titleStyles[ 0 ].backgroundHover }
-					onChange={ ( value ) => saveTitleStyles( { backgroundHover: value } ) }
+				<AdvancedPopColorControl
+					label={ __( 'Hover Background', 'kadence-blocks' ) }
+					colorValue={ ( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => saveTitleStyles( { backgroundHover: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Hover Border Color' ) }
@@ -438,15 +444,17 @@ class KadenceAccordionComponent extends Component {
 		);
 		const activeSettings = (
 			<Fragment>
-				<p className="kt-setting-label">{ __( 'Active Color' ) }</p>
-				<ColorPalette
-					value={ titleStyles[ 0 ].colorActive }
-					onChange={ ( value ) => saveTitleStyles( { colorActive: value } ) }
+				<AdvancedPopColorControl
+					label={ __( 'Active Color', 'kadence-blocks' ) }
+					colorValue={ ( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => saveTitleStyles( { colorActive: value } ) }
 				/>
-				<p className="kt-setting-label">{ __( 'Active Background' ) }</p>
-				<ColorPalette
-					value={ titleStyles[ 0 ].backgroundActive }
-					onChange={ ( value ) => saveTitleStyles( { backgroundActive: value } ) }
+				<AdvancedPopColorControl
+					label={ __( 'Active Background', 'kadence-blocks' ) }
+					colorValue={ ( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' ) }
+					colorDefault={ '' }
+					onColorChange={ ( value ) => saveTitleStyles( { backgroundActive: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Active Border Color' ) }
@@ -474,9 +482,9 @@ class KadenceAccordionComponent extends Component {
 			<style>
 				{ `
 				.kt-accordion-${ uniqueID } .kt-blocks-accordion-header {
-					color: ${ titleStyles[ 0 ].color };
-					border-color: ${ titleStyles[ 0 ].border[ 0 ] } ${ titleStyles[ 0 ].border[ 1 ] } ${ titleStyles[ 0 ].border[ 2 ] } ${ titleStyles[ 0 ].border[ 3 ] };
-					background-color: ${ titleStyles[ 0 ].background };
+					color: ${ KadenceColorOutput( titleStyles[ 0 ].color ) };
+					border-color: ${ KadenceColorOutput( titleStyles[ 0 ].border[ 0 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].border[ 1 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].border[ 2 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].border[ 3 ] ) };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].background ) };
 					padding:${ titleStyles[ 0 ].padding[ 0 ] }px ${ titleStyles[ 0 ].padding[ 1 ] }px ${ titleStyles[ 0 ].padding[ 2 ] }px ${ titleStyles[ 0 ].padding[ 3 ] }px;
 					margin-top:${ ( titleStyles[ 0 ].marginTop > 32 ? titleStyles[ 0 ].marginTop : 0 ) }px;
 					border-width:${ titleStyles[ 0 ].borderWidth[ 0 ] }px ${ titleStyles[ 0 ].borderWidth[ 1 ] }px ${ titleStyles[ 0 ].borderWidth[ 2 ] }px ${ titleStyles[ 0 ].borderWidth[ 3 ] }px;
@@ -498,48 +506,48 @@ class KadenceAccordionComponent extends Component {
 				}
 				.kt-accordion-${ uniqueID } .kt-accordion-panel-inner {
 					padding:${ contentPadding[ 0 ] }px ${ contentPadding[ 1 ] }px ${ contentPadding[ 2 ] }px ${ contentPadding[ 3 ] }px;
-					background-color: ${ contentBgColor };
-					border-color: ${ contentBorderColor };
+					background-color: ${ KadenceColorOutput( contentBgColor ) };
+					border-color: ${ KadenceColorOutput( contentBorderColor ) };
 					border-width:${ contentBorder[ 0 ] }px ${ contentBorder[ 1 ] }px ${ contentBorder[ 2 ] }px ${ contentBorder[ 3 ] }px;
 					border-radius:${ contentBorderRadius[ 0 ] }px ${ contentBorderRadius[ 1 ] }px ${ contentBorderRadius[ 2 ] }px ${ contentBorderRadius[ 3 ] }px;
 					min-height:${ ( minHeight ? minHeight + 'px' : '0' ) };
 				}
 				.kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${ titleStyles[ 0 ].color };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].color ) };
 				}
 				.kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${ titleStyles[ 0 ].background };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].background ) };
 				}
 				.kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger {
-					background-color: ${ titleStyles[ 0 ].color };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].color ) };
 				}
 				.kt-accordion-${ uniqueID } .kt-blocks-accordion-header:hover {
-					color: ${ titleStyles[ 0 ].colorHover };
-					border-color: ${ titleStyles[ 0 ].borderHover[ 0 ] } ${ titleStyles[ 0 ].borderHover[ 1 ] } ${ titleStyles[ 0 ].borderHover[ 2 ] } ${ titleStyles[ 0 ].borderHover[ 3 ] };
-					background-color: ${ titleStyles[ 0 ].backgroundHover };
+					color: ${ KadenceColorOutput( titleStyles[ 0 ].colorHover ) };
+					border-color: ${ KadenceColorOutput( titleStyles[ 0 ].borderHover[ 0 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].borderHover[ 1 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].borderHover[ 2 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].borderHover[ 3 ] ) };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].backgroundHover ) };
 				}
 				.kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${ titleStyles[ 0 ].colorHover };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].colorHover ) };
 				}
 				.kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${ titleStyles[ 0 ].backgroundHover };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].backgroundHover ) };
 				}
 				.kt-accordion-${ uniqueID }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger {
-					background-color: ${ titleStyles[ 0 ].colorHover };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].colorHover ) };
 				}
 				.kt-accordion-${ uniqueID }.kt-start-active-pane-${ openPane + 1 } .kt-accordion-pane-${ openPane + 1 } .kt-blocks-accordion-header {
-					color: ${ titleStyles[ 0 ].colorActive };
-					border-color: ${ titleStyles[ 0 ].borderActive[ 0 ] } ${ titleStyles[ 0 ].borderActive[ 1 ] } ${ titleStyles[ 0 ].borderActive[ 2 ] } ${ titleStyles[ 0 ].borderActive[ 3 ] };
-					background-color: ${ titleStyles[ 0 ].backgroundActive };
+					color: ${ KadenceColorOutput( titleStyles[ 0 ].colorActive ) };
+					border-color: ${ KadenceColorOutput( titleStyles[ 0 ].borderActive[ 0 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].borderActive[ 1 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].borderActive[ 2 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].borderActive[ 3 ] ) };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].backgroundActive ) };
 				}
 				.kt-accordion-${ uniqueID }.kt-start-active-pane-${ openPane + 1 }:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane-${ openPane + 1 } .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${ uniqueID }.kt-start-active-pane-${ openPane + 1 }:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane-${ openPane + 1 } .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${ titleStyles[ 0 ].colorActive };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].colorActive ) };
 				}
 				.kt-accordion-${ uniqueID }.kt-start-active-pane-${ openPane + 1 }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane-${ openPane + 1 } .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${ uniqueID }.kt-start-active-pane-${ openPane + 1 }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane-${ openPane + 1 } .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${ titleStyles[ 0 ].backgroundActive };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].backgroundActive ) };
 				}
 				.kt-accordion-${ uniqueID }.kt-start-active-pane-${ openPane + 1 }:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane-${ openPane + 1 } .kt-blocks-accordion-icon-trigger {
-					background-color: ${ titleStyles[ 0 ].colorActive };
+					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].colorActive ) };
 				}
 				` }
 			</style>
@@ -815,15 +823,17 @@ class KadenceAccordionComponent extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-								<p className="kt-setting-label">{ __( 'Inner Content Background', 'kadence-blocks' ) }</p>
-								<ColorPalette
-									value={ contentBgColor }
-									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
+								<AdvancedPopColorControl
+									label={ __( 'Inner Content Background', 'kadence-blocks' ) }
+									colorValue={ ( contentBgColor ? contentBgColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
 								/>
-								<p className="kt-setting-label">{ __( 'Inner Content Border Color', 'kadence-blocks' ) }</p>
-								<ColorPalette
-									value={ contentBorderColor }
-									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
+								<AdvancedPopColorControl
+									label={ __( 'Inner Content Border Color', 'kadence-blocks' ) }
+									colorValue={ ( contentBorderColor ? contentBorderColor : '' ) }
+									colorDefault={ '' }
+									onColorChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Inner Content Border Width (px)', 'kadence-blocks' ) }

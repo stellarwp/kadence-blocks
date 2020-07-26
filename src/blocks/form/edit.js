@@ -1344,13 +1344,13 @@ class KadenceForm extends Component {
 			}
 			return (
 				`#kb-form-${ uniqueID } .kadence-blocks-form-field input.kb-field:focus, #kb-form-${ uniqueID } .kadence-blocks-form-field textarea:focus {
-					${ ( style[ 0 ].colorActive ? 'color:' + style[ 0 ].colorActive + '!important;' : '' ) }
+					${ ( style[ 0 ].colorActive ? 'color:' + KadenceColorOutput( style[ 0 ].colorActive ) + '!important;' : '' ) }
 					${ ( inputBGA ? 'background:' + inputBGA + '!important;' : '' ) }
 					${ ( inputBox ? 'box-shadow:' + inputBox + '!important;' : '' ) }
 					${ ( style[ 0 ].borderActive ? 'border-color:' + KadenceColorOutput( style[ 0 ].borderActive ) + '!important;' : '' ) }
 				}
 				#kb-form-${ uniqueID } .kadence-blocks-form-field .kb-forms-submit:hover {
-					${ ( submit[ 0 ].colorHover ? 'color:' + submit[ 0 ].colorHover + '!important;' : '' ) }
+					${ ( submit[ 0 ].colorHover ? 'color:' + KadenceColorOutput( submit[ 0 ].colorHover ) + '!important;' : '' ) }
 					${ ( btnHBGnorm ? 'background:' + btnHBGnorm + '!important;' : '' ) }
 					${ ( btnHBox ? 'box-shadow:' + btnHBox + '!important;' : '' ) }
 					${ ( submit[ 0 ].borderHover ? 'border-color:' + KadenceColorOutput( submit[ 0 ].borderHover ) + '!important;' : '' ) }

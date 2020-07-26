@@ -7,7 +7,7 @@
  * Import Icons
  */
 import icons from './icons';
-
+import AdvancedPopColorControl from './advanced-pop-color-control';
 /**
  * Import External
  */
@@ -21,7 +21,6 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	ColorPalette,
 } = wp.blockEditor;
 const {
 	Button,
@@ -70,34 +69,40 @@ export default function BorderColorControls( {
 				{ control && control !== 'individual' && (
 					<Fragment>
 						<p className="kt-setting-label">{ label }</p>
-						<ColorPalette
-							value={ ( values ? values[ 0 ] : '' ) }
-							onChange={ ( value ) => onChange( [ value, value, value, value ] ) }
+						<AdvancedPopColorControl
+							label={ icons.linked }
+							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							colorDefault={ '' }
+							onColorChange={ ( value ) => onChange( [ value, value, value, value ] ) }
 						/>
 					</Fragment>
 				) }
 				{ control && control === 'individual' && (
 					<div className="kt-border-color-array-control">
 						<p className="kt-setting-label">{ label }</p>
-						<p className="kt-border-color-icon">{ firstIcon }</p>
-						<ColorPalette
-							value={ ( values ? values[ 0 ] : '' ) }
-							onChange={ ( value ) => onChange( [ value, values[ 1 ], values[ 2 ], values[ 3 ] ] ) }
+						<AdvancedPopColorControl
+							label={ firstIcon }
+							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							colorDefault={ '' }
+							onColorChange={ ( value ) => onChange( [ value, values[ 1 ], values[ 2 ], values[ 3 ] ] ) }
 						/>
-						<p className="kt-border-color-icon">{ secondIcon }</p>
-						<ColorPalette
-							value={ ( values ? values[ 1 ] : '' ) }
-							onChange={ ( value ) => onChange( [ values[ 0 ], value, values[ 2 ], values[ 3 ] ] ) }
+						<AdvancedPopColorControl
+							label={ secondIcon }
+							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							colorDefault={ '' }
+							onColorChange={ ( value ) => onChange( [ values[ 0 ], value, values[ 2 ], values[ 3 ] ] ) }
 						/>
-						<p className="kt-border-color-icon">{ thirdIcon }</p>
-						<ColorPalette
-							value={ ( values ? values[ 2 ] : '' ) }
-							onChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], value, values[ 3 ] ] ) }
+						<AdvancedPopColorControl
+							label={ thirdIcon }
+							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							colorDefault={ '' }
+							onColorChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], value, values[ 3 ] ] ) }
 						/>
-						<p className="kt-border-color-icon">{ fourthIcon }</p>
-						<ColorPalette
-							value={ ( values ? values[ 3 ] : '' ) }
-							onChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], values[ 2 ], value ] ) }
+						<AdvancedPopColorControl
+							label={ fourthIcon }
+							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							colorDefault={ '' }
+							onColorChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], values[ 2 ], value ] ) }
 						/>
 					</div>
 				) }
