@@ -17,10 +17,11 @@ import memoize from 'memize';
 import WebfontLoader from '../../fontloader';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
-import AdvancedColorControl from '../../advanced-color-control';
 import filter from 'lodash/filter';
 import IconControl from '../../icon-control';
 import IconRender from '../../icon-render';
+import KadenceColorOutput from '../../kadence-color-output';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
 /**
  * Import Css
  */
@@ -549,8 +550,8 @@ class KadenceTabs extends Component {
 						margin: ( titleMargin ? titleMargin[ 0 ] + 'px ' + ( 'tabs' === layout && widthType === 'percent' ? '0px ' : titleMargin[ 1 ] + 'px ' ) + titleMargin[ 2 ] + 'px ' + ( 'tabs' === layout && widthType === 'percent' ? '0px ' : titleMargin[ 3 ] + 'px ' ) : '' ),
 					} }>
 						<div className={ `kt-tab-title kt-tab-title-${ 1 + index }` } style={ {
-							backgroundColor: titleBg,
-							color: titleColor,
+							backgroundColor: KadenceColorOutput( titleBg ),
+							color: KadenceColorOutput( titleColor ),
 							fontSize: size + sizeType,
 							lineHeight: lineHeight + lineType,
 							fontWeight: fontWeight,
@@ -562,7 +563,7 @@ class KadenceTabs extends Component {
 							borderWidth: ( titleBorderWidth ? titleBorderWidth[ 0 ] + 'px ' + titleBorderWidth[ 1 ] + 'px ' + titleBorderWidth[ 2 ] + 'px ' + titleBorderWidth[ 3 ] + 'px' : '' ),
 							borderRadius: ( titleBorderRadius ? titleBorderRadius[ 0 ] + 'px ' + titleBorderRadius[ 1 ] + 'px ' + titleBorderRadius[ 2 ] + 'px ' + titleBorderRadius[ 3 ] + 'px' : '' ),
 							padding: ( titlePadding ? titlePadding[ 0 ] + 'px ' + titlePadding[ 1 ] + 'px ' + titlePadding[ 2 ] + 'px ' + titlePadding[ 3 ] + 'px' : '' ),
-							borderColor: titleBorder,
+							borderColor: KadenceColorOutput( titleBorder ),
 							marginRight: ( 'tabs' === layout && widthType === 'percent' ? gutter[ 0 ] + 'px' : undefined ),
 						} } onClick={ () => setAttributes( { currentTab: 1 + index } ) } onKeyPress={ () => setAttributes( { currentTab: 1 + index } ) } tabIndex="0" role="button">
 							{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
@@ -741,19 +742,19 @@ class KadenceTabs extends Component {
 		};
 		const normalSettings = (
 			<Fragment>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Title Color' ) }
 					colorValue={ ( titleColor ? titleColor : '' ) }
 					colorDefault={ '' }
 					onColorChange={ ( value ) => setAttributes( { titleColor: value } ) }
 				/>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Title Background' ) }
 					colorValue={ ( titleBg ? titleBg : '' ) }
 					colorDefault={ '' }
 					onColorChange={ ( value ) => setAttributes( { titleBg: value } ) }
 				/>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Title Border Color' ) }
 					colorValue={ ( titleBorder ? titleBorder : '' ) }
 					colorDefault={ '' }
@@ -763,19 +764,19 @@ class KadenceTabs extends Component {
 		);
 		const hoverSettings = (
 			<Fragment>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Hover Color' ) }
 					colorValue={ ( titleColorHover ? titleColorHover : '' ) }
 					colorDefault={ '' }
 					onColorChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
 				/>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Hover Background' ) }
 					colorValue={ ( titleBgHover ? titleBgHover : '' ) }
 					colorDefault={ '' }
 					onColorChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
 				/>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Hover Border Color' ) }
 					colorValue={ ( titleBorderHover ? titleBorderHover : '' ) }
 					colorDefault={ '' }
@@ -785,19 +786,19 @@ class KadenceTabs extends Component {
 		);
 		const activeSettings = (
 			<Fragment>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Active Color' ) }
 					colorValue={ ( titleColorActive ? titleColorActive : '' ) }
 					colorDefault={ '' }
 					onColorChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
 				/>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Active Background' ) }
 					colorValue={ ( titleBgActive ? titleBgActive : '' ) }
 					colorDefault={ '' }
 					onColorChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
 				/>
-				<AdvancedColorControl
+				<AdvancedPopColorControl
 					label={ __( 'Active Border Color' ) }
 					colorValue={ ( titleBorderActive ? titleBorderActive : '' ) }
 					colorDefault={ '' }
@@ -990,14 +991,14 @@ class KadenceTabs extends Component {
 		const renderCSS = (
 			<style>
 				{ `.kt-tabs-id${ uniqueID } .kt-title-item:hover .kt-tab-title {
-					color: ${ titleColorHover } !important;
-					border-color: ${ titleBorderHover } !important;
-					background-color: ${ titleBgHover } !important;
+					color: ${ KadenceColorOutput( titleColorHover ) } !important;
+					border-color: ${ KadenceColorOutput( titleBorderHover ) } !important;
+					background-color: ${ KadenceColorOutput( titleBgHover ) } !important;
 				}
 				.kt-tabs-id${ uniqueID } .kt-title-item.kt-tab-title-active .kt-tab-title, .kt-tabs-id${ uniqueID } .kt-title-item.kt-tab-title-active:hover .kt-tab-title {
-					color: ${ titleColorActive } !important;
-					border-color: ${ titleBorderActive } !important;
-					background-color: ${ titleBgActive } !important;
+					color: ${ KadenceColorOutput( titleColorActive ) } !important;
+					border-color: ${ KadenceColorOutput( titleBorderActive ) } !important;
+					background-color: ${ KadenceColorOutput( titleBgActive ) } !important;
 				}` }
 			</style>
 		);
@@ -1046,7 +1047,7 @@ class KadenceTabs extends Component {
 								title={ __( 'Content Settings' ) }
 								initialOpen={ false }
 							>
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Content Background' ) }
 									colorValue={ ( contentBgColor ? contentBgColor : '' ) }
 									colorDefault={ '' }
@@ -1062,7 +1063,7 @@ class KadenceTabs extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-								<AdvancedColorControl
+								<AdvancedPopColorControl
 									label={ __( 'Border Color' ) }
 									colorValue={ ( contentBorderColor ? contentBorderColor : '' ) }
 									colorDefault={ '' }
@@ -1578,8 +1579,8 @@ class KadenceTabs extends Component {
 								padding: ( innerPadding ? innerPadding[ 0 ] + 'px ' + innerPadding[ 1 ] + 'px ' + innerPadding[ 2 ] + 'px ' + innerPadding[ 3 ] + 'px' : '' ),
 								borderWidth: ( contentBorder ? contentBorder[ 0 ] + 'px ' + contentBorder[ 1 ] + 'px ' + contentBorder[ 2 ] + 'px ' + contentBorder[ 3 ] + 'px' : '' ),
 								minHeight: minHeight + 'px',
-								backgroundColor: contentBgColor,
-								borderColor: contentBorderColor,
+								backgroundColor: KadenceColorOutput( contentBgColor ),
+								borderColor: KadenceColorOutput( contentBorderColor ),
 							} }>
 								<InnerBlocks
 									template={ getPanesTemplate( tabCount ) }

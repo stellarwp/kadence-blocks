@@ -25,8 +25,8 @@
 }
 .kadence-blocks-tab-item__control-menu .components-icon-button, .kadence-blocks-tab-item__control-menu .components-button  {
     color:white;
-	padding: 0;
-	height: auto;
+	padding: 0 !important;
+	height: 20px;
 }
 .components-button.kt-tab-add.is-primary {
     border: 0;

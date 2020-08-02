@@ -2801,10 +2801,10 @@ class Kadence_Blocks_Frontend {
 				$css .= 'min-height:' . $attr['minHeight'] . 'px;';
 			}
 			if ( isset( $attr['contentBorderColor'] ) && ! empty( $attr['contentBorderColor'] ) ) {
-				$css .= 'border-color:' . $attr['contentBorderColor'] . ';';
+				$css .= 'border-color:' . $this->kadence_color_output( $attr['contentBorderColor'] ) . ';';
 			}
 			if ( isset( $attr['contentBgColor'] ) && ! empty( $attr['contentBgColor'] ) ) {
-				$css .= 'background:' . $attr['contentBgColor'] . ';';
+				$css .= 'background:' . $this->kadence_color_output( $attr['contentBgColor'] ) . ';';
 			}
 			$css .= '}';
 		}
@@ -2879,13 +2879,13 @@ class Kadence_Blocks_Frontend {
 				$css .= 'padding:' . $attr['titlePadding'][0] . 'px ' . $attr['titlePadding'][1] . 'px ' . $attr['titlePadding'][2] . 'px ' . $attr['titlePadding'][3] . 'px ;';
 			}
 			if ( isset( $attr['titleBorder'] ) && ! empty( $attr['titleBorder'] ) ) {
-				$css .= 'border-color:' . $attr['titleBorder'] . ';';
+				$css .= 'border-color:' . $this->kadence_color_output( $attr['titleBorder'] ) . ';';
 			}
 			if ( isset( $attr['titleColor'] ) && ! empty( $attr['titleColor'] ) ) {
-				$css .= 'color:' . $attr['titleColor'] . ';';
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleColor'] ) . ';';
 			}
 			if ( isset( $attr['titleBg'] ) && ! empty( $attr['titleBg'] ) ) {
-				$css .= 'background:' . $attr['titleBg'] . ';';
+				$css .= 'background:' . $this->kadence_color_output( $attr['titleBg'] ) . ';';
 			}
 			$css .= '}';
 		}
@@ -2893,13 +2893,13 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['titleBorderHover'] ) || isset( $attr['titleColorHover'] ) || isset( $attr['titleBgHover'] ) ) {
 			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title:hover, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title:hover {';
 			if ( isset( $attr['titleBorderHover'] ) && ! empty( $attr['titleBorderHover'] ) ) {
-				$css .= 'border-color:' . $attr['titleBorderHover'] . ';';
+				$css .= 'border-color:' . $this->kadence_color_output( $attr['titleBorderHover'] ) . ';';
 			}
 			if ( isset( $attr['titleColorHover'] ) && ! empty( $attr['titleColorHover'] ) ) {
-				$css .= 'color:' . $attr['titleColorHover'] . ';';
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleColorHover'] ) . ';';
 			}
 			if ( isset( $attr['titleBgHover'] ) && ! empty( $attr['titleBgHover'] ) ) {
-				$css .= 'background:' . $attr['titleBgHover'] . ';';
+				$css .= 'background:' . $this->kadence_color_output( $attr['titleBgHover'] ) . ';';
 			}
 			$css .= '}';
 		}
@@ -2907,13 +2907,13 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['titleBorderActive'] ) || isset( $attr['titleColorActive'] ) || isset( $attr['titleBgActive'] ) ) {
 			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tab-title-active .kt-tab-title  {';
 			if ( isset( $attr['titleBorderActive'] ) && ! empty( $attr['titleBorderActive'] ) ) {
-				$css .= 'border-color:' . $attr['titleBorderActive'] . ';';
+				$css .= 'border-color:' . $this->kadence_color_output( $attr['titleBorderActive'] ) . ';';
 			}
 			if ( isset( $attr['titleColorActive'] ) && ! empty( $attr['titleColorActive'] ) ) {
-				$css .= 'color:' . $attr['titleColorActive'] . ';';
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleColorActive'] ) . ';';
 			}
 			if ( isset( $attr['titleBgActive'] ) && ! empty( $attr['titleBgActive'] ) ) {
-				$css .= 'background:' . $attr['titleBgActive'] . ';';
+				$css .= 'background:' . $this->kadence_color_output( $attr['titleBgActive'] ) . ';';
 			} else {
 				$css .= 'background:#ffffff;';
 			}
@@ -3728,7 +3728,7 @@ class Kadence_Blocks_Frontend {
 	public function blocks_iconlist_array( $attr, $unique_id ) {
 		$css = '';
 		if ( isset( $attr['listMargin'] ) && is_array( $attr['listMargin'] ) && isset( $attr['listMargin'][0] ) ) {
-			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list {';
+			$css .= '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list {';
 				$css .= 'margin:' . $attr['listMargin'][0] . 'px ' . $attr['listMargin'][1] . 'px ' . $attr['listMargin'][2] . 'px ' . $attr['listMargin'][3] . 'px;';
 			$css .= '}';
 		}

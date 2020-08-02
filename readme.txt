@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.4.2
-Stable tag: 1.8.10
+Stable tag: 1.8.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,8 +87,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 1.9.0 =
-* New: Post Block
+= 1.8.11 =
+* Update: Accordion and Tab Color selectors.
+* Fix: Margin issue for icon list.
 
 = 1.8.10 =
 * Fix: Gallery Tablet and Mobile Gutter not working.
