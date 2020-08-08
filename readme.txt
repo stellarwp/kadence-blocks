@@ -88,6 +88,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 1.8.11 =
+** Fix button margin not working issue.
+** Fix: Radio field option for form.
+
+= 1.8.11 =
 * Update: Accordion and Tab Color selectors.
 * Fix: Margin issue for icon list.
 
