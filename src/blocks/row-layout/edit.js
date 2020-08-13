@@ -6,6 +6,7 @@
  * Import Icons
  */
 import icons from '../../icons';
+import Select from 'react-select';
 
 /**
  * Import External
@@ -170,7 +171,7 @@ class KadenceRowLayout extends Component {
 		} );
 	};
 	render() {
-		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -3385,6 +3386,33 @@ class KadenceRowLayout extends Component {
 										label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
 										checked={ ( undefined !== vsmobile ? vsmobile : false ) }
 										onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
+									/>
+									<h2>{ __( 'User Visibility Settings', 'kadence-blocks' ) }</h2>
+									<ToggleControl
+										label={ __( 'Hide from Logged in Users', 'kadence-blocks' ) }
+										checked={ ( undefined !== loggedIn ? loggedIn : false ) }
+										onChange={ ( value ) => setAttributes( { loggedIn: value } ) }
+									/>
+									{ loggedIn && (
+										<Fragment>
+											<h2 className="kt-heading-fontfamily-title">{ __( 'Optional: Hide from Specific User Roles', 'kadence-blocks' ) }</h2>
+											<div className="typography-family-select-form-row">
+												<Select
+													options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
+													value={ loggedInUser }
+													isMulti={ true }
+													maxMenuHeight={ 300 }
+													isClearable={ true }
+													placeholder={ '' }
+													onChange={ value => setAttributes( { loggedInUser: value } ) }
+												/>
+											</div>
+										</Fragment>
+									) }
+									<ToggleControl
+										label={ __( 'Hide from Loggedout Users', 'kadence-blocks' ) }
+										checked={ ( undefined !== loggedOut ? loggedOut : false ) }
+										onChange={ ( value ) => setAttributes( { loggedOut: value } ) }
 									/>
 								</PanelBody>
 							</Fragment>

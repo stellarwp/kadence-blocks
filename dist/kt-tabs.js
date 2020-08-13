@@ -148,5 +148,5 @@ jQuery( document ).ready( function( $ ) {
 		}
 	}
 	window.addEventListener( 'hashchange', kt_anchor_tabs, false );
-	window.addEventListener( 'load', kt_anchor_tabs, false );
+	kt_anchor_tabs();
 } );

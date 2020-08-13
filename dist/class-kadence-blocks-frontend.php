@@ -58,6 +58,38 @@ class Kadence_Blocks_Frontend {
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
 		add_action( 'wp_head', array( $this, 'faq_schema' ), 91 );
+		if ( ! is_admin() ) {
+			add_action( 'render_block', array( $this, 'conditionally_render_block' ), 6, 2 );
+		}
+	}
+	/**
+	 * Check for logged in, logged out visibility settings.
+	 *
+	 * @param mixed $block_content The block content.
+	 * @param array $block The block data.
+	 *
+	 * @return mixed Returns the block content.
+	 */
+	public function conditionally_render_block( $block_content, $block ) {
+		if ( 'kadence/rowlayout' === $block['blockName'] && isset( $block['attrs'] ) ) {
+			if ( isset( $block['attrs']['loggedIn'] ) && $block['attrs']['loggedIn'] && is_user_logged_in() ) {
+				if ( isset( $block['attrs']['loggedInUser'] ) && is_array( $block['attrs']['loggedInUser'] ) && ! empty( $block['attrs']['loggedInUser'] ) ) {
+					$user = wp_get_current_user();
+					foreach( $block['attrs']['loggedInUser'] as $key => $role ) {
+						if ( in_array( $role['value'], (array) $user->roles ) ) {
+							return '';
+						}
+					}
+				} else {
+					return '';
+				}
+			}
+			if ( isset( $block['attrs']['loggedOut'] ) && $block['attrs']['loggedOut'] && ! is_user_logged_in() ) {
+				return '';
+			}
+		}
+
+		return $block_content;
 	}
 	/**
 	 * On init startup.
@@ -4291,20 +4323,20 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['margin'] ) && is_array( $attr['margin'] ) && is_array( $attr['margin'][0] ) ) {
 			$margin = $attr['margin'][0];
 			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) && is_numeric( $margin['desk'][0] ) ) {
-				$css .= '.kt-btns' . $unique_id . ' {';
+				$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' {';
 				$css .= 'margin:' . $margin['desk'][0] . 'px ' . $margin['desk'][1] . 'px ' . $margin['desk'][2] . 'px ' . $margin['desk'][3] . 'px;';
 				$css .= '}';
 			}
 			if ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) && is_numeric( $margin['tablet'][0] ) ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-				$css .= '.kt-btns' . $unique_id . ' {';
+				$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' {';
 				$css .= 'margin:' . $margin['tablet'][0] . 'px ' . $margin['tablet'][1] . 'px ' . $margin['tablet'][2] . 'px ' . $margin['tablet'][3] . 'px;';
 				$css .= '}';
 				$css .= '}';
 			}
 			if ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) && is_numeric( $margin['mobile'][0] ) ) {
 				$css .= '@media (max-width: 767px) {';
-				$css .= '.kt-btns' . $unique_id . ' {';
+				$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' {';
 				$css .= 'margin:' . $margin['mobile'][0] . 'px ' . $margin['mobile'][1] . 'px ' . $margin['mobile'][2] . 'px ' . $margin['mobile'][3] . 'px;';
 				$css .= '}';
 				$css .= '}';

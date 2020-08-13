@@ -283,11 +283,13 @@ class KB_Ajax_Form {
 			case 'password':
 			case 'hidden':
 			case 'search':
-			case 'radio':
 			case 'select':
 				$value = ( $multi_select && is_array( $value ) ? sanitize_text_field( implode( ', ', $value ) ) : sanitize_text_field( $value ) );
 				break;
 			case 'checkbox':
+				$value = ( is_array( $value ) ? sanitize_text_field( implode( ', ', $value ) ) : sanitize_text_field( $value ) );
+				break;
+			case 'radio':
 				$value = ( is_array( $value ) ? sanitize_text_field( implode( ', ', $value ) ) : sanitize_text_field( $value ) );
 				break;
 			case 'url':

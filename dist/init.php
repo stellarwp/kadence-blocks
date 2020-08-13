@@ -117,7 +117,43 @@ function kadence_gutenberg_editor_assets() {
 }
 add_action( 'init', 'kadence_gutenberg_editor_assets' );
 
-
+/**
+ * Get an array of visibility options.
+ */
+function kadence_blocks_get_user_visibility_options() {
+	$specific_roles = array();
+	if ( function_exists( 'get_editable_roles' ) ) {
+		foreach ( get_editable_roles() as $role_slug => $role_info ) {
+			$specific_roles[] = array(
+				'value' => $role_slug,
+				'label' => $role_info['name'],
+			);
+		}
+	}
+	return apply_filters( 'kadence_blocks_user_visibility_options', $specific_roles );
+}
+/**
+ * Enqueue Gutenberg block assets for backend editor.
+ */
+function kadence_blocks_early_editor_assets() {
+	if ( ! is_admin() ) {
+		return;
+	}
+	global $pagenow;
+	if ( 'post.php' === $pagenow || 'post-new.php' === $pagenow ) {
+		$current_screen = get_current_screen();
+		if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
+			wp_localize_script(
+				'kadence-blocks-js',
+				'kadence_blocks_user_params',
+				array(
+					'userVisibility'  => kadence_blocks_get_user_visibility_options(),
+				)
+			);
+		}
+	}
+}
+add_action( 'current_screen', 'kadence_blocks_early_editor_assets' );
 /**
  * Register Meta for blocks width
  */

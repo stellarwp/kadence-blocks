@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2020-07-16 14:53-0600\n"
+"POT-Creation-Date: 2020-08-13 00:11-0600\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence WP\n"
@@ -1456,6 +1456,22 @@ msgid "Hide on Mobile"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "User Visibility Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Hide from Logged in Users"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Optional: Hide from Specific User Roles"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Hide from Loggedout Users"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Select Your Layout"
 msgstr ""
 
@@ -2829,7 +2845,7 @@ msgstr ""
 msgid "list"
 msgstr ""
 
-#: dist/blocks.build.js:1 dist/class-kadence-blocks-frontend.php:947
+#: dist/blocks.build.js:1 dist/class-kadence-blocks-frontend.php:979
 msgid "Item"
 msgstr ""
 
@@ -3443,7 +3459,7 @@ msgstr ""
 msgid "Textarea"
 msgstr ""
 
-#: dist/blocks.build.js:1 dist/form-ajax.php:303
+#: dist/blocks.build.js:1 dist/form-ajax.php:305
 msgid "Accept"
 msgstr ""
 
@@ -3931,7 +3947,7 @@ msgid "Error Message"
 msgstr ""
 
 #: dist/blocks.build.js:1 dist/form-ajax.php:56 dist/form-ajax.php:76
-#: dist/form-ajax.php:506
+#: dist/form-ajax.php:508
 msgid "Submission Failed"
 msgstr ""
 
@@ -4547,23 +4563,23 @@ msgstr ""
 msgid "Select the font families you want"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:941
+#: dist/class-kadence-blocks-frontend.php:973
 msgid "Please fix the errors to proceed"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:943
+#: dist/class-kadence-blocks-frontend.php:975
 msgid "is required"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:944
+#: dist/class-kadence-blocks-frontend.php:976
 msgid "does not match"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:945
+#: dist/class-kadence-blocks-frontend.php:977
 msgid "is not valid"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:946
+#: dist/class-kadence-blocks-frontend.php:978
 msgid "requires a unique entry and this value has already been used"
 msgstr ""
 
@@ -4612,11 +4628,11 @@ msgstr ""
 msgid "No Data"
 msgstr ""
 
-#: dist/form-ajax.php:506
+#: dist/form-ajax.php:508
 msgid "Data not found"
 msgstr ""
 
-#: dist/init.php:269 dist/settings/class-kadence-blocks-settings.php:252
+#: dist/init.php:305 dist/settings/class-kadence-blocks-settings.php:252
 #: dist/settings/class-kadence-blocks-settings.php:254
 #: dist/settings/class-kadence-blocks-settings.php:534
 msgid "Kadence Blocks"

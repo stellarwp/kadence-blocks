@@ -12,7 +12,7 @@ jQuery( function( $ ) {
 			var form = $(this),
 			submitButton = form.find('input[type=submit]')
 			form_data = kadence_blocks_form.validateForm( form );
-
+			console.log( form_data );
 			if ( form_data ) {
 				// send the request.
 				form.parent( '.wp-block-kadence-form' ).find( '.kadence-blocks-form-message' ).slideUp( 'fast', function() {

@@ -1207,24 +1207,77 @@ class KadenceForm extends Component {
 									) ) }
 								</div>
 							) }
-							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && 'checkbox' !== fields[ index ].type && 'radio' !== fields[ index ].type && (
-								<input name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete="off" data-required={ ( fields[ index ].required ? 'yes' : undefined ) } style={ {
-									paddingTop: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 0 ] ? style[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
-									paddingRight: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 1 ] ? style[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
-									paddingBottom: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 2 ] ? style[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
-									paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
-									background: ( undefined !== inputBG ? inputBG : undefined ),
-									color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
-									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
-									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
-									borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
-									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
-									borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
-									borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
-									borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
-									boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
-								} } />
+							{ 'radio' === fields[ index ].type && (
+								<div data-type={ fields[ index ].type } className={ `kb-field kb-radio-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` }>
+									{ times( fields[ index ].options.length, n => (
+										<div key={ n } data-type={ fields[ index ].type } className={ `kb-radio-item kb-radio-item-${ n }` }>
+											<input type="radio" name={ `kb_field_${ index }[]${ n }` } id={ `kb_field_${ index }[]${ n }` } className={ 'kb-sub-field kb-radio-style' } value={ ( undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '' ) } checked={ ( undefined !== fields[ index ].options[ n ].value && fields[ index ].options[ n ].value === fields[ index ].default ? true : false ) } style={ {
+												borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+											} } />
+											<label htmlFor={ `kb_field_${ index }[]${ n }` }>{ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }</label>
+										</div>
+									) ) }
+								</div>
+							) }
+							{ 'email' === fields[ index ].type && (
+								<input
+									name={ `kb_field_${ index }` }
+									id={ `kb_field_${ index }` }
+									type={ 'text' }
+									placeholder={ fields[ index ].placeholder }
+									value={ fields[ index ].default }
+									data-type={ fields[ index ].type }
+									className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` }
+									autoComplete="off"
+									data-required={ ( fields[ index ].required ? 'yes' : undefined ) }
+									style={ {
+										paddingTop: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 0 ] ? style[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
+										paddingRight: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 1 ] ? style[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
+										paddingBottom: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 2 ] ? style[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
+										paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
+										background: ( undefined !== inputBG ? inputBG : undefined ),
+										color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
+										fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
+										lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+										borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
+										borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
+										borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
+										borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
+										borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
+										borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+										boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+									} }
+								/>
+							) }
+							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && 'checkbox' !== fields[ index ].type && 'radio' !== fields[ index ].type && 'email' !== fields[ index ].type && (
+								<input
+									name={ `kb_field_${ index }` }
+									id={ `kb_field_${ index }` }
+									type={ fields[ index ].type }
+									placeholder={ fields[ index ].placeholder }
+									value={ fields[ index ].default }
+									data-type={ fields[ index ].type }
+									className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` }
+									autoComplete="off"
+									data-required={ ( fields[ index ].required ? 'yes' : undefined ) }
+									style={ {
+										paddingTop: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 0 ] ? style[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
+										paddingRight: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 1 ] ? style[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
+										paddingBottom: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 2 ] ? style[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
+										paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
+										background: ( undefined !== inputBG ? inputBG : undefined ),
+										color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
+										fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
+										lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+										borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
+										borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
+										borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
+										borderBottomWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 2 ] ? style[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
+										borderLeftWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 3 ] ? style[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
+										borderColor: ( undefined === style[ 0 ].border ? undefined : KadenceColorOutput( style[ 0 ].border, ( style[ 0 ].borderOpacity !== undefined ? style[ 0 ].borderOpacity : 1 ) ) ),
+										boxShadow: ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] && style[ 0 ].boxShadow[ 0 ] ? ( undefined !== style[ 0 ].boxShadow[ 7 ] && style[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 5 ] ? style[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== style[ 0 ].boxShadow[ 6 ] ? style[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
+									} }
+								/>
 							) }
 						</Fragment>
 					) }

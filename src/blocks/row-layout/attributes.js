@@ -486,5 +486,16 @@ const attributes = {
 		type: 'bool',
 		default: false,
 	},
+	loggedIn: {
+		type: 'bool',
+		default: false,
+	},
+	loggedInUser: {
+		type: 'array',
+	},
+	loggedOut: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

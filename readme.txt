@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
-Tested up to: 5.4.2
-Stable tag: 1.8.11
+Tested up to: 5.5.0
+Stable tag: 1.8.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,9 +87,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 1.8.11 =
-** Fix button margin not working issue.
-** Fix: Radio field option for form.
+= 1.8.12 =
+* Add: User visibility settings.
+* Fix: Name on Plugins page.
+* Fix: Issue with columns resizer.
+* Fix button margin not working issue.
+* Fix: Radio field option for form.
+* Fix: Tabs interlinking issue.
 
 = 1.8.11 =
 * Update: Accordion and Tab Color selectors.

@@ -154,14 +154,14 @@
 				outline:0;
 			}
 		}
-		.kb-checkbox-style-field {
+		.kb-checkbox-style-field, .kb-radio-style-field {
 			flex-basis: 100%;
 			max-width: 100%;
 			width: 100%;
 			flex-grow: 1;
 			margin-top: 0.3em;
 		}
-		.kb-checkbox-item {
+		.kb-checkbox-item, .kb-radio-item {
 			display: flex;
 			margin: 0;
 			align-items: center;
