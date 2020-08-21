@@ -26,6 +26,7 @@ import ThreeColumnDrag from './threecolumndrag';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import Slider from 'react-slick';
+import KadenceRange from '../../kadence-range-control';
 /**
  * Import Css
  */
@@ -171,7 +172,7 @@ class KadenceRowLayout extends Component {
 		} );
 	};
 	render() {
-		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -746,8 +747,8 @@ class KadenceRowLayout extends Component {
 							) ) }
 						</ButtonGroup>
 						<h2>{ __( 'Padding', 'kadence-blocks' ) }</h2>
-						<RangeControl
-							label={ icons.outlinetop }
+						<KadenceRange
+							beforeIcon={ icons.outlinetop }
 							value={ topPaddingM }
 							className="kt-icon-rangecontrol kt-top-padding"
 							onChange={ ( value ) => {
@@ -759,8 +760,8 @@ class KadenceRowLayout extends Component {
 							max={ paddingMax }
 							step={ paddingStep }
 						/>
-						<RangeControl
-							label={ icons.outlineright }
+						<KadenceRange
+							beforeIcon={ icons.outlineright }
 							value={ rightPaddingM }
 							className="kt-icon-rangecontrol kt-right-padding"
 							onChange={ ( value ) => {
@@ -772,8 +773,8 @@ class KadenceRowLayout extends Component {
 							max={ paddingMax }
 							step={ paddingStep }
 						/>
-						<RangeControl
-							label={ icons.outlinebottom }
+						<KadenceRange
+							beforeIcon={ icons.outlinebottom }
 							value={ bottomPaddingM }
 							className="kt-icon-rangecontrol kt-bottom-padding"
 							onChange={ ( value ) => {
@@ -785,8 +786,8 @@ class KadenceRowLayout extends Component {
 							max={ paddingMax }
 							step={ paddingStep }
 						/>
-						<RangeControl
-							label={ icons.outlineleft }
+						<KadenceRange
+							beforeIcon={ icons.outlineleft }
 							value={ leftPaddingM }
 							className="kt-icon-rangecontrol kt-left-padding"
 							onChange={ ( value ) => {
@@ -813,8 +814,8 @@ class KadenceRowLayout extends Component {
 							) ) }
 						</ButtonGroup>
 						<h2>{ __( 'Mobile Margin', 'kadence-blocks' ) }</h2>
-						<RangeControl
-							label={ icons.outlinetop }
+						<KadenceRange
+							beforeIcon={ icons.outlinetop }
 							value={ topMarginM }
 							className="kt-icon-rangecontrol kt-top-margin"
 							onChange={ ( value ) => {
@@ -826,8 +827,8 @@ class KadenceRowLayout extends Component {
 							max={ marginMax }
 							step={ marginStep }
 						/>
-						<RangeControl
-							label={ icons.outlinebottom }
+						<KadenceRange
+							beforeIcon={ icons.outlinebottom }
 							value={ bottomMarginM }
 							className="kt-icon-rangecontrol kt-bottom-margin"
 							onChange={ ( value ) => {
@@ -1066,8 +1067,8 @@ class KadenceRowLayout extends Component {
 							) ) }
 						</ButtonGroup>
 						<h2>{ __( 'Tablet Margin', 'kadence-blocks' ) }</h2>
-						<RangeControl
-							label={ icons.outlinetop }
+						<KadenceRange
+							beforeIcon={ icons.outlinetop }
 							value={ topMarginT }
 							className="kt-icon-rangecontrol kt-top-margin"
 							onChange={ ( value ) => {
@@ -1079,8 +1080,8 @@ class KadenceRowLayout extends Component {
 							max={ marginMax }
 							step={ marginStep }
 						/>
-						<RangeControl
-							label={ icons.outlinebottom }
+						<KadenceRange
+							beforeIcon={ icons.outlinebottom }
 							value={ bottomMarginT }
 							className="kt-icon-rangecontrol kt-bottom-margin"
 							onChange={ ( value ) => {
@@ -1424,8 +1425,8 @@ class KadenceRowLayout extends Component {
 							) ) }
 						</ButtonGroup>
 						<h2>{ __( 'Padding', 'kadence-blocks' ) }</h2>
-						<RangeControl
-							label={ icons.outlinetop }
+						<KadenceRange
+							beforeIcon={ icons.outlinetop }
 							value={ topPadding }
 							className="kt-icon-rangecontrol"
 							onChange={ ( value ) => {
@@ -1437,8 +1438,8 @@ class KadenceRowLayout extends Component {
 							max={ paddingMax }
 							step={ paddingStep }
 						/>
-						<RangeControl
-							label={ icons.outlineright }
+						<KadenceRange
+							beforeIcon={ icons.outlineright }
 							value={ rightPadding }
 							className="kt-icon-rangecontrol"
 							onChange={ ( value ) => {
@@ -1450,8 +1451,8 @@ class KadenceRowLayout extends Component {
 							max={ paddingMax }
 							step={ paddingStep }
 						/>
-						<RangeControl
-							label={ icons.outlinebottom }
+						<KadenceRange
+							beforeIcon={ icons.outlinebottom }
 							value={ bottomPadding }
 							className="kt-icon-rangecontrol"
 							onChange={ ( value ) => {
@@ -1463,8 +1464,8 @@ class KadenceRowLayout extends Component {
 							max={ paddingMax }
 							step={ paddingStep }
 						/>
-						<RangeControl
-							label={ icons.outlineleft }
+						<KadenceRange
+							beforeIcon={ icons.outlineleft }
 							value={ leftPadding }
 							className="kt-icon-rangecontrol"
 							onChange={ ( value ) => {
@@ -1491,8 +1492,8 @@ class KadenceRowLayout extends Component {
 							) ) }
 						</ButtonGroup>
 						<h2>{ __( 'Margin', 'kadence-blocks' ) }</h2>
-						<RangeControl
-							label={ icons.outlinetop }
+						<KadenceRange
+							beforeIcon={ icons.outlinetop }
 							value={ topMargin }
 							className="kt-icon-rangecontrol"
 							onChange={ ( value ) => {
@@ -1504,8 +1505,8 @@ class KadenceRowLayout extends Component {
 							max={ marginMax }
 							step={ marginStep }
 						/>
-						<RangeControl
-							label={ icons.outlinebottom }
+						<KadenceRange
+							beforeIcon={ icons.outlinebottom }
 							value={ bottomMargin }
 							className="kt-icon-rangecontrol"
 							onChange={ ( value ) => {
@@ -1627,7 +1628,7 @@ class KadenceRowLayout extends Component {
 														onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
 													/>
 													{ backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay && backgroundSliderSettings[ 0 ].autoPlay && (
-														<RangeControl
+														<KadenceRange
 															label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
 															value={ backgroundSliderSettings[ 0 ].speed }
 															onChange={ ( value ) => saveSliderSettings( { speed: value } ) }
@@ -1657,7 +1658,7 @@ class KadenceRowLayout extends Component {
 															}
 														} }
 													/>
-													<RangeControl
+													<KadenceRange
 														label={ __( 'Slider Transition Speed', 'kadence-blocks' ) }
 														value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ) }
 														onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
@@ -2785,7 +2786,7 @@ class KadenceRowLayout extends Component {
 		);
 		const bottomSepSizesMobile = (
 			<Fragment>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Mobile Height (px)' ) }
 					value={ ( bottomSepHeightMobile ? bottomSepHeightMobile : '' ) }
 					onChange={ ( value ) => {
@@ -2796,7 +2797,7 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 500 }
 				/>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Mobile Width (%)' ) }
 					value={ ( bottomSepWidthMobile ? bottomSepWidthMobile : '' ) }
 					onChange={ ( value ) => {
@@ -2811,7 +2812,7 @@ class KadenceRowLayout extends Component {
 		);
 		const bottomSepSizesTablet = (
 			<Fragment>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Tablet Height (px)' ) }
 					value={ ( bottomSepHeightTab ? bottomSepHeightTab : '' ) }
 					onChange={ ( value ) => {
@@ -2822,7 +2823,7 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 500 }
 				/>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Tablet Width (%)' ) }
 					value={ ( bottomSepWidthTab ? bottomSepWidthTab : '' ) }
 					onChange={ ( value ) => {
@@ -2837,7 +2838,7 @@ class KadenceRowLayout extends Component {
 		);
 		const bottomSepSizes = (
 			<Fragment>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Divider Height (px)' ) }
 					value={ bottomSepHeight }
 					onChange={ ( value ) => {
@@ -2848,7 +2849,7 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 500 }
 				/>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Divider Width (%)' ) }
 					value={ ( bottomSepWidth ? bottomSepWidth : '' ) }
 					onChange={ ( value ) => {
@@ -2863,7 +2864,7 @@ class KadenceRowLayout extends Component {
 		);
 		const topSepSizesMobile = (
 			<Fragment>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Mobile Height (px)' ) }
 					value={ ( topSepHeightMobile ? topSepHeightMobile : '' ) }
 					onChange={ ( value ) => {
@@ -2874,7 +2875,7 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 500 }
 				/>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Mobile Width (%)' ) }
 					value={ ( topSepWidthMobile ? topSepWidthMobile : '' ) }
 					onChange={ ( value ) => {
@@ -2889,7 +2890,7 @@ class KadenceRowLayout extends Component {
 		);
 		const topSepSizesTablet = (
 			<Fragment>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Tablet Height (px)' ) }
 					value={ ( topSepHeightTab ? topSepHeightTab : '' ) }
 					onChange={ ( value ) => {
@@ -2900,7 +2901,7 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 500 }
 				/>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Tablet Width (%)' ) }
 					value={ ( topSepWidthTab ? topSepWidthTab : '' ) }
 					onChange={ ( value ) => {
@@ -2915,7 +2916,7 @@ class KadenceRowLayout extends Component {
 		);
 		const topSepSizes = (
 			<Fragment>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Divider Height (px)' ) }
 					value={ topSepHeight }
 					onChange={ ( value ) => {
@@ -2926,7 +2927,7 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 500 }
 				/>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Divider Width (%)' ) }
 					value={ ( topSepWidth ? topSepWidth : '' ) }
 					onChange={ ( value ) => {
@@ -3270,7 +3271,7 @@ class KadenceRowLayout extends Component {
 													if ( tab.name ) {
 														if ( 'mobile' === tab.name ) {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Mobile Min Height' ) }
 																	value={ minHeightMobile }
 																	onChange={ ( value ) => {
@@ -3284,7 +3285,7 @@ class KadenceRowLayout extends Component {
 															);
 														} else if ( 'tablet' === tab.name ) {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Tablet Min Height' ) }
 																	value={ minHeightTablet }
 																	onChange={ ( value ) => {
@@ -3298,7 +3299,7 @@ class KadenceRowLayout extends Component {
 															);
 														} else {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Min Height' ) }
 																	value={ minHeight }
 																	onChange={ ( value ) => {
@@ -3338,7 +3339,7 @@ class KadenceRowLayout extends Component {
 													</Button>
 												) ) }
 											</ButtonGroup>
-											<RangeControl
+											<KadenceRange
 												label={ __( 'Content Max Width' ) }
 												value={ maxWidth }
 												onChange={ ( value ) => {
@@ -3396,15 +3397,27 @@ class KadenceRowLayout extends Component {
 									{ loggedIn && (
 										<Fragment>
 											<h2 className="kt-heading-fontfamily-title">{ __( 'Optional: Hide from Specific User Roles', 'kadence-blocks' ) }</h2>
-											<div className="typography-family-select-form-row">
+											<div className="kt-meta-select-wrap">
 												<Select
 													options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
 													value={ loggedInUser }
 													isMulti={ true }
-													maxMenuHeight={ 300 }
+													maxMenuHeight={ 200 }
 													isClearable={ true }
 													placeholder={ '' }
 													onChange={ value => setAttributes( { loggedInUser: value } ) }
+												/>
+											</div>
+											<h2 className="kt-heading-fontfamily-title">{ __( 'Optional: Show Only to Specific User Roles', 'kadence-blocks' ) }</h2>
+											<div className="kt-meta-select-wrap">
+												<Select
+													options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
+													value={ loggedInShow }
+													isMulti={ true }
+													maxMenuHeight={ 200 }
+													isClearable={ true }
+													placeholder={ '' }
+													onChange={ value => setAttributes( { loggedInShow: value } ) }
 												/>
 											</div>
 										</Fragment>

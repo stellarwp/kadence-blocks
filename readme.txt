@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.5.0
-Stable tag: 1.8.12
+Stable tag: 1.8.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.8.13 =
+* Add: User visibility setting for showing to a specific user.
+* Fix: Device visibility setting for columns.
+* Add: Device visibility setting for spacer block.
+* Fix: Issue with range input being near impossible to type in.
+* Fix: Issue with limit of 24 tabs.
+* Fix: Issue with slower loading and accordion js.
 
 = 1.8.12 =
 * Add: User visibility settings.

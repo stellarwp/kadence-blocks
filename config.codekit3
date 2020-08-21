@@ -790,6 +790,22 @@
 		"oAP": "/kadence-blocks.php",
 		"oF": 0
 		},
+	"/languages/kadence-blocks-fi.mo": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/languages/kadence-blocks-fi.mo",
+		"oF": 0
+		},
+	"/languages/kadence-blocks-fi.po": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/languages/kadence-blocks-fi.po",
+		"oF": 0
+		},
 	"/languages/kadence-blocks.pot": {
 		"cB": 0,
 		"ft": 8192,
@@ -2523,6 +2539,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/kadence-radio-buttons-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/kadence-range-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/kadence-range-control-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

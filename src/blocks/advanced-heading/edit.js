@@ -19,6 +19,7 @@ import KadenceColorOutput from '../../kadence-color-output';
 import WebfontLoader from '../../fontloader';
 import TextShadowControl from '../../text-shadow-control';
 import HeadingStyleCopyPaste from './copy-paste-style';
+import KadenceRange from '../../kadence-range-control';
 
 /**
  * Internal dependencies
@@ -45,7 +46,6 @@ const {
 const {
 	PanelBody,
 	Toolbar,
-	RangeControl,
 	ButtonGroup,
 	Button,
 	Dashicon,
@@ -203,10 +203,12 @@ class KadenceAdvancedHeading extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Font Size' ) }
 					value={ ( size ? size : '' ) }
-					onChange={ ( value ) => setAttributes( { size: value } ) }
+					onChange={ ( value ) => {
+						setAttributes( { size: value } );
+					} }
 					min={ fontMin }
 					max={ fontMax }
 					step={ fontStep }
@@ -225,7 +227,7 @@ class KadenceAdvancedHeading extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Line Height' ) }
 					value={ ( lineHeight ? lineHeight : '' ) }
 					onChange={ ( value ) => setAttributes( { lineHeight: value } ) }
@@ -251,7 +253,7 @@ class KadenceAdvancedHeading extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Tablet Font Size' ) }
 					value={ ( tabSize ? tabSize : '' ) }
 					onChange={ ( value ) => setAttributes( { tabSize: value } ) }
@@ -273,7 +275,7 @@ class KadenceAdvancedHeading extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Tablet Line Height' ) }
 					value={ ( tabLineHeight ? tabLineHeight : '' ) }
 					onChange={ ( value ) => setAttributes( { tabLineHeight: value } ) }
@@ -299,7 +301,7 @@ class KadenceAdvancedHeading extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Mobile Font Size' ) }
 					value={ ( mobileSize ? mobileSize : '' ) }
 					onChange={ ( value ) => setAttributes( { mobileSize: value } ) }
@@ -321,7 +323,7 @@ class KadenceAdvancedHeading extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Mobile Line Height' ) }
 					value={ ( mobileLineHeight ? mobileLineHeight : '' ) }
 					onChange={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
@@ -657,7 +659,7 @@ class KadenceAdvancedHeading extends Component {
 									] }
 									onChange={ value => setAttributes( { markBorderStyle: value } ) }
 								/>
-								<RangeControl
+								<KadenceRange
 									label={ __( 'Highlight Border Width', 'kadence-blocks' ) }
 									value={ markBorderWidth }
 									onChange={ value => setAttributes( { markBorderWidth: value } ) }
@@ -724,7 +726,7 @@ class KadenceAdvancedHeading extends Component {
 										</Button>
 									) ) }
 								</ButtonGroup>
-								<RangeControl
+								<KadenceRange
 									label={ __( 'Top Margin', 'kadence-blocks' ) }
 									value={ ( undefined !== topMargin ? topMargin : '' ) }
 									onChange={ ( value ) => setAttributes( { topMargin: value } ) }
@@ -746,7 +748,7 @@ class KadenceAdvancedHeading extends Component {
 										</Button>
 									) ) }
 								</ButtonGroup>
-								<RangeControl
+								<KadenceRange
 									label={ __( 'Bottom Margin', 'kadence-blocks' ) }
 									value={ ( undefined !== bottomMargin ? bottomMargin : '' ) }
 									onChange={ ( value ) => setAttributes( { bottomMargin: value } ) }

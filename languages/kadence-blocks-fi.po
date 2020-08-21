@@ -1,199 +1,202 @@
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Kadence Blocks\n"
+"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder "
+"Features\n"
 "POT-Creation-Date: 2020-08-20 16:09-0600\n"
-"PO-Revision-Date: 2015-05-08 13:15-0700\n"
-"Last-Translator: \n"
-"Language-Team: Kadence WP\n"
-"Language: en\n"
+"PO-Revision-Date: 2020-08-20 16:10-0600\n"
+"Last-Translator: Hannu Jaatinen <hannu.jaatinen@jargon.fi>\n"
+"Language-Team: Hannu Jaatinen <hannu.jaatinen@jargon.fi>\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.3.1\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;esc_attr_e;esc_attr__;esc_html__;"
-"esc_html_e;esc_attr_x;_x;esc_html_x\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: kadence-blocks.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: node_modules\n"
-"X-Poedit-SearchPathExcluded-1: dist/blocks\n"
-"X-Poedit-SearchPathExcluded-2: dist/vendor\n"
-"X-Poedit-SearchPathExcluded-3: src\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
 
 #: dist/class-kadence-blocks-frontend.php:973
 msgid "Please fix the errors to proceed"
-msgstr ""
+msgstr "Korjaa virheet jatkaaksesi."
 
 #: dist/class-kadence-blocks-frontend.php:975
 msgid "is required"
-msgstr ""
+msgstr "vaaditaan"
 
 #: dist/class-kadence-blocks-frontend.php:976
 msgid "does not match"
-msgstr ""
+msgstr "ei täsmää"
 
 #: dist/class-kadence-blocks-frontend.php:977
 msgid "is not valid"
-msgstr ""
+msgstr "ei ole kelvollinen"
 
 #: dist/class-kadence-blocks-frontend.php:978
 msgid "requires a unique entry and this value has already been used"
-msgstr ""
+msgstr "edellyttää yksilöllistä merkintää, ja tätä arvoa on jo käytetty"
 
 #: dist/class-kadence-blocks-frontend.php:979
 msgid "Item"
-msgstr ""
+msgstr "Kohde"
 
 #: dist/form-ajax.php:56 dist/form-ajax.php:76 dist/form-ajax.php:508
 msgid "Submission Failed"
-msgstr ""
+msgstr "Lähetys epäonnistui"
 
 #: dist/form-ajax.php:56
 msgid "Data not Found"
-msgstr ""
+msgstr "Tietoja ei löydy"
 
 #: dist/form-ajax.php:66 dist/form-ajax.php:186
 msgid "Submission"
-msgstr ""
+msgstr "Lähetys"
 
 #: dist/form-ajax.php:75
 msgid "Submission Success, Thanks for getting in touch!"
-msgstr ""
+msgstr "Lähetys onnistui. Kiitos yhteydenotostasi!"
 
 #: dist/form-ajax.php:77
 msgid "Submission Failed, reCaptcha spam prevention."
-msgstr ""
+msgstr "Lähettäminen epäonnistui, reCaptcha roskapostin esto."
 
 #: dist/form-ajax.php:87
 msgid "Submission Rejected"
-msgstr ""
+msgstr "Lähetys estettiin"
 
 #: dist/form-ajax.php:87
 msgid "Spam Detected"
-msgstr ""
+msgstr "Roskapostia havaittu"
 
 #: dist/form-ajax.php:94 dist/form-ajax.php:97 dist/form-ajax.php:101
 msgid "reCAPTCHA Failed"
-msgstr ""
+msgstr "reCAPTCHA-virhe"
 
 #: dist/form-ajax.php:168
 msgid "Required Field Empty"
-msgstr ""
+msgstr "Pakollinen kenttä tyhjä"
 
 #: dist/form-ajax.php:261
 msgid "Third Party Failed"
-msgstr ""
+msgstr "Kolmannen osapuolen virhe"
 
 #: dist/form-ajax.php:267
 msgid ""
 "Submission rejected, invalid security token. Reload the page and try again."
 msgstr ""
+"Lähetys hylätty, virheellinen suojaustunnus. Lataa sivu uudelleen ja yritä "
+"uudelleen."
 
 #: dist/form-ajax.php:267
 msgid "Token invalid"
-msgstr ""
+msgstr "Tunnus ei kelpaa"
 
 #: dist/form-ajax.php:270
 msgid "Submission failed"
-msgstr ""
+msgstr "Lähetys epäonnistui"
 
 #: dist/form-ajax.php:270
 msgid "No Data"
-msgstr ""
+msgstr "Ei tietoja"
 
 #: dist/form-ajax.php:305
 msgid "Accept"
-msgstr ""
+msgstr "Hyväksy"
 
 #: dist/form-ajax.php:508
 msgid "Data not found"
-msgstr ""
+msgstr "Tietoja ei löydy"
 
 #: dist/init.php:305 dist/settings/class-kadence-blocks-settings.php:252
 #: dist/settings/class-kadence-blocks-settings.php:254
 #: dist/settings/class-kadence-blocks-settings.php:534
 msgid "Kadence Blocks"
-msgstr ""
+msgstr "Kadence Blocks"
 
 #: dist/settings/class-kadence-blocks-settings.php:84
 msgid "Pale pink"
-msgstr ""
+msgstr "Vaaleanroosa"
 
 #: dist/settings/class-kadence-blocks-settings.php:89
 msgid "Vivid red"
-msgstr ""
+msgstr "Elävä punainen"
 
 #: dist/settings/class-kadence-blocks-settings.php:94
 msgid "Luminous vivid orange"
-msgstr ""
+msgstr "Valoisa elävä oranssi"
 
 #: dist/settings/class-kadence-blocks-settings.php:99
 msgid "Luminous vivid amber"
-msgstr ""
+msgstr "Valoisa elävä keltainen"
 
 #: dist/settings/class-kadence-blocks-settings.php:104
 msgid "Light green cyan"
-msgstr ""
+msgstr "Vaaleanvihreä syaani"
 
 #: dist/settings/class-kadence-blocks-settings.php:109
 msgid "Vivid green cyan"
-msgstr ""
+msgstr "Elävä vihreä syaani"
 
 #: dist/settings/class-kadence-blocks-settings.php:114
 msgid "Pale cyan blue"
-msgstr ""
+msgstr "Vaalea syaani sininen"
 
 #: dist/settings/class-kadence-blocks-settings.php:119
 msgid "Vivid cyan blue"
-msgstr ""
+msgstr "Elävä syaani sininen"
 
 #: dist/settings/class-kadence-blocks-settings.php:124
 msgid "Very light gray"
-msgstr ""
+msgstr "Erittäin vaaleanharmaa"
 
 #: dist/settings/class-kadence-blocks-settings.php:129
 msgid "Cyan bluish gray"
-msgstr ""
+msgstr "Syaani sinertävä harmaa"
 
 #: dist/settings/class-kadence-blocks-settings.php:134
 msgid "Very dark gray"
-msgstr ""
+msgstr "Erittäin tummanharmaa"
 
 #: dist/settings/class-kadence-blocks-settings.php:252
 #: dist/settings/class-kadence-blocks-settings.php:254
 #: dist/settings/class-kadence-blocks-settings.php:255
 msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
-msgstr ""
+msgstr "Kadence Blocks - Gutenberg-sivurakentajan lohkot"
 
 #: dist/settings/class-kadence-blocks-settings.php:255
 #: dist/settings/class-kadence-blocks-settings.php:903
 msgid "Settings"
-msgstr ""
+msgstr "Asetukset"
 
 #: dist/settings/class-kadence-blocks-settings.php:264
 msgid "Close"
-msgstr ""
+msgstr "Sulje"
 
 #: dist/settings/class-kadence-blocks-settings.php:265
 msgid "Save"
-msgstr ""
+msgstr "Tallenna"
 
 #: dist/settings/class-kadence-blocks-settings.php:266
 msgid "Updating"
-msgstr ""
+msgstr "Päivitetään"
 
 #: dist/settings/class-kadence-blocks-settings.php:267
 msgid "Updated"
-msgstr ""
+msgstr "Päivitetty"
 
 #: dist/settings/class-kadence-blocks-settings.php:268
 msgid "Config"
-msgstr ""
+msgstr "Määritykset"
 
 #: dist/settings/class-kadence-blocks-settings.php:269
 msgid "Default Settings"
-msgstr ""
+msgstr "Oletusasetukset"
 
 #: dist/settings/class-kadence-blocks-settings.php:275
 #: dist/settings/class-kadence-blocks-settings.php:281
@@ -209,298 +212,327 @@ msgid ""
 "Setting defaults has moved into Gutenberg, click on the top right corner "
 "settings and go to Kadence Blocks Controls"
 msgstr ""
+"Oletusasetukset on siirretty Gutenbergiin. Voit avata Kadence Blocksin "
+"säätimet napsauttamalla oikean yläreunan asetuskuvaketta"
 
 #: dist/settings/class-kadence-blocks-settings.php:357
 msgid "Config Kadence Block Defaults"
-msgstr ""
+msgstr "Määritä Kadence-lohkon oletukset"
 
 #: dist/settings/class-kadence-blocks-settings.php:368
 msgid "Config Kadence Block Settings View"
-msgstr ""
+msgstr "Määritä Kadence-lohkon asetusnäkymä"
 
 #: dist/settings/class-kadence-blocks-settings.php:379
 msgid "Config Kadence Blocks Color Palette"
-msgstr ""
+msgstr "Määritä Kadence Blocksin väripaletti"
 
 #: dist/settings/class-kadence-blocks-settings.php:390
 msgid "Config Kadence Blocks Global Settings"
-msgstr ""
+msgstr "Määritä Kadence Blocksin globaalit asetukset"
 
 #: dist/settings/class-kadence-blocks-settings.php:401
 msgid "Google reCaptcha Site Key"
-msgstr ""
+msgstr "Google reCaptcha sivuston avain"
 
 #: dist/settings/class-kadence-blocks-settings.php:412
 msgid "Google reCaptcha Secret Key"
-msgstr ""
+msgstr "Google reCaptcha salainen avain"
 
 #: dist/settings/class-kadence-blocks-settings.php:428
 msgid "Small Template"
-msgstr ""
+msgstr "Pieni malli"
 
 #: dist/settings/class-kadence-blocks-settings.php:429
 msgid "Large Template"
-msgstr ""
+msgstr "Suuri malli"
 
 #: dist/settings/class-kadence-blocks-settings.php:431
 msgid "Post default"
-msgstr ""
+msgstr "Artikkelin oletus"
 
 #: dist/settings/class-kadence-blocks-settings.php:432
 msgid "Page Default"
-msgstr ""
+msgstr "Sivun oletus"
 
 #: dist/settings/class-kadence-blocks-settings.php:434
 msgid "Enable Editor Width"
-msgstr ""
+msgstr "Ota editorin leveys käyttöön"
 
 #: dist/settings/class-kadence-blocks-settings.php:443
 msgid ""
 "Allows for changes to the editor width on per page/post basis with preset "
 "defaults."
 msgstr ""
+"Voit muuttaa editorin leveyttä sivu-/artikkelikohtaisesti esimääritetyillä "
+"oletusarvoilla."
 
 #: dist/settings/class-kadence-blocks-settings.php:445
 #: dist/settings/class-kadence-blocks-settings.php:458
 msgid "False"
-msgstr ""
+msgstr "Epätosi"
 
 #: dist/settings/class-kadence-blocks-settings.php:446
 #: dist/settings/class-kadence-blocks-settings.php:459
 msgid "True"
-msgstr ""
+msgstr "Tosi"
 
 #: dist/settings/class-kadence-blocks-settings.php:456
 msgid ""
 "Experimental editor CSS for less excess margins in Gutenberg in an attempt "
 "to get a closer WYSIWYG editing experience."
 msgstr ""
+"Kokeellinen editorin CSS ylimääräisten marginaalien vähentämiseksi "
+"Gutenbergissä, jotta muokkaaminen olisi lähempänä WYSIWYG-kokemusta."
 
 #: dist/settings/class-kadence-blocks-settings.php:469
 #: dist/settings/class-kadence-blocks-settings.php:478
 msgid "px"
-msgstr ""
+msgstr "px"
 
 #: dist/settings/class-kadence-blocks-settings.php:488
 #: dist/settings/class-kadence-blocks-settings.php:500
 msgid "Small"
-msgstr ""
+msgstr "Pieni"
 
 #: dist/settings/class-kadence-blocks-settings.php:489
 #: dist/settings/class-kadence-blocks-settings.php:501
 msgid "Large"
-msgstr ""
+msgstr "Suuri"
 
 #: dist/settings/class-kadence-blocks-settings.php:490
 #: dist/settings/class-kadence-blocks-settings.php:502
 msgid "Fullwidth"
-msgstr ""
+msgstr "Täysi leveys"
 
 #: dist/settings/class-kadence-blocks-settings.php:537
 msgid "Page Builder Toolkit"
-msgstr ""
+msgstr "Sivurakentajan työkalupakki"
 
 #: dist/settings/class-kadence-blocks-settings.php:568
 msgid "Dashboard"
-msgstr ""
+msgstr "Ohjausnäkymä"
 
 #: dist/settings/class-kadence-blocks-settings.php:569
 msgid "Help / Tutorials"
-msgstr ""
+msgstr "Ohje / Oppaat"
 
 #: dist/settings/class-kadence-blocks-settings.php:571
 msgid "Pro"
-msgstr ""
+msgstr "Pro"
 
 #: dist/settings/class-kadence-blocks-settings.php:576
 msgid "Blocks"
-msgstr ""
+msgstr "Lohkot"
 
 #: dist/settings/class-kadence-blocks-settings.php:576
 msgid "Disable/Enable Blocks"
-msgstr ""
+msgstr "Lohkojen poistaminen käytöstä tai ottaminen käyttöön"
 
 #: dist/settings/class-kadence-blocks-settings.php:596
 #: dist/settings/class-kadence-blocks-settings.php:600
 msgid "Activate"
-msgstr ""
+msgstr "Ota käyttöön"
 
 #: dist/settings/class-kadence-blocks-settings.php:598
 #: dist/settings/class-kadence-blocks-settings.php:600
 msgid "Deactivate"
-msgstr ""
+msgstr "Poista käytöstä"
 
 #: dist/settings/class-kadence-blocks-settings.php:600
 msgid "Activating..."
-msgstr ""
+msgstr "Otetaan käyttöön..."
 
 #: dist/settings/class-kadence-blocks-settings.php:600
 msgid "Activated"
-msgstr ""
+msgstr "Otettu käyttöön"
 
 #: dist/settings/class-kadence-blocks-settings.php:600
 msgid "Deactivating..."
-msgstr ""
+msgstr "Poistetaan käytöstä..."
 
 #: dist/settings/class-kadence-blocks-settings.php:600
 msgid "Deactivated"
-msgstr ""
+msgstr "Poistettu käytöstä"
 
 #: dist/settings/class-kadence-blocks-settings.php:610
 msgid "Editor Max Widths"
-msgstr ""
+msgstr "Editorin enimmäisleveydet"
 
 #: dist/settings/class-kadence-blocks-settings.php:610
 msgid "Match the editor width to your sites width."
-msgstr ""
+msgstr "Sovita editorin leveys sivustojesi leveyteen."
 
 #: dist/settings/class-kadence-blocks-settings.php:612
 msgid "Note: The current active themes \"$content_width\" is set to:"
-msgstr ""
+msgstr "Huomautus: Käytössä olevan teeman \"$content_width\" on:"
 
 #: dist/settings/class-kadence-blocks-settings.php:619
 msgid "Save Changes"
-msgstr ""
+msgstr "Tallenna muutokset"
 
 #: dist/settings/class-kadence-blocks-settings.php:629
 msgid "Helpful Links and Resources"
-msgstr ""
+msgstr "Hyödyllisiä linkkejä ja resursseja"
 
 #: dist/settings/class-kadence-blocks-settings.php:637
 msgid "Support"
-msgstr ""
+msgstr "Tuki"
 
 #: dist/settings/class-kadence-blocks-settings.php:638
 msgid ""
 "Are you having trouble getting things to look how you want? Or are you stuck "
 "and not sure what to do? We can help!"
 msgstr ""
+"Onko sinulla vaikeuksia saada asioita näyttämään, kuten haluat? Vai oletko "
+"jumissa ja et ole varma mitä tehdä? Me voimme auttaa!"
 
 #: dist/settings/class-kadence-blocks-settings.php:639
 msgid "Ask a question"
-msgstr ""
+msgstr "Lähetä kysymys"
 
 #: dist/settings/class-kadence-blocks-settings.php:649
 msgid "Changelog Blog"
-msgstr ""
+msgstr "Muutoslokin blogi"
 
 #: dist/settings/class-kadence-blocks-settings.php:650
 msgid "Read through highlights of recent changes made to Kadence Blocks."
-msgstr ""
+msgstr "Katso tärkeimmät tiedot Kadence Blocksin viimeisimmistä muutoksista."
 
 #: dist/settings/class-kadence-blocks-settings.php:651
 msgid "View"
-msgstr ""
+msgstr "Katso"
 
 #: dist/settings/class-kadence-blocks-settings.php:661
 msgid "Plugin Tutorials & Documentation"
-msgstr ""
+msgstr "Lisäosan oppaat ja dokumentaatio"
 
 #: dist/settings/class-kadence-blocks-settings.php:662
 msgid ""
 "Kadence Blocks documentation is set up to help you create amazing content."
-msgstr ""
+msgstr "Kadence Blocksin dokumentaatio auttaa sinua luomaan upeita sisältöjä."
 
 #: dist/settings/class-kadence-blocks-settings.php:663
 msgid "Browse Docs"
-msgstr ""
+msgstr "Selaa ohjeita"
 
 #: dist/settings/class-kadence-blocks-settings.php:675
 msgid "Kadence WP Newsletter"
-msgstr ""
+msgstr "Kadence WP:n uutiskirje"
 
 #: dist/settings/class-kadence-blocks-settings.php:676
 msgid ""
 "Get the latest news about product updates and new plugins right to your "
 "inbox."
 msgstr ""
+"Saat uusimmat uutiset tuotepäivityksistä ja uusista lisäosista suoraan "
+"sähköpostiisi."
 
 #: dist/settings/class-kadence-blocks-settings.php:677
 msgid "Subscribe"
-msgstr ""
+msgstr "Tilaa"
 
 #: dist/settings/class-kadence-blocks-settings.php:698
 msgid "Row Layout"
-msgstr ""
+msgstr "Rivin asettelu"
 
 #: dist/settings/class-kadence-blocks-settings.php:699
 msgid ""
 "Create rows with nested blocks either in columns or as a container. Give "
 "style to your rows with background, overlay, padding, etc."
 msgstr ""
+"Luo rivejä, joiden sisäkkäiset lohkot ovat joko sarakkeissa tai säilönä. "
+"Voit muuttaa rivien ulkoasua käyttämällä taustoja, peitteitä, marginaaleja "
+"jne."
 
 #: dist/settings/class-kadence-blocks-settings.php:704
 msgid "Form"
-msgstr ""
+msgstr "Lomake"
 
 #: dist/settings/class-kadence-blocks-settings.php:705
 msgid ""
 "Create a contact form or marketing form and style it within the block editor."
 msgstr ""
+"Luo yhteydenotto- tai markkinointilomake ja muotoile sen ulkoasu "
+"lohkoeditorissa."
 
 #: dist/settings/class-kadence-blocks-settings.php:710
 msgid "Advanced Gallery"
-msgstr ""
+msgstr "Edistynyt galleria"
 
 #: dist/settings/class-kadence-blocks-settings.php:711
 msgid ""
 "Photo galleries, carousels, and sliders! Enable custom links, captions, and "
 "more. Plus, you can select image sizes."
 msgstr ""
+"Kuvagallerioita, karusellia ja diaesityksiä! Käytä mukautettuja linkkejä, "
+"kuvatekstejä ja paljon muuta. Lisäksi voit valita haluamasi kuvakoot."
 
 #: dist/settings/class-kadence-blocks-settings.php:716
 msgid "Advanced Button"
-msgstr ""
+msgstr "Edistynyt painike"
 
 #: dist/settings/class-kadence-blocks-settings.php:717
 msgid ""
 "Create an advanced button or a row of buttons. Style each one including "
 "hover controls plus you can use an icon and display them side by side"
 msgstr ""
+"Luo edistynyt painike tai painikerivi. Voit muokata jokaisen painikkeen "
+"tyylin, myös hover-asetusten osalta, sekä käyttää kuvaketta ja näyttää "
+"painikkeita vierekkäin"
 
 #: dist/settings/class-kadence-blocks-settings.php:722
 msgid "Icon"
-msgstr ""
+msgstr "Kuvake"
 
 #: dist/settings/class-kadence-blocks-settings.php:723
 msgid ""
 "Choose from over 1500+ SVG Icons to add into your page and style the size, "
 "colors, background, border, etc."
 msgstr ""
+"Lisää sivulle kuvakkeita yli 1500 SVG-kuvakkeen valikoimasta ja muokkaa "
+"niiden kokoa, värejä, taustaa, reunaviivaa jne."
 
 #: dist/settings/class-kadence-blocks-settings.php:728
 msgid "Spacer/Divider"
-msgstr ""
+msgstr "Tyhjä tila/Erotin"
 
 #: dist/settings/class-kadence-blocks-settings.php:729
 msgid ""
 "Easily create a divider and determine the space around it or just create "
 "some space in your content."
 msgstr ""
+"Luo helposti jakaja ja määritä sen ympärillä oleva tila tai luo vain tilaa "
+"sisällöllesi."
 
 #: dist/settings/class-kadence-blocks-settings.php:734
 msgid "Advanced Heading"
-msgstr ""
+msgstr "Edistynyt otsikko"
 
 #: dist/settings/class-kadence-blocks-settings.php:735
 msgid ""
 "Transform your headings to Advanced Headings and customize the font family "
 "(even google fonts), color, and size."
 msgstr ""
+"Muunna otsikkosi Edistyneiksi otsikoiksi ja muokkaa fonttiperhettä (jopa "
+"Google-fontteja), väriä ja kokoa."
 
 #: dist/settings/class-kadence-blocks-settings.php:740
 msgid "Tabs"
-msgstr ""
+msgstr "Välilehdet"
 
 #: dist/settings/class-kadence-blocks-settings.php:741
 msgid ""
 "Create custom vertical or horizontal tabs with advanced styling controls. "
 "Each tab content is an empty canvas able to contain any other blocks."
 msgstr ""
+"Luo mukautettuja pysty- tai vaakasuuntaisia välilehtiä, joissa on "
+"kehittyneet muotoilutoiminnot. Jokaisen välilehden sisältö on tyhjä alusta, "
+"joka pystyy sisältämään mitä tahansa muita lohkoja."
 
 #: dist/settings/class-kadence-blocks-settings.php:746
 msgid "Info Box"
-msgstr ""
+msgstr "Tietolaatikko"
 
 #: dist/settings/class-kadence-blocks-settings.php:747
 msgid ""
@@ -508,50 +540,81 @@ msgid ""
 "description, and learn more text. Style static and hover colors even show a "
 "box-shadow."
 msgstr ""
+"Luo linkkinä toimiva laatikko, joka sisältää kuvakkeen tai kuvan sekä "
+"halutessasi myös otsikon, kuvauksen ja Lue lisää -tekstin. Voit muokata "
+"normaalin ja hover-tyylin ja jopa laatikon varjon."
 
 #: dist/settings/class-kadence-blocks-settings.php:752
 msgid "Accordion"
-msgstr ""
+msgstr "Haitariluettelo"
 
 #: dist/settings/class-kadence-blocks-settings.php:753
 msgid ""
 "Create beautiful accordions! Each pane can contain any other block, "
 "customize title styles, content background, and borders."
 msgstr ""
+"Luo kauniita haitarivalikoita! Kukin ruutu voi sisältää minkä tahansa muun "
+"lohkon, minkä lisäksi voit muokata otsikkotyylejä, sisällön taustaa ja "
+"reunaviivoja."
 
 #: dist/settings/class-kadence-blocks-settings.php:758
 msgid "Icon List"
-msgstr ""
+msgstr "Kuvakeluettelo"
 
 #: dist/settings/class-kadence-blocks-settings.php:759
 msgid ""
 "Add beautiful icons to your lists and make them more engaging. Over 1500 "
 "icons to choose from and unlimited styles."
 msgstr ""
+"Lisää kauniita kuvakkeita luetteloihin ja tee niistä entistä näyttävämpiä. "
+"Yli 1500 kuvakkeen valikoima ja rajaton määrä tyylejä."
 
 #: dist/settings/class-kadence-blocks-settings.php:764
 msgid "Testimonials"
-msgstr ""
+msgstr "Asiakaskommentit"
 
 #: dist/settings/class-kadence-blocks-settings.php:765
 msgid ""
 "Create confidence in your brand or product by showing off beautiful unique "
 "testimonials, add as a carousel or a grid."
 msgstr ""
+"Luo luottamusta brändiisi tai tuotteeseesi upeilla asiakaskommenteilla, "
+"jotka voidaan näyttää karusellina tai ruudukkona."
 
 #: dist/settings/class-kadence-blocks-settings.php:776
 msgid "Invalid nonce"
-msgstr ""
+msgstr "Virheellinen pyyntö"
 
 #: dist/settings/class-kadence-blocks-settings.php:779
 msgid "Missing Content"
-msgstr ""
+msgstr "Puuttuva sisältö"
 
 #: dist/settings/class-kadence-blocks-settings.php:785
 msgid "Nothing to Save"
-msgstr ""
+msgstr "Ei mitään tallennettavaa"
 
 #: dist/templates/form-email.php:152
 #, php-format
 msgid "Sent from %s"
-msgstr ""
+msgstr "Lähetetty kohteesta %s"
+
+#~ msgid "Kadence Blocks – Gutenberg Blocks for Page Builder Features"
+#~ msgstr ""
+#~ "Kadence Blocks – Gutenberg Blocks for Page Builder -lisäosan ominaisuudet"
+
+#~ msgid "https://www.kadencewp.com/product/kadence-gutenberg-blocks/"
+#~ msgstr "https://www.kadencewp.com/product/kadence-gutenberg-blocks/"
+
+#~ msgid ""
+#~ "Advanced Page Building Blocks for Gutenberg. Create custom column "
+#~ "layouts, backgrounds, dual buttons, icons etc."
+#~ msgstr ""
+#~ "Edistyksellisiä sivurakennuslohkoja Gutenbergille. Voit luoda "
+#~ "mukautettuja sarakeasetteluja, taustoja, kaksoispainikkeita, kuvakkeita "
+#~ "jne."
+
+#~ msgid "Kadence WP"
+#~ msgstr "Kadence WP"
+
+#~ msgid "https://www.kadencewp.com"
+#~ msgstr "https://www.kadencewp.com"

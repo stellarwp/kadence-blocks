@@ -26,6 +26,7 @@ import IconControl from '../../icon-control';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import KadenceColorOutput from '../../kadence-color-output';
+import KadenceRange from '../../kadence-range-control';
 /**
  * Internal block libraries
  */
@@ -51,7 +52,6 @@ const {
 	TabPanel,
 	Dashicon,
 	PanelBody,
-	RangeControl,
 	Toolbar,
 	TextControl,
 	ToggleControl,
@@ -1331,7 +1331,7 @@ class KadenceInfoBox extends Component {
 											value={ mediaIcon[ 0 ].icon }
 											onChange={ value => saveMediaIcon( { icon: value } ) }
 										/>
-										<RangeControl
+										<KadenceRange
 											label={ __( 'Icon Size' ) }
 											value={ mediaIcon[ 0 ].size }
 											onChange={ value => saveMediaIcon( { size: value } ) }
@@ -1494,7 +1494,7 @@ class KadenceInfoBox extends Component {
 									max={ 40 }
 									step={ 1 }
 								/>
-								<RangeControl
+								<KadenceRange
 									label={ __( 'Container Border Radius (px)' ) }
 									value={ containerBorderRadius }
 									onChange={ value => setAttributes( { containerBorderRadius: value } ) }
@@ -1617,7 +1617,7 @@ class KadenceInfoBox extends Component {
 										</Button>
 									) ) }
 								</ButtonGroup>
-								<RangeControl
+								<KadenceRange
 									label={ __( 'Container Max Width' ) }
 									value={ maxWidth }
 									onChange={ ( value ) => {
@@ -1763,7 +1763,7 @@ class KadenceInfoBox extends Component {
 												onChange={ changeImageSize }
 											/>
 										) }
-										<RangeControl
+										<KadenceRange
 											label={ __( 'Max Image Width' ) }
 											value={ mediaImage[ 0 ].maxWidth }
 											onChange={ value => saveMediaImage( { maxWidth: value } ) }
@@ -1847,7 +1847,7 @@ class KadenceInfoBox extends Component {
 											max={ 40 }
 											step={ 1 }
 										/>
-										<RangeControl
+										<KadenceRange
 											label={ __( 'Image Border Radius (px)' ) }
 											value={ mediaStyle[ 0 ].borderRadius }
 											onChange={ value => saveMediaStyle( { borderRadius: value } ) }
@@ -1955,7 +1955,7 @@ class KadenceInfoBox extends Component {
 											max={ 250 }
 											step={ 1 }
 										/>
-										<RangeControl
+										<KadenceRange
 											label={ __( 'Icon Size' ) }
 											value={ mediaIcon[ 0 ].size }
 											onChange={ value => saveMediaIcon( { size: value } ) }
@@ -1964,7 +1964,7 @@ class KadenceInfoBox extends Component {
 											step={ 1 }
 										/>
 										{ mediaIcon[ 0 ].icon && 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) && (
-											<RangeControl
+											<KadenceRange
 												label={ __( 'Icon Line Width' ) }
 												value={ mediaIcon[ 0 ].width }
 												onChange={ value => saveMediaIcon( { width: value } ) }
@@ -1983,7 +1983,7 @@ class KadenceInfoBox extends Component {
 											max={ 40 }
 											step={ 1 }
 										/>
-										<RangeControl
+										<KadenceRange
 											label={ __( 'Icon Border Radius (px)' ) }
 											value={ mediaStyle[ 0 ].borderRadius }
 											onChange={ value => saveMediaStyle( { borderRadius: value } ) }
@@ -2130,7 +2130,7 @@ class KadenceInfoBox extends Component {
 											max={ 40 }
 											step={ 1 }
 										/>
-										<RangeControl
+										<KadenceRange
 											label={ __( 'Number Border Radius (px)' ) }
 											value={ mediaStyle[ 0 ].borderRadius }
 											onChange={ value => saveMediaStyle( { borderRadius: value } ) }
@@ -2365,7 +2365,7 @@ class KadenceInfoBox extends Component {
 													if ( tab.name ) {
 														if ( 'mobile' === tab.name ) {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) }
 																	onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } ) }
 																	step={ 1 }
@@ -2375,7 +2375,7 @@ class KadenceInfoBox extends Component {
 															);
 														} else if ( 'tablet' === tab.name ) {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ) }
 																	onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 																	step={ 1 }
@@ -2385,7 +2385,7 @@ class KadenceInfoBox extends Component {
 															);
 														} else {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ) }
 																	onChange={ value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 																	step={ 1 }
@@ -2527,7 +2527,7 @@ class KadenceInfoBox extends Component {
 													if ( tab.name ) {
 														if ( 'mobile' === tab.name ) {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) }
 																	onChange={ value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), value ] } ) }
 																	step={ 1 }
@@ -2537,7 +2537,7 @@ class KadenceInfoBox extends Component {
 															);
 														} else if ( 'tablet' === tab.name ) {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ) }
 																	onChange={ value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } ) }
 																	step={ 1 }
@@ -2547,7 +2547,7 @@ class KadenceInfoBox extends Component {
 															);
 														} else {
 															tabout = (
-																<RangeControl
+																<KadenceRange
 																	value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ) }
 																	onChange={ value => setAttributes( { textMinHeight: [ value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } ) }
 																	step={ 1 }
@@ -2658,7 +2658,7 @@ class KadenceInfoBox extends Component {
 											max={ 40 }
 											step={ 1 }
 										/>
-										<RangeControl
+										<KadenceRange
 											label={ __( 'Learn More Border Radius (px)' ) }
 											value={ learnMoreStyles[ 0 ].borderRadius }
 											onChange={ value => saveLearnMoreStyles( { borderRadius: value } ) }
@@ -2751,7 +2751,7 @@ class KadenceInfoBox extends Component {
 																	opacityValue={ shadowHover[ 0 ].opacity }
 																	onOpacityChange={ value => saveHoverShadow( { opacity: value } ) }
 																/>
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Shadow Blur' ) }
 																	value={ shadowHover[ 0 ].blur }
 																	onChange={ value => saveHoverShadow( { blur: value } ) }
@@ -2759,7 +2759,7 @@ class KadenceInfoBox extends Component {
 																	max={ 100 }
 																	step={ 1 }
 																/>
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Shadow Spread' ) }
 																	value={ shadowHover[ 0 ].spread }
 																	onChange={ value => saveHoverShadow( { spread: value } ) }
@@ -2767,7 +2767,7 @@ class KadenceInfoBox extends Component {
 																	max={ 100 }
 																	step={ 1 }
 																/>
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Shadow Vertical Offset' ) }
 																	value={ shadowHover[ 0 ].vOffset }
 																	onChange={ value => saveHoverShadow( { vOffset: value } ) }
@@ -2775,7 +2775,7 @@ class KadenceInfoBox extends Component {
 																	max={ 100 }
 																	step={ 1 }
 																/>
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Shadow Horizontal Offset' ) }
 																	value={ shadowHover[ 0 ].hOffset }
 																	onChange={ value => saveHoverShadow( { hOffset: value } ) }
@@ -2796,7 +2796,7 @@ class KadenceInfoBox extends Component {
 																	opacityValue={ shadow[ 0 ].opacity }
 																	onOpacityChange={ value => saveShadow( { opacity: value } ) }
 																/>
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Shadow Blur' ) }
 																	value={ shadow[ 0 ].blur }
 																	onChange={ value => saveShadow( { blur: value } ) }
@@ -2804,7 +2804,7 @@ class KadenceInfoBox extends Component {
 																	max={ 100 }
 																	step={ 1 }
 																/>
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Shadow Spread' ) }
 																	value={ shadow[ 0 ].spread }
 																	onChange={ value => saveShadow( { spread: value } ) }
@@ -2812,7 +2812,7 @@ class KadenceInfoBox extends Component {
 																	max={ 100 }
 																	step={ 1 }
 																/>
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Shadow Vertical Offset' ) }
 																	value={ shadow[ 0 ].vOffset }
 																	onChange={ value => saveShadow( { vOffset: value } ) }
@@ -2820,7 +2820,7 @@ class KadenceInfoBox extends Component {
 																	max={ 100 }
 																	step={ 1 }
 																/>
-																<RangeControl
+																<KadenceRange
 																	label={ __( 'Shadow Horizontal Offset' ) }
 																	value={ shadow[ 0 ].hOffset }
 																	onChange={ value => saveShadow( { hOffset: value } ) }

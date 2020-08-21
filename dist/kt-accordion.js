@@ -9,6 +9,21 @@ function _classCallCheck(instance, Constructor) {
     throw new TypeError("Cannot call a class as a function");
   }
 }
+(function () {
+
+  if ( typeof window.CustomEvent === "function" ) return false;
+
+  function CustomEvent ( event, params ) {
+    params = params || { bubbles: false, cancelable: false, detail: undefined };
+    var evt = document.createEvent( 'CustomEvent' );
+    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+    return evt;
+   }
+
+  CustomEvent.prototype = window.Event.prototype;
+
+  window.CustomEvent = CustomEvent;
+})();
 
 function _defineProperties(target, props) {
   for (var i = 0; i < props.length; i++) {
@@ -419,6 +434,10 @@ function () {
     value: function _finishInitialization() {
       this.container.classList.add(this.settings.initializedClass);
       this._setRole( 'presentation', this.container );
+       // Create a new event
+      var event = new CustomEvent( 'initialized' );
+      // Dispatch the event
+      this.container.dispatchEvent( event );
     }
     /**
      *  ADD LISTENERS
@@ -841,70 +860,93 @@ function () {
 return KadenceAccordion;
 
 })));
-var accordions = document.querySelectorAll('.kt-accordion-inner-wrap');
-var accordionsArray = Array.from( accordions );
-for (var i = 0, len = accordionsArray.length; i < len; i++) {
-	var multiplePanels = accordionsArray[i].getAttribute('data-allow-multiple-open');
-	var openPanels = accordionsArray[i].getAttribute('data-start-open');
-	var openPanel = parseInt(openPanels);
-	if (  openPanels !== 'none' ) {
-		for (var b = 0, lenb = accordionsArray[i].children.length; b < lenb; b++) {
-			if ( accordionsArray[i].children[b].classList.contains('kt-accordion-pane-' + ( 1 + openPanel ) ) ) {
-				openPanel = b;
-			}
-		}
-	}
-    new KadenceAccordion( accordionsArray[i], {
-		openHeadersOnLoad: ( openPanels === 'none' ? [] : [parseInt(openPanel)] ),
-		headerClass: '.kt-blocks-accordion-header',
-		panelClass: '.kt-accordion-panel',
-		panelInnerClass: '.kt-accordion-panel-inner',
-		hiddenClass: 'kt-accordion-panel-hidden',
-		activeClass: 'kt-accordion-panel-active',
-		initializedClass: 'kt-accordion-initialized',
-		headerDataAttr: 'data-kt-accordion-header-id',
-		openMultiplePanels: ( multiplePanels === 'true' ? true : false ),
-	} );
-};
-( function() {
-	if ( document.getElementById && window.addEventListener ) {
-		function kt_accordion_scrollTo(element, to, duration) {
-			if (duration <= 0) return;
-			var difference = to - element.scrollTop;
-			var perTick = difference / duration * 10;
 
-			setTimeout(function() {
-				element.scrollTop = element.scrollTop + perTick;
-				if (element.scrollTop === to) return;
-				scrollTo(element, to, duration - 10);
-			}, 10);
-		}
-		function kt_anchor_accordion( e ) {
-			if ( window.location.hash != '' ) {
-				var id = location.hash.substring( 1 ),
-					element;
-
-				if ( ! ( /^[A-z0-9_-]+$/.test( id ) ) ) {
-					return;
-				}
-				element = document.getElementById( id );
-				if ( element ) {
-					if ( element.classList.contains('wp-block-kadence-pane') ) {
-						var child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
-						if ( ! child.classList.contains( 'kt-accordion-panel-active' ) ) {
-              child.click();
+(function() {
+	'use strict';
+	window.KadenceBlocksAccordion = {
+    /**
+		 * Initiate anchor scroll.
+		 */
+		scroll: function( element, to, duration ) {
+      if (duration <= 0) return;
+      var difference = to - element.scrollTop;
+      var perTick = difference / duration * 10;
+  
+      setTimeout(function() {
+        element.scrollTop = element.scrollTop + perTick;
+        if (element.scrollTop === to) return;
+        scrollTo(element, to, duration - 10);
+      }, 10);
+		},
+		/**
+		 * Initiate anchor trigger.
+		 */
+		anchor: function( e ) {
+      if ( window.location.hash != '' ) {
+        var id = location.hash.substring( 1 ),
+          element;
+  
+        if ( ! ( /^[A-z0-9_-]+$/.test( id ) ) ) {
+          return;
+        }
+        element = document.getElementById( id );
+        if ( element ) {
+          if ( element.classList.contains('wp-block-kadence-pane') ) {
+            var child = document.querySelectorAll('#' + id + ' .kt-blocks-accordion-header')[0];
+            if ( ! child.classList.contains( 'kt-accordion-panel-active' ) ) {
+              if ( e.type && e.type === 'initialized' ) {
+                window.setTimeout(function() {
+                  child.click();
+                }, 50 );
+              } else {
+                child.click();
+              }
             }
-            if ( e.type && e.type === 'load' ) {
+            if ( e.type && e.type === 'initialized' ) {
               window.setTimeout(function() {
-                kt_accordion_scrollTo( document.body, document.getElementById( id ).offsetTop, 600 );
+                window.KadenceBlocksAccordion.scroll( document.body, document.getElementById( id ).offsetTop, 600 );
               }, 350 );
             }
-					}
-				}
-			}
+          }
+        }
+      }
+		},
+		// Initiate the menus when the DOM loads.
+		init: function() {
+			var accordions = document.querySelectorAll('.kt-accordion-inner-wrap');
+      var accordionsArray = Array.from( accordions );
+      for (var i = 0, len = accordionsArray.length; i < len; i++) {
+        var multiplePanels = accordionsArray[i].getAttribute('data-allow-multiple-open');
+        var openPanels = accordionsArray[i].getAttribute('data-start-open');
+        var openPanel = parseInt(openPanels);
+        if (  openPanels !== 'none' ) {
+          for (var b = 0, lenb = accordionsArray[i].children.length; b < lenb; b++) {
+            if ( accordionsArray[i].children[b].classList.contains('kt-accordion-pane-' + ( 1 + openPanel ) ) ) {
+              openPanel = b;
+            }
+          }
+        }
+        accordionsArray[i].addEventListener( 'initialized',  window.KadenceBlocksAccordion.anchor, false );
+        new KadenceAccordion( accordionsArray[i], {
+          openHeadersOnLoad: ( openPanels === 'none' ? [] : [parseInt(openPanel)] ),
+          headerClass: '.kt-blocks-accordion-header',
+          panelClass: '.kt-accordion-panel',
+          panelInnerClass: '.kt-accordion-panel-inner',
+          hiddenClass: 'kt-accordion-panel-hidden',
+          activeClass: 'kt-accordion-panel-active',
+          initializedClass: 'kt-accordion-initialized',
+          headerDataAttr: 'data-kt-accordion-header-id',
+          openMultiplePanels: ( multiplePanels === 'true' ? true : false ),
+        } );
+      };
+      window.addEventListener( 'hashchange', window.KadenceBlocksAccordion.anchor, false );
 		}
-		window.addEventListener( 'hashchange', kt_anchor_accordion, false );
-    //window.addEventListener( 'DOMContentLoaded', kt_anchor_accordion, false );
-    window.addEventListener( 'load', kt_anchor_accordion, false );
 	}
-} )();
+	if ( 'loading' === document.readyState ) {
+		// The DOM has not yet been loaded.
+		document.addEventListener( 'DOMContentLoaded', window.KadenceBlocksAccordion.init );
+	} else {
+		// The DOM has already been loaded.
+		window.KadenceBlocksAccordion.init();
+	}
+})();

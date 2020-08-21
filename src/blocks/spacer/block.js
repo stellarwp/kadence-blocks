@@ -125,6 +125,18 @@ registerBlockType( 'kadence/spacer', {
 			type: 'string',
 			default: '',
 		},
+		vsdesk: {
+			type: 'bool',
+			default: false,
+		},
+		vstablet: {
+			type: 'bool',
+			default: false,
+		},
+		vsmobile: {
+			type: 'bool',
+			default: false,
+		},
 	},
 	transforms: {
 		from: [
@@ -175,7 +187,7 @@ registerBlockType( 'kadence/spacer', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, tabletHAlign, mobileHAlign } } = props;
+		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, tabletHAlign, mobileHAlign, vsdesk, vstablet, vsmobile } } = props;
 		let alp;
 		if ( dividerOpacity < 10 ) {
 			alp = '0.0' + dividerOpacity;
@@ -192,6 +204,13 @@ registerBlockType( 'kadence/spacer', {
 			const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
 			return dataUri;
 		};
+		const classes = classnames( {
+			[ `align${ ( blockAlignment ? blockAlignment : 'none' ) }` ]: true,
+			[ `kt-block-spacer-${ uniqueID }` ]: uniqueID,
+			'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
+			'kvs-md-false': vstablet !== 'undefined' && vstablet,
+			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
+		} );
 		const innerSpacerClasses = classnames( {
 			'kt-block-spacer': true,
 			[ `kt-block-spacer-halign-${ hAlign }` ]: hAlign,
@@ -199,7 +218,7 @@ registerBlockType( 'kadence/spacer', {
 			[ `kt-block-spacer-malign-${ mobileHAlign }` ]: mobileHAlign,
 		} );
 		return (
-			<div className={ `align${ ( blockAlignment ? blockAlignment : 'none' ) } kt-block-spacer-${ uniqueID }` }>
+			<div className={ classes }>
 				<div className={ innerSpacerClasses } style={ {
 					height: spacerHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ),
 				} } >

@@ -73,14 +73,35 @@ class Kadence_Blocks_Frontend {
 	public function conditionally_render_block( $block_content, $block ) {
 		if ( 'kadence/rowlayout' === $block['blockName'] && isset( $block['attrs'] ) ) {
 			if ( isset( $block['attrs']['loggedIn'] ) && $block['attrs']['loggedIn'] && is_user_logged_in() ) {
+				$hide = true;
 				if ( isset( $block['attrs']['loggedInUser'] ) && is_array( $block['attrs']['loggedInUser'] ) && ! empty( $block['attrs']['loggedInUser'] ) ) {
 					$user = wp_get_current_user();
 					foreach( $block['attrs']['loggedInUser'] as $key => $role ) {
 						if ( in_array( $role['value'], (array) $user->roles ) ) {
 							return '';
+						} else {
+							$hide = false;
 						}
 					}
-				} else {
+				}
+				if ( isset( $block['attrs']['loggedInShow'] ) && is_array( $block['attrs']['loggedInShow'] ) && ! empty( $block['attrs']['loggedInShow'] ) ) {
+					$user = wp_get_current_user();
+					$show_roles = array();
+					foreach ( $block['attrs']['loggedInShow'] as $key => $user_rule ) {
+						if ( isset( $user_rule['value'] ) && ! empty( $user_rule['value'] ) ) {
+							$show_roles[] = $user_rule['value'];
+						}
+					}
+					//print_r( $show_roles );
+					//print_r( $user->roles );
+					$match = array_intersect( $show_roles, (array) $user->roles );
+					if ( count( $match ) === 0 ) {
+						return '';
+					} else {
+						$hide = false;
+					}
+				}
+				if ( $hide ) {
 					return '';
 				}
 			}
@@ -1262,7 +1283,20 @@ class Kadence_Blocks_Frontend {
 			if ( ! is_object( $post ) ) {
 				return;
 			}
-			$blocks = $this->kadence_parse_blocks( $post->post_content );
+			$this->frontend_build_css( $post );
+		}
+	}
+	/**
+	 * Outputs extra css for blocks.
+	 *
+	 * @param $post_object object of WP_Post.
+	 */
+	public function frontend_build_css( $post_object ) {
+		if ( ! is_object( $post_object ) ) {
+			return;
+		}
+		if ( ! method_exists( $post_object, 'post_content' ) ) {
+			$blocks = $this->kadence_parse_blocks( $post_object->post_content );
 			// print_r( $blocks );
 			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 				return;

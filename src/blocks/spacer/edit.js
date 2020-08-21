@@ -94,7 +94,7 @@ class KadenceSpacerDivider extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, mobileHAlign, tabletHAlign }, className, setAttributes, toggleSelection } = this.props;
+		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, mobileHAlign, tabletHAlign, vsdesk, vstablet, vsmobile }, className, setAttributes, toggleSelection } = this.props;
 		let alp;
 		if ( dividerOpacity < 10 ) {
 			alp = '0.0' + dividerOpacity;
@@ -347,6 +347,26 @@ class KadenceSpacerDivider extends Component {
 										/>
 									</Fragment>
 								) }
+							</PanelBody>
+							<PanelBody
+								title={ __( 'Visibility Settings', 'kadence-blocks' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
+									checked={ ( undefined !== vsdesk ? vsdesk : false ) }
+									onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
+								/>
+								<ToggleControl
+									label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
+									checked={ ( undefined !== vstablet ? vstablet : false ) }
+									onChange={ ( value ) => setAttributes( { vstablet: value } ) }
+								/>
+								<ToggleControl
+									label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
+									checked={ ( undefined !== vsmobile ? vsmobile : false ) }
+									onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
+								/>
 							</PanelBody>
 						</InspectorControls>
 					</Fragment>

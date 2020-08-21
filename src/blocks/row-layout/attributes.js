@@ -493,6 +493,9 @@ const attributes = {
 	loggedInUser: {
 		type: 'array',
 	},
+	loggedInShow: {
+		type: 'array',
+	},
 	loggedOut: {
 		type: 'bool',
 		default: false,

@@ -270,3 +270,17 @@
     height: 0;
     overflow: hidden;
 }
+.kt-accordion-header-wrap {
+	.kt-btn-svg-icon.kt-btn-side-left {
+		padding-right: 5px;
+	}
+	.kt-btn-svg-icon.kt-btn-side-right {
+		padding-left: 5px;
+	}
+	.kt-acccordion-button-label-hide {
+		.kt-btn-svg-icon {
+			padding-left: 0;
+			padding-right: 0;
+		}
+	}
+}

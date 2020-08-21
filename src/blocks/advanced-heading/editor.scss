@@ -527,3 +527,22 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 		margin-bottom: 0 !important;
 	}
 }
+// Kadence Range CSS
+.kadence-range-control-inner {
+    box-sizing: border-box;
+    align-items: flex-start;
+    display: inline-flex;
+    -webkit-box-pack: start;
+    justify-content: flex-start;
+    padding: 0px;
+    position: relative;
+    width: 100%;
+}
+.kadence-range-control-inner .components-range-control.kadence-range-control-range {
+    flex-grow: 1;
+    margin-bottom: 0;
+}
+.kadence-range-control-inner .components-base-control.kt-range-number-input{
+margin-left: 16px;
+margin-bottom: 0;
+}

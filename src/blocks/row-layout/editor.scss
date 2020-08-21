@@ -7,7 +7,13 @@
  .kadence-radio-container-control {
     display: flex;
 }
-
+.kt-meta-select-wrap .ktp__menu {
+	z-index: 100000 !important;
+	position: relative;
+}
+.edit-post-sidebar .kt-meta-select-wrap input[type=text] {
+	box-shadow:none;
+}
 .kadence-radio-container-control.components-button-group .components-button {
     flex: 1 1 0;
     display: flex;
