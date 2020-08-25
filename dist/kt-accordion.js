@@ -902,11 +902,11 @@ return KadenceAccordion;
                 child.click();
               }
             }
-            if ( e.type && e.type === 'initialized' ) {
-              window.setTimeout(function() {
-                window.KadenceBlocksAccordion.scroll( document.body, document.getElementById( id ).offsetTop, 600 );
-              }, 350 );
-            }
+            // if ( e.type && e.type === 'initialized' ) {
+            //   window.setTimeout(function() {
+            //     window.KadenceBlocksAccordion.scroll( document.body, document.getElementById( id ).offsetTop, 600 );
+            //   }, 350 );
+            // }
           }
         }
       }
