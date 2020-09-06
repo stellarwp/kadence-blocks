@@ -1,5 +1,5 @@
 /**
- * Measure Component
+ * Range Control
  *
  */
 

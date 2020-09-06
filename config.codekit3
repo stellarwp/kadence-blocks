@@ -806,6 +806,14 @@
 		"oAP": "/languages/kadence-blocks-fi.po",
 		"oF": 0
 		},
+	"/languages/kadence-blocks.pot": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/languages/kadence-blocks.pot",
+		"oF": 0
+		},
 	"/node_modules": {
 		"ft": 65536,
 		"oA": 2,

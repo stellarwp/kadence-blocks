@@ -87,6 +87,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.8.14 =
+* Fix: RTL - Padding issue with rows and buttons.
+* Fix: RTL - Issue with controls and responsive icons.
+
 = 1.8.13 =
 * Add: User visibility setting for showing to a specific user.
 * Fix: Device visibility setting for columns.
