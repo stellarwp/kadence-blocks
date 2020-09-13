@@ -7,7 +7,9 @@
  .kt-border-color-array-control .components-color-palette {
     padding-left: 50px;
 }
-    
+body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-group.kt-size-type-options {
+    text-align: left;
+}
 .kt-border-color-array-control .kt-border-color-icon {
     float: left;
     width: 40px;

@@ -926,7 +926,7 @@ return KadenceAccordion;
             }
           }
         }
-        accordionsArray[i].addEventListener( 'initialized',  window.KadenceBlocksAccordion.anchor, false );
+        accordionsArray[i].addEventListener( 'initialized', window.KadenceBlocksAccordion.anchor, false );
         new KadenceAccordion( accordionsArray[i], {
           openHeadersOnLoad: ( openPanels === 'none' ? [] : [parseInt(openPanel)] ),
           headerClass: '.kt-blocks-accordion-header',

@@ -63,7 +63,7 @@ registerBlockType( 'kadence/advancedheading', {
 		content: {
 			type: 'string',
 			source: 'html',
-			selector: 'h1,h2,h3,h4,h5,h6',
+			selector: 'h1,h2,h3,h4,h5,h6,p',
 		},
 		level: {
 			type: 'number',
@@ -258,6 +258,10 @@ registerBlockType( 'kadence/advancedheading', {
 				vOffset: 1,
 			} ],
 		},
+		htmlTag: {
+			type: 'string',
+			default: 'heading',
+		},
 	},
 	transforms: {
 		from: [
@@ -305,8 +309,9 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { anchor, align, level, content, color, colorClass, textShadow, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions } } = props;
-		const tagName = 'h' + level;
+		const { attributes: { anchor, align, level, content, color, colorClass, textShadow, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions, htmlTag } } = props;
+		//const tagName = 'h' + level;
+		const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 		const textColorClass = getColorClassName( 'color', colorClass );
 		const mType = ( marginType ? marginType : 'px' );
 		let tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );

@@ -88,9 +88,18 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 1.8.14 =
-* Fix: RTL - Padding issue with rows and buttons.
-* Fix: RTL - Issue with controls and responsive icons.
-
+* Add: Option for Advanced Heading Block to be Paragraph.
+* Fix: Image align for testimonials.
+* Fix: Accordion scroll issue.
+* Fix: A few RTL issues.
+* Fix: More range controls moved over to Kadence Range.
+* Fix: Info Box allow two different links.
+* Fix: Two Icon size for range.
+* Fix: Firefox issue with range.
+* Fix: Margin unit in button.
+* Fix: Loading styles outside of content area issues.
+* Update: Add support for themes using css variables for color. Thanks @andreiglingeanu
+ 
 = 1.8.13 =
 * Add: User visibility setting for showing to a specific user.
 * Fix: Device visibility setting for columns.

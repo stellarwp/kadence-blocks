@@ -7,11 +7,11 @@
  * Internal block libraries
  */
 const { __ } = wp.i18n;
+import KadenceRange from './kadence-range-control';
 const {
 	Fragment,
 } = wp.element;
 const {
-	RangeControl,
 	Dashicon,
 	TabPanel,
 } = wp.components;
@@ -63,7 +63,7 @@ export default function ResponsiveRangeControl( {
 							if ( tab.name ) {
 								if ( 'mobile' === tab.name ) {
 									tabout = (
-										<RangeControl
+										<KadenceRange
 											value={ ( mobileValue ? mobileValue : zero ) }
 											onChange={ ( size ) => onChangeMobile( size ) }
 											min={ min }
@@ -73,7 +73,7 @@ export default function ResponsiveRangeControl( {
 									);
 								} else if ( 'tablet' === tab.name ) {
 									tabout = (
-										<RangeControl
+										<KadenceRange
 											value={ ( tabletValue ? tabletValue : zero ) }
 											onChange={ ( size ) => onChangeTablet( size ) }
 											min={ min }
@@ -83,7 +83,7 @@ export default function ResponsiveRangeControl( {
 									);
 								} else {
 									tabout = (
-										<RangeControl
+										<KadenceRange
 											value={ ( value ? value : zero ) }
 											onChange={ ( size ) => onChange( size ) }
 											min={ min }

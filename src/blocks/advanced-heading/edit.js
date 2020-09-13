@@ -132,7 +132,7 @@ class KadenceAdvancedHeading extends Component {
 	}
 	render() {
 		const { attributes, className, setAttributes, mergeBlocks, onReplace } = this.props;
-		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions } = attributes;
+		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag } = attributes;
 		const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -147,7 +147,7 @@ class KadenceAdvancedHeading extends Component {
 		};
 		const config = ( googleFont ? gconfig : '' );
 		const sconfig = ( markGoogleFont ? sgconfig : '' );
-		const tagName = 'h' + level;
+		const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
@@ -178,6 +178,64 @@ class KadenceAdvancedHeading extends Component {
 				onClick: () => setAttributes( { level: targetLevel } ),
 			} ];
 		};
+		const headingOptions = [
+			[
+				{
+					icon: <HeadingLevelIcon level={ 1 } isPressed={ ( 1 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 1', 'kadence-blocks' ),
+					isActive: ( 1 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => setAttributes( { level: 1, htmlTag: 'heading' } ),
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 2 } isPressed={ ( 2 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 2', 'kadence-blocks' ),
+					isActive: ( 2 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => setAttributes( { level: 2, htmlTag: 'heading' } ),
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 3 } isPressed={ ( 3 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 3', 'kadence-blocks' ),
+					isActive: ( 3 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => setAttributes( { level: 3, htmlTag: 'heading' } ),
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 4 } isPressed={ ( 4 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 4', 'kadence-blocks' ),
+					isActive: ( 4 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => setAttributes( { level: 4, htmlTag: 'heading' } ),
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 5 } isPressed={ ( 5 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 5', 'kadence-blocks' ),
+					isActive: ( 5 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => setAttributes( { level: 5, htmlTag: 'heading' } ),
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 6 } isPressed={ ( 6 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 6', 'kadence-blocks' ),
+					isActive: ( 6 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => setAttributes( { level: 6, htmlTag: 'heading' } ),
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 'p' } isPressed={ ( htmlTag && htmlTag === 'p' ? true : false ) } />,
+					title: __( 'Paragraph', 'kadence-blocks' ),
+					isActive: ( htmlTag && htmlTag === 'p' ? true : false ),
+					onClick: () => setAttributes( { htmlTag: 'p' } ),
+				},
+			],
+		];
 		const createLevelControlToolbar = ( targetLevel ) => {
 			return [ {
 				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ targetLevel === level } />,
@@ -494,9 +552,9 @@ class KadenceAdvancedHeading extends Component {
 				<BlockControls>
 					<Toolbar
 						isCollapsed={ true }
-						icon={ <HeadingLevelIcon level={ level } /> }
+						icon={ <HeadingLevelIcon level={ ( htmlTag === 'p' ? 'p' : level ) } /> }
 						label={ __( 'Change Heading Level', 'kadence-blocks' ) }
-						controls={ range( 1, 7 ).map( createLevelControlToolbar ) }
+						controls={ headingOptions }
 					/>
 					{ this.showSettings( 'allSettings' ) && this.showSettings( 'toolbarTypography' ) && (
 						<InlineTypographyControls
@@ -567,7 +625,7 @@ class KadenceAdvancedHeading extends Component {
 						<PanelBody title={ __( 'Heading Settings', 'kadence-blocks' ) }>
 							<div className="kb-tag-level-control components-base-control">
 								<p className="kb-component-label">{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
-								<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
+								<Toolbar controls={ headingOptions } />
 							</div>
 							<div className="kb-sidebar-alignment components-base-control">
 								<p className="kb-component-label kb-responsive-label">{ __( 'Text Alignment', 'kadence-blocks' ) }</p>

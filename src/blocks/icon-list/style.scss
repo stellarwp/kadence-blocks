@@ -49,12 +49,14 @@
 .kt-svg-icon-list-columns-2 ul.kt-svg-icon-list {
     grid-template-columns: 50% auto;
     grid-template-rows: auto;
-    display: grid;
+	display: grid;
+	grid-gap: 1em;
 }
 .kt-svg-icon-list-columns-3 ul.kt-svg-icon-list {
     grid-template-columns: 33% 33% auto;
     grid-template-rows: auto;
-    display: grid;
+	display: grid;
+	grid-gap: 1em;
 }
 .kt-info-icon-animate-flip .kadence-info-box-icon-inner-container {
     backface-visibility: hidden;

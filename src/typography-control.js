@@ -17,6 +17,7 @@ import Select from 'react-select';
 import map from 'lodash/map';
 import range from 'lodash/range';
 import HeadingLevelIcon from './heading-icons';
+import KadenceRange from './kadence-range-control';
 
 const {
 	applyFilters,
@@ -325,7 +326,7 @@ class TypographyControls extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Font Size', 'kadence-blocks' ) }
 					value={ ( fontSize ? fontSize[ 0 ] : '' ) }
 					onChange={ ( value ) => onFontSize( [ value, ( ! fontSize[ 1 ] ? fontSize[ 1 ] : '' ), ( ! fontSize[ 2 ] ? fontSize[ 2 ] : '' ) ] ) }
@@ -349,7 +350,7 @@ class TypographyControls extends Component {
 								</Button>
 							) ) }
 						</ButtonGroup>
-						<RangeControl
+						<KadenceRange
 							label={ __( 'Line Height', 'kadence-blocks' ) }
 							value={ ( lineHeight ? lineHeight[ 0 ] : '' ) }
 							onChange={ ( value ) => onLineHeight( [ value, lineHeight[ 1 ], lineHeight[ 2 ] ] ) }
@@ -377,7 +378,7 @@ class TypographyControls extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Tablet Font Size', 'kadence-blocks' ) }
 					value={ ( fontSize ? fontSize[ 1 ] : '' ) }
 					onChange={ ( value ) => onFontSize( [ fontSize[ 0 ], value, fontSize[ 2 ] ] ) }
@@ -401,7 +402,7 @@ class TypographyControls extends Component {
 								</Button>
 							) ) }
 						</ButtonGroup>
-						<RangeControl
+						<KadenceRange
 							label={ __( 'Tablet Line Height', 'kadence-blocks' ) }
 							value={ ( lineHeight ? lineHeight[ 1 ] : '' ) }
 							onChange={ ( value ) => onLineHeight( [ lineHeight[ 0 ], value, lineHeight[ 2 ] ] ) }
@@ -429,7 +430,7 @@ class TypographyControls extends Component {
 						</Button>
 					) ) }
 				</ButtonGroup>
-				<RangeControl
+				<KadenceRange
 					label={ __( 'Mobile Font Size', 'kadence-blocks' ) }
 					value={ ( fontSize ? fontSize[ 2 ] : '' ) }
 					onChange={ ( value ) => onFontSize( [ fontSize[ 0 ], fontSize[ 1 ], value ] ) }
@@ -453,7 +454,7 @@ class TypographyControls extends Component {
 								</Button>
 							) ) }
 						</ButtonGroup>
-						<RangeControl
+						<KadenceRange
 							label={ __( 'Mobile Line Height', 'kadence-blocks' ) }
 							value={ ( lineHeight ? lineHeight[ 2 ] : '' ) }
 							onChange={ ( value ) => onLineHeight( [ lineHeight[ 0 ], lineHeight[ 1 ], value ] ) }
@@ -514,7 +515,7 @@ class TypographyControls extends Component {
 					</Fragment>
 				) }
 				{ onLetterSpacing && (
-					<RangeControl
+					<KadenceRange
 						label={ __( 'Letter Spacing', 'kadence-blocks' ) }
 						value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
 						onChange={ ( value ) => onLetterSpacing( value ) }
@@ -597,7 +598,7 @@ class TypographyControls extends Component {
 							) ) }
 						</ButtonGroup>
 						{ paddingControl && paddingControl !== 'individual' && (
-							<RangeControl
+							<KadenceRange
 								label={ __( 'Padding (px)', 'kadence-blocks' ) }
 								value={ ( padding ? padding[ 0 ] : '' ) }
 								onChange={ ( value ) => onPadding( [ value, value, value, value ] ) }
@@ -609,36 +610,36 @@ class TypographyControls extends Component {
 						{ paddingControl && paddingControl === 'individual' && (
 							<Fragment>
 								<p>{ __( 'Padding (px)', 'kadence-blocks' ) }</p>
-								<RangeControl
+								<KadenceRange
 									className="kt-icon-rangecontrol"
-									label={ icons.outlinetop }
+									beforeIcon={ icons.outlinetop }
 									value={ ( padding ? padding[ 0 ] : '' ) }
 									onChange={ ( value ) => onPadding( [ value, padding[ 1 ], padding[ 2 ], padding[ 3 ] ] ) }
 									min={ 0 }
 									max={ 100 }
 									step={ 1 }
 								/>
-								<RangeControl
+								<KadenceRange
 									className="kt-icon-rangecontrol"
-									label={ icons.outlineright }
+									beforeIcon={ icons.outlineright }
 									value={ ( padding ? padding[ 1 ] : '' ) }
 									onChange={ ( value ) => onPadding( [ padding[ 0 ], value, padding[ 2 ], padding[ 3 ] ] ) }
 									min={ 0 }
 									max={ 100 }
 									step={ 1 }
 								/>
-								<RangeControl
+								<KadenceRange
 									className="kt-icon-rangecontrol"
-									label={ icons.outlinebottom }
+									beforeIcon={ icons.outlinebottom }
 									value={ ( padding ? padding[ 2 ] : '' ) }
 									onChange={ ( value ) => onPadding( [ padding[ 0 ], padding[ 1 ], value, padding[ 3 ] ] ) }
 									min={ 0 }
 									max={ 100 }
 									step={ 1 }
 								/>
-								<RangeControl
+								<KadenceRange
 									className="kt-icon-rangecontrol"
-									label={ icons.outlineleft }
+									beforeIcon={ icons.outlineleft }
 									value={ ( padding ? padding[ 3 ] : '' ) }
 									onChange={ ( value ) => onPadding( [ padding[ 0 ], padding[ 1 ], padding[ 2 ], value ] ) }
 									min={ 0 }
@@ -668,7 +669,7 @@ class TypographyControls extends Component {
 							) ) }
 						</ButtonGroup>
 						{ marginControl && marginControl !== 'individual' && (
-							<RangeControl
+							<KadenceRange
 								label={ __( 'Margin (px)', 'kadence-blocks' ) }
 								value={ ( margin ? margin[ 0 ] : '' ) }
 								onChange={ ( value ) => onMargin( [ value, value, value, value ] ) }
@@ -680,36 +681,36 @@ class TypographyControls extends Component {
 						{ marginControl && marginControl === 'individual' && (
 							<Fragment>
 								<p>{ __( 'Margin (px)', 'kadence-blocks' ) }</p>
-								<RangeControl
+								<KadenceRange
 									className="kt-icon-rangecontrol"
-									label={ icons.outlinetop }
+									beforeIcon={ icons.outlinetop }
 									value={ ( margin ? margin[ 0 ] : '' ) }
 									onChange={ ( value ) => onMargin( [ value, margin[ 1 ], margin[ 2 ], margin[ 3 ] ] ) }
 									min={ -100 }
 									max={ 100 }
 									step={ 1 }
 								/>
-								<RangeControl
+								<KadenceRange
 									className="kt-icon-rangecontrol"
-									label={ icons.outlineright }
+									beforeIcon={ icons.outlineright }
 									value={ ( margin ? margin[ 1 ] : '' ) }
 									onChange={ ( value ) => onMargin( [ margin[ 0 ], value, margin[ 2 ], margin[ 3 ] ] ) }
 									min={ -100 }
 									max={ 100 }
 									step={ 1 }
 								/>
-								<RangeControl
+								<KadenceRange
 									className="kt-icon-rangecontrol"
-									label={ icons.outlinebottom }
+									beforeIcon={ icons.outlinebottom }
 									value={ ( margin ? margin[ 2 ] : '' ) }
 									onChange={ ( value ) => onMargin( [ margin[ 0 ], margin[ 1 ], value, margin[ 3 ] ] ) }
 									min={ -100 }
 									max={ 100 }
 									step={ 1 }
 								/>
-								<RangeControl
+								<KadenceRange
 									className="kt-icon-rangecontrol"
-									label={ icons.outlineleft }
+									beforeIcon={ icons.outlineleft }
 									value={ ( margin ? margin[ 3 ] : '' ) }
 									onChange={ ( value ) => onMargin( [ margin[ 0 ], margin[ 1 ], margin[ 2 ], value ] ) }
 									min={ -100 }

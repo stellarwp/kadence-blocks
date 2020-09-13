@@ -12,6 +12,7 @@ import icons from './icons';
  * Import External
  */
 import map from 'lodash/map';
+import KadenceRange from './kadence-range-control';
 
 /**
  * Internal block libraries
@@ -24,7 +25,6 @@ const {
 	Button,
 	ButtonGroup,
 	Tooltip,
-	RangeControl,
 } = wp.components;
 
 /**
@@ -71,7 +71,7 @@ export default function MeasurementControls( {
 					) ) }
 				</ButtonGroup>
 				{ control && control !== 'individual' && (
-					<RangeControl
+					<KadenceRange
 						label={ label }
 						value={ ( measurement ? measurement[ 0 ] : '' ) }
 						onChange={ ( value ) => onChange( [ value, value, value, value ] ) }
@@ -83,36 +83,36 @@ export default function MeasurementControls( {
 				{ control && control === 'individual' && (
 					<Fragment>
 						<p>{ label }</p>
-						<RangeControl
+						<KadenceRange
 							className="kt-icon-rangecontrol"
-							label={ firstIcon }
+							beforeIcon={ firstIcon }
 							value={ ( measurement ? measurement[ 0 ] : '' ) }
 							onChange={ ( value ) => onChange( [ value, ( measurement && undefined !== measurement[ 1 ] && '' !== measurement[ 1 ] ? measurement[ 1 ] : zero ), ( measurement && undefined !== measurement[ 2 ] && '' !== measurement[ 2 ] ? measurement[ 2 ] : zero ), ( measurement && undefined !== measurement[ 3 ] && '' !== measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 							min={ min }
 							max={ max }
 							step={ step }
 						/>
-						<RangeControl
+						<KadenceRange
 							className="kt-icon-rangecontrol"
-							label={ secondIcon }
+							beforeIcon={ secondIcon }
 							value={ ( measurement ? measurement[ 1 ] : '' ) }
 							onChange={ ( value ) => onChange( [ ( measurement && undefined !== measurement[ 0 ] && '' !== measurement[ 0 ] ? measurement[ 0 ] : zero ), value, ( measurement && undefined !== measurement[ 2 ] && '' !== measurement[ 2 ] ? measurement[ 2 ] : zero ), ( measurement && undefined !== measurement[ 3 ] && '' !== measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 							min={ min }
 							max={ max }
 							step={ step }
 						/>
-						<RangeControl
+						<KadenceRange
 							className="kt-icon-rangecontrol"
-							label={ thirdIcon }
+							beforeIcon={ thirdIcon }
 							value={ ( measurement ? measurement[ 2 ] : '' ) }
 							onChange={ ( value ) => onChange( [ ( measurement && undefined !== measurement[ 0 ] && '' !== measurement[ 0 ] ? measurement[ 0 ] : zero ), ( measurement && undefined !== measurement[ 1 ] && '' !== measurement[ 1 ] ? measurement[ 1 ] : zero ), value, ( measurement && undefined !== measurement[ 3 ] && '' !== measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 							min={ min }
 							max={ max }
 							step={ step }
 						/>
-						<RangeControl
+						<KadenceRange
 							className="kt-icon-rangecontrol"
-							label={ fourthIcon }
+							beforeIcon={ fourthIcon }
 							value={ ( measurement ? measurement[ 3 ] : '' ) }
 							onChange={ ( value ) => onChange( [ ( measurement && undefined !== measurement[ 0 ] && '' !== measurement[ 0 ] ? measurement[ 0 ] : zero ), ( measurement && undefined !== measurement[ 1 ] && '' !== measurement[ 1 ] ? measurement[ 1 ] : zero ), ( measurement && undefined !== measurement[ 2 ] && '' !== measurement[ 2 ] ? measurement[ 2 ] : zero ), value ] ) }
 							min={ min }
@@ -126,36 +126,36 @@ export default function MeasurementControls( {
 		onChange && ! onControl && (
 			<Fragment>
 				<p className="kt-measurement-label">{ label }</p>
-				<RangeControl
+				<KadenceRange
 					className="kt-icon-rangecontrol"
-					label={ firstIcon }
+					beforeIcon={ firstIcon }
 					value={ ( measurement ? measurement[ 0 ] : '' ) }
 					onChange={ ( value ) => onChange( [ value, ( measurement && undefined !== measurement[ 1 ] && '' !== measurement[ 1 ] ? measurement[ 1 ] : zero ), ( measurement && undefined !== measurement[ 2 ] && '' !== measurement[ 2 ] ? measurement[ 2 ] : zero ), ( measurement && undefined !== measurement[ 3 ] && '' !== measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 					min={ min }
 					max={ max }
 					step={ step }
 				/>
-				<RangeControl
+				<KadenceRange
 					className="kt-icon-rangecontrol"
-					label={ secondIcon }
+					beforeIcon={ secondIcon }
 					value={ ( measurement ? measurement[ 1 ] : '' ) }
 					onChange={ ( value ) => onChange( [ ( measurement && undefined !== measurement[ 0 ] && '' !== measurement[ 0 ] ? measurement[ 0 ] : zero ), value, ( measurement && undefined !== measurement[ 2 ] && '' !== measurement[ 2 ] ? measurement[ 2 ] : zero ), ( measurement && undefined !== measurement[ 3 ] && '' !== measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 					min={ min }
 					max={ max }
 					step={ step }
 				/>
-				<RangeControl
+				<KadenceRange
 					className="kt-icon-rangecontrol"
-					label={ thirdIcon }
+					beforeIcon={ thirdIcon }
 					value={ ( measurement ? measurement[ 2 ] : '' ) }
 					onChange={ ( value ) => onChange( [ ( measurement && undefined !== measurement[ 0 ] && '' !== measurement[ 0 ] ? measurement[ 0 ] : zero ), ( measurement && undefined !== measurement[ 1 ] && '' !== measurement[ 1 ] ? measurement[ 1 ] : zero ), value, ( measurement && undefined !== measurement[ 3 ] && '' !== measurement[ 3 ] ? measurement[ 3 ] : zero ) ] ) }
 					min={ min }
 					max={ max }
 					step={ step }
 				/>
-				<RangeControl
+				<KadenceRange
 					className="kt-icon-rangecontrol"
-					label={ fourthIcon }
+					beforeIcon={ fourthIcon }
 					value={ ( measurement ? measurement[ 3 ] : '' ) }
 					onChange={ ( value ) => onChange( [ ( measurement && undefined !== measurement[ 0 ] && '' !== measurement[ 0 ] ? measurement[ 0 ] : zero ), ( measurement && undefined !== measurement[ 1 ] && '' !== measurement[ 1 ] ? measurement[ 1 ] : zero ), ( measurement && undefined !== measurement[ 2 ] && '' !== measurement[ 2 ] ? measurement[ 2 ] : zero ), value ] ) }
 					min={ min }

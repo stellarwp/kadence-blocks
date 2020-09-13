@@ -11,7 +11,7 @@ const attributes = {
 		type: 'string',
 		source: 'attribute',
 		attribute: 'href',
-		selector: 'a',
+		selector: 'a.info-box-link',
 	},
 	linkProperty: {
 		type: 'string',
@@ -21,7 +21,7 @@ const attributes = {
 		type: 'string',
 		source: 'attribute',
 		attribute: 'target',
-		selector: 'a',
+		selector: 'a.info-box-link',
 		default: '_self',
 	},
 	hAlign: {

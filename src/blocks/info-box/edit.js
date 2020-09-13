@@ -1955,14 +1955,6 @@ class KadenceInfoBox extends Component {
 											max={ 250 }
 											step={ 1 }
 										/>
-										<KadenceRange
-											label={ __( 'Icon Size' ) }
-											value={ mediaIcon[ 0 ].size }
-											onChange={ value => saveMediaIcon( { size: value } ) }
-											min={ 5 }
-											max={ 250 }
-											step={ 1 }
-										/>
 										{ mediaIcon[ 0 ].icon && 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) && (
 											<KadenceRange
 												label={ __( 'Icon Line Width' ) }
