@@ -13,9 +13,8 @@ export default function hexToRGBA( hex, alpha ) {
 	 * Detect CSS variables in form of var(--color) and get their current
 	 * values from the :root selector.
 	 */
-	if ( hexColor.indexOf( 'var(' ) > -1 ) {
-		hexColor = window.getComputedStyle( document.documentElement )
-			.getPropertyValue( hexColor.replace( 'var(', '' ).replace( ')', '' ) ) || '#fff'
+	if ( hex.indexOf( 'var(' ) > -1 ) {
+		hex = window.getComputedStyle( document.documentElement ).getPropertyValue( hex.replace( 'var(', '' ).replace( ')', '' ) ) || '#fff';
 	}
 
 	hex = hex.replace( '#', '' );
