@@ -56,7 +56,7 @@ class KadenceiconlistSettings extends Component {
 				{ isOpen ?
 					<Modal
 						className="kt-block-settings-modal"
-						title={ __( 'Spacer/Divider Settings' ) }
+						title={ __( 'Icon List Settings' ) }
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/iconlist', iconlistSettings );
 						} }>

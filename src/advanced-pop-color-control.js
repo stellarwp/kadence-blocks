@@ -76,7 +76,7 @@ class AdvancedPopColorControl extends Component {
 			currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
 		}
 		return (
-			<div className="kt-color-popover-container new-kadence-advanced-colors">
+			<div className="kt-color-popover-container components-base-control new-kadence-advanced-colors">
 				<div className="kt-advanced-color-settings-container">
 					{ this.props.label && (
 						<h2 className="kt-beside-color-label">{ this.props.label }</h2>

@@ -254,7 +254,7 @@ class Kadence_Blocks_Frontend {
 		}
 	}
 	/**
-	 * Render Row Block CSS In Head
+	 * Render Row  Block
 	 *
 	 * @param array $attributes the blocks attribtues.
 	 */
@@ -424,7 +424,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function render_advanced_heading_css_head( $attributes ) {
 		if ( ! wp_style_is( 'kadence-blocks-heading', 'enqueued' ) ) {
-			$this->enqueue_style(  'kadence-blocks-heading' );
+			$this->enqueue_style( 'kadence-blocks-heading' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
@@ -513,17 +513,23 @@ class Kadence_Blocks_Frontend {
 				if ( $this->it_is_not_amp() ) {
 					wp_enqueue_script( 'kadence-blocks-tabs-js' );
 				}
-				if ( ! doing_filter( 'the_content' ) ) {
-					if ( ! wp_style_is( 'kadence-blocks-tabs', 'done' ) ) {
-						wp_print_styles( 'kadence-blocks-tabs' );
-					}
-				}
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
 						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+				if ( ! doing_filter( 'the_content' ) ) {
+					if ( ! wp_style_is( 'kadence-blocks-tabs', 'done' ) ) {
+						wp_print_styles( 'kadence-blocks-tabs' );
+					}
+				} else {
+					if ( ! wp_style_is( 'kadence-blocks-tabs', 'done' ) ) {
+						ob_start();
+							wp_print_styles( 'kadence-blocks-tabs' );
+						$content = ob_get_clean() . $content;
 					}
 				}
 			}
@@ -1479,6 +1485,12 @@ class Kadence_Blocks_Frontend {
 							$this->render_form_css_head( $blockattr );
 						}
 					}
+					if ( 'kadence/tableofcontents' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->blocks_tableofcontents_scripts_check( $blockattr );
+						}
+					}
 					if ( 'core/block' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -1601,6 +1613,12 @@ class Kadence_Blocks_Frontend {
 						$this->blocks_form_scripts_check( $blockattr );
 					}
 				}
+				if ( 'kadence/tableofcontents' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->blocks_tableofcontents_scripts_check( $blockattr );
+					}
+				}
 				if ( 'core/block' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -1615,6 +1633,64 @@ class Kadence_Blocks_Frontend {
 				}
 				if ( isset( $inner_block['innerBlocks'] ) && ! empty( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) ) {
 					$this->blocks_cycle_through( $inner_block['innerBlocks'] );
+				}
+			}
+		}
+	}
+	/**
+	 * Grabs the scripts that are needed so we can load in the head.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_tableofcontents_scripts_check( $attr ) {
+		$toc = Kadence_Blocks_Table_Of_Contents::get_instance();
+		$toc->enqueue_script( 'kadence-blocks-table-of-contents' );
+		$toc->enqueue_style( 'kadence-blocks-table-of-contents' );
+		if ( isset( $attr['uniqueID'] ) ) {
+			$unique_id = $attr['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $toc->output_css( $attr, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
+			$label_font = $attr['labelFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $label_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $label_font['family'],
+					'fontvariants' => ( isset( $label_font['variant'] ) && ! empty( $label_font['variant'] ) ? array( $label_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $label_font['subset'] ) && ! empty( $label_font['subset'] ) ? array( $label_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $label_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $label_font['variant'], self::$gfonts[ $label_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $label_font['family'] ]['fontvariants'], $label_font['variant'] );
+				}
+				if ( ! in_array( $label_font['subset'], self::$gfonts[ $label_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $label_font['family'] ]['fontsubsets'], $label_font['subset'] );
+				}
+			}
+		}
+		if ( isset( $attr['submitFont'] ) && is_array( $attr['submitFont'] ) && isset( $attr['submitFont'][0] ) && is_array( $attr['submitFont'][0] ) && isset( $attr['submitFont'][0]['google'] ) && $attr['submitFont'][0]['google'] && ( ! isset( $attr['submitFont'][0]['loadGoogle'] ) || true === $attr['submitFont'][0]['loadGoogle'] ) && isset( $attr['submitFont'][0]['family'] ) ) {
+			$submit_font = $attr['submitFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $submit_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily' => $submit_font['family'],
+					'fontvariants' => ( isset( $submit_font['variant'] ) && ! empty( $submit_font['variant'] ) ? array( $submit_font['variant'] ) : array() ),
+					'fontsubsets' => ( isset( $submit_font['subset'] ) && ! empty( $submit_font['subset'] ) ? array( $submit_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $submit_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $submit_font['variant'], self::$gfonts[ $submit_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $submit_font['family'] ]['fontvariants'], $submit_font['variant'] );
+				}
+				if ( ! in_array( $submit_font['subset'], self::$gfonts[ $submit_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $submit_font['family'] ]['fontsubsets'], $submit_font['subset'] );
 				}
 			}
 		}
@@ -2353,7 +2429,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_infobox_array( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerMargin'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
+		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerBackgroundOpacity'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerMargin'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
 			$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap {';
 			if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
 				$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
@@ -2365,6 +2441,9 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['containerBackground'] ) && ! empty( $attr['containerBackground'] ) ) {
 				$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
 				$css .= 'background:' . $this->kadence_color_output( $attr['containerBackground'], $alpha ) . ';';
+			} elseif ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ) {
+				$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
+				$css .= 'background:' . $this->kadence_color_output( '#f2f2f2', $alpha ) . ';';
 			}
 			if ( isset( $attr['containerPadding'] ) && is_array( $attr['containerPadding'] ) ) {
 				$css .= 'padding:' . $attr['containerPadding'][ 0 ] . 'px ' . $attr['containerPadding'][ 1 ] . 'px ' . $attr['containerPadding'][ 2 ] . 'px ' . $attr['containerPadding'][ 3 ] . 'px;';

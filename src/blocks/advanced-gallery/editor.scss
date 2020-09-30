@@ -18,6 +18,9 @@
 		margin: 0;
 	}
  }
+ .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption {
+	 z-index: 100;
+ }
  .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-container > .components-placeholder.wp-block-kadence-advancedgallery {
 	margin-top: 10px;
  }

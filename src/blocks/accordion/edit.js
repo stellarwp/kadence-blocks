@@ -661,7 +661,7 @@ class KadenceAccordionComponent extends Component {
 													tabout = normalSettings;
 												}
 											}
-											return <div>{ tabout }</div>;
+											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 										}
 									}
 								</TabPanel>

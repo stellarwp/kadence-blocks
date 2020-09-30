@@ -115,7 +115,7 @@ registerBlockType( 'kadence/infobox', {
 			</div>
 		);
 		const numberOut = (
-			<div className={ `kadence-info-box-number-container kt-info-number-animate-${ mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none' }` } >
+			<div className={ `kadence-info-box-number-container kt-info-number-animate-${ mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none' }` } >
 				<div className={ 'kadence-info-box-number-inner-container' } >
 					<RichText.Content
 						className="kt-blocks-info-box-number"

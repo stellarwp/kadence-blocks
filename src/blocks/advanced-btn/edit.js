@@ -702,7 +702,7 @@ class KadenceAdvancedButton extends Component {
 												);
 											}
 										}
-										return <div>{ tabout }</div>;
+										return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 									}
 								}
 							</TabPanel>
@@ -820,7 +820,7 @@ class KadenceAdvancedButton extends Component {
 														);
 													}
 												}
-												return <div>{ tabout }</div>;
+												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 											}
 										}
 									</TabPanel>
@@ -917,7 +917,7 @@ class KadenceAdvancedButton extends Component {
 														);
 													}
 												}
-												return <div>{ tabout }</div>;
+												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 											}
 										}
 									</TabPanel>
@@ -952,7 +952,7 @@ class KadenceAdvancedButton extends Component {
 												tabout = buttonSettings( index );
 											}
 										}
-										return <div>{ tabout }</div>;
+										return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 									}
 								}
 							</TabPanel>
@@ -1071,7 +1071,7 @@ class KadenceAdvancedButton extends Component {
 										);
 									}
 								}
-								return <div>{ tabout }</div>;
+								return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 							}
 						}
 					</TabPanel>
@@ -1711,7 +1711,7 @@ class KadenceAdvancedButton extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -1836,7 +1836,7 @@ class KadenceAdvancedButton extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>

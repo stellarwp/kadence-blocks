@@ -4,10 +4,8 @@
  */
 /* global kadence_blocks_params */
 /**
- * Import Css
+ * Internal dependencies
  */
-import './editor.scss';
-import './markformat';
 import range from 'lodash/range';
 import map from 'lodash/map';
 import classnames from 'classnames';
@@ -18,13 +16,19 @@ import InlineAdvancedPopColorControl from '../../advanced-inline-pop-color-contr
 import KadenceColorOutput from '../../kadence-color-output';
 import WebfontLoader from '../../fontloader';
 import TextShadowControl from '../../text-shadow-control';
-import HeadingStyleCopyPaste from './copy-paste-style';
 import KadenceRange from '../../kadence-range-control';
 
 /**
- * Internal dependencies
+ * Block dependencies
  */
-import HeadingLevelIcon from '../../heading-icons';
+import HeadingLevelIcon from './heading-icons';
+import HeadingStyleCopyPaste from './copy-paste-style';
+import './markformat';
+
+/**
+ * Import Css
+ */
+import './editor.scss';
 /**
  * Internal block libraries
  */
@@ -48,6 +52,7 @@ const {
 	Toolbar,
 	ButtonGroup,
 	Button,
+	ToolbarGroup,
 	Dashicon,
 	TabPanel,
 	SelectControl,
@@ -236,15 +241,6 @@ class KadenceAdvancedHeading extends Component {
 				},
 			],
 		];
-		const createLevelControlToolbar = ( targetLevel ) => {
-			return [ {
-				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ targetLevel === level } />,
-				// translators: %s: heading level e.g: "1", "2", "3"
-				title: sprintf( __( 'Heading %d' ), targetLevel ),
-				isActive: targetLevel === level,
-				onClick: () => setAttributes( { level: targetLevel } ),
-			} ];
-		};
 		const deskControls = (
 			<PanelBody>
 				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type' ) }>
@@ -423,7 +419,7 @@ class KadenceAdvancedHeading extends Component {
 								tabout = deskControls;
 							}
 						}
-						return <div>{ tabout }</div>;
+						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 					}
 				}
 			</TabPanel>
@@ -484,7 +480,7 @@ class KadenceAdvancedHeading extends Component {
 								);
 							}
 						}
-						return <div>{ tabout }</div>;
+						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 					}
 				}
 			</TabPanel>
@@ -550,7 +546,7 @@ class KadenceAdvancedHeading extends Component {
 					}` }
 				</style>
 				<BlockControls>
-					<Toolbar
+					<ToolbarGroup
 						isCollapsed={ true }
 						icon={ <HeadingLevelIcon level={ ( htmlTag === 'p' ? 'p' : level ) } /> }
 						label={ __( 'Change Heading Level', 'kadence-blocks' ) }

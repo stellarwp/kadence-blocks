@@ -158,7 +158,7 @@ class KadenceIcons extends Component {
 								);
 							}
 						}
-						return <div>{ tabout }</div>;
+						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 					}
 				}
 			</TabPanel>
@@ -319,7 +319,7 @@ class KadenceIcons extends Component {
 										tabout = normalSettings( index );
 									}
 								}
-								return <div>{ tabout }</div>;
+								return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 							}
 						}
 					</TabPanel>

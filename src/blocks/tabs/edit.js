@@ -519,7 +519,7 @@ class KadenceTabs extends Component {
 								tabout = deskControls;
 							}
 						}
-						return <div>{ tabout }</div>;
+						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 					}
 				}
 			</TabPanel>
@@ -983,7 +983,7 @@ class KadenceTabs extends Component {
 								tabout = sizeDeskControls;
 							}
 						}
-						return <div>{ tabout }</div>;
+						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 					}
 				}
 			</TabPanel>
@@ -1117,7 +1117,7 @@ class KadenceTabs extends Component {
 													tabout = normalSettings;
 												}
 											}
-											return <div>{ tabout }</div>;
+											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 										}
 									}
 								</TabPanel>
@@ -1301,7 +1301,7 @@ class KadenceTabs extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>

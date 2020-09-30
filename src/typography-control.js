@@ -18,6 +18,7 @@ import map from 'lodash/map';
 import range from 'lodash/range';
 import HeadingLevelIcon from './heading-icons';
 import KadenceRange from './kadence-range-control';
+import MeasurementControls from './measurement-control';
 
 const {
 	applyFilters,
@@ -508,7 +509,7 @@ class TypographyControls extends Component {
 											tabout = sizeDeskControls;
 										}
 									}
-									return <div>{ tabout }</div>;
+									return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 								}
 							}
 						</TabPanel>
@@ -652,73 +653,16 @@ class TypographyControls extends Component {
 				) }
 				{ onMargin && onMarginControl && (
 					<Fragment>
-						<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Margin Control Type', 'kadence-blocks' ) }>
-							{ map( borderTypes, ( { name, key, icon } ) => (
-								<Tooltip text={ name }>
-									<Button
-										key={ key }
-										className="kt-size-btn"
-										isSmall
-										isPrimary={ marginControl === key }
-										aria-pressed={ marginControl === key }
-										onClick={ () => onMarginControl( key ) }
-									>
-										{ icon }
-									</Button>
-								</Tooltip>
-							) ) }
-						</ButtonGroup>
-						{ marginControl && marginControl !== 'individual' && (
-							<KadenceRange
-								label={ __( 'Margin (px)', 'kadence-blocks' ) }
-								value={ ( margin ? margin[ 0 ] : '' ) }
-								onChange={ ( value ) => onMargin( [ value, value, value, value ] ) }
-								min={ -100 }
-								max={ 100 }
-								step={ 1 }
-							/>
-						) }
-						{ marginControl && marginControl === 'individual' && (
-							<Fragment>
-								<p>{ __( 'Margin (px)', 'kadence-blocks' ) }</p>
-								<KadenceRange
-									className="kt-icon-rangecontrol"
-									beforeIcon={ icons.outlinetop }
-									value={ ( margin ? margin[ 0 ] : '' ) }
-									onChange={ ( value ) => onMargin( [ value, margin[ 1 ], margin[ 2 ], margin[ 3 ] ] ) }
-									min={ -100 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<KadenceRange
-									className="kt-icon-rangecontrol"
-									beforeIcon={ icons.outlineright }
-									value={ ( margin ? margin[ 1 ] : '' ) }
-									onChange={ ( value ) => onMargin( [ margin[ 0 ], value, margin[ 2 ], margin[ 3 ] ] ) }
-									min={ -100 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<KadenceRange
-									className="kt-icon-rangecontrol"
-									beforeIcon={ icons.outlinebottom }
-									value={ ( margin ? margin[ 2 ] : '' ) }
-									onChange={ ( value ) => onMargin( [ margin[ 0 ], margin[ 1 ], value, margin[ 3 ] ] ) }
-									min={ -100 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<KadenceRange
-									className="kt-icon-rangecontrol"
-									beforeIcon={ icons.outlineleft }
-									value={ ( margin ? margin[ 3 ] : '' ) }
-									onChange={ ( value ) => onMargin( [ margin[ 0 ], margin[ 1 ], margin[ 2 ], value ] ) }
-									min={ -100 }
-									max={ 100 }
-									step={ 1 }
-								/>
-							</Fragment>
-						) }
+						<MeasurementControls
+							label={ __( 'Margin (px)' ) }
+							measurement={ ( margin ? margin : '' ) }
+							control={ marginControl }
+							onChange={ ( value ) => onMargin( value ) }
+							onControl={ ( value ) => onMarginControl( value ) }
+							min={ -100 }
+							max={ 100 }
+							step={ 1 }
+						/>
 					</Fragment>
 				) }
 			</Fragment>

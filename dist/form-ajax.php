@@ -47,7 +47,7 @@ class KB_Ajax_Form {
 				$valid = check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false );
 			}
 			if ( $valid ) {
-				error_log( print_r( $_POST, true ) );
+				//error_log( print_r( $_POST, true ) );
 				// Lets get form data.
 				$form_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_id'] ) );
 				$post_id = absint( wp_unslash( $_POST['_kb_form_post_id'] ) );
@@ -247,7 +247,7 @@ class KB_Ajax_Form {
 							break;
 						case 'redirect':
 							if ( isset( $form_args['redirect'] ) && ! empty( trim( $form_args['redirect'] ) ) ) {
-								$final_data['redirect'] = trim( $form_args['redirect'] );
+								$final_data['redirect'] = apply_filters( 'kadence_blocks_form_redirect', trim( $form_args['redirect'] ), $form_args, $fields, $form_id, $post_id );
 							}
 							break;
 					}

@@ -424,7 +424,7 @@ class AdvancedPopBackgroundControl extends Component {
 													);
 												}
 											}
-											return <div>{ tabout }</div>;
+											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 										}
 									}
 								</TabPanel>

@@ -12,6 +12,7 @@ import Select from 'react-select';
  * Import External
  */
 import times from 'lodash/times';
+import dropRight from 'lodash/dropRight';
 import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
@@ -59,12 +60,12 @@ const {
 	ToggleControl,
 	SelectControl,
 } = wp.components;
-/**
- * Internal block libraries
- */
-const { __ } = wp.i18n;
-const ALLOWED_BLOCKS = [ 'kadence/column' ];
-const ALLOWED_MEDIA_TYPES = [ 'image' ];
+const { withSelect, withDispatch } = wp.data;
+const { compose } = wp.compose;
+const {
+	createBlock,
+} = wp.blocks;
+
 /**
  * Returns the layouts configuration for a given number of columns.
  *
@@ -75,6 +76,12 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 const getColumnsTemplate = memoize( ( columns ) => {
 	return times( columns, n => [ 'kadence/column', { id: n + 1 } ] );
 } );
+/**
+ * Internal block libraries
+ */
+const { __ } = wp.i18n;
+const ALLOWED_BLOCKS = [ 'kadence/column' ];
+const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
 const overlayOpacityOutput = memoize( ( opacity ) => {
 	if ( opacity < 10 ) {
@@ -988,7 +995,7 @@ class KadenceRowLayout extends Component {
 												tabout = overMobileControls;
 											}
 										}
-										return <div>{ tabout }</div>;
+										return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 									}
 								}
 							</TabPanel>
@@ -1241,7 +1248,7 @@ class KadenceRowLayout extends Component {
 												tabout = overTabControls;
 											}
 										}
-										return <div>{ tabout }</div>;
+										return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 									}
 								}
 							</TabPanel>
@@ -1346,6 +1353,7 @@ class KadenceRowLayout extends Component {
 							label={ __( 'Columns', 'kadence-blocks' ) }
 							value={ columns }
 							onChange={ ( nextColumns ) => {
+								this.props.updateColumns( columns, nextColumns );
 								setAttributes( {
 									columns: nextColumns,
 									colLayout: 'equal',
@@ -1972,7 +1980,7 @@ class KadenceRowLayout extends Component {
 											);
 										}
 									}
-									return <div>{ tabout }</div>;
+									return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 								}
 							}
 						</TabPanel>
@@ -2009,7 +2017,7 @@ class KadenceRowLayout extends Component {
 											tabout = overControls;
 										}
 									}
-									return <div>{ tabout }</div>;
+									return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 								}
 							}
 						</TabPanel>
@@ -2779,7 +2787,7 @@ class KadenceRowLayout extends Component {
 								tabout = deskControls;
 							}
 						}
-						return <div>{ tabout }</div>;
+						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 					}
 				}
 			</TabPanel>
@@ -3011,7 +3019,7 @@ class KadenceRowLayout extends Component {
 									tabout = topSepSizes;
 								}
 							}
-							return <div>{ tabout }</div>;
+							return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 						}
 					}
 				</TabPanel>
@@ -3088,7 +3096,7 @@ class KadenceRowLayout extends Component {
 									tabout = bottomSepSizes;
 								}
 							}
-							return <div>{ tabout }</div>;
+							return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 						}
 					}
 				</TabPanel>
@@ -3201,7 +3209,7 @@ class KadenceRowLayout extends Component {
 													tabout = bottomDividerSettings;
 												}
 											}
-											return <div>{ tabout }</div>;
+											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 										}
 									}
 								</TabPanel>
@@ -3313,7 +3321,7 @@ class KadenceRowLayout extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -3698,6 +3706,8 @@ class KadenceRowLayout extends Component {
 							<InnerBlocks
 								template={ getColumnsTemplate( columns ) }
 								templateLock="all"
+								orientation="horizontal"
+								renderAppender={ false }
 								allowedBlocks={ ALLOWED_BLOCKS } />
 						</div>
 					) }
@@ -3772,4 +3782,57 @@ class KadenceRowLayout extends Component {
 		);
 	}
 }
-export default ( KadenceRowLayout );
+//export default ( KadenceRowLayout );
+export default compose( [
+	withSelect( ( select, ownProps ) => {
+		const { clientId } = ownProps;
+		const {
+			getBlock,
+		} = select( 'core/block-editor' );
+		const block = getBlock( clientId );
+		return {
+			rowBlock: block,
+			realColumnCount: block.innerBlocks.length,
+		};
+	} ),
+	withDispatch( ( dispatch, { clientId }, { select } ) => {
+		const { replaceInnerBlocks } = dispatch( 'core/block-editor' );
+		const { getBlocks, getBlockAttributes } = select(
+			'core/block-editor'
+		);
+		return {
+			/**
+			 * Updates the column columnCount, including necessary revisions to child Column
+			 * blocks to grant required or redistribute available space.
+			 *
+			 * @param {number} previousColumns Previous column columnCount.
+			 * @param {number} newColumns      New column columnCount.
+			 */
+			updateColumns( previousColumns, newColumns ) {
+				let innerBlocks = getBlocks( clientId );
+
+				// Redistribute available width for existing inner blocks.
+				const isAddingColumn = newColumns > previousColumns;
+
+				if ( isAddingColumn ) {
+					innerBlocks = [
+						...innerBlocks,
+						...times( newColumns - previousColumns, ( n ) => {
+							return createBlock( 'kadence/column', {
+								id: n + 1,
+							} );
+						} ),
+					];
+				} else {
+					// The removed column will be the last of the inner blocks.
+					innerBlocks = dropRight(
+						innerBlocks,
+						previousColumns - newColumns
+					);
+				}
+
+				replaceInnerBlocks( clientId, innerBlocks, false );
+			},
+		};
+	} ),
+] )( KadenceRowLayout );

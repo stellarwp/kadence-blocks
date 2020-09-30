@@ -195,7 +195,7 @@ class KadenceSpacerDivider extends Component {
 								);
 							}
 						}
-						return <div>{ tabout }</div>;
+						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 					}
 				}
 			</TabPanel>
@@ -263,7 +263,7 @@ class KadenceSpacerDivider extends Component {
 														tabout = deskControls;
 													}
 												}
-												return <div>{ tabout }</div>;
+												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 											}
 										}
 									</TabPanel>

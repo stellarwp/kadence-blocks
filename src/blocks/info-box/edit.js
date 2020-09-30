@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Split Content
+ * BLOCK: Kadence Info Block
  *
  * Registering a basic block with Gutenberg.
  */
@@ -53,6 +53,7 @@ const {
 	Dashicon,
 	PanelBody,
 	Toolbar,
+	ColorPicker,
 	TextControl,
 	ToggleControl,
 	SelectControl,
@@ -984,7 +985,7 @@ class KadenceInfoBox extends Component {
 		};
 		const ngconfig = {
 			google: {
-				families: [ mediaNumber[ 0 ].family + ( mediaNumber[ 0 ].variant ? ':' + mediaNumber[ 0 ].variant : '' ) ],
+				families: [ ( mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : ' ' ) + ( mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].variant ? ':' + mediaNumber[ 0 ].variant : '' ) ],
 			},
 		};
 		const config = ( titleFont[ 0 ].google ? gconfig : '' );
@@ -1272,7 +1273,7 @@ class KadenceInfoBox extends Component {
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:before { border-top-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } ; border-right-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) }; border-bottom-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) } }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after{ border-right-color: ${ KadenceColorOutput( mediaStyle[ 0 ].hoverBorder ) }; border-right-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-bottom-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; border-top-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }`
 				) }
-				{ 'number' === mediaType && mediaNumber[ 0 ].hoverAnimation && 'drawborder' === mediaNumber[ 0 ].hoverAnimation && (
+				{ 'number' === mediaType && mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].hoverAnimation && 'drawborder' === mediaNumber[ 0 ].hoverAnimation && (
 					`#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media { border-width:0 !important; box-shadow: inset 0 0 0 ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px ${ mediaStyle[ 0 ].border }; }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }
 					#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:before { border-width: ${ mediaStyle[ 0 ].borderWidth[ 0 ] }px; }
@@ -1474,7 +1475,7 @@ class KadenceInfoBox extends Component {
 												);
 											}
 										}
-										return <div>{ tabout }</div>;
+										return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 									}
 								}
 							</TabPanel>
@@ -1564,7 +1565,7 @@ class KadenceInfoBox extends Component {
 													);
 												}
 											}
-											return <div>{ tabout }</div>;
+											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 										}
 									}
 								</TabPanel>
@@ -1699,7 +1700,7 @@ class KadenceInfoBox extends Component {
 													);
 												}
 											}
-											return <div>{ tabout }</div>;
+											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 										}
 									}
 								</TabPanel>
@@ -1931,7 +1932,7 @@ class KadenceInfoBox extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -2065,7 +2066,7 @@ class KadenceInfoBox extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -2205,7 +2206,7 @@ class KadenceInfoBox extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -2284,7 +2285,7 @@ class KadenceInfoBox extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -2387,7 +2388,7 @@ class KadenceInfoBox extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -2446,7 +2447,7 @@ class KadenceInfoBox extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -2549,7 +2550,7 @@ class KadenceInfoBox extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -2636,7 +2637,7 @@ class KadenceInfoBox extends Component {
 															);
 														}
 													}
-													return <div>{ tabout }</div>;
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
 											}
 										</TabPanel>
@@ -2824,7 +2825,7 @@ class KadenceInfoBox extends Component {
 														);
 													}
 												}
-												return <div>{ tabout }</div>;
+												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 											}
 										}
 									</TabPanel>
@@ -2914,7 +2915,7 @@ class KadenceInfoBox extends Component {
 									</div>
 								) }
 								{ 'number' === mediaType && (
-									<div className={ `kadence-info-box-number-container kt-info-number-animate-${ mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none' }` } >
+									<div className={ `kadence-info-box-number-container kt-info-number-animate-${ mediaNumber && mediaNumber[ 0 ] && mediaNumber[ 0 ].hoverAnimation ? mediaNumber[ 0 ].hoverAnimation : 'none' }` } >
 										<div className={ 'kadence-info-box-number-inner-container' } >
 											<RichText
 												className="kt-blocks-info-box-number"

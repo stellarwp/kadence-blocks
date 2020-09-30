@@ -511,7 +511,7 @@ class KadenceColumn extends Component {
 								tabout = deskControls;
 							}
 						}
-						return <div>{ tabout }</div>;
+						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 					}
 				}
 			</TabPanel>
@@ -577,7 +577,7 @@ class KadenceColumn extends Component {
 									tabout = alignDeskControls;
 								}
 							}
-							return <div>{ tabout }</div>;
+							return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 						}
 					}
 				</TabPanel>
