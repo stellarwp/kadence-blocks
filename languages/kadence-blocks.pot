@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2020-08-13 00:11-0600\n"
+"POT-Creation-Date: 2020-09-30 10:16-0600\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence WP\n"
@@ -128,10 +128,6 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Padding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Margin Control Type"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -374,6 +370,22 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Divider Width by %"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Visibility Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Hide on Desktop"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Hide on Tablet"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Hide on Mobile"
 msgstr ""
 
 #: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:716
@@ -1440,22 +1452,6 @@ msgid "Z-Index Control"
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Visibility Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hide on Desktop"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hide on Tablet"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hide on Mobile"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "User Visibility Settings"
 msgstr ""
 
@@ -1465,6 +1461,10 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Optional: Hide from Specific User Roles"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Optional: Show Only to Specific User Roles"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -1881,6 +1881,10 @@ msgid "Border Radius (%)"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Margin Control Type"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Link"
 msgstr ""
 
@@ -1914,6 +1918,42 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "rem"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Heading 1"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Heading 2"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Heading 3"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Heading 4"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Heading 5"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Heading 6"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Paragraph"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "kadence/advancedheading"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "core/paragraph"
 msgstr ""
 
 #: dist/blocks.build.js:1
@@ -1989,10 +2029,6 @@ msgid "Anchors lets you link directly to a section on a page."
 msgstr ""
 
 #: dist/blocks.build.js:1
-msgid "Highlight"
-msgstr ""
-
-#: dist/blocks.build.js:1
 msgid "Desktop"
 msgstr ""
 
@@ -2038,6 +2074,10 @@ msgstr ""
 
 #: dist/blocks.build.js:1
 msgid "Device Size Control Switch"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Highlight"
 msgstr ""
 
 #: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:740
@@ -2845,7 +2885,7 @@ msgstr ""
 msgid "list"
 msgstr ""
 
-#: dist/blocks.build.js:1 dist/class-kadence-blocks-frontend.php:979
+#: dist/blocks.build.js:1 dist/class-kadence-blocks-frontend.php:1066
 msgid "Item"
 msgstr ""
 
@@ -3984,6 +4024,122 @@ msgid "Submit"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Table of Contents"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "table of contents"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "summary"
+msgstr ""
+
+#: dist/blocks.build.js:1 dist/class-kadence-blocks-table-of-contents.php:643
+msgid "Table Of Contents"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "One Column"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Two columns"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Three Columns"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Bullets"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Numbered"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "List Style"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Allowed Headers"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "h1"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Enable Title"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Collapsed"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Collapsed Title Border Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Collapsible Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Enable Collapsible Content"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Start Collapsed"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "List Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "List Item Gap"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "List Items Hover Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "List Items Color"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "List Link Style"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Underline"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Underline on Hover"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "No underline"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "List Container Margin"
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Start adding Heading blocks to create a table of contents."
+msgstr ""
+
+#: dist/blocks.build.js:1
+msgid "Optional Title"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Kadence Blocks Controls"
 msgstr ""
 
@@ -4284,6 +4440,10 @@ msgid "List Icon Styles"
 msgstr ""
 
 #: dist/blocks.build.js:1
+msgid "Icon List Settings"
+msgstr ""
+
+#: dist/blocks.build.js:1
 msgid "Enable List Column Settings"
 msgstr ""
 
@@ -4563,24 +4723,34 @@ msgstr ""
 msgid "Select the font families you want"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:973
+#: dist/class-kadence-blocks-frontend.php:1060
 msgid "Please fix the errors to proceed"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:975
+#: dist/class-kadence-blocks-frontend.php:1062
 msgid "is required"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:976
+#: dist/class-kadence-blocks-frontend.php:1063
 msgid "does not match"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:977
+#: dist/class-kadence-blocks-frontend.php:1064
 msgid "is not valid"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:978
+#: dist/class-kadence-blocks-frontend.php:1065
 msgid "requires a unique entry and this value has already been used"
+msgstr ""
+
+#: dist/class-kadence-blocks-table-of-contents.php:153
+#: dist/class-kadence-blocks-table-of-contents.php:651
+msgid "Expand Table of Contents"
+msgstr ""
+
+#: dist/class-kadence-blocks-table-of-contents.php:154
+#: dist/class-kadence-blocks-table-of-contents.php:651
+msgid "Collapse Table of Contents"
 msgstr ""
 
 #: dist/form-ajax.php:56

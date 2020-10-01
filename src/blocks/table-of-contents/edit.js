@@ -22,6 +22,8 @@ import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ResponsiveRangeControl from '../../responsive-range-control';
+import BoxShadowControl from '../../box-shadow-control';
+import KadenceRange from '../../kadence-range-control';
 /**
  * Import Css
  */
@@ -30,7 +32,8 @@ import './editor.scss';
 /**
  * Import Icons
  */
-import icons from './icon';
+import blockIcons from './icon';
+import icons from '../../icons';
 
 /**
  * Internal dependencies
@@ -61,6 +64,7 @@ const {
 	TabPanel,
 	IconButton,
 	Dashicon,
+	ToolbarGroup,
 	Toolbar,
 	PanelBody,
 	RangeControl,
@@ -91,6 +95,7 @@ class KadenceTableOfContents extends Component {
 	constructor() {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
+		this.saveShadow = this.saveShadow.bind( this );
 		this.state = {
 			headings: [],
 			showContent: true,
@@ -99,6 +104,7 @@ class KadenceTableOfContents extends Component {
 			contentMarginControl: 'individual',
 			containerBorderControl: 'linked',
 			containerPaddingControl: 'linked',
+			borderRadiusControl: 'linked',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
@@ -148,6 +154,11 @@ class KadenceTableOfContents extends Component {
 		} else {
 			this.setState( { contentMarginControl: 'individual' } );
 		}
+		if ( this.props.attributes.borderRadius && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 1 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 2 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 3 ] ) {
+			this.setState( { borderRadiusControl: 'linked' } );
+		} else {
+			this.setState( { borderRadiusControl: 'individual' } );
+		}
 		if ( undefined !== this.props.attributes.startClosed && this.props.attributes.startClosed ) {
 			this.setState( { showContent: false } );
 		}
@@ -186,9 +197,24 @@ class KadenceTableOfContents extends Component {
 		}
 		return false;
 	}
+	saveShadow( value ) {
+		const { attributes, setAttributes } = this.props;
+		const { shadow } = attributes;
+
+		const newItems = shadow.map( ( item, thisIndex ) => {
+			if ( 0 === thisIndex ) {
+				item = { ...item, ...value };
+			}
+
+			return item;
+		} );
+		setAttributes( {
+			shadow: newItems,
+		} );
+	}
 	render() {
-		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle }, clientId, className, setAttributes } = this.props;
-		const { titlePaddingControl, containerBorderControl, containerPaddingControl, contentMarginControl, titleBorderControl, headings, showContent } = this.state;
+		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll }, clientId, className, setAttributes } = this.props;
+		const { titlePaddingControl, containerBorderControl, containerPaddingControl, contentMarginControl, titleBorderControl, headings, showContent, borderRadiusControl } = this.state;
 		const onToggle = () => {
 			if ( enableToggle ) {
 				this.setState( { showContent: ! showContent } );
@@ -233,7 +259,7 @@ class KadenceTableOfContents extends Component {
 		const columnOptions = [
 			[
 				{
-					icon: icons.oneColumns,
+					icon: blockIcons.oneColumns,
 					title: __( 'One Column', 'kadence-blocks' ),
 					isActive: ( 1 === columns ? true : false ),
 					onClick: () => setAttributes( { columns: 1 } ),
@@ -241,7 +267,7 @@ class KadenceTableOfContents extends Component {
 			],
 			[
 				{
-					icon: icons.twoColumns,
+					icon: blockIcons.twoColumns,
 					title: __( 'Two columns', 'kadence-blocks' ),
 					isActive: ( 2 === columns ? true : false ),
 					onClick: () => setAttributes( { columns: 2 } ),
@@ -249,7 +275,7 @@ class KadenceTableOfContents extends Component {
 			],
 			[
 				{
-					icon: icons.threeColumns,
+					icon: blockIcons.threeColumns,
 					title: __( 'Three Columns', 'kadence-blocks' ),
 					isActive: ( 3 === columns ? true : false ),
 					onClick: () => setAttributes( { columns: 3 } ),
@@ -259,7 +285,7 @@ class KadenceTableOfContents extends Component {
 		const listOptions = [
 			[
 				{
-					icon: icons.bullets,
+					icon: blockIcons.bullets,
 					title: __( 'Bullets', 'kadence-blocks' ),
 					isActive: ( 'disc' === listStyle ? true : false ),
 					onClick: () => setAttributes( { listStyle: 'disc' } ),
@@ -267,7 +293,7 @@ class KadenceTableOfContents extends Component {
 			],
 			[
 				{
-					icon: icons.numbered,
+					icon: blockIcons.numbered,
 					title: __( 'Numbered', 'kadence-blocks' ),
 					isActive: ( 'numbered' === listStyle ? true : false ),
 					onClick: () => setAttributes( { listStyle: 'numbered' } ),
@@ -275,7 +301,7 @@ class KadenceTableOfContents extends Component {
 			],
 			[
 				{
-					icon: icons.none,
+					icon: blockIcons.none,
 					title: __( 'None', 'kadence-blocks' ),
 					isActive: ( 'none' === listStyle ? true : false ),
 					onClick: () => setAttributes( { listStyle: 'none' } ),
@@ -304,11 +330,13 @@ class KadenceTableOfContents extends Component {
 		);
 		const blockControls = (
 			<BlockControls>
-				<Toolbar
+				<ToolbarGroup
+					isCollapsed={ false }
 					label={ __( 'Columns', 'kadence-blocks' ) }
 					controls={ columnOptions }
 				/>
-				<Toolbar
+				<ToolbarGroup
+					isCollapsed={ false }
 					label={ __( 'List Style', 'kadence-blocks' ) }
 					controls={ listOptions }
 				/>
@@ -663,6 +691,92 @@ class KadenceTableOfContents extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
+								<MeasurementControls
+									label={ __( 'Border Radius', 'kadence-blocks' ) }
+									measurement={ borderRadius }
+									control={ borderRadiusControl }
+									onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
+									onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
+									min={ 0 }
+									max={ 200 }
+									step={ 1 }
+									controlTypes={ [
+										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
+										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+									] }
+									firstIcon={ icons.topleft }
+									secondIcon={ icons.topright }
+									thirdIcon={ icons.bottomright }
+									fourthIcon={ icons.bottomleft }
+								/>
+								<BoxShadowControl
+									label={ __( 'Box Shadow', 'kadence-blocks' ) }
+									enable={ ( undefined !== displayShadow ? displayShadow : false ) }
+									color={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ) }
+									colorDefault={ '#000000' }
+									opacity={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) }
+									hOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) }
+									vOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) }
+									blur={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) }
+									spread={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) }
+									inset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false ) }
+									onEnableChange={ value => {
+										setAttributes( {
+											displayShadow: value,
+										} );
+									} }
+									onColorChange={ value => {
+										this.saveShadow( { color: value } );
+									} }
+									onOpacityChange={ value => {
+										this.saveShadow( { opacity: value } );
+									} }
+									onHOffsetChange={ value => {
+										this.saveShadow( { hOffset: value } );
+									} }
+									onVOffsetChange={ value => {
+										this.saveShadow( { vOffset: value } );
+									} }
+									onBlurChange={ value => {
+										this.saveShadow( { blur: value } );
+									} }
+									onSpreadChange={ value => {
+										this.saveShadow( { spread: value } );
+									} }
+									onInsetChange={ value => {
+										this.saveShadow( { inset: value } );
+									} }
+								/>
+								<KadenceRange
+									label={ __( 'Max Width', 'kadence-blocks' ) }
+									value={ maxWidth ? maxWidth : '' }
+									onChange={ ( value ) => setAttributes( { maxWidth: value } ) }
+									min={ 50 }
+									max={ 1400 }
+									step={ 1 }
+								/>
+							</PanelBody>
+						) }
+						{ this.showSettings( 'container' ) && (
+							<PanelBody
+								title={ __( 'Scroll Settings', 'kadence-blocks' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Enable Smooth Scroll to ID', 'kadence-blocks' ) }
+									checked={ enableSmoothScroll }
+									onChange={ value => setAttributes( { enableSmoothScroll: value } ) }
+								/>
+								{ enableSmoothScroll && (
+									<KadenceRange
+										label={ __( 'Scroll Offset', 'kadence-blocks' ) }
+										value={ smoothScrollOffset ? smoothScrollOffset : '' }
+										onChange={ ( value ) => setAttributes( { smoothScrollOffset: value } ) }
+										min={ 0 }
+										max={ 400 }
+										step={ 1 }
+									/>
+								) }
 							</PanelBody>
 						) }
 					</InspectorControls>
@@ -670,31 +784,34 @@ class KadenceTableOfContents extends Component {
 			</Fragment>
 		);
 		const ListTag = ( listStyle === 'numbered' ? 'ol' : 'ul' );
-		if ( headings.length === 0 || headings[ 0 ].content === '' ) {
-			return (
-				<div className={ classes } >
-					{ blockControls }
-					{ inspectorControls }
-					<Placeholder
-						className="kb-table-of-content-wrap"
-						icon={ icons.block }
-						label={ __( 'Table of Contents', 'kadence-blocks' ) }
-						instructions={ __( 'Start adding Heading blocks to create a table of contents.', 'kadence-blocks' ) }
-					/>
-				</div>
-			);
-		}
+		// if ( headings.length === 0 || headings[ 0 ].content === '' ) {
+		// 	return (
+		// 		<div className={ classes } >
+		// 			{ blockControls }
+		// 			{ inspectorControls }
+		// 			<Placeholder
+		// 				className="kb-table-of-content-wrap"
+		// 				icon={ icons.block }
+		// 				label={ __( 'Table of Contents', 'kadence-blocks' ) }
+		// 				instructions={ __( 'Start adding Heading blocks to create a table of contents.', 'kadence-blocks' ) }
+		// 			/>
+		// 		</div>
+		// 	);
+		// }
 		return (
 			<Fragment>
 				{ renderCSS }
 				{ blockControls }
 				{ inspectorControls }
-				<nav className={ classes } >
+				<nav className={ classes }>
 					<div className="kb-table-of-content-wrap" style={ {
 						padding: ( containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
 						borderWidth: ( containerBorder ? containerBorder[ 0 ] + 'px ' + containerBorder[ 1 ] + 'px ' + containerBorder[ 2 ] + 'px ' + containerBorder[ 3 ] + 'px' : '' ),
 						backgroundColor: KadenceColorOutput( containerBackground ),
 						borderColor: KadenceColorOutput( containerBorderColor ),
+						borderRadius: ( borderRadius ? borderRadius[ 0 ] + 'px ' + borderRadius[ 1 ] + 'px ' + borderRadius[ 2 ] + 'px ' + borderRadius[ 3 ] + 'px' : '' ),
+						boxShadow: ( undefined !== displayShadow && displayShadow && undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? ( undefined !== shadow[ 0 ].inset && shadow[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 1 ) ) : undefined ),
+						maxWidth: ( maxWidth ? maxWidth + 'px' : undefined ),
 					} }>
 						{ enableTitle && (
 							<div
@@ -748,6 +865,11 @@ class KadenceTableOfContents extends Component {
 								) }
 							</div>
 						) }
+						{ headings.length === 0 && (
+							<div className="kb-table-of-content-placeholder">
+								<p>{ __( 'Start adding Heading blocks to create a table of contents.', 'kadence-blocks' ) }</p>
+							</div>
+						) }
 						{ ( ( enableToggle && showContent ) || ! enableToggle ) && (
 							<ListTag
 								className={ `kb-table-of-content-list kb-table-of-content-list-columns-${ columns } kb-table-of-content-list-style-${ listStyle } kb-table-of-content-link-style-${ linkStyle }` }
@@ -767,10 +889,12 @@ class KadenceTableOfContents extends Component {
 									<WebfontLoader config={ cconfig }>
 									</WebfontLoader>
 								) }
-								<TableOfContentsList
-									nestedHeadingList={ linearToNestedHeadingList( headings ) }
-									listTag={ ListTag }
-								/>
+								{ headings.length !== 0 && (
+									<TableOfContentsList
+										nestedHeadingList={ linearToNestedHeadingList( headings ) }
+										listTag={ ListTag }
+									/>
+								) }
 							</ListTag>
 						) }
 					</div>
@@ -788,6 +912,9 @@ export default compose( [
 			getBlockName,
 			getBlockOrder,
 		} = select( 'core/block-editor' );
+		const {
+			__experimentalGetPreviewDeviceType,
+		} = select( 'core/edit-post' );
 		const postContent = select( 'core/editor' ).getEditedPostContent();
 
 		const blockIndex = getBlockIndex( clientId );
@@ -810,6 +937,7 @@ export default compose( [
 			postContent: postContent,
 			getBlock,
 			pageIndex: page,
+			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'desktop',
 		};
 	} ),
 ] )( KadenceTableOfContents );

@@ -1,10 +1,14 @@
 /**
  * Front End Styles
  */
-.entry-content .kb-table-of-content-nav {
+ .entry-content:not(.single-content) .kb-table-of-content-nav {
     margin-bottom: 30px;
 }
 .kb-table-of-content-nav {
+	.kb-table-of-contents-title {
+		font-size: 110%;
+		font-weight: bold;
+	}
 	.kb-table-of-content-wrap {
 		border-style: solid;
 		border-width: 0;
@@ -15,7 +19,7 @@
 			content: '';
 		}
 		.kb-table-of-content-list {
-			margin: 0;
+			margin: 20px 0 0 0;
 			padding-left: 1.75em;
 			list-style: disc;
 			.kb-table-of-contents__entry{
@@ -78,6 +82,18 @@
 		}
 	}
 }
+@media (max-width: 767px) {
+	.kb-table-of-content-nav {
+		.kb-table-of-content-wrap {
+			.kb-table-of-content-list-columns-2 {
+				columns: 1;
+			}
+			.kb-table-of-content-list-columns-3 {
+				columns: 1;
+			}
+		}
+	}
+}
 .kb-table-of-contents-title-wrap {
 	display: flex;
 	align-content: space-between;
@@ -99,6 +115,7 @@
 		min-width: 24px;
 		padding: 0;
 		border-radius: 0;
+		color: inherit;
 		border: 0;
 		box-shadow:none !important;
 	}

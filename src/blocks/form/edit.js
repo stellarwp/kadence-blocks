@@ -2562,7 +2562,7 @@ class KadenceForm extends Component {
 											tabout = (
 												<Fragment>
 													<AdvancedPopColorControl
-														label={ __( 'Button Hover Color', 'kadence-blocks' ) }
+														label={ __( 'Text Hover Color', 'kadence-blocks' ) }
 														colorValue={ ( submit[ 0 ].colorHover ? submit[ 0 ].colorHover : '' ) }
 														colorDefault={ '' }
 														onColorChange={ value => {
@@ -2749,7 +2749,7 @@ class KadenceForm extends Component {
 											tabout = (
 												<Fragment>
 													<AdvancedPopColorControl
-														label={ __( 'Button Color', 'kadence-blocks' ) }
+														label={ __( 'Text Color', 'kadence-blocks' ) }
 														colorValue={ ( submit[ 0 ].color ? submit[ 0 ].color : '' ) }
 														colorDefault={ '' }
 														onColorChange={ value => {

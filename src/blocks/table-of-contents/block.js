@@ -59,6 +59,7 @@ registerBlockType( 'kadence/tableofcontents', {
 	],
 	supports: {
 		html: false,
+		//align: [ 'left', 'right', 'center' ],
 	},
 	attributes: {
 		uniqueID: {
@@ -262,6 +263,46 @@ registerBlockType( 'kadence/tableofcontents', {
 		listGap: {
 			type: 'array',
 			default: [ '', '', '' ],
+		},
+		borderRadius: {
+			type: 'array',
+			default: [ 0, 0, 0, 0 ],
+		},
+		maxWidth: {
+			type: 'number',
+			default: '',
+		},
+		maxWidthType: {
+			type: 'string',
+			default: 'px',
+		},
+		displayShadow: {
+			type: 'bool',
+			default: false,
+		},
+		shadow: {
+			type: 'array',
+			default: [ {
+				color: '#000000',
+				opacity: 0.2,
+				spread: 0,
+				blur: 14,
+				hOffset: 0,
+				vOffset: 0,
+				inset: false,
+			} ],
+		},
+		enableScrollSpy: {
+			type: 'boolean',
+			default: false,
+		},
+		enableSmoothScroll: {
+			type: 'boolean',
+			default: false,
+		},
+		smoothScrollOffset: {
+			type: 'number',
+			default: 40,
 		},
 	},
 	edit,

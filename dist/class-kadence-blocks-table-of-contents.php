@@ -148,8 +148,6 @@ class Kadence_Blocks_Table_Of_Contents {
 			'kadence_blocks_toc',
 			array(
 				'headings'      => wp_json_encode( self::$headings ),
-				'enableScroll'  => true,
-				'scrollOffset'  => 40,
 				'expandText'    => esc_attr__( 'Expand Table of Contents', 'kadence-blocks' ),
 				'collapseText'  => esc_attr__( 'Collapse Table of Contents', 'kadence-blocks' ),
 			)
@@ -316,6 +314,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		// https://bugzilla.gnome.org/show_bug.cgi?id=761534.
 		libxml_use_internal_errors( true );
 		// Parse the post content into an HTML document.
+		$content = mb_convert_encoding( $content, 'HTML-ENTITIES', 'UTF-8' );
 		$doc->loadHTML(
 			// loadHTML expects ISO-8859-1, so we need to convert the post content to
 			// that format. We use htmlentities to encode Unicode characters not
@@ -389,7 +388,6 @@ class Kadence_Blocks_Table_Of_Contents {
 			function ( $heading ) use ( $headings_page, $current_page ) {
 				$anchor_string = false;
 				$anchor        = '';
-
 				if ( isset( $heading->attributes ) ) {
 					$id_attribute = $heading->attributes->getNamedItem( 'id' );
 
@@ -408,11 +406,15 @@ class Kadence_Blocks_Table_Of_Contents {
 						}
 					} else {
 						$anchor_string = $this->convert_text_to_anchor( $heading->textContent );
-						$anchor        = '#' . $this->convert_text_to_anchor( $heading->textContent );
+						if ( $anchor_string ) {
+							$anchor = '#' . $anchor_string;
+						}
 					}
 				} else {
 					$anchor_string = $this->convert_text_to_anchor( $heading->textContent );
-					$anchor        = '#' . $this->convert_text_to_anchor( $heading->textContent );
+					if ( $anchor_string ) {
+						$anchor = '#' . $anchor_string;
+					}
 				}
 
 				switch ( $heading->nodeName ) {
@@ -619,7 +621,7 @@ class Kadence_Blocks_Table_Of_Contents {
 
 		$headings = $this->table_of_contents_get_headings(
 			$the_post,
-			$attributes,
+			$attributes
 		);
 		$list_tag = ( isset( $attributes['listStyle'] ) && 'numbered' === $attributes['listStyle'] ? 'ol' : 'ul' );
 
@@ -639,13 +641,20 @@ class Kadence_Blocks_Table_Of_Contents {
 			$enable_toggle = false;
 			$start_closed  = false;
 		}
+		$enable_scroll = false;
+		$scroll_offset = '40';
+		if ( isset( $attributes['enableSmoothScroll'] ) && true === $attributes['enableSmoothScroll'] ) {
+			$enable_scroll = true;
+			$scroll_offset = ( isset( $attributes['smoothScrollOffset'] ) && is_numeric( $attributes['smoothScrollOffset'] ) ? $attributes['smoothScrollOffset'] : '40' );
+			$class .= ' kb-toc-smooth-scroll';
+		}
 		//print_r( $attributes );
-		$output = '<nav class="' . esc_attr( $class ) . ( $enable_toggle ? ' kb-collapsible-toc kb-toc-toggle-' . ( $start_closed ? 'hidden' : 'active' ) : '' ) . '" role="navigation" aria-label="' . esc_attr__( 'Table Of Contents', 'kadence-blocks' ) . '">';
+		$output = '<nav class="' . esc_attr( $class ) . ( $enable_toggle ? ' kb-collapsible-toc kb-toc-toggle-' . ( $start_closed ? 'hidden' : 'active' ) : '' ) . '" role="navigation" aria-label="' . esc_attr__( 'Table Of Contents', 'kadence-blocks' ) . '"' . ( $enable_scroll ? ' data-scroll-offset="' . esc_attr( $scroll_offset ) . '"' : '' ) . '>';
 		$output .= '<div class="kb-table-of-content-wrap">';
 		if ( ! isset( $attributes['enableTitle'] ) || isset( $attributes['enableTitle'] ) && $attributes['enableTitle'] ) {
 			$output .= '<div class="kb-table-of-contents-title-wrap kb-toggle-icon-style-' . ( $enable_toggle && isset( $attributes['toggleIcon'] ) && $attributes['toggleIcon'] ? $attributes['toggleIcon'] : 'arrow' ) . '">';
 			$output .= '<div class="kb-table-of-contents-title">';
-			$output .= ( isset( $attributes['title'] ) ? $attributes['title'] : '' );
+			$output .= ( isset( $attributes['title'] ) ? $attributes['title'] : __( 'Table of Contents', 'kadence-blocks' ) );
 			$output .= '</div>';
 			if ( $enable_toggle ) {
 				$output .= '<button class="kb-table-of-contents-icon-trigger" aria-expanded="' . esc_attr( $start_closed ? 'false' : 'true' ) . '" aria-label="' . ( $start_closed ? esc_attr__( 'Expand Table of Contents', 'kadence-blocks' ) : esc_attr__( 'Collapse Table of Contents', 'kadence-blocks' ) ) . '"></button>';
@@ -720,7 +729,20 @@ class Kadence_Blocks_Table_Of_Contents {
 		if ( isset( $attributes['containerBorder'] ) && is_array( $attributes['containerBorder'] ) ) {
 			$css->add_property( 'border-width', $css->render_measure( $attributes['containerBorder'], 'px' ) );
 		}
-		// Title..kb-table-of-contents-title-wrap
+		if ( isset( $attributes['borderRadius'] ) && ! empty( $attributes['borderRadius'] ) && is_array( $attributes['borderRadius'] ) ) {
+			$css->add_property( 'border-radius', $css->render_measure( $attributes['borderRadius'], 'px' ) );
+		}
+		if ( isset( $attributes['displayShadow'] ) && true == $attributes['displayShadow'] ) {
+			if ( isset( $attributes['shadow'] ) && is_array( $attributes['shadow'] ) && isset( $attributes['shadow'][0] ) && is_array( $attributes['shadow'][0] ) ) {
+				$css->add_property( 'box-shadow', $css->render_shadow( $attributes['shadow'][0] ) );
+			} else {
+				$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
+			}
+		}
+		if ( isset( $attributes['maxWidth'] ) && ! empty( $attributes['maxWidth'] ) ) {
+			$css->add_property( 'max-width', $css->render_number( $attributes['maxWidth'], 'px' ) );
+		}
+		// Title.
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title-wrap' );
 		if ( isset( $attributes['titleAlign'] ) ) {
 			$css->add_property( 'text-align', $css->render_string( $attributes['titleAlign'] ) );

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.5.0
-Stable tag: 1.9.0
+Stable tag: 1.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,18 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.9.2 =
+* Add: TOC Block Box Shadow.
+* Add: TOC Block Border Radius.
+* Add: TOC Block Max Width.
+* Add: TOC Block Scroll to ID.
+* Fix: TOC columns for mobile.
+* Fix: Expand Icon.
+* Fix: TOC better special character support.
+
+= 1.9.1 =
+* Fix: PHP 7.2 error.
 
 = 1.9.0 =
 * Add: Table of Content Block.

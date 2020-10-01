@@ -602,16 +602,12 @@ class Kadence_Blocks_CSS {
 		return $size_string;
 	}
 	/**
-	 * Generates the size output.
+	 * Generates the shadow output.
 	 *
 	 * @param array  $shadow an array of shadow settings.
-	 * @param string $default the default shadow settings.
 	 * @return string
 	 */
-	public function render_shadow( $shadow, $default = array() ) {
-		if ( $shadow === $default ) {
-			return false;
-		}
+	public function render_shadow( $shadow ) {
 		if ( empty( $shadow ) ) {
 			return false;
 		}
@@ -619,6 +615,9 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		if ( ! isset( $shadow['color'] ) ) {
+			return false;
+		}
+		if ( ! isset( $shadow['opacity'] ) ) {
 			return false;
 		}
 		if ( ! isset( $shadow['hOffset'] ) ) {
@@ -637,9 +636,9 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		if ( $shadow['inset'] ) {
-			$shadow_string = 'inset ' . ( ! empty( $shadow['hOffset'] ) ? $shadow['hOffset'] : '0' ) . 'px ' . ( ! empty( $shadow['vOffset'] ) ? $shadow['vOffset'] : '0' ) . 'px ' . ( ! empty( $shadow['blur'] ) ? $shadow['blur'] : '0' ) . 'px ' . ( ! empty( $shadow['spread'] ) ? $shadow['spread'] : '0' ) . 'px ' . ( ! empty( $shadow['color'] ) ? $this->render_color( $shadow['color'] ) : 'rgba(0,0,0,0.0)' );
+			$shadow_string = 'inset ' . ( ! empty( $shadow['hOffset'] ) ? $shadow['hOffset'] : '0' ) . 'px ' . ( ! empty( $shadow['vOffset'] ) ? $shadow['vOffset'] : '0' ) . 'px ' . ( ! empty( $shadow['blur'] ) ? $shadow['blur'] : '0' ) . 'px ' . ( ! empty( $shadow['spread'] ) ? $shadow['spread'] : '0' ) . 'px ' . ( ! empty( $shadow['color'] ) ? $this->render_color( $shadow['color'], $shadow['opacity'] ) : $this->render_color( '#000000', $shadow['opacity'] ) );
 		} else {
-			$shadow_string =  ( ! empty( $shadow['hOffset'] ) ? $shadow['hOffset'] : '0' ) . 'px ' . ( ! empty( $shadow['vOffset'] ) ? $shadow['vOffset'] : '0' ) . 'px ' . ( ! empty( $shadow['blur'] ) ? $shadow['blur'] : '0' ) . 'px ' . ( ! empty( $shadow['spread'] ) ? $shadow['spread'] : '0' ) . 'px ' . ( ! empty( $shadow['color'] ) ? $this->render_color( $shadow['color'] ) : 'rgba(0,0,0,0.0)' );
+			$shadow_string =  ( ! empty( $shadow['hOffset'] ) ? $shadow['hOffset'] : '0' ) . 'px ' . ( ! empty( $shadow['vOffset'] ) ? $shadow['vOffset'] : '0' ) . 'px ' . ( ! empty( $shadow['blur'] ) ? $shadow['blur'] : '0' ) . 'px ' . ( ! empty( $shadow['spread'] ) ? $shadow['spread'] : '0' ) . 'px ' . ( ! empty( $shadow['color'] ) ? $this->render_color( $shadow['color'], $shadow['opacity'] ) : $this->render_color( '#000000', $shadow['opacity'] ) );
 		}
 
 		return $shadow_string;
