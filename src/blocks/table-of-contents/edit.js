@@ -24,6 +24,7 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import BoxShadowControl from '../../box-shadow-control';
 import KadenceRange from '../../kadence-range-control';
+import ResponsiveMeasurementControls from '../../responsive-measurement-control';
 /**
  * Import Css
  */
@@ -105,6 +106,9 @@ class KadenceTableOfContents extends Component {
 			containerBorderControl: 'linked',
 			containerPaddingControl: 'linked',
 			borderRadiusControl: 'linked',
+			containerMarginControl: 'linked',
+			containerTabletMarginControl: 'linked',
+			containerMobileMarginControl: 'linked',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
@@ -158,6 +162,21 @@ class KadenceTableOfContents extends Component {
 			this.setState( { borderRadiusControl: 'linked' } );
 		} else {
 			this.setState( { borderRadiusControl: 'individual' } );
+		}
+		if ( this.props.attributes.containerMargin && this.props.attributes.containerMargin[ 0 ] === this.props.attributes.containerMargin[ 1 ] && this.props.attributes.containerMargin[ 0 ] === this.props.attributes.containerMargin[ 2 ] && this.props.attributes.containerMargin[ 0 ] === this.props.attributes.containerMargin[ 3 ] ) {
+			this.setState( { containerMarginControl: 'linked' } );
+		} else {
+			this.setState( { containerMarginControl: 'individual' } );
+		}
+		if ( this.props.attributes.containerTabletMargin && this.props.attributes.containerTabletMargin[ 0 ] === this.props.attributes.containerTabletMargin[ 1 ] && this.props.attributes.containerTabletMargin[ 0 ] === this.props.attributes.containerTabletMargin[ 2 ] && this.props.attributes.containerTabletMargin[ 0 ] === this.props.attributes.containerTabletMargin[ 3 ] ) {
+			this.setState( { containerTabletMarginControl: 'linked' } );
+		} else {
+			this.setState( { containerTabletMarginControl: 'individual' } );
+		}
+		if ( this.props.attributes.containerMobileMargin && this.props.attributes.containerMobileMargin[ 0 ] === this.props.attributes.containerMobileMargin[ 1 ] && this.props.attributes.containerMobileMargin[ 0 ] === this.props.attributes.containerMobileMargin[ 2 ] && this.props.attributes.containerMobileMargin[ 0 ] === this.props.attributes.containerMobileMargin[ 3 ] ) {
+			this.setState( { containerMobileMarginControl: 'linked' } );
+		} else {
+			this.setState( { containerMobileMarginControl: 'individual' } );
 		}
 		if ( undefined !== this.props.attributes.startClosed && this.props.attributes.startClosed ) {
 			this.setState( { showContent: false } );
@@ -213,8 +232,8 @@ class KadenceTableOfContents extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll }, clientId, className, setAttributes } = this.props;
-		const { titlePaddingControl, containerBorderControl, containerPaddingControl, contentMarginControl, titleBorderControl, headings, showContent, borderRadiusControl } = this.state;
+		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll, containerMobileMargin, containerTabletMargin, containerMargin }, clientId, className, setAttributes } = this.props;
+		const { titlePaddingControl, containerBorderControl, containerPaddingControl, contentMarginControl, titleBorderControl, headings, showContent, borderRadiusControl, containerMobileMarginControl, containerTabletMarginControl, containerMarginControl } = this.state;
 		const onToggle = () => {
 			if ( enableToggle ) {
 				this.setState( { showContent: ! showContent } );
@@ -755,6 +774,25 @@ class KadenceTableOfContents extends Component {
 									max={ 1400 }
 									step={ 1 }
 								/>
+								<ResponsiveMeasurementControls
+									label={ __( 'Container Margin', 'kadence-blocks' ) }
+									subLabel={ __( 'Margin', 'kadence-blocks' ) }
+									value={ containerMargin }
+									control={ containerMarginControl }
+									onChange={ ( value ) => setAttributes( { containerMargin: value } ) }
+									onChangeControl={ ( value ) => this.setState( { containerMarginControl: value } ) }
+									tabletValue={ containerTabletMargin }
+									tabletControl={ containerTabletMarginControl }
+									onChangeTablet={ ( value ) => setAttributes( { containerTabletMargin: value } ) }
+									onChangeTabletControl={ ( value ) => this.setState( { containerTabletMarginControl: value } ) }
+									mobileValue={ containerMobileMargin }
+									mobileControl={ containerMobileMarginControl }
+									onChangeMobile={ ( value ) => setAttributes( { containerMobileMargin: value } ) }
+									onChangeMobileControl={ ( value ) => this.setState( { containerMobileMarginControl: value } ) }
+									min={ -100 }
+									max={ 100 }
+									step={ 1 }
+								/>
 							</PanelBody>
 						) }
 						{ this.showSettings( 'container' ) && (
@@ -806,6 +844,7 @@ class KadenceTableOfContents extends Component {
 				<nav className={ classes }>
 					<div className="kb-table-of-content-wrap" style={ {
 						padding: ( containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
+						margin: ( containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] + 'px ' + containerMargin[ 1 ] + 'px ' + containerMargin[ 2 ] + 'px ' + containerMargin[ 3 ] + 'px' : '' ),
 						borderWidth: ( containerBorder ? containerBorder[ 0 ] + 'px ' + containerBorder[ 1 ] + 'px ' + containerBorder[ 2 ] + 'px ' + containerBorder[ 3 ] + 'px' : '' ),
 						backgroundColor: KadenceColorOutput( containerBackground ),
 						borderColor: KadenceColorOutput( containerBorderColor ),
@@ -841,8 +880,8 @@ class KadenceTableOfContents extends Component {
 										color: 'inherit',
 										fontWeight: titleFontWeight,
 										fontStyle: titleFontStyle,
-										fontSize: ( titleSize ? titleSize + titleSizeType : undefined ),
-										lineHeight: ( titleLineHeight ? titleLineHeight + titleLineType : undefined ),
+										fontSize: ( titleSize && titleSize[ 0 ] ? titleSize[ 0 ] + titleSizeType : undefined ),
+										lineHeight: ( titleLineHeight && titleLineHeight[ 0 ] ? titleLineHeight[ 0 ] + titleLineType : undefined ),
 										letterSpacing: ( titleLetterSpacing ? titleLetterSpacing + 'px' : undefined ),
 										textTransform: ( titleTextTransform ? titleTextTransform : undefined ),
 										fontFamily: ( titleTypography ? titleTypography : '' ),

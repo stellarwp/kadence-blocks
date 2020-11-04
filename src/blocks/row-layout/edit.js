@@ -3815,11 +3815,15 @@ export default compose( [
 				const isAddingColumn = newColumns > previousColumns;
 
 				if ( isAddingColumn ) {
+					const arrayLength = innerBlocks.length;
+					for ( let i = 0; i < arrayLength; i++ ) {
+						innerBlocks[ i ].attributes.id = ( i + 1 );
+					}
 					innerBlocks = [
 						...innerBlocks,
 						...times( newColumns - previousColumns, ( n ) => {
 							return createBlock( 'kadence/column', {
-								id: n + 1,
+								id: previousColumns + n + 1,
 							} );
 						} ),
 					];

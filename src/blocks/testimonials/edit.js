@@ -1011,7 +1011,7 @@ class KadenceTestimonials extends Component {
 										setAttributes( { itemsCount: newcount } );
 									} }
 									min={ 1 }
-									max={ 20 }
+									max={ 40 }
 								/>
 								{ this.showSettings( 'columnSettings' ) && (
 									<Fragment>

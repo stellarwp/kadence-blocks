@@ -383,9 +383,12 @@
 	background:#444444;
 	transition: all .3s ease-in-out;
 }
-.kt-button:hover {
+.wp-block-kadence-advancedbtn .kt-button:hover {
 	border-color:#444444;
-	color:#ffffff;
+    color:#ffffff;
+}
+.editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button:hover {
+    box-shadow: none;
 }
 .kt-button:hover::before {
 	opacity: 1;

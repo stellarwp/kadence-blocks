@@ -58,8 +58,18 @@ class Kadence_Blocks_Table_Of_Contents {
 		add_action( 'enqueue_block_assets', array( $this, 'blocks_assets' ) );
 		add_action( 'wp_footer', array( $this, 'headings_enqueue' ), 1 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 85 );
+		add_filter( 'rank_math/researches/toc_plugins', array( $this, 'toc_filter_rankmath' ) );
 		// add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		// add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
+	}
+	/**
+	 * Filter to add plugins to the TOC list.
+	 *
+	 * @param array $toc_plugins TOC plugins.
+	 */
+	public function toc_filter_rankmath( $toc_plugins ) {
+		$toc_plugins['kadence-blocks/kadence-blocks.php'] = 'Kadence Blocks';
+		return $toc_plugins;
 	}
 	/**
 	 * Enqueue Frontend Fonts
@@ -716,6 +726,10 @@ class Kadence_Blocks_Table_Of_Contents {
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		// Container.
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity)' );
+		if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) ) {
+			$css->add_property( 'margin', $css->render_measure( $attributes['containerMargin'], 'px' ) );
+		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap' );
 		if ( isset( $attributes['containerPadding'] ) && is_array( $attributes['containerPadding'] ) ) {
 			$css->add_property( 'padding', $css->render_measure( $attributes['containerPadding'], ( isset( $attributes['containerPaddingUnit'] ) && ! empty( $attributes['containerPaddingUnit'] ) ? $attributes['containerPaddingUnit'] : 'px' ) ) );
@@ -833,6 +847,10 @@ class Kadence_Blocks_Table_Of_Contents {
 		}
 		// Tablet.
 		$css->start_media_query( $media_query['tablet'] );
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity)' );
+		if ( isset( $attributes['containerTabletMargin'] ) && is_array( $attributes['containerTabletMargin'] ) ) {
+			$css->add_property( 'margin', $css->render_measure( $attributes['containerTabletMargin'], 'px' ) );
+		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title' );
 		if ( isset( $attributes['titleSize'] ) && is_array( $attributes['titleSize'] ) && isset( $attributes['titleSize'][1] ) && ! empty( $attributes['titleSize'][1] ) ) {
 			$css->add_property( 'font-size', $attributes['titleSize'][1] . ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) );
@@ -856,6 +874,10 @@ class Kadence_Blocks_Table_Of_Contents {
 		$css->stop_media_query();
 		// Mobile.
 		$css->start_media_query( $media_query['mobile'] );
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity)' );
+		if ( isset( $attributes['containerMobileMargin'] ) && is_array( $attributes['containerMobileMargin'] ) ) {
+			$css->add_property( 'margin', $css->render_measure( $attributes['containerMobileMargin'], 'px' ) );
+		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-contents-title' );
 		if ( isset( $attributes['titleSize'] ) && is_array( $attributes['titleSize'] ) && isset( $attributes['titleSize'][2] ) && ! empty( $attributes['titleSize'][2] ) ) {
 			$css->add_property( 'font-size', $attributes['titleSize'][2] . ( isset( $attributes['titleSizeType'] ) && ! empty( $attributes['titleSizeType'] ) ? $attributes['titleSizeType'] : 'px' ) );

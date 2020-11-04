@@ -98,8 +98,11 @@ export function getHeadingsFromContent( content, attributes ) {
 		}
 	}
 	const queryString = queryArray.toString();
-	const headingElements = tempPostContentDOM.querySelectorAll( queryString );
-	return getHeadingsFromHeadingElements( headingElements );
+	if ( queryString ) {
+		const headingElements = tempPostContentDOM.querySelectorAll( queryString );
+		return getHeadingsFromHeadingElements( headingElements );
+	}
+	return [];
 }
 
 /**

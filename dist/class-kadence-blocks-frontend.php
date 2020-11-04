@@ -1997,7 +1997,7 @@ class Kadence_Blocks_Frontend {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field label {';
 				if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][1] ) ) {
-					$css .= 'font-size:' . $label_font['size'][1] . ( isset( $label_font['fontSizeType'] ) && ! empty( $label_font['fontSizeType'] ) ? $label_font['fontSizeType'] : 'px' ) . ';';
+					$css .= 'font-size:' . $label_font['size'][1] . ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) . ';';
 				}
 				if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][1] ) ) {
 					$css .= 'line-height:' . $label_font['lineHeight'][1] . ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) . ';';
@@ -2009,7 +2009,7 @@ class Kadence_Blocks_Frontend {
 				$css .= '@media (max-width: 767px) {';
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field label {';
 				if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][2] ) ) {
-					$css .= 'font-size:' . $label_font['size'][2] . ( isset( $label_font['fontSizeType'] ) && ! empty( $label_font['fontSizeType'] ) ? $label_font['fontSizeType'] : 'px' ) . ';';
+					$css .= 'font-size:' . $label_font['size'][2] . ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) . ';';
 				}
 				if ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][2] ) ) {
 					$css .= 'line-height:' . $label_font['lineHeight'][2] . ( isset( $label_font['lineType'] ) && ! empty( $label_font['lineType'] ) ? $label_font['lineType'] : 'px' ) . ';';
@@ -3954,6 +3954,9 @@ class Kadence_Blocks_Frontend {
 	public function blocks_iconlist_array( $attr, $unique_id ) {
 		$css = '';
 		if ( isset( $attr['listMargin'] ) && is_array( $attr['listMargin'] ) && isset( $attr['listMargin'][0] ) ) {
+			$css .= '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ':not(.this-stops-third-party-issues) {';
+				$css .= 'margin-top:0';
+			$css .= '}';
 			$css .= '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list {';
 				$css .= 'margin:' . $attr['listMargin'][0] . 'px ' . $attr['listMargin'][1] . 'px ' . $attr['listMargin'][2] . 'px ' . $attr['listMargin'][3] . 'px;';
 			$css .= '}';
@@ -3961,6 +3964,12 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['listGap'] ) && ! empty( $attr['listGap'] ) ) {
 			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child) {';
 				$css .= 'margin-bottom:' . $attr['listGap'] . 'px;';
+			$css .= '}';
+			$css .= '.kt-svg-icon-list-columns-2.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list {';
+				$css .= 'grid-row-gap:' . $attr['listGap'] . 'px;';
+			$css .= '}';
+			$css .= '.kt-svg-icon-list-columns-2.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {';
+				$css .= 'margin:0px;';
 			$css .= '}';
 		}
 		if ( isset( $attr['listLabelGap'] ) && ! empty( $attr['listLabelGap'] ) ) {

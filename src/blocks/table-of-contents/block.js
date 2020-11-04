@@ -304,6 +304,18 @@ registerBlockType( 'kadence/tableofcontents', {
 			type: 'number',
 			default: 40,
 		},
+		containerMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		containerTabletMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		containerMobileMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
 	},
 	edit,
 	save() {

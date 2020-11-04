@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
-Tested up to: 5.5.0
-Stable tag: 1.9.2
+Tested up to: 5.5.3
+Stable tag: 1.9.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,17 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.9.3 =
+* Add: Polyfill for Safari Scroll to ID.
+* Add: Margin control for TOC block.
+* Fix TOC title font size not showing live.
+* Fix: Issue with TOC if all allowed headers turned off.
+* Fix: Testimonial Rating not working with global palette.
+* Fix: Issue with latest desktop safari and parallax. 
+* Fix: Issue with 2 column icon list block.
+* Fix: Issue with change columns not assigning ids correctly.
+* FixL Issue with three column tablet and mobile layout.
 
 = 1.9.2 =
 * Add: TOC Block Box Shadow.

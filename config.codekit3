@@ -3023,6 +3023,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/responsive-measurement-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/responsive-measurement-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/responsive-range-control.js": {
 		"bF": 0,
 		"ft": 64,
