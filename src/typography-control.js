@@ -109,10 +109,19 @@ class TypographyControls extends Component {
 		}
 	}
 	setTypographyOptions( typographySelectOptions ) {
-		const standardWeights = [
+		let standardWeights = [
 			{ value: 'regular', label: 'Normal' },
 			{ value: 'bold', label: 'Bold' },
 		];
+		const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
+		const headingWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.headingWeights ? kadence_blocks_params.headingWeights : [] );
+		const buttonWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.buttonWeights ? kadence_blocks_params.buttonWeights : [] );
+		if ( isKadenceT && this.props.fontGroup === 'heading' && headingWeights && Array.isArray( headingWeights ) && headingWeights.length ) {
+			standardWeights = headingWeights;
+		}
+		if ( isKadenceT && this.props.fontGroup === 'button' && buttonWeights && Array.isArray( buttonWeights ) && buttonWeights.length ) {
+			standardWeights = buttonWeights;
+		}
 		const standardStyles = [
 			{ value: 'normal', label: 'Normal' },
 			{ value: 'italic', label: 'Italic' },

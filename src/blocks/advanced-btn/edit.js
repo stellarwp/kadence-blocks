@@ -1725,6 +1725,7 @@ class KadenceAdvancedButton extends Component {
 										className="kt-font-family-area"
 									>
 										<TypographyControls
+											fontGroup={ 'button' }
 											letterSpacing={ letterSpacing }
 											onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
 											textTransform={ textTransform }

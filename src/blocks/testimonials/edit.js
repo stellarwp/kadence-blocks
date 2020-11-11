@@ -1315,6 +1315,7 @@ class KadenceTestimonials extends Component {
 												onColorChange={ value => saveTitleFont( { color: value } ) }
 											/>
 											<TypographyControls
+												fontGroup={ 'heading' }
 												tagLevel={ titleFont[ 0 ].level }
 												tagLowLevel={ 2 }
 												onTagLevel={ ( value ) => saveTitleFont( { level: value } ) }

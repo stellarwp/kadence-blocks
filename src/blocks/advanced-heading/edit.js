@@ -555,6 +555,7 @@ class KadenceAdvancedHeading extends Component {
 					{ this.showSettings( 'allSettings' ) && this.showSettings( 'toolbarTypography' ) && (
 						<InlineTypographyControls
 							uniqueID={ uniqueID }
+							fontGroup={ 'heading' }
 							letterSpacing={ letterSpacing }
 							onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
 							fontFamily={ typography }
@@ -649,6 +650,7 @@ class KadenceAdvancedHeading extends Component {
 								initialOpen={ false }
 							>
 								<TypographyControls
+									fontGroup={ 'heading' }
 									letterSpacing={ letterSpacing }
 									onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
 									fontFamily={ typography }
@@ -722,6 +724,7 @@ class KadenceAdvancedHeading extends Component {
 									step={ 1 }
 								/>
 								<TypographyControls
+									fontGroup={ 'heading' }
 									fontSize={ markSize }
 									onFontSize={ ( value ) => setAttributes( { markSize: value } ) }
 									fontSizeType={ markSizeType }

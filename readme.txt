@@ -88,6 +88,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 1.9.3 =
+** Fix: Issue with row layout gutter in some situations.
+** Update font list to use muli.
+* Update: Better inheriting of font options from global settings in Kadence Theme.
+
+= 1.9.3 =
 * Add: Polyfill for Safari Scroll to ID.
 * Add: Margin control for TOC block.
 * Fix TOC title font size not showing live.

@@ -102,6 +102,8 @@ function kadence_gutenberg_editor_assets() {
 			'privacy_title'  => ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' ),
 			'editor_width'   => apply_filters( 'kadence_blocks_editor_width', $enable_editor_width ),
 			'isKadenceT'     => class_exists( 'Kadence\Theme' ),
+			'headingWeights' => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_headings_weights() : null,
+			'buttonWeights'  => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null,
 		)
 	);
 	// Styles.
@@ -117,6 +119,146 @@ function kadence_gutenberg_editor_assets() {
 }
 add_action( 'init', 'kadence_gutenberg_editor_assets' );
 
+/**
+ * Get an array font weight options.
+ */
+function kadence_blocks_get_headings_weights() {
+	$weights = array();
+	if ( function_exists( 'Kadence\kadence' ) ) {
+		$heading_font = \Kadence\kadence()->option( 'heading_font' );
+		if ( is_array( $heading_font ) ) {
+			if ( isset( $heading_font['family'] ) && ! empty( $heading_font['family'] ) && 'inherit' === $heading_font['family'] ) {
+				// Inherit from Body.
+				$heading_font = \Kadence\kadence()->option( 'base_font' );
+			}
+			if ( isset( $heading_font['google'] ) && $heading_font['google'] ) {
+				// Google font.
+				if ( isset( $heading_font['variant'] ) && is_array( $heading_font['variant'] ) ) {
+					$new_weight_variant = array();
+					foreach ( array( 'h1_font', 'h2_font', 'h3_font', 'h4_font', 'h5_font', 'h6_font' ) as $option ) {
+						$variant = \Kadence\kadence()->sub_option( $option, 'weight' );
+						if ( ! in_array( $variant, $new_weight_variant, true ) ) {
+							array_push( $new_weight_variant, $variant );
+						}
+					}
+					$weights[] = array( 'value' => '', 'label' => __( 'Inherit', 'kadence-blocks' ) );
+					foreach ( $heading_font['variant'] as $key => $value ) {
+						if ( $value === '100' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '100', 'label' => __( 'Thin 100', 'kadence-blocks' ) );
+						} elseif ( $value === '200' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '200', 'label' => __( 'Extra-Light 200', 'kadence-blocks' ) );
+						} elseif ( $value === '300' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '300', 'label' => __( 'Light 300', 'kadence-blocks' ) );
+						} elseif ( $value === '400' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '400', 'label' => __( 'Regular', 'kadence-blocks' ) );
+						} elseif ( $value === 'regular' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '400', 'label' => __( 'Regular', 'kadence-blocks' ) );
+						} elseif ( $value === '500' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '500', 'label' => __( 'Medium 500', 'kadence-blocks' ) );
+						} elseif ( $value === '600' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '600', 'label' => __( 'Semi-Bold 600', 'kadence-blocks' ) );
+						} elseif ( $value === '700' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '700', 'label' => __( 'Bold 700', 'kadence-blocks' ) );
+						} elseif ( $value === '800' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '800', 'label' => __( 'Extra-Bold 800', 'kadence-blocks' ) );
+						} elseif ( $value === '900' && in_array( $value, $new_weight_variant ) ) {
+							$weights[] = array( 'value' => '900', 'label' => __( 'Ultra-Bold 900', 'kadence-blocks' ) );
+						}
+					}
+				}
+			} elseif ( isset( $heading_font['family'] ) && ! empty( $heading_font['family'] ) && substr( $heading_font['family'], 0, strlen( '-apple-system' ) ) === '-apple-system' ) {
+				// System Font.
+				$weights = array(
+					array( 'value' => '', 'label' => __( 'Inherit', 'kadence-blocks' ) ),
+					array( 'value' => '100', 'label' => __( 'Thin 100', 'kadence-blocks' ) ),
+					array( 'value' => '200', 'label' => __( 'Extra-Light 200', 'kadence-blocks' ) ),
+					array( 'value' => '300', 'label' => __( 'Light 300', 'kadence-blocks' ) ),
+					array( 'value' => '400', 'label' => __( 'Regular', 'kadence-blocks' ) ),
+					array( 'value' => '500', 'label' => __( 'Medium 500', 'kadence-blocks' ) ),
+					array( 'value' => '600', 'label' => __( 'Semi-Bold 600', 'kadence-blocks' ) ),
+					array( 'value' => '700', 'label' => __( 'Bold 700', 'kadence-blocks' ) ),
+					array( 'value' => '800', 'label' => __( 'Extra-Bold 800', 'kadence-blocks' ) ),
+					array( 'value' => '900', 'label' => __( 'Ultra-Bold 900', 'kadence-blocks' ) ),
+				);
+			}
+		}
+	}
+	return apply_filters( 'kadence_blocks_heading_weight_options', $weights );
+}
+/**
+ * Get an array font weight options.
+ */
+function kadence_blocks_get_button_weights() {
+	$weights = array();
+	if ( function_exists( 'Kadence\kadence' ) ) {
+		$button_font = \Kadence\kadence()->option( 'buttons_typography' );
+		if ( is_array( $button_font ) ) {
+			if ( isset( $button_font['family'] ) && ! empty( $button_font['family'] ) && 'inherit' === $button_font['family'] ) {
+				// Inherit from Body.
+				$button_font = \Kadence\kadence()->option( 'base_font' );
+			}
+			if ( isset( $button_font['google'] ) && $button_font['google'] ) {
+				$heading_font = \Kadence\kadence()->option( 'heading_font' );
+				if ( isset( $heading_font['family'] ) && ! empty( $heading_font['family'] ) && $button_font['family'] === $heading_font['family'] ) {
+					// Google font.
+					if ( isset( $heading_font['variant'] ) && is_array( $heading_font['variant'] ) ) {
+						if ( isset( $button_font['weight'] ) && ! empty( $button_font['weight'] ) ) {
+							$new_weight_variant = array( $button_font['weight'] );
+						} else {
+							$new_weight_variant = array();
+						}
+						foreach ( array( 'h1_font', 'h2_font', 'h3_font', 'h4_font', 'h5_font', 'h6_font' ) as $option ) {
+							$variant = \Kadence\kadence()->sub_option( $option, 'weight' );
+							if ( ! in_array( $variant, $new_weight_variant, true ) ) {
+								array_push( $new_weight_variant, $variant );
+							}
+						}
+						$weights[] = array( 'value' => '', 'label' => __( 'Inherit', 'kadence-blocks' ) );
+						foreach ( $heading_font['variant'] as $key => $value ) {
+							if ( $value === '100' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '100', 'label' => __( 'Thin 100', 'kadence-blocks' ) );
+							} elseif ( $value === '200' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '200', 'label' => __( 'Extra-Light 200', 'kadence-blocks' ) );
+							} elseif ( $value === '300' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '300', 'label' => __( 'Light 300', 'kadence-blocks' ) );
+							} elseif ( $value === '400' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '400', 'label' => __( 'Regular', 'kadence-blocks' ) );
+							} elseif ( $value === 'regular' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '400', 'label' => __( 'Regular', 'kadence-blocks' ) );
+							} elseif ( $value === '500' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '500', 'label' => __( 'Medium 500', 'kadence-blocks' ) );
+							} elseif ( $value === '600' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '600', 'label' => __( 'Semi-Bold 600', 'kadence-blocks' ) );
+							} elseif ( $value === '700' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '700', 'label' => __( 'Bold 700', 'kadence-blocks' ) );
+							} elseif ( $value === '800' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '800', 'label' => __( 'Extra-Bold 800', 'kadence-blocks' ) );
+							} elseif ( $value === '900' && in_array( $value, $new_weight_variant ) ) {
+								$weights[] = array( 'value' => '900', 'label' => __( 'Ultra-Bold 900', 'kadence-blocks' ) );
+							}
+						}
+					}
+				}
+			} elseif ( isset( $button_font['family'] ) && ! empty( $button_font['family'] ) && substr( $button_font['family'], 0, strlen( '-apple-system' ) ) === '-apple-system' ) {
+				// System Font.
+				$weights = array(
+					array( 'value' => '', 'label' => __( 'Inherit', 'kadence-blocks' ) ),
+					array( 'value' => '100', 'label' => __( 'Thin 100', 'kadence-blocks' ) ),
+					array( 'value' => '200', 'label' => __( 'Extra-Light 200', 'kadence-blocks' ) ),
+					array( 'value' => '300', 'label' => __( 'Light 300', 'kadence-blocks' ) ),
+					array( 'value' => '400', 'label' => __( 'Regular', 'kadence-blocks' ) ),
+					array( 'value' => '500', 'label' => __( 'Medium 500', 'kadence-blocks' ) ),
+					array( 'value' => '600', 'label' => __( 'Semi-Bold 600', 'kadence-blocks' ) ),
+					array( 'value' => '700', 'label' => __( 'Bold 700', 'kadence-blocks' ) ),
+					array( 'value' => '800', 'label' => __( 'Extra-Bold 800', 'kadence-blocks' ) ),
+					array( 'value' => '900', 'label' => __( 'Ultra-Bold 900', 'kadence-blocks' ) ),
+				);
+			}
+		}
+		//print_r( $button_font );
+	}
+	return apply_filters( 'kadence_blocks_button_weight_options', $weights );
+}
 /**
  * Get an array of visibility options.
  */

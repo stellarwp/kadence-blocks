@@ -3721,6 +3721,11 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_advancedgallery_array( $attr, $unique_id ) {
 		$css = '';
+		if ( isset( $attr['type'] ) && 'grid' === $attr['type'] && isset( $attr['displayShadow'] ) && ! empty( $attr['displayShadow'] ) && true === $attr['displayShadow'] ) {
+			$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
+				$css .= 'overflow: visible;';
+			$css .= '}';
+		}
 		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][0] ) && is_numeric( $attr['gutter'][0] ) ) {
 			$css .= '.wp-block-kadence-advancedgallery ul.kb-gallery-id-' . $unique_id . ' {';
 				$css .= 'margin: -' . ( $attr['gutter'][0] / 2 ) . 'px;';
@@ -4766,9 +4771,16 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['inheritMaxWidth'] ) && $attr['inheritMaxWidth'] ) {
 			global $content_width;
 			if ( isset( $content_width ) ) {
-				$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap.kb-theme-content-width {';
-					$css .= 'max-width:' . absint( $content_width ) . 'px;';
-				$css .= '}';
+				if ( class_exists( 'Kadence\Theme' ) ) {
+					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap.kb-theme-content-width {';
+						$css .= 'max-width:' . absint( $content_width ) . 'px;';
+						$css .= 'max-width: calc(' . absint( $content_width ) . 'px - var(--global-sm-spacing) - var(--global-sm-spacing) );';
+					$css .= '}';
+				} else {
+					$css .= '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap.kb-theme-content-width {';
+						$css .= 'max-width:' . absint( $content_width ) . 'px;';
+					$css .= '}';
+				}
 			}
 		}
 		if ( isset( $attr['firstColumnWidth'] ) && ! empty( $attr['firstColumnWidth'] ) && ( ! isset( $attr['columns'] ) || 2 === $attr['columns'] ) ) {

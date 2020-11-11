@@ -104,7 +104,7 @@ class InlineTypographyControl extends Component {
 		}
 	}
 	setTypographyOptions( typographySelectOptions ) {
-		const standardWeights = [
+		let standardWeights = [
 			{ value: 'regular', label: 'Normal' },
 			{ value: 'bold', label: 'Bold' },
 		];
@@ -112,6 +112,15 @@ class InlineTypographyControl extends Component {
 			{ value: 'normal', label: 'Normal' },
 			{ value: 'italic', label: 'Italic' },
 		];
+		const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
+		const headingWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.headingWeights ? kadence_blocks_params.headingWeights : [] );
+		const buttonWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.buttonWeights ? kadence_blocks_params.buttonWeights : [] );
+		if ( isKadenceT && this.props.fontGroup === 'heading' && headingWeights && Array.isArray( headingWeights ) && headingWeights.length ) {
+			standardWeights = headingWeights;
+		}
+		if ( isKadenceT && this.props.fontGroup === 'button' && buttonWeights && Array.isArray( buttonWeights ) && buttonWeights.length ) {
+			standardWeights = buttonWeights;
+		}
 		const activeFont = ( typographySelectOptions ? typographySelectOptions.filter( ( { value } ) => value === this.props.fontFamily ) : '' );
 		const fontStandardWeights = ( '' !== activeFont && undefined !== activeFont[ 0 ] && undefined !== activeFont[ 0 ].weights ?activeFont[ 0 ].weights : standardWeights );
 		const fontStandardStyles = ( '' !== activeFont && undefined !== activeFont[ 0 ] && undefined !== activeFont[ 0 ].styles ? activeFont[ 0 ].styles : standardStyles );

@@ -2290,6 +2290,7 @@ class KadenceInfoBox extends Component {
 											}
 										</TabPanel>
 										<TypographyControls
+											fontGroup={ 'heading' }
 											tagLevel={ titleFont[ 0 ].level }
 											onTagLevel={ ( value ) => saveTitleFont( { level: value } ) }
 											fontSize={ titleFont[ 0 ].size }
