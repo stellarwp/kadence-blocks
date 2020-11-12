@@ -36,6 +36,7 @@ import './blocks/testimonials/block.js';
 import './blocks/advanced-gallery/block.js';
 import './blocks/form/block.js';
 import './blocks/table-of-contents/block.js';
+import './blocks/food/block.js';
 
 import './plugins/kadence-control.js';
 import './plugins/editor-width.js';
