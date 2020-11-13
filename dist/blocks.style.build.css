@@ -4267,3 +4267,11 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
   padding: 0 !important;
   margin: 0 !important;
   overflow: hidden; }
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
+.kt-restaurent-menu {
+  background: red; }

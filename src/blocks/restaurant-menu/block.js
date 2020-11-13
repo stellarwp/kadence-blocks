@@ -16,6 +16,8 @@ import classnames from 'classnames';
 /**
  * Import Css
  */
+import './style.scss';
+import './editor.scss';
 
 //import backwardCompatibility from './deprecated';
 //import KadenceColorOutput from '../../kadence-color-output';

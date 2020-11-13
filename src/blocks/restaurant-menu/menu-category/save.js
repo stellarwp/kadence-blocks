@@ -1,3 +1,7 @@
+const {
+	Component,
+	Fragment,
+} = wp.element;
 
 /**
  * External dependencies

@@ -1,6 +1,8 @@
 import Inspector from './inspector';
 import Controls from './controls';
 
+import classnames from 'classnames';
+
 /**
  * Internal block libraries
  */
@@ -71,26 +73,34 @@ class KadenceCategoryItem extends Component {
 					onChange={ title => setAttributes( title ) }
 				/>
 
-				<RichText
-					tagName="p"
-					className={ classnames( className, 'kt-item-description' ) }
-					value={ description }
-					onChange={ description => setAttributes( description ) }
-				/>
+				<div className={ classnames( 'kt-item-content' ) }>
 
-				<RichText
-					tagName="span"
-					className={ classnames( className, 'kt-item-currency' ) }
-					value={ currency }
-					onChange={ currency => setAttributes( currency ) }
-				/>
+					<div className={ classnames( 'kt-item-left' ) }>
+						<RichText
+							tagName="p"
+							className={ classnames( className, 'kt-item-description' ) }
+							value={ description }
+							onChange={ description => setAttributes( description ) }
+						/>
+					</div>
 
-				<RichText
-					tagName="div"
-					className={ classnames( className, 'kt-item-price' ) }
-					value={ price }
-					onChange={ price => setAttributes( price ) }
-				/>
+
+					<div className={ classnames( 'kt-item-right' ) }>
+						<RichText
+							tagName="span"
+							className={ classnames( className, 'kt-item-currency' ) }
+							value={ currency }
+							onChange={ currency => setAttributes( currency ) }
+						/>
+
+						<RichText
+							tagName="div"
+							className={ classnames( className, 'kt-item-price' ) }
+							value={ price }
+							onChange={ price => setAttributes( price ) }
+						/>
+					</div>
+				</div>
 
 			</Fragment>
 		)

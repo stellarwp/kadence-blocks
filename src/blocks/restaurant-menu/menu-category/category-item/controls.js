@@ -1,12 +1,15 @@
 const {
-	BlockControls,
 	Toolbar
 } = wp.components
+
+const { BlockControls } = wp.blockEditor;
 
 const {
 	Component,
 	Fragment,
 } = wp.element;
+
+const { __, sprintf } = wp.i18n;
 
 class Controls extends Component {
 	constructor() {

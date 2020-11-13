@@ -1,3 +1,9 @@
+import classnames from 'classnames';
+
+const {
+	Component,
+	Fragment,
+} = wp.element;
 
 const {
 	InnerBlocks
@@ -6,7 +12,9 @@ const {
 const save = ( { attributes } ) => {
 	return (
 		<Fragment>
-			<InnerBlocks.Content />
+			<div className={ classnames( 'kt-restaurent-menu' ) }>
+				<InnerBlocks.Content />
+			</div>
 		</Fragment>
 	);
 };

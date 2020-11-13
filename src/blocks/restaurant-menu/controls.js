@@ -1,12 +1,15 @@
 const {
-	BlockControls,
 	Toolbar
 } = wp.components
+
+const { BlockControls } = wp.blockEditor;
 
 const {
 	Component,
 	Fragment,
 } = wp.element;
+
+const { __, sprintf } = wp.i18n;
 
 class Controls extends Component {
 	constructor() {
@@ -64,11 +67,11 @@ class Controls extends Component {
 				title: __( 'Add Row', 'frontrom' ),
 				isActive: false,
 				onClick: () => {
-					let row = createBlock( 'frontrom/row' );
-					let block = select( 'core/block-editor' ).getBlock( clientId );
-					let index = block.innerBlocks.length;
+					// let row = createBlock( 'frontrom/row' );
+					// let block = select( 'core/block-editor' ).getBlock( clientId );
+					// let index = block.innerBlocks.length;
 
-					dispatch('core/block-editor').insertBlock( row, index+1, clientId );
+					// dispatch('core/block-editor').insertBlock( row, index+1, clientId );
 				}
 			}
 		];

@@ -1,6 +1,10 @@
 import Inspector from './inspector';
 import Controls from './controls';
 
+import classnames from 'classnames';
+
+import './style.scss';
+
 /**
  * Internal block libraries
  */
@@ -34,13 +38,9 @@ const {
 const {
 	InnerBlocks
 } = wp.blockEditor
-/**
- * Regular expression matching invalid anchor characters for replacement.
- *
- * @type {RegExp}
- */
 
 
+const { select, dispatch, withSelect, withDispatch } = wp.data;
 
 class KadenceRestaurantMenu extends Component {
 	constructor() {
@@ -60,16 +60,33 @@ class KadenceRestaurantMenu extends Component {
 			<Fragment>
 				{ isSelected && <Inspector { ...this.props } /> }
 				{ isSelected && <Controls { ...this.props } /> }
+				<div className={ classnames( 'kt-restaurent-menu' ) }>
+					<InnerBlocks
+						template={ [
+							[
+								'kadence/restaurantmenucategory'
+							]
+						] }
+						templateLock={ false }
+						renderAppender={ () => ( null ) }
+					/>
+				</div>
 
-				<InnerBlocks
-					template={ [
-						[
-							'kadence/restaurantmenuitem'
-						]
-					] }
-					templateLock={ false }
-					renderAppender={ () => ( null ) }
-				/>
+				<Button
+					onClick={ () => {
+
+						const block = select( 'core/block-editor' ).getBlock( clientId );
+
+						const newItem = createBlock(
+							'kadence/restaurantmenucategory'
+						);
+
+						const newInnerBlocks = [ ...block.innerBlocks, { ...newItem } ];
+						dispatch( 'core/block-editor' ).replaceInnerBlocks( clientId, newInnerBlocks, false );
+					} }
+				>
+					{__('Add New Menu')}
+				</Button>
 			</Fragment>
 		)
 	}

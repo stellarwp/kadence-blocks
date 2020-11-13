@@ -40,6 +40,8 @@ const {
 	InnerBlocks
 } = wp.blockEditor
 
+const { select, dispatch, withSelect, withDispatch } = wp.data;
+
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
@@ -73,20 +75,36 @@ class KadenceRestaurantMenuCategory extends Component {
 
 				<RichText
 					tagName="h1"
-					className={ classnames( className, 'kt-mc-title' ) }
+					className={ classnames( className, 'kt-menu-category-title' ) }
 					value={ menuTitle }
 					onChange={ menuTitle => setAttributes( menuTitle ) }
 				/>
+				<div className={ classnames( 'kt-category-content' ) }>
+					<InnerBlocks
+						template={ [
+							[
+								'kadence/restaurantmenuitem'
+							]
+						] }
+						templateLock={ false }
+						renderAppender={ () => ( null ) }
+					/>
+				</div>
+				<Button
+					onClick={ () => {
 
-				<InnerBlocks
-					template={ [
-						[
+						const block = select( 'core/block-editor' ).getBlock( clientId );
+
+						const newItem = createBlock(
 							'kadence/restaurantmenuitem'
-						]
-					] }
-					templateLock={ false }
-					renderAppender={ () => ( null ) }
-				/>
+						);
+
+						const newInnerBlocks = [ ...block.innerBlocks, { ...newItem } ];
+						dispatch( 'core/block-editor' ).replaceInnerBlocks( clientId, newInnerBlocks, false );
+					} }
+				>
+					{__('Add New Menu Item')}
+				</Button>
 
 			</Fragment>
 		)

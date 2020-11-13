@@ -1,11 +1,15 @@
 const {
-	InspectorControls,
 	PanelBody
 } = wp.components
+
+const { InspectorControls } = wp.blockEditor;
+
 const {
 	Component,
 	Fragment,
 } = wp.element;
+
+const { __, sprintf } = wp.i18n;
 /**
  * Inspector controls
  */
@@ -27,7 +31,6 @@ class Inspector extends Component {
 
 		} = attributes
 
-		const parentId = select( 'core/block-editor' ).getBlockRootClientId( clientId );
 
 		return (
 

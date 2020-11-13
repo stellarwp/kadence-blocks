@@ -12,6 +12,7 @@ import save from './save';
 //import icons from './icon';
 
 import classnames from 'classnames';
+import './editor.scss';
 
 //import backwardCompatibility from './deprecated';
 //import KadenceColorOutput from '../../kadence-color-output';
@@ -51,6 +52,13 @@ registerBlockType( 'kadence/restaurantmenuitem', {
 	parent: [ 'kadence/restaurantmenu' ],
 	supports: {
 		inserter: false
+	},
+	getEditWrapperProps( attributes ) {
+		return {
+			style: {
+				width: '33.333333%'
+			}
+		};
 	},
 	attributes,
 	edit,
