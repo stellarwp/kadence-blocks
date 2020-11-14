@@ -1,14 +1,21 @@
+/**
+ * BLOCK: Kadence Restaurant Menu
+ */
+
+/**
+ * External dependencies
+ */
 import classnames from 'classnames';
 
-const {
-	Component,
-	Fragment,
-} = wp.element;
+/**
+ * Internal block libraries
+ */
+const { Component, Fragment } = wp.element;
+const { InnerBlocks }         = wp.blockEditor
 
-const {
-	InnerBlocks
-} = wp.blockEditor
-
+/**
+ * Build the restaurant menu save
+ */
 const save = ( { attributes } ) => {
 	return (
 		<Fragment>

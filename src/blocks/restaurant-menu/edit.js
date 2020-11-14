@@ -1,47 +1,30 @@
-import Inspector from './inspector';
-import Controls from './controls';
+/**
+ * BLOCK: Kadence Restaurant Menu
+ */
 
+/**
+ * External dependencies
+ */
 import classnames from 'classnames';
 
+/**
+ * Import Css
+ */
 import './style.scss';
 
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
-const {
-	createBlock,
-} = wp.blocks;
-const {
-	InspectorControls,
-	BlockControls,
-	AlignmentToolbar,
-	InspectorAdvancedControls,
-	RichText,
-} = wp.blockEditor;
-const {
-	Component,
-	Fragment,
-} = wp.element;
-const {
-	PanelBody,
-	Toolbar,
-	ButtonGroup,
-	Button,
-	ToolbarGroup,
-	Dashicon,
-	TabPanel,
-	SelectControl,
-	TextControl,
-} = wp.components;
+const { __ }                  = wp.i18n;
+const { createBlock }         = wp.blocks;
+const { Component, Fragment } = wp.element;
+const { Button }              = wp.components;
+const { InnerBlocks }         = wp.blockEditor
+const { select, dispatch }    = wp.data;
 
-const {
-	InnerBlocks
-} = wp.blockEditor
-
-
-const { select, dispatch, withSelect, withDispatch } = wp.data;
-
+/**
+ * Build the restaurant menu edit
+ */
 class KadenceRestaurantMenu extends Component {
 	constructor() {
 		super( ...arguments );
@@ -58,8 +41,6 @@ class KadenceRestaurantMenu extends Component {
 
 		return (
 			<Fragment>
-				{ isSelected && <Inspector { ...this.props } /> }
-				{ isSelected && <Controls { ...this.props } /> }
 				<div className={ classnames( 'kt-restaurent-menu' ) }>
 					<InnerBlocks
 						template={ [
@@ -91,4 +72,5 @@ class KadenceRestaurantMenu extends Component {
 		)
 	}
 }
+
 export default KadenceRestaurantMenu;

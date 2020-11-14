@@ -47,7 +47,7 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/restaurantmenuitem', {
-	title: __( 'Restaurant Menu Item' ),
+	title: __( 'Menu Item' ),
 	category: 'kadence-blocks',
 	parent: [ 'kadence/restaurantmenu' ],
 	supports: {

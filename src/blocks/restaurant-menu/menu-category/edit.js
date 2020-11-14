@@ -1,5 +1,7 @@
-import Inspector from './inspector';
-import Controls from './controls';
+
+/**
+ * BLOCK: Kadence Restaurant Menu Category
+ */
 
 /**
  * External dependencies
@@ -9,47 +11,17 @@ import classnames from 'classnames';
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
-const {
-	createBlock,
-} = wp.blocks;
-const {
-	InspectorControls,
-	BlockControls,
-	AlignmentToolbar,
-	InspectorAdvancedControls,
-	RichText,
-} = wp.blockEditor;
-const {
-	Component,
-	Fragment,
-} = wp.element;
-const {
-	PanelBody,
-	Toolbar,
-	ButtonGroup,
-	Button,
-	ToolbarGroup,
-	Dashicon,
-	TabPanel,
-	SelectControl,
-	TextControl,
-} = wp.components;
-
-const {
-	InnerBlocks
-} = wp.blockEditor
-
-const { select, dispatch, withSelect, withDispatch } = wp.data;
+const { __ }                  = wp.i18n;
+const { createBlock }         = wp.blocks;
+const { RichText }            = wp.blockEditor;
+const { Component, Fragment } = wp.element;
+const { Button }              = wp.components;
+const { InnerBlocks }         = wp.blockEditor;
+const { select, dispatch }    = wp.data;
 
 /**
- * Regular expression matching invalid anchor characters for replacement.
- *
- * @type {RegExp}
+ * Build the restaurant menu category edit
  */
-
-
-
 class KadenceRestaurantMenuCategory extends Component {
 	constructor() {
 		super( ...arguments );
@@ -70,9 +42,6 @@ class KadenceRestaurantMenuCategory extends Component {
 
 		return (
 			<Fragment>
-				{ isSelected && <Inspector { ...this.props } /> }
-				{ isSelected && <Controls { ...this.props } /> }
-
 				<RichText
 					tagName="h1"
 					className={ classnames( className, 'kt-menu-category-title' ) }
@@ -110,4 +79,5 @@ class KadenceRestaurantMenuCategory extends Component {
 		)
 	}
 }
+
 export default KadenceRestaurantMenuCategory;

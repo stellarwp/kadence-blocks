@@ -7921,6 +7921,12 @@ button.components-button.kt-accordion-add.is-primary svg {
  * Can include things like variables and mixins
  * that are used across the project.
 */
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
 .wp-block[data-type="kadence/restaurantmenu"] {
   background: #fff;
   padding: 15px; }
@@ -7938,6 +7944,12 @@ button.components-button.kt-accordion-add.is-primary svg {
  * Can include things like variables and mixins
  * that are used across the project.
 */
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
 .wp-block[data-type="kadence/restaurantmenucategory"] {
   margin: 0; }
   .wp-block[data-type="kadence/restaurantmenucategory"] .kt-menu-category-title {

@@ -4273,5 +4273,10 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
  * Can include things like variables and mixins
  * that are used across the project.
 */
+/**
+ * #.# Styles
+ *
+ * CSS for Frontend.
+ */
 .kt-restaurent-menu {
   background: red; }
