@@ -1,19 +1,21 @@
-const {
-	Component,
-	Fragment,
-} = wp.element;
+/**
+ * BLOCK: Kadence Restaurant Menu Category Item
+ */
 
 /**
  * External dependencies
  */
 import classnames from 'classnames';
 
+/**
+ * Internal block libraries
+ */
+const { Fragment } = wp.element;
+const { RichText } = wp.blockEditor;
 
-const {
-	RichText,
-} = wp.blockEditor;
-
-
+/**
+ * Build the restaurant menu category item save
+ */
 const save = ( { attributes } ) => {
 
 	const {

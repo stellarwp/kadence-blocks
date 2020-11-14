@@ -1,7 +1,15 @@
+/**
+ * BLOCK: Kadence Restaurant Menu Category Item
+ */
 
-
+/**
+ * Internal block libraries
+ */
 const { __ } = wp.i18n;
 
+/**
+ * Set default state
+ */
 export default {
 	title: {
 		type: 'String',

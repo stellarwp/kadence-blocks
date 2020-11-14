@@ -1,4 +1,3 @@
-
 /**
  * BLOCK: Kadence Restaurant Menu Category
  */

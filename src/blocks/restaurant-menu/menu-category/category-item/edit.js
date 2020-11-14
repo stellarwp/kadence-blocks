@@ -1,45 +1,22 @@
-import Inspector from './inspector';
-import Controls from './controls';
+/**
+ * BLOCK: Kadence Restaurant Menu Category Item
+ */
 
+/**
+ * External dependencies
+ */
 import classnames from 'classnames';
 
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
-const {
-	createBlock,
-} = wp.blocks;
-const {
-	InspectorControls,
-	BlockControls,
-	AlignmentToolbar,
-	InspectorAdvancedControls,
-	RichText,
-} = wp.blockEditor;
-const {
-	Component,
-	Fragment,
-} = wp.element;
-const {
-	PanelBody,
-	Toolbar,
-	ButtonGroup,
-	Button,
-	ToolbarGroup,
-	Dashicon,
-	TabPanel,
-	SelectControl,
-	TextControl,
-} = wp.components;
+const { __ } = wp.i18n;
+const { RichText } = wp.blockEditor;
+const { Component, Fragment } = wp.element;
+
 /**
- * Regular expression matching invalid anchor characters for replacement.
- *
- * @type {RegExp}
+ * Build the restaurant menu category item edit
  */
-
-
-
 class KadenceCategoryItem extends Component {
 	constructor() {
 		super( ...arguments );
@@ -63,8 +40,6 @@ class KadenceCategoryItem extends Component {
 
 		return (
 			<Fragment>
-				{ isSelected && <Inspector { ...this.props } /> }
-				{ isSelected && <Controls { ...this.props } /> }
 
 				<RichText
 					tagName="h3"
@@ -106,4 +81,5 @@ class KadenceCategoryItem extends Component {
 		)
 	}
 }
+
 export default KadenceCategoryItem;
