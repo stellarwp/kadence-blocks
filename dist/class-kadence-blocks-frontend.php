@@ -1038,7 +1038,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_style( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/blocks/form.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-testimonials', KADENCE_BLOCKS_URL . 'dist/blocks/testimonials.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
-		//wp_enqueue_style( 'kadence-blocks-style-css', KADENCE_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_enqueue_style( 'kadence-blocks-style-css', KADENCE_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
 		// Next all the extras that are shared.
 		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'dist/assets/css/simplelightbox.css', array(), KADENCE_BLOCKS_VERSION );

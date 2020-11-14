@@ -40,43 +40,41 @@ class KadenceCategoryItem extends Component {
 
 		return (
 			<Fragment>
+				<div className={ classnames( 'kt-category-content-item' ) }>
+					<div className={ classnames( 'kt-item-content' ) }>
+						<div className={ classnames( 'kt-item-left' ) }>
+							<RichText
+								tagName="h3"
+								className={ classnames( className, 'kt-item-title' ) }
+								value={ title }
+								onChange={ title => setAttributes( title ) }
+							/>
 
-				<RichText
-					tagName="h3"
-					className={ classnames( className, 'kt-item-title' ) }
-					value={ title }
-					onChange={ title => setAttributes( title ) }
-				/>
+							<RichText
+								tagName="p"
+								className={ classnames( className, 'kt-item-description' ) }
+								value={ description }
+								onChange={ description => setAttributes( description ) }
+							/>
+						</div>
 
-				<div className={ classnames( 'kt-item-content' ) }>
+						<div className={ classnames( 'kt-item-right' ) }>
+							<RichText
+								tagName="span"
+								className={ classnames( className, 'kt-item-currency' ) }
+								value={ currency }
+								onChange={ currency => setAttributes( currency ) }
+							/>
 
-					<div className={ classnames( 'kt-item-left' ) }>
-						<RichText
-							tagName="p"
-							className={ classnames( className, 'kt-item-description' ) }
-							value={ description }
-							onChange={ description => setAttributes( description ) }
-						/>
-					</div>
-
-
-					<div className={ classnames( 'kt-item-right' ) }>
-						<RichText
-							tagName="span"
-							className={ classnames( className, 'kt-item-currency' ) }
-							value={ currency }
-							onChange={ currency => setAttributes( currency ) }
-						/>
-
-						<RichText
-							tagName="div"
-							className={ classnames( className, 'kt-item-price' ) }
-							value={ price }
-							onChange={ price => setAttributes( price ) }
-						/>
+							<RichText
+								tagName="span"
+								className={ classnames( className, 'kt-item-price' ) }
+								value={ price }
+								onChange={ price => setAttributes( price ) }
+							/>
+						</div>
 					</div>
 				</div>
-
 			</Fragment>
 		)
 	}

@@ -24,15 +24,16 @@ const save = ( { attributes } ) => {
 
 	return (
 		<Fragment>
-			<RichText.Content
-				tagName="h1"
-				className={ classnames(
-					attributes.className ? attributes.classnames : '',
-					'kt-mc-title'
-				) }
-				value={ menuTitle }
-			/>
-			<InnerBlocks.Content />
+			<div className={ classnames( 'kt-menu-category' ) } >
+				<RichText.Content
+					tagName="h1"
+					className={ classnames( 'kt-menu-category-title' ) }
+					value={ menuTitle }
+				/>
+				<div className={ classnames( 'kt-category-content' ) }>
+					<InnerBlocks.Content />
+				</div>
+			</div>
 		</Fragment>
 	);
 };

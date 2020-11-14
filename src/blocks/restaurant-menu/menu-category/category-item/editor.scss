@@ -15,24 +15,26 @@
 	    font-weight: 600;
 	}
 
+	.kt-category-content-item {
+		padding-right: 30px;
+	}
+
+	.kt-item-description {
+		font-size: 16px;
+	    margin: 0;
+	    padding: 0;
+	    font-family: 'Open Sans', sans-serif;
+	}
+
 	.kt-item-content {
 		display: flex;
-		justify-content: space-around;
-		padding-right: 30px;
+		justify-content: space-between;
 
 		&:last-child {
 
 		}
-
 		.kt-item-left {
-
-			.kt-item-description {
-				font-size: 16px;
-			    margin: 0;
-			    padding: 0;
-			    padding-right: 30px;
-			    font-family: 'Open Sans', sans-serif;
-			}
+			padding-right: 20px;
 		}
 
 		.kt-item-right {

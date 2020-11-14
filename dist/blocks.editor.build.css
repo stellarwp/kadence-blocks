@@ -7961,7 +7961,7 @@ button.components-button.kt-accordion-add.is-primary svg {
     font-family: 'Open Sans', sans-serif; }
   .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content > .block-editor-inner-blocks
 > .block-editor-block-list__layout
-> .wp-block:nth-last-child(2) .kt-item-content {
+> .wp-block:nth-last-child(2) .kt-category-content-item {
     padding-right: 0; }
 /**
  * #.# Common SCSS
@@ -7982,18 +7982,20 @@ button.components-button.kt-accordion-add.is-primary svg {
     margin: 0;
     padding: 0 0 13px 0;
     font-weight: 600; }
+  .wp-block[data-type="kadence/restaurantmenuitem"] .kt-category-content-item {
+    padding-right: 30px; }
+  .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-description {
+    font-size: 16px;
+    margin: 0;
+    padding: 0;
+    font-family: 'Open Sans', sans-serif; }
   .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content {
     display: -ms-flexbox;
     display: flex;
-    -ms-flex-pack: distribute;
-        justify-content: space-around;
-    padding-right: 30px; }
-    .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-left .kt-item-description {
-      font-size: 16px;
-      margin: 0;
-      padding: 0;
-      padding-right: 30px;
-      font-family: 'Open Sans', sans-serif; }
+    -ms-flex-pack: justify;
+        justify-content: space-between; }
+    .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-left {
+      padding-right: 20px; }
     .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right {
       display: -ms-flexbox;
       display: flex; }

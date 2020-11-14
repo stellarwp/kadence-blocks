@@ -27,41 +27,40 @@ const save = ( { attributes } ) => {
 
 	return (
 		<Fragment>
-			<RichText.Content
-				tagName="h3"
-				className={ classnames(
-				 	attributes.className ? attributes.classnames : '',
-					'kt-item-title'
-				) }
-				value={ title }
-			/>
+			<div
+				className={ classnames( 'kt-category-content-item' ) }
+			>
+				<div className={ classnames( 'kt-item-content' ) }>
+					<div className={ classnames( 'kt-item-left' ) }>
+						<RichText.Content
+							tagName="h3"
+							className={ classnames( 'kt-item-title' ) }
+							value={ title }
+						/>
 
-			<RichText.Content
-				tagName="p"
-				className={ classnames(
-					attributes.className ? attributes.classnames : '',
-					'kt-item-description'
-				) }
-				value={ description }
-			/>
+						<RichText.Content
+							tagName="p"
+							className={ classnames( 'kt-item-description' ) }
+							value={ description }
+						/>
+					</div>
 
-			<RichText.Content
-				tagName="span"
-				className={ classnames(
-					attributes.className ? attributes.classnames : '',
-					'kt-item-currency'
-				) }
-				value={ currency }
-			/>
+					<div className={ classnames( 'kt-item-right' ) }>
+						<RichText.Content
+							tagName="span"
+							className={ classnames( 'kt-item-currency' ) }
+							value={ currency }
+						/>
 
-			<RichText.Content
-				tagName="div"
-				className={ classnames(
-					attributes.className ? attributes.classnames : '',
-					'kt-item-price'
-				) }
-				value={ price }
-			/>
+						<RichText.Content
+							tagName="div"
+							className={ classnames( 'kt-item-price' ) }
+							value={ price }
+						/>
+					</div>
+				</div>
+
+			</div>
 		</Fragment>
 	);
 };

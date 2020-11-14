@@ -5,5 +5,75 @@
  */
 
 .kt-restaurent-menu {
-	background: red;
+	background: #fff;
+	padding: 15px;
+
+	.kt-menu-category {
+
+		.kt-menu-category-title {
+			margin: 0;
+		    padding: 15px 0 35px 0;
+		    font-size: 32px;
+		    text-align: center;
+		    font-weight: 600;
+		    font-family: 'Open Sans', sans-serif;
+		}
+
+		.kt-category-content {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+
+			.kt-category-content-item {
+				width: 33.333333%;
+				padding-right: 30px;
+
+				&:last-child {
+					padding-right: 0;
+				}
+
+				.kt-item-title {
+					font-size: 18px;
+				    margin: 0;
+				    padding: 0 0 13px 0;
+				    font-weight: 600;
+				}
+
+				.kt-item-description {
+					font-size: 16px;
+				    margin: 0;
+				    padding: 0;
+				    font-family: 'Open Sans', sans-serif;
+				}
+
+				.kt-item-content {
+					display: flex;
+					justify-content: space-between;
+
+					.kt-item-left {
+						padding-right: 20px;
+					}
+
+					.kt-item-right {
+						display: flex;
+						white-space: nowrap;
+						font-family: 'Open Sans', sans-serif;
+						font-weight: 600;
+
+						.kt-item-currency {
+							font-size: 16px;
+						    margin: 0;
+						    padding: 0;
+						}
+
+						.kt-item-price {
+							font-size: 16px;
+						    margin: 0;
+						    padding: 0;
+						}
+					}
+				}
+			}
+		}
+	}
 }
