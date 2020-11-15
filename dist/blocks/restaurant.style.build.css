@@ -1,0 +1,77 @@
+/**
+ * #.# Styles
+ *
+ * CSS for Frontend.
+ */
+.kt-restaurent-menu.full-width {
+	width: 100% !important;
+	max-width: none !important; }
+
+.kt-restaurent-menu {
+	background: #fff;
+	padding: 15px; }
+	.kt-restaurent-menu .kt-menu-category .kt-menu-category-title {
+		margin: 0;
+		padding: 15px 0 35px 0;
+		font-size: 32px;
+		text-align: center;
+		font-weight: 600;
+		font-family: 'Open Sans', sans-serif; }
+	.kt-restaurent-menu .kt-menu-category .kt-category-content {
+		display: -ms-flexbox;
+		display: flex;
+		-ms-flex-wrap: wrap;
+				flex-wrap: wrap;
+		-ms-flex-pack: start;
+				justify-content: flex-start; }
+		.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item {
+			padding-right: 30px;
+			padding-bottom: 40px; }
+			.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-title {
+				font-size: 18px;
+				margin: 0;
+				padding: 0 0 13px 0;
+				font-weight: 600; }
+			.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-description {
+				font-size: 16px;
+				margin: 0;
+				padding: 0;
+				font-family: 'Open Sans', sans-serif; }
+			.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content {
+				display: -ms-flexbox;
+				display: flex;
+				-ms-flex-pack: justify;
+						justify-content: space-between;
+				width: 100%; }
+				.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-left {
+					padding-right: 20px;
+					width: 80%; }
+				.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right {
+					display: -ms-flexbox;
+					display: flex;
+					white-space: nowrap;
+					font-family: 'Open Sans', sans-serif;
+					font-weight: 600;
+					width: 20%; }
+					.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-currency {
+						font-size: 16px;
+						margin: 0;
+						padding: 0; }
+					.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-price {
+						font-size: 16px;
+						margin: 0;
+						padding: 0; }
+	.kt-restaurent-menu .col-12 {
+		-ms-flex: 0 0 100%;
+		flex: 0 0 100%;
+		max-width: 100%; }
+	@media (min-width: 768px) {
+		.kt-restaurent-menu .col-md-6 {
+			-ms-flex: 0 0 50%;
+			flex: 0 0 50%;
+			max-width: 50%; } }
+	@media (min-width: 992px) {
+		.kt-restaurent-menu .col-lg-4 {
+			-ms-flex: 0 0 33.333333%;
+			flex: 0 0 33.333333%;
+			max-width: 33.333333%; } }

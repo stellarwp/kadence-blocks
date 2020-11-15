@@ -28,7 +28,7 @@ const save = ( { attributes } ) => {
 	return (
 		<Fragment>
 			<div
-				className={ classnames( 'kt-category-content-item' ) }
+				className={ classnames( 'kt-category-content-item col-12 col-md-6 col-lg-4' ) }
 			>
 				<div className={ classnames( 'kt-item-content' ) }>
 					<div className={ classnames( 'kt-item-left' ) }>

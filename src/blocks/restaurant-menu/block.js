@@ -43,6 +43,7 @@ registerBlockType( 'kadence/restaurantmenu', {
 	icon: <Icon icon={ icons.block } />,
 	category: 'kadence-blocks',
 	keywords: ['restaurant menu', 'food', 'drinks'],
+	description: __( 'In the restaurant, a menu is a list of food and beverages offered to customers and the prices.' ),
 	getEditWrapperProps( attributes ) {
 		const { fullWidth } = attributes;
 		return {

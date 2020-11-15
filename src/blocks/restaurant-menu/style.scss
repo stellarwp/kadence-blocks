@@ -30,7 +30,7 @@
 			justify-content: flex-start;
 
 			.kt-category-content-item {
-				width: 33.333333%;
+
 				padding-right: 30px;
 				padding-bottom: 40px;
 
@@ -85,4 +85,27 @@
 			}
 		}
 	}
+
+	.col-12 {
+		-ms-flex: 0 0 100%;
+		flex: 0 0 100%;
+		max-width: 100%;
+	}
+
+	@media (min-width: 768px) {
+		.col-md-6 {
+			-ms-flex: 0 0 50%;
+			flex: 0 0 50%;
+			max-width: 50%;
+		}
+	}
+
+	@media (min-width: 992px) {
+		.col-lg-4 {
+			-ms-flex: 0 0 33.333333%;
+			flex: 0 0 33.333333%;
+			max-width: 33.333333%;
+		}
+	}
+
 }

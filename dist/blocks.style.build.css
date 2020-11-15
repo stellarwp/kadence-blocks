@@ -4300,7 +4300,6 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
     -ms-flex-pack: start;
         justify-content: flex-start; }
     .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item {
-      width: 33.333333%;
       padding-right: 30px;
       padding-bottom: 40px; }
       .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-title {
@@ -4337,3 +4336,17 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
             font-size: 16px;
             margin: 0;
             padding: 0; }
+  .kt-restaurent-menu .col-12 {
+    -ms-flex: 0 0 100%;
+    flex: 0 0 100%;
+    max-width: 100%; }
+  @media (min-width: 768px) {
+    .kt-restaurent-menu .col-md-6 {
+      -ms-flex: 0 0 50%;
+      flex: 0 0 50%;
+      max-width: 50%; } }
+  @media (min-width: 992px) {
+    .kt-restaurent-menu .col-lg-4 {
+      -ms-flex: 0 0 33.333333%;
+      flex: 0 0 33.333333%;
+      max-width: 33.333333%; } }
