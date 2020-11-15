@@ -6,5 +6,8 @@
  * Set default state
  */
 export default {
-
+	"fullWidth": {
+		"type": "Boolean",
+		"default": false
+	}
 }

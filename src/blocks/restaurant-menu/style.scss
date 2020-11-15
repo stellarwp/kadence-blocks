@@ -4,6 +4,11 @@
  * CSS for Frontend.
  */
 
+.kt-restaurent-menu.full-width {
+	width: 100% !important;
+	max-width: none !important;
+}
+
 .kt-restaurent-menu {
 	background: #fff;
 	padding: 15px;
@@ -27,9 +32,10 @@
 			.kt-category-content-item {
 				width: 33.333333%;
 				padding-right: 30px;
+				padding-bottom: 40px;
 
 				&:last-child {
-					padding-right: 0;
+
 				}
 
 				.kt-item-title {
@@ -49,9 +55,11 @@
 				.kt-item-content {
 					display: flex;
 					justify-content: space-between;
+					width: 100%;
 
 					.kt-item-left {
 						padding-right: 20px;
+						width: 80%;
 					}
 
 					.kt-item-right {
@@ -59,6 +67,7 @@
 						white-space: nowrap;
 						font-family: 'Open Sans', sans-serif;
 						font-weight: 600;
+						width: 20%;
 
 						.kt-item-currency {
 							font-size: 16px;

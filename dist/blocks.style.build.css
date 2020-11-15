@@ -4278,6 +4278,10 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
  *
  * CSS for Frontend.
  */
+.kt-restaurent-menu.full-width {
+  width: 100% !important;
+  max-width: none !important; }
+
 .kt-restaurent-menu {
   background: #fff;
   padding: 15px; }
@@ -4297,9 +4301,8 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
         justify-content: flex-start; }
     .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item {
       width: 33.333333%;
-      padding-right: 30px; }
-      .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item:last-child {
-        padding-right: 0; }
+      padding-right: 30px;
+      padding-bottom: 40px; }
       .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-title {
         font-size: 18px;
         margin: 0;
@@ -4314,15 +4317,18 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
         display: -ms-flexbox;
         display: flex;
         -ms-flex-pack: justify;
-            justify-content: space-between; }
+            justify-content: space-between;
+        width: 100%; }
         .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-left {
-          padding-right: 20px; }
+          padding-right: 20px;
+          width: 80%; }
         .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right {
           display: -ms-flexbox;
           display: flex;
           white-space: nowrap;
           font-family: 'Open Sans', sans-serif;
-          font-weight: 600; }
+          font-weight: 600;
+          width: 20%; }
           .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-currency {
             font-size: 16px;
             margin: 0;

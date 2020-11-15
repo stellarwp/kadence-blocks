@@ -13,21 +13,21 @@ const { __ } = wp.i18n;
 export default {
 	title: {
 		type: 'String',
-		default: __( 'Drinks' )
+		default: ''
 	},
 
 	description: {
 		type: 'String',
-		default: __( 'It is a long established fact that a reader.' )
+		default: ''
 	},
 
 	currency: {
 		type: 'String',
-		default: '$'
+		default: ''
 	},
 
 	price: {
 		type: 'String',
-		default: '50'
+		default: ''
 	}
 }

@@ -9,10 +9,24 @@
 	background: #fff;
 	padding: 15px;
 
+	.wp-block {
+		max-width: none !important;
+	}
+
 	.editor-block-list__layout,
 	.block-editor-block-list__layout {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: flex-start;
+	}
+
+	.kt-add-more-btn-wrap {
+		display: flex;
+		align-items: center;
+
+		button {
+			color: #000;
+    		font-weight: 500;
+		}
 	}
 }

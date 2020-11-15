@@ -43,6 +43,15 @@ registerBlockType( 'kadence/restaurantmenu', {
 	icon: <Icon icon={ icons.block } />,
 	category: 'kadence-blocks',
 	keywords: ['restaurant menu', 'food', 'drinks'],
+	getEditWrapperProps( attributes ) {
+		const { fullWidth } = attributes;
+		return {
+			style: {
+				maxWidth: fullWidth ? 'none' : false,
+				width: fullWidth ? '100%' : false
+			},
+		};
+	},
 	attributes,
 	edit,
 	save

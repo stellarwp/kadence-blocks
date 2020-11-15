@@ -7930,6 +7930,8 @@ button.components-button.kt-accordion-add.is-primary svg {
 .wp-block[data-type="kadence/restaurantmenu"] {
   background: #fff;
   padding: 15px; }
+  .wp-block[data-type="kadence/restaurantmenu"] .wp-block {
+    max-width: none !important; }
   .wp-block[data-type="kadence/restaurantmenu"] .editor-block-list__layout,
   .wp-block[data-type="kadence/restaurantmenu"] .block-editor-block-list__layout {
     display: -ms-flexbox;
@@ -7938,6 +7940,14 @@ button.components-button.kt-accordion-add.is-primary svg {
         flex-wrap: wrap;
     -ms-flex-pack: start;
         justify-content: flex-start; }
+  .wp-block[data-type="kadence/restaurantmenu"] .kt-add-more-btn-wrap {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+        align-items: center; }
+    .wp-block[data-type="kadence/restaurantmenu"] .kt-add-more-btn-wrap button {
+      color: #000;
+      font-weight: 500; }
 /**
  * #.# Common SCSS
  *
@@ -7954,15 +7964,17 @@ button.components-button.kt-accordion-add.is-primary svg {
   margin: 0; }
   .wp-block[data-type="kadence/restaurantmenucategory"] .kt-menu-category-title {
     margin: 0;
-    padding: 15px 0 35px 0;
+    padding: 35px 0 35px 0;
     font-size: 32px;
     text-align: center;
     font-weight: 600;
     font-family: 'Open Sans', sans-serif; }
-  .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content > .block-editor-inner-blocks
-> .block-editor-block-list__layout
-> .wp-block:nth-last-child(2) .kt-category-content-item {
-    padding-right: 0; }
+  .wp-block[data-type="kadence/restaurantmenucategory"] .kt-add-more-item-btn-wrap {
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+        justify-content: center; }
 /**
  * #.# Common SCSS
  *
@@ -7983,7 +7995,8 @@ button.components-button.kt-accordion-add.is-primary svg {
     padding: 0 0 13px 0;
     font-weight: 600; }
   .wp-block[data-type="kadence/restaurantmenuitem"] .kt-category-content-item {
-    padding-right: 30px; }
+    padding-right: 30px;
+    padding-bottom: 40px; }
   .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-description {
     font-size: 16px;
     margin: 0;
@@ -7993,12 +8006,18 @@ button.components-button.kt-accordion-add.is-primary svg {
     display: -ms-flexbox;
     display: flex;
     -ms-flex-pack: justify;
-        justify-content: space-between; }
+        justify-content: space-between;
+    -ms-flex-align: start;
+        align-items: flex-start;
+    width: 100%; }
     .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-left {
-      padding-right: 20px; }
+      padding-right: 20px;
+      width: 80%; }
     .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right {
       display: -ms-flexbox;
-      display: flex; }
+      display: flex;
+      width: 20%;
+      font-weight: 600; }
       .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right .kt-item-currency {
         font-size: 16px;
         margin: 0;

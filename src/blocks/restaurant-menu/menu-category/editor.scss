@@ -10,11 +10,17 @@
 
 	.kt-menu-category-title {
 		margin: 0;
-	    padding: 15px 0 35px 0;
+	    padding: 35px 0 35px 0;
 	    font-size: 32px;
 	    text-align: center;
 	    font-weight: 600;
 	    font-family: 'Open Sans', sans-serif;
+	}
+
+	.kt-add-more-item-btn-wrap {
+		width: 100%;
+		display: flex;
+		justify-content: center;
 	}
 
 	.kt-category-content {
@@ -22,7 +28,7 @@
 		> .block-editor-block-list__layout
 		> .wp-block:nth-last-child(2) {
        		.kt-category-content-item {
-       			padding-right: 0;
+
        		}
 		}
 	}

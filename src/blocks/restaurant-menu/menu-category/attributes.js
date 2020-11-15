@@ -13,6 +13,25 @@ const { __ } = wp.i18n;
 export default {
 	menuTitle: {
 		type: 'String',
-		default: __( 'APPETIZERS' )
- 	}
+		default: ''
+ 	},
+ 	title: {
+		type: 'String',
+		default: ''
+	},
+
+	description: {
+		type: 'String',
+		default: ''
+	},
+
+	currency: {
+		type: 'String',
+		default: ''
+	},
+
+	price: {
+		type: 'String',
+		default: ''
+	}
 }

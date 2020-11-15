@@ -17,6 +17,7 @@
 
 	.kt-category-content-item {
 		padding-right: 30px;
+		padding-bottom: 40px;
 	}
 
 	.kt-item-description {
@@ -29,16 +30,21 @@
 	.kt-item-content {
 		display: flex;
 		justify-content: space-between;
+		align-items: flex-start;
+		width: 100%;
 
 		&:last-child {
 
 		}
 		.kt-item-left {
 			padding-right: 20px;
+			width: 80%;
 		}
 
 		.kt-item-right {
 			display: flex;
+			width: 20%;
+			font-weight: 600;
 
 			.kt-item-currency {
 				font-size: 16px;

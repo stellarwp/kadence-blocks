@@ -47,14 +47,16 @@ class KadenceCategoryItem extends Component {
 								tagName="h3"
 								className={ classnames( className, 'kt-item-title' ) }
 								value={ title }
-								onChange={ title => setAttributes( title ) }
+								onChange={ title => setAttributes( { title } ) }
+								placeholder={__( 'Food Title' )}
 							/>
 
 							<RichText
 								tagName="p"
 								className={ classnames( className, 'kt-item-description' ) }
 								value={ description }
-								onChange={ description => setAttributes( description ) }
+								onChange={ description => setAttributes( { description } ) }
+								placeholder={__( 'Your sample text' )}
 							/>
 						</div>
 
@@ -63,14 +65,16 @@ class KadenceCategoryItem extends Component {
 								tagName="span"
 								className={ classnames( className, 'kt-item-currency' ) }
 								value={ currency }
-								onChange={ currency => setAttributes( currency ) }
+								onChange={ currency => setAttributes( { currency } ) }
+								placeholder="$"
 							/>
 
 							<RichText
 								tagName="span"
 								className={ classnames( className, 'kt-item-price' ) }
 								value={ price }
-								onChange={ price => setAttributes( price ) }
+								onChange={ price => setAttributes( { price } ) }
+								placeholder="10"
 							/>
 						</div>
 					</div>

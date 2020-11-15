@@ -17,9 +17,19 @@ const { InnerBlocks }         = wp.blockEditor
  * Build the restaurant menu save
  */
 const save = ( { attributes } ) => {
+
+	const {
+		fullWidth
+	} = attributes
+
 	return (
 		<Fragment>
-			<div className={ classnames( 'kt-restaurent-menu' ) }>
+			<div className={
+				classnames( {
+					'kt-restaurent-menu': true,
+					'full-width': fullWidth
+				} )
+			}>
 				<InnerBlocks.Content />
 			</div>
 		</Fragment>
