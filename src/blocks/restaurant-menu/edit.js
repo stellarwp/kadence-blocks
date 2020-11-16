@@ -24,7 +24,7 @@ import './style.scss';
 const { __ }                  = wp.i18n;
 const { createBlock }         = wp.blocks;
 const { Component, Fragment } = wp.element;
-const { Button, Dashicon }              = wp.components;
+const { Button, Dashicon }    = wp.components;
 const { InnerBlocks }         = wp.blockEditor
 const { select, dispatch }    = wp.data;
 

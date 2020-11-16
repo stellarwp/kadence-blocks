@@ -6,6 +6,9 @@ const { Component, Fragment } = wp.element;
 const { BlockControls }       = wp.blockEditor;
 const { Toolbar }             = wp.components;
 
+/**
+ * Build the restaurant menu controls
+ */
 class Controls extends Component {
 	render() {
 		const {
