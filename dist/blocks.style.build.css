@@ -4282,6 +4282,11 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
   width: 100% !important;
   max-width: none !important; }
 
+.kt-restaurent-menu.not-full-width {
+  max-width: 58rem;
+  width: calc(100% - 4rem);
+  margin: auto; }
+
 .kt-restaurent-menu {
   background: #fff;
   padding: 15px; }

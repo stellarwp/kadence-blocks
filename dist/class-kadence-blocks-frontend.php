@@ -474,6 +474,7 @@ class Kadence_Blocks_Frontend {
 			$this->enqueue_style( 'kadence-blocks-restaurant-menu' );
 		}
 	}
+
 	/**
 	 * Render Tabs Block CSS
 	 *

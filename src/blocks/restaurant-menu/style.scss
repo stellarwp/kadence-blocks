@@ -9,6 +9,13 @@
 	max-width: none !important;
 }
 
+.kt-restaurent-menu.not-full-width {
+	max-width: 58rem;
+    width: calc(100% - 4rem);
+    margin: auto;
+}
+
+
 .kt-restaurent-menu {
 	background: #fff;
 	padding: 15px;

@@ -27,7 +27,8 @@ const save = ( { attributes } ) => {
 			<div className={
 				classnames( {
 					'kt-restaurent-menu': true,
-					'full-width': fullWidth
+					'full-width': fullWidth,
+					'not-full-width': !fullWidth
 				} )
 			}>
 				<InnerBlocks.Content />

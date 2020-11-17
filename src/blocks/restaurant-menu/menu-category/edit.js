@@ -14,7 +14,7 @@ const { __ }                  = wp.i18n;
 const { createBlock }         = wp.blocks;
 const { RichText }            = wp.blockEditor;
 const { Component, Fragment } = wp.element;
-const { Button, IconButton }              = wp.components;
+const { Button, IconButton }  = wp.components;
 const { InnerBlocks }         = wp.blockEditor;
 const { select, dispatch }    = wp.data;
 
