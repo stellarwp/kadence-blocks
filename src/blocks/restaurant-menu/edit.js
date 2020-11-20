@@ -24,7 +24,7 @@ import './style.scss';
 const { __ }                  = wp.i18n;
 const { createBlock }         = wp.blocks;
 const { Component, Fragment } = wp.element;
-const { Button, Dashicon }    = wp.components;
+const { IconButton }    = wp.components;
 const { InnerBlocks }         = wp.blockEditor
 const { select, dispatch }    = wp.data;
 
@@ -52,30 +52,22 @@ class KadenceRestaurantMenu extends Component {
 
 				<div className={ classnames( 'kt-restaurent-menu' ) }>
 					<InnerBlocks
+						allowedBlocks={['kadence/restaurantmenucategory']}
 						template={ templates }
 						templateLock={ false }
-						renderAppender={ () => ( null ) }
+						renderAppender={ () => (
+							<IconButton
+					        icon="insert"
+					        label={ __('Add New Menu') }
+					        onClick={ () => {
+								const innerCount = select("core/editor").getBlocksByClientId(clientId)[0].innerBlocks.length;
+								let block = createBlock("kadence/restaurantmenucategory");
+								dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
+							} }
+					    /> ) }
 					/>
 				</div>
 
-				<div className={ classnames( 'kt-add-more-btn-wrap' ) }>
-					<Dashicon icon="plus" />
-					<Button
-						onClick={ () => {
-
-							const block = select( 'core/block-editor' ).getBlock( clientId );
-
-							const newItem = createBlock(
-								'kadence/restaurantmenucategory'
-							);
-
-							const newInnerBlocks = [ ...block.innerBlocks, { ...newItem } ];
-							dispatch( 'core/block-editor' ).replaceInnerBlocks( clientId, newInnerBlocks, false );
-						} }
-					>
-						{__('Add New Menu')}
-					</Button>
-				</div>
 			</Fragment>
 		)
 	}

@@ -55,6 +55,7 @@ class KadenceRestaurantMenuCategory extends Component {
 					/>
 					<div className={ classnames( 'kt-category-content' ) }>
 						<InnerBlocks
+							allowedBlocks={['kadence/restaurantmenuitem']}
 							template={ [
 								[
 									'kadence/restaurantmenuitem', {
@@ -66,26 +67,18 @@ class KadenceRestaurantMenuCategory extends Component {
 								]
 							] }
 							templateLock={ false }
-							renderAppender={ () => ( null ) }
+							renderAppender={ () => ( <IconButton
+							        icon="insert"
+							        label={ __('Add New Food Item') }
+							        onClick={ () => {
+										const innerCount = select("core/editor").getBlocksByClientId(clientId)[0].innerBlocks.length;
+										let block = createBlock("kadence/restaurantmenuitem");
+										console.log(block, innerCount, clientId)
+										dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
+									} }
+							    /> ) }
 						/>
 					</div>
-					<div className={ classnames( 'kt-add-more-item-btn-wrap' ) }>
-						<IconButton
-					        icon="insert"
-					        label={ __('Add New Food Item') }
-					        onClick={ () => {
-
-								const block = select( 'core/block-editor' ).getBlock( clientId );
-
-								const newItem = createBlock(
-									'kadence/restaurantmenuitem'
-								);
-
-								const newInnerBlocks = [ ...block.innerBlocks, { ...newItem } ];
-								dispatch( 'core/block-editor' ).replaceInnerBlocks( clientId, newInnerBlocks, false );
-							} }
-					    />
-				    </div>
 				</div>
 			</Fragment>
 		)
