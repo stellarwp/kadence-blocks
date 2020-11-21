@@ -21,7 +21,8 @@ const save = ( { attributes } ) => {
 	const {
 		menuTitle,
 		columns,
-		uniqueID
+		uniqueID,
+		catTitle
 	} = attributes;
 
 	return (
@@ -30,11 +31,14 @@ const save = ( { attributes } ) => {
 				'kt-menu-category',
 				`kt-menu-category-id-${uniqueID}`
 			) } >
-				<RichText.Content
-					tagName="h1"
-					className={ classnames( 'kt-menu-category-title' ) }
-					value={ menuTitle }
-				/>
+
+				{ 	catTitle && <RichText.Content
+						tagName="h1"
+						className={ classnames( 'kt-menu-category-title' ) }
+						value={ menuTitle }
+					/>
+				}
+
 				<div
 					className={ classnames( 'kt-category-content' ) }
 					data-columns-xxl={ columns[ 0 ] }

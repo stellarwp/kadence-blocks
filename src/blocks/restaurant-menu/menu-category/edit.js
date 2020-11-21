@@ -6,6 +6,8 @@
  * Internal dependencies
  */
 import Inspector from './inspector';
+import WebfontLoader from '../../../fontloader';
+import KadenceColorOutput from '../../../kadence-color-output';
 
 /**
  * External dependencies
@@ -32,6 +34,7 @@ class KadenceRestaurantMenuCategory extends Component {
 	}
 
 	componentDidMount() {
+
 		const { attributes } = this.props;
 		const { images, uniqueID } = attributes;
 
@@ -59,8 +62,21 @@ class KadenceRestaurantMenuCategory extends Component {
 			price,
 			columns,
 			uniqueID,
-			gutter
+			gutter,
+			displayTitle,
+			titleFont,
+			titleMinHeight,
+			titleColor
 		} = attributes;
+
+		const gconfig = {
+			google: {
+				families: [ titleFont[ 0 ].family + ( titleFont[ 0 ].variant ? ':' + titleFont[ 0 ].variant : '' ) ],
+			},
+		};
+		const config = ( titleFont[ 0 ].google ? gconfig : '' );
+		const titleTagName = 'h' + titleFont[ 0 ].level;
+
 
 		return (
 			<Fragment>
@@ -88,13 +104,34 @@ class KadenceRestaurantMenuCategory extends Component {
 					'kt-menu-category',
 					`kt-menu-category-id-${uniqueID}`
 				) } >
-					<RichText
-						tagName="h1"
-						className={ classnames( 'kt-menu-category-title' ) }
-						value={ menuTitle }
-						onChange={ menuTitle => setAttributes( { menuTitle } ) }
-						placeholder={ __( 'MENU TITLE' ) }
-					/>
+
+					{ displayTitle && titleFont[ 0 ].google && (
+						<WebfontLoader config={ config }>
+						</WebfontLoader>
+					) }
+					{ displayTitle && (
+						<RichText
+							className="kt-menu-category-title"
+							tagName={ titleTagName }
+							placeholder={ __( 'Title' ) }
+							onChange={ (value) => setAttributes( { menuTitle: value } ) }
+							value={ menuTitle }
+							style={ {
+								fontWeight: titleFont[ 0 ].weight,
+								fontStyle: titleFont[ 0 ].style,
+								color: KadenceColorOutput( titleColor ),
+								fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
+								lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
+								letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
+								fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
+								padding: ( titleFont[ 0 ].padding ? titleFont[ 0 ].padding[ 0 ] + 'px ' + titleFont[ 0 ].padding[ 1 ] + 'px ' + titleFont[ 0 ].padding[ 2 ] + 'px ' + titleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
+								margin: ( titleFont[ 0 ].margin ? titleFont[ 0 ].margin[ 0 ] + 'px ' + titleFont[ 0 ].margin[ 1 ] + 'px ' + titleFont[ 0 ].margin[ 2 ] + 'px ' + titleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
+								minHeight: ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
+							} }
+							keepPlaceholderOnFocus
+						/>
+					) }
+
 					<div
 						className={ classnames( 'kt-category-content' ) }
 						data-columns-xxl={ columns[ 0 ] }
@@ -117,7 +154,8 @@ class KadenceRestaurantMenuCategory extends Component {
 								]
 							] }
 							templateLock={ false }
-							renderAppender={ () => ( <IconButton
+							renderAppender={ () => (
+								<IconButton
 							        icon="insert"
 							        label={ __('Add New Food Item') }
 							        onClick={ () => {
@@ -125,7 +163,8 @@ class KadenceRestaurantMenuCategory extends Component {
 										let block = createBlock("kadence/restaurantmenuitem");
 										dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
 									} }
-							    /> ) }
+							    />
+							) }
 						/>
 					</div>
 				</div>
