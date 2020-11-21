@@ -3,6 +3,11 @@
  */
 
 /**
+ * Internal dependencies
+ */
+import Inspector from './inspector';
+
+/**
  * External dependencies
  */
 import classnames from 'classnames';
@@ -26,6 +31,17 @@ class KadenceRestaurantMenuCategory extends Component {
 		super( ...arguments );
 	}
 
+	componentDidMount() {
+		const { attributes } = this.props;
+		const { images, uniqueID } = attributes;
+
+		if ( ! uniqueID ) {
+			this.props.setAttributes( {
+				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+			} );
+		}
+	}
+
 	render() {
 		const {
 			clientId,
@@ -40,12 +56,38 @@ class KadenceRestaurantMenuCategory extends Component {
 			title,
 			description,
 			currency,
-			price
+			price,
+			columns,
+			uniqueID,
+			gutter
 		} = attributes;
 
 		return (
 			<Fragment>
-				<div className={ classnames( 'kt-menu-category' ) } >
+
+				{ isSelected && <Inspector {...this.props} /> }
+
+				<style>
+					{ `
+						.wp-block[data-type="kadence/restaurantmenucategory"]  .kt-menu-category-id-${uniqueID} .kt-category-content {
+							${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+						}
+						.wp-block[data-type="kadence/restaurantmenucategory"]  .kt-menu-category-id-${uniqueID} .kt-category-content-item {
+							${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+						}
+
+						.wp-block[data-type="kadence/restaurantmenucategory"]  .kt-menu-category-id-${uniqueID} .block-list-appender {
+							${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding-left:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+							${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding-bottom:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+							${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin-top:' + ( -( gutter[ 0 ] / 2 - 8 ) ) + 'px;' : '' ) }
+						}
+					`}
+				</style>
+
+				<div className={ classnames(
+					'kt-menu-category',
+					`kt-menu-category-id-${uniqueID}`
+				) } >
 					<RichText
 						tagName="h1"
 						className={ classnames( 'kt-menu-category-title' ) }
@@ -53,7 +95,15 @@ class KadenceRestaurantMenuCategory extends Component {
 						onChange={ menuTitle => setAttributes( { menuTitle } ) }
 						placeholder={ __( 'MENU TITLE' ) }
 					/>
-					<div className={ classnames( 'kt-category-content' ) }>
+					<div
+						className={ classnames( 'kt-category-content' ) }
+						data-columns-xxl={ columns[ 0 ] }
+						data-columns-xl={ columns[ 1 ] }
+						data-columns-lg={ columns[ 2 ] }
+						data-columns-md={ columns[ 3 ] }
+						data-columns-sm={ columns[ 4 ] }
+						data-columns-xs={ columns[ 5 ] }
+					>
 						<InnerBlocks
 							allowedBlocks={['kadence/restaurantmenuitem']}
 							template={ [
@@ -73,7 +123,6 @@ class KadenceRestaurantMenuCategory extends Component {
 							        onClick={ () => {
 										const innerCount = select("core/editor").getBlocksByClientId(clientId)[0].innerBlocks.length;
 										let block = createBlock("kadence/restaurantmenuitem");
-										console.log(block, innerCount, clientId)
 										dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
 									} }
 							    /> ) }

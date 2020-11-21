@@ -44,9 +44,6 @@ registerBlockType( 'kadence/restaurantmenuitem', {
 	},
 	getEditWrapperProps( attributes ) {
 		return {
-			style: {
-				width: '33.333333%'
-			}
 		};
 	},
 	attributes,

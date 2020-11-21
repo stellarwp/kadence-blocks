@@ -4288,8 +4288,7 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
   margin: auto; }
 
 .kt-restaurent-menu {
-  background: #fff;
-  padding: 15px; }
+  background: #fff; }
   .kt-restaurent-menu .kt-menu-category .kt-menu-category-title {
     margin: 0;
     padding: 15px 0 35px 0;
@@ -4304,54 +4303,138 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
         flex-wrap: wrap;
     -ms-flex-pack: start;
         justify-content: flex-start; }
-    .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item {
-      padding-right: 30px;
-      padding-bottom: 40px; }
-      .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-title {
-        font-size: 16px;
-        margin: 0;
-        padding: 0 0 13px 0;
-        font-weight: 600; }
-      .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-description {
-        font-size: 16px;
-        margin: 0;
-        padding: 0;
-        font-family: 'Open Sans', sans-serif; }
-      .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content {
+    .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-title {
+      font-size: 16px;
+      margin: 0;
+      padding: 0 0 13px 0;
+      font-weight: 600; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-description {
+      font-size: 16px;
+      margin: 0;
+      padding: 0;
+      font-family: 'Open Sans', sans-serif; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+      width: 100%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-left {
+        padding-right: 20px;
+        width: 80%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right {
         display: -ms-flexbox;
         display: flex;
-        -ms-flex-pack: justify;
-            justify-content: space-between;
+        white-space: nowrap;
+        font-family: 'Open Sans', sans-serif;
+        font-weight: 600;
+        width: 20%; }
+        .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-currency {
+          font-size: 16px;
+          margin: 0;
+          padding: 0; }
+        .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-price {
+          font-size: 16px;
+          margin: 0;
+          padding: 0; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xs="1"] .kt-category-content-item {
+      width: 100%; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xs="2"] .kt-category-content-item {
+      width: 50%; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xs="3"] .kt-category-content-item {
+      width: 33.33333%; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xs="4"] .kt-category-content-item {
+      width: 25%; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xs="5"] .kt-category-content-item {
+      width: 20%; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xs="6"] .kt-category-content-item {
+      width: 16.66667%; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xs="7"] .kt-category-content-item {
+      width: 14.28571%; }
+    .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xs="8"] .kt-category-content-item {
+      width: 12.5%; }
+    @media (min-width: 543px) {
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-sm="1"] .kt-category-content-item {
         width: 100%; }
-        .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-left {
-          padding-right: 20px;
-          width: 80%; }
-        .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right {
-          display: -ms-flexbox;
-          display: flex;
-          white-space: nowrap;
-          font-family: 'Open Sans', sans-serif;
-          font-weight: 600;
-          width: 20%; }
-          .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-currency {
-            font-size: 16px;
-            margin: 0;
-            padding: 0; }
-          .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-price {
-            font-size: 16px;
-            margin: 0;
-            padding: 0; }
-  .kt-restaurent-menu .col-12 {
-    -ms-flex: 0 0 100%;
-    flex: 0 0 100%;
-    max-width: 100%; }
-  @media (min-width: 768px) {
-    .kt-restaurent-menu .col-md-6 {
-      -ms-flex: 0 0 50%;
-      flex: 0 0 50%;
-      max-width: 50%; } }
-  @media (min-width: 992px) {
-    .kt-restaurent-menu .col-lg-4 {
-      -ms-flex: 0 0 33.333333%;
-      flex: 0 0 33.333333%;
-      max-width: 33.333333%; } }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-sm="2"] .kt-category-content-item {
+        width: 50%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-sm="3"] .kt-category-content-item {
+        width: 33.33333%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-sm="4"] .kt-category-content-item {
+        width: 25%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-sm="5"] .kt-category-content-item {
+        width: 20%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-sm="6"] .kt-category-content-item {
+        width: 16.66667%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-sm="7"] .kt-category-content-item {
+        width: 14.28571%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-sm="8"] .kt-category-content-item {
+        width: 12.5%; } }
+    @media (min-width: 768px) {
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-md="1"] .kt-category-content-item {
+        width: 100%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-md="2"] .kt-category-content-item {
+        width: 50%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-md="3"] .kt-category-content-item {
+        width: 33.33333%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-md="4"] .kt-category-content-item {
+        width: 25%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-md="5"] .kt-category-content-item {
+        width: 20%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-md="6"] .kt-category-content-item {
+        width: 16.66667%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-md="7"] .kt-category-content-item {
+        width: 14.28571%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-md="8"] .kt-category-content-item {
+        width: 12.5%; } }
+    @media (min-width: 992px) {
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-lg="1"] .kt-category-content-item {
+        width: 100%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-lg="2"] .kt-category-content-item {
+        width: 50%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-lg="3"] .kt-category-content-item {
+        width: 33.33333%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-lg="4"] .kt-category-content-item {
+        width: 25%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-lg="5"] .kt-category-content-item {
+        width: 20%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-lg="6"] .kt-category-content-item {
+        width: 16.66667%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-lg="7"] .kt-category-content-item {
+        width: 14.28571%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-lg="8"] .kt-category-content-item {
+        width: 12.5%; } }
+    @media (min-width: 1200px) {
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xl="1"] .kt-category-content-item {
+        width: 100%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xl="2"] .kt-category-content-item {
+        width: 50%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xl="3"] .kt-category-content-item {
+        width: 33.33333%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xl="4"] .kt-category-content-item {
+        width: 25%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xl="5"] .kt-category-content-item {
+        width: 20%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xl="6"] .kt-category-content-item {
+        width: 16.66667%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xl="7"] .kt-category-content-item {
+        width: 14.28571%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xl="8"] .kt-category-content-item {
+        width: 12.5%; } }
+    @media (min-width: 1500px) {
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xxl="1"] .kt-category-content-item {
+        width: 100%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xxl="2"] .kt-category-content-item {
+        width: 50%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xxl="3"] .kt-category-content-item {
+        width: 33.33333%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xxl="4"] .kt-category-content-item {
+        width: 25%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xxl="5"] .kt-category-content-item {
+        width: 20%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xxl="6"] .kt-category-content-item {
+        width: 16.66667%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xxl="7"] .kt-category-content-item {
+        width: 14.28571%; }
+      .kt-restaurent-menu .kt-menu-category .kt-category-content[data-columns-xxl="8"] .kt-category-content-item {
+        width: 12.5%; } }

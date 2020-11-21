@@ -18,7 +18,6 @@
 
 .kt-restaurent-menu {
 	background: #fff;
-	padding: 15px;
 
 	.kt-menu-category {
 
@@ -37,13 +36,6 @@
 			justify-content: flex-start;
 
 			.kt-category-content-item {
-
-				padding-right: 30px;
-				padding-bottom: 40px;
-
-				&:last-child {
-
-				}
 
 				.kt-item-title {
 					font-size: 16px;
@@ -90,29 +82,47 @@
 					}
 				}
 			}
+
+			@for $i from 1 through 8 {
+				&[data-columns-xs="#{ $i }"] .kt-category-content-item {
+					width: (100% / #{ $i });
+				}
+			}
+			@media (min-width: 543px) {
+				@for $i from 1 through 8 {
+					&[data-columns-sm="#{ $i }"] .kt-category-content-item {
+						width: (100% / #{ $i });
+					}
+				}
+			}
+			@media (min-width: 768px) {
+				@for $i from 1 through 8 {
+					&[data-columns-md="#{ $i }"] .kt-category-content-item {
+						width: (100% / #{ $i });
+					}
+				}
+			}
+			@media (min-width: 992px) {
+				@for $i from 1 through 8 {
+					&[data-columns-lg="#{ $i }"] .kt-category-content-item {
+						width: (100% / #{ $i });
+					}
+				}
+			}
+			@media (min-width: 1200px) {
+				@for $i from 1 through 8 {
+					&[data-columns-xl="#{ $i }"] .kt-category-content-item {
+						width: (100% / #{ $i });
+					}
+				}
+			}
+			@media (min-width: 1500px) {
+				@for $i from 1 through 8 {
+					&[data-columns-xxl="#{ $i }"] .kt-category-content-item {
+						width: (100% / #{ $i });
+					}
+				}
+			}
 		}
 	}
-
-	.col-12 {
-		-ms-flex: 0 0 100%;
-		flex: 0 0 100%;
-		max-width: 100%;
-	}
-
-	@media (min-width: 768px) {
-		.col-md-6 {
-			-ms-flex: 0 0 50%;
-			flex: 0 0 50%;
-			max-width: 50%;
-		}
-	}
-
-	@media (min-width: 992px) {
-		.col-lg-4 {
-			-ms-flex: 0 0 33.333333%;
-			flex: 0 0 33.333333%;
-			max-width: 33.333333%;
-		}
-	}
-
 }

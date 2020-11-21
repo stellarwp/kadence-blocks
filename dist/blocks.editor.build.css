@@ -7928,8 +7928,7 @@ button.components-button.kt-accordion-add.is-primary svg {
  * which makes it higher in priority.
  */
 .wp-block[data-type="kadence/restaurantmenu"] {
-  background: #fff;
-  padding: 15px; }
+  background: #fff; }
   .wp-block[data-type="kadence/restaurantmenu"] .wp-block {
     max-width: none !important; }
   .wp-block[data-type="kadence/restaurantmenu"] .editor-block-list__layout,
@@ -7975,6 +7974,35 @@ button.components-button.kt-accordion-add.is-primary svg {
     display: flex;
     -ms-flex-pack: center;
         justify-content: center; }
+  @media (min-width: 600px) {
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="2"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 50%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="3"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 33.33333%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="4"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 25%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="5"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 20%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="6"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 16.66667%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="7"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 14.28571%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="8"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 12.5%; } }
 /**
  * #.# Common SCSS
  *
@@ -7995,7 +8023,6 @@ button.components-button.kt-accordion-add.is-primary svg {
     padding: 0 0 13px 0;
     font-weight: 600; }
   .wp-block[data-type="kadence/restaurantmenuitem"] .kt-category-content-item {
-    padding-right: 30px;
     padding-bottom: 40px; }
   .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-description {
     font-size: 16px;

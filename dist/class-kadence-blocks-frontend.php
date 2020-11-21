@@ -469,10 +469,30 @@ class Kadence_Blocks_Frontend {
 	 *
 	 * @param array $attributes the blocks attribtues.
 	 */
-	public function render_restaurant_menu_css_head( $attr ) {
+	public function render_restaurant_menu_css_head( $block ) {
 		if ( ! wp_style_is( 'kadence-blocks-restaurant-menu', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-restaurant-menu' );
 		}
+
+		$inner_blocks = empty( $block['innerBlocks'] ) ? [] : $block['innerBlocks'];
+
+		foreach ( $inner_blocks as $key => $block ) {
+			$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
+
+			if ( isset( $attributes['uniqueID'] ) ) {
+				$unique_id = $attributes['uniqueID'];
+				$style_id = 'kt-blocks' . esc_attr( $unique_id );
+
+				if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'restaurantmenu', $unique_id ) ) {
+					$css = $this->blocks_restaurantmenu_array( $attributes, $unique_id );
+
+					if ( ! empty( $css ) ) {
+						$this->render_inline_css( $css, $style_id );
+					}
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -1406,7 +1426,7 @@ class Kadence_Blocks_Frontend {
 					if ( 'kadence/restaurantmenu' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
-							$this->render_restaurant_menu_css_head( $blockattr );
+							$this->render_restaurant_menu_css_head( $block );
 						}
 					}
 					if ( 'kadence/rowlayout' === $block['blockName'] ) {
@@ -3732,6 +3752,51 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 	}
+
+	/**
+	 * Builds CSS for Tabs block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_restaurantmenu_array( $attr, $unique_id ) {
+
+		$css = '';
+
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][0] ) && is_numeric( $attr['gutter'][0] ) ) {
+			$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
+				$css .= 'margin: -' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-category-content .kt-category-content-item {';
+				$css .= 'padding:' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+		}
+
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][1] ) && is_numeric( $attr['gutter'][1] ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
+					$css .= 'margin: -' . ( $attr['gutter'][1] / 2 ) . 'px;';
+				$css .= '}';
+				$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-category-content .kt-category-content-item {';
+					$css .= 'padding:' . ( $attr['gutter'][1] / 2 ) . 'px;';
+				$css .= '}';
+			$css .= '}';
+		}
+
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][2] ) && is_numeric( $attr['gutter'][2] ) ) {
+			$css .= '@media (max-width: 767px) {';
+				$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
+					$css .= 'margin: -' . ( $attr['gutter'][2] / 2 ) . 'px;';
+				$css .= '}';
+				$css .= '.kb-gallery-id-' . $unique_id . ' .kt-category-content .kt-category-content-item {';
+					$css .= 'padding:' . ( $attr['gutter'][2] / 2 ) . 'px;';
+				$css .= '}';
+			$css .= '}';
+		}
+
+		return $css;
+	}
+
 	/**
 	 * Builds CSS for Gallery block.
 	 *
