@@ -19,7 +19,7 @@ import KadenceRange from '../../../kadence-range-control';
  */
 const { __ } = wp.i18n;
 const { Component, Fragment } = wp.element;
-const { InspectorControls, ContrastChecker, PanelColorSettings, replaceInnerBlocks } = wp.blockEditor;
+const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
 const {
 	TextControl,
 	SelectControl,
@@ -64,7 +64,10 @@ class Inspector extends Component {
 			titleColor,
 			titleMinHeight,
 			titleHoverColor,
-			titleFont
+			titleFont,
+			hAlign,
+			hAlignTablet,
+			hAlignMobile
 		} = attributes;
 
 
@@ -262,6 +265,62 @@ class Inspector extends Component {
 							checked={ displayTitle }
 							onChange={ ( value ) => setAttributes( { displayTitle: value } ) }
 						/>
+
+						<h2 className="kt-heading-size-title">{ __( 'Title Align' ) }</h2>
+						<TabPanel className="kt-size-tabs kb-sidebar-alignment"
+							activeClass="active-tab"
+							tabs={ [
+								{
+									name: 'desk',
+									title: <Dashicon icon="desktop" />,
+									className: 'kt-desk-tab',
+								},
+								{
+									name: 'tablet',
+									title: <Dashicon icon="tablet" />,
+									className: 'kt-tablet-tab',
+								},
+								{
+									name: 'mobile',
+									title: <Dashicon icon="smartphone" />,
+									className: 'kt-mobile-tab',
+								},
+							] }>
+							{
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'mobile' === tab.name ) {
+											tabout = (
+												<AlignmentToolbar
+													isCollapsed={ false }
+													value={ hAlignMobile }
+													onChange={ ( value ) => setAttributes( { hAlignMobile: value } ) }
+												/>
+											);
+										} else if ( 'tablet' === tab.name ) {
+											tabout = (
+												<AlignmentToolbar
+													isCollapsed={ false }
+													value={ hAlignTablet }
+													onChange={ ( value ) => setAttributes( { hAlignTablet: value } ) }
+												/>
+											);
+										} else {
+											tabout = (
+												<AlignmentToolbar
+													isCollapsed={ false }
+													value={ hAlign }
+													onChange={ ( value ) => setAttributes( { hAlign: value } ) }
+												/>
+											);
+										}
+									}
+									return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
+
 						{ displayTitle && (
 							<Fragment>
 								<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>

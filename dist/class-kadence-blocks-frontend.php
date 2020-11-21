@@ -474,6 +474,21 @@ class Kadence_Blocks_Frontend {
 			$this->enqueue_style( 'kadence-blocks-restaurant-menu' );
 		}
 
+		$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
+
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'restaurantmenu_root', $unique_id ) ) {
+				$css = $this->blocks_restaurantmenu_root_array( $attributes, $unique_id );
+
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+
 		$inner_blocks = empty( $block['innerBlocks'] ) ? [] : $block['innerBlocks'];
 
 		foreach ( $inner_blocks as $key => $block ) {
@@ -1427,6 +1442,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
 							$this->render_restaurant_menu_css_head( $block );
+							$this->blocks_restaurantmenu_scripts_gfonts( $block );
 						}
 					}
 					if ( 'kadence/rowlayout' === $block['blockName'] ) {
@@ -3266,6 +3282,21 @@ class Kadence_Blocks_Frontend {
 		}
 		return $css;
 	}
+
+	/**
+	 * Adds Google fonts for infobox block.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_restaurantmenu_scripts_gfonts( $block ) {
+		$inner_blocks = empty( $block['innerBlocks'] ) ? [] : $block['innerBlocks'];
+
+		foreach ( $inner_blocks as $key => $block ) {
+			$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
+			$this->blocks_infobox_scripts_gfonts( $attributes );
+		}
+	}
+
 	/**
 	 * Adds Google fonts for infobox block.
 	 *
@@ -3291,6 +3322,7 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+
 		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
 			$title_font = $attr['titleFont'][0];
 			// Check if the font has been added yet.
@@ -3751,6 +3783,72 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Builds CSS for Tabs block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_restaurantmenu_root_array( $attr, $unique_id ) {
+		$css = '';
+		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerBackgroundOpacity'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerMargin'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
+			$css .= '.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu {';
+				if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
+					$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
+					$css .= 'border-color:' . $this->kadence_color_output( $attr['containerBorder'], $alpha ) . ';';
+				}
+				if ( isset( $attr['containerBorderRadius'] ) && ! empty( $attr['containerBorderRadius'] ) ) {
+					$css .= 'border-radius:' . $attr['containerBorderRadius'] . 'px;';
+				}
+				if ( isset( $attr['containerBackground'] ) && ! empty( $attr['containerBackground'] ) ) {
+					$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
+					$css .= 'background:' . $this->kadence_color_output( $attr['containerBackground'], $alpha ) . ';';
+				} elseif ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ) {
+					$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
+					$css .= 'background:' . $this->kadence_color_output( '#f2f2f2', $alpha ) . ';';
+				}
+				if ( isset( $attr['containerPadding'] ) && is_array( $attr['containerPadding'] ) ) {
+					$css .= 'padding:' . $attr['containerPadding'][ 0 ] . 'px ' . $attr['containerPadding'][ 1 ] . 'px ' . $attr['containerPadding'][ 2 ] . 'px ' . $attr['containerPadding'][ 3 ] . 'px;';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][0] ) && is_numeric( $attr['containerMargin'][0] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-top:' . $attr['containerMargin'][0] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][1] ) && is_numeric( $attr['containerMargin'][1] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-right:' . $attr['containerMargin'][1] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][2] ) && is_numeric( $attr['containerMargin'][2] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-bottom:' . $attr['containerMargin'][2] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][3] ) && is_numeric( $attr['containerMargin'][3] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-left:' . $attr['containerMargin'][3] . $unit . ';';
+				}
+				if ( isset( $attr['containerBorderWidth'] ) && is_array( $attr['containerBorderWidth'] ) ) {
+					$css .= 'border-width:' . $attr['containerBorderWidth'][ 0 ] . 'px ' . $attr['containerBorderWidth'][ 1 ] . 'px ' . $attr['containerBorderWidth'][ 2 ] . 'px ' . $attr['containerBorderWidth'][ 3 ] . 'px;';
+				}
+				if ( isset( $attr['maxWidth'] ) && ! empty( $attr['maxWidth'] ) ) {
+					$unit = ( isset( $attr['maxWidthUnit'] ) && ! empty( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' );
+					$css .= 'max-width:' . $attr['maxWidth'] . $unit . ';';
+				}
+				$css .= 'border-style: solid';
+			$css .= '}';
+		}
+
+		$css .= '.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu:hover {';
+			$border_hover = ( isset( $attr['containerHoverBorder'] ) && ! empty( $attr['containerHoverBorder'] ) ? $attr['containerHoverBorder'] : '#eeeeee' );
+			$alpha = ( isset( $attr['containerHoverBorderOpacity'] ) && is_numeric( $attr['containerHoverBorderOpacity'] ) ? $attr['containerHoverBorderOpacity'] : 1 );
+			$bg_hover = ( isset( $attr['containerHoverBackground'] ) && ! empty( $attr['containerHoverBackground'] ) ? $attr['containerHoverBackground'] : '#f2f2f2' );
+			$bg_alpha = ( isset( $attr['containerHoverBackgroundOpacity'] ) && is_numeric( $attr['containerHoverBackgroundOpacity'] ) ? $attr['containerHoverBackgroundOpacity'] : 1 );
+			$css .= 'border-color:' . $this->kadence_color_output( $border_hover, $alpha ) . ';';
+			$css .= 'background:' . $this->kadence_color_output( $bg_hover, $bg_alpha ) . ';';
+		$css .= '}';
+
+		return $css;
 	}
 
 	/**

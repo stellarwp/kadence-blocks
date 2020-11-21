@@ -91,4 +91,16 @@ export default {
 		type: 'Boolean',
 		default: true,
 	},
+	hAlign: {
+		type: 'string',
+		default: 'center',
+	},
+	hAlignTablet: {
+		type: 'string',
+		default: '',
+	},
+	hAlignMobile: {
+		type: 'string',
+		default: '',
+	},
 }

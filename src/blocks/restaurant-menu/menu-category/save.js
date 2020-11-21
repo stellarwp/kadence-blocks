@@ -28,8 +28,8 @@ const save = ( { attributes } ) => {
 	return (
 		<Fragment>
 			<div className={ classnames(
-				'kt-menu-category',
-				`kt-menu-category-id-${uniqueID}`
+				`kt-menu-category-id-${uniqueID}`,
+				'kt-menu-category'
 			) } >
 
 				{ 	catTitle && <RichText.Content
