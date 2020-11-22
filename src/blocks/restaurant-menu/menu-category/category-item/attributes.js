@@ -12,86 +12,86 @@ const { __ } = wp.i18n;
  */
 export default {
 	uniqueID: {
-		type: 'string',
+		type: 'String',
 	},
 	displayTitle: {
-		type: 'bool',
+		type: 'Boolean',
 		default: true,
 	},
 	title: {
-		type: 'array',
+		type: 'Array',
 		source: 'children',
 		selector: 'h1,h2,h3,h4,h5,h6',
 		default: __( 'Title' ),
 	},
 	titleColor: {
-		type: 'string',
+		type: 'String',
 		default: '',
 	},
 	titleHoverColor: {
-		type: 'string',
+		type: 'String',
 		default: '',
 	},
 	titleMinHeight: {
-		type: 'array',
+		type: 'Array',
 		default: [ '', '', '' ],
 	},
 	titleFont: {
-		type: 'array',
+		type: 'Array',
 		default: [ {
 			level: 2,
-			size: [ '', '', '' ],
+			size: [ '16', '16', '16' ],
 			sizeType: 'px',
 			lineHeight: [ '', '', '' ],
 			lineType: 'px',
 			letterSpacing: '',
 			textTransform: '',
-			family: '',
+			family: "'Open Sans', sans-serif",
 			google: false,
 			style: '',
-			weight: '',
+			weight: '600',
 			variant: '',
 			subset: '',
 			loadGoogle: true,
-			padding: [ 0, 0, 0, 0 ],
+			padding: [ 0, 30, 0, 0 ],
 			paddingControl: 'linked',
-			margin: [ 5, 0, 10, 0 ],
+			margin: [ 0, 0, 0, 0 ],
 			marginControl: 'individual',
 		} ],
 	},
 	displayText: {
-		type: 'bool',
+		type: 'Boolean',
 		default: true,
 	},
 	contentText: {
-		type: 'array',
+		type: 'Array',
 		source: 'children',
 		selector: 'p',
 		default: __( 'Details about food' ),
 	},
 	textColor: {
-		type: 'string',
+		type: 'String',
 		default: '',
 	},
 	textHoverColor: {
-		type: 'string',
+		type: 'String',
 		default: '',
 	},
 	textMinHeight: {
-		type: 'array',
+		type: 'Array',
 		default: [ '', '', '' ],
 	},
 	textFont: {
-		type: 'array',
+		type: 'Array',
 		default: [ {
 			level: 2,
-			size: [ '', '', '' ],
+			size: [ '16', '16', '16' ],
 			sizeType: 'px',
 			lineHeight: [ '', '', '' ],
 			lineType: 'px',
 			letterSpacing: '',
 			textTransform: '',
-			family: '',
+			family: "'Open Sans', sans-serif",
 			google: false,
 			style: '',
 			weight: '',
@@ -100,7 +100,7 @@ export default {
 			loadGoogle: true,
 			padding: [ 0, 0, 0, 0 ],
 			paddingControl: 'linked',
-			margin: [ 5, 0, 10, 0 ],
+			margin: [ 0, 0, 0, 0 ],
 			marginControl: 'individual',
 		} ],
 	},
@@ -110,40 +110,40 @@ export default {
 	},
 	amount: {
 		type: 'String',
-		default: ''
+		default: '$4.6'
 	},
 	priceColor: {
-		type: 'string',
+		type: 'String',
 		default: '',
 	},
 	priceHoverColor: {
-		type: 'string',
+		type: 'String',
 		default: '',
 	},
 	priceMinHeight: {
-		type: 'array',
+		type: 'Array',
 		default: [ '', '', '' ],
 	},
 	priceFont: {
-		type: 'array',
+		type: 'Array',
 		default: [ {
 			level: 2,
-			size: [ '', '', '' ],
+			size: [ '16', '16', '16' ],
 			sizeType: 'px',
 			lineHeight: [ '', '', '' ],
 			lineType: 'px',
 			letterSpacing: '',
 			textTransform: '',
-			family: '',
+			family: "'Open Sans', sans-serif",
 			google: false,
 			style: '',
-			weight: '',
+			weight: '600',
 			variant: '',
 			subset: '',
 			loadGoogle: true,
 			padding: [ 0, 0, 0, 0 ],
 			paddingControl: 'linked',
-			margin: [ 5, 0, 10, 0 ],
+			margin: [ 0, 0, 0, 0 ],
 			marginControl: 'individual',
 		} ],
 	},
@@ -152,7 +152,7 @@ export default {
 		default: ''
 	},
 	containerBackground: {
-		type: 'string',
+		type: 'String',
 		default: 'transparent',
 	},
 	containerBackgroundOpacity: {
@@ -160,7 +160,7 @@ export default {
 		default: 1,
 	},
 	containerHoverBackground: {
-		type: 'string',
+		type: 'String',
 		default: 'transparent',
 	},
 	containerHoverBackgroundOpacity: {
@@ -168,7 +168,7 @@ export default {
 		default: 1,
 	},
 	containerBorder: {
-		type: 'string',
+		type: 'String',
 		default: 'transparent',
 	},
 	containerBorderOpacity: {
@@ -176,7 +176,7 @@ export default {
 		default: 1,
 	},
 	containerHoverBorder: {
-		type: 'string',
+		type: 'String',
 		default: 'transparent',
 	},
 	containerHoverBorderOpacity: {
@@ -184,7 +184,7 @@ export default {
 		default: 1,
 	},
 	containerBorderWidth: {
-		type: 'array',
+		type: 'Array',
 		default: [ 0, 0, 0, 0 ],
 	},
 	containerBorderRadius: {
@@ -192,7 +192,7 @@ export default {
 		default: 0,
 	},
 	containerPadding: {
-		type: 'array',
+		type: 'Array',
 		default: [ 0, 0, 0, 0 ],
 	},
 }

@@ -20,7 +20,8 @@ const save = ( { attributes } ) => {
 
 	const {
 		fullWidth,
-		uniqueID
+		uniqueID,
+		hAlign
 	} = attributes
 
 	return (
@@ -29,6 +30,7 @@ const save = ( { attributes } ) => {
 				classnames( {
 					[`kt-restaurent-menu-id-${uniqueID}`]: true,
 					'kt-restaurent-menu': true,
+					[`kt-restaurent-menu-halign-${ hAlign }`]: true,
 					'full-width': fullWidth,
 					'not-full-width': !fullWidth
 				} )

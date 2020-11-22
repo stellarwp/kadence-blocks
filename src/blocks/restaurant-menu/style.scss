@@ -24,48 +24,24 @@
 		.kt-category-content {
 			display: flex;
 			flex-wrap: wrap;
-			justify-content: flex-start;
 
 			.kt-category-content-item {
 
-				.kt-item-title {
-					font-size: 16px;
-				    margin: 0;
-				    padding: 0 0 13px 0;
-				    font-weight: 600;
-				}
-
-				.kt-item-text {
-					font-size: 16px;
-				    margin: 0;
-				    padding: 0;
-				    font-family: 'Open Sans', sans-serif;
-				}
-
 				.kt-item-content {
 					display: flex;
-					justify-content: space-between;
+					flex-wrap: wrap;
 					width: 100%;
 
 					.kt-item-left {
-						padding-right: 20px;
 						width: 80%;
 					}
 
 					.kt-item-right {
 						display: flex;
 						white-space: nowrap;
-						font-family: 'Open Sans', sans-serif;
-						font-weight: 600;
 						width: 20%;
 
 						.kt-item-currency {
-							font-size: 16px;
-						    margin: 0;
-						    padding: 0;
-						}
-
-						.kt-item-amount {
 							font-size: 16px;
 						    margin: 0;
 						    padding: 0;
@@ -75,41 +51,41 @@
 			}
 
 			@for $i from 1 through 8 {
-				&[data-columns-xs="#{ $i }"] .kt-category-content-item {
+				&[data-columns-xs="#{ $i }"] .kt-category-content-item-wrap {
 					width: (100% / #{ $i });
 				}
 			}
 			@media (min-width: 543px) {
 				@for $i from 1 through 8 {
-					&[data-columns-sm="#{ $i }"] .kt-category-content-item {
+					&[data-columns-sm="#{ $i }"] .kt-category-content-item-wrap {
 						width: (100% / #{ $i });
 					}
 				}
 			}
 			@media (min-width: 768px) {
 				@for $i from 1 through 8 {
-					&[data-columns-md="#{ $i }"] .kt-category-content-item {
+					&[data-columns-md="#{ $i }"] .kt-category-content-item-wrap {
 						width: (100% / #{ $i });
 					}
 				}
 			}
 			@media (min-width: 992px) {
 				@for $i from 1 through 8 {
-					&[data-columns-lg="#{ $i }"] .kt-category-content-item {
+					&[data-columns-lg="#{ $i }"] .kt-category-content-item-wrap {
 						width: (100% / #{ $i });
 					}
 				}
 			}
 			@media (min-width: 1200px) {
 				@for $i from 1 through 8 {
-					&[data-columns-xl="#{ $i }"] .kt-category-content-item {
+					&[data-columns-xl="#{ $i }"] .kt-category-content-item-wrap {
 						width: (100% / #{ $i });
 					}
 				}
 			}
 			@media (min-width: 1500px) {
 				@for $i from 1 through 8 {
-					&[data-columns-xxl="#{ $i }"] .kt-category-content-item {
+					&[data-columns-xxl="#{ $i }"] .kt-category-content-item-wrap {
 						width: (100% / #{ $i });
 					}
 				}

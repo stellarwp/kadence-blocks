@@ -7959,12 +7959,6 @@ button.components-button.kt-accordion-add.is-primary svg {
  */
 .wp-block[data-type="kadence/restaurantmenucategory"] {
   margin: 0; }
-  .wp-block[data-type="kadence/restaurantmenucategory"] .kt-menu-category-title {
-    margin: 0;
-    padding: 35px 0 35px 0;
-    text-align: center;
-    font-weight: 600;
-    font-family: 'Open Sans', sans-serif; }
   .wp-block[data-type="kadence/restaurantmenucategory"] .kt-add-more-item-btn-wrap {
     width: 100%;
     display: -ms-flexbox;
@@ -7972,6 +7966,10 @@ button.components-button.kt-accordion-add.is-primary svg {
     -ms-flex-pack: center;
         justify-content: center; }
   @media (min-width: 600px) {
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="1"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 100%; }
     .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="2"] > .block-editor-inner-blocks
 > .block-editor-block-list__layout
 > .wp-block {
@@ -8014,18 +8012,6 @@ button.components-button.kt-accordion-add.is-primary svg {
  */
 .wp-block[data-type="kadence/restaurantmenuitem"] {
   margin: 0; }
-  .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-title {
-    font-size: 16px;
-    margin: 0;
-    padding: 0 0 13px 0;
-    font-weight: 600; }
-  .wp-block[data-type="kadence/restaurantmenuitem"] .kt-category-content-item {
-    padding-bottom: 40px; }
-  .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-text {
-    font-size: 16px;
-    margin: 0;
-    padding: 0;
-    font-family: 'Open Sans', sans-serif; }
   .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content {
     display: -ms-flexbox;
     display: flex;
@@ -8040,16 +8026,7 @@ button.components-button.kt-accordion-add.is-primary svg {
     .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right {
       display: -ms-flexbox;
       display: flex;
-      width: 20%;
-      font-weight: 600; }
-      .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right .kt-item-currency {
-        font-size: 16px;
-        margin: 0;
-        padding: 0; }
-      .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right .kt-item-amount {
-        font-size: 16px;
-        margin: 0;
-        padding: 0; }
+      width: 20%; }
 /**
  * #.# Common SCSS
  *

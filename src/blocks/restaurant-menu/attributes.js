@@ -67,11 +67,11 @@ export default {
 	},
 	containerPadding: {
 		type: 'array',
-		default: [ 20, 20, 20, 20 ],
+		default: [ 30, 30, 30, 30 ],
 	},
 	containerMargin: {
 		type: 'array',
-		default: [ '', '', '', '' ],
+		default: [ '0', '0', '0', '0' ],
 	},
 	containerMarginUnit: {
 		type: 'string',

@@ -8,24 +8,6 @@
 .wp-block[data-type="kadence/restaurantmenuitem"] {
 	margin: 0;
 
-	.kt-item-title {
-		font-size: 16px;
-	    margin: 0;
-	    padding: 0 0 13px 0;
-	    font-weight: 600;
-	}
-
-	.kt-category-content-item {
-		padding-bottom: 40px;
-	}
-
-	.kt-item-text {
-		font-size: 16px;
-	    margin: 0;
-	    padding: 0;
-	    font-family: 'Open Sans', sans-serif;
-	}
-
 	.kt-item-content {
 		display: flex;
 		justify-content: space-between;
@@ -43,19 +25,6 @@
 		.kt-item-right {
 			display: flex;
 			width: 20%;
-			font-weight: 600;
-
-			.kt-item-currency {
-				font-size: 16px;
-			    margin: 0;
-			    padding: 0;
-			}
-
-			.kt-item-amount {
-				font-size: 16px;
-			    margin: 0;
-			    padding: 0;
-			}
 		}
 	}
 }

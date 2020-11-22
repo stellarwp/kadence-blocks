@@ -22,8 +22,11 @@ const save = ( { attributes } ) => {
 		menuTitle,
 		columns,
 		uniqueID,
-		catTitle
+		catTitle,
+		titleFont
 	} = attributes;
+
+	const titleTagName = 'h' + titleFont[ 0 ].level;
 
 	return (
 		<Fragment>
@@ -33,7 +36,7 @@ const save = ( { attributes } ) => {
 			) } >
 
 				{ 	catTitle && <RichText.Content
-						tagName="h1"
+						tagName={ titleTagName }
 						className={ classnames( 'kt-menu-category-title' ) }
 						value={ menuTitle }
 					/>

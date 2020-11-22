@@ -48,6 +48,14 @@ class KadenceRestaurantMenu extends Component {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		}
+
+		this.props.setAttributes( {
+			containerPadding: [...this.props.attributes.containerPadding]
+		} );
+
+		this.props.setAttributes( {
+			containerBorderWidth: [...this.props.attributes.containerBorderWidth]
+		} );
 	}
 
 	render() {

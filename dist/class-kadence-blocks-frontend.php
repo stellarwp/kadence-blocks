@@ -3869,6 +3869,29 @@ class Kadence_Blocks_Frontend {
 			$css .= 'background:' . $this->kadence_color_output( $bg_hover, $bg_alpha ) . ';';
 		$css .= '}';
 
+		//if ( !empty( $attr['hAlign'] ) ) {
+
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-menu-category-title,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-item-title,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-item-text{ text-align: left; } ';
+
+		 $css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-center .kt-menu-category-title{ text-align: center; } ';
+
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-right .kt-menu-category-title{ text-align: right; } ';
+
+
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-category-content { justify-content: flex-start; }';
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-center .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-center .kt-category-content { justify-content: center; }';
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-right .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-right .kt-category-content { justify-content: flex-end; }';
+
+
+
+
+		//}
+
 		return $css;
 	}
 
@@ -3886,8 +3909,8 @@ class Kadence_Blocks_Frontend {
 			$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
 				$css .= 'margin: -' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
-			$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-category-content .kt-category-content-item {';
-				$css .= 'padding:' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '.kt-menu-category-id-' . $unique_id . ' .gutter {';
+				$css .= 'padding: ' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
 		}
 
@@ -3896,8 +3919,8 @@ class Kadence_Blocks_Frontend {
 				$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
 					$css .= 'margin: -' . ( $attr['gutter'][1] / 2 ) . 'px;';
 				$css .= '}';
-				$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-category-content .kt-category-content-item {';
-					$css .= 'padding:' . ( $attr['gutter'][1] / 2 ) . 'px;';
+				$css .= '.kt-menu-category-id-' . $unique_id . ' .gutter {';
+					$css .= 'padding: ' . ( $attr['gutter'][1] / 2 ) . 'px;';
 				$css .= '}';
 			$css .= '}';
 		}
@@ -3907,8 +3930,8 @@ class Kadence_Blocks_Frontend {
 				$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
 					$css .= 'margin: -' . ( $attr['gutter'][2] / 2 ) . 'px;';
 				$css .= '}';
-				$css .= '.kb-gallery-id-' . $unique_id . ' .kt-category-content .kt-category-content-item {';
-					$css .= 'padding:' . ( $attr['gutter'][2] / 2 ) . 'px;';
+				$css .= '.kb-gallery-id-' . $unique_id . ' .gutter {';
+					$css .= 'padding: ' . ( $attr['gutter'][2] / 2 ) . 'px;';
 				$css .= '}';
 			$css .= '}';
 		}
@@ -4013,7 +4036,6 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_restaurant_menu_item_title_array( $attr, $unique_id ) {
-
 		$css = '';
 
 		//Typography Style
@@ -4107,7 +4129,7 @@ class Kadence_Blocks_Frontend {
 		}
 
 		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerBackgroundOpacity'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerMargin'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
-			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' {';
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-category-content-item {';
 				if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
 					$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
 					$css .= 'border-color:' . $this->kadence_color_output( $attr['containerBorder'], $alpha ) . ';';

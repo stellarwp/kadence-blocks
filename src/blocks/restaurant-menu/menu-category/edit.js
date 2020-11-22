@@ -43,6 +43,10 @@ class KadenceRestaurantMenuCategory extends Component {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		}
+
+		this.props.setAttributes( {
+			titleFont: [...this.props.attributes.titleFont]
+		} );
 	}
 
 	render() {
@@ -88,8 +92,8 @@ class KadenceRestaurantMenuCategory extends Component {
 						.wp-block[data-type="kadence/restaurantmenucategory"]  .kt-menu-category-id-${uniqueID} .kt-category-content {
 							${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
 						}
-						.wp-block[data-type="kadence/restaurantmenucategory"]  .kt-menu-category-id-${uniqueID} .kt-category-content-item {
-							${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+						.wp-block[data-type="kadence/restaurantmenucategory"]  .kt-menu-category-id-${uniqueID} .gutter {
+							${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: ' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
 						}
 
 						.wp-block[data-type="kadence/restaurantmenucategory"]  .kt-menu-category-id-${uniqueID} .block-list-appender {
