@@ -4301,7 +4301,7 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
       margin: 0;
       padding: 0 0 13px 0;
       font-weight: 600; }
-    .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-description {
+    .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-text {
       font-size: 16px;
       margin: 0;
       padding: 0;
@@ -4326,7 +4326,7 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
           font-size: 16px;
           margin: 0;
           padding: 0; }
-        .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-price {
+        .kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-amount {
           font-size: 16px;
           margin: 0;
           padding: 0; }

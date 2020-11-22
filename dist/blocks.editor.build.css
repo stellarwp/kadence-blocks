@@ -8021,7 +8021,7 @@ button.components-button.kt-accordion-add.is-primary svg {
     font-weight: 600; }
   .wp-block[data-type="kadence/restaurantmenuitem"] .kt-category-content-item {
     padding-bottom: 40px; }
-  .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-description {
+  .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-text {
     font-size: 16px;
     margin: 0;
     padding: 0;
@@ -8046,7 +8046,7 @@ button.components-button.kt-accordion-add.is-primary svg {
         font-size: 16px;
         margin: 0;
         padding: 0; }
-      .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right .kt-item-price {
+      .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right .kt-item-amount {
         font-size: 16px;
         margin: 0;
         padding: 0; }

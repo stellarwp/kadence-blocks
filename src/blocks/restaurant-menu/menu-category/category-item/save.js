@@ -19,45 +19,63 @@ const { RichText } = wp.blockEditor;
 const save = ( { attributes } ) => {
 
 	const {
+		uniqueID,
+
+		displayTitle,
 		title,
-		description,
-		currency,
-		price
+
+		displayText,
+		contentText,
+
+		displayAmount,
+		amount,
 	} = attributes;
+
+	const hasContetnt = displayTitle || displayText ? true : false;
+
+	if ( !hasContetnt && !displayAmount ) {
+		return ( <Fragment></Fragment> )
+	}
 
 	return (
 		<Fragment>
 			<div
-				className={ classnames( 'kt-category-content-item' ) }
+				className={ classnames(
+					`kt-category-content-item-id-${uniqueID}`,
+					'kt-category-content-item'
+				) }
 			>
 				<div className={ classnames( 'kt-item-content' ) }>
-					<div className={ classnames( 'kt-item-left' ) }>
-						<RichText.Content
-							tagName="h3"
-							className={ classnames( 'kt-item-title' ) }
-							value={ title }
-						/>
 
-						<RichText.Content
-							tagName="p"
-							className={ classnames( 'kt-item-description' ) }
-							value={ description }
-						/>
-					</div>
+					{ 	hasContetnt &&
+						<div className={ classnames( 'kt-item-left' ) }>
+							{ 	displayTitle &&
+								<RichText.Content
+									tagName="h3"
+									className={ classnames( 'kt-item-title' ) }
+									value={ title }
+								/>
+							}
+							{ 	displayText &&
+								<RichText.Content
+									tagName="p"
+									className={ classnames( 'kt-item-text' ) }
+									value={ contentText }
+								/>
+							}
+						</div>
+					}
 
-					<div className={ classnames( 'kt-item-right' ) }>
-						<RichText.Content
-							tagName="span"
-							className={ classnames( 'kt-item-currency' ) }
-							value={ currency }
-						/>
+					{ 	displayAmount &&
+						<div className={ classnames( 'kt-item-right kt-item-price' ) }>
 
-						<RichText.Content
-							tagName="div"
-							className={ classnames( 'kt-item-price' ) }
-							value={ price }
-						/>
-					</div>
+							<RichText.Content
+								tagName="div"
+								className={ classnames( 'kt-item-amount' ) }
+								value={ amount }
+							/>
+						</div>
+					}
 				</div>
 
 			</div>
