@@ -485,10 +485,11 @@ class Kadence_Blocks_Table_Of_Contents {
 		if ( is_admin() || defined( 'REST_REQUEST' ) ) {
 			return null;
 		}
-		if ( ! in_the_loop() ) {
-			rewind_posts();
-			the_post();
-		}
+		// Bug when called in via a hook on the front page.
+		// if ( ! in_the_loop() && ! is_front_page() ) {
+		// 	rewind_posts();
+		// 	the_post();
+		// }
 		return get_post();
 	}
 	/**

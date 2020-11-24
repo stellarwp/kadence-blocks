@@ -74,11 +74,25 @@ class KB_Ajax_Form {
 					0 => array(
 						'success'          => esc_html__( 'Submission Success, Thanks for getting in touch!', 'kadence-blocks' ),
 						'error'            => esc_html__( 'Submission Failed', 'kadence-blocks' ),
-						'recaptchaerror'   => esc_html__( 'Submission Failed, reCaptcha spam prevention.', 'kadence-blocks' ),
+						'recaptchaerror'   => esc_html__( 'Submission Failed, reCaptcha spam prevention. Please reload your page and try again.', 'kadence-blocks' ),
 					),
 				);
-				if ( isset( $form_args['messages'] ) ) {
-					$messages = wp_parse_args( $messages, $form_args['messages'] );
+				if ( isset( $form_args['messages'] ) && isset( $form_args['messages'][0] ) ) {
+					if ( isset( $form_args['messages'][0]['recaptchaerror'] ) && ! empty( $form_args['messages'][0]['recaptchaerror'] ) ) {
+						$messages[0]['recaptchaerror'] = $form_args['messages'][0]['recaptchaerror'];
+					}
+					if ( isset( $form_args['messages'][0]['success'] ) && ! empty( $form_args['messages'][0]['success'] ) ) {
+						$messages[0]['success'] = $form_args['messages'][0]['success'];
+					}
+					if ( isset( $form_args['messages'][0]['error'] ) && ! empty( $form_args['messages'][0]['error'] ) ) {
+						$messages[0]['error'] = $form_args['messages'][0]['error'];
+					}
+					if ( isset( $form_args['messages'][0]['required'] ) && ! empty( $form_args['messages'][0]['required'] ) ) {
+						$messages[0]['required'] = $form_args['messages'][0]['required'];
+					}
+					if ( isset( $form_args['messages'][0]['invalid'] ) && ! empty( $form_args['messages'][0]['invalid'] ) ) {
+						$messages[0]['invalid'] = $form_args['messages'][0]['invalid'];
+					}
 				}
 				// Check Honey Pot.
 				if ( isset( $form_args['honeyPot'] ) && true === $form_args['honeyPot'] ) {

@@ -18,6 +18,7 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import KadenceColorOutput from '../../kadence-color-output';
 import ColumnStyleCopyPaste from './copy-paste-style';
+import MeasurementIndividualControls from '../../measurement-control-individual';
 /**
  * Internal block libraries
  */
@@ -40,6 +41,7 @@ const {
 	Dashicon,
 	PanelBody,
 	Panel,
+	PanelRow,
 	ToggleControl,
 	Button,
 	SelectControl,
@@ -62,6 +64,12 @@ class KadenceColumn extends Component {
 		this.state = {
 			borderWidthControl: 'linked',
 			borderRadiusControl: 'linked',
+			mobilePaddingControl: 'individual',
+			mobileMarginControl: 'individual',
+			tabletPaddingControl: 'individual',
+			tabletMarginControl: 'individual',
+			desktopPaddingControl: 'individual',
+			desktopMarginControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
@@ -135,7 +143,7 @@ class KadenceColumn extends Component {
 	}
 	render() {
 		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile }, setAttributes, clientId } = this.props;
-		const { borderWidthControl, borderRadiusControl } = this.state;
+		const { borderWidthControl, borderRadiusControl, mobilePaddingControl, mobileMarginControl, tabletPaddingControl, tabletMarginControl, deskPaddingControl, deskMarginControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -154,107 +162,38 @@ class KadenceColumn extends Component {
 			} );
 		};
 		const mobileControls = (
-			<PanelBody
-				title={ __( 'Mobile Padding/Margin' ) }
-				initialOpen={ false }
-			>
-				<h2>{ __( 'Mobile Padding (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ topPaddingM }
-					className="kt-icon-rangecontrol kt-top-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							topPaddingM: value,
-						} );
-					} }
+			<Panel className="components-panel__body is-opened">
+				<MeasurementIndividualControls
+					label={ __( 'Mobile Padding' ) }
+					top={ topPaddingM }
+					bottom={ bottomPaddingM }
+					left={ leftPaddingM }
+					right={ rightPaddingM }
+					control={ mobilePaddingControl }
+					onChangeTop={ ( value ) => setAttributes( { topPaddingM: value } ) }
+					onChangeBottom={ ( value ) => setAttributes( { bottomPaddingM: value } ) }
+					onChangeRight={ ( value ) => setAttributes( { rightPaddingM: value } ) }
+					onChangeLeft={ ( value ) => setAttributes( { leftPaddingM: value } ) }
+					onControl={ ( value ) => this.setState( { mobilePaddingControl: value } ) }
 					min={ 0 }
 					max={ 500 }
+					step={ 1 }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ rightPaddingM }
-					className="kt-icon-rangecontrol kt-right-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							rightPaddingM: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ bottomPaddingM }
-					className="kt-icon-rangecontrol kt-bottom-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							bottomPaddingM: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ leftPaddingM }
-					className="kt-icon-rangecontrol kt-left-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							leftPaddingM: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<h2>{ __( 'Mobile Margin (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ topMarginM }
-					className="kt-icon-rangecontrol kt-top-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							topMarginM: value,
-						} );
-					} }
+				<MeasurementIndividualControls
+					label={ __( 'Mobile Margin' ) }
+					top={ topMarginM }
+					bottom={ bottomMarginM }
+					left={ leftMarginM }
+					right={ rightMarginM }
+					control={ mobileMarginControl }
+					onChangeTop={ ( value ) => setAttributes( { topMarginM: value } ) }
+					onChangeBottom={ ( value ) => setAttributes( { bottomMarginM: value } ) }
+					onChangeRight={ ( value ) => setAttributes( { rightMarginM: value } ) }
+					onChangeLeft={ ( value ) => setAttributes( { leftMarginM: value } ) }
+					onControl={ ( value ) => this.setState( { mobileMarginControl: value } ) }
 					min={ -200 }
 					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ rightMarginM }
-					className="kt-icon-rangecontrol kt-right-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							rightMarginM: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ bottomMarginM }
-					className="kt-icon-rangecontrol kt-bottom-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							bottomMarginM: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ leftMarginM }
-					className="kt-icon-rangecontrol kt-left-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							leftMarginM: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
+					step={ 1 }
 				/>
 				<RangeControl
 					label={ __( 'Mobile Collapse Order' ) }
@@ -267,217 +206,79 @@ class KadenceColumn extends Component {
 					min={ -10 }
 					max={ 10 }
 				/>
-			</PanelBody>
+			</Panel>
 		);
 		const tabletControls = (
-			<PanelBody
-				title={ __( 'Tablet Padding/Margin' ) }
-				initialOpen={ false }
-			>
-				<h2>{ __( 'Tablet Padding (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ topPaddingT }
-					className="kt-icon-rangecontrol kt-top-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							topPaddingT: value,
-						} );
-					} }
+			<Panel className="components-panel__body is-opened">
+				<MeasurementIndividualControls
+					label={ __( 'Tablet Padding' ) }
+					top={ topPaddingT }
+					bottom={ bottomPaddingT }
+					left={ leftPaddingT }
+					right={ rightPaddingT }
+					control={ tabletPaddingControl }
+					onChangeTop={ ( value ) => setAttributes( { topPaddingT: value } ) }
+					onChangeBottom={ ( value ) => setAttributes( { bottomPaddingT: value } ) }
+					onChangeRight={ ( value ) => setAttributes( { rightPaddingT: value } ) }
+					onChangeLeft={ ( value ) => setAttributes( { leftPaddingT: value } ) }
+					onControl={ ( value ) => this.setState( { tabletPaddingControl: value } ) }
 					min={ 0 }
 					max={ 500 }
+					step={ 1 }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ rightPaddingT }
-					className="kt-icon-rangecontrol kt-right-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							rightPaddingT: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ bottomPaddingT }
-					className="kt-icon-rangecontrol kt-bottom-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							bottomPaddingT: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ leftPaddingT }
-					className="kt-icon-rangecontrol kt-left-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							leftPaddingT: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<h2>{ __( 'Tablet Margin (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ topMarginT }
-					className="kt-icon-rangecontrol kt-top-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							topMarginT: value,
-						} );
-					} }
+				<MeasurementIndividualControls
+					label={ __( 'Tablet Margin' ) }
+					top={ topMarginT }
+					bottom={ bottomMarginT }
+					left={ leftMarginT }
+					right={ rightMarginT }
+					control={ tabletMarginControl }
+					onChangeTop={ ( value ) => setAttributes( { topMarginT: value } ) }
+					onChangeBottom={ ( value ) => setAttributes( { bottomMarginT: value } ) }
+					onChangeRight={ ( value ) => setAttributes( { rightMarginT: value } ) }
+					onChangeLeft={ ( value ) => setAttributes( { leftMarginT: value } ) }
+					onControl={ ( value ) => this.setState( { tabletMarginControl: value } ) }
 					min={ -200 }
 					max={ 200 }
+					step={ 1 }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ rightMarginT }
-					className="kt-icon-rangecontrol kt-right-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							rightMarginT: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ bottomMarginT }
-					className="kt-icon-rangecontrol kt-bottom-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							bottomMarginT: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ leftMarginT }
-					className="kt-icon-rangecontrol kt-left-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							leftMarginT: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-			</PanelBody>
+			</Panel>
 		);
 		const deskControls = (
-			<PanelBody
-				title={ __( 'Padding/Margin' ) }
-				initialOpen={ false }
-			>
-				<h2>{ __( 'Padding (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ topPadding }
-					className="kt-icon-rangecontrol kt-top-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							topPadding: value,
-						} );
-					} }
+			<Panel className="components-panel__body is-opened">
+				<MeasurementIndividualControls
+					label={ __( 'Padding' ) }
+					top={ topPadding }
+					bottom={ bottomPadding }
+					left={ leftPadding }
+					right={ rightPadding }
+					control={ deskPaddingControl }
+					onChangeTop={ ( value ) => setAttributes( { topPadding: value } ) }
+					onChangeBottom={ ( value ) => setAttributes( { bottomPadding: value } ) }
+					onChangeRight={ ( value ) => setAttributes( { rightPadding: value } ) }
+					onChangeLeft={ ( value ) => setAttributes( { leftPadding: value } ) }
+					onControl={ ( value ) => this.setState( { deskPaddingControl: value } ) }
 					min={ 0 }
 					max={ 500 }
+					step={ 1 }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ rightPadding }
-					className="kt-icon-rangecontrol kt-right-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							rightPadding: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ bottomPadding }
-					className="kt-icon-rangecontrol kt-bottom-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							bottomPadding: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ leftPadding }
-					className="kt-icon-rangecontrol kt-left-padding"
-					onChange={ ( value ) => {
-						setAttributes( {
-							leftPadding: value,
-						} );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<h2>{ __( 'Margin (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ topMargin }
-					className="kt-icon-rangecontrol kt-top-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							topMargin: value,
-						} );
-					} }
+				<MeasurementIndividualControls
+					label={ __( 'Margin' ) }
+					top={ topMargin }
+					bottom={ bottomMargin }
+					left={ leftMargin }
+					right={ rightMargin }
+					control={ deskMarginControl }
+					onChangeTop={ ( value ) => setAttributes( { topMargin: value } ) }
+					onChangeBottom={ ( value ) => setAttributes( { bottomMargin: value } ) }
+					onChangeRight={ ( value ) => setAttributes( { rightMargin: value } ) }
+					onChangeLeft={ ( value ) => setAttributes( { leftMargin: value } ) }
+					onControl={ ( value ) => this.setState( { deskMarginControl: value } ) }
 					min={ -200 }
 					max={ 200 }
+					step={ 1 }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ rightMargin }
-					className="kt-icon-rangecontrol kt-right-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							rightMargin: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ bottomMargin }
-					className="kt-icon-rangecontrol kt-bottom-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							bottomMargin: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ leftMargin }
-					className="kt-icon-rangecontrol kt-left-margin"
-					onChange={ ( value ) => {
-						setAttributes( {
-							leftMargin: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-			</PanelBody>
+			</Panel>
 		);
 		const tabControls = (
 			<TabPanel className="kt-inspect-tabs"
