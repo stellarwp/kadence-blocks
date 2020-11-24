@@ -27,14 +27,18 @@ const save = ( { attributes } ) => {
 
 		displayText,
 		contentText,
+		textFont,
 
 		displayAmount,
 		amount,
+		priceFont
 	} = attributes;
 
 	const hasAmount    = displayAmount && amount != '' ? true : false;
 	const hasContetnt  = displayTitle || displayText ? true : false;
 	const titleTagName = 'h' + titleFont[ 0 ].level;
+	const textTagName = 'h' + textFont[ 0 ].level;
+	const priceTagName = 'h' + priceFont[ 0 ].level;
 
 	if ( !hasContetnt && !displayAmount ) {
 		return ( <Fragment></Fragment> )
@@ -59,7 +63,7 @@ const save = ( { attributes } ) => {
 								}
 								{ 	displayText &&
 									<RichText.Content
-										tagName="p"
+										tagName={ textTagName }
 										className={ classnames( 'kt-item-text' ) }
 										value={ contentText }
 									/>
@@ -71,7 +75,7 @@ const save = ( { attributes } ) => {
 							<div className={ classnames( 'kt-item-right kt-item-price' ) }>
 
 								<RichText.Content
-									tagName="div"
+									tagName={ priceTagName }
 									className={ classnames( 'kt-item-amount' ) }
 									value={ amount }
 								/>

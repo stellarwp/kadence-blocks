@@ -60,7 +60,7 @@ export default {
 			padding: [ 0, 0, 35, 0 ],
 			paddingControl: 'linked',
 			margin: [ 0, 0, 0, 0 ],
-			marginControl: 'individual',
+			marginControl: 'linked',
 		} ],
 	},
 	description: {
@@ -77,7 +77,7 @@ export default {
 	},
 	columns: {
 		type: 'Array',
-		default: [ 3, 3, 3, 2, 1, 1 ],
+		default: [ 2, 2, 2, 2, 1, 1 ],
 	},
 	columnControl: {
 		type: 'string',
@@ -85,7 +85,7 @@ export default {
 	},
 	gutter: {
 		type: 'Array',
-		default: [ 10, '', '' ],
+		default: [ 50, '', '' ],
 	},
 	catTitle: {
 		type: 'Boolean',

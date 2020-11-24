@@ -7927,24 +7927,24 @@ button.components-button.kt-accordion-add.is-primary svg {
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
-.wp-block[data-type="kadence/restaurantmenu"] {
-  background: #fff; }
-  .wp-block[data-type="kadence/restaurantmenu"] .wp-block {
-    max-width: none !important; }
-  .wp-block[data-type="kadence/restaurantmenu"] .editor-block-list__layout,
-  .wp-block[data-type="kadence/restaurantmenu"] .block-editor-block-list__layout {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap; }
-  .wp-block[data-type="kadence/restaurantmenu"] .kt-add-more-btn-wrap {
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-align: center;
-        align-items: center; }
-    .wp-block[data-type="kadence/restaurantmenu"] .kt-add-more-btn-wrap button {
-      color: #000;
-      font-weight: 500; }
+.wp-block[data-type="kadence/restaurantmenu"] .wp-block {
+  max-width: none !important; }
+
+.wp-block[data-type="kadence/restaurantmenu"] .editor-block-list__layout,
+.wp-block[data-type="kadence/restaurantmenu"] .block-editor-block-list__layout {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap; }
+
+.wp-block[data-type="kadence/restaurantmenu"] .kt-add-more-btn-wrap {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center; }
+  .wp-block[data-type="kadence/restaurantmenu"] .kt-add-more-btn-wrap button {
+    color: #000;
+    font-weight: 500; }
 /**
  * #.# Common SCSS
  *
@@ -8021,11 +8021,14 @@ button.components-button.kt-accordion-add.is-primary svg {
         align-items: flex-start;
     width: 100%; }
     .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-left {
-      padding-right: 20px;
       width: 80%; }
     .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right {
       display: -ms-flexbox;
       display: flex;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+      -ms-flex-align: start;
+          align-items: flex-start;
       width: 20%; }
 /**
  * #.# Common SCSS

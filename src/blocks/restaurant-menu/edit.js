@@ -71,6 +71,11 @@ class KadenceRestaurantMenu extends Component {
 			hAlign,
 			hAlignTablet,
 			hAlignMobile,
+
+			cAlign,
+			cAlignTablet,
+			cAlignMobile,
+
 			containerBackground,
 			containerBackgroundOpacity,
 			containerHoverBackground,
@@ -103,21 +108,20 @@ class KadenceRestaurantMenu extends Component {
 					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-halign-right .kt-menu-category-title {
 						text-align: right;
 					}
-					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-halign-right .block-editor-block-list__layout {
-						justify-content: flex-end;
-					}
-
 					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-halign-left .kt-menu-category-title {
 						text-align: left;
 					}
-					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-halign-left .block-editor-block-list__layout {
-						justify-content: flex-start;
-					}
-
 					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-halign-center .kt-menu-category-title {
 						text-align: center;
 					}
-					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-halign-center .block-editor-block-list__layout {
+
+					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-calign-right .block-editor-block-list__layout {
+						justify-content: flex-end;
+					}
+					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-calign-left .block-editor-block-list__layout {
+						justify-content: flex-start;
+					}
+					.kt-restaurent-menu-id-${uniqueID}.kt-restaurent-menu-calign-center .block-editor-block-list__layout {
 						justify-content: center;
 					}
 				`}</style>
@@ -131,6 +135,7 @@ class KadenceRestaurantMenu extends Component {
 					className={ classnames(
 						`kt-restaurent-menu-id-${uniqueID}`,
 						`kt-restaurent-menu-halign-${ hAlign }`,
+						`kt-restaurent-menu-calign-${ cAlign }`,
 						'kt-restaurent-menu'
 					) }
 					style={ {
@@ -151,16 +156,20 @@ class KadenceRestaurantMenu extends Component {
 						allowedBlocks={['kadence/restaurantmenucategory']}
 						template={ templates }
 						templateLock={ false }
-						renderAppender={ () => (
-							<IconButton
-					        icon="insert"
-					        label={ __('Add New Menu') }
-					        onClick={ () => {
-								const innerCount = select("core/editor").getBlocksByClientId(clientId)[0].innerBlocks.length;
-								let block = createBlock("kadence/restaurantmenucategory");
-								dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
-							} }
-					    /> ) }
+						renderAppender={ () =>  null
+
+							// (
+							// 	<IconButton
+						 //        icon="insert"
+						 //        label={ __('Add New Menu') }
+						 //        onClick={ () => {
+							// 		const innerCount = select("core/editor").getBlocksByClientId(clientId)[0].innerBlocks.length;
+							// 		let block = createBlock("kadence/restaurantmenucategory");
+							// 		dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
+							// 	} }
+						 //    /> )
+
+					    }
 					/>
 				</div>
 

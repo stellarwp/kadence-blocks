@@ -90,18 +90,21 @@ class KadenceCategoryItem extends Component {
 			titleFont,
 			titleMinHeight,
 			titleColor,
+			titleHoverColor,
 
 			displayText,
 			contentText,
 			textFont,
 			textMinHeight,
 			textColor,
+			textHoverColor,
 
 			displayAmount,
 			amount,
 			priceFont,
 			priceMinHeight,
-			priceColor
+			priceColor,
+			priceHoverColor
 
 		} = attributes;
 
@@ -137,11 +140,15 @@ class KadenceCategoryItem extends Component {
 			<style>
 				{ ( containerHoverBackground ? `.kt-category-content-item-id-${uniqueID} .kt-category-content-item:hover { background: ${ ( containerHoverBackground ? KadenceColorOutput( containerHoverBackground, ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBackgroundOpacity ? containerHoverBackgroundOpacity : 1 ) ) ) } !important; }` : '' ) }
 				{ ( containerHoverBorder ? `.kt-category-content-item-id-${uniqueID} .kt-category-content-item:hover { border-color: ${ ( containerHoverBorder ? KadenceColorOutput( containerHoverBorder, ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerHoverBorderOpacity ? containerHoverBorderOpacity : 1 ) ) ) } !important; }` : '' ) }
-
+				{ ( titleHoverColor ? `.kt-category-content-item-id-${uniqueID} .kt-category-content-item:hover .kt-item-title { color: ${ KadenceColorOutput( titleHoverColor ) } !important; }` : '' ) }
+				{ ( textHoverColor ? `.kt-category-content-item-id-${uniqueID} .kt-category-content-item:hover .kt-item-text { color: ${ KadenceColorOutput( textHoverColor ) } !important; }` : '' ) }
+				{ ( priceHoverColor ? `.kt-category-content-item-id-${uniqueID} .kt-category-content-item:hover .kt-item-amount { color: ${ KadenceColorOutput( priceHoverColor ) } !important; }` : '' ) }
 			</style>
 		);
 
 		const titleTagName = 'h' + titleFont[ 0 ].level;
+		const textTagName = 'h' + textFont[ 0 ].level;
+		const priceTagName = 'h' + priceFont[ 0 ].level;
 
 		return (
 			<Fragment>
@@ -204,7 +211,7 @@ class KadenceCategoryItem extends Component {
 
 									{ 	displayText &&
 										<RichText
-											tagName="p"
+											tagName={ textTagName }
 											className={ classnames( className, 'kt-item-text' ) }
 											value={ contentText }
 											onChange={ contentText => setAttributes( { contentText } ) }
@@ -230,7 +237,7 @@ class KadenceCategoryItem extends Component {
 								<div className={ classnames( 'kt-item-right kt-item-price' ) }>
 
 									<RichText
-										tagName="span"
+										tagName={ priceTagName }
 										className={ classnames( className, 'kt-item-amount' ) }
 										value={ amount }
 										onChange={ amount => setAttributes( { amount } ) }

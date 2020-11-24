@@ -53,10 +53,10 @@ export default {
 			variant: '',
 			subset: '',
 			loadGoogle: true,
-			padding: [ 0, 30, 0, 0 ],
+			padding: [ 0, 0, 0, 0 ],
 			paddingControl: 'linked',
 			margin: [ 0, 0, 0, 0 ],
-			marginControl: 'individual',
+			marginControl: 'linked',
 		} ],
 	},
 	displayText: {
@@ -101,7 +101,7 @@ export default {
 			padding: [ 0, 0, 0, 0 ],
 			paddingControl: 'linked',
 			margin: [ 0, 0, 0, 0 ],
-			marginControl: 'individual',
+			marginControl: 'linked',
 		} ],
 	},
 	displayAmount: {
@@ -144,7 +144,7 @@ export default {
 			padding: [ 0, 0, 0, 0 ],
 			paddingControl: 'linked',
 			margin: [ 0, 0, 0, 0 ],
-			marginControl: 'individual',
+			marginControl: 'linked',
 		} ],
 	},
 	currency: {

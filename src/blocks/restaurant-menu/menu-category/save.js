@@ -22,7 +22,7 @@ const save = ( { attributes } ) => {
 		menuTitle,
 		columns,
 		uniqueID,
-		catTitle,
+		displayTitle,
 		titleFont
 	} = attributes;
 
@@ -35,7 +35,7 @@ const save = ( { attributes } ) => {
 				'kt-menu-category'
 			) } >
 
-				{ 	catTitle && <RichText.Content
+				{ 	displayTitle && <RichText.Content
 						tagName={ titleTagName }
 						className={ classnames( 'kt-menu-category-title' ) }
 						value={ menuTitle }

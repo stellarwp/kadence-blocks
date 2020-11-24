@@ -30,6 +30,10 @@
 			.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right {
 				display: -ms-flexbox;
 				display: flex;
+				-ms-flex-pack: end;
+						justify-content: flex-end;
+				-ms-flex-align: start;
+						align-items: flex-start;
 				white-space: nowrap;
 				width: 20%; }
 				.kt-restaurent-menu .kt-menu-category .kt-category-content .kt-category-content-item .kt-item-content .kt-item-right .kt-item-currency {

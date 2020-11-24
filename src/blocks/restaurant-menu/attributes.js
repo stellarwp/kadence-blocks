@@ -25,6 +25,18 @@ export default {
 		type: 'string',
 		default: '',
 	},
+	cAlign: {
+		type: 'string',
+		default: 'left',
+	},
+	cAlignTablet: {
+		type: 'string',
+		default: '',
+	},
+	cAlignMobile: {
+		type: 'string',
+		default: '',
+	},
 	containerBackground: {
 		type: 'string',
 		default: '#f2f2f2',

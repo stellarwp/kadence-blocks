@@ -5,6 +5,8 @@ const { __ }                  = wp.i18n;
 const { Component, Fragment } = wp.element;
 const { BlockControls }       = wp.blockEditor;
 const { Toolbar }             = wp.components;
+const { select, dispatch }    = wp.data;
+const { createBlock }         = wp.blocks;
 
 /**
  * Build the restaurant menu controls
@@ -28,6 +30,16 @@ class Controls extends Component {
 				isActive: fullWidth,
 				onClick: () => {
 					setAttributes({ fullWidth: fullWidth ? false : true })
+				}
+			},
+			{
+				icon: 'plus',
+				title: __( 'Add New Menu' ),
+				isActive: false,
+				onClick: () => {
+					const innerCount = select("core/editor").getBlocksByClientId(clientId)[0].innerBlocks.length;
+					let block = createBlock("kadence/restaurantmenucategory");
+					dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
 				}
 			}
 		];

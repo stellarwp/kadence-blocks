@@ -6,6 +6,7 @@
  * Internal dependencies
  */
 import Inspector from './inspector';
+import Controls from './controls';
 import WebfontLoader from '../../../fontloader';
 import KadenceColorOutput from '../../../kadence-color-output';
 
@@ -47,6 +48,14 @@ class KadenceRestaurantMenuCategory extends Component {
 		this.props.setAttributes( {
 			titleFont: [...this.props.attributes.titleFont]
 		} );
+
+		this.props.setAttributes( {
+			gutter: [...this.props.attributes.gutter]
+		} );
+
+		this.props.setAttributes( {
+			columns: [...this.props.attributes.columns]
+		} );
 	}
 
 	render() {
@@ -81,11 +90,11 @@ class KadenceRestaurantMenuCategory extends Component {
 		const config = ( titleFont[ 0 ].google ? gconfig : '' );
 		const titleTagName = 'h' + titleFont[ 0 ].level;
 
-
 		return (
 			<Fragment>
 
 				{ isSelected && <Inspector {...this.props} /> }
+				{ isSelected && <Controls {...this.props} /> }
 
 				<style>
 					{ `
@@ -117,7 +126,7 @@ class KadenceRestaurantMenuCategory extends Component {
 						<RichText
 							className="kt-menu-category-title"
 							tagName={ titleTagName }
-							placeholder={ __( 'Title' ) }
+							placeholder={ __( 'Menu Title' ) }
 							onChange={ (value) => setAttributes( { menuTitle: value } ) }
 							value={ menuTitle }
 							style={ {
@@ -158,17 +167,21 @@ class KadenceRestaurantMenuCategory extends Component {
 								]
 							] }
 							templateLock={ false }
-							renderAppender={ () => (
-								<IconButton
-							        icon="insert"
-							        label={ __('Add New Food Item') }
-							        onClick={ () => {
-										const innerCount = select("core/editor").getBlocksByClientId(clientId)[0].innerBlocks.length;
-										let block = createBlock("kadence/restaurantmenuitem");
-										dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
-									} }
-							    />
-							) }
+							renderAppender={ () =>  null
+
+								// (
+								// 	<IconButton
+								//         icon="insert"
+								//         label={ __('Add New Food Item') }
+								//         onClick={ () => {
+								// 			const innerCount = select("core/editor").getBlocksByClientId(clientId)[0].innerBlocks.length;
+								// 			let block = createBlock("kadence/restaurantmenuitem");
+								// 			dispatch("core/block-editor").insertBlock(block, innerCount, clientId);
+								// 		} }
+								//     />
+								// )
+
+							}
 						/>
 					</div>
 				</div>

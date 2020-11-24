@@ -3880,12 +3880,12 @@ class Kadence_Blocks_Frontend {
 		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-right .kt-menu-category-title{ text-align: right; } ';
 
 
-		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-item-content,
-			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-category-content { justify-content: flex-start; }';
-		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-center .kt-item-content,
-			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-center .kt-category-content { justify-content: center; }';
-		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-right .kt-item-content,
-			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-right .kt-category-content { justify-content: flex-end; }';
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-left .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-left .kt-category-content { justify-content: flex-start; }';
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-center .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-center .kt-category-content { justify-content: center; }';
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-right .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-right .kt-category-content { justify-content: flex-end; }';
 
 
 
@@ -4036,6 +4036,27 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_restaurant_menu_item_title_array( $attr, $unique_id ) {
+
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
+			$title_font = $attr['titleFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
+
 		$css = '';
 
 		//Typography Style
@@ -4174,7 +4195,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 
-		$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ':hover {';
+		$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-category-content-item:hover {';
 			$border_hover = ( isset( $attr['containerHoverBorder'] ) && ! empty( $attr['containerHoverBorder'] ) ? $attr['containerHoverBorder'] : '#eeeeee' );
 			$alpha = ( isset( $attr['containerHoverBorderOpacity'] ) && is_numeric( $attr['containerHoverBorderOpacity'] ) ? $attr['containerHoverBorderOpacity'] : 1 );
 			$bg_hover = ( isset( $attr['containerHoverBackground'] ) && ! empty( $attr['containerHoverBackground'] ) ? $attr['containerHoverBackground'] : '#f2f2f2' );
@@ -4193,6 +4214,27 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_restaurant_menu_item_price_array( $attr, $unique_id ) {
+
+
+		if ( isset( $attr['priceFont'] ) && is_array( $attr['priceFont'] ) && isset( $attr['priceFont'][0] ) && is_array( $attr['priceFont'][0] ) && isset( $attr['priceFont'][0]['google'] ) && $attr['priceFont'][0]['google'] && ( ! isset( $attr['priceFont'][0]['loadGoogle'] ) || true === $attr['priceFont'][0]['loadGoogle'] ) &&  isset( $attr['priceFont'][0]['family'] ) ) {
+			$title_font = $attr['priceFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
 
 		$css = '';
 
@@ -4296,6 +4338,26 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_restaurant_menu_item_text_array( $attr, $unique_id ) {
+
+		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && isset( $attr['textFont'][0]['google'] ) && $attr['textFont'][0]['google'] && ( ! isset( $attr['textFont'][0]['loadGoogle'] ) || true === $attr['textFont'][0]['loadGoogle'] ) &&  isset( $attr['textFont'][0]['family'] ) ) {
+			$title_font = $attr['textFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
 
 		$css = '';
 

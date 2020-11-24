@@ -73,6 +73,11 @@ class Inspector extends Component {
 			hAlign,
 			hAlignTablet,
 			hAlignMobile,
+
+			cAlign,
+			cAlignTablet,
+			cAlignMobile,
+
 			containerBackground,
 			containerBackgroundOpacity,
 			containerHoverBackground,
@@ -116,7 +121,7 @@ class Inspector extends Component {
 						title={ __( 'Container Settings' ) }
 						initialOpen={ false }>
 
-						<h2 className="kt-heading-size-title">{ __( 'Content Align' ) }</h2>
+						<h2 className="kt-heading-size-title">{ __( 'Menu Title Align' ) }</h2>
 						<TabPanel className="kt-size-tabs kb-sidebar-alignment"
 							activeClass="active-tab"
 							tabs={ [
@@ -162,6 +167,61 @@ class Inspector extends Component {
 													isCollapsed={ false }
 													value={ hAlign }
 													onChange={ ( value ) => setAttributes( { hAlign: value } ) }
+												/>
+											);
+										}
+									}
+									return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+								}
+							}
+						</TabPanel>
+
+						<h2 className="kt-heading-size-title">{ __( 'Content Align' ) }</h2>
+						<TabPanel className="kt-size-tabs kb-sidebar-alignment"
+							activeClass="active-tab"
+							tabs={ [
+								{
+									name: 'desk',
+									title: <Dashicon icon="desktop" />,
+									className: 'kt-desk-tab',
+								},
+								{
+									name: 'tablet',
+									title: <Dashicon icon="tablet" />,
+									className: 'kt-tablet-tab',
+								},
+								{
+									name: 'mobile',
+									title: <Dashicon icon="smartphone" />,
+									className: 'kt-mobile-tab',
+								},
+							] }>
+							{
+								( tab ) => {
+									let tabout;
+									if ( tab.name ) {
+										if ( 'mobile' === tab.name ) {
+											tabout = (
+												<AlignmentToolbar
+													isCollapsed={ false }
+													value={ cAlignMobile }
+													onChange={ ( value ) => setAttributes( { cAlignMobile: value } ) }
+												/>
+											);
+										} else if ( 'tablet' === tab.name ) {
+											tabout = (
+												<AlignmentToolbar
+													isCollapsed={ false }
+													value={ cAlignTablet }
+													onChange={ ( value ) => setAttributes( { cAlignTablet: value } ) }
+												/>
+											);
+										} else {
+											tabout = (
+												<AlignmentToolbar
+													isCollapsed={ false }
+													value={ cAlign }
+													onChange={ ( value ) => setAttributes( { cAlign: value } ) }
 												/>
 											);
 										}
