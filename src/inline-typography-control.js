@@ -122,13 +122,24 @@ class InlineTypographyControl extends Component {
 			standardWeights = buttonWeights;
 		}
 		const activeFont = ( typographySelectOptions ? typographySelectOptions.filter( ( { value } ) => value === this.props.fontFamily ) : '' );
-		const fontStandardWeights = ( '' !== activeFont && undefined !== activeFont[ 0 ] && undefined !== activeFont[ 0 ].weights ?activeFont[ 0 ].weights : standardWeights );
-		const fontStandardStyles = ( '' !== activeFont && undefined !== activeFont[ 0 ] && undefined !== activeFont[ 0 ].styles ? activeFont[ 0 ].styles : standardStyles );
-		const typographyWeights = ( this.props.googleFont && this.props.fontFamily ? gFonts[ this.props.fontFamily ].w.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : fontStandardWeights );
-		const typographyStyles = ( this.props.googleFont && this.props.fontFamily ? gFonts[ this.props.fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : fontStandardStyles );
-		const typographySubsets = ( this.props.googleFont && this.props.fontFamily ? gFonts[ this.props.fontFamily ].s.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) ) : '' );
-		this.setState( { typographyWeights: typographyWeights } );
-		this.setState( { typographyStyles: typographyStyles } );
+		let fontStandardWeights = standardWeights;
+		let fontStandardStyles = standardStyles;
+		let typographySubsets = '';
+		if ( activeFont && activeFont[ 0 ] ) {
+			if ( undefined !== activeFont[ 0 ].weights ) {
+				fontStandardWeights = activeFont[ 0 ].weights;
+			}
+			if ( undefined !== activeFont[ 0 ].styles ) {
+				fontStandardStyles = activeFont[ 0 ].styles;
+			}
+		}
+		if ( this.props.googleFont && this.props.fontFamily && gFonts[ this.props.fontFamily ] ) {
+			fontStandardWeights = gFonts[ this.props.fontFamily ].w.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
+			fontStandardStyles = gFonts[ this.props.fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
+			typographySubsets = gFonts[ this.props.fontFamily ].s.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
+		}
+		this.setState( { typographyWeights: fontStandardWeights } );
+		this.setState( { typographyStyles: fontStandardStyles } );
 		this.setState( { typographySubsets: typographySubsets } );
 		this.setState( { fontFamilyValue: activeFont } );
 	}
