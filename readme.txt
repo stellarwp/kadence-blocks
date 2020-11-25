@@ -87,6 +87,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.9.6 =
+* add: Mailerlite
+** Fix: Issue with accordions pane link with multiple accordions on the page.
+* Fix: 
+
 = 1.9.5 =
 * Fix: Issue with rendering when previously had selected muli font.
 

@@ -415,6 +415,17 @@ class Kadence_Blocks_Settings {
 				'default'           => '',
 			)
 		);
+		register_setting(
+			'kadence_blocks_mailerlite_api',
+			'kadence_blocks_mailerlite_api',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'MailerLite API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
 	}
 	/**
 	 * Register settings

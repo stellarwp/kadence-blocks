@@ -66,7 +66,7 @@ class KadenceConfig extends Component {
 			<Fragment>
 				<PluginSidebarMoreMenuItem
 					target="kadence-controls"
-					icon={ icons.kadence }
+					icon={ icons.kadenceNew }
 				>
 					{ __( 'Kadence Blocks Controls' ) }
 				</PluginSidebarMoreMenuItem>
@@ -185,6 +185,6 @@ class KadenceConfig extends Component {
 }
 
 registerPlugin( 'kadence-control', {
-	icon: icons.kadenceBW,
+	icon: icons.kadenceNew,
 	render: KadenceConfig,
 } );

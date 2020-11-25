@@ -264,6 +264,83 @@ class KB_Ajax_Form {
 								$final_data['redirect'] = apply_filters( 'kadence_blocks_form_redirect', trim( $form_args['redirect'] ), $form_args, $fields, $form_id, $post_id );
 							}
 							break;
+						case 'mailerlite':
+							$api_key = get_option( 'kadence_blocks_mailerlite_api' );
+							if ( empty( $api_key ) ) {
+								return;
+							}
+							$mailerlite_default = array(
+								'map'    => array(),
+								'groupe' => '',
+							);
+							$mailerlite_args = ( isset( $form_args['mailerlite'] ) && is_array( $form_args['mailerlite'] ) && isset( $form_args['mailerlite'][0] ) && is_array( $form_args['mailerlite'][0] ) ? $form_args['mailerlite'][0] : $mailerlite_default );
+							$groups = ( isset( $mailerlite_args['group'] ) ? $mailerlite_args['group'] : array() );
+							$map = ( isset( $mailerlite_args['map'] ) && is_array( $mailerlite_args['map'] ) ? $mailerlite_args['map'] : array() );
+							$body = array(
+								'fields' => array(),
+							);
+							$email = false;
+							if ( ! empty( $map ) ) {
+								foreach ( $fields as $key => $data ) {
+									if ( isset( $map[ $key ] ) && ! empty( $map[ $key ] ) ) {
+										if ( 'email' === $map[ $key ] && ! $email ) {
+											$email = $data['value'];
+											$body['email'] = $data['value'];
+										} else {
+											$body['fields'][ $map[ $key ] ] = $data['value'];
+										}
+									}
+								}
+							} else {
+								foreach ( $fields as $key => $data ) {
+									if ( 'email' === $data['type'] ) {
+										$email = $data['value'];
+										$body['email'] = $data['value'];
+										break;
+									}
+								}
+							}
+							if ( empty( $body['fields'] ) ) {
+								unset( $body['fields'] );
+							}
+							if ( ! empty( $groups ) && is_array( $groups ) && isset( $groups[0] ) && ! empty( $groups[0] ) ) {
+								$group_id = $groups[0];
+							}
+							if ( isset( $body[ 'email' ] ) ) {
+								if ( ! empty( $group_id ) ) {
+									$api_url = 'https://api.mailerlite.com/api/v2/groups/' . $group_id . '/subscribers';
+								} else {
+									$api_url = 'https://api.mailerlite.com/api/v2/subscribers';
+								}
+								$response = wp_remote_post(
+									$api_url,
+									array(
+										'method'  => 'POST',
+										'timeout' => 10,
+										'headers' => array(
+											'accept'              => 'application/json',
+											'content-type'        => 'application/json',
+											'X-MailerLite-ApiKey' => $api_key,
+										),
+										'body'    => json_encode( $body ),
+									)
+								);
+
+								if ( is_wp_error( $response ) ) {
+									$error_message = $response->get_error_message();
+									error_log( "Something went wrong: $error_message" );
+								} else {
+									if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
+										error_log( __('No Response from MailerLite', 'kadence-blocks-pro' ) );
+										return;
+									}
+									if ( 400 === $response['response']['code'] ) {
+										error_log( $response['response']['message'] );
+										return;
+									}
+								}
+							}
+						break;
 					}
 				}
 

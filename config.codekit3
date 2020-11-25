@@ -382,6 +382,14 @@
 		"oAP": "/dist/class-kadence-blocks-table-of-contents.php",
 		"oF": 0
 		},
+	"/dist/class-mailerlite-form-rest-api.php": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/dist/class-mailerlite-form-rest-api.php",
+		"oF": 0
+		},
 	"/dist/form-ajax.php": {
 		"cB": 0,
 		"ft": 8192,
@@ -1732,6 +1740,17 @@
 		"oF": 1,
 		"oS": 0,
 		"sct": 1
+		},
+	"/src/blocks/form/mailerlite.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/form/mailerlite-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
 		},
 	"/src/blocks/form/style.scss": {
 		"aP": 1,

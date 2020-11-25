@@ -21,6 +21,7 @@ import TypographyControls from '../../typography-control';
 import BoxShadowControl from '../../box-shadow-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import MailerLiteControls from './mailerlite.js';
 /**
  * Import Css
  */
@@ -73,8 +74,11 @@ const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
 const actionOptionsList = [
 	{ value: 'email', label: __( 'Email', 'kadence-blocks' ), help: '', isDisabled: false },
 	{ value: 'redirect', label: __( 'Redirect', 'kadence-blocks' ), help: '', isDisabled: false },
+	{ value: 'mailerlite', label: __( 'Mailerlite', 'kadence-blocks' ), help: __( 'Add User to MailerLite list', 'kadence-blocks' ), isDisabled: false },
 	{ value: 'autoEmail', label: __( 'Auto Respond Email (Pro addon)', 'kadence-blocks' ), help: __( 'Send instant response to form entrant', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: true },
+	{ value: 'sendinblue', label: __( 'SendInBlue (Pro addon)', 'kadence-blocks' ), help: __( 'Add User to SendInBlue list', 'kadence-blocks' ), isDisabled: true },
+	{ value: 'mailchimp', label: __( 'MailChimp (Pro addon)', 'kadence-blocks' ), help: __( 'Add User to MailChimp list', 'kadence-blocks' ), isDisabled: true },
 ];
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -658,8 +662,35 @@ class KadenceForm extends Component {
 		};
 	}
 	render() {
-		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion }, className, isSelected, setAttributes } = this.props;
+		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion, mailerlite }, className, isSelected, setAttributes } = this.props;
 		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl } = this.state;
+		const saveMailerlite = ( value ) => {
+			const newItems = mailerlite.map( ( item, thisIndex ) => {
+				if ( 0 === thisIndex ) {
+					item = { ...item, ...value };
+				}
+
+				return item;
+			} );
+			setAttributes( {
+				mailerlite: newItems,
+			} );
+		};
+		const saveMailerliteMap = ( value, index ) => {
+			const newItems = fields.map( ( item, thisIndex ) => {
+				let newString = '';
+				if ( index === thisIndex ) {
+					newString = value;
+				} else if ( undefined !== mailerlite[ 0 ].map && undefined !== mailerlite[ 0 ].map[ thisIndex ] ) {
+					newString = mailerlite[ 0 ].map[ thisIndex ];
+				} else {
+					newString = '';
+				}
+
+				return newString;
+			} );
+			saveMailerlite( { map: newItems } );
+		};
 		const btnSizes = [
 			{ key: 'small', name: __( 'S', 'kadence-blocks' ) },
 			{ key: 'standard', name: __( 'M', 'kadence-blocks' ) },
@@ -3253,6 +3284,14 @@ class KadenceForm extends Component {
 							/>
 						</PanelBody>
 					</PanelBody>
+					{ actions.includes( 'mailerlite' ) && (
+						<MailerLiteControls
+							fields={ fields }
+							settings={ mailerlite }
+							save={ ( value ) => saveMailerlite( value ) }
+							saveMap={ ( value, i ) => saveMailerliteMap( value, i ) }
+						/>
+					) }
 				</InspectorControls>
 				<div id={ `animate-id${ uniqueID }` } className={ `kb-form-wrap aos-animate${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }>
 					<div id={ `kb-form-${ uniqueID }` } className={ 'kb-form' } style={ {

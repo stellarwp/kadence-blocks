@@ -592,3 +592,14 @@ function wpmlcore_7207_fix_kadence_form_block( array $block ) {
 	return $block;
 }
 add_filter( 'render_block_data', 'wpmlcore_7207_fix_kadence_form_block' );
+
+/**
+ * Setup the post select API endpoint.
+ *
+ * @return void
+ */
+function kadence_blocks_register_api_endpoints() {
+	$mailerlite_controller = new Kadence_MailerLite_REST_Controller;
+	$mailerlite_controller->register_routes();
+}
+add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );

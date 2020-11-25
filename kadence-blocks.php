@@ -42,6 +42,7 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-frontend.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-table-of-contents.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/settings/class-kadence-blocks-settings.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/class-mailerlite-form-rest-api.php';
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );
 

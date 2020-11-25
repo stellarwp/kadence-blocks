@@ -337,6 +337,13 @@ registerBlockType( 'kadence/form', {
 			type: 'bool',
 			default: true,
 		},
+		mailerlite: {
+			type: 'array',
+			default: [ {
+				group: [],
+				map: [],
+			} ],
+		},
 	},
 	edit,
 
