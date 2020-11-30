@@ -20,7 +20,6 @@ import StepControl from '../../step-control';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**

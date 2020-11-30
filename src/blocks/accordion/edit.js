@@ -29,7 +29,6 @@ import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 const {
 	createBlock,

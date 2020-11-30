@@ -25,7 +25,6 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 const {
 	createBlock,

@@ -20,6 +20,7 @@ import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import flow from 'lodash/flow';
 import filter from 'lodash/filter';
+import KadenceRange from '../../kadence-range-control';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
@@ -660,7 +661,7 @@ class KadenceAdvancedButton extends Component {
 										if ( tab.name ) {
 											if ( 'mobile' === tab.name ) {
 												tabout = (
-													<RangeControl
+													<KadenceRange
 														className="btn-text-size-range"
 														beforeIcon="editor-textcolor"
 														afterIcon="editor-textcolor"
@@ -674,7 +675,7 @@ class KadenceAdvancedButton extends Component {
 												);
 											} else if ( 'tablet' === tab.name ) {
 												tabout = (
-													<RangeControl
+													<KadenceRange
 														className="btn-text-size-range"
 														beforeIcon="editor-textcolor"
 														afterIcon="editor-textcolor"
@@ -688,7 +689,7 @@ class KadenceAdvancedButton extends Component {
 												);
 											} else {
 												tabout = (
-													<RangeControl
+													<KadenceRange
 														className="btn-text-size-range"
 														beforeIcon="editor-textcolor"
 														afterIcon="editor-textcolor"

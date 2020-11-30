@@ -13,8 +13,8 @@ import classnames from 'classnames';
 /**
  * Import Css
  */
-import './style.scss';
-import './editor.scss';
+// import './style.scss';
+// import './editor.scss';
 import edit from './edit';
 import backwardCompatibility from './deprecated';
 import KadenceColorOutput from '../../kadence-color-output';

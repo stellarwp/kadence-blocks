@@ -24,7 +24,6 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**
@@ -177,7 +176,7 @@ class KadenceIconLists extends Component {
 		}
 		return false;
 	}
-	saveListItem = ( value, thisIndex ) => {
+	saveListItem( value, thisIndex ) {
 		const currentItems = this.props.attributes.items;
 		const newUpdate = currentItems.map( ( item, index ) => {
 			if ( index === thisIndex ) {
@@ -188,7 +187,7 @@ class KadenceIconLists extends Component {
 		this.props.setAttributes( {
 			items: newUpdate,
 		} );
-	};
+	}
 	render() {
 		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign }, className, setAttributes, isSelected } = this.props;
 		const { marginControl } = this.state;

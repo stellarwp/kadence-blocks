@@ -68,8 +68,8 @@ class KadenceColumn extends Component {
 			mobileMarginControl: 'individual',
 			tabletPaddingControl: 'individual',
 			tabletMarginControl: 'individual',
-			desktopPaddingControl: 'individual',
-			desktopMarginControl: 'individual',
+			deskPaddingControl: 'individual',
+			deskMarginControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};

@@ -206,7 +206,7 @@ class AdvancedPopColorControl extends Component {
 			</div>
 		);
 	}
-	unConvertOpacity = ( value ) => {
+	unConvertOpacity( value ) {
 		let val = 100;
 		if ( value ) {
 			val = value * 100;

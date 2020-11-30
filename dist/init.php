@@ -27,7 +27,8 @@ function kadence_gutenberg_editor_assets() {
 	}
 
 	// Scripts.
-	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/blocks.build.js', array( 'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post' ), KADENCE_BLOCKS_VERSION, true );
+	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/build/blocks.js', array( 'react', 'react-dom', 'wp-element', 'wp-polyfill', 'wp-api' ), KADENCE_BLOCKS_VERSION, true );
+	//'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post'
 	$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
 	$sidebar_size   = 750;
 	$nosidebar_size = 1140;
@@ -83,6 +84,11 @@ function kadence_gutenberg_editor_assets() {
 	} else {
 		$enable_editor_width = true;
 	}
+	$gfonts_path      = KADENCE_BLOCKS_PATH . 'dist/gfonts-array.php';
+	$gfont_names_path = KADENCE_BLOCKS_PATH . 'dist/gfonts-names-array.php';
+	$icon_names_path  = KADENCE_BLOCKS_PATH . 'dist/icon-names-array.php';
+	$icon_ico_path    = KADENCE_BLOCKS_PATH . 'dist/icon-ico-array.php';
+	$icons_path       = KADENCE_BLOCKS_PATH . 'dist/icons-array.php';
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -104,10 +110,15 @@ function kadence_gutenberg_editor_assets() {
 			'isKadenceT'     => class_exists( 'Kadence\Theme' ),
 			'headingWeights' => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_headings_weights() : null,
 			'buttonWeights'  => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null,
+			// 'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
+			// 'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
+			// 'icon_names'     => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
+			// 'icons_ico'      => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
+			// 'icons_ico'      => file_exists( $icons_path ) ? include $icons_path : array(),
 		)
 	);
 	// Styles.
-	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/blocks.editor.build.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
+	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
 	// Limited Margins removed
 	// $editor_widths = get_option( 'kt_blocks_editor_width', array() );
 	// if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {

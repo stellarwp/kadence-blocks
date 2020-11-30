@@ -28,8 +28,8 @@ import ResponsiveMeasurementControls from '../../responsive-measurement-control'
 /**
  * Import Css
  */
-import './style.scss';
-import './editor.scss';
+// import './style.scss';
+// import './editor.scss';
 /**
  * Import Icons
  */

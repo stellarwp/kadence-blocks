@@ -61,6 +61,11 @@ import GalleryImage from './gallery-image';
 import icon from './icons';
 import { pickRelevantMediaFiles, pickRelevantMediaFilesUpdate } from './shared';
 
+/**
+ * Import Css
+ */
+import './editor.scss';
+
 const linkOptions = [
 	{ value: 'attachment', label: __( 'Attachment Page', 'kadence-blocks' ) },
 	{ value: 'media', label: __( 'Media File', 'kadence-blocks' ) },

@@ -120,7 +120,7 @@
 		background-color: #0085ba;
 
 		.components-button {
-			color: $white;
+			color: #fff;
 		}
 
 		.components-button:focus {
@@ -131,7 +131,7 @@
 
 	figcaption .block-editor-rich-text {
 		a {
-			color: $white;
+			color: #fff;
 		}
 	}
 }
@@ -283,9 +283,9 @@
 				overflow: visible;
 				padding: 43px 10px 10px;
 				font-size:13px;
-				color: $white;
+				color: #fff;
 				text-align: center;
-				background: linear-gradient(0deg, rgba($color: $black, $alpha: 0.5) 0, rgba($color: $black, $alpha: 0) 100%);
+				background: linear-gradient(0deg, rgba(0,0,0,0.5) 0, rgba(0,0,0,0) 100%);
 				img {
 					display: inline;
 				}

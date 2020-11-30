@@ -7,7 +7,6 @@
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**
@@ -756,7 +755,7 @@ class KadenceTestimonials extends Component {
 			boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
 			borderColor: ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
 			background: ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
-			borderRadius: containerBorderRadius + 'px',
+			borderRadius: ! isNaN( containerBorderRadius ) ? containerBorderRadius + 'px' : undefined,
 			borderTopWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 0 ] ? containerBorderWidth[ 0 ] + 'px' : undefined ),
 			borderRightWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 1 ] ? containerBorderWidth[ 1 ] + 'px' : undefined ),
 			borderBottomWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 2 ] ? containerBorderWidth[ 2 ] + 'px' : undefined ),

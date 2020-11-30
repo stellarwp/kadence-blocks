@@ -1,18 +1,24 @@
 {
-  "name": "kadence-blocks-cgb-guten-block",
+  "name": "kadence-blocks",
   "version": "1.0.0",
   "private": true,
+  "main": "src/blocks.js",
   "scripts": {
-    "start": "cgb-scripts start",
-    "build": "cgb-scripts build",
-    "eject": "cgb-scripts eject"
+    "start": "wp-scripts start",
+    "build": "wp-scripts build"
   },
   "dependencies": {
     "@dr-kobros/react-webfont-loader": "^8.0.0",
     "@fonticonpicker/react-fonticonpicker": "^1.2.0",
     "@wordpress/icons": "^2.2.0",
-    "cgb-scripts": "1.18.1",
     "classnames": "^2.2.6",
+    "eslint": "^4.15.0",
+    "eslint-config-wordpress": "^2.0.0",
+    "eslint-plugin-jest": "^21.6.1",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-wordpress": "^0.1.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",
     "re-resizable": "^4.7.1",
@@ -22,8 +28,10 @@
     "react-masonry-component": "^6.2.1",
     "react-select": "^2.2.0",
     "react-slick": "^0.24.0",
-    "react-transition-group": "^2.4.0",
-    "reactcss": "^1.2.3"
+    "react-transition-group": "^2.4.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@wordpress/scripts": "^10.0.0",
+    "install": "^0.13.0"
+  }
 }

@@ -13,7 +13,6 @@ import classnames from 'classnames';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 

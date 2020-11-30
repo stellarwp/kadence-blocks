@@ -180,9 +180,9 @@
 		"ft": 64,
 		"ma": 0,
 		"mi": 1,
-		"oA": 1,
-		"oAP": "/dist/assets/js/src/tiny-slider-min.js",
-		"oF": 1,
+		"oA": 0,
+		"oAP": "/dist/assets/js/tiny-slider.min.js",
+		"oF": 3,
 		"sC": 0,
 		"tS": 0
 		},
@@ -358,6 +358,69 @@
 		"oF": 0,
 		"oS": 3
 		},
+	"/dist/build/blocks.asset.php": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 1,
+		"oAP": "/dist/build/blocks.asset.php",
+		"oF": 1
+		},
+	"/dist/build/blocks.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 1,
+		"oAP": "/dist/build/blocks-min.css",
+		"oF": 1,
+		"oS": 3
+		},
+	"/dist/build/blocks.css.map": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 1,
+		"oAP": "/dist/build/blocks.css.map",
+		"oF": 1
+		},
+	"/dist/build/blocks.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/dist/build/blocks-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/build/blocks.js.map": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 1,
+		"oAP": "/dist/build/blocks.js.map",
+		"oF": 1
+		},
+	"/dist/build/style.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 1,
+		"oAP": "/dist/build/style-min.css",
+		"oF": 1,
+		"oS": 3
+		},
+	"/dist/build/style.css.map": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 1,
+		"oAP": "/dist/build/style.css.map",
+		"oF": 1
+		},
 	"/dist/class-kadence-blocks-css.php": {
 		"cB": 0,
 		"ft": 8192,
@@ -398,12 +461,52 @@
 		"oAP": "/dist/form-ajax.php",
 		"oF": 0
 		},
+	"/dist/gfonts-array.php": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/dist/gfonts-array.php",
+		"oF": 0
+		},
+	"/dist/gfonts-names-array.php": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/dist/gfonts-names-array.php",
+		"oF": 0
+		},
 	"/dist/helper-functions.php": {
 		"cB": 0,
 		"ft": 8192,
 		"hM": 0,
 		"oA": 0,
 		"oAP": "/dist/helper-functions.php",
+		"oF": 0
+		},
+	"/dist/icon-names-array.php": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/dist/icon-names-array.php",
+		"oF": 0
+		},
+	"/dist/icons-array.php": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/dist/icons-array.php",
+		"oF": 0
+		},
+	"/dist/icons-ico-array.php": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/dist/icons-ico-array.php",
 		"oF": 0
 		},
 	"/dist/init.php": {
@@ -598,6 +701,19 @@
 		"oAP": "/dist/settings/class-kadence-blocks-settings.php",
 		"oF": 0
 		},
+	"/dist/settings/dashboard.scss": {
+		"aP": 1,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/dist/settings/styles.css",
+		"oF": 2,
+		"oS": 3,
+		"sct": 1
+		},
 	"/dist/settings/img/accordion.jpg": {
 		"ft": 16384,
 		"iS": 24512,
@@ -704,7 +820,7 @@
 		},
 	"/dist/settings/img/kadence-logo.png": {
 		"ft": 32768,
-		"iS": 4560,
+		"iS": 23850,
 		"oA": 0,
 		"oAP": "/dist/settings/img/kadence-logo.png",
 		"oF": 0,
@@ -794,48 +910,6 @@
 		"hM": 0,
 		"oA": 0,
 		"oAP": "/dist/templates/form-email.php",
-		"oF": 0
-		},
-	"/dist/vendor/fonts/kadence-blocks-slick.eot": {
-		"cB": 0,
-		"ft": 8192,
-		"hM": 0,
-		"oA": 0,
-		"oAP": "/dist/vendor/fonts/kadence-blocks-slick.eot",
-		"oF": 0
-		},
-	"/dist/vendor/fonts/kadence-blocks-slick.svg": {
-		"ft": 2097152,
-		"miP": 0,
-		"oA": 2,
-		"oAP": "/dist/vendor/fonts/kadence-blocks-slick.svg",
-		"oF": 0,
-		"opt": 0,
-		"plM": 52780316221407,
-		"prP": 0
-		},
-	"/dist/vendor/fonts/kadence-blocks-slick.ttf": {
-		"cB": 0,
-		"ft": 8192,
-		"hM": 0,
-		"oA": 0,
-		"oAP": "/dist/vendor/fonts/kadence-blocks-slick.ttf",
-		"oF": 0
-		},
-	"/dist/vendor/fonts/kadence-blocks-slick.woff": {
-		"cB": 0,
-		"ft": 8192,
-		"hM": 0,
-		"oA": 0,
-		"oAP": "/dist/vendor/fonts/kadence-blocks-slick.woff",
-		"oF": 0
-		},
-	"/dist/vendor/fonts/kadence-blocks-slick.woff2": {
-		"cB": 0,
-		"ft": 8192,
-		"hM": 0,
-		"oA": 0,
-		"oAP": "/dist/vendor/fonts/kadence-blocks-slick.woff2",
 		"oF": 0
 		},
 	"/dist/vendor/kt-blocks-slick.css": {
@@ -2492,6 +2566,50 @@
 		"oS": 0,
 		"sct": 1
 		},
+	"/src/dashboard/dashboard.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/dashboard/dashboard-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/dashboard/notices.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/dashboard/notices-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/dashboard/pro-settings.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/dashboard/pro-settings-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/dashboard/settings.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/dashboard/settings-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/faicons.js": {
 		"bF": 0,
 		"ft": 64,
@@ -3165,6 +3283,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/typography-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/webpack.config.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/webpack.config-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

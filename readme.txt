@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
 Tested up to: 5.5.3
-Stable tag: 1.9.5
+Stable tag: 1.9.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,9 +88,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 1.9.6 =
-* add: Mailerlite
-** Fix: Issue with accordions pane link with multiple accordions on the page.
-* Fix: 
+* Add: MailerLite option to Kadence Blocks.
+* Update: Initial Update to Blocks settings page.
+* Update: Initial Update to use WPScripts.
+* Fix: Issue with dashes in table to contents when building links.
+* Fix: Issue with Column Margin/Padding controls.
+* Fix: Issue with Button Text Size Input.
+* Fix: Issue with accordions pane link with multiple accordions on the page.
+* Fix: Issue with border radius 0 for testimonial block.
 
 = 1.9.5 =
 * Fix: Issue with rendering when previously had selected muli font.

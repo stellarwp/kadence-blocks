@@ -15,29 +15,34 @@ const statuses = {
 const noop = () => {};
 
 class KTWebfontLoader extends Component {
-	state = {
-		status: undefined,
-	};
-
-	addFont = ( font ) => {
+	constructor() {
+		super( ...arguments );
+		this.handleLoading = this.handleLoading.bind( this );
+		this.handleActive = this.handleActive.bind( this );
+		this.handleInactive = this.handleInactive.bind( this );
+		this.loadFonts = this.loadFonts.bind( this );
+		this.state = {
+			status: undefined,
+		};
+	}
+	addFont( font ) {
 		if ( ! ktgooglefonts.includes( font ) ) {
 			ktgooglefonts.push( font );
 		}
-	};
-
-	handleLoading = () => {
+	}
+	handleLoading() {
 		this.setState( { status: statuses.loading } );
-	};
+	}
 
-	handleActive = () => {
+	handleActive() {
 		this.setState( { status: statuses.active } );
-	};
+	}
 
-	handleInactive = () => {
+	handleInactive() {
 		this.setState( { status: statuses.inactive } );
-	};
+	}
 
-	loadFonts = () => {
+	loadFonts() {
 		//if ( ! this.state.fonts.includes( this.props.config.google.families[ 0 ] ) ) {
 		if ( ! ktgooglefonts.includes( this.props.config.google.families[ 0 ] ) ) {
 			WebFont.load( {
