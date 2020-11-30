@@ -874,7 +874,7 @@ class KadenceTableOfContents extends Component {
 									onChange={ value => {
 										setAttributes( { title: value } );
 									} }
-									allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+									allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] }
 									className={ 'kb-table-of-contents-title' }
 									style={ {
 										color: 'inherit',

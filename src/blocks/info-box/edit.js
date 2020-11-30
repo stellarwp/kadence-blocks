@@ -2921,7 +2921,7 @@ class KadenceInfoBox extends Component {
 											<RichText
 												className="kt-blocks-info-box-number"
 												formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
-												allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
+												allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] : [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) }
 												tagName={ 'div' }
 												placeholder={ __( '1' ) }
 												onChange={ onChangeNumber }
@@ -2953,7 +2953,7 @@ class KadenceInfoBox extends Component {
 							<RichText
 								className="kt-blocks-info-box-title"
 								formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
-								allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
+								allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] : [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) }
 								tagName={ titleTagName }
 								placeholder={ __( 'Title' ) }
 								onChange={ onChangeTitle }
@@ -2981,7 +2981,7 @@ class KadenceInfoBox extends Component {
 							<RichText
 								className="kt-blocks-info-box-text"
 								formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
-								allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
+								allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] : [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) }
 								tagName={ 'p' }
 								placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.' ) }
 								onChange={ ( value ) => setAttributes( { contentText: value } ) }
@@ -3011,7 +3011,7 @@ class KadenceInfoBox extends Component {
 							} } >
 								<RichText
 									formattingControls={ [ 'bold', 'italic' ] }
-									allowedFormats={ [ 'core/bold', 'core/italic' ] }
+									allowedFormats={ [ 'core/bold', 'core/italic', 'toolset/inline-field' ] }
 									className="kt-blocks-info-box-learnmore"
 									tagName={ 'div' }
 									placeholder={ __( 'Learn More' ) }

@@ -421,7 +421,7 @@ class KadenceAdvancedButton extends Component {
 								onChange={ value => {
 									this.saveArrayUpdate( { text: value }, index );
 								} }
-								allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+								allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] }
 								className={ 'kt-button-text' }
 								keepPlaceholderOnFocus
 							/>

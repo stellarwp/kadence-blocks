@@ -579,7 +579,7 @@ class KadenceTabs extends Component {
 										this.saveArrayUpdate( { text: value }, index );
 									} }
 									formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
-									allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+									allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] }
 									className={ 'kt-title-text' }
 									style={ {
 										lineHeight: lineHeight + lineType,
@@ -598,7 +598,7 @@ class KadenceTabs extends Component {
 											this.saveArrayUpdate( { text: value }, index );
 										} }
 										formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
-										allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+										allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] }
 										className={ 'kt-title-text' }
 										style={ {
 											lineHeight: lineHeight + lineType,
@@ -614,7 +614,7 @@ class KadenceTabs extends Component {
 											this.saveArrayUpdate( { subText: value }, index );
 										} }
 										formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
-										allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+										allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] }
 										className={ 'kt-title-sub-text' }
 										style={ {
 											fontWeight: subFont[ 0 ].weight,
