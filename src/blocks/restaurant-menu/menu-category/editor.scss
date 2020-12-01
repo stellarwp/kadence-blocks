@@ -1,0 +1,38 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+.wp-block[data-type="kadence/restaurantmenucategory"] {
+	margin: 0;
+
+	.kt-add-more-item-btn-wrap {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+	}
+
+	.kt-category-content {
+		> .block-editor-inner-blocks
+		> .block-editor-block-list__layout
+		> .wp-block:nth-last-child(2) {
+       		.kt-category-content-item {
+
+       		}
+		}
+
+		// Beyond mobile viewports, we allow up to 8 columns.
+		@media (min-width: 600px) {
+			@for $i from 1 through 8 {
+				&[data-columns-xxl="#{ $i }"]
+				> .block-editor-inner-blocks
+				> .block-editor-block-list__layout
+				> .wp-block {
+					width: (100% / #{ $i });
+				}
+			}
+		}
+	}
+}

@@ -463,6 +463,74 @@ class Kadence_Blocks_Frontend {
 		}
 		return $content;
 	}
+
+	/**
+	 * Render Restaurant-Menu Block CSS
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 */
+	public function render_restaurant_menu_css_head( $block ) {
+		if ( ! wp_style_is( 'kadence-blocks-restaurant-menu', 'enqueued' ) ) {
+			$this->enqueue_style( 'kadence-blocks-restaurant-menu' );
+		}
+
+		$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
+
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'restaurantmenu_root', $unique_id ) ) {
+				$css = $this->blocks_restaurantmenu_root_array( $attributes, $unique_id );
+
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+
+		$inner_blocks = empty( $block['innerBlocks'] ) ? [] : $block['innerBlocks'];
+
+		foreach ( $inner_blocks as $key => $menu_block ) {
+			$menu_attributes = empty( $menu_block['attrs'] ) ? [] : $menu_block['attrs'];
+
+			if ( isset( $menu_attributes['uniqueID'] ) ) {
+				$menu_unique_id = $menu_attributes['uniqueID'];
+				$style_id = 'kt-blocks' . esc_attr( $menu_unique_id );
+
+				if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'restaurantmenu', $menu_unique_id ) ) {
+					$css = $this->blocks_restaurantmenu_array( $menu_attributes, $menu_unique_id );
+
+					if ( ! empty( $css ) ) {
+						$this->render_inline_css( $css, $style_id );
+					}
+				}
+			}
+
+			$menu_inner_blocks = empty( $menu_block['innerBlocks'] ) ? [] : $menu_block['innerBlocks'];
+
+			foreach ( $menu_inner_blocks as $key => $item_block ) {
+				$item_attributes = empty( $item_block['attrs'] ) ? [] : $item_block['attrs'];
+
+				if ( isset( $item_attributes['uniqueID'] ) ) {
+					$item_unique_id = $item_attributes['uniqueID'];
+					$style_id = 'kt-blocks' . esc_attr( $item_unique_id );
+
+					if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'restaurantmenu', $item_unique_id ) ) {
+						$css = $this->blocks_restaurant_menu_item_title_array( $item_attributes, $item_unique_id );
+						$css .= $this->blocks_restaurant_menu_item_text_array( $item_attributes, $item_unique_id );
+						$css .= $this->blocks_restaurant_menu_item_price_array( $item_attributes, $item_unique_id );
+
+						if ( ! empty( $css ) ) {
+							$this->render_inline_css( $css, $style_id );
+						}
+					}
+				}
+			}
+		}
+
+	}
+
 	/**
 	 * Render Tabs Block CSS
 	 *
@@ -1019,6 +1087,7 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		// Lets register all the block styles.
+		wp_register_style( 'kadence-blocks-restaurant-menu', KADENCE_BLOCKS_URL . 'dist/blocks/restaurant.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-rowlayout', KADENCE_BLOCKS_URL . 'dist/blocks/row.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-accordion', KADENCE_BLOCKS_URL . 'dist/blocks/accordion.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-btn', KADENCE_BLOCKS_URL . 'dist/blocks/btn.style.build.css', array(), KADENCE_BLOCKS_VERSION );
@@ -1390,6 +1459,13 @@ class Kadence_Blocks_Frontend {
 			}
 			foreach ( $blocks as $indexkey => $block ) {
 				if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
+					if ( 'kadence/restaurantmenu' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_restaurant_menu_css_head( $block );
+							$this->blocks_restaurantmenu_scripts_gfonts( $block );
+						}
+					}
 					if ( 'kadence/rowlayout' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -3227,6 +3303,21 @@ class Kadence_Blocks_Frontend {
 		}
 		return $css;
 	}
+
+	/**
+	 * Adds Google fonts for infobox block.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_restaurantmenu_scripts_gfonts( $block ) {
+		$inner_blocks = empty( $block['innerBlocks'] ) ? [] : $block['innerBlocks'];
+
+		foreach ( $inner_blocks as $key => $block ) {
+			$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
+			$this->blocks_infobox_scripts_gfonts( $attributes );
+		}
+	}
+
 	/**
 	 * Adds Google fonts for infobox block.
 	 *
@@ -3252,6 +3343,7 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+
 		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
 			$title_font = $attr['titleFont'][0];
 			// Check if the font has been added yet.
@@ -3713,6 +3805,655 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 	}
+
+	/**
+	 * Builds CSS for Tabs block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_restaurantmenu_root_array( $attr, $unique_id ) {
+		$css = '';
+		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerBackgroundOpacity'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerMargin'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
+			$css .= '.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu {';
+				if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
+					$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
+					$css .= 'border-color:' . $this->kadence_color_output( $attr['containerBorder'], $alpha ) . ';';
+				}
+				if ( isset( $attr['containerBorderRadius'] ) && ! empty( $attr['containerBorderRadius'] ) ) {
+					$css .= 'border-radius:' . $attr['containerBorderRadius'] . 'px;';
+				}
+				if ( isset( $attr['containerBackground'] ) && ! empty( $attr['containerBackground'] ) ) {
+					$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
+					$css .= 'background:' . $this->kadence_color_output( $attr['containerBackground'], $alpha ) . ';';
+				} elseif ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ) {
+					$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
+					$css .= 'background:' . $this->kadence_color_output( '#f2f2f2', $alpha ) . ';';
+				}
+				if ( isset( $attr['containerPadding'] ) && is_array( $attr['containerPadding'] ) ) {
+					$css .= 'padding:' . $attr['containerPadding'][ 0 ] . 'px ' . $attr['containerPadding'][ 1 ] . 'px ' . $attr['containerPadding'][ 2 ] . 'px ' . $attr['containerPadding'][ 3 ] . 'px;';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][0] ) && is_numeric( $attr['containerMargin'][0] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-top:' . $attr['containerMargin'][0] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][1] ) && is_numeric( $attr['containerMargin'][1] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-right:' . $attr['containerMargin'][1] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][2] ) && is_numeric( $attr['containerMargin'][2] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-bottom:' . $attr['containerMargin'][2] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][3] ) && is_numeric( $attr['containerMargin'][3] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-left:' . $attr['containerMargin'][3] . $unit . ';';
+				}
+				if ( isset( $attr['containerBorderWidth'] ) && is_array( $attr['containerBorderWidth'] ) ) {
+					$css .= 'border-width:' . $attr['containerBorderWidth'][ 0 ] . 'px ' . $attr['containerBorderWidth'][ 1 ] . 'px ' . $attr['containerBorderWidth'][ 2 ] . 'px ' . $attr['containerBorderWidth'][ 3 ] . 'px;';
+				}
+				if ( isset( $attr['maxWidth'] ) && ! empty( $attr['maxWidth'] ) ) {
+					$unit = ( isset( $attr['maxWidthUnit'] ) && ! empty( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' );
+					$css .= 'max-width:' . $attr['maxWidth'] . $unit . ';';
+				}
+				$css .= 'border-style: solid';
+			$css .= '}';
+		}
+
+		$css .= '.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu:hover {';
+			$border_hover = ( isset( $attr['containerHoverBorder'] ) && ! empty( $attr['containerHoverBorder'] ) ? $attr['containerHoverBorder'] : '#eeeeee' );
+			$alpha = ( isset( $attr['containerHoverBorderOpacity'] ) && is_numeric( $attr['containerHoverBorderOpacity'] ) ? $attr['containerHoverBorderOpacity'] : 1 );
+			$bg_hover = ( isset( $attr['containerHoverBackground'] ) && ! empty( $attr['containerHoverBackground'] ) ? $attr['containerHoverBackground'] : '#f2f2f2' );
+			$bg_alpha = ( isset( $attr['containerHoverBackgroundOpacity'] ) && is_numeric( $attr['containerHoverBackgroundOpacity'] ) ? $attr['containerHoverBackgroundOpacity'] : 1 );
+			$css .= 'border-color:' . $this->kadence_color_output( $border_hover, $alpha ) . ';';
+			$css .= 'background:' . $this->kadence_color_output( $bg_hover, $bg_alpha ) . ';';
+		$css .= '}';
+
+		//if ( !empty( $attr['hAlign'] ) ) {
+
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-menu-category-title,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-item-title,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-left .kt-item-text{ text-align: left; } ';
+
+		 $css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-center .kt-menu-category-title{ text-align: center; } ';
+
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-halign-right .kt-menu-category-title{ text-align: right; } ';
+
+
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-left .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-left .kt-category-content { justify-content: flex-start; }';
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-center .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-center .kt-category-content { justify-content: center; }';
+		$css .=	' .kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-right .kt-item-content,
+			.kt-restaurent-menu-id-' . $unique_id . '.kt-restaurent-menu-calign-right .kt-category-content { justify-content: flex-end; }';
+
+
+
+
+		//}
+
+		return $css;
+	}
+
+	/**
+	 * Builds CSS for Tabs block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_restaurantmenu_array( $attr, $unique_id ) {
+
+		$css = '';
+
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][0] ) && is_numeric( $attr['gutter'][0] ) ) {
+			$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
+				$css .= 'margin: -' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+			$css .= '.kt-menu-category-id-' . $unique_id . ' .gutter {';
+				$css .= 'padding: ' . ( $attr['gutter'][0] / 2 ) . 'px;';
+			$css .= '}';
+		}
+
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][1] ) && is_numeric( $attr['gutter'][1] ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
+					$css .= 'margin: -' . ( $attr['gutter'][1] / 2 ) . 'px;';
+				$css .= '}';
+				$css .= '.kt-menu-category-id-' . $unique_id . ' .gutter {';
+					$css .= 'padding: ' . ( $attr['gutter'][1] / 2 ) . 'px;';
+				$css .= '}';
+			$css .= '}';
+		}
+
+		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][2] ) && is_numeric( $attr['gutter'][2] ) ) {
+			$css .= '@media (max-width: 767px) {';
+				$css .= '.kt-restaurent-menu .kt-menu-category-id-' . $unique_id . ' .kt-category-content {';
+					$css .= 'margin: -' . ( $attr['gutter'][2] / 2 ) . 'px;';
+				$css .= '}';
+				$css .= '.kb-gallery-id-' . $unique_id . ' .gutter {';
+					$css .= 'padding: ' . ( $attr['gutter'][2] / 2 ) . 'px;';
+				$css .= '}';
+			$css .= '}';
+		}
+
+		//Typography Style
+		if ( isset( $attr['titleColor'] ) || isset( $attr['titleFont'] ) ) {
+			$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-menu-category-title {';
+			if ( isset( $attr['titleColor'] ) && ! empty( $attr['titleColor'] ) ) {
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleColor'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && is_array( $attr['titleFont'][ 0 ] ) ) {
+				$title_font = $attr['titleFont'][ 0 ];
+				if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && ! empty( $title_font['size'][0] ) ) {
+					$css .= 'font-size:' . $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) . ';';
+				}
+				if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && ! empty( $title_font['lineHeight'][0] ) ) {
+					$css .= 'line-height:' . $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) . ';';
+				}
+				if ( isset( $title_font['letterSpacing'] ) && ! empty( $title_font['letterSpacing'] ) ) {
+					$css .= 'letter-spacing:' . $title_font['letterSpacing'] .  'px;';
+				}
+				if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
+					$css .= 'text-transform:' . $title_font['textTransform'] .  ';';
+				}
+				if ( isset( $title_font['family'] ) && ! empty( $title_font['family'] ) ) {
+					$css .= 'font-family:' . $title_font['family'] .  ';';
+				}
+				if ( isset( $title_font['style'] ) && ! empty( $title_font['style'] ) ) {
+					$css .= 'font-style:' . $title_font['style'] .  ';';
+				}
+				if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) ) {
+					$css .= 'font-weight:' . $title_font['weight'] .  ';';
+				}
+				if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) ) {
+					$css .= 'padding:' . $title_font['padding'][0] . 'px ' . $title_font['padding'][1] . 'px ' . $title_font['padding'][2] . 'px ' . $title_font['padding'][3] . 'px;';
+				}
+				if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) ) {
+					$css .= 'margin:' . $title_font['margin'][0] . 'px ' . $title_font['margin'][1] . 'px ' . $title_font['margin'][2] . 'px ' . $title_font['margin'][3] . 'px;';
+				}
+			}
+			$css .= '}';
+		}
+
+		if ( isset( $attr['titleHoverColor'] ) && ! empty( $attr['titleHoverColor'] ) ) {
+			$css .= '.kt-menu-category-id-' . $unique_id . ':hover .kt-menu-category-title {';
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleHoverColor'] ) . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-menu-category-title {';
+			if ( isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['titleFont'][0]['size'][1] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][1] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-menu-category-title {';
+			if ( isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['titleMinHeight'][0] ) ) {
+				$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-menu-category-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-menu-category-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['titleMinHeight'][2] ) && is_numeric( $attr['titleMinHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kt-menu-category-id-' . $unique_id . ' .kt-menu-category-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+
+		return $css;
+	}
+
+	/**
+	 * Builds CSS for Tabs block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_restaurant_menu_item_title_array( $attr, $unique_id ) {
+
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
+			$title_font = $attr['titleFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
+
+		$css = '';
+
+		//Typography Style
+		if ( isset( $attr['titleColor'] ) || isset( $attr['titleFont'] ) ) {
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-title {';
+			if ( isset( $attr['titleColor'] ) && ! empty( $attr['titleColor'] ) ) {
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleColor'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && is_array( $attr['titleFont'][ 0 ] ) ) {
+				$title_font = $attr['titleFont'][ 0 ];
+				if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && ! empty( $title_font['size'][0] ) ) {
+					$css .= 'font-size:' . $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) . ';';
+				}
+				if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && ! empty( $title_font['lineHeight'][0] ) ) {
+					$css .= 'line-height:' . $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) . ';';
+				}
+				if ( isset( $title_font['letterSpacing'] ) && ! empty( $title_font['letterSpacing'] ) ) {
+					$css .= 'letter-spacing:' . $title_font['letterSpacing'] .  'px;';
+				}
+				if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
+					$css .= 'text-transform:' . $title_font['textTransform'] .  ';';
+				}
+				if ( isset( $title_font['family'] ) && ! empty( $title_font['family'] ) ) {
+					$css .= 'font-family:' . $title_font['family'] .  ';';
+				}
+				if ( isset( $title_font['style'] ) && ! empty( $title_font['style'] ) ) {
+					$css .= 'font-style:' . $title_font['style'] .  ';';
+				}
+				if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) ) {
+					$css .= 'font-weight:' . $title_font['weight'] .  ';';
+				}
+				if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) ) {
+					$css .= 'padding:' . $title_font['padding'][0] . 'px ' . $title_font['padding'][1] . 'px ' . $title_font['padding'][2] . 'px ' . $title_font['padding'][3] . 'px;';
+				}
+				if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) ) {
+					$css .= 'margin:' . $title_font['margin'][0] . 'px ' . $title_font['margin'][1] . 'px ' . $title_font['margin'][2] . 'px ' . $title_font['margin'][3] . 'px;';
+				}
+			}
+			$css .= '}';
+		}
+
+		if ( isset( $attr['titleHoverColor'] ) && ! empty( $attr['titleHoverColor'] ) ) {
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ':hover .kt-item-title {';
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleHoverColor'] ) . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-title {';
+			if ( isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['titleFont'][0]['size'][1] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][1] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-title {';
+			if ( isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['titleMinHeight'][0] ) ) {
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['titleMinHeight'][2] ) && is_numeric( $attr['titleMinHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+
+		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerBackgroundOpacity'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerMargin'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-category-content-item {';
+				if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
+					$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
+					$css .= 'border-color:' . $this->kadence_color_output( $attr['containerBorder'], $alpha ) . ';';
+				}
+				if ( isset( $attr['containerBorderRadius'] ) && ! empty( $attr['containerBorderRadius'] ) ) {
+					$css .= 'border-radius:' . $attr['containerBorderRadius'] . 'px;';
+				}
+				if ( isset( $attr['containerBackground'] ) && ! empty( $attr['containerBackground'] ) ) {
+					$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
+					$css .= 'background:' . $this->kadence_color_output( $attr['containerBackground'], $alpha ) . ';';
+				} elseif ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ) {
+					$alpha = ( isset( $attr['containerBackgroundOpacity'] ) && is_numeric( $attr['containerBackgroundOpacity'] ) ? $attr['containerBackgroundOpacity'] : 1 );
+					$css .= 'background:' . $this->kadence_color_output( '#f2f2f2', $alpha ) . ';';
+				}
+				if ( isset( $attr['containerPadding'] ) && is_array( $attr['containerPadding'] ) ) {
+					$css .= 'padding:' . $attr['containerPadding'][ 0 ] . 'px ' . $attr['containerPadding'][ 1 ] . 'px ' . $attr['containerPadding'][ 2 ] . 'px ' . $attr['containerPadding'][ 3 ] . 'px;';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][0] ) && is_numeric( $attr['containerMargin'][0] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-top:' . $attr['containerMargin'][0] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][1] ) && is_numeric( $attr['containerMargin'][1] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-right:' . $attr['containerMargin'][1] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][2] ) && is_numeric( $attr['containerMargin'][2] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-bottom:' . $attr['containerMargin'][2] . $unit . ';';
+				}
+				if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][3] ) && is_numeric( $attr['containerMargin'][3] ) ) {
+					$unit = ( isset( $attr['containerMarginUnit'] ) && ! empty( $attr['containerMarginUnit'] ) ? $attr['containerMarginUnit'] : 'px' );
+					$css .= 'margin-left:' . $attr['containerMargin'][3] . $unit . ';';
+				}
+				if ( isset( $attr['containerBorderWidth'] ) && is_array( $attr['containerBorderWidth'] ) ) {
+					$css .= 'border-width:' . $attr['containerBorderWidth'][ 0 ] . 'px ' . $attr['containerBorderWidth'][ 1 ] . 'px ' . $attr['containerBorderWidth'][ 2 ] . 'px ' . $attr['containerBorderWidth'][ 3 ] . 'px;';
+				}
+				if ( isset( $attr['maxWidth'] ) && ! empty( $attr['maxWidth'] ) ) {
+					$unit = ( isset( $attr['maxWidthUnit'] ) && ! empty( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' );
+					$css .= 'max-width:' . $attr['maxWidth'] . $unit . ';';
+				}
+				$css .= 'border-style: solid';
+			$css .= '}';
+		}
+
+		$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-category-content-item:hover {';
+			$border_hover = ( isset( $attr['containerHoverBorder'] ) && ! empty( $attr['containerHoverBorder'] ) ? $attr['containerHoverBorder'] : '#eeeeee' );
+			$alpha = ( isset( $attr['containerHoverBorderOpacity'] ) && is_numeric( $attr['containerHoverBorderOpacity'] ) ? $attr['containerHoverBorderOpacity'] : 1 );
+			$bg_hover = ( isset( $attr['containerHoverBackground'] ) && ! empty( $attr['containerHoverBackground'] ) ? $attr['containerHoverBackground'] : '#f2f2f2' );
+			$bg_alpha = ( isset( $attr['containerHoverBackgroundOpacity'] ) && is_numeric( $attr['containerHoverBackgroundOpacity'] ) ? $attr['containerHoverBackgroundOpacity'] : 1 );
+			$css .= 'border-color:' . $this->kadence_color_output( $border_hover, $alpha ) . ';';
+			$css .= 'background:' . $this->kadence_color_output( $bg_hover, $bg_alpha ) . ';';
+		$css .= '}';
+
+		return $css;
+	}
+
+		/**
+	 * Builds CSS for Tabs block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_restaurant_menu_item_price_array( $attr, $unique_id ) {
+
+
+		if ( isset( $attr['priceFont'] ) && is_array( $attr['priceFont'] ) && isset( $attr['priceFont'][0] ) && is_array( $attr['priceFont'][0] ) && isset( $attr['priceFont'][0]['google'] ) && $attr['priceFont'][0]['google'] && ( ! isset( $attr['priceFont'][0]['loadGoogle'] ) || true === $attr['priceFont'][0]['loadGoogle'] ) &&  isset( $attr['priceFont'][0]['family'] ) ) {
+			$title_font = $attr['priceFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
+
+		$css = '';
+
+		//Typography Style
+		if ( isset( $attr['priceColor'] ) || isset( $attr['priceFont'] ) ) {
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-price {';
+			if ( isset( $attr['priceColor'] ) && ! empty( $attr['priceColor'] ) ) {
+				$css .= 'color:' . $this->kadence_color_output( $attr['priceColor'] ) . ';';
+			}
+			if ( isset( $attr['priceFont'] ) && is_array( $attr['priceFont'] ) && is_array( $attr['priceFont'][ 0 ] ) ) {
+				$price_font = $attr['priceFont'][ 0 ];
+				if ( isset( $price_font['size'] ) && is_array( $price_font['size'] ) && ! empty( $price_font['size'][0] ) ) {
+					$css .= 'font-size:' . $price_font['size'][0] . ( ! isset( $price_font['sizeType'] ) ? 'px' : $price_font['sizeType'] ) . ';';
+				}
+				if ( isset( $price_font['lineHeight'] ) && is_array( $price_font['lineHeight'] ) && ! empty( $price_font['lineHeight'][0] ) ) {
+					$css .= 'line-height:' . $price_font['lineHeight'][0] . ( ! isset( $price_font['lineType'] ) ? 'px' : $price_font['lineType'] ) . ';';
+				}
+				if ( isset( $price_font['letterSpacing'] ) && ! empty( $price_font['letterSpacing'] ) ) {
+					$css .= 'letter-spacing:' . $price_font['letterSpacing'] .  'px;';
+				}
+				if ( isset( $price_font['textTransform'] ) && ! empty( $price_font['textTransform'] ) ) {
+					$css .= 'text-transform:' . $price_font['textTransform'] .  ';';
+				}
+				if ( isset( $price_font['family'] ) && ! empty( $price_font['family'] ) ) {
+					$css .= 'font-family:' . $price_font['family'] .  ';';
+				}
+				if ( isset( $price_font['style'] ) && ! empty( $price_font['style'] ) ) {
+					$css .= 'font-style:' . $price_font['style'] .  ';';
+				}
+				if ( isset( $price_font['weight'] ) && ! empty( $price_font['weight'] ) ) {
+					$css .= 'font-weight:' . $price_font['weight'] .  ';';
+				}
+				if ( isset( $price_font['padding'] ) && is_array( $price_font['padding'] ) ) {
+					$css .= 'padding:' . $price_font['padding'][0] . 'px ' . $price_font['padding'][1] . 'px ' . $price_font['padding'][2] . 'px ' . $price_font['padding'][3] . 'px;';
+				}
+				if ( isset( $price_font['margin'] ) && is_array( $price_font['margin'] ) ) {
+					$css .= 'margin:' . $price_font['margin'][0] . 'px ' . $price_font['margin'][1] . 'px ' . $price_font['margin'][2] . 'px ' . $price_font['margin'][3] . 'px;';
+				}
+			}
+			$css .= '}';
+		}
+
+		if ( isset( $attr['priceHoverColor'] ) && ! empty( $attr['priceHoverColor'] ) ) {
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ':hover .kt-item-price {';
+				$css .= 'color:' . $this->kadence_color_output( $attr['priceHoverColor'] ) . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['priceFont'] ) && is_array( $attr['priceFont'] ) && isset( $attr['priceFont'][0] ) && is_array( $attr['priceFont'][0] ) && ( ( isset( $attr['priceFont'][0]['size'] ) && is_array( $attr['priceFont'][0]['size'] ) && isset( $attr['priceFont'][0]['size'][1] ) && ! empty( $attr['priceFont'][0]['size'][1] ) ) || ( isset( $attr['priceFont'][0]['lineHeight'] ) && is_array( $attr['priceFont'][0]['lineHeight'] ) && isset( $attr['priceFont'][0]['lineHeight'][1] ) && ! empty( $attr['priceFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-price {';
+			if ( isset( $attr['priceFont'][0]['size'][1] ) && ! empty( $attr['priceFont'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['priceFont'][0]['size'][1] . ( ! isset( $attr['priceFont'][0]['sizeType'] ) ? 'px' : $attr['priceFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['priceFont'][0]['lineHeight'][1] ) && ! empty( $attr['priceFont'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['priceFont'][0]['lineHeight'][1] . ( ! isset( $attr['priceFont'][0]['lineType'] ) ? 'px' : $attr['priceFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['priceFont'] ) && is_array( $attr['priceFont'] ) && isset( $attr['priceFont'][0] ) && is_array( $attr['priceFont'][0] ) && ( ( isset( $attr['priceFont'][0]['size'] ) && is_array( $attr['priceFont'][0]['size'] ) && isset( $attr['priceFont'][0]['size'][2] ) && ! empty( $attr['priceFont'][0]['size'][2] ) ) || ( isset( $attr['priceFont'][0]['lineHeight'] ) && is_array( $attr['priceFont'][0]['lineHeight'] ) && isset( $attr['priceFont'][0]['lineHeight'][2] ) && ! empty( $attr['priceFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-price {';
+			if ( isset( $attr['priceFont'][0]['size'][2] ) && ! empty( $attr['priceFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['priceFont'][0]['size'][2] . ( ! isset( $attr['priceFont'][0]['sizeType'] ) ? 'px' : $attr['priceFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['priceFont'][0]['lineHeight'][2] ) && ! empty( $attr['priceFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['priceFont'][0]['lineHeight'][2] . ( ! isset( $attr['priceFont'][0]['lineType'] ) ? 'px' : $attr['priceFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['priceMinHeight'] ) && is_array( $attr['priceMinHeight'] ) && isset( $attr['priceMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['priceMinHeight'][0] ) ) {
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-price {';
+				$css .= 'min-height:' . $attr['priceMinHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['priceMinHeight'][1] ) && is_numeric( $attr['priceMinHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-price {';
+				$css .= 'min-height:' . $attr['priceMinHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['priceMinHeight'][2] ) && is_numeric( $attr['priceMinHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-price {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+
+		return $css;
+	}
+
+		/**
+	 * Builds CSS for Tabs block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_restaurant_menu_item_text_array( $attr, $unique_id ) {
+
+		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && isset( $attr['textFont'][0]['google'] ) && $attr['textFont'][0]['google'] && ( ! isset( $attr['textFont'][0]['loadGoogle'] ) || true === $attr['textFont'][0]['loadGoogle'] ) &&  isset( $attr['textFont'][0]['family'] ) ) {
+			$title_font = $attr['textFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
+
+		$css = '';
+
+		//Typography Style
+		if ( isset( $attr['textColor'] ) || isset( $attr['textFont'] ) ) {
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-text {';
+			if ( isset( $attr['textColor'] ) && ! empty( $attr['textColor'] ) ) {
+				$css .= 'color:' . $this->kadence_color_output( $attr['textColor'] ) . ';';
+			}
+			if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && is_array( $attr['textFont'][ 0 ] ) ) {
+				$text_font = $attr['textFont'][ 0 ];
+				if ( isset( $text_font['size'] ) && is_array( $text_font['size'] ) && ! empty( $text_font['size'][0] ) ) {
+					$css .= 'font-size:' . $text_font['size'][0] . ( ! isset( $text_font['sizeType'] ) ? 'px' : $text_font['sizeType'] ) . ';';
+				}
+				if ( isset( $text_font['lineHeight'] ) && is_array( $text_font['lineHeight'] ) && ! empty( $text_font['lineHeight'][0] ) ) {
+					$css .= 'line-height:' . $text_font['lineHeight'][0] . ( ! isset( $text_font['lineType'] ) ? 'px' : $text_font['lineType'] ) . ';';
+				}
+				if ( isset( $text_font['letterSpacing'] ) && ! empty( $text_font['letterSpacing'] ) ) {
+					$css .= 'letter-spacing:' . $text_font['letterSpacing'] .  'px;';
+				}
+				if ( isset( $text_font['textTransform'] ) && ! empty( $text_font['textTransform'] ) ) {
+					$css .= 'text-transform:' . $text_font['textTransform'] .  ';';
+				}
+				if ( isset( $text_font['family'] ) && ! empty( $text_font['family'] ) ) {
+					$css .= 'font-family:' . $text_font['family'] .  ';';
+				}
+				if ( isset( $text_font['style'] ) && ! empty( $text_font['style'] ) ) {
+					$css .= 'font-style:' . $text_font['style'] .  ';';
+				}
+				if ( isset( $text_font['weight'] ) && ! empty( $text_font['weight'] ) ) {
+					$css .= 'font-weight:' . $text_font['weight'] .  ';';
+				}
+				if ( isset( $text_font['padding'] ) && is_array( $text_font['padding'] ) ) {
+					$css .= 'padding:' . $text_font['padding'][0] . 'px ' . $text_font['padding'][1] . 'px ' . $text_font['padding'][2] . 'px ' . $text_font['padding'][3] . 'px;';
+				}
+				if ( isset( $text_font['margin'] ) && is_array( $text_font['margin'] ) ) {
+					$css .= 'margin:' . $text_font['margin'][0] . 'px ' . $text_font['margin'][1] . 'px ' . $text_font['margin'][2] . 'px ' . $text_font['margin'][3] . 'px;';
+				}
+			}
+			$css .= '}';
+		}
+
+		if ( isset( $attr['textHoverColor'] ) && ! empty( $attr['textHoverColor'] ) ) {
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ':hover .kt-item-text {';
+				$css .= 'color:' . $this->kadence_color_output( $attr['textHoverColor'] ) . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && ( ( isset( $attr['textFont'][0]['size'] ) && is_array( $attr['textFont'][0]['size'] ) && isset( $attr['textFont'][0]['size'][1] ) && ! empty( $attr['textFont'][0]['size'][1] ) ) || ( isset( $attr['textFont'][0]['lineHeight'] ) && is_array( $attr['textFont'][0]['lineHeight'] ) && isset( $attr['textFont'][0]['lineHeight'][1] ) && ! empty( $attr['textFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-text {';
+			if ( isset( $attr['textFont'][0]['size'][1] ) && ! empty( $attr['textFont'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['textFont'][0]['size'][1] . ( ! isset( $attr['textFont'][0]['sizeType'] ) ? 'px' : $attr['textFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['textFont'][0]['lineHeight'][1] ) && ! empty( $attr['textFont'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['textFont'][0]['lineHeight'][1] . ( ! isset( $attr['textFont'][0]['lineType'] ) ? 'px' : $attr['textFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && ( ( isset( $attr['textFont'][0]['size'] ) && is_array( $attr['textFont'][0]['size'] ) && isset( $attr['textFont'][0]['size'][2] ) && ! empty( $attr['textFont'][0]['size'][2] ) ) || ( isset( $attr['textFont'][0]['lineHeight'] ) && is_array( $attr['textFont'][0]['lineHeight'] ) && isset( $attr['textFont'][0]['lineHeight'][2] ) && ! empty( $attr['textFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-text {';
+			if ( isset( $attr['textFont'][0]['size'][2] ) && ! empty( $attr['textFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['textFont'][0]['size'][2] . ( ! isset( $attr['textFont'][0]['sizeType'] ) ? 'px' : $attr['textFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['textFont'][0]['lineHeight'][2] ) && ! empty( $attr['textFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['textFont'][0]['lineHeight'][2] . ( ! isset( $attr['textFont'][0]['lineType'] ) ? 'px' : $attr['textFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['textMinHeight'] ) && is_array( $attr['textMinHeight'] ) && isset( $attr['textMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['textMinHeight'][0] ) ) {
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-text {';
+				$css .= 'min-height:' . $attr['textMinHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['textMinHeight'][1] ) && is_numeric( $attr['textMinHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-text {';
+				$css .= 'min-height:' . $attr['textMinHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['textMinHeight'][2] ) && is_numeric( $attr['textMinHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kt-restaurent-menu .kt-category-content-item-id-' . $unique_id . ' .kt-item-text {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+
+		return $css;
+	}
+
 	/**
 	 * Builds CSS for Gallery block.
 	 *
@@ -4054,6 +4795,7 @@ class Kadence_Blocks_Frontend {
 			$this->enqueue_script( 'kadence-blocks-video-bg' );
 		}
 	}
+
 	/**
 	 * Adds Scripts and Google fonts for Tabs block.
 	 *
