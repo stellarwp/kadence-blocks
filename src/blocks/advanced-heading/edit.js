@@ -6,7 +6,6 @@
 /**
  * Internal dependencies
  */
-import range from 'lodash/range';
 import map from 'lodash/map';
 import classnames from 'classnames';
 import TypographyControls from '../../typography-control';
@@ -491,8 +490,7 @@ class KadenceAdvancedHeading extends Component {
 		} );
 		const headingContent = (
 			<RichText
-				formattingControls={ [ 'bold', 'italic', 'link', 'mark' ] }
-				allowedFormats={ [ 'core/bold', 'core/italic', 'core/link', 'kadence/mark' ] }
+				//allowedFormats={ [ 'core/bold', 'core/italic', 'core/link', 'kadence/mark' ] }
 				tagName={ tagName }
 				value={ content }
 				onChange={ ( value ) => setAttributes( { content: value } ) }

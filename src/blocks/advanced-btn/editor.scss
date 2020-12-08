@@ -51,6 +51,11 @@
         svg {
             width: 14px;
         }
+        .dashicon {
+            width: 14px;
+            height: 14px;
+            font-size: 14px;
+        }
 	}
 	&.kadence-blocks-button-item__inline-menu {
 		left:auto;
@@ -176,6 +181,11 @@
 .kt-advanced-color-settings-container .components-color-palette__clear svg {
 	width:16px;
 }
+.kt-advanced-color-settings-container .components-color-palette__clear span.dashicon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
 .kt-advanced-color-settings-container .components-color-palette__clear {
     background: transparent;
     padding: 4px;
@@ -214,7 +224,7 @@
     flex-grow: 1;
     font-weight: 400;
 }
-.kt-link-settings {
+.kt-btn-link-group .kt-link-settings {
     border: 1px solid #8d96a0;
     margin: 2px 0;
     height: 30px;
@@ -246,12 +256,15 @@
 	align-items: center;
 	margin: 20px 0;
 }
-.kt-link-settings .dashicon {
+.kt-btn-link-group .kt-link-settings .dashicon {
     width: 16px;
+    font-size: 16px;
     height: 16px;
 }
 .kt-button-size-type-options .dashicon {
-	width:14px;
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
 }
  // Controls
 .components-base-control__field .components-range-control__slider+.dashicon.dashicons-editor-textcolor {

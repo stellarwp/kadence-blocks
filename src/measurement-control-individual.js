@@ -79,7 +79,7 @@ export default function MeasurementIndividualControls( {
 				{ control && control !== 'individual' && (
 					<KadenceRange
 						label={ label }
-						value={ ( top ? top : '' ) }
+						value={ ( undefined !== top ? top : '' ) }
 						onChange={ ( value ) => {
 							onChangeTop( value );
 							onChangeRight( value );
@@ -97,7 +97,7 @@ export default function MeasurementIndividualControls( {
 						<KadenceRange
 							className="kt-icon-rangecontrol"
 							beforeIcon={ firstIcon }
-							value={ ( top ? top : '' ) }
+							value={ ( undefined !== top ? top : '' ) }
 							onChange={ ( value ) => onChangeTop( value ) }
 							min={ min }
 							max={ max }
@@ -106,7 +106,7 @@ export default function MeasurementIndividualControls( {
 						<KadenceRange
 							className="kt-icon-rangecontrol"
 							beforeIcon={ secondIcon }
-							value={ ( right ? right : '' ) }
+							value={ ( undefined !== right ? right : '' ) }
 							onChange={ ( value ) => onChangeRight( value ) }
 							min={ min }
 							max={ max }
@@ -115,7 +115,7 @@ export default function MeasurementIndividualControls( {
 						<KadenceRange
 							className="kt-icon-rangecontrol"
 							beforeIcon={ thirdIcon }
-							value={ ( bottom ? bottom : '' ) }
+							value={ ( undefined !== bottom ? bottom : '' ) }
 							onChange={ ( value ) => onChangeBottom( value ) }
 							min={ min }
 							max={ max }
@@ -124,7 +124,7 @@ export default function MeasurementIndividualControls( {
 						<KadenceRange
 							className="kt-icon-rangecontrol"
 							beforeIcon={ fourthIcon }
-							value={ ( left ? left : '' ) }
+							value={ ( undefined !== left ? left : '' ) }
 							onChange={ ( value ) => onChangeLeft( value ) }
 							min={ min }
 							max={ max }
@@ -140,7 +140,7 @@ export default function MeasurementIndividualControls( {
 				<KadenceRange
 					className="kt-icon-rangecontrol"
 					beforeIcon={ firstIcon }
-					value={ ( top ? top : '' ) }
+					value={ ( undefined !== top ? top : '' ) }
 					onChange={ ( value ) => onChangeTop( value ) }
 					min={ min }
 					max={ max }
@@ -149,7 +149,7 @@ export default function MeasurementIndividualControls( {
 				<KadenceRange
 					className="kt-icon-rangecontrol"
 					beforeIcon={ secondIcon }
-					value={ ( right ? right : '' ) }
+					value={ ( undefined !== right ? right : '' ) }
 					onChange={ ( value ) => onChangeRight( value ) }
 					min={ min }
 					max={ max }
@@ -158,7 +158,7 @@ export default function MeasurementIndividualControls( {
 				<KadenceRange
 					className="kt-icon-rangecontrol"
 					beforeIcon={ thirdIcon }
-					value={ ( bottom ? bottom : '' ) }
+					value={ ( undefined !== bottom ? bottom : '' ) }
 					onChange={ ( value ) => onChangeBottom( value ) }
 					min={ min }
 					max={ max }
@@ -167,7 +167,7 @@ export default function MeasurementIndividualControls( {
 				<KadenceRange
 					className="kt-icon-rangecontrol"
 					beforeIcon={ fourthIcon }
-					value={ ( left ? left : '' ) }
+					value={ ( undefined !== left ? left : '' ) }
 					onChange={ ( value ) => onChangeLeft( value ) }
 					min={ min }
 					max={ max }

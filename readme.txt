@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.2
-Tested up to: 5.5.3
-Stable tag: 1.9.7
+Tested up to: 5.6.0
+Stable tag: 1.9.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.9.8 =
+* Update: Admin Styling for WP 5.6
+* Fix: Advanced header link option not showing.
 
 = 1.9.7 =
 * Fix: Possible update issue.

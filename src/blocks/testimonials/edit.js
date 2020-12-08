@@ -145,7 +145,7 @@ class KadenceTestimonials extends Component {
 		} else {
 			this.setState( { containerPaddingControl: 'individual' } );
 		}
-		if ( this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 1 ] && this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 2 ] && this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 3 ] ) {
+		if ( this.props.attributes.ratingStyles[ 0 ] && this.props.attributes.ratingStyles[ 0 ].margin && this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 1 ] && this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 2 ] && this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 3 ] ) {
 			this.setState( { ratingMarginControl: 'linked' } );
 		} else {
 			this.setState( { ratingMarginControl: 'individual' } );

@@ -64,6 +64,7 @@ class InlineTypographyControl extends Component {
 				type: 'group',
 				label: 'Standard Fonts',
 				options: [
+					{ label: 'System Default', value: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"', google: false },
 					{ label: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
 					{ label: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
 					{ label: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
@@ -108,6 +109,17 @@ class InlineTypographyControl extends Component {
 			{ value: 'regular', label: 'Normal' },
 			{ value: 'bold', label: 'Bold' },
 		];
+		const systemWeights = [
+			{ value: '100', label: 'Thin 100' },
+			{ value: '200', label: 'Extra-Light 200' },
+			{ value: '300', label: 'Light 300' },
+			{ value: 'regular', label: 'Regular' },
+			{ value: '500', label: 'Medium 500' },
+			{ value: '600', label: 'Semi-Bold 600' },
+			{ value: '700', label: 'Bold 700' },
+			{ value: '800', label: 'Extra-Bold 800' },
+			{ value: '900', label: 'Ultra-Bold 900' },
+		];
 		const standardStyles = [
 			{ value: 'normal', label: 'Normal' },
 			{ value: 'italic', label: 'Italic' },
@@ -137,6 +149,9 @@ class InlineTypographyControl extends Component {
 			fontStandardWeights = gFonts[ this.props.fontFamily ].w.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
 			fontStandardStyles = gFonts[ this.props.fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
 			typographySubsets = gFonts[ this.props.fontFamily ].s.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
+		}
+		if ( this.props.fontFamily === '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' ) {
+			fontStandardWeights = systemWeights;
 		}
 		this.setState( { typographyWeights: fontStandardWeights } );
 		this.setState( { typographyStyles: fontStandardStyles } );

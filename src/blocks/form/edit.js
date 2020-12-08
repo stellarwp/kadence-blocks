@@ -1459,11 +1459,6 @@ class KadenceForm extends Component {
 					</WebfontLoader>
 				) }
 				<BlockControls key="controls">
-					<BlockAlignmentToolbar
-						value={ align }
-						controls={ [ 'center', 'wide', 'full' ] }
-						onChange={ value => setAttributes( { align: value } ) }
-					/>
 					<AlignmentToolbar
 						value={ hAlign }
 						onChange={ value => setAttributes( { hAlign: value } ) }
