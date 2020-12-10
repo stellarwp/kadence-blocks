@@ -90,7 +90,7 @@ class KadenceInfoBoxDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/infobox' ] ) {
+		if ( config[ 'kadence/infobox' ] === undefined || config[ 'kadence/infobox' ].length == 0 ) {
 			config[ 'kadence/infobox' ] = {};
 		}
 		config[ 'kadence/infobox' ][ key ] = value;

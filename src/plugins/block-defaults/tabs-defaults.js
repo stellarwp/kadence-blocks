@@ -62,7 +62,7 @@ class KadenceTabsDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/tabs' ] ) {
+		if ( config[ 'kadence/tabs' ] === undefined || config[ 'kadence/tabs' ].length == 0 ) {
 			config[ 'kadence/tabs' ] = {};
 		}
 		config[ 'kadence/tabs' ][ key ] = value;

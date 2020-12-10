@@ -2,6 +2,7 @@ import TypographyControls from '../../typography-control';
 import range from 'lodash/range';
 import map from 'lodash/map';
 import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
+import HeadingLevelIcon from '../../blocks/advanced-heading/heading-icons';
 /**
  * Internal block libraries
  */
@@ -52,7 +53,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/advancedheading' ] ) {
+		if ( config[ 'kadence/advancedheading' ] === undefined || config[ 'kadence/advancedheading' ].length == 0 ) {
 			config[ 'kadence/advancedheading' ] = {};
 		}
 		config[ 'kadence/advancedheading' ][ key ] = value;
@@ -81,9 +82,89 @@ class KadenceAdvancedHeadingDefault extends Component {
 				subscript: String( targetLevel ),
 			} ];
 		};
+		const level = ( undefined !== headingConfig.level ? headingConfig.level : 2 );
+		const htmlTag = ( undefined !== headingConfig.htmlTag ? headingConfig.htmlTag : 'heading' );
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
+		];
+		const headingOptions = [
+			[
+				{
+					icon: <HeadingLevelIcon level={ 1 } isPressed={ ( 1 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 1', 'kadence-blocks' ),
+					isActive: ( 1 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => {
+						this.saveConfigState( 'level', 1 );
+						this.saveConfigState( 'htmlTag', 'heading' );
+					},
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 2 } isPressed={ ( 2 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 2', 'kadence-blocks' ),
+					isActive: ( 2 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => {
+						this.saveConfigState( 'level', 2 );
+						this.saveConfigState( 'htmlTag', 'heading' );
+					},
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 3 } isPressed={ ( 3 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 3', 'kadence-blocks' ),
+					isActive: ( 3 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => {
+						this.saveConfigState( 'level', 3 );
+						this.saveConfigState( 'htmlTag', 'heading' );
+					},
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 4 } isPressed={ ( 4 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 4', 'kadence-blocks' ),
+					isActive: ( 4 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => {
+						this.saveConfigState( 'level', 4 );
+						this.saveConfigState( 'htmlTag', 'heading' );
+					},
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 5 } isPressed={ ( 5 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 5', 'kadence-blocks' ),
+					isActive: ( 5 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => {
+						this.saveConfigState( 'level', 5 );
+						this.saveConfigState( 'htmlTag', 'heading' );
+					},
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 6 } isPressed={ ( 6 === level && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+					title: __( 'Heading 6', 'kadence-blocks' ),
+					isActive: ( 6 === level && htmlTag && htmlTag === 'heading' ? true : false ),
+					onClick: () => {
+						this.saveConfigState( 'level', 6 );
+						this.saveConfigState( 'htmlTag', 'heading' );
+					},
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 'p' } isPressed={ ( htmlTag && htmlTag === 'p' ? true : false ) } />,
+					title: __( 'Paragraph', 'kadence-blocks' ),
+					isActive: ( htmlTag && htmlTag === 'p' ? true : false ),
+					onClick: () => {
+						this.saveConfigState( 'htmlTag', 'p' );
+					},
+				},
+			],
 		];
 		return (
 			<Fragment>
@@ -104,7 +185,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 						>
 							<div className="components-base-control">
 								<p className="kt-setting-label">{ __( 'HTML Tag' ) }</p>
-								<Toolbar controls={ range( 1, 7 ).map( createLevelControl ) } />
+								<Toolbar controls={ headingOptions } />
 							</div>
 							<div className="components-base-control">
 								<p className="kt-setting-label">{ __( 'Text Alignment' ) }</p>

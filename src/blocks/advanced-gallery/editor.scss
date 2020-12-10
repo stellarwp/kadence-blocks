@@ -162,7 +162,6 @@
 		color: transparent;
 	}
 }
-
 .kadence-blocks-library-gallery-item__inline-menu {
 	position: absolute;
 	top: 0px;
@@ -527,4 +526,28 @@
 .block-editor-editor-skeleton__content {
     max-width: 100%;
 }
+}
+.interface-interface-skeleton__editor {
+	max-width: 100%;
+}
+// Fix Slider Overflow Issue.
+.kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 160px );
+}
+@media (max-width: 960px) {
+	.auto-fold .kt-blocks-carousel {
+		max-width: calc( 100vw - 20px - 36px );
+	}
+	.auto-fold .edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
+		max-width: calc( 100vw - 20px - 280px - 36px );
+	}
+}
+.folded .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 36px );
+}
+.edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 280px - 160px );
+}
+.folded .edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 280px - 36px );
 }

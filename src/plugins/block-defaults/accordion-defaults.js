@@ -119,7 +119,7 @@ class KadenceAccordionDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/accordion' ] ) {
+		if ( config[ 'kadence/accordion' ] === undefined || config[ 'kadence/accordion' ].length == 0 ) {
 			config[ 'kadence/accordion' ] = {};
 		}
 		config[ 'kadence/accordion' ][ key ] = value;

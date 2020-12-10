@@ -1,0 +1,134 @@
+/* Measurements */
+.kadence-title-bar {
+    margin-bottom: 8px;
+}
+.kadence-controls-content {
+	display: flex;
+	.kadence-range-control {
+		flex-grow: 1;
+		margin-right: 2px;
+		margin-bottom: 0;
+		.components-base-control__field {
+			margin-bottom: 0;
+		}
+	}
+	.measure-input-wrap {
+		margin-right: 2px;
+		flex-grow: 1;
+		.components-base-control.measure-inputs {
+			margin:0;
+			position: relative;
+			.components-base-control__field{
+				margin-bottom: 0;
+			}
+			input[type=number] {
+				padding: 0 5px;
+				margin:0;
+			}
+		}
+	}
+	
+	.measure-label {
+		display: none;
+		font-size: 11px;
+		line-height: 16px;
+		padding: 3px 0;
+		text-align: center;
+		svg {
+			height: 16px;
+			width: 16px;
+		}
+	}
+}
+.kb-measure-control {
+	.measure-input-top .measure-inputs .components-base-control__field:before {
+		content: '';
+		display: block;
+		border-top:3px solid #757575;
+		width: 100%;
+		border-top-left-radius: 2px;
+		border-top-right-radius: 2px;
+		position: absolute;
+		left: 0;
+		top: 0;
+	}
+ 	&.kb-measure-corners-control .measure-input-top .measure-inputs .components-base-control__field:before {
+		width: 15px;
+		height: 15px;
+		border-left: 3px solid  #757575;
+		border-top: 3px solid  #757575;
+		border-top-right-radius: 0px;
+	}
+	.measure-input-right .measure-inputs .components-base-control__field:before {
+		content: '';
+		display: block;
+		border-right:3px solid #757575;
+		width: 0;
+		height: 100%;
+		border-bottom-right-radius: 2px;
+		border-top-right-radius: 2px;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+	&.kb-measure-corners-control .measure-input-right .measure-inputs .components-base-control__field:before {
+		width: 15px;
+		height: 15px;
+		border-right: 3px solid  #757575;
+		border-top: 3px solid  #757575;
+		border-bottom-right-radius: 0px;
+	}
+	.measure-input-bottom .measure-inputs .components-base-control__field:before {
+		content: '';
+		display: block;
+		border-bottom:3px solid #757575;
+		width: 100%;
+		border-bottom-left-radius: 2px;
+		border-bottom-right-radius: 2px;
+		position: absolute;
+		right: 0;
+		bottom: 0;
+	}
+	&.kb-measure-corners-control .measure-input-bottom .measure-inputs .components-base-control__field:before {
+		width: 15px;
+		height: 15px;
+		border-right: 3px solid  #757575;
+		border-bottom: 3px solid  #757575;
+		border-bottom-left-radius: 0px;
+	}
+	.measure-input-left .measure-inputs .components-base-control__field:before {
+		content: '';
+		display: block;
+		border-left:3px solid #757575;
+		height: 100%;
+		width:0;
+		border-bottom-left-radius: 2px;
+		border-top-left-radius: 2px;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+	}
+	&.kb-measure-corners-control .measure-input-left .measure-inputs .components-base-control__field:before {
+		width: 15px;
+		height: 15px;
+		border-left: 3px solid  #757575;
+		border-bottom: 3px solid  #757575;
+		border-top-left-radius: 0px;
+	}
+}
+.kadence-units {
+	max-width: 60px;
+	.components-button {
+		padding-top: 2px;
+		padding-bottom: 2px;
+		svg {
+			width: 16px;
+		}
+	}
+}
+.kadence-locked .components-button.is-single {
+    border: 1px solid #e2e4e7;
+    background-color: #fff;
+    display: flex;
+    height: 30px;
+}

@@ -54,7 +54,7 @@ class KadenceTypographyDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/typography' ] ) {
+		if ( config[ 'kadence/typography' ] === undefined || config[ 'kadence/typography' ].length == 0 ) {
 			config[ 'kadence/typography' ] = {};
 		}
 		config[ 'kadence/typography' ][ key ] = value;
@@ -71,6 +71,7 @@ class KadenceTypographyDefault extends Component {
 				type: 'group',
 				label: 'Standard Fonts',
 				options: [
+					{ label: 'System Default', value: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"', google: false },
 					{ label: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
 					{ label: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
 					{ label: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },

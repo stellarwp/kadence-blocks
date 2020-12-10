@@ -197,17 +197,6 @@
 		"sC": 0,
 		"tS": 0
 		},
-	"/dist/blocks.build.js": {
-		"bF": 0,
-		"ft": 64,
-		"ma": 0,
-		"mi": 1,
-		"oA": 1,
-		"oAP": "/dist/blocks.build-min.js",
-		"oF": 1,
-		"sC": 0,
-		"tS": 0
-		},
 	"/dist/blocks/accordion.style.build.css": {
 		"aP": 1,
 		"bl": 0,
@@ -2589,6 +2578,19 @@
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
+		},
+	"/src/editor-components.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 0,
+		"oA": 1,
+		"oAP": "/src/editor-components.css",
+		"oF": 1,
+		"oS": 0,
+		"sct": 1
 		},
 	"/src/faicons.js": {
 		"bF": 0,

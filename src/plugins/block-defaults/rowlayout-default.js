@@ -59,7 +59,7 @@ class KadenceRowLayoutDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/rowlayout' ] ) {
+		if ( config[ 'kadence/rowlayout' ] === undefined || config[ 'kadence/rowlayout' ].length == 0 ) {
 			config[ 'kadence/rowlayout' ] = {};
 		}
 		config[ 'kadence/rowlayout' ][ key ] = value;
