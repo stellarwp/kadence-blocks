@@ -11,8 +11,7 @@
  * which makes it higher in priority.
  */
 .kt-counter-up {
-  text-align: center;
-  font-size: 50px; }
+  text-align: center; }
 /**
  * #.# Common SCSS
  *

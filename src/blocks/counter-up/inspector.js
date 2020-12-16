@@ -119,7 +119,7 @@ class Inspector extends Component {
 								value={ end }
 								onChange={ (value) => setAttributes({ end: value }) }
 								min={ -9000 }
-								max={ 9000 }
+								max={ 90000000 }
 								step={ 1 }
 							/>
 
@@ -154,7 +154,7 @@ class Inspector extends Component {
 
 					<PanelBody
 						title={ __( 'Title Settings' ) }
-						initialOpen={ true }>
+						initialOpen={ false }>
 						<ToggleControl
 							label={ __( 'Show Title' ) }
 							checked={ displayTitle }
@@ -316,7 +316,7 @@ class Inspector extends Component {
 
 					<PanelBody
 						title={ __( 'Number Settings' ) }
-						initialOpen={ true }>
+						initialOpen={ false }>
 						<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
 						<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 							activeClass="active-tab"
@@ -424,7 +424,6 @@ class Inspector extends Component {
 						<TypographyControls
 							fontGroup={ 'heading' }
 							tagLevel={ numberFont[ 0 ].level }
-							onTagLevel={ ( value ) => saveNumberFont( { level: value } ) }
 							fontSize={ numberFont[ 0 ].size }
 							onFontSize={ ( value ) => saveNumberFont( { size: value } ) }
 							fontSizeType={ numberFont[ 0 ].sizeType }

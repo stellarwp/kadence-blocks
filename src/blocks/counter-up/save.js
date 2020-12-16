@@ -24,6 +24,7 @@ class KadenceCounterUpSave extends Component {
 		} = this.props;
 
 		const {
+			uniqueID,
 			title,
 			start,
 			end,
@@ -31,11 +32,22 @@ class KadenceCounterUpSave extends Component {
 			suffix,
 			duration,
 			separator,
-			uniqueID
+			displayTitle,
+			titleFont,
+			titleColor,
+			titleHoverColor,
+			titleMinHeight,
+			numberFont,
+			numberColor,
+			numberHoverColor,
+			numberMinHeight,
 		} = attributes
+
+		const titleTagName = 'h' + titleFont[ 0 ].level;
 
 		return (
 			<div
+				id={ `kt-counter-up-${uniqueID}` }
 				className={ classnames( 'kt-counter-up' ) }
 				data-start={ start }
 				data-end={ end }
@@ -44,11 +56,11 @@ class KadenceCounterUpSave extends Component {
 				data-duration={ duration }
 				data-separator={ separator }
 			>
-				<div className="kt-counter-up-process" />
+				<div className={ classnames( 'kt-counter-up-process kt-counter-up-number' ) } />
 				<RichText.Content
-					tagName="div"
+					tagName={ titleTagName }
+					className={ classnames( 'kt-counter-up-title' ) }
 					value={ title }
-					className="title"
 				/>
 			</div>
 		)

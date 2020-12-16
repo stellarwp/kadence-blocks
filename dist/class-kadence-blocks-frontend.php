@@ -253,9 +253,27 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 	}
+	/**
+	 * Render Counter Up  Block
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 */
 	public function render_counterup_layout_css_head($attributes) {
 		if ( ! wp_style_is( 'kadence-blocks-counterup', 'enqueued' ) ) {
 			wp_enqueue_style( 'kadence-blocks-counterup' );
+		}
+
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'counterup', $unique_id ) ) {
+				$css = $this->blocks_counterup_array( $attributes, $unique_id );
+
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
 		}
 	}
 	/**
@@ -1410,6 +1428,7 @@ class Kadence_Blocks_Frontend {
 							$blockattr = $block['attrs'];
 							$this->render_counterup_layout_css_head( $blockattr );
 							$this->render_counterup_layout_scripts( $blockattr );
+							$this->blocks_counterup_scripts_gfonts( $blockattr );
 						}
 					}
 					if ( 'kadence/column' === $block['blockName'] ) {
@@ -2437,6 +2456,193 @@ class Kadence_Blocks_Frontend {
 		return $css;
 	}
 	/**
+	 * Builds CSS for Counter Up block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_counterup_array( $attr, $unique_id ) {
+		$css = '';
+
+		if ( isset( $attr['titleColor'] ) || isset( $attr['titleFont'] ) ) {
+			$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-title {';
+			if ( isset( $attr['titleColor'] ) && ! empty( $attr['titleColor'] ) ) {
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleColor'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && is_array( $attr['titleFont'][ 0 ] ) ) {
+				$title_font = $attr['titleFont'][ 0 ];
+				if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && ! empty( $title_font['size'][0] ) ) {
+					$css .= 'font-size:' . $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) . ';';
+				}
+				if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && ! empty( $title_font['lineHeight'][0] ) ) {
+					$css .= 'line-height:' . $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) . ';';
+				}
+				if ( isset( $title_font['letterSpacing'] ) && ! empty( $title_font['letterSpacing'] ) ) {
+					$css .= 'letter-spacing:' . $title_font['letterSpacing'] .  'px;';
+				}
+				if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
+					$css .= 'text-transform:' . $title_font['textTransform'] .  ';';
+				}
+				if ( isset( $title_font['family'] ) && ! empty( $title_font['family'] ) ) {
+					$css .= 'font-family:' . $title_font['family'] .  ';';
+				}
+				if ( isset( $title_font['style'] ) && ! empty( $title_font['style'] ) ) {
+					$css .= 'font-style:' . $title_font['style'] .  ';';
+				}
+				if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) ) {
+					$css .= 'font-weight:' . $title_font['weight'] .  ';';
+				}
+				if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) ) {
+					$css .= 'padding:' . $title_font['padding'][0] . 'px ' . $title_font['padding'][1] . 'px ' . $title_font['padding'][2] . 'px ' . $title_font['padding'][3] . 'px;';
+				}
+				if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) ) {
+					$css .= 'margin:' . $title_font['margin'][0] . 'px ' . $title_font['margin'][1] . 'px ' . $title_font['margin'][2] . 'px ' . $title_font['margin'][3] . 'px;';
+				}
+			}
+			$css .= '}';
+		}
+		if ( isset( $attr['titleHoverColor'] ) && ! empty( $attr['titleHoverColor'] ) ) {
+			$css .= '#kt-counter-up-' . $unique_id . ':hover .kt-counter-up-title {';
+				$css .= 'color:' . $this->kadence_color_output( $attr['titleHoverColor'] ) . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-title {';
+			if ( isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['titleFont'][0]['size'][1] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][1] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-titletle {';
+			if ( isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['titleMinHeight'][0] ) ) {
+				$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['titleMinHeight'][2] ) && is_numeric( $attr['titleMinHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-title {';
+				$css .= 'min-height:' . $attr['titleMinHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+
+		if ( isset( $attr['numberColor'] ) || isset( $attr['numberFont'] ) ) {
+			$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-number {';
+			if ( isset( $attr['numberColor'] ) && ! empty( $attr['numberColor'] ) ) {
+				$css .= 'color:' . $this->kadence_color_output( $attr['numberColor'] ) . ';';
+			}
+			if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && is_array( $attr['numberFont'][ 0 ] ) ) {
+				$number_font = $attr['numberFont'][ 0 ];
+				if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && ! empty( $number_font['size'][0] ) ) {
+					$css .= 'font-size:' . $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) . ';';
+				}
+				if ( isset( $number_font['lineHeight'] ) && is_array( $number_font['lineHeight'] ) && ! empty( $number_font['lineHeight'][0] ) ) {
+					$css .= 'line-height:' . $number_font['lineHeight'][0] . ( ! isset( $number_font['lineType'] ) ? 'px' : $number_font['lineType'] ) . ';';
+				}
+				if ( isset( $number_font['letterSpacing'] ) && ! empty( $number_font['letterSpacing'] ) ) {
+					$css .= 'letter-spacing:' . $number_font['letterSpacing'] .  'px;';
+				}
+				if ( isset( $number_font['textTransform'] ) && ! empty( $number_font['textTransform'] ) ) {
+					$css .= 'text-transform:' . $number_font['textTransform'] .  ';';
+				}
+				if ( isset( $number_font['family'] ) && ! empty( $number_font['family'] ) ) {
+					$css .= 'font-family:' . $number_font['family'] .  ';';
+				}
+				if ( isset( $number_font['style'] ) && ! empty( $number_font['style'] ) ) {
+					$css .= 'font-style:' . $number_font['style'] .  ';';
+				}
+				if ( isset( $number_font['weight'] ) && ! empty( $number_font['weight'] ) ) {
+					$css .= 'font-weight:' . $number_font['weight'] .  ';';
+				}
+				if ( isset( $number_font['padding'] ) && is_array( $number_font['padding'] ) ) {
+					$css .= 'padding:' . $number_font['padding'][0] . 'px ' . $number_font['padding'][1] . 'px ' . $number_font['padding'][2] . 'px ' . $number_font['padding'][3] . 'px;';
+				}
+				if ( isset( $number_font['margin'] ) && is_array( $number_font['margin'] ) ) {
+					$css .= 'margin:' . $number_font['margin'][0] . 'px ' . $number_font['margin'][1] . 'px ' . $number_font['margin'][2] . 'px ' . $number_font['margin'][3] . 'px;';
+				}
+			}
+			$css .= '}';
+		}
+		if ( isset( $attr['numberHoverColor'] ) && ! empty( $attr['numberHoverColor'] ) ) {
+			$css .= '#kt-counter-up-' . $unique_id . ':hover .kt-counter-up-number {';
+				$css .= 'color:' . $this->kadence_color_output( $attr['numberHoverColor'] ) . ';';
+			$css .= '}';
+		}
+		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && ( ( isset( $attr['numberFont'][0]['size'] ) && is_array( $attr['numberFont'][0]['size'] ) && isset( $attr['numberFont'][0]['size'][1] ) && ! empty( $attr['numberFont'][0]['size'][1] ) ) || ( isset( $attr['numberFont'][0]['lineHeight'] ) && is_array( $attr['numberFont'][0]['lineHeight'] ) && isset( $attr['numberFont'][0]['lineHeight'][1] ) && ! empty( $attr['numberFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+			$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-number {';
+			if ( isset( $attr['numberFont'][0]['size'][1] ) && ! empty( $attr['numberFont'][0]['size'][1] ) ) {
+				$css .= 'font-size:' . $attr['numberFont'][0]['size'][1] . ( ! isset( $attr['numberFont'][0]['sizeType'] ) ? 'px' : $attr['numberFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['numberFont'][0]['lineHeight'][1] ) && ! empty( $attr['numberFont'][0]['lineHeight'][1] ) ) {
+				$css .= 'line-height:' . $attr['numberFont'][0]['lineHeight'][1] . ( ! isset( $attr['numberFont'][0]['lineType'] ) ? 'px' : $attr['numberFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && ( ( isset( $attr['numberFont'][0]['size'] ) && is_array( $attr['numberFont'][0]['size'] ) && isset( $attr['numberFont'][0]['size'][2] ) && ! empty( $attr['numberFont'][0]['size'][2] ) ) || ( isset( $attr['numberFont'][0]['lineHeight'] ) && is_array( $attr['numberFont'][0]['lineHeight'] ) && isset( $attr['numberFont'][0]['lineHeight'][2] ) && ! empty( $attr['numberFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-numbertle {';
+			if ( isset( $attr['numberFont'][0]['size'][2] ) && ! empty( $attr['numberFont'][0]['size'][2] ) ) {
+				$css .= 'font-size:' . $attr['numberFont'][0]['size'][2] . ( ! isset( $attr['numberFont'][0]['sizeType'] ) ? 'px' : $attr['numberFont'][0]['sizeType'] ) . ';';
+			}
+			if ( isset( $attr['numberFont'][0]['lineHeight'][2] ) && ! empty( $attr['numberFont'][0]['lineHeight'][2] ) ) {
+				$css .= 'line-height:' . $attr['numberFont'][0]['lineHeight'][2] . ( ! isset( $attr['numberFont'][0]['lineType'] ) ? 'px' : $attr['numberFont'][0]['lineType'] ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['numberMinHeight'] ) && is_array( $attr['numberMinHeight'] ) && isset( $attr['numberMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['numberMinHeight'][0] ) ) {
+				$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-number {';
+				$css .= 'min-height:' . $attr['numberMinHeight'][0] . 'px;';
+				$css .= '}';
+			}
+			if ( isset( $attr['numberMinHeight'][1] ) && is_numeric( $attr['numberMinHeight'][1] ) ) {
+				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-number {';
+				$css .= 'min-height:' . $attr['numberMinHeight'][1] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $attr['numberMinHeight'][2] ) && is_numeric( $attr['numberMinHeight'][2] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '#kt-counter-up-' . $unique_id . ' .kt-counter-up-number {';
+				$css .= 'min-height:' . $attr['numberMinHeight'][2] . 'px;';
+				$css .= '}';
+				$css .= '}';
+			}
+		}
+
+		return $css;
+	}
+	/**
 	 * Builds CSS for InfoBox block.
 	 *
 	 * @param array  $attr the blocks attr.
@@ -3241,6 +3447,52 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		return $css;
+	}
+	/**
+	 * Adds Google fonts for Counter Up block.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_counterup_scripts_gfonts( $attr ) {
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
+			$title_font = $attr['titleFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
+
+		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && isset( $attr['numberFont'][0]['google'] ) && $attr['numberFont'][0]['google'] && ( ! isset( $attr['numberFont'][0]['loadGoogle'] ) || true === $attr['numberFont'][0]['loadGoogle'] ) &&  isset( $attr['numberFont'][0]['family'] ) ) {
+			$title_font = $attr['numberFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
 	}
 	/**
 	 * Adds Google fonts for infobox block.

@@ -7,6 +7,7 @@
  */
 import Inspector from './inspector';
 import KadenceColorOutput from '../../kadence-color-output';
+import WebfontLoader from '../../fontloader';
 
 /**
  * Import External
@@ -58,6 +59,14 @@ class KadenceCounterUp extends Component {
 				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
 			} );
 		}
+
+		this.props.setAttributes( {
+			titleFont: [...this.props.attributes.titleFont],
+		} );
+
+		this.props.setAttributes( {
+			numberFont: [...this.props.attributes.numberFont],
+		} );
 	}
 
 	render() {
@@ -128,7 +137,7 @@ class KadenceCounterUp extends Component {
 				{ renderCSS }
 
 				<div id={ `kt-counter-up-${uniqueID}` } className={ classnames( 'kt-counter-up' ) }>
-					<span
+					<div
 						className={ classnames( 'kt-counter-up-number' ) }
 						style={ {
 							fontWeight: numberFont[ 0 ].weight,
@@ -152,12 +161,12 @@ class KadenceCounterUp extends Component {
 						  prefix={ prefix }
 						  suffix={ suffix }
 						/>
-					</span>
+					</div>
 
 					{ 	displayTitle &&
 						<RichText
 							tagName={ titleTagName }
-							className={ classnames( className, 'kt-counter-up-title' ) }
+							className={ classnames( 'kt-counter-up-title' ) }
 							value={ title }
 							onChange={ (content) => setAttributes({ title: content }) }
 							placeholder={ __( 'Type Here...' ) }
