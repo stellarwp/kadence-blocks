@@ -253,6 +253,11 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 	}
+	public function render_counterup_layout_css_head($attributes) {
+		if ( ! wp_style_is( 'kadence-blocks-counterup', 'enqueued' ) ) {
+			wp_enqueue_style( 'kadence-blocks-counterup' );
+		}
+	}
 	/**
 	 * Render Row  Block
 	 *
@@ -1019,6 +1024,7 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		// Lets register all the block styles.
+		wp_register_style( 'kadence-blocks-counterup', KADENCE_BLOCKS_URL . 'dist/blocks/counterup.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-rowlayout', KADENCE_BLOCKS_URL . 'dist/blocks/row.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-accordion', KADENCE_BLOCKS_URL . 'dist/blocks/accordion.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-btn', KADENCE_BLOCKS_URL . 'dist/blocks/btn.style.build.css', array(), KADENCE_BLOCKS_VERSION );
@@ -1041,6 +1047,8 @@ class Kadence_Blocks_Frontend {
 		//wp_enqueue_style( 'kadence-blocks-style-css', KADENCE_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
 		// Next all the extras that are shared.
+		wp_register_script( 'kadence-counter-up-js', KADENCE_BLOCKS_URL . 'dist/assets/js/src/countUp.min.js', array('jquery'), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-counter-up', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-countup.js', array('kadence-counter-up-js'), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'dist/assets/css/simplelightbox.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'dist/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
@@ -1395,6 +1403,13 @@ class Kadence_Blocks_Frontend {
 							$blockattr = $block['attrs'];
 							$this->render_row_layout_css_head( $blockattr );
 							$this->render_row_layout_scripts( $blockattr );
+						}
+					}
+					if ( 'kadence/counterup' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_counterup_layout_css_head( $blockattr );
+							$this->render_counterup_layout_scripts( $blockattr );
 						}
 					}
 					if ( 'kadence/column' === $block['blockName'] ) {
@@ -4037,6 +4052,18 @@ class Kadence_Blocks_Frontend {
 		}
 		return $css;
 	}
+
+	/**
+	 * Adds Scripts for Counter-Up block.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function render_counterup_layout_scripts( $attr ) {
+		if ( has_block( 'kadence/counterup' ) ) {
+			$this->enqueue_script( 'kadence-counter-up' );
+		}
+	}
+
 	/**
 	 * Adds Scripts for row block.
 	 *

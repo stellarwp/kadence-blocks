@@ -19,7 +19,7 @@ window.kb = {
 };
 import icons from './brand-icon';
 //wp.i18n.setLocaleData( { '': {} }, 'kadence-blocks' );
-
+import './blocks/counter-up/block.js';
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
 import './blocks/row-layout/block.js';

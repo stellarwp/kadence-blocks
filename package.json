@@ -18,6 +18,7 @@
     "re-resizable": "^4.7.1",
     "react-color": "^2.18.0",
     "react-container-dimensions": "^1.4.1",
+    "react-countup": "^4.3.3",
     "react-lazy-load": "^3.0.13",
     "react-masonry-component": "^6.2.1",
     "react-select": "^2.2.0",
