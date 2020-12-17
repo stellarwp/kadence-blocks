@@ -1,24 +1,26 @@
 /**
  * BLOCK: Kadence Counter-Up
  */
+
+/**
+ * Import External
+ */
 import classnames from 'classnames';
 
-const {
-	Component,
-	Fragment,
-} = wp.element;
-const {
-	InnerBlocks,
-	RichText,
-} = wp.blockEditor;
 /**
  * Internal block libraries
  */
 const { __, sprintf } = wp.i18n;
+const { Component, Fragment } = wp.element;
+const { InnerBlocks, RichText } = wp.blockEditor;
 
+/**
+ * Build the counter up save
+ */
 class KadenceCounterUpSave extends Component {
 
 	render() {
+
 		const {
 			attributes,
 		} = this.props;

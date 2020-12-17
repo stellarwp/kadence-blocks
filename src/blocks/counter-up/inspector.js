@@ -19,27 +19,18 @@ import KadenceRange from '../../kadence-range-control';
  */
 const { __ } = wp.i18n;
 const { Component, Fragment } = wp.element;
-const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
+const { InspectorControls } = wp.blockEditor;
 const {
 	TextControl,
-	SelectControl,
 	PanelBody,
 	RangeControl,
 	ToggleControl,
-	BaseControl,
-	ButtonGroup,
-	Button,
-	ColorPicker,
-	TextareaControl,
-	CheckboxControl,
-	Tooltip,
 	TabPanel,
 	Dashicon
 } = wp.components;
 
-
 /**
- * Menu category Settings
+ * Counter Up Settings
  */
 class Inspector extends Component {
 	constructor() {
@@ -268,48 +259,48 @@ class Inspector extends Component {
 									}
 								</TabPanel>
 								<TypographyControls
-								fontGroup={ 'heading' }
-								tagLevel={ titleFont[ 0 ].level }
-								onTagLevel={ ( value ) => saveTitleFont( { level: value } ) }
-								fontSize={ titleFont[ 0 ].size }
-								onFontSize={ ( value ) => saveTitleFont( { size: value } ) }
-								fontSizeType={ titleFont[ 0 ].sizeType }
-								onFontSizeType={ ( value ) => saveTitleFont( { sizeType: value } ) }
-								lineHeight={ titleFont[ 0 ].lineHeight }
-								onLineHeight={ ( value ) => saveTitleFont( { lineHeight: value } ) }
-								lineHeightType={ titleFont[ 0 ].lineType }
-								onLineHeightType={ ( value ) => saveTitleFont( { lineType: value } ) }
-								letterSpacing={ titleFont[ 0 ].letterSpacing }
-								onLetterSpacing={ ( value ) => saveTitleFont( { letterSpacing: value } ) }
-								fontFamily={ titleFont[ 0 ].family }
-								onFontFamily={ ( value ) => saveTitleFont( { family: value } ) }
-								onFontChange={ ( select ) => {
-									saveTitleFont( {
-										family: select.value,
-										google: select.google,
-									} );
-								} }
-								onFontArrayChange={ ( values ) => saveTitleFont( values ) }
-								googleFont={ titleFont[ 0 ].google }
-								onGoogleFont={ ( value ) => saveTitleFont( { google: value } ) }
-								loadGoogleFont={ titleFont[ 0 ].loadGoogle }
-								onLoadGoogleFont={ ( value ) => saveTitleFont( { loadGoogle: value } ) }
-								fontVariant={ titleFont[ 0 ].variant }
-								onFontVariant={ ( value ) => saveTitleFont( { variant: value } ) }
-								fontWeight={ titleFont[ 0 ].weight }
-								onFontWeight={ ( value ) => saveTitleFont( { weight: value } ) }
-								fontStyle={ titleFont[ 0 ].style }
-								onFontStyle={ ( value ) => saveTitleFont( { style: value } ) }
-								fontSubset={ titleFont[ 0 ].subset }
-								onFontSubset={ ( value ) => saveTitleFont( { subset: value } ) }
-								padding={ titleFont[ 0 ].padding }
-								onPadding={ ( value ) => saveTitleFont( { padding: value } ) }
-								paddingControl={ titleFont[ 0 ].paddingControl }
-								onPaddingControl={ ( value ) => saveTitleFont( { paddingControl: value } ) }
-								margin={ titleFont[ 0 ].margin }
-								onMargin={ ( value ) => saveTitleFont( { margin: value } ) }
-								marginControl={ titleFont[ 0 ].marginControl }
-								onMarginControl={ ( value ) => saveTitleFont( { marginControl: value } ) } />
+									fontGroup={ 'heading' }
+									tagLevel={ titleFont[ 0 ].level }
+									onTagLevel={ ( value ) => saveTitleFont( { level: value } ) }
+									fontSize={ titleFont[ 0 ].size }
+									onFontSize={ ( value ) => saveTitleFont( { size: value } ) }
+									fontSizeType={ titleFont[ 0 ].sizeType }
+									onFontSizeType={ ( value ) => saveTitleFont( { sizeType: value } ) }
+									lineHeight={ titleFont[ 0 ].lineHeight }
+									onLineHeight={ ( value ) => saveTitleFont( { lineHeight: value } ) }
+									lineHeightType={ titleFont[ 0 ].lineType }
+									onLineHeightType={ ( value ) => saveTitleFont( { lineType: value } ) }
+									letterSpacing={ titleFont[ 0 ].letterSpacing }
+									onLetterSpacing={ ( value ) => saveTitleFont( { letterSpacing: value } ) }
+									fontFamily={ titleFont[ 0 ].family }
+									onFontFamily={ ( value ) => saveTitleFont( { family: value } ) }
+									onFontChange={ ( select ) => {
+										saveTitleFont( {
+											family: select.value,
+											google: select.google,
+										} );
+									} }
+									onFontArrayChange={ ( values ) => saveTitleFont( values ) }
+									googleFont={ titleFont[ 0 ].google }
+									onGoogleFont={ ( value ) => saveTitleFont( { google: value } ) }
+									loadGoogleFont={ titleFont[ 0 ].loadGoogle }
+									onLoadGoogleFont={ ( value ) => saveTitleFont( { loadGoogle: value } ) }
+									fontVariant={ titleFont[ 0 ].variant }
+									onFontVariant={ ( value ) => saveTitleFont( { variant: value } ) }
+									fontWeight={ titleFont[ 0 ].weight }
+									onFontWeight={ ( value ) => saveTitleFont( { weight: value } ) }
+									fontStyle={ titleFont[ 0 ].style }
+									onFontStyle={ ( value ) => saveTitleFont( { style: value } ) }
+									fontSubset={ titleFont[ 0 ].subset }
+									onFontSubset={ ( value ) => saveTitleFont( { subset: value } ) }
+									padding={ titleFont[ 0 ].padding }
+									onPadding={ ( value ) => saveTitleFont( { padding: value } ) }
+									paddingControl={ titleFont[ 0 ].paddingControl }
+									onPaddingControl={ ( value ) => saveTitleFont( { paddingControl: value } ) }
+									margin={ titleFont[ 0 ].margin }
+									onMargin={ ( value ) => saveTitleFont( { margin: value } ) }
+									marginControl={ titleFont[ 0 ].marginControl }
+									onMarginControl={ ( value ) => saveTitleFont( { marginControl: value } ) } />
 							</Fragment>
 						}
 					</PanelBody>

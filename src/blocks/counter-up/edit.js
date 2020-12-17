@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Counter-Up
+ * BLOCK: Kadence Counter Up
  */
 
 /**
@@ -20,28 +20,19 @@ import classnames from 'classnames';
  */
 import './style.scss';
 import './editor.scss';
-const {
-	createBlock,
-} = wp.blocks;
-const { withSelect, withDispatch } = wp.data;
-const { compose } = wp.compose;
-const {
-	Component,
-	Fragment,
-} = wp.element;
-const {
-	RichText
-} = wp.blockEditor;
-const {
 
-} = wp.components;
 /**
  * Internal block libraries
  */
+const { createBlock } = wp.blocks;
+const { withSelect, withDispatch } = wp.data;
+const { compose } = wp.compose;
+const { Component, Fragment } = wp.element;
+const { RichText } = wp.blockEditor;
 const { __, sprintf } = wp.i18n;
 
 /**
- * Build the row edit
+ * Build the counter up edit
  */
 class KadenceCounterUp extends Component {
 	constructor() {

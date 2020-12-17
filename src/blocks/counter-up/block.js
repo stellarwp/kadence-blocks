@@ -1,15 +1,20 @@
 /**
- * BLOCK: Kadence Tabs
+ * BLOCK: Kadence Counter Up
  */
 
 /**
  * Import Icons
  */
 import icons from './icon';
+
 /**
  * Import attributes
  */
 import attributes from './attributes';
+
+/**
+ * Import External
+ */
 import classnames from 'classnames';
 
 /**

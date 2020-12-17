@@ -1,7 +1,15 @@
 /**
- * BLOCK: Kadence Tabs Attributes
+ * BLOCK: Kadence Conter Up Attributes
+ */
+
+/**
+ * Internal block libraries
  */
 const { __ } = wp.i18n;
+
+/**
+ * Set default state
+ */
 const attributes = {
 	uniqueID: {
 		type: 'string',

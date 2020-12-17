@@ -18,7 +18,7 @@ jQuery( function( $ ) {
 					suffix: suffix ? suffix : '',
 					separator: seperator ? ',' : ''
 				};
-				console.log(options);
+
 				let demo = new countUp.CountUp( el.get(0), end, options);
 				if (!demo.error) {
 				  demo.start();
