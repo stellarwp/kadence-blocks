@@ -1110,11 +1110,8 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		// Lets register all the block styles.
-<<<<<<< HEAD
 		wp_register_style( 'kadence-blocks-counterup', KADENCE_BLOCKS_URL . 'dist/blocks/counterup.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-=======
 		wp_register_style( 'kadence-blocks-restaurant-menu', KADENCE_BLOCKS_URL . 'dist/blocks/restaurant.style.build.css', array(), KADENCE_BLOCKS_VERSION );
->>>>>>> 2e633aed53d36aa1b5c86e7888b9aa822ea40eba
 		wp_register_style( 'kadence-blocks-rowlayout', KADENCE_BLOCKS_URL . 'dist/blocks/row.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-accordion', KADENCE_BLOCKS_URL . 'dist/blocks/accordion.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-btn', KADENCE_BLOCKS_URL . 'dist/blocks/btn.style.build.css', array(), KADENCE_BLOCKS_VERSION );
@@ -3541,7 +3538,6 @@ class Kadence_Blocks_Frontend {
 			$this->blocks_infobox_scripts_gfonts( $attributes );
 		}
 	}
-
 	/**
 	 * Adds Google fonts for Counter Up block.
 	 *
@@ -5048,7 +5044,6 @@ class Kadence_Blocks_Frontend {
 		}
 		return $css;
 	}
-
 	/**
 	 * Adds Scripts for Counter-Up block.
 	 *
@@ -5059,7 +5054,6 @@ class Kadence_Blocks_Frontend {
 			$this->enqueue_script( 'kadence-counter-up' );
 		}
 	}
-
 	/**
 	 * Adds Scripts for row block.
 	 *
