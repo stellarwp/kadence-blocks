@@ -1,0 +1,52 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+
+.kt-menu-category {
+	.kt-category-content {
+		@for $i from 1 through 8 {
+			&[data-columns-xs="#{ $i }"] .kt-category-content-item {
+				width: (100% / #{ $i });
+			}
+		}
+		@media (min-width: 543px) {
+			@for $i from 1 through 8 {
+				&[data-columns-sm="#{ $i }"] .kt-category-content-item {
+					width: (100% / #{ $i });
+				}
+			}
+		}
+		@media (min-width: 768px) {
+			@for $i from 1 through 8 {
+				&[data-columns-md="#{ $i }"] .kt-category-content-item {
+					width: (100% / #{ $i });
+				}
+			}
+		}
+		@media (min-width: 992px) {
+			@for $i from 1 through 8 {
+				&[data-columns-lg="#{ $i }"] .kt-category-content-item {
+					width: (100% / #{ $i });
+				}
+			}
+		}
+		@media (min-width: 1200px) {
+			@for $i from 1 through 8 {
+				&[data-columns-xl="#{ $i }"] .kt-category-content-item {
+					width: (100% / #{ $i });
+				}
+			}
+		}
+		@media (min-width: 1500px) {
+			@for $i from 1 through 8 {
+				&[data-columns-xxl="#{ $i }"] .kt-category-content-item {
+					width: (100% / #{ $i });
+				}
+			}
+		}
+	}
+}

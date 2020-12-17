@@ -1,0 +1,31 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+.wp-block[data-type="kadence/restaurantmenuitem"] {
+	margin: 0;
+
+	.kt-item-content {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		width: 100%;
+
+		&:last-child {
+
+		}
+		.kt-item-left {
+			width: 80%;
+		}
+
+		.kt-item-right {
+			display: flex;
+			justify-content: flex-end;
+    		align-items: flex-start;
+			width: 20%;
+		}
+	}
+}

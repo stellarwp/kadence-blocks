@@ -7941,6 +7941,121 @@ button.components-button.kt-accordion-add.is-primary svg {
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+.wp-block[data-type="kadence/restaurantmenu"] .wp-block {
+  max-width: none !important; }
+
+.wp-block[data-type="kadence/restaurantmenu"] .editor-block-list__layout,
+.wp-block[data-type="kadence/restaurantmenu"] .block-editor-block-list__layout {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap; }
+
+.wp-block[data-type="kadence/restaurantmenu"] .kt-add-more-btn-wrap {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center; }
+  .wp-block[data-type="kadence/restaurantmenu"] .kt-add-more-btn-wrap button {
+    color: #000;
+    font-weight: 500; }
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+.wp-block[data-type="kadence/restaurantmenucategory"] {
+  margin: 0; }
+  .wp-block[data-type="kadence/restaurantmenucategory"] .kt-add-more-item-btn-wrap {
+    width: 100%;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+        justify-content: center; }
+  @media (min-width: 600px) {
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="1"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 100%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="2"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 50%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="3"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 33.33333%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="4"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 25%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="5"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 20%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="6"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 16.66667%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="7"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 14.28571%; }
+    .wp-block[data-type="kadence/restaurantmenucategory"] .kt-category-content[data-columns-xxl="8"] > .block-editor-inner-blocks
+> .block-editor-block-list__layout
+> .wp-block {
+      width: 12.5%; } }
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+.wp-block[data-type="kadence/restaurantmenuitem"] {
+  margin: 0; }
+  .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: justify;
+        justify-content: space-between;
+    -ms-flex-align: start;
+        align-items: flex-start;
+    width: 100%; }
+    .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-left {
+      width: 80%; }
+    .wp-block[data-type="kadence/restaurantmenuitem"] .kt-item-content .kt-item-right {
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+      -ms-flex-align: start;
+          align-items: flex-start;
+      width: 20%; }
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
 .kt-block-default-palette .components-color-palette__item {
   display: -ms-flexbox;
   display: flex;
