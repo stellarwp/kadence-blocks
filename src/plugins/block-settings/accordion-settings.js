@@ -51,8 +51,7 @@ class KadenceAccordionSettings extends Component {
 		return (
 			<Fragment>
 				<Tooltip text="Block Settings Visibility">
-					<Button className="kt-block-settings" onClick={ () => this.setState( { isOpen: true } ) }>
-						<Dashicon icon="visibility" />
+					<Button className="kt-block-settings" icon="visibility" onClick={ () => this.setState( { isOpen: true } ) }>
 					</Button>
 				</Tooltip>
 				{ isOpen ?

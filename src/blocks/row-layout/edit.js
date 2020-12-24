@@ -20,7 +20,7 @@ import ResizableBox from 're-resizable';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 import PrebuiltModal from './prebuilt_modal';
-import MeasurementControls from '../../measurement-control';
+import MeasurementControls from '../../components/measurement/measurement-control';
 import KadenceFocalPicker from '../../kadence-focal-picker';
 import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
 import ThreeColumnDrag from './threecolumndrag';
@@ -28,6 +28,7 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import Slider from 'react-slick';
 import KadenceRange from '../../kadence-range-control';
+import ResponsiveControl from '../../components/responsive/responsive-control';
 /**
  * Import Css
  */
@@ -102,6 +103,7 @@ class KadenceRowLayout extends Component {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
 		this.saveSlideItem = this.saveSlideItem.bind( this );
+		this.getPreviewSize = this.getPreviewSize.bind( this );
 		this.state = {
 			firstWidth: null,
 			secondWidth: null,
@@ -177,6 +179,20 @@ class KadenceRowLayout extends Component {
 			backgroundSlider: newUpdate,
 		} );
 	}
+	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
+	}
 	render() {
 		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const saveTabletBackground = ( value ) => {
@@ -248,17 +264,6 @@ class KadenceRowLayout extends Component {
 			{ key: '%', name: '%' },
 			{ key: 'vw', name: 'vw' },
 		];
-		const backgroundSizes = {
-			auto: {
-				name: __( 'Auto', 'kadence-blocks' ),
-			},
-			cover: {
-				name: __( 'Cover', 'kadence-blocks' ),
-			},
-			contain: {
-				name: __( 'Contain', 'kadence-blocks' ),
-			},
-		};
 		const heightMax = ( minHeightUnit === 'px' ? 2000 : 200 );
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 		const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
@@ -267,6 +272,12 @@ class KadenceRowLayout extends Component {
 		const paddingMin = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0 : 0 );
 		const paddingMax = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 500 );
 		const paddingStep = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 );
+		const previewPaddingTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== topPadding ? topPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 0 ] : '' ), ( undefined !== topPaddingM ? topPaddingM : '' ) );
+		const previewPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ) );
+		const previewPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ) );
+		const previewPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== leftPadding ? leftPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) );
+		const previewMarginTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== topMargin ? topMargin : '' ), ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== topMarginM ? topMarginM : '' ) );
+		const previewMarginBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ) );
 		const onResize = ( event, direction, elt ) => {
 			let firstCol;
 			let secondCol;
@@ -805,46 +816,20 @@ class KadenceRowLayout extends Component {
 							max={ paddingMax }
 							step={ paddingStep }
 						/>
-						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
-							{ map( marginTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ marginUnit === key }
-									aria-pressed={ marginUnit === key }
-									onClick={ () => setAttributes( { marginUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<h2>{ __( 'Mobile Margin', 'kadence-blocks' ) }</h2>
-						<KadenceRange
-							beforeIcon={ icons.outlinetop }
-							value={ topMarginM }
-							className="kt-icon-rangecontrol kt-top-margin"
+						<MeasurementControls
+							label={ __( 'Mobile Margin', 'kadence-blocks' ) }
+							measurement={ [ ( topMarginM ? topMarginM : '' ), 'auto', ( bottomMarginM ? bottomMarginM : '' ), 'auto' ] }
 							onChange={ ( value ) => {
-								setAttributes( {
-									topMarginM: value,
-								} );
+								setAttributes( { topMarginM: value[ 0 ], bottomMarginM: value[ 2 ] } );
 							} }
 							min={ marginMin }
 							max={ marginMax }
 							step={ marginStep }
-						/>
-						<KadenceRange
-							beforeIcon={ icons.outlinebottom }
-							value={ bottomMarginM }
-							className="kt-icon-rangecontrol kt-bottom-margin"
-							onChange={ ( value ) => {
-								setAttributes( {
-									bottomMarginM: value,
-								} );
-							} }
-							min={ marginMin }
-							max={ marginMax }
-							step={ marginStep }
+							allowEmpty={ true }
+							unit={ marginUnit }
+							onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+							showUnit={ true }
+							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
 					</PanelBody>
 				) }
@@ -1035,20 +1020,6 @@ class KadenceRowLayout extends Component {
 						title={ __( 'Tablet Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
-						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Padding Type', 'kadence-blocks' ) }>
-							{ map( paddingTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ paddingUnit === key }
-									aria-pressed={ paddingUnit === key }
-									onClick={ () => setAttributes( { paddingUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
 						<MeasurementControls
 							label={ __( 'Padding', 'kadence-blocks' ) }
 							measurement={ tabletPadding }
@@ -1057,47 +1028,25 @@ class KadenceRowLayout extends Component {
 							max={ paddingMax }
 							step={ paddingStep }
 							allowEmpty={ true }
+							unit={ paddingUnit }
+							onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+							showUnit={ true }
+							units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 						/>
-						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
-							{ map( marginTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ marginUnit === key }
-									aria-pressed={ marginUnit === key }
-									onClick={ () => setAttributes( { marginUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<h2>{ __( 'Tablet Margin', 'kadence-blocks' ) }</h2>
-						<KadenceRange
-							beforeIcon={ icons.outlinetop }
-							value={ topMarginT }
-							className="kt-icon-rangecontrol kt-top-margin"
+						<MeasurementControls
+							label={ __( 'Margin', 'kadence-blocks' ) }
+							measurement={ [ ( topMarginT ? topMarginT : '' ), 'auto', ( bottomMarginT ? bottomMarginT : '' ), 'auto' ] }
 							onChange={ ( value ) => {
-								setAttributes( {
-									topMarginT: value,
-								} );
+								setAttributes( { topMarginT: value[ 0 ], bottomMarginT: value[ 2 ] } );
 							} }
 							min={ marginMin }
 							max={ marginMax }
 							step={ marginStep }
-						/>
-						<KadenceRange
-							beforeIcon={ icons.outlinebottom }
-							value={ bottomMarginT }
-							className="kt-icon-rangecontrol kt-bottom-margin"
-							onChange={ ( value ) => {
-								setAttributes( {
-									bottomMarginT: value,
-								} );
-							} }
-							min={ marginMin }
-							max={ marginMax }
-							step={ marginStep }
+							allowEmpty={ true }
+							unit={ marginUnit }
+							onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+							showUnit={ true }
+							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
 					</PanelBody>
 				) }
@@ -3460,8 +3409,8 @@ class KadenceRowLayout extends Component {
 					</style>
 				) }
 				<div className={ classes } style={ {
-					marginBottom: bottomMargin + marginUnit,
-					marginTop: topMargin + marginUnit,
+					marginBottom: previewMarginBottom + marginUnit,
+					marginTop: previewMarginTop + marginUnit,
 					minHeight: minHeight + minHeightUnit,
 					zIndex: ( zIndex ? zIndex : undefined ),
 				} }>
@@ -3558,7 +3507,7 @@ class KadenceRowLayout extends Component {
 					{ colLayout && this.showSettings( 'allSettings' ) && this.showSettings( 'paddingMargin' ) && ( ! paddingUnit || ( paddingUnit && 'px' === paddingUnit ) ) && (
 						<ResizableBox
 							size={ {
-								height: topPadding,
+								height: previewPaddingTop,
 							} }
 							minHeight="0"
 							handleClasses={ {
@@ -3578,12 +3527,22 @@ class KadenceRowLayout extends Component {
 							className={ 'kt-top-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
 								event.preventDefault();
-								document.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( topPadding + delta.height, 10 ) + 'px';
+								document.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( previewPaddingTop + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
-								setAttributes( {
-									topPadding: parseInt( topPadding + delta.height, 10 ),
-								} );
+								if ( 'Mobile' === this.props.getPreviewDevice ) {
+									setAttributes( {
+										topPaddingM: parseInt( previewPaddingTop + delta.height, 10 ),
+									} );
+								} else if ( 'Tablet' === this.props.getPreviewDevice ) {
+									setAttributes( {
+										tabletPadding: [ parseInt( previewPaddingTop + delta.height, 10 ), ( tabletPadding ? tabletPadding[ 1 ] : '' ), ( tabletPadding ? tabletPadding[ 2 ] : '' ), ( tabletPadding ? tabletPadding[ 3 ] : '' ) ],
+									} );
+								} else {
+									setAttributes( {
+										topPadding: parseInt( previewPaddingTop + delta.height, 10 ),
+									} );
+								}
 								toggleSelection( true );
 							} }
 							onResizeStart={ () => {
@@ -3593,7 +3552,7 @@ class KadenceRowLayout extends Component {
 							{ uniqueID && (
 								<div className="kt-row-padding">
 									<span id={ `row-top-${ uniqueID }` } >
-										{ topPadding + 'px' }
+										{ previewPaddingTop + 'px' }
 									</span>
 								</div>
 							) }
@@ -3603,11 +3562,11 @@ class KadenceRowLayout extends Component {
 						<Fragment>
 							{ uniqueID && (
 								<div className="kt-row-padding kb-static-row-padding" style={ {
-									paddingTop: topPadding + ( paddingUnit ? paddingUnit : 'px' ),
+									paddingTop: previewPaddingTop + ( paddingUnit ? paddingUnit : 'px' ),
 								} }>
 									<div className={ 'kb-row-padding-container' }>
 										<span id={ `row-top-${ uniqueID }` } >
-											{ topPadding + ( paddingUnit ? paddingUnit : 'px' ) }
+											{ previewPaddingTop + ( paddingUnit ? paddingUnit : 'px' ) }
 										</span>
 									</div>
 								</div>
@@ -3617,13 +3576,13 @@ class KadenceRowLayout extends Component {
 					{ colLayout && (
 						<div className={ `innerblocks-wrap${ ( inheritMaxWidth ? ' kb-theme-content-width' : '' ) }` } id={ `kt-layout-id${ uniqueID }` } style={ {
 							maxWidth: ! inheritMaxWidth ? maxWidth + maxWidthUnit : undefined,
-							paddingLeft: leftPadding + ( paddingUnit ? paddingUnit : 'px' ),
-							paddingRight: rightPadding + ( paddingUnit ? paddingUnit : 'px' ),
+							paddingLeft: previewPaddingLeft + ( paddingUnit ? paddingUnit : 'px' ),
+							paddingRight: previewPaddingRight + ( paddingUnit ? paddingUnit : 'px' ),
 						} }>
 							{ colLayout && 'row' !== colLayout && columns && 2 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
 								<div className="kt-resizeable-column-container" style={ {
-									left: leftPadding + ( paddingUnit ? paddingUnit : 'px' ),
-									right: rightPadding + ( paddingUnit ? paddingUnit : 'px' ),
+									left: previewPaddingLeft + ( paddingUnit ? paddingUnit : 'px' ),
+									right: previewPaddingRight + ( paddingUnit ? paddingUnit : 'px' ),
 								} }>
 									<ContainerDimensions>
 										{ ( { width } ) =>
@@ -3698,8 +3657,8 @@ class KadenceRowLayout extends Component {
 									widthString={ widthString }
 									secondWidthString={ secondWidthString }
 									columnsUnlocked={ columnsUnlocked }
-									leftPadding={ leftPadding }
-									rightPadding={ rightPadding }
+									leftPadding={ previewPaddingLeft }
+									rightPadding={ previewPaddingRight }
 								/>
 							) }
 							<InnerBlocks
@@ -3713,7 +3672,7 @@ class KadenceRowLayout extends Component {
 					{ colLayout && this.showSettings( 'allSettings' ) && this.showSettings( 'paddingMargin' ) && ( ! paddingUnit || ( paddingUnit && 'px' === paddingUnit ) ) && (
 						<ResizableBox
 							size={ {
-								height: bottomPadding,
+								height: previewPaddingBottom,
 							} }
 							minHeight="0"
 							handleClasses={ {
@@ -3732,12 +3691,22 @@ class KadenceRowLayout extends Component {
 							} }
 							className={ 'kt-bottom-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
-								document.getElementById( 'row-bottom-' + uniqueID ).innerHTML = parseInt( bottomPadding + delta.height, 10 ) + 'px';
+								document.getElementById( 'row-bottom-' + uniqueID ).innerHTML = parseInt( previewPaddingBottom + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
-								setAttributes( {
-									bottomPadding: parseInt( bottomPadding + delta.height, 10 ),
-								} );
+								if ( 'Mobile' === this.props.getPreviewDevice ) {
+									setAttributes( {
+										bottomPaddingM: parseInt( previewPaddingBottom + delta.height, 10 ),
+									} );
+								} else if ( 'Tablet' === this.props.getPreviewDevice ) {
+									setAttributes( {
+										tabletPadding: [ ( tabletPadding ? tabletPadding[ 0 ] : '' ), ( tabletPadding ? tabletPadding[ 1 ] : '' ), parseInt( previewPaddingBottom + delta.height, 10 ), ( tabletPadding ? tabletPadding[ 3 ] : '' ) ],
+									} );
+								} else {
+									setAttributes( {
+										bottomPadding: parseInt( previewPaddingBottom + delta.height, 10 ),
+									} );
+								}
 							} }
 							onResizeStart={ () => {
 							} }
@@ -3745,7 +3714,7 @@ class KadenceRowLayout extends Component {
 							{ uniqueID && (
 								<div className="kt-row-padding">
 									<span id={ `row-bottom-${ uniqueID }` } >
-										{ bottomPadding + 'px' }
+										{ previewPaddingBottom + 'px' }
 									</span>
 								</div>
 							) }
@@ -3755,11 +3724,11 @@ class KadenceRowLayout extends Component {
 						<Fragment>
 							{ uniqueID && (
 								<div className="kt-row-padding kb-static-row-padding" style={ {
-									paddingBottom: bottomPadding + ( paddingUnit ? paddingUnit : 'px' ),
+									paddingBottom: previewPaddingBottom + ( paddingUnit ? paddingUnit : 'px' ),
 								} }>
 									<div className={ 'kb-row-padding-container' }>
 										<span id={ `row-bottom-${ uniqueID }` } >
-											{ bottomPadding + ( paddingUnit ? paddingUnit : 'px' ) }
+											{ previewPaddingBottom + ( paddingUnit ? paddingUnit : 'px' ) }
 										</span>
 									</div>
 								</div>
@@ -3789,9 +3758,13 @@ export default compose( [
 			getBlock,
 		} = select( 'core/block-editor' );
 		const block = getBlock( clientId );
+		const {
+			__experimentalGetPreviewDeviceType,
+		} = select( 'core/edit-post' );
 		return {
 			rowBlock: block,
 			realColumnCount: block.innerBlocks.length,
+			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {

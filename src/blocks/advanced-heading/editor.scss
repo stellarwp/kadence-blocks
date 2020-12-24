@@ -87,8 +87,12 @@
     justify-content: center;
     align-items: center;
 }
+.kb-tag-level-control .components-toolbar>div+div.has-left-divider {
+    margin-left: 0;
+}
 .kb-tag-level-control .components-toolbar>div+div.has-left-divider:before {
     top: 12px;
+    left: 0;
 }
 .kb-tag-level-control .components-toolbar__control.components-button {
     width: 30px;
@@ -157,7 +161,7 @@
 		text-transform: uppercase;
 	}
 	.components-base-control .components-base-control__field {
-		margin-bottom: 0;
+        margin-bottom: 0;
 	}
 	.components-toggle-control .components-base-control__field .components-form-toggle {
 		display: block;
@@ -565,7 +569,7 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 .kadence-range-control-inner {
     box-sizing: border-box;
     align-items: flex-start;
-    display: inline-flex;
+    display: flex;
     -webkit-box-pack: start;
     justify-content: flex-start;
     padding: 0px;

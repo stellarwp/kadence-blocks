@@ -49,34 +49,21 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	InnerBlocks,
 	InspectorControls,
 	RichText,
 	BlockControls,
-	AlignmentToolbar,
-	BlockIcon,
-	BlockAlignmentToolbar,
 } = wp.blockEditor;
 const {
-	Button,
-	Placeholder,
-	ButtonGroup,
-	Tooltip,
 	TabPanel,
-	IconButton,
-	Dashicon,
 	ToolbarGroup,
-	Toolbar,
 	PanelBody,
-	RangeControl,
 	ToggleControl,
 	SelectControl,
-	TextControl,
 } = wp.components;
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+const { __ } = wp.i18n;
 
 /**
  * Regular expression matching invalid anchor characters for replacement.

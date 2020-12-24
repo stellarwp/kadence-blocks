@@ -534,6 +534,9 @@
 .kt-blocks-carousel {
     max-width: calc( 100vw - 20px - 160px );
 }
+.is-fullscreen-mode .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px );
+}
 @media (max-width: 960px) {
 	.auto-fold .kt-blocks-carousel {
 		max-width: calc( 100vw - 20px - 36px );
@@ -547,6 +550,9 @@
 }
 .edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
     max-width: calc( 100vw - 20px - 280px - 160px );
+}
+.is-fullscreen-mode .edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 280px );
 }
 .folded .edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
     max-width: calc( 100vw - 20px - 280px - 36px );

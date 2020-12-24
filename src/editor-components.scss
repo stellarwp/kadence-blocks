@@ -1,6 +1,83 @@
 /* Measurements */
 .kadence-title-bar {
-    margin-bottom: 8px;
+	margin-bottom: 8px;
+	display: flex;
+	align-items: center;
+	.kadence-control-title {
+		flex-grow: 1;
+	}
+	button.components-button.has-icon.is-reset {
+		width: 20px;
+		min-width: 20px;
+		padding: 0 3px;
+		margin: 0 5px 0 0;
+	}
+}
+.kadence-range-control-range .components-range-control__root svg {
+    margin-top: 2px;
+}
+.kadence-controls-content .measure-input-wrap .input-setting-toggle {
+	height: 14px;
+	.components-button.input-setting-toggle-btn {
+		width:100%;
+		height:14px;
+		padding:0;
+		line-height: 12px;
+		font-size: 7px !important;
+		margin: 0;
+		display: block;
+		border: 1px solid #e2e4e7;
+		border-radius: 0;
+		text-transform: uppercase;
+		background-color: #fff;
+	}
+}
+.kb-measure-control .kadence-controls-content {
+    align-items: flex-end;
+}
+.components-popover.kadence-range-popover-settings .components-popover__content>div {
+    padding: 30px 20px;
+}
+.components-button-group.kb-preset-size-options {
+    display: flex;
+	flex-flow: wrap;
+	margin: -1%;
+}
+.components-button-group.kb-preset-size-options button.components-button.kb-preset-sizes {
+    flex-basis:18%;
+    width:auto;
+    min-width:auto;
+    margin:1%;
+    border-radius:0;
+    text-align: center;
+    padding: 0 2px;
+    justify-content: center;
+}
+.components-button-group.kb-measure-responsive-options {
+	.components-button.kb-responsive-btn {
+		background: transparent;
+		height: auto;
+		border: 0;
+		box-shadow: none;
+		padding: 2px 4px;
+		margin-bottom: 0;
+		outline: 0;
+		color: #A0AEC0;
+		width: auto;
+		font-size: 10px;
+		&:hover {
+			color: #718096;
+		}
+		&.is-active {
+			color: #007cba;
+			background: transparent;
+		}
+		.dashicon {
+			width: 15px;
+			height: 15px;
+			font-size: 15px;
+		}
+	}
 }
 .kadence-controls-content {
 	display: flex;
@@ -10,6 +87,7 @@
 		margin-bottom: 0;
 		.components-base-control__field {
 			margin-bottom: 0;
+			display: flex;
 		}
 	}
 	.measure-input-wrap {
@@ -24,6 +102,15 @@
 			input[type=number] {
 				padding: 0 5px;
 				margin:0;
+				-moz-appearance: textfield;
+				&::-webkit-outer-spin-button,
+				&::-webkit-inner-spin-button {
+				-webkit-appearance: none;
+				margin: 0;
+				}
+				&[disabled] {
+					background: #e4e7ea;
+				}
 			}
 		}
 	}
@@ -118,6 +205,7 @@
 }
 .kadence-units {
 	max-width: 60px;
+	display: flex;
 	.components-button {
 		padding-top: 2px;
 		padding-bottom: 2px;
@@ -126,9 +214,54 @@
 		}
 	}
 }
+.kadence-units button.components-button.is-active.is-single.is-small {
+    min-width: 20px;
+    height: 30px;
+    border: 1px solid #e2e4e7;
+    background-color: #fff;
+    display: flex;
+    margin-right: 2px;
+}
+.kadence-units .kadence-units-group .components-button {
+    min-width: 20px;
+    height: 30px;
+    border: 1px solid #e2e4e7;
+    background-color: #fff;
+    display: flex;
+    margin-right: 2px;
+}
+.kadence-units .components-dropdown.components-dropdown-menu.components-toolbar {
+	background-color: transparent;
+	display: flex;
+	height: 30px;
+	min-height: 30px;
+	border: 1px solid #e2e4e7;
+	.components-button {
+		height: 30px;
+		min-width: 10px;
+		padding-top: 2px;
+		padding-left: 4px;
+		padding-right: 4px;
+		padding-bottom: 2px;
+		margin-left: 2px;
+		&:before {
+			display: none;
+		}
+	}
+}
 .kadence-locked .components-button.is-single {
     border: 1px solid #e2e4e7;
     background-color: #fff;
     display: flex;
     height: 30px;
+}
+.components-dropdown__content.kadence-units-popover .components-popover__content {
+    min-width: 40px;
+	width: 40px;
+	.components-button.components-dropdown-menu__menu-item {
+		min-width: 30px;
+	}
+	>div {
+		padding:5px
+	}
 }

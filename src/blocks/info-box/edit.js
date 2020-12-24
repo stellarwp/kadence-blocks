@@ -52,7 +52,6 @@ const {
 	Dashicon,
 	PanelBody,
 	Toolbar,
-	ColorPicker,
 	TextControl,
 	ToggleControl,
 	SelectControl,

@@ -21,6 +21,12 @@
 		padding: 0 15px;
 	}
 }
+.kt-blocks-carousel-init:not(.slick-initialized) .kt-blocks-testimonial-carousel-item {
+    display: none;
+}
+.kt-blocks-carousel-init:not(.slick-initialized) .kt-blocks-testimonial-carousel-item:first-child {
+    display: block;
+}
 .kt-testimonial-grid-wrap {
 	display: -ms-grid;
 	display: grid;

@@ -2,13 +2,13 @@ const icons = {};
 icons.blockRow = <svg width="20px" height="20px" viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
 clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
     <path d='M46.506,7.877l-45.012,0c-0.484,0 -0.882,0.398 -0.882,0.882l0,23.645c0,0.484 0.398,0.882 0.882,0.882l45.012,0c0.484,0 0.882,-0.398 0.882,-0.882l0,-23.65c-0.003,-0.482 -0.4,-0.877 -0.882,-0.877Zm-0.882,23.65l-43.248,0l0,-21.886l43.248,0l0,21.886Z'
-    fill='#179cd4' fillRule='nonzero' />
-    <rect x='4.587' y='11.533' width='38.825' height='18.096' fill='#179cd4'
+    fill='#0058b0' fillRule='nonzero' />
+    <rect x='4.587' y='11.533' width='38.825' height='18.096' fill='#0058b0'
     />
     <path d='M43.413,29.63l-38.826,0l0,-18.097l38.826,0l0,18.097Zm-37.061,-16.332l0,14.567l35.296,0l0,-14.567l-35.296,0Z'
-    fill='#179cd4' />
+    fill='#0058b0' />
     <path d='M24,40.123c4.365,0 7.957,-3.592 7.957,-7.957c0,-4.365 -3.592,-7.957 -7.957,-7.957c-4.365,0 -7.957,3.592 -7.957,7.957c0,0.001 0,0.002 0,0.003c0,4.363 3.591,7.954 7.954,7.954c0.001,0 0.002,0 0.003,0Z'
-    fill='#179cd4' fillRule='nonzero' stroke='#fff' strokeWidth='1.76' />
+    fill='#0058b0' fillRule='nonzero' stroke='#fff' strokeWidth='1.76' />
     <path d='M20.811,31.539l2.307,0l0,-2.309c0,-0.484 0.398,-0.882 0.882,-0.882c0.484,0 0.882,0.398 0.882,0.882l0,2.309l2.307,0c0.483,0 0.882,0.398 0.882,0.882c0,0.484 -0.399,0.882 -0.882,0.882l-2.307,0l0,2.307c0,0.484 -0.398,0.882 -0.882,0.882c-0.484,0 -0.882,-0.398 -0.882,-0.882l0,-2.307l-2.307,0c-0.483,0 -0.882,-0.398 -0.882,-0.882c0,-0.484 0.399,-0.882 0.882,-0.882Z'
     fill='#fff' fillRule='nonzero' />
 </svg>;
@@ -223,8 +223,8 @@ icons.alignbottom = <svg width="20px" height="20px" viewBox="0 0 20 20" xmlns="h
 	<rect x="4.489" y="12.802" width="11.022" height="2.512" />
 </svg>;
 icons.blockColumn = <svg width="20px" height="20px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" strokeLinejoin="round" strokeMiterlimit="1.414">
-	<path d="M47.612,40.008l-19.999,0l0,-32.016l13.566,0l6.433,0.023l0,31.993Z" fill="#97eaff" fillRule="nonzero" />
-	<path d="M20.383,40l-20.036,0l0,-32l20.036,0.019l0,31.981Z" fill="#00b5e2" fillRule="nonzero" />
+	<path d="M47.612,40.008l-19.999,0l0,-32.016l13.566,0l6.433,0.023l0,31.993Z" fill="#177ee5" fillRule="nonzero" />
+	<path d="M20.383,40l-20.036,0l0,-32l20.036,0.019l0,31.981Z" fill="#0058b0" fillRule="nonzero" />
 </svg>;
 icons.outlinetop = <svg width="20px" height="20px" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd" strokeLinejoin="round" strokeMiterlimit="1.414">
 	<rect x="2.714" y="5.492" width="1.048" height="9.017" fill="#555d66" />
@@ -863,7 +863,7 @@ clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
 </svg>;
 icons.headingBlock = <svg width="20px" height="20px" viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
 clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
-    <g fill='#179cd4' fillRule='nonzero'>
+    <g fill='#0058b0' fillRule='nonzero'>
         <path d='M45.013,46.298c0.705,0 1.285,-0.58 1.285,-1.285l0,-42.026c0,-0.705 -0.58,-1.285 -1.285,-1.285l-42.026,0c-0.705,0 -1.285,0.58 -1.285,1.285l0,42.026c0,0.705 0.58,1.285 1.285,1.285l42.026,0Zm-40.741,-42.026l39.456,0l0,39.456l-39.456,0l0,-39.456Z'
         />
         <path d='M11.221,8.736l7.36,0l0,12.117l10.838,0l0,-12.117l7.361,0l0,30.518l-7.361,0l0,-12.743l-10.838,0l0,12.743l-7.36,0l0,-30.518Z'
@@ -872,7 +872,7 @@ clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='1.414'>
 </svg>;
 icons.gallery = <svg width="20px" height="20px" viewBox='0 0 48 48' xmlns='http://www.w3.org/2000/svg' fillRule='evenodd'
 clipRule='evenodd' strokeLinejoin='round' strokeMiterlimit='2'>
-    <g fill='#179cd4' fillRule='nonzero'>
+    <g fill='#0058b0' fillRule='nonzero'>
         <path d='M46.652,11.743l-38.504,0c-0.414,0 -0.755,0.341 -0.755,0.755l0,28.023c0,0.414 0.341,0.755 0.755,0.755l38.504,0c0.414,0 0.755,-0.341 0.755,-0.755l0,-28.029c-0.003,-0.412 -0.344,-0.749 -0.755,-0.749Zm-0.754,28.017l-36.995,0l0,-26.508l36.995,0l0,26.508Z'
         />
         <path d='M1.53,5.125l38.504,0c0.412,0 0.752,0.337 0.755,0.749l0,4.421l-1.509,0l0,-3.66l-36.995,0l0,26.507l3.772,0l0,1.516l-4.527,0c-0.414,0 -0.755,-0.341 -0.755,-0.755l0,-28.023c0,-0.414 0.341,-0.755 0.755,-0.755Z'

@@ -1,5 +1,5 @@
 import map from 'lodash/map';
-import MeasurementControls from '../../measurement-control';
+import MeasurementControls from '../../components/measurement/measurement-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
 /**
  * Internal block libraries
@@ -13,6 +13,7 @@ const {
 	AlignmentToolbar,
 } = wp.blockEditor;
 const {
+	Panel,
 	PanelBody,
 	RangeControl,
 	Button,
@@ -28,12 +29,15 @@ class KadenceColumnDefault extends Component {
 		super( ...arguments );
 		this.saveConfig = this.saveConfig.bind( this );
 		this.saveConfigState = this.saveConfigState.bind( this );
+		this.clearDefaults = this.clearDefaults.bind( this );
+		this.clearAllDefaults = this.clearAllDefaults.bind( this );
 		this.state = {
 			isOpen: false,
 			isSaving: false,
+			resetConfirm: false,
 			configuration: ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} ),
-			borderWidthControl: 'linked',
-			borderRadiusControl: 'linked',
+			borderWidthControl: 'individual',
+			borderRadiusControl: 'individual',
 		};
 	}
 	componentDidMount() {
@@ -62,10 +66,25 @@ class KadenceColumnDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/column' ] ) {
+		if ( config[ 'kadence/column' ] === undefined || config[ 'kadence/column' ].length == 0 ) {
 			config[ 'kadence/column' ] = {};
 		}
 		config[ 'kadence/column' ][ key ] = value;
+		this.setState( { configuration: config } );
+	}
+	clearDefaults( key ) {
+		const config = this.state.configuration;
+		if ( config[ 'kadence/column' ] === undefined || config[ 'kadence/column' ].length == 0 ) {
+			config[ 'kadence/column' ] = {};
+		}
+		if ( undefined !== config[ 'kadence/column' ][ key ] ) {
+			delete config[ 'kadence/column' ][ key ];
+		}
+		this.setState( { configuration: config } );
+	}
+	clearAllDefaults() {
+		const config = this.state.configuration;
+		config[ 'kadence/column' ] = {};
 		this.setState( { configuration: config } );
 	}
 	render() {
@@ -74,271 +93,154 @@ class KadenceColumnDefault extends Component {
 		const textAlignDefaultStyles = [ '', '', '' ];
 		const textAlign = ( undefined !== columnConfig.textAlign && columnConfig.textAlign[ 0 ] ? columnConfig.textAlign : textAlignDefaultStyles );
 		const mobileControls = (
-			<PanelBody
-				title={ __( 'Mobile Padding/Margin' ) }
-				initialOpen={ false }
-			>
-				<h2>{ __( 'Mobile Padding (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ ( undefined !== columnConfig.topPaddingM ? columnConfig.topPaddingM : '' ) }
-					className="kt-icon-rangecontrol kt-top-padding"
+			<Panel className="components-panel__body is-opened">
+				<MeasurementControls
+					label={ __( 'Mobile Padding' ) }
+					reset={ () => {
+						this.clearDefaults( 'topPaddingM' );
+						this.clearDefaults( 'rightPaddingM' );
+						this.clearDefaults( 'bottomPaddingM' );
+						this.clearDefaults( 'leftPaddingM' );
+					} }
+					measurement={ [ ( undefined !== columnConfig.topPaddingM ? columnConfig.topPaddingM : '' ), ( undefined !== columnConfig.rightPaddingM ? columnConfig.rightPaddingM : '' ), ( undefined !== columnConfig.bottomPaddingM ? columnConfig.bottomPaddingM : '' ), ( undefined !== columnConfig.leftPaddingM ? columnConfig.leftPaddingM : '' ) ] }
 					onChange={ ( value ) => {
-						this.saveConfigState( 'topPaddingM', value );
+						this.saveConfigState( 'topPaddingM', value[ 0 ] );
+						this.saveConfigState( 'rightPaddingM', value[ 1 ] );
+						this.saveConfigState( 'bottomPaddingM', value[ 2 ] );
+						this.saveConfigState( 'leftPaddingM', value[ 3 ] );
 					} }
 					min={ 0 }
 					max={ 500 }
+					step={ 1 }
+					unit={ 'px' }
+					showUnit={ true }
+					units={ [ 'px' ] }
+					allowEmpty={ true }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ ( undefined !== columnConfig.rightPaddingM ? columnConfig.rightPaddingM : '' ) }
-					className="kt-icon-rangecontrol kt-right-padding"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'rightPaddingM', value );
+				<MeasurementControls
+					label={ __( 'Mobile Margin' ) }
+					reset={ () => {
+						this.clearDefaults( 'topMarginM' );
+						this.clearDefaults( 'rightMarginM' );
+						this.clearDefaults( 'bottomMarginM' );
+						this.clearDefaults( 'leftMarginM' );
 					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ ( undefined !== columnConfig.bottomPaddingM ? columnConfig.bottomPaddingM : '' ) }
-					className="kt-icon-rangecontrol kt-bottom-padding"
+					measurement={ [ ( undefined !== columnConfig.topMarginM ? columnConfig.topMarginM : '' ), ( undefined !== columnConfig.rightMarginM ? columnConfig.rightMarginM : '' ), ( undefined !== columnConfig.bottomMarginM ? columnConfig.bottomMarginM : '' ), ( undefined !== columnConfig.leftMarginM ? columnConfig.leftMarginM : '' ) ] }
 					onChange={ ( value ) => {
-						this.saveConfigState( 'bottomPaddingM', value );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ ( undefined !== columnConfig.leftPaddingM ? columnConfig.leftPaddingM : '' ) }
-					className="kt-icon-rangecontrol kt-left-padding"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'leftPaddingM', value );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<h2>{ __( 'Mobile Margin (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ ( undefined !== columnConfig.topMarginM ? columnConfig.topMarginM : '' ) }
-					className="kt-icon-rangecontrol kt-top-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'topMarginM', value );
+						this.saveConfigState( 'topMarginM', value[ 0 ] );
+						this.saveConfigState( 'rightMarginM', value[ 1 ] );
+						this.saveConfigState( 'bottomMarginM', value[ 2 ] );
+						this.saveConfigState( 'leftMarginM', value[ 3 ] );
 					} }
 					min={ -200 }
 					max={ 200 }
+					step={ 1 }
+					allowEmpty={ true }
+					unit={ 'px' }
+					showUnit={ true }
+					units={ [ 'px' ] }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ ( undefined !== columnConfig.rightMarginM ? columnConfig.rightMarginM : '' ) }
-					className="kt-icon-rangecontrol kt-right-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'rightMarginM', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ ( undefined !== columnConfig.bottomMarginM ? columnConfig.bottomMarginM : '' ) }
-					className="kt-icon-rangecontrol kt-bottom-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'bottomMarginM', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ ( undefined !== columnConfig.leftMarginM ? columnConfig.leftMarginM : '' ) }
-					className="kt-icon-rangecontrol kt-left-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'leftMarginM', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-			</PanelBody>
+			</Panel>
 		);
 		const tabletControls = (
-			<PanelBody
-				title={ __( 'Tablet Padding/Margin' ) }
-				initialOpen={ false }
-			>
-				<h2>{ __( 'Tablet Padding (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ ( undefined !== columnConfig.topPaddingT ? columnConfig.topPaddingT : '' ) }
-					className="kt-icon-rangecontrol kt-top-padding"
+			<Panel className="components-panel__body is-opened">
+				<MeasurementControls
+					label={ __( 'Tablet Padding' ) }
+					reset={ () => {
+						this.clearDefaults( 'topPaddingT' );
+						this.clearDefaults( 'rightPaddingT' );
+						this.clearDefaults( 'bottomPaddingT' );
+						this.clearDefaults( 'leftPaddingT' );
+					} }
+					measurement={ [ ( undefined !== columnConfig.topPaddingT ? columnConfig.topPaddingT : '' ), ( undefined !== columnConfig.rightPaddingT ? columnConfig.rightPaddingT : '' ), ( undefined !== columnConfig.bottomPaddingT ? columnConfig.bottomPaddingT : '' ), ( undefined !== columnConfig.leftPaddingT ? columnConfig.leftPaddingT : '' ) ] }
 					onChange={ ( value ) => {
-						this.saveConfigState( 'topPaddingT', value );
+						this.saveConfigState( 'topPaddingT', value[ 0 ] );
+						this.saveConfigState( 'rightPaddingT', value[ 1 ] );
+						this.saveConfigState( 'bottomPaddingT', value[ 2 ] );
+						this.saveConfigState( 'leftPaddingT', value[ 3 ] );
 					} }
 					min={ 0 }
 					max={ 500 }
+					step={ 1 }
+					unit={ 'px' }
+					showUnit={ true }
+					units={ [ 'px' ] }
+					allowEmpty={ true }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ ( undefined !== columnConfig.rightPaddingT ? columnConfig.rightPaddingT : '' ) }
-					className="kt-icon-rangecontrol kt-right-padding"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'rightPaddingT', value );
+				<MeasurementControls
+					label={ __( 'Tablet Margin' ) }
+					reset={ () => {
+						this.clearDefaults( 'topMarginT' );
+						this.clearDefaults( 'rightMarginT' );
+						this.clearDefaults( 'bottomMarginT' );
+						this.clearDefaults( 'leftMarginT' );
 					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ ( undefined !== columnConfig.bottomPaddingT ? columnConfig.bottomPaddingT : '' ) }
-					className="kt-icon-rangecontrol kt-bottom-padding"
+					measurement={ [ ( undefined !== columnConfig.topMarginT ? columnConfig.topMarginT : '' ), ( undefined !== columnConfig.rightMarginT ? columnConfig.rightMarginT : '' ), ( undefined !== columnConfig.bottomMarginT ? columnConfig.bottomMarginT : '' ), ( undefined !== columnConfig.leftMarginT ? columnConfig.leftMarginT : '' ) ] }
 					onChange={ ( value ) => {
-						this.saveConfigState( 'bottomPaddingT', value );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ ( undefined !== columnConfig.leftPaddingT ? columnConfig.leftPaddingT : '' ) }
-					className="kt-icon-rangecontrol kt-left-padding"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'leftPaddingT', value );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<h2>{ __( 'Tablet Margin (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ ( undefined !== columnConfig.topMarginT ? columnConfig.topMarginT : '' ) }
-					className="kt-icon-rangecontrol kt-top-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'topMarginT', value );
+						this.saveConfigState( 'topMarginT', value[ 0 ] );
+						this.saveConfigState( 'rightMarginT', value[ 1 ] );
+						this.saveConfigState( 'bottomMarginT', value[ 2 ] );
+						this.saveConfigState( 'leftMarginT', value[ 3 ] );
 					} }
 					min={ -200 }
 					max={ 200 }
+					step={ 1 }
+					allowEmpty={ true }
+					unit={ 'px' }
+					showUnit={ true }
+					units={ [ 'px' ] }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ ( undefined !== columnConfig.rightMarginT ? columnConfig.rightMarginT : '' ) }
-					className="kt-icon-rangecontrol kt-right-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'rightMarginT', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ ( undefined !== columnConfig.bottomMarginT ? columnConfig.bottomMarginT : '' ) }
-					className="kt-icon-rangecontrol kt-bottom-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'bottomMarginT', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ ( undefined !== columnConfig.leftMarginT ? columnConfig.leftMarginT : '' ) }
-					className="kt-icon-rangecontrol kt-left-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'leftMarginT', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-			</PanelBody>
+			</Panel>
 		);
 		const deskControls = (
-			<PanelBody
-				title={ __( 'Padding/Margin' ) }
-				initialOpen={ false }
-			>
-				<h2>{ __( 'Padding (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ ( undefined !== columnConfig.topPadding ? columnConfig.topPadding : '' ) }
-					className="kt-icon-rangecontrol kt-top-padding"
+			<Panel className="components-panel__body is-opened">
+				<MeasurementControls
+					label={ __( 'Padding' ) }
+					reset={ () => {
+						this.clearDefaults( 'topPadding' );
+						this.clearDefaults( 'rightPadding' );
+						this.clearDefaults( 'bottomPadding' );
+						this.clearDefaults( 'leftPadding' );
+					} }
+					measurement={ [ ( undefined !== columnConfig.topPadding ? columnConfig.topPadding : '' ), ( undefined !== columnConfig.rightPadding ? columnConfig.rightPadding : '' ), ( undefined !== columnConfig.bottomPadding ? columnConfig.bottomPadding : '' ), ( undefined !== columnConfig.leftPadding ? columnConfig.leftPadding : '' ) ] }
 					onChange={ ( value ) => {
-						this.saveConfigState( 'topPadding', value );
+						this.saveConfigState( 'topPadding', value[ 0 ] );
+						this.saveConfigState( 'rightPadding', value[ 1 ] );
+						this.saveConfigState( 'bottomPadding', value[ 2 ] );
+						this.saveConfigState( 'leftPadding', value[ 3 ] );
 					} }
 					min={ 0 }
 					max={ 500 }
+					step={ 1 }
+					unit={ 'px' }
+					showUnit={ true }
+					units={ [ 'px' ] }
+					allowEmpty={ true }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ ( undefined !== columnConfig.rightPadding ? columnConfig.rightPadding : '' ) }
-					className="kt-icon-rangecontrol kt-right-padding"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'rightPadding', value );
+				<MeasurementControls
+					label={ __( 'Margin' ) }
+					reset={ () => {
+						this.clearDefaults( 'topMargin' );
+						this.clearDefaults( 'rightMargin' );
+						this.clearDefaults( 'bottomMargin' );
+						this.clearDefaults( 'leftMargin' );
 					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ ( undefined !== columnConfig.bottomPadding ? columnConfig.bottomPadding : '' ) }
-					className="kt-icon-rangecontrol kt-bottom-padding"
+					measurement={ [ ( undefined !== columnConfig.topMargin ? columnConfig.topMargin : '' ), ( undefined !== columnConfig.rightMargin ? columnConfig.rightMargin : '' ), ( undefined !== columnConfig.bottomMargin ? columnConfig.bottomMargin : '' ), ( undefined !== columnConfig.leftMargin ? columnConfig.leftMargin : '' ) ] }
 					onChange={ ( value ) => {
-						this.saveConfigState( 'bottomPadding', value );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ ( undefined !== columnConfig.leftPadding ? columnConfig.leftPadding : '' ) }
-					className="kt-icon-rangecontrol kt-left-padding"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'leftPadding', value );
-					} }
-					min={ 0 }
-					max={ 500 }
-				/>
-				<h2>{ __( 'Margin (px)' ) }</h2>
-				<RangeControl
-					label={ icons.outlinetop }
-					value={ ( undefined !== columnConfig.topMargin ? columnConfig.topMargin : '' ) }
-					className="kt-icon-rangecontrol kt-top-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'topMargin', value );
+						this.saveConfigState( 'topMargin', value[ 0 ] );
+						this.saveConfigState( 'rightMargin', value[ 1 ] );
+						this.saveConfigState( 'bottomMargin', value[ 2 ] );
+						this.saveConfigState( 'leftMargin', value[ 3 ] );
 					} }
 					min={ -200 }
 					max={ 200 }
+					step={ 1 }
+					allowEmpty={ true }
+					unit={ 'px' }
+					showUnit={ true }
+					units={ [ 'px' ] }
 				/>
-				<RangeControl
-					label={ icons.outlineright }
-					value={ ( undefined !== columnConfig.rightMargin ? columnConfig.rightMargin : '' ) }
-					className="kt-icon-rangecontrol kt-right-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'rightMargin', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlinebottom }
-					value={ ( undefined !== columnConfig.bottomMargin ? columnConfig.bottomMargin : '' ) }
-					className="kt-icon-rangecontrol kt-bottom-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'bottomMargin', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-				<RangeControl
-					label={ icons.outlineleft }
-					value={ ( undefined !== columnConfig.leftMargin ? columnConfig.leftMargin : '' ) }
-					className="kt-icon-rangecontrol kt-left-margin"
-					onChange={ ( value ) => {
-						this.saveConfigState( 'leftMargin', value );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
-			</PanelBody>
+			</Panel>
 		);
 		const tabControls = (
 			<TabPanel className="kt-inspect-tabs"
@@ -405,7 +307,7 @@ class KadenceColumnDefault extends Component {
 			/>
 		);
 		const textAlignControls = (
-			<Fragment>
+			<div className="kb-sidebar-alignment">
 				<h2 className="kt-heading-size-title">{ __( 'Text Alignment' ) }</h2>
 				<TabPanel className="kt-size-tabs"
 					activeClass="active-tab"
@@ -442,7 +344,7 @@ class KadenceColumnDefault extends Component {
 						}
 					}
 				</TabPanel>
-			</Fragment>
+			</div>
 		);
 		return (
 			<Fragment>
@@ -483,6 +385,9 @@ class KadenceColumnDefault extends Component {
 							</div>
 							<MeasurementControls
 								label={ __( 'Border Width' ) }
+								reset={ () => {
+									this.clearDefaults( 'borderWidth' );
+								} }
 								measurement={ ( undefined !== columnConfig.borderWidth ? columnConfig.borderWidth : [ 0, 0, 0, 0 ] ) }
 								control={ this.state.borderWidthControl }
 								onChange={ ( value ) => this.saveConfigState( 'borderWidth', value ) }
@@ -493,6 +398,9 @@ class KadenceColumnDefault extends Component {
 							/>
 							<MeasurementControls
 								label={ __( 'Border Radius' ) }
+								reset={ () => {
+									this.clearDefaults( 'borderRadius' );
+								} }
 								measurement={ ( undefined !== columnConfig.borderRadius ? columnConfig.borderRadius : [ 0, 0, 0, 0 ] ) }
 								control={ this.state.borderRadiusControl }
 								onChange={ ( value ) => this.saveConfigState( 'borderRadius', value ) }
@@ -542,11 +450,28 @@ class KadenceColumnDefault extends Component {
 							<div className="kt-spacer-sidebar-15"></div>
 							{ tabControls }
 						</PanelBody>
-						<Button className="kt-defaults-save" isPrimary onClick={ () => {
-							this.saveConfig( 'kadence/column', columnConfig );
-						} }>
-							{ __( 'Save/Close' ) }
-						</Button>
+						<div className="kb-modal-footer">
+							{ ! this.state.resetConfirm && (
+								<Button className="kt-defaults-save" isDestructive disabled={ ( JSON.stringify( this.state.configuration[ 'kadence/column' ] ) === JSON.stringify( {} ) ? true : false ) } onClick={ () => {
+									this.setState( { resetConfirm: true } );
+								} }>
+									{ __( 'Reset' ) }
+								</Button>
+							) }
+							{ this.state.resetConfirm && (
+								<Button className="kt-defaults-save" isDestructive onClick={ () => {
+									this.clearAllDefaults();
+									this.setState( { resetConfirm: false } );
+								} }>
+									{ __( 'Confirm Reset' ) }
+								</Button>
+							) }
+							<Button className="kt-defaults-save" isPrimary onClick={ () => {
+								this.saveConfig( 'kadence/column', columnConfig );
+							} }>
+								{ __( 'Save/Close' ) }
+							</Button>
+						</div>
 					</Modal>
 					: null }
 			</Fragment>

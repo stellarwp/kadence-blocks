@@ -2,9 +2,9 @@
 Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.2
+Requires at least: 5.5
 Tested up to: 5.6.0
-Stable tag: 1.9.9
+Stable tag: 1.9.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.9.10 =
+ * Add: Responsive Controls with Preview to Heading Block.
+ * Add: Responsive Border width controls to Columns Block.
+ * Add: Reset options for Block Defaults.
+ * Fix: Issue with z-index controls with columns block.
+ * Fix: RTL language issue with list icon block: https://www.kadencewp.com/support-forums/topic/icon-list-bug-in-rtl-language/#post-261710
+ * Fix: Issue with tab font size.
+ * Fix: Issue with testimonial carousel.
 
 = 1.9.9 =
 * Update: Measure Settings Control.

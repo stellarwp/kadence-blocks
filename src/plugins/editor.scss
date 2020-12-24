@@ -195,6 +195,12 @@
 .kt-blocks-control-wrap .kt-block-defaults:focus {
     box-shadow: none;
 }
+.kt-block-defaults-modal .components-panel__body .kadence-controls-content .components-base-control {
+    margin-bottom: 0;
+}
+.kt-blocks-control-row {
+    display: flex;
+}
 .kt-blocks-control-wrap .kt-block-settings {
     width: 16%;
     display: inline-flex;
@@ -209,6 +215,15 @@
 	box-shadow: none;
 	margin-left: 2%;
     margin-bottom: 10px;
+}
+.kt-blocks-control-wrap .kt-block-settings span.dashicon {
+    width: auto;
+	height: auto;
+	font-size: 12px;
+}
+.kb-modal-footer {
+    display: flex;
+    justify-content: space-between;
 }
 .kt-blocks-control-wrap .kt-block-settings:hover {
 	background: #f9f9f9;

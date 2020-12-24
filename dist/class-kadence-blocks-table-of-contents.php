@@ -249,12 +249,12 @@ class Kadence_Blocks_Table_Of_Contents {
 	 *
 	 * @return array The list of headings.
 	 */
-	private function table_of_contents_get_headings( $post, $attributes ) {
+	private function table_of_contents_get_headings( $post, $attributes = array() ) {
 		global $multipage, $page, $pages;
 		if ( $multipage ) {
 			// Creates a list of heading lists, one list per page.
 			$pages_of_headings = array_map(
-				function( $page_content, $page_index ) use ( $page ) {
+				function( $page_content, $page_index ) use ( $page, $attributes ) {
 					return $this->table_of_contents_get_headings_from_content(
 						$page_content,
 						$page_index + 1,
