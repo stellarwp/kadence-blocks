@@ -411,6 +411,16 @@
 	color: inherit;
 	text-decoration: underline;
 }
+.kt-testimonial-item-wrap.testimonial-valign-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.kt-testimonial-item-wrap.testimonial-valign-bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
 .rtl {
 	.kt-testimonial-media-inner-wrap {
 		margin: 0 0 0 15px;

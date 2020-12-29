@@ -91,8 +91,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
  * Add: Responsive Controls with Preview to Heading Block.
  * Add: Responsive Border width controls to Columns Block.
  * Add: Reset options for Block Defaults.
+ * Add: Min height options for testimonials.
  * Fix: Issue with z-index controls with columns block.
- * Fix: RTL language issue with list icon block: https://www.kadencewp.com/support-forums/topic/icon-list-bug-in-rtl-language/#post-261710
+ * Fix: RTL language issue with list icon block.
  * Fix: Issue with tab font size.
  * Fix: Issue with testimonial carousel.
 

@@ -3435,249 +3435,269 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_testimonials_array( $attr, $unique_id ) {
-		$css = '';
+		$css                          = new Kadence_Blocks_CSS();
+		$media_query                  = array();
+		$media_query['mobile']        = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
+		$media_query['tablet']        = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '@media (min-width: 768px) and (max-width: 1024px)' );
+		$media_query['desktop']       = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		//$css = '';
 		if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] && isset( $attr['columnGap'] ) && ! empty( $attr['columnGap'] ) ) {
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item {';
-				$css .= 'padding: 0 ' . ( $attr['columnGap'] / 2 ) . 'px;';
-			$css .= '}';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init {';
-				$css .= 'margin: 0 -' . ( $attr['columnGap'] / 2 ) . 'px;';
-			$css .= '}';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-prev {';
-				$css .= 'left:' . ( $attr['columnGap'] / 2 ) . 'px;';
-			$css .= '}';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-next {';
-				$css .= 'right:' . ( $attr['columnGap'] / 2 ) . 'px;';
-			$css .= '}';
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
+			$css->add_property( 'padding', '0 ' . ( $attr['columnGap'] / 2 ) . 'px' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init' );
+			$css->add_property( 'margin', '0 -' . ( $attr['columnGap'] / 2 ) . 'px' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-prev' );
+			$css->add_property( 'left', ( $attr['columnGap'] / 2 ) . 'px' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-next' );
+			$css->add_property( 'right', ( $attr['columnGap'] / 2 ) . 'px' );
 		}
 		if ( isset( $attr['style'] ) && ( 'bubble' === $attr['style'] || 'inlineimage' === $attr['style'] ) ) {
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after {';
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );
 			if ( isset( $attr['containerBorderWidth'] ) && is_array( $attr['containerBorderWidth'] ) && ! empty( $attr['containerBorderWidth'][2] ) ) {
-				$css .= 'margin-top: ' . $attr['containerBorderWidth'][2] . 'px;';
+				$css->add_property( 'margin-top',  $attr['containerBorderWidth'][2] . 'px' );
 			}
 			if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
 				$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
-				$css .= 'border-top-color: ' . $this->kadence_color_output( $attr['containerBorder'], $alpha ) . ';';
+				$css->add_property( 'border-top-color', $css->render_color( $attr['containerBorder'], $alpha ) );
 			}
-			$css .= '}';
 		}
-		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && is_array( $attr['titleFont'][0] ) ) {
+		if ( isset( $attr['containerMinHeight'] ) && is_array( $attr['containerMinHeight'] ) && isset( $attr['containerMinHeight'][0] ) && is_numeric( $attr['containerMinHeight'][0] ) ) {
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
+			$css->add_property( 'min-height', $attr['containerMinHeight'][0] . 'px' );
+		}
+		if ( isset( $attr['containerMinHeight'] ) && is_array( $attr['containerMinHeight'] ) && isset( $attr['containerMinHeight'][1] ) && is_numeric( $attr['containerMinHeight'][1] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
+			$css->add_property( 'min-height', $attr['containerMinHeight'][1] . 'px' );
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['containerMinHeight'] ) && is_array( $attr['containerMinHeight'] ) && isset( $attr['containerMinHeight'][2] ) && is_numeric( $attr['containerMinHeight'][2] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
+			$css->add_property( 'min-height', $attr['containerMinHeight'][2] . 'px' );
+			$css->stop_media_query();
+		}
+		if ( ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && is_array( $attr['titleFont'][0] ) ) || ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) && is_numeric( $attr['titleMinHeight'][0] ) ) ) {
 			$title_font = $attr['titleFont'][0];
-
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-title {';
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-title' );
 			if ( isset( $title_font['color'] ) && ! empty( $title_font['color'] ) ) {
-				$css .= 'color:' . $this->kadence_color_output( $title_font['color'] ) . ';';
+				$css->add_property( 'color', $css->render_color( $title_font['color'] ) );
 			}
 			if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && ! empty( $title_font['size'][0] ) ) {
-				$css .= 'font-size:' . $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
 			}
 			if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && ! empty( $title_font['lineHeight'][0] ) ) {
-				$css .= 'line-height:' . $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) . ';';
+				$css->add_property( 'line-height', $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
 			}
 			if ( isset( $title_font['letterSpacing'] ) && ! empty( $title_font['letterSpacing'] ) ) {
-				$css .= 'letter-spacing:' . $title_font['letterSpacing'] . 'px;';
+				$css->add_property( 'letter-spacing', $title_font['letterSpacing'] . 'px' );
 			}
 			if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
-				$css .= 'text-transform:' . $title_font['textTransform'] . ';';
+				$css->add_property( 'text-transform', $title_font['textTransform'] );
 			}
 			if ( isset( $title_font['family'] ) && ! empty( $title_font['family'] ) ) {
-				$css .= 'font-family:' . $title_font['family'] . ';';
+				$css->add_property( 'font-family', $css->render_font_family( $title_font['family'] ) );
 			}
 			if ( isset( $title_font['style'] ) && ! empty( $title_font['style'] ) ) {
-				$css .= 'font-style:' . $title_font['style'] . ';';
+				$css->add_property( 'font-style', $title_font['style'] );
 			}
 			if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) && 'regular' !== $title_font['weight'] ) {
-				$css .= 'font-weight:' . $title_font['weight'] . ';';
+				$css->add_property( 'font-weight', $title_font['weight'] );
 			}
-			$css .= '}';
+			if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) && is_numeric( $attr['titleMinHeight'][0] ) ) {
+				$css->add_property( 'min-height', $attr['titleMinHeight'][0] . 'px' );
+			}
 		}
-		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) ) ) {
-			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-title {';
+		if ( ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) ) ) || ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-title' );
 			if ( isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) {
-				$css .= 'font-size:' . $attr['titleFont'][0]['size'][1] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $attr['titleFont'][0]['size'][1] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) {
-				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][1] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+				$css->add_property( 'line-height', $attr['titleFont'][0]['lineHeight'][1] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) );
 			}
-			$css .= '}';
-			$css .= '}';
+			if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) {
+				$css->add_property( 'min-height', $attr['titleMinHeight'][1] . 'px' );
+			}
+			$css->stop_media_query();
 		}
-		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) {
-			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-title {';
+		if ( ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) || ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-title' );
 			if ( isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) {
-				$css .= 'font-size:' . $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) {
-				$css .= 'line-height:' . $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) . ';';
+				$css->add_property( 'line-height', $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) );
 			}
-			$css .= '}';
-			$css .= '}';
+			if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][2] ) && is_numeric( $attr['titleMinHeight'][2] ) ) {
+				$css->add_property( 'min-height', $attr['titleMinHeight'][2] . 'px' );
+			}
+			$css->stop_media_query();
 		}
-		if ( isset( $attr['contentFont'] ) && is_array( $attr['contentFont'] ) && is_array( $attr['contentFont'][0] ) ) {
+		if ( ( isset( $attr['contentFont'] ) && is_array( $attr['contentFont'] ) && is_array( $attr['contentFont'][0] ) ) || ( isset( $attr['contentMinHeight'] ) && is_array( $attr['contentMinHeight'] ) && isset( $attr['contentMinHeight'][0] ) && is_numeric( $attr['contentMinHeight'][0] ) ) ) {
 			$content_font = $attr['contentFont'][0];
-
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-content {';
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-content' );
 			if ( isset( $content_font['color'] ) && ! empty( $content_font['color'] ) ) {
-				$css .= 'color:' . $this->kadence_color_output( $content_font['color'] ) . ';';
+				$css->add_property( 'color', $css->render_color( $content_font['color'] ) );
 			}
 			if ( isset( $content_font['size'] ) && is_array( $content_font['size'] ) && ! empty( $content_font['size'][0] ) ) {
-				$css .= 'font-size:' . $content_font['size'][0] . ( ! isset( $content_font['sizeType'] ) ? 'px' : $content_font['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $content_font['size'][0] . ( ! isset( $content_font['sizeType'] ) ? 'px' : $content_font['sizeType'] ) );
 			}
 			if ( isset( $content_font['lineHeight'] ) && is_array( $content_font['lineHeight'] ) && ! empty( $content_font['lineHeight'][0] ) ) {
-				$css .= 'line-height:' . $content_font['lineHeight'][0] . ( ! isset( $content_font['lineType'] ) ? 'px' : $content_font['lineType'] ) . ';';
+				$css->add_property( 'line-height', $content_font['lineHeight'][0] . ( ! isset( $content_font['lineType'] ) ? 'px' : $content_font['lineType'] ) );
 			}
 			if ( isset( $content_font['letterSpacing'] ) && ! empty( $content_font['letterSpacing'] ) ) {
-				$css .= 'letter-spacing:' . $content_font['letterSpacing'] . 'px;';
+				$css->add_property( 'letter-spacing', $content_font['letterSpacing'] . 'px' );
 			}
 			if ( isset( $content_font['textTransform'] ) && ! empty( $content_font['textTransform'] ) ) {
-				$css .= 'text-transform:' . $content_font['textTransform'] . ';';
+				$css->add_property( 'text-transform', $content_font['textTransform'] );
 			}
 			if ( isset( $content_font['family'] ) && ! empty( $content_font['family'] ) ) {
-				$css .= 'font-family:' . $content_font['family'] . ';';
+				$css->add_property( 'font-family', $css->render_font_family( $content_font['family'] ) );
 			}
 			if ( isset( $content_font['style'] ) && ! empty( $content_font['style'] ) ) {
-				$css .= 'font-style:' . $content_font['style'] . ';';
+				$css->add_property( 'font-style', $content_font['style'] );
 			}
 			if ( isset( $content_font['weight'] ) && ! empty( $content_font['weight'] ) && 'regular' !== $content_font['weight'] ) {
-				$css .= 'font-weight:' . $content_font['weight'] . ';';
+				$css->add_property( 'font-weight', $content_font['weight'] );
 			}
-			$css .= '}';
+			if ( isset( $attr['contentMinHeight'] ) && is_array( $attr['contentMinHeight'] ) && isset( $attr['contentMinHeight'][0] ) && is_numeric( $attr['contentMinHeight'][0] ) ) {
+				$css->add_property( 'min-height', $attr['contentMinHeight'][0] . 'px' );
+			}
 		}
-		if ( isset( $attr['contentFont'] ) && is_array( $attr['contentFont'] ) && isset( $attr['contentFont'][0] ) && is_array( $attr['contentFont'][0] ) && ( ( isset( $attr['contentFont'][0]['size'] ) && is_array( $attr['contentFont'][0]['size'] ) && isset( $attr['contentFont'][0]['size'][1] ) && ! empty( $attr['contentFont'][0]['size'][1] ) ) || ( isset( $attr['contentFont'][0]['lineHeight'] ) && is_array( $attr['contentFont'][0]['lineHeight'] ) && isset( $attr['contentFont'][0]['lineHeight'][1] ) && ! empty( $attr['contentFont'][0]['lineHeight'][1] ) ) ) ) {
-			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-content {';
+		if ( ( isset( $attr['contentFont'] ) && is_array( $attr['contentFont'] ) && isset( $attr['contentFont'][0] ) && is_array( $attr['contentFont'][0] ) && ( ( isset( $attr['contentFont'][0]['size'] ) && is_array( $attr['contentFont'][0]['size'] ) && isset( $attr['contentFont'][0]['size'][1] ) && ! empty( $attr['contentFont'][0]['size'][1] ) ) || ( isset( $attr['contentFont'][0]['lineHeight'] ) && is_array( $attr['contentFont'][0]['lineHeight'] ) && isset( $attr['contentFont'][0]['lineHeight'][1] ) && ! empty( $attr['contentFont'][0]['lineHeight'][1] ) ) ) ) || ( isset( $attr['contentMinHeight'] ) && is_array( $attr['contentMinHeight'] ) && isset( $attr['contentMinHeight'][1] ) && is_numeric( $attr['contentMinHeight'][1] ) ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-content' );
 			if ( isset( $attr['contentFont'][0]['size'][1] ) && ! empty( $attr['contentFont'][0]['size'][1] ) ) {
-				$css .= 'font-size:' . $attr['contentFont'][0]['size'][1] . ( ! isset( $attr['contentFont'][0]['sizeType'] ) ? 'px' : $attr['contentFont'][0]['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $attr['contentFont'][0]['size'][1] . ( ! isset( $attr['contentFont'][0]['sizeType'] ) ? 'px' : $attr['contentFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['contentFont'][0]['lineHeight'][1] ) && ! empty( $attr['contentFont'][0]['lineHeight'][1] ) ) {
-				$css .= 'line-height:' . $attr['contentFont'][0]['lineHeight'][1] . ( ! isset( $attr['contentFont'][0]['lineType'] ) ? 'px' : $attr['contentFont'][0]['lineType'] ) . ';';
+				$css->add_property( 'line-height', $attr['contentFont'][0]['lineHeight'][1] . ( ! isset( $attr['contentFont'][0]['lineType'] ) ? 'px' : $attr['contentFont'][0]['lineType'] ) );
 			}
-			$css .= '}';
-			$css .= '}';
+			if ( isset( $attr['contentMinHeight'] ) && is_array( $attr['contentMinHeight'] ) && isset( $attr['contentMinHeight'][1] ) && is_numeric( $attr['contentMinHeight'][1] ) ) {
+				$css->add_property( 'min-height', $attr['contentMinHeight'][1] . 'px' );
+			}
+			$css->stop_media_query();
 		}
-		if ( isset( $attr['contentFont'] ) && is_array( $attr['contentFont'] ) && isset( $attr['contentFont'][0] ) && is_array( $attr['contentFont'][0] ) && ( ( isset( $attr['contentFont'][0]['size'] ) && is_array( $attr['contentFont'][0]['size'] ) && isset( $attr['contentFont'][0]['size'][2] ) && ! empty( $attr['contentFont'][0]['size'][2] ) ) || ( isset( $attr['contentFont'][0]['lineHeight'] ) && is_array( $attr['contentFont'][0]['lineHeight'] ) && isset( $attr['contentFont'][0]['lineHeight'][2] ) && ! empty( $attr['contentFont'][0]['lineHeight'][2] ) ) ) ) {
-			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-content {';
+		if ( ( isset( $attr['contentFont'] ) && is_array( $attr['contentFont'] ) && isset( $attr['contentFont'][0] ) && is_array( $attr['contentFont'][0] ) && ( ( isset( $attr['contentFont'][0]['size'] ) && is_array( $attr['contentFont'][0]['size'] ) && isset( $attr['contentFont'][0]['size'][2] ) && ! empty( $attr['contentFont'][0]['size'][2] ) ) || ( isset( $attr['contentFont'][0]['lineHeight'] ) && is_array( $attr['contentFont'][0]['lineHeight'] ) && isset( $attr['contentFont'][0]['lineHeight'][2] ) && ! empty( $attr['contentFont'][0]['lineHeight'][2] ) ) ) ) || ( isset( $attr['contentMinHeight'] ) && is_array( $attr['contentMinHeight'] ) && isset( $attr['contentMinHeight'][2] ) && is_numeric( $attr['contentMinHeight'][2] ) ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-content' );
 			if ( isset( $attr['contentFont'][0]['size'][2] ) && ! empty( $attr['contentFont'][0]['size'][2] ) ) {
-				$css .= 'font-size:' . $attr['contentFont'][0]['size'][2] . ( ! isset( $attr['contentFont'][0]['sizeType'] ) ? 'px' : $attr['contentFont'][0]['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $attr['contentFont'][0]['size'][2] . ( ! isset( $attr['contentFont'][0]['sizeType'] ) ? 'px' : $attr['contentFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['contentFont'][0]['lineHeight'][2] ) && ! empty( $attr['contentFont'][0]['lineHeight'][2] ) ) {
-				$css .= 'line-height:' . $attr['contentFont'][0]['lineHeight'][2] . ( ! isset( $attr['contentFont'][0]['lineType'] ) ? 'px' : $attr['contentFont'][0]['lineType'] ) . ';';
+				$css->add_property( 'line-height', $attr['contentFont'][0]['lineHeight'][2] . ( ! isset( $attr['contentFont'][0]['lineType'] ) ? 'px' : $attr['contentFont'][0]['lineType'] ) );
 			}
-			$css .= '}';
-			$css .= '}';
+			if ( isset( $attr['contentMinHeight'] ) && is_array( $attr['contentMinHeight'] ) && isset( $attr['contentMinHeight'][2] ) && is_numeric( $attr['contentMinHeight'][2] ) ) {
+				$css->add_property( 'min-height', $attr['contentMinHeight'][2] . 'px' );
+			}
+			$css->stop_media_query();
 		}
 		if ( isset( $attr['nameFont'] ) && is_array( $attr['nameFont'] ) && is_array( $attr['nameFont'][0] ) ) {
 			$name_font = $attr['nameFont'][0];
-
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-name {';
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-name' );
 			if ( isset( $name_font['color'] ) && ! empty( $name_font['color'] ) ) {
-				$css .= 'color:' . $this->kadence_color_output( $name_font['color'] ) . ';';
+				$css->add_property( 'color', $css->render_color( $name_font['color'] ) );
 			}
 			if ( isset( $name_font['size'] ) && is_array( $name_font['size'] ) && ! empty( $name_font['size'][0] ) ) {
-				$css .= 'font-size:' . $name_font['size'][0] . ( ! isset( $name_font['sizeType'] ) ? 'px' : $name_font['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $name_font['size'][0] . ( ! isset( $name_font['sizeType'] ) ? 'px' : $name_font['sizeType'] ) );
 			}
 			if ( isset( $name_font['lineHeight'] ) && is_array( $name_font['lineHeight'] ) && ! empty( $name_font['lineHeight'][0] ) ) {
-				$css .= 'line-height:' . $name_font['lineHeight'][0] . ( ! isset( $name_font['lineType'] ) ? 'px' : $name_font['lineType'] ) . ';';
+				$css->add_property( 'line-height', $name_font['lineHeight'][0] . ( ! isset( $name_font['lineType'] ) ? 'px' : $name_font['lineType'] ) );
 			}
 			if ( isset( $name_font['letterSpacing'] ) && ! empty( $name_font['letterSpacing'] ) ) {
-				$css .= 'letter-spacing:' . $name_font['letterSpacing'] . 'px;';
+				$css->add_property( 'letter-spacing', $name_font['letterSpacing'] . 'px' );
 			}
 			if ( isset( $name_font['textTransform'] ) && ! empty( $name_font['textTransform'] ) ) {
-				$css .= 'text-transform:' . $name_font['textTransform'] . ';';
+				$css->add_property( 'text-transform', $name_font['textTransform'] );
 			}
 			if ( isset( $name_font['family'] ) && ! empty( $name_font['family'] ) ) {
-				$css .= 'font-family:' . $name_font['family'] . ';';
+				$css->add_property( 'font-family', $css->render_font_family( $name_font['family'] ) );
 			}
 			if ( isset( $name_font['style'] ) && ! empty( $name_font['style'] ) ) {
-				$css .= 'font-style:' . $name_font['style'] . ';';
+				$css->add_property( 'font-style', $name_font['style'] );
 			}
 			if ( isset( $name_font['weight'] ) && ! empty( $name_font['weight'] ) && 'regular' !== $name_font['weight'] ) {
-				$css .= 'font-weight:' . $name_font['weight'] . ';';
+				$css->add_property( 'font-weight', $name_font['weight'] );
 			}
-			$css .= '}';
 		}
 		if ( isset( $attr['nameFont'] ) && is_array( $attr['nameFont'] ) && isset( $attr['nameFont'][0] ) && is_array( $attr['nameFont'][0] ) && ( ( isset( $attr['nameFont'][0]['size'] ) && is_array( $attr['nameFont'][0]['size'] ) && isset( $attr['nameFont'][0]['size'][1] ) && ! empty( $attr['nameFont'][0]['size'][1] ) ) || ( isset( $attr['nameFont'][0]['lineHeight'] ) && is_array( $attr['nameFont'][0]['lineHeight'] ) && isset( $attr['nameFont'][0]['lineHeight'][1] ) && ! empty( $attr['nameFont'][0]['lineHeight'][1] ) ) ) ) {
-			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-name {';
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-name' );
 			if ( isset( $attr['nameFont'][0]['size'][1] ) && ! empty( $attr['nameFont'][0]['size'][1] ) ) {
-				$css .= 'font-size:' . $attr['nameFont'][0]['size'][1] . ( ! isset( $attr['nameFont'][0]['sizeType'] ) ? 'px' : $attr['nameFont'][0]['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $attr['nameFont'][0]['size'][1] . ( ! isset( $attr['nameFont'][0]['sizeType'] ) ? 'px' : $attr['nameFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['nameFont'][0]['lineHeight'][1] ) && ! empty( $attr['nameFont'][0]['lineHeight'][1] ) ) {
-				$css .= 'line-height:' . $attr['nameFont'][0]['lineHeight'][1] . ( ! isset( $attr['nameFont'][0]['lineType'] ) ? 'px' : $attr['nameFont'][0]['lineType'] ) . ';';
+				$css->add_property( 'line-height', $attr['nameFont'][0]['lineHeight'][1] . ( ! isset( $attr['nameFont'][0]['lineType'] ) ? 'px' : $attr['nameFont'][0]['lineType'] ) );
 			}
-			$css .= '}';
-			$css .= '}';
+			$css->stop_media_query();
 		}
 		if ( isset( $attr['nameFont'] ) && is_array( $attr['nameFont'] ) && isset( $attr['nameFont'][0] ) && is_array( $attr['nameFont'][0] ) && ( ( isset( $attr['nameFont'][0]['size'] ) && is_array( $attr['nameFont'][0]['size'] ) && isset( $attr['nameFont'][0]['size'][2] ) && ! empty( $attr['nameFont'][0]['size'][2] ) ) || ( isset( $attr['nameFont'][0]['lineHeight'] ) && is_array( $attr['nameFont'][0]['lineHeight'] ) && isset( $attr['nameFont'][0]['lineHeight'][2] ) && ! empty( $attr['nameFont'][0]['lineHeight'][2] ) ) ) ) {
-			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-name {';
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-name' );
 			if ( isset( $attr['nameFont'][0]['size'][2] ) && ! empty( $attr['nameFont'][0]['size'][2] ) ) {
-				$css .= 'font-size:' . $attr['nameFont'][0]['size'][2] . ( ! isset( $attr['nameFont'][0]['sizeType'] ) ? 'px' : $attr['nameFont'][0]['sizeType'] ) . ';';
+				$css->add_property( 'font-size:' . $attr['nameFont'][0]['size'][2] . ( ! isset( $attr['nameFont'][0]['sizeType'] ) ? 'px' : $attr['nameFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['nameFont'][0]['lineHeight'][2] ) && ! empty( $attr['nameFont'][0]['lineHeight'][2] ) ) {
-				$css .= 'line-height:' . $attr['nameFont'][0]['lineHeight'][2] . ( ! isset( $attr['nameFont'][0]['lineType'] ) ? 'px' : $attr['nameFont'][0]['lineType'] ) . ';';
+				$css->add_property( 'line-height:' . $attr['nameFont'][0]['lineHeight'][2] . ( ! isset( $attr['nameFont'][0]['lineType'] ) ? 'px' : $attr['nameFont'][0]['lineType'] ) );
 			}
-			$css .= '}';
-			$css .= '}';
+			$css->stop_media_query();
 		}
 		if ( isset( $attr['occupationFont'] ) && is_array( $attr['occupationFont'] ) && is_array( $attr['occupationFont'][0] ) ) {
 			$occupation_font = $attr['occupationFont'][0];
-
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-occupation {';
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-occupation' );
 			if ( isset( $occupation_font['color'] ) && ! empty( $occupation_font['color'] ) ) {
-				$css .= 'color:' . $this->kadence_color_output( $occupation_font['color'] ) . ';';
+				$css->add_property( 'color', $css->render_color( $occupation_font['color'] ) );
 			}
 			if ( isset( $occupation_font['size'] ) && is_array( $occupation_font['size'] ) && ! empty( $occupation_font['size'][0] ) ) {
-				$css .= 'font-size:' . $occupation_font['size'][0] . ( ! isset( $occupation_font['sizeType'] ) ? 'px' : $occupation_font['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $occupation_font['size'][0] . ( ! isset( $occupation_font['sizeType'] ) ? 'px' : $occupation_font['sizeType'] ) );
 			}
 			if ( isset( $occupation_font['lineHeight'] ) && is_array( $occupation_font['lineHeight'] ) && ! empty( $occupation_font['lineHeight'][0] ) ) {
-				$css .= 'line-height:' . $occupation_font['lineHeight'][0] . ( ! isset( $occupation_font['lineType'] ) ? 'px' : $occupation_font['lineType'] ) . ';';
+				$css->add_property( 'line-height', $occupation_font['lineHeight'][0] . ( ! isset( $occupation_font['lineType'] ) ? 'px' : $occupation_font['lineType'] ) );
 			}
 			if ( isset( $occupation_font['letterSpacing'] ) && ! empty( $occupation_font['letterSpacing'] ) ) {
-				$css .= 'letter-spacing:' . $occupation_font['letterSpacing'] . 'px;';
+				$css->add_property( 'letter-spacing', $occupation_font['letterSpacing'] . 'px' );
 			}
 			if ( isset( $occupation_font['textTransform'] ) && ! empty( $occupation_font['textTransform'] ) ) {
-				$css .= 'text-transform:' . $occupation_font['textTransform'] . ';';
+				$css->add_property( 'text-transform', $occupation_font['textTransform'] );
 			}
 			if ( isset( $occupation_font['family'] ) && ! empty( $occupation_font['family'] ) ) {
-				$css .= 'font-family:' . $occupation_font['family'] . ';';
+				$css->add_property( 'font-family', $css->render_font_family( $occupation_font['family'] ) );
 			}
 			if ( isset( $occupation_font['style'] ) && ! empty( $occupation_font['style'] ) ) {
-				$css .= 'font-style:' . $occupation_font['style'] . ';';
+				$css->add_property( 'font-style', $occupation_font['style'] );
 			}
 			if ( isset( $occupation_font['weight'] ) && ! empty( $occupation_font['weight'] ) && 'regular' !== $occupation_font['weight'] ) {
-				$css .= 'font-weight:' . $occupation_font['weight'] . ';';
+				$css->add_property( 'font-weight', $occupation_font['weight'] );
 			}
-			$css .= '}';
 		}
 		if ( isset( $attr['occupationFont'] ) && is_array( $attr['occupationFont'] ) && isset( $attr['occupationFont'][0] ) && is_array( $attr['occupationFont'][0] ) && ( ( isset( $attr['occupationFont'][0]['size'] ) && is_array( $attr['occupationFont'][0]['size'] ) && isset( $attr['occupationFont'][0]['size'][1] ) && ! empty( $attr['occupationFont'][0]['size'][1] ) ) || ( isset( $attr['occupationFont'][0]['lineHeight'] ) && is_array( $attr['occupationFont'][0]['lineHeight'] ) && isset( $attr['occupationFont'][0]['lineHeight'][1] ) && ! empty( $attr['occupationFont'][0]['lineHeight'][1] ) ) ) ) {
-			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-occupation {';
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-occupation' );
 			if ( isset( $attr['occupationFont'][0]['size'][1] ) && ! empty( $attr['occupationFont'][0]['size'][1] ) ) {
-				$css .= 'font-size:' . $attr['occupationFont'][0]['size'][1] . ( ! isset( $attr['occupationFont'][0]['sizeType'] ) ? 'px' : $attr['occupationFont'][0]['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $attr['occupationFont'][0]['size'][1] . ( ! isset( $attr['occupationFont'][0]['sizeType'] ) ? 'px' : $attr['occupationFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['occupationFont'][0]['lineHeight'][1] ) && ! empty( $attr['occupationFont'][0]['lineHeight'][1] ) ) {
-				$css .= 'line-height:' . $attr['occupationFont'][0]['lineHeight'][1] . ( ! isset( $attr['occupationFont'][0]['lineType'] ) ? 'px' : $attr['occupationFont'][0]['lineType'] ) . ';';
+				$css->add_property( 'line-height', $attr['occupationFont'][0]['lineHeight'][1] . ( ! isset( $attr['occupationFont'][0]['lineType'] ) ? 'px' : $attr['occupationFont'][0]['lineType'] ) );
 			}
-			$css .= '}';
-			$css .= '}';
+			$css->stop_media_query();
 		}
 		if ( isset( $attr['occupationFont'] ) && is_array( $attr['occupationFont'] ) && isset( $attr['occupationFont'][0] ) && is_array( $attr['occupationFont'][0] ) && ( ( isset( $attr['occupationFont'][0]['size'] ) && is_array( $attr['occupationFont'][0]['size'] ) && isset( $attr['occupationFont'][0]['size'][2] ) && ! empty( $attr['occupationFont'][0]['size'][2] ) ) || ( isset( $attr['occupationFont'][0]['lineHeight'] ) && is_array( $attr['occupationFont'][0]['lineHeight'] ) && isset( $attr['occupationFont'][0]['lineHeight'][2] ) && ! empty( $attr['occupationFont'][0]['lineHeight'][2] ) ) ) ) {
-			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-occupation {';
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-occupation' );
 			if ( isset( $attr['occupationFont'][0]['size'][2] ) && ! empty( $attr['occupationFont'][0]['size'][2] ) ) {
-				$css .= 'font-size:' . $attr['occupationFont'][0]['size'][2] . ( ! isset( $attr['occupationFont'][0]['sizeType'] ) ? 'px' : $attr['occupationFont'][0]['sizeType'] ) . ';';
+				$css->add_property( 'font-size', $attr['occupationFont'][0]['size'][2] . ( ! isset( $attr['occupationFont'][0]['sizeType'] ) ? 'px' : $attr['occupationFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['occupationFont'][0]['lineHeight'][2] ) && ! empty( $attr['occupationFont'][0]['lineHeight'][2] ) ) {
-				$css .= 'line-height:' . $attr['occupationFont'][0]['lineHeight'][2] . ( ! isset( $attr['occupationFont'][0]['lineType'] ) ? 'px' : $attr['occupationFont'][0]['lineType'] ) . ';';
+				$css->add_property( 'line-height', $attr['occupationFont'][0]['lineHeight'][2] . ( ! isset( $attr['occupationFont'][0]['lineType'] ) ? 'px' : $attr['occupationFont'][0]['lineType'] ) );
 			}
-			$css .= '}';
-			$css .= '}';
+			$css->stop_media_query();
 		}
-		return $css;
+		return $css->css_output();
 	}
 
 	/**
@@ -4398,7 +4418,7 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'line-height', $attr['markLineHeight'][0] . ( ! isset( $attr['markLineType'] ) ? 'px' : $attr['markLineType'] ) );
 			}
 			if ( isset( $attr['markTypography'] ) && ! empty( $attr['markTypography'] ) ) {
-				$css->add_property( 'font-family', $attr['markTypography'] );
+				$css->add_property( 'font-family', $css->render_font_family( $attr['markTypography'] ) );
 			}
 			if ( isset( $attr['markFontWeight'] ) && ! empty( $attr['markFontWeight'] ) ) {
 				$css->add_property( 'font-weight', $attr['markFontWeight'] );

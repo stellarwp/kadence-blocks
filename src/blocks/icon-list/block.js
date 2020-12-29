@@ -206,7 +206,7 @@ registerBlockType( 'kadence/iconlist', {
 		],
 	},
 	getEditWrapperProps( { blockAlignment } ) {
-		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment || 'none' === blockAlignment ) {
+		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {
 			return { 'data-align': blockAlignment };
 		}
 	},

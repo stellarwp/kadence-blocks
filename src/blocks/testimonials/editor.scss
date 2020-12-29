@@ -364,3 +364,13 @@
     width: 1em;
     height: 1em;
 }
+.kt-testimonial-item-wrap.testimonial-valign-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.kt-testimonial-item-wrap.testimonial-valign-bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}

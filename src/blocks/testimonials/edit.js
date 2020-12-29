@@ -27,6 +27,7 @@ import IconRender from '../../icon-render';
 import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../kadence-color-output';
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 /**
  * Internal block libraries
  */
@@ -42,6 +43,8 @@ const {
 	InspectorControls,
 	BlockControls,
 } = wp.blockEditor;
+const { withSelect } = wp.data;
+const { compose } = wp.compose;
 const {
 	Button,
 	IconButton,
@@ -70,6 +73,7 @@ class KadenceTestimonials extends Component {
 		this.onMoveForward = this.onMoveForward.bind( this );
 		this.onMoveBackward = this.onMoveBackward.bind( this );
 		this.showSettings = this.showSettings.bind( this );
+		this.getPreviewSize = this.getPreviewSize.bind( this );
 		this.state = {
 			containerPaddingControl: 'linked',
 			containerBorderControl: 'linked',
@@ -170,6 +174,20 @@ class KadenceTestimonials extends Component {
 			this.setState( { settings: blockSettings[ 'kadence/testimonials' ] } );
 		}
 	}
+	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
+	}
 	onMove( oldIndex, newIndex ) {
 		const testimonials = [ ...this.props.attributes.testimonials ];
 		testimonials.splice( newIndex, 1, this.props.attributes.testimonials[ oldIndex ] );
@@ -209,7 +227,7 @@ class KadenceTestimonials extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, displayContent, contentFont, displayName, displayMedia, nameFont, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, occupationFont, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, columnControl, displayIcon, iconStyles }, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, titleMinHeight, containerMinHeight, containerVAlign, contentMinHeight, displayContent, contentFont, displayName, displayMedia, nameFont, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, occupationFont, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, columnControl, displayIcon, iconStyles }, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, titlePaddingControl, titleMarginControl, ratingMarginControl, iconBorderControl, iconPaddingControl, iconMarginControl } = this.state;
 		const onColumnChange = ( value ) => {
 			let columnarray = [];
@@ -255,6 +273,14 @@ class KadenceTestimonials extends Component {
 			{ key: 'linked', name: __( 'Linked' ), icon: __( 'Linked' ) },
 			{ key: 'individual', name: __( 'Individual' ), icon: __( 'Individual' ) },
 		];
+		const VAlignOptions = [
+			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },
+			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
+			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
+		];
+		const previewContainerMinHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMinHeight && undefined !== containerMinHeight[ 0 ] ? containerMinHeight[ 0 ] : '' ), ( undefined !== containerMinHeight && undefined !== containerMinHeight[ 1 ] ? containerMinHeight[ 1 ] : '' ), ( undefined !== containerMinHeight && undefined !== containerMinHeight[ 2 ] ? containerMinHeight[ 2 ] : '' ) );
+		const previewTitleMinHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) );
+		const previewContentMinHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== contentMinHeight && undefined !== contentMinHeight[ 0 ] ? contentMinHeight[ 0 ] : '' ), ( undefined !== contentMinHeight && undefined !== contentMinHeight[ 1 ] ? contentMinHeight[ 1 ] : '' ), ( undefined !== contentMinHeight && undefined !== contentMinHeight[ 2 ] ? contentMinHeight[ 2 ] : '' ) );
 		const columnControls = (
 			<Fragment>
 				<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type' ) }>
@@ -405,7 +431,6 @@ class KadenceTestimonials extends Component {
 			nextArrow: <CustomNextArrow />,
 			prevArrow: <CustomPrevArrow />,
 		};
-		const isSelectedClass = ( isSelected ? 'is-selected' : 'not-selected' );
 		const savemediaStyles = ( value ) => {
 			const newUpdate = mediaStyles.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -762,11 +787,13 @@ class KadenceTestimonials extends Component {
 			borderLeftWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 3 ] ? containerBorderWidth[ 3 ] + 'px' : undefined ),
 			padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
 			maxWidth: ( 'bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px' ),
+			minHeight: ( 'bubble' === style || 'inlineimage' === style || ! previewContainerMinHeight ? undefined : previewContainerMinHeight + 'px' ),
 		};
 		const renderTestimonialPreview = ( index ) => {
 			return (
-				<div className={ `kt-testimonial-item-wrap kt-testimonial-item-${ index }` } style={ ( 'bubble' !== style && 'inlineimage' !== style ? containerStyles : {
+				<div className={ `kt-testimonial-item-wrap kt-testimonial-item-${ index }${ ( containerVAlign ? ' testimonial-valign-' + containerVAlign : '' ) }` } style={ ( 'bubble' !== style && 'inlineimage' !== style ? containerStyles : {
 					maxWidth: containerMaxWidth + 'px',
+					minHeight: ( previewContainerMinHeight ? previewContainerMinHeight + 'px' : undefined ),
 					paddingTop: ( displayIcon && iconStyles[ 0 ].icon && iconStyles[ 0 ].margin && iconStyles[ 0 ].margin[ 0 ] && ( iconStyles[ 0 ].margin[ 0 ] < 0 ) ? Math.abs( iconStyles[ 0 ].margin[ 0 ] ) + 'px' : undefined ),
 				} ) }>
 					{ itemsCount > 1 && (
@@ -798,7 +825,9 @@ class KadenceTestimonials extends Component {
 							renderTestimonialIcon( index )
 						) }
 						{ displayTitle && (
-							<div className="kt-testimonial-title-wrap">
+							<div className="kt-testimonial-title-wrap" style={ {
+								minHeight: ( previewTitleMinHeight ? previewTitleMinHeight + 'px' : undefined ),
+							} }>
 								<RichText
 									tagName={ 'h' + titleFont[ 0 ].level }
 									value={ testimonials[ index ].title }
@@ -842,7 +871,9 @@ class KadenceTestimonials extends Component {
 							</div>
 						) }
 						{ displayContent && (
-							<div className="kt-testimonial-content-wrap">
+							<div className="kt-testimonial-content-wrap" style={ {
+								minHeight: ( previewContentMinHeight ? previewContentMinHeight + 'px' : undefined ),
+							} }>
 								<RichText
 									tagName={ 'div' }
 									placeholder={ __( 'I have been looking for a product like this for years. I have tried everything and nothing did what I wanted until using this product. I am so glad I found it!' ) }
@@ -1187,6 +1218,42 @@ class KadenceTestimonials extends Component {
 										min={ 50 }
 										max={ 2000 }
 									/>
+									<ResponsiveRangeControls
+										label={ __( 'Container Min Height', 'kadence-blocks' ) }
+										value={ ( containerMinHeight && undefined !== containerMinHeight[ 0 ] ? containerMinHeight[ 0 ] : '' ) }
+										onChange={ value => setAttributes( { containerMinHeight: [ value, ( containerMinHeight && undefined !== containerMinHeight[ 1 ] ? containerMinHeight[ 1 ] : '' ), ( containerMinHeight && undefined !== containerMinHeight[ 2 ] ? containerMinHeight[ 2 ] : '' ) ] } ) }
+										tabletValue={ ( containerMinHeight && undefined !== containerMinHeight[ 1 ] ? containerMinHeight[ 1 ] : '' ) }
+										onChangeTablet={ ( value ) => setAttributes( { containerMinHeight: [ ( containerMinHeight && undefined !== containerMinHeight[ 0 ] ? containerMinHeight[ 0 ] : '' ), value, ( containerMinHeight && undefined !== containerMinHeight[ 2 ] ? containerMinHeight[ 2 ] : '' ) ] } ) }
+										mobileValue={ ( containerMinHeight && undefined !== containerMinHeight[ 2 ] ? containerMinHeight[ 2 ] : '' ) }
+										onChangeMobile={ ( value ) => setAttributes( { containerMinHeight: [ ( containerMinHeight && undefined !== containerMinHeight[ 0 ] ? containerMinHeight[ 0 ] : '' ), ( containerMinHeight && undefined !== containerMinHeight[ 1 ] ? containerMinHeight[ 1 ] : '' ), value ] } ) }
+										min={ 0 }
+										max={ 600 }
+										step={ 1 }
+										unit={ 'px' }
+										showUnit={ true }
+										units={ [ 'px' ] }
+									/>
+									{ containerMinHeight && ( containerMinHeight[ 0 ] || containerMinHeight[ 1 ] || containerMinHeight[ 2 ] ) && (
+										<div className="kt-btn-size-settings-container">
+											<h2 className="kt-beside-btn-group">{ __( 'Inner Content Align' ) }</h2>
+											<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Inner Content Align' ) }>
+												{ map( VAlignOptions, ( { name, icon, key } ) => (
+													<Tooltip text={ name }>
+														<Button
+															key={ key }
+															className="kt-btn-size-btn"
+															isSmall
+															isPrimary={ containerVAlign === key }
+															aria-pressed={ containerVAlign === key }
+															onClick={ () => setAttributes( { containerVAlign: key } ) }
+														>
+															{ icon }
+														</Button>
+													</Tooltip>
+												) ) }
+											</ButtonGroup>
+										</div>
+									) }
 								</PanelBody>
 							) }
 							{ this.showSettings( 'iconSettings' ) && (
@@ -1360,6 +1427,21 @@ class KadenceTestimonials extends Component {
 												marginControl={ titleMarginControl }
 												onMarginControl={ ( value ) => this.setState( { titleMarginControl: value } ) }
 											/>
+											<ResponsiveRangeControls
+												label={ __( 'Title Min Height', 'kadence-blocks' ) }
+												value={ ( titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ) }
+												onChange={ value => setAttributes( { titleMinHeight: [ value, ( titleMinHeight && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), ( titleMinHeight && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) ] } ) }
+												tabletValue={ ( titleMinHeight && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ) }
+												onChangeTablet={ ( value ) => setAttributes( { titleMinHeight: [ ( titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), value, ( titleMinHeight && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) ] } ) }
+												mobileValue={ ( titleMinHeight && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) }
+												onChangeMobile={ ( value ) => setAttributes( { titleMinHeight: [ ( titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), ( titleMinHeight && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), value ] } ) }
+												min={ 0 }
+												max={ 200 }
+												step={ 1 }
+												unit={ 'px' }
+												showUnit={ true }
+												units={ [ 'px' ] }
+											/>
 										</Fragment>
 									) }
 								</PanelBody>
@@ -1456,6 +1538,21 @@ class KadenceTestimonials extends Component {
 												onFontStyle={ ( value ) => saveContentFont( { style: value } ) }
 												fontSubset={ contentFont[ 0 ].subset }
 												onFontSubset={ ( value ) => saveContentFont( { subset: value } ) }
+											/>
+											<ResponsiveRangeControls
+												label={ __( 'Content Min Height', 'kadence-blocks' ) }
+												value={ ( contentMinHeight && undefined !== contentMinHeight[ 0 ] ? contentMinHeight[ 0 ] : '' ) }
+												onChange={ value => setAttributes( { contentMinHeight: [ value, ( contentMinHeight && undefined !== contentMinHeight[ 1 ] ? contentMinHeight[ 1 ] : '' ), ( contentMinHeight && undefined !== contentMinHeight[ 2 ] ? contentMinHeight[ 2 ] : '' ) ] } ) }
+												tabletValue={ ( contentMinHeight && undefined !== contentMinHeight[ 1 ] ? contentMinHeight[ 1 ] : '' ) }
+												onChangeTablet={ ( value ) => setAttributes( { contentMinHeight: [ ( contentMinHeight && undefined !== contentMinHeight[ 0 ] ? contentMinHeight[ 0 ] : '' ), value, ( contentMinHeight && undefined !== contentMinHeight[ 2 ] ? contentMinHeight[ 2 ] : '' ) ] } ) }
+												mobileValue={ ( contentMinHeight && undefined !== contentMinHeight[ 2 ] ? contentMinHeight[ 2 ] : '' ) }
+												onChangeMobile={ ( value ) => setAttributes( { contentMinHeight: [ ( contentMinHeight && undefined !== contentMinHeight[ 0 ] ? contentMinHeight[ 0 ] : '' ), ( contentMinHeight && undefined !== contentMinHeight[ 1 ] ? contentMinHeight[ 1 ] : '' ), value ] } ) }
+												min={ 0 }
+												max={ 400 }
+												step={ 1 }
+												unit={ 'px' }
+												showUnit={ true }
+												units={ [ 'px' ] }
 											/>
 										</Fragment>
 									) }
@@ -1851,4 +1948,13 @@ class KadenceTestimonials extends Component {
 		);
 	}
 }
-export default ( KadenceTestimonials );
+export default compose( [
+	withSelect( ( select, ownProps ) => {
+		const {
+			__experimentalGetPreviewDeviceType,
+		} = select( 'core/edit-post' );
+		return {
+			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+		};
+	} ),
+] )( KadenceTestimonials );

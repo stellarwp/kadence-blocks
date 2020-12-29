@@ -18,7 +18,7 @@ import map from 'lodash/map';
 import range from 'lodash/range';
 import HeadingLevelIcon from './heading-icons';
 import KadenceRange from './kadence-range-control';
-import MeasurementControls from './measurement-control';
+import MeasurementControls from './components/measurement/measurement-control';
 
 const {
 	applyFilters,
@@ -617,73 +617,17 @@ class TypographyControls extends Component {
 				) }
 				{ onPadding && onPaddingControl && (
 					<Fragment>
-						<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Padding Control Type', 'kadence-blocks' ) }>
-							{ map( borderTypes, ( { name, key, icon } ) => (
-								<Tooltip text={ name }>
-									<Button
-										key={ key }
-										className="kt-size-btn"
-										isSmall
-										isPrimary={ paddingControl === key }
-										aria-pressed={ paddingControl === key }
-										onClick={ () => onPaddingControl( key ) }
-									>
-										{ icon }
-									</Button>
-								</Tooltip>
-							) ) }
-						</ButtonGroup>
-						{ paddingControl && paddingControl !== 'individual' && (
-							<KadenceRange
-								label={ __( 'Padding (px)', 'kadence-blocks' ) }
-								value={ ( padding ? padding[ 0 ] : '' ) }
-								onChange={ ( value ) => onPadding( [ value, value, value, value ] ) }
-								min={ 0 }
-								max={ 100 }
-								step={ 1 }
-							/>
-						) }
-						{ paddingControl && paddingControl === 'individual' && (
-							<Fragment>
-								<p>{ __( 'Padding (px)', 'kadence-blocks' ) }</p>
-								<KadenceRange
-									className="kt-icon-rangecontrol"
-									beforeIcon={ icons.outlinetop }
-									value={ ( padding ? padding[ 0 ] : '' ) }
-									onChange={ ( value ) => onPadding( [ value, padding[ 1 ], padding[ 2 ], padding[ 3 ] ] ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<KadenceRange
-									className="kt-icon-rangecontrol"
-									beforeIcon={ icons.outlineright }
-									value={ ( padding ? padding[ 1 ] : '' ) }
-									onChange={ ( value ) => onPadding( [ padding[ 0 ], value, padding[ 2 ], padding[ 3 ] ] ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<KadenceRange
-									className="kt-icon-rangecontrol"
-									beforeIcon={ icons.outlinebottom }
-									value={ ( padding ? padding[ 2 ] : '' ) }
-									onChange={ ( value ) => onPadding( [ padding[ 0 ], padding[ 1 ], value, padding[ 3 ] ] ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<KadenceRange
-									className="kt-icon-rangecontrol"
-									beforeIcon={ icons.outlineleft }
-									value={ ( padding ? padding[ 3 ] : '' ) }
-									onChange={ ( value ) => onPadding( [ padding[ 0 ], padding[ 1 ], padding[ 2 ], value ] ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-								/>
-							</Fragment>
-						) }
+						<MeasurementControls
+							label={ __( 'Padding (px)', 'kadence-blocks' ) }
+							measurement={ ( padding ? padding : '' ) }
+							control={ paddingControl }
+							onChange={ ( value ) => onPadding( value ) }
+							onControl={ ( value ) => onPaddingControl( value ) }
+							min={ 0 }
+							max={ 100 }
+							step={ 1 }
+							allowEmpty={ false }
+						/>
 					</Fragment>
 				) }
 				{ onMargin && onMarginControl && (
@@ -697,6 +641,7 @@ class TypographyControls extends Component {
 							min={ -100 }
 							max={ 100 }
 							step={ 1 }
+							allowEmpty={ false }
 						/>
 					</Fragment>
 				) }

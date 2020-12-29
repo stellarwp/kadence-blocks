@@ -804,7 +804,8 @@ class KadenceIconLists extends Component {
 				) }
 				<style>
 					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap:not(:last-child) { margin-bottom: ${ listGap }px; }` }
-					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-right: ${ listLabelGap }px; }` }
+					{ `body:not(.rtl) .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-right: ${ listLabelGap }px; }` }
+					{ `body.rtl .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-left: ${ listLabelGap }px; }` }
 					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap {
 							font-weight: ${ ( listStyles[ 0 ].weight ? listStyles[ 0 ].weight : '' ) };
 							font-style: ${ ( listStyles[ 0 ].style ? listStyles[ 0 ].style : '' ) };

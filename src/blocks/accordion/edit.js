@@ -42,7 +42,6 @@ const {
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
-	ColorPalette,
 	BlockAlignmentToolbar,
 } = wp.blockEditor;
 const {

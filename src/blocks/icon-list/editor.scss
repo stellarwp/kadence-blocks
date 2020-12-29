@@ -20,10 +20,17 @@
 	text-align: left;
 	position: relative;
 }
+.rtl .kt-svg-icon-list-item-wrap {
+	text-align: right;
+}
 .kadence-blocks-list-item__control-menu {
     position: absolute;
     top: -10px;
     right:0;
+}
+.rtl .kadence-blocks-list-item__control-menu {
+	left:0;
+	right:auto;
 }
 .kadence-blocks-list-item__control-menu button.components-button {
     height: 16px;
@@ -35,6 +42,10 @@
 .kt-svg-icon-list-single {
 	margin-right: 10px;
 	padding: 4px 0;
+}
+.rtl .kt-svg-icon-list-single {
+	margin-left:10px;
+	margin-right:0;
 }
 .kt-svg-icon-list-item-wrap {
 	.editor-rich-text, .kt-svg-icon-list-text {
