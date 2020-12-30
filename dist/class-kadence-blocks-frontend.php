@@ -5536,7 +5536,7 @@ class Kadence_Blocks_Frontend {
 		$css->start_media_query( $media_query['tablet'] );
 		if ( isset( $attr['collapseOrder'] ) ) {
 			$css->set_selector( '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id );
-			$css->add_property( 'order' . $attr['collapseOrder'] );
+			$css->add_property( 'order', $attr['collapseOrder'] );
 		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 1 ] ) && ! empty( $attr['textAlign'][ 1 ] ) ) {
 			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );
@@ -5587,7 +5587,7 @@ class Kadence_Blocks_Frontend {
 		$css->start_media_query( $media_query['mobile'] );
 		if ( isset( $attr['collapseOrder'] ) ) {
 			$css->set_selector( '.kt-row-column-wrap.kt-mobile-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-row > .kadence-column' . $unique_id );
-			$css->add_property( 'order' . $attr['collapseOrder'] );
+			$css->add_property( 'order', $attr['collapseOrder'] );
 		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 2 ] ) && ! empty( $attr['textAlign'][ 2 ] ) ) {
 			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );
