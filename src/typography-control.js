@@ -3,6 +3,8 @@
  *
  */
 
+ /* global kadence_blocks_params */
+
 /**
  * Import Icons
  */
@@ -10,8 +12,8 @@ import icons from './icons';
 /**
  * Import External
  */
-import gFonts from './gfonts';
-import fonts from './fonts';
+//import gFonts from './gfonts';
+//import fonts from './fonts';
 import capitalizeFirstLetter from './capitalfirst';
 import Select from 'react-select';
 import map from 'lodash/map';
@@ -38,8 +40,6 @@ const {
 	TabPanel,
 	Dashicon,
 	PanelBody,
-	Tooltip,
-	RangeControl,
 	Toolbar,
 	ToggleControl,
 	SelectControl,
@@ -61,9 +61,9 @@ class TypographyControls extends Component {
 		};
 	}
 	componentDidMount() {
-		const fontsarray = fonts.map( ( name ) => {
+		const fontsarray = typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_font_names ? kadence_blocks_params.g_font_names.map( ( name ) => {
 			return { label: name, value: name, google: true };
-		} );
+		} ) : {};
 		const options = [
 			{
 				type: 'group',
@@ -150,10 +150,10 @@ class TypographyControls extends Component {
 				fontStandardStyles = activeFont[ 0 ].styles;
 			}
 		}
-		if ( this.props.googleFont && this.props.fontFamily && gFonts[ this.props.fontFamily ] ) {
-			fontStandardWeights = gFonts[ this.props.fontFamily ].w.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
-			fontStandardStyles = gFonts[ this.props.fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
-			typographySubsets = gFonts[ this.props.fontFamily ].s.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
+		if ( this.props.googleFont && this.props.fontFamily && typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_fonts && kadence_blocks_params.g_fonts[ this.props.fontFamily ] ) {
+			fontStandardWeights = kadence_blocks_params.g_fonts[ this.props.fontFamily ].w.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
+			fontStandardStyles = kadence_blocks_params.g_fonts[ this.props.fontFamily ].i.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
+			typographySubsets = kadence_blocks_params.g_fonts[ this.props.fontFamily ].s.map( opt => ( { label: capitalizeFirstLetter( opt ), value: opt } ) );
 		}
 		if ( this.props.fontFamily === '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"' ) {
 			fontStandardWeights = systemWeights;
@@ -213,17 +213,17 @@ class TypographyControls extends Component {
 				let weight;
 				let subset;
 				if ( select.google ) {
-					if ( ! gFonts[ select.value ].v.includes( 'regular' ) ) {
-						variant = gFonts[ select.value ].v[ 0 ];
+					if ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_fonts && ! kadence_blocks_params.g_fonts[ select.value ].v.includes( 'regular' ) ) {
+						variant = kadence_blocks_params.g_fonts[ select.value ].v[ 0 ];
 					} else {
 						variant = 'regular';
 					}
-					if ( ! gFonts[ select.value ].w.includes( 'regular' ) ) {
-						weight = gFonts[ select.value ].w[ 0 ];
+					if ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_fonts && ! kadence_blocks_params.g_fonts[ select.value ].w.includes( 'regular' ) ) {
+						weight = kadence_blocks_params.g_fonts[ select.value ].w[ 0 ];
 					} else {
 						weight = '400';
 					}
-					if ( gFonts[ select.value ].s.length > 1 ) {
+					if ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_fonts && kadence_blocks_params.g_fonts[ select.value ].s.length > 1 ) {
 						subset = 'latin';
 					} else {
 						subset = '';

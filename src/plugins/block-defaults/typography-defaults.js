@@ -1,3 +1,4 @@
+/* global kadence_blocks_params */
 const {
 	Component,
 	Fragment,
@@ -12,7 +13,7 @@ const {
 	applyFilters,
 } = wp.hooks;
 import Select from 'react-select';
-import fonts from '../../fonts';
+//import fonts from '../../fonts';
 
 import icons from '../../icons';
 /**
@@ -63,9 +64,9 @@ class KadenceTypographyDefault extends Component {
 	render() {
 		const { configuration, isOpen } = this.state;
 		const typoConfig = ( configuration && configuration[ 'kadence/typography' ] ? configuration[ 'kadence/typography' ] : {} );
-		const fontsarray = fonts.map( ( name ) => {
+		const fontsarray = typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_font_names ? kadence_blocks_params.g_font_names.map( ( name ) => {
 			return { label: name, value: name, google: true };
-		} );
+		} ) : {};
 		const options = [
 			{
 				type: 'group',
