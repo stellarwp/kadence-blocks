@@ -200,6 +200,9 @@ export default [
 			anchor: {
 				type: 'string',
 			},
+			colorClass: {
+				type: 'string',
+			},
 			htmlTag: {
 				type: 'string',
 				default: 'heading',
