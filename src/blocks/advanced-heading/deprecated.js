@@ -203,9 +203,33 @@ export default [
 			colorClass: {
 				type: 'string',
 			},
+			textShadow: {
+				type: 'array',
+				default: [ {
+					enable: false,
+					color: 'rgba(0, 0, 0, 0.2)',
+					blur: 1,
+					hOffset: 1,
+					vOffset: 1,
+				} ],
+			},
 			htmlTag: {
 				type: 'string',
 				default: 'heading',
+			},
+			kadenceAnimation: {
+				type: 'string',
+			},
+			kadenceAOSOptions: {
+				type: 'array',
+				default: [ {
+					duration: '',
+					offset: '',
+					easing: '',
+					once: '',
+					delay: '',
+					delayOffset: '',
+				} ],
 			},
 		},
 		save: ( { attributes } ) => {

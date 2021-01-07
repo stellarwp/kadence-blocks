@@ -36,7 +36,8 @@
     align-items: flex-end;
 }
 .components-popover.kadence-range-popover-settings .components-popover__content>div {
-    padding: 30px 20px;
+	padding: 30px 20px;
+	min-width: 280px;
 }
 .components-button-group.kb-preset-size-options {
     display: flex;

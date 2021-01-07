@@ -18,7 +18,7 @@ import './../../editor-components.scss';
  */
 import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
-import KadenceRange from './../../kadence-range-control';
+import KadenceRange from './../range/range-control';
 import MeasurementSingleControl from './single-input-control';
 import { undo } from '@wordpress/icons';
 

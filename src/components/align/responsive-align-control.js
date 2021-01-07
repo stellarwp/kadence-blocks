@@ -9,6 +9,7 @@
 import { useSelect, useDispatch } from '@wordpress/data';
 const { __ } = wp.i18n;
 import map from 'lodash/map';
+import get from 'lodash/get';
 import capitalizeFirstLetter from './../common/capitalfirst';
 const {
 	Dashicon,
@@ -31,6 +32,7 @@ export default function ResponsiveAlignControls( {
 	mobileValue,
 	tabletValue,
 	value,
+	isCollapsed = false,
 } ) {
 	const deviceType = useSelect( ( select ) => {
 		return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
@@ -63,21 +65,21 @@ export default function ResponsiveAlignControls( {
 	output.Mobile = (
 		<AlignmentToolbar
 			value={ ( mobileValue ? mobileValue : '' ) }
-			isCollapsed={ false }
+			isCollapsed={ isCollapsed }
 			onChange={ ( align ) => onChangeMobile( align ) }
 		/>
 	);
 	output.Tablet = (
 		<AlignmentToolbar
 			value={ ( tabletValue ? tabletValue : '' ) }
-			isCollapsed={ false }
+			isCollapsed={ isCollapsed }
 			onChange={ ( align ) => onChangeTablet( align ) }
 		/>
 	);
 	output.Desktop = (
 		<AlignmentToolbar
 			value={ ( value ? value : '' ) }
-			isCollapsed={ false }
+			isCollapsed={ isCollapsed }
 			onChange={ ( align ) => onChange( align ) }
 		/>
 	);

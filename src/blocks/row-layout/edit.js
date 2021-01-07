@@ -27,7 +27,7 @@ import ThreeColumnDrag from './threecolumndrag';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import Slider from 'react-slick';
-import KadenceRange from '../../kadence-range-control';
+import KadenceRange from '../../components/range/range-control';
 import ResponsiveControl from '../../components/responsive/responsive-control';
 /**
  * Import Css

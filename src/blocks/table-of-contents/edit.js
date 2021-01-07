@@ -23,7 +23,7 @@ import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import BoxShadowControl from '../../box-shadow-control';
-import KadenceRange from '../../kadence-range-control';
+import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasurementControls from '../../responsive-measurement-control';
 /**
  * Import Css

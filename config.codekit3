@@ -2546,6 +2546,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/components/color/color-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/components/color/color-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/components/common/capitalfirst.js": {
 		"bF": 0,
 		"ft": 64,
@@ -2586,6 +2597,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/components/measurement/single-input-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/components/range/range-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/components/range/range-control-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

@@ -271,7 +271,7 @@ class KadenceColumn extends Component {
 															onClick={ open }
 														>
 															<Dashicon icon="format-image" />
-															{ __( 'Edit Image' ) }
+															{ __( 'Edit Image', 'kadence-blocks' ) }
 														</Button>
 													) }
 												/>
@@ -323,7 +323,7 @@ class KadenceColumn extends Component {
 											</Fragment>
 										) }
 										<AdvancedPopColorControl
-											label={ __( 'Border Color' ) }
+											label={ __( 'Border Color', 'kadence-blocks' ) }
 											colorValue={ ( border ? border : '' ) }
 											colorDefault={ '' }
 											opacityValue={ borderOpacity }
@@ -349,7 +349,7 @@ class KadenceColumn extends Component {
 											preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
 										/>
 										<MeasurementControls
-											label={ __( 'Border Radius' ) }
+											label={ __( 'Border Radius', 'kadence-blocks' ) }
 											measurement={ borderRadius }
 											control={ borderRadiusControl }
 											onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
@@ -358,8 +358,8 @@ class KadenceColumn extends Component {
 											max={ 200 }
 											step={ 1 }
 											controlTypes={ [
-												{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-												{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+												{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
+												{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
 											] }
 											firstIcon={ icons.topleft }
 											secondIcon={ icons.topright }

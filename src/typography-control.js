@@ -19,7 +19,7 @@ import Select from 'react-select';
 import map from 'lodash/map';
 import range from 'lodash/range';
 import HeadingLevelIcon from './heading-icons';
-import KadenceRange from './kadence-range-control';
+import KadenceRange from './components/range/range-control';
 import MeasurementControls from './components/measurement/measurement-control';
 
 const {
@@ -72,6 +72,7 @@ class TypographyControls extends Component {
 					{ label: 'System Default', value: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"', google: false },
 					{ label: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
 					{ label: '"Arial Black", Gadget, sans-serif', value: '"Arial Black", Gadget, sans-serif', google: false },
+					{ label: 'Helvetica, sans-serif', value: 'Helvetica, sans-serif', google: false },
 					{ label: '"Comic Sans MS", cursive, sans-serif', value: '"Comic Sans MS", cursive, sans-serif', google: false },
 					{ label: 'Impact, Charcoal, sans-serif', value: 'Impact, Charcoal, sans-serif', google: false },
 					{ label: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', value: '"Lucida Sans Unicode", "Lucida Grande", sans-serif', google: false },

@@ -7,7 +7,7 @@
  * Import External
  */
 import map from 'lodash/map';
-import KadenceRange from './../../kadence-range-control';
+import KadenceRange from './../range/range-control';
 
 /**
  * Internal block libraries

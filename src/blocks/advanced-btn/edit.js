@@ -20,7 +20,7 @@ import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import flow from 'lodash/flow';
 import filter from 'lodash/filter';
-import KadenceRange from '../../kadence-range-control';
+import KadenceRange from '../../components/range/range-control';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',

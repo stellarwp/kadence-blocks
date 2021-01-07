@@ -15,7 +15,7 @@ import InlineAdvancedPopColorControl from '../../advanced-inline-pop-color-contr
 import KadenceColorOutput from '../../kadence-color-output';
 import WebfontLoader from '../../fontloader';
 import TextShadowControl from '../../text-shadow-control';
-import KadenceRange from '../../kadence-range-control';
+import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
