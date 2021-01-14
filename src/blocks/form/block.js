@@ -344,6 +344,31 @@ registerBlockType( 'kadence/form', {
 				map: [],
 			} ],
 		},
+		fluentcrm: {
+			type: 'array',
+			default: [ {
+				lists: [],
+				tags: [],
+				map: [],
+				doubleOptin: false,
+			} ],
+		},
+		containerMarginType: {
+			type: 'string',
+			default: 'px',
+		},
+		containerMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		tabletContainerMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		mobileContainerMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
 	},
 	edit,
 

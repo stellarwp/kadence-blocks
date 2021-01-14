@@ -1780,6 +1780,58 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_form_array( $attr, $unique_id ) {
 		$css = '';
+		if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) ) {
+			$css .= '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap {';
+			if ( isset( $attr['containerMargin'][0] ) && is_numeric( $attr['containerMargin'][0] ) ) {
+				$css .= 'margin-top:' . $attr['containerMargin'][0] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['containerMargin'][1] ) && is_numeric( $attr['containerMargin'][1] ) ) {
+				$css .= 'margin-right:' . $attr['containerMargin'][1] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['containerMargin'][2] ) && is_numeric( $attr['containerMargin'][2] ) ) {
+				$css .= 'margin-bottom:' . $attr['containerMargin'][2] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['containerMargin'][3] ) && is_numeric( $attr['containerMargin'][3] ) ) {
+				$css .= 'margin-left:' . $attr['containerMargin'][3] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			$css .= '}';
+		}
+		if ( isset( $attr['tabletContainerMargin'] ) && is_array( $attr['tabletContainerMargin'] ) ) {
+			$css .= '@media (max-width: 1024px) {';
+			$css .= '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap {';
+			if ( isset( $attr['tabletContainerMargin'][0] ) && is_numeric( $attr['tabletContainerMargin'][0] ) ) {
+				$css .= 'margin-top:' . $attr['tabletContainerMargin'][0] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['tabletContainerMargin'][1] ) && is_numeric( $attr['tabletContainerMargin'][1] ) ) {
+				$css .= 'margin-right:' . $attr['tabletContainerMargin'][1] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['tabletContainerMargin'][2] ) && is_numeric( $attr['tabletContainerMargin'][2] ) ) {
+				$css .= 'margin-bottom:' . $attr['tabletContainerMargin'][2] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['tabletContainerMargin'][3] ) && is_numeric( $attr['tabletContainerMargin'][3] ) ) {
+				$css .= 'margin-left:' . $attr['tabletContainerMargin'][3] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['mobileContainerMargin'] ) && is_array( $attr['mobileContainerMargin'] ) ) {
+			$css .= '@media (max-width: 767px) {';
+			$css .= '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap {';
+			if ( isset( $attr['mobileContainerMargin'][0] ) && is_numeric( $attr['mobileContainerMargin'][0] ) ) {
+				$css .= 'margin-top:' . $attr['mobileContainerMargin'][0] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['mobileContainerMargin'][1] ) && is_numeric( $attr['mobileContainerMargin'][1] ) ) {
+				$css .= 'margin-right:' . $attr['mobileContainerMargin'][1] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['mobileContainerMargin'][2] ) && is_numeric( $attr['mobileContainerMargin'][2] ) ) {
+				$css .= 'margin-bottom:' . $attr['mobileContainerMargin'][2] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['mobileContainerMargin'][3] ) && is_numeric( $attr['mobileContainerMargin'][3] ) ) {
+				$css .= 'margin-left:' . $attr['mobileContainerMargin'][3] . ( isset( $attr['containerMarginType'] ) && ! empty( $attr['containerMarginType'] ) ? $attr['containerMarginType'] : 'px' ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
 		if ( isset( $attr['style'] ) && is_array( $attr['style'] ) && isset( $attr['style'][ 0 ] ) && is_array( $attr['style'][ 0 ] ) ) {
 			$style = $attr['style'][ 0 ];
 			if ( isset( $style['rowGap'] ) && is_numeric( $style['rowGap'] ) ) {
@@ -1870,7 +1922,7 @@ class Kadence_Blocks_Frontend {
 				$css .= '}';
 			}
 			if ( ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][1] ) ) || ( isset( $style['lineHeight'] ) && is_array( $style['lineHeight'] ) && is_numeric( $style['lineHeight'][1] ) ) ) {
-				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '@media (max-width: 1024px) {';
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field, .kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-select-style-field {';
 				if ( isset( $style['fontSize'] ) && is_array( $style['fontSize'] ) && is_numeric( $style['fontSize'][1] ) ) {
 					$css .= 'font-size:' . $style['fontSize'][1] . ( isset( $style['fontSizeType'] ) && ! empty( $style['fontSizeType'] ) ? $style['fontSizeType'] : 'px' ) . ';';
@@ -1910,7 +1962,7 @@ class Kadence_Blocks_Frontend {
 				$css .= '}';
 			}
 			if ( isset( $style['size'] ) && 'custom' && $style['size'] && isset( $style['tabletPadding'] ) && is_array( $style['tabletPadding'] ) && isset( $style['tabletPadding'][0] ) && is_numeric( $style['tabletPadding'][0] ) ) {
-				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '@media (max-width: 1024px) {';
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-text-style-field {';
 				if( isset( $style['tabletPadding'][0] ) && is_numeric( $style['tabletPadding'][0] ) ) {
 					$css .= 'padding-top:' . $style['tabletPadding'][0] . 'px;';
@@ -1999,7 +2051,7 @@ class Kadence_Blocks_Frontend {
 			}
 			$css .= '}';
 			if ( ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][1] ) ) || ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][1] ) ) ) {
-				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '@media (max-width: 1024px) {';
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field label {';
 				if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][1] ) ) {
 					$css .= 'font-size:' . $label_font['size'][1] . ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) . ';';
@@ -2078,9 +2130,6 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $submit['backgroundHover'] ) && ! empty( $submit['backgroundHover'] ) ) {
 					$alpha = ( isset( $submit['backgroundHoverOpacity'] ) && is_numeric( $submit['backgroundHoverOpacity'] ) ? $submit['backgroundHoverOpacity'] : 1 );
 					$css  .= 'background:' . $this->kadence_color_output( $submit['backgroundHover'], $alpha ) . ';';
-				} else {
-					$alpha = ( isset( $submit['backgroundHoverOpacity'] ) && is_numeric( $submit['backgroundHoverOpacity'] ) ? $submit['backgroundHoverOpacity'] : 1 );
-					$css  .= 'background:' . $this->kadence_color_output( '#444444', $alpha ) . ';';
 				}
 				if ( isset( $submit['boxShadowHover'] ) && is_array( $submit['boxShadowHover'] ) && isset( $submit['boxShadowHover'][0] ) && true === $submit['boxShadowHover'][0] && isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ) {
 					$css  .= 'box-shadow:' . ( isset( $submit['boxShadowHover'][7] ) && true === $submit['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $submit['boxShadowHover'][3] ) && is_numeric( $submit['boxShadowHover'][3] ) ? $submit['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][4] ) && is_numeric( $submit['boxShadowHover'][4] ) ? $submit['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $submit['boxShadowHover'][5] ) && is_numeric( $submit['boxShadowHover'][5] ) ? $submit['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $submit['boxShadowHover'][6] ) && is_numeric( $submit['boxShadowHover'][6] ) ? $submit['boxShadowHover'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $submit['boxShadowHover'][1] ) && ! empty( $submit['boxShadowHover'][1] ) ? $submit['boxShadowHover'][1] : '#000000' ), ( isset( $submit['boxShadowHover'][2] ) && is_numeric( $submit['boxShadowHover'][2] ) ? $submit['boxShadowHover'][2] : 0.4 ) ) . ';';
@@ -2126,7 +2175,7 @@ class Kadence_Blocks_Frontend {
 				$css .= '}';
 			}
 			if ( isset( $submit['size'] ) && 'custom' && $submit['size'] && isset( $submit['tabletPadding'] ) && is_array( $submit['tabletPadding'] ) && isset( $submit['tabletPadding'][0] ) && is_numeric( $submit['tabletPadding'][0] ) ) {
-				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '@media (max-width: 1024px) {';
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit {';
 				if ( isset( $submit['tabletPadding'][0] ) && is_numeric( $submit['tabletPadding'][0] ) ) {
 					$css .= 'padding-top:' . $submit['tabletPadding'][0] . 'px;';
@@ -2182,7 +2231,7 @@ class Kadence_Blocks_Frontend {
 				$css .= '}';
 			}
 			if ( ( isset( $submit_margin['tablet'][0] ) && is_numeric( $submit_margin['tablet'][0] ) ) || ( isset( $submit_margin['tablet'][1] ) && is_numeric( $submit_margin['tablet'][1] ) ) || ( isset( $submit_margin['tablet'][2] ) && is_numeric( $submit_margin['tablet'][2] ) ) || ( isset( $submit_margin['tablet'][3] ) && is_numeric( $submit_margin['tablet'][3] ) ) ) {
-				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '@media (max-width: 1024px) {';
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit {';
 					if ( isset( $submit_margin['tablet'][0] ) && is_numeric( $submit_margin['tablet'][0] ) ) {
 						$css .= 'margin-top:' . $submit_margin['tablet'][0] . $margin_unit . ';';
@@ -2244,7 +2293,7 @@ class Kadence_Blocks_Frontend {
 			}
 			$css .= '}';
 			if ( ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][1] ) ) || ( isset( $submit_font['lineHeight'] ) && is_array( $submit_font['lineHeight'] ) && is_numeric( $submit_font['lineHeight'][1] ) ) ) {
-				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '@media (max-width: 1024px) {';
 					$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field .kb-forms-submit {';
 				if ( isset( $submit_font['size'] ) && is_array( $submit_font['size'] ) && is_numeric( $submit_font['size'][1] ) ) {
 					$css .= 'font-size:' . $submit_font['size'][1] . ( isset( $submit_font['fontSizeType'] ) && ! empty( $submit_font['fontSizeType'] ) ? $submit_font['fontSizeType'] : 'px' ) . ';';
@@ -2352,7 +2401,7 @@ class Kadence_Blocks_Frontend {
 			}
 			$css .= '}';
 			if ( ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][1] ) ) || ( isset( $message_font['lineHeight'] ) && is_array( $message_font['lineHeight'] ) && is_numeric( $message_font['lineHeight'][1] ) ) ) {
-				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
+				$css .= '@media (max-width: 1024px) {';
 				$css .= '.kadence-form-' . $unique_id . ' .kadence-blocks-form-message {';
 				if ( isset( $message_font['size'] ) && is_array( $message_font['size'] ) && is_numeric( $message_font['size'][1] ) ) {
 					$css .= 'font-size:' . $message_font['size'][1] . ( isset( $message_font['fontSizeType'] ) && ! empty( $message_font['fontSizeType'] ) ? $message_font['fontSizeType'] : 'px' ) . ';';

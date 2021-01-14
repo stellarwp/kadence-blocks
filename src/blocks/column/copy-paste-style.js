@@ -195,7 +195,7 @@ class ColumnStyleCopyPaste extends Component {
 			}
 			if ( blockAttributes.vsmobile ) {
 				copyStyles.vsmobile = blockAttributes.vsmobile;
-			}			
+			}
 			localStorage.setItem( 'kadenceColumnStyle', JSON.stringify( copyStyles ) );
 		};
 		const pasteAction = () => {

@@ -390,6 +390,14 @@
 		"oAP": "/dist/build/style.css.map",
 		"oF": 1
 		},
+	"/dist/class-fluentcrm-form-rest-api.php": {
+		"cB": 0,
+		"ft": 8192,
+		"hM": 0,
+		"oA": 0,
+		"oAP": "/dist/class-fluentcrm-form-rest-api.php",
+		"oF": 0
+		},
 	"/dist/class-kadence-blocks-css.php": {
 		"cB": 0,
 		"ft": 8192,
@@ -1783,6 +1791,17 @@
 		"oF": 1,
 		"oS": 0,
 		"sct": 1
+		},
+	"/src/blocks/form/fluentcrm.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/form/fluentcrm-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
 		},
 	"/src/blocks/form/mailerlite.js": {
 		"bF": 0,

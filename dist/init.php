@@ -112,6 +112,7 @@ function kadence_gutenberg_editor_assets() {
 			'buttonWeights'  => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null,
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
+			'fluentCRM'      => defined( 'FLUENTCRM' ),
 			// 'icon_names'     => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
 			// 'icons_ico'      => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
 			// 'icons_fa'       => file_exists( $icons_path ) ? include $icons_path : array(),
@@ -612,5 +613,7 @@ add_filter( 'render_block_data', 'wpmlcore_7207_fix_kadence_form_block' );
 function kadence_blocks_register_api_endpoints() {
 	$mailerlite_controller = new Kadence_MailerLite_REST_Controller;
 	$mailerlite_controller->register_routes();
+	$fluentCRM_controller = new Kadence_FluentCRM_REST_Controller;
+	$fluentCRM_controller->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );

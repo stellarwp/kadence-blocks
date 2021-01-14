@@ -341,6 +341,64 @@ class KB_Ajax_Form {
 								}
 							}
 						break;
+						case 'fluentCRM':
+							$fluentcrm_default = array(
+								'map'         => array(),
+								'lists'       => array(),
+								'tags'        => array(),
+								'doubleOptin' => false,
+							);
+							$fluentcrm_args = ( isset( $form_args['fluentcrm'] ) && is_array( $form_args['fluentcrm'] ) && isset( $form_args['fluentcrm'][0] ) && is_array( $form_args['fluentcrm'][0] ) ? $form_args['fluentcrm'][0] : $fluentcrm_default );
+							$map = ( isset( $fluentcrm_args['map'] ) && is_array( $fluentcrm_args['map'] ) ? $fluentcrm_args['map'] : array() );
+							$double_optin = ( isset( $fluentcrm_args['doubleOptin'] ) ? $fluentcrm_args['doubleOptin'] : false );
+							$fluent_data = array();
+							$lists = ( isset( $fluentcrm_args['lists'] ) ? $fluentcrm_args['lists'] : array() );
+							$tags = ( isset( $fluentcrm_args['tags'] ) ? $fluentcrm_args['tags'] : array() );
+							if ( $double_optin ) {
+								$fluent_data['status'] = 'pending';
+							} else {
+								$fluent_data['status'] = 'subscribed';
+							}
+							if ( ! empty( $lists ) ) {
+								$fluent_data['lists'] = array();
+								foreach ( $lists as $key => $data ) {
+									$fluent_data['lists'][] = $data['value'];
+								}
+							}
+							if ( ! empty( $tags ) ) {
+								$fluent_data['tags'] = array();
+								foreach ( $tags as $key => $data ) {
+									$fluent_data['tags'][] = $data['value'];
+								}
+							}
+							$email = false;
+							if ( ! empty( $map ) ) {
+								foreach ( $fields as $key => $data ) {
+									if ( isset( $map[ $key ] ) && ! empty( $map[ $key ] ) ) {
+										if ( 'email' === $map[ $key ] && ! $email ) {
+											$email = $data['value'];
+											$fluent_data['email'] = $data['value'];
+										} else {
+											$fluent_data[ $map[ $key ] ] = $data['value'];
+										}
+									}
+								}
+							} else {
+								foreach ( $fields as $key => $data ) {
+									if ( 'email' === $data['type'] ) {
+										$fluent_data['email'] = $data['value'];
+										break;
+									}
+								}
+							}
+							if ( isset( $fluent_data['email'] ) && ! empty( $fluent_data['email'] ) && function_exists( 'FluentCrmApi' ) ) {
+								$contact_api = FluentCrmApi( 'contacts' );
+								$contact = $contact_api->createOrUpdate( $fluent_data );
+								if ( $double_optin && 'pending' === $contact->status ) {
+									$contact->sendDoubleOptinEmail();
+								}
+							}
+						break;
 					}
 				}
 
