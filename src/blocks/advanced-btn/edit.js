@@ -380,7 +380,7 @@ class KadenceAdvancedButton extends Component {
 					} }
 				>
 					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` }>
-						<span className={ `kt-button kt-button-${ index } kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) } kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) }` } style={ {
+						<span className={ `kt-button kt-button-${ index } kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) } kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) }${ ( btns[ index ].inheritStyles ? ' kb-btn-global-' + btns[ index ].inheritStyles : '' ) }${ ( btns[ index ].inheritStyles && 'inherit' === btns[ index ].inheritStyles ? ' wp-block-button__link' : '' ) }` } style={ {
 							background: ( undefined !== btnbg ? btnbg : undefined ),
 							color: ( undefined !== btns[ index ].color ? KadenceColorOutput( btns[ index ].color ) : undefined ),
 							fontSize: ( undefined !== btns[ index ].size ? btns[ index ].size + 'px' : undefined ),
@@ -574,6 +574,14 @@ class KadenceAdvancedButton extends Component {
 				setAttributes( { widthType: 'full' } );
 			}
 		};
+		const buttonStyleOptions = [
+			{ key: '', name: __( 'Default', 'kadence-blocks' ) },
+			{ key: 'inherit', name: __( 'Theme', 'kadence-blocks' ) },
+			// { key: 'leftabove', name: __( 'Left Above' ), icon: icons.infoLeftAbove },
+			// { key: 'left', name: __( 'Left' ), icon: icons.infoLeft },
+			// { key: 'overlay', name: __( 'Overlay' ), icon: icons.infoTopOverlay },
+			// { key: 'overlayleft', name: __( 'Overlay Left' ), icon: icons.infoLeftOverlay },
+		];
 		const tabControls = ( index ) => {
 			const isButtonSelected = ( isSelected && this.state.selectedButton === index );
 			return (
@@ -582,6 +590,30 @@ class KadenceAdvancedButton extends Component {
 					initialOpen={ false }
 					opened={ ( true === isButtonSelected ? true : undefined ) }
 				>
+					<Fragment>
+						<h2 className="side-h2-label">{ __( 'Button Inherit Styles', 'kadence-blocks' ) }</h2>
+						<ButtonGroup className="kt-style-btn-group kb-button-global-styles" aria-label={ __( 'Button Global Styles', 'kadence-blocks' ) }>
+							{ map( buttonStyleOptions, ( { name, key } ) => (
+								<Button
+									key={ key }
+									className="kt-style-btn"
+									isSmall
+									isPrimary={ ( undefined !== btns[ index ].inheritStyles && btns[ index ].inheritStyles === key ? true : false ) }
+									aria-pressed={ ( undefined !== btns[ index ].inheritStyles && btns[ index ].inheritStyles === key ? true : false ) }
+									onClick={ () => {
+										//this.saveArrayUpdate( { inheritStyles: key }, index );
+										if ( key === 'inherit' ) {
+											this.saveArrayUpdate( { color: '', background: '', backgroundType: 'solid', border: '', colorHover: '', backgroundHover: '', backgroundHoverType: 'solid', borderHover: '', inheritStyles: key }, index );
+										} else {
+											this.saveArrayUpdate( { inheritStyles: key }, index );
+										}
+									} }
+								>
+									{ name }
+								</Button>
+							) ) }
+						</ButtonGroup>
+					</Fragment>
 					<h2 className="side-h2-label">{ __( 'Button Link', 'kadence-blocks' ) }</h2>
 					<div className="kt-btn-link-group">
 						<URLInput
@@ -1111,8 +1143,8 @@ class KadenceAdvancedButton extends Component {
 						<div className="kt-inner-sub-section">
 							<AdvancedPopColorControl
 								label={ __( 'Background Color', 'kadence-blocks' ) }
-								colorValue={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '#444444' ) }
-								colorDefault={ '#444444' }
+								colorValue={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '' ) }
+								colorDefault={ '' }
 								opacityValue={ btns[ index ].backgroundHoverOpacity }
 								onColorChange={ value => {
 									this.saveArrayUpdate( { backgroundHover: value }, index );
@@ -1128,8 +1160,8 @@ class KadenceAdvancedButton extends Component {
 						<div className="kt-inner-sub-section">
 							<AdvancedPopColorControl
 								label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
-								colorValue={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '#444444' ) }
-								colorDefault={ '#444444' }
+								colorValue={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '' ) }
+								colorDefault={ '' }
 								opacityValue={ btns[ index ].backgroundHoverOpacity }
 								onColorChange={ value => {
 									this.saveArrayUpdate( { backgroundHover: value }, index );
@@ -1223,8 +1255,8 @@ class KadenceAdvancedButton extends Component {
 					) }
 					<AdvancedPopColorControl
 						label={ __( 'Hover Border Color', 'kadence-blocks' ) }
-						colorValue={ ( btns[ index ].borderHover ? btns[ index ].borderHover : '#444444' ) }
-						colorDefault={ '#444444' }
+						colorValue={ ( btns[ index ].borderHover ? btns[ index ].borderHover : '' ) }
+						colorDefault={ '' }
 						opacityValue={ btns[ index ].borderHoverOpacity }
 						onColorChange={ value => {
 							this.saveArrayUpdate( { borderHover: value }, index );
@@ -1279,7 +1311,7 @@ class KadenceAdvancedButton extends Component {
 					<AdvancedPopColorControl
 						label={ __( 'Text Color', 'kadence-blocks' ) }
 						colorValue={ btns[ index ].color }
-						colorDefault={ '#555555' }
+						colorDefault={ '' }
 						onColorChange={ value => {
 							this.saveArrayUpdate( { color: value }, index );
 						} }
@@ -1418,7 +1450,7 @@ class KadenceAdvancedButton extends Component {
 					<AdvancedPopColorControl
 						label={ __( 'Border Color', 'kadence-blocks' ) }
 						colorValue={ ( btns[ index ].border ? btns[ index ].border : '#555555' ) }
-						colorDefault={ '#555555' }
+						colorDefault={ '' }
 						opacityValue={ btns[ index ].borderOpacity }
 						onColorChange={ value => {
 							this.saveArrayUpdate( { border: value }, index );
@@ -1510,14 +1542,14 @@ class KadenceAdvancedButton extends Component {
 			}
 			return (
 				`#kt-btns_${ uniqueID } .kt-button-${ index }:hover {
-					color: ${ KadenceColorOutput( btns[ index ].colorHover ) } !important;
-					border-color: ${ KadenceColorOutput( ( undefined === btns[ index ].borderHover ? '#444444' : btns[ index ].borderHover ), ( btns[ index ].borderHoverOpacity !== undefined ? btns[ index ].borderHoverOpacity : 1 ) ) } !important;
-					box-shadow: ${ btnBox } !important;
+					${ ( btns[ index ].colorHover ? 'color:' + KadenceColorOutput( btns[ index ].colorHover ) + '!important;' : '' ) }
+					${ ( btns[ index ].borderHover || ( btns[ index ].borderHoverOpacity && 1 !== btns[ index ].borderHoverOpacity ) ? 'border-color:' + KadenceColorOutput( ( undefined === btns[ index ].borderHover ? '#444444' : btns[ index ].borderHover ), ( btns[ index ].borderHoverOpacity !== undefined ? btns[ index ].borderHoverOpacity : 1 ) ) + '!important;' : '' ) }
+					${ ( btnBox ? 'box-shadow:' + btnBox + '!important;' : '' ) }
 				}
 				#kt-btns_${ uniqueID } .kt-button-${ index }::before {
-					background: ${ btnbg };
-					box-shadow: ${ btnBox2 };
-					border-radius: ${ btnRad }px;
+					${ ( btnbg ? 'background:' + btnbg + ';' : '' ) }
+					${ ( btnBox2 ? 'box-shadow:' + btnBox2 + ';' : '' ) }
+					${ ( btnRad ? 'border-radius:' + btnRad + 'px;' : '' ) }
 				}`
 			);
 		};
@@ -1652,6 +1684,7 @@ class KadenceAdvancedButton extends Component {
 														download: false,
 														tabletGap: ( newbtns[ 0 ].tabletGap ? newbtns[ 0 ].tabletGap : '' ),
 														mobileGap: ( newbtns[ 0 ].mobileGap ? newbtns[ 0 ].mobileGap : '' ),
+														inheritStyles: ( newbtns[ 0 ].inheritStyles ? newbtns[ 0 ].inheritStyles : '' ),
 													} );
 													setAttributes( { btns: newbtns } );
 													this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );

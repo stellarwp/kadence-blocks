@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.6.0
-Stable tag: 1.9.13
+Stable tag: 1.9.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.9.14 =
+ * Update: Buttons, option to inherit theme styles.
+ * Update: Gallery Lightbox to lightweight non-jquery version.
+ * Update: Possible fix for Relevanssi save index issue.
+ * Update: WPML translation with tabs.
 
 = 1.9.13 =
  * Add: Form container Margin.

@@ -925,13 +925,13 @@ class Kadence_Blocks_Frontend {
 						wp_enqueue_script( 'kadence-blocks-masonry-init' );
 					}
 					if ( isset( $attributes['linkTo'] ) && 'media' == isset( $attributes['linkTo'] ) && isset( $attributes['lightbox'] ) && 'magnific' === $attributes['lightbox'] ) {
-						wp_enqueue_style( 'kadence-blocks-magnific-css' );
+						wp_enqueue_style( 'kadence-simplelightbox-css' );
 						if ( ! doing_filter( 'the_content' ) ) {
-							if ( ! wp_style_is( 'kadence-blocks-magnific-css', 'done' ) ) {
-								wp_print_styles( 'kadence-blocks-magnific-css' );
+							if ( ! wp_style_is( 'kadence-simplelightbox-css', 'done' ) ) {
+								wp_print_styles( 'kadence-simplelightbox-css' );
 							}
 						}
-						wp_enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+						wp_enqueue_script( 'kadence-blocks-simplelightbox-init' );
 					}
 				}
 				if ( ! doing_filter( 'the_content' ) ) {
@@ -998,6 +998,34 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
+	 * Checks if the current request is a WP REST API request.
+	 *
+	 * Case #1: After WP_REST_Request initialisation
+	 * Case #2: Support "plain" permalink settings
+	 * Case #3: It can happen that WP_Rewrite is not yet initialized,
+	 *          so do this (wp-settings.php)
+	 * Case #4: URL Path begins with wp-json/ (your REST prefix)
+	 *          Also supports WP installations in subfolders
+	 *
+	 * @returns boolean
+	 * @author matzeeable
+	 */
+	public function is_rest() {
+		$prefix = rest_get_url_prefix( );
+		if (defined('REST_REQUEST') && REST_REQUEST // (#1)
+				|| isset($_GET['rest_route']) // (#2)
+						&& strpos( trim( $_GET['rest_route'], '\\/' ), $prefix , 0 ) === 0)
+				return true;
+		// (#3)
+		global $wp_rewrite;
+		if ($wp_rewrite === null) $wp_rewrite = new WP_Rewrite();
+
+		// (#4)
+		$rest_url = wp_parse_url( trailingslashit( rest_url( ) ) );
+		$current_url = wp_parse_url( add_query_arg( array( ) ) );
+		return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+	}
+	/**
 	 *
 	 * Register and Enqueue block assets
 	 *
@@ -1015,7 +1043,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function register_scripts() {
 		// If in the backend, bail out.
-		if ( is_admin() ) {
+		if ( is_admin() || $this->is_rest() ) {
 			return;
 		}
 		// Lets register all the block styles.
@@ -1053,6 +1081,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'magnific-popup', KADENCE_BLOCKS_URL . 'dist/magnific.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-magnific-js', KADENCE_BLOCKS_URL . 'dist/kt-init-video-popup.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-gallery-magnific-init', KADENCE_BLOCKS_URL . 'dist/kb-gallery-magnific-init.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-simplelightbox-init', KADENCE_BLOCKS_URL . 'dist/kb-gallery-simple-init.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-accordion-js', KADENCE_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'dist/kt-tabs-min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'dist/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
@@ -3763,8 +3792,10 @@ class Kadence_Blocks_Frontend {
 				$this->enqueue_script( 'kadence-blocks-masonry-init' );
 			}
 			if ( isset( $attr['linkTo'] ) && 'media' === $attr['linkTo'] && isset( $attr['lightbox'] ) && ! empty( $attr['lightbox'] ) && 'magnific' === $attr['lightbox'] ) {
-				$this->enqueue_style( 'kadence-blocks-magnific-css' );
-				$this->enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+				// $this->enqueue_style( 'kadence-blocks-magnific-css' );
+				// $this->enqueue_script( 'kadence-blocks-gallery-magnific-init' );
+				$this->enqueue_style( 'kadence-simplelightbox-css' );
+				$this->enqueue_script( 'kadence-blocks-simplelightbox-init' );
 			}
 		}
 		if ( isset( $attr['captionStyles'] ) && is_array( $attr['captionStyles'] ) && isset( $attr['captionStyles'][0] ) && is_array( $attr['captionStyles'][0] ) && isset( $attr['captionStyles'][0]['google'] ) && $attr['captionStyles'][0]['google'] && ( ! isset( $attr['captionStyles'][0]['loadGoogle'] ) || true === $attr['captionStyles'][0]['loadGoogle'] ) && isset( $attr['captionStyles'][0]['family'] ) ) {
@@ -4837,7 +4868,9 @@ class Kadence_Blocks_Frontend {
 							$css  .= 'background:' . $this->kadence_color_output( $btnvalue['backgroundHover'], $alpha ) . ';';
 						} else {
 							$alpha = ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 );
-							$css  .= 'background:' . $this->hex2rgba( '#444444', $alpha ) . ';';
+							if ( ! isset( $btnvalue['inheritStyles'] ) || ( isset( $btnvalue['inheritStyles'] ) && 'inherit' !== $btnvalue['inheritStyles'] ) ) {
+								$css  .= 'background:' . $this->hex2rgba( '#444444', $alpha ) . ';';
+							}
 						}
 						if ( isset( $btnvalue['boxShadowHover'] ) && is_array( $btnvalue['boxShadowHover'] ) && isset( $btnvalue['boxShadowHover'][0] ) && true === $btnvalue['boxShadowHover'][0] && isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ) {
 							$css  .= 'box-shadow:' . ( isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadowHover'][3] ) && is_numeric( $btnvalue['boxShadowHover'][3] ) ? $btnvalue['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][4] ) && is_numeric( $btnvalue['boxShadowHover'][4] ) ? $btnvalue['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][5] ) && is_numeric( $btnvalue['boxShadowHover'][5] ) ? $btnvalue['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][6] ) && is_numeric( $btnvalue['boxShadowHover'][6] ) ? $btnvalue['boxShadowHover'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $btnvalue['boxShadowHover'][1] ) && ! empty( $btnvalue['boxShadowHover'][1] ) ? $btnvalue['boxShadowHover'][1] : '#000000' ), ( isset( $btnvalue['boxShadowHover'][2] ) && is_numeric( $btnvalue['boxShadowHover'][2] ) ? $btnvalue['boxShadowHover'][2] : 0.4 ) ) . ';';

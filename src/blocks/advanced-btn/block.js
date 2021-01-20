@@ -113,6 +113,7 @@ registerBlockType( 'kadence/advancedbtn', {
 				download: false,
 				tabletGap: '',
 				mobileGap: '',
+				inheritStyles: '',
 			} ],
 		},
 		letterSpacing: {
@@ -199,9 +200,21 @@ registerBlockType( 'kadence/advancedbtn', {
 			} else {
 				btnSize = 'standard';
 			}
+			let globalStyles;
+			if ( undefined !== btns[ index ].inheritStyles && '' !== btns[ index ].inheritStyles ) {
+				globalStyles = 'kb-btn-global-' + btns[ index ].inheritStyles;
+			} else {
+				globalStyles = '';
+			}
+			let themeStyles;
+			if ( undefined !== btns[ index ].inheritStyles && 'inherit' === btns[ index ].inheritStyles ) {
+				themeStyles = 'wp-block-button__link';
+			} else {
+				themeStyles = '';
+			}
 			return (
 				<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-					<a className={ `kt-button button kt-btn-${ index }-action kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) } kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) } kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( 'video' === btns[ index ].target ? ' ktblocksvideopop' : '' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }` } download={ ( undefined !== btns[ index ].download && true === btns[ index ].download ? '' : undefined ) } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
+					<a className={ `kt-button button kt-btn-${ index }-action kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) } kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) } kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) } kt-btn-has-text-${ ( ! btns[ index ].text ? 'false' : 'true' ) } kt-btn-has-svg-${ ( ! btns[ index ].icon ? 'false' : 'true' ) }${ ( 'video' === btns[ index ].target ? ' ktblocksvideopop' : '' ) }${ ( btns[ index ].cssClass ? ' ' + btns[ index ].cssClass : '' ) }${ ( globalStyles ? ' ' + globalStyles : '' ) }${ ( themeStyles ? ' ' + themeStyles : '' ) }` } download={ ( undefined !== btns[ index ].download && true === btns[ index ].download ? '' : undefined ) } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
 						borderRadius: ( undefined !== btns[ index ].borderRadius && '' !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
 						borderWidth: ( undefined !== btns[ index ].borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
 						letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),

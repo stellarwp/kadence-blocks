@@ -516,6 +516,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/dist/kb-gallery-simple-init.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/dist/kb-gallery-simple-init-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/dist/kb-init-html-bg-video.js": {
 		"bF": 0,
 		"ft": 64,
