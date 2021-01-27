@@ -311,6 +311,10 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'string',
 			default: 'heading',
 		},
+		loadItalic: {
+			type: 'boolean',
+			default: false,
+		},
 	},
 	transforms: {
 		from: [

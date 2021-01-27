@@ -4684,6 +4684,14 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
+			if ( isset( $attr['loadItalic'] ) && true == $attr['loadItalic'] ) {
+				if ( isset( $attr['fontVariant'] ) && strpos( $attr['fontVariant'], 'italic' ) === false ) {
+					$italicVersion = ( $attr['fontVariant'] === 'regular' ? 'italic' : $attr['fontVariant'] . 'italic' );
+					if ( ! in_array( $italicVersion, self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
+						array_push( self::$gfonts[ $attr['typography'] ]['fontvariants'], $italicVersion );
+					}
+				}
+			}
 		}
 		if ( isset( $attr['markGoogleFont'] ) && $attr['markGoogleFont'] && ( ! isset( $attr['markLoadGoogleFont'] ) || true == $attr['markLoadGoogleFont'] ) && isset( $attr['markTypography'] ) ) {
 			// Check if the font has been added yet.
@@ -4785,7 +4793,7 @@ class Kadence_Blocks_Frontend {
 					} else {
 						$bgtype = 'solid';
 					}
-					$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+					$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
 					if ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][0] ) && ! empty( $btnvalue['width'][0] ) ) {
 						$css .= 'width:' . $btnvalue['width'][0] . 'px;';
 					}
@@ -4827,7 +4835,7 @@ class Kadence_Blocks_Frontend {
 						$css  .= 'box-shadow:' . ( isset( $btnvalue['boxShadow'][7] ) && true === $btnvalue['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadow'][3] ) && is_numeric( $btnvalue['boxShadow'][3] ) ? $btnvalue['boxShadow'][3] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][4] ) && is_numeric( $btnvalue['boxShadow'][4] ) ? $btnvalue['boxShadow'][4] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][5] ) && is_numeric( $btnvalue['boxShadow'][5] ) ? $btnvalue['boxShadow'][5] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadow'][6] ) && is_numeric( $btnvalue['boxShadow'][6] ) ? $btnvalue['boxShadow'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $btnvalue['boxShadow'][1] ) && ! empty( $btnvalue['boxShadow'][1] ) ? $btnvalue['boxShadow'][1] : '#000000' ), ( isset( $btnvalue['boxShadow'][2] ) && is_numeric( $btnvalue['boxShadow'][2] ) ? $btnvalue['boxShadow'][2] : 0.2 ) ) . ';';
 					}
 					$css .= '}';
-					$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus {';
+					$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus {';
 					if ( isset( $btnvalue['colorHover'] ) && ! empty( $btnvalue['colorHover'] ) ) {
 						$css .= 'color:' . $this->kadence_color_output( $btnvalue['colorHover'] ) . ';';
 					}
@@ -4840,7 +4848,7 @@ class Kadence_Blocks_Frontend {
 					}
 					$css .= '}';
 					if ( 'gradient' === $bgtype ) {
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before {';
+						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before {';
 						if ( isset( $btnvalue['backgroundHoverType'] ) && 'gradient' === $btnvalue['backgroundHoverType'] ) {
 							$bg1 = ( ! isset( $btnvalue['backgroundHover'] ) ? $this->hex2rgba( '#444444', ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 ) ) : $this->kadence_color_output( $btnvalue['backgroundHover'], ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 ) ) );
 							$bg2 = ( isset( $btnvalue['gradientHover'][0] ) && ! empty( $btnvalue['gradientHover'][0] ) ? $this->kadence_color_output( $btnvalue['gradientHover'][0], ( isset( $btnvalue['gradientHover'][1] ) && is_numeric( $btnvalue['gradientHover'][1] ) ? $btnvalue['gradientHover'][1] : 1 ) ) : $this->hex2rgba( '#999999', ( isset( $btnvalue['gradientHover'][1] ) && is_numeric( $btnvalue['gradientHover'][1] ) ? $btnvalue['gradientHover'][1] : 1 ) ) );
@@ -4859,10 +4867,10 @@ class Kadence_Blocks_Frontend {
 						}
 						$css .= '}';
 					} else {
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before {';
+						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before {';
 						$css .= 'display:none;';
 						$css .= '}';
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus {';
+						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus {';
 						if ( isset( $btnvalue['backgroundHover'] ) && ! empty( $btnvalue['backgroundHover'] ) ) {
 							$alpha = ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 );
 							$css  .= 'background:' . $this->kadence_color_output( $btnvalue['backgroundHover'], $alpha ) . ';';
@@ -4887,7 +4895,7 @@ class Kadence_Blocks_Frontend {
 					}
 					if ( ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][0] ) && is_numeric( $btnvalue['responsiveSize'][0] ) ) || ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][1] ) && ! empty( $btnvalue['width'][1] ) ) ) {
 						$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
 						if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][0] ) && is_numeric( $btnvalue['responsiveSize'][0] ) ) {
 							$css .= 'font-size:' . $btnvalue['responsiveSize'][0] . 'px;';
 						}
@@ -4899,7 +4907,7 @@ class Kadence_Blocks_Frontend {
 					}
 					if ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][0] ) && is_numeric( $btnvalue['responsivePaddingBT'][0] ) ) || ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) ) ) {
 						$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) {
 							$css .= 'padding-left:' . $btnvalue['responsivePaddingLR'][0] . 'px;';
 							$css .= 'padding-right:' . $btnvalue['responsivePaddingLR'][0] . 'px;';
@@ -4921,7 +4929,7 @@ class Kadence_Blocks_Frontend {
 					}
 					if ( ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][1] ) && is_numeric( $btnvalue['responsiveSize'][1] ) ) || ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][2] ) && ! empty( $btnvalue['width'][2] ) ) ) {
 						$css .= '@media (max-width: 767px) {';
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
 						if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][1] ) && is_numeric( $btnvalue['responsiveSize'][1] ) ) {
 							$css .= 'font-size:' . $btnvalue['responsiveSize'][1] . 'px;';
 						}
@@ -4933,7 +4941,7 @@ class Kadence_Blocks_Frontend {
 					}
 					if ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) || ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) ) ) {
 						$css .= '@media (max-width: 767px) {';
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) {
 							$css .= 'padding-left:' . $btnvalue['responsivePaddingLR'][1] . 'px;';
 							$css .= 'padding-right:' . $btnvalue['responsivePaddingLR'][1] . 'px;';

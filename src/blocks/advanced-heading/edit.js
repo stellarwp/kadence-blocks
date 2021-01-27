@@ -163,7 +163,7 @@ class KadenceAdvancedHeading extends Component {
 	}
 	render() {
 		const { attributes, className, setAttributes, mergeBlocks, onReplace } = this.props;
-		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding } = attributes;
+		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic } = attributes;
 		const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -500,6 +500,8 @@ class KadenceAdvancedHeading extends Component {
 									onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
 									textTransform={ textTransform }
 									onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
+									loadItalic={ loadItalic }
+									onLoadItalic={ ( value ) => setAttributes( { loadItalic: value } ) }
 								/>
 							</PanelBody>
 						) }

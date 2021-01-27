@@ -24,7 +24,6 @@
 					var filter = foundGalleries[ i ].getAttribute( 'data-image-filter' );
 					var foundGalleryClass = false;
 					for ( let n = 0; n < galleryClass.length; n++ ) {
-						console.log( galleryClass[ n ] );
 						if ( galleryClass[ n ].indexOf( 'kb-gallery-id' ) !== -1 ) {
 							foundGalleryClass = galleryClass[ n ];
 							break;

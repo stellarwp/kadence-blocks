@@ -203,6 +203,8 @@ class TypographyControls extends Component {
 			onPaddingControl,
 			onMargin,
 			onMarginControl,
+			loadItalic,
+			onLoadItalic,
 			textTransform,
 			onTextTransform } = this.props;
 		const { controlSize, typographySelectOptions, typographyOptions, typographySubsets, typographyStyles, typographyWeights, fontFamilyValue } = this.state;
@@ -612,6 +614,13 @@ class TypographyControls extends Component {
 								label={ __( 'Load Google Font on Frontend', 'kadence-blocks' ) }
 								checked={ loadGoogleFont }
 								onChange={ onLoadGoogleFont }
+							/>
+						) }
+						{ fontFamily && googleFont && loadGoogleFont && onFontStyle && 'normal' === fontStyle && onLoadItalic && undefined !== typographyStyles[ 1 ] && undefined !== typographyStyles[ 1 ].value && 'italic' === typographyStyles[ 1 ].value && (
+							<ToggleControl
+								label={ __( 'Load Italic Styles Also', 'kadence-blocks' ) }
+								checked={ loadItalic }
+								onChange={ onLoadItalic }
 							/>
 						) }
 					</Fragment>

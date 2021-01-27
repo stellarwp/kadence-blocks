@@ -526,6 +526,14 @@
                 flex: 0 0 100% !important;
             }
 		}
+		&.kt-gutter-none {
+			> .wp-block-kadence-column.inner-column-2 {
+				margin-right: 1px;
+			}
+			> .wp-block-kadence-column.inner-column-3 {
+				margin-left: -1px;
+			}
+		}
 		&.kt-v-gutter-default > .wp-block-kadence-column.inner-column-1 {
 			margin-bottom: 30px;
 		}
