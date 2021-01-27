@@ -52,7 +52,7 @@ class KadenceAdvancedGalleryDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/advancedgallery' ] ) {
+		if ( config[ 'kadence/advancedgallery' ] === undefined || config[ 'kadence/advancedgallery' ].length == 0 ) {
 			config[ 'kadence/advancedgallery' ] = {};
 		}
 		config[ 'kadence/advancedgallery' ][ key ] = value;

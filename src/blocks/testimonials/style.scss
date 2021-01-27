@@ -21,6 +21,12 @@
 		padding: 0 15px;
 	}
 }
+.kt-blocks-carousel-init:not(.slick-initialized) .kt-blocks-testimonial-carousel-item {
+    display: none;
+}
+.kt-blocks-carousel-init:not(.slick-initialized) .kt-blocks-testimonial-carousel-item:first-child {
+    display: block;
+}
 .kt-testimonial-grid-wrap {
 	display: -ms-grid;
 	display: grid;
@@ -404,6 +410,16 @@
 .kt-testimonial-occupation a {
 	color: inherit;
 	text-decoration: underline;
+}
+.kt-testimonial-item-wrap.testimonial-valign-middle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.kt-testimonial-item-wrap.testimonial-valign-bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
 }
 .rtl {
 	.kt-testimonial-media-inner-wrap {

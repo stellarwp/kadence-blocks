@@ -200,13 +200,13 @@ class AdvancedPopColorControl extends Component {
 			</div>
 		);
 	}
-	unConvertOpactiy = ( value ) => {
+	unConvertOpactiy( value ) {
 		let val = 100;
 		if ( value ) {
 			val = value * 100;
 		}
 		return val;
-	};
+	}
 	onChangeState( color, palette ) {
 		let opacity = 1;
 		let newColor;

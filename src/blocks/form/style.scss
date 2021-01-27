@@ -169,9 +169,9 @@
 			text-shadow:none;
 			border-width:0px;
 			border-radius: 3px;
-			border-color:#1768ea;
-			background:#1768ea;
-			color:#ffffff;
+			border-color:var( --global-palette-btn-bg, #1768ea );
+			background:var( --global-palette-btn-bg, #1768ea );
+			color: var( --global-palette-btn, #ffffff);
 			display: flex;
 			text-align: center;
 			justify-content: center;
@@ -188,6 +188,11 @@
 			}
 			&.kb-button-width-full {
 				width: 100%;
+			}
+			&:hover {
+				border-color:var( --global-palette-btn-bg-hover, #1768ea );
+				color: var(--global-palette-btn-hover, #ffffff );
+				background: var(--global-palette-btn-bg-hover, #1768ea );
 			}
 		}
 		.kb-forms-submit::before {

@@ -7,7 +7,6 @@
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**
@@ -26,7 +25,7 @@ import IconControl from '../../icon-control';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import KadenceColorOutput from '../../kadence-color-output';
-import KadenceRange from '../../kadence-range-control';
+import KadenceRange from '../../components/range/range-control';
 /**
  * Internal block libraries
  */
@@ -53,7 +52,6 @@ const {
 	Dashicon,
 	PanelBody,
 	Toolbar,
-	ColorPicker,
 	TextControl,
 	ToggleControl,
 	SelectControl,

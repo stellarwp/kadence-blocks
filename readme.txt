@@ -2,9 +2,9 @@
 Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.2
-Tested up to: 5.5.3
-Stable tag: 1.9.3
+Requires at least: 5.5
+Tested up to: 5.6.0
+Stable tag: 1.9.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,10 +87,76 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 1.9.3 =
-** Fix: Issue with row layout gutter in some situations.
-** Update font list to use muli.
+= 1.9.15 =
+ * Update: Add option to load italic font if google font selected.
+ * Update: Add JetBrains Mono, Big Shoulders, Public Sans, Bebas Neue and Inter google fonts.
+ * Fix: Button CSS issue.
+
+= 1.9.14 =
+ * Update: Buttons, option to inherit theme styles.
+ * Update: Gallery Lightbox to lightweight non-jquery version.
+ * Update: Possible fix for Relevanssi save index issue.
+ * Update: WPML translation with tabs.
+
+= 1.9.13 =
+ * Add: Form container Margin.
+ * Add: Form subscribe to fluent CRM
+
+= 1.9.12 =
+ * Fix: Possible issue with heading block showing broken.
+
+= 1.9.11 =
+ * Fix: Possible issue with testimonial carousel.
+ * Fix: Possible issue heading block showing broken.
+
+= 1.9.10 =
+ * Add: Responsive Controls with Preview to Heading Block.
+ * Add: Responsive Border width controls to Columns Block.
+ * Add: Reset options for Block Defaults.
+ * Add: Min height options for testimonials.
+ * Fix: Issue with z-index controls with columns block.
+ * Fix: RTL language issue with list icon block.
+ * Fix: Issue with tab font size.
+ * Fix: Issue with testimonial carousel.
+
+= 1.9.9 =
+* Update: Measure Settings Control.
+* Fix: Possible issue with gallery carousel overflow.
+* Fix: Possible issue with defaults.
+* Fix: RTL Collapse grid gutter.
+* Fix: RTL Column select.
+* Fix: Accordion Mobile Font size.
+
+= 1.9.8 =
+* Update: Admin Styling for WP 5.6
+* Fix: Advanced header link option not showing.
+
+= 1.9.7 =
+* Fix: Possible update issue.
+
+= 1.9.6 =
+* Add: MailerLite option to Kadence Blocks.
+* Update: Initial Update to Blocks settings page.
+* Update: Initial Update to use WPScripts.
+* Fix: Issue with dashes in table to contents when building links.
+* Fix: Issue with Column Margin/Padding controls.
+* Fix: Issue with Button Text Size Input.
+* Fix: Issue with accordions pane link with multiple accordions on the page.
+* Fix: Issue with border radius 0 for testimonial block.
+
+= 1.9.5 =
+* Fix: Issue with rendering when previously had selected muli font.
+
+= 1.9.4 =
+* Update font list, change muli to mulish.
+* Update: Better column Padding/Margin Controls.
+* Fix: Anchor Header issue.
 * Update: Better inheriting of font options from global settings in Kadence Theme.
+* Fix: Gallery Captions Tablet and Mobile sizes.
+* Fix: issue with TOC in certain contexts.
+* Fix: RTL issue in editor.
+* Update: Show Error Message Below submit for validation errors.
+* Add: Error Message to issue with recaptcha v3 failing on second post without reloading the page.
 
 = 1.9.3 =
 * Add: Polyfill for Safari Scroll to ID.

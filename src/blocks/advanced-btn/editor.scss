@@ -4,6 +4,30 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .components-button-group.kb-button-global-styles.kt-style-btn-group {
+    width: 100%;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.components-button-group.kb-button-global-styles.kt-style-btn-group button.components-button.kt-style-btn {
+    border: 2px solid #eeeeee;
+    color: #555;
+    width: auto;
+    text-align: center;
+    justify-content: center;
+    border-radius: 3px;
+}
+.components-button-group.kb-button-global-styles.kt-style-btn-group button.components-button.kt-style-btn:hover {
+    border: 2px solid #ddd;
+    color: #555;
+}
+.components-button-group.kb-button-global-styles.kt-style-btn-group button.components-button.kt-style-btn.is-primary {
+    border: 2px solid #777;
+    color: #333;
+}
  .wp-block-kadence-advancedbtn {
 	.btn-area-wrap {
 		padding-top: 14px;
@@ -50,6 +74,11 @@
         height: 20px;
         svg {
             width: 14px;
+        }
+        .dashicon {
+            width: 14px;
+            height: 14px;
+            font-size: 14px;
         }
 	}
 	&.kadence-blocks-button-item__inline-menu {
@@ -176,6 +205,11 @@
 .kt-advanced-color-settings-container .components-color-palette__clear svg {
 	width:16px;
 }
+.kt-advanced-color-settings-container .components-color-palette__clear span.dashicon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
 .kt-advanced-color-settings-container .components-color-palette__clear {
     background: transparent;
     padding: 4px;
@@ -214,7 +248,7 @@
     flex-grow: 1;
     font-weight: 400;
 }
-.kt-link-settings {
+.kt-btn-link-group .kt-link-settings {
     border: 1px solid #8d96a0;
     margin: 2px 0;
     height: 30px;
@@ -246,12 +280,15 @@
 	align-items: center;
 	margin: 20px 0;
 }
-.kt-link-settings .dashicon {
+.kt-btn-link-group .kt-link-settings .dashicon {
     width: 16px;
+    font-size: 16px;
     height: 16px;
 }
 .kt-button-size-type-options .dashicon {
-	width:14px;
+    width: 14px;
+    height: 14px;
+    font-size: 14px;
 }
  // Controls
 .components-base-control__field .components-range-control__slider+.dashicon.dashicons-editor-textcolor {
@@ -355,6 +392,15 @@
 }
 .kt-button {
 	z-index: 1;
+    position: relative;
+    overflow: hidden;
+    border-width: 0;
+}
+.editor-styles-wrapper .btn-area-wrap .kt-button {
+    border-style: solid;
+}
+.kt-button:not(.kb-btn-global-inherit) {
+	z-index: 1;
 	position: relative;
     padding: 8px 16px;
     cursor: pointer;
@@ -367,8 +413,6 @@
 	display: flex;
 	text-align: center;
 	justify-content: center;
-	border-style: solid;
-	overflow: hidden;
     transition: all .3s ease-in-out;
 }
 .kt-button::before {
@@ -380,14 +424,17 @@
 	left: 0;
 	z-index: -1;
 	opacity: 0;
-	background:#444444;
+	background:transparent;
 	transition: all .3s ease-in-out;
 }
-.wp-block-kadence-advancedbtn .kt-button:hover {
+.kt-button:not(.kb-btn-global-inherit)::before {
+    background:#444444;
+}
+.wp-block-kadence-advancedbtn .kt-button:not(.kb-btn-global-inherit):hover {
 	border-color:#444444;
     color:#ffffff;
 }
-.editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button:hover {
+.editor-styles-wrapper .wp-block-kadence-advancedbtn .kt-button:not(.kb-btn-global-inherit):hover {
     box-shadow: none;
 }
 .kt-button:hover::before {

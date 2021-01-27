@@ -34,6 +34,14 @@
 		margin-bottom: 0;
 	}
 }
+.rtl .wp-block-kadence-iconlist ul.kt-svg-icon-list {
+	.kt-svg-icon-list-item-wrap {
+		.kt-svg-icon-list-single {
+			margin-left: 10px;
+			margin-right:0;
+		}
+	}
+}
 .wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {
 	align-items: flex-start;
 }

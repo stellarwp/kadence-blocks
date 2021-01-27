@@ -279,6 +279,22 @@ const attributes = {
 			vOffset: 2,
 		} ],
 	},
+	containerMinHeight: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
+	containerVAlign: {
+		type: 'string',
+		default: '',
+	},
+	titleMinHeight: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
+	contentMinHeight: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
 	showPresets: {
 		type: 'bool',
 		default: true,

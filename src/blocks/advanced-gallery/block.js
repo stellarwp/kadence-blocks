@@ -12,11 +12,6 @@ import icons from '../../icons';
  */
 import edit from './edit';
 import classnames from 'classnames';
-/**
- * Import Css
- */
-import './style.scss';
-import './editor.scss';
 
 /**
  * Internal block libraries

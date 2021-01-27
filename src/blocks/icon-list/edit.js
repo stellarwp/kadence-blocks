@@ -24,7 +24,6 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**
@@ -177,7 +176,7 @@ class KadenceIconLists extends Component {
 		}
 		return false;
 	}
-	saveListItem = ( value, thisIndex ) => {
+	saveListItem( value, thisIndex ) {
 		const currentItems = this.props.attributes.items;
 		const newUpdate = currentItems.map( ( item, index ) => {
 			if ( index === thisIndex ) {
@@ -188,7 +187,7 @@ class KadenceIconLists extends Component {
 		this.props.setAttributes( {
 			items: newUpdate,
 		} );
-	};
+	}
 	render() {
 		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign }, className, setAttributes, isSelected } = this.props;
 		const { marginControl } = this.state;
@@ -805,7 +804,8 @@ class KadenceIconLists extends Component {
 				) }
 				<style>
 					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap:not(:last-child) { margin-bottom: ${ listGap }px; }` }
-					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-right: ${ listLabelGap }px; }` }
+					{ `body:not(.rtl) .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-right: ${ listLabelGap }px; }` }
+					{ `body.rtl .kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-single { margin-left: ${ listLabelGap }px; }` }
 					{ `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-wrap {
 							font-weight: ${ ( listStyles[ 0 ].weight ? listStyles[ 0 ].weight : '' ) };
 							font-style: ${ ( listStyles[ 0 ].style ? listStyles[ 0 ].style : '' ) };

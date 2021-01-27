@@ -13,8 +13,8 @@ import classnames from 'classnames';
 /**
  * Import Css
  */
-import './style.scss';
-import './editor.scss';
+// import './style.scss';
+// import './editor.scss';
 import edit from './edit';
 import backwardCompatibility from './deprecated';
 import KadenceColorOutput from '../../kadence-color-output';
@@ -45,6 +45,7 @@ const {
  */
 registerBlockType( 'kadence/advancedheading', {
 	title: __( 'Advanced Heading' ),
+	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
 	icon: {
 		src: icons.block,
 	},
@@ -143,9 +144,49 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'number',
 			default: '',
 		},
+		leftMargin: {
+			type: 'number',
+			default: '',
+		},
+		rightMargin: {
+			type: 'number',
+			default: '',
+		},
 		marginType: {
 			type: 'string',
 			default: 'px',
+		},
+		tabletMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		mobileMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		tabletMarginType: {
+			type: 'string',
+			default: 'px',
+		},
+		mobileMarginType: {
+			type: 'string',
+			default: 'px',
+		},
+		paddingType: {
+			type: 'string',
+			default: 'px',
+		},
+		padding: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		tabletPadding: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		mobilePadding: {
+			type: 'array',
+			default: [ '', '', '', '' ],
 		},
 		markSize: {
 			type: 'array',
@@ -209,6 +250,14 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'array',
 			default: [ 0, 0, 0, 0 ],
 		},
+		markTabPadding: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		markMobilePadding: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
 		markPaddingControl: {
 			type: 'string',
 			default: 'linked',
@@ -262,6 +311,10 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'string',
 			default: 'heading',
 		},
+		loadItalic: {
+			type: 'boolean',
+			default: false,
+		},
 	},
 	transforms: {
 		from: [
@@ -309,16 +362,12 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { anchor, align, level, content, color, colorClass, textShadow, uniqueID, letterSpacing, topMargin, bottomMargin, marginType, className, kadenceAnimation, kadenceAOSOptions, htmlTag } } = props;
-		//const tagName = 'h' + level;
+		const { attributes: { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag } } = props;
 		const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
-		const textColorClass = getColorClassName( 'color', colorClass );
 		const mType = ( marginType ? marginType : 'px' );
-		let tagId = ( anchor ? anchor : `kt-adv-heading${ uniqueID }` );
+		const textColorClass = getColorClassName( 'color', colorClass );
 		const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
-		const wrapper = ( anchor || revealAnimation ? true : false );
-		tagId = ( revealAnimation && ! anchor ? `kt-adv-inner-heading${ uniqueID }` : tagId );
-		//const classes = ( ! wrapper && className ? `${ className } ${ getBlockDefaultClassName( 'kadence/advancedheading' ) }` : getBlockDefaultClassName( 'kadence/advancedheading' ) );
+		const wrapper = ( revealAnimation ? true : false );
 		const classes = classnames( {
 			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
 			[ className ]: ! wrapper && className,
@@ -328,29 +377,22 @@ registerBlockType( 'kadence/advancedheading', {
 		const htmlItem = (
 			<RichText.Content
 				tagName={ tagName }
-				id={ tagId }
+				id={ anchor ? anchor : undefined }
 				className={ classes }
+				data-kb-block={ `kb-adv-heading${ uniqueID }` }
 				data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) }
 				data-aos-offset={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].offset ? kadenceAOSOptions[ 0 ].offset : undefined ) }
 				data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
 				data-aos-delay={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].delay ? kadenceAOSOptions[ 0 ].delay : undefined ) }
 				data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
 				data-aos-once={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && undefined !== kadenceAOSOptions[ 0 ].once && '' !== kadenceAOSOptions[ 0 ].once ? kadenceAOSOptions[ 0 ].once : undefined ) }
-				style={ {
-					textAlign: align,
-					color: ! textColorClass && color ? KadenceColorOutput( color ) : undefined,
-					letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
-					marginTop: ( undefined !== topMargin && '' !== topMargin ? topMargin + mType : undefined ),
-					marginBottom: ( undefined !== bottomMargin && '' !== bottomMargin ? bottomMargin + mType : undefined ),
-					textShadow: ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
-				} }
 				value={ content }
 			/>
 		);
 		return (
 			<Fragment>
 				{ wrapper && (
-					<div id={ `kt-adv-heading${ uniqueID }` } className={ `kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
+					<div className={ `kb-adv-heading-wrap${ uniqueID } kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
 						{ htmlItem }
 					</div>
 				) }

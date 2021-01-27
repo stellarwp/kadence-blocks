@@ -184,7 +184,7 @@ class KadenceTestimonialDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/testimonials' ] ) {
+		if ( config[ 'kadence/testimonials' ] === undefined || config[ 'kadence/testimonials' ].length == 0 ) {
 			config[ 'kadence/testimonials' ] = {};
 		}
 		config[ 'kadence/testimonials' ][ key ] = value;

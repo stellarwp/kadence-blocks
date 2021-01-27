@@ -862,7 +862,8 @@ return KadenceAccordion;
 })));
 
 (function() {
-	'use strict';
+  'use strict';
+  var hasInitializedKadenceAccordion = false;
 	window.KadenceBlocksAccordion = {
     /**
 		 * Initiate anchor scroll.
@@ -889,6 +890,10 @@ return KadenceAccordion;
         if ( ! ( /^[A-z0-9_-]+$/.test( id ) ) ) {
           return;
         }
+        if ( e.type && e.type === 'initialized' && hasInitializedKadenceAccordion ) {
+          return;
+        }
+        hasInitializedKadenceAccordion = true;
         element = document.getElementById( id );
         if ( element ) {
           if ( element.classList.contains('wp-block-kadence-pane') ) {

@@ -52,16 +52,12 @@ class Kadence_Blocks_CSS {
 	 * @var array
 	 */
 	private $_special_properties_list = array(
-		'border-top-left-radius',
-		'border-top-right-radius',
-		'border-bottom-left-radius',
-		'border-bottom-right-radius',
 		'transition',
 		'transition-delay',
 		'transition-duration',
 		'transition-property',
 		'transition-timing-function',
-		'background-image',
+		'flex',
 		'content',
 	);
 
@@ -233,15 +229,19 @@ class Kadence_Blocks_CSS {
 				break;
 			case 'background-image':
 				$this->add_rule( $property, sprintf( "url('%s')", $value ) );
-				break;
+			break;
 			case 'content':
 				$this->add_rule( $property, sprintf( '%s', $value ) );
-				break;
+			break;
+			case 'flex':
+				$this->add_rule( $property, $value );
+				$this->add_rule( $property, $value, '-webkit-' );
+			break;
 			default:
 				$this->add_rule( $property, $value );
 				$this->add_rule( $property, $value, '-webkit-' );
 				$this->add_rule( $property, $value, '-moz-' );
-				break;
+			break;
 		}
 
 		return $this;

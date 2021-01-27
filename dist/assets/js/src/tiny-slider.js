@@ -292,6 +292,19 @@ var tns = (function (){
 		}
 	  }
 	}
+	function setInnerAttrs(els, attrs) {
+		els = (isNodeList(els) || els instanceof Array) ? els : [els];
+		if (Object.prototype.toString.call(attrs) !== '[object Object]') { return; }
+		for (var i = els.length; i--;) {
+			var childs = els[i].getElementsByTagName('a');
+			console.log(childs );
+			for (var n = childs.length; n--;) {
+				for(var key in attrs) {
+					childs[n].setAttribute(key, attrs[key]);
+				}
+			}
+		}
+	}
 	
 	function removeAttrs(els, attrs) {
 	  els = (isNodeList(els) || els instanceof Array) ? els : [els];
@@ -304,6 +317,20 @@ var tns = (function (){
 		}
 	  }
 	}
+	function removeInnerAttrs(els, attrs) {
+		els = (isNodeList(els) || els instanceof Array) ? els : [els];
+		attrs = (attrs instanceof Array) ? attrs : [attrs];
+	  
+		var attrLength = attrs.length;
+		for (var i = els.length; i--;) {
+			var childs = els[i].getElementsByTagName('a');
+			for (var n = childs.length; n--;) {
+				for (var j = attrLength; j--;) {
+					childs[n].removeAttribute(attrs[j]);
+				}
+			}
+		}
+	  }
 	
 	function arrayFromNodeList (nl) {
 	  var arr = [];
@@ -465,19 +492,6 @@ var tns = (function (){
 	  }
 	}
 	
-	// Object.keys
-	if (!Object.keys) {
-	  Object.keys = function(object) {
-		var keys = [];
-		for (var name in object) {
-		  if (Object.prototype.hasOwnProperty.call(object, name)) {
-			keys.push(name);
-		  }
-		}
-		return keys;
-	  };
-	}
-	
 	// ChildNode.remove
 	if(!("remove" in Element.prototype)){
 	  Element.prototype.remove = function(){
@@ -539,7 +553,8 @@ var tns = (function (){
 		preventScrollOnTouch: false,
 		freezable: true,
 		onInit: false,
-		useLocalStorage: true
+		useLocalStorage: true,
+		textDirection: 'ltr'
 	  }, options || {});
 	
 	  var doc = document,
@@ -708,6 +723,7 @@ var tns = (function (){
 		  autoHeight = getOption('autoHeight'),
 		  controls = getOption('controls'),
 		  controlsText = getOption('controlsText'),
+		  textDirection = getOption('textDirection'),
 		  nav = getOption('nav'),
 		  touch = getOption('touch'),
 		  mouseDrag = getOption('mouseDrag'),
@@ -1156,6 +1172,9 @@ var tns = (function (){
 			'aria-hidden': 'true',
 			'tabindex': '-1'
 		  });
+		  setInnerAttrs( item, {
+			'tabindex': '-1'
+		  } );
 		});
 	
 		// ## clone slides
@@ -2362,6 +2381,7 @@ var tns = (function (){
 			if (hasAttr(item, 'aria-hidden')) {
 			  removeAttrs(item, ['aria-hidden', 'tabindex']);
 			  addClass(item, slideActiveClass);
+			  removeInnerAttrs( item, ['tabindex'] );
 			}
 		  // hide slides
 		  } else {
@@ -2370,6 +2390,9 @@ var tns = (function (){
 				'aria-hidden': 'true',
 				'tabindex': '-1'
 			  });
+			  setInnerAttrs( item, {
+				'tabindex': '-1'
+			  } );
 			  removeClass(item, slideActiveClass);
 			}
 		  }
@@ -2422,10 +2445,14 @@ var tns = (function (){
 			  'tabindex': '-1',
 			  'aria-label': navStr + (navCurrentIndexCached + 1)
 			});
+			setInnerAttrs(navPrev, {
+			'tabindex': '-1',
+			});
 			removeClass(navPrev, navActiveClass);
 	
 			setAttrs(navCurrent, {'aria-label': navStr + (navCurrentIndex + 1) + navStrCurrent});
 			removeAttrs(navCurrent, 'tabindex');
+			removeInnerAttrs(navCurrent, 'tabindex');
 			addClass(navCurrent, navActiveClass);
 	
 			navCurrentIndexCached = navCurrentIndex;
@@ -2541,6 +2568,9 @@ var tns = (function (){
 	
 	  function doContainerTransform (val) {
 		if (val == null) { val = getContainerTransformValue(); }
+		if (textDirection === 'rtl' && val.charAt(0) === '-') {
+			val = val.substr(1)
+		}
 		container.style[transformAttr] = transformPrefix + val + transformPostfix;
 	  }
 	
@@ -3071,6 +3101,11 @@ var tns = (function (){
 				  var indexMoved = - dist * items / (viewport + gutter);
 				  indexMoved = dist > 0 ? Math.floor(indexMoved) : Math.ceil(indexMoved);
 				  index += indexMoved;
+				  if (textDirection === 'rtl') { 
+					index += indexMoved * -1;
+				  } else {
+					index += indexMoved;
+				  }
 				} else {
 				  var moved = - (translateInit + dist);
 				  if (moved <= 0) {

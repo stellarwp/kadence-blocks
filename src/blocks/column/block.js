@@ -34,7 +34,8 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/column', {
-	title: __( 'Column' ),
+	title: __( 'Section', 'kadence-blocks' ),
+	description: __( 'An inner section of content.', 'kadence-blocks' ),
 	icon: icons.blockColumn,
 	category: 'kadence-blocks',
 	parent: [ 'kadence/rowlayout' ],
@@ -130,6 +131,14 @@ registerBlockType( 'kadence/column', {
 		borderWidth: {
 			type: 'array',
 			default: [ 0, 0, 0, 0 ],
+		},
+		tabletBorderWidth: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		mobileBorderWidth: {
+			type: 'array',
+			default: [ '', '', '', '' ],
 		},
 		borderRadius: {
 			type: 'array',
@@ -232,6 +241,14 @@ registerBlockType( 'kadence/column', {
 		vsmobile: {
 			type: 'bool',
 			default: false,
+		},
+		paddingType: {
+			type: 'string',
+			default: 'px',
+		},
+		marginType: {
+			type: 'string',
+			default: 'px',
 		},
 	},
 	supports: {

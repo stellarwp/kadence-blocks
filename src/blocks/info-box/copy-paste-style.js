@@ -149,6 +149,22 @@ class InfoBoxStyleCopyPaste extends Component {
 					}
 				}
 			}
+			if ( blockAttributes.textSpacing ) {
+				if ( blockAttributes.textSpacing[ 0 ] && blockAttributes.textSpacing[ 0 ].padding ) {
+					copyStyles.textSpacing = [ {
+						padding: blockAttributes.textSpacing[ 0 ].padding,
+					} ];
+					if ( blockAttributes.textSpacing[ 0 ].paddingControl ) {
+						copyStyles.textSpacing[ 0 ].paddingControl = blockAttributes.textSpacing[ 0 ].paddingControl;
+					}
+					if ( blockAttributes.textSpacing[ 0 ].margin ) {
+						copyStyles.textSpacing[ 0 ].margin = blockAttributes.textSpacing[ 0 ].margin;
+					}
+					if ( blockAttributes.textSpacing[ 0 ].marginControl ) {
+						copyStyles.textSpacing[ 0 ].marginControl = blockAttributes.textSpacing[ 0 ].marginControl;
+					}
+				}
+			}
 			if ( blockAttributes.mediaStyle ) {
 				copyStyles.mediaStyle = blockAttributes.mediaStyle;
 			}

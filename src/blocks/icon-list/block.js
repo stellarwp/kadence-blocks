@@ -14,8 +14,8 @@ import edit from './edit';
 /**
  * Import Css
  */
-import './style.scss';
-import './editor.scss';
+// import './style.scss';
+// import './editor.scss';
 
 /**
  * Internal block libraries
@@ -206,7 +206,7 @@ registerBlockType( 'kadence/iconlist', {
 		],
 	},
 	getEditWrapperProps( { blockAlignment } ) {
-		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment || 'none' === blockAlignment ) {
+		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {
 			return { 'data-align': blockAlignment };
 		}
 	},

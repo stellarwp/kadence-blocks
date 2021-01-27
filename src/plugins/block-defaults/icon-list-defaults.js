@@ -61,7 +61,7 @@ class KadenceIconListDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/iconlist' ] ) {
+		if ( config[ 'kadence/iconlist' ] === undefined || config[ 'kadence/iconlist' ].length == 0 ) {
 			config[ 'kadence/iconlist' ] = {};
 		}
 		config[ 'kadence/iconlist' ][ key ] = value;

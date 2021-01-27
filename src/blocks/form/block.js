@@ -18,8 +18,8 @@ import edit from './edit';
 /**
  * Import Css
  */
-import './style.scss';
-import './editor.scss';
+// import './style.scss';
+// import './editor.scss';
 const {
 	Fragment,
 } = wp.element;
@@ -336,6 +336,38 @@ registerBlockType( 'kadence/form', {
 		honeyPot: {
 			type: 'bool',
 			default: true,
+		},
+		mailerlite: {
+			type: 'array',
+			default: [ {
+				group: [],
+				map: [],
+			} ],
+		},
+		fluentcrm: {
+			type: 'array',
+			default: [ {
+				lists: [],
+				tags: [],
+				map: [],
+				doubleOptin: false,
+			} ],
+		},
+		containerMarginType: {
+			type: 'string',
+			default: 'px',
+		},
+		containerMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		tabletContainerMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
+		},
+		mobileContainerMargin: {
+			type: 'array',
+			default: [ '', '', '', '' ],
 		},
 	},
 	edit,

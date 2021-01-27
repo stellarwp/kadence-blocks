@@ -13,7 +13,7 @@ import WebfontLoader from '../../fontloader';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import KadenceColorOutput from '../../kadence-color-output';
-import KadenceRangeControl from '../../kadence-range-control';
+import KadenceRange from '../../components/range/range-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import Slider from 'react-slick';
 const {
@@ -60,6 +60,11 @@ const { withSelect } = wp.data;
 import GalleryImage from './gallery-image';
 import icon from './icons';
 import { pickRelevantMediaFiles, pickRelevantMediaFilesUpdate } from './shared';
+
+/**
+ * Import Css
+ */
+import './editor.scss';
 
 const linkOptions = [
 	{ value: 'attachment', label: __( 'Attachment Page', 'kadence-blocks' ) },
@@ -1085,7 +1090,7 @@ class GalleryEdit extends Component {
 												if ( tab.name ) {
 													if ( 'mobile' === tab.name ) {
 														tabout = (
-															<KadenceRangeControl
+															<KadenceRange
 																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) }
 																onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } ) }
 																step={ 1 }
@@ -1095,7 +1100,7 @@ class GalleryEdit extends Component {
 														);
 													} else if ( 'tablet' === tab.name ) {
 														tabout = (
-															<KadenceRangeControl
+															<KadenceRange
 																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ) }
 																onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
 																step={ 1 }
@@ -1105,7 +1110,7 @@ class GalleryEdit extends Component {
 														);
 													} else {
 														tabout = (
-															<KadenceRangeControl
+															<KadenceRange
 																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ) }
 																onChange={ value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
 																step={ 1 }

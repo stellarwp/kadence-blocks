@@ -74,8 +74,8 @@
 	position: absolute;
 	left: 0;
 	right: 0;
-	top: 5em;
-	bottom: 5em;
+	top: 3em;
+	bottom: 3em;
 	display: block;
 	z-index: -1;
 	box-shadow: 0 0.2em 1em rgba(0, 0, 0, 0.6);
@@ -101,7 +101,7 @@
 	display: block;
 	line-height: 0;
 	box-sizing: border-box;
-	padding: 5em 0;
+	padding: 3em 0;
 	margin: 0 auto;
   }
   
@@ -112,15 +112,15 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	word-wrap: normal;
-	font-size: 1.4em;
 	position: absolute;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	padding: 0.71429em 0;
-	color: #fff;
-	color: rgba(255, 255, 255, 0.7);
-	text-align: center;
+	text-align: left;
+    line-height: 18px;
+    color: #F3F3F3;
+    padding: 0 0 1em 0;
+    font-size: 16px;
   }
   
   .slbCloseBtn, .slbArrow {
@@ -129,6 +129,7 @@
 	border: 0;
 	cursor: pointer;
 	background: none;
+	box-shadow: none !important;
   }
   
   .slbCloseBtn::-moz-focus-inner, .slbArrow::-moz-focus-inner {
@@ -136,8 +137,9 @@
 	border: 0;
   }
   
-  .slbCloseBtn:hover, .slbArrow:hover {
+  .slbCloseBtn:hover, .slbArrow:hover, .slbCloseBtn:focus, .slbArrow:focus {
 	opacity: 0.5;
+	color: #fff;
 	background: transparent;
   }
   
@@ -149,12 +151,12 @@
 	-webkit-animation: slbEnter 0.3s;
 	-moz-animation: slbEnter 0.3s;
 	animation: slbEnter 0.3s;
-	font-size: 3em;
-	width: 1.66667em;
-	height: 1.66667em;
-	line-height: 1.66667em;
+	font-size: 28px;
+    width: 3rem;
+    height: 3rem;
+    line-height: 3rem;
 	position: absolute;
-	right: -0.33333em;
+	right: 0;
 	top: 0;
 	color: #fff;
 	color: rgba(255, 255, 255, 0.7);

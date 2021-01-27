@@ -16,6 +16,8 @@ const { __ } = wp.i18n;
 class KadenceAccordionSettings extends Component {
 	constructor() {
 		super( ...arguments );
+		this.saveConfig = this.saveConfig.bind( this );
+		this.saveConfigState = this.saveConfigState.bind( this );
 		this.state = {
 			isOpen: false,
 			isSaving: false,
@@ -49,8 +51,7 @@ class KadenceAccordionSettings extends Component {
 		return (
 			<Fragment>
 				<Tooltip text="Block Settings Visibility">
-					<Button className="kt-block-settings" onClick={ () => this.setState( { isOpen: true } ) }>
-						<Dashicon icon="visibility" />
+					<Button className="kt-block-settings" icon="visibility" onClick={ () => this.setState( { isOpen: true } ) }>
 					</Button>
 				</Tooltip>
 				{ isOpen ?

@@ -1,9 +1,8 @@
+/* global kadence_blocks_params */
+
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import map from 'lodash/map';
-import OpacityControl from '../../opacity-control';
-import hexToRGBA from '../../hex-to-rgba';
-import IconControl from '../../icon-control';
 import AdvancedColorControl from '../../advanced-color-control';
 import debounce from 'lodash/debounce';
 /**
@@ -15,18 +14,10 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	ColorPalette,
-} = wp.blockEditor;
-const {
 	Button,
 	PanelBody,
-	RangeControl,
 	ToggleControl,
-	SelectControl,
-	Modal,
-	ColorIndicator,
 	ButtonGroup,
-	Tooltip,
 } = wp.components;
 
 import icons from '../../icons';

@@ -29,7 +29,6 @@ import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 const {
 	createBlock,
@@ -43,7 +42,6 @@ const {
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
-	ColorPalette,
 	BlockAlignmentToolbar,
 } = wp.blockEditor;
 const {

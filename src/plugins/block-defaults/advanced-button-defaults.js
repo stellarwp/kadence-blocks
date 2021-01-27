@@ -63,7 +63,7 @@ class KadenceButtonDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/advancedbtn' ] ) {
+		if ( config[ 'kadence/advancedbtn' ] === undefined || config[ 'kadence/advancedbtn' ].length == 0 ) {
 			config[ 'kadence/advancedbtn' ] = {};
 		}
 		config[ 'kadence/advancedbtn' ][ key ] = value;

@@ -21,10 +21,12 @@ import TypographyControls from '../../typography-control';
 import BoxShadowControl from '../../box-shadow-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import MailerLiteControls from './mailerlite.js';
+import FluentCRMControls from './fluentcrm.js';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**
@@ -61,6 +63,10 @@ const {
 	TabPanel,
 	ExternalLink,
 } = wp.components;
+
+const { withSelect } = wp.data;
+const { compose } = wp.compose;
+
 const {
 	applyFilters,
 } = wp.hooks;
@@ -73,8 +79,13 @@ const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
 const actionOptionsList = [
 	{ value: 'email', label: __( 'Email', 'kadence-blocks' ), help: '', isDisabled: false },
 	{ value: 'redirect', label: __( 'Redirect', 'kadence-blocks' ), help: '', isDisabled: false },
+	{ value: 'mailerlite', label: __( 'Mailerlite', 'kadence-blocks' ), help: __( 'Add User to MailerLite list', 'kadence-blocks' ), isDisabled: false },
+	{ value: 'fluentCRM', label: __( 'FluentCRM', 'kadence-blocks' ), help: __( 'Add User to FluentCRM list', 'kadence-blocks' ), isDisabled: false },
 	{ value: 'autoEmail', label: __( 'Auto Respond Email (Pro addon)', 'kadence-blocks' ), help: __( 'Send instant response to form entrant', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'entry', label: __( 'Database Entry (Pro addon)', 'kadence-blocks' ), help: __( 'Log each form submission', 'kadence-blocks' ), isDisabled: true },
+	{ value: 'sendinblue', label: __( 'SendInBlue (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to SendInBlue list', 'kadence-blocks' ), isDisabled: true },
+	{ value: 'mailchimp', label: __( 'MailChimp (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to MailChimp list', 'kadence-blocks' ), isDisabled: true },
+	{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: true },
 ];
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -135,6 +146,9 @@ class KadenceForm extends Component {
 			messageFontBorderControl: 'linked',
 			messagePaddingControl: 'individual',
 			messageMarginControl: 'individual',
+			deskMarginControl: 'individual',
+			tabletMarginControl: 'individual',
+			mobileMarginControl: 'individual',
 			siteKey: '',
 			secretKey: '',
 			isSavedKey: false,
@@ -657,9 +671,85 @@ class KadenceForm extends Component {
 			this.onOptionMove( oldIndex, oldIndex - 1, fieldIndex );
 		};
 	}
+	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
+	}
 	render() {
-		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion }, className, isSelected, setAttributes } = this.props;
-		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl } = this.state;
+		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion, mailerlite, fluentcrm, containerMargin, tabletContainerMargin, mobileContainerMargin, containerMarginType }, className, isSelected, setAttributes } = this.props;
+		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl, deskMarginControl, tabletMarginControl, mobileMarginControl } = this.state;
+		const previewContainerMarginType = ( undefined !== containerMarginType ? containerMarginType : 'px' );
+		const previewContainerMarginTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
+		const previewContainerMarginRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
+		const previewContainerMarginBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
+		const previewContainerMarginLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
+		const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -2 : -200 );
+		const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 12 : 200 );
+		const containerMarginStep = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1 );
+		const saveMailerlite = ( value ) => {
+			const newItems = mailerlite.map( ( item, thisIndex ) => {
+				if ( 0 === thisIndex ) {
+					item = { ...item, ...value };
+				}
+
+				return item;
+			} );
+			setAttributes( {
+				mailerlite: newItems,
+			} );
+		};
+		const saveFluentCRM = ( value ) => {
+			const newItems = fluentcrm.map( ( item, thisIndex ) => {
+				if ( 0 === thisIndex ) {
+					item = { ...item, ...value };
+				}
+
+				return item;
+			} );
+			setAttributes( {
+				fluentcrm: newItems,
+			} );
+		};
+		const saveFluentCRMMap = ( value, index ) => {
+			const newItems = fields.map( ( item, thisIndex ) => {
+				let newString = '';
+				if ( index === thisIndex ) {
+					newString = value;
+				} else if ( undefined !== fluentcrm[ 0 ].map && undefined !== fluentcrm[ 0 ].map[ thisIndex ] ) {
+					newString = fluentcrm[ 0 ].map[ thisIndex ];
+				} else {
+					newString = '';
+				}
+
+				return newString;
+			} );
+			saveFluentCRM( { map: newItems } );
+		};
+		const saveMailerliteMap = ( value, index ) => {
+			const newItems = fields.map( ( item, thisIndex ) => {
+				let newString = '';
+				if ( index === thisIndex ) {
+					newString = value;
+				} else if ( undefined !== mailerlite[ 0 ].map && undefined !== mailerlite[ 0 ].map[ thisIndex ] ) {
+					newString = mailerlite[ 0 ].map[ thisIndex ];
+				} else {
+					newString = '';
+				}
+
+				return newString;
+			} );
+			saveMailerlite( { map: newItems } );
+		};
 		const btnSizes = [
 			{ key: 'small', name: __( 'S', 'kadence-blocks' ) },
 			{ key: 'standard', name: __( 'M', 'kadence-blocks' ) },
@@ -690,7 +780,7 @@ class KadenceForm extends Component {
 			{ key: 'vh', name: 'vh' },
 			{ key: 'rem', name: 'rem' },
 		];
-		const marginUnit = ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].unit ? submitMargin[ 0 ].unit : 'px' )
+		const marginUnit = ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].unit ? submitMargin[ 0 ].unit : 'px' );
 		const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -100 );
 		const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 12 : 100 );
 		const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
@@ -1429,11 +1519,6 @@ class KadenceForm extends Component {
 					</WebfontLoader>
 				) }
 				<BlockControls key="controls">
-					<BlockAlignmentToolbar
-						value={ align }
-						controls={ [ 'center', 'wide', 'full' ] }
-						onChange={ value => setAttributes( { align: value } ) }
-					/>
 					<AlignmentToolbar
 						value={ hAlign }
 						onChange={ value => setAttributes( { hAlign: value } ) }
@@ -3253,8 +3338,62 @@ class KadenceForm extends Component {
 							/>
 						</PanelBody>
 					</PanelBody>
+					<PanelBody
+						title={ __( 'Container Settings', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<ResponsiveMeasuremenuControls
+							label={ __( 'Container Margin', 'kadence-blocks' ) }
+							control={ deskMarginControl }
+							tabletControl={ tabletMarginControl }
+							mobileControl={ mobileMarginControl }
+							value={ ( undefined !== containerMargin ? containerMargin : [ '', '', '', '' ] ) }
+							tabletValue={ ( undefined !== tabletContainerMargin ? tabletContainerMargin : [ '', '', '', '' ] ) }
+							mobileValue={ ( undefined !== mobileContainerMargin ? mobileContainerMargin : [ '', '', '', '' ] ) }
+							onChange={ ( value ) => {
+								setAttributes( { containerMargin: value } );
+							} }
+							onChangeTablet={ ( value ) => {
+								setAttributes( { tabletContainerMargin: value } );
+							} }
+							onChangeMobile={ ( value ) => {
+								setAttributes( { mobileContainerMargin: value } );
+							} }
+							onChangeControl={ ( value ) => this.setState( { deskMarginControl: value } ) }
+							onChangeTabletControl={ ( value ) => this.setState( { tabletMarginControl: value } ) }
+							onChangeMobileControl={ ( value ) => this.setState( { mobileMarginControl: value } ) }
+							allowEmpty={ true }
+							min={ containerMarginMin }
+							max={ containerMarginMax }
+							step={ containerMarginStep }
+							unit={ containerMarginType }
+							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+							onUnit={ ( value ) => setAttributes( { containerMarginType: value } ) }
+						/>
+					</PanelBody>
+					{ actions.includes( 'mailerlite' ) && (
+						<MailerLiteControls
+							fields={ fields }
+							settings={ mailerlite }
+							save={ ( value ) => saveMailerlite( value ) }
+							saveMap={ ( value, i ) => saveMailerliteMap( value, i ) }
+						/>
+					) }
+					{ actions.includes( 'fluentCRM' ) && (
+						<FluentCRMControls
+							fields={ fields }
+							settings={ fluentcrm }
+							save={ ( value ) => saveFluentCRM( value ) }
+							saveMap={ ( value, i ) => saveFluentCRMMap( value, i ) }
+						/>
+					) }
 				</InspectorControls>
-				<div id={ `animate-id${ uniqueID }` } className={ `kb-form-wrap aos-animate${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }>
+				<div id={ `animate-id${ uniqueID }` } className={ `kb-form-wrap aos-animate${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
+					marginLeft: ( undefined !== previewContainerMarginLeft ? previewContainerMarginLeft + previewContainerMarginType : undefined ),
+					marginRight: ( undefined !== previewContainerMarginRight ? previewContainerMarginRight + previewContainerMarginType : undefined ),
+					marginTop: ( undefined !== previewContainerMarginTop ? previewContainerMarginTop + previewContainerMarginType : undefined ),
+					marginBottom: ( undefined !== previewContainerMarginBottom ? previewContainerMarginBottom + previewContainerMarginType : undefined ),
+				} }>
 					<div id={ `kb-form-${ uniqueID }` } className={ 'kb-form' } style={ {
 						marginRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? '-' + ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
 						marginLeft: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? '-' + ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
@@ -3318,4 +3457,14 @@ class KadenceForm extends Component {
 		);
 	}
 }
-export default ( KadenceForm );
+//export default ( KadenceForm );
+export default compose( [
+	withSelect( ( select, ownProps ) => {
+		const {
+			__experimentalGetPreviewDeviceType,
+		} = select( 'core/edit-post' );
+		return {
+			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+		};
+	} ),
+] )( KadenceForm );

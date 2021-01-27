@@ -59,7 +59,7 @@ class KadenceSpacerDefault extends Component {
 	}
 	saveConfigState( key, value ) {
 		const config = this.state.configuration;
-		if ( ! config[ 'kadence/spacer' ] ) {
+		if ( config[ 'kadence/spacer' ] === undefined || config[ 'kadence/spacer' ].length == 0 ) {
 			config[ 'kadence/spacer' ] = {};
 		}
 		config[ 'kadence/spacer' ][ key ] = value;

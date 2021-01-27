@@ -9,10 +9,11 @@ jQuery( function( $ ) {
 		},
 		submit: function( e ) {
 			e.preventDefault();
+			$( 'body' ).trigger( 'kb-form-start-submit', $(this) );
 			var form = $(this),
 			submitButton = form.find('input[type=submit]')
 			form_data = kadence_blocks_form.validateForm( form );
-			console.log( form_data );
+			//console.log( form_data );
 			if ( form_data ) {
 				// send the request.
 				form.parent( '.wp-block-kadence-form' ).find( '.kadence-blocks-form-message' ).slideUp( 'fast', function() {
@@ -32,6 +33,9 @@ jQuery( function( $ ) {
 							// $( 'html, body' ).animate( {
 							// 	scrollTop: $('.kadence-blocks-form-message').offset().top - 100
 							// }, 'fast' );
+							if ( form.find('.g-recaptcha').length > 0 ) {
+								grecaptcha.reset();
+							}
 							kadence_blocks_form.clearForm( form );
 						}
 					} else {
@@ -113,7 +117,7 @@ jQuery( function( $ ) {
 		 * @param position (value = bottom or end) end if form is onepare, bottom, if form is multistep
 		 */
 		addErrorNotice: function( form ) {
-			$(form).find('li.kb-form-submit').append('<div class="kb-form-errors">' + kadence_blocks_form_params.error_message + '</div>');
+			$(form).after( '<div class="kadence-blocks-form-message kadence-blocks-form-warning">' + kadence_blocks_form_params.error_message + '</div>');
 		},
 
 		isValidURL: function( url ) {

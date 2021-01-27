@@ -247,6 +247,10 @@ button.components-button.kt-accordion-add.is-primary svg {
 	min-width: 24px;
     box-sizing: content-box;
 }
+.rtl .kt-blocks-accordion-icon-trigger {
+    margin-left: 0;
+    margin-right: auto;
+}
 .kt-blocks-accordion-title-wrap {
     display: flex;
 }

@@ -23,13 +23,13 @@ import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import BoxShadowControl from '../../box-shadow-control';
-import KadenceRange from '../../kadence-range-control';
+import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasurementControls from '../../responsive-measurement-control';
 /**
  * Import Css
  */
-import './style.scss';
-import './editor.scss';
+// import './style.scss';
+// import './editor.scss';
 /**
  * Import Icons
  */
@@ -49,34 +49,21 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	InnerBlocks,
 	InspectorControls,
 	RichText,
 	BlockControls,
-	AlignmentToolbar,
-	BlockIcon,
-	BlockAlignmentToolbar,
 } = wp.blockEditor;
 const {
-	Button,
-	Placeholder,
-	ButtonGroup,
-	Tooltip,
 	TabPanel,
-	IconButton,
-	Dashicon,
 	ToolbarGroup,
-	Toolbar,
 	PanelBody,
-	RangeControl,
 	ToggleControl,
 	SelectControl,
-	TextControl,
 } = wp.components;
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+const { __ } = wp.i18n;
 
 /**
  * Regular expression matching invalid anchor characters for replacement.

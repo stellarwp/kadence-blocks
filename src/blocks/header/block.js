@@ -21,8 +21,8 @@ import save from './save';
 /**
  * Import Css
  */
-import './style.scss';
-import './editor.scss';
+// import './style.scss';
+// import './editor.scss';
 
 /**
  * Internal block libraries

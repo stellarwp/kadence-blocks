@@ -127,6 +127,12 @@ class ColumnStyleCopyPaste extends Component {
 			if ( blockAttributes.borderWidth ) {
 				copyStyles.borderWidth = blockAttributes.borderWidth;
 			}
+			if ( blockAttributes.tabletBorderWidth ) {
+				copyStyles.tabletBorderWidth = blockAttributes.tabletBorderWidth;
+			}
+			if ( blockAttributes.mobileBorderWidth ) {
+				copyStyles.mobileBorderWidth = blockAttributes.mobileBorderWidth;
+			}
 			if ( blockAttributes.borderRadius ) {
 				copyStyles.borderRadius = blockAttributes.borderRadius;
 			}
@@ -169,6 +175,12 @@ class ColumnStyleCopyPaste extends Component {
 			if ( blockAttributes.rightMarginT ) {
 				copyStyles.rightMarginT = blockAttributes.rightMarginT;
 			}
+			if ( blockAttributes.marginType ) {
+				copyStyles.marginType = blockAttributes.marginType;
+			}
+			if ( blockAttributes.paddingType ) {
+				copyStyles.paddingType = blockAttributes.paddingType;
+			}
 			if ( blockAttributes.displayShadow ) {
 				copyStyles.displayShadow = blockAttributes.displayShadow;
 			}
@@ -183,7 +195,7 @@ class ColumnStyleCopyPaste extends Component {
 			}
 			if ( blockAttributes.vsmobile ) {
 				copyStyles.vsmobile = blockAttributes.vsmobile;
-			}			
+			}
 			localStorage.setItem( 'kadenceColumnStyle', JSON.stringify( copyStyles ) );
 		};
 		const pasteAction = () => {

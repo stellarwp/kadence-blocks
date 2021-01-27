@@ -19,7 +19,7 @@
 	}
  }
  .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption {
-	 z-index: 100;
+	 z-index: 10;
  }
  .wp-block[data-type="kadence/advancedgallery"] .kb-gallery-container > .components-placeholder.wp-block-kadence-advancedgallery {
 	margin-top: 10px;
@@ -120,7 +120,7 @@
 		background-color: #0085ba;
 
 		.components-button {
-			color: $white;
+			color: #fff;
 		}
 
 		.components-button:focus {
@@ -131,7 +131,7 @@
 
 	figcaption .block-editor-rich-text {
 		a {
-			color: $white;
+			color: #fff;
 		}
 	}
 }
@@ -162,7 +162,6 @@
 		color: transparent;
 	}
 }
-
 .kadence-blocks-library-gallery-item__inline-menu {
 	position: absolute;
 	top: 0px;
@@ -196,7 +195,7 @@
 	display: flex;
 	flex-wrap: wrap;
 	list-style-type: none;
-	padding: 0;
+	padding: 0 !important;
 	.kadence-blocks-gallery-item {
 		position: relative;
 		padding:5px;
@@ -283,9 +282,9 @@
 				overflow: visible;
 				padding: 43px 10px 10px;
 				font-size:13px;
-				color: $white;
+				color: #fff;
 				text-align: center;
-				background: linear-gradient(0deg, rgba($color: $black, $alpha: 0.5) 0, rgba($color: $black, $alpha: 0) 100%);
+				background: linear-gradient(0deg, rgba(0,0,0,0.5) 0, rgba(0,0,0,0) 100%);
 				img {
 					display: inline;
 				}
@@ -527,4 +526,34 @@
 .block-editor-editor-skeleton__content {
     max-width: 100%;
 }
+}
+.interface-interface-skeleton__editor {
+	max-width: 100%;
+}
+// Fix Slider Overflow Issue.
+.kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 160px );
+}
+.is-fullscreen-mode .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px );
+}
+@media (max-width: 960px) {
+	.auto-fold .kt-blocks-carousel {
+		max-width: calc( 100vw - 20px - 36px );
+	}
+	.auto-fold .edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
+		max-width: calc( 100vw - 20px - 280px - 36px );
+	}
+}
+.folded .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 36px );
+}
+.edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 280px - 160px );
+}
+.is-fullscreen-mode .edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 280px );
+}
+.folded .edit-post-layout.is-sidebar-opened .kt-blocks-carousel {
+    max-width: calc( 100vw - 20px - 280px - 36px );
 }

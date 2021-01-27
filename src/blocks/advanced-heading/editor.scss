@@ -72,9 +72,32 @@
     box-shadow: none;
     background: #555d66;
 }
+.kb-tag-level-control .components-toolbar {
+    width: 100%;
+    display: flex;
+}
+.kb-tag-level-control div.has-left-divider .components-toolbar__control.components-button[aria-label="Paragraph"] svg {
+    max-height: 14px;
+}
+.kb-tag-level-control div.has-left-divider .components-toolbar__control.components-button[aria-label="Paragraph"] svg path {
+    transform: translate(-2px, -1px);
+}
+.kb-tag-level-control .components-toolbar > div {
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+}
+.kb-tag-level-control .components-toolbar>div+div.has-left-divider {
+    margin-left: 0;
+}
+.kb-tag-level-control .components-toolbar>div+div.has-left-divider:before {
+    top: 12px;
+    left: 0;
+}
 .kb-tag-level-control .components-toolbar__control.components-button {
-    width: 33px;
-    min-width: 33px !important;
+    width: 30px;
+    min-width: 30px !important;
+    height: 33px;
 }
 .components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row .kt-typography__control input {
     min-height: 18px;
@@ -138,7 +161,7 @@
 		text-transform: uppercase;
 	}
 	.components-base-control .components-base-control__field {
-		margin-bottom: 0;
+        margin-bottom: 0;
 	}
 	.components-toggle-control .components-base-control__field .components-form-toggle {
 		display: block;
@@ -203,9 +226,10 @@
 		background: #f2f2f2;
 		box-shadow: none;
 	}
-	.kt-typography-size-type-options .components-button.kt-size-btn svg {
+	.kt-typography-size-type-options .components-button.kt-size-btn svg, .kt-typography-size-type-options .components-button.kt-size-btn span.dashicon {
 		width: 12px;
-		height: 12px;
+        height: 12px;
+        font-size: 12px;
 	}
 	.kt-typography-size-type-options {
 		flex-grow: 2;
@@ -231,6 +255,15 @@
 		display: flex;
 		justify-content: space-between;
 	}
+}
+.components-popover.kt-popover-font-family .components-popover__content .typography-row-settings .components-base-control:last-child .components-base-control__field .kt-typography-size-type {
+    width: 100%;
+}
+.components-popover.kt-popover-font-family .components-popover__content .kt-type-size-input-wrap .components-base-control:last-child {
+    flex: 0 1 40%;
+}
+.components-popover.kt-popover-font-family .components-popover__content .kt-type-size-input-wrap .kt-typography-number-input {
+    flex: 0 1 55%;
 }
 .components-popover.kt-popover-font-family .components-popover__content .typography-row-settings .kt-type-input-wrap {
     flex: 0 1 33.33%;
@@ -327,6 +360,11 @@
             svg {
                 width: 15px;
                 height:15px;
+            }
+            span.dashicon {
+                width: 15px;
+                height: 15px;
+                font-size: 15px;
             }
         }
     }
@@ -531,7 +569,7 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
 .kadence-range-control-inner {
     box-sizing: border-box;
     align-items: flex-start;
-    display: inline-flex;
+    display: flex;
     -webkit-box-pack: start;
     justify-content: flex-start;
     padding: 0px;
