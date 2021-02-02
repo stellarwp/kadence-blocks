@@ -52,7 +52,7 @@ class CustomComponent extends Component {
 								activeClass="active-tab"
 								tabs={ [
 									{
-										name: 'sections',
+										name: 'section',
 										title: __( 'Sections', 'kadence-blocks' ),
 										className: 'kb-sections-tab',
 									},
@@ -76,6 +76,7 @@ class CustomComponent extends Component {
 												tabout = (
 													<Library
 														clientId={ this.props.clientId }
+														tab={ tab.name }
 													/>
 												);
 											}

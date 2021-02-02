@@ -428,7 +428,7 @@ class Kadence_Blocks_CSS {
 		if ( strpos( $font_string, '"') === false && strpos( $font_string, ',') === false && strpos( $font_string, ' ' ) !== false ) {
 			$font_string = "'" . $font_string . "'";
 		}
-		return apply_filters( 'kadence_blocks_font_family_string', $font_string );
+		return apply_filters( 'kadence_blocks_font_family_string', $font_string, $font_name );
 	}
 
 	/**

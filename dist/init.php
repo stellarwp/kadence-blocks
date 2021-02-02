@@ -84,6 +84,12 @@ function kadence_gutenberg_editor_assets() {
 	} else {
 		$enable_editor_width = true;
 	}
+	$pro_data = false;
+	if ( class_exists( 'Kadence_Theme_Pro' ) ) {
+		$pro_data = get_option( 'ktp_api_manager' );
+	} elseif ( class_exists( 'Kadence_Blocks_Pro' ) ) {
+		$pro_data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+	}
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'dist/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'dist/gfonts-names-array.php';
 	$icon_names_path  = KADENCE_BLOCKS_PATH . 'dist/icon-names-array.php';
@@ -93,6 +99,8 @@ function kadence_gutenberg_editor_assets() {
 		'kadence-blocks-js',
 		'kadence_blocks_params',
 		array(
+			'ajax_url'       => admin_url( 'admin-ajax.php' ),
+			'ajax_nonce'     => wp_create_nonce( 'kadence-blocks-ajax-verification' ),
 			'sidebar_size'   => $sidebar_size,
 			'nosidebar_size' => $nosidebar_size,
 			'default_size'   => $jssize,
@@ -100,6 +108,7 @@ function kadence_gutenberg_editor_assets() {
 			'configuration'  => get_option( 'kadence_blocks_config_blocks' ),
 			'settings'       => get_option( 'kadence_blocks_settings_blocks' ),
 			'userrole'       => $userrole,
+			'proData'        => $pro_data,
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'global'         => get_option( 'kadence_blocks_global' ),

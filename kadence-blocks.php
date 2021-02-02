@@ -38,6 +38,7 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'dist/init.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/form-ajax.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/helper-functions.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-prebuilt-library.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-css.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-frontend.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-table-of-contents.php';

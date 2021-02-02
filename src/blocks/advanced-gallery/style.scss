@@ -610,6 +610,12 @@
 			}
 		}
 	}
+	&[data-slider-type="slider"] .kb-slide-item {
+		display:none;
+		&:first-child {
+			display:block;
+		}
+	}
 	.kb-slide-item {
 		padding: 4px 5px;
 	}

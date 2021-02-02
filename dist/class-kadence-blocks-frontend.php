@@ -782,7 +782,32 @@ class Kadence_Blocks_Frontend {
 			if ( is_array( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) ) {
 				$answer = '';
 				foreach ( $block['innerBlocks'] as $inner_key => $inner_block ) {
-					$answer .= strip_tags( $inner_block['innerHTML'], '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>' );
+					if ( ! empty( $inner_block['innerHTML'] ) ) {
+						$inner_html = trim( strip_tags( $inner_block['innerHTML'], '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>' ) );
+						if ( ! empty( $inner_html ) ) {
+							$answer .= $inner_html;
+						}
+					}
+					if ( isset( $inner_block['innerBlocks'] ) && is_array( $inner_block['innerBlocks'] ) && ! empty ( $inner_block['innerBlocks'] ) ) {
+						foreach ( $inner_block['innerBlocks'] as $again_inner_key => $again_inner_block ) {
+							if ( ! empty( $again_inner_block['innerHTML'] ) ) {
+								$inner_html = trim( strip_tags( $again_inner_block['innerHTML'], '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>' ) );
+								if ( ! empty( $inner_html ) ) {
+									$answer .= $inner_html;
+								}
+							}
+							if ( isset( $again_inner_block['innerBlocks'] ) && is_array( $again_inner_block['innerBlocks'] ) && ! empty ( $again_inner_block['innerBlocks'] ) ) {
+								foreach ( $again_inner_block['innerBlocks'] as $again_again_inner_key => $again_again_inner_block ) {
+									if ( ! empty( $again_again_inner_block['innerHTML'] ) ) {
+										$inner_html = trim( strip_tags( $again_again_inner_block['innerHTML'], '<a><strong><br><h2><h3><h4><h5><ul><li><ol><p>' ) );
+										if ( ! empty( $inner_html ) ) {
+											$answer .= $inner_html;
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 				preg_match( '/<span class="kt-blocks-accordion-title">(.*?)<\/span>/s', $block['innerHTML'], $match );
 				$question = ( $match && isset( $match[1] ) && ! empty( $match[1] ) ? $match[1] : '' );

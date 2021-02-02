@@ -87,6 +87,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 1.9.16 =
+ * Update: Template Library
+ 
+
 = 1.9.15 =
  * Update: Add option to load italic font if google font selected.
  * Update: Add JetBrains Mono, Big Shoulders, Public Sans, Bebas Neue and Inter google fonts.
