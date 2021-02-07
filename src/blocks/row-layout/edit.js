@@ -181,13 +181,13 @@ class KadenceRowLayout extends Component {
 	}
 	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
 		if ( device === 'Mobile' ) {
-			if ( undefined !== mobileSize && '' !== mobileSize ) {
+			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
 				return mobileSize;
-			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
+			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
 				return tabletSize;
 			}
 		} else if ( device === 'Tablet' ) {
-			if ( undefined !== tabletSize && '' !== tabletSize ) {
+			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
 				return tabletSize;
 			}
 		}
@@ -3579,7 +3579,7 @@ class KadenceRowLayout extends Component {
 							paddingLeft: previewPaddingLeft + ( paddingUnit ? paddingUnit : 'px' ),
 							paddingRight: previewPaddingRight + ( paddingUnit ? paddingUnit : 'px' ),
 						} }>
-							{ colLayout && 'row' !== colLayout && columns && 2 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
+							{ colLayout && 'row' !== colLayout && columns && 2 === columns && this.showSettings( 'allSettings' ) && 'Desktop' === this.props.getPreviewDevice && this.showSettings( 'columnResize' ) && (
 								<div className="kt-resizeable-column-container" style={ {
 									left: previewPaddingLeft + ( paddingUnit ? paddingUnit : 'px' ),
 									right: previewPaddingRight + ( paddingUnit ? paddingUnit : 'px' ),
@@ -3647,7 +3647,7 @@ class KadenceRowLayout extends Component {
 									</ContainerDimensions>
 								</div>
 							) }
-							{ colLayout && 'row' !== colLayout && columns && 3 === columns && this.showSettings( 'allSettings' ) && this.showSettings( 'columnResize' ) && (
+							{ colLayout && 'row' !== colLayout && columns && 3 === columns && this.showSettings( 'allSettings' ) && 'Desktop' === this.props.getPreviewDevice && this.showSettings( 'columnResize' ) && (
 								<ThreeColumnDrag
 									uniqueID={ uniqueID }
 									onSetState={ value => this.setState( value ) }

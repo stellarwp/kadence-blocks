@@ -149,13 +149,13 @@ class KadenceAdvancedHeading extends Component {
 	}
 	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
 		if ( device === 'Mobile' ) {
-			if ( undefined !== mobileSize && '' !== mobileSize ) {
+			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
 				return mobileSize;
-			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
+			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
 				return tabletSize;
 			}
 		} else if ( device === 'Tablet' ) {
-			if ( undefined !== tabletSize && '' !== tabletSize ) {
+			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
 				return tabletSize;
 			}
 		}
