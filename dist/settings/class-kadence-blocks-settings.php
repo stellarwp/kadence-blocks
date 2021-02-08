@@ -587,7 +587,7 @@ class Kadence_Blocks_Settings {
 						<?php if ( apply_filters( 'kadence_blocks_editor_width', true ) ) { ?>
 							<h2><?php echo esc_html__( 'Editor Max Widths', 'kadence-blocks' ); ?><span class="kt-main-subtitle"><?php echo esc_html__( 'Match the editor width to your sites width.', 'kadence-blocks' ); ?></span></h2>
 							<?php global $content_width; ?>
-								<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "$content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
+								<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
 								<div class="kt-promo-row">
 								<?php
 								echo '<form action="options.php" method="post">';

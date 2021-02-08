@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.6.0
-Stable tag: 1.9.15
+Stable tag: 1.9.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,8 +88,8 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 1.9.16 =
- * Update: Template Library
- 
+ * Fix: Possible issue with preview mode.
+ * Tweak: Gallery slider load.
 
 = 1.9.15 =
  * Update: Add option to load italic font if google font selected.
