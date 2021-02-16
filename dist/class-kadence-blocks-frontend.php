@@ -578,10 +578,10 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( $this->it_is_not_amp() ) {
+				wp_enqueue_script( 'kadence-blocks-tabs-js' );
+			}
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'tabs', $unique_id ) ) {
-				if ( $this->it_is_not_amp() ) {
-					wp_enqueue_script( 'kadence-blocks-tabs-js' );
-				}
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
@@ -597,7 +597,7 @@ class Kadence_Blocks_Frontend {
 				} else {
 					if ( ! wp_style_is( 'kadence-blocks-tabs', 'done' ) ) {
 						ob_start();
-							wp_print_styles( 'kadence-blocks-tabs' );
+						wp_print_styles( 'kadence-blocks-tabs' );
 						$content = ob_get_clean() . $content;
 					}
 				}
@@ -1220,7 +1220,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-slick', KADENCE_BLOCKS_URL . 'dist/vendor/slick.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-slick-init', KADENCE_BLOCKS_URL . 'dist/kt-slick-init.js', array( 'jquery', 'kadence-slick' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-video-bg', KADENCE_BLOCKS_URL . 'dist/kb-init-html-bg-video.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-masonry-init', KADENCE_BLOCKS_URL . 'dist/kb-masonry-init.js', array( 'jquery', 'masonry' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-masonry-init', KADENCE_BLOCKS_URL . 'dist/kb-masonry-init.js', array( 'masonry' ), KADENCE_BLOCKS_VERSION, true );
 	}
 	/**
 	 * Registers and enqueue's script.
@@ -1782,6 +1782,9 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_tableofcontents_scripts_check( $attr ) {
 		$toc = Kadence_Blocks_Table_Of_Contents::get_instance();
+		if ( isset( $attr['enableScrollSpy'] ) && $attr['enableScrollSpy'] ) {
+			$toc->enqueue_script( 'kadence-blocks-gumshoe' );
+		}
 		$toc->enqueue_script( 'kadence-blocks-table-of-contents' );
 		$toc->enqueue_style( 'kadence-blocks-table-of-contents' );
 		if ( isset( $attr['uniqueID'] ) ) {
@@ -3266,7 +3269,7 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['titleBorderWidth'] ) || isset( $attr['titleBorderRadius'] ) || isset( $attr['titlePadding'] ) || isset( $attr['titleBorder'] ) || isset( $attr['titleColor'] ) || isset( $attr['titleBg'] ) ) {
-			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';
+			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';
 			if ( isset( $attr['size'] ) && ! empty( $attr['size'] ) ) {
 				$css .= 'font-size:' . $attr['size'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -3304,7 +3307,7 @@ class Kadence_Blocks_Frontend {
 		}
 		// Hover.
 		if ( isset( $attr['titleBorderHover'] ) || isset( $attr['titleColorHover'] ) || isset( $attr['titleBgHover'] ) ) {
-			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title:hover, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title:hover {';
+			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title:hover, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title:hover {';
 			if ( isset( $attr['titleBorderHover'] ) && ! empty( $attr['titleBorderHover'] ) ) {
 				$css .= 'border-color:' . $this->kadence_color_output( $attr['titleBorderHover'] ) . ';';
 			}
@@ -3318,7 +3321,7 @@ class Kadence_Blocks_Frontend {
 		}
 		// Active.
 		if ( isset( $attr['titleBorderActive'] ) || isset( $attr['titleColorActive'] ) || isset( $attr['titleBgActive'] ) ) {
-			$css .= '.kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tab-title-active .kt-tab-title  {';
+			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li.kt-tab-title-active .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title.kt-tab-title-active .kt-tab-title  {';
 			if ( isset( $attr['titleBorderActive'] ) && ! empty( $attr['titleBorderActive'] ) ) {
 				$css .= 'border-color:' . $this->kadence_color_output( $attr['titleBorderActive'] ) . ';';
 			}
@@ -3334,7 +3337,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['tabSize'] ) || isset( $attr['tabLineHeight'] ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';
+			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';
 			if ( isset( $attr['tabSize'] ) ) {
 				$css .= 'font-size:' . $attr['tabSize'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -3346,7 +3349,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['mobileSize'] ) || isset( $attr['mobileLineHeight'] ) ) {
 			$css .= '@media (max-width: 767px) {';
-			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';
+			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';
 			if ( isset( $attr['mobileSize'] ) ) {
 				$css .= 'font-size:' . $attr['mobileSize'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
 			}
@@ -3652,7 +3655,7 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'right', ( $attr['columnGap'] / 2 ) . 'px' );
 		}
 		if ( isset( $attr['style'] ) && ( 'bubble' === $attr['style'] || 'inlineimage' === $attr['style'] ) ) {
-			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );
+			$css->set_selector( '.wp-block-kadence-testimonials.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );
 			if ( isset( $attr['containerBorderWidth'] ) && is_array( $attr['containerBorderWidth'] ) && ! empty( $attr['containerBorderWidth'][2] ) ) {
 				$css->add_property( 'margin-top',  $attr['containerBorderWidth'][2] . 'px' );
 			}
@@ -5219,7 +5222,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['textTransform'] ) && ! empty( $attr['textTransform'] ) ) {
 				$css->add_property( 'text-transform', $attr['textTransform'] );
 			}
-			if ( isset( $attr['letterSpacing'] ) && ! empty( $attr['letterSpacing'] ) ) {
+			if ( isset( $attr['letterSpacing'] ) && is_numeric( $attr['letterSpacing'] ) ) {
 				$css->add_property( 'letter-spacing', $attr['letterSpacing'] . ( ! isset( $attr['letterType'] ) ? 'px' : $attr['letterType'] ) );
 			}
 			if ( isset( $attr['color'] ) && ! empty( $attr['color'] ) ) {

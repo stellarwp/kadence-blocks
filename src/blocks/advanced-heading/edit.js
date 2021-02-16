@@ -294,7 +294,7 @@ class KadenceAdvancedHeading extends Component {
 					fontStyle: fontStyle,
 					fontSize: ( previewFontSize ? previewFontSize + sizeType : undefined ),
 					lineHeight: ( previewLineHeight ? previewLineHeight + lineType : undefined ),
-					letterSpacing: ( letterSpacing ? letterSpacing + 'px' : undefined ),
+					letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 					textTransform: ( textTransform ? textTransform : undefined ),
 					fontFamily: ( typography ? typography : '' ),
 					paddingTop: ( undefined !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),

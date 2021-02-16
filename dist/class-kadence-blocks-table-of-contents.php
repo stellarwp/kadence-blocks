@@ -142,7 +142,8 @@ class Kadence_Blocks_Table_Of_Contents {
 			return;
 		}
 		// Lets register all the block styles.
-		wp_register_style( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'dist/blocks/tableofcontents.style.build.css', array(), KADENCE_BLOCKS_VERSION );		
+		wp_register_style( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'dist/blocks/tableofcontents.style.build.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_script( 'kadence-blocks-gumshoe', KADENCE_BLOCKS_URL . 'dist/assets/js/gumshoe.min.js', array(), KADENCE_BLOCKS_VERSION, true );	
 		wp_register_script( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-table-of-contents.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 	/**
@@ -310,7 +311,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		$content,
 		$headings_page = 1,
 		$current_page = 1,
-		$attributes
+		$attributes = array()
 	) {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// Disabled because of PHP DOMDoument and DOMXPath APIs using camelCase.
@@ -449,7 +450,7 @@ class Kadence_Blocks_Table_Of_Contents {
 				}
 				if ( $anchor_string ) {
 					$add = true;
-					foreach( self::$headings as $v ) {
+					foreach ( self::$headings as $v ) {
 						if ( $v['anchor'] == $anchor_string ) {
 							$add = false;
 						}
@@ -660,7 +661,7 @@ class Kadence_Blocks_Table_Of_Contents {
 			$class .= ' kb-toc-smooth-scroll';
 		}
 		//print_r( $attributes );
-		$output = '<nav class="' . esc_attr( $class ) . ( $enable_toggle ? ' kb-collapsible-toc kb-toc-toggle-' . ( $start_closed ? 'hidden' : 'active' ) : '' ) . '" role="navigation" aria-label="' . esc_attr__( 'Table Of Contents', 'kadence-blocks' ) . '"' . ( $enable_scroll ? ' data-scroll-offset="' . esc_attr( $scroll_offset ) . '"' : '' ) . '>';
+		$output = '<nav class="' . esc_attr( $class ) . ( $enable_toggle ? ' kb-collapsible-toc kb-toc-toggle-' . ( $start_closed ? 'hidden' : 'active' ) : '' ) . '" role="navigation" aria-label="' . esc_attr__( 'Table Of Contents', 'kadence-blocks' ) . '"' . ( $enable_scroll ? ' data-scroll-offset="' . esc_attr( $scroll_offset ) . '"' : '' ) . ( isset( $attributes['enableScrollSpy'] ) && true === $attributes['enableScrollSpy'] ? ' data-scroll-spy="true"' : '' ) . '>';
 		$output .= '<div class="kb-table-of-content-wrap">';
 		if ( ! isset( $attributes['enableTitle'] ) || isset( $attributes['enableTitle'] ) && $attributes['enableTitle'] ) {
 			$output .= '<div class="kb-table-of-contents-title-wrap kb-toggle-icon-style-' . ( $enable_toggle && isset( $attributes['toggleIcon'] ) && $attributes['toggleIcon'] ? $attributes['toggleIcon'] : 'arrow' ) . '">';
@@ -690,6 +691,9 @@ class Kadence_Blocks_Table_Of_Contents {
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'tableofcontent', $unique_id ) ) {
 				if ( kadence_blocks_is_not_amp() ) {
+					if ( isset( $attributes['enableScrollSpy'] ) && $attributes['enableScrollSpy'] ) {
+						wp_enqueue_script( 'kadence-blocks-gumshoe' );
+					}
 					wp_enqueue_script( 'kadence-blocks-table-of-contents' );
 				}
 				if ( ! doing_filter( 'the_content' ) ) {
@@ -835,6 +839,10 @@ class Kadence_Blocks_Table_Of_Contents {
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list .kb-table-of-contents__entry:hover' );
 		if ( isset( $attributes['contentHoverColor'] ) && ! empty( $attributes['contentHoverColor'] ) ) {
 			$css->add_property( 'color', $css->render_color( $attributes['contentHoverColor'] ) );
+		}
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list .active > .kb-table-of-contents__entry' );
+		if ( isset( $attributes['contentActiveColor'] ) && ! empty( $attributes['contentActiveColor'] ) ) {
+			$css->add_property( 'color', $css->render_color( $attributes['contentActiveColor'] ) );
 		}
 		if ( isset( $attributes['listGap'] ) && is_array( $attributes['listGap'] ) && isset( $attributes['listGap'][0] ) && ! empty( $attributes['listGap'][0] ) ) {
 			$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-list li' );

@@ -278,6 +278,7 @@ class KadenceRowLayout extends Component {
 		const previewPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== leftPadding ? leftPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) );
 		const previewMarginTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== topMargin ? topMargin : '' ), ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== topMarginM ? topMarginM : '' ) );
 		const previewMarginBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ) );
+		const previewBackgroundColor = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bgColor ? bgColor : '' ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgColor ? tabletBackground[0].bgColor : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgColor ? mobileBackground[0].bgColor : '' ) );
 		const onResize = ( event, direction, elt ) => {
 			let firstCol;
 			let secondCol;
@@ -3416,7 +3417,7 @@ class KadenceRowLayout extends Component {
 				} }>
 					{ ( 'slider' !== backgroundSettingTab && 'video' !== backgroundSettingTab ) && (
 						<div className={ `kt-row-layout-background${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
-							backgroundColor: ( bgColor ? KadenceColorOutput( bgColor ) : undefined ),
+							backgroundColor: ( previewBackgroundColor ? KadenceColorOutput( previewBackgroundColor ) : undefined ),
 							backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
 							backgroundSize: bgImgSize,
 							backgroundPosition: bgImgPosition,

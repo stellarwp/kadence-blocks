@@ -56,6 +56,9 @@ const {
 	SelectControl,
 	TextControl,
 } = wp.components;
+const {
+	applyFilters,
+} = wp.hooks;
 /**
  * Internal block libraries
  */
@@ -577,8 +580,7 @@ class KadenceTabs extends Component {
 									onChange={ value => {
 										this.saveArrayUpdate( { text: value }, index );
 									} }
-									formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
-									allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+									allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 									className={ 'kt-title-text' }
 									style={ {
 										lineHeight: lineHeight + lineType,
@@ -596,8 +598,7 @@ class KadenceTabs extends Component {
 										onChange={ value => {
 											this.saveArrayUpdate( { text: value }, index );
 										} }
-										formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
-										allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+										allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 										className={ 'kt-title-text' }
 										style={ {
 											lineHeight: lineHeight + lineType,
@@ -612,8 +613,7 @@ class KadenceTabs extends Component {
 										onChange={ value => {
 											this.saveArrayUpdate( { subText: value }, index );
 										} }
-										formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
-										allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+										allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 										className={ 'kt-title-sub-text' }
 										style={ {
 											fontWeight: subFont[ 0 ].weight,

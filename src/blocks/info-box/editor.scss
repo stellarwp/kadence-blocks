@@ -4,6 +4,11 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ // Remove Extra Margin.
+//  .block-editor-block-list__block[data-type="kadence/infobox"] {
+//     margin-top:0;
+//     margin-bottom:0;
+// }
  .kb-upload-inline-btn.kt-cta-upload-btn {
 	 margin-bottom:0;
  }
@@ -54,10 +59,10 @@
 .edit-post-sidebar .kb-image-size-select-form-row input[type=text], .kt-block-defaults-modal .kb-image-size-select-form-row input[type=text] {
 	box-shadow: none;
 }
-.wp-block-kadence-infobox {
-    display: flex;
-    flex-direction: column;
-}
+// .wp-block-kadence-infobox {
+//     display: flex;
+//     flex-direction: column;
+// }
 .kb-image-size-container .kb-image-size-select-form-row {
     margin-bottom: 10px;
     z-index: 200;

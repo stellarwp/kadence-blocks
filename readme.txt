@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.6.0
-Stable tag: 1.9.16
+Stable tag: 1.9.17
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,20 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.9.17 =
+ * Add: Inline toolset support.
+ * Add: Scroll Spy to Table of Contents Block.
+ * Update: Remove jQuery dependency for masonry gallery.
+ * Update: Better Schema output for accordion FAQ.
+ * Update: Add Button Text transform to block defaults.
+ * Update: Heading Letter Spacing allow 0.
+ * Fix: button not using theme border styles.
+ * Fix: Cloned items in carousel not opening lightbox.
+ * Fix: Issue with tab css specificity. 
+ * Fix: Issue with testimonial css specificity. 
+ * Fix: Issue with columns in editor not outputting custom css classes.
+ * Fix: Issue with row layout mobile grid css.
 
 = 1.9.16 =
  * Fix: Possible issue with preview mode.

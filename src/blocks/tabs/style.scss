@@ -78,6 +78,9 @@
 .wp-block-kadence-tabs .kt-tab-inner-content-inner p:last-child {
     margin-bottom: 0;
 }
+.wp-block-kadence-tabs .kt-tab-inner-content-inner p:first-child {
+    margin-top: 0;
+}
 .kt-tab-alignment-center > .kt-tabs-title-list, .kt-tab-alignment-center > .kt-tabs-content-wrap > .kt-tabs-accordion-title a {
 	justify-content: center;
 }

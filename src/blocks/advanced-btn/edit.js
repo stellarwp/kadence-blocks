@@ -64,6 +64,9 @@ const {
 	MenuItem,
 } = wp.components;
 const { DELETE } = wp.keycodes;
+const {
+	applyFilters,
+} = wp.hooks;
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -422,7 +425,7 @@ class KadenceAdvancedButton extends Component {
 								onChange={ value => {
 									this.saveArrayUpdate( { text: value }, index );
 								} }
-								allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+								allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 								className={ 'kt-button-text' }
 								keepPlaceholderOnFocus
 							/>

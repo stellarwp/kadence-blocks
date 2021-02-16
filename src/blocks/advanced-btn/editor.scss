@@ -394,7 +394,7 @@
 	z-index: 1;
     position: relative;
     overflow: hidden;
-    border-width: 0;
+    border: 0 solid transparent;
 }
 .editor-styles-wrapper .btn-area-wrap .kt-button {
     border-style: solid;

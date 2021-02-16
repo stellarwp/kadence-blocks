@@ -7,8 +7,6 @@
 		position: relative;
 		z-index: 1;
 		overflow: hidden;
-		border-style: solid;
-		border-width: 0;
 	}
 	.kt-button:not(.kb-btn-global-inherit) {
 		padding: 8px 16px;
@@ -25,6 +23,8 @@
 		border-color:#555555;
 		background:transparent;
 		color:#555555;
+		border-style: solid;
+		border-width: 0;
 	}
 	.kt-button:not(.kb-btn-global-inherit):hover, .kt-button:not(.kb-btn-global-inherit):focus {
 		border-color:#444444;

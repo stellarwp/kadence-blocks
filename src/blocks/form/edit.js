@@ -3420,7 +3420,7 @@ class KadenceForm extends Component {
 								onChange={ value => {
 									this.saveSubmit( { label: value } );
 								} }
-								allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+								allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 								className={ `kb-forms-submit kb-button-size-${ submit[ 0 ].size } kb-button-width-${ submit[ 0 ].widthType }` }
 								style={ {
 									background: ( undefined !== btnBG ? btnBG : undefined ),

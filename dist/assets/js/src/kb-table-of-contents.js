@@ -126,11 +126,32 @@
 				}
 			}
 		},
+		initScrollSpy: function() {
+			if ( typeof Gumshoe == 'function' ) {
+				var scroll_spy = document.querySelectorAll( '.wp-block-kadence-tableofcontents[data-scroll-spy="true"]' );
+				if ( ! scroll_spy.length ) {
+					return;
+				}
+				var spy_item = [];
+				for ( let n = 0; n < scroll_spy.length; n++ ) {
+					var offset = parseInt( scroll_spy[n].getAttribute( 'data-scroll-offset' ) );
+					// Initialize Gumshoe
+					spy_item[ n ] = new Gumshoe( '.'  + scroll_spy[n].classList[2] + ' .kb-table-of-content-list a', {
+						nested: true,
+						nestedClass: 'active-parent',
+						offset: function () {
+							return ( offset ? offset : 0 );
+						}
+					});
+				}
+			}
+		},
 		// Initiate sticky when the DOM loads.
 		init: function() {
 			window.kadenceTOC.initAddAnchors();
 			window.kadenceTOC.initCollapse();
 			window.kadenceTOC.initScroll();
+			window.kadenceTOC.initScrollSpy();
 		}
 	}
 	if ( 'loading' === document.readyState ) {

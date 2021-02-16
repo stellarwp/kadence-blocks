@@ -295,6 +295,9 @@ registerBlockType( 'kadence/tableofcontents', {
 			type: 'boolean',
 			default: false,
 		},
+		contentActiveColor: {
+			type: 'string',
+		},
 		enableSmoothScroll: {
 			type: 'boolean',
 			default: false,

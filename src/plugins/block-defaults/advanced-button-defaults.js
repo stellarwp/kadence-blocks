@@ -938,6 +938,8 @@ class KadenceButtonDefault extends Component {
 							<TypographyControls
 								letterSpacing={ ( undefined !== buttonConfig.letterSpacing ? buttonConfig.letterSpacing : '' ) }
 								onLetterSpacing={ ( value ) => this.saveConfigState( 'letterSpacing', value ) }
+								textTransform={ ( undefined !== buttonConfig.textTransform ? buttonConfig.textTransform : '' ) }
+								onTextTransform={ ( value ) => this.saveConfigState( 'textTransform', value ) }
 								fontFamily={ ( undefined !== buttonConfig.typography ? buttonConfig.typography : '' ) }
 								onFontFamily={ ( value ) => this.saveConfigState( 'typography', value ) }
 								onFontChange={ ( select ) => {

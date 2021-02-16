@@ -87,6 +87,17 @@
 		"oS": 0,
 		"sct": 1
 		},
+	"/dist/assets/js/gumshoe.min.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/dist/assets/js/gumshoe.min-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/dist/assets/js/kb-form-min.js": {
 		"bF": 0,
 		"ft": 64,
@@ -139,6 +150,17 @@
 		"oA": 1,
 		"oAP": "/dist/assets/js/simplelightbox.min-min.js",
 		"oF": 1,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/assets/js/src/gumshoe.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/dist/assets/js/src/gumshoe-min.js",
+		"oF": 0,
 		"sC": 0,
 		"tS": 0
 		},
@@ -2413,6 +2435,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/blocks/row-layout/block-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/row-layout/devlibrary.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/row-layout/devlibrary-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

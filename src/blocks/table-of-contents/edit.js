@@ -60,6 +60,10 @@ const {
 	ToggleControl,
 	SelectControl,
 } = wp.components;
+
+const {
+	applyFilters,
+} = wp.hooks;
 /**
  * Internal block libraries
  */
@@ -219,7 +223,7 @@ class KadenceTableOfContents extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll, containerMobileMargin, containerTabletMargin, containerMargin }, clientId, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll, containerMobileMargin, containerTabletMargin, containerMargin, enableScrollSpy, contentActiveColor }, clientId, className, setAttributes } = this.props;
 		const { titlePaddingControl, containerBorderControl, containerPaddingControl, contentMarginControl, titleBorderControl, headings, showContent, borderRadiusControl, containerMobileMarginControl, containerTabletMarginControl, containerMarginControl } = this.state;
 		const onToggle = () => {
 			if ( enableToggle ) {
@@ -783,26 +787,41 @@ class KadenceTableOfContents extends Component {
 							</PanelBody>
 						) }
 						{ this.showSettings( 'container' ) && (
-							<PanelBody
-								title={ __( 'Scroll Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-							>
-								<ToggleControl
-									label={ __( 'Enable Smooth Scroll to ID', 'kadence-blocks' ) }
-									checked={ enableSmoothScroll }
-									onChange={ value => setAttributes( { enableSmoothScroll: value } ) }
-								/>
-								{ enableSmoothScroll && (
-									<KadenceRange
-										label={ __( 'Scroll Offset', 'kadence-blocks' ) }
-										value={ smoothScrollOffset ? smoothScrollOffset : '' }
-										onChange={ ( value ) => setAttributes( { smoothScrollOffset: value } ) }
-										min={ 0 }
-										max={ 400 }
-										step={ 1 }
+							<Fragment>
+								<PanelBody
+									title={ __( 'Scroll Settings', 'kadence-blocks' ) }
+									initialOpen={ false }
+								>
+									<ToggleControl
+										label={ __( 'Enable Smooth Scroll to ID', 'kadence-blocks' ) }
+										checked={ enableSmoothScroll }
+										onChange={ value => setAttributes( { enableSmoothScroll: value } ) }
 									/>
-								) }
-							</PanelBody>
+									{ enableSmoothScroll && (
+										<KadenceRange
+											label={ __( 'Scroll Offset', 'kadence-blocks' ) }
+											value={ smoothScrollOffset ? smoothScrollOffset : '' }
+											onChange={ ( value ) => setAttributes( { smoothScrollOffset: value } ) }
+											min={ 0 }
+											max={ 400 }
+											step={ 1 }
+										/>
+									) }
+									<ToggleControl
+										label={ __( 'Enable Highlighting Heading when scrolling in active area.', 'kadence-blocks' ) }
+										checked={ enableScrollSpy }
+										onChange={ value => setAttributes( { enableScrollSpy: value } ) }
+									/>
+									{ enableScrollSpy && (
+										<AdvancedPopColorControl
+											label={ __( 'List Items Active Color', 'kadence-blocks' ) }
+											colorValue={ ( contentActiveColor ? contentActiveColor : '' ) }
+											colorDefault={ '' }
+											onColorChange={ ( value ) => setAttributes( { contentActiveColor: value } ) }
+										/>
+									) }
+								</PanelBody>
+							</Fragment>
 						) }
 					</InspectorControls>
 				) }
@@ -861,7 +880,7 @@ class KadenceTableOfContents extends Component {
 									onChange={ value => {
 										setAttributes( { title: value } );
 									} }
-									allowedFormats={ [ 'core/bold', 'core/italic', 'core/strikethrough' ] }
+									allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 									className={ 'kb-table-of-contents-title' }
 									style={ {
 										color: 'inherit',

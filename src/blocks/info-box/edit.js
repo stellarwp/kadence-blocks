@@ -56,7 +56,9 @@ const {
 	ToggleControl,
 	SelectControl,
 } = wp.components;
-
+const {
+	applyFilters,
+} = wp.hooks;
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -2918,8 +2920,7 @@ class KadenceInfoBox extends Component {
 										<div className={ 'kadence-info-box-number-inner-container' } >
 											<RichText
 												className="kt-blocks-info-box-number"
-												formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
-												allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
+												allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
 												tagName={ 'div' }
 												placeholder={ __( '1' ) }
 												onChange={ onChangeNumber }
@@ -2950,8 +2951,7 @@ class KadenceInfoBox extends Component {
 						{ displayTitle && (
 							<RichText
 								className="kt-blocks-info-box-title"
-								formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
-								allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
+								allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
 								tagName={ titleTagName }
 								placeholder={ __( 'Title' ) }
 								onChange={ onChangeTitle }
@@ -2978,8 +2978,7 @@ class KadenceInfoBox extends Component {
 						{ displayText && (
 							<RichText
 								className="kt-blocks-info-box-text"
-								formattingControls={ ( linkProperty === 'learnmore' ? [ 'bold', 'italic', 'link', 'strikethrough' ] : [ 'bold', 'italic', 'strikethrough' ] ) }
-								allowedFormats={ ( linkProperty === 'learnmore' ? [ 'core/bold', 'core/italic', 'core/link' ] : [ 'core/bold', 'core/italic' ] ) }
+								allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
 								tagName={ 'p' }
 								placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.' ) }
 								onChange={ ( value ) => setAttributes( { contentText: value } ) }
@@ -3008,8 +3007,7 @@ class KadenceInfoBox extends Component {
 								margin: ( learnMoreStyles[ 0 ].margin ? learnMoreStyles[ 0 ].margin[ 0 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 1 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 2 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 							} } >
 								<RichText
-									formattingControls={ [ 'bold', 'italic' ] }
-									allowedFormats={ [ 'core/bold', 'core/italic' ] }
+									allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) }
 									className="kt-blocks-info-box-learnmore"
 									tagName={ 'div' }
 									placeholder={ __( 'Learn More' ) }
