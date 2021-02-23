@@ -1,0 +1,223 @@
+/**
+ * BLOCK: Kadence Latest Posts
+ *
+ * Registering a block with Gutenberg.
+ */
+
+/**
+ * Import Icons
+ */
+import icons from './icon';
+
+import classnames from 'classnames';
+/**
+ * Import Css
+ */
+import './editor.scss';
+
+
+
+import edit from './edit';
+/**
+ * Internal block libraries
+ */
+const { __ } = wp.i18n;
+const {
+	registerBlockType,
+	createBlock,
+	getBlockDefaultClassName,
+} = wp.blocks;
+const {
+	Fragment,
+} = wp.element;
+const {
+	RichText,
+	getColorClassName,
+} = wp.blockEditor;
+
+/**
+ * Register: a Gutenberg Block.
+ *
+ * @link https://wordpress.org/gutenberg/handbook/block-api/
+ * @param  {string}   name     Block name.
+ * @param  {Object}   settings Block settings.
+ * @return {?WPBlock}          The block, if it has been successfully
+ *                             registered; otherwise `undefined`.
+ */
+registerBlockType( 'kadence/posts', {
+	title: __( 'Posts', 'kadence-blocks' ),
+	icon: {
+		src: icons.block,
+	},
+	category: 'kadence-blocks',
+	keywords: [
+		__( 'latest posts' ),
+		__( 'blog' ),
+		__( 'KB' ),
+	],
+	supports: {
+		html: false,
+		//align: [ 'left', 'right', 'center' ],
+	},
+	attributes: {
+		uniqueID: {
+			type: 'string',
+		},
+		columns: {
+			type: 'number',
+			default: 3,
+		},
+		postsToShow: {
+			type: 'number',
+			default: 6,
+		},
+		offsetQuery: {
+			type: 'number',
+			default: 0,
+		},
+		allowSticky: {
+			type: 'bool',
+			default: false,
+		},
+		postType: {
+			type: 'string',
+			default: 'post',
+		},
+		postTax: {
+			type: 'bool',
+			default: false,
+		},
+		taxType: {
+			type: 'string',
+			default: '',
+		},
+		order: {
+			type: 'string',
+			default: 'desc',
+		},
+		orderBy: {
+			type: 'string',
+			default: 'date',
+		},
+		excludeTax: {
+			type: 'string',
+			default: 'include',
+		},
+		categories: {
+			type: 'array',
+			default: [],
+		},
+		tags: {
+			type: 'array',
+			default: [],
+		},
+		alignImage: {
+			type: 'string',
+			default: 'beside',
+		},
+		image: {
+			type: 'bool',
+			default: true,
+		},
+		imageSize: {
+			type: 'string',
+			default: 'medium_large',
+		},
+		imageRatio: {
+			type: 'string',
+			default: '2-3',
+		},
+		aboveCategories: {
+			type: 'bool',
+			default: true,
+		},
+		categoriesDivider: {
+			type: 'string',
+			default: 'vline',
+		},
+		categoriesStyle: {
+			type: 'string',
+			default: 'normal',
+		},
+		meta: {
+			type: 'bool',
+			default: true,
+		},
+		metaDivider: {
+			type: 'string',
+			default: 'dot',
+		},
+		author: {
+			type: 'bool',
+			default: true,
+		},
+		authorImage: {
+			type: 'bool',
+			default: false,
+		},
+		authorImageSize: {
+			type: 'number',
+			default: 25,
+		},
+		authorEnabledLabel: {
+			type: 'bool',
+			default: true,
+		},
+		authorLabel: {
+			type: 'string',
+			default: '',
+		},
+		date: {
+			type: 'bool',
+			default: true,
+		},
+		dateEnabledLabel: {
+			type: 'bool',
+			default: false,
+		},
+		dateLabel: {
+			type: 'string',
+			default: '',
+		},
+		dateUpdated: {
+			type: 'bool',
+			default: false,
+		},
+		dateUpdateEnabledLabel: {
+			type: 'bool',
+			default: false,
+		},
+		dateUpdateLabel: {
+			type: 'string',
+			default: '',
+		},
+		metaCategories: {
+			type: 'bool',
+			default: false,
+		},
+		metaCategoriesEnabledLabel: {
+			type: 'bool',
+			default: false,
+		},
+		metaCategoriesLabel: {
+			type: 'string',
+			default: '',
+		},
+		excerpt: {
+			type: 'bool',
+			default: true,
+		},
+		readmore: {
+			type: 'bool',
+			default: true,
+		},
+		readmoreLabel: {
+			type: 'string',
+			default: '',
+		},
+	},
+	edit,
+	save() {
+		return null;
+	},
+} );

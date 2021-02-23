@@ -29,13 +29,9 @@
     color: #333;
 }
  .wp-block-kadence-advancedbtn {
-	.btn-area-wrap {
-		padding-top: 14px;
-	}
-}
- .wp-block-kadence-advancedbtn {
 	.btn-area-wrap.is-selected {
 		position:relative;
+        padding-top: 14px;
 		min-width: 100px;
 		&:before {
 			content: '';
@@ -386,6 +382,10 @@
     position: relative;
     vertical-align: middle;
     display:inline-block;
+}
+.wp-block[data-type="kadence/advancedbtn"] {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 [data-type="kadence/advancedbtn"].is-selected .wp-block-kadence-advancedbtn, [data-type="kadence/advancedbtn"].is-typing .wp-block-kadence-advancedbtn {
     padding-bottom: 40px;

@@ -70,6 +70,7 @@ class KadenceInfoBox extends Component {
 	constructor() {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
+		this.getPreviewSize = this.getPreviewSize.bind( this );
 		this.state = {
 			containerPaddingControl: 'linked',
 			containerBorderControl: 'linked',
@@ -154,6 +155,20 @@ class KadenceInfoBox extends Component {
 			return true;
 		}
 		return false;
+	}
+	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
 	}
 	render() {
 		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored, number, mediaNumber }, className, setAttributes, isSelected } = this.props;
@@ -1127,39 +1142,6 @@ class KadenceInfoBox extends Component {
 				mediaIcon: newUpdate,
 			} );
 		};
-		const saveMediaNumber = ( value ) => {
-			if ( undefined === mediaNumber ) {
-				const tempMediaNumber = [ {
-					family: '',
-					google: false,
-					hoverAnimation: 'none',
-					style: '',
-					weight: '',
-					variant: '',
-					subset: '',
-					loadGoogle: true,
-				} ];
-				const tempNewUpdate = tempMediaNumber.map( ( item, index ) => {
-					if ( 0 === index ) {
-						item = { ...item, ...value };
-					}
-					return item;
-				} );
-				setAttributes( {
-					mediaNumber: tempNewUpdate,
-				} );
-			} else {
-				const newUpdate = this.props.attributes.mediaNumber.map( ( item, index ) => {
-					if ( 0 === index ) {
-						item = { ...item, ...value };
-					}
-					return item;
-				} );
-				setAttributes( {
-					mediaNumber: newUpdate,
-				} );
-			}
-		};
 		const saveMediaStyle = ( value ) => {
 			const newUpdate = mediaStyle.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -1169,6 +1151,27 @@ class KadenceInfoBox extends Component {
 			} );
 			setAttributes( {
 				mediaStyle: newUpdate,
+			} );
+		};
+		const saveMediaNumber = ( value ) => {
+			const newMediaNumber = mediaNumber ? mediaNumber : [ {
+				family: '',
+				google: false,
+				hoverAnimation: 'none',
+				style: '',
+				weight: '',
+				variant: '',
+				subset: '',
+				loadGoogle: true,
+			} ];
+			const newNumberUpdate = newMediaNumber.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				mediaNumber: newNumberUpdate,
 			} );
 		};
 		const saveTitleFont = ( value ) => {
@@ -2092,7 +2095,7 @@ class KadenceInfoBox extends Component {
 											step={ 1 }
 										/>
 										<TypographyControls
-											fontFamily={ mediaNumber[ 0 ].family }
+											fontFamily={ mediaNumber[ 0 ] && mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : '' }
 											onFontFamily={ ( value ) => saveMediaNumber( { family: value } ) }
 											onFontChange={ ( select ) => {
 												saveMediaNumber( {
@@ -2100,6 +2103,7 @@ class KadenceInfoBox extends Component {
 													google: select.google,
 												} );
 											} }
+											onFontArrayChange={ ( values ) => saveMediaNumber( values ) }
 											googleFont={ undefined !== mediaNumber[ 0 ].google ? mediaNumber[ 0 ].google : false }
 											onGoogleFont={ ( value ) => saveMediaNumber( { google: value } ) }
 											loadGoogleFont={ undefined !== mediaNumber[ 0 ].loadGoogle ? mediaNumber[ 0 ].loadGoogle : true }
@@ -2930,7 +2934,7 @@ class KadenceInfoBox extends Component {
 													fontStyle: mediaNumber[ 0 ].style,
 													color: ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
 													fontSize: mediaIcon[ 0 ].size + 'px',
-													fontFamily: ( mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : '' ),
+													fontFamily: ( mediaNumber[ 0 ].family ? mediaNumber[ 0 ].family : undefined ),
 												} }
 											/>
 										</div>

@@ -143,6 +143,19 @@ class KadenceRowLayoutSettings extends Component {
 							onChange={ value => this.saveConfigState( 'backgroundOverlay', value ) }
 						/>
 						<SelectControl
+							label={ __( 'Enable Border Settings' ) }
+							value={ ( rowSettings.border ? rowSettings.border : 'all' ) }
+							options={ [
+								{ value: 'all', label: __( 'All Users' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
+								{ value: 'none', label: __( 'No Users' ) },
+							] }
+							onChange={ value => this.saveConfigState( 'border', value ) }
+						/>
+						<SelectControl
 							label={ __( 'Enable Dividers Settings' ) }
 							value={ ( rowSettings.dividers ? rowSettings.dividers : 'all' ) }
 							options={ [

@@ -119,6 +119,8 @@ function kadence_gutenberg_editor_assets() {
 			'isKadenceT'     => class_exists( 'Kadence\Theme' ),
 			'headingWeights' => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_headings_weights() : null,
 			'buttonWeights'  => class_exists( 'Kadence\Theme' ) ? kadence_blocks_get_button_weights() : null,
+			'postTypes'      => kadence_blocks_get_post_types(),
+			'taxonomies'     => kadence_blocks_get_taxonomies(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
 			'fluentCRM'      => defined( 'FLUENTCRM' ),
@@ -140,6 +142,65 @@ function kadence_gutenberg_editor_assets() {
 }
 add_action( 'init', 'kadence_gutenberg_editor_assets' );
 
+/**
+ * Setup the post type taxonomies for post blocks.
+ *
+ * @return array
+ */
+function kadence_blocks_get_taxonomies() {
+	$post_types = kadence_blocks_get_post_types();
+	$output = array();
+	foreach ( $post_types as $key => $post_type ) {
+		$taxonomies = get_object_taxonomies( $post_type['value'], 'objects' );
+		$taxs = array();
+		foreach ( $taxonomies as $term_slug => $term ) {
+			if ( ! $term->public || ! $term->show_ui ) {
+				continue;
+			}
+			$taxs[ $term_slug ] = $term;
+			$terms = get_terms( $term_slug );
+			$term_items = array();
+			if ( ! empty( $terms ) ) {
+				foreach ( $terms as $term_key => $term_item ) {
+					$term_items[] = array(
+						'value' => $term_item->term_id,
+						'label' => $term_item->name,
+					);
+				}
+				$output[ $post_type['value'] ]['terms'][ $term_slug ] = $term_items;
+			}
+		}
+		$output[ $post_type['value'] ]['taxonomy'] = $taxs;
+	}
+	return apply_filters( 'kadence_blocks_taxonomies', $output );
+}
+
+/**
+ * Setup the post type options for post blocks.
+ *
+ * @return array
+ */
+function kadence_blocks_get_post_types() {
+	$args = array(
+		'public'       => true,
+		'show_in_rest' => true,
+	);
+	$post_types = get_post_types( $args, 'objects' );
+	$output = array();
+	foreach ( $post_types as $post_type ) {
+		// if ( 'product' == $post_type->name || 'attachment' == $post_type->name ) {
+		// 	continue;
+		// }
+		if ( 'attachment' == $post_type->name ) {
+			continue;
+		}
+		$output[] = array(
+			'value' => $post_type->name,
+			'label' => $post_type->label,
+		);
+	}
+	return apply_filters( 'kadence_blocks_post_types', $output );
+}
 /**
  * Get an array font weight options.
  */
@@ -575,7 +636,45 @@ function kadence_blocks_locate_template( $template_name, $template_path = '', $d
 	// Return what we found.
 	return apply_filters( 'kadence_blocks_locate_template', $template, $template_name, $template_path );
 }
+/**
+ * Print an SVG Icon
+ *
+ * @param string $icon the icon name.
+ * @param string $icon_title the icon title for screen readers.
+ * @param bool   $base if the baseline class should be added.
+ */
+function kadence_blocks_print_icon( $icon = 'arrow-right-alt', $icon_title = '', $base = true ) {
+	echo kadence_blocks_get_icon( $icon, $icon_title, $base ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+/**
+ * Get an SVG Icon
+ *
+ * @param string $icon the icon name.
+ * @param string $icon_title the icon title for screen readers.
+ * @param bool   $base if the baseline class should be added.
+ */
+function kadence_blocks_get_icon( $icon = 'arrow-right-alt', $icon_title = '', $base = true, $aria = false ) {
+	$display_title = apply_filters( 'kadence_svg_icons_have_title', true );
+	$output = '<span class="kadence-svg-iconset' . ( $base ? ' svg-baseline' : '' ) . '">';
+	switch ( $icon ) {
+		case 'arrow-right-alt':
+			$output .= '<svg' . ( ! $aria ? ' aria-hidden="true"' : '' ) . ' class="kadence-svg-icon kadence-arrow-right-alt-svg" fill="currentColor" version="1.1" xmlns="http://www.w3.org/2000/svg" width="27" height="28" viewBox="0 0 27 28">';
+			if ( $display_title ) {
+				$output .= '<title>' . ( ! empty( $icon_title ) ? $icon_title : esc_html__( 'Continue', 'kadence' ) ) . '</title>';
+			}
+			$output .= '<path d="M27 13.953c0 0.141-0.063 0.281-0.156 0.375l-6 5.531c-0.156 0.141-0.359 0.172-0.547 0.094-0.172-0.078-0.297-0.25-0.297-0.453v-3.5h-19.5c-0.281 0-0.5-0.219-0.5-0.5v-3c0-0.281 0.219-0.5 0.5-0.5h19.5v-3.5c0-0.203 0.109-0.375 0.297-0.453s0.391-0.047 0.547 0.078l6 5.469c0.094 0.094 0.156 0.219 0.156 0.359v0z"></path>
+			</svg>';
+			break;
+		default:
+			$output .= '';
+			break;
+	}
+	$output .= '</span>';
 
+	$output = apply_filters( 'kadence_svg_icon', $output, $icon, $icon_title, $base );
+
+	return $output;
+}
 /**
  * Convert the post ID in Kadence Form's block.
  *

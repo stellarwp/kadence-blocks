@@ -35,6 +35,7 @@ import './blocks/testimonials/block.js';
 import './blocks/advanced-gallery/block.js';
 import './blocks/form/block.js';
 import './blocks/table-of-contents/block.js';
+import './blocks/posts/block.js';
 // import './blocks/restaurant-menu/block.js';
 // import './blocks/restaurant-menu/menu-category/block.js';
 // import './blocks/restaurant-menu/menu-category/category-item/block.js';

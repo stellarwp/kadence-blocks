@@ -585,6 +585,8 @@ registerBlockType( 'kadence/rowlayout', {
 					bottomSVGDivider = <path d="M500,2l25,98l-50,0l25,-98Z" />;
 				} else if ( 'littrii' === bottomSep ) {
 					bottomSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
+				} else if ( 'threelevels' === bottomSep ) {
+					bottomSVGDivider = <Fragment><path style={ { opacity: 0.33 } } d="M0 95L1000 0v100H0v-5z"></path><path style={ { opacity: 0.66 } } d="M0 95l1000-67.944V100H0v-5z"></path><path d="M0 95l1000-40.887V100H0v-5z"></path></Fragment>
 				}
 				let topSVGDivider;
 				if ( 'ct' === topSep ) {

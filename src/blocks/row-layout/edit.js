@@ -108,6 +108,8 @@ class KadenceRowLayout extends Component {
 			firstWidth: null,
 			secondWidth: null,
 			showPreset: false,
+			borderWidthControl: 'individual',
+			borderRadiusControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
@@ -144,6 +146,11 @@ class KadenceRowLayout extends Component {
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/rowlayout' ] !== undefined && typeof blockSettings[ 'kadence/rowlayout' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/rowlayout' ] } );
+		}
+		if ( this.props.attributes.borderRadius && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 1 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 2 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 3 ] ) {
+			this.setState( { borderRadiusControl: 'linked' } );
+		} else {
+			this.setState( { borderRadiusControl: 'individual' } );
 		}
 	}
 	showSettings( key ) {
@@ -194,7 +201,8 @@ class KadenceRowLayout extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { borderWidthControl, borderRadiusControl } = this.state;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -279,6 +287,28 @@ class KadenceRowLayout extends Component {
 		const previewMarginTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== topMargin ? topMargin : '' ), ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== topMarginM ? topMarginM : '' ) );
 		const previewMarginBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ) );
 		const previewBackgroundColor = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bgColor ? bgColor : '' ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgColor ? tabletBackground[0].bgColor : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgColor ? mobileBackground[0].bgColor : '' ) );
+		const previewBorderTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 0 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 0 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 0 ] : '' ) );
+		const previewBorderRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 1 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 1 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 1 ] : '' ) );
+		const previewBorderBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 2 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 2 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 2 ] : '' ) );
+		const previewBorderLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 3 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 3 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 3 ] : '' ) );
+		const previewRadiusTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderRadius ? borderRadius[ 0 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 0 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 0 ] : '' ) );
+		const previewRadiusRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
+		const previewRadiusBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
+		const previewRadiusLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
+		const previewBorderColor = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== border ? border : '' ), ( undefined !== tabletBorder ? tabletBorder : '' ), ( undefined !== mobileBorder ? mobileBorder : '' ) );
+		let hasBorderRadius = false;
+		if ( undefined !== borderRadius && undefined !== borderRadius[0] && borderRadius[0] ) {
+			hasBorderRadius = true;
+		}
+		if ( undefined !== borderRadius && undefined !== borderRadius[1] && borderRadius[1] ) {
+			hasBorderRadius = true;
+		}
+		if ( undefined !== borderRadius && undefined !== borderRadius[2] && borderRadius[2] ) {
+			hasBorderRadius = true;
+		}
+		if ( undefined !== borderRadius && undefined !== borderRadius[3] && borderRadius[3] ) {
+			hasBorderRadius = true;
+		}
 		const onResize = ( event, direction, elt ) => {
 			let firstCol;
 			let secondCol;
@@ -362,6 +392,7 @@ class KadenceRowLayout extends Component {
 			[ `kt-custom-second-width-${ secondWidthString }` ]: secondWidthString,
 			[ `kt-custom-third-width-${ thirdWidthString }` ]: thirdWidthString,
 			[ hasBG ]: hasBG,
+			'has-border-radius' : hasBorderRadius,
 			'kt-inner-column-height-full': columnsInnerHeight,
 			'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 			'kvs-md-false': vstablet !== 'undefined' && vstablet,
@@ -513,6 +544,8 @@ class KadenceRowLayout extends Component {
 		bottomSVGDivider.mtns = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
 		bottomSVGDivider.littri = <path d="M500,2l25,98l-50,0l25,-98Z" />;
 		bottomSVGDivider.littrii = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
+		bottomSVGDivider.threelevels = <Fragment><path style={ { opacity: 0.33 } } d="M0 95L1000 0v100H0v-5z"></path><path style={ { opacity: 0.66 } } d="M0 95l1000-67.944V100H0v-5z"></path><path d="M0 95l1000-40.887V100H0v-5z"></path></Fragment>;
+		bottomSVGDivider.threelevelsi = <Fragment><path style={ { opacity: 0.33 } } d="M1000 95L0 0v100h1000v-5z"></path><path style={ { opacity: 0.66 } } d="M1000 95L0 27.056V100h1000v-5z"></path><path d="M1000 95L0 54.113V100h1000v-5z"></path></Fragment>;
 		const renderBottomSVGDivider = svg => (
 			<svg viewBox="0 0 1000 100" preserveAspectRatio="none" style={ { fill: '#000000' } }>
 				{ bottomSVGDivider[ svg ] }
@@ -540,6 +573,8 @@ class KadenceRowLayout extends Component {
 		topSVGDivider.mtns = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
 		topSVGDivider.littri = <path d="M500,2l25,98l-50,0l25,-98Z" />;
 		topSVGDivider.littrii = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
+		topSVGDivider.threelevels = <Fragment><path style={ { opacity: 0.33 } } d="M1000 5L0 100V0h1000v5z"></path><path style={ { opacity: 0.66 } } d="M1000 5L0 72.944V0h1000v5z"></path><path d="M1000 5L0 45.887V0h1000v5z"></path></Fragment>;
+		topSVGDivider.threelevelsi = <Fragment><path style={ { opacity: 0.33 } } d="M0 5l1000 95V0H0v5z"></path><path style={ { opacity: 0.66 } } d="M0 5l1000 67.944V0H0v5z"></path><path d="M0 5l1000 40.887V0H0v5z"></path></Fragment>;
 		const renderTopSVGDivider = svg => (
 			<svg className="top-icon" viewBox="0 0 1000 100" preserveAspectRatio="none" style={ { fill: '#000000' } }>
 				{ topSVGDivider[ svg ] }
@@ -750,72 +785,18 @@ class KadenceRowLayout extends Component {
 						title={ __( 'Mobile Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
-						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Padding Type', 'kadence-blocks' ) }>
-							{ map( paddingTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ paddingUnit === key }
-									aria-pressed={ paddingUnit === key }
-									onClick={ () => setAttributes( { paddingUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<h2>{ __( 'Padding', 'kadence-blocks' ) }</h2>
-						<KadenceRange
-							beforeIcon={ icons.outlinetop }
-							value={ topPaddingM }
-							className="kt-icon-rangecontrol kt-top-padding"
-							onChange={ ( value ) => {
-								setAttributes( {
-									topPaddingM: value,
-								} );
-							} }
+						<MeasurementControls
+							label={ __( 'Mobile Padding', 'kadence-blocks' ) }
+							measurement={ [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ] }
+							onChange={ ( value ) => setAttributes( { topPaddingM: value[ 0 ], rightPaddingM: value[ 1 ], bottomPaddingM: value[ 2 ], leftPaddingM: value[ 3 ] } ) }
 							min={ paddingMin }
 							max={ paddingMax }
 							step={ paddingStep }
-						/>
-						<KadenceRange
-							beforeIcon={ icons.outlineright }
-							value={ rightPaddingM }
-							className="kt-icon-rangecontrol kt-right-padding"
-							onChange={ ( value ) => {
-								setAttributes( {
-									rightPaddingM: value,
-								} );
-							} }
-							min={ paddingMin }
-							max={ paddingMax }
-							step={ paddingStep }
-						/>
-						<KadenceRange
-							beforeIcon={ icons.outlinebottom }
-							value={ bottomPaddingM }
-							className="kt-icon-rangecontrol kt-bottom-padding"
-							onChange={ ( value ) => {
-								setAttributes( {
-									bottomPaddingM: value,
-								} );
-							} }
-							min={ paddingMin }
-							max={ paddingMax }
-							step={ paddingStep }
-						/>
-						<KadenceRange
-							beforeIcon={ icons.outlineleft }
-							value={ leftPaddingM }
-							className="kt-icon-rangecontrol kt-left-padding"
-							onChange={ ( value ) => {
-								setAttributes( {
-									leftPaddingM: value,
-								} );
-							} }
-							min={ paddingMin }
-							max={ paddingMax }
-							step={ paddingStep }
+							allowEmpty={ true }
+							unit={ paddingUnit }
+							onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+							showUnit={ true }
+							units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 						/>
 						<MeasurementControls
 							label={ __( 'Mobile Margin', 'kadence-blocks' ) }
@@ -985,6 +966,53 @@ class KadenceRowLayout extends Component {
 								}
 							</TabPanel>
 						) }
+					</PanelBody>
+				) }
+				{ this.showSettings( 'border' ) && (
+					<PanelBody
+						title={ __( 'Border Settings', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<AdvancedPopColorControl
+							label={ __( 'Mobile Border Color', 'kadence-blocks' ) }
+							colorValue={ ( mobileBorder ? mobileBorder : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => setAttributes( { mobileBorder: value } ) }
+						/>
+						<MeasurementControls
+							label={ __( 'Mobile Border Width', 'kadence-blocks' ) }
+							measurement={ mobileBorderWidth }
+							onChange={ ( value ) => setAttributes( { mobileBorderWidth: value } ) }
+							control={ borderWidthControl }
+							onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
+							min={ 0 }
+							max={ 40 }
+							step={ 1 }
+							allowEmpty={ true }
+							unit={ 'px' }
+							units={ [ 'px' ] }
+							showUnit={ true }
+							preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
+						/>
+						<MeasurementControls
+							label={ __( 'Mobile Border Radius', 'kadence-blocks' ) }
+							measurement={ mobileBorderRadius }
+							control={ borderRadiusControl }
+							onChange={ ( value ) => setAttributes( { mobileBorderRadius: value } ) }
+							onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
+							min={ 0 }
+							max={ 500 }
+							step={ 1 }
+							allowEmpty={ true }
+							controlTypes={ [
+								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
+								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							] }
+							firstIcon={ icons.topleft }
+							secondIcon={ icons.topright }
+							thirdIcon={ icons.bottomright }
+							fourthIcon={ icons.bottomleft }
+						/>
 					</PanelBody>
 				) }
 			</Fragment>
@@ -1202,6 +1230,53 @@ class KadenceRowLayout extends Component {
 								}
 							</TabPanel>
 						) }
+					</PanelBody>
+				) }
+				{ this.showSettings( 'border' ) && (
+					<PanelBody
+						title={ __( 'Border Settings', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<AdvancedPopColorControl
+							label={ __( 'Tablet Border Color', 'kadence-blocks' ) }
+							colorValue={ ( tabletBorder ? tabletBorder : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => setAttributes( { tabletBorder: value } ) }
+						/>
+						<MeasurementControls
+							label={ __( 'Tablet Border Width', 'kadence-blocks' ) }
+							measurement={ tabletBorderWidth }
+							onChange={ ( value ) => setAttributes( { tabletBorderWidth: value } ) }
+							control={ borderWidthControl }
+							onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
+							min={ 0 }
+							max={ 40 }
+							step={ 1 }
+							allowEmpty={ true }
+							unit={ 'px' }
+							units={ [ 'px' ] }
+							showUnit={ true }
+							preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
+						/>
+						<MeasurementControls
+							label={ __( 'Tablet Border Radius', 'kadence-blocks' ) }
+							measurement={ tabletBorderRadius }
+							control={ borderRadiusControl }
+							onChange={ ( value ) => setAttributes( { tabletBorderRadius: value } ) }
+							onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
+							min={ 0 }
+							max={ 500 }
+							step={ 1 }
+							allowEmpty={ true }
+							controlTypes={ [
+								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
+								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							] }
+							firstIcon={ icons.topleft }
+							secondIcon={ icons.topright }
+							thirdIcon={ icons.bottomright }
+							fourthIcon={ icons.bottomleft }
+						/>
 					</PanelBody>
 				) }
 			</Fragment>
@@ -1970,6 +2045,53 @@ class KadenceRowLayout extends Component {
 								}
 							}
 						</TabPanel>
+					</PanelBody>
+				) }
+				{ this.showSettings( 'border' ) && (
+					<PanelBody
+						title={ __( 'Border Settings', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<AdvancedPopColorControl
+							label={ __( 'Border Color', 'kadence-blocks' ) }
+							colorValue={ ( border ? border : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => setAttributes( { border: value } ) }
+						/>
+						<MeasurementControls
+							label={ __( 'Border Width', 'kadence-blocks' ) }
+							measurement={ borderWidth }
+							onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
+							control={ borderWidthControl }
+							onControl={ ( value ) => this.setState( { borderWidthControl: value } ) }
+							min={ 0 }
+							max={ 40 }
+							step={ 1 }
+							allowEmpty={ true }
+							unit={ 'px' }
+							units={ [ 'px' ] }
+							showUnit={ true }
+							preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
+						/>
+						<MeasurementControls
+							label={ __( 'Border Radius', 'kadence-blocks' ) }
+							measurement={ borderRadius }
+							control={ borderRadiusControl }
+							onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
+							onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
+							min={ 0 }
+							max={ 500 }
+							step={ 1 }
+							allowEmpty={ true }
+							controlTypes={ [
+								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
+								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							] }
+							firstIcon={ icons.topleft }
+							secondIcon={ icons.topright }
+							thirdIcon={ icons.bottomright }
+							fourthIcon={ icons.bottomleft }
+						/>
 					</PanelBody>
 				) }
 			</Fragment>
@@ -2920,6 +3042,8 @@ class KadenceRowLayout extends Component {
 						'mtns',
 						'littri',
 						'littrii',
+						'threelevels',
+						'threelevelsi',
 					] }
 					value={ ( topSep === 'none' ? '' : topSep ) }
 					onChange={ value => setAttributes( { topSep: value } ) }
@@ -2997,6 +3121,8 @@ class KadenceRowLayout extends Component {
 						'mtns',
 						'littri',
 						'littrii',
+						'threelevels',
+						'threelevelsi',
 					] }
 					value={ ( bottomSep === 'none' ? '' : bottomSep ) }
 					onChange={ value => setAttributes( { bottomSep: value } ) }
@@ -3412,6 +3538,15 @@ class KadenceRowLayout extends Component {
 				<div className={ classes } style={ {
 					marginBottom: previewMarginBottom + marginUnit,
 					marginTop: previewMarginTop + marginUnit,
+					borderColor: ( previewBorderColor ? KadenceColorOutput( previewBorderColor ) : undefined ),
+					borderTopWidth: ( previewBorderTop ? previewBorderTop + 'px' : undefined ),
+					borderRightWidth: ( previewBorderRight ? previewBorderRight + 'px' : undefined ),
+					borderBottomWidth: ( previewBorderBottom ? previewBorderBottom + 'px' : undefined ),
+					borderLeftWidth: ( previewBorderLeft ? previewBorderLeft + 'px' : undefined ),
+					borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + 'px' : undefined ),
+					borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + 'px' : undefined ),
+					borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + 'px' : undefined ),
+					borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + 'px' : undefined ),
 					minHeight: minHeight + minHeightUnit,
 					zIndex: ( zIndex ? zIndex : undefined ),
 				} }>
@@ -3422,7 +3557,6 @@ class KadenceRowLayout extends Component {
 							backgroundSize: bgImgSize,
 							backgroundPosition: bgImgPosition,
 							backgroundRepeat: bgImgRepeat,
-							backgroundAttachment: ( bgImgAttachment === 'parallax' ? 'fixed' : bgImgAttachment ),
 						} }></div>
 					) }
 					{ ( 'slider' === backgroundSettingTab ) && (

@@ -500,5 +500,41 @@ const attributes = {
 		type: 'bool',
 		default: false,
 	},
+	borderWidth: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	tabletBorderWidth: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	mobileBorderWidth: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	borderRadius: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	tabletBorderRadius: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	mobileBorderRadius: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	border: {
+		type: 'string',
+		default: '',
+	},
+	tabletBorder: {
+		type: 'string',
+		default: '',
+	},
+	mobileBorder: {
+		type: 'string',
+		default: '',
+	},
 };
 export default attributes;

@@ -297,7 +297,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->row_layout_array_css( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'rowlayout', $unique_id ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -346,7 +346,7 @@ class Kadence_Blocks_Frontend {
 			$css = $this->column_layout_css( $attributes, $unique_id );
 			if ( ! empty( $css ) ) {
 				if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'column', $unique_id ) ) {
-					$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 				} else {
 					$this->render_inline_css( $css, $style_id, true );
 				}
@@ -409,7 +409,7 @@ class Kadence_Blocks_Frontend {
 				if ( ! empty( $css ) ) {
 					// This only runs if the content if loaded via the rest API. Normally the css would already be added in the head.
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -455,7 +455,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_advanced_heading_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'advancedheading', $unique_id ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -585,7 +585,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -641,7 +641,7 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'spacer', $unique_id ) ) {
 				$css = $this->blocks_spacer_array( $attributes, $unique_id );
 				if ( doing_filter( 'the_content' ) ) {
-					$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+					$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 				} else {
 					$this->render_inline_css( $css, $style_id, true );
 				}
@@ -686,7 +686,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_icon_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -737,7 +737,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_infobox_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'infobox', $unique_id ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -847,7 +847,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_accordion_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -909,7 +909,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_testimonials_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -963,7 +963,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_form_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -1036,7 +1036,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_advancedgallery_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -1082,7 +1082,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_iconlist_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
@@ -1628,6 +1628,12 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_tableofcontents_scripts_check( $blockattr );
 						}
 					}
+					if ( 'kadence/posts' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->blocks_posts_styles_check( $blockattr );
+						}
+					}
 					if ( 'core/block' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -1757,6 +1763,12 @@ class Kadence_Blocks_Frontend {
 						$this->blocks_tableofcontents_scripts_check( $blockattr );
 					}
 				}
+				if ( 'kadence/posts' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->blocks_posts_styles_check( $blockattr );
+					}
+				}
 				if ( 'core/block' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -1773,6 +1785,17 @@ class Kadence_Blocks_Frontend {
 					$this->blocks_cycle_through( $inner_block['innerBlocks'] );
 				}
 			}
+		}
+	}
+	/**
+	 * Grabs the scripts that are needed so we can load in the head.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_posts_styles_check( $attr ) {
+		if ( ! class_exists( 'Kadence\Theme' ) ) {
+			$pb = Kadence_Blocks_Posts::get_instance();
+			$pb->enqueue_style( 'kadence-blocks-posts' );
 		}
 	}
 	/**
@@ -5867,13 +5890,60 @@ class Kadence_Blocks_Frontend {
 				$css->stop_media_query();
 			}
 		}
-		if ( isset( $attr['bgColor'] ) || isset( $attr['bgImg'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) ) {
+		if ( isset( $attr['bgColor'] ) || isset( $attr['bgImg'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['border'] ) || isset( $attr['borderWidth'] ) || isset( $attr['borderRadius'] ) ) {
 			$css->set_selector( '#kt-layout-id' . $unique_id );
 			if ( isset( $attr['topMargin'] ) ) {
 				$css->add_property( 'margin-top', $attr['topMargin'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['bottomMargin'] ) ) {
 				$css->add_property( 'margin-bottom', $attr['bottomMargin'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px' ) );
+			}
+			if ( isset( $attr['border'] ) ) {
+				$css->add_property( 'border-color', $css->render_color( $attr['border'] ) );
+			}
+			if ( isset( $attr['borderWidth'] ) && is_array( $attr['borderWidth'] ) ) {
+				if ( isset( $attr['borderWidth'][ 0 ] ) && is_numeric( $attr['borderWidth'][ 0 ] ) ) {
+					$css->add_property( 'border-top-width', $attr['borderWidth'][ 0 ] . 'px' );
+				}
+				if ( isset( $attr['borderWidth'][ 1 ] ) && is_numeric( $attr['borderWidth'][ 1 ] ) ) {
+					$css->add_property( 'border-right-width', $attr['borderWidth'][ 1 ] . 'px' );
+				}
+				if ( isset( $attr['borderWidth'][ 2 ] ) && is_numeric( $attr['borderWidth'][ 2 ] ) ) {
+					$css->add_property( 'border-bottom-width', $attr['borderWidth'][ 2 ] . 'px' );
+				}
+				if ( isset( $attr['borderWidth'][ 3 ] ) && is_numeric( $attr['borderWidth'][ 3 ] ) ) {
+					$css->add_property( 'border-left-width', $attr['borderWidth'][ 3 ] . 'px' );
+				}
+			}
+			$has_radius = false;
+			if ( isset( $attr['borderRadius'] ) && is_array( $attr['borderRadius'] ) ) {
+				if ( isset( $attr['borderRadius'][ 0 ] ) && is_numeric( $attr['borderRadius'][ 0 ] ) ) {
+					if ( 0 !== $attr['borderRadius'][ 0 ] ) {
+						$has_radius = true;
+					}
+					$css->add_property( 'border-top-left-radius', $attr['borderRadius'][ 0 ] . 'px' );
+				}
+				if ( isset( $attr['borderRadius'][ 1 ] ) && is_numeric( $attr['borderRadius'][ 1 ] ) ) {
+					if ( 0 !== $attr['borderRadius'][ 1 ] ) {
+						$has_radius = true;
+					}
+					$css->add_property( 'border-top-right-radius', $attr['borderRadius'][ 1 ] . 'px' );
+				}
+				if ( isset( $attr['borderRadius'][ 2 ] ) && is_numeric( $attr['borderRadius'][ 2 ] ) ) {
+					if ( 0 !== $attr['borderRadius'][ 2 ] ) {
+						$has_radius = true;
+					}
+					$css->add_property( 'border-bottom-right-radius', $attr['borderRadius'][ 2 ] . 'px' );
+				}
+				if ( isset( $attr['borderRadius'][ 3 ] ) && is_numeric( $attr['borderRadius'][ 3 ] ) ) {
+					if ( 0 !== $attr['borderRadius'][ 3 ] ) {
+						$has_radius = true;
+					}
+					$css->add_property( 'border-bottom-left-radius', $attr['borderRadius'][ 3 ] . 'px' );
+				}
+			}
+			if ( $has_radius ) {
+				$css->add_property( 'overflow', 'hidden' );
 			}
 			if ( isset( $attr['bgColor'] ) && ! empty( $attr['bgColor'] ) ) {
 				if ( isset( $attr['bgColorClass'] ) && empty( $attr['bgColorClass'] ) || ! isset( $attr['bgColorClass'] ) ) {
@@ -6058,15 +6128,46 @@ class Kadence_Blocks_Frontend {
 		}
 		$tablet_overlay = ( isset( $attr['tabletOverlay'] ) && is_array( $attr['tabletOverlay'] ) && isset( $attr['tabletOverlay'][0] ) && is_array( $attr['tabletOverlay'][0] ) ? $attr['tabletOverlay'][0] : array() );
 		$tablet_background = ( isset( $attr['tabletBackground'] ) && is_array( $attr['tabletBackground'] ) && isset( $attr['tabletBackground'][0] ) && is_array( $attr['tabletBackground'][0] ) ? $attr['tabletBackground'][0] : array() );
-		if ( isset( $attr['tabletPadding'] ) || isset( $attr['topMarginT'] ) || isset( $attr['minHeightTablet'] ) || isset( $attr['bottomMarginT'] ) || ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) || ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) ) {
+		if ( isset( $attr['tabletPadding'] ) || isset( $attr['topMarginT'] ) || isset( $attr['tabletBorder'] ) || isset( $attr['tabletBorderWidth'] ) || isset( $attr['tabletBorderRadius'] ) || isset( $attr['minHeightTablet'] ) || isset( $attr['bottomMarginT'] ) || ( isset( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) || ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] ) ) {
 			$css->start_media_query( $media_query['tablet'] );
-			if ( isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) ) {
+			if ( isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || isset( $attr['tabletBorder'] ) || isset( $attr['tabletBorderWidth'] ) || isset( $attr['tabletBorderRadius'] ) ) {
 				$css->set_selector( '#kt-layout-id' . $unique_id );
 				if ( isset( $attr['topMarginT'] ) ) {
 					$css->add_property( 'margin-top', $attr['topMarginT'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px' ) );
 				}
 				if ( isset( $attr['bottomMarginT'] ) ) {
 					$css->add_property( 'margin-bottom', $attr['bottomMarginT'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px' ) );
+				}
+				if ( isset( $attr['tabletBorder'] ) ) {
+					$css->add_property( 'border-color', $css->render_color( $attr['tabletBorder'] ) );
+				}
+				if ( isset( $attr['tabletBorderWidth'] ) && is_array( $attr['tabletBorderWidth'] ) ) {
+					if ( isset( $attr['tabletBorderWidth'][ 0 ] ) && is_numeric( $attr['tabletBorderWidth'][ 0 ] ) ) {
+						$css->add_property( 'border-top-width', $attr['tabletBorderWidth'][ 0 ] . 'px' );
+					}
+					if ( isset( $attr['tabletBorderWidth'][ 1 ] ) && is_numeric( $attr['tabletBorderWidth'][ 1 ] ) ) {
+						$css->add_property( 'border-right-width', $attr['tabletBorderWidth'][ 1 ] . 'px' );
+					}
+					if ( isset( $attr['tabletBorderWidth'][ 2 ] ) && is_numeric( $attr['tabletBorderWidth'][ 2 ] ) ) {
+						$css->add_property( 'border-bottom-width', $attr['tabletBorderWidth'][ 2 ] . 'px' );
+					}
+					if ( isset( $attr['tabletBorderWidth'][ 3 ] ) && is_numeric( $attr['tabletBorderWidth'][ 3 ] ) ) {
+						$css->add_property( 'border-left-width', $attr['tabletBorderWidth'][ 3 ] . 'px' );
+					}
+				}
+				if ( isset( $attr['tabletBorderRadius'] ) && is_array( $attr['tabletBorderRadius'] ) ) {
+					if ( isset( $attr['tabletBorderRadius'][ 0 ] ) && is_numeric( $attr['tabletBorderRadius'][ 0 ] ) ) {
+						$css->add_property( 'border-top-left-radius', $attr['tabletBorderRadius'][ 0 ] . 'px' );
+					}
+					if ( isset( $attr['tabletBorderRadius'][ 1 ] ) && is_numeric( $attr['tabletBorderRadius'][ 1 ] ) ) {
+						$css->add_property( 'border-top-right-radius', $attr['tabletBorderRadius'][ 1 ] . 'px' );
+					}
+					if ( isset( $attr['tabletBorderRadius'][ 2 ] ) && is_numeric( $attr['tabletBorderRadius'][ 2 ] ) ) {
+						$css->add_property( 'border-bottom-right-radius', $attr['tabletBorderRadius'][ 2 ] . 'px' );
+					}
+					if ( isset( $attr['tabletBorderRadius'][ 3 ] ) && is_numeric( $attr['tabletBorderRadius'][ 3 ] ) ) {
+						$css->add_property( 'border-bottom-left-radius', $attr['tabletBorderRadius'][ 3 ] . 'px' );
+					}
 				}
 			}
 			if ( ( isset( $attr['tabletPadding'] ) && is_array( $attr['tabletPadding'] ) ) || isset( $attr['minHeightTablet'] ) ) {
@@ -6180,6 +6281,37 @@ class Kadence_Blocks_Frontend {
 				}
 				if ( isset( $attr['bottomMarginM'] ) ) {
 					$css->add_property( 'margin-bottom', $attr['bottomMarginM'] . ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px' ) );
+				}
+				if ( isset( $attr['mobileBorder'] ) ) {
+					$css->add_property( 'border-color', $css->render_color( $attr['mobileBorder'] ) );
+				}
+				if ( isset( $attr['mobileBorderWidth'] ) && is_array( $attr['mobileBorderWidth'] ) ) {
+					if ( isset( $attr['mobileBorderWidth'][ 0 ] ) && is_numeric( $attr['mobileBorderWidth'][ 0 ] ) ) {
+						$css->add_property( 'border-top-width', $attr['mobileBorderWidth'][ 0 ] . 'px' );
+					}
+					if ( isset( $attr['mobileBorderWidth'][ 1 ] ) && is_numeric( $attr['mobileBorderWidth'][ 1 ] ) ) {
+						$css->add_property( 'border-right-width', $attr['mobileBorderWidth'][ 1 ] . 'px' );
+					}
+					if ( isset( $attr['mobileBorderWidth'][ 2 ] ) && is_numeric( $attr['mobileBorderWidth'][ 2 ] ) ) {
+						$css->add_property( 'border-bottom-width', $attr['mobileBorderWidth'][ 2 ] . 'px' );
+					}
+					if ( isset( $attr['mobileBorderWidth'][ 3 ] ) && is_numeric( $attr['mobileBorderWidth'][ 3 ] ) ) {
+						$css->add_property( 'border-left-width', $attr['mobileBorderWidth'][ 3 ] . 'px' );
+					}
+				}
+				if ( isset( $attr['mobileBorderRadius'] ) && is_array( $attr['mobileBorderRadius'] ) ) {
+					if ( isset( $attr['mobileBorderRadius'][ 0 ] ) && is_numeric( $attr['mobileBorderRadius'][ 0 ] ) ) {
+						$css->add_property( 'border-top-left-radius', $attr['mobileBorderRadius'][ 0 ] . 'px' );
+					}
+					if ( isset( $attr['mobileBorderRadius'][ 1 ] ) && is_numeric( $attr['mobileBorderRadius'][ 1 ] ) ) {
+						$css->add_property( 'border-top-right-radius', $attr['mobileBorderRadius'][ 1 ] . 'px' );
+					}
+					if ( isset( $attr['mobileBorderRadius'][ 2 ] ) && is_numeric( $attr['mobileBorderRadius'][ 2 ] ) ) {
+						$css->add_property( 'border-bottom-right-radius', $attr['mobileBorderRadius'][ 2 ] . 'px' );
+					}
+					if ( isset( $attr['mobileBorderRadius'][ 3 ] ) && is_numeric( $attr['mobileBorderRadius'][ 3 ] ) ) {
+						$css->add_property( 'border-bottom-left-radius', $attr['mobileBorderRadius'][ 3 ] . 'px' );
+					}
 				}
 			}
 			if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['minHeightMobile'] ) ) {
