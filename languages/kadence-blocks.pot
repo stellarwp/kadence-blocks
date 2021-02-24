@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Kadence Blocks\n"
-"POT-Creation-Date: 2020-09-30 10:16-0600\n"
+"POT-Creation-Date: 2021-02-23 15:57-0700\n"
 "PO-Revision-Date: 2015-05-08 13:15-0700\n"
 "Last-Translator: \n"
 "Language-Team: Kadence WP\n"
@@ -21,4791 +21,201 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-2: dist/vendor\n"
 "X-Poedit-SearchPathExcluded-3: src\n"
 
-#: dist/blocks.build.js:1
-msgid "Linked"
+#: dist/build/blocks.js:33
+msgid "full"
 msgstr ""
 
-#: dist/blocks.build.js:1
-msgid "Individual"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Measurement Control Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-#, javascript-format
-msgid "Heading %d"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "None"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Capitalize"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Uppercase"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Lowercase"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Size Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Font Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Line Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Font Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Line Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Font Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Line Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HTML Tag"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Size Controls"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Letter Spacing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text Transform"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Font Family"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select a font family"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Font Weight"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Font Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Font Subset"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Load Google Font on Frontend"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Padding Control Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Padding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Margin (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Clear"
-msgstr ""
-
-#: dist/blocks.build.js:1
-#, javascript-format
-msgid "Color code: %s"
-msgstr ""
-
-#: dist/blocks.build.js:1
-#, javascript-format
-msgid "Color: %s"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "X"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Y"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Blur"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Spread"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inset"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "URL"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Paste or type URL"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Apply"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "To edit this block, you need permission to upload media."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Upload a media file or pick one from your media library."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid ""
-"Upload an audio file, pick one from your media library, or add one with a "
-"URL."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid ""
-"Upload an image file, pick one from your media library, or add one with a "
-"URL."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid ""
-"Upload a video file, pick one from your media library, or add one with a URL."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Audio"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Video"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Cancel"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Insert from URL"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Color Control Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Default"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:489
-#: dist/settings/class-kadence-blocks-settings.php:501
-msgid "Large"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:488
-#: dist/settings/class-kadence-blocks-settings.php:500
-msgid "Small"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Full Screen Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Editor Max Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "*Note: You can define these widths in your Kadence Blocks settings."
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:728
-msgid "Spacer/Divider"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "spacer"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "divider"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "KT"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Spacer Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Height Units"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:469
-#: dist/settings/class-kadence-blocks-settings.php:478
-msgid "px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "vh"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Divider Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Divider"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Alignment"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Divider Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Solid"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Dashed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Dotted"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Stripe"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Divider Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Stripe Angle"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Stripe Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Stripe Gap"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Divider Height in px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Divider Width by %"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Visibility Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hide on Desktop"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hide on Tablet"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hide on Mobile"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:716
-msgid "Advanced Button"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid ""
-"Create an advanced button or a row of buttons. Style each one, including "
-"hover controls!"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:722
-msgid "Icon"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "KB"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "S"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "M"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "L"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Auto"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Fixed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Full"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Linear"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Radial"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gradient"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:255
-#: dist/settings/class-kadence-blocks-settings.php:903
-msgid "Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button..."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Button"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Left"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Right"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Duplicate Button"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove Button"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Link"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link Target"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Same Window"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "New Window"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Video Popup"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "NOTE: Video popup only works with youtube and vimeo links."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set link to nofollow?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set link attribute Sponsored?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set link to Download?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Top and Bottom Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left and Right Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Collapse on mobile"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Fixed Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Color Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Normal"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hover"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Border Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Border Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Border Radius"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Location"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Right"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Custom CSS Class"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gap Between Next"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hover Text Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gradient Color 1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Location"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gradient Color 2"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gradient Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gradient Angle"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gradient Position"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Center Top"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Center Center"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Center Bottom"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left Top"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left Center"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left Bottom"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Right Top"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Right Center"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Right Bottom"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hover Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hover Box Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Box Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Count"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Button"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Alignment"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Margin Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Force Button Fullwidth"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Open in New Tab"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "No Follow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Sponsored"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Download"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove link"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Copy/Paste Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Copy Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Paste Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:698
-msgid "Row Layout"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "row"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "layout"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Play"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pause"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Unmute"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mute"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Cover"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Contain"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Row"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Two: Equal"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Two: Left Heavy 66/33"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Two: Right Heavy 33/66"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three: Equal"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three: Left Heavy 50/25/25"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three: Right Heavy 25/25/50"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three: Center Heavy 25/50/25"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three: Wide Center 20/60/20"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three: Wider Center 15/70/15"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Four: Equal"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Four: Left Heavy 40/20/20/20"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Four: Right Heavy 20/20/20/40"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Five: Equal"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Six: Equal"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Equal"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left Heavy 66/33"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Right Heavy 33/66"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Collapse to Rows"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left Heavy 50/25/25"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Right Heavy 25/25/50"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Center Heavy 25/50/25"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Wide Center 20/60/20"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Wider Center 15/70/15"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left Heavy 40/20/20/20"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Right Heavy 20/20/20/40"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Single Row"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "First Row, Next Columns 100 - 50/50"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Last Row, Previous Columns 50/50 - 100"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Two Column Grid"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three Column Grid"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Layout"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column Collapse Vertical Gutter"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Standard: 30px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "No Gutter"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Skinny: 10px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Narrow: 20px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Wide: 40px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Wider: 60px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Widest: 80px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Collapse Order"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left to Right"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Right to Left"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Padding/Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Padding Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set custom background for Mobile?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Force no image for mobile"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Edit Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Image Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Image Repeat"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "No Repeat"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Repeat"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Repeat-x"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Repeat-y"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Image Attachment"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Scroll"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Parallax"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Background Overlay"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set custom background overlay for mobile?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Layout"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Padding/Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set custom background for tablets?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Force no image for tablet"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Background Overlay"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set custom background overlay for tablets?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slide"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slide Background Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slide Select Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Layout"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column Layout"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column Gutter"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Padding/Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Slider Image Count"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slider Image Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slider Image Position"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slider Image Repeat"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slider Auto Play"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Autoplay Speed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Transition Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Fade"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slider Transition Speed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Arrow Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "White on Dark"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Black on Light"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Outline Black"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Outline White"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Dot Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Dark"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Light"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Outline Dark"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Outline Light"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select Video"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove Video"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HTML5 Video File URL"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "YouTube ID ( example: Sv_hGITmNuo )"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Video Ratio"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "16 / 9"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "4 / 3"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "3 / 2"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mute Video"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Loop Video"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Play Pause Buttons?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select Video Poster"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Force Background Image inline?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Overlay Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Overlay Opacity"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Overlay Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Blend Mode"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Multiply"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Screen"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Overlay"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Darken"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Lighten"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Color Dodge"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Color Burn"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Difference"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Exclusion"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hue"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Saturation"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Luminosity"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Notice: Blend Mode not supported in all browsers"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Second Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Image Position"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text Color Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link Hover Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Height (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Width (%)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Height (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Width (%)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Divider Height (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Divider Width (%)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select Divider"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Vertical Align Top"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Vertical Align Middle"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Vertical Align Bottom"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Dividers"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bottom"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Top"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Structure Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container HTML tag"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "div"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "header"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "section"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "article"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "main"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "aside"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "footer"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Min Height Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Minimium Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Min Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Min Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Min Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Content Max Width Inherit from Theme?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Max Width Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Content Max Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inner Column Height 100%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Z-Index Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "User Visibility Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hide from Logged in Users"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Optional: Hide from Specific User Roles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Optional: Show Only to Specific User Roles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hide from Loggedout Users"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select Your Layout"
-msgstr ""
-
-#: dist/blocks.build.js:1
-#, javascript-format
-msgid "Switch to 5% step resizing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Switch to fluid resizing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Prebuilt Library"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Library"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Close Dialog"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Sections"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Starter Packs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Category"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Search"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Prebuilt Options"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:571
-msgid "Pro"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Blocks Pro required for this item"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Upgrade to Pro"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Header Demo"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "call-to-action"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "fullwidth"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "buttons"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Header Split Demo"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three Icons"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "features"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "icons"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "info"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image and Dual Buttons"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three Column Staff Info"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "images"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "infobox"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three Column Images"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Colored Icon InfoBoxes"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Testimonial Carousel"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "testimonials"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "carousel"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Features Border Top Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Subtle Accordion"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "accordion"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "collapse"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Split with Iphone"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "split"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Demo Tabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "tabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Features, Services"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "services"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bottom Call to action"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Dual Icon InfoBoxes"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "dual"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Basic Tabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Features Around Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Blue Image and Call to action"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Flip Image InfoBoxes"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "flip"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three Color Blocks"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Split Content"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Vertical Tabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "vertical"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three Contact Icons"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "contact"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Split with column features"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "nested"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Call to action with box"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "box"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Tabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Accordion Highlight"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Split with Phone beside Icons"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Basic Header"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Split Call to action"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Simple Tabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "simple"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "button"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Prebuilt Starter Packs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Back to Starter Packs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Designed by"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Digital Marketing Agency"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "agency"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "business"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Home"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Services"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Blog"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "About"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Contact"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Padding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Margin (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Collapse Order"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Padding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Margin (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text Alignment"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Z Index Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "icon"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "svg"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Hover Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Stacked"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hover Background Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "background Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Line Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Border Size (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Border Radius (%)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Margin Control Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title for Accessibility"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Count"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number of Icons"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:734
-msgid "Advanced Heading"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "title"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "heading"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "em"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "rem"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading 1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading 2"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading 3"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading 4"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading 5"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading 6"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Paragraph"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "kadence/advancedheading"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "core/paragraph"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Write heading…"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Change Heading Level"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Advanced Typography Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Highlight Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Highlight Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Highlight Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Highlight Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Highlight Border Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Highlight Border Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Margin Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Top Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bottom Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text Shadow Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HTML Anchor"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Anchors lets you link directly to a section on a page."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Desktop"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Typography Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Weight"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Transform"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Spacing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Subset"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Load Font"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Device Size Control Switch"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Highlight"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:740
-msgid "Tabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "tab"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab 1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab 2"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab 3"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab"
-msgstr ""
-
-#: dist/blocks.build.js:1
-#, javascript-format
-msgid "Tab %d"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Skip"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Simple"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Boldbg"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Center"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Vertical"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:752
-msgid "Accordion"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set initial Open Tab"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "initial Open Tab"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Title"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab subtitle"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "vtabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove Item"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Anchor"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Anchors lets you link directly to a tab."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Only Icon?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hover Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hover Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Active Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Active Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Active Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Set Initial Open Tab"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Initial Open Tab"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Content Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Content Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inner Content Padding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Content Border Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Title Color Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Active"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Title Width/Spacing/Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Title Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "% Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Gutter"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Gutter"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gutter"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Padding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Top Margin (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bottom Margin (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Margin (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Border Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Title Font Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Title Icon Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Subtitle Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Subtitles?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Anchor Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Content Minimium Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Max Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select Initial Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Initial Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Tab"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:746
-msgid "Info Box"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Create beautiful information boxes using icons or images."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Info"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid ""
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, "
-"accumsan sed rutrum vel, dapibus et leo."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Learn More"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Align Left"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bold Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Circle Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Basic"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Left Above"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Overlay Left"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Edit Media"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "InfoBox Quick Layout Presets"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "InfoBox Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link Content"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Entire Box"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Only Learn More Text"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Content Align"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Border Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Hover Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Max Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Media Align"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Media Align"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Align"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Vertical Align"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Middle"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "clear"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image File Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Max Image Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Hover Animation"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Grayscale to Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Border Spin In"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Grayscale to Color & Border Spin In"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Flip to Another Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Flip Image (Use same size as start image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "SVG Hover Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "*you must force inline svg for this to have effect."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Hover Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Hover Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "SVG Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Line Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Hover Animation"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Flip to Another Icon"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Hover Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Hover Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Title for Accessibility"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Hover Animation"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Hover Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Hover Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Hover Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Title"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Text"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Learn More Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Learn More"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HOVER: Text Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HOVER: Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HOVER: Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Learn More Border Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Learn More Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Shadow Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Shadow Blur"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Shadow Spread"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Shadow Vertical Offset"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Shadow Horizontal Offset"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media area"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "1"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:753
-msgid ""
-"Create beautiful accordions! Each pane can contain any other block, "
-"customize title styles, content background, and borders."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "pane"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Base"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Subtle"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bottom Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Panes close when another opens"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Start with all panes collapsed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Initial Open Accordion"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Accordion Pane"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Title Color Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Title Trigger Icon"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Icon"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select Icon Set"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Side"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Title Spacing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Title Padding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Spacer Between"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Title Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Title Border Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Title Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane Title Font Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inner Content Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inner Content Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inner Content Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inner Content Border Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inner Content Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Tag Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Tag"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "h2"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "h3"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "h4"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "h5"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "h6"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Content Minimum Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable FAQ Schema"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Accordion Item"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove Accordion Item"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Pane"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Icon Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show only Icon"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Title"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:758
-msgid "Icon List"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Create engaging lists with icons for bullets."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "list"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/class-kadence-blocks-frontend.php:1066
-msgid "Item"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Item Up"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Item Down"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Controls"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Number of Items"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Vertical Spacing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Horizontal Icon and Label Spacing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Align"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Text Styling"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Edit All Icon Styles Together"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "PLEASE NOTE: This will override individual list item settings."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Individual list Item Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Item"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:764
-msgid "Testimonials"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "rating"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Card"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bubble"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image In Content"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column Control Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Screen Above 1500px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Screen 1200px - 1499px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Screen 992px - 1199px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Screen 768px - 991px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Screen 544px - 767px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Screen Below 543px"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Testimonial"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Rating"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Image"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Testimonial Backward"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Testimonial Forward"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Best product I have ever used!"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid ""
-"I have been looking for a product like this for years. I have tried "
-"everything and nothing did what I wanted until using this product. I am so "
-"glad I found it!"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Sophia Reily"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "CEO of Company"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Grid"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Carousel"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Testimonial Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Testimonial Items"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column Gap"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Carousel Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Carousel Auto Play"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Carousel Slide Transition Speed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slides to Scroll"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "One"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "All"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Max Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Top Icon"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Border Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Rating Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Rating"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Rating Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Content"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Media"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Max Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Border Width (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Border Radius (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Ratio"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Landscape 4:2"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Landscape 3:2"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Landscape 4:3"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Portrait 3:4"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Portrait 2:3"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Square 1:1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Name Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Name"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Occupation Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Occupation"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Individual Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "kt-carousel-arrowstyle-"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:710
-msgid "Advanced Gallery"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid ""
-"Photo galleries, carousels, and sliders! Enable custom links, captions, and "
-"more."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gallery"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Attachment Page"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Media File"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Custom"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Masonry"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Fluid Carousel"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Slider"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Thumbnail Slider (Pro addon)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tiles (Pro addon)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Thumbnails are cropped to align."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Thumbnails are not cropped."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Edit gallery"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Drag images, upload new ones or select files from your library."
-msgstr ""
-
-#: dist/blocks.build.js:1
-#, javascript-format
-msgid "image %1$d of %2$d in gallery"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gallery Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gallery Type:"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gallery Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image ratio"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Landscape 2:1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Landscape 3:1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Landscape 4:1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Inherit"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Thumbnail Image ratio"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Thumb Column Control Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Thumbnail Columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Row Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Carousel Height"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Carousel Center Mode"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Thumbnail Image Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link To"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link Image Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link Triggers?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Lightbox"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "New Tab"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Caption in Lightbox"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Filter"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Not supported in Internet Explorer"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Grayscale"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Sepia"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Vintage"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Earlybird"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Toaster"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mayfair"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Caption Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Captions"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Caption Placement"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bottom of Image - Show on Hover"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bottom of Image - Show always"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Below Image - Show always"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Cover Image - Show on Hover"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Force hover effect always for mobile"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Caption Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Caption Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Image Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gallery Spacing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Write caption…"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Image Backward"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Image Forward"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:704
-msgid "Form"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Create a contact or marketing form for your website."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Marketing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Email"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Redirect"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Auto Respond Email (Pro addon)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Send instant response to form entrant"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Database Entry (Pro addon)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Log each form submission"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "V3"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "V2"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Field"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Field Type"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Text"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Textarea"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/form-ajax.php:305
-msgid "Accept"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Telephone"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "CheckBoxes"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Radio"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Required?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Textarea Rows"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Option"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Option"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Multi Select?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show inline?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Policy Link"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link Text"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "View Privacy Policy"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Link URL"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Start checked?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Field Label"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Label"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Field Placeholder"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Default"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Help Text"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Field Auto Fill"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Name"
-msgstr ""
-
-#: dist/blocks.build.js:1
+#: dist/class-fluentcrm-form-rest-api.php:84
 msgid "First Name"
 msgstr ""
 
-#: dist/blocks.build.js:1
+#: dist/class-fluentcrm-form-rest-api.php:88
 msgid "Last Name"
 msgstr ""
 
-#: dist/blocks.build.js:1
-msgid "Organization"
+#: dist/class-fluentcrm-form-rest-api.php:105
+#: dist/class-mailerlite-form-rest-api.php:138
+msgid "Actionable endpoint for api call."
 msgstr ""
 
-#: dist/blocks.build.js:1
-msgid "Street Address"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Address Line 1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Country Name"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Postal Code"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Off"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "20%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "25%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "33%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "40%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "50%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "60%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "66%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "75%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "80%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "100%"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Unset"
-msgstr ""
-
-#: dist/blocks.build.js:1
-#, javascript-format
-msgid "Field %1$d of %2$d in form"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Field Up"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Move Field Down"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Duplicate Field"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove Field"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Field"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Actions After Submit"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Email Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Email To Address"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "name@example.com"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Seperate with comma for more then one email address."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Email Subject"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "From Email"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "From Name"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Reply To"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Email Field"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Cc"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bcc"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Send as HTML email?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "If off plain text is used."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Redirect Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Redirect to"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Basic Spam Check"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Basic Honey Pot Spam Check"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid ""
-"This adds a hidden field that if filled out prevents the form from "
-"submitting."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Google reCAPTCHA"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Google reCAPTCHA"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Recaptcha Version"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Get keys"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Get help"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Site Key"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Secret Key"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Saving"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/settings/class-kadence-blocks-settings.php:265
-msgid "Save"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Field Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Size"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mobile Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tablet Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Desktop Padding"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Colors"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Focus"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Focus Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Focus Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Focus Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Focus Box Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Input Box Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Field Row Gap"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Field Column Gutter"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Label Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Label Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Required?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "If off required asterisk is removed."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Required Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Advanced Label Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Colors"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Hover Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Hover Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Hover Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Hover Box Shadow"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Button Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Advanced Button Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Margin Unit"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Desktop Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Message Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Success Message"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/form-ajax.php:75
-msgid "Submission Success, Thanks for getting in touch!"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Success Message Colors"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Success Message Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Success Message Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Success Message Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Error Message"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/form-ajax.php:56 dist/form-ajax.php:76
-#: dist/form-ajax.php:508
-msgid "Submission Failed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Recapcha Error Message"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/form-ajax.php:77
-msgid "Submission Failed, reCaptcha spam prevention."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Error Message Colors"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Error Message Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Error Message Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Error Message Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Advanced Message Font Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Submit"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Table of Contents"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "table of contents"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "summary"
-msgstr ""
-
-#: dist/blocks.build.js:1 dist/class-kadence-blocks-table-of-contents.php:643
-msgid "Table Of Contents"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "One Column"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Two columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Three Columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Bullets"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Numbered"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Allowed Headers"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "h1"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Collapsed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Collapsed Title Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Collapsible Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Collapsible Content"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Start Collapsed"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Item Gap"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Items Hover Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Items Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Link Style"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Underline"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Underline on Hover"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "No underline"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Container Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Start adding Heading blocks to create a table of contents."
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Optional Title"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Blocks Controls"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Color Palette"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Block Defaults"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Components"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Editor Width"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Spacer/Divider"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Save/Close"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Spacer/Divider Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enabled All Settings For"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "All Users"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Minimum User Role Contributor"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Minimum User Role Author"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Minimum User Role Editor"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Minimum User Role Admin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "No Users"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Control Individual Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Height Units"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Height Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Divider Toggle Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Divider Styles Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Tabs"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show Presets"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Title Alignment"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tab Title Spacing/Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Title Paddding (px)"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Tabs Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Control Individual Settings Groups"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Layout Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Content Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Color Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Spacing/Border Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Font Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Icon Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Structure Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Accordions"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Accordions"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Accordion Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Pane Close/Open Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Trigger Icon Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Spacing Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Border Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Inner Content Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Tag Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Info Box"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Hover Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Container Hover Border"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Medium Large"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Medium"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Thumbnail"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon Hover Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HOVER: Learn More Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HOVER: Learn More Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "HOVER: Learn More Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Learn More Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Learn More Background"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Learn More Border Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Shadow Opacity"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Info Box Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Container Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Media Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Title Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Text Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Learn More Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Shadow Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Advanced Button"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Design Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icons Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "CSS Class"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Count Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Size Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Color Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Icon Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Font Family Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Icon List"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "List Icon Styles"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Icon List Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable List Column Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable List Spacing Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Text Style Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable All List Icon Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable individual List Item Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Testimonials"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Background Opacity"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Border Opacity"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Testimonial Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Style Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Column Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Carousel Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Top Icon Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Rating Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Name Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Occupation Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Individual Item Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Advanced Heading"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Advanced Heading Controls"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading Font Size Units"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Heading Line Heights Units"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mark Font Size Units"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Mark Line Heights Units"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Advanced Heading Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Inline Toolbar Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Advanced Typography Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Highlight Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Margin Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "vw"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Row Layout"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Row Layout Controls"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column width Resizing control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Step Resizing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Fluid Resizing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Padding Margin"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Row Layout Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Custom Column Resizing"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Basic Layout Controls"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Padding/Margin Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Background Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Background Overlay Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Dividers Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Text Color Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Advanced Gallery"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Default Gallery Type:"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Default Image ratio"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Gutter Default"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Advanced Gallery Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Gutter Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Lightbox Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Image Style Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Caption Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Image Shadow Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Gallery Spacing Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Columns"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Column Controls"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Column Settings"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Text Align Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Text Color Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Enable Padding/Margin Control"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Remove Last Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Add Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Use only Kadence Blocks Colors?"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Refresh page to reload theme defined colors"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Name:"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Edit Color"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Font Family Options"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Kadence Font Family Options"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Show All Font Family Options"
-msgstr ""
-
-#: dist/blocks.build.js:1
-msgid "Select the font families you want"
-msgstr ""
-
-#: dist/class-kadence-blocks-frontend.php:1060
+#: dist/class-kadence-blocks-frontend.php:1189
 msgid "Please fix the errors to proceed"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1062
+#: dist/class-kadence-blocks-frontend.php:1191
 msgid "is required"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1063
+#: dist/class-kadence-blocks-frontend.php:1192
 msgid "does not match"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1064
+#: dist/class-kadence-blocks-frontend.php:1193
 msgid "is not valid"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1065
+#: dist/class-kadence-blocks-frontend.php:1194
 msgid "requires a unique entry and this value has already been used"
 msgstr ""
 
-#: dist/class-kadence-blocks-table-of-contents.php:153
-#: dist/class-kadence-blocks-table-of-contents.php:651
+#: dist/class-kadence-blocks-frontend.php:1195
+msgid "Item"
+msgstr ""
+
+#: dist/class-kadence-blocks-posts.php:357
+msgid "No posts"
+msgstr ""
+
+#: dist/class-kadence-blocks-prebuilt-library.php:320
+#: dist/class-kadence-blocks-prebuilt-library.php:359
+msgid "No library data"
+msgstr ""
+
+#: dist/class-kadence-blocks-table-of-contents.php:162
+#: dist/class-kadence-blocks-table-of-contents.php:672
 msgid "Expand Table of Contents"
 msgstr ""
 
-#: dist/class-kadence-blocks-table-of-contents.php:154
-#: dist/class-kadence-blocks-table-of-contents.php:651
+#: dist/class-kadence-blocks-table-of-contents.php:163
+#: dist/class-kadence-blocks-table-of-contents.php:672
 msgid "Collapse Table of Contents"
+msgstr ""
+
+#: dist/class-kadence-blocks-table-of-contents.php:664
+msgid "Table Of Contents"
+msgstr ""
+
+#: dist/class-kadence-blocks-table-of-contents.php:669
+msgid "Table of Contents"
+msgstr ""
+
+#: dist/class-mailerlite-form-rest-api.php:133
+msgid "The API Key for mailchimp account."
+msgstr ""
+
+#: dist/class-mailerlite-form-rest-api.php:143
+msgid "Query Args for url."
+msgstr ""
+
+#: dist/form-ajax.php:56 dist/form-ajax.php:76 dist/form-ajax.php:657
+msgid "Submission Failed"
 msgstr ""
 
 #: dist/form-ajax.php:56
 msgid "Data not Found"
 msgstr ""
 
-#: dist/form-ajax.php:66 dist/form-ajax.php:186
+#: dist/form-ajax.php:66 dist/form-ajax.php:200
 msgid "Submission"
 msgstr ""
 
-#: dist/form-ajax.php:87
+#: dist/form-ajax.php:75
+msgid "Submission Success, Thanks for getting in touch!"
+msgstr ""
+
+#: dist/form-ajax.php:77
+msgid ""
+"Submission Failed, reCaptcha spam prevention. Please reload your page and "
+"try again."
+msgstr ""
+
+#: dist/form-ajax.php:101
 msgid "Submission Rejected"
 msgstr ""
 
-#: dist/form-ajax.php:87
+#: dist/form-ajax.php:101
 msgid "Spam Detected"
 msgstr ""
 
-#: dist/form-ajax.php:94 dist/form-ajax.php:97 dist/form-ajax.php:101
+#: dist/form-ajax.php:108 dist/form-ajax.php:111 dist/form-ajax.php:115
 msgid "reCAPTCHA Failed"
 msgstr ""
 
-#: dist/form-ajax.php:168
+#: dist/form-ajax.php:182
 msgid "Required Field Empty"
 msgstr ""
 
-#: dist/form-ajax.php:261
+#: dist/form-ajax.php:334
+msgid "No Response from MailerLite"
+msgstr ""
+
+#: dist/form-ajax.php:410
 msgid "Third Party Failed"
 msgstr ""
 
-#: dist/form-ajax.php:267
+#: dist/form-ajax.php:416
 msgid ""
 "Submission rejected, invalid security token. Reload the page and try again."
 msgstr ""
 
-#: dist/form-ajax.php:267
+#: dist/form-ajax.php:416
 msgid "Token invalid"
 msgstr ""
 
-#: dist/form-ajax.php:270
+#: dist/form-ajax.php:419
 msgid "Submission failed"
 msgstr ""
 
-#: dist/form-ajax.php:270
+#: dist/form-ajax.php:419
 msgid "No Data"
 msgstr ""
 
-#: dist/form-ajax.php:508
+#: dist/form-ajax.php:454
+msgid "Accept"
+msgstr ""
+
+#: dist/form-ajax.php:657
 msgid "Data not found"
 msgstr ""
 
-#: dist/init.php:305 dist/settings/class-kadence-blocks-settings.php:252
+#: dist/init.php:226 dist/init.php:254 dist/init.php:298 dist/init.php:327
+msgid "Inherit"
+msgstr ""
+
+#: dist/init.php:229 dist/init.php:255 dist/init.php:301 dist/init.php:328
+msgid "Thin 100"
+msgstr ""
+
+#: dist/init.php:231 dist/init.php:256 dist/init.php:303 dist/init.php:329
+msgid "Extra-Light 200"
+msgstr ""
+
+#: dist/init.php:233 dist/init.php:257 dist/init.php:305 dist/init.php:330
+msgid "Light 300"
+msgstr ""
+
+#: dist/init.php:235 dist/init.php:237 dist/init.php:258 dist/init.php:307
+#: dist/init.php:309 dist/init.php:331
+msgid "Regular"
+msgstr ""
+
+#: dist/init.php:239 dist/init.php:259 dist/init.php:311 dist/init.php:332
+msgid "Medium 500"
+msgstr ""
+
+#: dist/init.php:241 dist/init.php:260 dist/init.php:313 dist/init.php:333
+msgid "Semi-Bold 600"
+msgstr ""
+
+#: dist/init.php:243 dist/init.php:261 dist/init.php:315 dist/init.php:334
+msgid "Bold 700"
+msgstr ""
+
+#: dist/init.php:245 dist/init.php:262 dist/init.php:317 dist/init.php:335
+msgid "Extra-Bold 800"
+msgstr ""
+
+#: dist/init.php:247 dist/init.php:263 dist/init.php:319 dist/init.php:336
+msgid "Ultra-Bold 900"
+msgstr ""
+
+#: dist/init.php:529 dist/settings/class-kadence-blocks-settings.php:252
 #: dist/settings/class-kadence-blocks-settings.php:254
-#: dist/settings/class-kadence-blocks-settings.php:534
 msgid "Kadence Blocks"
+msgstr ""
+
+#: dist/init.php:663
+msgid "Continue"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:84
@@ -4858,8 +268,17 @@ msgstr ""
 msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
 msgstr ""
 
+#: dist/settings/class-kadence-blocks-settings.php:255
+#: dist/settings/class-kadence-blocks-settings.php:846
+msgid "Settings"
+msgstr ""
+
 #: dist/settings/class-kadence-blocks-settings.php:264
 msgid "Close"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:265
+msgid "Save"
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:266
@@ -4917,248 +336,328 @@ msgstr ""
 msgid "Google reCaptcha Secret Key"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:428
+#: dist/settings/class-kadence-blocks-settings.php:423
+msgid "MailerLite API Key"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:439
 msgid "Small Template"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:429
+#: dist/settings/class-kadence-blocks-settings.php:440
 msgid "Large Template"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:431
+#: dist/settings/class-kadence-blocks-settings.php:442
 msgid "Post default"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:432
+#: dist/settings/class-kadence-blocks-settings.php:443
 msgid "Page Default"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:434
+#: dist/settings/class-kadence-blocks-settings.php:445
 msgid "Enable Editor Width"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:443
+#: dist/settings/class-kadence-blocks-settings.php:454
 msgid ""
 "Allows for changes to the editor width on per page/post basis with preset "
 "defaults."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:445
-#: dist/settings/class-kadence-blocks-settings.php:458
+#: dist/settings/class-kadence-blocks-settings.php:456
+#: dist/settings/class-kadence-blocks-settings.php:469
 msgid "False"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:446
-#: dist/settings/class-kadence-blocks-settings.php:459
+#: dist/settings/class-kadence-blocks-settings.php:457
+#: dist/settings/class-kadence-blocks-settings.php:470
 msgid "True"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:456
+#: dist/settings/class-kadence-blocks-settings.php:467
 msgid ""
 "Experimental editor CSS for less excess margins in Gutenberg in an attempt "
 "to get a closer WYSIWYG editing experience."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:490
-#: dist/settings/class-kadence-blocks-settings.php:502
+#: dist/settings/class-kadence-blocks-settings.php:480
+#: dist/settings/class-kadence-blocks-settings.php:489
+msgid "px"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:499
+#: dist/settings/class-kadence-blocks-settings.php:511
+msgid "Small"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:500
+#: dist/settings/class-kadence-blocks-settings.php:512
+msgid "Large"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:501
+#: dist/settings/class-kadence-blocks-settings.php:513
 msgid "Fullwidth"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:537
-msgid "Page Builder Toolkit"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:568
-msgid "Dashboard"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:569
-msgid "Help / Tutorials"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:576
-msgid "Blocks"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:576
-msgid "Disable/Enable Blocks"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:596
-#: dist/settings/class-kadence-blocks-settings.php:600
+#: dist/settings/class-kadence-blocks-settings.php:575
+#: dist/settings/class-kadence-blocks-settings.php:580
 msgid "Activate"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:598
-#: dist/settings/class-kadence-blocks-settings.php:600
+#: dist/settings/class-kadence-blocks-settings.php:577
+#: dist/settings/class-kadence-blocks-settings.php:580
 msgid "Deactivate"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:600
+#: dist/settings/class-kadence-blocks-settings.php:580
 msgid "Activating..."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:600
+#: dist/settings/class-kadence-blocks-settings.php:580
 msgid "Activated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:600
+#: dist/settings/class-kadence-blocks-settings.php:580
 msgid "Deactivating..."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:600
+#: dist/settings/class-kadence-blocks-settings.php:580
 msgid "Deactivated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:610
+#: dist/settings/class-kadence-blocks-settings.php:588
 msgid "Editor Max Widths"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:610
+#: dist/settings/class-kadence-blocks-settings.php:588
 msgid "Match the editor width to your sites width."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:612
-msgid "Note: The current active themes \"$content_width\" is set to:"
+#: dist/settings/class-kadence-blocks-settings.php:590
+msgid "Note: The current active themes \"content_width\" is set to:"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:619
+#: dist/settings/class-kadence-blocks-settings.php:597
 msgid "Save Changes"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:629
-msgid "Helpful Links and Resources"
+#: dist/settings/class-kadence-blocks-settings.php:608
+msgid "Web Creators Community"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:637
-msgid "Support"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:638
+#: dist/settings/class-kadence-blocks-settings.php:609
 msgid ""
-"Are you having trouble getting things to look how you want? Or are you stuck "
-"and not sure what to do? We can help!"
+"Join our community of fellow kadence users creating effective websites! "
+"Share your site, ask a question and help others."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:639
-msgid "Ask a question"
+#: dist/settings/class-kadence-blocks-settings.php:610
+msgid "Join our Facebook Group"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:649
-msgid "Changelog Blog"
+#: dist/settings/class-kadence-blocks-settings.php:615
+msgid "Documentation"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:650
-msgid "Read through highlights of recent changes made to Kadence Blocks."
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:651
-msgid "View"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:661
-msgid "Plugin Tutorials & Documentation"
-msgstr ""
-
-#: dist/settings/class-kadence-blocks-settings.php:662
+#: dist/settings/class-kadence-blocks-settings.php:616
 msgid ""
-"Kadence Blocks documentation is set up to help you create amazing content."
+"Need help? We have a knowledge base full of articles to get you started."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:663
+#: dist/settings/class-kadence-blocks-settings.php:617
 msgid "Browse Docs"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:675
-msgid "Kadence WP Newsletter"
+#: dist/settings/class-kadence-blocks-settings.php:622
+msgid "Support"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:676
+#: dist/settings/class-kadence-blocks-settings.php:623
 msgid ""
-"Get the latest news about product updates and new plugins right to your "
-"inbox."
+"Have a question, we are happy to help! Get in touch with our support team."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:677
-msgid "Subscribe"
+#: dist/settings/class-kadence-blocks-settings.php:624
+msgid "Submit a Ticket"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:699
+#: dist/settings/class-kadence-blocks-settings.php:641
+msgid "Row Layout"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:642
 msgid ""
 "Create rows with nested blocks either in columns or as a container. Give "
 "style to your rows with background, overlay, padding, etc."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:705
+#: dist/settings/class-kadence-blocks-settings.php:647
+msgid "Form"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:648
 msgid ""
 "Create a contact form or marketing form and style it within the block editor."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:711
+#: dist/settings/class-kadence-blocks-settings.php:653
+msgid "Advanced Gallery"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:654
 msgid ""
 "Photo galleries, carousels, and sliders! Enable custom links, captions, and "
 "more. Plus, you can select image sizes."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:717
+#: dist/settings/class-kadence-blocks-settings.php:659
+msgid "Advanced Button"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:660
 msgid ""
 "Create an advanced button or a row of buttons. Style each one including "
 "hover controls plus you can use an icon and display them side by side"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:723
+#: dist/settings/class-kadence-blocks-settings.php:665
+msgid "Icon"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:666
 msgid ""
 "Choose from over 1500+ SVG Icons to add into your page and style the size, "
 "colors, background, border, etc."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:729
+#: dist/settings/class-kadence-blocks-settings.php:671
+msgid "Spacer/Divider"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:672
 msgid ""
 "Easily create a divider and determine the space around it or just create "
 "some space in your content."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:735
+#: dist/settings/class-kadence-blocks-settings.php:677
+msgid "Advanced Heading"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:678
 msgid ""
 "Transform your headings to Advanced Headings and customize the font family "
 "(even google fonts), color, and size."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:741
+#: dist/settings/class-kadence-blocks-settings.php:683
+msgid "Tabs"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:684
 msgid ""
 "Create custom vertical or horizontal tabs with advanced styling controls. "
 "Each tab content is an empty canvas able to contain any other blocks."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:747
+#: dist/settings/class-kadence-blocks-settings.php:689
+msgid "Info Box"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:690
 msgid ""
 "Create a box link containing an icon or image and optionally a title, "
 "description, and learn more text. Style static and hover colors even show a "
 "box-shadow."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:759
+#: dist/settings/class-kadence-blocks-settings.php:695
+msgid "Accordion"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:696
+msgid ""
+"Create beautiful accordions! Each pane can contain any other block, "
+"customize title styles, content background, and borders."
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:701
+msgid "Icon List"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:702
 msgid ""
 "Add beautiful icons to your lists and make them more engaging. Over 1500 "
 "icons to choose from and unlimited styles."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:765
+#: dist/settings/class-kadence-blocks-settings.php:707
+msgid "Testimonials"
+msgstr ""
+
+#: dist/settings/class-kadence-blocks-settings.php:708
 msgid ""
 "Create confidence in your brand or product by showing off beautiful unique "
 "testimonials, add as a carousel or a grid."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:776
+#: dist/settings/class-kadence-blocks-settings.php:719
 msgid "Invalid nonce"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:779
+#: dist/settings/class-kadence-blocks-settings.php:722
 msgid "Missing Content"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:785
+#: dist/settings/class-kadence-blocks-settings.php:728
 msgid "Nothing to Save"
+msgstr ""
+
+#: dist/templates/entry-loop-footer.php:16
+msgid "Read More"
+msgstr ""
+
+#: dist/templates/entry-loop-meta.php:19
+msgid "By"
+msgstr ""
+
+#: dist/templates/entry-loop-meta.php:22
+msgid "Posted on"
+msgstr ""
+
+#: dist/templates/entry-loop-meta.php:25
+msgid "Updated on"
+msgstr ""
+
+#: dist/templates/entry-loop-meta.php:28
+msgid "Posted in"
+msgstr ""
+
+#: dist/templates/entry-loop-meta.php:130
+msgid ", "
+msgstr ""
+
+#: dist/templates/entry-loop-meta.php:147
+msgid "Comment"
+msgstr ""
+
+#: dist/templates/entry-loop-meta.php:149
+msgid "Comments"
+msgstr ""
+
+#: dist/templates/entry-loop-taxonomies.php:23
+msgid " / "
+msgstr ""
+
+#: dist/templates/entry-loop-taxonomies.php:27
+msgid " - "
+msgstr ""
+
+#: dist/templates/entry-loop-taxonomies.php:31
+msgid " | "
 msgstr ""
 
 #: dist/templates/form-email.php:152

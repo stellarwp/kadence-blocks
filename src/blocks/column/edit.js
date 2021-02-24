@@ -228,7 +228,7 @@ class KadenceColumn extends Component {
 								{ this.showSettings( 'container' ) && (
 									<Fragment>
 										<AdvancedPopColorControl
-											label={ __( 'Background Color' ) }
+											label={ __( 'Background Color', 'kadence-blocks' ) }
 											colorValue={ ( background ? background : '' ) }
 											colorDefault={ '' }
 											opacityValue={ backgroundOpacity }
