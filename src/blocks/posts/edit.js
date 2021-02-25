@@ -88,7 +88,7 @@ class KadencePosts extends Component {
 		}
 	}
 	render() {
-		const { attributes: { uniqueID, order, columns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel }, className, setAttributes, latestPosts, taxList, taxOptions, taxFilterOptions } = this.props;
+		const { attributes: { uniqueID, order, columns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle }, className, setAttributes, latestPosts, taxList, taxOptions, taxFilterOptions } = this.props;
 		const taxonomyList = [];
 		const taxonomyOptions = [];
 		const taxonomyFilterOptions = [];
@@ -346,6 +346,21 @@ class KadencePosts extends Component {
 								onChange={ ( value ) => setAttributes( { alignImage: value } ) }
 							/>
 						) }
+						<SelectControl
+							label={ __( 'Style' ) }
+							options={ [
+								{
+									label: __( 'Boxed' ),
+									value: 'boxed',
+								},
+								{
+									label: __( 'Unboxed' ),
+									value: 'unboxed',
+								},
+							] }
+							value={ loopStyle }
+							onChange={ ( value ) => setAttributes( { loopStyle: value } ) }
+						/>
 					</PanelBody>
 					<PanelBody
 						title={ __( 'Image Settings', 'kadence-blocks' ) }
@@ -811,7 +826,7 @@ class KadencePosts extends Component {
 		return (
 			<Fragment>
 				{ settingspanel }
-				<div className={ `${ className } kb-posts kb-posts-id-${ uniqueID } ${ columnsClass } grid-cols content-wrap item-image-style-${ columns === 1 ? alignImage : 'above' }` }>
+				<div className={ `${ className } kb-posts kb-posts-id-${ uniqueID } ${ columnsClass } grid-cols content-wrap kb-posts-style-${ loopStyle ? loopStyle : 'boxed' } item-image-style-${ columns === 1 ? alignImage : 'above' }` }>
 					{ displayPosts.map( ( post, i ) =>
 						renderPosts( post, i )
 					) }

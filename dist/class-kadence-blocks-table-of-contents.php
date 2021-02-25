@@ -710,7 +710,7 @@ class Kadence_Blocks_Table_Of_Contents {
 				$css = $this->output_css( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}

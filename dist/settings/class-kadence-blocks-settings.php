@@ -168,7 +168,7 @@ class Kadence_Blocks_Settings {
 				);
 			}
 			if ( isset( $san_palette[0] ) ) {
-				echo '<style id="kadence_blocks_palette_css" type="text/css">';
+				echo '<style id="kadence_blocks_palette_css">';
 				foreach ( $san_palette as $set ) {
 					$slug = $set['slug'];
 					$color = $set['color'];

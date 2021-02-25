@@ -215,6 +215,10 @@ registerBlockType( 'kadence/posts', {
 			type: 'string',
 			default: '',
 		},
+		loopStyle: {
+			type: 'string',
+			default: 'boxed',
+		},
 	},
 	edit,
 	save() {

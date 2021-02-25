@@ -15,6 +15,10 @@
 .loop-entry.content-bg {
     background: var(--global-palette9, #fff);
 }
+.wp-block-kadence-posts .entry-meta a {
+	color: inherit;
+	text-decoration: none;
+}
  .entry-meta {
 	font-size: 80%;
 	margin: 1em 0;
@@ -27,10 +31,6 @@
 		time {
 			white-space: nowrap;
 		}
-	}
-	a {
-		color: inherit;
-		text-decoration: none;
 	}
 	.meta-label {
 		margin-right: .2rem;
@@ -123,12 +123,14 @@ a.post-more-link {
     font-weight: bold;
     letter-spacing: .05em;
     text-transform: uppercase;
-    text-decoration: none;
-    color: inherit;
 	font-size: 80%;
 	.kadence-svg-iconset {
 		margin-left: 0.5em;
 	}
+}
+.wp-block-kadence-posts a.post-more-link {
+    text-decoration: none;
+    color: inherit;
 	&:hover {
 		color: var(--global-palette-highlight, #3182CE);
 	}
@@ -247,6 +249,16 @@ a.post-more-link {
 .grid-lg-col-1.item-image-style-beside article.loop-entry.has-post-thumbnail {
 	display: grid;
 	grid-template-columns: 1fr 2fr;
+}
+.kb-posts-style-unboxed .loop-entry {
+	background: transparent;
+	box-shadow: none;
+	> .entry-content-wrap {
+		padding:0;
+	}
+	.post-thumbnail {
+		margin-bottom: 1em;
+	}
 }
 
 #start-resizable-editor-section {

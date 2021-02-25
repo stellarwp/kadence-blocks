@@ -8,6 +8,16 @@
 .loop-entry.content-bg {
     background: var(--global-palette9, #fff);
 }
+.kb-posts-style-unboxed .loop-entry.content-bg {
+	background: transparent;
+	box-shadow: none;
+	> .entry-content-wrap {
+		padding:0;
+	}
+	.post-thumbnail {
+		margin-bottom: 1em;
+	}
+}
  .entry-meta {
 	font-size: 80%;
 	margin: 1em 0;

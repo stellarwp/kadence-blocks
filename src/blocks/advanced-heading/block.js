@@ -373,6 +373,7 @@ registerBlockType( 'kadence/advancedheading', {
 			[ className ]: ! wrapper && className,
 			[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
 			[ textColorClass ]: textColorClass,
+			'has-text-color': textColorClass,
 		} );
 		const htmlItem = (
 			<RichText.Content

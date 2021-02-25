@@ -401,7 +401,7 @@ add_action( 'init', 'kt_blocks_init_post_meta' );
 function kadence_blocks_admin_theme_content_width() {
 	global $content_width;
 	if ( isset( $content_width ) ) {
-		echo '<style type="text/css" id="kt-block-content-width">';
+		echo '<style id="kt-block-content-width">';
 		echo '.wp-block-kadence-rowlayout > .innerblocks-wrap.kb-theme-content-width {
 			max-width:' . esc_attr( $content_width ) . 'px;
 		}';
@@ -453,7 +453,7 @@ function kadence_blocks_admin_editor_width() {
 		} else {
 			$jssize = $default_size;
 		}
-		echo '<style type="text/css" id="kt-block-editor-width">';
+		echo '<style id="kt-block-editor-width">';
 		echo 'body.gutenberg-editor-page.kt-editor-width-default .editor-post-title__block,
 		body.gutenberg-editor-page.kt-editor-width-default .editor-default-block-appender,
 		body.gutenberg-editor-page.kt-editor-width-default .block-editor-block-list__block,

@@ -268,6 +268,7 @@ class Kadence_Blocks_Posts {
 		$classes[] = 'kb-posts-id-' . ( isset( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '' );
 		$classes[] = 'content-wrap';
 		$classes[] = 'grid-cols';
+		$classes[] = 'kb-posts-style-' . ( isset( $attributes['loopStyle'] ) ? $attributes['loopStyle'] : 'boxed' );
 		if ( isset( $attributes['columns'] ) && ! empty( $attributes['columns'] ) ) {
 			$columns = absint( $attributes['columns'] );
 		} else {
@@ -380,14 +381,14 @@ class Kadence_Blocks_Posts {
 						$content = ob_get_clean() . $content;
 					}
 				}
-				//$css = $this->output_css( $attributes, $unique_id );
-				// if ( ! empty( $css ) ) {
-				// 	if ( doing_filter( 'the_content' ) ) {
-				// 		$content = '<style id="' . $style_id . '" type="text/css">' . $css . '</style>' . $content;
-				// 	} else {
-				// 		$this->render_inline_css( $css, $style_id, true );
-				// 	}
-				// }
+				$css = $this->output_css( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
 			}
 		}
 		return $content;
@@ -403,6 +404,24 @@ class Kadence_Blocks_Posts {
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		if ( isset( $attributes['loopStyle'] ) && 'unboxed' === $attributes['loopStyle'] ) {
+			if ( class_exists( 'Kadence\Theme' ) ) {
+				$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry' );
+				$css->add_property( 'background', 'transparent' );
+				$css->add_property( 'box-shadow', 'none' );
+				$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry > .entry-content-wrap' );
+				$css->add_property( 'padding', '0px' );
+				$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry .post-thumbnail' );
+				$css->add_property( 'margin-bottom', '1em' );
+			}
+		} else {
+			if ( class_exists( 'Kadence\Theme' ) && defined( 'KADENCE_VERSION' ) ) {
+				if ( version_compare( KADENCE_VERSION, '1.0.16', '<' ) ) {
+					$css->set_selector( '.wp-block-kadence-posts.kb-posts-id-' . $unique_id . ' .entry.loop-entry > .entry-content-wrap' );
+					$css->add_property( 'padding', '2rem' );
+				}
+			}
+		}
 		return $css->css_output();
 	}
 	/**
