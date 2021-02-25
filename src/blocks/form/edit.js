@@ -32,7 +32,7 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 const {
 	Component,
 	Fragment,
@@ -1147,7 +1147,12 @@ class KadenceForm extends Component {
 				'is-selected': isFieldSelected,
 				[ `kb-input-size-${ style[ 0 ].size }` ]: style[ 0 ].size,
 			} );
-			const ariaLabel = sprintf( __( 'Field %1$d of %2$d in form', 'kadence-blocks' ), ( index + 1 ), fields.length );
+			const ariaLabel = sprintf(
+				/* translators: %1$d: field number %2$d: max amount of fields */
+				__( 'Field %1$d of %2$d in form', 'kadence-blocks' ),
+				( index + 1 ),
+				fields.length
+				);
 			let acceptLabel;
 			let acceptLabelBefore;
 			let acceptLabelAfter;

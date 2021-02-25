@@ -31,7 +31,7 @@ import ResponsiveRangeControls from '../../components/range/responsive-range-con
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const {
 	Component,
 	Fragment,

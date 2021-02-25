@@ -3,7 +3,7 @@ const {
 	Fragment,
 } = wp.element;
 const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const { applyFilters } = wp.hooks;
 const { registerPlugin } = wp.plugins;
 const {

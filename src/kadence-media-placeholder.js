@@ -28,7 +28,7 @@ const {
 const {
 	withSelect,
 } = wp.data;
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -42,15 +42,15 @@ const InsertFromURLPopover = ( { src, onChange, onSubmit, onClose } ) => (
 			<input
 				className="block-editor-media-placeholder__url-input-field"
 				type="url"
-				aria-label={ __( 'URL' ) }
-				placeholder={ __( 'Paste or type URL' ) }
+				aria-label={ __( 'URL', 'kadence-blocks' ) }
+				placeholder={ __( 'Paste or type URL', 'kadence-blocks' ) }
 				onChange={ onChange }
 				value={ src }
 			/>
 			<Button
 				className="block-editor-media-placeholder__url-input-submit-button"
 				icon={ keyboardReturn }
-				label={ __( 'Apply' ) }
+				label={ __( 'Apply', 'kadence-blocks' ) }
 				type="submit"
 			/>
 		</form>
@@ -210,9 +210,7 @@ class KadenceMediaPlaceholder extends Component {
 		let title = labels.title;
 
 		if ( ! mediaUpload && ! onSelectURL ) {
-			instructions = __(
-				'To edit this block, you need permission to upload media.'
-			);
+			instructions = __( 'To edit this block, you need permission to upload media.', 'kadence-blocks' );
 		}
 
 		if ( instructions === undefined || title === undefined ) {
@@ -222,34 +220,26 @@ class KadenceMediaPlaceholder extends Component {
 			const isVideo = isOneType && 'video' === allowedTypes[ 0 ];
 
 			if ( instructions === undefined && mediaUpload ) {
-				instructions = __(
-					'Upload a media file or pick one from your media library.'
-				);
+				instructions = __( 'Upload a media file or pick one from your media library.', 'kadence-blocks' );
 
 				if ( isAudio ) {
-					instructions = __(
-						'Upload an audio file, pick one from your media library, or add one with a URL.'
-					);
+					instructions = __( 'Upload an audio file, pick one from your media library, or add one with a URL.', 'kadence-blocks' );
 				} else if ( isImage ) {
-					instructions = __(
-						'Upload an image file, pick one from your media library, or add one with a URL.'
-					);
+					instructions = __( 'Upload an image file, pick one from your media library, or add one with a URL.', 'kadence-blocks' );
 				} else if ( isVideo ) {
-					instructions = __(
-						'Upload a video file, pick one from your media library, or add one with a URL.'
-					);
+					instructions = __( 'Upload a video file, pick one from your media library, or add one with a URL.', 'kadence-blocks' );
 				}
 			}
 
 			if ( title === undefined ) {
-				title = __( 'Media' );
+				title = __( 'Media', 'kadence-blocks' );
 
 				if ( isAudio ) {
-					title = __( 'Audio' );
+					title = __( 'Audio', 'kadence-blocks' );
 				} else if ( isImage ) {
-					title = __( 'Image' );
+					title = __( 'Image', 'kadence-blocks' );
 				} else if ( isVideo ) {
-					title = __( 'Video' );
+					title = __( 'Video', 'kadence-blocks' );
 				}
 			}
 		}
@@ -300,11 +290,11 @@ class KadenceMediaPlaceholder extends Component {
 			onCancel && (
 				<Button
 					className="block-editor-media-placeholder__cancel-button"
-					title={ __( 'Cancel' ) }
+					title={ __( 'Cancel', 'kadence-blocks' ) }
 					isLink
 					onClick={ onCancel }
 				>
-					{ __( 'Cancel' ) }
+					{ __( 'Cancel', 'kadence-blocks' ) }
 				</Button>
 			)
 		);
@@ -324,7 +314,7 @@ class KadenceMediaPlaceholder extends Component {
 					isPressed={ isURLInputVisible }
 					isTertiary
 				>
-					{ __( 'Insert from URL' ) }
+					{ __( 'Insert from URL', 'kadence-blocks' ) }
 				</Button>
 				{ isURLInputVisible && (
 					<InsertFromURLPopover
@@ -369,7 +359,7 @@ class KadenceMediaPlaceholder extends Component {
 								open();
 							} }
 						>
-							{ __( 'Select Image' ) }
+							{ __( 'Select Image', 'kadence-blocks' ) }
 						</Button>
 					);
 				} }

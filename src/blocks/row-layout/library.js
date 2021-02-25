@@ -25,7 +25,7 @@ import Prebuilts from './prebuilt_array';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 class CustomComponent extends Component {
 	constructor() {
 		super( ...arguments );

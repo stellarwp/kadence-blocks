@@ -19,7 +19,7 @@ import edit from './edit';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
 /**
  * Register: a Gutenberg Block.

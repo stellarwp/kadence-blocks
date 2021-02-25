@@ -79,7 +79,7 @@ const getColumnsTemplate = memoize( ( columns ) => {
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const ALLOWED_BLOCKS = [ 'kadence/column' ];
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 

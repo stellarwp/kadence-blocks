@@ -7,7 +7,7 @@
  * Internal block libraries
  */
 import { useSelect, useDispatch } from '@wordpress/data';
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 import map from 'lodash/map';
 import get from 'lodash/get';
 import capitalizeFirstLetter from './../common/capitalfirst';

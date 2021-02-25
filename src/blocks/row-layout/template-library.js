@@ -29,7 +29,7 @@ import Prebuilts from './prebuilt_template_array';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 class CustomComponent extends Component {
 	constructor() {
 		super( ...arguments );
@@ -64,7 +64,7 @@ class CustomComponent extends Component {
 			<Fragment>
 				{/* <div className="kt-prebuilt-template-header">
 					<SelectControl
-						label={ __( 'Category' ) }
+						label={ __( 'Category', 'kadence-blocks' ) }
 						value={ this.state.category }
 						options={ catOptions }
 						onChange={ value => this.setState( { category: value } ) }
@@ -72,12 +72,12 @@ class CustomComponent extends Component {
 					<TextControl
 						type="text"
 						value={ this.state.search }
-						placeholder={ __( 'Search' ) }
+						placeholder={ __( 'Search', 'kadence-blocks' ) }
 						onChange={ value => this.setState( { search: value } ) }
 					/>
 				</div> */}
 				{ this.state.view === 'templates' && (
-					<ButtonGroup className="kb-template-packs" aria-label={ __( 'Prebuilt Starter Packs' ) }>
+					<ButtonGroup className="kb-template-packs" aria-label={ __( 'Prebuilt Starter Packs', 'kadence-blocks' ) }>
 						{ map( blockOutput, ( { name, key, image, background, category, keywords, by, pages } ) => {
 							if ( ( 'all' === this.state.category || category.includes( this.state.category ) ) && ( ! this.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( this.state.search.toLowerCase() ) ) ) ) ) {
 								return (
@@ -117,7 +117,7 @@ class CustomComponent extends Component {
 													this.setState( { view: 'templates', selected: null } );
 												} }
 											>
-												<Dashicon icon="arrow-left-alt" />{ __( 'Back to Starter Packs' ) }
+												<Dashicon icon="arrow-left-alt" />{ __( 'Back to Starter Packs', 'kadence-blocks' ) }
 											</Button>
 											<div className="kb-template-top-credit">
 												<h2 className="kb-template-name">
@@ -126,7 +126,7 @@ class CustomComponent extends Component {
 												<div className="kb-top-designed-by-credit">{ __( 'Designed by', 'kadence-blocks' ) } <a href={ byLink } className={ 'kb-designed-by-link' }>{ by }</a></div>
 											</div>
 										</div>
-										<ButtonGroup className="kb-template-packs kb-template-packs-scroll" aria-label={ __( 'Prebuilt Starter Packs' ) }>
+										<ButtonGroup className="kb-template-packs kb-template-packs-scroll" aria-label={ __( 'Prebuilt Starter Packs', 'kadence-blocks' ) }>
 											{ map( templates, ( { name, key, image, content, pro } ) => {
 												return (
 													<div className="kt-prebuilt-item">

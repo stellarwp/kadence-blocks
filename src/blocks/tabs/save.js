@@ -18,7 +18,7 @@ const {
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 
 class KadenceTabsSave extends Component {
 	stripStringRender( string ) {

@@ -9,7 +9,7 @@ import icons from './../../icons';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 import KadenceRange from './range-control';
 const {
 	Dashicon,

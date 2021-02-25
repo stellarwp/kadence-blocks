@@ -21,7 +21,7 @@ const kbColorUniqueIDs = [];
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 class KadenceColorDefault extends Component {
 	constructor() {
 		super( ...arguments );

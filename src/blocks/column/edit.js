@@ -22,7 +22,7 @@ import ResponsiveAlignControls from '../../components/align/responsive-align-con
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 
 const {
 	Component,

@@ -2,6 +2,8 @@
  * Kadence Blocks
  *
  */
+
+// Utils
 import TypographyControls from './typography-control.js';
 import AdvancedColorControl from './advanced-color-control.js';
 import BoxShadowControl from './box-shadow-control';
@@ -17,8 +19,9 @@ window.kb = {
 		IconRender,
 	},
 };
+// Brand Icon.
 import icons from './brand-icon';
-//wp.i18n.setLocaleData( { '': {} }, 'kadence-blocks' );
+
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
 import './blocks/row-layout/block.js';

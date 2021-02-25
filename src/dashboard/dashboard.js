@@ -9,7 +9,7 @@ import Notices from './notices';
 /**
  * WordPress dependencies
  */
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 const { registerCoreBlocks } = wp.blockLibrary;
 const { hasFilter } = wp.hooks;
 const { Fragment, Component, RawHTML, render } = wp.element;

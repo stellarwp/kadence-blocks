@@ -219,37 +219,6 @@
 		"sC": 0,
 		"tS": 0
 		},
-	"/dist/blocks.build.js": {
-		"bF": 0,
-		"ft": 64,
-		"ma": 0,
-		"mi": 1,
-		"oA": 1,
-		"oAP": "/dist/blocks.build-min.js",
-		"oF": 0,
-		"sC": 0,
-		"tS": 0
-		},
-	"/dist/blocks.editor.build.css": {
-		"aP": 1,
-		"bl": 0,
-		"ft": 16,
-		"ma": 0,
-		"oA": 0,
-		"oAP": "/dist/blocks.editor.build-min.css",
-		"oF": 0,
-		"oS": 3
-		},
-	"/dist/blocks.style.build.css": {
-		"aP": 1,
-		"bl": 0,
-		"ft": 16,
-		"ma": 0,
-		"oA": 0,
-		"oAP": "/dist/blocks.style.build-min.css",
-		"oF": 0,
-		"oS": 3
-		},
 	"/dist/blocks/accordion.style.build.css": {
 		"aP": 1,
 		"bl": 0,
@@ -1235,6 +1204,72 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/node_modules/@tannin/compile/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/@tannin/compile/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/node_modules/@tannin/evaluate/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/@tannin/evaluate/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/node_modules/@tannin/plural-forms/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/@tannin/plural-forms/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/node_modules/@tannin/postfix/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/@tannin/postfix/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/node_modules/@wordpress/i18n/build-module/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/@wordpress/i18n/build-module/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/node_modules/@wordpress/i18n/node_modules/sprintf-js/src/sprintf.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/@wordpress/i18n/node_modules/sprintf-js/src/sprintf-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/node_modules/@wordpress/icons/build-module/index.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1426,6 +1461,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/node_modules/react/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/node_modules/tannin/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/tannin/index-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
@@ -1888,6 +1934,17 @@
 		"oS": 3,
 		"sct": 1
 		},
+	"/src/blocks/column/attributes.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/column/attributes-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/blocks/column/block.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1910,6 +1967,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/blocks/column/deprecated.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/column/deprecated-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/blocks/column/edit.js": {
 		"bF": 0,
 		"ft": 64,
@@ -1917,6 +1985,28 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/blocks/column/edit-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/column/icon.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/column/icon-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/column/save.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/column/save-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
@@ -3097,6 +3187,28 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/components/color/hex-to-rgba.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/components/color/hex-to-rgba-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/components/color/kadence-color-output.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/components/color/kadence-color-output-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/components/common/capitalfirst.js": {
 		"bF": 0,
 		"ft": 64,
@@ -3381,6 +3493,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/icons-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/icons/block-icons.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/icons/block-icons-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

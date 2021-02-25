@@ -37,7 +37,7 @@ import save from './save';
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
 
 function kt_stripStringRender( string ) {

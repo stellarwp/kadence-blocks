@@ -1,4 +1,4 @@
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 import map from 'lodash/map';
 const { withSelect, withDispatch } = wp.data;
 const { compose } = wp.compose;

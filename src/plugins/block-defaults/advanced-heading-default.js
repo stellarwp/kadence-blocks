@@ -6,7 +6,7 @@ import HeadingLevelIcon from '../../blocks/advanced-heading/heading-icons';
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 const {
 	Component,
 	Fragment,
@@ -75,8 +75,11 @@ class KadenceAdvancedHeadingDefault extends Component {
 		const createLevelControl = ( targetLevel ) => {
 			return [ {
 				icon: 'heading',
-				// translators: %s: heading level e.g: "1", "2", "3"
-				title: sprintf( __( 'Heading %d' ), targetLevel ),
+				title: sprintf(
+					/* translators: %d: heading level e.g: "1", "2", "3" */
+					__( 'Heading %d', 'kadence-blocks' ),
+					targetLevel
+					),
 				isActive: targetLevel === ( undefined !== headingConfig.level ? headingConfig.level : 2 ),
 				onClick: () => this.saveConfigState( 'level', targetLevel ),
 				subscript: String( targetLevel ),

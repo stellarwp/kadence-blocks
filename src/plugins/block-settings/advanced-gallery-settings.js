@@ -12,7 +12,7 @@ const {
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 class KadenceGallerySettings extends Component {
 	constructor() {
 		super( ...arguments );

@@ -29,7 +29,7 @@ const {
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 const {
 	Fragment,
 	Component,
@@ -322,8 +322,11 @@ class TypographyControls extends Component {
 		const createLevelControl = ( targetLevel ) => {
 			return [ {
 				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ targetLevel === tagLevel } />,
-				// translators: %s: heading level e.g: "1", "2", "3"
-				title: sprintf( __( 'Heading %d', 'kadence-blocks' ), targetLevel ),
+				title: sprintf(
+					/* translators: %d: heading level e.g: "1", "2", "3" */
+					__( 'Heading %d', 'kadence-blocks' ),
+					targetLevel
+					),
 				isActive: targetLevel === tagLevel,
 				onClick: () => onTagLevel( targetLevel ),
 			} ];

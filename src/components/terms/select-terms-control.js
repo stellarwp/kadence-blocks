@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { fetchJson } from './../common/fetch';
 
 const { addQueryArgs } = wp.url;
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const {
 	Component,
 } = wp.element;

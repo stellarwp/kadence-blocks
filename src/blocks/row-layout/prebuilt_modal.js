@@ -18,7 +18,7 @@ import icons from '../../brand-icon';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 class CustomComponent extends Component {
 	constructor() {
 		super( ...arguments );

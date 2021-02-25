@@ -13,7 +13,7 @@ import map from 'lodash/map';
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 const {
 	Component,
 } = wp.element;
