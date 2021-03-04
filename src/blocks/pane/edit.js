@@ -82,7 +82,7 @@ class KadencePane extends Component {
 			<div className={ `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }` }>
 				<InspectorControls>
 					<PanelBody
-						title={ __( 'Title Icon Settings' ) }
+						title={ __( 'Title Icon Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
 						<IconControl
@@ -90,16 +90,16 @@ class KadencePane extends Component {
 							onChange={ value => setAttributes( { icon: value } ) }
 						/>
 						<SelectControl
-							label={ __( 'Icon Side' ) }
+							label={ __( 'Icon Side', 'kadence-blocks' ) }
 							value={ iconSide }
 							options={ [
-								{ value: 'right', label: __( 'Right' ) },
-								{ value: 'left', label: __( 'Left' ) },
+								{ value: 'right', label: __( 'Right', 'kadence-blocks' ) },
+								{ value: 'left', label: __( 'Left', 'kadence-blocks' ) },
 							] }
 							onChange={ value => setAttributes( { iconSide: value } ) }
 						/>
 						<ToggleControl
-							label={ __( 'Show only Icon' ) }
+							label={ __( 'Show only Icon', 'kadence-blocks' ) }
 							checked={ hideLabel }
 							onChange={ value => setAttributes( { hideLabel: value } ) }
 						/>
@@ -114,7 +114,7 @@ class KadencePane extends Component {
 							<RichText
 								className="kt-blocks-accordion-title"
 								tagName={ 'div' }
-								placeholder={ __( 'Add Title' ) }
+								placeholder={ __( 'Add Title', 'kadence-blocks' ) }
 								onChange={ value => setAttributes( { title: value } ) }
 								value={ title }
 								keepPlaceholderOnFocus

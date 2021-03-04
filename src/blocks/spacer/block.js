@@ -39,15 +39,15 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/spacer', {
-	title: __( 'Spacer/Divider' ), // Block title.
+	title: __( 'Spacer/Divider', 'kadence-blocks' ), // Block title.
 	icon: {
 		src: icons.spacerblock,
 	},
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [
-		__( 'spacer' ),
-		__( 'divider' ),
-		__( 'KT' ),
+		__( 'spacer', 'kadence-blocks' ),
+		__( 'divider', 'kadence-blocks' ),
+		'KB',
 	],
 	supports: {
 		anchor: true,

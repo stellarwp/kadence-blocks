@@ -365,7 +365,7 @@ class Inspector extends Component {
 							) ) }
 						</ButtonGroup>
 						<KadenceRange
-							label={ __( 'Container Max Width' ) }
+							label={ __( 'Container Max Width', 'kadence-blocks' ) }
 							value={ maxWidth }
 							onChange={ ( value ) => {
 								setAttributes( {

@@ -184,7 +184,7 @@ export default function ThreeColumnDrag( {
 							axis="x"
 						>
 							{ columnsUnlocked && (
-								<Tooltip text={ __( 'Switch to 5% step resizing' ) }>
+								<Tooltip text={ __( 'Switch to 5% step resizing', 'kadence-blocks' ) }>
 									<Button
 										className="kt-fluid-grid-btn"
 										isSmall
@@ -197,7 +197,7 @@ export default function ThreeColumnDrag( {
 								</Tooltip>
 							) }
 							{ ! columnsUnlocked && (
-								<Tooltip text={ __( 'Switch to fluid resizing' ) }>
+								<Tooltip text={ __( 'Switch to fluid resizing', 'kadence-blocks' ) }>
 									<Button
 										className="kt-fluid-grid-btn"
 										isSmall
@@ -241,7 +241,7 @@ export default function ThreeColumnDrag( {
 							axis="x"
 						>
 							{ columnsUnlocked && (
-								<Tooltip text={ __( 'Switch to 5% step resizing' ) }>
+								<Tooltip text={ __( 'Switch to 5% step resizing', 'kadence-blocks' ) }>
 									<Button
 										className="kt-fluid-grid-btn"
 										isSmall
@@ -254,7 +254,7 @@ export default function ThreeColumnDrag( {
 								</Tooltip>
 							) }
 							{ ! columnsUnlocked && (
-								<Tooltip text={ __( 'Switch to fluid resizing' ) }>
+								<Tooltip text={ __( 'Switch to fluid resizing', 'kadence-blocks' ) }>
 									<Button
 										className="kt-fluid-grid-btn"
 										isSmall

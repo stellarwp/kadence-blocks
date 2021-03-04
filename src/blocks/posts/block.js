@@ -51,9 +51,9 @@ registerBlockType( 'kadence/posts', {
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'latest posts' ),
-		__( 'blog' ),
-		__( 'KB' ),
+		__( 'latest posts', 'kadence-blocks' ),
+		__( 'blog', 'kadence-blocks' ),
+		'KB',
 	],
 	supports: {
 		html: false,

@@ -154,7 +154,7 @@ class CustomComponent extends Component {
 																<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
 																{ 'true' !== kadence_blocks_params.pro && (
 																	<div className="kt-popover-pro-notice">
-																		<h2>{ __( 'Kadence Blocks Pro required for this item' ) } </h2>
+																		<h2>{ __( 'Kadence Blocks Pro required for this item', 'kadence-blocks' ) } </h2>
 																		<ExternalLink href={ 'https://www.kadenceblocks.com/pro/' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
 																	</div>
 																) }

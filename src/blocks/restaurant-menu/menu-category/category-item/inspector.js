@@ -663,7 +663,7 @@ class Inspector extends Component {
 									marginControl={ priceFont[ 0 ].marginControl }
 									onMarginControl={ ( value ) => savePriceFont( { marginControl: value } ) }
 								/>
-								<h2 className="kt-heading-size-price">{ __( 'Min Height' ) }</h2>
+								<h2 className="kt-heading-size-price">{ __( 'Min Height', 'kadence-blocks' ) }</h2>
 								<TabPanel className="kt-size-tabs"
 									activeClass="active-tab"
 									tabs={ [

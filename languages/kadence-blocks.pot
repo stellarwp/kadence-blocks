@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Kadence Blocks – Gutenberg Blocks for Page Builder Features plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 1.10.2\n"
+"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 1.10.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/kadence-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-02-25T16:59:19+00:00\n"
+"POT-Creation-Date: 2021-03-04T20:19:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: kadence-blocks\n"
@@ -68,7 +68,7 @@ msgstr ""
 msgid "Item"
 msgstr ""
 
-#: dist/class-kadence-blocks-posts.php:358
+#: dist/class-kadence-blocks-posts.php:368
 msgid "No posts"
 msgstr ""
 
@@ -99,7 +99,7 @@ msgstr ""
 
 #: dist/form-ajax.php:56
 #: dist/form-ajax.php:76
-#: dist/form-ajax.php:657
+#: dist/form-ajax.php:669
 #: dist/build/blocks.js:33
 msgid "Submission Failed"
 msgstr ""
@@ -140,109 +140,109 @@ msgstr ""
 msgid "Required Field Empty"
 msgstr ""
 
-#: dist/form-ajax.php:410
+#: dist/form-ajax.php:422
 msgid "Third Party Failed"
 msgstr ""
 
-#: dist/form-ajax.php:416
+#: dist/form-ajax.php:428
 msgid "Submission rejected, invalid security token. Reload the page and try again."
 msgstr ""
 
-#: dist/form-ajax.php:416
+#: dist/form-ajax.php:428
 msgid "Token invalid"
 msgstr ""
 
-#: dist/form-ajax.php:419
+#: dist/form-ajax.php:431
 msgid "Submission failed"
 msgstr ""
 
-#: dist/form-ajax.php:419
+#: dist/form-ajax.php:431
 msgid "No Data"
 msgstr ""
 
-#: dist/form-ajax.php:454
+#: dist/form-ajax.php:466
 #: dist/build/blocks.js:33
 msgid "Accept"
 msgstr ""
 
-#: dist/form-ajax.php:657
+#: dist/form-ajax.php:669
 msgid "Data not found"
 msgstr ""
 
-#: dist/init.php:226
-#: dist/init.php:254
-#: dist/init.php:298
-#: dist/init.php:327
+#: dist/init.php:237
+#: dist/init.php:265
+#: dist/init.php:309
+#: dist/init.php:338
 #: dist/build/blocks.js:33
 msgid "Inherit"
 msgstr ""
 
-#: dist/init.php:229
-#: dist/init.php:255
-#: dist/init.php:301
-#: dist/init.php:328
+#: dist/init.php:240
+#: dist/init.php:266
+#: dist/init.php:312
+#: dist/init.php:339
 msgid "Thin 100"
 msgstr ""
 
-#: dist/init.php:231
-#: dist/init.php:256
-#: dist/init.php:303
-#: dist/init.php:329
+#: dist/init.php:242
+#: dist/init.php:267
+#: dist/init.php:314
+#: dist/init.php:340
 msgid "Extra-Light 200"
 msgstr ""
 
-#: dist/init.php:233
-#: dist/init.php:257
-#: dist/init.php:305
-#: dist/init.php:330
+#: dist/init.php:244
+#: dist/init.php:268
+#: dist/init.php:316
+#: dist/init.php:341
 msgid "Light 300"
 msgstr ""
 
-#: dist/init.php:235
-#: dist/init.php:237
-#: dist/init.php:258
-#: dist/init.php:307
-#: dist/init.php:309
-#: dist/init.php:331
+#: dist/init.php:246
+#: dist/init.php:248
+#: dist/init.php:269
+#: dist/init.php:318
+#: dist/init.php:320
+#: dist/init.php:342
 msgid "Regular"
 msgstr ""
 
-#: dist/init.php:239
-#: dist/init.php:259
-#: dist/init.php:311
-#: dist/init.php:332
+#: dist/init.php:250
+#: dist/init.php:270
+#: dist/init.php:322
+#: dist/init.php:343
 msgid "Medium 500"
 msgstr ""
 
-#: dist/init.php:241
-#: dist/init.php:260
-#: dist/init.php:313
-#: dist/init.php:333
+#: dist/init.php:252
+#: dist/init.php:271
+#: dist/init.php:324
+#: dist/init.php:344
 msgid "Semi-Bold 600"
 msgstr ""
 
-#: dist/init.php:243
-#: dist/init.php:261
-#: dist/init.php:315
-#: dist/init.php:334
+#: dist/init.php:254
+#: dist/init.php:272
+#: dist/init.php:326
+#: dist/init.php:345
 msgid "Bold 700"
 msgstr ""
 
-#: dist/init.php:245
-#: dist/init.php:262
-#: dist/init.php:317
-#: dist/init.php:335
+#: dist/init.php:256
+#: dist/init.php:273
+#: dist/init.php:328
+#: dist/init.php:346
 msgid "Extra-Bold 800"
 msgstr ""
 
-#: dist/init.php:247
-#: dist/init.php:263
-#: dist/init.php:319
-#: dist/init.php:336
+#: dist/init.php:258
+#: dist/init.php:274
+#: dist/init.php:330
+#: dist/init.php:347
 msgid "Ultra-Bold 900"
 msgstr ""
 
-#: dist/init.php:529
+#: dist/init.php:540
 #: dist/settings/class-kadence-blocks-settings.php:254
 msgid "Kadence Blocks"
 msgstr ""
@@ -399,6 +399,7 @@ msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:480
 #: dist/settings/class-kadence-blocks-settings.php:489
+#: dist/build/blocks.js:33
 msgid "px"
 msgstr ""
 
@@ -495,6 +496,7 @@ msgid "Create an advanced button or a row of buttons. Style each one including h
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:665
+#: dist/build/blocks.js:33
 msgid "Icon"
 msgstr ""
 
@@ -503,6 +505,7 @@ msgid "Choose from over 1500+ SVG Icons to add into your page and style the size
 msgstr ""
 
 #: dist/settings/class-kadence-blocks-settings.php:671
+#: dist/build/blocks.js:33
 msgid "Spacer/Divider"
 msgstr ""
 
@@ -751,7 +754,83 @@ msgid "Padding (px)"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "Height"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Tablet Height"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Mobile Height"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Spacer Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Height Units"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "vh"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Divider Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Enable Divider"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Alignment"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Divider Style"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Solid"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Dashed"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Dotted"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Stripe"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Divider Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Stripe Angle"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Stripe Width"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Stripe Gap"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Divider Height in px"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Divider Width by %"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -768,6 +847,14 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Hide on Mobile"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "spacer"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "divider"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -791,31 +878,7 @@ msgid "Remove link"
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "Pro"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Upgrade to Pro"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Prebuilt Starter Packs"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Back to Starter Packs"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Designed by"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Sections"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Starter Packs"
+msgid "Device"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -876,6 +939,66 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Select Image"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Switch to 5% step resizing"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Switch to fluid resizing"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Category"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Search"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Prebuilt Options"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Pro"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Kadence Blocks Pro required for this item"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Prebuilt Starter Packs"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Back to Starter Packs"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Designed by"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Prebuilt Library"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Close Dialog"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Sections"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Starter Packs"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -1007,6 +1130,10 @@ msgid "Mobile Layout"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "Column Collapse Vertical Gutter"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Standard: 30px"
 msgstr ""
 
@@ -1032,6 +1159,10 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Widest: 80px"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Collapse Order"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -1231,14 +1362,6 @@ msgid "Padding/Margin"
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "Padding Type"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Margin Type"
-msgstr ""
-
-#: dist/build/blocks.js:33
 msgid "Background Settings"
 msgstr ""
 
@@ -1307,6 +1430,10 @@ msgid "Slider Image Repeat"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "Slider Auto Play"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Autoplay Speed"
 msgstr ""
 
@@ -1364,6 +1491,10 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Remove Video"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "HTML5 Video File URL"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -1487,6 +1618,14 @@ msgid "Gradient Type"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "Linear"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Radial"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Gradient Angle"
 msgstr ""
 
@@ -1495,7 +1634,119 @@ msgid "Gradient Position"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "Background Image Position"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Blend Mode"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Text Color Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Text Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Link Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Link Hover Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Mobile Height (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Mobile Width (%)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Tablet Height (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Tablet Width (%)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Divider Height (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Divider Width (%)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Select Divider"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Vertical Align Top"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Vertical Align Middle"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Vertical Align Bottom"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Dividers"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Structure Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container HTML tag"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Min Height Type"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Minimium Height"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Mobile Min Height"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Tablet Min Height"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Min Height"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Content Max Width Inherit from Theme?"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Max Width Type"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Content Max Width"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Inner Column Height 100%"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Z-Index Control"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -1535,6 +1786,14 @@ msgid "Mute"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "row/layout"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "column"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Copy/Paste Styles"
 msgstr ""
 
@@ -1555,10 +1814,6 @@ msgid "Tablet:"
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "Device"
-msgstr ""
-
-#: dist/build/blocks.js:33
 msgid "Box Shadow"
 msgstr ""
 
@@ -1575,15 +1830,35 @@ msgid "An inner section of content."
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "column"
-msgstr ""
-
-#: dist/build/blocks.js:33
 msgid "section"
 msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Color Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Tab"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Edit Media"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Size"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "InfoBox Quick Layout Presets"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "InfoBox Style"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -1595,11 +1870,395 @@ msgid "Link Settings"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "Link Target"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Same Window"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "New Window"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Set link to nofollow?"
 msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Set link attribute Sponsored?"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Link Content"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Entire Box"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Only Learn More Text"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Content Align"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container Border Width (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container Border Radius (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Hover"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Hover Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Hover Border"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container Border"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container Padding"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Margin Type"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container Max Width"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Media Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Mobile Media Align"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Tablet Media Align"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Media Align"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Media Vertical Align"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Middle"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Media Type"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Image File Size"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Max Image Width"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Image Hover Animation"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Grayscale to Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Border Spin In"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Grayscale to Color & Border Spin In"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Flip to Another Image"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Flip Image (Use same size as start image"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "clear"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Image Border Radius (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "SVG Hover Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "*you must force inline svg for this to have effect."
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Image Hover Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Image Hover Border"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "SVG Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Image Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Image Border"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Line Width"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Border"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Border Radius (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Flip to Another Icon"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Hover Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Hover Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Hover Border"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Border Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Title for Accessibility"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Size"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Border"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Border Radius (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Hover Animation"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Hover Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Hover Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Hover Border"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number Border Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Media Padding"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Media Margin"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Title Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Show Title"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Hover Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Title Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Text Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Show Text"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Learn More Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Show Learn More"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "HOVER: Text Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "HOVER: Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "HOVER: Border Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Background"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Learn More Border Width (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Learn More Border Radius (px)"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Container Shadow"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Enable Shadow"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Shadow Color"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Shadow Blur"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Shadow Spread"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Shadow Vertical Offset"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Shadow Horizontal Offset"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Media area"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Title"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo."
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Learn More"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Title Icon Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Icon Side"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Show only Icon"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Add Title"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Pane"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -1724,18 +2383,6 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "V2"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Linear"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Radial"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Solid"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -2167,10 +2814,6 @@ msgid "Button Colors"
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "Hover"
-msgstr ""
-
-#: dist/build/blocks.js:33
 msgid "Text Hover Color"
 msgstr ""
 
@@ -2184,10 +2827,6 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Button Hover Box Shadow"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Text Color"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -2267,10 +2906,6 @@ msgid "Advanced Message Font Settings"
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "Container Settings"
-msgstr ""
-
-#: dist/build/blocks.js:33
 msgid "Container Margin"
 msgstr ""
 
@@ -2319,19 +2954,15 @@ msgid "Allowed Headers"
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "Title Settings"
-msgstr ""
-
-#: dist/build/blocks.js:33
 msgid "Enable Title"
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "Title Color"
+msgid "Title Border Width (px)"
 msgstr ""
 
 #: dist/build/blocks.js:33
-msgid "Title Border Width (px)"
+msgid "Collapsed"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -2367,6 +2998,10 @@ msgid "List Settings"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "List Item Gap"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "List Items Hover Color"
 msgstr ""
 
@@ -2380,14 +3015,6 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "List Container Margin"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Container Background"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Container Padding"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -2419,7 +3046,139 @@ msgid "List Items Active Color"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "Optional Title"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Start adding Heading blocks to create a table of contents."
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "table of contents"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "summary"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Select Posts Type:"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Order by"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Newest to Oldest"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Oldest to Newest"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Modified Ascending"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Modified Decending"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "A → Z"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Z → A"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Menu Order"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Random"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Number of items"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Offset Starting Post"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Select Taxonomy"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Select Terms"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "All"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Whether to include or exclude items from selected terms."
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Include"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Exclude"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Select the post Taxonomy"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Filter by Category"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Filter by Tag"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Show Unique"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Exclude posts in this block from showing in others on the same page."
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Allow Sticky Posts?"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Layout Settings"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Tablet Columns"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Align Image"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Style"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Boxed"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Unboxed"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -2507,6 +3266,10 @@ msgid "Category Divider"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "Title Size"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Meta Settings"
 msgstr ""
 
@@ -2587,6 +3350,14 @@ msgid "Posts"
 msgstr ""
 
 #: dist/build/blocks.js:33
+msgid "latest posts"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "blog"
+msgstr ""
+
+#: dist/build/blocks.js:33
 msgid "Kadence Tabs"
 msgstr ""
 
@@ -2612,10 +3383,6 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Tab Title Color Settings"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Hover Color"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -2652,10 +3419,6 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Tab Title Font Settings"
-msgstr ""
-
-#: dist/build/blocks.js:33
-msgid "Structure Settings"
 msgstr ""
 
 #: dist/build/blocks.js:33
@@ -2800,6 +3563,14 @@ msgstr ""
 
 #: dist/build/blocks.js:33
 msgid "Gallery Spacing"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Reset"
+msgstr ""
+
+#: dist/build/blocks.js:33
+msgid "Confirm Reset"
 msgstr ""
 
 #: dist/build/blocks.js:33

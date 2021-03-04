@@ -106,7 +106,7 @@ class KadenceSpacerDivider extends Component {
 		const dividerBorderColor = ( ! dividerColor ? KadenceColorOutput( '#eeeeee', alp ) : KadenceColorOutput( dividerColor, alp ) );
 		const deskControls = (
 			<RangeControl
-				label={ __( 'Height' ) }
+				label={ __( 'Height', 'kadence-blocks' ) }
 				value={ spacerHeight }
 				onChange={ value => setAttributes( { spacerHeight: value } ) }
 				min={ 6 }
@@ -115,7 +115,7 @@ class KadenceSpacerDivider extends Component {
 		);
 		const tabletControls = (
 			<RangeControl
-				label={ __( 'Tablet Height' ) }
+				label={ __( 'Tablet Height', 'kadence-blocks' ) }
 				value={ tabletSpacerHeight }
 				onChange={ value => setAttributes( { tabletSpacerHeight: value } ) }
 				min={ 6 }
@@ -124,7 +124,7 @@ class KadenceSpacerDivider extends Component {
 		);
 		const mobileControls = (
 			<RangeControl
-				label={ __( 'Mobile Height' ) }
+				label={ __( 'Mobile Height', 'kadence-blocks' ) }
 				value={ mobileSpacerHeight }
 				onChange={ value => setAttributes( { mobileSpacerHeight: value } ) }
 				min={ 6 }
@@ -217,16 +217,16 @@ class KadenceSpacerDivider extends Component {
 						</BlockControls>
 						<InspectorControls>
 							<PanelBody
-								title={ __( 'Spacer Settings' ) }
+								title={ __( 'Spacer Settings', 'kadence-blocks' ) }
 								initialOpen={ true }
 							>
 								{ this.showSettings( 'spacerHeightUnits' ) && (
 									<SelectControl
-										label={ __( 'Height Units' ) }
+										label={ __( 'Height Units', 'kadence-blocks' ) }
 										value={ spacerHeightUnits }
 										options={ [
-											{ value: 'px', label: __( 'px' ) },
-											{ value: 'vh', label: __( 'vh' ) },
+											{ value: 'px', label: __( 'px', 'kadence-blocks' ) },
+											{ value: 'vh', label: __( 'vh', 'kadence-blocks' ) },
 										] }
 										onChange={ value => setAttributes( { spacerHeightUnits: value } ) }
 									/>
@@ -270,12 +270,12 @@ class KadenceSpacerDivider extends Component {
 								) }
 							</PanelBody>
 							<PanelBody
-								title={ __( 'Divider Settings' ) }
+								title={ __( 'Divider Settings', 'kadence-blocks' ) }
 								initialOpen={ true }
 							>
 								{ this.showSettings( 'dividerToggle' ) && (
 									<ToggleControl
-										label={ __( 'Enable Divider' ) }
+										label={ __( 'Enable Divider', 'kadence-blocks' ) }
 										checked={ dividerEnable }
 										onChange={ value => setAttributes( { dividerEnable: value } ) }
 									/>
@@ -287,18 +287,18 @@ class KadenceSpacerDivider extends Component {
 											{ tabAlignControls }
 										</div>
 										<SelectControl
-											label={ __( 'Divider Style' ) }
+											label={ __( 'Divider Style', 'kadence-blocks' ) }
 											value={ dividerStyle }
 											options={ [
-												{ value: 'solid', label: __( 'Solid' ) },
-												{ value: 'dashed', label: __( 'Dashed' ) },
-												{ value: 'dotted', label: __( 'Dotted' ) },
-												{ value: 'stripe', label: __( 'Stripe' ) },
+												{ value: 'solid', label: __( 'Solid', 'kadence-blocks' ) },
+												{ value: 'dashed', label: __( 'Dashed', 'kadence-blocks' ) },
+												{ value: 'dotted', label: __( 'Dotted', 'kadence-blocks' ) },
+												{ value: 'stripe', label: __( 'Stripe', 'kadence-blocks' ) },
 											] }
 											onChange={ value => setAttributes( { dividerStyle: value } ) }
 										/>
 										<AdvancedPopColorControl
-											label={ __( 'Divider Color' ) }
+											label={ __( 'Divider Color', 'kadence-blocks' ) }
 											colorValue={ ( dividerColor ? dividerColor : '' ) }
 											colorDefault={ '' }
 											opacityValue={ dividerOpacity }
@@ -309,21 +309,21 @@ class KadenceSpacerDivider extends Component {
 										{ 'stripe' === dividerStyle && (
 											<Fragment>
 												<RangeControl
-													label={ __( 'Stripe Angle' ) }
+													label={ __( 'Stripe Angle', 'kadence-blocks' ) }
 													value={ rotate }
 													onChange={ value => setAttributes( { rotate: value } ) }
 													min={ 0 }
 													max={ 135 }
 												/>
 												<RangeControl
-													label={ __( 'Stripe Width' ) }
+													label={ __( 'Stripe Width', 'kadence-blocks' ) }
 													value={ strokeWidth }
 													onChange={ value => setAttributes( { strokeWidth: value } ) }
 													min={ 1 }
 													max={ 30 }
 												/>
 												<RangeControl
-													label={ __( 'Stripe Gap' ) }
+													label={ __( 'Stripe Gap', 'kadence-blocks' ) }
 													value={ strokeGap }
 													onChange={ value => setAttributes( { strokeGap: value } ) }
 													min={ 1 }
@@ -332,14 +332,14 @@ class KadenceSpacerDivider extends Component {
 											</Fragment>
 										) }
 										<RangeControl
-											label={ __( 'Divider Height in px' ) }
+											label={ __( 'Divider Height in px', 'kadence-blocks' ) }
 											value={ dividerHeight }
 											onChange={ value => setAttributes( { dividerHeight: value } ) }
 											min={ minD }
 											max={ maxD }
 										/>
 										<RangeControl
-											label={ __( 'Divider Width by %' ) }
+											label={ __( 'Divider Width by %', 'kadence-blocks' ) }
 											value={ dividerWidth }
 											onChange={ value => setAttributes( { dividerWidth: value } ) }
 											min={ 0 }

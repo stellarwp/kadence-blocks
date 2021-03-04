@@ -52,9 +52,9 @@ registerBlockType( 'kadence/tableofcontents', {
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'table of contents' ),
-		__( 'summary' ),
-		__( 'KB' ),
+		__( 'table of contents', 'kadence-blocks' ),
+		__( 'summary', 'kadence-blocks' ),
+		'KB',
 	],
 	supports: {
 		html: false,

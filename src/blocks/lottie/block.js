@@ -42,15 +42,15 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/lottie', {
-	title: __( 'Lottie Animation' ),
+	title: __( 'Lottie Animation', 'kadence-blocks' ),
 	icon: {
 		src: icons.block,
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'lottie' ),
-		__( 'animation' ),
-		__( 'KB' ),
+		__( 'lottie', 'kadence-blocks' ),
+		__( 'animation', 'kadence-blocks' ),
+		'KB',
 	],
 	supports: {
 		ktanimate: true,

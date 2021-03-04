@@ -362,32 +362,32 @@ class KadenceTableOfContents extends Component {
 								initialOpen={ true }
 							>
 								<ToggleControl
-									label={ __( 'h1' ) }
+									label={ 'h1' }
 									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h1 ? allowedHeaders[ 0 ].h1 : true }
 									onChange={ value => saveAllowedHeaders( { h1: value } ) }
 								/>
 								<ToggleControl
-									label={ __( 'h2' ) }
+									label={ 'h2' }
 									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h2 ? allowedHeaders[ 0 ].h2 : true }
 									onChange={ value => saveAllowedHeaders( { h2: value } ) }
 								/>
 								<ToggleControl
-									label={ __( 'h3' ) }
+									label={ 'h3' }
 									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h3 ? allowedHeaders[ 0 ].h3 : true }
 									onChange={ value => saveAllowedHeaders( { h3: value } ) }
 								/>
 								<ToggleControl
-									label={ __( 'h4' ) }
+									label={ 'h4' }
 									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h4 ? allowedHeaders[ 0 ].h4 : true }
 									onChange={ value => saveAllowedHeaders( { h4: value } ) }
 								/>
 								<ToggleControl
-									label={ __( 'h5' ) }
+									label={ 'h5' }
 									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h5 ? allowedHeaders[ 0 ].h5 : true }
 									onChange={ value => saveAllowedHeaders( { h5: value } ) }
 								/>
 								<ToggleControl
-									label={ __( 'h6' ) }
+									label={ 'h6' }
 									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h6 ? allowedHeaders[ 0 ].h6 : true }
 									onChange={ value => saveAllowedHeaders( { h6: value } ) }
 								/>
@@ -464,12 +464,12 @@ class KadenceTableOfContents extends Component {
 											tabs={ [
 												{
 													name: 'normal',
-													title: __( 'Normal' ),
+													title: __( 'Normal', 'kadence-blocks' ),
 													className: 'kt-normal-tab',
 												},
 												{
 													name: 'hover',
-													title: __( 'Collapsed' ),
+													title: __( 'Collapsed', 'kadence-blocks' ),
 													className: 'kt-hover-tab',
 												},
 											] }>
@@ -555,7 +555,7 @@ class KadenceTableOfContents extends Component {
 								initialOpen={ false }
 							>
 								<ResponsiveRangeControl
-									label={ __( 'List Item Gap' ) }
+									label={ __( 'List Item Gap', 'kadence-blocks' ) }
 									value={ listGap && listGap[0] ? listGap[0] : '' }
 									mobileValue={ listGap && listGap[2] ? listGap[2] : '' }
 									tabletValue={ listGap && listGap[1] ? listGap[1] : '' }
@@ -571,12 +571,12 @@ class KadenceTableOfContents extends Component {
 									tabs={ [
 										{
 											name: 'normal',
-											title: __( 'Normal' ),
+											title: __( 'Normal', 'kadence-blocks' ),
 											className: 'kt-normal-tab',
 										},
 										{
 											name: 'hover',
-											title: __( 'Hover' ),
+											title: __( 'Hover', 'kadence-blocks' ),
 											className: 'kt-hover-tab',
 										},
 									] }>
@@ -874,7 +874,7 @@ class KadenceTableOfContents extends Component {
 								) }
 								<RichText
 									tagName="div"
-									placeholder={ __( 'Optional Title' ) }
+									placeholder={ __( 'Optional Title', 'kadence-blocks' ) }
 									format="string"
 									value={ title }
 									onChange={ value => {

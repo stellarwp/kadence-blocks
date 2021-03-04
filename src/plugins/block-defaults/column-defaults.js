@@ -195,7 +195,7 @@ class KadenceColumnDefault extends Component {
 		const deskControls = (
 			<Panel className="components-panel__body is-opened">
 				<MeasurementControls
-					label={ __( 'Padding' ) }
+					label={ __( 'Padding', 'kadence-blocks' ) }
 					reset={ () => {
 						this.clearDefaults( 'topPadding' );
 						this.clearDefaults( 'rightPadding' );
@@ -218,7 +218,7 @@ class KadenceColumnDefault extends Component {
 					allowEmpty={ true }
 				/>
 				<MeasurementControls
-					label={ __( 'Margin' ) }
+					label={ __( 'Margin', 'kadence-blocks' ) }
 					reset={ () => {
 						this.clearDefaults( 'topMargin' );
 						this.clearDefaults( 'rightMargin' );
@@ -308,7 +308,7 @@ class KadenceColumnDefault extends Component {
 		);
 		const textAlignControls = (
 			<div className="kb-sidebar-alignment">
-				<h2 className="kt-heading-size-title">{ __( 'Text Alignment' ) }</h2>
+				<h2 className="kt-heading-size-title">{ __( 'Text Alignment', 'kadence-blocks' ) }</h2>
 				<TabPanel className="kt-size-tabs"
 					activeClass="active-tab"
 					tabs={ [
@@ -397,7 +397,7 @@ class KadenceColumnDefault extends Component {
 								step={ 1 }
 							/>
 							<MeasurementControls
-								label={ __( 'Border Radius' ) }
+								label={ __( 'Border Radius', 'kadence-blocks' ) }
 								reset={ () => {
 									this.clearDefaults( 'borderRadius' );
 								} }
@@ -409,8 +409,8 @@ class KadenceColumnDefault extends Component {
 								max={ 200 }
 								step={ 1 }
 								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-									{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+									{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
+									{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
 								] }
 								firstIcon={ icons.topleft }
 								secondIcon={ icons.topright }
@@ -419,12 +419,12 @@ class KadenceColumnDefault extends Component {
 							/>
 							{ textAlignControls }
 							<PanelBody
-								title={ __( 'Text Color Settings' ) }
+								title={ __( 'Text Color Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<div className="components-base-control">
 									<AdvancedPopColorControl
-										label={ __( 'Text Color' ) }
+										label={ __( 'Text Color', 'kadence-blocks' ) }
 										colorValue={ ( columnConfig.textColor ? columnConfig.textColor : '' ) }
 										colorDefault={ '' }
 										onColorChange={ value => this.saveConfigState( 'textColor', value ) }
@@ -432,7 +432,7 @@ class KadenceColumnDefault extends Component {
 								</div>
 								<div className="components-base-control">
 									<AdvancedPopColorControl
-										label={ __( 'Link Color' ) }
+										label={ __( 'Link Color', 'kadence-blocks' ) }
 										colorValue={ ( columnConfig.linkColor ? columnConfig.linkColor : '' ) }
 										colorDefault={ '' }
 										onColorChange={ value => this.saveConfigState( 'linkColor', value ) }
@@ -440,7 +440,7 @@ class KadenceColumnDefault extends Component {
 								</div>
 								<div className="components-base-control">
 									<AdvancedPopColorControl
-										label={ __( 'Link Hover Color' ) }
+										label={ __( 'Link Hover Color', 'kadence-blocks' ) }
 										colorValue={ ( columnConfig.linkHoverColor ? columnConfig.linkHoverColor : '' ) }
 										colorDefault={ '' }
 										onColorChange={ value => this.saveConfigState( 'linkHoverColor', value ) }
@@ -455,7 +455,7 @@ class KadenceColumnDefault extends Component {
 								<Button className="kt-defaults-save" isDestructive disabled={ ( JSON.stringify( this.state.configuration[ 'kadence/column' ] ) === JSON.stringify( {} ) ? true : false ) } onClick={ () => {
 									this.setState( { resetConfirm: true } );
 								} }>
-									{ __( 'Reset' ) }
+									{ __( 'Reset', 'kadence-blocks' ) }
 								</Button>
 							) }
 							{ this.state.resetConfirm && (
@@ -463,13 +463,13 @@ class KadenceColumnDefault extends Component {
 									this.clearAllDefaults();
 									this.setState( { resetConfirm: false } );
 								} }>
-									{ __( 'Confirm Reset' ) }
+									{ __( 'Confirm Reset', 'kadence-blocks' ) }
 								</Button>
 							) }
 							<Button className="kt-defaults-save" isPrimary onClick={ () => {
 								this.saveConfig( 'kadence/column', columnConfig );
 							} }>
-								{ __( 'Save/Close' ) }
+								{ __( 'Save/Close', 'kadence-blocks' ) }
 							</Button>
 						</div>
 					</Modal>

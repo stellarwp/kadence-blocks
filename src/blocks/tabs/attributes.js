@@ -73,21 +73,21 @@ const attributes = {
 	titles: {
 		type: 'array',
 		default: [ {
-			text: __( 'Tab 1' ),
+			text: __( 'Tab 1', 'kadence-blocks' ),
 			icon: '',
 			iconSide: 'right',
 			onlyIcon: false,
 			subText: '',
 			anchor: '',
 		}, {
-			text: __( 'Tab 2' ),
+			text: __( 'Tab 2', 'kadence-blocks' ),
 			icon: '',
 			iconSide: 'right',
 			onlyIcon: false,
 			subText: '',
 			anchor: '',
 		}, {
-			text: __( 'Tab 3' ),
+			text: __( 'Tab 3', 'kadence-blocks' ),
 			icon: '',
 			iconSide: 'right',
 			onlyIcon: false,

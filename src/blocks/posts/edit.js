@@ -173,7 +173,7 @@ class KadencePosts extends Component {
 				<InspectorControls>
 					<PanelBody>
 						<SelectControl
-							label={ __( 'Select Posts Type:' ) }
+							label={ __( 'Select Posts Type:', 'kadence-blocks' ) }
 							options={ postTypes }
 							value={ postType }
 							onChange={ ( value ) => {
@@ -184,42 +184,42 @@ class KadencePosts extends Component {
 							} }
 						/>
 						<SelectControl
-							label={ __( 'Order by' ) }
+							label={ __( 'Order by', 'kadence-blocks' ) }
 							options={ [
 								{
-									label: __( 'Newest to Oldest', 'kadence-blocks-pro' ),
+									label: __( 'Newest to Oldest', 'kadence-blocks' ),
 									value: 'date/desc',
 								},
 								{
-									label: __( 'Oldest to Newest', 'kadence-blocks-pro' ),
+									label: __( 'Oldest to Newest', 'kadence-blocks' ),
 									value: 'date/asc',
 								},
 								{
-									label: __( 'Modified Ascending', 'kadence-blocks-pro' ),
+									label: __( 'Modified Ascending', 'kadence-blocks' ),
 									value: 'modified/asc',
 								},
 								{
-									label: __( 'Modified Decending', 'kadence-blocks-pro' ),
+									label: __( 'Modified Decending', 'kadence-blocks' ),
 									value: 'modified/desc',
 								},
 								{
 									/* translators: label for ordering posts by title in ascending order */
-									label: __( 'A → Z', 'kadence-blocks-pro' ),
+									label: __( 'A → Z', 'kadence-blocks' ),
 									value: 'title/asc',
 								},
 								{
 									/* translators: label for ordering posts by title in descending order */
-									label: __( 'Z → A', 'kadence-blocks-pro' ),
+									label: __( 'Z → A', 'kadence-blocks' ),
 									value: 'title/desc',
 								},
 								{
 									/* translators: label for ordering posts by title in descending order */
-									label: __( 'Menu Order', 'kadence-blocks-pro' ),
+									label: __( 'Menu Order', 'kadence-blocks' ),
 									value: 'menu_order/asc',
 								},
 								{
 									/* translators: label for ordering posts by title in descending order */
-									label: __( 'Random', 'kadence-blocks-pro' ),
+									label: __( 'Random', 'kadence-blocks' ),
 									value: 'rand/desc',
 								},
 							] }
@@ -236,7 +236,7 @@ class KadencePosts extends Component {
 						/>
 						<KadenceRange
 							key="query-controls-range-control"
-							label={ __( 'Number of items' ) }
+							label={ __( 'Number of items', 'kadence-blocks' ) }
 							value={ postsToShow }
 							onChange={ ( value ) => setAttributes( { postsToShow: value } ) }
 							min={ 1 }
@@ -244,7 +244,7 @@ class KadencePosts extends Component {
 						/>
 						<KadenceRange
 							key="query-controls-range-control"
-							label={ __( 'Offset Starting Post' ) }
+							label={ __( 'Offset Starting Post', 'kadence-blocks' ) }
 							value={ offsetQuery }
 							onChange={ ( value ) => setAttributes( { offsetQuery: value } ) }
 							min={ 0 }
@@ -255,7 +255,7 @@ class KadencePosts extends Component {
 								{ ( undefined !== taxonomyList && 0 !== taxonomyList.length ) && (
 									<div className="term-select-form-row">
 										<label htmlFor={ 'tax-selection' } className="screen-reader-text">
-											{ __( 'Select Taxonomy' ) }
+											{ __( 'Select Taxonomy', 'kadence-blocks' ) }
 										</label>
 										<Select
 											value={ taxonomyList.filter( ( { value } ) => value === taxType ) }
@@ -267,7 +267,7 @@ class KadencePosts extends Component {
 											options={ taxonomyList }
 											isMulti={ false }
 											maxMenuHeight={ 300 }
-											placeholder={ __( 'Select Taxonomy' ) }
+											placeholder={ __( 'Select Taxonomy', 'kadence-blocks' ) }
 										/>
 									</div>
 								) }
@@ -275,7 +275,7 @@ class KadencePosts extends Component {
 									<Fragment>
 										<div className="term-select-form-row">
 											<label htmlFor={ 'terms-selection' } className="screen-reader-text">
-												{ __( 'Select Terms' ) }
+												{ __( 'Select Terms', 'kadence-blocks' ) }
 											</label>
 											<Select
 												value={ categories }
@@ -286,15 +286,15 @@ class KadencePosts extends Component {
 												options={ taxonomyOptions }
 												isMulti={ true }
 												maxMenuHeight={ 300 }
-												placeholder={ __( 'All' ) }
+												placeholder={ __( 'All', 'kadence-blocks' ) }
 											/>
 										</div>
 										<RadioControl
-											help={ __( 'Whether to include or exclude items from selected terms.' ) }
+											help={ __( 'Whether to include or exclude items from selected terms.', 'kadence-blocks' ) }
 											selected={ ( undefined !== excludeTax ? excludeTax : 'include' ) }
 											options={ [
-												{ label: __( 'Include', 'kadence-blocks-pro' ), value: 'include' },
-												{ label: __( 'Exclude', 'kadence-blocks-pro' ), value: 'exclude' },
+												{ label: __( 'Include', 'kadence-blocks' ), value: 'include' },
+												{ label: __( 'Exclude', 'kadence-blocks' ), value: 'exclude' },
 											] }
 											onChange={ ( value ) => setAttributes( { excludeTax: value } ) }
 										/>
@@ -302,7 +302,7 @@ class KadencePosts extends Component {
 								) }
 								{ ( ! postType || postType === 'post' ) && (
 									<ToggleControl
-										label={ __( 'Select the post Taxonomy' ) }
+										label={ __( 'Select the post Taxonomy', 'kadence-blocks' ) }
 										checked={ postTax }
 										onChange={ ( value ) => setAttributes( { postTax: value } ) }
 									/>
@@ -312,7 +312,7 @@ class KadencePosts extends Component {
 						{ ( ! postType || ( postType === 'post' && ! postTax ) ) && (
 							<Fragment>
 								<KadenceSelectTerms
-									placeholder={ __( 'Filter by Category' ) }
+									placeholder={ __( 'Filter by Category', 'kadence-blocks' ) }
 									restBase={ 'wp/v2/categories' }
 									fieldId={ 'tax-select-category' }
 									value={ categories }
@@ -321,7 +321,7 @@ class KadencePosts extends Component {
 									} }
 								/>
 								<KadenceSelectTerms
-									placeholder={ __( 'Filter by Tag' ) }
+									placeholder={ __( 'Filter by Tag', 'kadence-blocks' ) }
 									restBase={ 'wp/v2/tags' }
 									fieldId={ 'tax-select-tags' }
 									value={ tags }
@@ -330,39 +330,39 @@ class KadencePosts extends Component {
 									} }
 								/>
 								<RadioControl
-									help={ __( 'Whether to include or exclude items from selected terms.' ) }
+									help={ __( 'Whether to include or exclude items from selected terms.', 'kadence-blocks' ) }
 									selected={ ( undefined !== excludeTax ? excludeTax : 'include' ) }
 									options={ [
-										{ label: __( 'Include', 'kadence-blocks-pro' ), value: 'include' },
-										{ label: __( 'Exclude', 'kadence-blocks-pro' ), value: 'exclude' },
+										{ label: __( 'Include', 'kadence-blocks' ), value: 'include' },
+										{ label: __( 'Exclude', 'kadence-blocks' ), value: 'exclude' },
 									] }
 									onChange={ ( value ) => setAttributes( { excludeTax: value } ) }
 								/>
 								<ToggleControl
-									label={ __( 'Select the post Taxonomy' ) }
+									label={ __( 'Select the post Taxonomy', 'kadence-blocks' ) }
 									checked={ postTax }
 									onChange={ ( value ) => setAttributes( { postTax: value } ) }
 								/>
 							</Fragment>
 						) }
 						<ToggleControl
-							label={ __( 'Show Unique' ) }
-							help={ __( 'Exclude posts in this block from showing in others on the same page.' ) }
+							label={ __( 'Show Unique', 'kadence-blocks' ) }
+							help={ __( 'Exclude posts in this block from showing in others on the same page.', 'kadence-blocks' ) }
 							checked={ showUnique }
 							onChange={ ( value ) => setAttributes( { showUnique: value } ) }
 						/>
 						<ToggleControl
-							label={ __( 'Allow Sticky Posts?' ) }
+							label={ __( 'Allow Sticky Posts?', 'kadence-blocks' ) }
 							checked={ allowSticky }
 							onChange={ ( value ) => setAttributes( { allowSticky: value } ) }
 						/>
 					</PanelBody>
 					<PanelBody
-						title={ __( 'Layout Settings' ) }
+						title={ __( 'Layout Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
 						<KadenceRange
-							label={ __( 'Columns' ) }
+							label={ __( 'Columns', 'kadence-blocks' ) }
 							value={ columns }
 							onChange={ ( value ) => setAttributes( { columns: value } ) }
 							min={ 1 }
@@ -370,7 +370,7 @@ class KadencePosts extends Component {
 						/>
 						{ 1 !== columns && (
 							<KadenceRange
-								label={ __( 'Tablet Columns' ) }
+								label={ __( 'Tablet Columns', 'kadence-blocks' ) }
 								value={ tabletColumns }
 								onChange={ ( value ) => setAttributes( { tabletColumns: value } ) }
 								min={ 1 }
@@ -379,14 +379,14 @@ class KadencePosts extends Component {
 						) }
 						{ 1 === columns && image && (
 							<SelectControl
-								label={ __( 'Align Image' ) }
+								label={ __( 'Align Image', 'kadence-blocks' ) }
 								options={ [
 									{
-										label: __( 'Top' ),
+										label: __( 'Top', 'kadence-blocks' ),
 										value: 'above',
 									},
 									{
-										label: __( 'Left' ),
+										label: __( 'Left', 'kadence-blocks' ),
 										value: 'beside',
 									},
 								] }
@@ -395,14 +395,14 @@ class KadencePosts extends Component {
 							/>
 						) }
 						<SelectControl
-							label={ __( 'Style' ) }
+							label={ __( 'Style', 'kadence-blocks' ) }
 							options={ [
 								{
-									label: __( 'Boxed' ),
+									label: __( 'Boxed', 'kadence-blocks' ),
 									value: 'boxed',
 								},
 								{
-									label: __( 'Unboxed' ),
+									label: __( 'Unboxed', 'kadence-blocks' ),
 									value: 'unboxed',
 								},
 							] }

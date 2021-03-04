@@ -33,7 +33,7 @@ const { registerBlockType } = wp.blocks;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/pane', {
-	title: __( 'Pane' ),
+	title: __( 'Pane', 'kadence-blocks' ),
 	icon: icons.accordionBlock,
 	category: 'kadence-blocks',
 	parent: [ 'kadence/accordion' ],

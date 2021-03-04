@@ -737,7 +737,7 @@ class KadenceRowLayout extends Component {
 						{ columns > 1 && (
 							<Fragment>
 								<p className="components-base-control__label">{ __( 'Mobile Layout', 'kadence-blocks' ) }</p>
-								<ButtonGroup aria-label={ __( 'Mobile Layout' ) }>
+								<ButtonGroup aria-label={ __( 'Mobile Layout', 'kadence-blocks' ) }>
 									{ map( mobileLayoutOptions, ( { name, key, icon } ) => (
 										<Tooltip text={ name }>
 											<Button
@@ -757,7 +757,7 @@ class KadenceRowLayout extends Component {
 						) }
 						{ columns > 1 && (
 							<SelectControl
-								label={ __( 'Column Collapse Vertical Gutter' ) }
+								label={ __( 'Column Collapse Vertical Gutter', 'kadence-blocks' ) }
 								value={ collapseGutter }
 								options={ [
 									{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
@@ -773,7 +773,7 @@ class KadenceRowLayout extends Component {
 						) }
 						{ columns > 1 && (
 							<SelectControl
-								label={ __( 'Collapse Order' ) }
+								label={ __( 'Collapse Order', 'kadence-blocks' ) }
 								value={ collapseOrder }
 								options={ [
 									{ value: 'left-to-right', label: __( 'Left to Right', 'kadence-blocks' ) },
@@ -1579,7 +1579,7 @@ class KadenceRowLayout extends Component {
 														onChange={ value => setAttributes( { bgImgRepeat: value } ) }
 													/>
 													<ToggleControl
-														label={ __( 'Slider Auto Play' ) }
+														label={ __( 'Slider Auto Play', 'kadence-blocks' ) }
 														checked={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ) }
 														onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
 													/>
@@ -1738,7 +1738,7 @@ class KadenceRowLayout extends Component {
 																</Tooltip>
 															) }
 															<TextControl
-																label={ __( 'HTML5 Video File URL' ) }
+																label={ __( 'HTML5 Video File URL', 'kadence-blocks' ) }
 																value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
 																onChange={ value => saveVideoSettings( { local: value } ) }
 															/>
@@ -2211,8 +2211,8 @@ class KadenceRowLayout extends Component {
 					label={ __( 'Gradient Type', 'kadence-blocks' ) }
 					value={ overlayGradType }
 					options={ [
-						{ value: 'linear', label: __( 'Linear' ) },
-						{ value: 'radial', label: __( 'Radial' ) },
+						{ value: 'linear', label: __( 'Linear', 'kadence-blocks' ) },
+						{ value: 'radial', label: __( 'Radial', 'kadence-blocks' ) },
 					] }
 					onChange={ value => setAttributes( { overlayGradType: value } ) }
 				/>
@@ -2275,7 +2275,7 @@ class KadenceRowLayout extends Component {
 		const overTabControls = (
 			<div>
 				<RangeControl
-					label={ __( 'Overlay Opacity' ) }
+					label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
 					onChange={ ( value ) => {
 						saveTabletOverlay( {
@@ -2286,7 +2286,7 @@ class KadenceRowLayout extends Component {
 					max={ 100 }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Overlay Color' ) }
+					label={ __( 'Overlay Color', 'kadence-blocks' ) }
 					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
 					colorDefault={ '' }
 					onColorChange={ value => saveTabletOverlay( { overlay: value } ) }
@@ -2301,12 +2301,12 @@ class KadenceRowLayout extends Component {
 							onClick={ open }
 						>
 							<Dashicon icon="format-image" />
-							{ __( 'Select Image' ) }
+							{ __( 'Select Image', 'kadence-blocks' ) }
 						</Button>
 					) }
 				/>
 				{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg && (
-					<Tooltip text={ __( 'Remove Image' ) }>
+					<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
 						<Button
 							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
 							onClick={ onRemoveTabletOverlayImage }
@@ -2316,28 +2316,28 @@ class KadenceRowLayout extends Component {
 					</Tooltip>
 				) }
 				<SelectControl
-					label={ __( 'Background Image Size' ) }
+					label={ __( 'Background Image Size', 'kadence-blocks' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
 					options={ [
-						{ value: 'cover', label: __( 'Cover' ) },
-						{ value: 'contain', label: __( 'Contain' ) },
-						{ value: 'auto', label: __( 'Auto' ) },
+						{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
+						{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
+						{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
 					] }
 					onChange={ value => saveTabletOverlay( { overlayBgImgSize: value } ) }
 				/>
 				<SelectControl
-					label={ __( 'Background Image Position' ) }
+					label={ __( 'Background Image Position', 'kadence-blocks' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
 					options={ [
-						{ value: 'center top', label: __( 'Center Top' ) },
-						{ value: 'center center', label: __( 'Center Center' ) },
-						{ value: 'center bottom', label: __( 'Center Bottom' ) },
-						{ value: 'left top', label: __( 'Left Top' ) },
-						{ value: 'left center', label: __( 'Left Center' ) },
-						{ value: 'left bottom', label: __( 'Left Bottom' ) },
-						{ value: 'right top', label: __( 'Right Top' ) },
-						{ value: 'right center', label: __( 'Right Center' ) },
-						{ value: 'right bottom', label: __( 'Right Bottom' ) },
+						{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+						{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+						{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+						{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+						{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+						{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+						{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+						{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+						{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
 					] }
 					onChange={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
 				/>
@@ -2345,20 +2345,20 @@ class KadenceRowLayout extends Component {
 					label={ __( 'Background Image Repeat' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
 					options={ [
-						{ value: 'no-repeat', label: __( 'No Repeat' ) },
-						{ value: 'repeat', label: __( 'Repeat' ) },
-						{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-						{ value: 'repeat-y', label: __( 'Repeat-y' ) },
+						{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
+						{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
+						{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
+						{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
 					] }
 					onChange={ value => saveTabletOverlay( { overlayBgImgRepeat: value } ) }
 				/>
 				<SelectControl
-					label={ __( 'Background Image Attachment' ) }
+					label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgAttachment : 'scroll' ) }
 					options={ [
-						{ value: 'scroll', label: __( 'Scroll' ) },
-						{ value: 'fixed', label: __( 'Fixed' ) },
-						{ value: 'parallax', label: __( 'Parallax' ) },
+						{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
+						{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
+						{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
 					] }
 					onChange={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
 				/>
@@ -2366,31 +2366,31 @@ class KadenceRowLayout extends Component {
 					label={ __( 'Blend Mode' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBlendMode : 'none' ) }
 					options={ [
-						{ value: 'normal', label: __( 'Normal' ) },
-						{ value: 'multiply', label: __( 'Multiply' ) },
-						{ value: 'screen', label: __( 'Screen' ) },
-						{ value: 'overlay', label: __( 'Overlay' ) },
-						{ value: 'darken', label: __( 'Darken' ) },
-						{ value: 'lighten', label: __( 'Lighten' ) },
-						{ value: 'color-dodge', label: __( 'Color Dodge' ) },
-						{ value: 'color-burn', label: __( 'Color Burn' ) },
-						{ value: 'difference', label: __( 'Difference' ) },
-						{ value: 'exclusion', label: __( 'Exclusion' ) },
-						{ value: 'hue', label: __( 'Hue' ) },
-						{ value: 'saturation', label: __( 'Saturation' ) },
-						{ value: 'color', label: __( 'Color' ) },
-						{ value: 'luminosity', label: __( 'Luminosity' ) },
+						{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
+						{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
+						{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
+						{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
+						{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
+						{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
+						{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
+						{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
+						{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
+						{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
+						{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
+						{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
+						{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
+						{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
 
 					] }
 					onChange={ value => saveTabletOverlay( { overlayBlendMode: value } ) }
 				/>
-				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 			</div>
 		);
 		const overTabGradControls = (
 			<div>
 				<RangeControl
-					label={ __( 'Overlay Opacity' ) }
+					label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayOpacity : 30 ) }
 					onChange={ ( value ) => {
 						saveTabletOverlay( {
@@ -2401,13 +2401,13 @@ class KadenceRowLayout extends Component {
 					max={ 100 }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Color' ) }
+					label={ __( 'Color', 'kadence-blocks' ) }
 					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
 					colorDefault={ '' }
 					onColorChange={ value => saveTabletOverlay( { overlay: value } ) }
 				/>
 				<RangeControl
-					label={ __( 'Location' ) }
+					label={ __( 'Location', 'kadence-blocks' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradLoc : 0 ) }
 					onChange={ ( value ) => {
 						saveTabletOverlay( {
@@ -2418,13 +2418,13 @@ class KadenceRowLayout extends Component {
 					max={ 100 }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Second Color' ) }
+					label={ __( 'Second Color', 'kadence-blocks' ) }
 					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlaySecond : '' ) }
 					colorDefault={ '#00B5E2' }
 					onColorChange={ value => saveTabletOverlay( { overlaySecond: value } ) }
 				/>
 				<RangeControl
-					label={ __( 'Location' ) }
+					label={ __( 'Location', 'kadence-blocks' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradLocSecond : 100 ) }
 					onChange={ ( value ) => {
 						saveTabletOverlay( {
@@ -2435,17 +2435,17 @@ class KadenceRowLayout extends Component {
 					max={ 100 }
 				/>
 				<SelectControl
-					label={ __( 'Gradient Type' ) }
+					label={ __( 'Gradient Type', 'kadence-blocks' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradType : 'linear' ) }
 					options={ [
-						{ value: 'linear', label: __( 'Linear' ) },
-						{ value: 'radial', label: __( 'Radial' ) },
+						{ value: 'linear', label: __( 'Linear', 'kadence-blocks' ) },
+						{ value: 'radial', label: __( 'Radial', 'kadence-blocks' ) },
 					] }
 					onChange={ value => saveTabletOverlay( { overlayGradType: value } ) }
 				/>
 				{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayGradType && 'linear' === tabletOverlay[ 0 ].overlayGradType && (
 					<RangeControl
-						label={ __( 'Gradient Angle' ) }
+						label={ __( 'Gradient Angle', 'kadence-blocks' ) }
 						value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayGradAngle : 180 ) }
 						onChange={ ( value ) => {
 							saveTabletOverlay( {
@@ -2458,18 +2458,18 @@ class KadenceRowLayout extends Component {
 				) }
 				{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayGradType && 'radial' === tabletOverlay[ 0 ].overlayGradType && (
 					<SelectControl
-						label={ __( 'Gradient Position' ) }
+						label={ __( 'Gradient Position', 'kadence-blocks' ) }
 						value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
 						options={ [
-							{ value: 'center top', label: __( 'Center Top' ) },
-							{ value: 'center center', label: __( 'Center Center' ) },
-							{ value: 'center bottom', label: __( 'Center Bottom' ) },
-							{ value: 'left top', label: __( 'Left Top' ) },
-							{ value: 'left center', label: __( 'Left Center' ) },
-							{ value: 'left bottom', label: __( 'Left Bottom' ) },
-							{ value: 'right top', label: __( 'Right Top' ) },
-							{ value: 'right center', label: __( 'Right Center' ) },
-							{ value: 'right bottom', label: __( 'Right Bottom' ) },
+							{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+							{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+							{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+							{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+							{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+							{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+							{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+							{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+							{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
 						] }
 						onChange={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
 					/>
@@ -2478,25 +2478,25 @@ class KadenceRowLayout extends Component {
 					label={ __( 'Blend Mode' ) }
 					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBlendMode : 'none' ) }
 					options={ [
-						{ value: 'normal', label: __( 'Normal' ) },
-						{ value: 'multiply', label: __( 'Multiply' ) },
-						{ value: 'screen', label: __( 'Screen' ) },
-						{ value: 'overlay', label: __( 'Overlay' ) },
-						{ value: 'darken', label: __( 'Darken' ) },
-						{ value: 'lighten', label: __( 'Lighten' ) },
-						{ value: 'color-dodge', label: __( 'Color Dodge' ) },
-						{ value: 'color-burn', label: __( 'Color Burn' ) },
-						{ value: 'difference', label: __( 'Difference' ) },
-						{ value: 'exclusion', label: __( 'Exclusion' ) },
-						{ value: 'hue', label: __( 'Hue' ) },
-						{ value: 'saturation', label: __( 'Saturation' ) },
-						{ value: 'color', label: __( 'Color' ) },
-						{ value: 'luminosity', label: __( 'Luminosity' ) },
+						{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
+						{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
+						{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
+						{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
+						{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
+						{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
+						{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
+						{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
+						{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
+						{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
+						{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
+						{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
+						{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
+						{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
 
 					] }
 					onChange={ value => saveTabletOverlay( { overlayBlendMode: value } ) }
 				/>
-				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 			</div>
 		);
 		const overMobileControls = (
@@ -2513,7 +2513,7 @@ class KadenceRowLayout extends Component {
 					max={ 100 }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Overlay Color' ) }
+					label={ __( 'Overlay Color', 'kadence-blocks' ) }
 					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
 					colorDefault={ '' }
 					onColorChange={ value => saveMobileOverlay( { overlay: value } ) }
@@ -2528,12 +2528,12 @@ class KadenceRowLayout extends Component {
 							onClick={ open }
 						>
 							<Dashicon icon="format-image" />
-							{ __( 'Select Image' ) }
+							{ __( 'Select Image', 'kadence-blocks' ) }
 						</Button>
 					) }
 				/>
 				{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg && (
-					<Tooltip text={ __( 'Remove Image' ) }>
+					<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
 						<Button
 							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
 							onClick={ onRemoveMobileOverlayImage }
@@ -2543,17 +2543,17 @@ class KadenceRowLayout extends Component {
 					</Tooltip>
 				) }
 				<SelectControl
-					label={ __( 'Background Image Size' ) }
+					label={ __( 'Background Image Size', 'kadence-blocks' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
 					options={ [
-						{ value: 'cover', label: __( 'Cover' ) },
-						{ value: 'contain', label: __( 'Contain' ) },
-						{ value: 'auto', label: __( 'Auto' ) },
+						{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
+						{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
+						{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
 					] }
 					onChange={ value => saveMobileOverlay( { overlayBgImgSize: value } ) }
 				/>
 				<SelectControl
-					label={ __( 'Background Image Position' ) }
+					label={ __( 'Background Image Position', 'kadence-blocks' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
 					options={ [
 						{ value: 'center top', label: __( 'Center Top' ) },
@@ -2569,7 +2569,7 @@ class KadenceRowLayout extends Component {
 					onChange={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
 				/>
 				<SelectControl
-					label={ __( 'Background Image Repeat' ) }
+					label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
 					options={ [
 						{ value: 'no-repeat', label: __( 'No Repeat' ) },
@@ -2580,44 +2580,44 @@ class KadenceRowLayout extends Component {
 					onChange={ value => saveMobileOverlay( { overlayBgImgRepeat: value } ) }
 				/>
 				<SelectControl
-					label={ __( 'Background Image Attachment' ) }
+					label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgAttachment : 'scroll' ) }
 					options={ [
-						{ value: 'scroll', label: __( 'Scroll' ) },
-						{ value: 'fixed', label: __( 'Fixed' ) },
-						{ value: 'parallax', label: __( 'Parallax' ) },
+						{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
+						{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
+						{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
 					] }
 					onChange={ value => saveMobileOverlay( { overlayBgImgAttachment: value } ) }
 				/>
 				<SelectControl
-					label={ __( 'Blend Mode' ) }
+					label={ __( 'Blend Mode', 'kadence-blocks' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBlendMode : 'none' ) }
 					options={ [
-						{ value: 'normal', label: __( 'Normal' ) },
-						{ value: 'multiply', label: __( 'Multiply' ) },
-						{ value: 'screen', label: __( 'Screen' ) },
-						{ value: 'overlay', label: __( 'Overlay' ) },
-						{ value: 'darken', label: __( 'Darken' ) },
-						{ value: 'lighten', label: __( 'Lighten' ) },
-						{ value: 'color-dodge', label: __( 'Color Dodge' ) },
-						{ value: 'color-burn', label: __( 'Color Burn' ) },
-						{ value: 'difference', label: __( 'Difference' ) },
-						{ value: 'exclusion', label: __( 'Exclusion' ) },
-						{ value: 'hue', label: __( 'Hue' ) },
-						{ value: 'saturation', label: __( 'Saturation' ) },
-						{ value: 'color', label: __( 'Color' ) },
-						{ value: 'luminosity', label: __( 'Luminosity' ) },
+						{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
+						{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
+						{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
+						{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
+						{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
+						{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
+						{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
+						{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
+						{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
+						{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
+						{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
+						{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
+						{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
+						{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
 
 					] }
 					onChange={ value => saveMobileOverlay( { overlayBlendMode: value } ) }
 				/>
-				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 			</div>
 		);
 		const overMobileGradControls = (
 			<div>
 				<RangeControl
-					label={ __( 'Overlay Opacity' ) }
+					label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayOpacity : 30 ) }
 					onChange={ ( value ) => {
 						saveMobileOverlay( {
@@ -2628,7 +2628,7 @@ class KadenceRowLayout extends Component {
 					max={ 100 }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Color' ) }
+					label={ __( 'Color', 'kadence-blocks' ) }
 					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
 					colorDefault={ '' }
 					onColorChange={ value => saveMobileOverlay( { overlay: value } ) }
@@ -2645,13 +2645,13 @@ class KadenceRowLayout extends Component {
 					max={ 100 }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Second Color' ) }
+					label={ __( 'Second Color', 'kadence-blocks' ) }
 					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlaySecond : '' ) }
 					colorDefault={ '#00B5E2' }
 					onColorChange={ value => saveMobileOverlay( { overlaySecond: value } ) }
 				/>
 				<RangeControl
-					label={ __( 'Location' ) }
+					label={ __( 'Location', 'kadence-blocks' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradLocSecond : 100 ) }
 					onChange={ ( value ) => {
 						saveMobileOverlay( {
@@ -2665,14 +2665,14 @@ class KadenceRowLayout extends Component {
 					label={ __( 'Gradient Type' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradType : 'linear' ) }
 					options={ [
-						{ value: 'linear', label: __( 'Linear' ) },
-						{ value: 'radial', label: __( 'Radial' ) },
+						{ value: 'linear', label: __( 'Linear', 'kadence-blocks' ) },
+						{ value: 'radial', label: __( 'Radial', 'kadence-blocks' ) },
 					] }
 					onChange={ value => saveMobileOverlay( { overlayGradType: value } ) }
 				/>
 				{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayGradType && 'linear' === mobileOverlay[ 0 ].overlayGradType && (
 					<RangeControl
-						label={ __( 'Gradient Angle' ) }
+						label={ __( 'Gradient Angle', 'kadence-blocks' ) }
 						value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayGradAngle : 180 ) }
 						onChange={ ( value ) => {
 							saveMobileOverlay( {
@@ -2685,66 +2685,66 @@ class KadenceRowLayout extends Component {
 				) }
 				{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayGradType && 'radial' === mobileOverlay[ 0 ].overlayGradType && (
 					<SelectControl
-						label={ __( 'Gradient Position' ) }
+						label={ __( 'Gradient Position', 'kadence-blocks' ) }
 						value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
 						options={ [
-							{ value: 'center top', label: __( 'Center Top' ) },
-							{ value: 'center center', label: __( 'Center Center' ) },
-							{ value: 'center bottom', label: __( 'Center Bottom' ) },
-							{ value: 'left top', label: __( 'Left Top' ) },
-							{ value: 'left center', label: __( 'Left Center' ) },
-							{ value: 'left bottom', label: __( 'Left Bottom' ) },
-							{ value: 'right top', label: __( 'Right Top' ) },
-							{ value: 'right center', label: __( 'Right Center' ) },
-							{ value: 'right bottom', label: __( 'Right Bottom' ) },
+							{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+							{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+							{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+							{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+							{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+							{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+							{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+							{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+							{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
 						] }
 						onChange={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
 					/>
 				) }
 				<SelectControl
-					label={ __( 'Blend Mode' ) }
+					label={ __( 'Blend Mode', 'kadence-blocks' ) }
 					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBlendMode : 'none' ) }
 					options={ [
-						{ value: 'normal', label: __( 'Normal' ) },
-						{ value: 'multiply', label: __( 'Multiply' ) },
-						{ value: 'screen', label: __( 'Screen' ) },
-						{ value: 'overlay', label: __( 'Overlay' ) },
-						{ value: 'darken', label: __( 'Darken' ) },
-						{ value: 'lighten', label: __( 'Lighten' ) },
-						{ value: 'color-dodge', label: __( 'Color Dodge' ) },
-						{ value: 'color-burn', label: __( 'Color Burn' ) },
-						{ value: 'difference', label: __( 'Difference' ) },
-						{ value: 'exclusion', label: __( 'Exclusion' ) },
-						{ value: 'hue', label: __( 'Hue' ) },
-						{ value: 'saturation', label: __( 'Saturation' ) },
-						{ value: 'color', label: __( 'Color' ) },
-						{ value: 'luminosity', label: __( 'Luminosity' ) },
+						{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
+						{ value: 'multiply', label: __( 'Multiply', 'kadence-blocks' ) },
+						{ value: 'screen', label: __( 'Screen', 'kadence-blocks' ) },
+						{ value: 'overlay', label: __( 'Overlay', 'kadence-blocks' ) },
+						{ value: 'darken', label: __( 'Darken', 'kadence-blocks' ) },
+						{ value: 'lighten', label: __( 'Lighten', 'kadence-blocks' ) },
+						{ value: 'color-dodge', label: __( 'Color Dodge', 'kadence-blocks' ) },
+						{ value: 'color-burn', label: __( 'Color Burn', 'kadence-blocks' ) },
+						{ value: 'difference', label: __( 'Difference', 'kadence-blocks' ) },
+						{ value: 'exclusion', label: __( 'Exclusion', 'kadence-blocks' ) },
+						{ value: 'hue', label: __( 'Hue', 'kadence-blocks' ) },
+						{ value: 'saturation', label: __( 'Saturation', 'kadence-blocks' ) },
+						{ value: 'color', label: __( 'Color', 'kadence-blocks' ) },
+						{ value: 'luminosity', label: __( 'Luminosity', 'kadence-blocks' ) },
 
 					] }
 					onChange={ value => saveMobileOverlay( { overlayBlendMode: value } ) }
 				/>
-				<p>{ __( 'Notice: Blend Mode not supported in all browsers' ) }</p>
+				<p>{ __( 'Notice: Blend Mode not supported in all browsers', 'kadence-blocks' ) }</p>
 			</div>
 		);
 		const colorControls = (
 			<PanelBody
-				title={ __( 'Text Color Settings' ) }
+				title={ __( 'Text Color Settings', 'kadence-blocks' ) }
 				initialOpen={ false }
 			>
 				<AdvancedPopColorControl
-					label={ __( 'Text Color' ) }
+					label={ __( 'Text Color', 'kadence-blocks' ) }
 					colorValue={ ( textColor ? textColor : '' ) }
 					colorDefault={ '' }
 					onColorChange={ value => setAttributes( { textColor: value } ) }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Link Color' ) }
+					label={ __( 'Link Color', 'kadence-blocks' ) }
 					colorValue={ ( linkColor ? linkColor : '' ) }
 					colorDefault={ '' }
 					onColorChange={ value => setAttributes( { linkColor: value } ) }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Link Hover Color' ) }
+					label={ __( 'Link Hover Color', 'kadence-blocks' ) }
 					colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
 					colorDefault={ '' }
 					onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
@@ -2793,7 +2793,7 @@ class KadenceRowLayout extends Component {
 		const bottomSepSizesMobile = (
 			<Fragment>
 				<KadenceRange
-					label={ __( 'Mobile Height (px)' ) }
+					label={ __( 'Mobile Height (px)', 'kadence-blocks' ) }
 					value={ ( bottomSepHeightMobile ? bottomSepHeightMobile : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2804,7 +2804,7 @@ class KadenceRowLayout extends Component {
 					max={ 500 }
 				/>
 				<KadenceRange
-					label={ __( 'Mobile Width (%)' ) }
+					label={ __( 'Mobile Width (%)', 'kadence-blocks' ) }
 					value={ ( bottomSepWidthMobile ? bottomSepWidthMobile : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2819,7 +2819,7 @@ class KadenceRowLayout extends Component {
 		const bottomSepSizesTablet = (
 			<Fragment>
 				<KadenceRange
-					label={ __( 'Tablet Height (px)' ) }
+					label={ __( 'Tablet Height (px)', 'kadence-blocks' ) }
 					value={ ( bottomSepHeightTab ? bottomSepHeightTab : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2830,7 +2830,7 @@ class KadenceRowLayout extends Component {
 					max={ 500 }
 				/>
 				<KadenceRange
-					label={ __( 'Tablet Width (%)' ) }
+					label={ __( 'Tablet Width (%)', 'kadence-blocks' ) }
 					value={ ( bottomSepWidthTab ? bottomSepWidthTab : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2845,7 +2845,7 @@ class KadenceRowLayout extends Component {
 		const bottomSepSizes = (
 			<Fragment>
 				<KadenceRange
-					label={ __( 'Divider Height (px)' ) }
+					label={ __( 'Divider Height (px)', 'kadence-blocks' ) }
 					value={ bottomSepHeight }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2856,7 +2856,7 @@ class KadenceRowLayout extends Component {
 					max={ 500 }
 				/>
 				<KadenceRange
-					label={ __( 'Divider Width (%)' ) }
+					label={ __( 'Divider Width (%)', 'kadence-blocks' ) }
 					value={ ( bottomSepWidth ? bottomSepWidth : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2871,7 +2871,7 @@ class KadenceRowLayout extends Component {
 		const topSepSizesMobile = (
 			<Fragment>
 				<KadenceRange
-					label={ __( 'Mobile Height (px)' ) }
+					label={ __( 'Mobile Height (px)', 'kadence-blocks' ) }
 					value={ ( topSepHeightMobile ? topSepHeightMobile : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2882,7 +2882,7 @@ class KadenceRowLayout extends Component {
 					max={ 500 }
 				/>
 				<KadenceRange
-					label={ __( 'Mobile Width (%)' ) }
+					label={ __( 'Mobile Width (%)', 'kadence-blocks' ) }
 					value={ ( topSepWidthMobile ? topSepWidthMobile : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2897,7 +2897,7 @@ class KadenceRowLayout extends Component {
 		const topSepSizesTablet = (
 			<Fragment>
 				<KadenceRange
-					label={ __( 'Tablet Height (px)' ) }
+					label={ __( 'Tablet Height (px)', 'kadence-blocks' ) }
 					value={ ( topSepHeightTab ? topSepHeightTab : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2908,7 +2908,7 @@ class KadenceRowLayout extends Component {
 					max={ 500 }
 				/>
 				<KadenceRange
-					label={ __( 'Tablet Width (%)' ) }
+					label={ __( 'Tablet Width (%)', 'kadence-blocks' ) }
 					value={ ( topSepWidthTab ? topSepWidthTab : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2923,7 +2923,7 @@ class KadenceRowLayout extends Component {
 		const topSepSizes = (
 			<Fragment>
 				<KadenceRange
-					label={ __( 'Divider Height (px)' ) }
+					label={ __( 'Divider Height (px)', 'kadence-blocks' ) }
 					value={ topSepHeight }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2934,7 +2934,7 @@ class KadenceRowLayout extends Component {
 					max={ 500 }
 				/>
 				<KadenceRange
-					label={ __( 'Divider Width (%)' ) }
+					label={ __( 'Divider Width (%)', 'kadence-blocks' ) }
 					value={ ( topSepWidth ? topSepWidth : '' ) }
 					onChange={ ( value ) => {
 						setAttributes( {
@@ -2978,7 +2978,7 @@ class KadenceRowLayout extends Component {
 					showSearch={ false }
 					renderFunc={ renderTopSVGDivider }
 					theme="dividers"
-					noSelectedPlaceholder={ __( 'Select Divider' ) }
+					noSelectedPlaceholder={ __( 'Select Divider', 'kadence-blocks' ) }
 					isMulti={ false }
 				/>
 				<AdvancedPopColorControl
@@ -2987,7 +2987,7 @@ class KadenceRowLayout extends Component {
 					colorDefault={ '#ffffff' }
 					onColorChange={ value => setAttributes( { topSepColor: value } ) }
 				/>
-				<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+				<h2 className="kt-heading-size-title">{ __( 'Size Controls', 'kadence-blocks' ) }</h2>
 				<TabPanel className="kt-size-tabs"
 					activeClass="active-tab"
 					tabs={ [
@@ -3057,16 +3057,16 @@ class KadenceRowLayout extends Component {
 					showSearch={ false }
 					renderFunc={ renderBottomSVGDivider }
 					theme="dividers"
-					noSelectedPlaceholder={ __( 'Select Divider' ) }
+					noSelectedPlaceholder={ __( 'Select Divider', 'kadence-blocks' ) }
 					isMulti={ false }
 				/>
 				<AdvancedPopColorControl
-					label={ __( 'Divider Color' ) }
+					label={ __( 'Divider Color', 'kadence-blocks' ) }
 					colorValue={ ( bottomSepColor ? bottomSepColor : '' ) }
 					colorDefault={ '#ffffff' }
 					onColorChange={ value => setAttributes( { bottomSepColor: value } ) }
 				/>
-				<h2 className="kt-heading-size-title">{ __( 'Size Controls' ) }</h2>
+				<h2 className="kt-heading-size-title">{ __( 'Size Controls', 'kadence-blocks' ) }</h2>
 				<TabPanel className="kt-size-tabs"
 					activeClass="active-tab"
 					tabs={ [
@@ -3121,7 +3121,7 @@ class KadenceRowLayout extends Component {
 								render={ ( { open } ) => (
 									<IconButton
 										className="components-toolbar__control"
-										label={ __( 'Background Image' ) }
+										label={ __( 'Background Image', 'kadence-blocks' ) }
 										icon="format-image"
 										onClick={ open }
 									/>
@@ -3130,7 +3130,7 @@ class KadenceRowLayout extends Component {
 						</Toolbar>
 					) }
 					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Top' ) }>
+						<Tooltip text={ __( 'Vertical Align Top', 'kadence-blocks' ) }>
 							<Button
 								className={ classnames(
 									'components-icon-button',
@@ -3146,7 +3146,7 @@ class KadenceRowLayout extends Component {
 						</Tooltip>
 					</Toolbar>
 					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Middle' ) }>
+						<Tooltip text={ __( 'Vertical Align Middle', 'kadence-blocks' ) }>
 							<Button
 								className={ classnames(
 									'components-icon-button',
@@ -3162,7 +3162,7 @@ class KadenceRowLayout extends Component {
 						</Tooltip>
 					</Toolbar>
 					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Bottom' ) }>
+						<Tooltip text={ __( 'Vertical Align Bottom', 'kadence-blocks' ) }>
 							<Button
 								className={ classnames(
 									'components-icon-button',
@@ -3188,7 +3188,7 @@ class KadenceRowLayout extends Component {
 						<div className="kt-sidebar-settings-spacer"></div>
 						{ this.showSettings( 'dividers' ) && (
 							<PanelBody
-								title={ __( 'Dividers' ) }
+								title={ __( 'Dividers', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
@@ -3196,12 +3196,12 @@ class KadenceRowLayout extends Component {
 									tabs={ [
 										{
 											name: 'bottomdivider',
-											title: __( 'Bottom' ),
+											title: __( 'Bottom', 'kadence-blocks' ),
 											className: 'kt-bottom-tab',
 										},
 										{
 											name: 'topdivider',
-											title: __( 'Top' ),
+											title: __( 'Top', 'kadence-blocks' ),
 											className: 'kt-top-tab',
 										},
 									] }>
@@ -3227,25 +3227,25 @@ class KadenceRowLayout extends Component {
 						{ this.showSettings( 'structure' ) && (
 							<Fragment>
 								<PanelBody
-									title={ __( 'Structure Settings' ) }
+									title={ __( 'Structure Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<SelectControl
-										label={ __( 'Container HTML tag' ) }
+										label={ __( 'Container HTML tag', 'kadence-blocks' ) }
 										value={ htmlTag }
 										options={ [
-											{ value: 'div', label: __( 'div' ) },
-											{ value: 'header', label: __( 'header' ) },
-											{ value: 'section', label: __( 'section' ) },
-											{ value: 'article', label: __( 'article' ) },
-											{ value: 'main', label: __( 'main' ) },
-											{ value: 'aside', label: __( 'aside' ) },
-											{ value: 'footer', label: __( 'footer' ) },
+											{ value: 'div', label: 'div' },
+											{ value: 'header', label: 'header' },
+											{ value: 'section', label: 'section' },
+											{ value: 'article', label: 'article' },
+											{ value: 'main', label: 'main' },
+											{ value: 'aside', label: 'aside' },
+											{ value: 'footer', label: 'footer' },
 										] }
 										onChange={ value => setAttributes( { htmlTag: value } ) }
 									/>
 									<div class="row-min-height-settings">
-										<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Min Height Type' ) }>
+										<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Min Height Type', 'kadence-blocks' ) }>
 											{ map( heightTypes, ( { name, key } ) => (
 												<Button
 													key={ key }
@@ -3286,7 +3286,7 @@ class KadenceRowLayout extends Component {
 														if ( 'mobile' === tab.name ) {
 															tabout = (
 																<KadenceRange
-																	label={ __( 'Mobile Min Height' ) }
+																	label={ __( 'Mobile Min Height', 'kadence-blocks' ) }
 																	value={ minHeightMobile }
 																	onChange={ ( value ) => {
 																		setAttributes( {
@@ -3300,7 +3300,7 @@ class KadenceRowLayout extends Component {
 														} else if ( 'tablet' === tab.name ) {
 															tabout = (
 																<KadenceRange
-																	label={ __( 'Tablet Min Height' ) }
+																	label={ __( 'Tablet Min Height', 'kadence-blocks' ) }
 																	value={ minHeightTablet }
 																	onChange={ ( value ) => {
 																		setAttributes( {
@@ -3314,7 +3314,7 @@ class KadenceRowLayout extends Component {
 														} else {
 															tabout = (
 																<KadenceRange
-																	label={ __( 'Min Height' ) }
+																	label={ __( 'Min Height', 'kadence-blocks' ) }
 																	value={ minHeight }
 																	onChange={ ( value ) => {
 																		setAttributes( {
@@ -3333,13 +3333,13 @@ class KadenceRowLayout extends Component {
 										</TabPanel>
 									</div>
 									<ToggleControl
-										label={ __( 'Content Max Width Inherit from Theme?' ) }
+										label={ __( 'Content Max Width Inherit from Theme?', 'kadence-blocks' ) }
 										checked={ ( undefined !== inheritMaxWidth ? inheritMaxWidth : false ) }
 										onChange={ ( value ) => setAttributes( { inheritMaxWidth: value } ) }
 									/>
 									{ inheritMaxWidth !== true && (
 										<Fragment>
-											<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
+											<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type', 'kadence-blocks' ) }>
 												{ map( widthTypes, ( { name, key } ) => (
 													<Button
 														key={ key }
@@ -3354,7 +3354,7 @@ class KadenceRowLayout extends Component {
 												) ) }
 											</ButtonGroup>
 											<KadenceRange
-												label={ __( 'Content Max Width' ) }
+												label={ __( 'Content Max Width', 'kadence-blocks' ) }
 												value={ maxWidth }
 												onChange={ ( value ) => {
 													setAttributes( {
@@ -3367,12 +3367,12 @@ class KadenceRowLayout extends Component {
 										</Fragment>
 									) }
 									<ToggleControl
-										label={ __( 'Inner Column Height 100%' ) }
+										label={ __( 'Inner Column Height 100%', 'kadence-blocks' ) }
 										checked={ ( undefined !== columnsInnerHeight ? columnsInnerHeight : false ) }
 										onChange={ ( value ) => setAttributes( { columnsInnerHeight: value } ) }
 									/>
 									<RangeControl
-										label={ __( 'Z-Index Control' ) }
+										label={ __( 'Z-Index Control', 'kadence-blocks' ) }
 										value={ zIndex }
 										onChange={ ( value ) => {
 											setAttributes( {

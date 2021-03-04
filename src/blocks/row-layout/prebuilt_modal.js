@@ -29,11 +29,11 @@ class CustomComponent extends Component {
 	render() {
 		return (
 			<Fragment>
-				<Button className="kt-prebuilt" onClick={ () => this.setState( { modalOpen: true } ) }>{ __( 'Prebuilt Library' ) }</Button>
+				<Button className="kt-prebuilt" onClick={ () => this.setState( { modalOpen: true } ) }>{ __( 'Prebuilt Library', 'kadence-blocks' ) }</Button>
 				{ this.state.modalOpen ?
 					<Modal
 						className="kt-prebuilt-modal"
-						title={ __( 'Prebuilt Library' ) }
+						title={ __( 'Prebuilt Library', 'kadence-blocks' ) }
 						onRequestClose={ () => this.setState( { modalOpen: false } ) }>
 						<div className="kb-prebuilt-section">
 							<div className="kb-prebuilt-header">
@@ -42,7 +42,7 @@ class CustomComponent extends Component {
 							</div>
 							<IconButton
 								className="kb-prebuilt-header-close"
-								label={ __( 'Close Dialog' ) }
+								label={ __( 'Close Dialog', 'kadence-blocks' ) }
 								icon="no-alt"
 								onClick={ () => {
 									this.setState( { modalOpen: false } );
