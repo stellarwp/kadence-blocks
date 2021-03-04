@@ -1793,9 +1793,19 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attr the blocks attr.
 	 */
 	public function blocks_posts_styles_check( $attr ) {
+		$pb = Kadence_Blocks_Posts::get_instance();
 		if ( ! class_exists( 'Kadence\Theme' ) ) {
-			$pb = Kadence_Blocks_Posts::get_instance();
 			$pb->enqueue_style( 'kadence-blocks-posts' );
+		}
+		if ( isset( $attr['uniqueID'] ) ) {
+			$unique_id = $attr['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $pb->output_css( $attr, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
 		}
 	}
 	/**

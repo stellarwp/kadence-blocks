@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.6.0
-Stable tag: 1.10.2
+Stable tag: 1.10.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.10.3 =
+* Add: Post Block Title Size settings.
+* Add: Post Block Tablet column controls.
+* Update: Row layout responsive controls.
+* Fix: Background image for background overlay not showing.
+* Fix: TOC linking issue.
+* Fix: Possible issue with reusable causing an error.
 
 = 1.10.2 =
 * Fix: Post Block Styles.

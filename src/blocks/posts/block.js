@@ -219,6 +219,25 @@ registerBlockType( 'kadence/posts', {
 			type: 'string',
 			default: 'boxed',
 		},
+		titleFont: {
+			type: 'array',
+			default: [ {
+				level: 2,
+				size: [ '', '', '' ],
+				sizeType: 'px',
+				lineHeight: [ '', '', '' ],
+				lineType: 'px',
+				letterSpacing: [ '', '', '' ],
+				letterType: 'px',
+				textTransform: '',
+			} ],
+		},
+		tabletColumns: {
+			type: 'number',
+		},
+		mobileColumns: {
+			type: 'number',
+		},
 	},
 	edit,
 	save() {

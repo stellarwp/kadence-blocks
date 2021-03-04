@@ -244,7 +244,19 @@ class KB_Ajax_Form {
 								$headers .= 'Reply-To: <' . $reply_email . '>' . "\r\n";
 							}
 							if ( isset( $form_args['email'][0]['fromEmail'] ) && ! empty( trim( $form_args['email'][0]['fromEmail'] ) ) ) {
-								$headers .= 'From: ' . ( isset( $form_args['email'][0]['fromName'] ) && ! empty( trim( $form_args['email'][0]['fromName'] ) ) ? trim( $form_args['email'][0]['fromName'] ) . ' ' : '' ) . '<' . sanitize_email( trim( $form_args['email'][0]['fromEmail'] ) ) . '>' . "\r\n";
+								$from_name = ( isset( $form_args['email'][0]['fromName'] ) && ! empty( trim( $form_args['email'][0]['fromName'] ) ) ? trim( $form_args['email'][0]['fromName'] ) . ' ' : '' );
+								if ( strpos( $from_name, '{field_' ) !== false ) {
+									if ( preg_match( '/{field_(.*?)}/', $from_name, $match) == 1 ) {
+										$field_id = $match[1];
+										if ( isset( $field_id ) ) {
+											$real_id = absint( $field_id ) - 1;
+											if ( isset( $fields[ $real_id ] ) && is_array( $fields[ $real_id ] ) && isset( $fields[ $real_id ]['value'] ) ) {
+												$from_name = str_replace( '{field_' . $field_id . '}' , $fields[ $real_id ]['value'], $from_name );
+											}
+										}
+									}
+								}
+								$headers .= 'From: ' . $from_name . '<' . sanitize_email( trim( $form_args['email'][0]['fromEmail'] ) ) . '>' . "\r\n";
 							}
 							$cc_headers = '';
 							if ( isset( $form_args['email'][0]['cc'] ) && ! empty( trim( $form_args['email'][0]['cc'] ) ) ) {

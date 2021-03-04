@@ -6,11 +6,11 @@
  * Import Icons
  */
 import icons from '../../icons';
-import Select from 'react-select';
 
 /**
  * Import External
  */
+import Select from 'react-select';
 import times from 'lodash/times';
 import dropRight from 'lodash/dropRight';
 import map from 'lodash/map';
@@ -19,33 +19,39 @@ import memoize from 'memize';
 import ResizableBox from 're-resizable';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
-import PrebuiltModal from './prebuilt_modal';
+import Slider from 'react-slick';
+/**
+ * Import Kadence Components
+ */
+import KadenceRange from '../../components/range/range-control';
+import ResponsiveControl from '../../components/responsive/responsive-control';
+import KadenceColorOutput from '../../kadence-color-output';
 import MeasurementControls from '../../components/measurement/measurement-control';
 import KadenceFocalPicker from '../../kadence-focal-picker';
 import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
-import ThreeColumnDrag from './threecolumndrag';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
-import Slider from 'react-slick';
-import KadenceRange from '../../components/range/range-control';
-import ResponsiveControl from '../../components/responsive/responsive-control';
+/**
+ * Import Block Specific Components
+ */
+import ThreeColumnDrag from './threecolumndrag';
+import PrebuiltModal from './prebuilt_modal';
 /**
  * Import Css
  */
 import './editor.scss';
-import KadenceColorOutput from '../../kadence-color-output';
-const {
-	Component,
-	Fragment,
-} = wp.element;
-const {
+/**
+ * Import WordPress Internals
+ */
+import { Component, Fragment } from '@wordpress/element';
+import {
 	MediaUpload,
 	InnerBlocks,
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
-} = wp.blockEditor;
-const {
+} from '@wordpress/block-editor';
+import {
 	Button,
 	ButtonGroup,
 	Tooltip,
@@ -59,12 +65,10 @@ const {
 	Toolbar,
 	ToggleControl,
 	SelectControl,
-} = wp.components;
-const { withSelect, withDispatch } = wp.data;
-const { compose } = wp.compose;
-const {
-	createBlock,
-} = wp.blocks;
+} from '@wordpress/components';
+import { withDispatch, withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
+import { createBlock } from '@wordpress/blocks';
 
 /**
  * Returns the layouts configuration for a given number of columns.
@@ -1393,7 +1397,7 @@ class KadenceRowLayout extends Component {
 						{ columns > 1 && (
 							<Fragment>
 								<p className="components-base-control__label">{ __( 'Layout', 'kadence-blocks' ) }</p>
-								<ButtonGroup aria-label={ __( 'Column Layout', 'kadence-blocks' ) }>
+								<ButtonGroup className="kb-column-layout" aria-label={ __( 'Column Layout', 'kadence-blocks' ) }>
 									{ map( layoutOptions, ( { name, key, icon } ) => (
 										<Tooltip text={ name }>
 											<Button
@@ -1442,113 +1446,33 @@ class KadenceRowLayout extends Component {
 						title={ __( 'Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
-						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Padding Type', 'kadence-blocks' ) }>
-							{ map( paddingTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ paddingUnit === key }
-									aria-pressed={ paddingUnit === key }
-									onClick={ () => setAttributes( { paddingUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<h2>{ __( 'Padding', 'kadence-blocks' ) }</h2>
-						<KadenceRange
-							beforeIcon={ icons.outlinetop }
-							value={ topPadding }
-							className="kt-icon-rangecontrol"
-							onChange={ ( value ) => {
-								setAttributes( {
-									topPadding: value,
-								} );
-							} }
+						<MeasurementControls
+							label={ __( 'Padding', 'kadence-blocks' ) }
+							measurement={ [ ( undefined !== topPadding ? topPadding : '' ), ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== leftPadding ? leftPadding : '' ) ] }
+							onChange={ ( value ) => setAttributes( { topPadding: value[ 0 ], rightPadding: value[ 1 ], bottomPadding: value[ 2 ], leftPadding: value[ 3 ] } ) }
 							min={ paddingMin }
 							max={ paddingMax }
 							step={ paddingStep }
+							allowEmpty={ true }
+							unit={ paddingUnit }
+							onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+							showUnit={ true }
+							units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 						/>
-						<KadenceRange
-							beforeIcon={ icons.outlineright }
-							value={ rightPadding }
-							className="kt-icon-rangecontrol"
+						<MeasurementControls
+							label={ __( 'Margin', 'kadence-blocks' ) }
+							measurement={ [ ( topMargin ? topMargin : '' ), 'auto', ( bottomMargin ? bottomMargin : '' ), 'auto' ] }
 							onChange={ ( value ) => {
-								setAttributes( {
-									rightPadding: value,
-								} );
-							} }
-							min={ paddingMin }
-							max={ paddingMax }
-							step={ paddingStep }
-						/>
-						<KadenceRange
-							beforeIcon={ icons.outlinebottom }
-							value={ bottomPadding }
-							className="kt-icon-rangecontrol"
-							onChange={ ( value ) => {
-								setAttributes( {
-									bottomPadding: value,
-								} );
-							} }
-							min={ paddingMin }
-							max={ paddingMax }
-							step={ paddingStep }
-						/>
-						<KadenceRange
-							beforeIcon={ icons.outlineleft }
-							value={ leftPadding }
-							className="kt-icon-rangecontrol"
-							onChange={ ( value ) => {
-								setAttributes( {
-									leftPadding: value,
-								} );
-							} }
-							min={ paddingMin }
-							max={ paddingMax }
-							step={ paddingStep }
-						/>
-						<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
-							{ map( marginTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ marginUnit === key }
-									aria-pressed={ marginUnit === key }
-									onClick={ () => setAttributes( { marginUnit: key } ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<h2>{ __( 'Margin', 'kadence-blocks' ) }</h2>
-						<KadenceRange
-							beforeIcon={ icons.outlinetop }
-							value={ topMargin }
-							className="kt-icon-rangecontrol"
-							onChange={ ( value ) => {
-								setAttributes( {
-									topMargin: value,
-								} );
+								setAttributes( { topMargin: value[ 0 ], bottomMargin: value[ 2 ] } );
 							} }
 							min={ marginMin }
 							max={ marginMax }
 							step={ marginStep }
-						/>
-						<KadenceRange
-							beforeIcon={ icons.outlinebottom }
-							value={ bottomMargin }
-							className="kt-icon-rangecontrol"
-							onChange={ ( value ) => {
-								setAttributes( {
-									bottomMargin: value,
-								} );
-							} }
-							min={ marginMin }
-							max={ marginMax }
-							step={ marginStep }
+							allowEmpty={ true }
+							unit={ marginUnit }
+							onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+							showUnit={ true }
+							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
 					</PanelBody>
 				) }
@@ -2118,28 +2042,31 @@ class KadenceRowLayout extends Component {
 					onOpacityChange={ value => setAttributes( { overlayFirstOpacity: value } ) }
 				/>
 				{ ! overlayBgImg && (
-					<KadenceMediaPlaceholder
-						labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
-						onSelect={ ( img ) => {
-							setAttributes( {
-								overlayBgImgID: img.id,
-								overlayBgImg: img.url,
-							} );
-						} }
-						onSelectURL={ ( newURL ) => {
-							if ( newURL !== bgImg ) {
+					<Fragment>
+						{console.log( 'header' ) }
+						<KadenceMediaPlaceholder
+							labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
+							onSelect={ ( img ) => {
 								setAttributes( {
-									overlayBgImgID: undefined,
-									overlayBgImg: newURL,
+									overlayBgImgID: img.id,
+									overlayBgImg: img.url,
 								} );
-							}
-						} }
-						accept="image/*"
-						className={ 'kadence-image-upload' }
-						allowedTypes={ ALLOWED_MEDIA_TYPES }
-						value={ { bgImgID, bgImg } }
-						disableMediaButtons={ bgImg }
-					/>
+							} }
+							onSelectURL={ ( newURL ) => {
+								if ( newURL !== bgImg ) {
+									setAttributes( {
+										overlayBgImgID: undefined,
+										overlayBgImg: newURL,
+									} );
+								}
+							} }
+							accept="image/*"
+							className={ 'kadence-image-upload' }
+							allowedTypes={ ALLOWED_MEDIA_TYPES }
+							value={ { overlayBgImgID, overlayBgImg } }
+							disableMediaButtons={ overlayBgImg }
+						/>
+					</Fragment>
 				) }
 				{ overlayBgImg && (
 					<Fragment>
@@ -3253,7 +3180,11 @@ class KadenceRowLayout extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						{ tabControls }
+						<ResponsiveControl
+							desktopChildren={ deskControls }
+							tabletChildren={ tabletControls }
+							mobileChildren={ mobileControls }
+						/>
 						<div className="kt-sidebar-settings-spacer"></div>
 						{ this.showSettings( 'dividers' ) && (
 							<PanelBody

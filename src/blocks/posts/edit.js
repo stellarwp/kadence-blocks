@@ -13,6 +13,7 @@ import icons from '../../icons';
  * Import External
  */
 import KadenceSelectTerms from '../../components/terms/select-terms-control';
+import TypographyControls from '../../components/typography/typography-control';
 import classnames from 'classnames';
 import map from 'lodash/map';
 import Select from 'react-select';
@@ -71,6 +72,7 @@ const kbpostsUniqueIDs = [];
 class KadencePosts extends Component {
 	constructor() {
 		super( ...arguments );
+		this.getPreviewSize = this.getPreviewSize.bind( this );
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
@@ -87,8 +89,22 @@ class KadencePosts extends Component {
 			kbpostsUniqueIDs.push( this.props.attributes.uniqueID );
 		}
 	}
+	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
+	}
 	render() {
-		const { attributes: { uniqueID, order, columns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle }, className, setAttributes, latestPosts, taxList, taxOptions, taxFilterOptions } = this.props;
+		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont }, className, setAttributes, latestPosts, taxList, taxOptions, taxFilterOptions } = this.props;
 		const taxonomyList = [];
 		const taxonomyOptions = [];
 		const taxonomyFilterOptions = [];
@@ -121,13 +137,36 @@ class KadencePosts extends Component {
 		if ( 1 === columns ) {
 			columnsClass = 'grid-xs-col-1 grid-sm-col-1 grid-lg-col-1';
 		} else if ( 2 === columns ) {
-			columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-2';
+			if ( undefined !== tabletColumns && 1 === tabletColumns  ) {
+				columnsClass = 'grid-xs-col-1 grid-sm-col-1 grid-lg-col-2';
+			} else {
+				columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-2';
+			}
 		} else {
-			columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-3';
+			if ( undefined !== tabletColumns && 1 === tabletColumns  ) {
+				columnsClass = 'grid-xs-col-1 grid-sm-col-1 grid-lg-col-3';
+			} else if ( undefined !== tabletColumns && 3 === tabletColumns  ) {
+				columnsClass = 'grid-xs-col-1 grid-sm-col-3 grid-lg-col-3';
+			} else {
+				columnsClass = 'grid-xs-col-1 grid-sm-col-2 grid-lg-col-3';
+			}
 		}
+		const titleSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
+		const titleLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
+		const titleLetterSpacing = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 0 ] ? titleFont[ 0 ].letterSpacing[ 0 ] : '' ), ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 1 ] ? titleFont[ 0 ].letterSpacing[ 1 ] : '' ), ( undefined !== titleFont &&  undefined !== titleFont[ 0 ] &&  undefined !== titleFont[ 0 ].letterSpacing && undefined !== titleFont[ 0 ].letterSpacing[ 2 ] ? titleFont[ 0 ].letterSpacing[ 2 ] : '' ) );
 		const hasPosts = Array.isArray( latestPosts ) && latestPosts.length;
-		
-	
+		const saveTitleFont = ( value ) => {
+			const newUpdate = titleFont.map( ( item, index ) => {
+				if ( 0 === index ) {
+					item = { ...item, ...value };
+				}
+				return item;
+			} );
+			setAttributes( {
+				titleFont: newUpdate,
+			} );
+		};
+		const HtmlTagOut = 'h' + ( undefined !== titleFont && undefined !== titleFont[ 0 ] && undefined !== titleFont[0].level ? titleFont[0].level : '2' );
 		const dateFormat = __experimentalGetSettings().formats.date;
 		const settingspanel = (
 			<Fragment>
@@ -329,6 +368,15 @@ class KadencePosts extends Component {
 							min={ 1 }
 							max={ 3 }
 						/>
+						{ 1 !== columns && (
+							<KadenceRange
+								label={ __( 'Tablet Columns' ) }
+								value={ tabletColumns }
+								onChange={ ( value ) => setAttributes( { tabletColumns: value } ) }
+								min={ 1 }
+								max={ columns }
+							/>
+						) }
 						{ 1 === columns && image && (
 							<SelectControl
 								label={ __( 'Align Image' ) }
@@ -502,6 +550,30 @@ class KadencePosts extends Component {
 							) }
 						</PanelBody>
 					) }
+					<PanelBody
+						title={ __( 'Title Size', 'kadence-blocks' ) }
+						initialOpen={ false }
+					>
+						<TypographyControls
+							fontGroup={ 'post-title' }
+							tagLevel={ titleFont[ 0 ].level }
+							tagLowLevel={ 2 }
+							tagHighLevel={ 7 }
+							onTagLevel={ ( value ) => saveTitleFont( { level: value } ) }
+							fontSize={ titleFont[ 0 ].size }
+							onFontSize={ ( value ) => saveTitleFont( { size: value } ) }
+							fontSizeType={ titleFont[ 0 ].sizeType }
+							onFontSizeType={ ( value ) => saveTitleFont( { sizeType: value } ) }
+							lineHeight={ titleFont[ 0 ].lineHeight }
+							onLineHeight={ ( value ) => saveTitleFont( { lineHeight: value } ) }
+							lineHeightType={ titleFont[ 0 ].lineType }
+							onLineHeightType={ ( value ) => saveTitleFont( { lineType: value } ) }
+							reLetterSpacing={ titleFont[ 0 ].letterSpacing }
+							onLetterSpacing={ ( value ) => saveTitleFont( { letterSpacing: value } ) }
+							letterSpacingType={ titleFont[ 0 ].letterType }
+							onLetterSpacingType={ ( value ) => saveTitleFont( { letterType: value } ) }
+						/>
+					</PanelBody>
 					<PanelBody
 						title={ __( 'Meta Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
@@ -684,7 +756,7 @@ class KadencePosts extends Component {
 					) }
 					<div className="entry-content-wrap">
 						<header className="entry-header">
-							{ ( postType === 'post' && categories && post.kb_category_info ) && (
+							{ ( postType === 'post' && aboveCategories && post.kb_category_info ) && (
 								<div className="entry-taxonomies">
 									<span className={ `category-links term-links category-style-${ categoriesStyle }` }>
 										{ post.kb_category_info.map( ( category, index, arr ) => {
@@ -706,12 +778,20 @@ class KadencePosts extends Component {
 									</span>
 								</div>
 							) }
-							<h2 className="entry-title">
+							<HtmlTagOut
+								className="entry-title"
+								style={ {
+									fontSize: ( titleSize ? titleSize + titleFont[ 0 ].sizeType : undefined ),
+									lineHeight: ( titleLineHeight ? titleLineHeight + titleFont[ 0 ].lineType : undefined ),
+									letterSpacing: ( titleLetterSpacing ? titleLetterSpacing + titleFont[ 0 ].letterType : undefined ),
+									textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
+								} }
+							>
 								<a
 									href={ post.link }
 									dangerouslySetInnerHTML={ { __html: post.title.rendered.trim() || __( '(Untitled)' ) }}
 								/>
-							</h2>
+							</HtmlTagOut>
 							{ meta && (
 								<div className={ `entry-meta entry-meta-divider-${ metaDivider }` }>
 									{ author && post.kb_author_info && post.kb_author_info.display_name && (
@@ -720,7 +800,7 @@ class KadencePosts extends Component {
 												<span className="author-avatar" style={ {
 													width: authorImageSize ? authorImageSize + 'px': undefined,
 													height: authorImageSize ? authorImageSize + 'px': undefined,
-												}}>
+												} }>
 													<span className="author-image">
 														{<img src={ post.kb_author_info.author_image } style={ {
 															width: authorImageSize ? authorImageSize + 'px': undefined,
@@ -839,6 +919,9 @@ class KadencePosts extends Component {
 export default withSelect( ( select, props ) => {
 	const { postsToShow, order, orderBy, categories, tags, postTax, postType, taxType, offsetQuery, excludeTax } = props.attributes;
 	const { getEntityRecords } = select( 'core' );
+	const {
+		__experimentalGetPreviewDeviceType,
+	} = select( 'core/edit-post' );
 	const theType = ( postType ? postType : 'post' );
 	const taxonomyList = ( taxonomies[ theType ] && taxonomies[ theType ].taxonomy ? taxonomies[ theType ].taxonomy : [] );
 	let orderString = order;
@@ -887,5 +970,6 @@ export default withSelect( ( select, props ) => {
 		latestPosts: getEntityRecords( 'postType', theType, latestPostsQuery ),
 		taxList: taxonomyList,
 		taxOptions: taxonomyOptions,
+		getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
 	};
 } )( KadencePosts );

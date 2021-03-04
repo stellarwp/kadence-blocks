@@ -1248,6 +1248,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/node_modules/@wordpress/element/build-module/index.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/@wordpress/element/build-module/index-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/node_modules/@wordpress/i18n/build-module/index.js": {
 		"bF": 0,
 		"ft": 64,
@@ -3315,6 +3326,17 @@
 		"mi": 1,
 		"oA": 1,
 		"oAP": "/src/components/terms/select-terms-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/components/typography/heading-icons.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/components/typography/heading-icons-min.js",
 		"oF": 0,
 		"sC": 0,
 		"tS": 0

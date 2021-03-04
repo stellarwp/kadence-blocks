@@ -54,13 +54,13 @@ export default function ResponsiveControl( {
 	];
 	const output = {};
 	output.Mobile = (
-		desktopChildren
+		mobileChildren
 	);
 	output.Tablet = (
 		tabletChildren
 	);
 	output.Desktop = (
-		mobileChildren
+		desktopChildren
 	);
 	return (
 		<div className={ 'components-base-control kt-inspect-tabs kb-responsive-control' }>

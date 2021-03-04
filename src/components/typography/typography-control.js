@@ -8,19 +8,18 @@
 /**
  * Import Icons
  */
-import icons from './icons';
+import icons from './../../icons';
 /**
  * Import External
  */
-//import gFonts from './gfonts';
-//import fonts from './fonts';
-import capitalizeFirstLetter from './capitalfirst';
+import capitalizeFirstLetter from './../common/capitalfirst';
 import Select from 'react-select';
 import map from 'lodash/map';
 import range from 'lodash/range';
 import HeadingLevelIcon from './heading-icons';
-import KadenceRange from './components/range/range-control';
-import MeasurementControls from './components/measurement/measurement-control';
+import KadenceRange from './../range/range-control';
+import MeasurementControls from './../measurement/measurement-control';
+import ResponsiveRangeControls from './../range/responsive-range-control';
 
 const {
 	applyFilters,
@@ -206,7 +205,10 @@ class TypographyControls extends Component {
 			loadItalic,
 			onLoadItalic,
 			textTransform,
-			onTextTransform } = this.props;
+			onTextTransform,
+			reLetterSpacing = false,
+			letterSpacingType = 'px',
+			onLetterSpacingType } = this.props;
 		const { controlSize, typographySelectOptions, typographyOptions, typographySubsets, typographyStyles, typographyWeights, fontFamilyValue } = this.state;
 		const onTypoFontChange = ( select ) => {
 			if ( select === null ) {
@@ -309,20 +311,9 @@ class TypographyControls extends Component {
 				onFontStyle( select );
 			}
 		};
-		// const createLevelControl = ( targetLevel ) => {
-		// 	return [ {
-		// 		icon: 'heading',
-		// 		// translators: %s: heading level e.g: "1", "2", "3"
-		// 		title: sprintf( __( 'Heading %d', 'kadence-blocks' ), targetLevel ),
-		// 		isActive: targetLevel === tagLevel,
-		// 		onClick: () => onTagLevel( targetLevel ),
-		// 		subscript: String( targetLevel ),
-		// 	} ];
-		// };
 		const createLevelControl = ( targetLevel ) => {
 			return [ {
 				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ targetLevel === tagLevel } />,
-				// translators: %s: heading level e.g: "1", "2", "3"
 				title: sprintf(
 					/* translators: %d: heading level e.g: "1", "2", "3" */
 					__( 'Heading %d', 'kadence-blocks' ),
@@ -338,11 +329,6 @@ class TypographyControls extends Component {
 			{ value: 'uppercase', label: __( 'Uppercase', 'kadence-blocks' ) },
 			{ value: 'lowercase', label: __( 'Lowercase', 'kadence-blocks' ) },
 		];
-		const sizeTypes = [
-			{ key: 'px', name: 'px' },
-			{ key: 'em', name: 'em' },
-			{ key: 'rem', name: 'rem' },
-		];
 		const borderTypes = [
 			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.linked },
 			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.individual },
@@ -353,162 +339,6 @@ class TypographyControls extends Component {
 		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
 		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
 		const lineStep = ( lineHeightType !== 'px' ? 0.1 : 1 );
-		const sizeDeskControls = (
-			<PanelBody>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ fontSizeType === key }
-							aria-pressed={ fontSizeType === key }
-							onClick={ () => onFontSizeType( key ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<KadenceRange
-					label={ __( 'Font Size', 'kadence-blocks' ) }
-					value={ ( fontSize ? fontSize[ 0 ] : '' ) }
-					onChange={ ( value ) => onFontSize( [ value, ( ! fontSize[ 1 ] ? fontSize[ 1 ] : '' ), ( ! fontSize[ 2 ] ? fontSize[ 2 ] : '' ) ] ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				{ onLineHeight && onLineHeightType && (
-					<Fragment>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-							{ map( sizeTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ lineHeightType === key }
-									aria-pressed={ lineHeightType === key }
-									onClick={ () => onLineHeightType( key ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<KadenceRange
-							label={ __( 'Line Height', 'kadence-blocks' ) }
-							value={ ( lineHeight ? lineHeight[ 0 ] : '' ) }
-							onChange={ ( value ) => onLineHeight( [ value, lineHeight[ 1 ], lineHeight[ 2 ] ] ) }
-							min={ lineMin }
-							max={ lineMax }
-							step={ lineStep }
-						/>
-					</Fragment>
-				) }
-			</PanelBody>
-		);
-		const sizeTabletControls = (
-			<PanelBody>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ fontSizeType === key }
-							aria-pressed={ fontSizeType === key }
-							onClick={ () => onFontSizeType( key ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<KadenceRange
-					label={ __( 'Tablet Font Size', 'kadence-blocks' ) }
-					value={ ( fontSize ? fontSize[ 1 ] : '' ) }
-					onChange={ ( value ) => onFontSize( [ fontSize[ 0 ], value, fontSize[ 2 ] ] ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				{ onLineHeight && onLineHeightType && (
-					<Fragment>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-							{ map( sizeTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ lineHeightType === key }
-									aria-pressed={ lineHeightType === key }
-									onClick={ () => onLineHeightType( key ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<KadenceRange
-							label={ __( 'Tablet Line Height', 'kadence-blocks' ) }
-							value={ ( lineHeight ? lineHeight[ 1 ] : '' ) }
-							onChange={ ( value ) => onLineHeight( [ lineHeight[ 0 ], value, lineHeight[ 2 ] ] ) }
-							min={ lineMin }
-							max={ lineMax }
-							step={ lineStep }
-						/>
-					</Fragment>
-				) }
-			</PanelBody>
-		);
-		const sizeMobileControls = (
-			<PanelBody>
-				<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-					{ map( sizeTypes, ( { name, key } ) => (
-						<Button
-							key={ key }
-							className="kt-size-btn"
-							isSmall
-							isPrimary={ fontSizeType === key }
-							aria-pressed={ fontSizeType === key }
-							onClick={ () => onFontSizeType( key ) }
-						>
-							{ name }
-						</Button>
-					) ) }
-				</ButtonGroup>
-				<KadenceRange
-					label={ __( 'Mobile Font Size', 'kadence-blocks' ) }
-					value={ ( fontSize ? fontSize[ 2 ] : '' ) }
-					onChange={ ( value ) => onFontSize( [ fontSize[ 0 ], fontSize[ 1 ], value ] ) }
-					min={ fontMin }
-					max={ fontMax }
-					step={ fontStep }
-				/>
-				{ onLineHeight && onLineHeightType && (
-					<Fragment>
-						<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
-							{ map( sizeTypes, ( { name, key } ) => (
-								<Button
-									key={ key }
-									className="kt-size-btn"
-									isSmall
-									isPrimary={ lineHeightType === key }
-									aria-pressed={ lineHeightType === key }
-									onClick={ () => onLineHeightType( key ) }
-								>
-									{ name }
-								</Button>
-							) ) }
-						</ButtonGroup>
-						<KadenceRange
-							label={ __( 'Mobile Line Height', 'kadence-blocks' ) }
-							value={ ( lineHeight ? lineHeight[ 2 ] : '' ) }
-							onChange={ ( value ) => onLineHeight( [ lineHeight[ 0 ], lineHeight[ 1 ], value ] ) }
-							min={ lineMin }
-							max={ lineMax }
-							step={ lineStep }
-						/>
-					</Fragment>
-				) }
-			</PanelBody>
-		);
 		return (
 			<Fragment>
 				{ onTagLevel && (
@@ -518,46 +348,40 @@ class TypographyControls extends Component {
 					</div>
 				) }
 				{ onFontSize && onFontSizeType && (
-					<Fragment>
-						<h2 className="kt-heading-size-title">{ __( 'Size Controls', 'kadence-blocks' ) }</h2>
-						<TabPanel className="kt-size-tabs"
-							activeClass="active-tab"
-							tabs={ [
-								{
-									name: 'desk',
-									title: <Dashicon icon="desktop" />,
-									className: 'kt-desk-tab',
-								},
-								{
-									name: 'tablet',
-									title: <Dashicon icon="tablet" />,
-									className: 'kt-tablet-tab',
-								},
-								{
-									name: 'mobile',
-									title: <Dashicon icon="smartphone" />,
-									className: 'kt-mobile-tab',
-								},
-							] }>
-							{
-								( tab ) => {
-									let tabout;
-									if ( tab.name ) {
-										if ( 'mobile' === tab.name ) {
-											tabout = sizeMobileControls;
-										} else if ( 'tablet' === tab.name ) {
-											tabout = sizeTabletControls;
-										} else {
-											tabout = sizeDeskControls;
-										}
-									}
-									return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-								}
-							}
-						</TabPanel>
-					</Fragment>
+					<ResponsiveRangeControls
+						label={ __( 'Font Size', 'kadence-blocks' ) }
+						value={ ( fontSize && undefined !== fontSize[ 0 ] ? fontSize[ 0 ] : '' ) }
+						onChange={ value => onFontSize( [ value, ( fontSize && undefined !== fontSize[ 1 ] ? fontSize[ 1 ] : '' ), ( fontSize && undefined !== fontSize[ 2 ] ? fontSize[ 2 ] : '' ) ] ) }
+						tabletValue={ ( fontSize && undefined !== fontSize[ 1 ] ? fontSize[ 1 ] : '' ) }
+						onChangeTablet={ ( value ) => onFontSize( [ ( fontSize && undefined !== fontSize[ 0 ] ? fontSize[ 0 ] : '' ), value, ( fontSize && undefined !== fontSize[ 2 ] ? fontSize[ 2 ] : '' ) ] ) }
+						mobileValue={ ( fontSize && undefined !== fontSize[ 2 ] ? fontSize[ 2 ] : '' ) }
+						onChangeMobile={ ( value ) => onFontSize( [ ( fontSize && undefined !== fontSize[ 0 ] ? fontSize[ 0 ] : '' ), ( fontSize && undefined !== fontSize[ 1 ] ? fontSize[ 1 ] : '' ), value ] ) }
+						min={ fontMin }
+						max={ fontMax }
+						step={ fontStep }
+						unit={ ( fontSizeType ? fontSizeType : 'px' ) }
+						onUnit={ ( value ) => onFontSizeType( value ) }
+						units={ [ 'px', 'em', 'rem' ] }
+					/>
 				) }
-				{ onLetterSpacing && (
+				{ onLineHeight && onLineHeightType && (
+					<ResponsiveRangeControls
+						label={ __( 'Line Height', 'kadence-blocks' ) }
+						value={ ( lineHeight && undefined !== lineHeight[ 0 ] ? lineHeight[ 0 ] : '' ) }
+						onChange={ value => onLineHeight( [ value, ( lineHeight && undefined !== lineHeight[ 1 ] ? lineHeight[ 1 ] : '' ), ( lineHeight && undefined !== lineHeight[ 2 ] ? lineHeight[ 2 ] : '' ) ] ) }
+						tabletValue={ ( lineHeight && undefined !== lineHeight[ 1 ] ? lineHeight[ 1 ] : '' ) }
+						onChangeTablet={ ( value ) => onLineHeight( [ ( lineHeight && undefined !== lineHeight[ 0 ] ? lineHeight[ 0 ] : '' ), value, ( lineHeight && undefined !== lineHeight[ 2 ] ? lineHeight[ 2 ] : '' ) ] ) }
+						mobileValue={ ( lineHeight && undefined !== lineHeight[ 2 ] ? lineHeight[ 2 ] : '' ) }
+						onChangeMobile={ ( value ) => onLineHeight( [ ( lineHeight && undefined !== lineHeight[ 0 ] ? lineHeight[ 0 ] : '' ), ( lineHeight && undefined !== lineHeight[ 1 ] ? lineHeight[ 1 ] : '' ), value ] ) }
+						min={ lineMin }
+						max={ lineMax }
+						step={ lineStep }
+						unit={ ( lineHeightType ? lineHeightType : 'px' ) }
+						onUnit={ ( value ) => onLineHeightType( value ) }
+						units={ [ 'px', 'em', 'rem' ] }
+					/>
+				) }
+				{ onLetterSpacing && ! reLetterSpacing && (
 					<KadenceRange
 						label={ __( 'Letter Spacing', 'kadence-blocks' ) }
 						value={ ( undefined !== letterSpacing ? letterSpacing : '' ) }
@@ -565,6 +389,23 @@ class TypographyControls extends Component {
 						min={ -5 }
 						max={ 15 }
 						step={ 0.1 }
+					/>
+				) }
+				{ onLetterSpacing && reLetterSpacing && (
+					<ResponsiveRangeControls
+						label={ __( 'Letter Spacing', 'kadence-blocks' ) }
+						value={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ) }
+						onChange={ value => onLetterSpacing( [ value, ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ), ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) ] ) }
+						tabletValue={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ) }
+						onChangeTablet={ ( value ) => onLetterSpacing( [ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ), value, ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) ] ) }
+						mobileValue={ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[2] ? reLetterSpacing[2] : '' ) }
+						onChangeMobile={ ( value ) => onLetterSpacing( [ ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[0] ? reLetterSpacing[0] : '' ), ( undefined !== reLetterSpacing && undefined !== reLetterSpacing[1] ? reLetterSpacing[1] : '' ), value ] ) }
+						min={ -5 }
+						max={ 15 }
+						step={ 0.1 }
+						unit={ ( onLetterSpacingType ? letterSpacingType : 'px' ) }
+						onUnit={ ( value ) => onLetterSpacingType( value ) }
+						units={ ( onLetterSpacingType ? [ 'px', 'em', 'rem' ] : [ 'px' ] ) }
 					/>
 				) }
 				{ onTextTransform && (

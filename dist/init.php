@@ -25,10 +25,9 @@ function kadence_gutenberg_editor_assets() {
 	if ( ! is_admin() ) {
 		return;
 	}
-
+	$asset_meta = kadence_blocks_get_asset_file( 'dist/build/blocks' );
 	// Scripts.
-	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/build/blocks.js', array( 'lodash', 'react', 'react-dom', 'wp-data', 'wp-element', 'wp-i18n', 'wp-polyfill', 'wp-primitives', 'wp-api' ), KADENCE_BLOCKS_VERSION, true );
-	//'wp-api-fetch', 'wp-blocks', 'wp-i18n', 'wp-element', 'wp-editor', 'wp-api', 'wp-edit-post'
+	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/build/blocks.js', array_merge( $asset_meta['dependencies'], array( 'wp-api' ) ), $asset_meta['version'], true );
 	$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
 	$sidebar_size   = 750;
 	$nosidebar_size = 1140;
@@ -131,16 +130,28 @@ function kadence_gutenberg_editor_assets() {
 	);
 	// Styles.
 	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
-	// Limited Margins removed
-	// $editor_widths = get_option( 'kt_blocks_editor_width', array() );
-	// if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
-	// 	wp_enqueue_style( 'kadence-blocks-limited-margins-css', KADENCE_BLOCKS_URL . 'dist/limited-margins.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
-	// }
 	if ( function_exists( 'wp_set_script_translations' ) ) {
 		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
 	}
 }
 add_action( 'init', 'kadence_gutenberg_editor_assets' );
+
+/**
+ * Get the asset file produced by wp scripts.
+ *
+ * @param string $filepath the file path.
+ * @return array
+ */
+function kadence_blocks_get_asset_file( $filepath ) {
+	$asset_path = KADENCE_BLOCKS_PATH . $filepath . '.asset.php';
+
+	return file_exists( $asset_path )
+		? include $asset_path
+		: array(
+			'dependencies' => array( 'lodash', 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-data', 'wp-element', 'wp-i18n', 'wp-polyfill', 'wp-primitives', 'wp-api' ),
+			'version'      => KADENCE_BLOCKS_VERSION,
+		);
+}
 
 /**
  * Setup the post type taxonomies for post blocks.

@@ -6,7 +6,9 @@
 
 import hexToRGBA from '../../components/color/hex-to-rgba';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
-
+import {
+	InnerBlocks,
+} from '@wordpress/block-editor';
 export default [
 	{
 		attributes: {

@@ -10,10 +10,11 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	InnerBlocks,
 	getColorClassName,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
+
 class KadenceRowLayoutSave extends Component {
 	render() {
 		const { attributes: { columns, blockAlignment, inheritMaxWidth, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo, bgColorClass, vsdesk, vstablet, vsmobile } } = this.props;

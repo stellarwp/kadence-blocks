@@ -280,11 +280,21 @@ class Kadence_Blocks_Posts {
 			$classes[] = 'grid-lg-col-1';
 			$classes[] = 'item-image-style-' . $placement;
 		} elseif ( 2 === $columns ) {
-			$classes[] = 'grid-sm-col-2';
+			if ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 1 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-1';
+			} else {
+				$classes[] = 'grid-sm-col-2';
+			}
 			$classes[] = 'grid-lg-col-2';
 			$classes[] = 'item-image-style-above';
 		} else {
-			$classes[] = 'grid-sm-col-2';
+			if ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 1 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-1';
+			} elseif ( isset( $attributes['tabletColumns'] ) && ! empty( $attributes['tabletColumns'] ) && 3 === $attributes['tabletColumns'] ) {
+				$classes[] = 'grid-sm-col-3';
+			} else {
+				$classes[] = 'grid-sm-col-2';
+			}
 			$classes[] = 'grid-lg-col-3';
 			$classes[] = 'item-image-style-above';
 		}
@@ -404,6 +414,20 @@ class Kadence_Blocks_Posts {
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$title_font = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) ? $attributes['titleFont'][0] : array() );
+		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry .entry-title' );
+		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][0] ) && ! empty( $title_font['size'][0] ) ) {
+			$css->add_property( 'font-size', $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
+		}
+		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && isset( $title_font['lineHeight'][0] ) && ! empty( $title_font['lineHeight'][0] ) ) {
+			$css->add_property( 'line-height', $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
+		}
+		if ( isset( $title_font['letterSpacing'] ) && is_array( $title_font['letterSpacing'] ) && isset( $title_font['letterSpacing'][0] ) && ! empty( $title_font['letterSpacing'][0] ) ) {
+			$css->add_property( 'letter-spacing', $title_font['letterSpacing'][0] . ( ! isset( $title_font['letterType'] ) ? 'px' : $title_font['letterType'] ) );
+		}
+		if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
+			$css->add_property( 'text-transform', $title_font['textTransform'] );
+		}
 		if ( isset( $attributes['loopStyle'] ) && 'unboxed' === $attributes['loopStyle'] ) {
 			if ( class_exists( 'Kadence\Theme' ) ) {
 				$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry' );
@@ -422,6 +446,30 @@ class Kadence_Blocks_Posts {
 				}
 			}
 		}
+		$css->start_media_query( $media_query['tablet'] );
+		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry .entry-title' );
+		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][1] ) && ! empty( $title_font['size'][1] ) ) {
+			$css->add_property( 'font-size', $title_font['size'][1] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
+		}
+		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && isset( $title_font['lineHeight'][1] ) && ! empty( $title_font['lineHeight'][1] ) ) {
+			$css->add_property( 'line-height', $title_font['lineHeight'][1] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
+		}
+		if ( isset( $title_font['letterSpacing'] ) && is_array( $title_font['letterSpacing'] ) && isset( $title_font['letterSpacing'][1] ) && ! empty( $title_font['letterSpacing'][1] ) ) {
+			$css->add_property( 'letter-spacing', $title_font['letterSpacing'][1] . ( ! isset( $title_font['letterType'] ) ? 'px' : $title_font['letterType'] ) );
+		}
+		$css->stop_media_query();
+		$css->start_media_query( $media_query['mobile'] );
+		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry .entry-title' );
+		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][2] ) && ! empty( $title_font['size'][2] ) ) {
+			$css->add_property( 'font-size', $title_font['size'][2] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
+		}
+		if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && isset( $title_font['lineHeight'][2] ) && ! empty( $title_font['lineHeight'][2] ) ) {
+			$css->add_property( 'line-height', $title_font['lineHeight'][2] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
+		}
+		if ( isset( $title_font['letterSpacing'] ) && is_array( $title_font['letterSpacing'] ) && isset( $title_font['letterSpacing'][2] ) && ! empty( $title_font['letterSpacing'][2] ) ) {
+			$css->add_property( 'letter-spacing', $title_font['letterSpacing'][2] . ( ! isset( $title_font['letterType'] ) ? 'px' : $title_font['letterType'] ) );
+		}
+		$css->stop_media_query();
 		return $css->css_output();
 	}
 	/**

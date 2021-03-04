@@ -19,8 +19,9 @@
 					return;
 				}
 				for ( let n = 0; n < heading_items.length; n++ ) {
-					if ( heading_items[ n ].textContent.replace('–', '-').includes( headings[ i ].content.replace('–', '-') ) ) {
+					if ( heading_items[ n ].textContent.replace('–', '-').replace("’", "'").includes( headings[ i ].content.replace('–', '-') ) ) {
 						heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
+						break;
 					}
 				}
 			}
