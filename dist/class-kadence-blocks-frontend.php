@@ -281,6 +281,7 @@ class Kadence_Blocks_Frontend {
 	 * @param string $content the blocks content.
 	 */
 	public function render_row_layout_css( $attributes, $content ) {
+		$attributes = apply_filters( 'kadence_render_row_layout_css_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-rowlayout', 'enqueued' ) ) {
 			wp_enqueue_style( 'kadence-blocks-rowlayout' );
 		}
@@ -408,7 +409,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_advanced_btn_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					// This only runs if the content if loaded via the rest API. Normally the css would already be added in the head.
-					if ( doing_filter( 'the_content' ) ) {
+					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'advancedbtn', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -584,7 +585,7 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'tabs', $unique_id ) ) {
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) ) {
+					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'tabs', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -640,7 +641,7 @@ class Kadence_Blocks_Frontend {
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'spacer', $unique_id ) ) {
 				$css = $this->blocks_spacer_array( $attributes, $unique_id );
-				if ( doing_filter( 'the_content' ) ) {
+				if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'spacer', $unique_id ) ) {
 					$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 				} else {
 					$this->render_inline_css( $css, $style_id, true );
@@ -685,7 +686,7 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'icon', $unique_id ) ) {
 				$css = $this->blocks_icon_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) ) {
+					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'icon', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -846,7 +847,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_accordion_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) ) {
+					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'accordion', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -908,7 +909,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_testimonials_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) ) {
+					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'testimonials', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -962,7 +963,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_form_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) ) {
+					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'form', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -1035,7 +1036,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_advancedgallery_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) ) {
+					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'advancedgallery', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -1081,7 +1082,7 @@ class Kadence_Blocks_Frontend {
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'iconlist', $unique_id ) ) {
 				$css = $this->blocks_iconlist_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) ) {
+					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'iconlist', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
