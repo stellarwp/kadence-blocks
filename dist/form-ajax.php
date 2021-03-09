@@ -199,12 +199,14 @@ class KB_Ajax_Form {
 							$to            = isset( $form_args['email'][0]['emailTo'] ) && ! empty( trim( $form_args['email'][0]['emailTo'] ) ) ? trim( $form_args['email'][0]['emailTo'] ) : get_option( 'admin_email' );
 							$subject       = isset( $form_args['email'][0]['subject'] ) && ! empty( trim( $form_args['email'][0]['subject'] ) ) ? $form_args['email'][0]['subject'] : '[' . get_bloginfo( 'name' ) . ' ' . __( 'Submission', 'kadence-blocks' ) . ']';
 							if ( strpos( $subject, '{field_' ) !== false ) {
-								if ( preg_match( '/{field_(.*?)}/', $subject, $match) == 1 ) {
-									$field_id = $match[1];
-									if ( isset( $field_id ) ) {
-										$real_id = absint( $field_id ) - 1;
-										if ( isset( $fields[ $real_id ] ) && is_array( $fields[ $real_id ] ) && isset( $fields[ $real_id ]['value'] ) ) {
-											$subject = str_replace( '{field_' . $field_id . '}' , $fields[ $real_id ]['value'], $subject );
+								preg_match_all( '/{field_(.*?)}/', $subject, $match ); 
+								if ( is_array( $match ) && isset( $match[1] ) && is_array( $match[1] ) ) {
+									foreach ( $match[1] as $field_id ) {
+										if ( isset( $field_id ) ) {
+											$real_id = absint( $field_id ) - 1;
+											if ( isset( $fields[ $real_id ] ) && is_array( $fields[ $real_id ] ) && isset( $fields[ $real_id ]['value'] ) ) {
+												$subject = str_replace( '{field_' . $field_id . '}' , $fields[ $real_id ]['value'], $subject );
+											}
 										}
 									}
 								}

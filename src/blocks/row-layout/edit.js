@@ -2043,7 +2043,6 @@ class KadenceRowLayout extends Component {
 				/>
 				{ ! overlayBgImg && (
 					<Fragment>
-						{console.log( 'header' ) }
 						<KadenceMediaPlaceholder
 							labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
 							onSelect={ ( img ) => {

@@ -107,7 +107,7 @@ class KadenceRowLayoutDefault extends Component {
 						this.clearDefaults( 'bottomPaddingM' );
 						this.clearDefaults( 'leftPaddingM' );
 					} }
-					label={ __( 'Mobile PaddingM' ) }
+					label={ __( 'Mobile Padding', 'kadence-blocks' ) }
 					measurement={ [ ( undefined !== rowConfig.topPaddingM ? rowConfig.topPaddingM : '' ), ( undefined !== rowConfig.rightPaddingM ? rowConfig.rightPaddingM : '' ), ( undefined !== rowConfig.bottomPaddingM ? rowConfig.bottomPaddingM : '' ), ( undefined !== rowConfig.leftPaddingM ? rowConfig.leftPaddingM : '' ) ] }
 					onChange={ ( value ) => {
 						this.saveConfigState( 'topPaddingM', value[ 0 ] );
@@ -128,7 +128,7 @@ class KadenceRowLayoutDefault extends Component {
 						this.clearDefaults( 'topMarginM' );
 						this.clearDefaults( 'bottomMarginM' );
 					} }
-					label={ __( 'Mobile Margin' ) }
+					label={ __( 'Mobile Margin', 'kadence-blocks' ) }
 					measurement={ [ ( undefined !== rowConfig.topMarginM ? rowConfig.topMarginM : '' ), 'auto', ( undefined !== rowConfig.bottomMarginM ? rowConfig.bottomMarginM : '' ), 'auto' ] }
 					onChange={ ( value ) => {
 						this.saveConfigState( 'topMarginM', value[ 0 ] );
@@ -148,7 +148,7 @@ class KadenceRowLayoutDefault extends Component {
 			<Fragment>
 				<MeasurementControls
 					reset={ () => this.clearDefaults( 'tabletPadding' ) }
-					label={ __( 'Tablet Padding' ) }
+					label={ __( 'Tablet Padding', 'kadence-blocks' ) }
 					measurement={ ( undefined !== rowConfig.tabletPadding ? rowConfig.tabletPadding : [ '', '', '', '' ] ) }
 					onChange={ ( value ) => this.saveConfigState( 'tabletPadding', value ) }
 					min={ paddingMin }
@@ -164,7 +164,7 @@ class KadenceRowLayoutDefault extends Component {
 						this.clearDefaults( 'topMarginT' );
 						this.clearDefaults( 'bottomMarginT' );
 					} }
-					label={ __( 'Tablet Margin' ) }
+					label={ __( 'Tablet Margin', 'kadence-blocks' ) }
 					measurement={ [ ( undefined !== rowConfig.topMarginT ? rowConfig.topMarginT : '' ), 'auto', ( undefined !== rowConfig.bottomMarginT ? rowConfig.bottomMarginT : '' ), 'auto' ] }
 					onChange={ ( value ) => {
 						this.saveConfigState( 'topMarginT', value[ 0 ] );
@@ -189,7 +189,7 @@ class KadenceRowLayoutDefault extends Component {
 						this.clearDefaults( 'bottomPadding' );
 						this.clearDefaults( 'leftPadding' );
 					} }
-					label={ __( 'Padding' ) }
+					label={ __( 'Padding', 'kadence-blocks' ) }
 					measurement={ [ ( undefined !== rowConfig.topPadding ? rowConfig.topPadding : '' ), ( undefined !== rowConfig.rightPadding ? rowConfig.rightPadding : '' ), ( undefined !== rowConfig.bottomPadding ? rowConfig.bottomPadding : '' ), ( undefined !== rowConfig.leftPadding ? rowConfig.leftPadding : '' ) ] }
 					onChange={ ( value ) => {
 						this.saveConfigState( 'topPadding', value[ 0 ] );
@@ -210,7 +210,7 @@ class KadenceRowLayoutDefault extends Component {
 						this.clearDefaults( 'topMargin' );
 						this.clearDefaults( 'bottomMargin' );
 					} }
-					label={ __( 'Margin' ) }
+					label={ __( 'Margin', 'kadence-blocks' ) }
 					measurement={ [ ( undefined !== rowConfig.topMargin ? rowConfig.topMargin : '' ), 'auto', ( undefined !== rowConfig.bottomMargin ? rowConfig.bottomMargin : '' ), 'auto' ] }
 					onChange={ ( value ) => {
 						this.saveConfigState( 'topMargin', value[ 0 ] );
@@ -230,7 +230,7 @@ class KadenceRowLayoutDefault extends Component {
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
 					<span className="kt-block-icon">{ icons.blockRow }</span>
-					{ __( 'Row Layout' ) }
+					{ __( 'Row Layout', 'kadence-blocks' ) }
 				</Button>
 				{ isOpen ?
 					<Modal
@@ -240,43 +240,53 @@ class KadenceRowLayoutDefault extends Component {
 							this.saveConfig( 'kadence/rowlayout', rowConfig );
 						} }>
 						<PanelBody
-							title={ __( 'Row Layout Controls' ) }
+							title={ __( 'Row Layout Controls', 'kadence-blocks' ) }
 							initialOpen={ true }
 						>
 							<SelectControl
-								label={ __( 'Column width Resizing control' ) }
+								label={ __( 'Align', 'kadence-blocks' ) }
+								value={ ( undefined !== rowConfig.align ? rowConfig.align : '' ) }
+								options={ [
+									{ value: '', label: __( 'Default', 'kadence-blocks' ) },
+									{ value: 'wide', label: __( 'Wide', 'kadence-blocks' ) },
+									{ value: 'full', label: __( 'Fullwidth', 'kadence-blocks' ) },
+								] }
+								onChange={ ( value ) => this.saveConfigState( 'align', value ) }
+							/>
+							<SelectControl
+								label={ __( 'Column width Resizing control', 'kadence-blocks' ) }
 								value={ ( undefined !== rowConfig.columnsUnlocked ? rowConfig.columnsUnlocked : false ) }
 								options={ [
-									{ value: false, label: __( 'Step Resizing' ) },
-									{ value: true, label: __( 'Fluid Resizing' ) },
+									{ value: false, label: __( 'Step Resizing', 'kadence-blocks' ) },
+									{ value: true, label: __( 'Fluid Resizing', 'kadence-blocks' ) },
 								] }
 								onChange={ value => this.saveConfigState( 'columnsUnlocked', value ) }
 							/>
 							<SelectControl
-								label={ __( 'Column Gutter' ) }
+								label={ __( 'Column Gutter', 'kadence-blocks' ) }
 								value={ ( undefined !== rowConfig.columnGutter ? rowConfig.columnGutter : 'default' ) }
 								options={ [
-									{ value: 'default', label: __( 'Standard: 30px' ) },
-									{ value: 'none', label: __( 'No Gutter' ) },
-									{ value: 'skinny', label: __( 'Skinny: 10px' ) },
-									{ value: 'narrow', label: __( 'Narrow: 20px' ) },
-									{ value: 'wide', label: __( 'Wide: 40px' ) },
-									{ value: 'wider', label: __( 'Wider: 60px' ) },
-									{ value: 'widest', label: __( 'Widest: 80px' ) },
+									{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
+									{ value: 'none', label: __( 'No Gutter', 'kadence-blocks' ) },
+									{ value: 'skinny', label: __( 'Skinny: 10px', 'kadence-blocks' ) },
+									{ value: 'narrow', label: __( 'Narrow: 20px', 'kadence-blocks' ) },
+									{ value: 'wide', label: __( 'Wide: 40px', 'kadence-blocks' ) },
+									{ value: 'wider', label: __( 'Wider: 60px', 'kadence-blocks' ) },
+									{ value: 'widest', label: __( 'Widest: 80px', 'kadence-blocks' ) },
 								] }
 								onChange={ ( value ) => this.saveConfigState( 'columnGutter', value ) }
 							/>
 							<SelectControl
-								label={ __( 'Column Collapse Vertical Gutter' ) }
+								label={ __( 'Column Collapse Vertical Gutter', 'kadence-blocks' ) }
 								value={ ( undefined !== rowConfig.collapseGutter ? rowConfig.collapseGutter : 'default' ) }
 								options={ [
-									{ value: 'default', label: __( 'Standard: 30px' ) },
-									{ value: 'none', label: __( 'No Gutter' ) },
-									{ value: 'skinny', label: __( 'Skinny: 10px' ) },
-									{ value: 'narrow', label: __( 'Narrow: 20px' ) },
-									{ value: 'wide', label: __( 'Wide: 40px' ) },
-									{ value: 'wider', label: __( 'Wider: 60px' ) },
-									{ value: 'widest', label: __( 'Widest: 80px' ) },
+									{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
+									{ value: 'none', label: __( 'No Gutter', 'kadence-blocks' ) },
+									{ value: 'skinny', label: __( 'Skinny: 10px', 'kadence-blocks' ) },
+									{ value: 'narrow', label: __( 'Narrow: 20px', 'kadence-blocks' ) },
+									{ value: 'wide', label: __( 'Wide: 40px', 'kadence-blocks' ) },
+									{ value: 'wider', label: __( 'Wider: 60px', 'kadence-blocks' ) },
+									{ value: 'widest', label: __( 'Widest: 80px', 'kadence-blocks' ) },
 								] }
 								onChange={ ( value ) => this.saveConfigState( 'collapseGutter', value ) }
 							/>
@@ -284,14 +294,14 @@ class KadenceRowLayoutDefault extends Component {
 								label={ __( 'Collapse Order' ) }
 								value={ ( undefined !== rowConfig.collapseOrder ? rowConfig.collapseOrder : 'left-to-right' ) }
 								options={ [
-									{ value: 'left-to-right', label: __( 'Left to Right' ) },
-									{ value: 'right-to-left', label: __( 'Right to Left' ) },
+									{ value: 'left-to-right', label: __( 'Left to Right', 'kadence-blocks' ) },
+									{ value: 'right-to-left', label: __( 'Right to Left', 'kadence-blocks' ) },
 								] }
 								onChange={ value => this.saveConfigState( 'collapseOrder', value ) }
 							/>
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Padding Margin' ) }
+							title={ __( 'Padding Margin', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
 							<TabPanel className="kt-inspect-tabs"
@@ -331,31 +341,31 @@ class KadenceRowLayoutDefault extends Component {
 							</TabPanel>
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Structure Settings' ) }
+							title={ __( 'Structure Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
 							<SelectControl
-								label={ __( 'Container HTML tag' ) }
+								label={ __( 'Container HTML tag', 'kadence-blocks' ) }
 								value={ ( undefined !== rowConfig.htmlTag ? rowConfig.htmlTag : 'div' ) }
 								options={ [
-									{ value: 'div', label: __( 'div' ) },
-									{ value: 'header', label: __( 'header' ) },
-									{ value: 'section', label: __( 'section' ) },
-									{ value: 'article', label: __( 'article' ) },
-									{ value: 'main', label: __( 'main' ) },
-									{ value: 'aside', label: __( 'aside' ) },
-									{ value: 'footer', label: __( 'footer' ) },
+									{ value: 'div', label: 'div' },
+									{ value: 'header', label: 'header' },
+									{ value: 'section', label: 'section' },
+									{ value: 'article', label: 'article' },
+									{ value: 'main', label: 'main' },
+									{ value: 'aside', label: 'aside' },
+									{ value: 'footer', label: 'footer' },
 								] }
 								onChange={ ( value ) => this.saveConfigState( 'htmlTag', value ) }
 							/>
 							<ToggleControl
-								label={ __( 'Content Max Width Inherit from Theme?' ) }
+								label={ __( 'Content Max Width Inherit from Theme?', 'kadence-blocks' ) }
 								checked={ ( undefined !== rowConfig.inheritMaxWidth ? rowConfig.inheritMaxWidth : false ) }
 								onChange={ ( value ) => this.saveConfigState( 'inheritMaxWidth', value ) }
 							/>
 							{ undefined !== rowConfig.inheritMaxWidth && rowConfig.inheritMaxWidth !== true && (
 								<Fragment>
-									<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type' ) }>
+									<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type', 'kadence-blocks' ) }>
 										{ map( widthTypes, ( { name, key } ) => (
 											<Button
 												key={ key }
@@ -370,7 +380,7 @@ class KadenceRowLayoutDefault extends Component {
 										) ) }
 									</ButtonGroup>
 									<RangeControl
-										label={ __( 'Content Max Width' ) }
+										label={ __( 'Content Max Width', 'kadence-blocks' ) }
 										value={ ( undefined !== rowConfig.maxWidth ? rowConfig.maxWidth : '' ) }
 										onChange={ ( value ) => this.saveConfigState( 'maxWidth', value ) }
 										min={ 0 }
@@ -379,7 +389,7 @@ class KadenceRowLayoutDefault extends Component {
 								</Fragment>
 							) }
 							<ToggleControl
-								label={ __( 'Inner Column Height 100%' ) }
+								label={ __( 'Inner Column Height 100%', 'kadence-blocks' ) }
 								checked={ ( undefined !== rowConfig.columnsInnerHeight ? rowConfig.columnsInnerHeight : false ) }
 								onChange={ ( value ) => this.saveConfigState( 'columnsInnerHeight', value ) }
 							/>
@@ -389,7 +399,7 @@ class KadenceRowLayoutDefault extends Component {
 								<Button className="kt-defaults-save" isDestructive disabled={ ( JSON.stringify( this.state.configuration[ 'kadence/rowlayout' ] ) === JSON.stringify( {} ) ? true : false ) } onClick={ () => {
 									this.setState( { resetConfirm: true } );
 								} }>
-									{ __( 'Reset' ) }
+									{ __( 'Reset', 'kadence-blocks' ) }
 								</Button>
 							) }
 							{ this.state.resetConfirm && (
@@ -397,13 +407,13 @@ class KadenceRowLayoutDefault extends Component {
 									this.clearAllDefaults();
 									this.setState( { resetConfirm: false } );
 								} }>
-									{ __( 'Confirm Reset' ) }
+									{ __( 'Confirm Reset', 'kadence-blocks' ) }
 								</Button>
 							) }
 							<Button className="kt-defaults-save" isPrimary onClick={ () => {
 								this.saveConfig( 'kadence/rowlayout', rowConfig );
 							} }>
-								{ __( 'Save/Close' ) }
+								{ __( 'Save/Close', 'kadence-blocks' ) }
 							</Button>
 						</div>
 					</Modal>

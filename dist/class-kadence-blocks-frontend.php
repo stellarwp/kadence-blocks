@@ -224,6 +224,14 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-editor-css',
 			)
 		);
+		// register_block_type(
+		// 	'kadence/countdown',
+		// 	array(
+		// 		'render_callback' => array( $this, 'render_countdown_css' ),
+		// 		'editor_script'   => 'kadence-blocks-js',
+		// 		'editor_style'    => 'kadence-blocks-editor-css',
+		// 	)
+		// );
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 	}
 	/**
@@ -923,6 +931,53 @@ class Kadence_Blocks_Frontend {
 	 *
 	 * @param array $attributes the blocks attributes.
 	 */
+	public function render_countdown_css_head( $attributes ) {
+		if ( ! wp_style_is( 'kadence-blocks-countdown', 'enqueued' ) ) {
+			$this->enqueue_style( 'kadence-blocks-countdown' );
+		}
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $this->blocks_countdown_css( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render form CSS Inline
+	 *
+	 * @param array  $attributes the blocks attributes.
+	 * @param string $content the blocks content.
+	 */
+	public function render_countdown_css( $attributes, $content ) {
+		if ( ! wp_style_is( 'kadence-blocks-countdown', 'enqueued' ) ) {
+			wp_enqueue_style( 'kadence-blocks-countdown' );
+		}
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				wp_enqueue_script( 'kadence-blocks-countdown' );
+				$css = $this->blocks_countdown_css( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( doing_filter( 'the_content' ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
+	}
+	/**
+	 * Render form CSS In Head
+	 *
+	 * @param array $attributes the blocks attributes.
+	 */
 	public function render_form_css_head( $attributes ) {
 		if ( ! wp_style_is( 'kadence-blocks-form', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-form' );
@@ -1165,6 +1220,7 @@ class Kadence_Blocks_Frontend {
 		wp_add_inline_style( 'kadence-blocks-heading', $heading_css );
 		wp_register_style( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/blocks/form.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-testimonials', KADENCE_BLOCKS_URL . 'dist/blocks/testimonials.style.build.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-countdown', KADENCE_BLOCKS_URL . 'dist/blocks/countdown.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
 		//wp_enqueue_style( 'kadence-blocks-style-css', KADENCE_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
@@ -1180,6 +1236,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-accordion-js', KADENCE_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'dist/kt-tabs-min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'dist/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-countdown', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-countdown.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-form',
@@ -1940,6 +1997,15 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+	}
+	/**
+	 * Builds CSS for Countdown Block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_countdown_css( $attr, $unique_id ) {
+		return '';
 	}
 	/**
 	 * Builds CSS for form block.
@@ -5529,6 +5595,11 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_advanced_btn_array( $attr, $unique_id ) {
+		$css                    = new Kadence_Blocks_CSS();
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		if ( isset( $attr['btns'] ) && is_array( $attr['btns'] ) ) {
 			foreach ( $attr['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
@@ -5542,227 +5613,242 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
-		$css = '';
-		if ( isset( $attr['typography'] ) || isset( $attr['textTransform'] ) ) {
-			$css .= '.kt-btns' . $unique_id . ' .kt-button {';
+		if ( isset( $attr['typography'] ) || isset( $attr['textTransform'] ) || isset( $attr['fontWeight'] ) || isset( $attr['fontStyle'] ) ) {
+			$css->set_selector( '.kt-btns' . $unique_id . ' .kt-button' );
 			if ( isset( $attr['typography'] ) && ! empty( $attr['typography'] ) ) {
-				$css .= 'font-family:' . $attr['typography'] . ';';
+				$css->add_property( 'font-family', $css->render_font_family( $attr['typography'] ) );
 			}
 			if ( isset( $attr['fontWeight'] ) && ! empty( $attr['fontWeight'] ) ) {
-				$css .= 'font-weight:' . $attr['fontWeight'] . ';';
+				$css->add_property( 'font-weight', $attr['fontWeight'] );
 			}
 			if ( isset( $attr['fontStyle'] ) && ! empty( $attr['fontStyle'] ) ) {
-				$css .= 'font-style:' . $attr['fontStyle'] . ';';
+				$css->add_property( 'font-style', $attr['fontStyle'] );
 			}
 			if ( isset( $attr['textTransform'] ) && ! empty( $attr['textTransform'] ) ) {
-				$css .= 'text-transform:' . $attr['textTransform'] . ';';
+				$css->add_property( 'text-transform', $attr['textTransform'] );
 			}
-			$css .= '}';
 		}
 		if ( isset( $attr['margin'] ) && is_array( $attr['margin'] ) && is_array( $attr['margin'][0] ) ) {
 			$margin = $attr['margin'][0];
 			$unit = ( isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px' );
-			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) && is_numeric( $margin['desk'][0] ) ) {
-				$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' {';
-				$css .= 'margin:' . $margin['desk'][0] . $unit . ' ' . $margin['desk'][1] . $unit . ' ' . $margin['desk'][2] . $unit . ' ' . $margin['desk'][3] . $unit . ';';
-				$css .= '}';
+			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) ) {
+				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
+				if ( isset( $margin['desk'][0] ) && is_numeric( $margin['desk'][0] ) ) {
+					$css->add_property( 'margin-top', $margin['desk'][0] . $unit );
+				}
+				if ( isset( $margin['desk'][1] ) && is_numeric( $margin['desk'][1] ) ) {
+					$css->add_property( 'margin-right', $margin['desk'][1] . $unit );
+				}
+				if ( isset( $margin['desk'][2] ) && is_numeric( $margin['desk'][2] ) ) {
+					$css->add_property( 'margin-bottom', $margin['desk'][2] . $unit );
+				}
+				if ( isset( $margin['desk'][3] ) && is_numeric( $margin['desk'][3] ) ) {
+					$css->add_property( 'margin-left', $margin['desk'][3] . $unit );
+				}
 			}
-			if ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) && is_numeric( $margin['tablet'][0] ) ) {
-				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-				$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' {';
-				$css .= 'margin:' . $margin['tablet'][0] . $unit . ' ' . $margin['tablet'][1] . $unit . ' ' . $margin['tablet'][2] . $unit . ' ' . $margin['tablet'][3] . $unit . ';';
-				$css .= '}';
-				$css .= '}';
+			if ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) ) {
+				$css->start_media_query( $media_query['tablet'] );
+				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
+				if ( isset( $margin['tablet'][0] ) && is_numeric( $margin['tablet'][0] ) ) {
+					$css->add_property( 'margin-top', $margin['tablet'][0] . $unit );
+				}
+				if ( isset( $margin['tablet'][1] ) && is_numeric( $margin['tablet'][1] ) ) {
+					$css->add_property( 'margin-right', $margin['tablet'][1] . $unit );
+				}
+				if ( isset( $margin['tablet'][2] ) && is_numeric( $margin['tablet'][2] ) ) {
+					$css->add_property( 'margin-bottom', $margin['tablet'][2] . $unit );
+				}
+				if ( isset( $margin['tablet'][3] ) && is_numeric( $margin['tablet'][3] ) ) {
+					$css->add_property( 'margin-left', $margin['tablet'][3] . $unit );
+				}
+				$css->stop_media_query();
 			}
-			if ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) && is_numeric( $margin['mobile'][0] ) ) {
-				$css .= '@media (max-width: 767px) {';
-				$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' {';
-				$css .= 'margin:' . $margin['mobile'][0] . $unit . ' ' . $margin['mobile'][1] . $unit . ' ' . $margin['mobile'][2] . $unit . ' ' . $margin['mobile'][3] . $unit . ';';
-				$css .= '}';
-				$css .= '}';
+			if ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) ) {
+				$css->start_media_query( $media_query['mobile'] );
+				$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ', .site .entry-content .wp-block-kadence-advancedbtn.kt-btns' . $unique_id );
+				if ( isset( $margin['mobile'][0] ) && is_numeric( $margin['mobile'][0] ) ) {
+					$css->add_property( 'margin-top', $margin['mobile'][0] . $unit );
+				}
+				if ( isset( $margin['mobile'][1] ) && is_numeric( $margin['mobile'][1] ) ) {
+					$css->add_property( 'margin-right', $margin['mobile'][1] . $unit );
+				}
+				if ( isset( $margin['mobile'][2] ) && is_numeric( $margin['mobile'][2] ) ) {
+					$css->add_property( 'margin-bottom', $margin['mobile'][2] . $unit );
+				}
+				if ( isset( $margin['mobile'][3] ) && is_numeric( $margin['mobile'][3] ) ) {
+					$css->add_property( 'margin-left', $margin['mobile'][3] . $unit );
+				}
+				$css->stop_media_query();
 			}
 		}
 		if ( isset( $attr['btns'] ) && is_array( $attr['btns'] ) ) {
 			foreach ( $attr['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
 					if ( isset( $btnvalue['gap'] ) && is_numeric( $btnvalue['gap'] ) ) {
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' {';
-						$css .= 'margin-right:' . $btnvalue['gap'] . 'px;';
-						$css .= '}';
-						$css .= '.rtl .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' {';
-						$css .= 'margin-left:' . $btnvalue['gap'] . 'px;';
-						$css .= 'margin-right:0px;';
-						$css .= '}';
+						$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
+						$css->add_property( 'margin-right',  $btnvalue['gap'] . 'px' );
+						$css->set_selector( 'rtl .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
+						$css->add_property( 'margin-left',  $btnvalue['gap'] . 'px' );
+						$css->add_property( 'margin-right',  '0px' );
 					}
 					if ( isset( $btnvalue['backgroundType'] ) && 'gradient' === $btnvalue['backgroundType'] || isset( $btnvalue['backgroundHoverType'] ) && 'gradient' === $btnvalue['backgroundHoverType'] ) {
 						$bgtype = 'gradient';
 					} else {
 						$bgtype = 'solid';
 					}
-					$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+					$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 					if ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][0] ) && ! empty( $btnvalue['width'][0] ) ) {
-						$css .= 'width:' . $btnvalue['width'][0] . 'px;';
+						$css->add_property( 'width',  $btnvalue['width'][0] . 'px' );
 					}
 					if ( ! isset( $btnvalue['btnSize'] ) || ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] ) ) {
 						if ( isset( $btnvalue['paddingLR'] ) && is_numeric( $btnvalue['paddingLR'] ) ) {
-							$css .= 'padding-left:' . $btnvalue['paddingLR'] . 'px;';
-							$css .= 'padding-right:' . $btnvalue['paddingLR'] . 'px;';
+							$css->add_property( 'padding-left', $btnvalue['paddingLR'] . 'px' );
+							$css->add_property( 'padding-right', $btnvalue['paddingLR'] . 'px' );
 						}
 						if ( isset( $btnvalue['paddingBT'] ) && is_numeric( $btnvalue['paddingBT'] ) ) {
-							$css .= 'padding-top:' . $btnvalue['paddingBT'] . 'px;';
-							$css .= 'padding-bottom:' . $btnvalue['paddingBT'] . 'px;';
+							$css->add_property( 'padding-top', $btnvalue['paddingBT'] . 'px' );
+							$css->add_property( 'padding-bottom', $btnvalue['paddingBT'] . 'px' );
 						}
 					}
 					if ( isset( $btnvalue['color'] ) && ! empty( $btnvalue['color'] ) ) {
-						$css .= 'color:' . $this->kadence_color_output( $btnvalue['color'] ) . ';';
+						$css->add_property( 'color', $css->render_color( $btnvalue['color'] ) );
 					}
 					if ( isset( $btnvalue['size'] ) && ! empty( $btnvalue['size'] ) ) {
-						$css .= 'font-size:' . $btnvalue['size'] . 'px;';
+						$css->add_property( 'font-size', $btnvalue['size'] . 'px' );
 					}
 					if ( isset( $btnvalue['backgroundType'] ) && 'gradient' === $btnvalue['backgroundType'] ) {
-						$bg1 = ( ! isset( $btnvalue['background'] ) || 'transparent' === $btnvalue['background'] ? 'rgba(255,255,255,0)' : $this->kadence_color_output( $btnvalue['background'], ( isset( $btnvalue['backgroundOpacity'] ) && is_numeric( $btnvalue['backgroundOpacity'] ) ? $btnvalue['backgroundOpacity'] : 1 ) ) );
-						$bg2 = ( isset( $btnvalue['gradient'][0] ) && ! empty( $btnvalue['gradient'][0] ) ? $this->kadence_color_output( $btnvalue['gradient'][0], ( isset( $btnvalue['gradient'][1] ) && is_numeric( $btnvalue['gradient'][1] ) ? $btnvalue['gradient'][1] : 1 ) ) : $this->hex2rgba( '#999999', ( isset( $btnvalue['gradient'][1] ) && is_numeric( $btnvalue['gradient'][1] ) ? $btnvalue['gradient'][1] : 1 ) ) );
+						$bg1 = ( ! isset( $btnvalue['background'] ) || 'transparent' === $btnvalue['background'] ? 'rgba(255,255,255,0)' : $css->render_color( $btnvalue['background'], ( isset( $btnvalue['backgroundOpacity'] ) && is_numeric( $btnvalue['backgroundOpacity'] ) ? $btnvalue['backgroundOpacity'] : 1 ) ) );
+						$bg2 = ( isset( $btnvalue['gradient'][0] ) && ! empty( $btnvalue['gradient'][0] ) ? $css->render_color( $btnvalue['gradient'][0], ( isset( $btnvalue['gradient'][1] ) && is_numeric( $btnvalue['gradient'][1] ) ? $btnvalue['gradient'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $btnvalue['gradient'][1] ) && is_numeric( $btnvalue['gradient'][1] ) ? $btnvalue['gradient'][1] : 1 ) ) );
 						if ( isset( $btnvalue['gradient'][4] ) && 'radial' === $btnvalue['gradient'][4] ) {
-							$css .= 'background:radial-gradient(at ' . ( isset( $btnvalue['gradient'][6] ) && ! empty( $btnvalue['gradient'][6] ) ? $btnvalue['gradient'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $btnvalue['gradient'][2] ) && is_numeric( $btnvalue['gradient'][2] ) ? $btnvalue['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $btnvalue['gradient'][3] ) && is_numeric( $btnvalue['gradient'][3] ) ? $btnvalue['gradient'][3] : '100' ) . '%);';
+							$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $btnvalue['gradient'][6] ) && ! empty( $btnvalue['gradient'][6] ) ? $btnvalue['gradient'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $btnvalue['gradient'][2] ) && is_numeric( $btnvalue['gradient'][2] ) ? $btnvalue['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $btnvalue['gradient'][3] ) && is_numeric( $btnvalue['gradient'][3] ) ? $btnvalue['gradient'][3] : '100' ) . '%)' );
 						} else if ( ! isset( $btnvalue['gradient'][4] ) || 'radial' !== $btnvalue['gradient'][4] ) {
-							$css .= 'background:linear-gradient(' . ( isset( $btnvalue['gradient'][5] ) && ! empty( $btnvalue['gradient'][5] ) ? $btnvalue['gradient'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $btnvalue['gradient'][2] ) && is_numeric( $btnvalue['gradient'][2] ) ? $btnvalue['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $btnvalue['gradient'][3] ) && is_numeric( $btnvalue['gradient'][3] ) ? $btnvalue['gradient'][3] : '100' ) . '%);';
+							$css->add_property( 'background', 'linear-gradient(' . ( isset( $btnvalue['gradient'][5] ) && ! empty( $btnvalue['gradient'][5] ) ? $btnvalue['gradient'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $btnvalue['gradient'][2] ) && is_numeric( $btnvalue['gradient'][2] ) ? $btnvalue['gradient'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $btnvalue['gradient'][3] ) && is_numeric( $btnvalue['gradient'][3] ) ? $btnvalue['gradient'][3] : '100' ) . '%)' );
 						}
 					} else if ( isset( $btnvalue['background'] ) && ! empty( $btnvalue['background'] ) && 'transparent' === $btnvalue['background'] ) {
-						$css .= 'background:transparent;';
+						$css->add_property( 'background', 'transparent' );
 					} else if ( isset( $btnvalue['background'] ) && ! empty( $btnvalue['background'] ) ) {
 						$alpha = ( isset( $btnvalue['backgroundOpacity'] ) && is_numeric( $btnvalue['backgroundOpacity'] ) ? $btnvalue['backgroundOpacity'] : 1 );
-						$css  .= 'background:' . $this->kadence_color_output( $btnvalue['background'], $alpha ) . ';';
+						$css->add_property( 'background', $css->render_color( $btnvalue['background'], $alpha ) );
 					}
 					if ( isset( $btnvalue['border'] ) && ! empty( $btnvalue['border'] ) ) {
 						$alpha = ( isset( $btnvalue['borderOpacity'] ) && is_numeric( $btnvalue['borderOpacity'] ) ? $btnvalue['borderOpacity'] : 1 );
-						$css  .= 'border-color:' . $this->kadence_color_output( $btnvalue['border'], $alpha ) . ';';
+						$css->add_property( 'border-color', $css->render_color( $btnvalue['border'], $alpha ) );
 					}
 					if ( isset( $btnvalue['boxShadow'] ) && is_array( $btnvalue['boxShadow'] ) && isset( $btnvalue['boxShadow'][0] ) && true === $btnvalue['boxShadow'][0] ) {
-						$css  .= 'box-shadow:' . ( isset( $btnvalue['boxShadow'][7] ) && true === $btnvalue['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadow'][3] ) && is_numeric( $btnvalue['boxShadow'][3] ) ? $btnvalue['boxShadow'][3] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][4] ) && is_numeric( $btnvalue['boxShadow'][4] ) ? $btnvalue['boxShadow'][4] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][5] ) && is_numeric( $btnvalue['boxShadow'][5] ) ? $btnvalue['boxShadow'][5] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadow'][6] ) && is_numeric( $btnvalue['boxShadow'][6] ) ? $btnvalue['boxShadow'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $btnvalue['boxShadow'][1] ) && ! empty( $btnvalue['boxShadow'][1] ) ? $btnvalue['boxShadow'][1] : '#000000' ), ( isset( $btnvalue['boxShadow'][2] ) && is_numeric( $btnvalue['boxShadow'][2] ) ? $btnvalue['boxShadow'][2] : 0.2 ) ) . ';';
+						$css->add_property( 'box-shadow', ( isset( $btnvalue['boxShadow'][7] ) && true === $btnvalue['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadow'][3] ) && is_numeric( $btnvalue['boxShadow'][3] ) ? $btnvalue['boxShadow'][3] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][4] ) && is_numeric( $btnvalue['boxShadow'][4] ) ? $btnvalue['boxShadow'][4] : '1' ) . 'px ' . ( isset( $btnvalue['boxShadow'][5] ) && is_numeric( $btnvalue['boxShadow'][5] ) ? $btnvalue['boxShadow'][5] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadow'][6] ) && is_numeric( $btnvalue['boxShadow'][6] ) ? $btnvalue['boxShadow'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $btnvalue['boxShadow'][1] ) && ! empty( $btnvalue['boxShadow'][1] ) ? $btnvalue['boxShadow'][1] : '#000000' ), ( isset( $btnvalue['boxShadow'][2] ) && is_numeric( $btnvalue['boxShadow'][2] ) ? $btnvalue['boxShadow'][2] : 0.2 ) ) );
 					}
-					$css .= '}';
-					$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus {';
+					$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus' );
 					if ( isset( $btnvalue['colorHover'] ) && ! empty( $btnvalue['colorHover'] ) ) {
-						$css .= 'color:' . $this->kadence_color_output( $btnvalue['colorHover'] ) . ';';
+						$css->add_property( 'color', $css->render_color( $btnvalue['colorHover'] ) );
 					}
 					if ( isset( $btnvalue['borderHover'] ) && ! empty( $btnvalue['borderHover'] ) ) {
 						$alpha = ( isset( $btnvalue['borderHoverOpacity'] ) && is_numeric( $btnvalue['borderHoverOpacity'] ) ? $btnvalue['borderHoverOpacity'] : 1 );
-						$css .= 'border-color:' . $this->kadence_color_output( $btnvalue['borderHover'], $alpha ) . ';';
+						$css->add_property( 'border-color', $css->render_color( $btnvalue['borderHover'], $alpha ) );
 					}
 					if ( isset( $btnvalue['boxShadowHover'] ) && is_array( $btnvalue['boxShadowHover'] ) && isset( $btnvalue['boxShadowHover'][0] ) && true === $btnvalue['boxShadowHover'][0] && isset( $btnvalue['boxShadowHover'][7] ) && true !== $btnvalue['boxShadowHover'][7] ) {
-						$css  .= 'box-shadow:' . ( isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadowHover'][3] ) && is_numeric( $btnvalue['boxShadowHover'][3] ) ? $btnvalue['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][4] ) && is_numeric( $btnvalue['boxShadowHover'][4] ) ? $btnvalue['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][5] ) && is_numeric( $btnvalue['boxShadowHover'][5] ) ? $btnvalue['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][6] ) && is_numeric( $btnvalue['boxShadowHover'][6] ) ? $btnvalue['boxShadowHover'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $btnvalue['boxShadowHover'][1] ) && ! empty( $btnvalue['boxShadowHover'][1] ) ? $btnvalue['boxShadowHover'][1] : '#000000' ), ( isset( $btnvalue['boxShadowHover'][2] ) && is_numeric( $btnvalue['boxShadowHover'][2] ) ? $btnvalue['boxShadowHover'][2] : 0.4 ) ) . ';';
+						$css->add_property( 'box-shadow', ( isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadowHover'][3] ) && is_numeric( $btnvalue['boxShadowHover'][3] ) ? $btnvalue['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][4] ) && is_numeric( $btnvalue['boxShadowHover'][4] ) ? $btnvalue['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][5] ) && is_numeric( $btnvalue['boxShadowHover'][5] ) ? $btnvalue['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][6] ) && is_numeric( $btnvalue['boxShadowHover'][6] ) ? $btnvalue['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $btnvalue['boxShadowHover'][1] ) && ! empty( $btnvalue['boxShadowHover'][1] ) ? $btnvalue['boxShadowHover'][1] : '#000000' ), ( isset( $btnvalue['boxShadowHover'][2] ) && is_numeric( $btnvalue['boxShadowHover'][2] ) ? $btnvalue['boxShadowHover'][2] : 0.4 ) ) );
 					}
-					$css .= '}';
 					if ( 'gradient' === $bgtype ) {
-						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before {';
+						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before' );
 						if ( isset( $btnvalue['backgroundHoverType'] ) && 'gradient' === $btnvalue['backgroundHoverType'] ) {
-							$bg1 = ( ! isset( $btnvalue['backgroundHover'] ) ? $this->hex2rgba( '#444444', ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 ) ) : $this->kadence_color_output( $btnvalue['backgroundHover'], ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 ) ) );
-							$bg2 = ( isset( $btnvalue['gradientHover'][0] ) && ! empty( $btnvalue['gradientHover'][0] ) ? $this->kadence_color_output( $btnvalue['gradientHover'][0], ( isset( $btnvalue['gradientHover'][1] ) && is_numeric( $btnvalue['gradientHover'][1] ) ? $btnvalue['gradientHover'][1] : 1 ) ) : $this->hex2rgba( '#999999', ( isset( $btnvalue['gradientHover'][1] ) && is_numeric( $btnvalue['gradientHover'][1] ) ? $btnvalue['gradientHover'][1] : 1 ) ) );
+							$bg1 = ( ! isset( $btnvalue['backgroundHover'] ) ? $css->render_color( '#444444', ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 ) ) : $css->render_color( $btnvalue['backgroundHover'], ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 ) ) );
+							$bg2 = ( isset( $btnvalue['gradientHover'][0] ) && ! empty( $btnvalue['gradientHover'][0] ) ? $css->render_color( $btnvalue['gradientHover'][0], ( isset( $btnvalue['gradientHover'][1] ) && is_numeric( $btnvalue['gradientHover'][1] ) ? $btnvalue['gradientHover'][1] : 1 ) ) : $css->render_color( '#999999', ( isset( $btnvalue['gradientHover'][1] ) && is_numeric( $btnvalue['gradientHover'][1] ) ? $btnvalue['gradientHover'][1] : 1 ) ) );
 							if ( isset( $btnvalue['gradientHover'][4] ) && 'radial' === $btnvalue['gradientHover'][4] ) {
-								$css .= 'background:radial-gradient(at ' . ( isset( $btnvalue['gradientHover'][6] ) && ! empty( $btnvalue['gradientHover'][6] ) ? $btnvalue['gradientHover'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $btnvalue['gradientHover'][2] ) && is_numeric( $btnvalue['gradientHover'][2] ) ? $btnvalue['gradientHover'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $btnvalue['gradientHover'][3] ) && is_numeric( $btnvalue['gradientHover'][3] ) ? $btnvalue['gradientHover'][3] : '100' ) . '%);';
+								$css->add_property( 'background', 'radial-gradient(at ' . ( isset( $btnvalue['gradientHover'][6] ) && ! empty( $btnvalue['gradientHover'][6] ) ? $btnvalue['gradientHover'][6] : 'center center' ) . ', ' . $bg1 . ' ' . ( isset( $btnvalue['gradientHover'][2] ) && is_numeric( $btnvalue['gradientHover'][2] ) ? $btnvalue['gradientHover'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $btnvalue['gradientHover'][3] ) && is_numeric( $btnvalue['gradientHover'][3] ) ? $btnvalue['gradientHover'][3] : '100' ) . '%)' );
 							} else if ( ! isset( $btnvalue['gradientHover'][4] ) || 'radial' !== $btnvalue['gradientHover'][4] ) {
-								$css .= 'background:linear-gradient(' . ( isset( $btnvalue['gradientHover'][5] ) && ! empty( $btnvalue['gradientHover'][5] ) ? $btnvalue['gradientHover'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $btnvalue['gradientHover'][2] ) && is_numeric( $btnvalue['gradientHover'][2] ) ? $btnvalue['gradientHover'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $btnvalue['gradientHover'][3] ) && is_numeric( $btnvalue['gradientHover'][3] ) ? $btnvalue['gradientHover'][3] : '100' ) . '%);';
+								$css->add_property( 'background', 'linear-gradient(' . ( isset( $btnvalue['gradientHover'][5] ) && ! empty( $btnvalue['gradientHover'][5] ) ? $btnvalue['gradientHover'][5] : '180' ) . 'deg, ' . $bg1 . ' ' . ( isset( $btnvalue['gradientHover'][2] ) && is_numeric( $btnvalue['gradientHover'][2] ) ? $btnvalue['gradientHover'][2] : '0' ) . '%, ' . $bg2 . ' ' . ( isset( $btnvalue['gradientHover'][3] ) && is_numeric( $btnvalue['gradientHover'][3] ) ? $btnvalue['gradientHover'][3] : '100' ) . '%)' );
 							}
 						} else if ( isset( $btnvalue['backgroundHover'] ) && ! empty( $btnvalue['backgroundHover'] ) ) {
 							$alpha = ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 );
-							$css  .= 'background:' . $this->kadence_color_output( $btnvalue['backgroundHover'], $alpha ) . ';';
+							$css->add_property( 'background', $css->render_color( $btnvalue['backgroundHover'], $alpha ) );
 						}
 						if ( isset( $btnvalue['boxShadowHover'] ) && is_array( $btnvalue['boxShadowHover'] ) && isset( $btnvalue['boxShadowHover'][0] ) && true === $btnvalue['boxShadowHover'][0] && isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ) {
-							$css  .= 'box-shadow:' . ( isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadowHover'][3] ) && is_numeric( $btnvalue['boxShadowHover'][3] ) ? $btnvalue['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][4] ) && is_numeric( $btnvalue['boxShadowHover'][4] ) ? $btnvalue['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][5] ) && is_numeric( $btnvalue['boxShadowHover'][5] ) ? $btnvalue['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][6] ) && is_numeric( $btnvalue['boxShadowHover'][6] ) ? $btnvalue['boxShadowHover'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $btnvalue['boxShadowHover'][1] ) && ! empty( $btnvalue['boxShadowHover'][1] ) ? $btnvalue['boxShadowHover'][1] : '#000000' ), ( isset( $btnvalue['boxShadowHover'][2] ) && is_numeric( $btnvalue['boxShadowHover'][2] ) ? $btnvalue['boxShadowHover'][2] : 0.4 ) ) . ';';
-							$css  .= 'border-radius:' . ( isset( $btnvalue['borderRadius'] ) && is_numeric( $btnvalue['borderRadius'] ) ? $btnvalue['borderRadius'] : '3' ) . 'px;';
+							$css->add_property( 'box-shadow', ( isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadowHover'][3] ) && is_numeric( $btnvalue['boxShadowHover'][3] ) ? $btnvalue['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][4] ) && is_numeric( $btnvalue['boxShadowHover'][4] ) ? $btnvalue['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][5] ) && is_numeric( $btnvalue['boxShadowHover'][5] ) ? $btnvalue['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][6] ) && is_numeric( $btnvalue['boxShadowHover'][6] ) ? $btnvalue['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $btnvalue['boxShadowHover'][1] ) && ! empty( $btnvalue['boxShadowHover'][1] ) ? $btnvalue['boxShadowHover'][1] : '#000000' ), ( isset( $btnvalue['boxShadowHover'][2] ) && is_numeric( $btnvalue['boxShadowHover'][2] ) ? $btnvalue['boxShadowHover'][2] : 0.4 ) ) );
+							$css->add_property( 'border-radius', ( isset( $btnvalue['borderRadius'] ) && is_numeric( $btnvalue['borderRadius'] ) ? $btnvalue['borderRadius'] : '3' ) . 'px' );
 						}
-						$css .= '}';
 					} else {
-						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before {';
-						$css .= 'display:none;';
-						$css .= '}';
-						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus {';
+						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button::before' );
+						$css->add_property( 'display', 'none' );
+						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover, .wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:focus' );
 						if ( isset( $btnvalue['backgroundHover'] ) && ! empty( $btnvalue['backgroundHover'] ) ) {
 							$alpha = ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 );
-							$css  .= 'background:' . $this->kadence_color_output( $btnvalue['backgroundHover'], $alpha ) . ';';
+							$css->add_property( 'background', $css->render_color( $btnvalue['backgroundHover'], $alpha ) );
 						} else {
 							$alpha = ( isset( $btnvalue['backgroundHoverOpacity'] ) && is_numeric( $btnvalue['backgroundHoverOpacity'] ) ? $btnvalue['backgroundHoverOpacity'] : 1 );
 							if ( ! isset( $btnvalue['inheritStyles'] ) || ( isset( $btnvalue['inheritStyles'] ) && 'inherit' !== $btnvalue['inheritStyles'] ) ) {
-								$css  .= 'background:' . $this->hex2rgba( '#444444', $alpha ) . ';';
+								$css->add_property( 'background', $css->render_color( '#444444', $alpha ) );
 							}
 						}
 						if ( isset( $btnvalue['boxShadowHover'] ) && is_array( $btnvalue['boxShadowHover'] ) && isset( $btnvalue['boxShadowHover'][0] ) && true === $btnvalue['boxShadowHover'][0] && isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ) {
-							$css  .= 'box-shadow:' . ( isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadowHover'][3] ) && is_numeric( $btnvalue['boxShadowHover'][3] ) ? $btnvalue['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][4] ) && is_numeric( $btnvalue['boxShadowHover'][4] ) ? $btnvalue['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][5] ) && is_numeric( $btnvalue['boxShadowHover'][5] ) ? $btnvalue['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][6] ) && is_numeric( $btnvalue['boxShadowHover'][6] ) ? $btnvalue['boxShadowHover'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $btnvalue['boxShadowHover'][1] ) && ! empty( $btnvalue['boxShadowHover'][1] ) ? $btnvalue['boxShadowHover'][1] : '#000000' ), ( isset( $btnvalue['boxShadowHover'][2] ) && is_numeric( $btnvalue['boxShadowHover'][2] ) ? $btnvalue['boxShadowHover'][2] : 0.4 ) ) . ';';
+							$css->add_property( 'box-shadow', ( isset( $btnvalue['boxShadowHover'][7] ) && true === $btnvalue['boxShadowHover'][7] ? 'inset ' : '' ) . ( isset( $btnvalue['boxShadowHover'][3] ) && is_numeric( $btnvalue['boxShadowHover'][3] ) ? $btnvalue['boxShadowHover'][3] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][4] ) && is_numeric( $btnvalue['boxShadowHover'][4] ) ? $btnvalue['boxShadowHover'][4] : '2' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][5] ) && is_numeric( $btnvalue['boxShadowHover'][5] ) ? $btnvalue['boxShadowHover'][5] : '3' ) . 'px ' . ( isset( $btnvalue['boxShadowHover'][6] ) && is_numeric( $btnvalue['boxShadowHover'][6] ) ? $btnvalue['boxShadowHover'][6] : '0' ) . 'px ' . $css->render_color( ( isset( $btnvalue['boxShadowHover'][1] ) && ! empty( $btnvalue['boxShadowHover'][1] ) ? $btnvalue['boxShadowHover'][1] : '#000000' ), ( isset( $btnvalue['boxShadowHover'][2] ) && is_numeric( $btnvalue['boxShadowHover'][2] ) ? $btnvalue['boxShadowHover'][2] : 0.4 ) ) );
 						}
-						$css .= '}';
 					}
 					// Tablet CSS.
 					if ( isset( $btnvalue['tabletGap'] ) && is_numeric( $btnvalue['tabletGap'] ) ) {
-						$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' {';
-						$css .= 'margin-right:' . $btnvalue['tabletGap'] . 'px;';
-						$css .= '}';
-						$css .= '}';
+						$css->start_media_query( $media_query['tablet'] );
+						$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
+						$css->add_property( 'margin-right', $btnvalue['tabletGap'] . 'px' );
+						$css->stop_media_query();
 					}
 					if ( ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][0] ) && is_numeric( $btnvalue['responsiveSize'][0] ) ) || ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][1] ) && ! empty( $btnvalue['width'][1] ) ) ) {
-						$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
-						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						$css->start_media_query( $media_query['tablet'] );
+						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][0] ) && is_numeric( $btnvalue['responsiveSize'][0] ) ) {
-							$css .= 'font-size:' . $btnvalue['responsiveSize'][0] . 'px;';
+							$css->add_property( 'font-size', $btnvalue['responsiveSize'][0] . 'px' );
 						}
 						if ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][1] ) && ! empty( $btnvalue['width'][1] ) ) {
-							$css .= 'width:' . $btnvalue['width'][1] . 'px;';
+							$css->add_property( 'width', $btnvalue['width'][1] . 'px' );
 						}
-						$css .= '}';
-						$css .= '}';
+						$css->stop_media_query();
 					}
 					if ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][0] ) && is_numeric( $btnvalue['responsivePaddingBT'][0] ) ) || ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) ) ) {
-						$css .= '@media (min-width: 768px) and (max-width: 1024px) {';
-						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						$css->start_media_query( $media_query['tablet'] );
+						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][0] ) && is_numeric( $btnvalue['responsivePaddingLR'][0] ) ) {
-							$css .= 'padding-left:' . $btnvalue['responsivePaddingLR'][0] . 'px;';
-							$css .= 'padding-right:' . $btnvalue['responsivePaddingLR'][0] . 'px;';
+							$css->add_property( 'padding-left', $btnvalue['responsivePaddingLR'][0] . 'px' );
+							$css->add_property( 'padding-right', $btnvalue['responsivePaddingLR'][0] . 'px' );
 						}
 						if ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][0] ) && is_numeric( $btnvalue['responsivePaddingBT'][0] ) ) {
-							$css .= 'padding-top:' . $btnvalue['responsivePaddingBT'][0] . 'px;';
-							$css .= 'padding-bottom:' . $btnvalue['responsivePaddingBT'][0] . 'px;';
+							$css->add_property( 'padding-top', $btnvalue['responsivePaddingBT'][0] . 'px' );
+							$css->add_property( 'padding-bottom', $btnvalue['responsivePaddingBT'][0] . 'px' );
 						}
-						$css .= '}';
-						$css .= '}';
+						$css->stop_media_query();
 					}
 					// Mobile CSS.
 					if ( isset( $btnvalue['mobileGap'] ) && is_numeric( $btnvalue['mobileGap'] ) ) {
-						$css .= '@media (max-width: 767px) {';
-						$css .= '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' {';
-						$css .= 'margin-right:' . $btnvalue['mobileGap'] . 'px;';
-						$css .= '}';
-						$css .= '}';
+						$css->start_media_query( $media_query['mobile'] );
+						$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
+						$css->add_property( 'margin-right', $btnvalue['mobileGap'] . 'px' );
+						$css->stop_media_query();
 					}
 					if ( ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][1] ) && is_numeric( $btnvalue['responsiveSize'][1] ) ) || ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][2] ) && ! empty( $btnvalue['width'][2] ) ) ) {
-						$css .= '@media (max-width: 767px) {';
-						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						$css->start_media_query( $media_query['mobile'] );
+						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsiveSize'] ) && is_array( $btnvalue['responsiveSize'] ) && isset( $btnvalue['responsiveSize'][1] ) && is_numeric( $btnvalue['responsiveSize'][1] ) ) {
-							$css .= 'font-size:' . $btnvalue['responsiveSize'][1] . 'px;';
+							$css->add_property( 'font-size', $btnvalue['responsiveSize'][1] . 'px' );
 						}
 						if ( isset( $attr['widthType'] ) && 'fixed' === $attr['widthType'] && isset( $btnvalue['width'] ) && is_array( $btnvalue['width'] ) && isset( $btnvalue['width'][2] ) && ! empty( $btnvalue['width'][2] ) ) {
-							$css .= 'width:' . $btnvalue['width'][2] . 'px;';
+							$css->add_property( 'width', $btnvalue['width'][2] . 'px' );
 						}
-						$css .= '}';
-						$css .= '}';
+						$css->stop_media_query();
 					}
 					if ( isset( $btnvalue['btnSize'] ) && 'custom' === $btnvalue['btnSize'] && ( ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) || ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) ) ) {
-						$css .= '@media (max-width: 767px) {';
-						$css .= '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button {';
+						$css->start_media_query( $media_query['mobile'] );
+						$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button' );
 						if ( isset( $btnvalue['responsivePaddingLR'] ) && is_array( $btnvalue['responsivePaddingLR'] ) && isset( $btnvalue['responsivePaddingLR'][1] ) && is_numeric( $btnvalue['responsivePaddingLR'][1] ) ) {
-							$css .= 'padding-left:' . $btnvalue['responsivePaddingLR'][1] . 'px;';
-							$css .= 'padding-right:' . $btnvalue['responsivePaddingLR'][1] . 'px;';
+							$css->add_property( 'padding-left', $btnvalue['responsivePaddingLR'][1] . 'px' );
+							$css->add_property( 'padding-right', $btnvalue['responsivePaddingLR'][1] . 'px' );
 						}
 						if ( isset( $btnvalue['responsivePaddingBT'] ) && is_array( $btnvalue['responsivePaddingBT'] ) && isset( $btnvalue['responsivePaddingBT'][1] ) && is_numeric( $btnvalue['responsivePaddingBT'][1] ) ) {
-							$css .= 'padding-top:' . $btnvalue['responsivePaddingBT'][1] . 'px;';
-							$css .= 'padding-bottom:' . $btnvalue['responsivePaddingBT'][1] . 'px;';
+							$css->add_property( 'padding-top', $btnvalue['responsivePaddingBT'][1] . 'px' );
+							$css->add_property( 'padding-bottom', $btnvalue['responsivePaddingBT'][1] . 'px' );
 						}
-						$css .= '}';
-						$css .= '}';
+						$css->stop_media_query();
 					}
 				}
 			}
 		}
-		return $css;
+		return $css->css_output();
 	}
 	/**
 	 * Builds CSS for Advanced Button block.

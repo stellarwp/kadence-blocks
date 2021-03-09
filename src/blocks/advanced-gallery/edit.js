@@ -50,7 +50,7 @@ const {
 	InspectorControls,
 } = wp.blockEditor;
 const { Component, Fragment } = wp.element;
-const { __, sprintf } = wp.i18n;
+import { __, sprintf } from '@wordpress/i18n';
 const { getBlobByURL, isBlobURL, revokeBlobURL } = wp.blob;
 const { withSelect } = wp.data;
 

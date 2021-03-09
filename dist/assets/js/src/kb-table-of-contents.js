@@ -13,13 +13,14 @@
 		 */
 		initAddAnchors: function() {
 			var headings = JSON.parse( kadence_blocks_toc.headings );
+			//console.log( headings );
 			for ( let i = 0; i < headings.length; i++ ) {
 				var heading_items = document.querySelectorAll( 'h' + headings[ i ].level );
 				if ( ! heading_items.length ) {
 					return;
 				}
 				for ( let n = 0; n < heading_items.length; n++ ) {
-					if ( heading_items[ n ].textContent.replace('–', '-').replace("’", "'").includes( headings[ i ].content.replace('–', '-') ) ) {
+					if ( heading_items[ n ].textContent.replace(/–/g, '-').replace(/’/g, "'").includes( headings[ i ].content.replace(/–/g, '-') ) ) {
 						heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
 						break;
 					}

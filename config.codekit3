@@ -98,6 +98,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/dist/assets/js/kb-countdown.min.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/dist/assets/js/kb-countdown.min-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/dist/assets/js/kb-form-min.js": {
 		"bF": 0,
 		"ft": 64,
@@ -161,6 +172,17 @@
 		"oA": 1,
 		"oAP": "/dist/assets/js/src/gumshoe-min.js",
 		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/dist/assets/js/src/kb-countdown.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 0,
+		"oAP": "/dist/assets/js/kb-countdown.min.js",
+		"oF": 3,
 		"sC": 0,
 		"tS": 0
 		},
@@ -236,6 +258,16 @@
 		"ma": 0,
 		"oA": 0,
 		"oAP": "/dist/blocks/btn.style.build-min.css",
+		"oF": 0,
+		"oS": 3
+		},
+	"/dist/blocks/countdown.style.build.css": {
+		"aP": 1,
+		"bl": 0,
+		"ft": 16,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/dist/blocks/countdown.style.build-min.css",
 		"oF": 0,
 		"oS": 3
 		},
@@ -1402,6 +1434,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/node_modules/react-countdown/./dist/index.es.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/node_modules/react-countdown/./dist/index.es-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/node_modules/react-dom/index.js": {
 		"bF": 0,
 		"ft": 64,
@@ -2021,6 +2064,109 @@
 		"oF": 0,
 		"sC": 0,
 		"tS": 0
+		},
+	"/src/blocks/countdown/attributes.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/countdown/attributes-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/countdown/block.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/countdown/block-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/countdown/countdown-inner/block.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/countdown/countdown-inner/block-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/countdown/countdown-timer/block.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/countdown/countdown-timer/block-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/countdown/countdown-timer/edit.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/countdown/countdown-timer/edit-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/countdown/edit.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/countdown/edit-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/countdown/editor.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/src/blocks/countdown/editor.css",
+		"oF": 0,
+		"oS": 0,
+		"sct": 1
+		},
+	"/src/blocks/countdown/save.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/blocks/countdown/save-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
+	"/src/blocks/countdown/style.scss": {
+		"aP": 1,
+		"bl": 1,
+		"dP": 10,
+		"ec": 1,
+		"ft": 4,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/dist/blocks/countdown.style.build.css",
+		"oF": 2,
+		"oS": 3,
+		"sct": 1
 		},
 	"/src/blocks/form/block.js": {
 		"bF": 0,

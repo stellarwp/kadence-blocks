@@ -1,6 +1,9 @@
 (function() {
 	'use strict';
 	window.kadenceBlocksMasonry = {
+		trigger_animation_class: function( element ) {
+			element.classList.add( 'kt-masonry-trigger-animation' );
+		},
 		init: function() {
 			var masonryitems = document.querySelectorAll( '.kb-masonry-init' );
 			// No point if no items
@@ -17,12 +20,13 @@
 					itemSelector: itemSelector,
 					isOriginLeft: masRtl,
 				} );
-				var subitems = masonryitems[i].querySelectorAll( itemSelector );
-				for ( let n = 0; n < subitems.length; n++ ) {
-					setTimeout( function( ) {
-						subitems[n].classList.add( 'kt-masonry-trigger-animation' );
-					}, n * 75 );
-				}
+				// var subitems = masonryitems[i].querySelectorAll( itemSelector );
+				// for ( let n = 0; n < subitems.length; n++ ) {
+				// 	setTimeout( function( n ) {
+				// 		console.log( subitems[n] );
+				// 		subitems[n].classList.add( 'kt-masonry-trigger-animation' );
+				// 	}, n * 75, n );
+				// }
 				imagesLoaded( masonryitems[i] ).on( 'progress', function() {
 					// layout Masonry after each image loads
 					masGrid.layout();

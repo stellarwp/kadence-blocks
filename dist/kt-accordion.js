@@ -924,10 +924,11 @@ return KadenceAccordion;
         var multiplePanels = accordionsArray[i].getAttribute('data-allow-multiple-open');
         var openPanels = accordionsArray[i].getAttribute('data-start-open');
         var openPanel = parseInt(openPanels);
-        if (  openPanels !== 'none' ) {
+        if ( openPanels !== 'none' ) {
           for (var b = 0, lenb = accordionsArray[i].children.length; b < lenb; b++) {
-            if ( accordionsArray[i].children[b].classList.contains('kt-accordion-pane-' + ( 1 + openPanel ) ) ) {
+            if ( accordionsArray[i].children[b].classList.contains( 'kt-accordion-pane-' + parseInt( 1 + openPanel ) ) ) {
               openPanel = b;
+              break;
             }
           }
         }

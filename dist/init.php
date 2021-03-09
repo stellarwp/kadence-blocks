@@ -129,7 +129,7 @@ function kadence_gutenberg_editor_assets() {
 		)
 	);
 	// Styles.
-	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), KADENCE_BLOCKS_VERSION );
+	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), $asset_meta['version'] );
 	if ( function_exists( 'wp_set_script_translations' ) ) {
 		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
 	}

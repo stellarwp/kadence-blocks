@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
-Tested up to: 5.6.0
-Stable tag: 1.10.3
+Tested up to: 5.7.0
+Stable tag: 1.10.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.10.4 =
+* Update: Editor CSS for when columns are set to full height.
+* Fix: Masonry gallery issue.
+* Fix: Accordion set default open on working.
 
 = 1.10.3 =
 * Add: Post Block Title Size settings.
