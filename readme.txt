@@ -89,6 +89,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 1.10.4 =
 * Update: Editor CSS for when columns are set to full height.
+* Update: Toolset merge.
 * Fix: Masonry gallery issue.
 * Fix: Accordion set default open on working.
 
