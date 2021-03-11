@@ -299,5 +299,21 @@ const attributes = {
 		type: 'bool',
 		default: true,
 	},
+	wrapperPaddingType: {
+		type: 'string',
+		default: 'px',
+	},
+	wrapperPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	wrapperTabletPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	wrapperMobilePadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
 };
 export default attributes;

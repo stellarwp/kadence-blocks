@@ -18,18 +18,25 @@ import KadenceRadioButtons from '../../kadence-radio-buttons';
 import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
+
+/**
+ * Import Css
+ */
+import './editor.scss';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 import { __experimentalGetSettings as getDateSettings } from '@wordpress/date';
 
-const {
+import { applyFilters } from '@wordpress/hooks';
+
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
+} from '@wordpress/element';
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 const {
 	InnerBlocks,
 	MediaUpload,
@@ -45,6 +52,7 @@ import {
 	Button,
 	DateTimePicker,
 	Tooltip,
+	SelectControl,
 	ToolbarGroup,
 } from '@wordpress/components';
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
@@ -57,7 +65,14 @@ const COUNTDOWN_TEMPLATE = [
     [ 'kadence/countdown-timer', {} ],
     [ 'core/paragraph', { placeholder: 'Below' } ],
 ];
+const COUNTDOWN_NO_TIMER = [
+    [ 'core/paragraph', { placeholder: 'Above' } ],
+];
 const ALLOWED_BLOCKS = [ 'kadence/countdown-timer', 'core/paragraph' ];
+const typeOptions = [
+	{ value: 'date', label: __( 'Date', 'kadence-blocks' ), disabled: false },
+	{ value: 'evergreen', label: __( 'Evergreen (Pro addon)', 'kadence-blocks' ), disabled: true },
+];
 
 /**
  * Build the spacer edit
@@ -106,7 +121,7 @@ class KadenceCountdown extends Component {
 			this.setState( { borderRadiusControl: 'individual' } );
 		}
 		if ( ! this.props.attributes.date ) {
-			const settings = __experimentalGetSettings();
+			const settings = getDateSettings();
 			const { timezone } = settings;
             const today = new Date();
             const newDate = new Date();
@@ -147,8 +162,9 @@ class KadenceCountdown extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, expireAction, units, layout, timerLayout, date, timestamp, timezone, timeOffset, daysLabel, hoursLabel, minutesLabel, secondsLabel, counterAlign, numberColor, numberSize, numberSizeType, numberLineHeight, numberLineType, numberLetterSpacing, numberLetterType, numberTypography, numberGoogleFont, numberLoadGoogleFont, numberFontSubset, numberFontVariant, numberFontWeight, numberFontStyle, numberTextTransform, labelColor, labelSize, labelSizeType, labelLineHeight, labelLineType, labelLetterSpacing, labelLetterType, labelTypography, labelGoogleFont, labelLoadGoogleFont, labelFontSubset, labelFontVariant, labelFontWeight, labelFontStyle, labelTextTransform, border, borderRadius, borderWidth, mobileBorderWidth, tabletBorderWidth, backgroundImg, background, vsdesk, vstablet, vsmobile, paddingType, marginType, mobilePadding, tabletPadding, padding, mobileMargin, tabletMargin, margin }, setAttributes, className, clientId } = this.props;
+		const { attributes: { uniqueID, expireAction, units, enableTimer, layout, timerLayout, date, timestamp, timezone, timeOffset, daysLabel, hoursLabel, minutesLabel, secondsLabel, counterAlign, numberColor, numberSize, numberSizeType, numberLineHeight, numberLineType, numberLetterSpacing, numberLetterType, numberTypography, numberGoogleFont, numberLoadGoogleFont, numberFontSubset, numberFontVariant, numberFontWeight, numberFontStyle, numberTextTransform, labelColor, labelSize, labelSizeType, labelLineHeight, labelLineType, labelLetterSpacing, labelLetterType, labelTypography, labelGoogleFont, labelLoadGoogleFont, labelFontSubset, labelFontVariant, labelFontWeight, labelFontStyle, labelTextTransform, border, borderRadius, borderWidth, mobileBorderWidth, tabletBorderWidth, backgroundImg, background, vsdesk, vstablet, vsmobile, countdownType, paddingType, marginType, mobilePadding, tabletPadding, padding, mobileMargin, tabletMargin, margin }, setAttributes, className, clientId } = this.props;
 		const { previewExpired, borderWidthControl, borderRadiusControl, paddingControl, marginControl } = this.state;
+		const countdownTypes = applyFilters( 'kadence.countdownTypes', typeOptions );
 		const settings = getDateSettings();
 		// To know if the current timezone is a 12 hour time with look for "a" in the time format
 		// We also make sure this a is not escaped by a "/"
@@ -310,41 +326,71 @@ class KadenceCountdown extends Component {
 							<Panel
 								className={ 'components-panel__body is-opened' }
 							>
-								<DateTimePicker
-									currentDate={ ( ! date ? undefined : date ) }
-									onChange={ value => {
-										console.log( value );
-										saveDate( value );
-									} }
-									is12Hour={ is12HourTime }
-									help={ __( 'Date set according to your sites timezone', 'kadence-blocks' ) }
+								<SelectControl
+									label={ __( 'Countdown Type', 'kadence-blocks' ) }
+									options={ countdownTypes }
+									value={ countdownType }
+									onChange={ ( value ) => setAttributes( { countdownType: value } ) }
 								/>
-								<PanelBody
-									title={ __( 'Display Units', 'kadence-blocks' ) }
-									initialOpen={ false }
-								>
-									<ToggleControl
-										label={ __( 'Days', 'kadence-blocks' ) }
-										checked={ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].days ? units[ 0 ].days : true }
-										onChange={ value => saveUnits( { days: value } ) }
-									/>
-									<ToggleControl
-										label={ __( 'Hours', 'kadence-blocks' ) }
-										checked={ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].hours ? units[ 0 ].hours : true }
-										onChange={ value => saveUnits( { hours: value } ) }
-									/>
-									<ToggleControl
-										label={ __( 'Minutes', 'kadence-blocks' ) }
-										checked={ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].minutes ? units[ 0 ].minutes : true }
-										onChange={ value => saveUnits( { minutes: value } ) }
-									/>
-									<ToggleControl
-										label={ __( 'Seconds', 'kadence-blocks' ) }
-										checked={ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].seconds ? units[ 0 ].seconds : true }
-										onChange={ value => saveUnits( { seconds: value } ) }
-									/>
-								</PanelBody>
+								{ 'date' === countdownType && (
+									<Fragment>
+										<DateTimePicker
+											currentDate={ ( ! date ? undefined : date ) }
+											onChange={ value => {
+												saveDate( value );
+											} }
+											is12Hour={ is12HourTime }
+											help={ __( 'Date set according to your sites timezone', 'kadence-blocks' ) }
+										/>
+									</Fragment>
+								) }
 							</Panel>
+							<PanelBody
+								title={ __( 'Countdown Display', 'kadence-blocks' ) }
+								initialOpen={ false }
+							>
+								<ToggleControl
+									label={ __( 'Display Countdown', 'kadence-blocks' ) }
+									checked={ enableTimer }
+									onChange={ value => setAttributes( { enableTimer: value } ) }
+								/>
+								{ enableTimer && (
+									<Fragment>
+										<ResponsiveAlignControls
+											label={ __( 'Countdown Alignment', 'kadence-blocks' ) }
+											value={ ( undefined !== counterAlign && undefined !== counterAlign[0] ? counterAlign[0] : '' ) }
+											mobileValue={ ( undefined !== counterAlign && undefined !== counterAlign[1] ? counterAlign[1] : '' ) }
+											tabletValue={ ( undefined !== counterAlign && undefined !== counterAlign[2] ? counterAlign[2] : '' ) }
+											onChange={ ( nextAlign ) => setAttributes( { counterAlign: nextAlign } ) }
+											onChangeTablet={ ( nextAlign ) => setAttributes( { counterAlign: nextAlign } ) }
+											onChangeMobile={ ( nextAlign ) => setAttributes( { counterAlign: nextAlign } ) }
+										/>
+										<ToggleControl
+											label={ __( 'Display Days Unit', 'kadence-blocks' ) }
+											checked={ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].days ? units[ 0 ].days : true }
+											onChange={ value => saveUnits( { days: value } ) }
+										/>
+										{ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].days && ! units[ 0 ].days && (
+											<Fragment>
+												<ToggleControl
+													label={ __( 'Hours', 'kadence-blocks' ) }
+													checked={ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].hours ? units[ 0 ].hours : true }
+													onChange={ value => saveUnits( { hours: value } ) }
+												/>
+												{ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].hours && ! units[ 0 ].hours && (
+													<Fragment>
+														<ToggleControl
+															label={ __( 'Minutes', 'kadence-blocks' ) }
+															checked={ undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].minutes ? units[ 0 ].minutes : true }
+															onChange={ value => saveUnits( { minutes: value } ) }
+														/>
+													</Fragment>
+												) }
+											</Fragment>
+										) }
+									</Fragment>
+								) }
+							</PanelBody>
 							<PanelBody
 								title={ __( 'Container Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -515,7 +561,7 @@ class KadenceCountdown extends Component {
 				) }
 				<InnerBlocks
 					templateLock='all'
-					template={ COUNTDOWN_TEMPLATE }
+					template={ ! enableTimer ? COUNTDOWN_NO_TIMER : COUNTDOWN_TEMPLATE }
 				/>
 			</div>
 		);

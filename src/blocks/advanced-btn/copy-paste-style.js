@@ -169,6 +169,24 @@ class ButtonStyleCopyPaste extends Component {
 				if ( blockAttributes.btns[ buttonIndex ].mobileGap ) {
 					copyStyles.btn[ 0 ].mobileGap = blockAttributes.btns[ buttonIndex ].mobileGap;
 				}
+				if ( blockAttributes.btns[ buttonIndex ].inheritStyles ) {
+					copyStyles.btn[ 0 ].inheritStyles = blockAttributes.btns[ buttonIndex ].inheritStyles;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].iconSize ) {
+					copyStyles.btn[ 0 ].iconSize = blockAttributes.btns[ buttonIndex ].iconSize;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].iconPadding ) {
+					copyStyles.btn[ 0 ].iconPadding = blockAttributes.btns[ buttonIndex ].iconPadding;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].iconTabletPadding ) {
+					copyStyles.btn[ 0 ].iconTabletPadding = blockAttributes.btns[ buttonIndex ].iconTabletPadding;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].iconMobilePadding ) {
+					copyStyles.btn[ 0 ].iconMobilePadding = blockAttributes.btns[ buttonIndex ].iconMobilePadding;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].onlyIcon ) {
+					copyStyles.btn[ 0 ].onlyIcon = blockAttributes.btns[ buttonIndex ].onlyIcon;
+				}
 			}
 			if ( blockAttributes.letterSpacing ) {
 				copyStyles.letterSpacing = blockAttributes.letterSpacing;

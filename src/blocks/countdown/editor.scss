@@ -7,3 +7,26 @@
  .wp-block[data-type="kadence/countdown-timer"] {
     pointer-events: none;
 }
+.kb-countdown-timer {
+    display: flex;
+	.kb-countdown-date-item {
+		justify-content: center;
+		display: flex;
+		align-items: flex-end;
+		padding-right: 0.6em;
+		line-height: 1.4em;
+	}
+	.kb-countdown-label {
+		font-size: 0.8em;
+		display:flex;
+		justify-content: flex-start;
+		flex: 1;
+	}
+	.kb-countdown-number {
+		display:flex;
+		flex: 1;
+		font-size: 1.4em;
+		justify-content: center;
+		padding-right: 0.2em;
+	}
+}

@@ -4,6 +4,45 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kb-small-responsive-control .kb-small-responsive-options {
+    margin-bottom: 10px;
+    .kb-responsive-btn {
+        background: transparent;
+        border: 0;
+        height: auto;
+        border-bottom: 0;
+        padding: 2px 4px;
+        margin-bottom: 0;
+        outline: 0;
+        color: #A0AEC0;
+        width: auto;
+        font-size: 10px;
+        box-shadow: none;
+        &.is-active {
+            color: var( --wp-admin-theme-color, #007cba );
+            background: transparent;
+        }
+        .dashicon {
+            width: 15px;
+            height: 15px;
+            font-size: 15px;
+        }
+    }
+}
+
+.kb-small-responsive-control .kb-small-responsive-options .kb-responsive-btn {
+    background: transparent;
+    border: 0;
+    height: auto;
+    border-bottom: 0;
+    padding: 2px 4px;
+    margin-bottom: 0;
+    outline: 0;
+    color: #A0AEC0;
+    width: auto;
+    font-size: 10px;
+    box-shadow: none;
+}
  .components-button-group.kb-button-global-styles.kt-style-btn-group {
     width: 100%;
     text-align: center;
@@ -487,4 +526,34 @@
 }
 .wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .kt-button {
     justify-content: center;
+}
+.kb-btn-only-icon .kt-button-text {
+    display:none;
+}
+.kb-btn-only-icon .kt-btn-svg-icon {
+    padding: 0 !important;
+}
+#start-resizable-editor-section {
+    display: none;
+}
+
+/* add all responsive styles here */
+@media (max-width: 1024px) {
+    .kb-btn-tablet-only-icon .kt-button-text {
+        display:none;
+    }
+    .kb-btn-tablet-only-icon .kt-btn-svg-icon {
+        padding: 0 !important;
+    }
+}
+@media (max-width: 767px) {
+    .kb-btn-mobile-only-icon .kt-button-text {
+        display:none;
+    }
+    .kb-btn-mobile-only-icon .kt-btn-svg-icon {
+        padding: 0 !important;
+    }
+}
+#end-resizable-editor-section {
+    display: none;
 }

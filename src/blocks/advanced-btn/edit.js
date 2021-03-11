@@ -22,6 +22,7 @@ import flow from 'lodash/flow';
 import filter from 'lodash/filter';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
@@ -94,6 +95,7 @@ class KadenceAdvancedButton extends Component {
 			selectedButton: null,
 			btnLink: false,
 			marginControl: 'individual',
+			iconPaddingControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
@@ -372,6 +374,21 @@ class KadenceAdvancedButton extends Component {
 			//const ariaLabel = sprintf( __( 'Button %1$d of %2$d', 'kadence-blocks' ), ( index + 1 ), btns.length );
 			const ariaLabel =  __( 'Button', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' );
 			const moveable = ( index === 0 && ( ( index + 1 ) === btns.length ) ? false : true );
+			const btnClassName = classnames( {
+				'kt-button': true,
+				[ `kt-button--${ index }` ]: true,
+				[ `kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) }` ]: true,
+				[ `kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) }` ]: true,
+				[ `kb-btn-global-${ btns[ index ].inheritStyles }` ]: btns[ index ].inheritStyles,
+				'wp-block-button__link': btns[ index ].inheritStyles && 'inherit' === btns[ index ].inheritStyles,
+				[ `kb-btn-only-icon` ]: ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[0] ),
+				[ `kb-btn-tablet-only-icon` ]:( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[1] ),
+				[ `kb-btn-mobile-only-icon` ]: ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[2] ),
+			} );
+			const topIconPadding = ( btns[ index ].icon ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[0] && '' !== btns[ index ].iconPadding[0] ? btns[ index ].iconPadding[0] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[0] && '' !== btns[ index ].iconTabletPadding[0] ? btns[ index ].iconTabletPadding[0] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[0] && '' !== btns[ index ].iconMobilePadding[0] ? btns[ index ].iconMobilePadding[0] : '' ) ) : '' );
+			const rightIconPadding = ( btns[ index ].icon ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[1] && '' !== btns[ index ].iconPadding[1] ? btns[ index ].iconPadding[1] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[1] && '' !== btns[ index ].iconTabletPadding[1] ? btns[ index ].iconTabletPadding[1] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[1] && '' !== btns[ index ].iconMobilePadding[1] ? btns[ index ].iconMobilePadding[1] : '' ) ) : '' );
+			const bottomIconPadding = ( btns[ index ].icon ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[2] && '' !== btns[ index ].iconPadding[2] ? btns[ index ].iconPadding[2] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[2] && '' !== btns[ index ].iconTabletPadding[2] ? btns[ index ].iconTabletPadding[2] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[2] && '' !== btns[ index ].iconMobilePadding[2] ? btns[ index ].iconMobilePadding[2] : '' ) ) : '' );
+			const leftIconPadding = ( btns[ index ].icon ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[3] && '' !== btns[ index ].iconPadding[3] ? btns[ index ].iconPadding[3] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[3] && '' !== btns[ index ].iconTabletPadding[3] ? btns[ index ].iconTabletPadding[3] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[3] && '' !== btns[ index ].iconMobilePadding[3] ? btns[ index ].iconMobilePadding[3] : '' ) ) : '' );
 			return (
 				<div
 					className={ fieldClassName }
@@ -392,7 +409,7 @@ class KadenceAdvancedButton extends Component {
 					} }
 				>
 					<span className={ `kt-button-wrap kt-btn-${ index }-action kt-btn-svg-show-${ ( ! btns[ index ].iconHover ? 'always' : 'hover' ) }` }>
-						<span className={ `kt-button kt-button-${ index } kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) } kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) }${ ( btns[ index ].inheritStyles ? ' kb-btn-global-' + btns[ index ].inheritStyles : '' ) }${ ( btns[ index ].inheritStyles && 'inherit' === btns[ index ].inheritStyles ? ' wp-block-button__link' : '' ) }` } style={ {
+						<span className={ btnClassName } style={ {
 							background: ( undefined !== btnbg ? btnbg : undefined ),
 							color: ( undefined !== btns[ index ].color ? KadenceColorOutput( btns[ index ].color ) : undefined ),
 							fontSize: ( undefined !== btns[ index ].size ? this.getPreviewSize( this.props.getPreviewDevice, btns[ index ].size, ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ), ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) ) + 'px' : undefined ),
@@ -412,7 +429,12 @@ class KadenceAdvancedButton extends Component {
 							boxShadow: ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] && btns[ index ].boxShadow[ 0 ] ? ( undefined !== btns[ index ].boxShadow[ 7 ] && btns[ index ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ), ( undefined !== btns[ index ].boxShadow[ 2 ] ? btns[ index ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 						} } >
 							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } style={ {
+									paddingTop: ( topIconPadding ? topIconPadding + 'px' : undefined ),
+									paddingRight: ( rightIconPadding ? rightIconPadding + 'px' : undefined ),
+									paddingBottom: ( bottomIconPadding ? bottomIconPadding + 'px' : undefined ),
+									paddingLeft: ( leftIconPadding ? leftIconPadding + 'px' : undefined ),
+								} } />
 							) }
 							<RichText
 								tagName="div"
@@ -439,7 +461,12 @@ class KadenceAdvancedButton extends Component {
 								keepPlaceholderOnFocus
 							/>
 							{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } />
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } style={ {
+									paddingTop: ( topIconPadding ? topIconPadding + 'px' : undefined ),
+									paddingRight: ( rightIconPadding ? rightIconPadding + 'px' : undefined ),
+									paddingBottom: ( bottomIconPadding ? bottomIconPadding + 'px' : undefined ),
+									paddingLeft: ( leftIconPadding ? leftIconPadding + 'px' : undefined ),
+								} } />
 							) }
 						</span>
 					</span>
@@ -1033,6 +1060,42 @@ class KadenceAdvancedButton extends Component {
 									} }
 								/>
 							</div>
+							<SmallResponsiveControl
+								label={ __( 'Show Only Icon', 'kadence-blocks' ) }
+								desktopChildren={ <ToggleControl
+									label={ __( 'Show only Icon', 'kadence-blocks' ) }
+									checked={ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ) }
+									onChange={ ( value ) => this.saveArrayUpdate( { onlyIcon: [ value, ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[1] ? btns[ index ].onlyIcon[1] : '' ), ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[2] ? btns[ index ].onlyIcon[2] : '' ) ] }, index ) }
+								/> }
+								tabletChildren={ <ToggleControl
+									label={  __( 'Show only Icon', 'kadence-blocks' ) }
+									disabled={ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ) }
+									checked={ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[1] ? btns[ index ].onlyIcon[1] : ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ) ) }
+									onChange={ ( value ) => this.saveArrayUpdate( { onlyIcon: [ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ), value, ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[2] ? btns[ index ].onlyIcon[2] : '' ) ] }, index ) }
+								/> }
+								mobileChildren={ <ToggleControl
+									label={  __( 'Show only Icon', 'kadence-blocks' ) }
+									disabled={ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[1] && '' !== btns[ index ].onlyIcon[1] ? btns[ index ].onlyIcon[1] : ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ) ) }
+									checked={ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[2] && '' !== btns[ index ].onlyIcon[2] ? btns[ index ].onlyIcon[2] : ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[1] ? btns[ index ].onlyIcon[1] : ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ) ) ) }
+									onChange={ ( value ) => this.saveArrayUpdate( { onlyIcon: [ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ), ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[1] ? btns[ index ].onlyIcon[1] : '' ), value ] }, index ) }
+								/> }
+							/>
+							<ResponsiveMeasuremenuControls
+								label={ __( 'Icon Padding', 'kadence-blocks' ) }
+								value={ undefined !== btns[ index ].iconPadding ? btns[ index ].iconPadding : [ '', '', '', '' ] }
+								control={ this.state.iconPaddingControl }
+								tabletValue={ undefined !== btns[ index ].iconTabletPadding ? btns[ index ].iconTabletPadding : [ '', '', '', '' ] }
+								mobileValue={ undefined !== btns[ index ].iconMobilePadding ? btns[ index ].iconMobilePadding : [ '', '', '', '' ] }
+								onChange={ ( value ) => this.saveArrayUpdate( { iconPadding: value }, index ) }
+								onChangeTablet={ ( value ) => this.saveArrayUpdate( { iconTabletPadding: value }, index ) }
+								onChangeMobile={ ( value ) => this.saveArrayUpdate( { iconMobilePadding: value }, index ) }
+								onChangeControl={ ( value ) => this.setState( { iconPaddingControl: value } ) }
+								min={ 0 }
+								max={ 200 }
+								step={ 1 }
+								unit={ 'px' }
+								units={ [ 'px' ] }
+							/>
 							<SelectControl
 								label={ __( 'Icon Location', 'kadence-blocks' ) }
 								value={ btns[ index ].iconSide }
@@ -1697,6 +1760,11 @@ class KadenceAdvancedButton extends Component {
 														tabletGap: ( newbtns[ 0 ].tabletGap ? newbtns[ 0 ].tabletGap : '' ),
 														mobileGap: ( newbtns[ 0 ].mobileGap ? newbtns[ 0 ].mobileGap : '' ),
 														inheritStyles: ( newbtns[ 0 ].inheritStyles ? newbtns[ 0 ].inheritStyles : '' ),
+														iconSize: ( newbtns[ 0 ].iconSize ? newbtns[ 0 ].iconSize : [ '', '', '' ] ),
+														iconPadding: ( newbtns[ 0 ].iconPadding ? newbtns[ 0 ].iconPadding : [ '', '', '', '' ] ),
+														iconTabletPadding: ( newbtns[ 0 ].iconTabletPadding ? newbtns[ 0 ].iconTabletPadding : [ '', '', '', '' ] ),
+														iconMobilePadding: ( newbtns[ 0 ].iconMobilePadding ? newbtns[ 0 ].iconMobilePadding : [ '', '', '', '' ] ),
+														onlyIcon: ( newbtns[ 0 ].onlyIcon ? newbtns[ 0 ].onlyIcon : [ false, '', '' ] ),
 													} );
 													setAttributes( { btns: newbtns } );
 													this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
@@ -1806,10 +1874,10 @@ class KadenceAdvancedButton extends Component {
 									>
 										<ResponsiveMeasuremenuControls
 											label={ __( 'Margin', 'kadence-blocks' ) }
-											value={ margin[ 0 ].desk }
+											value={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ] }
 											control={ this.state.marginControl }
-											tabletValue={ margin[ 0 ].tablet }
-											mobileValue={ margin[ 0 ].mobile }
+											tabletValue={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet ? margin[ 0 ].tablet : [ '', '', '', '' ] }
+											mobileValue={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile ? margin[ 0 ].mobile : [ '', '', '', '' ] }
 											onChange={ ( value ) => saveMargin( { desk: value } ) }
 											onChangeTablet={ ( value ) => saveMargin( { tablet: value } ) }
 											onChangeMobile={ ( value ) => saveMargin( { mobile: value } ) }

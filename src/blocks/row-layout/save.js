@@ -110,9 +110,9 @@ class KadenceRowLayoutSave extends Component {
 		} else if ( 'littrii' === topSep ) {
 			topSVGDivider = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
 		} else if ( 'threelevels' === topSep ) {
-			topSVGDivider = <Fragment><path style={ { opacity: 0.33 } } d="M1000 5L0 100V0h1000v5z"></path><path style={ { opacity: 0.66 } } d="M1000 5L0 72.944V0h1000v5z"></path><path d="M1000 5L0 45.887V0h1000v5z"></path></Fragment>;
+			topSVGDivider = <Fragment><path style={ { opacity: 0.33 } } d="M0 95L1000 0v100H0v-5z"></path><path style={ { opacity: 0.66 } } d="M0 95l1000-67.944V100H0v-5z"></path><path d="M0 95l1000-40.887V100H0v-5z"></path></Fragment>;
 		} else if ( 'threelevelsi' === topSep ) {
-			topSVGDivider = <Fragment><path style={ { opacity: 0.33 } } d="M0 5l1000 95V0H0v5z"></path><path style={ { opacity: 0.66 } } d="M0 5l1000 67.944V0H0v5z"></path><path d="M0 5l1000 40.887V0H0v5z"></path></Fragment>;
+			topSVGDivider = <Fragment><path style={ { opacity: 0.33 } } d="M1000 95L0 0v100h1000v-5z"></path><path style={ { opacity: 0.66 } } d="M1000 95L0 27.056V100h1000v-5z"></path><path d="M1000 95L0 54.113V100h1000v-5z"></path></Fragment>;
 		}
 		const firstColumnClass = ( firstColumnWidth && ( 2 === columns || 3 === columns ) ? ' kt-custom-first-width-' + firstColumnWidth : '' );
 		const secondColumnClass = ( secondColumnWidth && ( 2 === columns || 3 === columns ) ? ' kt-custom-second-width-' + secondColumnWidth : '' );

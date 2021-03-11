@@ -2138,9 +2138,9 @@
 		"ec": 1,
 		"ft": 4,
 		"ma": 0,
-		"oA": 0,
+		"oA": 1,
 		"oAP": "/src/blocks/countdown/editor.css",
-		"oF": 0,
+		"oF": 1,
 		"oS": 0,
 		"sct": 1
 		},
@@ -3465,6 +3465,17 @@
 		"sC": 0,
 		"tS": 0
 		},
+	"/src/components/responsive/small-responsive-control.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/components/responsive/small-responsive-control-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
+		},
 	"/src/components/terms/select-terms-control.js": {
 		"bF": 0,
 		"ft": 64,
@@ -4141,6 +4152,17 @@
 		"oF": 1,
 		"oS": 0,
 		"sct": 1
+		},
+	"/src/plugins/kadence-control-plugin.js": {
+		"bF": 0,
+		"ft": 64,
+		"ma": 0,
+		"mi": 1,
+		"oA": 1,
+		"oAP": "/src/plugins/kadence-control-plugin-min.js",
+		"oF": 0,
+		"sC": 0,
+		"tS": 0
 		},
 	"/src/plugins/kadence-control.js": {
 		"bF": 0,

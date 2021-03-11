@@ -1,8 +1,0 @@
-/**
- * #.# Editor Styles
- *
- * CSS for just Backend enqueued after style.scss
- * which makes it higher in priority.
- */
-.wp-block[data-type="kadence/countdown-timer"] {
-  pointer-events: none; }

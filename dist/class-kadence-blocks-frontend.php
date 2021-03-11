@@ -3799,6 +3799,89 @@ class Kadence_Blocks_Frontend {
 		$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '@media (min-width: 768px) and (max-width: 1024px)' );
 		$media_query['desktop']       = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		//$css = '';
+		// Wrapper Padding
+		if ( isset( $attr['wrapperPadding'] ) && is_array( $attr['wrapperPadding'] ) ) {
+			if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] ) {
+				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
+				if ( isset( $attr['wrapperPadding'][0] ) && is_numeric( $attr['wrapperPadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['wrapperPadding'][0] . 'px' );
+				}
+				if ( isset( $attr['wrapperPadding'][2] ) && is_numeric( $attr['wrapperPadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['wrapperPadding'][2] . 'px' );
+				}
+			} else {
+				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
+				if ( isset( $attr['wrapperPadding'][0] ) && is_numeric( $attr['wrapperPadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['wrapperPadding'][0] . 'px' );
+				}
+				if ( isset( $attr['wrapperPadding'][2] ) && is_numeric( $attr['wrapperPadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['wrapperPadding'][2] . 'px' );
+				}
+			}
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
+			if ( isset( $attr['wrapperPadding'][1] ) && is_numeric( $attr['wrapperPadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['wrapperPadding'][1] . 'px' );
+			}
+			if ( isset( $attr['wrapperPadding'][3] ) && is_numeric( $attr['wrapperPadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['wrapperPadding'][3] . 'px' );
+			}
+		}
+		if ( isset( $attr['wrapperTabletPadding'] ) && is_array( $attr['wrapperTabletPadding'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] ) {
+				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
+				if ( isset( $attr['wrapperTabletPadding'][0] ) && is_numeric( $attr['wrapperTabletPadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['wrapperTabletPadding'][0] . 'px' );
+				}
+				if ( isset( $attr['wrapperTabletPadding'][2] ) && is_numeric( $attr['wrapperTabletPadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['wrapperTabletPadding'][2] . 'px' );
+				}
+			} else {
+				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
+				if ( isset( $attr['wrapperTabletPadding'][0] ) && is_numeric( $attr['wrapperTabletPadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['wrapperTabletPadding'][0] . 'px' );
+				}
+				if ( isset( $attr['wrapperTabletPadding'][2] ) && is_numeric( $attr['wrapperTabletPadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['wrapperTabletPadding'][2] . 'px' );
+				}
+			}
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
+			if ( isset( $attr['wrapperTabletPadding'][1] ) && is_numeric( $attr['wrapperTabletPadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['wrapperTabletPadding'][1] . 'px' );
+			}
+			if ( isset( $attr['wrapperTabletPadding'][3] ) && is_numeric( $attr['wrapperTabletPadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['wrapperTabletPadding'][3] . 'px' );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['wrapperMobilePadding'] ) && is_array( $attr['wrapperMobilePadding'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] ) {
+				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
+				if ( isset( $attr['wrapperMobilePadding'][0] ) && is_numeric( $attr['wrapperMobilePadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['wrapperMobilePadding'][0] . 'px' );
+				}
+				if ( isset( $attr['wrapperMobilePadding'][2] ) && is_numeric( $attr['wrapperMobilePadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['wrapperMobilePadding'][2] . 'px' );
+				}
+			} else {
+				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
+				if ( isset( $attr['wrapperMobilePadding'][0] ) && is_numeric( $attr['wrapperMobilePadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['wrapperMobilePadding'][0] . 'px' );
+				}
+				if ( isset( $attr['wrapperMobilePadding'][2] ) && is_numeric( $attr['wrapperMobilePadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['wrapperMobilePadding'][2] . 'px' );
+				}
+			}
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
+			if ( isset( $attr['wrapperMobilePadding'][1] ) && is_numeric( $attr['wrapperMobilePadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['wrapperMobilePadding'][1] . 'px' );
+			}
+			if ( isset( $attr['wrapperMobilePadding'][3] ) && is_numeric( $attr['wrapperMobilePadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['wrapperMobilePadding'][3] . 'px' );
+			}
+			$css->stop_media_query();
+		}
 		if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] && isset( $attr['columnGap'] ) && ! empty( $attr['columnGap'] ) ) {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
 			$css->add_property( 'padding', '0 ' . ( $attr['columnGap'] / 2 ) . 'px' );
@@ -5900,6 +5983,58 @@ class Kadence_Blocks_Frontend {
 							$css->add_property( 'padding-bottom', $btnvalue['responsivePaddingBT'][1] . 'px' );
 						}
 						$css->stop_media_query();
+					}
+					// Icons CSS.
+					if ( isset( $btnvalue['icon'] ) && ! empty( $btnvalue['icon'] ) ) {
+						if ( isset( $btnvalue['iconPadding'] ) && is_array( $btnvalue['iconPadding'] ) ) {
+							$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
+							if ( isset( $btnvalue['iconPadding'][0] ) && is_numeric( $btnvalue['iconPadding'][0] ) ) {
+								$css->add_property( 'padding-top', $btnvalue['iconPadding'][0] . 'px' );
+							}
+							if ( isset( $btnvalue['iconPadding'][1] ) && is_numeric( $btnvalue['iconPadding'][1] ) ) {
+								$css->add_property( 'padding-right', $btnvalue['iconPadding'][1] . 'px' );
+							}
+							if ( isset( $btnvalue['iconPadding'][2] ) && is_numeric( $btnvalue['iconPadding'][2] ) ) {
+								$css->add_property( 'padding-bottom', $btnvalue['iconPadding'][2] . 'px' );
+							}
+							if ( isset( $btnvalue['iconPadding'][3] ) && is_numeric( $btnvalue['iconPadding'][3] ) ) {
+								$css->add_property( 'padding-left', $btnvalue['iconPadding'][3] . 'px' );
+							}
+						}
+						if ( isset( $btnvalue['iconTabletPadding'] ) && is_array( $btnvalue['iconTabletPadding'] ) ) {
+							$css->start_media_query( $media_query['tablet'] );
+							$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
+							if ( isset( $btnvalue['iconTabletPadding'][0] ) && is_numeric( $btnvalue['iconTabletPadding'][0] ) ) {
+								$css->add_property( 'padding-top', $btnvalue['iconTabletPadding'][0] . 'px' );
+							}
+							if ( isset( $btnvalue['iconTabletPadding'][1] ) && is_numeric( $btnvalue['iconTabletPadding'][1] ) ) {
+								$css->add_property( 'padding-right', $btnvalue['iconTabletPadding'][1] . 'px' );
+							}
+							if ( isset( $btnvalue['iconTabletPadding'][2] ) && is_numeric( $btnvalue['iconTabletPadding'][2] ) ) {
+								$css->add_property( 'padding-bottom', $btnvalue['iconTabletPadding'][2] . 'px' );
+							}
+							if ( isset( $btnvalue['iconTabletPadding'][3] ) && is_numeric( $btnvalue['iconTabletPadding'][3] ) ) {
+								$css->add_property( 'padding-left', $btnvalue['iconTabletPadding'][3] . 'px' );
+							}
+							$css->stop_media_query();
+						}
+						if ( isset( $btnvalue['iconMobilePadding'] ) && is_array( $btnvalue['iconMobilePadding'] ) ) {
+							$css->start_media_query( $media_query['mobile'] );
+							$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
+							if ( isset( $btnvalue['iconMobilePadding'][0] ) && is_numeric( $btnvalue['iconMobilePadding'][0] ) ) {
+								$css->add_property( 'padding-top', $btnvalue['iconMobilePadding'][0] . 'px' );
+							}
+							if ( isset( $btnvalue['iconMobilePadding'][1] ) && is_numeric( $btnvalue['iconMobilePadding'][1] ) ) {
+								$css->add_property( 'padding-right', $btnvalue['iconMobilePadding'][1] . 'px' );
+							}
+							if ( isset( $btnvalue['iconMobilePadding'][2] ) && is_numeric( $btnvalue['iconMobilePadding'][2] ) ) {
+								$css->add_property( 'padding-bottom', $btnvalue['iconMobilePadding'][2] . 'px' );
+							}
+							if ( isset( $btnvalue['iconMobilePadding'][3] ) && is_numeric( $btnvalue['iconMobilePadding'][3] ) ) {
+								$css->add_property( 'padding-left', $btnvalue['iconMobilePadding'][3] . 'px' );
+							}
+							$css->stop_media_query();
+						}
 					}
 				}
 			}

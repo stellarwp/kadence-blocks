@@ -577,8 +577,8 @@ class KadenceRowLayout extends Component {
 		topSVGDivider.mtns = <Fragment><path d="M1000,50l-182.69,-45.286l-292.031,61.197l-190.875,-41.075l-143.748,28.794l-190.656,-23.63l0,70l1000,0l0,-50Z" style={ { opacity: 0.4 } } /><path d="M1000,57l-152.781,-22.589l-214.383,19.81l-159.318,-21.471l-177.44,25.875l-192.722,5.627l-103.356,-27.275l0,63.023l1000,0l0,-43Z" /></Fragment>;
 		topSVGDivider.littri = <path d="M500,2l25,98l-50,0l25,-98Z" />;
 		topSVGDivider.littrii = <path d="M1000,100l-1000,0l0,-100l475,0l25,98l25,-98l475,0l0,100Z" />;
-		topSVGDivider.threelevels = <Fragment><path style={ { opacity: 0.33 } } d="M1000 5L0 100V0h1000v5z"></path><path style={ { opacity: 0.66 } } d="M1000 5L0 72.944V0h1000v5z"></path><path d="M1000 5L0 45.887V0h1000v5z"></path></Fragment>;
-		topSVGDivider.threelevelsi = <Fragment><path style={ { opacity: 0.33 } } d="M0 5l1000 95V0H0v5z"></path><path style={ { opacity: 0.66 } } d="M0 5l1000 67.944V0H0v5z"></path><path d="M0 5l1000 40.887V0H0v5z"></path></Fragment>;
+		topSVGDivider.threelevels = <Fragment><path style={ { opacity: 0.33 } } d="M0 95L1000 0v100H0v-5z"></path><path style={ { opacity: 0.66 } } d="M0 95l1000-67.944V100H0v-5z"></path><path d="M0 95l1000-40.887V100H0v-5z"></path></Fragment>;
+		topSVGDivider.threelevelsi = <Fragment><path style={ { opacity: 0.33 } } d="M1000 95L0 0v100h1000v-5z"></path><path style={ { opacity: 0.66 } } d="M1000 95L0 27.056V100h1000v-5z"></path><path d="M1000 95L0 54.113V100h1000v-5z"></path></Fragment>;
 		const renderTopSVGDivider = svg => (
 			<svg className="top-icon" viewBox="0 0 1000 100" preserveAspectRatio="none" style={ { fill: '#000000' } }>
 				{ topSVGDivider[ svg ] }
@@ -2971,6 +2971,7 @@ class KadenceRowLayout extends Component {
 						'threelevels',
 						'threelevelsi',
 					] }
+					iconsPerPage={ 30 }
 					value={ ( topSep === 'none' ? '' : topSep ) }
 					onChange={ value => setAttributes( { topSep: value } ) }
 					appendTo="body"
@@ -3050,6 +3051,7 @@ class KadenceRowLayout extends Component {
 						'threelevels',
 						'threelevelsi',
 					] }
+					iconsPerPage={ 30 }
 					value={ ( bottomSep === 'none' ? '' : bottomSep ) }
 					onChange={ value => setAttributes( { bottomSep: value } ) }
 					appendTo="body"

@@ -28,6 +28,7 @@ import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 /**
  * Internal block libraries
  */
@@ -227,7 +228,7 @@ class KadenceTestimonials extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, titleMinHeight, containerMinHeight, containerVAlign, contentMinHeight, displayContent, contentFont, displayName, displayMedia, nameFont, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, occupationFont, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, columnControl, displayIcon, iconStyles }, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, titleMinHeight, containerMinHeight, containerVAlign, contentMinHeight, displayContent, contentFont, displayName, displayMedia, nameFont, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, occupationFont, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, columnControl, displayIcon, iconStyles, wrapperPaddingType, wrapperPadding, wrapperTabletPadding, wrapperMobilePadding }, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, titlePaddingControl, titleMarginControl, ratingMarginControl, iconBorderControl, iconPaddingControl, iconMarginControl } = this.state;
 		const onColumnChange = ( value ) => {
 			let columnarray = [];
@@ -278,9 +279,16 @@ class KadenceTestimonials extends Component {
 			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
 			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
 		];
+		const paddingMin = ( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0 : 0 );
+		const paddingMax = ( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 12 : 200 );
+		const paddingStep = ( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0.1 : 1 );
 		const previewContainerMinHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMinHeight && undefined !== containerMinHeight[ 0 ] ? containerMinHeight[ 0 ] : '' ), ( undefined !== containerMinHeight && undefined !== containerMinHeight[ 1 ] ? containerMinHeight[ 1 ] : '' ), ( undefined !== containerMinHeight && undefined !== containerMinHeight[ 2 ] ? containerMinHeight[ 2 ] : '' ) );
 		const previewTitleMinHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] : '' ), ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ? titleMinHeight[ 1 ] : '' ), ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ? titleMinHeight[ 2 ] : '' ) );
 		const previewContentMinHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== contentMinHeight && undefined !== contentMinHeight[ 0 ] ? contentMinHeight[ 0 ] : '' ), ( undefined !== contentMinHeight && undefined !== contentMinHeight[ 1 ] ? contentMinHeight[ 1 ] : '' ), ( undefined !== contentMinHeight && undefined !== contentMinHeight[ 2 ] ? contentMinHeight[ 2 ] : '' ) );
+		const previewWrapperPaddingTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== wrapperPadding && undefined !== wrapperPadding[ 0 ] ? wrapperPadding[ 0 ] : '' ), ( undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[ 0 ] ? wrapperTabletPadding[ 0 ] : '' ), ( undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[ 0 ] ? wrapperMobilePadding[ 0 ] : '' ) );
+		const previewWrapperPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== wrapperPadding && undefined !== wrapperPadding[ 1 ] ? wrapperPadding[ 1 ] : '' ), ( undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[ 1 ] ? wrapperTabletPadding[ 1 ] : '' ), ( undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[ 1 ] ? wrapperMobilePadding[ 1 ] : '' ) );
+		const previewWrapperPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== wrapperPadding && undefined !== wrapperPadding[ 2 ] ? wrapperPadding[ 2 ] : '' ), ( undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[ 2 ] ? wrapperTabletPadding[ 2 ] : '' ), ( undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[ 2 ] ? wrapperMobilePadding[ 2 ] : '' ) );
+		const previewWrapperPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== wrapperPadding && undefined !== wrapperPadding[ 3 ] ? wrapperPadding[ 3 ] : '' ), ( undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[ 3 ] ? wrapperTabletPadding[ 3 ] : '' ), ( undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[ 3 ] ? wrapperMobilePadding[ 3 ] : '' ) );
 		const columnControls = (
 			<Fragment>
 				<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type' ) }>
@@ -788,13 +796,17 @@ class KadenceTestimonials extends Component {
 			padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
 			maxWidth: ( 'bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px' ),
 			minHeight: ( 'bubble' === style || 'inlineimage' === style || ! previewContainerMinHeight ? undefined : previewContainerMinHeight + 'px' ),
+			marginTop: layout && layout === 'carousel' && previewWrapperPaddingTop ? previewWrapperPaddingTop + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
+			marginBottom: layout && layout === 'carousel' && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
 		};
-		const renderTestimonialPreview = ( index ) => {
+		const renderTestimonialPreview = ( index, isCarousel = false ) => {
 			return (
 				<div className={ `kt-testimonial-item-wrap kt-testimonial-item-${ index }${ ( containerVAlign ? ' testimonial-valign-' + containerVAlign : '' ) }` } style={ ( 'bubble' !== style && 'inlineimage' !== style ? containerStyles : {
 					maxWidth: containerMaxWidth + 'px',
 					minHeight: ( previewContainerMinHeight ? previewContainerMinHeight + 'px' : undefined ),
 					paddingTop: ( displayIcon && iconStyles[ 0 ].icon && iconStyles[ 0 ].margin && iconStyles[ 0 ].margin[ 0 ] && ( iconStyles[ 0 ].margin[ 0 ] < 0 ) ? Math.abs( iconStyles[ 0 ].margin[ 0 ] ) + 'px' : undefined ),
+					marginTop: isCarousel && previewWrapperPaddingTop ? previewWrapperPaddingTop + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
+					marginBottom: isCarousel && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
 				} ) }>
 					{ itemsCount > 1 && (
 						<div className="kt-testimonial-item__move-menu">
@@ -1866,6 +1878,30 @@ class KadenceTestimonials extends Component {
 									) }
 								</PanelBody>
 							) }
+							{ this.showSettings( 'wrapperSettings' ) && (
+								<PanelBody
+									title={ __( 'Wrapper Padding', 'kadence-blocks' ) }
+									initialOpen={ false }
+								>
+									<ResponsiveMeasuremenuControls
+										label={ __( 'Wrapper Padding', 'kadence-blocks' ) }
+										value={ wrapperPadding }
+										control={ this.state.wrapperPaddingControls }
+										tabletValue={ wrapperTabletPadding }
+										mobileValue={ wrapperMobilePadding }
+										onChange={ ( value ) => setAttributes( { wrapperPadding: value } ) }
+										onChangeTablet={ ( value ) => setAttributes( { wrapperTabletPadding: value } ) }
+										onChangeMobile={ ( value ) => setAttributes( { wrapperMobilePadding: value } ) }
+										onChangeControl={ ( value ) => this.setState( { wrapperPaddingControls: value } ) }
+										min={ paddingMin }
+										max={ paddingMax }
+										step={ paddingStep }
+										unit={ wrapperPaddingType }
+										units={ [ 'px', 'em', 'rem', '%' ] }
+										onUnit={ ( value ) => setAttributes( { wrapperPaddingType: value } ) }
+									/>
+								</PanelBody>
+							) }
 							<div className="kt-sidebar-settings-spacer"></div>
 							{ this.showSettings( 'individualSettings' ) && (
 								<PanelBody
@@ -1903,18 +1939,21 @@ class KadenceTestimonials extends Component {
 				{ ! this.state.showPreset && (
 					<Fragment>
 						{ layout && layout === 'carousel' && (
-							<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ dotStyle }` }>
+							<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ dotStyle }` } style={ {
+								paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
+								paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
+							} }>
 								{ itemsCount !== 1 && (
 									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } { ...sliderSettings }>
 										{ times( itemsCount, n =>
 											<div className="kt-blocks-testimonial-carousel-item" key={ n }>
-												{ renderTestimonialPreview( n ) }
+												{ renderTestimonialPreview( n, true ) }
 											</div>
 										) }
 									</Slider>
 								) }
 								{ itemsCount === 1 && (
-									times( itemsCount, n => renderTestimonialPreview( n ) )
+									times( itemsCount, n => renderTestimonialPreview( n, true ) )
 								) }
 							</div>
 						) }
@@ -1922,6 +1961,10 @@ class KadenceTestimonials extends Component {
 							<div className={ 'kt-testimonial-grid-wrap' } style={ {
 								'grid-row-gap': columnGap + 'px',
 								'grid-column-gap': columnGap + 'px',
+								paddingTop: previewWrapperPaddingTop ? previewWrapperPaddingTop + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
+								paddingRight: previewWrapperPaddingRight ? previewWrapperPaddingRight + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
+								paddingBottom: previewWrapperPaddingBottom ? previewWrapperPaddingBottom + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
+								paddingLeft: previewWrapperPaddingLeft ? previewWrapperPaddingLeft + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
 							} }>
 								{ times( itemsCount, n => renderTestimonialPreview( n ) ) }
 							</div>

@@ -6,6 +6,10 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	countdownType: {
+		type: 'string',
+		default: 'date',
+	},
 	date: {
 		type: 'string',
 		default: '',
@@ -184,6 +188,10 @@ const attributes = {
 	},
 	// Counter Align.
 	counterAlign: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
+	counterVAlign: {
 		type: 'array',
 		default: [ '', '', '' ],
 	},
