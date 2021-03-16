@@ -28,7 +28,11 @@ const attributes = {
 	},
 	expireAction: {
 		type: 'string',
-		default: 'message',
+		default: 'none',
+	},
+	redirectURL: {
+		type: 'string',
+		default: '',
 	},
 	evergreenHours: {
 		type: 'number',
@@ -49,15 +53,27 @@ const attributes = {
 			seconds: true,
 		} ],
 	},
-	layout: {
-		type: 'string',
-		default: 'left',
-	},
 	timerLayout: {
 		type: 'string',
-		default: 'inline',
+		default: 'block',
+	},
+	timeNumbers: {
+		type: 'bool',
+		default: false,
+	},
+	countdownDivider: {
+		type: 'bool',
+		default: false,
 	},
 	// Labels.
+	preLabel: {
+		type: 'string',
+		default: '',
+	},
+	postLabel: {
+		type: 'string',
+		default: '',
+	},
 	daysLabel: {
 		type: 'string',
 		default: '',
@@ -78,120 +94,137 @@ const attributes = {
 	numberColor: {
 		type: 'string',
 	},
-	numberSize: {
+	numberFont: {
 		type: 'array',
-		default: [ '', '', '' ],
+		default: [ {
+			size: [ '', '', '' ],
+			sizeType: 'px',
+			lineHeight: [ '', '', '' ],
+			lineType: 'px',
+			letterSpacing: [ '', '', '' ],
+			letterType: 'px',
+			textTransform: '',
+			family: '',
+			google: false,
+			style: '',
+			weight: '',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+		} ],
 	},
-	numberSizeType: {
-		type: 'string',
-		default: 'px',
-	},
-	numberLineHeight: {
-		type: 'array',
-		default: [ '', '', '' ],
-	},
-	numberLineType: {
-		type: 'string',
-		default: 'px',
-	},
-	numberLetterSpacing: {
-		type: 'array',
-		default: [ '', '', '' ],
-	},
-	numberLetterType: {
-		type: 'string',
-		default: 'px',
-	},
-	numberTypography: {
+	// Item.
+	itemBackground: {
 		type: 'string',
 		default: '',
 	},
-	numberGoogleFont: {
-		type: 'boolean',
-		default: false,
-	},
-	numberLoadGoogleFont: {
-		type: 'boolean',
-		default: true,
-	},
-	numberFontSubset: {
+	itemBorder: {
 		type: 'string',
 		default: '',
 	},
-	numberFontVariant: {
-		type: 'string',
-		default: '',
+	itemBorderWidth: {
+		type: 'array',
+		default: [ 0, 0, 0, 0 ],
 	},
-	numberFontWeight: {
-		type: 'string',
-		default: 'regular',
+	itemTabletBorderWidth: {
+		type: 'array',
+		default: [ '', '', '', '' ],
 	},
-	numberFontStyle: {
+	itemMobileBorderWidth: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	itemBorderRadius: {
+		type: 'array',
+		default: [ 0, 0, 0, 0 ],
+	},
+	itemPaddingType: {
 		type: 'string',
-		default: 'normal',
+		default: 'px',
+	},
+	itemPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	itemTabletPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	itemMobilePadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
 	},
 	// Label settings.
 	labelColor: {
 		type: 'string',
 	},
-	labelSize: {
+	labelFont: {
 		type: 'array',
-		default: [ '', '', '' ],
+		default: [ {
+			size: [ '', '', '' ],
+			sizeType: 'px',
+			lineHeight: [ '', '', '' ],
+			lineType: 'px',
+			letterSpacing: [ '', '', '' ],
+			letterType: 'px',
+			textTransform: '',
+			family: '',
+			google: false,
+			style: '',
+			weight: '',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+		} ],
 	},
-	labelSizeType: {
+	// PreLabel settings.
+	preLabelColor: {
 		type: 'string',
-		default: 'px',
 	},
-	labelLineHeight: {
+	preLabelFont: {
 		type: 'array',
-		default: [ '', '', '' ],
+		default: [ {
+			size: [ '', '', '' ],
+			sizeType: 'px',
+			lineHeight: [ '', '', '' ],
+			lineType: 'px',
+			letterSpacing: [ '', '', '' ],
+			letterType: 'px',
+			textTransform: '',
+			family: '',
+			google: false,
+			style: '',
+			weight: '',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+		} ],
 	},
-	labelLineType: {
+	// PostLabel settings.
+	postLabelColor: {
 		type: 'string',
-		default: 'px',
 	},
-	labelLetterSpacing: {
+	postLabelFont: {
 		type: 'array',
-		default: [ '', '', '' ],
-	},
-	labelLetterType: {
-		type: 'string',
-		default: 'px',
-	},
-	labelTypography: {
-		type: 'string',
-		default: '',
-	},
-	labelGoogleFont: {
-		type: 'boolean',
-		default: false,
-	},
-	labelLoadGoogleFont: {
-		type: 'boolean',
-		default: true,
-	},
-	labelFontSubset: {
-		type: 'string',
-		default: '',
-	},
-	labelFontVariant: {
-		type: 'string',
-		default: '',
-	},
-	labelFontWeight: {
-		type: 'string',
-		default: 'regular',
-	},
-	labelFontStyle: {
-		type: 'string',
-		default: 'normal',
+		default: [ {
+			size: [ '', '', '' ],
+			sizeType: 'px',
+			lineHeight: [ '', '', '' ],
+			lineType: 'px',
+			letterSpacing: [ '', '', '' ],
+			letterType: 'px',
+			textTransform: '',
+			family: '',
+			google: false,
+			style: '',
+			weight: '',
+			variant: '',
+			subset: '',
+			loadGoogle: true,
+		} ],
 	},
 	// Counter Align.
 	counterAlign: {
-		type: 'array',
-		default: [ '', '', '' ],
-	},
-	counterVAlign: {
 		type: 'array',
 		default: [ '', '', '' ],
 	},
@@ -220,17 +253,6 @@ const attributes = {
 	background: {
 		type: 'string',
 		default: '',
-	},
-	backgroundImg: {
-		type: 'array',
-		default: [ {
-			bgImg: '',
-			bgImgID: '',
-			bgImgSize: 'cover',
-			bgImgPosition: 'center center',
-			bgImgAttachment: 'scroll',
-			bgImgRepeat: 'no-repeat',
-		} ],
 	},
 	// Padding.
 	paddingType: {

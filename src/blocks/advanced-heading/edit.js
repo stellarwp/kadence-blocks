@@ -16,7 +16,7 @@ import KadenceColorOutput from '../../kadence-color-output';
 import WebfontLoader from '../../fontloader';
 import TextShadowControl from '../../text-shadow-control';
 import KadenceRange from '../../components/range/range-control';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 
@@ -615,7 +615,7 @@ class KadenceAdvancedHeading extends Component {
 									textTransform={ markTextTransform }
 									onTextTransform={ ( value ) => setAttributes( { markTextTransform: value } ) }
 								/>
-								<ResponsiveMeasuremenuControls
+								<ResponsiveMeasurementControls
 									label={ __( 'Padding', 'kadence-blocks' ) }
 									value={ markPadding }
 									control={ this.state.markPaddingControls }
@@ -639,7 +639,7 @@ class KadenceAdvancedHeading extends Component {
 								title={ __( 'Spacing Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<ResponsiveMeasuremenuControls
+								<ResponsiveMeasurementControls
 									label={ __( 'Padding', 'kadence-blocks' ) }
 									value={ padding }
 									control={ this.state.paddingControl }
@@ -656,7 +656,7 @@ class KadenceAdvancedHeading extends Component {
 									units={ [ 'px', 'em', 'rem', '%' ] }
 									onUnit={ ( value ) => setAttributes( { paddingType: value } ) }
 								/>
-								<ResponsiveMeasuremenuControls
+								<ResponsiveMeasurementControls
 									label={ __( 'Margin', 'kadence-blocks' ) }
 									value={ [ ( undefined !== topMargin ? topMargin : '' ), ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== leftMargin ? leftMargin : '' ) ] }
 									control={ this.state.marginControl }

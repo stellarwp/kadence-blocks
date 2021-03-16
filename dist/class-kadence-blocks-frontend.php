@@ -224,14 +224,6 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-editor-css',
 			)
 		);
-		// register_block_type(
-		// 	'kadence/countdown',
-		// 	array(
-		// 		'render_callback' => array( $this, 'render_countdown_css' ),
-		// 		'editor_script'   => 'kadence-blocks-js',
-		// 		'editor_style'    => 'kadence-blocks-editor-css',
-		// 	)
-		// );
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 	}
 	/**
@@ -971,57 +963,6 @@ class Kadence_Blocks_Frontend {
 	 *
 	 * @param array $attributes the blocks attributes.
 	 */
-	public function render_countdown_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_countdown_render_block_attributes', $attributes );
-		if ( ! wp_style_is( 'kadence-blocks-countdown', 'enqueued' ) ) {
-			$this->enqueue_style( 'kadence-blocks-countdown' );
-		}
-		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
-				$css = $this->blocks_countdown_css( $attributes, $unique_id );
-				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id );
-				}
-			}
-		}
-	}
-	/**
-	 * Render form CSS Inline
-	 *
-	 * @param array  $attributes the blocks attributes.
-	 * @param string $content the blocks content.
-	 */
-	public function render_countdown_css( $attributes, $content ) {
-		if ( ! wp_style_is( 'kadence-blocks-countdown', 'enqueued' ) ) {
-			wp_enqueue_style( 'kadence-blocks-countdown' );
-		}
-		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
-				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_countdown_render_block_attributes', $attributes );
-				wp_enqueue_script( 'kadence-blocks-countdown' );
-				$css = $this->blocks_countdown_css( $attributes, $unique_id );
-				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) ) {
-						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
-					} else {
-						$this->render_inline_css( $css, $style_id, true );
-					}
-				}
-			}
-		}
-		return $content;
-	}
-	/**
-	 * Render form CSS In Head
-	 *
-	 * @param array $attributes the blocks attributes.
-	 */
 	public function render_form_css_head( $attributes ) {
 		// Filter attributes for easier dynamic css.
 		$attributes = apply_filters( 'kadence_blocks_form_render_block_attributes', $attributes );
@@ -1276,7 +1217,6 @@ class Kadence_Blocks_Frontend {
 		wp_add_inline_style( 'kadence-blocks-heading', $heading_css );
 		wp_register_style( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/blocks/form.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-testimonials', KADENCE_BLOCKS_URL . 'dist/blocks/testimonials.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-countdown', KADENCE_BLOCKS_URL . 'dist/blocks/countdown.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
 		//wp_enqueue_style( 'kadence-blocks-style-css', KADENCE_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
@@ -1292,7 +1232,6 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-accordion-js', KADENCE_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'dist/kt-tabs-min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'dist/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-countdown', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-countdown.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-form',
@@ -1741,6 +1680,12 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_tableofcontents_scripts_check( $blockattr );
 						}
 					}
+					if ( 'kadence/countdown' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->blocks_countdown_scripts_check( $blockattr );
+						}
+					}
 					if ( 'kadence/posts' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -1876,6 +1821,12 @@ class Kadence_Blocks_Frontend {
 						$this->blocks_tableofcontents_scripts_check( $blockattr );
 					}
 				}
+				if ( 'kadence/countdown' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->blocks_countdown_scripts_check( $blockattr );
+					}
+				}
 				if ( 'kadence/posts' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -1917,6 +1868,102 @@ class Kadence_Blocks_Frontend {
 				$css = $pb->output_css( $attr, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Grabs the scripts that are needed so we can load in the head.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_countdown_scripts_check( $attr ) {
+		$countdown = Kadence_Blocks_Countdown::get_instance();
+		$countdown->enqueue_style( 'kadence-blocks-countdown' );
+		$countdown->enqueue_script( 'kadence-blocks-countdown' );
+		if ( isset( $attr['uniqueID'] ) ) {
+			$unique_id = $attr['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+				$css = $countdown->output_css( $attr, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && isset( $attr['numberFont'][0]['google'] ) && $attr['numberFont'][0]['google'] && ( ! isset( $attr['numberFont'][0]['loadGoogle'] ) || true === $attr['numberFont'][0]['loadGoogle'] ) && isset( $attr['numberFont'][0]['family'] ) ) {
+			$number_font = $attr['numberFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $number_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $number_font['family'],
+					'fontvariants' => ( isset( $number_font['variant'] ) && ! empty( $number_font['variant'] ) ? array( $number_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $number_font['subset'] ) && ! empty( $number_font['subset'] ) ? array( $number_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $number_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $number_font['variant'], self::$gfonts[ $number_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $number_font['family'] ]['fontvariants'], $number_font['variant'] );
+				}
+				if ( ! in_array( $number_font['subset'], self::$gfonts[ $number_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $number_font['family'] ]['fontsubsets'], $number_font['subset'] );
+				}
+			}
+		}
+		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
+			$label_font = $attr['labelFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $label_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $label_font['family'],
+					'fontvariants' => ( isset( $label_font['variant'] ) && ! empty( $label_font['variant'] ) ? array( $label_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $label_font['subset'] ) && ! empty( $label_font['subset'] ) ? array( $label_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $label_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $label_font['variant'], self::$gfonts[ $label_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $label_font['family'] ]['fontvariants'], $label_font['variant'] );
+				}
+				if ( ! in_array( $label_font['subset'], self::$gfonts[ $label_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $label_font['family'] ]['fontsubsets'], $label_font['subset'] );
+				}
+			}
+		}
+		if ( isset( $attr['preLabelFont'] ) && is_array( $attr['preLabelFont'] ) && isset( $attr['preLabelFont'][0] ) && is_array( $attr['preLabelFont'][0] ) && isset( $attr['preLabelFont'][0]['google'] ) && $attr['preLabelFont'][0]['google'] && ( ! isset( $attr['preLabelFont'][0]['loadGoogle'] ) || true === $attr['preLabelFont'][0]['loadGoogle'] ) && isset( $attr['preLabelFont'][0]['family'] ) ) {
+			$pre_label_font = $attr['preLabelFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $pre_label_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $pre_label_font['family'],
+					'fontvariants' => ( isset( $pre_label_font['variant'] ) && ! empty( $pre_label_font['variant'] ) ? array( $pre_label_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $pre_label_font['subset'] ) && ! empty( $pre_label_font['subset'] ) ? array( $pre_label_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $pre_label_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $pre_label_font['variant'], self::$gfonts[ $pre_label_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $pre_label_font['family'] ]['fontvariants'], $pre_label_font['variant'] );
+				}
+				if ( ! in_array( $pre_label_font['subset'], self::$gfonts[ $pre_label_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $pre_label_font['family'] ]['fontsubsets'], $pre_label_font['subset'] );
+				}
+			}
+		}
+		if ( isset( $attr['postLabelFont'] ) && is_array( $attr['postLabelFont'] ) && isset( $attr['postLabelFont'][0] ) && is_array( $attr['postLabelFont'][0] ) && isset( $attr['postLabelFont'][0]['google'] ) && $attr['postLabelFont'][0]['google'] && ( ! isset( $attr['postLabelFont'][0]['loadGoogle'] ) || true === $attr['postLabelFont'][0]['loadGoogle'] ) && isset( $attr['postLabelFont'][0]['family'] ) ) {
+			$post_label_font = $attr['postLabelFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $post_label_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $post_label_font['family'],
+					'fontvariants' => ( isset( $post_label_font['variant'] ) && ! empty( $post_label_font['variant'] ) ? array( $post_label_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $post_label_font['subset'] ) && ! empty( $post_label_font['subset'] ) ? array( $post_label_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $post_label_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $post_label_font['variant'], self::$gfonts[ $post_label_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $post_label_font['family'] ]['fontvariants'], $post_label_font['variant'] );
+				}
+				if ( ! in_array( $post_label_font['subset'], self::$gfonts[ $post_label_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $post_label_font['family'] ]['fontsubsets'], $post_label_font['subset'] );
 				}
 			}
 		}
@@ -2053,15 +2100,6 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
-	}
-	/**
-	 * Builds CSS for Countdown Block.
-	 *
-	 * @param array  $attr the blocks attr.
-	 * @param string $unique_id the blocks attr ID.
-	 */
-	public function blocks_countdown_css( $attr, $unique_id ) {
-		return '';
 	}
 	/**
 	 * Builds CSS for form block.

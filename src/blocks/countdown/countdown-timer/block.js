@@ -50,7 +50,8 @@ registerBlockType( 'kadence/countdown-timer', {
 	save: props => {
 		const { attributes: { uniqueID, className } } = props;
 		return (
-			<div className={ `kb-countdown-timer${ uniqueID } kb-countdown-timer${ ( className ? ' ' + className : '' ) }` }>
+			<div className={ `kb-countdown-timer-${ uniqueID } kb-countdown-timer${ ( className ? ' ' + className : '' ) }` }>
+				<div className="kb-countdown-item kb-countdown-date-item"><span className="kb-countdown-number">&nbsp;</span><span className="kb-countdown-label">&nbsp;</span></div>
 			</div>
 		);
 	}

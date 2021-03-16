@@ -73,7 +73,6 @@ class KadenceConfig extends Component {
 			this.setState( { deviceType:this.props.getPreviewDevice } );
 			changeBodyClass( this.props.getPreviewDevice );
 		}
-		console.log( this.props.getPreviewDevice );
 		return (
 			<Fragment>
 				<PluginSidebarMoreMenuItem

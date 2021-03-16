@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Tab
+ * BLOCK: Kadence Pane
  *
  * Registering a basic block with Gutenberg.
  */

@@ -41,21 +41,23 @@ class KadenceCoundownTimer extends Component {
 	}
 	render() {
 		const { attributes: { uniqueID }, clientId } = this.props;
-		// const parts = {};
-		// 	//console.log( units );
-		// 	//if ( units[0].days ) {
-		// 		parts.days = Math.floor(difference / (1000 * 60 * 60 * 24));
-		// 	//}
-		// 	parts.hours = Math.floor((difference / (1000 * 60 * 60)) % 24);
-		// 	parts.minutes = Math.floor((difference / 1000 / 60) % 60);
-		// 	parts.seconds = Math.floor((difference / 1000) % 60);units
+		const parentID = (  undefined !== this.props.parentBlock[0].attributes.uniqueID ? this.props.parentBlock[0].attributes.uniqueID : this.props.rootID );
 		const displayUnits = this.props.parentBlock[0].attributes.units;
 		const labels = {};
 		labels.days = this.props.parentBlock[0].attributes.daysLabel ? this.props.parentBlock[0].attributes.daysLabel : __( 'Days', 'kadence-blocks' );
-		labels.hours = this.props.parentBlock[0].attributes.hoursLabel ? this.props.parentBlock[0].attributes.hoursLabel : __( 'Hours', 'kadence-blocks' );
-		labels.minutes = this.props.parentBlock[0].attributes.minutesLabel ? this.props.parentBlock[0].attributes.minutesLabel : __( 'Minutes', 'kadence-blocks' );
-		labels.seconds = this.props.parentBlock[0].attributes.secondsLabel ? this.props.parentBlock[0].attributes.secondsLabel : __( 'Seconds', 'kadence-blocks' );
-		console.log( displayUnits );
+		labels.hours = this.props.parentBlock[0].attributes.hoursLabel ? this.props.parentBlock[0].attributes.hoursLabel : __( 'Hrs', 'kadence-blocks' );
+		labels.minutes = this.props.parentBlock[0].attributes.minutesLabel ? this.props.parentBlock[0].attributes.minutesLabel : __( 'Mins', 'kadence-blocks' );
+		labels.seconds = this.props.parentBlock[0].attributes.secondsLabel ? this.props.parentBlock[0].attributes.secondsLabel : __( 'Secs', 'kadence-blocks' );
+		const preText = ( this.props.parentBlock[0].attributes.preLabel ? <div className="kb-countdown-item kb-pre-timer">{ this.props.parentBlock[0].attributes.preLabel }</div> : '' );
+		const postText = ( this.props.parentBlock[0].attributes.postLabel ? <div className="kb-countdown-item kb-post-timer">{ this.props.parentBlock[0].attributes.postLabel }</div> : '' );
+		const timeNumbers = ( this.props.parentBlock[0].attributes.timeNumbers ? true : false );
+		const enableDividers = (  undefined !== this.props.parentBlock[0].attributes.timerLayout && 'inline' !== this.props.parentBlock[0].attributes.timerLayout && this.props.parentBlock[0].attributes.countdownDivider ? true : false );
+		const calculateNumberDesign = ( number ) => {
+			if ( timeNumbers ) {
+				return number > 9 ? "" + number: "0" + number;
+			}
+			return number;
+		}
 		const renderer = ( { total, days, hours, minutes, seconds, completed } ) => {
 			if ( completed ) {
 				const parts = {};
@@ -79,9 +81,18 @@ class KadenceCoundownTimer extends Component {
 					parts.seconds = 0;
 				}
 				const remaining = Object.keys(parts).map( ( part ) => {
-					return <div className="kb-countdown-date-item"><span className="kb-countdown-number">{ parts[part] }</span> <span className="kb-countdown-label">{ labels[part] }</span></div>;
-				});
-				return remaining;
+					if ( 'seconds' !== part && enableDividers ) {
+						return <Fragment><div className={ `kb-countdown-date-item kb-countdown-item kb-countdown-date-item-${ part }` }><span className="kb-countdown-number">{ calculateNumberDesign( parts[part] ) }</span><span className="kb-countdown-label">{ labels[part] }</span></div><div className={ `kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${ part }` }><span className="kb-countdown-number">:</span><span className="kb-countdown-label">&nbsp;</span></div></Fragment>;
+					}
+					return <div className={ `kb-countdown-date-item kb-countdown-item kb-countdown-date-item-${ part }` }><span className="kb-countdown-number">{ calculateNumberDesign( parts[part] ) }</span><span className="kb-countdown-label">{ labels[part] }</span></div>;
+				} );
+				return (
+					<Fragment>
+						{ preText }
+						{ remaining }
+						{ postText }
+					</Fragment>
+				);
 			} else {
 				// Render a countdown
 				const parts = {};
@@ -114,14 +125,23 @@ class KadenceCoundownTimer extends Component {
 					parts.seconds = calculateSeconds;
 				}
 				const remaining = Object.keys(parts).map( ( part ) => {
-					return <div className="kb-countdown-date-item"><span className="kb-countdown-number">{ parts[part] }</span> <span className="kb-countdown-label">{ labels[part] }</span></div>;
+					if ( 'seconds' !== part && enableDividers ) {
+						return <Fragment><div className={ `kb-countdown-date-item kb-countdown-item kb-countdown-date-item-${ part }` }><span className="kb-countdown-number">{ calculateNumberDesign( parts[part] ) }</span><span className="kb-countdown-label">{ labels[part] }</span></div><div className={ `kb-countdown-item kb-countdown-date-item kb-countdown-divider-item kb-countdown-divider-item-${ part }` }><span className="kb-countdown-number">:</span><span className="kb-countdown-label">&nbsp;</span></div></Fragment>;
+					}
+					return <div className={ `kb-countdown-date-item kb-countdown-item kb-countdown-date-item-${ part }` }><span className="kb-countdown-number">{ calculateNumberDesign( parts[part] ) }</span><span className="kb-countdown-label">{ labels[part] }</span></div>;
 				});
-				return remaining;
+				return (
+					<Fragment>
+						{ preText }
+						{ remaining }
+						{ postText }
+					</Fragment>
+				);
 			}
 		};
 		return (
-			<div id={ `kb-timer-${ this.props.rootID }` } className={ `kb-countdown-timer kb-countdown-timer${ uniqueID }` } >
-				 <Countdown
+			<div id={ `kb-timer-${ parentID }` } className={ `kb-countdown-timer kb-countdown-timer-${ uniqueID }` } >
+				<Countdown
 					date={ new Date( this.props.parentBlock[0].attributes.timestamp ) }
 					renderer={ renderer }
 				/>

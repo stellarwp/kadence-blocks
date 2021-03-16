@@ -7,19 +7,18 @@
 /**
  * Import Icons
  */
-import icons from '../../icons/block-icons';
+import icons from '../../../icons/block-icons';
 /**
  * Internal dependencies
  */
 import edit from './edit';
-import save from './save';
-import attributes from './attributes';
 
 /**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
+import { InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * Register: a Gutenberg Block.
@@ -30,7 +29,7 @@ import { registerBlockType } from '@wordpress/blocks';
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/countdown-content', {
+registerBlockType( 'kadence/countdown-inner', {
 	/* translators: block name */
 	title: __( 'Countdown Content', 'kadence-blocks' ),
 	/* translators: block description */
@@ -43,7 +42,21 @@ registerBlockType( 'kadence/countdown-content', {
 		reusable: false,
 		html: false,
 	},
-	attributes,
+	attributes: {
+		uniqueID: {
+			type: 'string',
+		},
+		location: {
+			type: 'string',
+		},
+	},
 	edit,
-	save,
+	save( { attributes } ) {
+		const { location, uniqueID } = attributes;
+		return (
+			<div className={ `kb-countdown-inner kb-countdown-inner-${ location } kb-countdown-inner-${ uniqueID }` }>
+				<InnerBlocks.Content />
+			</div>
+		);
+	},
 } );

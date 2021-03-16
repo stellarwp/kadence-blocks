@@ -23,6 +23,7 @@ import filter from 'lodash/filter';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
+import URLInputControl from '../../components/common/link-control';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
@@ -518,7 +519,7 @@ class KadenceAdvancedButton extends Component {
 											<Fragment>
 												<MenuGroup>
 													<MenuItem
-														icon="arrow-right"
+														icon="arrow-left"
 														onClick={ flow( onClose, this.onMoveBackward( index ) ) }
 														disabled={ index === 0 }
 														label={ __( 'Move Left', 'kadence-blocks' ) }
@@ -526,7 +527,7 @@ class KadenceAdvancedButton extends Component {
 														{ __( 'Move Left', 'kadence-blocks' ) }
 													</MenuItem>
 													<MenuItem
-														icon={ 'editor-paste-text' }
+														icon={ 'arrow-right' }
 														onClick={ flow( onClose, this.onMoveForward( index ) ) }
 														disabled={ ( index + 1 ) === btns.length }
 														label={ __( 'Move Right', 'kadence-blocks' ) }
@@ -653,57 +654,31 @@ class KadenceAdvancedButton extends Component {
 							) ) }
 						</ButtonGroup>
 					</Fragment>
-					<h2 className="side-h2-label">{ __( 'Button Link', 'kadence-blocks' ) }</h2>
-					<div className="kt-btn-link-group">
-						<URLInput
-							value={ btns[ index ].link }
-							className="kt-btn-link-input"
-							onChange={ value => {
-								this.saveArrayUpdate( { link: value }, index );
-							} }
-						/>
-						<IconButton
-							className="kt-link-settings"
-							icon={ 'arrow-down-alt2' }
-							label={ __( 'Link Settings', 'kadence-blocks' ) }
-							onClick={ () => this.setState( { btnLink: ( this.state.btnLink ? false : true ) } ) }
-						/>
-					</div>
-					{ this.state.btnLink && (
-						<Fragment>
-							<div className="kt-spacer-sidebar-15"></div>
-							<SelectControl
-								label={ __( 'Link Target', 'kadence-blocks' ) }
-								value={ btns[ index ].target }
-								options={ [
-									{ value: '_self', label: __( 'Same Window', 'kadence-blocks' ) },
-									{ value: '_blank', label: __( 'New Window', 'kadence-blocks' ) },
-									{ value: 'video', label: __( 'Video Popup', 'kadence-blocks' ) },
-								] }
-								onChange={ value => {
-									this.saveArrayUpdate( { target: value }, index );
-								} }
-							/>
-							{ btns[ index ].target === 'video' && (
-								<p>{ __( 'NOTE: Video popup only works with youtube and vimeo links.', 'kadence-blocks' ) }</p>
-							) }
-							<ToggleControl
-								label={ __( 'Set link to nofollow?', 'kadence-blocks' ) }
-								checked={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
-								onChange={ ( value ) => this.saveArrayUpdate( { noFollow: value }, index ) }
-							/>
-							<ToggleControl
-								label={ __( 'Set link attribute Sponsored?', 'kadence-blocks' ) }
-								checked={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
-								onChange={ ( value ) => this.saveArrayUpdate( { sponsored: value }, index ) }
-							/>
-							<ToggleControl
-								label={ __( 'Set link to Download?', 'kadence-blocks' ) }
-								checked={ ( undefined !== btns[ index ].download ? btns[ index ].download : false ) }
-								onChange={ ( value ) => this.saveArrayUpdate( { download: value }, index ) }
-							/>
-						</Fragment>
-					) }
+					<URLInputControl
+						label={ __( 'Button Link', 'kadence-blocks' ) }
+						url={ btns[ index ].link }
+						onChangeUrl={ value => {
+							this.saveArrayUpdate( { link: value }, index );
+						} }
+						additionalControls={ true }
+						changeTargetType={ true }
+						opensInNewTab={ ( undefined !== btns[ index ].target ? btns[ index ].target : '' ) }
+						onChangeTarget={ value => {
+							this.saveArrayUpdate( { target: value }, index );
+						} }
+						linkNoFollow={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
+						onChangeFollow={ value => {
+							this.saveArrayUpdate( { noFollow: value }, index );
+						} }
+						linkSponsored={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
+						onChangeSponsored={ value => {
+							this.saveArrayUpdate( { sponsored: value }, index );
+						} }
+						linkDownload={ ( undefined !== btns[ index ].download ? btns[ index ].download : false ) }
+						onChangeDownload={ value => {
+							this.saveArrayUpdate( { download: value }, index );
+						} }
+					/>
 					{ this.showSettings( 'sizeSettings' ) && (
 						<Fragment>
 							<h2 className="kt-heading-size-title">{ __( 'Text Size', 'kadence-blocks' ) }</h2>

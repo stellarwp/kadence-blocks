@@ -43,6 +43,7 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-frontend.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-table-of-contents.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-posts.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-countdown.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/settings/class-kadence-blocks-settings.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-mailerlite-form-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-fluentcrm-form-rest-api.php';

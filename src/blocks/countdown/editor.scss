@@ -6,18 +6,26 @@
  */
  .wp-block[data-type="kadence/countdown-timer"] {
     pointer-events: none;
+	max-width: none;
+	margin-top: 0px;
+    margin-bottom: 0px;
+}
+.kb-countdown-container {
+	overflow: hidden;
+	border: 0 solid transparent;
+	padding:1em;
 }
 .kb-countdown-timer {
     display: flex;
-	.kb-countdown-date-item {
+	flex-wrap: wrap;
+	.kb-countdown-item {
 		justify-content: center;
 		display: flex;
 		align-items: flex-end;
-		padding-right: 0.6em;
-		line-height: 1.4em;
+		margin-right: 0.5em;
+		border:0px solid transparent;
 	}
 	.kb-countdown-label {
-		font-size: 0.8em;
 		display:flex;
 		justify-content: flex-start;
 		flex: 1;
@@ -25,8 +33,153 @@
 	.kb-countdown-number {
 		display:flex;
 		flex: 1;
-		font-size: 1.4em;
 		justify-content: center;
-		padding-right: 0.2em;
+		margin-right: 0.2em;
 	}
+}
+.kb-countdown-timer-layout-block {
+	.kb-countdown-item {
+		flex-direction: column;
+		align-items: center;
+		margin-right: 0.2em;
+		min-width: 1.6em;
+		padding:0.3rem;
+		&.kb-countdown-date-item-seconds {
+			margin-right: 0;
+		}
+		&.kb-countdown-divider-item {
+			min-width: 0;
+			padding:0.3rem 0;
+		}
+		.kb-countdown-number {
+			margin:0;
+			font-size: 2.2rem;
+			line-height: 1;
+		}
+		.kb-countdown-label {
+			font-size: .9rem;
+			text-transform: uppercase;
+		}
+	}
+	.kb-countdown-item.kb-pre-timer {
+		flex: 1 0 100%;
+		margin-right: 0;
+		align-items: flex-start;
+	}
+	.kb-countdown-item.kb-post-timer {
+		flex: 1 0 100%;
+		margin-right: 0;
+		align-items: flex-start;
+	}
+}
+.kb-countdown-timer-layout-block.kb-countdown-enable-dividers {
+	.kb-countdown-item {
+		min-width: 1.2em;
+		&.kb-countdown-divider-item {
+			min-width: 0;
+		}
+	}
+}
+.wp-block[data-type="kadence/countdown-inner"] {
+	margin-top: 0px;
+    margin-bottom: 0px;
+}
+// Hide Expired By Default.
+.wp-block[data-type="kadence/countdown-inner"]:nth-child(2) {
+    display: none;
+}
+.kb-countdown-preview-expired {
+	.wp-block[data-type="kadence/countdown-timer"],
+	.wp-block[data-type="kadence/countdown-inner"] {
+		display: none;
+	}
+	.wp-block[data-type="kadence/countdown-inner"]:nth-child(2) {
+		display: block;
+	}
+}
+// Align.
+.kb-countdown-align-center {
+	.kb-countdown-timer {
+		justify-content: center;
+		.kb-pre-timer, .kb-post-timer {
+			align-items: center;
+		}
+	}
+}
+.kb-countdown-align-left {
+	.kb-countdown-timer {
+		justify-content: flex-start;
+		.kb-pre-timer, .kb-post-timer {
+			align-items: flex-start;
+		}
+	}
+}
+.kb-countdown-align-right {
+	.kb-countdown-timer {
+		justify-content: flex-end;
+		.kb-pre-timer, .kb-post-timer {
+			align-items: flex-end;
+		}
+	}
+}
+#start-resizable-editor-section {
+    display: none;
+}
+
+/* add all responsive styles here */
+@media (min-width: 768px) and (max-width: 1024px) {
+	.kb-countdown-align-tablet-center {
+		.kb-countdown-timer {
+			justify-content: center;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: center;
+			}
+		}
+	}
+	.kb-countdown-align-tablet-left {
+		.kb-countdown-timer {
+			justify-content: flex-start;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: flex-start;
+			}
+		}
+	}
+	.kb-countdown-align-tablet-right {
+		.kb-countdown-timer {
+			justify-content: flex-end;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: flex-end;
+			}
+		}
+	}
+}
+@media (max-width: 767px) {
+	.kb-countdown-align-mobile-center {
+		.kb-countdown-timer {
+			justify-content: center;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: center;
+			}
+		}
+	}
+	.kb-countdown-align-mobile-left {
+		.kb-countdown-timer {
+			justify-content: flex-start;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: flex-start;
+			}
+		}
+	}
+	.kb-countdown-align-mobile-right {
+		.kb-countdown-timer {
+			justify-content: flex-end;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: flex-end;
+			}
+		}
+	}
+}
+
+#end-resizable-editor-section {
+    display: none;
 }

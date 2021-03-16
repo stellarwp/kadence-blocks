@@ -4,6 +4,55 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kb-link-control .kb-link-control-inner-row .components-base-control {
+    margin:0;
+}
+.kb-link-control {
+    .kb-link-control-inner-row {
+        display: flex;
+        flex-grow: 1;
+        max-width: 100%;
+    }
+    .kb-link-control-inner {
+        display: flex;
+        max-width: 100%;
+    }
+    .kb-link-control-additional-controls {
+        margin-top:15px;
+    }
+}
+.kb-link-control .kb-link-control-inner-row input.block-editor-url-input__input {
+    max-width: 97%;
+    width: 100%;
+}
+.kb-link-control .kb-link-control-inner-row .components-button svg {
+    height: 16px;
+    width: 16px;
+}
+.kb-link-control .kb-link-control-inner-row .components-button.has-icon {
+    min-width: 28px;
+    padding: 6px;
+}
+.kb-link-control .kb-link-settings-toggle.has-icon {
+    border: 1px solid #ddd;
+    height: 38px;
+}
+.kb-link-control .kb-link-control-inner-row .components-external-link {
+    margin: 7px;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 50px;
+    max-width: 500px;
+}
+.kb-link-control .block-editor-format-toolbar__link-container-content {
+    display: flex;
+    flex-grow: 1;
+    border: 1px solid #ddd;
+    max-width: 100%;
+}
  .kb-small-responsive-control .kb-small-responsive-options {
     margin-bottom: 10px;
     .kb-responsive-btn {
