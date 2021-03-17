@@ -4,12 +4,18 @@
  .kb-countdown-container {
 	 opacity: 0;
 	 padding:1em;
-	 overflow: hidden;
 	 border: 0 solid transparent;
  }
+ .kb-countdown-container:not( .kb-countdown-has-timer) {
+    padding: 0;
+}
+.kb-countdown-container.kb-countdown-reveal-on-load {
+    height:0;
+    overflow: hidden;
+    transition: height 0.8s ease;
+}
  .kb-countdown-timer {
     display: flex;
-	margin:1em 0;
 	flex-wrap: wrap;
 	word-break: normal;
 	.kb-countdown-item {
@@ -74,6 +80,82 @@
 		}
 	}
 }
+.kb-countdown-align-center {
+	.kb-countdown-timer {
+		justify-content: center;
+		.kb-pre-timer, .kb-post-timer {
+			align-items: center;
+		}
+	}
+}
+.kb-countdown-align-left {
+	.kb-countdown-timer {
+		justify-content: flex-start;
+		.kb-pre-timer, .kb-post-timer {
+			align-items: flex-start;
+		}
+	}
+}
+.kb-countdown-align-right {
+	.kb-countdown-timer {
+		justify-content: flex-end;
+		.kb-pre-timer, .kb-post-timer {
+			align-items: flex-end;
+		}
+	}
+}
 .kb-countdown-inner-complete {
     display: none;
+}
+@media (max-width: 1024px) {
+	.kb-countdown-align-tablet-center {
+		.kb-countdown-timer {
+			justify-content: center;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: center;
+			}
+		}
+	}
+	.kb-countdown-align-tablet-left {
+		.kb-countdown-timer {
+			justify-content: flex-start;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: flex-start;
+			}
+		}
+	}
+	.kb-countdown-align-tablet-right {
+		.kb-countdown-timer {
+			justify-content: flex-end;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: flex-end;
+			}
+		}
+	}
+}
+@media (max-width: 767px) {
+	.kb-countdown-align-mobile-center {
+		.kb-countdown-timer {
+			justify-content: center;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: center;
+			}
+		}
+	}
+	.kb-countdown-align-mobile-left {
+		.kb-countdown-timer {
+			justify-content: flex-start;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: flex-start;
+			}
+		}
+	}
+	.kb-countdown-align-mobile-right {
+		.kb-countdown-timer {
+			justify-content: flex-end;
+			.kb-pre-timer, .kb-post-timer {
+				align-items: flex-end;
+			}
+		}
+	}
 }

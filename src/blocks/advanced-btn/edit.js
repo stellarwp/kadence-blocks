@@ -377,7 +377,7 @@ class KadenceAdvancedButton extends Component {
 			const moveable = ( index === 0 && ( ( index + 1 ) === btns.length ) ? false : true );
 			const btnClassName = classnames( {
 				'kt-button': true,
-				[ `kt-button--${ index }` ]: true,
+				[ `kt-button-${ index }` ]: true,
 				[ `kt-btn-size-${ ( btns[ index ].btnSize ? btns[ index ].btnSize : btnSize ) }` ]: true,
 				[ `kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) }` ]: true,
 				[ `kb-btn-global-${ btns[ index ].inheritStyles }` ]: btns[ index ].inheritStyles,
@@ -1864,89 +1864,6 @@ class KadenceAdvancedButton extends Component {
 											units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 											onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 										/>
-										<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
-											{ map( marginTypes, ( { name, key } ) => (
-												<Button
-													key={ key }
-													className="kt-size-btn"
-													isSmall
-													isPrimary={ marginUnit === key }
-													aria-pressed={ marginUnit === key }
-													onClick={ () => setAttributes( { marginUnit: key } ) }
-												>
-													{ name }
-												</Button>
-											) ) }
-										</ButtonGroup>
-										<h2 className="kt-heading-size-title">{ __( 'Margin', 'kadence-blocks' ) }</h2>
-										<TabPanel className="kt-size-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'desk',
-													title: <Dashicon icon="desktop" />,
-													className: 'kt-desk-tab',
-												},
-												{
-													name: 'tablet',
-													title: <Dashicon icon="tablet" />,
-													className: 'kt-tablet-tab',
-												},
-												{
-													name: 'mobile',
-													title: <Dashicon icon="smartphone" />,
-													className: 'kt-mobile-tab',
-												},
-											] }>
-											{
-												( tab ) => {
-													let tabout;
-													if ( tab.name ) {
-														if ( 'mobile' === tab.name ) {
-															tabout = (
-																<MeasurementControls
-																	label={ __( 'Mobile Margin', 'kadence-blocks' ) }
-																	measurement={ margin[ 0 ].mobile }
-																	control={ this.state.marginControl }
-																	onChange={ ( value ) => saveMargin( { mobile: value } ) }
-																	onControl={ ( value ) => this.setState( { marginControl: value } ) }
-																	min={ marginMin }
-																	max={ marginMax }
-																	step={ marginStep }
-																/>
-															);
-														} else if ( 'tablet' === tab.name ) {
-															tabout = (
-																<MeasurementControls
-																	label={ __( 'Tablet Margin', 'kadence-blocks' ) }
-																	measurement={ margin[ 0 ].tablet }
-																	control={ this.state.marginControl }
-																	onChange={ ( value ) => saveMargin( { tablet: value } ) }
-																	onControl={ ( value ) => this.setState( { marginControl: value } ) }
-																	min={ marginMin }
-																	max={ marginMax }
-																	step={ marginStep }
-																/>
-															);
-														} else {
-															tabout = (
-																<MeasurementControls
-																	label={ __( 'Margin', 'kadence-blocks' ) }
-																	measurement={ margin[ 0 ].desk }
-																	control={ this.state.marginControl }
-																	onChange={ ( value ) => saveMargin( { desk: value } ) }
-																	onControl={ ( value ) => this.setState( { marginControl: value } ) }
-																	min={ marginMin }
-																	max={ marginMax }
-																	step={ marginStep }
-																/>
-															);
-														}
-													}
-													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-												}
-											}
-										</TabPanel>
 									</PanelBody>
 								) }
 							</InspectorControls>

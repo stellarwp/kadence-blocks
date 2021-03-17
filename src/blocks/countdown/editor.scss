@@ -10,10 +10,17 @@
 	margin-top: 0px;
     margin-bottom: 0px;
 }
+.wp-block[data-type="kadence/countdown"] {
+	margin-top: 0px;
+    margin-bottom: 0px;
+}
 .kb-countdown-container {
 	overflow: hidden;
 	border: 0 solid transparent;
 	padding:1em;
+}
+.kb-countdown-container:not( .kb-countdown-has-timer) {
+    padding: 0;
 }
 .kb-countdown-timer {
     display: flex;
@@ -24,6 +31,8 @@
 		align-items: flex-end;
 		margin-right: 0.5em;
 		border:0px solid transparent;
+		overflow-wrap: normal;
+		word-break: normal;
 	}
 	.kb-countdown-label {
 		display:flex;
@@ -127,7 +136,7 @@
 }
 
 /* add all responsive styles here */
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (max-width: 1024px) {
 	.kb-countdown-align-tablet-center {
 		.kb-countdown-timer {
 			justify-content: center;

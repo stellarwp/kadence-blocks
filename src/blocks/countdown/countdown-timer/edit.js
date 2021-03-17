@@ -48,8 +48,8 @@ class KadenceCoundownTimer extends Component {
 		labels.hours = this.props.parentBlock[0].attributes.hoursLabel ? this.props.parentBlock[0].attributes.hoursLabel : __( 'Hrs', 'kadence-blocks' );
 		labels.minutes = this.props.parentBlock[0].attributes.minutesLabel ? this.props.parentBlock[0].attributes.minutesLabel : __( 'Mins', 'kadence-blocks' );
 		labels.seconds = this.props.parentBlock[0].attributes.secondsLabel ? this.props.parentBlock[0].attributes.secondsLabel : __( 'Secs', 'kadence-blocks' );
-		const preText = ( this.props.parentBlock[0].attributes.preLabel ? <div className="kb-countdown-item kb-pre-timer">{ this.props.parentBlock[0].attributes.preLabel }</div> : '' );
-		const postText = ( this.props.parentBlock[0].attributes.postLabel ? <div className="kb-countdown-item kb-post-timer">{ this.props.parentBlock[0].attributes.postLabel }</div> : '' );
+		const preText = ( this.props.parentBlock[0].attributes.preLabel ? <div className="kb-countdown-item kb-pre-timer"><span className="kb-pre-timer-inner">{ this.props.parentBlock[0].attributes.preLabel }</span></div> : '' );
+		const postText = ( this.props.parentBlock[0].attributes.postLabel ? <div className="kb-countdown-item kb-post-timer"><span className="kb-post-timer-inner">{ this.props.parentBlock[0].attributes.postLabel }</span></div> : '' );
 		const timeNumbers = ( this.props.parentBlock[0].attributes.timeNumbers ? true : false );
 		const enableDividers = (  undefined !== this.props.parentBlock[0].attributes.timerLayout && 'inline' !== this.props.parentBlock[0].attributes.timerLayout && this.props.parentBlock[0].attributes.countdownDivider ? true : false );
 		const calculateNumberDesign = ( number ) => {

@@ -34,7 +34,7 @@ registerBlockType( 'kadence/countdown-timer', {
 	/* translators: block description */
 	description: __( 'The countdown timer', 'kadence-blocks' ),
 	category: 'kadence-blocks',
-	icon: icons.section,
+	icon: icons.innerCountdown,
 	parent: [ 'kadence/countdown' ],
 	supports: {
 		inserter: false,

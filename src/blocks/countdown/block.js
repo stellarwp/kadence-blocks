@@ -36,7 +36,7 @@ registerBlockType( 'kadence/countdown', {
 	/* translators: block description */
 	description: __( '', 'kadence-blocks' ),
 	category: 'kadence-blocks',
-	icon: icons.section,
+	icon: icons.countdown,
 	keywords: [
 		'kb',
 		/* translators: block keyword */

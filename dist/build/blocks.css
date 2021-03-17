@@ -1925,8 +1925,8 @@ button.components-button.kb-sidebar-image {
         word-break: break-word;
         overflow-wrap: break-word;
         max-width: none;
-        margin-top: -14px;
-        margin-bottom: -14px; }
+        margin-top: 0px;
+        margin-bottom: 0px; }
         .wp-block-kadence-rowlayout > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] .block-editor-block-list__block-edit {
           flex-basis: 100%; }
 
@@ -7995,10 +7995,17 @@ a.post-more-link {
   margin-top: 0px;
   margin-bottom: 0px; }
 
+.wp-block[data-type="kadence/countdown"] {
+  margin-top: 0px;
+  margin-bottom: 0px; }
+
 .kb-countdown-container {
   overflow: hidden;
   border: 0 solid transparent;
   padding: 1em; }
+
+.kb-countdown-container:not(.kb-countdown-has-timer) {
+  padding: 0; }
 
 .kb-countdown-timer {
   display: flex;
@@ -8008,7 +8015,9 @@ a.post-more-link {
     display: flex;
     align-items: flex-end;
     margin-right: 0.5em;
-    border: 0px solid transparent; }
+    border: 0px solid transparent;
+    overflow-wrap: normal;
+    word-break: normal; }
   .kb-countdown-timer .kb-countdown-label {
     display: flex;
     justify-content: flex-start;
@@ -8086,7 +8095,7 @@ a.post-more-link {
   display: none; }
 
 /* add all responsive styles here */
-@media (min-width: 768px) and (max-width: 1024px) {
+@media (max-width: 1024px) {
   .kb-countdown-align-tablet-center .kb-countdown-timer {
     justify-content: center; }
     .kb-countdown-align-tablet-center .kb-countdown-timer .kb-pre-timer, .kb-countdown-align-tablet-center .kb-countdown-timer .kb-post-timer {

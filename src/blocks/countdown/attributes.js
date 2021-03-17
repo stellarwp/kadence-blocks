@@ -34,15 +34,26 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	campaignID: {
+		type: 'string',
+	},
 	evergreenHours: {
 		type: 'number',
 	},
 	evergreenMinutes: {
 		type: 'number',
 	},
+	evergreenReset: {
+		type: 'number',
+		default: 30,
+	},
 	enableTimer: {
 		type: 'bool',
 		default: true,
+	},
+	revealOnLoad: {
+		type: 'bool',
+		default: false,
 	},
 	units: {
 		type: 'array',

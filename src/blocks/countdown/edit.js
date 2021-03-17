@@ -22,6 +22,7 @@ import ResponsiveMeasurementControls from '../../components/measurement/responsi
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import URLInputControl from '../../components/common/link-control';
 import TypographyControls from '../../components/typography/typography-control';
+import KadenceRange from '../../components/range/range-control';
 
 /**
  * Import Css
@@ -39,7 +40,7 @@ import {
 	Component,
 	Fragment,
 } from '@wordpress/element';
-import { withSelect } from '@wordpress/data';
+import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import {
 	InnerBlocks,
@@ -47,6 +48,7 @@ import {
 	AlignmentToolbar,
 	InspectorAdvancedControls,
 	InspectorControls,
+	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
 	Dashicon,
@@ -91,7 +93,7 @@ const actionOptions = [
 	{ value: 'message', label: __( 'Replace with Content (Pro addon)', 'kadence-blocks' ), disabled: true },
 	{ value: 'redirect', label: __( 'Redirect (Pro addon)', 'kadence-blocks' ), disabled: true },
 ];
-
+const ANCHOR_REGEX = /[\s#]/g;
 /**
  * Build the spacer edit
  */
@@ -204,7 +206,7 @@ class KadenceCountdown extends Component {
 		return new Date( currentDate.getTime() + ( shiftDiff * 60 * 60 * 1000 ) ).getTime();
 	};
 	render() {
-		const { attributes: { uniqueID, expireAction, units, enableTimer, redirectURL, timerLayout, date, timestamp, timezone, timeOffset, preLabel, postLabel, daysLabel, hoursLabel, minutesLabel, secondsLabel, counterAlign, numberColor, numberFont, labelColor, labelFont, preLabelColor, preLabelFont, postLabelColor, postLabelFont, border, borderRadius, borderWidth, mobileBorderWidth, tabletBorderWidth, background, vsdesk, vstablet, vsmobile, countdownType, paddingType, marginType, containerMobilePadding, containerTabletPadding, containerPadding, containerMobileMargin, containerTabletMargin, containerMargin, itemBorder, itemBorderWidth, itemBackground, itemTabletBorderWidth, itemMobileBorderWidth, itemPadding, itemTabletPadding, itemMobilePadding, itemBorderRadius, itemPaddingType, timeNumbers, countdownDivider }, setAttributes, className, clientId } = this.props;
+		const { attributes: { uniqueID, expireAction, units, enableTimer, evergreenHours, evergreenMinutes, redirectURL, timerLayout, date, timestamp, evergreenReset, timezone, timeOffset, preLabel, postLabel, daysLabel, hoursLabel, minutesLabel, secondsLabel, counterAlign, campaignID, numberColor, numberFont, labelColor, labelFont, preLabelColor, preLabelFont, postLabelColor, postLabelFont, border, borderRadius, borderWidth, mobileBorderWidth, tabletBorderWidth, background, vsdesk, vstablet, vsmobile, countdownType, paddingType, marginType, containerMobilePadding, containerTabletPadding, containerPadding, containerMobileMargin, containerTabletMargin, containerMargin, itemBorder, itemBorderWidth, itemBackground, itemTabletBorderWidth, itemMobileBorderWidth, itemPadding, itemTabletPadding, itemMobilePadding, itemBorderRadius, itemPaddingType, timeNumbers, countdownDivider, revealOnLoad }, setAttributes, className, clientId } = this.props;
 		const { previewExpired, borderWidthControl, borderRadiusControl, paddingControl, marginControl, itemBorderRadiusControl, itemPaddingControl, itemBorderWidthControl } = this.state;
 		const countdownTypes = applyFilters( 'kadence.countdownTypes', typeOptions );
 		const countdownActions = applyFilters( 'kadence.countdownActions', actionOptions );
@@ -239,6 +241,32 @@ class KadenceCountdown extends Component {
 				timestamp: theSiteTimezoneTimestamp,
 				timezone: theTimezone,
 				timeOffset: theTimeOffset,
+			} );
+		};
+		const getEverGreenTimestamp = ( value ) => {
+            const newDate = new Date();
+            newDate.setTime( newDate.getTime() + ( Number( value )*60*60*1000 ) );
+			newDate.setTime( newDate.getTime() + ( ( evergreenMinutes ? Number( evergreenMinutes ) : 0 )*60*1000 ) );
+			return newDate.getTime();
+		}
+		const saveEvergreenHours = ( value ) => {
+			const theEvergreenTimeStamp = getEverGreenTimestamp( value );
+			setAttributes( {
+				evergreenHours: value,
+				timestamp: theEvergreenTimeStamp,
+			} );
+		};
+		const getEverGreenMinTimestamp = ( value ) => {
+			const newDate = new Date();
+            newDate.setTime( newDate.getTime() + ( ( evergreenHours ? Number( evergreenHours ) : 0 )*60*60*1000 ) );
+			newDate.setTime( newDate.getTime() + ( Number( value )*60*1000 ) );
+			return newDate.getTime();
+		}
+		const saveEvergreenMinutes = ( value ) => {
+			const theEvergreenTimeStamp = getEverGreenMinTimestamp( value );
+			setAttributes( {
+				evergreenMinutes: value,
+				timestamp: theEvergreenTimeStamp,
 			} );
 		};
 		const saveNumberFont = ( value ) => {
@@ -369,22 +397,50 @@ class KadenceCountdown extends Component {
 		const previewPostLabelFontSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].size && undefined !== postLabelFont[0].size[0] && '' !== postLabelFont[0].size[0] ? postLabelFont[0].size[0] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].size && undefined !== postLabelFont[0].size[1] && '' !== postLabelFont[0].size[1] ? postLabelFont[0].size[1] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].size && undefined !== postLabelFont[0].size[2] && '' !== postLabelFont[0].size[2] ? postLabelFont[0].size[2] : '' ) );
 		const previewPostLabelLineSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].lineHeight && undefined !== postLabelFont[0].lineHeight[0] && '' !== postLabelFont[0].lineHeight[0] ? postLabelFont[0].lineHeight[0] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].lineHeight && undefined !== postLabelFont[0].lineHeight[1] && '' !== postLabelFont[0].lineHeight[1] ? postLabelFont[0].lineHeight[1] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].lineHeight && undefined !== postLabelFont[0].lineHeight[2] && '' !== postLabelFont[0].lineHeight[2] ? postLabelFont[0].lineHeight[2] : '' ) );
 		const previewPostLabelLetterSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].letterSpacing && undefined !== postLabelFont[0].letterSpacing[0] && '' !== postLabelFont[0].letterSpacing[0] ? postLabelFont[0].letterSpacing[0] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].letterSpacing && undefined !== postLabelFont[0].letterSpacing[1] && '' !== postLabelFont[0].letterSpacing[1] ? postLabelFont[0].letterSpacing[1] : '' ), ( undefined !== postLabelFont && undefined !== postLabelFont[0] && undefined !== postLabelFont[0].letterSpacing && undefined !== postLabelFont[0].letterSpacing[2] && '' !== postLabelFont[0].letterSpacing[2] ? postLabelFont[0].letterSpacing[2] : '' ) );
-		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
 		const classes = classnames( {
 			'kb-countdown-container': true,
 			[ `kb-countdown-container-${ uniqueID }` ]: uniqueID,
-			[ `kb-countdown-timer-layout-${ timerLayout }` ] : timerLayout,
-			'kb-countdown-enable-dividers': 'inline' !== timerLayout && countdownDivider,
+			[ `kb-countdown-timer-layout-${ timerLayout }` ] : timerLayout && enableTimer,
+			'kb-countdown-enable-dividers': 'inline' !== timerLayout && countdownDivider && enableTimer,
 			'kb-countdown-has-timer' : enableTimer,
 			'kb-countdown-preview-expired': previewExpired,
-			[ `kb-countdown-align-${ counterAlign[0] }` ]: ( undefined !== counterAlign && undefined !== counterAlign[0] ? counterAlign[0] : false ),
-			[ `kb-countdown-align-tablet-${ counterAlign[1] }` ]: ( undefined !== counterAlign && undefined !== counterAlign[1] ? counterAlign[1] : false ),
-			[ `kb-countdown-align-mobile-${ counterAlign[2] }` ]: ( undefined !== counterAlign && undefined !== counterAlign[2] ? counterAlign[2] : false ),
+			[ `kb-countdown-align-${ counterAlign[0] }` ]: ( undefined !== counterAlign && undefined !== counterAlign[0] && enableTimer ? counterAlign[0] : false ),
+			[ `kb-countdown-align-tablet-${ counterAlign[1] }` ]: ( undefined !== counterAlign && undefined !== counterAlign[1] && enableTimer ? counterAlign[1] : false ),
+			[ `kb-countdown-align-mobile-${ counterAlign[2] }` ]: ( undefined !== counterAlign && undefined !== counterAlign[2] && enableTimer ? counterAlign[2] : false ),
 			'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 			'kvs-md-false': vstablet !== 'undefined' && vstablet,
 			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 			[ className ]: className,
 		} );
+		if ( this.props.isNested && this.props.parentBlock ) {
+			if ( undefined !== this.props.parentBlock.attributes.countdownType && this.props.parentBlock.attributes.countdownType !== countdownType ) {
+				setAttributes( { countdownType: this.props.parentBlock.attributes.countdownType } )
+			}
+			if ( undefined !== this.props.parentBlock.attributes.evergreenMinutes && this.props.parentBlock.attributes.evergreenMinutes !== evergreenMinutes ) {
+				setAttributes( { evergreenMinutes: this.props.parentBlock.attributes.evergreenMinutes } )
+			}
+			if ( undefined !== this.props.parentBlock.attributes.timeOffset && this.props.parentBlock.attributes.timeOffset !== timeOffset ) {
+				setAttributes( { timeOffset: this.props.parentBlock.attributes.timeOffset } )
+			}
+			if ( undefined !== this.props.parentBlock.attributes.timezone && this.props.parentBlock.attributes.timezone !== timezone ) {
+				setAttributes( { timezone: this.props.parentBlock.attributes.timezone } )
+			}
+			if ( undefined !== this.props.parentBlock.attributes.timestamp && this.props.parentBlock.attributes.timestamp !== timestamp ) {
+				setAttributes( { timestamp: this.props.parentBlock.attributes.timestamp } )
+			}
+			if ( undefined !== this.props.parentBlock.attributes.evergreenHours && this.props.parentBlock.attributes.evergreenHours !== evergreenHours ) {
+				setAttributes( { evergreenHours: this.props.parentBlock.attributes.evergreenHours } )
+			}
+			if ( undefined !== this.props.parentBlock.attributes.date && this.props.parentBlock.attributes.date !== date ) {
+				setAttributes( { date: this.props.parentBlock.attributes.date } )
+			}
+			if ( undefined !== this.props.parentBlock.attributes.campaignID && this.props.parentBlock.attributes.campaignID !== campaignID ) {
+				setAttributes( { campaignID: this.props.parentBlock.attributes.campaignID } )
+			}
+			if ( undefined !== this.props.parentBlock.attributes.evergreenReset && this.props.parentBlock.attributes.evergreenReset !== evergreenReset ) {
+				setAttributes( { evergreenReset: this.props.parentBlock.attributes.evergreenReset } )
+			}
+		}
 		return (
 			<div className={ classes } style={ {
 				background: ( background ? KadenceColorOutput( background ) : undefined ),
@@ -498,14 +554,14 @@ class KadenceCountdown extends Component {
 											isPressed={ ! this.state.previewExpired }
 											onClick={ () => this.setState( { previewExpired: false } ) }
 										>
-											<span>{ __( 'Live', 'kadence-pro' ) }</span>
+											<span>{ __( 'Live', 'kadence-blocks' ) }</span>
 										</Button>
 										<Button
 											className="components-tab-button"
 											isPressed={ this.state.previewExpired }
 											onClick={ () => this.setState( { previewExpired: true } ) }
 										>
-											<span>{ __( 'Expired', 'kadence-pro' ) }</span>
+											<span>{ __( 'Expired', 'kadence-blocks' ) }</span>
 										</Button>
 									</ToolbarGroup>
 								</Fragment>
@@ -515,38 +571,108 @@ class KadenceCountdown extends Component {
 							<Panel
 								className={ 'components-panel__body is-opened' }
 							>
-								<SelectControl
-									label={ __( 'Countdown Type', 'kadence-blocks' ) }
-									options={ countdownTypes }
-									value={ countdownType }
-									onChange={ ( value ) => setAttributes( { countdownType: value } ) }
-								/>
-								{ 'date' === countdownType && (
-									<div className="components-base-control">
-										<DateTimePicker
-											currentDate={ ( ! date ? undefined : date ) }
-											onChange={ value => {
-												saveDate( value );
-											} }
-											is12Hour={ is12HourTime }
-											help={ __( 'Date set according to your sites timezone', 'kadence-blocks' ) }
-										/>
-									</div>
-								) }
-								<SelectControl
-									label={ __( 'Action on Expire', 'kadence-blocks' ) }
-									options={ countdownActions }
-									value={ expireAction }
-									onChange={ ( value ) => setAttributes( { expireAction: value } ) }
-								/>
-								{ 'redirect' === expireAction && (
+								{ this.props.isNested && (
 									<Fragment>
-										<URLInputControl
-											label={ __( 'Redirect URL', 'kadence-blocks' ) }
-											url={ redirectURL }
-											onChangeUrl={ value => setAttributes( { redirectURL: value } ) }
-											additionalControls={false}
+										<h2>{ __( 'Countdown Time Settings Synced to Parent Block', 'kadence-blocks' ) }</h2>
+										<Button
+											className="kb-select-parent-button"
+											isSecondary
+											onClick={ () => this.props.selectBlock( this.props.parentBlock.clientId ) }
+										>
+											<span>{ __( 'Edit Settings', 'kadence-blocks' ) }</span>
+										</Button>
+									</Fragment>
+								) }
+								{ ! this.props.isNested && (
+									<Fragment>
+										<SelectControl
+											label={ __( 'Countdown Type', 'kadence-blocks' ) }
+											options={ countdownTypes }
+											value={ countdownType }
+											onChange={ ( value ) => setAttributes( { countdownType: value } ) }
 										/>
+										{ 'date' === countdownType && (
+											<div className="components-base-control">
+												<DateTimePicker
+													currentDate={ ( ! date ? undefined : date ) }
+													onChange={ value => {
+														saveDate( value );
+													} }
+													is12Hour={ is12HourTime }
+													help={ __( 'Date set according to your sites timezone', 'kadence-blocks' ) }
+												/>
+											</div>
+										) }
+										{ 'evergreen' === countdownType && (
+											<Fragment>
+												<KadenceRange
+													label={ __( 'Evergreen Hours', 'kadence-blocks' ) }
+													value={ evergreenHours }
+													onChange={ value => {
+														saveEvergreenHours( value );
+													} }
+													min={ 0 }
+													max={ 100 }
+													step={ 1 }
+												/>
+												<KadenceRange
+													label={ __( 'Evergreen Minutes', 'kadence-blocks' ) }
+													value={ evergreenMinutes }
+													onChange={ value => {
+														saveEvergreenMinutes( value );
+													} }
+													min={ 0 }
+													max={ 59 }
+													step={ 1 }
+												/>
+												<TextControl
+													label={ __( 'Campaign ID' ) }
+													help={ __( 'Create a unique ID. To reset the timer for everyone change this id. To link with other timers give them all the same ID.', 'kadence-blocks' ) }
+													value={ campaignID || '' }
+													onChange={ ( nextValue ) => {
+														nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
+														setAttributes( {
+															campaignID: nextValue,
+														} );
+													} }
+												/>
+												<KadenceRange
+													label={ __( 'Amount of days to wait until the evergreen is reset for visitors', 'kadence-blocks' ) }
+													value={ evergreenReset }
+													onChange={ value => {
+														setAttributes( {
+															evergreenReset: value,
+														} );
+													} }
+													min={ 0 }
+													max={ 100 }
+													step={ 1 }
+												/>
+											</Fragment>
+										) }
+										<SelectControl
+											label={ __( 'Action on Expire', 'kadence-blocks' ) }
+											options={ countdownActions }
+											value={ expireAction }
+											onChange={ ( value ) => setAttributes( { expireAction: value } ) }
+										/>
+										{ 'redirect' === expireAction && (
+											<Fragment>
+												<URLInputControl
+													label={ __( 'Redirect URL', 'kadence-blocks' ) }
+													url={ redirectURL }
+													onChangeUrl={ value => setAttributes( { redirectURL: value } ) }
+													additionalControls={false}
+												/>
+											</Fragment>
+										) }
+										{ expireAction && 'none' !== expireAction && (
+											<ToggleControl
+												label={ __( 'Reveal onLoad', 'kadence-blocks' ) }
+												checked={ revealOnLoad }
+												onChange={ value => setAttributes( { revealOnLoad: value } ) }
+											/>
+										) }
 									</Fragment>
 								) }
 							</Panel>
@@ -747,6 +873,8 @@ class KadenceCountdown extends Component {
 										onLetterSpacing={ ( value ) => saveNumberFont( { letterSpacing: value } ) }
 										letterSpacingType={ numberFont[ 0 ].letterType }
 										onLetterSpacingType={ ( value ) => saveNumberFont( { letterType: value } ) }
+										textTransform={ numberFont[ 0 ].textTransform }
+										onTextTransform={ ( value ) => saveNumberFont( { textTransform: value } ) }
 										fontFamily={ numberFont[ 0 ].family }
 										onFontFamily={ ( value ) => saveNumberFont( { family: value } ) }
 										onFontChange={ ( select ) => {
@@ -796,6 +924,8 @@ class KadenceCountdown extends Component {
 										onLetterSpacing={ ( value ) => saveLabelFont( { letterSpacing: value } ) }
 										letterSpacingType={ labelFont[ 0 ].letterType }
 										onLetterSpacingType={ ( value ) => saveLabelFont( { letterType: value } ) }
+										textTransform={ labelFont[ 0 ].textTransform }
+										onTextTransform={ ( value ) => saveLabelFont( { textTransform: value } ) }
 										fontFamily={ labelFont[ 0 ].family }
 										onFontFamily={ ( value ) => saveLabelFont( { family: value } ) }
 										onFontChange={ ( select ) => {
@@ -845,6 +975,8 @@ class KadenceCountdown extends Component {
 										onLetterSpacing={ ( value ) => savePreFont( { letterSpacing: value } ) }
 										letterSpacingType={ preLabelFont[ 0 ].letterType }
 										onLetterSpacingType={ ( value ) => savePreFont( { letterType: value } ) }
+										textTransform={ preLabelFont[ 0 ].textTransform }
+										onTextTransform={ ( value ) => savePreFont( { textTransform: value } ) }
 										fontFamily={ preLabelFont[ 0 ].family }
 										onFontFamily={ ( value ) => savePreFont( { family: value } ) }
 										onFontChange={ ( select ) => {
@@ -894,6 +1026,8 @@ class KadenceCountdown extends Component {
 										onLetterSpacing={ ( value ) => savePostFont( { letterSpacing: value } ) }
 										letterSpacingType={ postLabelFont[ 0 ].letterType }
 										onLetterSpacingType={ ( value ) => savePostFont( { letterType: value } ) }
+										textTransform={ postLabelFont[ 0 ].textTransform }
+										onTextTransform={ ( value ) => savePostFont( { textTransform: value } ) }
 										fontFamily={ postLabelFont[ 0 ].family }
 										onFontFamily={ ( value ) => savePostFont( { family: value } ) }
 										onFontChange={ ( select ) => {
@@ -1062,13 +1196,25 @@ export default compose( [
 		const {
 			__experimentalGetPreviewDeviceType,
 		} = select( 'core/edit-post' );
+		let isNested = false;
 		const {
 			getBlock,
+			getBlockParentsByBlockName,
 		} = select( 'core/block-editor' );
-		const block = getBlock( clientId );
+		const parentBlocks = getBlockParentsByBlockName( clientId, 'kadence/countdown' );
+		if ( parentBlocks.length && undefined !== parentBlocks[0] && '' !== parentBlocks[0] ) {
+			isNested = true;
+		}
 		return {
-			countdownBlock: block,
+			isNested: isNested,
+			parentBlock: ( isNested ? getBlock( parentBlocks[0] ) : '' ),
 			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+		};
+	} ),
+	withDispatch( ( dispatch, { clientId } ) => {
+		const { selectBlock } = dispatch( blockEditorStore );
+		return {
+			selectBlock: ( id ) => selectBlock( id ),
 		};
 	} ),
 ] )( KadenceCountdown );

@@ -183,14 +183,21 @@ class Kadence_Blocks_Countdown {
 			wp_enqueue_style( 'kadence-blocks-countdown' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
+			$unique_id      = $attributes['uniqueID'];
+			$campaign_id    = ( isset( $attributes['campaignID'] ) && ! empty( $attributes['campaignID'] ) ? $attributes['campaignID'] : $unique_id );
+			$countdown_type = ( isset( $attributes['countdownType'] ) && ! empty( $attributes['countdownType'] ) ? $attributes['countdownType'] : 'date' );
+
 			self::$countdown[ $unique_id ] = array(
 				'timestamp'    => ( isset( $attributes['timestamp'] ) ? $attributes['timestamp'] : '' ),
-				'type'         => ( isset( $attributes['countdownType'] ) ? $attributes['countdownType'] : 'date' ),
+				'type'         => $countdown_type,
+				'revealOnLoad' => ( isset( $attributes['revealOnLoad'] ) && $attributes['revealOnLoad'] ? true : false ),
 				'stopWatch'    => ( isset( $attributes['timeNumbers'] ) && $attributes['timeNumbers'] ? true : false ),
 				'dividers'     => ( isset( $attributes['countdownDivider'] ) && $attributes['countdownDivider'] ? true : false ),
 				'action'       => ( isset( $attributes['expireAction'] ) ? $attributes['expireAction'] : 'none' ),
 				'redirect'     => ( isset( $attributes['redirectURL'] ) ? $attributes['redirectURL'] : '' ),
+				'reset'        => ( isset( $attributes['evergreenReset'] ) ? $attributes['evergreenReset'] : 30 ),
+				'campaign_id'  => $campaign_id,
+				'evergreen'    => ( 'evergreen' === $countdown_type ? apply_filters( 'kadence_blocks_countdown_evergreen_config', '', $campaign_id, apply_filters( 'kadence_blocks_countdown_site_slug', sanitize_title( get_bloginfo( 'name' ) ) ) ) : '' ),
 				'hours'        => ( isset( $attributes['evergreenHours'] ) ? $attributes['evergreenHours'] : '' ),
 				'minutes'      => ( isset( $attributes['evergreenMinutes'] ) ? $attributes['evergreenMinutes'] : '' ),
 				'timer'        => ( isset( $attributes['enableTimer'] ) ? $attributes['enableTimer'] : true ),
@@ -403,9 +410,163 @@ class Kadence_Blocks_Countdown {
 			}
 			$css->stop_media_query();
 		}
+		if ( isset( $attr['itemBackground'] ) || isset( $attr['itemBorder'] ) || ( isset( $attr['itemBorderRadius'] ) && is_array( $attr['itemBorderRadius'] ) ) || ( isset( $attr['itemBorderWidth'] ) && is_array( $attr['itemBorderWidth'] ) ) || ( isset( $attr['itemPadding'] ) && is_array( $attr['itemPadding'] ) ) ) {
+			$css->set_selector( '.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item:not( .kb-countdown-divider-item )' );
+			if ( isset( $attr['itemBackground'] ) && ! empty( $attr['itemBackground'] ) ) {
+				$css->add_property( 'background', $css->render_color( $attr['itemBackground'] ) );
+			}
+			if ( isset( $attr['itemBorder'] ) && ! empty( $attr['itemBorder'] ) ) {
+				$css->add_property( 'border-color', $css->render_color( $attr['itemBorder'] ) );
+			}
+			if ( isset( $attr['itemBorderRadius'] ) && is_array( $attr['itemBorderRadius'] ) ) {
+				if ( isset( $attr['itemBorderRadius'][0] ) && is_numeric( $attr['itemBorderRadius'][0] ) ) {
+					$css->add_property( 'border-top-left-radius', $attr['itemBorderRadius'][0] . 'px' );
+				}
+				if ( isset( $attr['itemBorderRadius'][1] ) && is_numeric( $attr['itemBorderRadius'][1] ) ) {
+					$css->add_property( 'border-top-right-radius', $attr['itemBorderRadius'][1] . 'px' );
+				}
+				if ( isset( $attr['itemBorderRadius'][2] ) && is_numeric( $attr['itemBorderRadius'][2] ) ) {
+					$css->add_property( 'border-bottom-right-radius', $attr['itemBorderRadius'][2] . 'px' );
+				}
+				if ( isset( $attr['itemBorderRadius'][3] ) && is_numeric( $attr['itemBorderRadius'][3] ) ) {
+					$css->add_property( 'border-bottom-left-radius', $attr['itemBorderRadius'][3] . 'px' );
+				}
+			}
+			if ( isset( $attr['itemBorderWidth'] ) && is_array( $attr['itemBorderWidth'] ) ) {
+				if ( isset( $attr['itemBorderWidth'][0] ) && is_numeric( $attr['itemBorderWidth'][0] ) ) {
+					$css->add_property( 'border-top-width', $attr['itemBorderWidth'][0] . 'px' );
+				}
+				if ( isset( $attr['itemBorderWidth'][1] ) && is_numeric( $attr['itemBorderWidth'][1] ) ) {
+					$css->add_property( 'border-right-width', $attr['itemBorderWidth'][1] . 'px' );
+				}
+				if ( isset( $attr['itemBorderWidth'][2] ) && is_numeric( $attr['itemBorderWidth'][2] ) ) {
+					$css->add_property( 'border-bottom-width', $attr['itemBorderWidth'][2] . 'px' );
+				}
+				if ( isset( $attr['itemBorderWidth'][3] ) && is_numeric( $attr['itemBorderWidth'][3] ) ) {
+					$css->add_property( 'border-left-width', $attr['itemBorderWidth'][3] . 'px' );
+				}
+			}
+			if ( isset( $attr['itemPadding'] ) && is_array( $attr['itemPadding'] ) ) {
+				if ( isset( $attr['itemPadding'][0] ) && is_numeric( $attr['itemPadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['itemPadding'][0] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemPadding'][1] ) && is_numeric( $attr['itemPadding'][1] ) ) {
+					$css->add_property( 'padding-right', $attr['itemPadding'][1] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemPadding'][2] ) && is_numeric( $attr['itemPadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['itemPadding'][2] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemPadding'][3] ) && is_numeric( $attr['itemPadding'][3] ) ) {
+					$css->add_property( 'padding-left', $attr['itemPadding'][3] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+			}
+			$css->set_selector( '.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item.kb-countdown-divider-item' );
+			if ( isset( $attr['itemPadding'] ) && is_array( $attr['itemPadding'] ) ) {
+				if ( isset( $attr['itemPadding'][0] ) && is_numeric( $attr['itemPadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['itemPadding'][0] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemPadding'][2] ) && is_numeric( $attr['itemPadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['itemPadding'][2] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+			}
+			if ( isset( $attr['itemBorderWidth'] ) && is_array( $attr['itemBorderWidth'] ) ) {
+				if ( isset( $attr['itemBorderWidth'][0] ) && is_numeric( $attr['itemBorderWidth'][0] ) ) {
+					$css->add_property( 'border-top-width', $attr['itemBorderWidth'][0] . 'px' );
+				}
+				if ( isset( $attr['itemBorderWidth'][2] ) && is_numeric( $attr['itemBorderWidth'][2] ) ) {
+					$css->add_property( 'border-bottom-width', $attr['itemBorderWidth'][2] . 'px' );
+				}
+			}
+		}
+		if ( ( isset( $attr['itemTabletBorderWidth'] ) && is_array( $attr['itemTabletBorderWidth'] ) ) || ( isset( $attr['itemTabletPadding'] ) && is_array( $attr['itemTabletPadding'] ) ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item:not( .kb-countdown-divider-item )' );
+			if ( isset( $attr['itemTabletPadding'] ) && is_array( $attr['itemTabletPadding'] ) ) {
+				if ( isset( $attr['itemTabletPadding'][0] ) && is_numeric( $attr['itemTabletPadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['itemTabletPadding'][0] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemTabletPadding'][1] ) && is_numeric( $attr['itemTabletPadding'][1] ) ) {
+					$css->add_property( 'padding-right', $attr['itemTabletPadding'][1] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemTabletPadding'][2] ) && is_numeric( $attr['itemTabletPadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['itemTabletPadding'][2] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemTabletPadding'][3] ) && is_numeric( $attr['itemTabletPadding'][3] ) ) {
+					$css->add_property( 'padding-left', $attr['itemTabletPadding'][3] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+			}
+			if ( isset( $attr['itemTabletBorderWidth'] ) && is_array( $attr['itemTabletBorderWidth'] ) ) {
+				if ( isset( $attr['itemTabletBorderWidth'][0] ) && is_numeric( $attr['itemTabletBorderWidth'][0] ) ) {
+					$css->add_property( 'border-top-width', $attr['itemTabletBorderWidth'][0] . 'px' );
+				}
+				if ( isset( $attr['itemTabletBorderWidth'][1] ) && is_numeric( $attr['itemTabletBorderWidth'][1] ) ) {
+					$css->add_property( 'border-right-width', $attr['itemTabletBorderWidth'][1] . 'px' );
+				}
+				if ( isset( $attr['itemTabletBorderWidth'][2] ) && is_numeric( $attr['itemTabletBorderWidth'][2] ) ) {
+					$css->add_property( 'border-bottom-width', $attr['itemTabletBorderWidth'][2] . 'px' );
+				}
+				if ( isset( $attr['itemTabletBorderWidth'][3] ) && is_numeric( $attr['itemTabletBorderWidth'][3] ) ) {
+					$css->add_property( 'border-left-width', $attr['itemTabletBorderWidth'][3] . 'px' );
+				}
+			}
+			$css->set_selector( '.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item.kb-countdown-divider-item' );
+			if ( isset( $attr['itemTabletPadding'] ) && is_array( $attr['itemTabletPadding'] ) ) {
+				if ( isset( $attr['itemTabletPadding'][0] ) && is_numeric( $attr['itemTabletPadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['itemTabletPadding'][0] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemTabletPadding'][2] ) && is_numeric( $attr['itemTabletPadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['itemTabletPadding'][2] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+			}
+			if ( isset( $attr['itemTabletBorderWidth'] ) && is_array( $attr['itemTabletBorderWidth'] ) ) {
+				if ( isset( $attr['itemTabletBorderWidth'][0] ) && is_numeric( $attr['itemTabletBorderWidth'][0] ) ) {
+					$css->add_property( 'border-top-width', $attr['itemTabletBorderWidth'][0] . 'px' );
+				}
+				if ( isset( $attr['itemTabletBorderWidth'][2] ) && is_numeric( $attr['itemTabletBorderWidth'][2] ) ) {
+					$css->add_property( 'border-bottom-width', $attr['itemTabletBorderWidth'][2] . 'px' );
+				}
+			}
+			$css->stop_media_query();
+		}
+		if ( ( isset( $attr['itemMobileBorderWidth'] ) && is_array( $attr['itemMobileBorderWidth'] ) ) || ( isset( $attr['itemMobilePadding'] ) && is_array( $attr['itemMobilePadding'] ) ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item:not( .kb-countdown-divider-item )' );
+			if ( isset( $attr['itemMobilePadding'] ) && is_array( $attr['itemMobilePadding'] ) ) {
+				if ( isset( $attr['itemMobilePadding'][0] ) && is_numeric( $attr['itemMobilePadding'][0] ) ) {
+					$css->add_property( 'padding-top', $attr['itemMobilePadding'][0] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemMobilePadding'][1] ) && is_numeric( $attr['itemMobilePadding'][1] ) ) {
+					$css->add_property( 'padding-right', $attr['itemMobilePadding'][1] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemMobilePadding'][2] ) && is_numeric( $attr['itemMobilePadding'][2] ) ) {
+					$css->add_property( 'padding-bottom', $attr['itemMobilePadding'][2] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+				if ( isset( $attr['itemMobilePadding'][3] ) && is_numeric( $attr['itemMobilePadding'][3] ) ) {
+					$css->add_property( 'padding-left', $attr['itemMobilePadding'][3] . ( isset( $attr['itemPaddingType'] ) ? $attr['itemPaddingType'] : 'px' ) );
+				}
+			}
+			if ( isset( $attr['itemMobileBorderWidth'] ) && is_array( $attr['itemMobileBorderWidth'] ) ) {
+				if ( isset( $attr['itemMobileBorderWidth'][0] ) && is_numeric( $attr['itemMobileBorderWidth'][0] ) ) {
+					$css->add_property( 'border-top-width', $attr['itemMobileBorderWidth'][0] . 'px' );
+				}
+				if ( isset( $attr['itemMobileBorderWidth'][1] ) && is_numeric( $attr['itemMobileBorderWidth'][1] ) ) {
+					$css->add_property( 'border-right-width', $attr['itemMobileBorderWidth'][1] . 'px' );
+				}
+				if ( isset( $attr['itemMobileBorderWidth'][2] ) && is_numeric( $attr['itemMobileBorderWidth'][2] ) ) {
+					$css->add_property( 'border-bottom-width', $attr['itemMobileBorderWidth'][2] . 'px' );
+				}
+				if ( isset( $attr['itemMobileBorderWidth'][3] ) && is_numeric( $attr['itemMobileBorderWidth'][3] ) ) {
+					$css->add_property( 'border-left-width', $attr['itemMobileBorderWidth'][3] . 'px' );
+				}
+			}
+			$css->stop_media_query();
+		}
 		$number_font = ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) ? $attr['numberFont'][0] : array() );
-		if ( ! empty( $number_font ) ) {
+		if ( ! empty( $number_font ) || ( isset( $attr['numberColor'] ) && ! empty( $attr['numberColor'] ) ) ) {
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item .kb-countdown-number' );
+			if ( isset( $attr['numberColor'] ) && ! empty( $attr['numberColor'] ) ) {
+				$css->add_property( 'color', $css->render_color( $attr['numberColor'] ) );
+			}
 			if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && isset( $number_font['size'][0] ) && ! empty( $number_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ) );
 			}
@@ -467,8 +628,11 @@ class Kadence_Blocks_Countdown {
 			$css->stop_media_query();
 		}
 		$label_font = ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) ? $attr['labelFont'][0] : array() );
-		if ( ! empty( $label_font ) ) {
+		if ( ! empty( $label_font ) || ( isset( $attr['labelColor'] ) && ! empty( $attr['labelColor'] ) ) ) {
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-date-item .kb-countdown-label' );
+			if ( isset( $attr['labelColor'] ) && ! empty( $attr['labelColor'] ) ) {
+				$css->add_property( 'color', $css->render_color( $attr['labelColor'] ) );
+			}
 			if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && isset( $label_font['size'][0] ) && ! empty( $label_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $label_font['size'][0] . ( ! isset( $label_font['sizeType'] ) ? 'px' : $label_font['sizeType'] ) );
 			}
@@ -518,8 +682,11 @@ class Kadence_Blocks_Countdown {
 			$css->stop_media_query();
 		}
 		$pre_label_font = ( isset( $attr['preLabelFont'] ) && is_array( $attr['preLabelFont'] ) && isset( $attr['preLabelFont'][0] ) && is_array( $attr['preLabelFont'][0] ) ? $attr['preLabelFont'][0] : array() );
-		if ( ! empty( $pre_label_font ) ) {
+		if ( ! empty( $pre_label_font ) || ( isset( $attr['preLabelColor'] ) && ! empty( $attr['preLabelColor'] ) ) ) {
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-item.kb-pre-timer' );
+			if ( isset( $attr['preLabelColor'] ) && ! empty( $attr['preLabelColor'] ) ) {
+				$css->add_property( 'color', $css->render_color( $attr['preLabelColor'] ) );
+			}
 			if ( isset( $pre_label_font['size'] ) && is_array( $pre_label_font['size'] ) && isset( $pre_label_font['size'][0] ) && ! empty( $pre_label_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $pre_label_font['size'][0] . ( ! isset( $pre_label_font['sizeType'] ) ? 'px' : $pre_label_font['sizeType'] ) );
 			}
@@ -569,8 +736,11 @@ class Kadence_Blocks_Countdown {
 			$css->stop_media_query();
 		}
 		$post_label_font = ( isset( $attr['postLabelFont'] ) && is_array( $attr['postLabelFont'] ) && isset( $attr['postLabelFont'][0] ) && is_array( $attr['postLabelFont'][0] ) ? $attr['postLabelFont'][0] : array() );
-		if ( ! empty( $post_label_font ) ) {
+		if ( ! empty( $post_label_font ) || ( isset( $attr['postLabelColor'] ) && ! empty( $attr['postLabelColor'] ) ) ) {
 			$css->set_selector( '.kb-countdown-container.kb-countdown-container-' . $unique_id . ' .kb-countdown-item.kb-post-timer' );
+			if ( isset( $attr['postLabelColor'] ) && ! empty( $attr['postLabelColor'] ) ) {
+				$css->add_property( 'color', $css->render_color( $attr['postLabelColor'] ) );
+			}
 			if ( isset( $post_label_font['size'] ) && is_array( $post_label_font['size'] ) && isset( $post_label_font['size'][0] ) && ! empty( $post_label_font['size'][0] ) ) {
 				$css->add_property( 'font-size', $post_label_font['size'][0] . ( ! isset( $post_label_font['sizeType'] ) ? 'px' : $post_label_font['sizeType'] ) );
 			}
@@ -630,7 +800,10 @@ class Kadence_Blocks_Countdown {
 			'kadence-blocks-countdown',
 			'kadence_blocks_countdown',
 			array(
-				'timers'  => wp_json_encode( self::$countdown ),
+				'ajax_url'   => admin_url( 'admin-ajax.php' ),
+				'ajax_nonce' => wp_create_nonce( 'kadence_blocks_countdown' ),
+				'site_slug'  => apply_filters( 'kadence_blocks_countdown_site_slug', sanitize_title( get_bloginfo( 'name' ) ) ),
+				'timers'     => wp_json_encode( self::$countdown ),
 			)
 		);
 	}
