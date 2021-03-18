@@ -186,7 +186,8 @@ class Kadence_Blocks_Countdown {
 			$unique_id      = $attributes['uniqueID'];
 			$campaign_id    = ( isset( $attributes['campaignID'] ) && ! empty( $attributes['campaignID'] ) ? $attributes['campaignID'] : $unique_id );
 			$countdown_type = ( isset( $attributes['countdownType'] ) && ! empty( $attributes['countdownType'] ) ? $attributes['countdownType'] : 'date' );
-
+			$site_slug      = apply_filters( 'kadence_blocks_countdown_site_slug', sanitize_title( get_bloginfo( 'name' ) ) );
+			$reset_days     = ( isset( $attributes['evergreenReset'] ) && ! empty( $attributes['evergreenReset'] ) ? $attributes['evergreenReset'] : 30 );
 			self::$countdown[ $unique_id ] = array(
 				'timestamp'    => ( isset( $attributes['timestamp'] ) ? $attributes['timestamp'] : '' ),
 				'type'         => $countdown_type,
@@ -195,9 +196,10 @@ class Kadence_Blocks_Countdown {
 				'dividers'     => ( isset( $attributes['countdownDivider'] ) && $attributes['countdownDivider'] ? true : false ),
 				'action'       => ( isset( $attributes['expireAction'] ) ? $attributes['expireAction'] : 'none' ),
 				'redirect'     => ( isset( $attributes['redirectURL'] ) ? $attributes['redirectURL'] : '' ),
-				'reset'        => ( isset( $attributes['evergreenReset'] ) ? $attributes['evergreenReset'] : 30 ),
+				'reset'        => $reset_days,
 				'campaign_id'  => $campaign_id,
-				'evergreen'    => ( 'evergreen' === $countdown_type ? apply_filters( 'kadence_blocks_countdown_evergreen_config', '', $campaign_id, apply_filters( 'kadence_blocks_countdown_site_slug', sanitize_title( get_bloginfo( 'name' ) ) ) ) : '' ),
+				'evergreen'    => ( 'evergreen' === $countdown_type ? apply_filters( 'kadence_blocks_countdown_evergreen_config', 'query', $campaign_id, $site_slug, $reset_days ) : '' ),
+				'strict'       => ( isset( $attributes['evergreenStrict'] ) && $attributes['evergreenStrict'] ? true : false ),
 				'hours'        => ( isset( $attributes['evergreenHours'] ) ? $attributes['evergreenHours'] : '' ),
 				'minutes'      => ( isset( $attributes['evergreenMinutes'] ) ? $attributes['evergreenMinutes'] : '' ),
 				'timer'        => ( isset( $attributes['enableTimer'] ) ? $attributes['enableTimer'] : true ),

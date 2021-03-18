@@ -4,10 +4,24 @@
 	window.kadenceCountdown = {
 		cache: {},
 		timers: JSON.parse( kadence_blocks_countdown.timers ),
-		/**
-		 * the script to get layout cookie
-		 */
-		getCookie: function ( name ) {
+		createCookie: function( name, value, length, unit ) {
+			if ( length ) {
+				var date = new Date();
+				if ( 'minutes' == unit ) {
+					date.setTime( date.getTime() + ( length * 60 * 1000 ) );
+				} else if ( 'hours' == unit ) {
+					date.setTime( date.getTime() + ( length * 60 * 60 * 1000 ) );
+				} else {
+					date.setTime( date.getTime()+(length*24*60*60*1000));
+				}
+				var expires = "; expires="+date.toGMTString();
+			} else {
+				var expires = "";
+			}
+	
+			document.cookie = kadence_blocks_countdown.site_slug + '-' + name+"="+value+expires+"; path=/";
+		},
+		getCookie( name ) {
 			var value = "; " + document.cookie;
 			var parts = value.split("; " + kadence_blocks_countdown.site_slug + '-' + name + "=");
 			if ( parts.length == 2 ) {
@@ -19,44 +33,61 @@
 			var currentTimeStamp = new Date;
 			var total = '';
 			if ( window.kadenceCountdown.timers[ id ].type === 'evergreen' ) {
+				//Check for cookie.
 				if ( '' !== window.kadenceCountdown.cache[ id ].cookie ) {
 					total = Math.floor( window.kadenceCountdown.cache[ id ].cookie - currentTimeStamp.getTime() );
-					if ( total < 0  ) {
-						// check if reset is needed.
-						var resetDate = new Date;
-						resetDate.setTime( window.kadenceCountdown.cache[ id ].cookie + ( Math.floor( window.kadenceCountdown.cache[ id ].reset )*24*60*60*1000 ) );
-						var shouldRest = Math.floor( resetDate.getTime() - currentTimeStamp.getTime() );
-						if ( shouldRest < 0  ) {
-							var newDate = new Date;
-							newDate.setTime( newDate.getTime() + ( Math.floor( window.kadenceCountdown.timers[ id ].hours )*60*60*1000 ) );
-							newDate.setTime( newDate.getTime() + ( Math.floor( window.kadenceCountdown.timers[ id ].minutes )*60*1000 ) );
-							window.kadenceCountdown.timers[ id ].evergreen = newDate.getTime() + 100;
-							total = Math.floor( newDate.getTime() - currentTimeStamp.getTime() );
-							var request = new XMLHttpRequest();
-							request.open( 'POST', kadence_blocks_countdown.ajax_url, true );
-							request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded;' );
-							request.onload = function () {
-								if ( this.status >= 200 && this.status < 400 ) {
-									// If successful
-									//console.log(this.response);
-								} else {
-									// If fail
-									//console.log(this.response);
-								}
-							};
-							request.onerror = function() {
-								// Connection error
-							};
-							request.send( 'action=kadence_evergreen_timestamp&nonce=' + kadence_blocks_countdown.ajax_nonce + '&site_slug=' + kadence_blocks_countdown.site_slug + '&timestamp=' + window.kadenceCountdown.timers[ id ].evergreen + '&countdown_id=' + window.kadenceCountdown.timers[ id ].campaign_id );
+				}
+				// Check for database storage only for strict.
+				if ( ! total && window.kadenceCountdown.timers[ id ].strict && 'query' === window.kadenceCountdown.timers[ id ].evergreen ) {
+					// remove query so we don't run this twice.
+					window.kadenceCountdown.timers[ id ].evergreen = '';
+					window.kadenceCountdown.cache[ id ].request = new XMLHttpRequest();
+					window.kadenceCountdown.cache[ id ].request.open( 'POST', kadence_blocks_countdown.ajax_url, true );
+					window.kadenceCountdown.cache[ id ].request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded;' );
+					window.kadenceCountdown.cache[ id ].request.onload = function () {
+						if ( this.status >= 200 && this.status < 400 ) {
+							// If successful
+							window.kadenceCountdown.cache[ id ].evergreen = parseInt( this.response );
+							if ( window.kadenceCountdown.cache[ id ].evergreen ) {
+								total = Math.floor( window.kadenceCountdown.cache[ id ].evergreen - currentTimeStamp.getTime() );
+								window.kadenceCountdown.createCookie( window.kadenceCountdown.timers[ id ].campaign_id, window.kadenceCountdown.cache[ id ].evergreen, 30, 'days' );
+								window.kadenceCountdown.cache[ id ].cookie = window.kadenceCountdown.cache[ id ].evergreen;
+							}
+						} else {
+							// If fail
+							//console.log(this.response);
 						}
-					}
-				} else if ( window.kadenceCountdown.timers[ id ].evergreen ) {
+					};
+					window.kadenceCountdown.cache[ id ].request.onerror = function() {
+						// Connection error
+					};
+					window.kadenceCountdown.cache[ id ].request.send( 'action=kadence_get_evergreen&nonce=' + kadence_blocks_countdown.ajax_nonce + '&site_slug=' + kadence_blocks_countdown.site_slug + '&reset=' + window.kadenceCountdown.cache[ id ].reset + '&countdown_id=' + window.kadenceCountdown.timers[ id ].campaign_id );
+				}
+				// Check for loaded no cache mode.
+				if ( ! total && ! window.kadenceCountdown.timers[ id ].strict && window.kadenceCountdown.timers[ id ].evergreen && 'query' !== window.kadenceCountdown.timers[ id ].evergreen ) {
 					total = Math.floor( window.kadenceCountdown.timers[ id ].evergreen - currentTimeStamp.getTime() );
-				} else {
+				}
+				// We've set the cache and it's counting.
+				if ( ! total && window.kadenceCountdown.cache[ id ].evergreen ) {
+					total = Math.floor( window.kadenceCountdown.cache[ id ].evergreen - currentTimeStamp.getTime() );
+				}
+				// Total is negative so past date, let check if we should reset it.
+				if ( total && total < 0  ) {
+					// check if reset is needed.
+					var resetDate = new Date;
+					resetDate.setTime( window.kadenceCountdown.cache[ id ].cookie + ( Math.floor( window.kadenceCountdown.cache[ id ].reset )*24*60*60*1000 ) );
+					var shouldRest = Math.floor( resetDate.getTime() - currentTimeStamp.getTime() );
+					if ( shouldRest < 0  ) {
+						total = '';
+					}
+				}
+				// total is empty so lets set it, however if we are in strict mode we need to wait for the ajax request.
+				if ( ! total && ( ( window.kadenceCountdown.timers[ id ].strict && window.kadenceCountdown.cache[ id ].request && window.kadenceCountdown.cache[ id ].request.readyState && window.kadenceCountdown.cache[ id ].request.readyState === 4 ) || ! window.kadenceCountdown.timers[ id ].strict ) ) {
 					var newDate = new Date;
 					newDate.setTime( newDate.getTime() + ( Math.floor( window.kadenceCountdown.timers[ id ].hours )*60*60*1000 ) );
 					newDate.setTime( newDate.getTime() + ( Math.floor( window.kadenceCountdown.timers[ id ].minutes )*60*1000 ) );
-					window.kadenceCountdown.timers[ id ].evergreen = newDate.getTime() + 100;
+					window.kadenceCountdown.cache[ id ].evergreen = newDate.getTime() + 100;
+					window.kadenceCountdown.createCookie( window.kadenceCountdown.timers[ id ].campaign_id, window.kadenceCountdown.cache[ id ].evergreen, 30, 'days' );
 					total = Math.floor( newDate.getTime() - currentTimeStamp.getTime() );
 					var request = new XMLHttpRequest();
 					request.open( 'POST', kadence_blocks_countdown.ajax_url, true );
@@ -73,13 +104,13 @@
 					request.onerror = function() {
 						// Connection error
 					};
-					request.send( 'action=kadence_evergreen_timestamp&nonce=' + kadence_blocks_countdown.ajax_nonce + '&site_slug=' + kadence_blocks_countdown.site_slug + '&timestamp=' + window.kadenceCountdown.timers[ id ].evergreen + '&countdown_id=' + window.kadenceCountdown.timers[ id ].campaign_id );
+					request.send( 'action=kadence_evergreen_timestamp&nonce=' + kadence_blocks_countdown.ajax_nonce + '&site_slug=' + kadence_blocks_countdown.site_slug + '&timestamp=' + window.kadenceCountdown.cache[ id ].evergreen + '&countdown_id=' + window.kadenceCountdown.timers[ id ].campaign_id );
 				}
 			} else {
 				total = Math.floor( window.kadenceCountdown.timers[ id ].timestamp - currentTimeStamp.getTime() );
 			}
 			// Check if completed.
-			if ( total < 0  ) {
+			if ( total && total < 0  ) {
 				if ( 'redirect' === window.kadenceCountdown.timers[ id ].action ) {
 					if ( window.kadenceCountdown.timers[ id ].redirect ) {
 						window.location.href = window.kadenceCountdown.timers[ id ].redirect;
@@ -155,7 +186,7 @@
 				}
 				return;
 			}
-			if ( window.kadenceCountdown.timers[ id ].timer ) {
+			if ( ( total || 0 === total ) && window.kadenceCountdown.timers[ id ].timer ) {
 				var enableDividers = window.kadenceCountdown.timers[ id ].dividers;
 				var timeNumbers = window.kadenceCountdown.timers[ id ].stopWatch;
 				var units = window.kadenceCountdown.timers[ id ].units;
@@ -203,13 +234,27 @@
 				}).join(" ");
 				element.innerHTML = preText + remaining + postText;
 			}
-			if ( 0 === window.kadenceCountdown.cache[ id ].run ) {
+			if ( ( total || 0 === total ) && ! window.kadenceCountdown.cache[ id ].revealed ) {
+				window.kadenceCountdown.cache[ id ].revealed = true;
 				parent.style.opacity = 1;
 				if ( window.kadenceCountdown.timers[ id ].revealOnLoad ) {
-					parent.style.height = parent.scrollHeight+"px";
+					var sticky = parent.closest( '.kadence-pro-fixed-wrap' );
+					if ( sticky && ! window.kadenceCountdown.timers[ id ].timer ) {
+						setTimeout( function(){
+							parent.style.height = parent.scrollHeight+"px";
+							sticky.style.transition = 'height 0.8s ease';
+							sticky.style.height = Math.floor( sticky.scrollHeight + parent.scrollHeight ) + "px";
+						}, 200 );
+						setTimeout( function(){
+							var event = new CustomEvent( 'kadence-update-sticky' );
+							window.dispatchEvent( event );
+							sticky.style.transition = '';
+						}, 1000 );
+					} else {
+						parent.style.height = parent.scrollHeight+"px";
+					}
 				}
 			}
-			window.kadenceCountdown.cache[ id ].run ++;
 		},
 		calculateNumberDesign( number, timeNumbers = false ) {
 			if ( timeNumbers ) {
@@ -219,7 +264,9 @@
 		},
 		updateTimer( element, id, parent ) {
 			window.kadenceCountdown.cache[ id ] = {};
-			window.kadenceCountdown.cache[ id ].run = 0;
+			window.kadenceCountdown.cache[ id ].evergreen = '';
+			window.kadenceCountdown.cache[ id ].request = '';
+			window.kadenceCountdown.cache[ id ].revealed = false;
 			window.kadenceCountdown.cache[ id ].cookie = '';
 			if ( window.kadenceCountdown.timers[ id ].type === 'evergreen' && window.kadenceCountdown.timers[ id ].campaign_id ) {
 				window.kadenceCountdown.cache[ id ].cookie = window.kadenceCountdown.getCookie( window.kadenceCountdown.timers[ id ].campaign_id );

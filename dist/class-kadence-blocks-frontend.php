@@ -3349,7 +3349,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['shadow'] ) && is_array( $attr['shadow'] ) && is_array( $attr['shadow'][ 0 ] ) ) {
 				$shadow = $attr['shadow'][ 0 ];
 				$css .= '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap {';
-				$css .= 'box-shadow:' . $shadow['hOffset'] . 'px ' . $shadow['vOffset'] . 'px ' . $shadow['blur'] . 'px ' . $shadow['spread'] . 'px ' . $this->kadence_color_output( $shadow['color'], $shadow['opacity'] ) . ';';
+				$css .= 'box-shadow:' . $shadow['hOffset'] . 'px ' . $shadow['vOffset'] . 'px ' . $shadow['blur'] . 'px ' . $shadow['spread'] . 'px ' . $this->kadence_color_output( ( isset( $shadow['color'] ) ? $shadow['color'] : '' ), $shadow['opacity'] ) . ';';
 				$css .= '}';
 			}
 			if ( isset( $attr['shadowHover'] ) && is_array( $attr['shadowHover'] ) && is_array( $attr['shadowHover'][ 0 ] ) ) {

@@ -206,7 +206,7 @@ class KadenceCountdown extends Component {
 		return new Date( currentDate.getTime() + ( shiftDiff * 60 * 60 * 1000 ) ).getTime();
 	};
 	render() {
-		const { attributes: { uniqueID, expireAction, units, enableTimer, evergreenHours, evergreenMinutes, redirectURL, timerLayout, date, timestamp, evergreenReset, timezone, timeOffset, preLabel, postLabel, daysLabel, hoursLabel, minutesLabel, secondsLabel, counterAlign, campaignID, numberColor, numberFont, labelColor, labelFont, preLabelColor, preLabelFont, postLabelColor, postLabelFont, border, borderRadius, borderWidth, mobileBorderWidth, tabletBorderWidth, background, vsdesk, vstablet, vsmobile, countdownType, paddingType, marginType, containerMobilePadding, containerTabletPadding, containerPadding, containerMobileMargin, containerTabletMargin, containerMargin, itemBorder, itemBorderWidth, itemBackground, itemTabletBorderWidth, itemMobileBorderWidth, itemPadding, itemTabletPadding, itemMobilePadding, itemBorderRadius, itemPaddingType, timeNumbers, countdownDivider, revealOnLoad }, setAttributes, className, clientId } = this.props;
+		const { attributes: { uniqueID, expireAction, units, enableTimer, evergreenHours, evergreenMinutes, redirectURL, timerLayout, date, timestamp, evergreenReset, timezone, timeOffset, preLabel, postLabel, daysLabel, hoursLabel, minutesLabel, secondsLabel, counterAlign, campaignID, numberColor, numberFont, labelColor, labelFont, preLabelColor, preLabelFont, postLabelColor, postLabelFont, border, borderRadius, borderWidth, mobileBorderWidth, tabletBorderWidth, background, vsdesk, vstablet, vsmobile, countdownType, paddingType, marginType, containerMobilePadding, containerTabletPadding, containerPadding, containerMobileMargin, containerTabletMargin, containerMargin, itemBorder, itemBorderWidth, itemBackground, itemTabletBorderWidth, itemMobileBorderWidth, itemPadding, itemTabletPadding, itemMobilePadding, itemBorderRadius, itemPaddingType, timeNumbers, countdownDivider, revealOnLoad, evergreenStrict }, setAttributes, className, clientId } = this.props;
 		const { previewExpired, borderWidthControl, borderRadiusControl, paddingControl, marginControl, itemBorderRadiusControl, itemPaddingControl, itemBorderWidthControl } = this.state;
 		const countdownTypes = applyFilters( 'kadence.countdownTypes', typeOptions );
 		const countdownActions = applyFilters( 'kadence.countdownActions', actionOptions );
@@ -440,6 +440,9 @@ class KadenceCountdown extends Component {
 			if ( undefined !== this.props.parentBlock.attributes.evergreenReset && this.props.parentBlock.attributes.evergreenReset !== evergreenReset ) {
 				setAttributes( { evergreenReset: this.props.parentBlock.attributes.evergreenReset } )
 			}
+			if ( undefined !== this.props.parentBlock.attributes.evergreenStrict && this.props.parentBlock.attributes.evergreenStrict !== evergreenStrict ) {
+				setAttributes( { evergreenStrict: this.props.parentBlock.attributes.evergreenStrict } )
+			}
 		}
 		return (
 			<div className={ classes } style={ {
@@ -647,6 +650,12 @@ class KadenceCountdown extends Component {
 													min={ 0 }
 													max={ 100 }
 													step={ 1 }
+												/>
+												<ToggleControl
+													label={ __( 'Verify by IP Address', 'kadence-blocks' ) }
+													checked={ evergreenStrict }
+													onChange={ value => setAttributes( { evergreenStrict: value } ) }
+													help={ __( 'This will add a delay to the rendering of the countdown if no cookie found as it will query the server database to see if the user can be found by their IP address', 'kadence-blocks' ) }
 												/>
 											</Fragment>
 										) }

@@ -47,6 +47,10 @@ const attributes = {
 		type: 'number',
 		default: 30,
 	},
+	evergreenStrict: {
+		type: 'bool',
+		default: false,
+	},
 	enableTimer: {
 		type: 'bool',
 		default: true,
