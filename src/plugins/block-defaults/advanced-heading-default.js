@@ -90,6 +90,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
 			{ key: 'em', name: __( 'em' ) },
+			{ key: 'rem', name: __( 'rem' ) },
 		];
 		const headingOptions = [
 			[

@@ -89,7 +89,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 1.10.6 =
 * Add: Countdown Block.
+* Fix: Tabs anchor links on mobile when showing accordion.
 * Fix: Button editor preview and margin settings.
+* Fix: Add missing rem to heading size defaults.
 
 = 1.10.5 =
 * Update: Add testimonial wrapper padding.

@@ -790,7 +790,7 @@ class KadenceRowLayout extends Component {
 						initialOpen={ false }
 					>
 						<MeasurementControls
-							label={ __( 'Mobile Padding', 'kadence-blocks' ) }
+							label={ __( 'Padding', 'kadence-blocks' ) }
 							measurement={ [ topPaddingM, rightPaddingM, bottomPaddingM, leftPaddingM ] }
 							onChange={ ( value ) => setAttributes( { topPaddingM: value[ 0 ], rightPaddingM: value[ 1 ], bottomPaddingM: value[ 2 ], leftPaddingM: value[ 3 ] } ) }
 							min={ paddingMin }
@@ -803,8 +803,8 @@ class KadenceRowLayout extends Component {
 							units={ [ 'px', 'em', 'rem', '%', 'vh', 'vw' ] }
 						/>
 						<MeasurementControls
-							label={ __( 'Mobile Margin', 'kadence-blocks' ) }
-							measurement={ [ ( topMarginM ? topMarginM : '' ), 'auto', ( bottomMarginM ? bottomMarginM : '' ), 'auto' ] }
+							label={ __( 'Margin', 'kadence-blocks' ) }
+							measurement={ [ ( undefined !== topMarginM ? topMarginM : '' ), 'auto', ( undefined !== bottomMarginM ? bottomMarginM : '' ), 'auto' ] }
 							onChange={ ( value ) => {
 								setAttributes( { topMarginM: value[ 0 ], bottomMarginM: value[ 2 ] } );
 							} }
@@ -1068,7 +1068,7 @@ class KadenceRowLayout extends Component {
 						/>
 						<MeasurementControls
 							label={ __( 'Margin', 'kadence-blocks' ) }
-							measurement={ [ ( topMarginT ? topMarginT : '' ), 'auto', ( bottomMarginT ? bottomMarginT : '' ), 'auto' ] }
+							measurement={ [ ( undefined !== topMarginT ? topMarginT : '' ), 'auto', ( undefined !== bottomMarginT ? bottomMarginT : '' ), 'auto' ] }
 							onChange={ ( value ) => {
 								setAttributes( { topMarginT: value[ 0 ], bottomMarginT: value[ 2 ] } );
 							} }
@@ -1461,7 +1461,7 @@ class KadenceRowLayout extends Component {
 						/>
 						<MeasurementControls
 							label={ __( 'Margin', 'kadence-blocks' ) }
-							measurement={ [ ( topMargin ? topMargin : '' ), 'auto', ( bottomMargin ? bottomMargin : '' ), 'auto' ] }
+							measurement={ [ ( undefined !== topMargin ? topMargin : '' ), 'auto', ( undefined !== bottomMargin ? bottomMargin : '' ), 'auto' ] }
 							onChange={ ( value ) => {
 								setAttributes( { topMargin: value[ 0 ], bottomMargin: value[ 2 ] } );
 							} }
