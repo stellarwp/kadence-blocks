@@ -96,6 +96,7 @@ registerBlockType( 'kadence/form', {
 				required: false,
 				width: [ '100', '', '' ],
 				auto: '',
+				errorMessage: '',
 			},
 			{
 				label: 'Email',
@@ -117,6 +118,7 @@ registerBlockType( 'kadence/form', {
 				required: true,
 				width: [ '100', '', '' ],
 				auto: '',
+				errorMessage: '',
 			},
 			{
 				label: 'Message',
@@ -138,6 +140,7 @@ registerBlockType( 'kadence/form', {
 				required: true,
 				width: [ '100', '', '' ],
 				auto: '',
+				errorMessage: '',
 			} ],
 		},
 		messages: {

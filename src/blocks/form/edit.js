@@ -1553,6 +1553,7 @@ class KadenceForm extends Component {
 									required: false,
 									width: [ '100', '', '' ],
 									auto: '',
+									errorMessage: '',
 								} );
 								setAttributes( { fields: newFields } );
 								this.saveFields( { multiSelect: fields[ 0 ].multiSelect }, 0 );

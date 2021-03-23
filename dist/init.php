@@ -122,6 +122,7 @@ function kadence_gutenberg_editor_assets() {
 			'taxonomies'     => kadence_blocks_get_taxonomies(),
 			'g_fonts'        => file_exists( $gfonts_path ) ? include $gfonts_path : array(),
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
+			'c_fonts'        => apply_filters( 'kadence_blocks_custom_fonts', array() ),
 			'fluentCRM'      => defined( 'FLUENTCRM' ),
 			// 'icon_names'     => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
 			// 'icons_ico'      => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
@@ -134,7 +135,7 @@ function kadence_gutenberg_editor_assets() {
 		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
 	}
 }
-add_action( 'init', 'kadence_gutenberg_editor_assets' );
+add_action( 'init', 'kadence_gutenberg_editor_assets', 12 );
 
 /**
  * Get the asset file produced by wp scripts.
@@ -352,6 +353,37 @@ function kadence_blocks_get_button_weights() {
 	}
 	return apply_filters( 'kadence_blocks_button_weight_options', $weights );
 }
+/**
+ * Add a filter that matches for custom font filter.
+ */
+function kadence_blocks_convert_custom_fonts() {
+	if ( ! is_admin() ) {
+		return;
+	}
+	$convert_fonts = apply_filters( 'kadence_blocks_add_custom_fonts', array() );
+	if ( ! empty( $convert_fonts ) && is_array( $convert_fonts ) ) {
+		add_filter(
+			'kadence_blocks_custom_fonts',
+			function( $custom_fonts ) use( $convert_fonts ) {
+				foreach ( $convert_fonts as $font_name => $args ) {
+					$weights_arg = array();
+					if ( is_array( $args ) && isset( $args['weights'] ) && is_array( $args['weights'] ) ) {
+						$weights_arg = $args['weights'];
+					}
+					$font_slug = ( is_array( $args ) && isset( $args['fallback'] ) && ! empty( $args['fallback'] ) ? '"' . $font_name . '", ' . $args['fallback'] : $font_name );
+					$custom_fonts[ $font_slug  ] = array(
+						'name'    => $font_slug,
+						'weights' => $weights_arg,
+						'styles'  => array(),
+					);
+				}
+				return $custom_fonts;
+			},
+			10
+		);
+	}
+}
+add_filter( 'init', 'kadence_blocks_convert_custom_fonts', 11 );
 /**
  * Get an array of visibility options.
  */

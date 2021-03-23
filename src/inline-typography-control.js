@@ -61,7 +61,7 @@ class InlineTypographyControl extends Component {
 		const fontsarray = typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.g_font_names ? kadence_blocks_params.g_font_names.map( ( name ) => {
 			return { label: name, value: name, google: true };
 		} ) : {};
-		const options = [
+		let options = [
 			{
 				type: 'group',
 				label: 'Standard Fonts',
@@ -89,6 +89,41 @@ class InlineTypographyControl extends Component {
 				options: fontsarray,
 			},
 		];
+		if ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.c_fonts ) {
+			const newOptions = [];
+			Object.keys( kadence_blocks_params.c_fonts ).forEach(function ( font ) {
+				const name = kadence_blocks_params.c_fonts[font].name;
+				const weights = [];
+				Object.keys( kadence_blocks_params.c_fonts[font].weights ).forEach(function ( weight ) {
+					weights.push( {
+						value: kadence_blocks_params.c_fonts[font].weights[weight],
+						label: kadence_blocks_params.c_fonts[font].weights[weight],
+					} ); 
+				} );
+				const styles = [];
+				Object.keys( kadence_blocks_params.c_fonts[font].styles ).forEach(function ( style ) {
+					styles.push( {
+						value: kadence_blocks_params.c_fonts[font].weights[style],
+						label: kadence_blocks_params.c_fonts[font].weights[style],
+					} ); 
+				} );
+				newOptions.push( {
+					label: name,
+					value: name,
+					google: false,
+					weights: weights,
+					styles: styles,
+				} );
+			} );
+			const custom_fonts = [
+				{
+					type: 'group',
+					label: __( 'Custom Fonts', 'kadence-custom-fonts' ),
+					options: newOptions,
+				},
+			];
+			options = custom_fonts.concat( options );
+		}
 		let typographyOptions = applyFilters( 'kadence.typography_options', options );
 		let typographySelectOptions = [].concat.apply( [], typographyOptions.map( option => option.options ) );
 		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );

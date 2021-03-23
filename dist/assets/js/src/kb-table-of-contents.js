@@ -20,7 +20,11 @@
 					return;
 				}
 				for ( let n = 0; n < heading_items.length; n++ ) {
-					if ( heading_items[ n ].textContent.replace(/–/g, '-').replace(/’/g, "'").includes( headings[ i ].content.replace(/–/g, '-') ) ) {
+					// console.log( heading_items[ n ].textContent.replace(/–/g, '-').replace(/’/g, "'").replace(/“/g, '"').replace(/”/g, '"') );
+					// console.log ( headings[ i ].content.replace(/–/g, '-') );
+					// console.log ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '') );
+					// console.log ( headings[ i ].content.replace(/[^\w\s]/gi, '') );
+					if ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '').includes( headings[ i ].content.replace(/[^\w\s]/gi, '') ) ) {
 						heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
 						break;
 					}
