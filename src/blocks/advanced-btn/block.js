@@ -126,7 +126,10 @@ registerBlockType( 'kadence/advancedbtn', {
 				iconPadding: [ '', '', '', '' ],
 				iconTabletPadding: [ '', '', '', '' ],
 				iconMobilePadding: [ '', '', '', '' ],
-				onlyIcon: [ false, '', '' ]
+				onlyIcon: [ false, '', '' ],
+				iconColor: '',
+				iconColorHover: '',
+				sizeType: 'px',
 			} ],
 		},
 		letterSpacing: {

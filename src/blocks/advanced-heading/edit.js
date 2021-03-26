@@ -58,9 +58,13 @@ const {
 	ToolbarGroup,
 	Dashicon,
 	TabPanel,
+	Spinner,
 	SelectControl,
 	TextControl,
 } = wp.components;
+const {
+	applyFilters,
+} = wp.hooks;
 /**
  * Regular expression matching invalid anchor characters for replacement.
  *
@@ -162,8 +166,8 @@ class KadenceAdvancedHeading extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes, className, setAttributes, mergeBlocks, onReplace } = this.props;
-		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic } = attributes;
+		const { attributes, className, setAttributes, mergeBlocks, onReplace, clientId } = this.props;
+		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic } = attributes;
 		const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -179,6 +183,7 @@ class KadenceAdvancedHeading extends Component {
 		const config = ( googleFont ? gconfig : '' );
 		const sconfig = ( markGoogleFont ? sgconfig : '' );
 		const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
+		const TagHTML = tagName;
 		const fontMin = ( sizeType !== 'px' ? 0.2 : 5 );
 		const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -200 );
 		const marginMax = ( marginType === 'em' || marginType === 'rem' ? 12 : 200 );
@@ -270,6 +275,33 @@ class KadenceAdvancedHeading extends Component {
 			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
 			[ className ]: className,
 		} );
+		const dynamicHeadingContent = (
+			<TagHTML
+				style={ {
+					textAlign: previewAlign,
+					color: color ? KadenceColorOutput( color ) : undefined,
+					fontWeight: fontWeight,
+					fontStyle: fontStyle,
+					fontSize: ( previewFontSize ? previewFontSize + sizeType : undefined ),
+					lineHeight: ( previewLineHeight ? previewLineHeight + lineType : undefined ),
+					letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
+					textTransform: ( textTransform ? textTransform : undefined ),
+					fontFamily: ( typography ? typography : '' ),
+					paddingTop: ( undefined !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
+					paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
+					paddingBottom: ( undefined !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
+					paddingLeft: ( undefined !== previewPaddingLeft ? previewPaddingLeft + paddingType : undefined ),
+					marginTop: ( undefined !== previewMarginTop ? previewMarginTop + marginType : undefined ),
+					marginRight: ( undefined !== previewMarginRight ? previewMarginRight + marginType : undefined ),
+					marginBottom: ( undefined !== previewMarginBottom ? previewMarginBottom + marginType : undefined ),
+					marginLeft: ( undefined !== previewMarginLeft ? previewMarginLeft + marginType : undefined ),
+					textShadow: ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
+				} }
+				className={ classes }
+			>
+				{ applyFilters( 'kadence.dynamicText', <Spinner />, attributes, clientId ) }
+			</TagHTML>
+		);
 		const headingContent = (
 			<RichText
 				tagName={ tagName }
@@ -726,12 +758,12 @@ class KadenceAdvancedHeading extends Component {
 							data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
 							data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
 						>
-							{ headingContent }
+							{ undefined !== kadenceDynamic && undefined !== kadenceDynamic[0] && undefined !== kadenceDynamic[0].enable && kadenceDynamic[0].enable ? dynamicHeadingContent : headingContent }
 						</div>
 					</div>
 				) }
 				{ ! kadenceAnimation && (
-					headingContent
+					undefined !== kadenceDynamic && undefined !== kadenceDynamic[0] && undefined !== kadenceDynamic[0].enable && kadenceDynamic[0].enable ? dynamicHeadingContent : headingContent
 				) }
 				{ googleFont && (
 					<WebfontLoader config={ config }>

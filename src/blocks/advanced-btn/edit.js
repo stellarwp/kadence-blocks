@@ -413,7 +413,7 @@ class KadenceAdvancedButton extends Component {
 						<span className={ btnClassName } style={ {
 							background: ( undefined !== btnbg ? btnbg : undefined ),
 							color: ( undefined !== btns[ index ].color ? KadenceColorOutput( btns[ index ].color ) : undefined ),
-							fontSize: ( undefined !== btns[ index ].size ? this.getPreviewSize( this.props.getPreviewDevice, btns[ index ].size, ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ), ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) ) + 'px' : undefined ),
+							fontSize: ( undefined !== btns[ index ].size ? this.getPreviewSize( this.props.getPreviewDevice, btns[ index ].size, ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ), ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) ) + ( undefined !== btns[ index ].sizeType ? btns[ index ].sizeType : 'px' ) : undefined ),
 							fontWeight: fontWeight,
 							fontStyle: fontStyle,
 							letterSpacing: letterSpacing + 'px',
@@ -681,6 +681,29 @@ class KadenceAdvancedButton extends Component {
 					/>
 					{ this.showSettings( 'sizeSettings' ) && (
 						<Fragment>
+							<ResponsiveRangeControls
+								label={ __( 'Font Size', 'kadence-blocks' ) }
+								value={ btns[ index ].size ? btns[ index ].size : '' }
+								onChange={ value => {
+									this.saveArrayUpdate( { size: value }, index );
+								} }
+								tabletValue={ ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ) }
+								onChangeTablet={ ( value ) => {
+									this.saveArrayUpdate( { responsiveSize: [ value, ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) ] }, index );
+								} }
+								mobileValue={ ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) }
+								onChangeMobile={ ( value ) => {
+									this.saveArrayUpdate( { responsiveSize: [ ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ), value ] }, index );
+								} }
+								min={ 0 }
+								max={ ( ( btns[ index ].sizeType ? btns[ index ].sizeType : 'px' ) !== 'px' ? 12 : 200 ) }
+								step={ ( ( btns[ index ].sizeType ? btns[ index ].sizeType : 'px' ) !== 'px' ? 0.1 : 1 ) }
+								unit={ btns[ index ].sizeType ? btns[ index ].sizeType : 'px' }
+								onUnit={ ( value ) => {
+									this.saveArrayUpdate( { sizeType: value }, index );
+								} }
+								units={ [ 'px', 'em', 'rem' ] }
+							/>
 							<h2 className="kt-heading-size-title">{ __( 'Text Size', 'kadence-blocks' ) }</h2>
 							<TabPanel className="kt-size-tabs"
 								activeClass="active-tab"

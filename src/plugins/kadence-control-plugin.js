@@ -64,13 +64,16 @@ class KadenceConfig extends Component {
 	}
 	render() {
 		const changeBodyClass = ( key ) => {
-			document.body.classList.remove( 'kadence-preview-width-tablet' );
-			document.body.classList.remove( 'kadence-preview-width-mobile' );
-			document.body.classList.remove( 'kadence-preview-width-desktop' );
-			document.body.classList.add( 'kadence-preview-width-' + key.toLowerCase() );
+			if ( key ) {
+				document.body.classList.remove( 'kadence-preview-width-tablet' );
+				document.body.classList.remove( 'kadence-preview-width-mobile' );
+				document.body.classList.remove( 'kadence-preview-width-desktop' );
+				document.body.classList.add( 'kadence-preview-width-' + key.toLowerCase() );
+			}
 		};
 		if ( this.state.deviceType !== this.props.getPreviewDevice ) {
 			this.setState( { deviceType:this.props.getPreviewDevice } );
+			console.log( this.props.getPreviewDevice );
 			changeBodyClass( this.props.getPreviewDevice );
 		}
 		return (

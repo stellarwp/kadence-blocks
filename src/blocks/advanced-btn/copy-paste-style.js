@@ -70,6 +70,9 @@ class ButtonStyleCopyPaste extends Component {
 				if ( blockAttributes.btns[ buttonIndex ].size ) {
 					copyStyles.btn[ 0 ].size = blockAttributes.btns[ buttonIndex ].size;
 				}
+				if ( blockAttributes.btns[ buttonIndex ].sizeType ) {
+					copyStyles.btn[ 0 ].sizeType = blockAttributes.btns[ buttonIndex ].sizeType;
+				}
 				if ( blockAttributes.btns[ buttonIndex ].paddingBT ) {
 					copyStyles.btn[ 0 ].paddingBT = blockAttributes.btns[ buttonIndex ].paddingBT;
 				}
@@ -186,6 +189,12 @@ class ButtonStyleCopyPaste extends Component {
 				}
 				if ( blockAttributes.btns[ buttonIndex ].onlyIcon ) {
 					copyStyles.btn[ 0 ].onlyIcon = blockAttributes.btns[ buttonIndex ].onlyIcon;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].iconColor ) {
+					copyStyles.btn[ 0 ].iconColor = blockAttributes.btns[ buttonIndex ].iconColor;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].iconColorHover ) {
+					copyStyles.btn[ 0 ].iconColorHover = blockAttributes.btns[ buttonIndex ].iconColorHover;
 				}
 			}
 			if ( blockAttributes.letterSpacing ) {
