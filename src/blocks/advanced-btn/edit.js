@@ -24,6 +24,7 @@ import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 import URLInputControl from '../../components/common/link-control';
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
@@ -704,78 +705,6 @@ class KadenceAdvancedButton extends Component {
 								} }
 								units={ [ 'px', 'em', 'rem' ] }
 							/>
-							<h2 className="kt-heading-size-title">{ __( 'Text Size', 'kadence-blocks' ) }</h2>
-							<TabPanel className="kt-size-tabs"
-								activeClass="active-tab"
-								tabs={ [
-									{
-										name: 'desk',
-										title: <Dashicon icon="desktop" />,
-										className: 'kt-desk-tab',
-									},
-									{
-										name: 'tablet',
-										title: <Dashicon icon="tablet" />,
-										className: 'kt-tablet-tab',
-									},
-									{
-										name: 'mobile',
-										title: <Dashicon icon="smartphone" />,
-										className: 'kt-mobile-tab',
-									},
-								] }>
-								{
-									( tab ) => {
-										let tabout;
-										if ( tab.name ) {
-											if ( 'mobile' === tab.name ) {
-												tabout = (
-													<KadenceRange
-														className="btn-text-size-range"
-														beforeIcon="editor-textcolor"
-														afterIcon="editor-textcolor"
-														value={ ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) }
-														onChange={ value => {
-															this.saveArrayUpdate( { responsiveSize: [ ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ), value ] }, index );
-														} }
-														min={ 4 }
-														max={ 100 }
-													/>
-												);
-											} else if ( 'tablet' === tab.name ) {
-												tabout = (
-													<KadenceRange
-														className="btn-text-size-range"
-														beforeIcon="editor-textcolor"
-														afterIcon="editor-textcolor"
-														value={ ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 0 ] ? btns[ index ].responsiveSize[ 0 ] : '' ) }
-														onChange={ value => {
-															this.saveArrayUpdate( { responsiveSize: [ value, ( undefined !== btns[ index ].responsiveSize && undefined !== btns[ index ].responsiveSize[ 1 ] ? btns[ index ].responsiveSize[ 1 ] : '' ) ] }, index );
-														} }
-														min={ 4 }
-														max={ 100 }
-													/>
-												);
-											} else {
-												tabout = (
-													<KadenceRange
-														className="btn-text-size-range"
-														beforeIcon="editor-textcolor"
-														afterIcon="editor-textcolor"
-														value={ btns[ index ].size }
-														onChange={ value => {
-															this.saveArrayUpdate( { size: value }, index );
-														} }
-														min={ 4 }
-														max={ 100 }
-													/>
-												);
-											}
-										}
-										return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-									}
-								}
-							</TabPanel>
 							<div className="kt-btn-size-settings-container">
 								<h2 className="kt-beside-btn-group">{ __( 'Button Size' ) }</h2>
 								<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Button Size', 'kadence-blocks' ) }>

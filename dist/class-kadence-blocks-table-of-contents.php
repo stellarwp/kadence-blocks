@@ -731,7 +731,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		// Container.
-		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity)' );
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
 		if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) ) {
 			$css->add_property( 'margin', $css->render_measure( $attributes['containerMargin'], 'px' ) );
 		}
@@ -856,7 +856,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		}
 		// Tablet.
 		$css->start_media_query( $media_query['tablet'] );
-		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity)' );
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
 		if ( isset( $attributes['containerTabletMargin'] ) && is_array( $attributes['containerTabletMargin'] ) ) {
 			$css->add_property( 'margin', $css->render_measure( $attributes['containerTabletMargin'], 'px' ) );
 		}
@@ -883,7 +883,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		$css->stop_media_query();
 		// Mobile.
 		$css->start_media_query( $media_query['mobile'] );
-		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity)' );
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
 		if ( isset( $attributes['containerMobileMargin'] ) && is_array( $attributes['containerMobileMargin'] ) ) {
 			$css->add_property( 'margin', $css->render_measure( $attributes['containerMobileMargin'], 'px' ) );
 		}

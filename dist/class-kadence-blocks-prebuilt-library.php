@@ -127,6 +127,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			// Ajax Calls.
 			add_action( 'wp_ajax_kadence_import_get_prebuilt_data', array( $this, 'prebuilt_data_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_reload_prebuilt_data', array( $this, 'prebuilt_data_reload_ajax_callback' ) );
+			add_action( 'wp_ajax_kadence_import_get_new_connection_data', array( $this, 'prebuilt_connection_info_ajax_callback' ) );
 		}
 
 		// Add a cleanup routine.
@@ -231,12 +232,12 @@ class Kadence_Blocks_Prebuilt_Library {
 	 */
 	public function get_remote_url_contents() {
 		$args = array(
-			'key'       => $this->package,
+			'key'       => $this->key,
 			'api_email' => $this->api_email,
 			'api_key'   => $this->api_key,
 		);
 		// Get the response.
-		$api_url  = add_query_arg( $args, $this->remote_url );
+		$api_url  = add_query_arg( $args, $this->url );
 		$response = wp_remote_get( $api_url );
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
@@ -305,14 +306,67 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * 3). import content
 	 * 4). execute 'after content import' actions (before widget import WP action, widget import, customizer import, after import WP action)
 	 */
+	public function prebuilt_connection_info_ajax_callback() {
+		// Verify if the AJAX call is valid (checks nonce and current_user_can).
+		$this->verify_ajax_call();
+		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
+		$this->api_email     = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->package       = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
+		$this->url           = empty( $_POST['url'] ) ? '' : sanitize_text_field( $_POST['url'] ) . 'wp-json/kadence-cloud/v1/info/';
+		$this->key           = empty( $_POST['key'] ) ? 'section' : sanitize_text_field( $_POST['key'] );
+		// Do you have the data?
+		$get_data = $this->get_connection_data();
+		if ( ! $get_data ) {
+			// Send JSON Error response to the AJAX call.
+			wp_send_json( esc_html__( 'No Connection data', 'kadence-blocks' ) );
+		} else {
+			wp_send_json( $get_data );
+		}
+		die;
+	}
+	/**
+	 * Get the local data file if there, else query the api.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_connection_data( $skip_local = false ) {
+		$args = array(
+			'key'       => $this->key,
+		);
+		// Get the response.
+		$api_url  = add_query_arg( $args, $this->url );
+		$response = wp_remote_get( $api_url );
+		// Early exit if there was an error.
+		if ( is_wp_error( $response ) ) {
+			return '';
+		}
+
+		// Get the CSS from our response.
+		$contents = wp_remote_retrieve_body( $response );
+
+		// Early exit if there was an error.
+		if ( is_wp_error( $contents ) ) {
+			return;
+		}
+
+		return $contents;
+	}
+	/**
+	 * Main AJAX callback function for:
+	 * 1). get local data if there
+	 * 2). query api for data if needed
+	 * 3). import content
+	 * 4). execute 'after content import' actions (before widget import WP action, widget import, customizer import, after import WP action)
+	 */
 	public function prebuilt_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
 		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
 		$this->api_email     = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
 		$this->package       = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
-		$this->url           = empty( $_POST['url'] ) ? $this->remote_url : sanitize_text_field( $_POST['url'] );
-		$this->key           = empty( $_POST['key'] ) ? '' : sanitize_text_field( $_POST['key'] );
+		$this->url           = empty( $_POST['url'] ) ? $this->remote_url : sanitize_text_field( $_POST['url'] ) . 'wp-json/kadence-cloud/v1/get/';
+		$this->key           = empty( $_POST['key'] ) ? 'section' : sanitize_text_field( $_POST['key'] );
 		// Do you have the data?
 		$get_data = $this->get_template_data();
 		if ( ! $get_data ) {
@@ -344,8 +398,8 @@ class Kadence_Blocks_Prebuilt_Library {
 		$this->api_key   = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
 		$this->api_email = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
 		$this->package   = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
-		$this->url       = empty( $_POST['url'] ) ? $this->remote_url : sanitize_text_field( $_POST['url'] );
-		$this->key       = empty( $_POST['key'] ) ? '' : sanitize_text_field( $_POST['key'] );
+		$this->url       = empty( $_POST['url'] ) ? $this->remote_url : sanitize_text_field( $_POST['url'] ) . 'wp-json/kadence-cloud/v1/get/';
+		$this->key       = empty( $_POST['key'] ) ? 'section' : sanitize_text_field( $_POST['key'] );
 
 		$removed = $this->delete_block_library_folder();
 		if ( ! $removed ) {

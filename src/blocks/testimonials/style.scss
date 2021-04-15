@@ -253,6 +253,16 @@
 	.kt-testimonial-meta-wrap .kt-testimonial-meta-name-wrap {
 		text-align: center;
 	}
+	&.kt-testimonials-icon-on.kt-testimonial-halign-center .kt-testimonial-item-wrap {
+		text-align: left;
+	}
+	.kt-svg-testimonial-global-icon-wrap {
+		float: left;
+		margin: 0 10px 0 0;
+	}
+	&.kt-testimonial-halign-right .kt-svg-testimonial-global-icon-wrap {
+		float:right;
+	}
 }
 .kt-testimonial-style-card.kt-testimonial-halign-right .kt-testimonial-media-inner-wrap {
 	margin: 0 0 15px 0;

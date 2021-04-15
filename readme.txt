@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.7.0
-Stable tag: 1.10.7
+Stable tag: 1.10.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,18 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 1.10.8 =
+* Add: hidden field option to form block.
+* Update: rewrite form js, remove jQuery dependency.
+* Update: Add form field custom error notice options.
+* Fix: Gallery issue with custom links open in new tab resetting.
+* Fix: Issue with Table of Contents Block Margin.
+* Fix: Issue with testimonials wrapper padding unit.
+* Fix: Editor Row background styles.
+* Fix: Issue with Radio Buttons showing inline in Form.
+* Fix: icon list, link text settings.
+* Fix: Info block issue with icon flip in some browsers.
 
 = 1.10.7 =
 * Update: Table of Contents Block for better special character support.

@@ -135,11 +135,19 @@
 			width: 100%;
 			flex-grow: 1;
 			margin-top: 0.3em;
+			&.kb-radio-style-inline {
+				display: flex;
+			}
 		}
 		.kb-checkbox-item, .kb-radio-item {
 			display: flex;
 			margin: 0;
 			align-items: center;
+		}
+		.kb-radio-style-inline {
+			.kb-checkbox-item:not(:first-child), .kb-radio-item:not(:first-child) {
+				margin-left: 0.8em;
+			}
 		}
 		&.kb-input-size-custom {
 			.kb-text-style-field {

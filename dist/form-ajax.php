@@ -47,7 +47,6 @@ class KB_Ajax_Form {
 				$valid = check_ajax_referer( 'kb_form_nonce', '_kb_form_verify', false );
 			}
 			if ( $valid ) {
-				//error_log( print_r( $_POST, true ) );
 				// Lets get form data.
 				$form_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_id'] ) );
 				$post_id = absint( wp_unslash( $_POST['_kb_form_post_id'] ) );

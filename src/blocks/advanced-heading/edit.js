@@ -299,7 +299,7 @@ class KadenceAdvancedHeading extends Component {
 				} }
 				className={ classes }
 			>
-				{ applyFilters( 'kadence.dynamicText', <Spinner />, attributes, clientId ) }
+				{ undefined !== kadenceDynamic && undefined !== kadenceDynamic[0] && undefined !== kadenceDynamic[0].enable && kadenceDynamic[0].enable ? applyFilters( 'kadence.dynamicText', <Spinner />, attributes, clientId ) : <Spinner /> }
 			</TagHTML>
 		);
 		const headingContent = (

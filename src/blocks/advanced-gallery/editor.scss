@@ -307,7 +307,7 @@
 	@media (min-width: 600px) {
 		@for $i from 2 through 8 {
 			&[data-columns-xxl="#{ $i }"] .kadence-blocks-gallery-item {
-				width: (100% / #{ $i });
+				width: calc(100%/#{ $i });
 			}
 		}
 	}

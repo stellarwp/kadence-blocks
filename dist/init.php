@@ -124,6 +124,7 @@ function kadence_gutenberg_editor_assets() {
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
 			'c_fonts'        => apply_filters( 'kadence_blocks_custom_fonts', array() ),
 			'fluentCRM'      => defined( 'FLUENTCRM' ),
+			'cloud_settings' => get_option( 'kadence_blocks_cloud' ),
 			// 'icon_names'     => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
 			// 'icons_ico'      => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
 			// 'icons_fa'       => file_exists( $icons_path ) ? include $icons_path : array(),

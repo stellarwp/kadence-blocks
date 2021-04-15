@@ -24,7 +24,7 @@
 					// console.log ( headings[ i ].content.replace(/–/g, '-') );
 					// console.log ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '') );
 					// console.log ( headings[ i ].content.replace(/[^\w\s]/gi, '') );
-					if ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '').includes( headings[ i ].content.replace(/[^\w\s]/gi, '') ) ) {
+					if ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '') === headings[ i ].content.replace(/[^\w\s]/gi, '') ) {
 						heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
 						break;
 					}

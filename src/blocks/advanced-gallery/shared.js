@@ -17,6 +17,9 @@ export const pickRelevantMediaFiles = ( image, lightSize, thumbSize, oldImages )
 				if ( oldImages[ k ].customLink ) {
 					imageProps.customLink = oldImages[ k ].customLink;
 				}
+				if ( oldImages[ k ].linkTarget ) {
+					imageProps.linkTarget = oldImages[ k ].linkTarget;
+				}
 			}
 		}
 	}
@@ -44,6 +47,7 @@ export const pickRelevantMediaFilesUpdate = ( image, lightSize, thumbSize ) => {
 	imageProps.caption = get( theImage, [ 'caption', 'raw' ] ) || get( theImage, [ 'caption' ] ) || undefined;
 	imageProps.url = theImage.source_url || image.url;
 	imageProps.customLink = image.customLink;
+	imageProps.linkTarget = image.linkTarget;
 	imageProps.thumbUrl = get( theImage, [ 'sizes', thumbSize, 'url' ] ) || get( theImage, [ 'media_details', 'sizes', thumbSize, 'source_url' ] ) || theImage.source_url || image.url;
 	imageProps.lightUrl = get( theImage, [ 'sizes', lightSize, 'url' ] ) || get( theImage, [ 'media_details', 'sizes', lightSize, 'source_url' ] ) || theImage.source_url || image.url;
 	imageProps.width = get( theImage, [ 'sizes', thumbSize, 'width' ] ) || get( theImage, [ 'media_details', 'sizes', thumbSize, 'width' ] ) || get( theImage, [ 'media_details', 'width' ] ) || undefined;

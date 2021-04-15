@@ -426,6 +426,17 @@ class Kadence_Blocks_Settings {
 				'default'           => '',
 			)
 		);
+		register_setting(
+			'kadence_blocks_cloud',
+			'kadence_blocks_cloud',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Config Kadence Blocks Cloud', 'kadence-blocks' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
+		);
 	}
 	/**
 	 * Register settings

@@ -5,7 +5,7 @@
  * Description: Advanced Page Building Blocks for Gutenberg. Create custom column layouts, backgrounds, dual buttons, icons etc.
  * Author: Kadence WP
  * Author URI: https://www.kadencewp.com
- * Version: 1.10.7
+ * Version: 1.10.8
  * Text Domain: kadence-blocks
  * License: GPL2+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'KADENCE_BLOCKS_PATH', realpath( plugin_dir_path( __FILE__ ) ) . DIRECTORY_SEPARATOR );
 define( 'KADENCE_BLOCKS_URL', plugin_dir_url( __FILE__ ) );
-define( 'KADENCE_BLOCKS_VERSION', '1.10.7' );
+define( 'KADENCE_BLOCKS_VERSION', '1.10.8' );
 
 /**
  * Add a check before redirecting
@@ -38,7 +38,7 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'dist/init.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/form-ajax.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/helper-functions.php';
-	// require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-prebuilt-library.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-prebuilt-library.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-css.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-frontend.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-table-of-contents.php';

@@ -834,6 +834,45 @@ class KadenceForm extends Component {
 		};
 		const fieldControls = ( index ) => {
 			const isFieldSelected = ( isSelected && this.state.selectedField === index );
+			if ( 'hidden' === fields[ index ].type ) {
+				return (
+					<PanelBody
+						title={ ( undefined !== fields[ index ].label && null !== fields[ index ].label && '' !== fields[ index ].label ? fields[ index ].label : __( 'Field', 'kadence-blocks' ) + ' ' + ( index + 1 ) ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
+						initialOpen={ false }
+						opened={ ( true === isFieldSelected ? true : undefined ) }
+					>
+						<SelectControl
+							label={ __( 'Field Type', 'kadence-blocks' ) }
+							value={ fields[ index ].type }
+							options={ [
+								{ value: 'text', label: __( 'Text', 'kadence-blocks' ) },
+								{ value: 'email', label: __( 'Email', 'kadence-blocks' ) },
+								{ value: 'textarea', label: __( 'Textarea', 'kadence-blocks' ) },
+								{ value: 'accept', label: __( 'Accept', 'kadence-blocks' ) },
+								{ value: 'select', label: __( 'Select', 'kadence-blocks' ) },
+								{ value: 'tel', label: __( 'Telephone', 'kadence-blocks' ) },
+								{ value: 'checkbox', label: __( 'CheckBoxes', 'kadence-blocks' ) },
+								{ value: 'radio', label: __( 'Radio', 'kadence-blocks' ) },
+								{ value: 'hidden', label: __( 'Hidden', 'kadence-blocks' ) },
+							] }
+							onChange={ value => {
+								this.saveFields( { type: value }, index );
+							} }
+						/>
+						<TextControl
+							label={ __( 'Field Name', 'kadence-blocks' ) }
+							placeholder={ __( 'Field Name', 'kadence-blocks' ) }
+							value={ ( undefined !== fields[ index ].label ? fields[ index ].label : '' ) }
+							onChange={ ( value ) => this.saveFields( { label: value }, index ) }
+						/>
+						<TextControl
+							label={ __( 'Field Input', 'kadence-blocks' ) }
+							value={ ( undefined !== fields[ index ].default ? fields[ index ].default : '' ) }
+							onChange={ ( value ) => this.saveFields( { default: value }, index ) }
+						/>
+					</PanelBody>
+				);
+			}
 			return (
 				<PanelBody
 					title={ ( undefined !== fields[ index ].label && null !== fields[ index ].label && '' !== fields[ index ].label ? fields[ index ].label : __( 'Field', 'kadence-blocks' ) + ' ' + ( index + 1 ) ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
@@ -852,6 +891,7 @@ class KadenceForm extends Component {
 							{ value: 'tel', label: __( 'Telephone', 'kadence-blocks' ) },
 							{ value: 'checkbox', label: __( 'CheckBoxes', 'kadence-blocks' ) },
 							{ value: 'radio', label: __( 'Radio', 'kadence-blocks' ) },
+							{ value: 'hidden', label: __( 'Hidden', 'kadence-blocks' ) },
 						] }
 						onChange={ value => {
 							this.saveFields( { type: value }, index );
@@ -1132,6 +1172,22 @@ class KadenceForm extends Component {
 							}
 						}
 					</TabPanel>
+					{ ( undefined !== fields[ index ].required ? fields[ index ].required : false ) && (
+						<TextControl
+							label={ __( 'Field error message when required', 'kadence-blocks' ) }
+							value={ ( undefined !== fields[ index ].requiredMessage ? fields[ index ].requiredMessage : '' ) }
+							onChange={ ( value ) => this.saveFields( { requiredMessage: value }, index ) }
+							placeholder={ ( undefined !== fields[ index ].label ? fields[ index ].label : '' ) + ' ' + __( 'is required', 'kadence-blocks' ) }
+						/>
+					) }
+					{ ( 'tel' === fields[ index ].type || 'email' === fields[ index ].type ) && (
+						<TextControl
+							label={ __( 'Field error message when invalid', 'kadence-blocks' ) }
+							value={ ( undefined !== fields[ index ].errorMessage ? fields[ index ].errorMessage : '' ) }
+							onChange={ ( value ) => this.saveFields( { errorMessage: value }, index ) }
+							placeholder={ ( undefined !== fields[ index ].label ? fields[ index ].label : '' ) + ' ' + __( 'is not valid', 'kadence-blocks' ) }
+						/>
+					) }
 				</PanelBody>
 			);
 		};
@@ -1141,6 +1197,11 @@ class KadenceForm extends Component {
 			</Fragment>
 		);
 		const fieldOutput = ( index ) => {
+			if ( 'hidden' === fields[ index ].type ) {
+				return (
+					<input type="hidden" name={ `kb_field_${ index }` } value={ fields[ index ].default } />
+				);
+			}
 			const isFieldSelected = ( isSelected && this.state.selectedField === index );
 			const fieldClassName = classnames( {
 				'kadence-blocks-form-field': true,
@@ -1291,7 +1352,7 @@ class KadenceForm extends Component {
 								</select>
 							) }
 							{ 'checkbox' === fields[ index ].type && (
-								<div data-type={ fields[ index ].type } className={ `kb-field kb-checkbox-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` }>
+								<div data-type={ fields[ index ].type } className={ `kb-field kb-checkbox-style-field kb-${ fields[ index ].type }-field kb-field-${ index }kb-radio-style-${ fields[ index ].inline ? 'inline' : 'normal' }` }>
 									{ times( fields[ index ].options.length, n => (
 										<div key={ n } data-type={ fields[ index ].type } className={ `kb-checkbox-item kb-checkbox-item-${ n }` }>
 											<input type="checkbox" name={ `kb_field_${ index }[]${ n }` } id={ `kb_field_${ index }[]${ n }` } className={ 'kb-sub-field kb-checkbox-style' } value={ ( undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '' ) } checked={ ( undefined !== fields[ index ].options[ n ].value && fields[ index ].options[ n ].value === fields[ index ].default ? true : false ) } style={ {
@@ -1303,7 +1364,7 @@ class KadenceForm extends Component {
 								</div>
 							) }
 							{ 'radio' === fields[ index ].type && (
-								<div data-type={ fields[ index ].type } className={ `kb-field kb-radio-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` }>
+								<div data-type={ fields[ index ].type } className={ `kb-field kb-radio-style-field kb-${ fields[ index ].type }-field kb-field-${ index } kb-radio-style-${ fields[ index ].inline ? 'inline' : 'normal' }` }>
 									{ times( fields[ index ].options.length, n => (
 										<div key={ n } data-type={ fields[ index ].type } className={ `kb-radio-item kb-radio-item-${ n }` }>
 											<input type="radio" name={ `kb_field_${ index }[]${ n }` } id={ `kb_field_${ index }[]${ n }` } className={ 'kb-sub-field kb-radio-style' } value={ ( undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '' ) } checked={ ( undefined !== fields[ index ].options[ n ].value && fields[ index ].options[ n ].value === fields[ index ].default ? true : false ) } style={ {
@@ -1554,6 +1615,7 @@ class KadenceForm extends Component {
 									width: [ '100', '', '' ],
 									auto: '',
 									errorMessage: '',
+									requiredMessage: '',
 								} );
 								setAttributes( { fields: newFields } );
 								this.saveFields( { multiSelect: fields[ 0 ].multiSelect }, 0 );
@@ -3226,6 +3288,14 @@ class KadenceForm extends Component {
 								} }
 							/>
 						</PanelBody>
+						<PanelRow>
+							<TextControl
+								label={ __( 'Pre Submit Form Validation Error Message', 'kadence-blocks' ) }
+								placeholder={ __( 'Please fix the errors to proceed', 'kadence-blocks' ) }
+								value={ ( undefined !== messages[ 0 ].preError ? messages[ 0 ].preError : '' ) }
+								onChange={ ( value ) => this.saveMessages( { preError: value } ) }
+							/>
+						</PanelRow>
 						<PanelRow>
 							<TextControl
 								label={ __( 'Error Message', 'kadence-blocks' ) }

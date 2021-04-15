@@ -1232,7 +1232,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-accordion-js', KADENCE_BLOCKS_URL . 'dist/kt-accordion-min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'dist/kt-tabs-min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'dist/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-form',
 			'kadence_blocks_form_params',
@@ -3842,26 +3842,26 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] ) {
 				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
 				if ( isset( $attr['wrapperPadding'][0] ) && is_numeric( $attr['wrapperPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $attr['wrapperPadding'][0] . 'px' );
+					$css->add_property( 'padding-top', $attr['wrapperPadding'][0] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['wrapperPadding'][2] ) && is_numeric( $attr['wrapperPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $attr['wrapperPadding'][2] . 'px' );
+					$css->add_property( 'padding-bottom', $attr['wrapperPadding'][2] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 			} else {
 				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
 				if ( isset( $attr['wrapperPadding'][0] ) && is_numeric( $attr['wrapperPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $attr['wrapperPadding'][0] . 'px' );
+					$css->add_property( 'padding-top', $attr['wrapperPadding'][0] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['wrapperPadding'][2] ) && is_numeric( $attr['wrapperPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $attr['wrapperPadding'][2] . 'px' );
+					$css->add_property( 'padding-bottom', $attr['wrapperPadding'][2] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 			}
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
 			if ( isset( $attr['wrapperPadding'][1] ) && is_numeric( $attr['wrapperPadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attr['wrapperPadding'][1] . 'px' );
+				$css->add_property( 'padding-right', $attr['wrapperPadding'][1] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 			}
 			if ( isset( $attr['wrapperPadding'][3] ) && is_numeric( $attr['wrapperPadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attr['wrapperPadding'][3] . 'px' );
+				$css->add_property( 'padding-left', $attr['wrapperPadding'][3] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 			}
 		}
 		if ( isset( $attr['wrapperTabletPadding'] ) && is_array( $attr['wrapperTabletPadding'] ) ) {
@@ -3869,26 +3869,26 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] ) {
 				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
 				if ( isset( $attr['wrapperTabletPadding'][0] ) && is_numeric( $attr['wrapperTabletPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $attr['wrapperTabletPadding'][0] . 'px' );
+					$css->add_property( 'padding-top', $attr['wrapperTabletPadding'][0] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['wrapperTabletPadding'][2] ) && is_numeric( $attr['wrapperTabletPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $attr['wrapperTabletPadding'][2] . 'px' );
+					$css->add_property( 'padding-bottom', $attr['wrapperTabletPadding'][2] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 			} else {
 				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
 				if ( isset( $attr['wrapperTabletPadding'][0] ) && is_numeric( $attr['wrapperTabletPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $attr['wrapperTabletPadding'][0] . 'px' );
+					$css->add_property( 'padding-top', $attr['wrapperTabletPadding'][0] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['wrapperTabletPadding'][2] ) && is_numeric( $attr['wrapperTabletPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $attr['wrapperTabletPadding'][2] . 'px' );
+					$css->add_property( 'padding-bottom', $attr['wrapperTabletPadding'][2] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 			}
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
 			if ( isset( $attr['wrapperTabletPadding'][1] ) && is_numeric( $attr['wrapperTabletPadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attr['wrapperTabletPadding'][1] . 'px' );
+				$css->add_property( 'padding-right', $attr['wrapperTabletPadding'][1] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 			}
 			if ( isset( $attr['wrapperTabletPadding'][3] ) && is_numeric( $attr['wrapperTabletPadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attr['wrapperTabletPadding'][3] . 'px' );
+				$css->add_property( 'padding-left', $attr['wrapperTabletPadding'][3] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 			}
 			$css->stop_media_query();
 		}
@@ -3897,26 +3897,26 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] ) {
 				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
 				if ( isset( $attr['wrapperMobilePadding'][0] ) && is_numeric( $attr['wrapperMobilePadding'][0] ) ) {
-					$css->add_property( 'padding-top', $attr['wrapperMobilePadding'][0] . 'px' );
+					$css->add_property( 'padding-top', $attr['wrapperMobilePadding'][0] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['wrapperMobilePadding'][2] ) && is_numeric( $attr['wrapperMobilePadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $attr['wrapperMobilePadding'][2] . 'px' );
+					$css->add_property( 'padding-bottom', $attr['wrapperMobilePadding'][2] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 			} else {
 				$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
 				if ( isset( $attr['wrapperMobilePadding'][0] ) && is_numeric( $attr['wrapperMobilePadding'][0] ) ) {
-					$css->add_property( 'padding-top', $attr['wrapperMobilePadding'][0] . 'px' );
+					$css->add_property( 'padding-top', $attr['wrapperMobilePadding'][0] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['wrapperMobilePadding'][2] ) && is_numeric( $attr['wrapperMobilePadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $attr['wrapperMobilePadding'][2] . 'px' );
+					$css->add_property( 'padding-bottom', $attr['wrapperMobilePadding'][2] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 				}
 			}
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id );
 			if ( isset( $attr['wrapperMobilePadding'][1] ) && is_numeric( $attr['wrapperMobilePadding'][1] ) ) {
-				$css->add_property( 'padding-right', $attr['wrapperMobilePadding'][1] . 'px' );
+				$css->add_property( 'padding-right', $attr['wrapperMobilePadding'][1] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 			}
 			if ( isset( $attr['wrapperMobilePadding'][3] ) && is_numeric( $attr['wrapperMobilePadding'][3] ) ) {
-				$css->add_property( 'padding-left', $attr['wrapperMobilePadding'][3] . 'px' );
+				$css->add_property( 'padding-left', $attr['wrapperMobilePadding'][3] . ( isset( $attr['wrapperPaddingType'] ) && ! empty( $attr['wrapperPaddingType'] ) ? $attr['wrapperPaddingType'] : 'px' ) );
 			}
 			$css->stop_media_query();
 		}
@@ -3933,7 +3933,7 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['style'] ) && ( 'bubble' === $attr['style'] || 'inlineimage' === $attr['style'] ) ) {
 			$css->set_selector( '.wp-block-kadence-testimonials.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-text-wrap:after' );
 			if ( isset( $attr['containerBorderWidth'] ) && is_array( $attr['containerBorderWidth'] ) && ! empty( $attr['containerBorderWidth'][2] ) ) {
-				$css->add_property( 'margin-top',  $attr['containerBorderWidth'][2] . 'px' );
+				$css->add_property( 'margin-top', $attr['containerBorderWidth'][2] . 'px' );
 			}
 			if ( isset( $attr['containerBorder'] ) && ! empty( $attr['containerBorder'] ) ) {
 				$alpha = ( isset( $attr['containerBorderOpacity'] ) && is_numeric( $attr['containerBorderOpacity'] ) ? $attr['containerBorderOpacity'] : 1 );
@@ -5166,7 +5166,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['listStyles'] ) && is_array( $attr['listStyles'] ) && isset( $attr['listStyles'][0] ) && is_array( $attr['listStyles'][0] ) && ( ( isset( $attr['listStyles'][0]['size'] ) && is_array( $attr['listStyles'][0]['size'] ) && isset( $attr['listStyles'][0]['size'][1] ) && ! empty( $attr['listStyles'][0]['size'][1] ) ) || ( isset( $attr['listStyles'][0]['lineHeight'] ) && is_array( $attr['listStyles'][0]['lineHeight'] ) && isset( $attr['listStyles'][0]['lineHeight'][1] ) && ! empty( $attr['listStyles'][0]['lineHeight'][1] ) ) ) ) {
 			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {';
+				$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap, .kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a {';
 			if ( isset( $attr['listStyles'][0]['size'][1] ) && ! empty( $attr['listStyles'][0]['size'][1] ) ) {
 				$css .= 'font-size:' . $attr['listStyles'][0]['size'][1] . ( ! isset( $attr['listStyles'][0]['sizeType'] ) ? 'px' : $attr['listStyles'][0]['sizeType'] ) . ';';
 			}
@@ -5178,7 +5178,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['listStyles'] ) && is_array( $attr['listStyles'] ) && isset( $attr['listStyles'][0] ) && is_array( $attr['listStyles'][0] ) && ( ( isset( $attr['listStyles'][0]['size'] ) && is_array( $attr['listStyles'][0]['size'] ) && isset( $attr['listStyles'][0]['size'][2] ) && ! empty( $attr['listStyles'][0]['size'][2] ) ) || ( isset( $attr['listStyles'][0]['lineHeight'] ) && is_array( $attr['listStyles'][0]['lineHeight'] ) && isset( $attr['listStyles'][0]['lineHeight'][2] ) && ! empty( $attr['listStyles'][0]['lineHeight'][2] ) ) ) ) {
 			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {';
+			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap, .kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a {';
 				if ( isset( $attr['listStyles'][0]['size'][2] ) && ! empty( $attr['listStyles'][0]['size'][2] ) ) {
 					$css .= 'font-size:' . $attr['listStyles'][0]['size'][2] . ( ! isset( $attr['listStyles'][0]['sizeType'] ) ? 'px' : $attr['listStyles'][0]['sizeType'] ) . ';';
 				}
@@ -6570,7 +6570,7 @@ class Kadence_Blocks_Frontend {
 					$css->add_property( 'background-image', $type . '-gradient(' . $angle. ', ' . $color . ' ' . $loc . '%, ' . $colorsecond . ' ' . $locsecond . '%)' );
 				} else {
 					if ( ! empty( $tablet_overlay['overlay'] ) ) {
-						$css->add_property( 'background-color:', $css->render_color( $tablet_overlay['overlay'] ) );
+						$css->add_property( 'background-color', $css->render_color( $tablet_overlay['overlay'] ) );
 					}
 					if ( ! empty( $tablet_overlay['overlayBgImg'] ) ) {
 						if ( ! empty( $tablet_overlay['overlayBgImgAttachment'] ) ) {

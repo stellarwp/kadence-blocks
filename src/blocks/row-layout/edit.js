@@ -19,7 +19,6 @@ import memoize from 'memize';
 import ResizableBox from 're-resizable';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
-import Slider from 'react-slick';
 /**
  * Import Kadence Components
  */
@@ -36,6 +35,8 @@ import KadenceRadioButtons from '../../kadence-radio-buttons';
  */
 import ThreeColumnDrag from './threecolumndrag';
 import PrebuiltModal from './prebuilt_modal';
+import Overlay from './row-overlay';
+import RowBackground from './row-background';
 /**
  * Import Css
  */
@@ -290,7 +291,8 @@ class KadenceRowLayout extends Component {
 		const previewPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== leftPadding ? leftPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) );
 		const previewMarginTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== topMargin ? topMargin : '' ), ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== topMarginM ? topMarginM : '' ) );
 		const previewMarginBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ) );
-		const previewBackgroundColor = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bgColor ? bgColor : '' ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgColor ? tabletBackground[0].bgColor : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgColor ? mobileBackground[0].bgColor : '' ) );
+		const previewBackgroundColor = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bgColor ? bgColor : '' ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgColor ? tabletBackground[0].bgColor : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgColor && mobileBackground[0].enable ? mobileBackground[0].bgColor : '' ) );
+		// Border.
 		const previewBorderTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 0 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 0 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 0 ] : '' ) );
 		const previewBorderRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 1 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 1 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 1 ] : '' ) );
 		const previewBorderBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 2 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 2 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 2 ] : '' ) );
@@ -422,58 +424,6 @@ class KadenceRowLayout extends Component {
 			{ key: 'equal', col: 5, name: __( 'Five: Equal', 'kadence-blocks' ), icon: icons.fivecol },
 			{ key: 'equal', col: 6, name: __( 'Six: Equal', 'kadence-blocks' ), icon: icons.sixcol },
 		];
-		function CustomNextArrow( props ) {
-			const { className, style, onClick } = props;
-			return (
-				<button
-					className={ className }
-					style={ { ...style, display: 'block' } }
-					onClick={ onClick }
-				>
-					<Dashicon icon="arrow-right-alt2" />
-				</button>
-			);
-		}
-
-		function CustomPrevArrow( props ) {
-			const { className, style, onClick } = props;
-			return (
-				<button
-					className={ className }
-					style={ { ...style, display: 'block' } }
-					onClick={ onClick }
-				>
-					<Dashicon icon="arrow-left-alt2" />
-				</button>
-			);
-		}
-		const sliderSettings = {
-			dots: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].dotStyle === 'none' ? false : true ),
-			arrows: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && backgroundSliderSettings[ 0 ].arrowStyle !== 'none' ? true : false ),
-			infinite: true,
-			fade: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade ? backgroundSliderSettings[ 0 ].fade : true ),
-			speed: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ),
-			draggable: false,
-			autoplaySpeed: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].speed ? backgroundSliderSettings[ 0 ].speed : 7000 ),
-			autoplay: ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ),
-			slidesToShow: 1,
-			slidesToScroll: 1,
-			nextArrow: <CustomNextArrow />,
-			prevArrow: <CustomPrevArrow />,
-		};
-		const renderSliderImages = ( index ) => {
-			return (
-				<div className="kb-bg-slide-contain">
-					<div className={ `kb-bg-slide kb-bg-slide-${ index }` } style={ {
-						backgroundColor: ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && undefined !== backgroundSlider[ index ].bgColor ? KadenceColorOutput( backgroundSlider[ index ].bgColor ) : undefined ),
-						backgroundImage: ( undefined !== backgroundSlider && undefined !== backgroundSlider[ index ] && undefined !== backgroundSlider[ index ].bgImg ? 'url("' + backgroundSlider[ index ].bgImg + '")' : undefined ),
-						backgroundSize: bgImgSize,
-						backgroundPosition: bgImgPosition,
-						backgroundRepeat: bgImgRepeat,
-					} }></div>
-				</div>
-			);
-		};
 		const saveSliderSettings = ( value ) => {
 			let backgroundSlidSettings;
 			if ( undefined === backgroundSliderSettings || ( undefined !== backgroundSliderSettings && undefined === backgroundSliderSettings[ 0 ] ) ) {
@@ -3467,73 +3417,8 @@ class KadenceRowLayout extends Component {
 						) }
 					</style>
 				) }
-				<div className={ classes } style={ {
-					marginBottom: previewMarginBottom + marginUnit,
-					marginTop: previewMarginTop + marginUnit,
-					borderColor: ( previewBorderColor ? KadenceColorOutput( previewBorderColor ) : undefined ),
-					borderTopWidth: ( previewBorderTop ? previewBorderTop + 'px' : undefined ),
-					borderRightWidth: ( previewBorderRight ? previewBorderRight + 'px' : undefined ),
-					borderBottomWidth: ( previewBorderBottom ? previewBorderBottom + 'px' : undefined ),
-					borderLeftWidth: ( previewBorderLeft ? previewBorderLeft + 'px' : undefined ),
-					borderTopLeftRadius: ( previewRadiusTop ? previewRadiusTop + 'px' : undefined ),
-					borderTopRightRadius: ( previewRadiusRight ? previewRadiusRight + 'px' : undefined ),
-					borderBottomRightRadius: ( previewRadiusBottom ? previewRadiusBottom + 'px' : undefined ),
-					borderBottomLeftRadius: ( previewRadiusLeft ? previewRadiusLeft + 'px' : undefined ),
-					minHeight: minHeight + minHeightUnit,
-					zIndex: ( zIndex ? zIndex : undefined ),
-				} }>
-					{ ( 'slider' !== backgroundSettingTab && 'video' !== backgroundSettingTab ) && (
-						<div className={ `kt-row-layout-background${ bgImg && bgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ bgImgID } style={ {
-							backgroundColor: ( previewBackgroundColor ? KadenceColorOutput( previewBackgroundColor ) : undefined ),
-							backgroundImage: ( bgImg ? `url(${ bgImg })` : undefined ),
-							backgroundSize: bgImgSize,
-							backgroundPosition: bgImgPosition,
-							backgroundRepeat: bgImgRepeat,
-						} }></div>
-					) }
-					{ ( 'slider' === backgroundSettingTab ) && (
-						<div className={ `kt-blocks-carousel kb-blocks-bg-slider kt-carousel-container-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` }>
-							{ backgroundSliderCount !== 1 && (
-								<Slider className={ `kt-carousel-arrowstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) } kt-carousel-dotstyle-${ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }` } { ...sliderSettings }>
-									{ times( backgroundSliderCount, n => renderSliderImages( n ) ) }
-								</Slider>
-							) }
-							{ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) === 1 && (
-								times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => renderSliderImages( n ) )
-							) }
-						</div>
-					) }
-					{ ( 'video' === backgroundSettingTab ) && (
-						<div className={ 'kb-blocks-bg-video-container' } style={ { backgroundColor: ( bgColor ? KadenceColorOutput( bgColor ) : undefined ) } }>
-							{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
-								<video className="kb-blocks-bg-video" playsinline="" loop="" src={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : undefined ) }></video>
-							) }
-							{ ( 'youtube' === backgroundVideoType ) && (
-								<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(http://img.youtube.com/vi/${ backgroundVideo[ 0 ].youtube }/maxresdefault.jpg)` } }></div>
-							) }
-						</div>
-					) }
-					{ ( ! currentOverlayTab || 'grad' !== currentOverlayTab ) && (
-						<div className={ `kt-row-layout-overlay kt-row-overlay-normal${ overlayBgImg && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ overlayBgImgID } style={ {
-							backgroundColor: ( overlay ? KadenceColorOutput( overlay, ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : undefined ),
-							backgroundImage: ( overlayBgImg ? `url(${ overlayBgImg })` : undefined ),
-							backgroundSize: overlayBgImgSize,
-							backgroundPosition: overlayBgImgPosition,
-							backgroundRepeat: overlayBgImgRepeat,
-							backgroundAttachment: ( overlayBgImgAttachment === 'parallax' ? 'fixed' : overlayBgImgAttachment ),
-							mixBlendMode: overlayBlendMode,
-							opacity: overlayOpacityOutput( overlayOpacity ),
-						} }>
-						</div>
-					) }
-					{ currentOverlayTab && 'grad' === currentOverlayTab && (
-						<div className={ 'kt-row-layout-overlay kt-row-overlay-gradient' } data-bg-img-id={ overlayBgImgID } style={ {
-							backgroundImage: ( 'radial' === overlayGradType ? `radial-gradient(at ${ overlayBgImgPosition }, ${ ( overlay ? KadenceColorOutput( overlay, ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : '' ) } ${ overlayGradLoc }%, ${ ( overlaySecond ? KadenceColorOutput( overlaySecond, ( undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity ? overlaySecondOpacity : 1 ) ) : '' ) } ${ overlayGradLocSecond }%)` : `linear-gradient(${ overlayGradAngle }deg, ${ ( overlay ? KadenceColorOutput( overlay, ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : '' ) } ${ overlayGradLoc }%, ${ ( overlaySecond ? KadenceColorOutput( overlaySecond, ( undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity ? overlaySecondOpacity : 1 ) ) : '' ) } ${ overlayGradLocSecond }%)` ),
-							mixBlendMode: overlayBlendMode,
-							opacity: overlayOpacityOutput( overlayOpacity ),
-						} }>
-						</div>
-					) }
+				<RowBackground backgroundClasses={ classes } { ...this.props }>
+					<Overlay { ...this.props } />
 					{ ! colLayout && (
 						<div className="kt-select-layout">
 							<div className="kt-select-layout-title">
@@ -3812,7 +3697,7 @@ class KadenceRowLayout extends Component {
 							</svg>
 						</div>
 					) }
-				</div>
+				</RowBackground>
 			</Fragment>
 		);
 	}

@@ -73,7 +73,6 @@ class KadenceConfig extends Component {
 		};
 		if ( this.state.deviceType !== this.props.getPreviewDevice ) {
 			this.setState( { deviceType:this.props.getPreviewDevice } );
-			console.log( this.props.getPreviewDevice );
 			changeBodyClass( this.props.getPreviewDevice );
 		}
 		return (

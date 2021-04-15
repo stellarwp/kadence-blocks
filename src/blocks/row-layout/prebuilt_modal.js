@@ -37,7 +37,7 @@ class CustomComponent extends Component {
 						onRequestClose={ () => this.setState( { modalOpen: false } ) }>
 						<div className="kb-prebuilt-section">
 							<div className="kb-prebuilt-header">
-								<span className="kb-prebuilt-header-logo">{ icons.kadence }</span>
+								<span className="kb-prebuilt-header-logo">{ icons.kadenceCatNew }</span>
 								<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
 							</div>
 							<IconButton

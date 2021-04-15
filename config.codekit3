@@ -115,6 +115,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/dist\/assets\/js\/kb-form-block.min.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/kb-form-block.min-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/dist\/assets\/js\/kb-form-min.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -188,6 +199,17 @@
       "mi" : 1,
       "oA" : 0,
       "oAP" : "\/dist\/assets\/js\/kb-countdown.min.js",
+      "oF" : 3,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/assets\/js\/src\/kb-form-block.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/dist\/assets\/js\/kb-form-block.min.js",
       "oF" : 3,
       "sC" : 0,
       "tS" : 0
@@ -438,73 +460,6 @@
       "oAP" : "\/dist\/blocks\/testimonials.style.build-min.css",
       "oF" : 0,
       "pg" : 0
-    },
-    "\/dist\/build\/blocks.asset.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks.asset.php",
-      "oF" : 1
-    },
-    "\/dist\/build\/blocks.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks-min.css",
-      "oF" : 1,
-      "pg" : 0
-    },
-    "\/dist\/build\/blocks.css.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks.css.map",
-      "oF" : 1
-    },
-    "\/dist\/build\/blocks.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/dist\/build\/blocks.js.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks.js.map",
-      "oF" : 1
-    },
-    "\/dist\/build\/style.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/style-min.css",
-      "oF" : 1,
-      "pg" : 0
-    },
-    "\/dist\/build\/style.css.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/style.css.map",
-      "oF" : 1
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -1187,17 +1142,6 @@
       "oAP" : "\/node_modules",
       "oF" : 0
     },
-    "\/node_modules\/@emotion\/cache\/dist\/cache.esm.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@emotion\/cache\/dist\/cache.esm-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/node_modules\/@emotion\/hash\/dist\/hash.esm.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -1220,28 +1164,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/node_modules\/@emotion\/serialize\/dist\/serialize.esm.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@emotion\/serialize\/dist\/serialize.esm-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/node_modules\/@emotion\/sheet\/dist\/sheet.esm.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@emotion\/sheet\/dist\/sheet.esm-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/node_modules\/@emotion\/stylis\/dist\/stylis.esm.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -1260,28 +1182,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@emotion\/unitless\/dist\/unitless.esm-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/node_modules\/@emotion\/utils\/dist\/utils.esm.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@emotion\/utils\/dist\/utils.esm-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/node_modules\/@emotion\/weak-memoize\/dist\/weak-memoize.esm.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@emotion\/weak-memoize\/dist\/weak-memoize.esm-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -1458,17 +1358,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/i18n\/build-module\/index-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/node_modules\/@wordpress\/i18n\/node_modules\/sprintf-js\/src\/sprintf.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@wordpress\/i18n\/node_modules\/sprintf-js\/src\/sprintf-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -1678,6 +1567,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/button-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/buttons.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/buttons-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -2030,6 +1930,28 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/currency-pound-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/custom-link.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/custom-link-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/custom-post-type.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/custom-post-type-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -2628,6 +2550,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/list-view.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/list-view-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/@wordpress\/icons\/build-module\/library\/list.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -2793,6 +2726,28 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/next.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/next-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/overlay-text.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/overlay-text-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/@wordpress\/icons\/build-module\/library\/page-break.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -2811,6 +2766,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/page-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/pages.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/pages-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -2958,6 +2924,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/post-categories.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/post-categories-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/@wordpress\/icons\/build-module\/library\/post-comments-count.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3053,6 +3030,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/preformatted-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/previous.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/previous-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -3684,13 +3672,24 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/node_modules\/create-emotion\/dist\/create-emotion.esm.js" : {
+    "\/node_modules\/create-emotion\/dist\/index.esm.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
       "oA" : 1,
-      "oAP" : "\/node_modules\/create-emotion\/dist\/create-emotion.esm-min.js",
+      "oAP" : "\/node_modules\/create-emotion\/dist\/index.esm-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/emotion\/dist\/index.esm.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/emotion\/dist\/index.esm-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -3702,6 +3701,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/lodash\/lodash-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/material-colors\/dist\/colors.es2015.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/material-colors\/dist\/colors.es2015-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -3761,13 +3771,464 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/node_modules\/react-color\/lib\/index.js" : {
+    "\/node_modules\/react-color\/es\/components\/alpha\/Alpha.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
       "oA" : 1,
-      "oAP" : "\/node_modules\/react-color\/lib\/index-min.js",
+      "oAP" : "\/node_modules\/react-color\/es\/components\/alpha\/Alpha-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/alpha\/AlphaPointer.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/alpha\/AlphaPointer-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/block\/Block.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/block\/Block-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/block\/BlockSwatches.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/block\/BlockSwatches-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/chrome\/Chrome.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/chrome\/Chrome-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/chrome\/ChromeFields.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/chrome\/ChromeFields-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/chrome\/ChromePointer.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/chrome\/ChromePointer-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/chrome\/ChromePointerCircle.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/chrome\/ChromePointerCircle-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/circle\/Circle.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/circle\/Circle-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/circle\/CircleSwatch.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/circle\/CircleSwatch-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/common\/ColorWrap.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/common\/ColorWrap-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/compact\/Compact.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/compact\/Compact-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/compact\/CompactColor.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/compact\/CompactColor-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/compact\/CompactFields.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/compact\/CompactFields-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/github\/Github.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/github\/Github-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/github\/GithubSwatch.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/github\/GithubSwatch-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/google\/Google.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/google\/Google-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/google\/GoogleFields.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/google\/GoogleFields-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/google\/GooglePointer.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/google\/GooglePointer-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/google\/GooglePointerCircle.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/google\/GooglePointerCircle-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/hue\/Hue.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/hue\/Hue-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/hue\/HuePointer.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/hue\/HuePointer-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/material\/Material.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/material\/Material-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/photoshop\/Photoshop.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/photoshop\/Photoshop-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopButton.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopButton-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopFields.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopFields-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopPointer.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopPointer-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopPointerCircle.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopPointerCircle-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopPreviews.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/photoshop\/PhotoshopPreviews-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/sketch\/Sketch.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/sketch\/Sketch-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/sketch\/SketchFields.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/sketch\/SketchFields-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/sketch\/SketchPresetColors.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/sketch\/SketchPresetColors-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/slider\/Slider.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/slider\/Slider-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/slider\/SliderPointer.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/slider\/SliderPointer-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/slider\/SliderSwatch.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/slider\/SliderSwatch-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/slider\/SliderSwatches.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/slider\/SliderSwatches-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/swatches\/Swatches.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/swatches\/Swatches-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/swatches\/SwatchesColor.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/swatches\/SwatchesColor-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/swatches\/SwatchesGroup.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/swatches\/SwatchesGroup-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/components\/twitter\/Twitter.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/components\/twitter\/Twitter-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/helpers\/color.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/helpers\/color-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/react-color\/es\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-color\/es\/index-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -3868,6 +4329,39 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/reactcss\/lib\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/reactcss\/lib\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/sprintf-js\/src\/sprintf.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/sprintf-js\/src\/sprintf-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/stylis-rule-sheet\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/stylis-rule-sheet\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/tannin\/index.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3875,6 +4369,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/tannin\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/tinycolor2\/.\/tinycolor.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/tinycolor2\/.\/tinycolor-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -5213,6 +5718,28 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/blocks\/row-layout\/dev_prebuilt_modal.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/row-layout\/dev_prebuilt_modal-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/row-layout\/devcloud-connect.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/row-layout\/devcloud-connect-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/blocks\/row-layout\/devlibrary.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -5289,6 +5816,28 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/blocks\/row-layout\/prebuilt_template_array-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/row-layout\/row-background.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/row-layout\/row-background-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/row-layout\/row-overlay.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/row-layout\/row-overlay-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
