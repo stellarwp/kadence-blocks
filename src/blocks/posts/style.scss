@@ -258,7 +258,7 @@ a.post-more-link {
 	}
 }
 @media screen and (min-width: 768px) {
-	.grid-lg-col-1.item-image-style-beside article.loop-entry.has-post-thumbnail {
+	.grid-lg-col-1.item-image-style-beside article.loop-entry.has-post-thumbnail:not(.kb-post-no-image) {
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
 	}

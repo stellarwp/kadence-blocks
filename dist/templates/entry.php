@@ -8,8 +8,9 @@
  */
 
 defined( 'ABSPATH' ) || exit;
+$enabled_image = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['image'] ) && ! $attributes['image'] ? false : true );
 ?>
-<article <?php post_class( 'entry content-bg loop-entry' ); ?>>
+<article <?php post_class( 'entry content-bg loop-entry' . ( ! $enabled_image ? ' kb-post-no-image' : '' ) ); ?>>
 	<?php
 		kadence_blocks_get_template( 'entry-loop-thumbnail.php', array( 'attributes' => $attributes ) );
 	?>

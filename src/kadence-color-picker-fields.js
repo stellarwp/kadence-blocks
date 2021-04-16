@@ -1,5 +1,4 @@
-import color from 'react-color/lib/helpers/color';
-
+import * as color from 'react-color/lib/helpers/color'
 import { EditableInput } from 'react-color/lib/components/common';
 const {
 	Component,
@@ -25,8 +24,8 @@ class KadencePickerFields extends Component {
 		}
 	}
 	handleChange( data, e ) {
-		if ( data.hex ) {
-			color.isValidHex( data.hex ) && this.props.onChange( {
+		if ( data.hex && color.isValidHex( data.hex ) ) {
+			this.props.onChange( {
 				hex: data.hex,
 				source: 'hex',
 			}, e );
