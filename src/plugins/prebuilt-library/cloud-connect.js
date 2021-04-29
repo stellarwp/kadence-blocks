@@ -8,6 +8,9 @@ const {
 } = wp.element;
 const { apiFetch } = wp;
 const {
+	localStorage,
+} = window;
+const {
 	Button,
 	ButtonGroup,
 	Tooltip,
@@ -26,7 +29,6 @@ import {
 	trash,
 	chevronDown,
 } from '@wordpress/icons';
-import Masonry from 'react-masonry-component';
 const {
 	applyFilters,
 } = wp.hooks;
@@ -35,7 +37,6 @@ import map from 'lodash/map';
 import debounce from 'lodash/debounce';
 import LazyLoad from 'react-lazy-load';
 
-//import Prebuilts from './prebuilt_array';
 function kadenceBlocksTryParseJSON(jsonString){
     try {
         var o = JSON.parse(jsonString);
@@ -56,7 +57,7 @@ function kadenceBlocksTryParseJSON(jsonString){
  * Internal block libraries
  */
 const { __ } = wp.i18n;
-class PrebuiltSections extends Component {
+class CloudConnect extends Component {
 	constructor() {
 		super( ...arguments );
 		this.saveSettings = this.saveSettings.bind( this );
@@ -85,9 +86,8 @@ class PrebuiltSections extends Component {
 			method: 'POST',
 			data: { kadence_blocks_cloud: JSON.stringify( cloudSettings ) },
 		} ).then( ( response ) => {
-			this.setState( {
-				isSaving: false,
-			} );
+			//console.log( response );
+			this.setState( { isSaving: false, errorConnecting: false, isLoading: false, newUrl: '', newKey: '', cloudSettings: cloudSettings } );
 			this.props.onReload();
 		} );
 	}
@@ -108,6 +108,7 @@ class PrebuiltSections extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
+				//console.log( response );
 				const o = kadenceBlocksTryParseJSON( response );
 				if ( o ) {
 					const cloudSettings = control.state.cloudSettings;
@@ -119,11 +120,12 @@ class PrebuiltSections extends Component {
 					newConnect.title = o.name;
 					newConnect.url = control.state.newUrl;
 					newConnect.key = control.state.newKey;
+					newConnect.expires = o.expires;
+					newConnect.refresh = o.refresh;
 					cloudSettings.connections.push( newConnect );
 					control.saveSettings( cloudSettings );
-					control.setState( { errorConnecting: false, isLoading: false, newUrl: '', newKey: '', cloudSettings: cloudSettings } );
 				} else {
-					control.setState( { errorConnecting: true, isLoading: false } );
+					control.setState( { errorConnecting: true, errorNotice: response, isLoading: false } );
 				}
 			}
 		})
@@ -134,7 +136,7 @@ class PrebuiltSections extends Component {
 	}
 	render() {
 		const control = this;
-		console.log( this.state.cloudSettings );
+		//console.log( this.state.cloudSettings );
 		return (
 			<div className={ `kb-new-connection-content` }>
 				{ ( this.state.isLoading ) ? (
@@ -143,6 +145,9 @@ class PrebuiltSections extends Component {
 					</Fragment>
 				) : (
 					<Fragment>
+					{ this.state.errorConnecting && (
+						<div className="error">{ this.state.errorNotice }</div>
+					) }
 					  { this.state.cloudSettings.connections && this.state.cloudSettings.connections[0] && (
 						  <Fragment>
 								{ this.state.cloudSettings.connections.map( ( connection, index ) =>
@@ -153,6 +158,7 @@ class PrebuiltSections extends Component {
 												key={ `connection-${ index }` }
 												className={ 'kb-connection-remove-button' }
 												icon={ trash }
+												aria-label={ __( 'Remove Connection', 'kadence-blocks' ) }
 												onClick={ () => {
 													const cloudSettings = this.state.cloudSettings;
 													cloudSettings.connections.splice(index, 1);
@@ -167,7 +173,7 @@ class PrebuiltSections extends Component {
 					  ) }
 					  <div className="kb-connection-add-new">
 						<TextControl
-							label={__( 'Connection URL', 'kadence-blocks' ) }
+							label={ __( 'Connection URL', 'kadence-blocks' ) }
 							type="text"
 							value={ this.state.newUrl }
 							onChange={ value => this.setState( { newUrl: value } ) }
@@ -185,7 +191,7 @@ class PrebuiltSections extends Component {
 								this.addConnection();
 							} }
 						>
-							{ __( 'Add Connection' ) }
+							{ __( 'Add Connection', 'kadence-blocks' ) }
 						</Button>
 					</div>
 					</Fragment>
@@ -215,4 +221,4 @@ export default compose(
 			} ),
 		),
 	} ) ),
-)( PrebuiltSections );
+)( CloudConnect );

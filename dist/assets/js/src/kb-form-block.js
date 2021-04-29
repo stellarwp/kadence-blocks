@@ -341,7 +341,6 @@
 						}
 					}
 					if ( form.querySelector('.g-recaptcha') ) {
-						console.log( 'hellow' );
 						grecaptcha.reset();
 					}
 					submitButton.removeAttribute( 'disabled' );

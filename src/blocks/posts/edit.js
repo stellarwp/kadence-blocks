@@ -14,14 +14,15 @@ import icons from '../../icons';
  */
 import KadenceSelectTerms from '../../components/terms/select-terms-control';
 import TypographyControls from '../../components/typography/typography-control';
+import debounce from 'lodash/debounce';
 import classnames from 'classnames';
 import map from 'lodash/map';
 import Select from 'react-select';
 import pickBy from 'lodash/pickBy';
 import isUndefined from 'lodash/isUndefined';
-import KadenceRange from '../../kadence-range-control';
+import KadenceRange from '../../components/range/range-control';
+import getQuery from './get-query';
 
-const { decodeEntities } = wp.htmlEntities;
 /**
  * Import Css
  */
@@ -59,8 +60,10 @@ const {
 	Dashicon,
 	Spinner,
 } = wp.components;
-
-const { postTypes, taxonomies } = kadence_blocks_params;
+const { apiFetch } = wp;
+const { postTypes, taxonomies, postQueryEndpoint } = kadence_blocks_params;
+const { addQueryArgs } = wp.url;
+const { decodeEntities } = wp.htmlEntities;
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -72,7 +75,13 @@ const kbpostsUniqueIDs = [];
 class KadencePosts extends Component {
 	constructor() {
 		super( ...arguments );
+		this.getPosts = this.getPosts.bind( this );
 		this.getPreviewSize = this.getPreviewSize.bind( this );
+		this.state = {
+			latestPosts: [],
+			loaded: false,
+		};
+		this.debouncedGetPosts = debounce( this.getPosts.bind( this ), 200 );
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
@@ -87,6 +96,19 @@ class KadencePosts extends Component {
 			kbpostsUniqueIDs.push( this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kbpostsUniqueIDs.push( this.props.attributes.uniqueID );
+		}
+		this.getPosts();
+	}
+	componentDidUpdate( prevProps ) {
+		const hasChange = [ 'postType', 'taxType', 'offsetQuery', 'postTax', 'excludeTax', 'allowSticky', 'orderBy', 'order', 'categories', 'tags', 'postsToShow' ].reduce(
+			( acc, key ) => {
+				return acc || prevProps.attributes[ key ] !== this.props.attributes[ key ];
+			},
+			false
+		);
+		if ( hasChange ) {
+			this.setState( { loaded: false } );
+			this.debouncedGetPosts();
 		}
 	}
 	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
@@ -103,8 +125,24 @@ class KadencePosts extends Component {
 		}
 		return desktopSize;
 	}
+	getPosts() {
+		this.setState( { loaded: false } );
+		apiFetch( {
+			path: addQueryArgs(
+				postQueryEndpoint,
+				getQuery( this.props.attributes, 'query' )
+			),
+		} )
+			.then( ( posts ) => {
+				this.setState( { latestPosts: posts, loaded: true } );
+			} )
+			.catch( () => {
+				this.setState( { latestPosts: [], loaded: true } );
+			} );
+	}
 	render() {
-		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont }, className, setAttributes, latestPosts, taxList, taxOptions, taxFilterOptions } = this.props;
+		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont }, className, setAttributes, taxList, taxOptions, taxFilterOptions } = this.props;
+		const { latestPosts, loaded } = this.state;
 		const taxonomyList = [];
 		const taxonomyOptions = [];
 		const taxonomyFilterOptions = [];
@@ -180,7 +218,6 @@ class KadencePosts extends Component {
 								setAttributes( { postType: value } );
 								setAttributes( { taxType: '' } );
 								setAttributes( { categories: [] } );
-								setAttributes( { postIds: [] } );
 							} }
 						/>
 						<SelectControl
@@ -711,7 +748,7 @@ class KadencePosts extends Component {
 						/>
 						{ readmore && (
 							<TextControl
-								label={ __( 'Read More' ) }
+								label={ __( 'Read More', 'kadence-blocks' ) }
 								value={ readmoreLabel }
 								onChange={ ( value ) => setAttributes( { readmoreLabel: value } ) }
 							/>
@@ -720,18 +757,32 @@ class KadencePosts extends Component {
 				</InspectorControls>
 			</Fragment>
 		);
+		if ( ! loaded ) {
+			return (
+				<Fragment>
+					{ settingspanel }
+					<Placeholder
+						icon="admin-post"
+						label={ __( 'Posts', 'kadence-blocks' ) }
+					>
+						
+						<Spinner />
+					</Placeholder>
+				</Fragment>
+			);
+		}
 		if ( ! hasPosts ) {
 			return (
 				<Fragment>
 					{ settingspanel }
 					<Placeholder
 						icon="admin-post"
-						label={ __( 'Posts' ) }
+						label={ __( 'Posts', 'kadence-blocks' ) }
 					>
 						
 						{ ! Array.isArray( latestPosts ) ?
 							<Spinner /> :
-							__( 'No posts found.' ) }
+							__( 'No posts found.', 'kadence-blocks' ) }
 					</Placeholder>
 				</Fragment>
 			);
@@ -742,13 +793,13 @@ class KadencePosts extends Component {
 			return (
 				<article
 					key={ i }
-					className={ classnames( post.kb_featured_image_src_large && post.kb_featured_image_src_large[ 0 ] && image ? 'has-post-thumbnail' : 'kb-no-thumb' ) + ' entry content-bg entry content-bg loop-entry components-disabled' }
+					className={ classnames( post.featured_image_src_large && post.featured_image_src_large[ 0 ] && image ? 'has-post-thumbnail' : 'kb-no-thumb' ) + ' entry content-bg entry content-bg loop-entry components-disabled' }
 				>
-					{ image && post.kb_featured_image_src_large && post.kb_featured_image_src_large[ 0 ] !== undefined && (
+					{ image && post.featured_image_src_large && post.featured_image_src_large[ 0 ] !== undefined && (
 						<a href={ post.link } className={ `post-thumbnail kadence-thumbnail-ratio-${ imageRatio }`}>
 							<div className="post-thumbnail-inner">
 								<img
-									src={ post.kb_featured_image_src_large[ 0 ] }
+									src={ post.featured_image_src_large[ 0 ] }
 									alt={ decodeEntities( post.title.rendered.trim() ) || __( '(Untitled)', 'kadence-blocks' ) }
 								/>
 							</div>
@@ -756,10 +807,10 @@ class KadencePosts extends Component {
 					) }
 					<div className="entry-content-wrap">
 						<header className="entry-header">
-							{ ( postType === 'post' && aboveCategories && post.kb_category_info ) && (
+							{ ( postType === 'post' && aboveCategories && post.category_info ) && (
 								<div className="entry-taxonomies">
 									<span className={ `category-links term-links category-style-${ categoriesStyle }` }>
-										{ post.kb_category_info.map( ( category, index, arr ) => {
+										{ post.category_info.map( ( category, index, arr ) => {
 											if ( arr.length - 1 === index || categoriesStyle === 'pill' ) {
 												return (
 													<a key={ category.id } className="kb-posts-block-category-link" href={ '#category' }>
@@ -794,15 +845,15 @@ class KadencePosts extends Component {
 							</HtmlTagOut>
 							{ meta && (
 								<div className={ `entry-meta entry-meta-divider-${ metaDivider }` }>
-									{ author && post.kb_author_info && post.kb_author_info.display_name && (
+									{ author && post.author_info && post.author_info.display_name && (
 										<span className="posted-by">
-											{ authorImage && post.kb_author_info.author_image && (
+											{ authorImage && post.author_info.author_image && (
 												<span className="author-avatar" style={ {
 													width: authorImageSize ? authorImageSize + 'px': undefined,
 													height: authorImageSize ? authorImageSize + 'px': undefined,
 												} }>
 													<span className="author-image">
-														{<img src={ post.kb_author_info.author_image } style={ {
+														{<img src={ post.author_info.author_image } style={ {
 															width: authorImageSize ? authorImageSize + 'px': undefined,
 															height: authorImageSize ? authorImageSize + 'px': undefined,
 														}} />}
@@ -815,8 +866,8 @@ class KadencePosts extends Component {
 												</span>
 											) }
 											<span className="author vcard">
-												<a className="url fn n" href={ post.kb_author_info.author_link }>
-													{ post.kb_author_info.display_name }
+												<a className="url fn n" href={ post.author_info.author_link }>
+													{ post.author_info.display_name }
 												</a>
 											</span>
 										</span>
@@ -845,7 +896,7 @@ class KadencePosts extends Component {
 											</time>
 										</span>
 									) }
-									{ metaCategories && post.kb_category_info && (
+									{ metaCategories && post.category_info && (
 										<span className="category-links">
 											{ metaCategoriesEnabledLabel && (
 												<span className="meta-label">
@@ -853,7 +904,7 @@ class KadencePosts extends Component {
 												</span>
 											) }
 											<span className="category-link-items">
-												{ post.kb_category_info.map( ( category, index, arr ) => {
+												{ post.category_info.map( ( category, index, arr ) => {
 													if ( arr.length - 1 === index ) {
 														return (
 															<a key={ category.id } className="kb-posts-block-category-link" href={ '#category' }>
@@ -872,14 +923,14 @@ class KadencePosts extends Component {
 											</span>
 										</span>
 									) }
-									{ comments && 0 !== post.kb_comment_info && (
+									{ comments && 0 !== post.comment_info && (
 										<span className="meta-comments">
 											<a className="meta-comments-link anchor-scroll" href={ post.link + '#comments' }>
-												{ 1 === post.kb_comment_info && (
-													post.kb_comment_info + ' ' + __( 'Comment', 'kadence-blocks' )
+												{ 1 === post.comment_info && (
+													post.comment_info + ' ' + __( 'Comment', 'kadence-blocks' )
 												) }
-												{ 1 !== post.kb_comment_info && (
-													post.kb_comment_info + ' ' + __( 'Comments', 'kadence-blocks' )
+												{ 1 !== post.comment_info && (
+													post.comment_info + ' ' + __( 'Comments', 'kadence-blocks' )
 												) }
 											</a>
 										</span>
@@ -924,17 +975,9 @@ export default withSelect( ( select, props ) => {
 	} = select( 'core/edit-post' );
 	const theType = ( postType ? postType : 'post' );
 	const taxonomyList = ( taxonomies[ theType ] && taxonomies[ theType ].taxonomy ? taxonomies[ theType ].taxonomy : [] );
-	let orderString = order;
-	let latestPostsQuery;
 	let taxonomyOptions = [];
 	let termQueryBase = '';
 	if ( theType !== 'post' || postTax ) {
-		latestPostsQuery = pickBy( {
-			order: orderString,
-			orderby: orderBy,
-			per_page: postsToShow,
-			offset: offsetQuery,
-		}, ( value ) => ! isUndefined( value ) );
 		if ( 'undefined' !== typeof taxonomies[ theType ] ) {
 			if ( taxType ) {
 				if ( taxonomies[ theType ].taxonomy && taxonomies[ theType ].taxonomy[ taxType ] ) {
@@ -945,29 +988,8 @@ export default withSelect( ( select, props ) => {
 				}
 			}
 		}
-		if ( 'exclude' === excludeTax ) {
-			latestPostsQuery[ termQueryBase + '_exclude' ] = categories.map( option => option.value );
-		} else {
-			latestPostsQuery[ termQueryBase ] = categories.map( option => option.value );
-		}
-	} else {
-		latestPostsQuery = pickBy( {
-			order: orderString,
-			orderby: orderBy,
-			per_page: postsToShow,
-			offset: offsetQuery,
-		}, ( value ) => ! isUndefined( value ) );
-		if ( 'exclude' === excludeTax ) {
-			latestPostsQuery[ 'categories_exclude' ] = categories.map( option => option.value );
-			latestPostsQuery[ 'tags_exclude' ] = tags.map( option => option.value );
-		} else {
-			latestPostsQuery[ 'categories' ] = categories.map( option => option.value );
-			latestPostsQuery[ 'tags' ] = tags.map( option => option.value );
-		}
-		latestPostsQuery
 	}
 	return {
-		latestPosts: getEntityRecords( 'postType', theType, latestPostsQuery ),
 		taxList: taxonomyList,
 		taxOptions: taxonomyOptions,
 		getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',

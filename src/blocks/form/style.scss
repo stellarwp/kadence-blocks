@@ -64,6 +64,15 @@
 		&.kb-submit-field {
 			margin-bottom: 0;
 		}
+		&.kb-accept-form-field {
+			align-items: flex-start;
+			.kb-checkbox-style {
+				margin: 0.5rem 0.5rem 0 0;
+			}
+			.kb-checkbox-style ~ label {
+				width: calc(100% - 1.8em);
+			}
+		}
 		label {
 			display: block;
 			line-height: 1.8;

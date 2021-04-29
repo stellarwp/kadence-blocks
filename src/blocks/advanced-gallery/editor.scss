@@ -3,6 +3,13 @@
  *
  * CSS for Backend.
  */
+ .wp-block[data-align=right]>.wp-block-kadence-advancedgallery, .wp-block[data-align=left]>.wp-block-kadence-advancedgallery {
+    max-width: 420px;
+    width: 100%;
+}
+.wp-block-kadence-advancedgallery ul.kb-gallery-main-contain {
+    margin-bottom: 0;
+}
  .components-button-group.kt-style-btn-group.kb-gallery-type-select button.components-button.kt-style-btn {
 	width: 33%;
 	&.kb-disabled-btn{
@@ -458,7 +465,7 @@
 		top:0;
 		bottom:0;
 		box-shadow:inset 0 0 100px rgba(0,0,20,.4), inset 0 5px 15px rgba(0,0,0,.1);
-		background: linear-gradient(top, rgba(255,145,0,0.2) 0%,rgba(255,230,48,0.2) 60%), linear-gradient(20deg, rgba(255,0,0,0.2) 0%,rgba(255,0,0,0) 35%);
+		background: linear-gradient(to bottom, rgba(255,145,0,0.2) 0%,rgba(255,230,48,0.2) 60%), linear-gradient(20deg, rgba(255,0,0,0.2) 0%,rgba(255,0,0,0) 35%);
 	}
 	img {
 		filter:sepia(0.2) brightness(1.1) contrast(1.3);

@@ -462,6 +462,10 @@ const attributes = {
 		type: 'bool',
 		default: false,
 	},
+	isPrebuiltModal: {
+		type: 'bool',
+		default: false,
+	},
 	minHeightTablet: {
 		type: 'number',
 		default: '',
@@ -536,5 +540,9 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	responsiveMaxWidth: {
+		type: 'array',
+		default: [ '', '' ],
+	}
 };
 export default attributes;

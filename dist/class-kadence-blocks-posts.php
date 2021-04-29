@@ -40,9 +40,9 @@ class Kadence_Blocks_Posts {
 	public function __construct() {
 		add_action( 'init', array( $this, 'on_init' ), 20 );
 		add_action( 'enqueue_block_assets', array( $this, 'blocks_assets' ) );
-		add_filter( 'rest_post_collection_params', array( $this, 'rand_orderby_rest_post_collection_params' ) );
-		add_filter( 'rest_post_collection_params', array( $this, 'menu_order_orderby_rest_post_collection_params' ) );
-		add_action( 'rest_api_init', array( $this, 'register_rest_fields' ) );
+		// add_filter( 'rest_post_collection_params', array( $this, 'rand_orderby_rest_post_collection_params' ) );
+		// add_filter( 'rest_post_collection_params', array( $this, 'menu_order_orderby_rest_post_collection_params' ) );
+		//add_action( 'rest_api_init', array( $this, 'register_rest_fields' ) );
 	}
 	/**
 	 * Get image info for the rest field

@@ -319,6 +319,7 @@ class KB_Ajax_Form {
 							if ( ! empty( $groups ) && is_array( $groups ) && isset( $groups[0] ) && ! empty( $groups[0] ) ) {
 								$group_id = $groups[0];
 							}
+							$body['resubscribe'] = true;
 							if ( isset( $body[ 'email' ] ) ) {
 								if ( ! empty( $group_id ) ) {
 									$api_url = 'https://api.mailerlite.com/api/v2/groups/' . $group_id . '/subscribers';
@@ -344,12 +345,11 @@ class KB_Ajax_Form {
 									error_log( "Something went wrong: $error_message" );
 								} else {
 									if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
-										error_log( __('No Response from MailerLite', 'kadence-blocks-pro' ) );
-										return;
+										error_log( __( 'No Response from MailerLite', 'kadence-blocks' ) );
 									}
 									if ( 400 === $response['response']['code'] ) {
-										error_log( $response['response']['message'] );
-										return;
+										error_log( print_r( $response['response'], true ) );
+										$this->process_bail( $response['response']['message'] . ' ' . __( 'MailerLite Misconfiguration', 'kadence-blocks' ), __( 'MailerLite Failed', 'kadence-blocks' ) );
 									}
 								}
 							}

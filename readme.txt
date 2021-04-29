@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.7.1
-Stable tag: 1.10.9
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,28 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+
+= 2.0.0 =
+Release Date: April 29th, 2021
+* Update: Prebuilt Library (New Interface!).
+* Update: Posts Block Rest calls.
+* Update: Force subscribe a unsubscribed user in mailer lite if the user is requesting subscribe.
+* Update: Gallery Align options, allow left and right.
+* Add: Icon color option for buttons.
+* Add: Icon size option for buttons.
+* Add: Aria Label option for buttons.
+* Add: Response Max width options to row layout.
+* Fix: CSS issue with accept field.
+* Fix: Icon List conversions.
+* Fix: Icon List focus on enter.
+* Fix: em not being used when selected for button text size.
+* Fix: Mobile background url input size.
+* Fix: Issue with background overlay opacity setting at 0.
+* Fix: Issue with gallery and small images.
+* Fix: RTL issues with testimonials.
+* Fix: Issue with mobile row border.
+* Fix: Issue with accordion toggle and default theme. 
 
 = 1.10.9 =
 Release Date: April 16th, 2021

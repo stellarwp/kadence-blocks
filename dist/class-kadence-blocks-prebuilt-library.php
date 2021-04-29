@@ -36,7 +36,14 @@ class Kadence_Blocks_Prebuilt_Library {
 	 *
 	 * @var string
 	 */
-	private $package = 'sections';
+	private $package = 'section';
+
+	/**
+	 * Is a template for Kadence. 
+	 *
+	 * @var bool
+	 */
+	private $is_template = false;
 
 	/**
 	 * API email for kadence
@@ -98,6 +105,14 @@ class Kadence_Blocks_Prebuilt_Library {
 	protected $remote_url = 'https://cloud.kadenceblocks.com/wp-json/kadence-cloud/v1/get/';
 
 	/**
+	 * The remote URL.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $remote_templates_url = 'https://api.startertemplatecloud.com/wp-json/kadence-starter/v1/get/';
+
+	/**
 	 * The final data.
 	 *
 	 * @access protected
@@ -128,11 +143,52 @@ class Kadence_Blocks_Prebuilt_Library {
 			add_action( 'wp_ajax_kadence_import_get_prebuilt_data', array( $this, 'prebuilt_data_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_reload_prebuilt_data', array( $this, 'prebuilt_data_reload_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_get_new_connection_data', array( $this, 'prebuilt_connection_info_ajax_callback' ) );
+			add_action( 'wp_ajax_kadence_import_get_prebuilt_templates_data', array( $this, 'prebuilt_templates_data_ajax_callback' ) );
+			add_action( 'wp_ajax_kadence_import_reload_prebuilt_templates_data', array( $this, 'prebuilt_templates_data_reload_ajax_callback' ) );
+			add_action( 'wp_ajax_kadence_import_process_data', array( $this, 'process_data_ajax_callback' ) );
 		}
 
 		// Add a cleanup routine.
 		$this->schedule_cleanup();
 		add_action( 'delete_block_library_folder', array( $this, 'delete_block_library_folder' ) );
+	}
+	/**
+	 * Get the section data if available locally.
+	 */
+	public function get_section_prebuilt_data( $pro_data ) {
+		$pro_key = ( isset( $pro_data['ktp_api_key'] ) && ! empty( $pro_data['ktp_api_key'] ) ? $pro_data['ktp_api_key'] : '' );
+		$api_email = ( isset( $pro_data['activation_email'] ) && ! empty( $pro_data['activation_email'] ) ? $pro_data['activation_email'] : '' );
+		if ( empty( $pro_key ) ) {
+			$pro_key = ( isset( $pro_data['ithemes_key'] ) && ! empty( $pro_data['ithemes_key'] ) ? $pro_data['ithemes_key'] : '' );
+			if ( $pro_key ) {
+				$api_email = 'iThemes';
+			}
+		}
+		$this->api_key       = $pro_key;
+		$this->api_email     = $api_email;
+		$this->package       = 'section';
+		$this->url           = $this->remote_url;
+		$this->key           = 'section';
+		// Do you have the data?
+		$get_data = $this->get_only_local_template_data();
+		if ( ! $get_data ) {
+			// Send JSON Error response to the AJAX call.
+			return false;
+		}
+		return $get_data;
+	}
+	
+	/**
+	 * Get the local data file if there.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_only_local_template_data( $skip_local = false ) {
+		// If the local file exists, return it's data.
+		return file_exists( $this->get_local_template_data_path() )
+			? $this->get_local_template_data_contents()
+			: '';
 	}
 	/**
 	 * Get the local data file if there, else query the api.
@@ -151,9 +207,33 @@ class Kadence_Blocks_Prebuilt_Library {
 				return $this->get_local_template_data_contents();
 			}
 		}
-		if ( '[]' === $this->get_local_template_data_contents() ) {
-			if ( $this->create_template_data_file( $skip_local ) ) {
-				return $this->get_local_template_data_contents();
+		// // If it's empty lets try to get the data.
+		// if ( '[]' === $this->get_local_template_data_contents() ) {
+		// 	if ( $this->create_template_data_file( $skip_local ) ) {
+		// 		return $this->get_local_template_data_contents();
+		// 	}
+		// }
+		// If it's a Kadence Cloud, lets make sure it's within date.
+		if ( 'templates' !== $this->package && 'section' !== $this->package && ! $this->is_template ) {
+			$cloud_settings = json_decode( get_option( 'kadence_blocks_cloud' ), true );
+			if ( isset( $cloud_settings['connections'] ) && isset( $cloud_settings['connections'][ $this->package ] ) && isset( $cloud_settings['connections'][ $this->package ]['expires'] ) && ! empty( $cloud_settings['connections'][ $this->package ]['expires'] ) ) {
+				$expires = strtotime( get_date_from_gmt( $cloud_settings['connections'][ $this->package ]['expires'] ) );
+				$now     = strtotime( get_date_from_gmt( current_time( 'Y-m-d H:i:s' ) ) );
+				if ( $expires < $now ) {
+					$refresh = ( isset( $cloud_settings['connections'][ $this->package ]['refresh'] ) && ! empty( $cloud_settings['connections'][ $this->package ]['refresh'] ) ? $cloud_settings['connections'][ $this->package ]['refresh'] : 'month' );
+					if ( 'day' === $refresh ) {
+						$expires_add = DAY_IN_SECONDS;
+					} elseif ( 'week' === $refresh ) {
+						$expires_add = WEEK_IN_SECONDS;
+					} else {
+						$expires_add = MONTH_IN_SECONDS;
+					}
+					$cloud_settings['connections'][ $this->package ]['expires'] = gmdate( 'Y-m-d H:i:s', strtotime( current_time() ) + $expires_add );
+					update_option( 'kadence_blocks_cloud', json_encode( $cloud_settings ) );
+					if ( $this->create_template_data_file( true ) ) {
+						return $this->get_local_template_data_contents();
+					}
+				}
 			}
 		}
 		// If the local file exists, return it's data.
@@ -186,7 +266,6 @@ class Kadence_Blocks_Prebuilt_Library {
 		if ( $skip_local || ! $this->data ) {
 			$this->get_data();
 		}
-
 		// Put the contents in the file. Return false if that fails.
 		if ( ! $filesystem->put_contents( $file_path, $this->data ) ) {
 			return false;
@@ -215,11 +294,10 @@ class Kadence_Blocks_Prebuilt_Library {
 	public function get_local_template_data_contents() {
 		$local_path = $this->get_local_template_data_path();
 
-		// Check if the local stylesheet exists. (true means the file doesn't exist).
+		// Check if the local exists. (true means the file doesn't exist).
 		if ( $this->local_file_exists() ) {
 			return false;
 		}
-
 		ob_start();
 		include $local_path;
 		return ob_get_clean();
@@ -232,12 +310,28 @@ class Kadence_Blocks_Prebuilt_Library {
 	 */
 	public function get_remote_url_contents() {
 		$args = array(
-			'key'       => $this->key,
-			'api_email' => $this->api_email,
-			'api_key'   => $this->api_key,
+			'key' => $this->key,
 		);
+		if ( 'templates' === $this->package || 'section' === $this->package || $this->is_template ) {
+			$args['api_email'] = $this->api_email;
+			$args['api_key']   = $this->api_key;
+			if ( 'iThemes' === $this->api_email ) {
+				if ( is_callable( 'network_home_url' ) ) {
+					$site_url = network_home_url( '', 'http' );
+				} else {
+					$site_url = get_bloginfo( 'url' );
+				}
+				$site_url = preg_replace( '/^https/', 'http', $site_url );
+				$site_url = preg_replace( '|/$|', '', $site_url );
+				$args['site_url'] = $site_url;
+			}
+		}
+		if ( 'templates' === $this->package ) {
+			$args['request'] = 'blocks';
+		}
 		// Get the response.
 		$api_url  = add_query_arg( $args, $this->url );
+
 		$response = wp_remote_get( $api_url );
 		// Early exit if there was an error.
 		if ( is_wp_error( $response ) ) {
@@ -293,8 +387,8 @@ class Kadence_Blocks_Prebuilt_Library {
 			}
 		} elseif ( class_exists( 'Kadence_Blocks_Pro' ) ) {
 			$kbp_data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
-			if ( $kbp_data && isset( $kbp_data['ktp_api_key'] ) && ! empty( $kbp_data['ktp_api_key'] ) ) {
-				$kb_api = $kbp_data['ktp_api_key'];
+			if ( $kbp_data && isset( $kbp_data['api_key'] ) && ! empty( $kbp_data['api_key'] ) ) {
+				$kb_api = $kbp_data['api_key'];
 			}
 		}
 		return md5( $this->get_base_url() . $this->get_base_path() . $this->package . KADENCE_BLOCKS_VERSION . $kb_api );
@@ -309,10 +403,11 @@ class Kadence_Blocks_Prebuilt_Library {
 	public function prebuilt_connection_info_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
+		$this->local_template_data_path = '';
 		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
 		$this->api_email     = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
 		$this->package       = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
-		$this->url           = empty( $_POST['url'] ) ? '' : sanitize_text_field( $_POST['url'] ) . 'wp-json/kadence-cloud/v1/info/';
+		$this->url           = empty( $_POST['url'] ) ? '' : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/info/';
 		$this->key           = empty( $_POST['key'] ) ? 'section' : sanitize_text_field( $_POST['key'] );
 		// Do you have the data?
 		$get_data = $this->get_connection_data();
@@ -362,11 +457,13 @@ class Kadence_Blocks_Prebuilt_Library {
 	public function prebuilt_data_ajax_callback() {
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
+		$this->local_template_data_path = '';
 		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
 		$this->api_email     = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
 		$this->package       = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
-		$this->url           = empty( $_POST['url'] ) ? $this->remote_url : sanitize_text_field( $_POST['url'] ) . 'wp-json/kadence-cloud/v1/get/';
-		$this->key           = empty( $_POST['key'] ) ? 'section' : sanitize_text_field( $_POST['key'] );
+		$this->url           = empty( $_POST['url'] ) ? $this->remote_url : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/get/';
+		$this->key           = isset( $_POST['key'] ) && ! empty( $_POST['key'] ) ? sanitize_text_field( $_POST['key'] ) : 'section';
+		$this->is_template   = isset( $_POST['is_template'] ) && ! empty( $_POST['is_template'] ) ? true : false;
 		// Do you have the data?
 		$get_data = $this->get_template_data();
 		if ( ! $get_data ) {
@@ -377,7 +474,227 @@ class Kadence_Blocks_Prebuilt_Library {
 		}
 		die;
 	}
+	/**
+	 * Main AJAX callback function for getting the prebuilt templates array.
+	 */
+	public function prebuilt_templates_data_ajax_callback() {
+		// Verify if the AJAX call is valid (checks nonce and current_user_can).
+		$this->verify_ajax_call();
+		$this->local_template_data_path = '';
+		$this->api_key       = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
+		$this->api_email     = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->package       = 'templates';
+		$this->url           = $this->remote_templates_url;
+		$this->key           = 'blocks';
+		// Do you have the data?
+		$get_data = $this->get_template_data();
+		if ( ! $get_data ) {
+			// Send JSON Error response to the AJAX call.
+			wp_send_json( esc_html__( 'No library data', 'kadence-blocks' ) );
+		} else {
+			wp_send_json( $get_data );
+		}
+		die;
+	}
+	/**
+	 * Main AJAX callback function for:
+	 * 1). get local data if there
+	 * 2). query api for data if needed
+	 * 3). import content
+	 * 4). execute 'after content import' actions (before widget import WP action, widget import, customizer import, after import WP action)
+	 */
+	public function prebuilt_templates_data_reload_ajax_callback() {
 
+		// Verify if the AJAX call is valid (checks nonce and current_user_can).
+		$this->verify_ajax_call();
+		$this->local_template_data_path = '';
+		$this->api_key   = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
+		$this->api_email = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
+		$this->package       = 'templates';
+		$this->url           = $this->remote_templates_url;
+		$this->key           = 'blocks';
+
+		//$removed = $this->delete_block_library_folder();
+		// if ( ! $removed ) {
+		// 	wp_send_json_error( 'failed_to_flush' );
+		// }
+		// Do you have the data?
+		$get_data = $this->get_template_data( true );
+
+		if ( ! $get_data ) {
+			// Send JSON Error response to the AJAX call.
+			wp_send_json( esc_html__( 'No library data', 'kadence-blocks' ) );
+		} else {
+			wp_send_json( $get_data );
+		}
+		die;
+	}
+
+	/**
+	 * Ajax function for processing the import data.
+	 */
+	public function process_data_ajax_callback() {
+		// Verify if the AJAX call is valid (checks nonce and current_user_can).
+		$this->verify_ajax_call();
+		$data = empty( $_POST['import_content'] ) ? '' : stripslashes( $_POST['import_content'] );
+		// Do you have the data?
+		if ( $data ) {
+			$data = $this->process_content( $data );
+			if ( ! $data ) {
+				// Send JSON Error response to the AJAX call.
+				wp_send_json( esc_html__( 'No data', 'kadence-blocks' ) );
+			} else {
+				wp_send_json( $data );
+			}
+		}
+		// Send JSON Error response to the AJAX call.
+		wp_send_json( esc_html__( 'No data', 'kadence-blocks' ) );
+		die;
+	}
+	/**
+	 * Download and Replace images
+	 *
+	 * @param  string $content the import post content.
+	 */
+	public function process_content( $content = '' ) {
+		// Find all urls.
+		preg_match_all( '#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $content, $match );
+		$all_urls = array_unique( $match[0] );
+
+		if ( empty( $all_urls ) ) {
+			return $content;
+		}
+
+		$map_urls    = array();
+		$image_urls  = array();
+		// Find all the images.
+		foreach ( $all_urls as $key => $link ) {
+			if ( $this->check_for_image( $link ) ) {
+				// Avoid srcset images.
+				if (
+					false === strpos( $link, '-150x' ) &&
+					false === strpos( $link, '-300x' ) &&
+					false === strpos( $link, '-1024x' )
+				) {
+					$image_urls[] = $link;
+				}
+			}
+		}
+		// Process images.
+		if ( ! empty( $image_urls ) ) {
+			foreach ( $image_urls as $key => $image_url ) {
+				// Download remote image.
+				$image            = array(
+					'url' => $image_url,
+					'id'  => 0,
+				);
+				$downloaded_image       = $this->import_image( $image );
+				$map_urls[ $image_url ] = $downloaded_image['url'];
+			}
+		}
+		// Replace images in content.
+		foreach ( $map_urls as $old_url => $new_url ) {
+			$content = str_replace( $old_url, $new_url, $content );
+			// Replace the slashed URLs if any exist.
+			$old_url = str_replace( '/', '/\\', $old_url );
+			$new_url = str_replace( '/', '/\\', $new_url );
+			$content = str_replace( $old_url, $new_url, $content );
+		}
+		return $content;
+	}
+	/**
+	 * Import an image.
+	 *
+	 * @param array $image_data the image data to import.
+	 */
+	public function import_image( $image_data ) {
+		$local_image = $this->check_for_local_image( $image_data );
+		if ( $local_image['status'] ) {
+			return $local_image['image'];
+		}
+
+		$file_content = wp_remote_retrieve_body(
+			wp_safe_remote_get(
+				$image_data['url'],
+				array(
+					'timeout'   => '60',
+					'sslverify' => false,
+				)
+			)
+		);
+		// Empty file content?
+		if ( empty( $file_content ) ) {
+			return $image_data;
+		}
+
+		$filename = basename( $image_data['url'] );
+
+		$upload = wp_upload_bits( $filename, null, $file_content );
+		$post = array(
+			'post_title' => $filename,
+			'guid'       => $upload['url'],
+		);
+		$info = wp_check_filetype( $upload['file'] );
+		if ( $info ) {
+			$post['post_mime_type'] = $info['type'];
+		} else {
+			return $image_data;
+		}
+		$post_id = wp_insert_attachment( $post, $upload['file'] );
+		wp_update_attachment_metadata(
+			$post_id,
+			wp_generate_attachment_metadata( $post_id, $upload['file'] )
+		);
+		update_post_meta( $post_id, '_kadence_blocks_image_hash', sha1( $image_data['url'] ) );
+
+		return array(
+			'id'  => $post_id,
+			'url' => $upload['url'],
+		);
+	}
+
+	/**
+	 * Check if image is already imported.
+	 *
+	 * @param array $image_data the image data to import.
+	 */
+	public function check_for_local_image( $image_data ) {
+		global $wpdb;
+
+		// Thanks BrainstormForce for this idea.
+		// Check if image is already local based on meta key and custom hex value.
+		$image_id = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT `post_id` FROM `' . $wpdb->postmeta . '`
+					WHERE `meta_key` = \'_kadence_blocks_image_hash\'
+						AND `meta_value` = %s
+				;',
+				sha1( $image_data['url'] )
+			)
+		);
+		if ( $image_id ) {
+			$local_image = array(
+				'id'  => $image_id,
+				'url' => wp_get_attachment_url( $image_id ),
+			);
+			return array(
+				'status' => true,
+				'image'  => $local_image,
+			);
+		}
+		return array(
+			'status' => false,
+			'image'  => $image_data,
+		);
+	}
+	/**
+	 * Check if link is for an image.
+	 *
+	 * @param string $link url possibly to an image.
+	 */
+	public function check_for_image( $link = '' ) {
+		return preg_match( '/^((https?:\/\/)|(www\.))([a-z0-9-].?)+(:[0-9]+)?\/[\w\-]+\.(jpg|png|gif|jpeg)\/?$/i', $link );
+	}
 	/**
 	 * Check if the AJAX call is valid.
 	 */
@@ -395,16 +712,17 @@ class Kadence_Blocks_Prebuilt_Library {
 
 		// Verify if the AJAX call is valid (checks nonce and current_user_can).
 		$this->verify_ajax_call();
+		$this->local_template_data_path = '';
 		$this->api_key   = empty( $_POST['api_key'] ) ? '' : sanitize_text_field( $_POST['api_key'] );
 		$this->api_email = empty( $_POST['api_email'] ) ? '' : sanitize_text_field( $_POST['api_email'] );
 		$this->package   = empty( $_POST['package'] ) ? 'section' : sanitize_text_field( $_POST['package'] );
-		$this->url       = empty( $_POST['url'] ) ? $this->remote_url : sanitize_text_field( $_POST['url'] ) . 'wp-json/kadence-cloud/v1/get/';
+		$this->url       = empty( $_POST['url'] ) ? $this->remote_url : rtrim( sanitize_text_field( $_POST['url'] ), '/' ) . '/wp-json/kadence-cloud/v1/get/';
 		$this->key       = empty( $_POST['key'] ) ? 'section' : sanitize_text_field( $_POST['key'] );
 
-		$removed = $this->delete_block_library_folder();
-		if ( ! $removed ) {
-			wp_send_json_error( 'failed_to_flush' );
-		}
+		// $removed = $this->delete_block_library_folder();
+		// if ( ! $removed ) {
+		// 	wp_send_json_error( 'failed_to_flush' );
+		// }
 		// Do you have the data?
 		$get_data = $this->get_template_data( true );
 

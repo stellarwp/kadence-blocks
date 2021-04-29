@@ -60,6 +60,9 @@ const {
 	Tooltip,
 } = wp.components;
 
+import {
+	closeSmall,
+} from '@wordpress/icons';
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -715,7 +718,7 @@ class KadenceTestimonials extends Component {
 												sizes: null,
 											}, index );
 										} }
-										icon="no-alt"
+										icon={ closeSmall }
 										showTooltip={ true }
 									/>
 								</Fragment>

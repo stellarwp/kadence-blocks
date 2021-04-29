@@ -4,6 +4,14 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
+ .kadence-toolbar-design-library {
+    margin-left: 5px;
+    align-items: center;
+	.kb-toolbar-prebuilt-button {
+		padding-left:12px;
+		padding-right:12px;
+	}
+}
  .kt-block-default-palette .components-color-palette__item {
     display: flex;
     align-items: center;

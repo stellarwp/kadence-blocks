@@ -16,6 +16,7 @@
 		line-height: 1.6;
 		text-decoration: none;
 		text-align: center;
+		align-items: center;
 		justify-content: center;
 		transition: all .3s ease-in-out;
 		border-width:2px;
@@ -24,6 +25,9 @@
 		background:transparent;
 		color:#555555;
 		border-style: solid;
+		.kt-btn-svg-icon { 
+			transition: all .3s ease-in-out;
+		}
 	}
 	.kt-button:not(.kb-btn-global-inherit):hover, .kt-button:not(.kb-btn-global-inherit):focus {
 		border-color:#444444;
@@ -70,10 +74,10 @@
 	opacity: 1;
 }
 .kt-btn-svg-icon.kt-btn-side-right {
-    padding-left: 5px;
+    padding-left: 0.5em;
 }
 .kt-btn-svg-icon.kt-btn-side-left {
-    padding-right: 5px;
+    padding-right: 0.5em;
 }
 .kt-btn-has-text-false .kt-btn-svg-icon {
     padding-left:0;

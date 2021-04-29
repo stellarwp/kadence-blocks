@@ -1,20 +1,37 @@
-const { withSelect, withDispatch } = wp.data;
+/**
+ * Handle Cloud Connections.
+ */
 const {
-	rawHandler,
-} = wp.blocks;
-const {
+	localStorage,
+} = window;
+
+/**
+ * External dependencies
+ */
+import Masonry from 'react-masonry-component';
+import debounce from 'lodash/debounce';
+import LazyLoad from 'react-lazy-load';
+
+/**
+ * WordPress dependencies
+ */
+import {
+	withSelect,
+	withDispatch,
+} from '@wordpress/data';
+import { rawHandler } from '@wordpress/blocks';
+import { 
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import { compose } from '@wordpress/compose';
+import {
 	Button,
-	ButtonGroup,
-	Tooltip,
 	TextControl,
 	SelectControl,
-	ExternalLink,
+	VisuallyHidden,
 	Spinner,
-} = wp.components;
+} from '@wordpress/components';
 import {
 	arrowLeft,
 	download,
@@ -24,37 +41,16 @@ import {
 	chevronLeft,
 	chevronDown,
 } from '@wordpress/icons';
-import Masonry from 'react-masonry-component';
-const {
-	applyFilters,
-} = wp.hooks;
-const { compose } = wp.compose;
-import map from 'lodash/map';
-import debounce from 'lodash/debounce';
-import LazyLoad from 'react-lazy-load';
+import { __, sprintf } from '@wordpress/i18n';
 
-//import Prebuilts from './prebuilt_array';
-function kadenceBlocksTryParseJSON(jsonString){
-    try {
-        var o = JSON.parse(jsonString);
 
-        // Handle non-exception-throwing cases:
-        // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
-        // but... JSON.parse(null) returns null, and typeof null === "object", 
-        // so we must check for that, too. Thankfully, null is falsey, so this suffices:
-        if (o && typeof o === "object") {
-            return o;
-        }
-    }
-    catch (e) { }
-
-    return false;
-};
 /**
- * Internal block libraries
+ * Internal dependencies
  */
-const { __ } = wp.i18n;
-class PrebuiltSections extends Component {
+import KadenceTryParseJSON from '../../components/common/parse-json'
+
+
+class CloudSections extends Component {
 	constructor() {
 		super( ...arguments );
 		this.loadTemplateData = this.loadTemplateData.bind( this );
@@ -68,15 +64,40 @@ class PrebuiltSections extends Component {
 			items: false,
 			errorItems: false,
 			isLoading: false,
+			isImporting: false,
 			sidebar:false,
-			categories: [ 'category' ],
-			url: ( this.props.tab === 'kadence_cloud' && kadence_blocks_params.kadence_cloud && kadence_blocks_params.kadence_cloud.url ? kadence_blocks_params.kadence_cloud.url : '' ),
-			key: ( this.props.tab === 'kadence_cloud' && kadence_blocks_params.kadence_cloud && kadence_blocks_params.kadence_cloud.key ? kadence_blocks_params.kadence_cloud.key : '' ),
+			categories: { 'category': 'Category' },
 		};
 		this.debouncedReloadTemplateData = debounce( this.reloadTemplateData.bind( this ), 200 );
 	}
 	onInsertContent( blockcode ) {
-		this.props.import( blockcode );
+		this.importProcess( blockcode );
+	}
+	importProcess( blockcode ) {
+		this.setState( { isImporting: true } );
+		var data = new FormData();
+		data.append( 'action', 'kadence_import_process_data' );
+		data.append( 'security', kadence_blocks_params.ajax_nonce );
+		data.append( 'import_content', blockcode );
+		var control = this;
+		jQuery.ajax( {
+			method:      'POST',
+			url:         kadence_blocks_params.ajax_url,
+			data:        data,
+			contentType: false,
+			processData: false,
+		} )
+		.done( function( response, status, stately ) {
+			if ( response ) {
+				//console.log( response );
+				control.props.import( response );
+				control.setState( { isImporting: false } );
+			}
+		})
+		.fail( function( error ) {
+			console.log( error );
+			control.setState( { isImporting: false } );
+		});
 	}
 	capitalizeFirstLetter( string ) {
 		return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
@@ -92,8 +113,6 @@ class PrebuiltSections extends Component {
 		var data = new FormData();
 		data.append( 'action', 'kadence_import_reload_prebuilt_data' );
 		data.append( 'security', kadence_blocks_params.ajax_nonce );
-		data.append( 'api_key', ( kadence_blocks_params.pro_data && kadence_blocks_params.pro_data.ktp_api_key ? kadence_blocks_params.pro_data.ktp_api_key : '' ) );
-		data.append( 'api_email', ( kadence_blocks_params.pro_data && kadence_blocks_params.pro_data.activation_email ? kadence_blocks_params.pro_data.activation_email : '' ) );
 		data.append( 'package', this.props.tab );
 		data.append( 'url', this.props.tab !== 'section' && action[0] && action[0].url ? action[0].url : '' );
 		data.append( 'key', this.props.tab !== 'section' && action[0] && action[0].key ? action[0].key : '' );
@@ -107,21 +126,20 @@ class PrebuiltSections extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				console.log( response );
-				const o = kadenceBlocksTryParseJSON( response );
+				const o = KadenceTryParseJSON( response, false );
 				if ( o ) {
-					const filteredLibraryItems = applyFilters( 'kadence.prebuilt_object', o );
-					const cats = [ 'category' ];
-					{ Object.keys( filteredLibraryItems ).map( function( key, index ) {
-						if ( filteredLibraryItems[ key ].categories && filteredLibraryItems[ key ].categories.length ) {
-							for ( let c = 0; c < filteredLibraryItems[ key ].categories.length; c++ ) {
-								if ( ! cats.includes( filteredLibraryItems[ key ].categories[ c ] ) ) {
-									cats.push( filteredLibraryItems[ key ].categories[ c ] );
+					const cats = { 'category': 'Category' };
+					{ Object.keys( o ).map( function( key, index ) {
+						//console.log( o[ key ].categories );
+						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
+							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
+								if ( ! cats.hasOwnProperty( ckey ) ) {
+									cats[ ckey ] = o[ key ].categories[ ckey ];
 								}
-							}
+							} ) }
 						}
 					} ) }
-					control.setState( { items: filteredLibraryItems, errorItems: false, isLoading: false, categories: cats } );
+					control.setState( { items: o, errorItems: false, isLoading: false, categories: cats } );
 				} else {
 					control.setState( { items: 'error', errorItems: true, isLoading: false } );
 				}
@@ -134,18 +152,31 @@ class PrebuiltSections extends Component {
 	}
 	loadTemplateData() {
 		this.setState( { errorItems: false, isLoading: true, items: 'loading', tab: this.props.tab } );
-		let action = {}
+		let action = [];
 		if ( this.props.tab !== 'section' ) {
 			action = this.props.libraries.filter( obj => {
 				return obj.slug === this.props.tab;
 			});
 		}
-
+		if ( action === undefined || action.length == 0 ) {
+			const cloudSettings = kadence_blocks_params.cloud_settings ? JSON.parse( kadence_blocks_params.cloud_settings ) : {};
+			if ( cloudSettings && cloudSettings['connections'] ) {
+				action = cloudSettings['connections'].filter( obj => {
+					return obj.slug === this.props.tab;
+				});
+			}
+		}
+		if ( action === undefined || action.length == 0 ) {
+			if ( typeof kadence_blocks_params.prebuilt_libraries === 'object' && kadence_blocks_params.prebuilt_libraries !== null ) {
+				this.setState( { actions: kadence_blocks_params.prebuilt_libraries.concat( this.state.actions ) } );
+				action = kadence_blocks_params.prebuilt_libraries.filter( obj => {
+					return obj.slug === this.props.tab;
+				});
+			}
+		}
 		var data = new FormData();
 		data.append( 'action', 'kadence_import_get_prebuilt_data' );
 		data.append( 'security', kadence_blocks_params.ajax_nonce );
-		data.append( 'api_key', ( kadence_blocks_params.pro_data && kadence_blocks_params.pro_data.ktp_api_key ? kadence_blocks_params.pro_data.ktp_api_key : '' ) );
-		data.append( 'api_email', ( kadence_blocks_params.pro_data && kadence_blocks_params.pro_data.activation_email ? kadence_blocks_params.pro_data.activation_email : '' ) );
 		data.append( 'package', this.props.tab );
 		data.append( 'url', this.props.tab !== 'section' && action[0] && action[0].url ? action[0].url : '' );
 		data.append( 'key', this.props.tab !== 'section' && action[0] && action[0].key ? action[0].key : '' );
@@ -159,20 +190,20 @@ class PrebuiltSections extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				const o = kadenceBlocksTryParseJSON( response );
+				const o = KadenceTryParseJSON( response, false );
 				if ( o ) {
-					const filteredLibraryItems = applyFilters( 'kadence.prebuilt_object', o );
-					const cats = [ 'category' ];
-					{ Object.keys( filteredLibraryItems ).map( function( key, index ) {
-						if ( filteredLibraryItems[ key ].categories && filteredLibraryItems[ key ].categories.length ) {
-							for ( let c = 0; c < filteredLibraryItems[ key ].categories.length; c++ ) {
-								if ( ! cats.includes( filteredLibraryItems[ key ].categories[ c ] ) ) {
-									cats.push( filteredLibraryItems[ key ].categories[ c ] );
+					const cats = { 'category': 'Category' };
+					{ Object.keys( o ).map( function( key, index ) {
+						//console.log( o[ key ].categories );
+						if ( o[ key ].categories && typeof o[ key ].categories === "object") {
+							{ Object.keys( o[ key ].categories ).map( function( ckey, i ) {
+								if ( ! cats.hasOwnProperty( ckey ) ) {
+									cats[ckey] = o[ key ].categories[ ckey ];
 								}
-							}
+							} ) }
 						}
 					} ) }
-					control.setState( { items: filteredLibraryItems, errorItems: false, isLoading: false, categories: cats } );
+					control.setState( { items: o, errorItems: false, isLoading: false, categories: cats } );
 				} else {
 					control.setState( { items: 'error', errorItems: true, isLoading: false } );
 				}
@@ -188,19 +219,22 @@ class PrebuiltSections extends Component {
 			this.props.onReload();
 			this.debouncedReloadTemplateData();
 		}
+		const activePanel = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+		const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'hide' );
+		const sidebarEnabled = ( this.state.sidebar ? this.state.sidebar : sidebar_saved_enabled );
 		const roundAccurately = (number, decimalPlaces) => Number(Math.round(Number(number + "e" + decimalPlaces)) + "e" + decimalPlaces * -1);
 		const libraryItems = this.props.tab !== this.state.tab ? false : this.state.items;
-		console.log( libraryItems );
-		const catOptions = this.state.categories.map( ( item ) => {
-			return { value: ( 'category' === item ? 'all' : item ), label: this.capitalizeFirstLetter( item ) }
+		const categoryItems = this.state.categories;
+		const catOptions = Object.keys( categoryItems ).map( function( key, index ) {
+			return { value: ( 'category' === key ? 'all' : key ), label: categoryItems[key] }
 		} );
-		const sideCatOptions = this.state.categories.map( ( item ) => {
-			return { value:( 'category' === item ? 'all' : item ), label: ( 'category' === item ? 'All' : this.capitalizeFirstLetter( item ) ) }
-		} );		
+		const sideCatOptions = Object.keys( categoryItems ).map( function( key, index ) {
+			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categoryItems[key] ) }
+		} );	
 		const control = this;
 		return (
-			<div className={ `kt-prebuilt-content${ ( this.state.sidebar ? ' kb-prebuilt-has-sidebar' : '' ) }` }>
-				{ this.state.sidebar && (
+			<div className={ `kt-prebuilt-content${ ( sidebarEnabled === 'show' ? ' kb-prebuilt-has-sidebar' : '' ) }` }>
+				{ sidebarEnabled === 'show' && (
 					<div className="kt-prebuilt-sidebar">
 						<div className="kb-library-sidebar-top">
 							<TextControl
@@ -212,7 +246,12 @@ class PrebuiltSections extends Component {
 							<Button
 								className={ 'kb-trigger-sidebar' }
 								icon={ previous }
-								onClick={ () => this.setState( { sidebar: false } ) }
+								onClick={ () => {
+									const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeSidebar['sidebar'] = 'hide';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									this.setState( { sidebar: 'hide' } );
+								}}
 							/>
 						</div>
 						<div className="kb-library-sidebar-bottom">
@@ -229,13 +268,18 @@ class PrebuiltSections extends Component {
 						</div>
 					</div>
 				) }
-				{ ! this.state.sidebar && (
+				{ sidebarEnabled !== 'show' && (
 					<div className="kt-prebuilt-header kb-library-header">
 						<div className="kb-library-header-left">
 							<Button
 								className={ 'kb-trigger-sidebar' }
 								icon={ next }
-								onClick={ () => this.setState( { sidebar: true } ) }
+								onClick={ () => {
+									const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeSidebar['sidebar'] = 'show';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									this.setState( { sidebar: 'show' } );
+								}}
 							/>
 							<SelectControl
 								className={ "kb-library-header-cat-select" }
@@ -254,13 +298,19 @@ class PrebuiltSections extends Component {
 						</div>
 					</div>
 				) }
-				{ ( this.state.isLoading || false === libraryItems || this.state.errorItems ) ? (
+				{ ( this.state.isImporting || this.state.isLoading || false === libraryItems || this.state.errorItems ) ? (
 					<Fragment>
-						{ ! this.state.errorItems && (
+						{ ! this.state.errorItems && this.state.isLoading && (
 							<Spinner />
 						) }
+						{ ! this.state.errorItems && this.state.isImporting &&  (
+							<div className="preparing-importing-images">
+								<Spinner />
+								<h2>{ __( 'Preparing Content...', 'kadence-blocks' ) }</h2>
+							</div>
+						) }
 						{ this.state.errorItems && (
-							<Fragment>
+							<div>
 								<h2 style={ { textAlign:'center' } }>
 									{ __( 'Error, Unable to access library database, please try re-syncing', 'kadence-blocks' ) }
 								</h2>
@@ -273,7 +323,7 @@ class PrebuiltSections extends Component {
 										{ __( ' Sync with Cloud', 'kadence-blocks' ) }
 									</Button>
 								</div>
-							</Fragment>
+							</div>
 						) }
 						{ false === libraryItems && (
 							<Fragment>{ this.loadTemplateData() }</Fragment>
@@ -292,46 +342,50 @@ class PrebuiltSections extends Component {
 					>
 						{ Object.keys( this.state.items ).map( function( key, index ) {
 							const name = control.state.items[key].name;
+							const slug = control.state.items[key].slug;
 							const content = control.state.items[key].content;
 							const image = control.state.items[key].image;
 							const imageWidth = control.state.items[key].imageW;
 							const imageHeight = control.state.items[key].imageH;
 							const categories = control.state.items[key].categories;
 							const keywords = control.state.items[key].keywords;
+							const description = control.state.items[key].description;
 							const pro = control.state.items[key].pro;
-							const member = control.state.items[key].member;
-							if ( ( 'all' === control.state.category || categories.includes( control.state.category ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
+							const locked = libraryItems[key].locked;
+							const descriptionId = `${ slug }_kb_cloud__item-description`;
+							if ( ( 'all' === control.state.category || Object.keys( categories ).includes( control.state.category ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
 								return (
 									<div className="kt-prebuilt-item">
-										<Tooltip text={ name }>
-											<Button
-												key={ key }
-												className="kt-import-btn"
-												isSmall
-												isDisabled={ undefined !== pro && pro && 'true' !== kadence_blocks_params.pro }
-												onClick={ () => control.onInsertContent( content ) }
+										<Button
+											key={ key }
+											className="kt-import-btn"
+											isSmall
+											// translators: %s: Prebuilt Name
+											aria-label={ sprintf( __( 'Add %s', 'kadence-blocks' ), name ) }
+											aria-describedby={ description ? descriptionId : undefined }
+											isDisabled={ locked }
+											onClick={ () => ! locked ? control.onInsertContent( content ) : '' }
+										>
+											<div
+												className="kt-import-btn-inner"
+												style={ {
+													paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
+												} }
 											>
-												<div
-													className="kt-import-btn-inner"
-													style={ {
-														paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
-													} }
-												>
-													<LazyLoad>
-														<img src={ image } alt={ name } />
-													</LazyLoad>
-												</div>
-											</Button>
-										</Tooltip>
+												<LazyLoad>
+													<img src={ image } alt={ name } />
+												</LazyLoad>
+												<span className="kb-import-btn-title">{ name }</span>
+											</div>
+										</Button>
+										{ !! description && (
+											<VisuallyHidden id={ descriptionId }>
+												{ description }
+											</VisuallyHidden>
+										) }
 										{ undefined !== pro && pro && (
 											<Fragment>
 												<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
-												{ 'true' !== kadence_blocks_params.pro && (
-													<div className="kt-popover-pro-notice">
-														<h2>{ __( 'Kadence Blocks Pro required for this item' ) } </h2>
-														<ExternalLink href={ 'https://www.kadenceblocks.com/pro/' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
-													</div>
-												) }
 											</Fragment>
 										) }
 									</div>
@@ -365,4 +419,4 @@ export default compose(
 			} ),
 		),
 	} ) ),
-)( PrebuiltSections );
+)( CloudSections );

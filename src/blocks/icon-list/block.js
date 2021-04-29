@@ -41,7 +41,7 @@ const {
 const {
 	Fragment,
 } = wp.element;
-const lineSep = 'true' === kadence_blocks_params.gutenberg ? __UNSTABLE_LINE_SEPARATOR : LINE_SEPARATOR;
+const lineSep = LINE_SEPARATOR ? LINE_SEPARATOR : __UNSTABLE_LINE_SEPARATOR;
 /**
  * Register: a Gutenberg Block.
  *
@@ -53,16 +53,16 @@ const lineSep = 'true' === kadence_blocks_params.gutenberg ? __UNSTABLE_LINE_SEP
  */
 registerBlockType( 'kadence/iconlist', {
 	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-	title: __( 'Icon List' ), // Block title.
+	title: __( 'Icon List', 'kadence-blocks' ), // Block title.
 	icon: {
 		src: itemicons.iconlistBlock,
 	},
-	description: __( 'Create engaging lists with icons for bullets.' ),
+	description: __( 'Create engaging lists with icons for bullets.', 'kadence-blocks' ),
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [
-		__( 'icon' ),
-		__( 'list' ),
-		__( 'KT' ),
+		__( 'icon', 'kadence-blocks' ),
+		__( 'list', 'kadence-blocks' ),
+		'KB',
 	],
 	attributes: {
 		items: {

@@ -62,7 +62,7 @@
 		margin:0 auto;
 		width: 100%;
 	}
-	.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:last-child {
+	.kt-testimonial-grid-wrap .kt-testimonial-item-wrap:last-child:first-child {
 		margin-right:auto;
 	}
 }
@@ -435,14 +435,20 @@
 	.kt-testimonial-media-inner-wrap {
 		margin: 0 0 0 15px;
 	}
-	.kt-testimonial-halign-right {
-		.kt-testimonial-media-inner-wrap {
-			margin: 0 15px 0 0;
-		}
-	}
+	// .kt-testimonial-halign-right {
+	// 	.kt-testimonial-media-inner-wrap {
+	// 		margin: 0 15px 0 0;
+	// 	}
+	// }
 	.kt-testimonial-style-card {
 		.kt-testimonial-media-inner-wrap {
 			margin: 0 0 15px 0;
 		}
 	}
+}
+.rtl .kt-testimonial-halign-right .kt-testimonial-meta-wrap {
+    flex-direction: row;
+}
+.rtl .kt-testimonial-meta-wrap .kt-testimonial-meta-name-wrap {
+    text-align: right;
 }

@@ -37,17 +37,22 @@ export default function ResponsiveControl( {
 	const devices = [
 		{
 			name: 'Desktop',
+			key: 'desktop',
+			label: __( 'Desktop', 'kadence-blocks' ),
 			title: <Dashicon icon="desktop" />,
 			itemClass: 'kb-desk-tab',
 		},
 		{
 			name: 'Tablet',
+			key: 'tablet',
+			label: __( 'Tablet', 'kadence-blocks' ),
 			title: <Dashicon icon="tablet" />,
 			itemClass: 'kb-tablet-tab',
 		},
 		{
 			name: 'Mobile',
 			key: 'mobile',
+			label: __( 'Mobile', 'kadence-blocks' ),
 			title: <Dashicon icon="smartphone" />,
 			itemClass: 'kb-mobile-tab',
 		},
@@ -66,11 +71,12 @@ export default function ResponsiveControl( {
 		<div className={ 'components-base-control kt-inspect-tabs kb-responsive-control' }>
 			<div className="kadence-title-bar">
 				<ButtonGroup className="components-tab-panel__tabs" aria-label={ __( 'Device', 'kadence-blocks' ) }>
-					{ map( devices, ( { name, key, title, itemClass } ) => (
+					{ map( devices, ( { name, key, title, itemClass, label } ) => (
 						<Button
 							key={ key }
 							className={ `components-tab-panel__tabs-item ${ itemClass }${ name === deviceType ? ' active-tab' : '' }` }
 							aria-pressed={ deviceType === name }
+							aria-label={ label }
 							onClick={ () => customSetPreviewDeviceType( name ) }
 						>
 							{ title }

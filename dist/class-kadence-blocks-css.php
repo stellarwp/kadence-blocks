@@ -432,6 +432,24 @@ class Kadence_Blocks_CSS {
 	}
 
 	/**
+	 * Generates the font family output.
+	 *
+	 * @param array $font an array of font settings.
+	 * @return string
+	 */
+	public function render_font_weight( $weight ) {
+		if ( empty( $weight ) ) {
+			return false;
+		}
+		if ( 'regular' === $weight ) {
+			$weight_string = 'normal';
+		} else {
+			$weight_string = $weight;
+		}
+		return $weight_string;
+	}
+
+	/**
 	 * Generates the font output.
 	 *
 	 * @param array  $font an array of font settings.

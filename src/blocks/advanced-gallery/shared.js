@@ -26,8 +26,8 @@ export const pickRelevantMediaFiles = ( image, lightSize, thumbSize, oldImages )
 	imageProps.url = image.url || image.source_url;
 	imageProps.thumbUrl = get( image, [ 'sizes', thumbSize, 'url' ] ) || get( image, [ 'media_details', 'sizes', thumbSize, 'source_url' ] ) || image.url || image.source_url;
 	imageProps.lightUrl = get( image, [ 'sizes', lightSize, 'url' ] ) || get( image, [ 'media_details', 'sizes', lightSize, 'source_url' ] ) || image.url || image.source_url;
-	imageProps.width = get( image, [ 'sizes', thumbSize, 'width' ] ) || get( image, [ 'media_details', 'sizes', thumbSize, 'width' ] ) || get( image, [ 'media_details', 'width' ] ) || undefined;
-	imageProps.height = get( image, [ 'sizes', thumbSize, 'height' ] ) || get( image, [ 'media_details', 'sizes', thumbSize, 'height' ] ) || get( image, [ 'media_details', 'height' ] ) || undefined;
+	imageProps.width = get( image, [ 'sizes', thumbSize, 'width' ] ) || get( image, [ 'media_details', 'sizes', thumbSize, 'width' ] ) || get( image, [ 'sizes', 'full', 'width' ] ) || get( image, [ 'media_details', 'width' ] ) || undefined;
+	imageProps.height = get( image, [ 'sizes', thumbSize, 'height' ] ) || get( image, [ 'media_details', 'sizes', thumbSize, 'height' ] ) || get( image, [ 'sizes', 'full', 'height' ] ) || get( image, [ 'media_details', 'height' ] ) || undefined;
 	return imageProps;
 };
 

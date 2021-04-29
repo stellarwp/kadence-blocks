@@ -58,7 +58,7 @@ class Overlay extends Component {
 		const previewOverlayPosition = this.getPreviewSize( this.props.getPreviewDevice, ( overlayBgImgPosition ? overlayBgImgPosition : undefined ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayBgImgPosition && tabletOverlay[0].enable ? tabletOverlay[0].overlayBgImgPosition : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayBgImgPosition && mobileOverlay[0].enable ? mobileOverlay[0].overlayBgImgPosition : '' ) );
 		const previewOverlayRepeat = this.getPreviewSize( this.props.getPreviewDevice, ( overlayBgImgRepeat ? overlayBgImgRepeat : undefined ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayBgImgRepeat && tabletOverlay[0].enable ? tabletOverlay[0].overlayBgImgRepeat : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayBgImgRepeat && mobileOverlay[0].enable ? mobileOverlay[0].overlayBgImgRepeat : '' ) );
 		const previewOverlayAttachment = this.getPreviewSize( this.props.getPreviewDevice, ( overlayBgImgAttachment ? overlayBgImgAttachment : undefined ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayBgImgAttachment && tabletOverlay[0].enable ? tabletOverlay[0].overlayBgImgAttachment : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayBgImgAttachment && mobileOverlay[0].enable ? mobileOverlay[0].overlayBgImgAttachment : '' ) );
-		const previewOverlayOpacity = this.getPreviewSize( this.props.getPreviewDevice, ( '' !== overlayOpacity ? overlayOpacity : undefined ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayOpacity && tabletOverlay[0].enable ? tabletOverlay[0].overlayOpacity : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayOpacity && mobileOverlay[0].enable ? mobileOverlay[0].overlayOpacity : '' ) );
+		const previewOverlayOpacity = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== overlayOpacity ? overlayOpacity : undefined ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayOpacity && tabletOverlay[0].enable ? tabletOverlay[0].overlayOpacity : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayOpacity && mobileOverlay[0].enable ? mobileOverlay[0].overlayOpacity : '' ) );
 		const previewOverlayBlendMode = this.getPreviewSize( this.props.getPreviewDevice, ( overlayBlendMode ? overlayBlendMode : undefined ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayBlendMod && tabletOverlay[0].enable ? tabletOverlay[0].overlayBlendMod : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayBlendMod && mobileOverlay[0].enable ? mobileOverlay[0].overlayBlendMod : '' ) );
 		const previewOverlayGradLoc = this.getPreviewSize( this.props.getPreviewDevice, ( overlayGradLoc ? overlayGradLoc : 0 ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayGradLoc && tabletOverlay[0].enable ? tabletOverlay[0].overlayGradLoc : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayGradLoc && mobileOverlay[0].enable ? mobileOverlay[0].overlayGradLoc : '' ) );
 
@@ -74,7 +74,7 @@ class Overlay extends Component {
 						backgroundRepeat: ( previewOverlayRepeat ? previewOverlayRepeat : undefined ),
 						backgroundAttachment: ( previewOverlayAttachment === 'parallax' ? 'fixed' : previewOverlayAttachment ),
 						mixBlendMode:  ( previewOverlayBlendMode ? previewOverlayBlendMode : undefined ),
-						opacity: ( previewOverlayOpacity ? overlayOpacityOutput( previewOverlayOpacity ) : undefined ),
+						opacity: ( undefined !== previewOverlayOpacity && Number.isInteger( previewOverlayOpacity ) ? overlayOpacityOutput( previewOverlayOpacity ) : undefined ),
 					} }>
 					</div>
 				) }
@@ -82,7 +82,7 @@ class Overlay extends Component {
 					<div className={ 'kt-row-layout-overlay kt-row-overlay-gradient' } data-bg-img-id={ overlayBgImgID } style={ {
 						backgroundImage: ( 'radial' === previewOverlayGradType ? `radial-gradient(at ${ previewOverlayPosition }, ${ ( previewOverlayColor ? previewOverlayColor : '' ) } ${ previewOverlayGradLoc }%, ${ ( previewOverlaySecondColor ? previewOverlaySecondColor : '' ) } ${ previewOverlayGradLocSecond }%)` : `linear-gradient(${ previewOverlayGradAngle }deg, ${ ( previewOverlayColor ? previewOverlayColor : '' ) } ${ previewOverlayGradLoc }%, ${ ( previewOverlaySecondColor ? previewOverlaySecondColor : '' ) } ${ previewOverlayGradLocSecond }%)` ),
 						mixBlendMode:  ( previewOverlayBlendMode ? previewOverlayBlendMode : undefined ),
-						opacity: ( previewOverlayOpacity ? overlayOpacityOutput( previewOverlayOpacity ) : undefined ),
+						opacity: ( undefined !== previewOverlayOpacity && Number.isInteger( previewOverlayOpacity ) ? overlayOpacityOutput( previewOverlayOpacity ) : undefined ),
 					} }>
 					</div>
 				) }

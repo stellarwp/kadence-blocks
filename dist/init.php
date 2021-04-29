@@ -12,11 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Enqueue Gutenberg block assets for backend editor.
- *
- * `wp-blocks`: includes block type registration and related functions.
- * `wp-element`: includes the WordPress Element abstraction for describing the structure of your blocks.
- * `wp-i18n`: To internationalize the block's text.
+ * Enqueue block assets for backend editor.
  *
  * @since 1.0.0
  */
@@ -28,6 +24,17 @@ function kadence_gutenberg_editor_assets() {
 	$asset_meta = kadence_blocks_get_asset_file( 'dist/build/blocks' );
 	// Scripts.
 	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/build/blocks.js', array_merge( $asset_meta['dependencies'], array( 'wp-api' ) ), $asset_meta['version'], true );
+	// Styles.
+	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), $asset_meta['version'] );
+	if ( function_exists( 'wp_set_script_translations' ) ) {
+		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
+	}
+}
+add_action( 'init', 'kadence_gutenberg_editor_assets', 12 );
+/**
+ * Enqueue block settings for backend editor.
+ */
+function kadence_blocks_gutenberg_editor_assets_variables() {
 	$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
 	$sidebar_size   = 750;
 	$nosidebar_size = 1140;
@@ -84,10 +91,12 @@ function kadence_gutenberg_editor_assets() {
 		$enable_editor_width = true;
 	}
 	$pro_data = false;
-	if ( class_exists( 'Kadence_Theme_Pro' ) ) {
-		$pro_data = get_option( 'ktp_api_manager' );
-	} elseif ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-		$pro_data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
+		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', false ) ) {
+			$pro_data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+		} else {
+			$pro_data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+		}
 	}
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'dist/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'dist/gfonts-names-array.php';
@@ -109,6 +118,7 @@ function kadence_gutenberg_editor_assets() {
 			'userrole'       => $userrole,
 			'proData'        => $pro_data,
 			'pro'            => ( class_exists( 'Kadence_Blocks_Pro' ) ? 'true' : 'false' ),
+			'library_sections' => Kadence_Blocks_Prebuilt_Library::get_instance()->get_section_prebuilt_data( $pro_data ),
 			'colors'         => get_option( 'kadence_blocks_colors' ),
 			'global'         => get_option( 'kadence_blocks_global' ),
 			'gutenberg'      => ( function_exists( 'gutenberg_menu' ) ? 'true' : 'false' ),
@@ -124,19 +134,17 @@ function kadence_gutenberg_editor_assets() {
 			'g_font_names'   => file_exists( $gfont_names_path ) ? include $gfont_names_path : array(),
 			'c_fonts'        => apply_filters( 'kadence_blocks_custom_fonts', array() ),
 			'fluentCRM'      => defined( 'FLUENTCRM' ),
+			'cloud_enabled'  => apply_filters( 'kadence_blocks_cloud_enabled', true ),
 			'cloud_settings' => get_option( 'kadence_blocks_cloud' ),
-			// 'icon_names'     => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
-			// 'icons_ico'      => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
-			// 'icons_fa'       => file_exists( $icons_path ) ? include $icons_path : array(),
+			'prebuilt_libraries' => apply_filters( 'kadence_blocks_custom_prebuilt_libraries', array() ),
+			'postQueryEndpoint'  => '/kbp/v1/post-query',
+			'icon_names'     => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
+			'icons_ico'      => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
+			'icons_fa'       => file_exists( $icons_path ) ? include $icons_path : array(),
 		)
 	);
-	// Styles.
-	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), $asset_meta['version'] );
-	if ( function_exists( 'wp_set_script_translations' ) ) {
-		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
-	}
 }
-add_action( 'init', 'kadence_gutenberg_editor_assets', 12 );
+add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_assets_variables' );
 
 /**
  * Get the asset file produced by wp scripts.
@@ -763,9 +771,11 @@ add_filter( 'render_block_data', 'wpmlcore_7207_fix_kadence_form_block' );
  * @return void
  */
 function kadence_blocks_register_api_endpoints() {
-	$mailerlite_controller = new Kadence_MailerLite_REST_Controller;
+	$posts_controller = new Kadence_Blocks_Post_Rest_Controller();
+	$posts_controller->register_routes();
+	$mailerlite_controller = new Kadence_MailerLite_REST_Controller();
 	$mailerlite_controller->register_routes();
-	$fluentCRM_controller = new Kadence_FluentCRM_REST_Controller;
-	$fluentCRM_controller->register_routes();
+	$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
+	$fluentcrm_controller->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );

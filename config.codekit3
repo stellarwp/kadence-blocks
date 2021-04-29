@@ -413,6 +413,18 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/blocks\/row.style.update.build.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/blocks\/row.style.update.build-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
     "\/dist\/blocks\/spacer.style.build.css" : {
       "aP" : 1,
       "bl" : 0,
@@ -461,53 +473,6 @@
       "oF" : 0,
       "pg" : 0
     },
-    "\/dist\/build\/blocks.asset.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.asset.php",
-      "oF" : 0
-    },
-    "\/dist\/build\/blocks.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
-    "\/dist\/build\/blocks.css.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.css.map",
-      "oF" : 0
-    },
-    "\/dist\/build\/blocks.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/dist\/build\/blocks.js.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.js.map",
-      "oF" : 0
-    },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -538,6 +503,14 @@
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/dist\/class-kadence-blocks-frontend.php",
+      "oF" : 0
+    },
+    "\/dist\/class-kadence-blocks-posts-rest-api.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/class-kadence-blocks-posts-rest-api.php",
       "oF" : 0
     },
     "\/dist\/class-kadence-blocks-posts.php" : {
@@ -5425,6 +5398,17 @@
       "pg" : 0,
       "sct" : 1
     },
+    "\/src\/blocks\/posts\/get-query.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/posts\/get-query-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/blocks\/posts\/icon.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -5765,35 +5749,13 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/row-layout\/dev_prebuilt_modal.js" : {
+    "\/src\/blocks\/row-layout\/content-width-icons.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
       "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/dev_prebuilt_modal-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/row-layout\/devcloud-connect.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/devcloud-connect-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/row-layout\/devlibrary.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/devlibrary-min.js",
+      "oAP" : "\/src\/blocks\/row-layout\/content-width-icons-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -5822,50 +5784,6 @@
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
-    },
-    "\/src\/blocks\/row-layout\/library.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/library-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/row-layout\/prebuilt_array.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/prebuilt_array-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/row-layout\/prebuilt_modal.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/prebuilt_modal-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/row-layout\/prebuilt_template_array.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/prebuilt_template_array-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
     },
     "\/src\/blocks\/row-layout\/row-background.js" : {
       "bF" : 0,
@@ -5900,6 +5818,20 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/blocks\/row-layout\/style-update.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/blocks\/row.style.update.build.css",
+      "oF" : 2,
+      "oS" : 3,
+      "pg" : 0,
+      "sct" : 1
+    },
     "\/src\/blocks\/row-layout\/style.scss" : {
       "aP" : 1,
       "bl" : 0,
@@ -5914,17 +5846,6 @@
       "pg" : 0,
       "sct" : 1
     },
-    "\/src\/blocks\/row-layout\/template-library.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/template-library-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/src\/blocks\/row-layout\/threecolumndrag.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -5932,6 +5853,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/blocks\/row-layout\/threecolumndrag-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/row-layout\/vertical-align-icons.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/row-layout\/vertical-align-icons-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -6399,6 +6331,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/components\/common\/link-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/common\/parse-json.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/common\/parse-json-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -7189,6 +7132,108 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/plugins\/kadence-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/plugins\/prebuilt-library\/cloud-connect.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/cloud-connect-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/plugins\/prebuilt-library\/cloud-library.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/cloud-library-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/plugins\/prebuilt-library\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/editor.css",
+      "oF" : 1,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/src\/plugins\/prebuilt-library\/prebuilt-library.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/prebuilt-library-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/plugins\/prebuilt-library\/section-library.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/section-library-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/plugins\/prebuilt-library\/single-template-library.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/single-template-library-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/plugins\/prebuilt-library\/template-library.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/template-library-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/plugins\/prebuilt-library\/templates-library.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/templates-library-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/plugins\/prebuilt-library\/toolbar-library.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/plugins\/prebuilt-library\/toolbar-library-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0

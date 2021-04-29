@@ -10,7 +10,6 @@ import IconRender from '../../icon-render';
 import TypographyControls from '../../typography-control';
 import BoxShadowControl from '../../box-shadow-control';
 import WebfontLoader from '../../fontloader';
-import hexToRGBA from '../../hex-to-rgba';
 import StepControl from '../../step-control';
 import URLInputInline from '../../inline-link-control';
 import KadenceColorOutput from '../../kadence-color-output';
@@ -364,7 +363,7 @@ class KadenceAdvancedButton extends Component {
 			let btnGrad2;
 			if ( undefined !== btns[ index ].backgroundType && 'gradient' === btns[ index ].backgroundType ) {
 				btnGrad = ( 'transparent' === btns[ index ].background || undefined === btns[ index ].background ? 'rgba(255,255,255,0)' : KadenceColorOutput( btns[ index ].background, ( btns[ index ].backgroundOpacity !== undefined ? btns[ index ].backgroundOpacity : 1 ) ) );
-				btnGrad2 = ( undefined !== btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] && '' !== btns[ index ].gradient[ 0 ] ? KadenceColorOutput( btns[ index ].gradient[ 0 ], ( undefined !== btns[ index ].gradient && btns[ index ].gradient[ 1 ] !== undefined ? btns[ index ].gradient[ 1 ] : 1 ) ) : hexToRGBA( '#999999', ( undefined !== btns[ index ].gradient && btns[ index ].gradient[ 1 ] !== undefined ? btns[ index ].gradient[ 1 ] : 1 ) ) );
+				btnGrad2 = ( undefined !== btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] && '' !== btns[ index ].gradient[ 0 ] ? KadenceColorOutput( btns[ index ].gradient[ 0 ], ( undefined !== btns[ index ].gradient && btns[ index ].gradient[ 1 ] !== undefined ? btns[ index ].gradient[ 1 ] : 1 ) ) : KadenceColorOutput( '#999999', ( undefined !== btns[ index ].gradient && btns[ index ].gradient[ 1 ] !== undefined ? btns[ index ].gradient[ 1 ] : 1 ) ) );
 				if ( undefined !== btns[ index ].gradient && 'radial' === btns[ index ].gradient[ 4 ] ) {
 					btnbg = `radial-gradient(at ${ ( undefined === btns[ index ].gradient[ 6 ] ? 'center center' : btns[ index ].gradient[ 6 ] ) }, ${ btnGrad } ${ ( undefined === btns[ index ].gradient[ 2 ] ? '0' : btns[ index ].gradient[ 2 ] ) }%, ${ btnGrad2 } ${ ( undefined === btns[ index ].gradient[ 3 ] ? '100' : btns[ index ].gradient[ 3 ] ) }%)`;
 				} else if ( undefined === btns[ index ].gradient || 'radial' !== btns[ index ].gradient[ 4 ] ) {
@@ -431,7 +430,9 @@ class KadenceAdvancedButton extends Component {
 							boxShadow: ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] && btns[ index ].boxShadow[ 0 ] ? ( undefined !== btns[ index ].boxShadow[ 7 ] && btns[ index ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ), ( undefined !== btns[ index ].boxShadow[ 2 ] ? btns[ index ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 						} } >
 							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } style={ {
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '14' } style={ {
+									fontSize: ( undefined !== btns[ index ].iconSize ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ) + ( undefined !== btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) : undefined ),
+									color: ( undefined !== btns[ index ].iconColor ? KadenceColorOutput( btns[ index ].iconColor ) : undefined ),
 									paddingTop: ( topIconPadding ? topIconPadding + 'px' : undefined ),
 									paddingRight: ( rightIconPadding ? rightIconPadding + 'px' : undefined ),
 									paddingBottom: ( bottomIconPadding ? bottomIconPadding + 'px' : undefined ),
@@ -463,7 +464,9 @@ class KadenceAdvancedButton extends Component {
 								keepPlaceholderOnFocus
 							/>
 							{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
-								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ ( ! btns[ index ].size ? '14' : btns[ index ].size ) } style={ {
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '1em' } style={ {
+									fontSize: ( undefined !== btns[ index ].iconSize ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ) + ( undefined !== btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) : undefined ),
+									color: ( undefined !== btns[ index ].iconColor ? KadenceColorOutput( btns[ index ].iconColor ) : undefined ),
 									paddingTop: ( topIconPadding ? topIconPadding + 'px' : undefined ),
 									paddingRight: ( rightIconPadding ? rightIconPadding + 'px' : undefined ),
 									paddingBottom: ( bottomIconPadding ? bottomIconPadding + 'px' : undefined ),
@@ -542,14 +545,14 @@ class KadenceAdvancedButton extends Component {
 								) }
 							</div>
 							<div className="kadence-blocks-button-item-controls kadence-blocks-button-item__inline-menu">
-								<IconButton
+								<Button
 									icon="admin-page"
 									onClick={ this.onDuplicateButton( index ) }
 									className="kadence-blocks-button-item__duplicate"
 									label={ __( 'Duplicate Button', 'kadence-blocks' ) }
 									disabled={ ! isButtonSelected }
 								/>
-								<IconButton
+								<Button
 									icon="no-alt"
 									onClick={ this.onRemoveButton( index ) }
 									className="kadence-blocks-button-item__remove"
@@ -987,6 +990,72 @@ class KadenceAdvancedButton extends Component {
 									} }
 								/>
 							</div>
+							<ResponsiveRangeControls
+								label={ __( 'Icon Size', 'kadence-blocks' ) }
+								value={ ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] && btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ) }
+								onChange={ value => {
+									this.saveArrayUpdate( { iconSize: [ value, ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] && btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] && btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ] }, index );
+								} }
+								tabletValue={ ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] && btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ) }
+								onChangeTablet={ ( value ) => {
+									this.saveArrayUpdate( { iconSize: [ ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] && btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), value, ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] && btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ] }, index );
+								} }
+								mobileValue={ ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] && btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) }
+								onChangeMobile={ ( value ) => {
+									this.saveArrayUpdate( { iconSize: [ ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] && btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] && btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), value ] }, index );
+								} }
+								min={ 0 }
+								max={ ( ( btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) !== 'px' ? 12 : 200 ) }
+								step={ ( ( btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) !== 'px' ? 0.1 : 1 ) }
+								unit={ btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' }
+								onUnit={ ( value ) => {
+									this.saveArrayUpdate( { iconSizeType: value }, index );
+								} }
+								units={ [ 'px', 'em', 'rem' ] }
+							/>
+							<TabPanel
+								className="kt-inspect-tabs kt-hover-tabs"
+								activeClass="active-tab"
+								tabs={ [
+									{
+										name: 'normal' + index,
+										title: __( 'Normal', 'kadence-blocks' ),
+										className: 'kt-normal-tab',
+									},
+									{
+										name: 'hover' + index,
+										title: __( 'Hover', 'kadence-blocks' ),
+										className: 'kt-hover-tab',
+									},
+								] }>
+								{
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'hover' + index === tab.name ) {
+												tabout = <AdvancedPopColorControl
+													label={ __( 'Hover Icon Color', 'kadence-blocks' ) }
+													colorValue={ ( btns[ index ].iconColorHover ? btns[ index ].iconColorHover : '' ) }
+													colorDefault={ '' }
+													onColorChange={ value => {
+														this.saveArrayUpdate( { iconColorHover: value }, index );
+													} }
+												/>;
+											} else {
+												tabout = <AdvancedPopColorControl
+													label={ __( 'Icon Color', 'kadence-blocks' ) }
+													colorValue={ ( btns[ index ].iconColor ? btns[ index ].iconColor : '' ) }
+													colorDefault={ '' }
+													onColorChange={ value => {
+														this.saveArrayUpdate( { iconColor: value }, index );
+													} }
+												/>;
+											}
+										}
+										return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+									}
+								}
+							</TabPanel>
 							<SmallResponsiveControl
 								label={ __( 'Show Only Icon', 'kadence-blocks' ) }
 								desktopChildren={ <ToggleControl
@@ -1110,6 +1179,11 @@ class KadenceAdvancedButton extends Component {
 							}
 						}
 					</TabPanel>
+					<TextControl
+						label={ __( 'Add Aria Label', 'kadence-blocks' ) }
+						value={ ( btns[ index ].label ? btns[ index ].label : '' ) }
+						onChange={ ( value ) => this.saveArrayUpdate( { label: value }, index ) }
+					/>
 				</PanelBody>
 			);
 		};
@@ -1520,14 +1594,14 @@ class KadenceAdvancedButton extends Component {
 			let btnBox2 = '';
 			if ( undefined !== btns[ index ].backgroundHoverType && 'gradient' === btns[ index ].backgroundHoverType && undefined !== btns[ index ].gradientHover ) {
 				btnGrad = ( undefined === btns[ index ].backgroundHover ? KadenceColorOutput( '#444444', ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) : KadenceColorOutput( btns[ index ].backgroundHover, ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) );
-				btnGrad2 = ( undefined === btns[ index ].gradientHover[ 0 ] ? hexToRGBA( '#777777', ( btns[ index ].gradientHover[ 1 ] !== undefined ? btns[ index ].gradientHover[ 1 ] : 1 ) ) : KadenceColorOutput( btns[ index ].gradientHover[ 0 ], ( btns[ index ].gradientHover[ 1 ] !== undefined ? btns[ index ].gradientHover[ 1 ] : 1 ) ) );
+				btnGrad2 = ( undefined === btns[ index ].gradientHover[ 0 ] ? KadenceColorOutput( '#777777', ( btns[ index ].gradientHover[ 1 ] !== undefined ? btns[ index ].gradientHover[ 1 ] : 1 ) ) : KadenceColorOutput( btns[ index ].gradientHover[ 0 ], ( btns[ index ].gradientHover[ 1 ] !== undefined ? btns[ index ].gradientHover[ 1 ] : 1 ) ) );
 				if ( undefined !== btns[ index ].gradientHover && 'radial' === btns[ index ].gradientHover[ 4 ] ) {
 					btnbg = `radial-gradient(at ${ ( undefined === btns[ index ].gradientHover[ 6 ] ? 'center center' : btns[ index ].gradientHover[ 6 ] ) }, ${ btnGrad } ${ ( undefined === btns[ index ].gradientHover[ 2 ] ? '0' : btns[ index ].gradientHover[ 2 ] ) }%, ${ btnGrad2 } ${ ( undefined === btns[ index ].gradientHover[ 3 ] ? '100' : btns[ index ].gradientHover[ 3 ] ) }%)`;
 				} else if ( undefined !== btns[ index ].backgroundType && 'gradient' === btns[ index ].backgroundType && undefined !== btns[ index ].gradientHover && 'linear' === btns[ index ].gradientHover[ 4 ] ) {
 					btnbg = `linear-gradient(${ ( undefined === btns[ index ].gradientHover[ 5 ] ? '180' : btns[ index ].gradientHover[ 5 ] ) }deg, ${ btnGrad } ${ ( undefined === btns[ index ].gradientHover[ 2 ] ? '0' : btns[ index ].gradientHover[ 2 ] ) }%, ${ btnGrad2 } ${ ( undefined === btns[ index ].gradientHover[ 3 ] ? '100' : btns[ index ].gradientHover[ 3 ] ) }%)`;
 				}
 			} else if ( undefined !== btns[ index ].backgroundHoverType && 'gradient' === btns[ index ].backgroundHoverType && undefined === btns[ index ].gradientHover ) {
-				btnGrad = ( undefined === btns[ index ].backgroundHover ? hexToRGBA( '#444444', ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) : KadenceColorOutput( btns[ index ].backgroundHover, ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) );
+				btnGrad = ( undefined === btns[ index ].backgroundHover ? KadenceColorOutput( '#444444', ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) : KadenceColorOutput( btns[ index ].backgroundHover, ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) ) );
 				btnbg = `linear-gradient(180deg, ${ btnGrad } 0%, #777777 100%)`;
 			} else {
 				btnbg = KadenceColorOutput( ( undefined === btns[ index ].backgroundHover ? '#444444' : btns[ index ].backgroundHover ), ( btns[ index ].backgroundHoverOpacity !== undefined ? btns[ index ].backgroundHoverOpacity : 1 ) );
@@ -1548,6 +1622,7 @@ class KadenceAdvancedButton extends Component {
 					${ ( btns[ index ].borderHover || ( btns[ index ].borderHoverOpacity && 1 !== btns[ index ].borderHoverOpacity ) ? 'border-color:' + KadenceColorOutput( ( undefined === btns[ index ].borderHover ? '#444444' : btns[ index ].borderHover ), ( btns[ index ].borderHoverOpacity !== undefined ? btns[ index ].borderHoverOpacity : 1 ) ) + '!important;' : '' ) }
 					${ ( btnBox ? 'box-shadow:' + btnBox + '!important;' : '' ) }
 				}
+				${ ( btns[ index ].iconColorHover ? `#kt-btns_${ uniqueID } .kt-button-${ index }:hover .kt-btn-svg-icon { color:${ KadenceColorOutput( btns[ index ].iconColorHover ) } !important;}` : '' ) }
 				#kt-btns_${ uniqueID } .kt-button-${ index }::before {
 					${ ( btnbg ? 'background:' + btnbg + ';' : '' ) }
 					${ ( btnBox2 ? 'box-shadow:' + btnBox2 + ';' : '' ) }

@@ -30,13 +30,16 @@ import KadenceFocalPicker from '../../kadence-focal-picker';
 import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 /**
  * Import Block Specific Components
  */
 import ThreeColumnDrag from './threecolumndrag';
-import PrebuiltModal from './prebuilt_modal';
+import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
 import Overlay from './row-overlay';
 import RowBackground from './row-background';
+import VerticalAlignmentIcon from './vertical-align-icons';
+import ContentWidthIcon from './content-width-icons';
 /**
  * Import Css
  */
@@ -58,6 +61,8 @@ import {
 	Tooltip,
 	TabPanel,
 	FocalPointPicker,
+	Popover,
+	ToolbarGroup,
 	TextControl,
 	IconButton,
 	Dashicon,
@@ -70,7 +75,9 @@ import {
 import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { createBlock } from '@wordpress/blocks';
-
+import {
+	image,
+} from '@wordpress/icons';
 /**
  * Returns the layouts configuration for a given number of columns.
  *
@@ -88,14 +95,6 @@ import { __ } from '@wordpress/i18n';
 const ALLOWED_BLOCKS = [ 'kadence/column' ];
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
-const overlayOpacityOutput = memoize( ( opacity ) => {
-	if ( opacity < 10 ) {
-		return '0.0' + opacity;
-	} else if ( opacity >= 100 ) {
-		return '1';
-	}
-	return '0.' + opacity;
-} );
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -113,6 +112,7 @@ class KadenceRowLayout extends Component {
 			firstWidth: null,
 			secondWidth: null,
 			showPreset: false,
+			contentWidthPop: false,
 			borderWidthControl: 'individual',
 			borderRadiusControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
@@ -206,8 +206,8 @@ class KadenceRowLayout extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder }, toggleSelection, className, setAttributes, clientId } = this.props;
-		const { borderWidthControl, borderRadiusControl } = this.state;
+		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { borderWidthControl, borderRadiusControl, contentWidthPop } = this.state;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -252,21 +252,6 @@ class KadenceRowLayout extends Component {
 				mobileOverlay: newUpdate,
 			} );
 		};
-		const marginTypes = [
-			{ key: 'px', name: 'px' },
-			{ key: 'em', name: 'em' },
-			{ key: '%', name: '%' },
-			{ key: 'vh', name: 'vh' },
-			{ key: 'rem', name: 'rem' },
-		];
-		const paddingTypes = [
-			{ key: 'px', name: 'px' },
-			{ key: 'em', name: 'em' },
-			{ key: '%', name: '%' },
-			{ key: 'vw', name: 'vw' },
-			{ key: 'vh', name: 'vh' },
-			{ key: 'rem', name: 'rem' },
-		];
 		const heightTypes = [
 			{ key: 'px', name: 'px' },
 			{ key: 'vw', name: 'vw' },
@@ -289,19 +274,7 @@ class KadenceRowLayout extends Component {
 		const previewPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 1 ] : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ) );
 		const previewPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ) );
 		const previewPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== leftPadding ? leftPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) );
-		const previewMarginTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== topMargin ? topMargin : '' ), ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== topMarginM ? topMarginM : '' ) );
-		const previewMarginBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ) );
-		const previewBackgroundColor = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bgColor ? bgColor : '' ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgColor ? tabletBackground[0].bgColor : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgColor && mobileBackground[0].enable ? mobileBackground[0].bgColor : '' ) );
-		// Border.
-		const previewBorderTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 0 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 0 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 0 ] : '' ) );
-		const previewBorderRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 1 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 1 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 1 ] : '' ) );
-		const previewBorderBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 2 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 2 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 2 ] : '' ) );
-		const previewBorderLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 3 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 3 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 3 ] : '' ) );
-		const previewRadiusTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderRadius ? borderRadius[ 0 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 0 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 0 ] : '' ) );
-		const previewRadiusRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderRadius ? borderRadius[ 1 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 1 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 1 ] : '' ) );
-		const previewRadiusBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderRadius ? borderRadius[ 2 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 2 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 2 ] : '' ) );
-		const previewRadiusLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderRadius ? borderRadius[ 3 ] : '' ), ( undefined !== tabletBorderRadius ? tabletBorderRadius[ 3 ] : '' ), ( undefined !== mobileBorderRadius ? mobileBorderRadius[ 3 ] : '' ) );
-		const previewBorderColor = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== border ? border : '' ), ( undefined !== tabletBorder ? tabletBorder : '' ), ( undefined !== mobileBorder ? mobileBorder : '' ) );
+		const previewMaxWidth = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[0] ? responsiveMaxWidth[ 0 ] : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) );
 		let hasBorderRadius = false;
 		if ( undefined !== borderRadius && undefined !== borderRadius[0] && borderRadius[0] ) {
 			hasBorderRadius = true;
@@ -3055,6 +3028,32 @@ class KadenceRowLayout extends Component {
 				</TabPanel>
 			</Fragment>
 		);
+		const verticalAlignOptions = [
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'top' } isPressed={ ( verticalAlignment === 'top' ? true : false ) } />,
+					title: __( 'Align Top', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'top' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'top' } ),
+				},
+			],
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'middle' } isPressed={ ( verticalAlignment === 'middle' ? true : false ) } />,
+					title: __( 'Align Middle', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'middle' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'middle' } ),
+				},
+			],
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'bottom' } isPressed={ ( verticalAlignment === 'bottom' ? true : false ) } />,
+					title: __( 'Align Bottom', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'bottom' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'bottom' } ),
+				},
+			],
+		];
 		return (
 			<Fragment>
 				<BlockControls>
@@ -3070,10 +3069,10 @@ class KadenceRowLayout extends Component {
 								type="image"
 								value={ null }
 								render={ ( { open } ) => (
-									<IconButton
+									<Button
 										className="components-toolbar__control"
 										label={ __( 'Background Image', 'kadence-blocks' ) }
-										icon="format-image"
+										icon={ image }
 										onClick={ open }
 									/>
 								) }
@@ -3081,53 +3080,79 @@ class KadenceRowLayout extends Component {
 						</Toolbar>
 					) }
 					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Top', 'kadence-blocks' ) }>
-							<Button
-								className={ classnames(
-									'components-icon-button',
-									'components-toolbar__control',
-									'kadence-vertical-align',
-									{ 'is-active': verticalAlignment === 'top' },
-									{ 'is-pressed': verticalAlignment === 'top' },
-								) }
-								onClick={ () => setAttributes( { verticalAlignment: 'top' } ) }
+						<Button
+							className="kb-content-width"
+							icon={ inheritMaxWidth ? <ContentWidthIcon value='theme' /> : <ContentWidthIcon value='normal' /> }
+							onClick={ () => {
+								if ( ! this.state.contentWidthPop ) {
+									this.setState( { contentWidthPop: true } );
+								}
+							} }
+							isPressed={ contentWidthPop ? true : false }
+							aria-haspopup="true"
+							aria-expanded={ contentWidthPop }
+							label={  __( 'Inner Content Width', 'kadence-blocks' ) }
+							showTooltip={ true }
+						/>
+						{ contentWidthPop && (
+							<Popover
+								className="kb-content-width-popover"
+								position="bottom center"
+								onClick={ () => {} }
+								expandOnMobile={ true }
+								onClose={ () => {
+									this.setState( { contentWidthPop: false } );
+								} }
 							>
-								{ icons.aligntop }
-							</Button>
-						</Tooltip>
+								<div className="kb-content-width-popover-inner-wrap">
+									<ToggleControl
+										label={ __( 'Use Theme Content Inner Width?', 'kadence-blocks' ) }
+										checked={ ( undefined !== inheritMaxWidth ? inheritMaxWidth : false ) }
+										onChange={ ( value ) => setAttributes( { inheritMaxWidth: value } ) }
+									/>
+									{ inheritMaxWidth !== true && (
+										<Fragment>
+											<ResponsiveRangeControls
+												label={ __( 'Custom Content Max Width', 'kadence-blocks' ) }
+												value={ maxWidth ? maxWidth : '' }
+												onChange={ value => {
+													setAttributes( { maxWidth: value } );
+												} }
+												tabletValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ) }
+												onChangeTablet={ ( value ) => {
+													setAttributes( { responsiveMaxWidth: [ value, ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) ] } );
+												} }
+												mobileValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) }
+												onChangeMobile={ ( value ) => {
+													setAttributes( { responsiveMaxWidth: [ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ), value ] } );
+												} }
+												min={ 0 }
+												max={ widthMax }
+												step={ 1 }
+												unit={ maxWidthUnit ? maxWidthUnit : 'px' }
+												onUnit={ ( value ) => {
+													setAttributes( { maxWidthUnit: value } );
+												} }
+												units={ [ 'px', '%', 'vw' ] }
+											/>
+										</Fragment>
+									) }
+								</div>
+							</Popover>
+						) }
 					</Toolbar>
-					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Middle', 'kadence-blocks' ) }>
-							<Button
-								className={ classnames(
-									'components-icon-button',
-									'components-toolbar__control',
-									'kadence-vertical-align',
-									{ 'is-active': verticalAlignment === 'middle' },
-									{ 'is-pressed': verticalAlignment === 'middle' },
-								) }
-								onClick={ () => setAttributes( { verticalAlignment: 'middle' } ) }
-							>
-								{ icons.alignmiddle }
-							</Button>
-						</Tooltip>
-					</Toolbar>
-					<Toolbar>
-						<Tooltip text={ __( 'Vertical Align Bottom', 'kadence-blocks' ) }>
-							<Button
-								className={ classnames(
-									'components-icon-button',
-									'components-toolbar__control',
-									'kadence-vertical-align',
-									{ 'is-active': verticalAlignment === 'bottom' },
-									{ 'is-pressed': verticalAlignment === 'bottom' },
-								) }
-								onClick={ () => setAttributes( { verticalAlignment: 'bottom' } ) }
-							>
-								{ icons.alignbottom }
-							</Button>
-						</Tooltip>
-					</Toolbar>
+					{/* <ToolbarGroup
+						isCollapsed={ true }
+						icon={ <ContentWidthIcon value={ inheritMaxWidth } /> }
+						label={ __( 'Inner Content Width', 'kadence-blocks' )  }
+						controls={ contentWidthOptions }
+					/> */}
+					<ToolbarGroup
+						isCollapsed={ true }
+						icon={ <VerticalAlignmentIcon value={ verticalAlignment } /> }
+						label={ __( 'Vertical Align', 'kadence-blocks' )  }
+						controls={ verticalAlignOptions }
+					/>
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
@@ -3290,30 +3315,28 @@ class KadenceRowLayout extends Component {
 									/>
 									{ inheritMaxWidth !== true && (
 										<Fragment>
-											<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Max Width Type', 'kadence-blocks' ) }>
-												{ map( widthTypes, ( { name, key } ) => (
-													<Button
-														key={ key }
-														className="kt-size-btn"
-														isSmall
-														isPrimary={ maxWidthUnit === key }
-														aria-pressed={ maxWidthUnit === key }
-														onClick={ () => setAttributes( { maxWidthUnit: key } ) }
-													>
-														{ name }
-													</Button>
-												) ) }
-											</ButtonGroup>
-											<KadenceRange
-												label={ __( 'Content Max Width', 'kadence-blocks' ) }
-												value={ maxWidth }
-												onChange={ ( value ) => {
-													setAttributes( {
-														maxWidth: value,
-													} );
+											<ResponsiveRangeControls
+												label={ __( 'Custom Content Max Width', 'kadence-blocks' ) }
+												value={ maxWidth ? maxWidth : '' }
+												onChange={ value => {
+													setAttributes( { maxWidth: value } );
+												} }
+												tabletValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ) }
+												onChangeTablet={ ( value ) => {
+													setAttributes( { responsiveMaxWidth: [ value, ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) ] } );
+												} }
+												mobileValue={ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) }
+												onChangeMobile={ ( value ) => {
+													setAttributes( { responsiveMaxWidth: [ ( undefined !== responsiveMaxWidth && undefined !== responsiveMaxWidth[ 0 ] ? responsiveMaxWidth[ 0 ] : '' ), value ] } );
 												} }
 												min={ 0 }
 												max={ widthMax }
+												step={ 1 }
+												unit={ maxWidthUnit ? maxWidthUnit : 'px' }
+												onUnit={ ( value ) => {
+													setAttributes( { maxWidthUnit: value } );
+												} }
+												units={ [ 'px', '%', 'vw' ] }
 											/>
 										</Fragment>
 									) }
@@ -3443,6 +3466,8 @@ class KadenceRowLayout extends Component {
 							</ButtonGroup>
 							<PrebuiltModal
 								clientId={ clientId }
+								open={ isPrebuiltModal ? true : false }
+								onlyModal={ isPrebuiltModal ? true : false }
 							/>
 						</div>
 					) }
@@ -3527,7 +3552,7 @@ class KadenceRowLayout extends Component {
 					) }
 					{ colLayout && (
 						<div className={ `innerblocks-wrap${ ( inheritMaxWidth ? ' kb-theme-content-width' : '' ) }` } id={ `kt-layout-id${ uniqueID }` } style={ {
-							maxWidth: ! inheritMaxWidth ? maxWidth + maxWidthUnit : undefined,
+							maxWidth: ! inheritMaxWidth && previewMaxWidth ? previewMaxWidth + maxWidthUnit : undefined,
 							paddingLeft: previewPaddingLeft + ( paddingUnit ? paddingUnit : 'px' ),
 							paddingRight: previewPaddingRight + ( paddingUnit ? paddingUnit : 'px' ),
 						} }>

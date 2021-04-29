@@ -7,6 +7,22 @@
  .kadence-radio-container-control {
     display: flex;
 }
+// Core Should fix this.
+.block-editor-media-placeholder__url-input-form input[type=url].block-editor-media-placeholder__url-input-field {
+    min-width:200px;
+}
+.kb-content-width-popover-inner-wrap {
+	min-width: 300px;
+	min-height: 60px;
+	padding: 12px;
+	.components-toggle-control .components-base-control__field {
+		margin-bottom: 10px;
+		margin-top: 10px;
+	}
+	.kb-responsive-range-control {
+		margin-top: 30px;
+	}
+}
 // Sidebar Tabs Update
 .kt-inspect-tabs.kb-responsive-control {
     padding-top: 0;
@@ -573,11 +589,6 @@ button.components-button.kb-sidebar-image {
 .kt-inspect-tabs .components-button-group .kt-layout-btn.is-primary {
     z-index: 0;
 }
-.kt-prebuilt-header {
-    display: flex;
-    justify-content: space-between;
-    padding: 0 10px;
-}
 .components-button-group.kt-size-type-options.kt-row-size-type-options {
 	float: right;
 }
@@ -780,300 +791,6 @@ button.components-button.kb-sidebar-image {
     background: var(--wp-admin-theme-color-darker-10);
     color: white;
     box-shadow:none;
-}
-// Prebuilt Library
-.components-modal__frame.kt-prebuilt-modal .components-button-group {
-    padding-top: 10px;
-    display: grid;
-    grid-template-columns: 50% 50%;
-    grid-gap: 0;
-}
-.components-modal__frame.kt-prebuilt-modal .components-modal__header .components-modal__header-heading {
-    text-transform: uppercase;
-    font-weight: bold;
-}
-.components-modal__frame.kt-prebuilt-modal .components-base-control .components-base-control__field .components-base-control__label {
-    font-weight: bold;
-    line-height: 30px;
-    padding-right: 10px;
-}
-.components-modal__frame.kt-prebuilt-modal .components-base-control .components-base-control__field {
-    display: flex;
-}
-.components-modal__frame.kt-prebuilt-modal .components-base-control .components-base-control__field select {
-    max-width:200px;
-}
-.components-modal__frame.kt-prebuilt-modal .kt-prebuilt-item {
-	padding: 0 10px 20px;
-	position: relative;
-	.kt-import-btn {
-		padding-bottom: 61%;
-		border: 5px solid #fff;
-		border-radius: 0 !important;
-		height: 0;
-		background: #eee;
-		width: 100%;
-		overflow: hidden;
-		position: relative;
-		box-shadow: 0 -1px 10px 0 rgba(0,0,0,.07);
-		img {
-			position: absolute;
-			left: 0;
-			top: 0;
-			width:100%;
-			height: auto;
-			max-width: 100%;
-		}
-		&:hover {
-			border: 5px solid #0085ba;
-		}
-	}
-}
-.components-modal__frame.kt-prebuilt-modal .kb-prebuilt-masonry-grid .kt-prebuilt-item {
-	width: 33.33%;
-	float: left;
-	.kt-import-btn-inner {
-		padding-bottom: 61%;
-		height: 0;
-		overflow: hidden;
-		width: 100%;
-		position: relative;
-	}
-	.kt-import-btn {
-		padding: 0;
-		height: auto
-	};
-}
-.kb-library-sidebar-top {
-    display: flex;
-    margin-bottom: 10px;
-}
-.kb-prebuilt-section{
-height: 100%;
-}
-
-.kb-library-sidebar-top .components-base-control {
-    flex-grow: 1;
-}
-
-.kb-library-sidebar-bottom button.components-button.kb-category-button.is-pressed, .kb-library-sidebar-bottom .components-button.is-pressed:hover:not(:disabled) {
-    color: #222;
-    background: #fff;
-}
-
-button.components-button.kb-category-button {
-    width: 100%;
-    margin-bottom: 3px;
-}
-.kb-prebuilt-grid.kb-prebuilt-masonry-grid {
-    margin-top: 24px;
-}
-.kt-return-templates-btn {
-    font-size: 16px;
-    color: #A0AEC0;
-}
-.kt-popover-pro-notice {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right:10px;
-    bottom: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: rgba(14, 156, 209, .9);
-    color: white;
-    opacity:0;
-    transition: all 0.3s ease;
-}
-.kt-popover-pro-notice h2, .kt-popover-pro-notice a {
-    color:#fff;
-}
-
-.kt-prebuilt-item:hover .kt-popover-pro-notice {
-    opacity:1;
-}
-.kt-prebuilt-item .kb-pro-template {
-    position: absolute;
-    z-index: 10000;
-    top: 20px;
-    right: 20px;
-    background: #C53030;
-    border-radius: 10px;
-    width: 40px;
-	line-height: 20px;
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 11px;
-    text-align: center;
-}
-.kb-template-packs-scroll .kt-prebuilt-item .kt-import-btn img {
-    transform: translateY(0);
-    transition: transform 2s ease;
-}
-.kb-template-packs-scroll .kt-prebuilt-item .kt-import-btn:hover img {
-    transform: translateY(calc(-100% + 300px));
-}
-.components-modal__frame.kt-prebuilt-modal .kb-template-packs-scroll .kt-prebuilt-item .kt-import-btn {
-    padding-bottom: 300px !important;
-    transition: all 2s ease;
-}
-
-.components-modal__frame.kt-prebuilt-modal {
-	width: 100%;
-	max-width: 1000px;
-	height: 86%;
-	overflow: scroll;
-	.components-button-group {
-		width: auto;
-	}
-}
- @media (min-width: 1440px) {
-	.components-modal__frame.kt-prebuilt-modal {
-		max-width: 1300px;
-		.components-button-group {
-			width: auto;
-			grid-template-columns: 33.33% 33.33% 33.33%;
-		}
-	}
-}
-@media (min-width: 1640px) {
-	.components-modal__frame.kt-prebuilt-modal {
-		max-width: 1500px;
-	}
-}
-// DEV Prebuilt Library
-.kb-prebuilt-header.kb-prebuilt-library-header {
-    position: relative;
-    margin-left: -24px;
-    background: #edf2f7;
-    margin-right: -24px;
-	padding: 0 24px;
-	height: 50px;
-}
-.components-modal__frame.kt-prebuilt-modal.kb-prebuilt-library-modal {
-	border: 0;
-	max-width: 95%;
-}
-.components-modal__frame.kt-prebuilt-modal.kb-prebuilt-library-modal .components-modal__content {
-    padding: 0 24px 24px;
-}
-.kb-prebuilt-library-reload, .kb-prebuilt-header-close-wrap {
-	.components-button.has-icon {
-		min-width: none;
-		opacity: 0.7;
-		&:hover {
-			opacity: 1;
-		}
-		svg {
-			margin: 0;
-			width: 20px;
-		}
-	}
-}
-.kb-prebuilt-header-close-wrap {
-    border-left: 1px solid rgba(0,0,0,.2);
-    margin-left: 5px;
-    padding-left: 5px;
-}
-.kb-prebuilt-library-actions {
-    flex-grow: 1;
-    justify-content: center;
-    display: flex;
-	height: 100%;
-	.components-button.kb-action-button {
-		height: 100%;
-		padding: 0 16px;
-		color: #4a5568;
-		border-radius: 0;
-		&:hover {
-			background: rgba(255,255,255,0.5);
-		}
-		&.is-pressed {
-			background: #fff;
-			border: 0;
-			color: #4a5568;
-			outline: 0;
-		}
-	}
-}
-.kb-prebuilt-header-close-wrap .kb-prebuilt-header-close {
-    position: static;
-}
-.kb-prebuilt-header.kb-prebuilt-library-logo {
-    position: static;
-}
-.kt-prebuilt-header.kb-library-header {
-    padding: 10px 0 0;
-}
-.kb-library-header-right, .kb-library-header-left {
-    display: flex;
-}
-.components-modal__frame.kt-prebuilt-modal .components-button-group.kb-prebuilt-grid {
-	grid-gap: 30px;
-	.kt-prebuilt-item {
-		padding: 0;
-		border:5px solid #fff;
-		box-shadow: 0 -1px 10px 0 rgb(0 0 0 / 7%);
-		&:hover {
-			border:5px solid var(--wp-admin-theme-color, #007cba );
-		}
-		.kt-import-btn {
-			border:0 !important;
-			box-shadow: none !important;
-			.LazyLoad {
-				position: absolute;
-				left: 0;
-				right: 0;
-				top:0;
-				bottom:0;
-			}
-		}
-	}
-}
-.kb-new-connection-content {
-	max-width: 800px;
-	margin:24px auto;
-}
-.kb-connection-title {
-    margin-bottom: 10px;
-    background: #f2f2f2;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 10px;
-    font-weight: bold;
-    border-left: 4px solid #aaa;
-}
-.components-modal__frame.kt-prebuilt-modal .kb-connection-add-new .components-base-control .components-base-control__field {
-    display:block;
-}
-.components-modal__frame.kt-prebuilt-modal .kb-connection-add-new .components-base-control .components-base-control__field .components-base-control__label {
-    padding:0;
-    margin:0;
-}
-
-.components-button.kb-trigger-sidebar.has-icon{
-	min-width:20px;
-    height: 30px;
-	svg {
-		width: 20px;
-		height: 20px;
-	}
-}
-.kt-prebuilt-content.kb-prebuilt-has-sidebar {
-    display: grid;
-    grid-template-columns: 1fr 5fr;
-    grid-gap: 24px;
-    height: calc( 100% - 50px );
-}
-.kt-prebuilt-sidebar {
-    padding: 10px 24px 24px;
-    margin-left: -24px;
-    margin-bottom: -24px;
-    background: #edf2f7;
 }
  // Controls
 .components-range-control.kt-icon-rangecontrol .components-base-control__label {

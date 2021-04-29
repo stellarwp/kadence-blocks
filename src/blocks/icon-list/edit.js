@@ -41,6 +41,7 @@ const {
 const {
 	Component,
 	Fragment,
+	findDOMNode,
 } = wp.element;
 const {
 	PanelBody,
@@ -54,6 +55,12 @@ const {
 
 const { compose } = wp.compose;
 const { withDispatch } = wp.data;
+import {
+	plus,
+	chevronUp,
+	chevronDown,
+	close,
+} from '@wordpress/icons';
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -326,12 +333,23 @@ class KadenceIconLists extends Component {
 				setAttributes( { items: newItems } );
 				setAttributes( { listCount: amount } );
 				this.setState( { focusIndex: addin } );
+				setFocusOnNewItem( addin );
 			}
+		};
+		// Silly Hack to handle focus.
+		const setFocusOnNewItem = ( index ) => {
+			setTimeout( function(){ 
+				if ( document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` ) ) {
+					const parent = document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` );
+					const rich = parent.querySelector( '.rich-text' );
+					rich.focus();
+				}
+			}, 100);
 		};
 		const renderIconSettings = ( index ) => {
 			return (
 				<PanelBody
-					title={ __( 'Item' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }
+					title={ __( 'Item', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === listCount ? true : false ) }
 				>
 					<p className="components-base-control__label">{ __( 'Link' ) }</p>
@@ -342,11 +360,11 @@ class KadenceIconLists extends Component {
 						} }
 					/>
 					<SelectControl
-						label={ __( 'Link Target' ) }
+						label={ __( 'Link Target', 'kadence-blocks' ) }
 						value={ items[ index ].target }
 						options={ [
-							{ value: '_self', label: __( 'Same Window' ) },
-							{ value: '_blank', label: __( 'New Window' ) },
+							{ value: '_self', label: __( 'Same Window', 'kadence-blocks' ) },
+							{ value: '_blank', label: __( 'New Window', 'kadence-blocks' ) },
 						] }
 						onChange={ value => {
 							this.saveListItem( { target: value }, index );
@@ -487,7 +505,7 @@ class KadenceIconLists extends Component {
 						onRemove={ ( value ) => {
 							removeListItem( value, index );
 						} }
-						isSelected={ this.state.focusIndex === index }
+						//isSelected={ this.state.focusIndex === index }
 						unstableOnFocus={ this.onSelectItem( index ) }
 						onReplace={ ( value ) => {
 							stopOnReplace( value, index );
@@ -495,27 +513,27 @@ class KadenceIconLists extends Component {
 						className={ 'kt-svg-icon-list-text' }
 					/>
 					<div className="kadence-blocks-list-item__control-menu">
-						<IconButton
+						<Button
 							icon="arrow-up"
 							onClick={ index === 0 ? undefined : this.onMoveUp( index ) }
 							className="kadence-blocks-list-item__move-up"
-							label={ __( 'Move Item Up' ) }
+							label={ __( 'Move Item Up', 'kadence-blocks' ) }
 							aria-disabled={ index === 0 }
 							disabled={ ! this.state.focusIndex === index }
 						/>
-						<IconButton
+						<Button
 							icon="arrow-down"
 							onClick={ ( index + 1 ) === listCount ? undefined : this.onMoveDown( index ) }
 							className="kadence-blocks-list-item__move-down"
-							label={ __( 'Move Item Down' ) }
+							label={ __( 'Move Item Down', 'kadence-blocks' ) }
 							aria-disabled={ ( index + 1 ) === listCount }
 							disabled={ ! this.state.focusIndex === index }
 						/>
-						<IconButton
+						<Button
 							icon="no-alt"
 							onClick={ () => removeListItem( null, index ) }
 							className="kadence-blocks-list-item__remove"
-							label={ __( 'Remove Item' ) }
+							label={ __( 'Remove Item', 'kadence-blocks' ) }
 							disabled={ ! this.state.focusIndex === index }
 						/>
 					</div>
@@ -828,9 +846,9 @@ class KadenceIconLists extends Component {
 					{ times( listCount, n => renderIconsPreview( n ) ) }
 					{ isSelected && (
 						<Fragment>
-							<IconButton
+							<Button
 								isDefault={ true }
-								icon="plus"
+								icon={ plus }
 								onClick={ () => {
 									const newitems = items;
 									const newcount = listCount + 1;
@@ -857,7 +875,7 @@ class KadenceIconLists extends Component {
 									}
 									setAttributes( { listCount: newcount } );
 								} }
-								label={ __( 'Add Item' ) }
+								label={ __( 'Add List Item', 'kadence-blocks' ) }
 							/>
 						</Fragment>
 					) }

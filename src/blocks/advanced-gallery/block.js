@@ -47,7 +47,7 @@ registerBlockType( 'kadence/advancedgallery', {
 	],
 	supports: {
 		anchor: true,
-		align: [ 'wide', 'full' ],
+		align: [ 'wide', 'full', 'left', 'right' ],
 	},
 	attributes: {
 		uniqueID: {
