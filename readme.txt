@@ -94,6 +94,7 @@ Release Date: April 29th, 2021
 * Update: Posts Block Rest calls.
 * Update: Force subscribe a unsubscribed user in mailer lite if the user is requesting subscribe.
 * Update: Gallery Align options, allow left and right.
+** Update: Responsive gap options for form fields.
 * Add: Icon color option for buttons.
 * Add: Icon size option for buttons.
 * Add: Aria Label option for buttons.
@@ -107,7 +108,7 @@ Release Date: April 29th, 2021
 * Fix: Issue with gallery and small images.
 * Fix: RTL issues with testimonials.
 * Fix: Issue with mobile row border.
-* Fix: Issue with accordion toggle and default theme. 
+* Fix: Issue with accordion toggle and default theme.
 
 = 1.10.9 =
 Release Date: April 16th, 2021
