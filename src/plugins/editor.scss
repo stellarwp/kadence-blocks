@@ -6,11 +6,17 @@
  */
  .kadence-toolbar-design-library {
     margin-left: 5px;
+	margin-right: 5px;
     align-items: center;
 	.kb-toolbar-prebuilt-button {
 		padding-left:12px;
 		padding-right:12px;
 	}
+}
+@media (max-width: 600px) {
+.kadence-toolbar-design-library {
+    display: none;
+}
 }
  .kt-block-default-palette .components-color-palette__item {
     display: flex;

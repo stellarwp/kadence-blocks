@@ -17,6 +17,7 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import KadenceColorOutput from '../../kadence-color-output';
 import ColumnStyleCopyPaste from './copy-paste-style';
+import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 /**
@@ -205,9 +206,9 @@ class KadenceColumn extends Component {
 		const hasBackgroundImage = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? true : false );
 		return (
 			<div className={ classes } >
-				{ ( textColor || linkColor || linkHoverColor || zIndex ) && (
+				{ ( textColor || linkColor || linkHoverColor || ( undefined !== zIndex && '' !== zIndex ) ) && (
 					<style>
-						{ ( zIndex ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
+						{ ( ( undefined !== zIndex && '' !== zIndex ) ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
 						{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 						{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 						{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
@@ -534,7 +535,7 @@ class KadenceColumn extends Component {
 					</Fragment>
 				) }
 				<InspectorAdvancedControls>
-					<RangeControl
+					<KadenceRange
 						label={ __( 'Z Index Control' ) }
 						value={ zIndex }
 						onChange={ ( value ) => {
@@ -545,7 +546,7 @@ class KadenceColumn extends Component {
 						min={ -200 }
 						max={ 200 }
 					/>
-					<RangeControl
+					<KadenceRange
 						label={ __( 'Mobile Collapse Order' ) }
 						value={ collapseOrder }
 						onChange={ ( value ) => {

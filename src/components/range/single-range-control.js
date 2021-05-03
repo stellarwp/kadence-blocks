@@ -56,7 +56,7 @@ export default function ResponsiveSingleRangeControl( {
 		onChange && (
 			<div className={ `kadence-controls-content kb-responsive-range-control-inner${ '' !== className ? ' ' + className : '' }` }>
 				<KadenceRange
-					value={ ( value ? value : '' ) }
+					value={ ( undefined !== value ? value : '' ) }
 					onChange={ ( size ) => onChange( size ) }
 					min={ min }
 					max={ max }

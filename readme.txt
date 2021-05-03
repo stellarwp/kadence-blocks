@@ -89,12 +89,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 
 = 2.0.0 =
-Release Date: April 29th, 2021
+Release Date: May 3rd, 2021
 * Update: Prebuilt Library (New Interface!).
 * Update: Posts Block Rest calls.
 * Update: Force subscribe a unsubscribed user in mailer lite if the user is requesting subscribe.
 * Update: Gallery Align options, allow left and right.
-** Update: Responsive gap options for form fields.
+* Update: Responsive gap options for form fields.
+* Update: accessibility with form.
+* Update: Accordion accessibility.
 * Add: Icon color option for buttons.
 * Add: Icon size option for buttons.
 * Add: Aria Label option for buttons.

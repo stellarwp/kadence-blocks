@@ -295,6 +295,18 @@ button.components-button.kb-category-button {
 .kb-library-header-right, .kb-library-header-left {
     display: flex;
 }
+.kb-connection-info {
+    margin-top: 20px;
+    font-style: oblique;
+    color: #777;
+    a {
+        color: #777;
+        &:hover {
+            color: var(--wp-admin-theme-color, #007cba )
+        }
+    }
+}
+
 .components-modal__frame.kt-prebuilt-modal .components-button-group.kb-prebuilt-grid {
 	grid-gap: 30px;
 	.kt-prebuilt-item {

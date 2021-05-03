@@ -22,6 +22,7 @@ import BoxShadowControl from '../../box-shadow-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
 /**
@@ -693,6 +694,8 @@ class KadenceForm extends Component {
 		const previewContainerMarginRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
 		const previewContainerMarginBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
 		const previewContainerMarginLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
+		const previewRowGap = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : '' ), ( undefined !== style[ 0 ].tabletRowGap && '' !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap + 'px' : '' ), ( undefined !== style[ 0 ].mobileRowGap && '' !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap + 'px' : '' ) );
+		const previewGutter = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ), ( undefined !== style[ 0 ].tabletGutter && '' !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ), ( undefined !== style[ 0 ].mobileGutter && '' !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) );
 		const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -2 : -200 );
 		const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 12 : 200 );
 		const containerMarginStep = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1 );
@@ -1233,9 +1236,9 @@ class KadenceForm extends Component {
 					className={ fieldClassName }
 					style={ {
 						width: ( '33' === fields[ index ].width[ 0 ] ? '33.33' : fields[ index ].width[ 0 ] ) + '%',
-						marginBottom: ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : undefined ),
-						paddingRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
-						paddingLeft: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
+						marginBottom: ( previewRowGap ? previewRowGap : undefined ),
+						paddingRight: ( undefined !== previewGutter && '' !== previewGutter ? ( previewGutter / 2 ) + 'px' : undefined ),
+						paddingLeft: ( undefined !== previewGutter && '' !== previewGutter ? ( previewGutter / 2 ) + 'px' : undefined ),
 					} }
 					tabIndex="0"
 					ref={ this.bindContainer }
@@ -2305,24 +2308,47 @@ class KadenceForm extends Component {
 							min={ 0 }
 							max={ 50 }
 						/>
-						<RangeControl
+						<ResponsiveRangeControls
 							label={ __( 'Field Row Gap', 'kadence-blocks' ) }
-							value={ style[ 0 ].rowGap }
+							value={ ( undefined !== style[ 0 ].rowGap ? style[ 0 ].rowGap : '' ) }
 							onChange={ value => {
 								this.saveStyle( { rowGap: value } );
 							} }
+							tabletValue={ ( undefined !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap : '' ) }
+							onChangeTablet={ value => {
+								this.saveStyle( { tabletRowGap: value } );
+							} }
+							mobileValue={ ( undefined !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap : '' ) }
+							onChangeMobile={ value => {
+								this.saveStyle( { mobileRowGap: value } );
+							} }
 							min={ 0 }
 							max={ 100 }
+							step={ 1 }
+							showUnit={ true }
+							unit={ 'px' }
+							units={ [ 'px' ] }
 						/>
-						<RangeControl
+						<ResponsiveRangeControls
 							label={ __( 'Field Column Gutter', 'kadence-blocks' ) }
-							value={ style[ 0 ].gutter }
+							value={ ( undefined !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ) }
 							onChange={ value => {
 								this.saveStyle( { gutter: value } );
 							} }
-							step={ 2 }
+							tabletValue={ ( undefined !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ) }
+							onChangeTablet={ value => {
+								this.saveStyle( { tabletGutter: value } );
+							} }
+							mobileValue={ ( undefined !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) }
+							onChangeMobile={ value => {
+								this.saveStyle( { mobileGutter: value } );
+							} }
 							min={ 0 }
 							max={ 50 }
+							step={ 2 }
+							showUnit={ true }
+							unit={ 'px' }
+							units={ [ 'px' ] }
 						/>
 					</PanelBody>
 					<PanelBody

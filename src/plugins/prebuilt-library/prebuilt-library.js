@@ -91,14 +91,20 @@ class PrebuiltModal extends Component {
 			reloadActions:false,
 			isSaving: false,
 			isFetching: false,
-			modalOpen: this.props.open ? true : false,
-			onlyModal: this.props.onlyModal ? true : false,
+			modalOpen: false,
+			onlyModal: false,
 			section: null,
 			cloudSettings: kadence_blocks_params.cloud_settings ? JSON.parse( kadence_blocks_params.cloud_settings ) : {},
 			actions: kadence_blocks_params.cloud_enabled ? normal_actions : no_connect_actions,
 		};
 	}
 	componentDidMount() {
+		if ( this.props.open && this.props.onlyModal ) {
+			this.setState( {
+				modalOpen: true,
+				onlyModal: true,
+			} );
+		}
 		if ( typeof kadence_blocks_params.prebuilt_libraries === 'object' && kadence_blocks_params.prebuilt_libraries !== null ) {
 			this.setState( { actions: kadence_blocks_params.prebuilt_libraries.concat( this.state.actions ) } );
 		}

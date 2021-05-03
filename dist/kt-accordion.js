@@ -943,6 +943,9 @@ return KadenceAccordion;
           initializedClass: 'kt-accordion-initialized',
           headerDataAttr: 'data-kt-accordion-header-id',
           openMultiplePanels: ( multiplePanels === 'true' ? true : false ),
+		  roles: {
+			presentation: false
+		  }
         } );
       };
       window.addEventListener( 'hashchange', window.KadenceBlocksAccordion.anchor, false );

@@ -94,7 +94,7 @@ jQuery( function( $ ) {
 				}
 				$(item).siblings('.kb-form-error-msg').remove();
 				if ( $(item).hasClass( 'kb-checkbox-style' ) ) {
-					$(item).parent('.kadence-blocks-form-field').append('<div class="kb-form-error-msg kadence-blocks-form-warning">'+ error_string +'</div>');
+					$(item).parent('.kadence-blocks-form-field').append('<div class="kb-form-error-msg kadence-blocks-form-warning" role="alert">'+ error_string +'</div>');
 				} else {
 					$(item).after('<div class="kb-form-error-msg kadence-blocks-form-warning">'+ error_string +'</div>');
 				}

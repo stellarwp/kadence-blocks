@@ -33,30 +33,18 @@ const {
 	applyFilters,
 } = wp.hooks;
 const { compose } = wp.compose;
+import { __, sprintf } from '@wordpress/i18n';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
 import LazyLoad from 'react-lazy-load';
 
-function kadenceBlocksTryParseJSON(jsonString){
-    try {
-        var o = JSON.parse(jsonString);
-
-        // Handle non-exception-throwing cases:
-        // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
-        // but... JSON.parse(null) returns null, and typeof null === "object", 
-        // so we must check for that, too. Thankfully, null is falsey, so this suffices:
-        if (o && typeof o === "object") {
-            return o;
-        }
-    }
-    catch (e) { }
-
-    return false;
-};
+/**
+ * Internal dependencies
+ */
+ import KadenceTryParseJSON from '../../components/common/parse-json'
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
 class CloudConnect extends Component {
 	constructor() {
 		super( ...arguments );
@@ -74,7 +62,7 @@ class CloudConnect extends Component {
 		apiFetch( { path: '/wp/v2/settings' } ).then( ( res ) => {
 			this.setState( {
 				isLoading: false,
-				cloudSettings: JSON.parse( res.kadence_blocks_cloud ),
+				cloudSettings: KadenceTryParseJSON( res.kadence_blocks_cloud ),
 			} );
 		} );
 	}
@@ -109,7 +97,7 @@ class CloudConnect extends Component {
 		.done( function( response, status, stately ) {
 			if ( response ) {
 				//console.log( response );
-				const o = kadenceBlocksTryParseJSON( response );
+				const o = KadenceTryParseJSON( response, false );
 				if ( o ) {
 					const cloudSettings = control.state.cloudSettings;
 					if ( ! cloudSettings.connections ) {
@@ -193,6 +181,10 @@ class CloudConnect extends Component {
 						>
 							{ __( 'Add Connection', 'kadence-blocks' ) }
 						</Button>
+					</div>
+					<div className="kb-connection-info">
+						{ __( 'Learn about connecting libraries at:', 'kadence-blocks' ) + ' ' } 
+						<ExternalLink href={ 'https://www.kadencecloud.com/' }>{ __( 'Kadence Cloud', 'kadence-blocks' ) }</ExternalLink>
 					</div>
 					</Fragment>
 				) }

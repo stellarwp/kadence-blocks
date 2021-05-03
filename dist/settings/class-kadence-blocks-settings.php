@@ -211,6 +211,16 @@ class Kadence_Blocks_Settings {
 			unset( $options['kadence/advnacedgallery'] );
 			update_option( 'kt_blocks_unregistered_blocks', $options );
 		}
+		// Don't need to unregister a block that is not loaded.
+		if ( ! class_exists( 'woocommerce' ) && is_array( $options ) ) {
+			if ( in_array( 'kadence/productcarousel', $options, true ) ) {
+				foreach ( $options as $key => $block ) {
+					if ( $block === 'kadence/productcarousel' ) {
+						unset( $options[ $key ] );
+					}
+				}
+			}
+		}
 		if ( $options ) {
 			wp_enqueue_script( 'kadence-blocks-deregister-js', KADENCE_BLOCKS_URL . 'dist/settings/blocks-deregister.js', array( 'wp-blocks' ), KADENCE_BLOCKS_VERSION, true );
 			wp_localize_script(

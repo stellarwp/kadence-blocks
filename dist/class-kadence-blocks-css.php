@@ -257,7 +257,10 @@ class Kadence_Blocks_CSS {
 	 * @param  string $value - the value to be placed with the property
 	 * @return $this
 	 */
-	public function add_property( $property, $value ) {
+	public function add_property( $property, $value = null ) {
+		if ( null === $value ) {
+			return $this;
+		}
 		if ( in_array( $property, $this->_special_properties_list ) ) {
 			$this->add_special_rules( $property, $value );
 		} else {

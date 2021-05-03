@@ -71,7 +71,7 @@ export default function ResponsiveRangeControls( {
 	const output = {};
 	output.Mobile = (
 		<ResponsiveSingleRangeControl
-			value={ ( mobileValue ? mobileValue : '' ) }
+			value={ ( undefined !== mobileValue ? mobileValue : '' ) }
 			onChange={ ( size ) => onChangeMobile( size ) }
 			min={ min }
 			max={ max }
@@ -84,7 +84,7 @@ export default function ResponsiveRangeControls( {
 	);
 	output.Tablet = (
 		<ResponsiveSingleRangeControl
-			value={ ( tabletValue ? tabletValue : '' ) }
+			value={ ( undefined !== tabletValue ? tabletValue : '' ) }
 			onChange={ ( size ) => onChangeTablet( size ) }
 			min={ min }
 			max={ max }
@@ -97,7 +97,7 @@ export default function ResponsiveRangeControls( {
 	);
 	output.Desktop = (
 		<ResponsiveSingleRangeControl
-			value={ ( value ? value : '' ) }
+			value={ ( undefined !== value ? value : '' ) }
 			onChange={ ( size ) => onChange( size ) }
 			min={ min }
 			max={ max }

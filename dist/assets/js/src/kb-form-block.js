@@ -15,7 +15,6 @@
 				form.classList.add( 'kb-form-has-error' );
 			}
 			item.classList.add( 'has-error' );
-
 			if ( error_type ) {
 				switch ( error_type ) {
 					case 'required' :
@@ -53,9 +52,14 @@
 				if ( next ) {
 					next.remove();
 				}
+				var error_id = item.getAttribute('name') + '-error';
+				item.setAttribute( 'aria-describedby', error_id );
+				item.setAttribute( 'aria-invalid', 'true' );
 				var el = document.createElement('div');
+				el.id = error_id;
 				el.classList.add( 'kb-form-error-msg' );
 				el.classList.add( 'kadence-blocks-form-warning' );
+				el.setAttribute( 'role', 'alert' );
 				el.innerHTML = error_string;
 				if ( item.classList.contains( 'kb-checkbox-style' ) ) {
 					item.parentNode.append( el );
@@ -99,6 +103,8 @@
 			if ( errors.length ) {
 				for ( var n = 0; n < errors.length; n++ ) {
 					errors[n].classList.remove( 'has-error' );
+					errors[n].removeAttribute( 'aria-describedby' );
+					errors[n].removeAttribute( 'aria-invalid' );
 					var next = errors[n].parentNode.querySelector( '.kb-form-error-msg' );
 					if ( next ) {
 						next.remove();
@@ -314,10 +320,12 @@
 				request.onload = function () {
 					if ( this.status >= 200 && this.status < 400 ) {
 						// If successful
-						console.log( JSON.parse( this.response ) );
+						//console.log( JSON.parse( this.response ) );
 						var response = JSON.parse( this.response );
 						if ( response.success ) {
-							var event = new Event( 'kb-form-success' );
+							var event = new Event( 'kb-form-success', {
+								formID: form.id,
+							  } );
 							// Dispatch the event.
 							window.document.body.dispatchEvent(event);
 							if ( response.redirect ) {

@@ -54,6 +54,9 @@
         min-height: 22px;
         line-height: 20px;
         padding: 2px;
+		svg {
+			min-width: 16px !important;
+		}
     }
 }
  .edit-post-sidebar .typography-family-select-form-row input[type=text], .kt-block-defaults-modal .typography-family-select-form-row input[type=text], .components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row input[type=text] {

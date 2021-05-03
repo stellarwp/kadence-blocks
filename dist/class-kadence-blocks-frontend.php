@@ -2181,6 +2181,50 @@ class Kadence_Blocks_Frontend {
 				$css .= 'margin-left:-' . floor( $style['gutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
 				$css .= '}';
 			}
+			if ( isset( $style['tabletRowGap'] ) && is_numeric( $style['tabletRowGap'] ) ) {
+				$css .= '@media (max-width: 1024px) {';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field {';
+				$css .= 'margin-bottom:' . $style['tabletRowGap'] . ( isset( $style['rowGapType'] ) && ! empty( $style['rowGapType'] ) ? $style['rowGapType'] : 'px' ) . ';';
+				$css .= '}';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field.kb-submit-field {';
+				$css .= 'margin-bottom:0;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $style['tabletGutter'] ) && is_numeric( $style['tabletGutter'] ) ) {
+				$css .= '@media (max-width: 1024px) {';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field {';
+				$css .= 'padding-right:' . floor( $style['tabletGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
+				$css .= 'padding-left:' . floor( $style['tabletGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
+				$css .= '}';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form {';
+				$css .= 'margin-right:-' . floor( $style['tabletGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
+				$css .= 'margin-left:-' . floor( $style['tabletGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $style['mobileRowGap'] ) && is_numeric( $style['mobileRowGap'] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field {';
+				$css .= 'margin-bottom:' . $style['mobileRowGap'] . ( isset( $style['rowGapType'] ) && ! empty( $style['rowGapType'] ) ? $style['rowGapType'] : 'px' ) . ';';
+				$css .= '}';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field.kb-submit-field {';
+				$css .= 'margin-bottom:0;';
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $style['mobileGutter'] ) && is_numeric( $style['mobileGutter'] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field {';
+				$css .= 'padding-right:' . floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
+				$css .= 'padding-left:' . floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
+				$css .= '}';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form {';
+				$css .= 'margin-right:-' . floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
+				$css .= 'margin-left:-' . floor( $style['mobileGutter'] / 2 ) . ( isset( $style['gutterType'] ) && ! empty( $style['gutterType'] ) ? $style['gutterType'] : 'px' ) . ';';
+				$css .= '}';
+				$css .= '}';
+			}
 			if ( isset( $style['requiredColor'] ) && ! empty( $style['requiredColor'] ) ) {
 				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field label .required {';
 				$css .= 'color:' . $this->kadence_color_output( $style['requiredColor'] ) . ';';
@@ -3162,10 +3206,10 @@ class Kadence_Blocks_Frontend {
 			$css->start_media_query( $media_query['mobile'] );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-title' );
 			if ( isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) {
-				$css->add_property( 'font-size' . $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) );
+				$css->add_property( 'font-size', $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ) );
 			}
 			if ( isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) {
-				$css->add_property( 'line-height' . $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) );
+				$css->add_property( 'line-height', $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ) );
 			}
 			$css->stop_media_query();
 		}
@@ -6948,9 +6992,13 @@ class Kadence_Blocks_Frontend {
 			$css->set_selector( '.kadence-column' . $unique_id . ' a:hover' );
 			$css->add_property( 'color',  $css->render_color( $attr['linkHoverColor'] ) );
 		}
-		if ( isset( $attr['zIndex'] ) && ! empty( $attr['zIndex'] ) ) {
+		if ( isset( $attr['zIndex'] ) ) {
 			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );
-			$css->add_property( 'z-index',  $attr['zIndex'] );
+			if (  $attr['zIndex'] === 0 ) {
+				$css->add_property( 'z-index', 'auto' );
+			} else {
+				$css->add_property( 'z-index', $attr['zIndex'] );
+			}
 		}
 		$css->start_media_query( $media_query['tablet'] );
 		if ( isset( $attr['collapseOrder'] ) ) {

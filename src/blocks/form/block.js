@@ -222,6 +222,10 @@ registerBlockType( 'kadence/form', {
 				rowGapType: 'px',
 				gutter: '',
 				gutterType: 'px',
+				tabletRowGap: '',
+				mobileRowGap: '',
+				tabletGutter: '',
+				mobileGutter: '',
 			} ],
 		},
 		labelFont: {
@@ -517,7 +521,7 @@ registerBlockType( 'kadence/form', {
 						</Fragment>
 					) }
 					{ honeyPot && (
-						<input className="kadence-blocks-field verify" type="text" name="_kb_verify_email" autoComplete="off" placeholder="Email" tabIndex="-1" />
+						<input className="kadence-blocks-field verify" type="text" name="_kb_verify_email" autoComplete="off" aria-hidden="true" placeholder="Email" tabIndex="-1" />
 					) }
 					<div className={ submitClassName }>
 						<RichText.Content

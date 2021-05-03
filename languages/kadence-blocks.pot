@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-04-29T19:38:52+00:00\n"
+"POT-Creation-Date: 2021-05-03T19:23:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: kadence-blocks\n"
@@ -341,7 +341,7 @@ msgid "Ultra-Bold 900"
 msgstr ""
 
 #: dist/init.php:581
-#: dist/settings/class-kadence-blocks-settings.php:254
+#: dist/settings/class-kadence-blocks-settings.php:264
 msgid "Kadence Blocks"
 msgstr ""
 
@@ -389,301 +389,301 @@ msgstr ""
 msgid "Very dark gray"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:252
-#: dist/settings/class-kadence-blocks-settings.php:254
-#: dist/settings/class-kadence-blocks-settings.php:255
+#: dist/settings/class-kadence-blocks-settings.php:262
+#: dist/settings/class-kadence-blocks-settings.php:264
+#: dist/settings/class-kadence-blocks-settings.php:265
 msgid "Kadence Blocks -  Gutenberg Page Builder Blocks"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:264
+#: dist/settings/class-kadence-blocks-settings.php:274
 msgid "Close"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:265
+#: dist/settings/class-kadence-blocks-settings.php:275
 #: dist/build/blocks.js:23
 msgid "Save"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:266
+#: dist/settings/class-kadence-blocks-settings.php:276
 msgid "Updating"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:267
+#: dist/settings/class-kadence-blocks-settings.php:277
 msgid "Updated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:268
+#: dist/settings/class-kadence-blocks-settings.php:278
 msgid "Config"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:269
+#: dist/settings/class-kadence-blocks-settings.php:279
 msgid "Default Settings"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:275
-#: dist/settings/class-kadence-blocks-settings.php:281
-#: dist/settings/class-kadence-blocks-settings.php:287
-#: dist/settings/class-kadence-blocks-settings.php:293
-#: dist/settings/class-kadence-blocks-settings.php:299
-#: dist/settings/class-kadence-blocks-settings.php:305
-#: dist/settings/class-kadence-blocks-settings.php:311
-#: dist/settings/class-kadence-blocks-settings.php:317
-#: dist/settings/class-kadence-blocks-settings.php:323
-#: dist/settings/class-kadence-blocks-settings.php:329
+#: dist/settings/class-kadence-blocks-settings.php:285
+#: dist/settings/class-kadence-blocks-settings.php:291
+#: dist/settings/class-kadence-blocks-settings.php:297
+#: dist/settings/class-kadence-blocks-settings.php:303
+#: dist/settings/class-kadence-blocks-settings.php:309
+#: dist/settings/class-kadence-blocks-settings.php:315
+#: dist/settings/class-kadence-blocks-settings.php:321
+#: dist/settings/class-kadence-blocks-settings.php:327
+#: dist/settings/class-kadence-blocks-settings.php:333
+#: dist/settings/class-kadence-blocks-settings.php:339
 msgid "Setting defaults has moved into Gutenberg, click on the top right corner settings and go to Kadence Blocks Controls"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:357
+#: dist/settings/class-kadence-blocks-settings.php:367
 msgid "Config Kadence Block Defaults"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:368
+#: dist/settings/class-kadence-blocks-settings.php:378
 msgid "Config Kadence Block Settings View"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:379
+#: dist/settings/class-kadence-blocks-settings.php:389
 msgid "Config Kadence Blocks Color Palette"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:390
+#: dist/settings/class-kadence-blocks-settings.php:400
 msgid "Config Kadence Blocks Global Settings"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:401
+#: dist/settings/class-kadence-blocks-settings.php:411
 msgid "Google reCaptcha Site Key"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:412
+#: dist/settings/class-kadence-blocks-settings.php:422
 msgid "Google reCaptcha Secret Key"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:434
+#: dist/settings/class-kadence-blocks-settings.php:444
 msgid "Config Kadence Blocks Cloud"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:450
+#: dist/settings/class-kadence-blocks-settings.php:460
 msgid "Small Template"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:451
+#: dist/settings/class-kadence-blocks-settings.php:461
 msgid "Large Template"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:453
+#: dist/settings/class-kadence-blocks-settings.php:463
 msgid "Post default"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:454
+#: dist/settings/class-kadence-blocks-settings.php:464
 msgid "Page Default"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:456
+#: dist/settings/class-kadence-blocks-settings.php:466
 msgid "Enable Editor Width"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:465
+#: dist/settings/class-kadence-blocks-settings.php:475
 msgid "Allows for changes to the editor width on per page/post basis with preset defaults."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:467
-#: dist/settings/class-kadence-blocks-settings.php:480
+#: dist/settings/class-kadence-blocks-settings.php:477
+#: dist/settings/class-kadence-blocks-settings.php:490
 msgid "False"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:468
-#: dist/settings/class-kadence-blocks-settings.php:481
+#: dist/settings/class-kadence-blocks-settings.php:478
+#: dist/settings/class-kadence-blocks-settings.php:491
 msgid "True"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:478
+#: dist/settings/class-kadence-blocks-settings.php:488
 msgid "Experimental editor CSS for less excess margins in Gutenberg in an attempt to get a closer WYSIWYG editing experience."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:491
-#: dist/settings/class-kadence-blocks-settings.php:500
+#: dist/settings/class-kadence-blocks-settings.php:501
+#: dist/settings/class-kadence-blocks-settings.php:510
 #: dist/build/blocks.js:9
 msgid "px"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:510
-#: dist/settings/class-kadence-blocks-settings.php:522
+#: dist/settings/class-kadence-blocks-settings.php:520
+#: dist/settings/class-kadence-blocks-settings.php:532
 msgid "Small"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:511
-#: dist/settings/class-kadence-blocks-settings.php:523
+#: dist/settings/class-kadence-blocks-settings.php:521
+#: dist/settings/class-kadence-blocks-settings.php:533
 #: dist/build/blocks.js:33
 #: dist/build/blocks.js:52
 msgid "Large"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:512
-#: dist/settings/class-kadence-blocks-settings.php:524
+#: dist/settings/class-kadence-blocks-settings.php:522
+#: dist/settings/class-kadence-blocks-settings.php:534
 #: dist/build/blocks.js:52
 msgid "Fullwidth"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:586
-#: dist/settings/class-kadence-blocks-settings.php:591
+#: dist/settings/class-kadence-blocks-settings.php:596
+#: dist/settings/class-kadence-blocks-settings.php:601
 msgid "Activate"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:588
-#: dist/settings/class-kadence-blocks-settings.php:591
+#: dist/settings/class-kadence-blocks-settings.php:598
+#: dist/settings/class-kadence-blocks-settings.php:601
 msgid "Deactivate"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:591
+#: dist/settings/class-kadence-blocks-settings.php:601
 msgid "Activating..."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:591
+#: dist/settings/class-kadence-blocks-settings.php:601
 msgid "Activated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:591
+#: dist/settings/class-kadence-blocks-settings.php:601
 msgid "Deactivating..."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:591
+#: dist/settings/class-kadence-blocks-settings.php:601
 msgid "Deactivated"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:599
+#: dist/settings/class-kadence-blocks-settings.php:609
 msgid "Editor Max Widths"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:599
+#: dist/settings/class-kadence-blocks-settings.php:609
 msgid "Match the editor width to your sites width."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:601
+#: dist/settings/class-kadence-blocks-settings.php:611
 msgid "Note: The current active themes \"content_width\" is set to:"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:608
+#: dist/settings/class-kadence-blocks-settings.php:618
 msgid "Save Changes"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:652
+#: dist/settings/class-kadence-blocks-settings.php:662
 #: dist/build/blocks.js:9
 #: dist/build/blocks.js:52
 msgid "Row Layout"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:653
+#: dist/settings/class-kadence-blocks-settings.php:663
 msgid "Create rows with nested blocks either in columns or as a container. Give style to your rows with background, overlay, padding, etc."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:658
+#: dist/settings/class-kadence-blocks-settings.php:668
 #: dist/build/blocks.js:9
 #: dist/build/blocks.js:23
 msgid "Form"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:659
+#: dist/settings/class-kadence-blocks-settings.php:669
 msgid "Create a contact form or marketing form and style it within the block editor."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:664
+#: dist/settings/class-kadence-blocks-settings.php:674
 msgid "Advanced Gallery"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:665
+#: dist/settings/class-kadence-blocks-settings.php:675
 msgid "Photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus, you can select image sizes."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:670
+#: dist/settings/class-kadence-blocks-settings.php:680
 msgid "Advanced Button"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:671
+#: dist/settings/class-kadence-blocks-settings.php:681
 msgid "Create an advanced button or a row of buttons. Style each one including hover controls plus you can use an icon and display them side by side"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:676
+#: dist/settings/class-kadence-blocks-settings.php:686
 #: dist/build/blocks.js:20
 msgid "Icon"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:677
+#: dist/settings/class-kadence-blocks-settings.php:687
 msgid "Choose from over 1500+ SVG Icons to add into your page and style the size, colors, background, border, etc."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:682
+#: dist/settings/class-kadence-blocks-settings.php:692
 #: dist/build/blocks.js:9
 msgid "Spacer/Divider"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:683
+#: dist/settings/class-kadence-blocks-settings.php:693
 msgid "Easily create a divider and determine the space around it or just create some space in your content."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:688
+#: dist/settings/class-kadence-blocks-settings.php:698
 msgid "Advanced Heading"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:689
+#: dist/settings/class-kadence-blocks-settings.php:699
 msgid "Transform your headings to Advanced Headings and customize the font family (even google fonts), color, and size."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:694
+#: dist/settings/class-kadence-blocks-settings.php:704
 #: dist/build/blocks.js:9
 msgid "Tabs"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:695
+#: dist/settings/class-kadence-blocks-settings.php:705
 msgid "Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:700
+#: dist/settings/class-kadence-blocks-settings.php:710
 msgid "Info Box"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:701
+#: dist/settings/class-kadence-blocks-settings.php:711
 msgid "Create a box link containing an icon or image and optionally a title, description, and learn more text. Style static and hover colors even show a box-shadow."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:706
+#: dist/settings/class-kadence-blocks-settings.php:716
 #: dist/build/blocks.js:9
 msgid "Accordion"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:707
+#: dist/settings/class-kadence-blocks-settings.php:717
 msgid "Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:712
+#: dist/settings/class-kadence-blocks-settings.php:722
 #: dist/build/blocks.js:20
 msgid "Icon List"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:713
+#: dist/settings/class-kadence-blocks-settings.php:723
 msgid "Add beautiful icons to your lists and make them more engaging. Over 1500 icons to choose from and unlimited styles."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:718
+#: dist/settings/class-kadence-blocks-settings.php:728
 #: dist/build/blocks.js:9
 msgid "Testimonials"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:719
+#: dist/settings/class-kadence-blocks-settings.php:729
 msgid "Create confidence in your brand or product by showing off beautiful unique testimonials, add as a carousel or a grid."
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:730
+#: dist/settings/class-kadence-blocks-settings.php:740
 msgid "Invalid nonce"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:733
+#: dist/settings/class-kadence-blocks-settings.php:743
 msgid "Missing Content"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:739
+#: dist/settings/class-kadence-blocks-settings.php:749
 msgid "Nothing to Save"
 msgstr ""
 
-#: dist/settings/class-kadence-blocks-settings.php:857
+#: dist/settings/class-kadence-blocks-settings.php:867
 #: dist/build/blocks.js:9
 #: dist/build/blocks.js:20
 #: dist/build/blocks.js:21
@@ -1569,6 +1569,30 @@ msgstr ""
 
 #: dist/build/blocks.js:9
 msgid "Back to Starter Packs"
+msgstr ""
+
+#: dist/build/blocks.js:9
+msgid "Remove Connection"
+msgstr ""
+
+#: dist/build/blocks.js:9
+msgid "Connection URL"
+msgstr ""
+
+#: dist/build/blocks.js:9
+msgid "Connection Access Key"
+msgstr ""
+
+#: dist/build/blocks.js:9
+msgid "Add Connection"
+msgstr ""
+
+#: dist/build/blocks.js:9
+msgid "Learn about connecting libraries at:"
+msgstr ""
+
+#: dist/build/blocks.js:9
+msgid "Kadence Cloud"
 msgstr ""
 
 #: dist/build/blocks.js:9
