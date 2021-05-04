@@ -9,6 +9,7 @@ import { createBlock } from '@wordpress/blocks';
 import { 
 	Component,
 	render,
+	Fragment,
 } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { __ } from '@wordpress/i18n';
@@ -20,10 +21,39 @@ import {
  * Internal dependencies
  */
  import icons from '../../brand-icon';
+import KadenceTryParseJSON from '../../components/common/parse-json';
 /**
  * Add Prebuilt Library button to Gutenberg toolbar
  */
 class ToolbarLibrary extends Component {
+	constructor() {
+		super( ...arguments );
+		this.showSettings = this.showSettings.bind( this );
+		this.state = {
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
+			settings: {},
+		};
+	}
+	componentDidMount() {
+		const blockSettings = ( kadence_blocks_params.configuration ? KadenceTryParseJSON( kadence_blocks_params.configuration, true ) : {} );
+		if ( blockSettings[ 'kadence/designlibrary' ] !== undefined && typeof blockSettings[ 'kadence/designlibrary' ] === 'object' ) {
+			this.setState( { settings: blockSettings[ 'kadence/designlibrary' ] } );
+		}
+	}
+	showSettings( key ) {
+		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
+			return true;
+		} else if ( 'contributor' === this.state.settings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'author' === this.state.settings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'editor' === this.state.settings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'admin' === this.state.settings[ key ] && 'admin' === this.state.user ) {
+			return true;
+		}
+		return false;
+	}
     render() {
 		const {
             insertBlocks,
@@ -49,15 +79,17 @@ class ToolbarLibrary extends Component {
 			}
 			return document.querySelector(selector); 
 		}
-		checkElement( '.edit-post-header-toolbar' ).then( ( selector ) => {
-			if ( ! selector.querySelector( '.kadence-toolbar-design-library' ) ) {
-				const toolbarButton = document.createElement( 'div' );
-				toolbarButton.classList.add( 'kadence-toolbar-design-library' );
+		if ( this.showSettings( 'show' ) ) {
+			checkElement( '.edit-post-header-toolbar' ).then( ( selector ) => {
+				if ( ! selector.querySelector( '.kadence-toolbar-design-library' ) ) {
+					const toolbarButton = document.createElement( 'div' );
+					toolbarButton.classList.add( 'kadence-toolbar-design-library' );
 
-				selector.appendChild( toolbarButton );
-				render( <LibraryButton />, toolbarButton );
-			}
-		} );
+					selector.appendChild( toolbarButton );
+					render( <LibraryButton />, toolbarButton );
+				}
+			} );
+		}
 
         return null;
     }

@@ -43,6 +43,7 @@ import KadenceGallerySettings from './block-settings/advanced-gallery-settings';
 import KadenceColumn from './block-defaults/column-defaults';
 import KadenceColumnSettings from './block-settings/column-settings';
 import KadenceColors from './block-defaults/color-palette-defaults';
+import KadenceDesignLibrarySettings from './block-settings/design-library-settings';
 //import KadenceGlobalTypography from './block-globals/typography';
 
 /*
@@ -170,6 +171,7 @@ class KadenceConfig extends Component {
 							) ) }
 							<h3>{ __( 'Components' ) }</h3>
 							<KadenceFontFamily />
+							<KadenceDesignLibrarySettings />
 							{ map( this.state.controls, ( { Control } ) => (
 								<Control />
 							) ) }

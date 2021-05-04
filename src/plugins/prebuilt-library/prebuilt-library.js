@@ -146,11 +146,11 @@ class PrebuiltModal extends Component {
 		}
 		return (
 			<Fragment>
-				<Button className="kt-prebuilt" onClick={ () => this.setState( { modalOpen: true } ) }>{ __( 'Prebuilt Library', 'kadence-blocks' ) }</Button>
+				<Button className="kt-prebuilt" onClick={ () => this.setState( { modalOpen: true } ) }>{ __( 'Design Library', 'kadence-blocks' ) }</Button>
 				{ this.state.modalOpen ?
 					<Modal
 						className="kt-prebuilt-modal kb-prebuilt-library-modal"
-						title={ __( 'Prebuilt Library', 'kadence-blocks' ) }
+						title={ __( 'Design Library', 'kadence-blocks' ) }
 						onRequestClose={ () => {
 							this.setState( { modalOpen: false } );
 							if ( this.state.onlyModal ) {

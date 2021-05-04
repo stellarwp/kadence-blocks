@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.7.1
-Stable tag: 2.0.0
+Stable tag: 2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,18 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.0.3 =
+Release Date: May 4th, 2021
+* Add: Option to hide design library button.
+* Fix: Possible issue with info box rendering.
+
+= 2.0.2 =
+Release Date: May 4th, 2021
+* Fix: Possible issue with info box rendering.
+
+= 2.0.1 =
+Release Date: May 3rd, 2021
+* Fix: Possible issue with info box rendering.
 
 = 2.0.0 =
 Release Date: May 3rd, 2021

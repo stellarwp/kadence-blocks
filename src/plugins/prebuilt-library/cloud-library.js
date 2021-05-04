@@ -386,6 +386,11 @@ class CloudSections extends Component {
 										{ undefined !== pro && pro && (
 											<Fragment>
 												<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
+												{ locked && (
+													<div className="kt-popover-pro-notice">
+														<h2>{ __( 'Pro required for this item', 'kadence-blocks' ) } </h2>
+													</div>
+												) }
 											</Fragment>
 										) }
 									</div>

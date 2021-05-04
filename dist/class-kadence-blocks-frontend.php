@@ -3216,7 +3216,7 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) ) {
 			if ( is_numeric( $attr['titleMinHeight'][0] ) ) {
 				$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-title' );
-				$$css->add_property( 'min-height', $attr['titleMinHeight'][0] . 'px' );
+				$css->add_property( 'min-height', $attr['titleMinHeight'][0] . 'px' );
 			}
 			if ( isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) {
 				$css->start_media_query( $media_query['tablet'] );
@@ -3246,7 +3246,7 @@ class Kadence_Blocks_Frontend {
 				$content = 'flex-end';
 			}
 			$css->start_media_query( $media_query['tablet'] );
-			$$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
+			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
 			$css->add_property( 'display', $display );
 			if ( ! empty( $align ) ) {
 				$css->add_property( 'align-items', $align );
@@ -3273,7 +3273,7 @@ class Kadence_Blocks_Frontend {
 			}
 			$css->start_media_query( $media_query['mobile'] );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
-			$css .= 'display: ' . $display . ';';
+			$css->add_property( 'display', $display );
 			if ( ! empty( $content ) ) {
 				$css->add_property( 'justify-content', $content );
 			}
@@ -3383,7 +3383,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['textMinHeight'][1] ) && is_numeric( $attr['textMinHeight'][1] ) ) {
 				$css->start_media_query( $media_query['tablet'] );
 				$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-text' );
-				$$css->add_property( 'min-height', $attr['textMinHeight'][1] . 'px' );
+				$css->add_property( 'min-height', $attr['textMinHeight'][1] . 'px' );
 				$css->stop_media_query();
 			}
 			if ( isset( $attr['textMinHeight'][2] ) && is_numeric( $attr['textMinHeight'][2] ) ) {
