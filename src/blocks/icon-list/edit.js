@@ -12,7 +12,7 @@ import icons from '../../icons';
  */
 import times from 'lodash/times';
 import MeasurementControls from '../../measurement-control';
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import WebfontLoader from '../../fontloader';
 import map from 'lodash/map';
 import IconControl from '../../icon-control';

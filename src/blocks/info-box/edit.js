@@ -15,7 +15,7 @@ import './editor.scss';
 import icons from '../../icons';
 import map from 'lodash/map';
 import get from 'lodash/get';
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ImageSizeControl from '../../image-size-control';
@@ -26,6 +26,9 @@ import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
+import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+
+
 /**
  * Internal block libraries
  */
@@ -34,6 +37,8 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
+const { compose } = wp.compose;
+const { withSelect } = wp.data;
 const {
 	MediaUpload,
 	URLInput,
@@ -171,9 +176,17 @@ class KadenceInfoBox extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored, number, mediaNumber }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, containerPaddingType, containerMobilePadding, containerTabletPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored, number, mediaNumber }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, containerMarginControl } = this.state;
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
+		const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );
+		const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
+		const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200 );
+		const paddingStep = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1 );
+		const previewContainerPaddingTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding &&  undefined !== containerPadding[0] ? containerPadding[0] : '' ), ( undefined !== containerTabletPadding &&  undefined !== containerTabletPadding[0] ? containerTabletPadding[0] : '' ), ( undefined !== containerMobilePadding &&  undefined !== containerMobilePadding[0] ? containerMobilePadding[0] : '' ) );
+		const previewContainerPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding &&  undefined !== containerPadding[1] ? containerPadding[1] : '' ), ( undefined !== containerTabletPadding &&  undefined !== containerTabletPadding[1] ? containerTabletPadding[1] : '' ), ( undefined !== containerMobilePadding &&  undefined !== containerMobilePadding[1] ? containerMobilePadding[1] : '' ) );
+		const previewContainerPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding &&  undefined !== containerPadding[2] ? containerPadding[2] : '' ), ( undefined !== containerTabletPadding &&  undefined !== containerTabletPadding[2] ? containerTabletPadding[2] : '' ), ( undefined !== containerMobilePadding &&  undefined !== containerMobilePadding[2] ? containerMobilePadding[2] : '' ) );
+		const previewContainerPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding &&  undefined !== containerPadding[3] ? containerPadding[3] : '' ), ( undefined !== containerTabletPadding &&  undefined !== containerTabletPadding[3] ? containerTabletPadding[3] : '' ), ( undefined !== containerMobilePadding &&  undefined !== containerMobilePadding[3] ? containerMobilePadding[3] : '' ) );
 		const widthTypes = [
 			{ key: 'px', name: 'px' },
 			{ key: '%', name: '%' },
@@ -1572,15 +1585,33 @@ class KadenceInfoBox extends Component {
 										}
 									}
 								</TabPanel>
-								<MeasurementControls
+								<ResponsiveMeasuremenuControls
 									label={ __( 'Container Padding', 'kadence-blocks' ) }
-									measurement={ containerPadding }
 									control={ containerPaddingControl }
-									onChange={ ( value ) => setAttributes( { containerPadding: value } ) }
-									onControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
+									tabletControl={ containerPaddingControl }
+									mobileControl={ containerPaddingControl }
+									value={ containerPadding }
+									tabletValue={ containerTabletPadding }
+									mobileValue={ containerMobilePadding }
+									onChange={ ( value ) => {
+										setAttributes( { containerPadding: value } );
+									} }
+									onChangeTablet={ ( value ) => {
+										setAttributes( { containerTabletPadding: value } );
+									} }
+									onChangeMobile={ ( value ) => {
+										setAttributes( { containerMobilePadding: value } );
+									} }
+									onChangeControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
+									onChangeTabletControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
+									onChangeMobileControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
+									allowEmpty={ true }
+									min={ paddingMin }
+									max={ paddingMax }
+									step={ paddingStep }
+									unit={ containerPaddingType }
+									units={ [ 'px', 'em', 'rem', '%' ] }
+									onUnit={ ( value ) => setAttributes( { containerPaddingType: value } ) }
 								/>
 								<ButtonGroup className="kt-size-type-options kt-row-size-type-options kb-typo-when-linked-individual-avail" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
 									{ map( marginTypes, ( { name, key } ) => (
@@ -2845,7 +2876,10 @@ class KadenceInfoBox extends Component {
 					background: ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : KadenceColorOutput( '#f2f2f2', ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) ),
 					borderRadius: containerBorderRadius + 'px',
 					borderWidth: ( containerBorderWidth ? containerBorderWidth[ 0 ] + 'px ' + containerBorderWidth[ 1 ] + 'px ' + containerBorderWidth[ 2 ] + 'px ' + containerBorderWidth[ 3 ] + 'px' : '' ),
-					padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
+					paddingTop: ( '' !== previewContainerPaddingTop ? previewContainerPaddingTop + previewPaddingType : undefined ),
+					paddingRight: ( '' !== previewContainerPaddingRight ? previewContainerPaddingRight + previewPaddingType : undefined ),
+					paddingBottom: ( '' !== previewContainerPaddingBottom ? previewContainerPaddingBottom + previewPaddingType : undefined ),
+					paddingLeft: ( '' !== previewContainerPaddingLeft ? previewContainerPaddingLeft + previewPaddingType : undefined ),
 					maxWidth: ( maxWidth ? maxWidth + maxWidthUnit : undefined ),
 					marginTop: ( containerMargin && '' !== containerMargin[ 0 ] ? containerMargin[ 0 ] + containerMarginUnit : undefined ),
 					marginRight: ( containerMargin && '' !== containerMargin[ 1 ] ? containerMargin[ 1 ] + containerMarginUnit : undefined ),
@@ -3041,4 +3075,13 @@ class KadenceInfoBox extends Component {
 		);
 	}
 }
-export default ( KadenceInfoBox );
+export default compose( [
+	withSelect( ( select, ownProps ) => {
+		const {
+			__experimentalGetPreviewDeviceType,
+		} = select( 'core/edit-post' );
+		return {
+			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+		};
+	} ),
+] )( KadenceInfoBox );

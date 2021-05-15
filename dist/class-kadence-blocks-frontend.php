@@ -1565,7 +1565,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( ! method_exists( $post_object, 'post_content' ) ) {
 			$blocks = $this->kadence_parse_blocks( $post_object->post_content );
-			// print_r( $blocks );
+			//print_r( $blocks );
 			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 				return;
 			}
@@ -1840,6 +1840,10 @@ class Kadence_Blocks_Frontend {
 							$reusable_block = get_post( $blockattr['ref'] );
 							if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
 								$reuse_data_block = $this->kadence_parse_blocks( $reusable_block->post_content );
+								// This is a block inside itself.
+								if ( isset( $reuse_data_block[0] ) && isset( $reuse_data_block[0]['blockName'] ) && 'core/block' === $reuse_data_block[0]['blockName'] && isset( $reuse_data_block[0]['attrs'] ) && isset( $reuse_data_block[0]['attrs']['ref'] ) && $reuse_data_block[0]['attrs']['ref'] === $blockattr['ref'] ) {
+									return;
+								}
 								$this->blocks_cycle_through( $reuse_data_block );
 							}
 						}
@@ -2900,16 +2904,16 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['containerPadding'] ) && is_array( $attr['containerPadding'] ) ) {
 				if ( isset( $attr['containerPadding'][0] ) && is_numeric( $attr['containerPadding'][0] ) ) {
-					$css->add_property( 'padding-top', $attr['containerPadding'][0] . 'px' );
+					$css->add_property( 'padding-top', $attr['containerPadding'][0] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['containerPadding'][1] ) && is_numeric( $attr['containerPadding'][1] ) ) {
-					$css->add_property( 'padding-right', $attr['containerPadding'][1] . 'px' );
+					$css->add_property( 'padding-right', $attr['containerPadding'][1] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['containerPadding'][2] ) && is_numeric( $attr['containerPadding'][2] ) ) {
-					$css->add_property( 'padding-bottom', $attr['containerPadding'][2] . 'px' );
+					$css->add_property( 'padding-bottom', $attr['containerPadding'][2] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
 				}
 				if ( isset( $attr['containerPadding'][3] ) && is_numeric( $attr['containerPadding'][3] ) ) {
-					$css->add_property( 'padding-left', $attr['containerPadding'][3] . 'px' );
+					$css->add_property( 'padding-left', $attr['containerPadding'][3] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
 				}
 			}
 			if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) && isset( $attr['containerMargin'][0] ) && is_numeric( $attr['containerMargin'][0] ) ) {
@@ -2946,6 +2950,40 @@ class Kadence_Blocks_Frontend {
 				$unit = ( isset( $attr['maxWidthUnit'] ) && ! empty( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' );
 				$css->add_property( 'max-width', $attr['maxWidth'] . $unit );
 			}
+		}
+		if ( isset( $attr['containerTabletPadding'] ) && is_array( $attr['containerTabletPadding'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
+			if ( isset( $attr['containerTabletPadding'][0] ) && is_numeric( $attr['containerTabletPadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['containerTabletPadding'][0] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['containerTabletPadding'][1] ) && is_numeric( $attr['containerTabletPadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['containerTabletPadding'][1] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['containerTabletPadding'][2] ) && is_numeric( $attr['containerTabletPadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['containerTabletPadding'][2] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['containerTabletPadding'][3] ) && is_numeric( $attr['containerTabletPadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['containerTabletPadding'][3] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['containerMobilePadding'] ) && is_array( $attr['containerMobilePadding'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
+			if ( isset( $attr['containerMobilePadding'][0] ) && is_numeric( $attr['containerMobilePadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['containerMobilePadding'][0] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['containerMobilePadding'][1] ) && is_numeric( $attr['containerMobilePadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['containerMobilePadding'][1] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['containerMobilePadding'][2] ) && is_numeric( $attr['containerMobilePadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['containerMobilePadding'][2] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['containerMobilePadding'][3] ) && is_numeric( $attr['containerMobilePadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['containerMobilePadding'][3] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) );
+			}
+			$css->stop_media_query();
 		}
 		$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover' );
 		$border_hover = ( isset( $attr['containerHoverBorder'] ) && ! empty( $attr['containerHoverBorder'] ) ? $attr['containerHoverBorder'] : '#eeeeee' );
@@ -5428,14 +5466,60 @@ class Kadence_Blocks_Frontend {
 				$css .= 'background:' . $this->kadence_color_output( $attr['contentBgColor'] ) . ';';
 			}
 			if ( isset( $attr['contentPadding'] ) && is_array( $attr['contentPadding'] ) ) {
-				$css .= 'padding:' . $attr['contentPadding'][ 0 ] . 'px ' . $attr['contentPadding'][ 1 ] . 'px ' . $attr['contentPadding'][ 2 ] . 'px ' . $attr['contentPadding'][ 3 ] . 'px;';
+				if ( isset( $attr['contentPadding'][ 0 ] ) && is_numeric($attr['contentPadding'][ 0 ] ) ) {
+					$css .= 'padding-top:' . $attr['contentPadding'][ 0 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $attr['contentPadding'][ 1 ] ) && is_numeric($attr['contentPadding'][ 1 ] ) ) {
+					$css .= 'padding-right:' . $attr['contentPadding'][ 1 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $attr['contentPadding'][ 2 ] ) && is_numeric($attr['contentPadding'][ 2 ] ) ) {
+					$css .= 'padding-bottom:' . $attr['contentPadding'][ 2 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $attr['contentPadding'][ 3 ] ) && is_numeric($attr['contentPadding'][ 3 ] ) ) {
+					$css .= 'padding-left:' . $attr['contentPadding'][ 3 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+				}
 			}
 			if ( isset( $attr['contentBorder'] ) && is_array( $attr['contentBorder'] ) ) {
 				$css .= 'border-width:' . $attr['contentBorder'][ 0 ] . 'px ' . $attr['contentBorder'][ 1 ] . 'px ' . $attr['contentBorder'][ 2 ] . 'px ' . $attr['contentBorder'][ 3 ] . 'px;';
 			}
 			$css .= '}';
 		}
-
+		if ( isset( $attr['contentTabletPadding'] ) && is_array( $attr['contentTabletPadding'] ) ) {
+			$css .= '@media (max-width: 1024px) {';
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner {';
+			if ( isset( $attr['contentTabletPadding'][ 0 ] ) && is_numeric($attr['contentTabletPadding'][ 0 ] ) ) {
+				$css .= 'padding-top:' . $attr['contentTabletPadding'][ 0 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['contentTabletPadding'][ 1 ] ) && is_numeric($attr['contentTabletPadding'][ 1 ] ) ) {
+				$css .= 'padding-right:' . $attr['contentTabletPadding'][ 1 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['contentTabletPadding'][ 2 ] ) && is_numeric($attr['contentTabletPadding'][ 2 ] ) ) {
+				$css .= 'padding-bottom:' . $attr['contentTabletPadding'][ 2 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['contentTabletPadding'][ 3 ] ) && is_numeric($attr['contentTabletPadding'][ 3 ] ) ) {
+				$css .= 'padding-left:' . $attr['contentTabletPadding'][ 3 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
+		if ( isset( $attr['contentMobilePadding'] ) && is_array( $attr['contentMobilePadding'] ) ) {
+			$css .= '@media (max-width: 1024px) {';
+			$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner {';
+			if ( isset( $attr['contentMobilePadding'][ 0 ] ) && is_numeric($attr['contentMobilePadding'][ 0 ] ) ) {
+				$css .= 'padding-top:' . $attr['contentMobilePadding'][ 0 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['contentMobilePadding'][ 1 ] ) && is_numeric($attr['contentMobilePadding'][ 1 ] ) ) {
+				$css .= 'padding-right:' . $attr['contentMobilePadding'][ 1 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['contentMobilePadding'][ 2 ] ) && is_numeric($attr['contentMobilePadding'][ 2 ] ) ) {
+				$css .= 'padding-bottom:' . $attr['contentMobilePadding'][ 2 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+			}
+			if ( isset( $attr['contentMobilePadding'][ 3 ] ) && is_numeric($attr['contentMobilePadding'][ 3 ] ) ) {
+				$css .= 'padding-left:' . $attr['contentMobilePadding'][ 3 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
+			}
+			$css .= '}';
+			$css .= '}';
+		}
 		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && is_array( $attr['titleStyles'][ 0 ] ) ) {
 			$title_styles = $attr['titleStyles'][ 0 ];
 			$css .= '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header {';
@@ -5476,12 +5560,59 @@ class Kadence_Blocks_Frontend {
 				$css .= 'border-width:' . $title_styles['borderWidth'][0] . 'px ' . $title_styles['borderWidth'][1] . 'px ' . $title_styles['borderWidth'][2] . 'px ' . $title_styles['borderWidth'][3] . 'px;';
 			}
 			if ( isset( $title_styles['padding'] ) && is_array( $title_styles['padding'] ) ) {
-				$css .= 'padding:' . $title_styles['padding'][0] . 'px ' . $title_styles['padding'][1] . 'px ' . $title_styles['padding'][2] . 'px ' . $title_styles['padding'][3] . 'px;';
+				if ( isset( $title_styles['padding'][0] ) && is_numeric($title_styles['padding'][0] ) ) {
+					$css .= 'padding-top:' . $title_styles['padding'][0] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['padding'][1] ) && is_numeric($title_styles['padding'][1] ) ) {
+					$css .= 'padding-right:' . $title_styles['padding'][1] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['padding'][2] ) && is_numeric($title_styles['padding'][2] ) ) {
+					$css .= 'padding-bottom:' . $title_styles['padding'][2] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['padding'][3] ) && is_numeric($title_styles['padding'][3] ) ) {
+					$css .= 'padding-left:' . $title_styles['padding'][3] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
 			}
 			if ( isset( $title_styles['marginTop'] ) && ! empty( $title_styles['marginTop'] ) ) {
 				$css .= 'margin-top:' . $title_styles['marginTop'] . 'px;';
 			}
 			$css .= '}';
+			if ( isset( $title_styles['paddingTablet'] ) && is_array( $title_styles['paddingTablet'] ) ) {
+				$css .= '@media (max-width: 1024px) {';
+				$css .= '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header {';
+				if ( isset( $title_styles['paddingTablet'][0] ) && is_numeric($title_styles['paddingTablet'][0] ) ) {
+					$css .= 'padding-top:' . $title_styles['paddingTablet'][0] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['paddingTablet'][1] ) && is_numeric($title_styles['paddingTablet'][1] ) ) {
+					$css .= 'padding-right:' . $title_styles['paddingTablet'][1] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['paddingTablet'][2] ) && is_numeric($title_styles['paddingTablet'][2] ) ) {
+					$css .= 'padding-bottom:' . $title_styles['paddingTablet'][2] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['paddingTablet'][3] ) && is_numeric($title_styles['paddingTablet'][3] ) ) {
+					$css .= 'padding-left:' . $title_styles['paddingTablet'][3] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				$css .= '}';
+				$css .= '}';
+			}
+			if ( isset( $title_styles['paddingMobile'] ) && is_array( $title_styles['paddingMobile'] ) ) {
+				$css .= '@media (max-width: 767px) {';
+				$css .= '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header {';
+				if ( isset( $title_styles['paddingMobile'][0] ) && is_numeric($title_styles['paddingMobile'][0] ) ) {
+					$css .= 'padding-top:' . $title_styles['paddingMobile'][0] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['paddingMobile'][1] ) && is_numeric($title_styles['paddingMobile'][1] ) ) {
+					$css .= 'padding-right:' . $title_styles['paddingMobile'][1] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['paddingMobile'][2] ) && is_numeric($title_styles['paddingMobile'][2] ) ) {
+					$css .= 'padding-bottom:' . $title_styles['paddingMobile'][2] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				if ( isset( $title_styles['paddingMobile'][3] ) && is_numeric($title_styles['paddingMobile'][3] ) ) {
+					$css .= 'padding-left:' . $title_styles['paddingMobile'][3] . ( isset( $title_styles['paddingType'] ) && ! empty( $title_styles['paddingType'] ) ? $title_styles['paddingType'] : 'px' ) . ';';
+				}
+				$css .= '}';
+				$css .= '}';
+			}
 			if ( isset( $title_styles['size'] ) && is_array( $title_styles['size'] ) && ! empty( $title_styles['size'][0] ) ) {
 				$css .= '.kt-accordion-id' . $unique_id . ' .kt-blocks-accordion-header .kt-btn-svg-icon svg {';
 					$css .= 'width:' . $title_styles['size'][0] . ( ! isset( $title_styles['sizeType'] ) ? 'px' : $title_styles['sizeType'] ) . ';';
@@ -5551,8 +5682,8 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && isset( $attr['titleStyles'][0] ) && is_array( $attr['titleStyles'][0] ) && ( ( isset( $attr['titleStyles'][0]['size'] ) && is_array( $attr['titleStyles'][0]['size'] ) && isset( $attr['titleStyles'][0]['size'][1] ) && ! empty( $attr['titleStyles'][0]['size'][1] ) ) || ( isset( $attr['titleStyles'][0]['lineHeight'] ) && is_array( $attr['titleStyles'][0]['lineHeight'] ) && isset( $attr['titleStyles'][0]['lineHeight'][1] ) && ! empty( $attr['titleStyles'][0]['lineHeight'][1] ) ) ) ) {
-			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-blocks-accordion-header {';
+			$css .= '@media (max-width: 1024px) {';
+			$css .= '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header {';
 			if ( isset( $attr['titleStyles'][0]['size'][1] ) && ! empty( $attr['titleStyles'][0]['size'][1] ) ) {
 				$css .= 'font-size:' . $attr['titleStyles'][0]['size'][1] . ( ! isset( $attr['titleStyles'][0]['sizeType'] ) ? 'px' : $attr['titleStyles'][0]['sizeType'] ) . ';';
 			}
@@ -5568,7 +5699,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['titleStyles'] ) && is_array( $attr['titleStyles'] ) && isset( $attr['titleStyles'][0] ) && is_array( $attr['titleStyles'][0] ) && ( ( isset( $attr['titleStyles'][0]['size'] ) && is_array( $attr['titleStyles'][0]['size'] ) && isset( $attr['titleStyles'][0]['size'][2] ) && ! empty( $attr['titleStyles'][0]['size'][2] ) ) || ( isset( $attr['titleStyles'][0]['lineHeight'] ) && is_array( $attr['titleStyles'][0]['lineHeight'] ) && isset( $attr['titleStyles'][0]['lineHeight'][2] ) && ! empty( $attr['titleStyles'][0]['lineHeight'][2] ) ) ) ) {
 			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-blocks-accordion-header {';
+			$css .= '.kt-accordion-id' . $unique_id . ' .wp-block-kadence-pane .kt-accordion-header-wrap .kt-blocks-accordion-header {';
 				if ( isset( $attr['titleStyles'][0]['size'][2] ) && ! empty( $attr['titleStyles'][0]['size'][2] ) ) {
 					$css .= 'font-size:' . $attr['titleStyles'][0]['size'][2] . ( ! isset( $attr['titleStyles'][0]['sizeType'] ) ? 'px' : $attr['titleStyles'][0]['sizeType'] ) . ';';
 				}
@@ -6882,6 +7013,9 @@ class Kadence_Blocks_Frontend {
 			}
 			$css->stop_media_query();
 		}
+		if ( isset( $attr['kadenceBlockCSS'] ) && ! empty( $attr['kadenceBlockCSS'] ) ) {
+			$css->add_css_string( str_replace( 'selector', '#kt-layout-id' . $unique_id, $attr['kadenceBlockCSS'] ) );
+		}
 		return $css->css_output();
 	}
 	/**
@@ -7102,6 +7236,9 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		$css->stop_media_query();
+		if ( isset( $attr['kadenceBlockCSS'] ) && ! empty( $attr['kadenceBlockCSS'] ) ) {
+			$css->add_css_string( str_replace( 'selector', '.kadence-column' . $unique_id, $attr['kadenceBlockCSS'] ) );
+		}
 		return $css->css_output();
 	}
 	/**

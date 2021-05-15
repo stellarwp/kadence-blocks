@@ -111,6 +111,15 @@ class InfoBoxStyleCopyPaste extends Component {
 			if ( blockAttributes.containerPadding ) {
 				copyStyles.containerPadding = blockAttributes.containerPadding;
 			}
+			if ( blockAttributes.containerTabletPadding ) {
+				copyStyles.containerTabletPadding = blockAttributes.containerTabletPadding;
+			}
+			if ( blockAttributes.containerMobilePadding ) {
+				copyStyles.containerMobilePadding = blockAttributes.containerMobilePadding;
+			}
+			if ( blockAttributes.containerPaddingType ) {
+				copyStyles.containerPaddingType = blockAttributes.containerPaddingType;
+			}
 			if ( blockAttributes.mediaType ) {
 				copyStyles.mediaType = blockAttributes.mediaType;
 			}

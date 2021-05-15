@@ -130,7 +130,7 @@ class Kadence_MailerLite_REST_Controller extends WP_REST_Controller {
 		$query_params  = parent::get_collection_params();
 
 		$query_params[ self::PROP_API_KEY ] = array(
-			'description' => __( 'The API Key for mailchimp account.', 'kadence-blocks-pro' ),
+			'description' => __( 'The API Key for Mailerlite account.', 'kadence-blocks-pro' ),
 			'type'        => 'string',
 		);
 

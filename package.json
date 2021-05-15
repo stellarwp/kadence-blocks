@@ -21,6 +21,7 @@
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",
     "re-resizable": "^4.7.1",
+    "react-ace": "^9.4.0",
     "react-color": "^2.18.0",
     "react-container-dimensions": "^1.4.1",
     "react-countdown": "^2.3.1",

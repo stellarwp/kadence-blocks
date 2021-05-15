@@ -361,6 +361,9 @@ class Kadence_Blocks_Posts {
 			echo '<div class="' . esc_attr( esc_attr( implode( ' ', $classes ) ) ) . '">';
 			while ( $loop->have_posts() ) {
 				$loop->the_post();
+				if ( isset( $attributes['showUnique'] ) && true === $attributes['showUnique'] ) {
+					$kadence_blocks_posts_not_in[] = get_the_ID();
+				}
 				kadence_blocks_get_template( 'entry.php', array( 'attributes' => $attributes ) );
 			}
 			echo '</div>';

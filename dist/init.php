@@ -92,11 +92,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	}
 	$pro_data = false;
 	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
-		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', false ) ) {
-			$pro_data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
-		} else {
-			$pro_data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
-		}
+		$pro_data = kadence_blocks_get_pro_license_data();
 	}
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'dist/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'dist/gfonts-names-array.php';
@@ -137,6 +133,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'cloud_enabled'  => apply_filters( 'kadence_blocks_cloud_enabled', true ),
 			'cloud_settings' => get_option( 'kadence_blocks_cloud' ),
 			'prebuilt_libraries' => apply_filters( 'kadence_blocks_custom_prebuilt_libraries', array() ),
+			'showDesignLibrary' => apply_filters( 'kadence_blocks_design_library_enabled', true ),
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
 			'icon_names'     => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
 			'icons_ico'      => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
@@ -779,3 +776,39 @@ function kadence_blocks_register_api_endpoints() {
 	$fluentcrm_controller->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
+
+/**
+ * Get the license information.
+ *
+ * @return array
+ */
+function kadence_blocks_get_pro_license_data() {
+	$data = false;
+	$current_theme = wp_get_theme();
+	$current_theme_name = $current_theme->get( 'Name' );
+	$current_theme_template = $current_theme->get( 'Template' );
+	// Check for a classic theme license.
+	if ( 'Pinnacle Premium' == $current_theme_name || 'pinnacle_premium' == $current_theme_template || 'Ascend - Premium' == $current_theme_name || 'ascend_premium' == $current_theme_template || 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template ) {
+		$pro_data = get_option( 'kt_api_manager' );
+		if ( $pro_data ) {
+			$data['ithemes']  = '';
+			$data['username'] = '';
+			if ( 'Pinnacle Premium' == $current_theme_name || 'pinnacle_premium' == $current_theme_template ) {
+				$data['product_id'] = 'pinnacle_premium';
+			} elseif ( 'Ascend - Premium' == $current_theme_name || 'ascend_premium' == $current_theme_template ) {
+				$data['product_id'] = 'ascend_premium';
+			} elseif ( 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template ) {
+				$data['product_id'] = 'virtue_premium';
+			}
+			$data['api_key'] = $pro_data['kt_api_key'];
+			$data['api_email'] = $pro_data['activation_email'];
+		}
+	} else {
+		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', false ) ) {
+			$pro_data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+		} else {
+			$pro_data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+		}
+	}
+	return $data;
+}

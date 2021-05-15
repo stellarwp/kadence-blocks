@@ -186,6 +186,10 @@ class KB_Ajax_Form {
 							'label' => str_replace( '{privacy_policy}', $privacy_title, $data['label'] ),
 							'value' => $this->sanitize_field( $data['type'], wp_unslash( $_POST[ 'kb_field_' . $key ] ), $data['multiSelect'] ),
 						);
+						if ( 'hidden' === $data['type'] ) {
+							$fields[ $key ]['value'] = str_replace( '{page_title}', get_the_title( $post->$ID ), $fields[ $key ]['value'] );
+							$fields[ $key ]['value'] = str_replace( '{page_url}', wp_get_referer(), $fields[ $key ]['value'] );
+						}
 						unset( $_POST[ 'kb_field_' . $key ] );
 					}
 				}

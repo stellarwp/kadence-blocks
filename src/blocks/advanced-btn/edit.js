@@ -7,7 +7,7 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import IconControl from '../../icon-control';
 import IconRender from '../../icon-render';
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../box-shadow-control';
 import WebfontLoader from '../../fontloader';
 import StepControl from '../../step-control';
@@ -38,22 +38,28 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
-const {
+import { withSelect } from '@wordpress/data';
+
+import { DELETE } from '@wordpress/keycodes';
+import {
+	cog,
+	pages,
+	chevronRight,
+	chevronLeft,
+	plus,
+	close,
+	code,
+} from '@wordpress/icons';
+import { Component, Fragment } from '@wordpress/element';
+import {
 	RichText,
 	URLInput,
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
 	InspectorAdvancedControls,
-} = wp.blockEditor;
-const {
-	Component,
-	Fragment,
-} = wp.element;
-const {
-	IconButton,
+} from '@wordpress/block-editor';
+import {
 	Dashicon,
 	TabPanel,
 	Button,
@@ -67,11 +73,13 @@ const {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
-} = wp.components;
-const { DELETE } = wp.keycodes;
-const {
+	Icon,
+} from '@wordpress/components';
+import { compose } from '@wordpress/compose';
+import { hasBlockSupport } from '@wordpress/blocks';
+import {
 	applyFilters,
-} = wp.hooks;
+} from '@wordpress/hooks';
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -325,7 +333,7 @@ class KadenceAdvancedButton extends Component {
 			{ key: 'small', name: __( 'S' ) },
 			{ key: 'standard', name: __( 'M' ) },
 			{ key: 'large', name: __( 'L' ) },
-			{ key: 'custom', name: <Dashicon icon="admin-generic" /> },
+			{ key: 'custom', name: <Icon icon={ cog } /> },
 		];
 		const btnWidths = [
 			{ key: 'auto', name: __( 'Auto' ) },
@@ -430,7 +438,7 @@ class KadenceAdvancedButton extends Component {
 							boxShadow: ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] && btns[ index ].boxShadow[ 0 ] ? ( undefined !== btns[ index ].boxShadow[ 7 ] && btns[ index ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ), ( undefined !== btns[ index ].boxShadow[ 2 ] ? btns[ index ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 						} } >
 							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
-								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '14' } style={ {
+								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '1em' } style={ {
 									fontSize: ( undefined !== btns[ index ].iconSize ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ) + ( undefined !== btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) : undefined ),
 									color: ( undefined !== btns[ index ].iconColor ? KadenceColorOutput( btns[ index ].iconColor ) : undefined ),
 									paddingTop: ( topIconPadding ? topIconPadding + 'px' : undefined ),
@@ -515,7 +523,7 @@ class KadenceAdvancedButton extends Component {
 								{ moveable && (
 									<DropdownMenu
 										className="block-editor-block-settings-menu kadence-blocks-button-item__move-menu_item"
-										icon={ 'move' }
+										icon={ code }
 										label={ __( 'Move Button', 'kadence-blocks' ) }
 										popoverProps={ POPOVER_PROPS }
 									>
@@ -523,7 +531,7 @@ class KadenceAdvancedButton extends Component {
 											<Fragment>
 												<MenuGroup>
 													<MenuItem
-														icon="arrow-left"
+														icon={ chevronLeft }
 														onClick={ flow( onClose, this.onMoveBackward( index ) ) }
 														disabled={ index === 0 }
 														label={ __( 'Move Left', 'kadence-blocks' ) }
@@ -531,7 +539,7 @@ class KadenceAdvancedButton extends Component {
 														{ __( 'Move Left', 'kadence-blocks' ) }
 													</MenuItem>
 													<MenuItem
-														icon={ 'arrow-right' }
+														icon={ chevronRight }
 														onClick={ flow( onClose, this.onMoveForward( index ) ) }
 														disabled={ ( index + 1 ) === btns.length }
 														label={ __( 'Move Right', 'kadence-blocks' ) }
@@ -546,14 +554,14 @@ class KadenceAdvancedButton extends Component {
 							</div>
 							<div className="kadence-blocks-button-item-controls kadence-blocks-button-item__inline-menu">
 								<Button
-									icon="admin-page"
+									icon={ pages }
 									onClick={ this.onDuplicateButton( index ) }
 									className="kadence-blocks-button-item__duplicate"
 									label={ __( 'Duplicate Button', 'kadence-blocks' ) }
 									disabled={ ! isButtonSelected }
 								/>
 								<Button
-									icon="no-alt"
+									icon={ close }
 									onClick={ this.onRemoveButton( index ) }
 									className="kadence-blocks-button-item__remove"
 									label={ __( 'Remove Button', 'kadence-blocks' ) }
@@ -1717,6 +1725,7 @@ class KadenceAdvancedButton extends Component {
 											<Button
 												className="kb-add-field"
 												isPrimary={ true }
+												icon={ plus }
 												onClick={ () => {
 													const newbtns = btns;
 													const newcount = Math.abs( btnCount + 1 );
@@ -1773,7 +1782,6 @@ class KadenceAdvancedButton extends Component {
 													setAttributes( { btnCount: newcount } );
 												} }
 											>
-												<Dashicon icon="plus" />
 												{ __( 'Add Button', 'kadence-blocks' ) }
 											</Button>
 										</PanelRow>

@@ -79,7 +79,7 @@ class ToolbarLibrary extends Component {
 			}
 			return document.querySelector(selector); 
 		}
-		if ( this.showSettings( 'show' ) ) {
+		if ( this.showSettings( 'show' ) && kadence_blocks_params.showDesignLibrary ) {
 			checkElement( '.edit-post-header-toolbar' ).then( ( selector ) => {
 				if ( ! selector.querySelector( '.kadence-toolbar-design-library' ) ) {
 					const toolbarButton = document.createElement( 'div' );

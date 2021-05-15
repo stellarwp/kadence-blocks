@@ -21,7 +21,7 @@ window.kb = {
 };
 // Brand Icon.
 import icons from './brand-icon';
-
+import './extension/block-css/block-css';
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
 import './blocks/row-layout/block.js';

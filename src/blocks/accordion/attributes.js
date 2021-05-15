@@ -54,6 +54,18 @@ const attributes = {
 		type: 'array',
 		default: [ 20, 20, 20, 20 ],
 	},
+	contentTabletPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	contentMobilePadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	contentPaddingType: {
+		type: 'string',
+		default: 'px',
+	},
 	titleAlignment: {
 		type: 'string',
 		default: 'left',
@@ -91,6 +103,9 @@ const attributes = {
 			backgroundActive: '#444444',
 			borderActive: [ '#444444', '#444444', '#444444', '#444444' ],
 			textTransform: '',
+			paddingTablet: [ '', '', '', '' ],
+			paddingMobile: [ '', '', '', '' ],
+			paddingType: 'px',
 		} ],
 	},
 	showIcon: {

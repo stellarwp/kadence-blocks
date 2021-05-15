@@ -66,7 +66,7 @@ class TypographyControls extends Component {
 		let options = [
 			{
 				type: 'group',
-				label: 'Standard Fonts',
+				label: __( 'Standard Fonts', 'kadence-blocks' ),
 				options: [
 					{ label: 'System Default', value: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"', google: false },
 					{ label: 'Arial, Helvetica, sans-serif', value: 'Arial, Helvetica, sans-serif', google: false },
@@ -87,7 +87,7 @@ class TypographyControls extends Component {
 			},
 			{
 				type: 'group',
-				label: 'Google Fonts',
+				label: __( 'Google Fonts', 'kadence-blocks' ),
 				options: fontsarray,
 			},
 		];
@@ -120,7 +120,7 @@ class TypographyControls extends Component {
 			const custom_fonts = [
 				{
 					type: 'group',
-					label: __( 'Custom Fonts', 'kadence-custom-fonts' ),
+					label: __( 'Custom Fonts', 'kadence-blocks' ),
 					options: newOptions,
 				},
 			];
@@ -146,19 +146,21 @@ class TypographyControls extends Component {
 	}
 	setTypographyOptions( typographySelectOptions ) {
 		let standardWeights = [
-			{ value: 'regular', label: 'Normal' },
-			{ value: 'bold', label: 'Bold' },
+			{ value: 'inherit', label: __( 'Inherit', 'kadence-blocks' ) },
+			{ value: '400', label: __( 'Normal', 'kadence-blocks' ) },
+			{ value: 'bold', label: __( 'Bold', 'kadence-blocks' ) },
 		];
 		const systemWeights = [
-			{ value: '100', label: 'Thin 100' },
-			{ value: '200', label: 'Extra-Light 200' },
-			{ value: '300', label: 'Light 300' },
-			{ value: 'regular', label: 'Regular' },
-			{ value: '500', label: 'Medium 500' },
-			{ value: '600', label: 'Semi-Bold 600' },
-			{ value: '700', label: 'Bold 700' },
-			{ value: '800', label: 'Extra-Bold 800' },
-			{ value: '900', label: 'Ultra-Bold 900' },
+			{ value: 'inherit', label: __( 'Inherit', 'kadence-blocks' ) },
+			{ value: '100', label: __( 'Thin 100', 'kadence-blocks' ) },
+			{ value: '200', label: __( 'Extra-Light 200', 'kadence-blocks' ) },
+			{ value: '300', label: __( 'Light 300', 'kadence-blocks' ) },
+			{ value: '400', label: __( 'Regular', 'kadence-blocks' ) },
+			{ value: '500', label: __( 'Medium 500', 'kadence-blocks' ) },
+			{ value: '600', label: __( 'Semi-Bold 600', 'kadence-blocks' ) },
+			{ value: '700', label: __( 'Bold 700', 'kadence-blocks' ) },
+			{ value: '800', label: __( 'Extra-Bold 800', 'kadence-blocks' ) },
+			{ value: '900', label: __( 'Ultra-Bold 900', 'kadence-blocks' ) },
 		];
 		const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
 		const headingWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.headingWeights ? kadence_blocks_params.headingWeights : [] );
@@ -271,7 +273,7 @@ class TypographyControls extends Component {
 				} else {
 					subset = '';
 					variant = '';
-					weight = '400';
+					weight = 'inherit';
 				}
 				if ( onFontArrayChange ) {
 					onFontArrayChange( { google: select.google, family: select.value, variant: variant, weight: weight, style: 'normal', subset: subset } );
@@ -286,12 +288,12 @@ class TypographyControls extends Component {
 		};
 		const onTypoFontClear = () => {
 			if ( onFontArrayChange ) {
-				onFontArrayChange( { google: false, family: '', variant: '', weight: 'regular', style: 'normal', subset: '' } );
+				onFontArrayChange( { google: false, family: '', variant: '', weight: 'inherit', style: 'normal', subset: '' } );
 			} else {
 				onGoogleFont( false );
 				onFontFamily( '' );
 				onFontVariant( '' );
-				onFontWeight( 'regular' );
+				onFontWeight( 'inherit' );
 				onFontStyle( 'normal' );
 				onFontSubset( '' );
 			}
@@ -468,7 +470,7 @@ class TypographyControls extends Component {
 						{ onFontWeight && (
 							<SelectControl
 								label={ __( 'Font Weight', 'kadence-blocks' ) }
-								value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
+								value={ ( 'regular' === fontWeight ? '400' : fontWeight ) }
 								options={ typographyWeights }
 								onChange={ onTypoFontWeightChange }
 							/>
@@ -523,7 +525,7 @@ class TypographyControls extends Component {
 				{ onMargin && onMarginControl && (
 					<Fragment>
 						<MeasurementControls
-							label={ __( 'Margin (px)' ) }
+							label={ __( 'Margin (px)', 'kadence-blocks' ) }
 							measurement={ ( margin ? margin : '' ) }
 							control={ marginControl }
 							onChange={ ( value ) => onMargin( value ) }

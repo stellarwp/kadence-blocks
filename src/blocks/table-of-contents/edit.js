@@ -13,7 +13,7 @@ import isEqual from 'lodash/isEqual';
 import classnames from 'classnames';
 import memoize from 'memize';
 import WebfontLoader from '../../fontloader';
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import filter from 'lodash/filter';
 import IconControl from '../../icon-control';

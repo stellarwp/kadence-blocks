@@ -150,8 +150,7 @@
 	z-index: 10;
 	background: #0085ba;
 	.components-button {
-		padding: 0;
-		height:auto;
+		padding: 0 !important;
 		color:#f4f4f4;
 		min-width: 25px;
 		width: 25px;
@@ -173,6 +172,7 @@
         height: 20px;
         width: 25px;
         min-width: 25px;
+		line-height: 20px;
     }
 }
 .kt-button-text.is-selected {
@@ -572,7 +572,7 @@
 }
 .wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .btn-area-wrap {
     display: block;
-    flex-grow:1;
+    flex: 1;
 }
 .wp-block-kadence-advancedbtn.kt-force-btn-fullwidth .btn-area-wrap .kt-button-wrap {
     display:block;

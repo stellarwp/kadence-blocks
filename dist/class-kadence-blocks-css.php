@@ -70,6 +70,14 @@ class Kadence_Blocks_CSS {
 	protected $_css = '';
 
 	/**
+	 * Stores all of the custom css.
+	 *
+	 * @access protected
+	 * @var string
+	 */
+	protected $_css_string = '';
+
+	/**
 	 * The string that holds all of the css to output
 	 *
 	 * @access protected
@@ -107,6 +115,16 @@ class Kadence_Blocks_CSS {
 			$this->add_selector_rules_to_output();
 		}
 		$this->_selector = $selector;
+		return $this;
+	}
+	/**
+	 * Sets css string for final output.
+	 *
+	 * @param  string $string - the css string.
+	 * @return $this
+	 */
+	public function add_css_string( $string ) {
+		$this->_css_string .= $string;
 		return $this;
 	}
 
@@ -816,6 +834,8 @@ class Kadence_Blocks_CSS {
 	public function css_output() {
 		// Add current selector's rules to output
 		$this->add_selector_rules_to_output();
+
+		$this->_output .= $this->_css_string;
 
 		// Output minified css
 		return $this->_output;

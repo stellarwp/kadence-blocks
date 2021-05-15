@@ -17,7 +17,7 @@ import times from 'lodash/times';
 import filter from 'lodash/filter';
 import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../fontloader';
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../box-shadow-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';

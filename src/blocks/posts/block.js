@@ -183,7 +183,7 @@ registerBlockType( 'kadence/posts', {
 			type: 'bool',
 			default: false,
 		},
-		dateUpdateEnabledLabel: {
+		dateUpdatedEnabledLabel: {
 			type: 'bool',
 			default: false,
 		},
@@ -237,6 +237,10 @@ registerBlockType( 'kadence/posts', {
 		},
 		mobileColumns: {
 			type: 'number',
+		},
+		showUnique: {
+			type: 'bool',
+			default: false,
 		},
 	},
 	edit,

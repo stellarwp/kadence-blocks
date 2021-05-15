@@ -80,6 +80,18 @@ const attributes = {
 		type: 'array',
 		default: [ 20, 20, 20, 20 ],
 	},
+	containerTabletPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	containerMobilePadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	containerPaddingType: {
+		type: 'string',
+		default: 'px',
+	},
 	mediaType: {
 		type: 'string',
 		default: 'icon',
@@ -267,6 +279,9 @@ const attributes = {
 			backgroundHover: '#444444',
 			borderHover: '#444444',
 			hoverEffect: 'revealBorder',
+			paddingTablet: [ '', '', '', '' ],
+			paddingMobile: [ '', '', '', '' ],
+			paddingType: 'px',
 		} ],
 	},
 	displayShadow: {

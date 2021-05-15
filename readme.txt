@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
-Tested up to: 5.7.1
-Stable tag: 2.0.3
+Tested up to: 5.7.2
+Stable tag: 2.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,22 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.0.4 =
+Release Date: May 15th, 2021
+* Add: Custom css option to row and section blocks.
+* Add: Responsive padding settings to Accordion Block Inner Content Padding.
+* Add: Responsive padding settings to InfoBox Block.
+* Add: 16:9 ratio option to gallery.
+* Add: Placeholder options {page_title} and {page_url} to form block hidden field value.
+* Add: PHP filter to remove design library button.
+* Update Button block move icon for moving when you have two or more buttons.
+* Fix: Posts show unique only option.
+* Fix: Responsive accordion title settings.
+* Fix: Design Library issue with certain keys.
+* Fix: Issue with testimonials using grid single column where the last item has margin-right set.
+* Fix: Issue with posts block not saving updated date label on settings
+* Fix: Issue with icon size not changing in the editor.
 
 = 2.0.3 =
 Release Date: May 4th, 2021

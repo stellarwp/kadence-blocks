@@ -120,8 +120,9 @@ class PrebuiltSections extends Component {
 	}
 	reloadTemplateData() {
 		this.setState( { errorItems: false, isLoading: true, items: 'loading' } );
-		var data_key = (  kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
-		var data_email = (  kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
+		var data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
+		var data_email = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
+		var product_id = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.product_id ?  kadence_blocks_params.proData.product_id : '' );
 		if ( ! data_key ) {
 			data_key = (  kadence_blocks_params.proData &&  kadence_blocks_params.proData.ithemes_key ?  kadence_blocks_params.proData.ithemes_key : '' );
 			if ( data_key ) {
@@ -133,6 +134,7 @@ class PrebuiltSections extends Component {
 		data.append( 'security', kadence_blocks_params.ajax_nonce );
 		data.append( 'api_key', data_key );
 		data.append( 'api_email', data_email );
+		data.append( 'product_id', product_id );
 		data.append( 'package', 'section' );
 		var control = this;
 		jQuery.ajax( {
@@ -161,8 +163,9 @@ class PrebuiltSections extends Component {
 	}
 	loadTemplateData() {
 		this.setState( { errorItems: false, isLoading: true, items: 'loading' } );
-		var data_key = (  kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
-		var data_email = (  kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
+		var data_key = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_key ?  kadence_blocks_params.proData.api_key : '' );
+		var data_email = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.api_email ?  kadence_blocks_params.proData.api_email : '' );
+		var product_id = ( kadence_blocks_params.proData &&  kadence_blocks_params.proData.product_id ?  kadence_blocks_params.proData.product_id : '' );
 		if ( ! data_key ) {
 			data_key = (  kadence_blocks_params.proData &&  kadence_blocks_params.proData.ithemes_key ?  kadence_blocks_params.proData.ithemes_key : '' );
 			if ( data_key ) {
@@ -174,6 +177,7 @@ class PrebuiltSections extends Component {
 		data.append( 'security', kadence_blocks_params.ajax_nonce );
 		data.append( 'api_key', data_key );
 		data.append( 'api_email', data_email );
+		data.append( 'product_id', product_id );
 		data.append( 'package', 'section' );
 		var control = this;
 		jQuery.ajax( {

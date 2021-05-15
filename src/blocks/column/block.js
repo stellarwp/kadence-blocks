@@ -54,6 +54,7 @@ registerBlockType( 'kadence/column', {
 		ktanimateadd: true,
 		ktanimatepreview: true,
 		ktanimateswipe: true,
+		kbcss: true,
 		// Add EditorsKit block navigator toolbar.
 		editorsKitBlockNavigator: true,
 	},

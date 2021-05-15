@@ -42,6 +42,9 @@
 .kt-testimonial-grid-wrap .kt-testimonial-item-wrap:last-child {
 	margin-right:0;
 }
+.kt-testimonial-columns-1 .kt-testimonial-grid-wrap .kt-testimonial-item-wrap:last-child {
+    margin-right: auto;
+}
 .kt-testimonial-grid-wrap .kt-testimonial-item-wrap:nth-child(1) {
 	-ms-grid-column: 1;
 }

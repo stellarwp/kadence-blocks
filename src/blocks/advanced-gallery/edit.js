@@ -769,6 +769,10 @@ class GalleryEdit extends Component {
 											value: 'land32',
 										},
 										{
+											label: __( 'Landscape 16:9', 'kadence-blocks' ),
+											value: 'land169',
+										},
+										{
 											label: __( 'Landscape 2:1', 'kadence-blocks' ),
 											value: 'land21',
 										},
@@ -812,6 +816,10 @@ class GalleryEdit extends Component {
 										{
 											label: __( 'Landscape 3:2', 'kadence-blocks' ),
 											value: 'land32',
+										},
+										{
+											label: __( 'Landscape 16:9', 'kadence-blocks' ),
+											value: 'land169',
 										},
 										{
 											label: __( 'Landscape 2:1', 'kadence-blocks' ),

@@ -20,11 +20,12 @@ import memoize from 'memize';
 import map from 'lodash/map';
 import WebfontLoader from '../../fontloader';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import BorderColorControls from '../../border-color-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../kadence-color-output';
+import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 
 /**
  * Import Css
@@ -81,6 +82,7 @@ class KadenceAccordionComponent extends Component {
 	constructor() {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
+		this.getPreviewSize = this.getPreviewSize.bind( this );
 		this.state = {
 			contentPaddingControl: 'linked',
 			contentBorderRadiusControl: 'linked',
@@ -96,6 +98,20 @@ class KadenceAccordionComponent extends Component {
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
+	}
+	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
@@ -216,7 +232,7 @@ class KadenceAccordionComponent extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, paneCount, blockAlignment, openPane, titleStyles, contentPadding, minHeight, maxWidth, contentBorder, contentBorderColor, contentBorderRadius, contentBgColor, titleAlignment, startCollapsed, faqSchema, linkPaneCollapse, showIcon, iconStyle, iconSide }, className, setAttributes, clientId, realPaneCount, accordionBlock } = this.props;
+		const { attributes: { uniqueID, paneCount, blockAlignment, openPane, titleStyles, contentPadding, contentTabletPadding, contentMobilePadding, contentPaddingType, minHeight, maxWidth, contentBorder, contentBorderColor, contentBorderRadius, contentBgColor, titleAlignment, startCollapsed, faqSchema, linkPaneCollapse, showIcon, iconStyle, iconSide }, className, setAttributes, clientId, realPaneCount, accordionBlock } = this.props;
 		const { titleBorderRadiusControl, titleBorderControl, titlePaddingControl, contentBorderControl, contentBorderRadiusControl, contentPaddingControl, titleBorderColorControl, titleBorderHoverColorControl, titleBorderActiveColorControl, titleTag } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
@@ -225,6 +241,22 @@ class KadenceAccordionComponent extends Component {
 			{ key: 'subtle', name: __( 'Subtle' ), icon: icons.accord03 },
 			{ key: 'bottom', name: __( 'Bottom Border' ), icon: icons.accord04 },
 		];
+		const previewPaddingType = ( undefined !== contentPaddingType ? contentPaddingType : 'px' );
+		const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
+		const paddingMax = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 12 : 200 );
+		const paddingStep = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0.1 : 1 );
+		const previewContentPaddingTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== contentPadding && undefined !== contentPadding[0] ? contentPadding[0] : '' ), ( undefined !== contentTabletPadding &&  undefined !== contentTabletPadding[0] ? contentTabletPadding[0] : '' ), ( undefined !== contentMobilePadding &&  undefined !== contentMobilePadding[0] ? contentMobilePadding[0] : '' ) );
+		const previewContentPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== contentPadding && undefined !== contentPadding[1] ? contentPadding[1] : '' ), ( undefined !== contentTabletPadding &&  undefined !== contentTabletPadding[1] ? contentTabletPadding[1] : '' ), ( undefined !== contentMobilePadding &&  undefined !== contentMobilePadding[1] ? contentMobilePadding[1] : '' ) );
+		const previewContentPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== contentPadding && undefined !== contentPadding[2] ? contentPadding[2] : '' ), ( undefined !== contentTabletPadding &&  undefined !== contentTabletPadding[2] ? contentTabletPadding[2] : '' ), ( undefined !== contentMobilePadding &&  undefined !== contentMobilePadding[2] ? contentMobilePadding[2] : '' ) );
+		const previewContentPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== contentPadding && undefined !== contentPadding[3] ? contentPadding[3] : '' ), ( undefined !== contentTabletPadding &&  undefined !== contentTabletPadding[3] ? contentTabletPadding[3] : '' ), ( undefined !== contentMobilePadding &&  undefined !== contentMobilePadding[3] ? contentMobilePadding[3] : '' ) );
+		const previewTitlePaddingType = ( undefined !== titleStyles[ 0 ].paddingType && '' !== titleStyles[ 0 ].paddingType ? titleStyles[ 0 ].paddingType : 'px' );
+		const titlePaddingMin = ( previewTitlePaddingType === 'em' || previewTitlePaddingType === 'rem' ? 0 : 0 );
+		const titlePaddingMax = ( previewTitlePaddingType === 'em' || previewTitlePaddingType === 'rem' ? 12 : 200 );
+		const titlePaddingStep = ( previewTitlePaddingType === 'em' || previewTitlePaddingType === 'rem' ? 0.1 : 1 );
+		const previewTitlePaddingTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 0 ] ? titleStyles[ 0 ].padding[ 0 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 0 ] ? titleStyles[ 0 ].paddingTablet[ 0 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 0 ] ? titleStyles[ 0 ].paddingMobile[ 0 ] : '' ) );
+		const previewTitlePaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 1 ] ? titleStyles[ 0 ].padding[ 1 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 1 ] ? titleStyles[ 0 ].paddingTablet[ 1 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 1 ] ? titleStyles[ 0 ].paddingMobile[ 1 ] : '' ) );
+		const previewTitlePaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 2 ] ? titleStyles[ 0 ].padding[ 2 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 2 ] ? titleStyles[ 0 ].paddingTablet[ 2 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 2 ] ? titleStyles[ 0 ].paddingMobile[ 2 ] : '' ) );
+		const previewTitlePaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleStyles[ 0 ].padding && undefined !== titleStyles[ 0 ].padding[ 3 ] ? titleStyles[ 0 ].padding[ 3 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingTablet && undefined !== titleStyles[ 0 ].paddingTablet[ 3 ] ? titleStyles[ 0 ].paddingTablet[ 3 ] : '' ), ( undefined !== titleStyles[ 0 ].paddingMobile && undefined !== titleStyles[ 0 ].paddingMobile[ 3 ] ? titleStyles[ 0 ].paddingMobile[ 3 ] : '' ) );
 		const setInitalLayout = ( key ) => {
 			if ( 'skip' === key ) {
 			} else if ( 'base' === key ) {
@@ -483,7 +515,10 @@ class KadenceAccordionComponent extends Component {
 					color: ${ KadenceColorOutput( titleStyles[ 0 ].color ) };
 					border-color: ${ KadenceColorOutput( titleStyles[ 0 ].border[ 0 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].border[ 1 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].border[ 2 ] ) } ${ KadenceColorOutput( titleStyles[ 0 ].border[ 3 ] ) };
 					background-color: ${ KadenceColorOutput( titleStyles[ 0 ].background ) };
-					padding:${ titleStyles[ 0 ].padding[ 0 ] }px ${ titleStyles[ 0 ].padding[ 1 ] }px ${ titleStyles[ 0 ].padding[ 2 ] }px ${ titleStyles[ 0 ].padding[ 3 ] }px;
+					${ '' !== previewTitlePaddingTop ? `padding-top:${ previewTitlePaddingTop + previewTitlePaddingType };` : '' }
+					${ '' !== previewTitlePaddingRight ? `padding-right:${ previewTitlePaddingRight + previewTitlePaddingType };` : '' }
+					${ '' !== previewTitlePaddingBottom ? `padding-bottom:${ previewTitlePaddingBottom + previewTitlePaddingType };` : '' }
+					${ '' !== previewTitlePaddingLeft ? `padding-left:${ previewTitlePaddingLeft + previewTitlePaddingType };` : '' }
 					margin-top:${ ( titleStyles[ 0 ].marginTop > 32 ? titleStyles[ 0 ].marginTop : 0 ) }px;
 					border-width:${ titleStyles[ 0 ].borderWidth[ 0 ] }px ${ titleStyles[ 0 ].borderWidth[ 1 ] }px ${ titleStyles[ 0 ].borderWidth[ 2 ] }px ${ titleStyles[ 0 ].borderWidth[ 3 ] }px;
 					border-radius:${ titleStyles[ 0 ].borderRadius[ 0 ] }px ${ titleStyles[ 0 ].borderRadius[ 1 ] }px ${ titleStyles[ 0 ].borderRadius[ 2 ] }px ${ titleStyles[ 0 ].borderRadius[ 3 ] }px;
@@ -503,7 +538,10 @@ class KadenceAccordionComponent extends Component {
 					height:${ titleStyles[ 0 ].size[ 0 ] }${ titleStyles[ 0 ].sizeType };
 				}
 				.kt-accordion-${ uniqueID } .kt-accordion-panel-inner {
-					padding:${ contentPadding[ 0 ] }px ${ contentPadding[ 1 ] }px ${ contentPadding[ 2 ] }px ${ contentPadding[ 3 ] }px;
+					${ '' !== previewContentPaddingTop ? `padding-top:${ previewContentPaddingTop + previewPaddingType };` : '' }
+					${ '' !== previewContentPaddingRight ? `padding-right:${ previewContentPaddingRight + previewPaddingType };` : '' }
+					${ '' !== previewContentPaddingBottom ? `padding-bottom:${ previewContentPaddingBottom + previewPaddingType };` : '' }
+					${ '' !== previewContentPaddingLeft ? `padding-left:${ previewContentPaddingLeft + previewPaddingType };` : '' }
 					background-color: ${ KadenceColorOutput( contentBgColor ) };
 					border-color: ${ KadenceColorOutput( contentBorderColor ) };
 					border-width:${ contentBorder[ 0 ] }px ${ contentBorder[ 1 ] }px ${ contentBorder[ 2 ] }px ${ contentBorder[ 3 ] }px;
@@ -710,7 +748,7 @@ class KadenceAccordionComponent extends Component {
 								title={ __( 'Pane Title Spacing', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<MeasurementControls
+								{/* <MeasurementControls
 									label={ __( 'Pane Title Padding (px)', 'kadence-blocks' ) }
 									measurement={ titleStyles[ 0 ].padding }
 									control={ titlePaddingControl }
@@ -719,6 +757,36 @@ class KadenceAccordionComponent extends Component {
 									min={ 0 }
 									max={ 40 }
 									step={ 1 }
+								/> */}
+								<ResponsiveMeasuremenuControls
+									label={ __( 'Pane Title Padding', 'kadence-blocks' ) }
+									control={ titlePaddingControl }
+									tabletControl={ titlePaddingControl }
+									mobileControl={ titlePaddingControl }
+									value={ titleStyles[ 0 ].padding }
+									tabletValue={ undefined !== titleStyles[ 0 ].paddingTablet ? titleStyles[ 0 ].paddingTablet : ['','','',''] }
+									mobileValue={ undefined !== titleStyles[ 0 ].paddingMobile ? titleStyles[ 0 ].paddingMobile : ['','','',''] }
+									onChange={ ( value ) => {
+										saveTitleStyles( { padding: value } );
+									} }
+									onChangeTablet={ ( value ) => {
+										saveTitleStyles( { paddingTablet: value } );
+									} }
+									onChangeMobile={ ( value ) => {
+										saveTitleStyles( { paddingMobile: value } );
+									} }
+									onChangeControl={ ( value ) => this.setState( { titlePaddingControl: value } ) }
+									onChangeTabletControl={ ( value ) => this.setState( { titlePaddingControl: value } ) }
+									onChangeMobileControl={ ( value ) => this.setState( { titlePaddingControl: value } ) }
+									allowEmpty={ true }
+									min={ titlePaddingMin }
+									max={ titlePaddingMax }
+									step={ titlePaddingStep }
+									unit={ undefined !== titleStyles[ 0 ].paddingType ? titleStyles[ 0 ].paddingType : 'px' }
+									units={ [ 'px', 'em', 'rem', '%' ] }
+									onUnit={ ( value ) => {
+										saveTitleStyles( { paddingType: value } );
+									} }
 								/>
 								<RangeControl
 									label={ __( 'Pane Spacer Between', 'kadence-blocks' ) }
@@ -811,15 +879,33 @@ class KadenceAccordionComponent extends Component {
 								title={ __( 'Inner Content Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<MeasurementControls
-									label={ __( 'Inner Content Padding (px)', 'kadence-blocks' ) }
-									measurement={ contentPadding }
+								<ResponsiveMeasuremenuControls
+									label={ __( 'Inner Content Padding', 'kadence-blocks' ) }
 									control={ contentPaddingControl }
-									onChange={ ( value ) => setAttributes( { contentPadding: value } ) }
-									onControl={ ( value ) => this.setState( { contentPaddingControl: value } ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
+									tabletControl={ contentPaddingControl }
+									mobileControl={ contentPaddingControl }
+									value={ contentPadding }
+									tabletValue={ contentTabletPadding }
+									mobileValue={ contentMobilePadding }
+									onChange={ ( value ) => {
+										setAttributes( { contentPadding: value } );
+									} }
+									onChangeTablet={ ( value ) => {
+										setAttributes( { contentTabletPadding: value } );
+									} }
+									onChangeMobile={ ( value ) => {
+										setAttributes( { contentMobilePadding: value } );
+									} }
+									onChangeControl={ ( value ) => this.setState( { contentPaddingControl: value } ) }
+									onChangeTabletControl={ ( value ) => this.setState( { contentPaddingControl: value } ) }
+									onChangeMobileControl={ ( value ) => this.setState( { contentPaddingControl: value } ) }
+									allowEmpty={ true }
+									min={ paddingMin }
+									max={ paddingMax }
+									step={ paddingStep }
+									unit={ contentPaddingType }
+									units={ [ 'px', 'em', 'rem', '%' ] }
+									onUnit={ ( value ) => setAttributes( { contentPaddingType: value } ) }
 								/>
 								<AdvancedPopColorControl
 									label={ __( 'Inner Content Background', 'kadence-blocks' ) }
@@ -1002,12 +1088,16 @@ export default compose( [
 	withSelect( ( select, ownProps ) => {
 		const { clientId } = ownProps;
 		const {
+			__experimentalGetPreviewDeviceType,
+		} = select( 'core/edit-post' );
+		const {
 			getBlock,
 		} = select( 'core/block-editor' );
 		const block = getBlock( clientId );
 		return {
 			accordionBlock: block,
 			realPaneCount: block.innerBlocks.length,
+			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {
