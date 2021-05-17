@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.7.2
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.0.5 =
+Release Date: May 17th, 2021
+* Fix: Issue with design library not showing active.
 
 = 2.0.4 =
 Release Date: May 15th, 2021

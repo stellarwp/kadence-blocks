@@ -805,9 +805,9 @@ function kadence_blocks_get_pro_license_data() {
 		}
 	} else {
 		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', false ) ) {
-			$pro_data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+			$data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
 		} else {
-			$pro_data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
+			$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
 		}
 	}
 	return $data;
