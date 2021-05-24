@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.7.2
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.0.6 =
+Release Date: May 24th, 2021
+* Update: Add VW to heading font size units.
+* Update: Better support for themes with variable color palettes.
+* Fix: Multisite issue.
+* Fix: Issue with color palette letting you create colors when custom colors are disabled.
+* Fix: Issue with iconbox mobile icon size.
+* Fix: Tweak some tab accessibility code.
 
 = 2.0.5 =
 Release Date: May 17th, 2021

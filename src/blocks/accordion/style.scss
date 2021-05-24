@@ -25,6 +25,10 @@
 	width: 100%;
 	box-shadow: none;
     text-shadow: none;
+	.kt-blocks-accordion-title {
+		word-wrap: break-word;
+		white-space: normal;
+	}
 }
 .kt-blocks-accordion-header:focus {
 	box-shadow: none;

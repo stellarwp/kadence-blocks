@@ -7,7 +7,7 @@
 import ResizableBox from 're-resizable';
 import SvgPattern from './svg-pattern';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
 /**
  * Import Css
  */

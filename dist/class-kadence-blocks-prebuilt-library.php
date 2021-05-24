@@ -263,7 +263,11 @@ class Kadence_Blocks_Prebuilt_Library {
 
 		// If the folder doesn't exist, create it.
 		if ( ! file_exists( $this->get_block_library_folder() ) ) {
-			$this->get_filesystem()->mkdir( $this->get_block_library_folder(), FS_CHMOD_DIR );
+			$chmod_dir = ( 0755 & ~ umask() );
+			if ( defined( 'FS_CHMOD_DIR' ) ) {
+				$chmod_dir = FS_CHMOD_DIR;
+			}
+			$this->get_filesystem()->mkdir( $this->get_block_library_folder(), $chmod_dir );
 		}
 
 		// If the file doesn't exist, create it. Return false if it can not be created.

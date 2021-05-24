@@ -597,7 +597,7 @@ class Kadence_Blocks_CSS {
 		}
 		if ( ! is_array( $color ) && strpos( $color, 'palette' ) === 0 ) {
 			$color = 'var(--global-' . $color . ')';
-		} elseif ( isset( $opacity ) && is_numeric( $opacity ) ) {
+		} elseif ( isset( $opacity ) && is_numeric( $opacity ) && 1 !== (int) $opacity ) {
 			$color = kadence_blocks_hex2rgba( $color, $opacity );
 		}
 		return $color;

@@ -3,7 +3,7 @@
  */
 jQuery( document ).ready( function( $ ) {
 	$( '.kt-tabs-wrap' ).each( function( a ) {
-		var ktStartTab = $( this ).find( '> .kt-tabs-title-list .kt-tab-title-active' ).attr( 'data-tab' );
+		var ktStartTab = $( this ).find( '> .kt-tabs-title-list .kt-tab-title-active a' ).attr( 'data-tab' );
 		var ktTabsList = $( this ).find( '> .kt-tabs-title-list' ).attr( {
 			role: 'tablist',
 		} );

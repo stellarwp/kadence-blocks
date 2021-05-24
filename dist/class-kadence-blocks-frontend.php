@@ -3034,13 +3034,13 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $media_icon['tabletSize'] ) && is_numeric( $media_icon['tabletSize'] ) ) {
 			$css->start_media_query( $media_query['tablet'] );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
-			$css->add_property( 'font-size:' . $media_icon['tabletSize'] . 'px' );
+			$css->add_property( 'font-size', $media_icon['tabletSize'] . 'px' );
 			$css->stop_media_query();
 		}
 		if ( isset( $media_icon['mobileSize'] ) && is_numeric( $media_icon['mobileSize'] ) ) {
 			$css->start_media_query( $media_query['mobile'] );
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
-			$css->add_property( 'font-size:' . $media_icon['mobileSize'] . 'px' );
+			$css->add_property( 'font-size', $media_icon['mobileSize'] . 'px' );
 			$css->stop_media_query();
 		}
 		if ( ( isset( $media_number['family'] ) && ! empty( $media_number['family'] ) ) || ( isset( $media_number['style'] ) && ! empty( $media_number['style'] ) ) || ( isset( $media_number['weight'] ) && ! empty( $media_number['weight'] ) ) ) {

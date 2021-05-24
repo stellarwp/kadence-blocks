@@ -10,16 +10,13 @@ import IconRender from '../../icon-render';
 import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../box-shadow-control';
 import WebfontLoader from '../../fontloader';
-import StepControl from '../../step-control';
 import URLInputInline from '../../inline-link-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
-import MeasurementControls from '../../measurement-control';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import flow from 'lodash/flow';
 import filter from 'lodash/filter';
-import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 import URLInputControl from '../../components/common/link-control';
@@ -1661,66 +1658,6 @@ class KadenceAdvancedButton extends Component {
 										title={ __( 'Button Count', 'kadence-blocks' ) }
 										initialOpen={ true }
 									>
-										{/* <StepControl
-											label={ __( 'Number of Buttons', 'kadence-blocks' ) }
-											value={ btnCount }
-											onChange={ ( newcount ) => {
-												const newbtns = btns;
-												if ( newbtns.length < newcount ) {
-													const amount = Math.abs( newcount - newbtns.length );
-													{ times( amount, n => {
-														newbtns.push( {
-															text: newbtns[ 0 ].text,
-															link: newbtns[ 0 ].link,
-															target: newbtns[ 0 ].target,
-															size: newbtns[ 0 ].size,
-															paddingBT: newbtns[ 0 ].paddingBT,
-															paddingLR: newbtns[ 0 ].paddingLR,
-															color: newbtns[ 0 ].color,
-															background: newbtns[ 0 ].background,
-															border: newbtns[ 0 ].border,
-															backgroundOpacity: newbtns[ 0 ].backgroundOpacity,
-															borderOpacity: newbtns[ 0 ].borderOpacity,
-															borderRadius: newbtns[ 0 ].borderRadius,
-															borderWidth: newbtns[ 0 ].borderWidth,
-															colorHover: newbtns[ 0 ].colorHover,
-															backgroundHover: newbtns[ 0 ].backgroundHover,
-															borderHover: newbtns[ 0 ].borderHover,
-															backgroundHoverOpacity: newbtns[ 0 ].backgroundHoverOpacity,
-															borderHoverOpacity: newbtns[ 0 ].borderHoverOpacity,
-															icon: newbtns[ 0 ].icon,
-															iconSide: newbtns[ 0 ].iconSide,
-															iconHover: newbtns[ 0 ].iconHover,
-															cssClass: ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
-															noFollow: ( newbtns[ 0 ].noFollow ? newbtns[ 0 ].noFollow : false ),
-															gap: ( newbtns[ 0 ].gap ? newbtns[ 0 ].gap : 5 ),
-															responsiveSize: ( newbtns[ 0 ].responsiveSize ? newbtns[ 0 ].responsiveSize : [ '', '' ] ),
-															gradient: ( newbtns[ 0 ].gradient ? newbtns[ 0 ].gradient : [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ] ),
-															gradientHover: ( newbtns[ 0 ].gradientHover ? newbtns[ 0 ].gradientHover : [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ] ),
-															btnStyle: ( newbtns[ 0 ].btnStyle ? newbtns[ 0 ].btnStyle : 'basic' ),
-															btnSize: ( newbtns[ 0 ].btnSize ? newbtns[ 0 ].btnSize : 'standard' ),
-															backgroundType: ( newbtns[ 0 ].backgroundType ? newbtns[ 0 ].backgroundType : 'solid' ),
-															backgroundHoverType: ( newbtns[ 0 ].backgroundHoverType ? newbtns[ 0 ].backgroundHoverType : 'solid' ),
-															width: ( newbtns[ 0 ].width ? newbtns[ 0 ].width : [ '', '', '' ] ),
-															responsivePaddingBT: ( newbtns[ 0 ].responsivePaddingBT ? newbtns[ 0 ].responsivePaddingBT : [ '', '' ] ),
-															responsivePaddingLR: ( newbtns[ 0 ].responsivePaddingLR ? newbtns[ 0 ].responsivePaddingLR : [ '', '' ] ),
-															boxShadow: ( newbtns[ 0 ].boxShadow ? newbtns[ 0 ].boxShadow : [ false, '#000000', 0.2, 1, 1, 2, 0, false ] ),
-															boxShadowHover: ( newbtns[ 0 ].boxShadowHover ? newbtns[ 0 ].boxShadowHover : [ false, '#000000', 0.4, 2, 2, 3, 0, false ] ),
-															sponsored: ( newbtns[ 0 ].sponsored ? newbtns[ 0 ].sponsored : false ),
-															download: false,
-															tabletGap: ( newbtns[ 0 ].tabletGap ? newbtns[ 0 ].tabletGap : '' ),
-															mobileGap: ( newbtns[ 0 ].mobileGap ? newbtns[ 0 ].mobileGap : '' ),
-														} );
-													} ); }
-													setAttributes( { btns: newbtns } );
-													this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
-												}
-												setAttributes( { btnCount: newcount } );
-											} }
-											min={ 1 }
-											max={ 5 }
-											step={ 1 }
-										/> */}
 										<PanelRow>
 											<Button
 												className="kb-add-field"

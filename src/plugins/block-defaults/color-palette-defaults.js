@@ -176,7 +176,7 @@ class KadenceColorDefault extends Component {
 								);
 							} )
 						) }
-						{ undefined !== kadenceColors.palette && undefined !== kadenceColors.palette[ colorRemove ] && (
+						{ undefined !== kadenceColors.palette && undefined !== kadenceColors.palette[ colorRemove ] && ! this.props.disableCustomColors && (
 							<div className="kt-colors-remove-last">
 								<Tooltip text={ __( 'Remove Last Color' ) } >
 									<Button
@@ -201,24 +201,23 @@ class KadenceColorDefault extends Component {
 						) }
 					</div>
 				) }
-				<div className="kt-colors-add-new">
-					<Button
-						type="button"
-						className={ this.state.isSaving ? 'kb-add-btn-is-saving' : 'kb-add-btn-is-active' }
-						isPrimary
-						disabled={ this.state.isSaving }
-						onClick={ () => {
-							if ( this.state.isSaving ) {
-								return;
-							}
-							if ( undefined === kadenceColors.palette ) {
-								kadenceColors.palette = [];
-							}
-							let id = uniqueId();
-							if ( kbColorUniqueIDs.includes( id ) ) {
-								id = kadenceColors.palette.length.toString();
+				{ ! this.props.disableCustomColors && (
+					<div className="kt-colors-add-new">
+						<Button
+							type="button"
+							className={ this.state.isSaving ? 'kb-add-btn-is-saving' : 'kb-add-btn-is-active' }
+							isPrimary
+							disabled={ this.state.isSaving }
+							onClick={ () => {
+								if ( this.state.isSaving ) {
+									return;
+								}
+								if ( undefined === kadenceColors.palette ) {
+									kadenceColors.palette = [];
+								}
+								let id = uniqueId();
 								if ( kbColorUniqueIDs.includes( id ) ) {
-									id = uniqueId( id );
+									id = kadenceColors.palette.length.toString();
 									if ( kbColorUniqueIDs.includes( id ) ) {
 										id = uniqueId( id );
 										if ( kbColorUniqueIDs.includes( id ) ) {
@@ -227,33 +226,36 @@ class KadenceColorDefault extends Component {
 												id = uniqueId( id );
 												if ( kbColorUniqueIDs.includes( id ) ) {
 													id = uniqueId( id );
+													if ( kbColorUniqueIDs.includes( id ) ) {
+														id = uniqueId( id );
+													}
 												}
 											}
 										}
 									}
 								}
-							}
-							kbColorUniqueIDs.push( id );
-							kadenceColors.palette.push( {
-								color: '#888888',
-								name: __( 'Color' ) + ' ' + ( id ),
-								slug: 'kb-palette-' + id,
-							} );
-							colors.push( {
-								color: '#888888',
-								name: __( 'Color' ) + ' ' + ( id ),
-								slug: 'kb-palette-' + id,
-							} );
-							this.setState( { kadenceColors: kadenceColors } );
-							this.setState( { colors: colors } );
-							this.saveConfig();
-						} }
-						aria-label={ __( 'Add Color' ) }
-					>
-						{ __( 'Add Color' ) }
-					</Button>
-				</div>
-				{ undefined !== kadenceColors.palette && undefined !== kadenceColors.palette[ 0 ] && (
+								kbColorUniqueIDs.push( id );
+								kadenceColors.palette.push( {
+									color: '#888888',
+									name: __( 'Color' ) + ' ' + ( id ),
+									slug: 'kb-palette-' + id,
+								} );
+								colors.push( {
+									color: '#888888',
+									name: __( 'Color' ) + ' ' + ( id ),
+									slug: 'kb-palette-' + id,
+								} );
+								this.setState( { kadenceColors: kadenceColors } );
+								this.setState( { colors: colors } );
+								this.saveConfig();
+							} }
+							aria-label={ __( 'Add Color' ) }
+						>
+							{ __( 'Add Color' ) }
+						</Button>
+					</div>
+				) }
+				{ undefined !== kadenceColors.palette && undefined !== kadenceColors.palette[ 0 ] && ! this.props.disableCustomColors && (
 					<Fragment>
 						<ToggleControl
 							label={ __( 'Use only Kadence Blocks Colors?' ) }
@@ -284,11 +286,12 @@ class KadenceColorDefault extends Component {
 	}
 }
 export default compose( [
-	withSelect( ( select ) => {
+	withSelect( ( select, ownProps ) => {
 		const { getSettings } = select( 'core/block-editor' );
 		const settings = getSettings();
 		return {
 			baseColors: get( settings, [ 'colors' ], [] ),
+			disableCustomColors: settings.disableCustomColors !== undefined ? settings.disableCustomColors : false,
 		};
 	} ),
 	withDispatch( ( dispatch ) => {

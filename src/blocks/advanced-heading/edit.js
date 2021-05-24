@@ -481,7 +481,7 @@ class KadenceAdvancedHeading extends Component {
 										step={ fontStep }
 										unit={ sizeType }
 										onUnit={ ( value ) => setAttributes( { sizeType: value } ) }
-										units={ [ 'px', 'em', 'rem' ] }
+										units={ [ 'px', 'em', 'rem', 'vw' ] }
 									/>
 									<ResponsiveRangeControls
 										label={ __( 'Line Height', 'kadence-blocks' ) }

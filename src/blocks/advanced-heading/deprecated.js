@@ -5,7 +5,7 @@
  */
 import classnames from 'classnames';
 
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/deprecated-kadence-color-output';
 
 const {
 	Fragment,

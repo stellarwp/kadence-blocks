@@ -17,7 +17,6 @@ import classnames from 'classnames';
 // import './editor.scss';
 import edit from './edit';
 import backwardCompatibility from './deprecated';
-import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Internal block libraries
  */

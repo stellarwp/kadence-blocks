@@ -9,7 +9,7 @@ import hexToRGBA from './hex-to-rgba';
 export default function KadenceColorOutput( string, opacity = null ) {
 	if ( string && string.startsWith( 'palette' ) ) {
 		string = 'var(--global-' + string + ')';
-	} else if ( opacity !== null && ! isNaN( opacity ) && undefined !== string && '' !== string ) {
+	} else if ( opacity !== null && ! isNaN( opacity ) && 1 !== Number( opacity ) && undefined !== string && '' !== string ) {
 		string = hexToRGBA( string, opacity );
 	}
 	return string;

@@ -73,7 +73,9 @@ class AdvancedPopColorControl extends Component {
 			currentColorString = this.props.colorDefault;
 		}
 		if ( this.props.onOpacityChange && ! this.state.isPalette ) {
-			currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
+			if ( Number( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) !== 1 ) {
+				currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
+			}
 		}
 		return (
 			<div className="kt-color-popover-container components-base-control new-kadence-advanced-colors">

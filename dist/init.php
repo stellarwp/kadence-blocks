@@ -143,6 +143,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_assets_variables' );
 
+
 /**
  * Get the asset file produced by wp scripts.
  *
@@ -804,7 +805,7 @@ function kadence_blocks_get_pro_license_data() {
 			$data['api_email'] = $pro_data['activation_email'];
 		}
 	} else {
-		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', false ) ) {
+		if ( is_multisite() && ! apply_filters( 'kadence_activation_individual_multisites', true ) ) {
 			$data = get_site_option( 'kt_api_manager_kadence_gutenberg_pro_data' );
 		} else {
 			$data = get_option( 'kt_api_manager_kadence_gutenberg_pro_data' );

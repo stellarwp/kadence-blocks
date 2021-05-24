@@ -42,16 +42,16 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/infobox', {
-	title: __( 'Info Box' ),
-	description: __( 'Create beautiful information boxes using icons or images.' ),
+	title: __( 'Info Box', 'kadence-blocks' ),
+	description: __( 'Create beautiful information boxes using icons or images.', 'kadence-blocks' ),
 	icon: {
 		src: icons.infobox,
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'Info' ),
-		__( 'Icon' ),
-		__( 'KB' ),
+		__( 'Info', 'kadence-blocks' ),
+		__( 'Icon', 'kadence-blocks' ),
+		'KB',
 	],
 	attributes,
 	edit,
