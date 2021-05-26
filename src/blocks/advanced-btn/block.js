@@ -10,7 +10,7 @@ import times from 'lodash/times';
 /**
  * Internal libraries
  */
-import IconRender from '../../icon-render';
+import IconRender from '../../components/icons/icon-render';
 /**
  * Import Icons
  */
@@ -26,7 +26,7 @@ import edit from './edit';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
 const {
 	RichText,

@@ -61,7 +61,7 @@ const { compose } = wp.compose;
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+ import { __ } from '@wordpress/i18n';
 
 const ALLOWED_BLOCKS = [ 'kadence/pane' ];
 /**

@@ -3,7 +3,7 @@
  *
  */
 import flow from 'lodash/flow';
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const {
 	Component,
 	Fragment,

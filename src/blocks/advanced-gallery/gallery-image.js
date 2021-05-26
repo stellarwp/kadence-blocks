@@ -8,7 +8,7 @@ import classnames from 'classnames';
  */
 const { Component, Fragment } = wp.element;
 const { IconButton, Spinner, ToggleControl } = wp.components;
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const { BACKSPACE, DELETE } = wp.keycodes;
 const { withSelect } = wp.data;
 const { RichText, URLPopover, URLInput } = wp.blockEditor;

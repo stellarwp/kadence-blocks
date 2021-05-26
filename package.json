@@ -32,8 +32,8 @@
     "react-transition-group": "^2.4.0"
   },
   "devDependencies": {
-    "@wordpress/i18n": "3.6.0",
-    "@wordpress/scripts": "^14.0.1",
+    "@wordpress/i18n": "4.0.0",
+    "@wordpress/scripts": "^16.0.0",
     "install": "^0.13.0"
   }
 }

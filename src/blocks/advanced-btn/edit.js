@@ -5,8 +5,8 @@
  */
 import times from 'lodash/times';
 import map from 'lodash/map';
-import IconControl from '../../icon-control';
-import IconRender from '../../icon-render';
+import IconControl from '../../components/icons/icon-control';
+import IconRender from '../../components/icons/icon-render';
 import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../box-shadow-control';
 import WebfontLoader from '../../fontloader';

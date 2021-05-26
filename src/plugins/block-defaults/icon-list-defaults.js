@@ -2,7 +2,7 @@ import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
 import map from 'lodash/map';
-import IconControl from '../../icon-control';
+import IconControl from '../../components/icons/icon-control';
 
 /**
  * Internal block libraries

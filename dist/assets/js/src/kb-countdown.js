@@ -43,7 +43,7 @@
 					window.kadenceCountdown.timers[ id ].evergreen = '';
 					window.kadenceCountdown.cache[ id ].request = new XMLHttpRequest();
 					window.kadenceCountdown.cache[ id ].request.open( 'POST', kadence_blocks_countdown.ajax_url, true );
-					window.kadenceCountdown.cache[ id ].request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded;' );
+					window.kadenceCountdown.cache[ id ].request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 					window.kadenceCountdown.cache[ id ].request.onload = function () {
 						if ( this.status >= 200 && this.status < 400 ) {
 							// If successful
@@ -91,7 +91,7 @@
 					total = Math.floor( newDate.getTime() - currentTimeStamp.getTime() );
 					var request = new XMLHttpRequest();
 					request.open( 'POST', kadence_blocks_countdown.ajax_url, true );
-					request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded;' );
+					request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 					request.onload = function () {
 						if ( this.status >= 200 && this.status < 400 ) {
 							// If successful

@@ -1,7 +1,7 @@
 /**
  * BLOCK: Kadence Tabs Attributes
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const attributes = {
 	uniqueID: {
 		type: 'string',

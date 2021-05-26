@@ -243,8 +243,13 @@ class SingleTemplateLibrary extends Component {
 										key={ key }
 										className="kt-import-btn"
 										isSmall
-										// translators: %s: Prebuilt Name
-										aria-label={ sprintf( __( 'Add %s', 'kadence-blocks' ), name ) }
+										aria-label={
+											sprintf(
+												/* translators: %s is Prebuilt Name */
+												__( 'Add %s', 'kadence-blocks' ),
+												name
+											)
+										}
 										isDisabled={ undefined !== pro && pro && 'true' !== kadence_blocks_params.pro }
 										onClick={ () => ! locked ? control.onInsertContent( content ) : '' }
 									>

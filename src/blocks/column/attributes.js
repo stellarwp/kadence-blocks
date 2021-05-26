@@ -216,6 +216,9 @@ const attributes = {
 	bgColorClass: {
 		type: 'string',
 		default: '',
+	},
+	templateLock: {
+		type: 'string',
 	}
 };
 export default attributes;

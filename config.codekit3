@@ -1148,6 +1148,14 @@
       "oAP" : "\/languages\/kadence-blocks-fi.po",
       "oF" : 0
     },
+    "\/languages\/kadence-blocks.pot" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/languages\/kadence-blocks.pot",
+      "oF" : 0
+    },
     "\/node_modules" : {
       "ft" : 65536,
       "oA" : 2,
@@ -6164,6 +6172,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/blocks\/testimonials\/deprecated.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/testimonials\/deprecated-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/blocks\/testimonials\/edit.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -6367,6 +6386,39 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/components\/common\/parse-json-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/icons\/genicon.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/icons\/genicon-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/icons\/icon-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/icons\/icon-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/icons\/icon-render.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/icons\/icon-render-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0

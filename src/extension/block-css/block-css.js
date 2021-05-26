@@ -22,7 +22,7 @@ import {
 	applyFilters,
 	addFilter,
 } from '@wordpress/hooks';
-import { __ } from '@wordpress/i18n';
+import { __, sprintf } from '@wordpress/i18n';
 
  /**
  * Add Block CSS attributes
@@ -92,7 +92,15 @@ addFilter( 'blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute );
 									} }
 								/>
 								<p style={ { marginBottom: 20 } } />
-								<p dangerouslySetInnerHTML={ { __html: __( 'Use %s rule to change block styles.', 'kadence-blocks' ).replace( '%s', '<code>selector</code>' ) } } />
+								
+								{ /* translators: The %s is for selector code */ }
+								<p dangerouslySetInnerHTML={ {
+									__html: sprintf(
+										/* translators: The %s is for selector code */
+										__( 'Use %s rule to change block styles.', 'kadence-blocks' ),
+										'<code>selector</code>'
+									)
+								 } } />
 							</Fragment>
 						</PanelBody>
 					</InspectorControls>

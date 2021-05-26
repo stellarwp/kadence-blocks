@@ -16,7 +16,7 @@ import classnames from 'classnames';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const { registerBlockType, createBlock } = wp.blocks;
 const { Fragment } = wp.element;
 const {

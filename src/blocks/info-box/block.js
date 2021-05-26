@@ -6,7 +6,7 @@
  * Import Icons
  */
 import icons from '../../icons';
-import IconRender from '../../icon-render';
+import IconRender from '../../components/icons/icon-render';
 /**
  * Import attributes
  */

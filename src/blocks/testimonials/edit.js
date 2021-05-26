@@ -13,20 +13,23 @@ import './editor.scss';
  * Import Icons
  */
 import icons from '../../icons';
+/**
+ * Import External
+ */
+import Slider from 'react-slick';
 import map from 'lodash/map';
 import times from 'lodash/times';
-import TypographyControls from '../../typography-control';
+/**
+ * Import Components
+ */
+import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../fontloader';
-import hexToRGBA from '../../hex-to-rgba';
-import GenIcon from '../../genicon';
-import FaIco from '../../faicons';
-import Slider from 'react-slick';
-import IconControl from '../../icon-control';
-import IconRender from '../../icon-render';
+import IconControl from '../../components/icons/icon-control';
+import IconRender from '../../components/icons/icon-render';
 import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 /**
@@ -48,7 +51,6 @@ const { withSelect } = wp.data;
 const { compose } = wp.compose;
 const {
 	Button,
-	IconButton,
 	ButtonGroup,
 	Dashicon,
 	PanelBody,
@@ -62,6 +64,7 @@ const {
 
 import {
 	closeSmall,
+	image,
 } from '@wordpress/icons';
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -261,26 +264,26 @@ class KadenceTestimonials extends Component {
 			}
 		};
 		const styleOptions = [
-			{ key: 'basic', name: __( 'Basic' ), icon: icons.testimonialBasic },
-			{ key: 'card', name: __( 'Card' ), icon: icons.testimonialCard },
-			{ key: 'bubble', name: __( 'Bubble' ), icon: icons.testimonialBubble },
-			{ key: 'inlineimage', name: __( 'Image In Content' ), icon: icons.testimonialInline },
+			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: icons.testimonialBasic },
+			{ key: 'card', name: __( 'Card', 'kadence-blocks' ), icon: icons.testimonialCard },
+			{ key: 'bubble', name: __( 'Bubble', 'kadence-blocks' ), icon: icons.testimonialBubble },
+			{ key: 'inlineimage', name: __( 'Image In Content', 'kadence-blocks' ), icon: icons.testimonialInline },
 		];
 		const startlayoutOptions = [
-			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
-			{ key: 'basic', name: __( 'Basic' ), icon: icons.testimonialBasic },
-			{ key: 'card', name: __( 'Card' ), icon: icons.testimonialCard },
-			{ key: 'bubble', name: __( 'Bubble' ), icon: icons.testimonialBubble },
-			{ key: 'inlineimage', name: __( 'Image In Content' ), icon: icons.testimonialInline },
+			{ key: 'skip', name: __( 'Skip', 'kadence-blocks' ), icon: __( 'Skip' ) },
+			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: icons.testimonialBasic },
+			{ key: 'card', name: __( 'Card', 'kadence-blocks' ), icon: icons.testimonialCard },
+			{ key: 'bubble', name: __( 'Bubble', 'kadence-blocks' ), icon: icons.testimonialBubble },
+			{ key: 'inlineimage', name: __( 'Image In Content', 'kadence-blocks' ), icon: icons.testimonialInline },
 		];
 		const columnControlTypes = [
-			{ key: 'linked', name: __( 'Linked' ), icon: __( 'Linked' ) },
-			{ key: 'individual', name: __( 'Individual' ), icon: __( 'Individual' ) },
+			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: __( 'Linked', 'kadence-blocks' ) },
+			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: __( 'Individual', 'kadence-blocks' ) },
 		];
 		const VAlignOptions = [
-			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },
-			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
-			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
+			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: icons.aligntop },
+			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: icons.alignmiddle },
+			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: icons.alignbottom },
 		];
 		const paddingMin = ( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0 : 0 );
 		const paddingMax = ( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 12 : 200 );
@@ -294,7 +297,7 @@ class KadenceTestimonials extends Component {
 		const previewWrapperPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== wrapperPadding && undefined !== wrapperPadding[ 3 ] ? wrapperPadding[ 3 ] : '' ), ( undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[ 3 ] ? wrapperTabletPadding[ 3 ] : '' ), ( undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[ 3 ] ? wrapperMobilePadding[ 3 ] : '' ) );
 		const columnControls = (
 			<Fragment>
-				<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type' ) }>
+				<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type', 'kadence-blocks' ) }>
 					{ map( columnControlTypes, ( { name, key, icon } ) => (
 						<Tooltip text={ name }>
 							<Button
@@ -312,7 +315,7 @@ class KadenceTestimonials extends Component {
 				</ButtonGroup>
 				{ columnControl && columnControl !== 'individual' && (
 					<RangeControl
-						label={ __( 'Columns' ) }
+						label={ __( 'Columns', 'kadence-blocks' ) }
 						value={ columns[ 2 ] }
 						onChange={ onColumnChange }
 						min={ 1 }
@@ -321,44 +324,44 @@ class KadenceTestimonials extends Component {
 				) }
 				{ columnControl && columnControl === 'individual' && (
 					<Fragment>
-						<h4>{ __( 'Columns' ) }</h4>
+						<h4>{ __( 'Columns', 'kadence-blocks' ) }</h4>
 						<RangeControl
-							label={ __( 'Screen Above 1500px' ) }
+							label={ __( 'Screen Above 1500px', 'kadence-blocks' ) }
 							value={ columns[ 0 ] }
 							onChange={ ( value ) => setAttributes( { columns: [ value, columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 							min={ 1 }
 							max={ 5 }
 						/>
 						<RangeControl
-							label={ __( 'Screen 1200px - 1499px' ) }
+							label={ __( 'Screen 1200px - 1499px', 'kadence-blocks' ) }
 							value={ columns[ 1 ] }
 							onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], value, columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 							min={ 1 }
 							max={ 5 }
 						/>
 						<RangeControl
-							label={ __( 'Screen 992px - 1199px' ) }
+							label={ __( 'Screen 992px - 1199px', 'kadence-blocks' ) }
 							value={ columns[ 2 ] }
 							onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], value, columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
 							min={ 1 }
 							max={ 5 }
 						/>
 						<RangeControl
-							label={ __( 'Screen 768px - 991px' ) }
+							label={ __( 'Screen 768px - 991px', 'kadence-blocks' ) }
 							value={ columns[ 3 ] }
 							onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], value, columns[ 4 ], columns[ 5 ] ] } ) }
 							min={ 1 }
 							max={ 5 }
 						/>
 						<RangeControl
-							label={ __( 'Screen 544px - 767px' ) }
+							label={ __( 'Screen 544px - 767px', 'kadence-blocks' ) }
 							value={ columns[ 4 ] }
 							onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], value, columns[ 5 ] ] } ) }
 							min={ 1 }
 							max={ 5 }
 						/>
 						<RangeControl
-							label={ __( 'Screen Below 543px' ) }
+							label={ __( 'Screen Below 543px', 'kadence-blocks' ) }
 							value={ columns[ 5 ] }
 							onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], value ] } ) }
 							min={ 1 }
@@ -533,15 +536,15 @@ class KadenceTestimonials extends Component {
 		const renderTestimonialSettings = ( index ) => {
 			return (
 				<PanelBody
-					title={ __( 'Testimonial' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }
+					title={ __( 'Testimonial', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === itemsCount ? true : false ) }
 				>
 					<SelectControl
-						label={ __( 'Media Type' ) }
+						label={ __( 'Media Type', 'kadence-blocks' ) }
 						value={ testimonials[ index ].media }
 						options={ [
-							{ value: 'image', label: __( 'Image' ) },
-							{ value: 'icon', label: __( 'Icon' ) },
+							{ value: 'image', label: __( 'Image', 'kadence-blocks' ) },
+							{ value: 'icon', label: __( 'Icon', 'kadence-blocks' ) },
 						] }
 						onChange={ value => saveTestimonials( { media: value }, index ) }
 					/>
@@ -554,7 +557,7 @@ class KadenceTestimonials extends Component {
 								} }
 							/>
 							<RangeControl
-								label={ __( 'Icon Size' ) }
+								label={ __( 'Icon Size', 'kadence-blocks' ) }
 								value={ testimonials[ index ].isize }
 								onChange={ value => {
 									saveTestimonials( { isize: value }, index );
@@ -564,7 +567,7 @@ class KadenceTestimonials extends Component {
 							/>
 							{ testimonials[ index ].icon && 'fe' === testimonials[ index ].icon.substring( 0, 2 ) && (
 								<RangeControl
-									label={ __( 'Line Width' ) }
+									label={ __( 'Line Width', 'kadence-blocks' ) }
 									value={ testimonials[ index ].istroke }
 									onChange={ value => {
 										saveTestimonials( { istroke: value }, index );
@@ -575,7 +578,7 @@ class KadenceTestimonials extends Component {
 								/>
 							) }
 							<AdvancedPopColorControl
-								label={ __( 'Icon Color' ) }
+								label={ __( 'Icon Color', 'kadence-blocks' ) }
 								colorValue={ ( testimonials[ index ].color ? testimonials[ index ].color : '#555555' ) }
 								colorDefault={ '#555555' }
 								onColorChange={ ( value ) => saveTestimonials( { color: value }, index ) }
@@ -583,7 +586,7 @@ class KadenceTestimonials extends Component {
 						</Fragment>
 					) }
 					<RangeControl
-						label={ __( 'Rating' ) }
+						label={ __( 'Rating', 'kadence-blocks' ) }
 						value={ testimonials[ index ].rating }
 						onChange={ value => {
 							saveTestimonials( { rating: value }, index );
@@ -693,7 +696,7 @@ class KadenceTestimonials extends Component {
 										value={ ( testimonials[ index ].id ? testimonials[ index ].id : '' ) }
 										allowedTypes={ ALLOWED_MEDIA_TYPES }
 										render={ ( { open } ) => (
-											<Tooltip text={ __( 'Edit Image' ) }>
+											<Tooltip text={ __( 'Edit Image', 'kadence-blocks' ) }>
 												<Button
 													style={ {
 														backgroundImage: 'url("' + urlOutput + '")',
@@ -768,10 +771,10 @@ class KadenceTestimonials extends Component {
 											value={ '' }
 											allowedTypes={ ALLOWED_MEDIA_TYPES }
 											render={ ( { open } ) => (
-												<IconButton
+												<Button
 													className="kt-testimonial-image-placeholder"
-													label={ __( 'Add Image' ) }
-													icon="format-image"
+													aria-label={ __( 'Add Image', 'kadence-blocks' ) }
+													icon={ image }
 													style={ {
 														borderRadius: mediaStyles[ 0 ].borderRadius + 'px',
 													} }
@@ -789,7 +792,7 @@ class KadenceTestimonials extends Component {
 		};
 		const containerStyles = {
 			boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
-			borderColor: ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
+			borderColor: ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
 			background: ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
 			borderRadius: ! isNaN( containerBorderRadius ) ? containerBorderRadius + 'px' : undefined,
 			borderTopWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 0 ] ? containerBorderWidth[ 0 ] + 'px' : undefined ),
@@ -813,18 +816,18 @@ class KadenceTestimonials extends Component {
 				} ) }>
 					{ itemsCount > 1 && (
 						<div className="kt-testimonial-item__move-menu">
-							<IconButton
+							<Button
 								icon="arrow-left"
 								onClick={ 0 === index ? undefined : this.onMoveBackward( index ) }
 								className="kt-testimonial-item__move-backward"
-								label={ __( 'Move Testimonial Backward' ) }
+								aria-label={ __( 'Move Testimonial Backward', 'kadence-blocks' ) }
 								aria-disabled={ 0 === index }
 							/>
-							<IconButton
+							<Button
 								icon="arrow-right"
 								onClick={ itemsCount === ( index + 1 ) ? undefined : this.onMoveForward( index ) }
 								className="kt-testimonial-item__move-forward"
-								label={ __( 'Move Testimonial Forward' ) }
+								aria-label={ __( 'Move Testimonial Forward', 'kadence-blocks' ) }
 								aria-disabled={ itemsCount === ( index + 1 ) }
 							/>
 						</div>
@@ -849,7 +852,7 @@ class KadenceTestimonials extends Component {
 									onChange={ value => {
 										saveTestimonials( { title: value }, index );
 									} }
-									placeholder={ __( 'Best product I have ever used!' ) }
+									placeholder={ __( 'Best product I have ever used!', 'kadence-blocks' ) }
 									style={ {
 										fontWeight: titleFont[ 0 ].weight,
 										fontStyle: titleFont[ 0 ].style,
@@ -870,18 +873,18 @@ class KadenceTestimonials extends Component {
 							<div className={ `kt-testimonial-rating-wrap kt-testimonial-rating-${ testimonials[ index ].rating }` } style={ {
 								margin: ( ratingStyles[ 0 ].margin ? ratingStyles[ 0 ].margin[ 0 ] + 'px ' + ratingStyles[ 0 ].margin[ 1 ] + 'px ' + ratingStyles[ 0 ].margin[ 2 ] + 'px ' + ratingStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 							} }>
-								<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+								<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								{ testimonials[ index ].rating > 1 && (
-									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 2 && (
-									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 3 && (
-									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 4 && (
-									<GenIcon className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } icon={ FaIco[ 'fas_star' ] } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 							</div>
 						) }
@@ -891,7 +894,7 @@ class KadenceTestimonials extends Component {
 							} }>
 								<RichText
 									tagName={ 'div' }
-									placeholder={ __( 'I have been looking for a product like this for years. I have tried everything and nothing did what I wanted until using this product. I am so glad I found it!' ) }
+									placeholder={ __( 'I have been looking for a product like this for years. I have tried everything and nothing did what I wanted until using this product. I am so glad I found it!', 'kadence-blocks' ) }
 									value={ testimonials[ index ].content }
 									onChange={ value => {
 										saveTestimonials( { content: value }, index );
@@ -921,7 +924,7 @@ class KadenceTestimonials extends Component {
 									<div className="kt-testimonial-name-wrap">
 										<RichText
 											tagName={ 'div' }
-											placeholder={ __( 'Sophia Reily' ) }
+											placeholder={ __( 'Sophia Reily', 'kadence-blocks' ) }
 											value={ testimonials[ index ].name }
 											onChange={ value => {
 												saveTestimonials( { name: value }, index );
@@ -944,7 +947,7 @@ class KadenceTestimonials extends Component {
 									<div className="kt-testimonial-occupation-wrap">
 										<RichText
 											tagName={ 'div' }
-											placeholder={ __( 'CEO of Company' ) }
+											placeholder={ __( 'CEO of Company', 'kadence-blocks' ) }
 											value={ testimonials[ index ].occupation }
 											onChange={ value => {
 												saveTestimonials( { occupation: value }, index );
@@ -977,7 +980,7 @@ class KadenceTestimonials extends Component {
 					{ ( layout === 'carousel' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-blocks-carousel .slick-prev { left: ${ columnGap / 2 }px; }` : '' ) }
 					{ ( layout === 'carousel' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-blocks-carousel .slick-next { right: ${ columnGap / 2 }px; }` : '' ) }
 					{ ( style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-testimonial-text-wrap:after { margin-top: ${ containerBorderWidth && undefined !== containerBorderWidth[ 2 ] ? containerBorderWidth[ 2 ] : '1' }px; }` : '' ) }
-					{ ( style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-testimonial-text-wrap:after { border-top-color: ${ ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : hexToRGBA( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ) } }` : '' ) }
+					{ ( style === 'bubble' || style === 'inlineimage' ? `#kt-blocks-testimonials-wrap${ uniqueID } .kt-testimonial-text-wrap:after { border-top-color: ${ ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ) } }` : '' ) }
 				</style>
 				{ this.showSettings( 'allSettings' ) && (
 					<Fragment>
@@ -991,19 +994,19 @@ class KadenceTestimonials extends Component {
 							<PanelBody>
 								{ this.showSettings( 'layoutSettings' ) && (
 									<SelectControl
-										label={ __( 'Layout' ) }
+										label={ __( 'Layout', 'kadence-blocks' ) }
 										value={ layout }
 										options={ [
-											{ value: 'grid', label: __( 'Grid' ) },
-											{ value: 'carousel', label: __( 'Carousel' ) },
+											{ value: 'grid', label: __( 'Grid', 'kadence-blocks' ) },
+											{ value: 'carousel', label: __( 'Carousel', 'kadence-blocks' ) },
 										] }
 										onChange={ value => setAttributes( { layout: value } ) }
 									/>
 								) }
 								{ this.showSettings( 'styleSettings' ) && (
 									<Fragment>
-										<p className="components-base-control__label">{ __( 'Testimonial Style' ) }</p>
-										<ButtonGroup className="kt-style-btn-group" aria-label={ __( 'Testimonial Style' ) }>
+										<p className="components-base-control__label">{ __( 'Testimonial Style', 'kadence-blocks' ) }</p>
+										<ButtonGroup className="kt-style-btn-group" aria-label={ __( 'Testimonial Style', 'kadence-blocks' ) }>
 											{ map( styleOptions, ( { name, key, icon } ) => (
 												<Tooltip text={ name }>
 													<Button
@@ -1022,7 +1025,7 @@ class KadenceTestimonials extends Component {
 									</Fragment>
 								) }
 								<RangeControl
-									label={ __( 'Testimonial Items' ) }
+									label={ __( 'Testimonial Items', 'kadence-blocks' ) }
 									value={ itemsCount }
 									onChange={ newcount => {
 										const newitems = this.props.attributes.testimonials;
@@ -1062,7 +1065,7 @@ class KadenceTestimonials extends Component {
 									<Fragment>
 										{ columnControls }
 										<RangeControl
-											label={ __( 'Column Gap' ) }
+											label={ __( 'Column Gap', 'kadence-blocks' ) }
 											value={ columnGap }
 											onChange={ ( value ) => setAttributes( { columnGap: value } ) }
 											min={ 0 }
@@ -1075,17 +1078,17 @@ class KadenceTestimonials extends Component {
 								<Fragment>
 									{ this.showSettings( 'carouselSettings' ) && (
 										<PanelBody
-											title={ __( 'Carousel Settings' ) }
+											title={ __( 'Carousel Settings', 'kadence-blocks' ) }
 											initialOpen={ false }
 										>
 											<ToggleControl
-												label={ __( 'Carousel Auto Play' ) }
+												label={ __( 'Carousel Auto Play', 'kadence-blocks' ) }
 												checked={ autoPlay }
 												onChange={ ( value ) => setAttributes( { autoPlay: value } ) }
 											/>
 											{ autoPlay && (
 												<RangeControl
-													label={ __( 'Autoplay Speed' ) }
+													label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
 													value={ autoSpeed }
 													onChange={ ( value ) => setAttributes( { autoSpeed: value } ) }
 													min={ 500 }
@@ -1094,7 +1097,7 @@ class KadenceTestimonials extends Component {
 												/>
 											) }
 											<RangeControl
-												label={ __( 'Carousel Slide Transition Speed' ) }
+												label={ __( 'Carousel Slide Transition Speed', 'kadence-blocks' ) }
 												value={ transSpeed }
 												onChange={ ( value ) => setAttributes( { transSpeed: value } ) }
 												min={ 100 }
@@ -1102,7 +1105,7 @@ class KadenceTestimonials extends Component {
 												step={ 10 }
 											/>
 											<SelectControl
-												label={ __( 'Slides to Scroll' ) }
+												label={ __( 'Slides to Scroll', 'kadence-blocks' ) }
 												options={ [
 													{
 														label: __( 'One' ),
@@ -1117,26 +1120,26 @@ class KadenceTestimonials extends Component {
 												onChange={ ( value ) => setAttributes( { slidesScroll: value } ) }
 											/>
 											<SelectControl
-												label={ __( 'Arrow Style' ) }
+												label={ __( 'Arrow Style', 'kadence-blocks' ) }
 												options={ [
 													{
-														label: __( 'White on Dark' ),
+														label: __( 'White on Dark', 'kadence-blocks' ),
 														value: 'whiteondark',
 													},
 													{
-														label: __( 'Black on Light' ),
+														label: __( 'Black on Light', 'kadence-blocks' ),
 														value: 'blackonlight',
 													},
 													{
-														label: __( 'Outline Black' ),
+														label: __( 'Outline Black', 'kadence-blocks' ),
 														value: 'outlineblack',
 													},
 													{
-														label: __( 'Outline White' ),
+														label: __( 'Outline White', 'kadence-blocks' ),
 														value: 'outlinewhite',
 													},
 													{
-														label: __( 'None' ),
+														label: __( 'None', 'kadence-blocks' ),
 														value: 'none',
 													},
 												] }
@@ -1144,26 +1147,26 @@ class KadenceTestimonials extends Component {
 												onChange={ ( value ) => setAttributes( { arrowStyle: value } ) }
 											/>
 											<SelectControl
-												label={ __( 'Dot Style' ) }
+												label={ __( 'Dot Style', 'kadence-blocks' ) }
 												options={ [
 													{
-														label: __( 'Dark' ),
+														label: __( 'Dark', 'kadence-blocks' ),
 														value: 'dark',
 													},
 													{
-														label: __( 'Light' ),
+														label: __( 'Light', 'kadence-blocks' ),
 														value: 'light',
 													},
 													{
-														label: __( 'Outline Dark' ),
+														label: __( 'Outline Dark', 'kadence-blocks' ),
 														value: 'outlinedark',
 													},
 													{
-														label: __( 'Outline Light' ),
+														label: __( 'Outline Light', 'kadence-blocks' ),
 														value: 'outlinelight',
 													},
 													{
-														label: __( 'None' ),
+														label: __( 'None', 'kadence-blocks' ),
 														value: 'none',
 													},
 												] }
@@ -1176,12 +1179,12 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'containerSettings' ) && (
 								<PanelBody
-									title={ __( 'Container Settings' ) }
+									title={ __( 'Container Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<div className="kt-spacer-sidebar-15"></div>
 									<MeasurementControls
-										label={ __( 'Container Border Width (px)' ) }
+										label={ __( 'Container Border Width (px)', 'kadence-blocks' ) }
 										measurement={ containerBorderWidth }
 										control={ containerBorderControl }
 										onChange={ ( value ) => setAttributes( { containerBorderWidth: value } ) }
@@ -1191,7 +1194,7 @@ class KadenceTestimonials extends Component {
 										step={ 1 }
 									/>
 									<RangeControl
-										label={ __( 'Container Border Radius (px)' ) }
+										label={ __( 'Container Border Radius (px)', 'kadence-blocks' ) }
 										value={ containerBorderRadius }
 										onChange={ value => setAttributes( { containerBorderRadius: value } ) }
 										step={ 1 }
@@ -1199,7 +1202,7 @@ class KadenceTestimonials extends Component {
 										max={ 200 }
 									/>
 									<AdvancedPopColorControl
-										label={ __( 'Container Background' ) }
+										label={ __( 'Container Background', 'kadence-blocks' ) }
 										colorValue={ ( containerBackground ? containerBackground : '' ) }
 										colorDefault={ '' }
 										onColorChange={ value => setAttributes( { containerBackground: value } ) }
@@ -1207,7 +1210,7 @@ class KadenceTestimonials extends Component {
 										onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 									/>
 									<AdvancedPopColorControl
-										label={ __( 'Container Border' ) }
+										label={ __( 'Container Border', 'kadence-blocks' ) }
 										colorValue={ ( containerBorder ? containerBorder : '' ) }
 										colorDefault={ '' }
 										onColorChange={ value => setAttributes( { containerBorder: value } ) }
@@ -1216,7 +1219,7 @@ class KadenceTestimonials extends Component {
 									/>
 									<div className="kt-spacer-sidebar-15"></div>
 									<MeasurementControls
-										label={ __( 'Container Padding' ) }
+										label={ __( 'Container Padding', 'kadence-blocks' ) }
 										measurement={ containerPadding }
 										control={ containerPaddingControl }
 										onChange={ ( value ) => setAttributes( { containerPadding: value } ) }
@@ -1226,7 +1229,7 @@ class KadenceTestimonials extends Component {
 										step={ 1 }
 									/>
 									<RangeControl
-										label={ __( 'Container Max Width (px)' ) }
+										label={ __( 'Container Max Width (px)', 'kadence-blocks' ) }
 										value={ containerMaxWidth }
 										onChange={ value => setAttributes( { containerMaxWidth: value } ) }
 										step={ 5 }
@@ -1250,8 +1253,8 @@ class KadenceTestimonials extends Component {
 									/>
 									{ containerMinHeight && ( containerMinHeight[ 0 ] || containerMinHeight[ 1 ] || containerMinHeight[ 2 ] ) && (
 										<div className="kt-btn-size-settings-container">
-											<h2 className="kt-beside-btn-group">{ __( 'Inner Content Align' ) }</h2>
-											<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Inner Content Align' ) }>
+											<h2 className="kt-beside-btn-group">{ __( 'Inner Content Align', 'kadence-blocks' ) }</h2>
+											<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Inner Content Align', 'kadence-blocks' ) }>
 												{ map( VAlignOptions, ( { name, icon, key } ) => (
 													<Tooltip text={ name }>
 														<Button
@@ -1273,11 +1276,11 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'iconSettings' ) && (
 								<PanelBody
-									title={ __( 'Icon Settings' ) }
+									title={ __( 'Icon Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<ToggleControl
-										label={ __( 'Show Top Icon' ) }
+										label={ __( 'Show Top Icon', 'kadence-blocks' ) }
 										checked={ displayIcon }
 										onChange={ ( value ) => setAttributes( { displayIcon: value } ) }
 									/>
@@ -1290,7 +1293,7 @@ class KadenceTestimonials extends Component {
 												} }
 											/>
 											<RangeControl
-												label={ __( 'Icon Size' ) }
+												label={ __( 'Icon Size', 'kadence-blocks' ) }
 												value={ iconStyles[ 0 ].size }
 												onChange={ value => saveIconStyles( { size: value } ) }
 												step={ 1 }
@@ -1299,7 +1302,7 @@ class KadenceTestimonials extends Component {
 											/>
 											{ iconStyles[ 0 ].icon && 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) && (
 												<RangeControl
-													label={ __( 'Line Width' ) }
+													label={ __( 'Line Width', 'kadence-blocks' ) }
 													value={ iconStyles[ 0 ].stroke }
 													onChange={ value => {
 														saveIconStyles( { stroke: value } );
@@ -1310,14 +1313,14 @@ class KadenceTestimonials extends Component {
 												/>
 											) }
 											<AdvancedPopColorControl
-												label={ __( 'Color' ) }
+												label={ __( 'Color', 'kadence-blocks' ) }
 												colorValue={ ( iconStyles[ 0 ].color ? iconStyles[ 0 ].color : '' ) }
 												colorDefault={ '' }
 												onColorChange={ ( value ) => saveIconStyles( { color: value } ) }
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
-												label={ __( 'Icon Border Width (px)' ) }
+												label={ __( 'Icon Border Width (px)', 'kadence-blocks' ) }
 												measurement={ iconStyles[ 0 ].borderWidth }
 												control={ iconBorderControl }
 												onChange={ ( value ) => saveIconStyles( { borderWidth: value } ) }
@@ -1327,7 +1330,7 @@ class KadenceTestimonials extends Component {
 												step={ 1 }
 											/>
 											<RangeControl
-												label={ __( 'Icon Border Radius (px)' ) }
+												label={ __( 'Icon Border Radius (px)', 'kadence-blocks' ) }
 												value={ iconStyles[ 0 ].borderRadius }
 												onChange={ value => saveIconStyles( { borderRadius: value } ) }
 												step={ 1 }
@@ -1335,7 +1338,7 @@ class KadenceTestimonials extends Component {
 												max={ 200 }
 											/>
 											<AdvancedPopColorControl
-												label={ __( 'Icon Background' ) }
+												label={ __( 'Icon Background', 'kadence-blocks' ) }
 												colorValue={ ( iconStyles[ 0 ].background ? iconStyles[ 0 ].background : '' ) }
 												colorDefault={ '' }
 												onColorChange={ value => saveIconStyles( { background: value } ) }
@@ -1344,7 +1347,7 @@ class KadenceTestimonials extends Component {
 												onArrayChange={ ( color, opacity ) => saveIconStyles( { background: color, backgroundOpacity: opacity } ) }
 											/>
 											<AdvancedPopColorControl
-												label={ __( 'Icon Border Color' ) }
+												label={ __( 'Icon Border Color', 'kadence-blocks' ) }
 												colorValue={ ( iconStyles[ 0 ].border ? iconStyles[ 0 ].border : '' ) }
 												colorDefault={ '' }
 												onColorChange={ value => saveIconStyles( { border: value } ) }
@@ -1354,7 +1357,7 @@ class KadenceTestimonials extends Component {
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
-												label={ __( 'Icon Padding' ) }
+												label={ __( 'Icon Padding', 'kadence-blocks' ) }
 												measurement={ iconStyles[ 0 ].padding }
 												control={ iconPaddingControl }
 												onChange={ ( value ) => saveIconStyles( { padding: value } ) }
@@ -1364,7 +1367,7 @@ class KadenceTestimonials extends Component {
 												step={ 1 }
 											/>
 											<MeasurementControls
-												label={ __( 'Icon Margin' ) }
+												label={ __( 'Icon Margin', 'kadence-blocks' ) }
 												measurement={ iconStyles[ 0 ].margin }
 												control={ iconMarginControl }
 												onChange={ ( value ) => saveIconStyles( { margin: value } ) }
@@ -1379,18 +1382,18 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'titleSettings' ) && (
 								<PanelBody
-									title={ __( 'Title Settings' ) }
+									title={ __( 'Title Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<ToggleControl
-										label={ __( 'Show Title' ) }
+										label={ __( 'Show Title', 'kadence-blocks' ) }
 										checked={ displayTitle }
 										onChange={ ( value ) => setAttributes( { displayTitle: value } ) }
 									/>
 									{ displayTitle && (
 										<Fragment>
 											<AdvancedPopColorControl
-												label={ __( 'Color Settings' ) }
+												label={ __( 'Color Settings', 'kadence-blocks' ) }
 												colorValue={ ( titleFont[ 0 ].color ? titleFont[ 0 ].color : '' ) }
 												colorDefault={ '' }
 												onColorChange={ value => saveTitleFont( { color: value } ) }
@@ -1463,24 +1466,24 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'ratingSettings' ) && (
 								<PanelBody
-									title={ __( 'Rating Settings' ) }
+									title={ __( 'Rating Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<ToggleControl
-										label={ __( 'Show Rating' ) }
+										label={ __( 'Show Rating', 'kadence-blocks' ) }
 										checked={ displayRating }
 										onChange={ ( value ) => setAttributes( { displayRating: value } ) }
 									/>
 									{ displayRating && (
 										<Fragment>
 											<AdvancedPopColorControl
-												label={ __( 'Color' ) }
+												label={ __( 'Color', 'kadence-blocks' ) }
 												colorValue={ ( ratingStyles[ 0 ].color ? ratingStyles[ 0 ].color : '' ) }
 												colorDefault={ '' }
 												onColorChange={ ( value ) => saveRatingStyles( { color: value } ) }
 											/>
 											<RangeControl
-												label={ __( 'Icon Size' ) }
+												label={ __( 'Icon Size', 'kadence-blocks' ) }
 												value={ ratingStyles[ 0 ].size }
 												onChange={ value => saveRatingStyles( { size: value } ) }
 												step={ 1 }
@@ -1488,7 +1491,7 @@ class KadenceTestimonials extends Component {
 												max={ 120 }
 											/>
 											<MeasurementControls
-												label={ __( 'Rating Margin' ) }
+												label={ __( 'Rating Margin', 'kadence-blocks' ) }
 												measurement={ ratingStyles[ 0 ].margin }
 												control={ ratingMarginControl }
 												onChange={ ( value ) => saveRatingStyles( { margin: value } ) }
@@ -1503,18 +1506,18 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'contentSettings' ) && (
 								<PanelBody
-									title={ __( 'Content Settings' ) }
+									title={ __( 'Content Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<ToggleControl
-										label={ __( 'Show Content' ) }
+										label={ __( 'Show Content', 'kadence-blocks' ) }
 										checked={ displayContent }
 										onChange={ ( value ) => setAttributes( { displayContent: value } ) }
 									/>
 									{ displayContent && (
 										<Fragment>
 											<AdvancedPopColorControl
-												label={ __( 'Color' ) }
+												label={ __( 'Color', 'kadence-blocks' ) }
 												colorValue={ ( contentFont[ 0 ].color ? contentFont[ 0 ].color : '' ) }
 												colorDefault={ '' }
 												onColorChange={ value => saveContentFont( { color: value } ) }
@@ -1575,11 +1578,11 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'mediaSettings' ) && (
 								<PanelBody
-									title={ __( 'Media Settings' ) }
+									title={ __( 'Media Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<ToggleControl
-										label={ __( 'Show Media' ) }
+										label={ __( 'Show Media', 'kadence-blocks' ) }
 										checked={ displayMedia }
 										onChange={ ( value ) => setAttributes( { displayMedia: value } ) }
 									/>
@@ -1587,7 +1590,7 @@ class KadenceTestimonials extends Component {
 										<Fragment>
 											{ 'card' !== style && (
 												<RangeControl
-													label={ __( 'Media Max Size' ) }
+													label={ __( 'Media Max Size', 'kadence-blocks' ) }
 													value={ mediaStyles[ 0 ].width }
 													onChange={ value => savemediaStyles( { width: value } ) }
 													step={ 1 }
@@ -1596,7 +1599,7 @@ class KadenceTestimonials extends Component {
 												/>
 											) }
 											<MeasurementControls
-												label={ __( 'Media Border Width (px)' ) }
+												label={ __( 'Media Border Width (px)', 'kadence-blocks' ) }
 												measurement={ mediaStyles[ 0 ].borderWidth }
 												control={ mediaBorderControl }
 												onChange={ ( value ) => savemediaStyles( { borderWidth: value } ) }
@@ -1606,7 +1609,7 @@ class KadenceTestimonials extends Component {
 												step={ 1 }
 											/>
 											<RangeControl
-												label={ __( 'Media Border Radius (px)' ) }
+												label={ __( 'Media Border Radius (px)', 'kadence-blocks' ) }
 												value={ mediaStyles[ 0 ].borderRadius }
 												onChange={ value => savemediaStyles( { borderRadius: value } ) }
 												step={ 1 }
@@ -1614,7 +1617,7 @@ class KadenceTestimonials extends Component {
 												max={ 200 }
 											/>
 											<AdvancedPopColorControl
-												label={ __( 'Media Background' ) }
+												label={ __( 'Media Background', 'kadence-blocks' ) }
 												colorValue={ ( mediaStyles[ 0 ].background ? mediaStyles[ 0 ].background : '' ) }
 												colorDefault={ '' }
 												onColorChange={ value => savemediaStyles( { background: value } ) }
@@ -1623,7 +1626,7 @@ class KadenceTestimonials extends Component {
 												onArrayChange={ ( color, opacity ) => savemediaStyles( { background: color, backgroundOpacity: opacity } ) }
 											/>
 											<AdvancedPopColorControl
-												label={ __( 'Media Border Color' ) }
+												label={ __( 'Media Border Color', 'kadence-blocks' ) }
 												colorValue={ ( mediaStyles[ 0 ].border ? mediaStyles[ 0 ].border : '' ) }
 												colorDefault={ '' }
 												onColorChange={ value => savemediaStyles( { border: value } ) }
@@ -1633,7 +1636,7 @@ class KadenceTestimonials extends Component {
 											/>
 											<div className="kt-spacer-sidebar-15"></div>
 											<MeasurementControls
-												label={ __( 'Media Padding' ) }
+												label={ __( 'Media Padding', 'kadence-blocks' ) }
 												measurement={ mediaStyles[ 0 ].padding }
 												control={ mediaPaddingControl }
 												onChange={ ( value ) => savemediaStyles( { padding: value } ) }
@@ -1643,7 +1646,7 @@ class KadenceTestimonials extends Component {
 												step={ 1 }
 											/>
 											<MeasurementControls
-												label={ __( 'Media Margin' ) }
+												label={ __( 'Media Margin', 'kadence-blocks' ) }
 												measurement={ mediaStyles[ 0 ].margin }
 												control={ mediaMarginControl }
 												onChange={ ( value ) => savemediaStyles( { margin: value } ) }
@@ -1655,18 +1658,18 @@ class KadenceTestimonials extends Component {
 											{ 'card' === style && (
 												<Fragment>
 													<SelectControl
-														label={ __( 'Image Size' ) }
+														label={ __( 'Image Size', 'kadence-blocks' ) }
 														options={ [
 															{
-																label: __( 'Cover' ),
+																label: __( 'Cover', 'kadence-blocks' ),
 																value: 'cover',
 															},
 															{
-																label: __( 'Contain' ),
+																label: __( 'Contain', 'kadence-blocks' ),
 																value: 'Contain',
 															},
 															{
-																label: __( 'Auto' ),
+																label: __( 'Auto', 'kadence-blocks' ),
 																value: 'auto',
 															},
 														] }
@@ -1674,30 +1677,30 @@ class KadenceTestimonials extends Component {
 														onChange={ ( value ) => savemediaStyles( { backgroundSize: value } ) }
 													/>
 													<SelectControl
-														label={ __( 'Image Ratio' ) }
+														label={ __( 'Image Ratio', 'kadence-blocks' ) }
 														options={ [
 															{
-																label: __( 'Landscape 4:2' ),
+																label: __( 'Landscape 4:2', 'kadence-blocks' ),
 																value: '50',
 															},
 															{
-																label: __( 'Landscape 3:2' ),
+																label: __( 'Landscape 3:2', 'kadence-blocks' ),
 																value: '66.67',
 															},
 															{
-																label: __( 'Landscape 4:3' ),
+																label: __( 'Landscape 4:3', 'kadence-blocks' ),
 																value: '75',
 															},
 															{
-																label: __( 'Portrait 3:4' ),
+																label: __( 'Portrait 3:4', 'kadence-blocks' ),
 																value: '133.33',
 															},
 															{
-																label: __( 'Portrait 2:3' ),
+																label: __( 'Portrait 2:3', 'kadence-blocks' ),
 																value: '150',
 															},
 															{
-																label: __( 'Square 1:1' ),
+																label: __( 'Square 1:1', 'kadence-blocks' ),
 																value: '100',
 															},
 														] }
@@ -1712,18 +1715,18 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'nameSettings' ) && (
 								<PanelBody
-									title={ __( 'Name Settings' ) }
+									title={ __( 'Name Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<ToggleControl
-										label={ __( 'Show Name' ) }
+										label={ __( 'Show Name', 'kadence-blocks' ) }
 										checked={ displayName }
 										onChange={ ( value ) => setAttributes( { displayName: value } ) }
 									/>
 									{ displayName && (
 										<Fragment>
 											<AdvancedPopColorControl
-												label={ __( 'Color' ) }
+												label={ __( 'Color', 'kadence-blocks' ) }
 												colorValue={ ( nameFont[ 0 ].color ? nameFont[ 0 ].color : '' ) }
 												colorDefault={ '' }
 												onColorChange={ ( value ) => saveNameFont( { color: value } ) }
@@ -1769,18 +1772,18 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'occupationSettings' ) && (
 								<PanelBody
-									title={ __( 'Occupation Settings' ) }
+									title={ __( 'Occupation Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<ToggleControl
-										label={ __( 'Show Occupation' ) }
+										label={ __( 'Show Occupation', 'kadence-blocks' ) }
 										checked={ displayOccupation }
 										onChange={ ( value ) => setAttributes( { displayOccupation: value } ) }
 									/>
 									{ displayOccupation && (
 										<Fragment>
 											<AdvancedPopColorControl
-												label={ __( 'Color' ) }
+												label={ __( 'Color', 'kadence-blocks' ) }
 												colorValue={ ( occupationFont[ 0 ].color ? occupationFont[ 0 ].color : '' ) }
 												colorDefault={ '' }
 												onColorChange={ ( value ) => saveOccupationFont( { color: value } ) }
@@ -1826,18 +1829,18 @@ class KadenceTestimonials extends Component {
 							) }
 							{ this.showSettings( 'shadowSettings' ) && (
 								<PanelBody
-									title={ __( 'Container Shadow' ) }
+									title={ __( 'Container Shadow', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									<ToggleControl
-										label={ __( 'Enable Shadow' ) }
+										label={ __( 'Enable Shadow', 'kadence-blocks' ) }
 										checked={ displayShadow }
 										onChange={ value => setAttributes( { displayShadow: value } ) }
 									/>
 									{ displayShadow && (
 										<Fragment>
 											<AdvancedPopColorControl
-												label={ __( 'Shadow Color' ) }
+												label={ __( 'Shadow Color', 'kadence-blocks' ) }
 												colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
 												colorDefault={ '' }
 												onColorChange={ value => saveShadow( { color: value } ) }
@@ -1846,7 +1849,7 @@ class KadenceTestimonials extends Component {
 												onArrayChange={ ( color, opacity ) => saveShadow( { color: color, opacity: opacity } ) }
 											/>
 											<RangeControl
-												label={ __( 'Shadow Blur' ) }
+												label={ __( 'Shadow Blur', 'kadence-blocks' ) }
 												value={ shadow[ 0 ].blur }
 												onChange={ value => saveShadow( { blur: value } ) }
 												min={ 0 }
@@ -1854,7 +1857,7 @@ class KadenceTestimonials extends Component {
 												step={ 1 }
 											/>
 											<RangeControl
-												label={ __( 'Shadow Spread' ) }
+												label={ __( 'Shadow Spread', 'kadence-blocks' ) }
 												value={ shadow[ 0 ].spread }
 												onChange={ value => saveShadow( { spread: value } ) }
 												min={ -100 }
@@ -1862,7 +1865,7 @@ class KadenceTestimonials extends Component {
 												step={ 1 }
 											/>
 											<RangeControl
-												label={ __( 'Shadow Vertical Offset' ) }
+												label={ __( 'Shadow Vertical Offset', 'kadence-blocks' ) }
 												value={ shadow[ 0 ].vOffset }
 												onChange={ value => saveShadow( { vOffset: value } ) }
 												min={ -100 }
@@ -1870,7 +1873,7 @@ class KadenceTestimonials extends Component {
 												step={ 1 }
 											/>
 											<RangeControl
-												label={ __( 'Shadow Horizontal Offset' ) }
+												label={ __( 'Shadow Horizontal Offset', 'kadence-blocks' ) }
 												value={ shadow[ 0 ].hOffset }
 												onChange={ value => saveShadow( { hOffset: value } ) }
 												min={ -100 }
@@ -1908,7 +1911,7 @@ class KadenceTestimonials extends Component {
 							<div className="kt-sidebar-settings-spacer"></div>
 							{ this.showSettings( 'individualSettings' ) && (
 								<PanelBody
-									title={ __( 'Individual Settings' ) }
+									title={ __( 'Individual Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
 								>
 									{ renderSettings }
@@ -1920,9 +1923,9 @@ class KadenceTestimonials extends Component {
 				{ this.state.showPreset && (
 					<div className="kt-select-starter-style-tabs kt-select-starter-style-infobox">
 						<div className="kt-select-starter-style-tabs-title">
-							{ __( 'Select Initial Style' ) }
+							{ __( 'Select Initial Style', 'kadence-blocks' ) }
 						</div>
-						<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Initial Style' ) }>
+						<ButtonGroup className="kt-init-tabs-btn-group" aria-label={ __( 'Initial Style', 'kadence-blocks' ) }>
 							{ map( startlayoutOptions, ( { name, key, icon } ) => (
 								<Button
 									key={ key }

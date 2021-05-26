@@ -18,8 +18,8 @@ import WebfontLoader from '../../fontloader';
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
 import filter from 'lodash/filter';
-import IconControl from '../../icon-control';
-import IconRender from '../../icon-render';
+import IconControl from '../../components/icons/icon-control';
+import IconRender from '../../components/icons/icon-render';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 /**

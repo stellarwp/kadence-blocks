@@ -12,10 +12,10 @@ import editorIcons from '../../icons';
  */
 import times from 'lodash/times';
 import map from 'lodash/map';
-import IconControl from '../../icon-control';
-import IconRender from '../../icon-render';
+import IconControl from '../../components/icons/icon-control';
+import IconRender from '../../components/icons/icon-render';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
 import StepControl from '../../step-control';
 /**
  * Import Css

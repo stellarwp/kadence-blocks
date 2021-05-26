@@ -3,7 +3,7 @@ import MeasurementControls from '../../measurement-control';
 import map from 'lodash/map';
 import OpacityControl from '../../opacity-control';
 import hexToRGBA from '../../hex-to-rgba';
-import IconControl from '../../icon-control';
+import IconControl from '../../components/icons/icon-control';
 /**
  * Internal block libraries
  */

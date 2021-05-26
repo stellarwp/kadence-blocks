@@ -1,6 +1,6 @@
 import TypographyControls from '../../typography-control';
 import MeasurementControls from '../../measurement-control';
-import IconControl from '../../icon-control';
+import IconControl from '../../components/icons/icon-control';
 /**
  * Internal block libraries
  */

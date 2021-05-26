@@ -22,7 +22,7 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
-const { __ }                = wp.i18n;
+import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
 const { Fragment }          = wp.element;
 const { Icon }              = wp.components;

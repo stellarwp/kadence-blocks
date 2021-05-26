@@ -3,10 +3,7 @@
  */
 import classnames from 'classnames';
 import times from 'lodash/times';
-import GenIcon from '../../genicon';
-import Ico from '../../svgicons';
-import FaIco from '../../faicons';
-import IconRender from '../../icon-render';
+import IconRender from '../../components/icons/icon-render';
 const {
 	Component,
 	Fragment,

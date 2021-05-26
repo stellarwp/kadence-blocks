@@ -97,7 +97,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'dist/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'dist/gfonts-names-array.php';
 	$icon_names_path  = KADENCE_BLOCKS_PATH . 'dist/icon-names-array.php';
-	$icon_ico_path    = KADENCE_BLOCKS_PATH . 'dist/icon-ico-array.php';
+	$icon_ico_path    = KADENCE_BLOCKS_PATH . 'dist/icons-ico-array.php';
 	$icons_path       = KADENCE_BLOCKS_PATH . 'dist/icons-array.php';
 	wp_localize_script(
 		'kadence-blocks-js',

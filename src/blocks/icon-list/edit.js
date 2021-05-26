@@ -15,8 +15,8 @@ import MeasurementControls from '../../measurement-control';
 import TypographyControls from '../../components/typography/typography-control';
 import WebfontLoader from '../../fontloader';
 import map from 'lodash/map';
-import IconControl from '../../icon-control';
-import IconRender from '../../icon-render';
+import IconControl from '../../components/icons/icon-control';
+import IconRender from '../../components/icons/icon-render';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import KadenceColorOutput from '../../kadence-color-output';
@@ -225,9 +225,9 @@ class KadenceIconLists extends Component {
 			} );
 		};
 		const iconAlignOptions = [
-			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },
-			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
-			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
+			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: icons.aligntop },
+			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: icons.alignmiddle },
+			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: icons.alignbottom },
 		];
 		const stopOnReplace = ( value, index ) => {
 			if ( value && undefined !== value[ 0 ] && undefined !== value[ 0 ].attributes && value[ 0 ].attributes.content ) {
@@ -812,7 +812,7 @@ class KadenceIconLists extends Component {
 						<div className="kt-sidebar-settings-spacer"></div>
 						{ this.showSettings( 'individualIcons' ) && (
 							<PanelBody
-								title={ __( 'Individual list Item Settings' ) }
+								title={ __( 'Individual list Item Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
 								{ renderSettings }

@@ -4,8 +4,8 @@
  * Registering a basic block with Gutenberg.
  */
 
-import IconControl from '../../icon-control';
-import IconRender from '../../icon-render';
+import IconControl from '../../components/icons/icon-control';
+import IconRender from '../../components/icons/icon-render';
 
 const {
 	RichText,

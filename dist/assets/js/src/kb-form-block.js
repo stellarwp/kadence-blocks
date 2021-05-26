@@ -316,7 +316,7 @@
 				submitButton.classList.add( 'button-primary-disabled' );
 				var request = new XMLHttpRequest();
 				request.open( 'POST', kadence_blocks_form_params.ajaxurl, true );
-				request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded;' );
+				request.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' );
 				request.onload = function () {
 					if ( this.status >= 200 && this.status < 400 ) {
 						// If successful
