@@ -24,7 +24,7 @@ function kadence_gutenberg_editor_assets() {
 	$asset_meta = kadence_blocks_get_asset_file( 'dist/build/runtime' );
 	// Scripts.
 	wp_register_script( 'kadence-blocks-blocks', KADENCE_BLOCKS_URL . 'dist/build/blocks.js', array_merge( $asset_meta['dependencies'], array( 'wp-api' ) ), $asset_meta['version'], true );
-	wp_register_script( 'kadence-blocks-vendor', KADENCE_BLOCKS_URL . 'dist/build/vendors~blocks.js', array_merge( $asset_meta['dependencies'], array( 'wp-api' ) ), $asset_meta['version'], true );
+	wp_register_script( 'kadence-blocks-vendor', KADENCE_BLOCKS_URL . 'dist/build/vendors/blocks.js', array_merge( $asset_meta['dependencies'], array( 'wp-api' ) ), $asset_meta['version'], true );
 	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/build/runtime.js', array_merge( $asset_meta['dependencies'], array( 'wp-api', 'kadence-blocks-blocks', 'kadence-blocks-vendor' ) ), $asset_meta['version'], true );
 	// Styles.
 	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), $asset_meta['version'] );
