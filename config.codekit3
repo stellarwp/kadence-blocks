@@ -473,6 +473,14 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks.asset.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.asset.php",
+      "oF" : 0
+    },
     "\/dist\/build\/blocks.css" : {
       "aP" : 1,
       "bl" : 0,
@@ -492,25 +500,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/dist\/build\/runtime.asset.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/runtime.asset.php",
-      "oF" : 0
-    },
-    "\/dist\/build\/runtime.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/runtime-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0

@@ -1,7 +1,6 @@
 const defaultConfig = require("@wordpress/scripts/config/webpack.config");
 const SplitChunkName = require( './src/config/split-chunk-name' );
 const splitChunkName = new SplitChunkName();
-defaultConfig.optimization.runtimeChunk = 'single';
 defaultConfig.optimization.splitChunks = {
 	chunks: 'all',
 	maxInitialRequests: 10,
