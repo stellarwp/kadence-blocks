@@ -251,12 +251,14 @@ class KB_Ajax_Form {
 							if ( isset( $form_args['email'][0]['fromEmail'] ) && ! empty( trim( $form_args['email'][0]['fromEmail'] ) ) ) {
 								$from_name = ( isset( $form_args['email'][0]['fromName'] ) && ! empty( trim( $form_args['email'][0]['fromName'] ) ) ? trim( $form_args['email'][0]['fromName'] ) . ' ' : '' );
 								if ( strpos( $from_name, '{field_' ) !== false ) {
-									if ( preg_match( '/{field_(.*?)}/', $from_name, $match) == 1 ) {
-										$field_id = $match[1];
-										if ( isset( $field_id ) ) {
-											$real_id = absint( $field_id ) - 1;
-											if ( isset( $fields[ $real_id ] ) && is_array( $fields[ $real_id ] ) && isset( $fields[ $real_id ]['value'] ) ) {
-												$from_name = str_replace( '{field_' . $field_id . '}' , $fields[ $real_id ]['value'], $from_name );
+									preg_match_all( '/{field_(.*?)}/', $from_name, $match ); 
+									if ( is_array( $match ) && isset( $match[1] ) && is_array( $match[1] ) ) {
+										foreach ( $match[1] as $field_id ) {
+											if ( isset( $field_id ) ) {
+												$real_id = absint( $field_id ) - 1;
+												if ( isset( $fields[ $real_id ] ) && is_array( $fields[ $real_id ] ) && isset( $fields[ $real_id ]['value'] ) ) {
+													$from_name = str_replace( '{field_' . $field_id . '}' , $fields[ $real_id ]['value'], $from_name );
+												}
 											}
 										}
 									}

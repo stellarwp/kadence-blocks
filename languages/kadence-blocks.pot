@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-05-26T19:15:03+00:00\n"
+"POT-Creation-Date: 2021-05-26T19:27:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: kadence-blocks\n"
@@ -266,91 +266,91 @@ msgstr ""
 msgid "Data not found"
 msgstr ""
 
-#: dist/init.php:247
-#: dist/init.php:275
-#: dist/init.php:319
-#: dist/init.php:348
+#: dist/init.php:246
+#: dist/init.php:274
+#: dist/init.php:318
+#: dist/init.php:347
 #: dist/build/blocks.js:1
 #: dist/build/blocks.js:34
 #: dist/build/blocks.js:44
 msgid "Inherit"
 msgstr ""
 
-#: dist/init.php:250
-#: dist/init.php:276
-#: dist/init.php:322
-#: dist/init.php:349
+#: dist/init.php:249
+#: dist/init.php:275
+#: dist/init.php:321
+#: dist/init.php:348
 #: dist/build/blocks.js:1
 msgid "Thin 100"
 msgstr ""
 
-#: dist/init.php:252
-#: dist/init.php:277
-#: dist/init.php:324
-#: dist/init.php:350
+#: dist/init.php:251
+#: dist/init.php:276
+#: dist/init.php:323
+#: dist/init.php:349
 #: dist/build/blocks.js:1
 msgid "Extra-Light 200"
 msgstr ""
 
-#: dist/init.php:254
-#: dist/init.php:278
-#: dist/init.php:326
-#: dist/init.php:351
+#: dist/init.php:253
+#: dist/init.php:277
+#: dist/init.php:325
+#: dist/init.php:350
 #: dist/build/blocks.js:1
 msgid "Light 300"
 msgstr ""
 
-#: dist/init.php:256
-#: dist/init.php:258
-#: dist/init.php:279
-#: dist/init.php:328
-#: dist/init.php:330
-#: dist/init.php:352
+#: dist/init.php:255
+#: dist/init.php:257
+#: dist/init.php:278
+#: dist/init.php:327
+#: dist/init.php:329
+#: dist/init.php:351
 #: dist/build/blocks.js:1
 msgid "Regular"
 msgstr ""
 
-#: dist/init.php:260
-#: dist/init.php:280
-#: dist/init.php:332
-#: dist/init.php:353
+#: dist/init.php:259
+#: dist/init.php:279
+#: dist/init.php:331
+#: dist/init.php:352
 #: dist/build/blocks.js:1
 msgid "Medium 500"
 msgstr ""
 
-#: dist/init.php:262
-#: dist/init.php:281
-#: dist/init.php:334
-#: dist/init.php:354
+#: dist/init.php:261
+#: dist/init.php:280
+#: dist/init.php:333
+#: dist/init.php:353
 #: dist/build/blocks.js:1
 msgid "Semi-Bold 600"
 msgstr ""
 
-#: dist/init.php:264
-#: dist/init.php:282
-#: dist/init.php:336
-#: dist/init.php:355
+#: dist/init.php:263
+#: dist/init.php:281
+#: dist/init.php:335
+#: dist/init.php:354
 #: dist/build/blocks.js:1
 msgid "Bold 700"
 msgstr ""
 
-#: dist/init.php:266
-#: dist/init.php:283
-#: dist/init.php:338
-#: dist/init.php:356
+#: dist/init.php:265
+#: dist/init.php:282
+#: dist/init.php:337
+#: dist/init.php:355
 #: dist/build/blocks.js:1
 msgid "Extra-Bold 800"
 msgstr ""
 
-#: dist/init.php:268
-#: dist/init.php:284
-#: dist/init.php:340
-#: dist/init.php:357
+#: dist/init.php:267
+#: dist/init.php:283
+#: dist/init.php:339
+#: dist/init.php:356
 #: dist/build/blocks.js:1
 msgid "Ultra-Bold 900"
 msgstr ""
 
-#: dist/init.php:581
+#: dist/init.php:580
 #: dist/settings/class-kadence-blocks-settings.php:264
 msgid "Kadence Blocks"
 msgstr ""

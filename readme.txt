@@ -88,10 +88,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 2.0.7 =
-Release Date: May 24th, 2021
+Release Date: May 26th, 2021
 * Add: Attribute to lock section inner block.
 * Update: JS Build for better language support.
-* Fix: Possible issue with form block.
+* Update: Form MailerLite group limit, add search.
+* Update: Form from input to allow more then one placeholder.
+* Fix: Possible issue with form block on some servers.
 
 = 2.0.6 =
 Release Date: May 24th, 2021
