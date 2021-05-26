@@ -77,12 +77,11 @@ class MailerLiteControls extends Component {
 		apiFetch( {
 			path: addQueryArgs(
 				'/kb-mailerlite/v1/get',
-				{ apikey: this.state.api, endpoint: 'groups' }
+				{ apikey: this.state.api, endpoint: 'groups', queryargs: [ 'limit=500' ] }
 			),
 		} )
 			.then( ( groups ) => {
 				const theGroups = [];
-				theGroups.push( { value: null, label: 'Select a Group' } );
 				groups.map( ( item ) => {
 					theGroups.push( { value: item.id, label: item.name } );
 				} );
@@ -207,13 +206,17 @@ class MailerLiteControls extends Component {
 						{ ! isFetching && hasGroup && (
 							<Fragment>
 								<h2 className="kt-heading-size-title">{ __( 'Select Group', 'kadence-blocks' ) }</h2>
-								<SelectControl
-									value={ ( undefined !== this.props.settings[ 0 ].group && this.props.settings[ 0 ].group[0] ? this.props.settings[ 0 ].group[0] : '' ) }
+								<div className="mailerlite-select-form-row">
+								<Select
+									value={ ( group ? group.filter( ( { value } ) => value.toString() === ( undefined !== this.props.settings[ 0 ].group && this.props.settings[ 0 ].group[0] ? this.props.settings[ 0 ].group[0].toString() : '' ) ) : '' ) }
 									onChange={ ( value ) => {
-										this.props.save( { group: ( value ? [ value ] : [] ) } );
+										this.props.save( { group: ( value.value ? [ value.value ] : [] ) } );
 									} }
+									placeholder={ __( 'Select a Group', 'kadence-blocks' ) }
+									maxMenuHeight={ 300 }
 									options={ group }
 								/>
+								</div>
 								{ ! this.props.settings[ 0 ].group && (
 									<div style={ { height: '100px' } }></div>
 								) }
