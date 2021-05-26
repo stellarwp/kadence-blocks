@@ -4,13 +4,15 @@
   "private": true,
   "main": "src/blocks.js",
   "scripts": {
+    "packages-update": "wp-scripts packages-update",
     "start": "wp-scripts start",
-    "build": "wp-scripts build"
+    "build": "wp-scripts build",
+    "build:custom": "wp-scripts build --webpack-bundle-analyzer"
   },
   "dependencies": {
     "@dr-kobros/react-webfont-loader": "^8.0.0",
     "@fonticonpicker/react-fonticonpicker": "^1.2.0",
-    "@wordpress/icons": "^2.10.0",
+    "@wordpress/icons": "^4.0.0",
     "classnames": "^2.2.6",
     "eslint": "^4.15.0",
     "eslint-config-wordpress": "^2.0.0",
@@ -32,8 +34,8 @@
     "react-transition-group": "^2.4.0"
   },
   "devDependencies": {
-    "@wordpress/i18n": "4.0.0",
-    "@wordpress/scripts": "^16.0.0",
+    "@wordpress/i18n": "^4.1.0",
+    "@wordpress/scripts": "^16.1.0",
     "install": "^0.13.0"
   }
 }

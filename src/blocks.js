@@ -4,7 +4,7 @@
  */
 
 // Utils
-import TypographyControls from './typography-control.js';
+import TypographyControls from './components/typography/typography-control';
 import AdvancedColorControl from './advanced-color-control.js';
 import BoxShadowControl from './box-shadow-control';
 import IconControl from './components/icons/icon-control';
@@ -19,8 +19,6 @@ window.kb = {
 		IconRender,
 	},
 };
-// Brand Icon.
-import icons from './brand-icon';
 import './extension/block-css/block-css';
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
@@ -49,6 +47,8 @@ import './blocks/countdown/countdown-inner/block.js';
 import './plugins/kadence-control.js';
 import './plugins/editor-width.js';
 import './plugins/prebuilt-library/toolbar-library';
+// Brand Icon.
+import icons from './brand-icon';
 if ( typeof kt_blocks_default_size !== 'undefined' ) {
 	wp.data.dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kt_blocks_default_size } );
 }

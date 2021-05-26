@@ -684,8 +684,12 @@ class GalleryEdit extends Component {
 			}
 		);
 		const renderGalleryImages = ( img, index, thumbnail = false ) => {
-			/* translators: %1$d is the order number of the image, %2$d is the total number of images. */
-			const ariaLabel = sprintf( __( 'image %1$d of %2$d in gallery', 'kadence-blocks' ), ( index + 1 ), images.length );
+			const ariaLabel = sprintf(
+					/* translators: %1$d is the order number of the image, %2$d is the total number of images. */
+					__( 'image %1$d of %2$d in gallery', 'kadence-blocks' ),
+					( index + 1 ),
+					images.length
+				);
 			const ratio = ( thumbnail ? thumbnailRatio : imageRatio );
 			return (
 				<li className="kadence-blocks-gallery-item" key={ img.id || img.url }>

@@ -473,6 +473,59 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
+    "\/dist\/build\/blocks.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/build\/blocks-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/build\/runtime.asset.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/runtime.asset.php",
+      "oF" : 0
+    },
+    "\/dist\/build\/runtime.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/build\/runtime-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/build\/vendors\/blocks.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -1371,6 +1424,149 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/createAddHook.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/createAddHook-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/createCurrentHook.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/createCurrentHook-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/createDidHook.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/createDidHook-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/createDoingHook.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/createDoingHook-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/createHasHook.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/createHasHook-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/createHooks.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/createHooks-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/createRemoveHook.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/createRemoveHook-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/createRunHook.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/createRunHook-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/validateHookName.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/validateHookName-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/hooks\/build-module\/validateNamespace.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/hooks\/build-module\/validateNamespace-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/i18n\/build-module\/create-i18n.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/i18n\/build-module\/create-i18n-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/i18n\/build-module\/default-i18n.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/i18n\/build-module\/default-i18n-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/@wordpress\/i18n\/build-module\/index.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -1382,6 +1578,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/@wordpress\/i18n\/build-module\/sprintf.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/i18n\/build-module\/sprintf-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/@wordpress\/icons\/build-module\/index.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -1389,6 +1596,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/add-submenu.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/add-submenu-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -1433,6 +1651,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/align-right-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/archive-title.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/archive-title-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -1613,17 +1842,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/node_modules\/@wordpress\/icons\/build-module\/library\/camera.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/camera-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/node_modules\/@wordpress\/icons\/build-module\/library\/cancel-circle-filled.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -1679,17 +1897,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/node_modules\/@wordpress\/icons\/build-module\/library\/chart-line.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/chart-line-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/node_modules\/@wordpress\/icons\/build-module\/library\/check.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -1697,17 +1904,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/check-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/node_modules\/@wordpress\/icons\/build-module\/library\/chevron-back-ios.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/chevron-back-ios-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -1763,17 +1959,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/classic-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/node_modules\/@wordpress\/icons\/build-module\/library\/close-circle-filled.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/close-circle-filled-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -1873,17 +2058,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/comment-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/node_modules\/@wordpress\/icons\/build-module\/library\/controls-repeat.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/controls-repeat-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -2016,17 +2190,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/edit-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/node_modules\/@wordpress\/icons\/build-module\/library\/expand.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/expand-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -2603,6 +2766,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/login.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/login-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/@wordpress\/icons\/build-module\/library\/loop.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -2731,6 +2905,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/more-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/move-to.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/move-to-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -2984,6 +3169,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/post-comments-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/post-content.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/post-content-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -3318,6 +3514,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/site-logo.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/site-logo-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/@wordpress\/icons\/build-module\/library\/stack.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3417,6 +3624,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/swatch.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/swatch-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/node_modules\/@wordpress\/icons\/build-module\/library\/table-column-after.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3512,6 +3730,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/tag-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/node_modules\/@wordpress\/icons\/build-module\/library\/term-description.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/@wordpress\/icons\/build-module\/library\/term-description-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -6540,6 +6769,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/components\/typography\/typography-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/config\/split-chunk-name.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/config\/split-chunk-name-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0

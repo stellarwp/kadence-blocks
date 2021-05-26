@@ -6,6 +6,10 @@
  /* global kadence_blocks_params */
 
 /**
+ * Internal block libraries
+ */
+import { __, sprintf } from '@wordpress/i18n';
+/**
  * Import Icons
  */
 import icons from './../../icons';
@@ -25,10 +29,6 @@ const {
 	applyFilters,
 } = wp.hooks;
 
-/**
- * Internal block libraries
- */
-import { __, sprintf } from '@wordpress/i18n';
 const {
 	Fragment,
 	Component,
