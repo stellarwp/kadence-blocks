@@ -41,6 +41,14 @@
     justify-content: center;
     margin-bottom:24px
 }
+.edit-post-sidebar .mailerlite-select-form-row input[type=text], .kt-block-defaults-modal .mailerlite-select-form-row input[type=text] {
+	box-shadow: none;
+}
+.edit-post-sidebar .mailerlite-select-form-row, .kt-block-defaults-modal .mailerlite-select-form-row {
+	margin-bottom: 10px;
+	z-index: 200;
+	position: relative;
+}
 .edit-post-settings-sidebar__panel-block .components-panel__body .components-base-control.kb-option-text-control {
     margin-bottom: 10px;
 }
