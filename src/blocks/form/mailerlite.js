@@ -210,7 +210,7 @@ class MailerLiteControls extends Component {
 								<Select
 									value={ ( undefined !== this.props.settings[ 0 ].group && this.props.settings[ 0 ].group[0] ? this.props.settings[ 0 ].group[0] : '' ) }
 									onChange={ ( value ) => {
-										this.props.save( { group: ( value ? [ value ] : [] ) } );
+										this.props.save( { group: ( value.value ? [ value.value ] : [] ) } );
 									} }
 									placeholder={ __( 'Select a Group', 'kadence-blocks' ) }
 									maxMenuHeight={ 300 }
