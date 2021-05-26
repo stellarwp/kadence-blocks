@@ -208,7 +208,7 @@ class MailerLiteControls extends Component {
 								<h2 className="kt-heading-size-title">{ __( 'Select Group', 'kadence-blocks' ) }</h2>
 								<div className="mailerlite-select-form-row">
 								<Select
-									value={ ( undefined !== this.props.settings[ 0 ].group && this.props.settings[ 0 ].group[0] ? this.props.settings[ 0 ].group[0] : '' ) }
+									value={ ( group ? group.filter( ( { value } ) => value.toString() === ( undefined !== this.props.settings[ 0 ].group && this.props.settings[ 0 ].group[0] ? this.props.settings[ 0 ].group[0].toString() : '' ) ) : '' ) }
 									onChange={ ( value ) => {
 										this.props.save( { group: ( value.value ? [ value.value ] : [] ) } );
 									} }
