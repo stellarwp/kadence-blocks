@@ -172,8 +172,8 @@ class TypographyControls extends Component {
 			standardWeights = buttonWeights;
 		}
 		const standardStyles = [
-			{ value: 'normal', label: 'Normal' },
-			{ value: 'italic', label: 'Italic' },
+			{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
+			{ value: 'italic', label: __( 'Italic', 'kadence-blocks' ) },
 		];
 		const activeFont = ( typographySelectOptions ? typographySelectOptions.filter( ( { value } ) => value === this.props.fontFamily ) : '' );
 		let fontStandardWeights = standardWeights;

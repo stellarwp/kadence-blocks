@@ -812,7 +812,20 @@ class Kadence_Blocks_Prebuilt_Library {
 	 * @return bool
 	 */
 	public function delete_block_library_folder() {
+		if ( file_exists( $this->get_old_block_library_folder() ) ) {
+			$this->get_filesystem()->delete( $this->get_old_block_library_folder(), true );
+		}
 		return $this->get_filesystem()->delete( $this->get_block_library_folder(), true );
+	}
+	/**
+	 * Get the old folder for templates data.
+	 *
+	 * @access public
+	 * @return string
+	 */
+	public function get_old_block_library_folder() {
+		$old_block_library_folder = trailingslashit( $this->get_filesystem()->wp_content_dir() ) . 'kadence_blocks_library';
+		return $old_block_library_folder;
 	}
 	/**
 	 * Get the folder for templates data.
@@ -849,7 +862,8 @@ class Kadence_Blocks_Prebuilt_Library {
 	 */
 	public function get_base_path() {
 		if ( ! $this->base_path ) {
-			$this->base_path = apply_filters( 'kadence_block_library_local_data_base_path', trailingslashit( $this->get_filesystem()->wp_content_dir() ) );
+			$upload_dir = wp_upload_dir();
+			$this->base_path = apply_filters( 'kadence_block_library_local_data_base_path', trailingslashit( $upload_dir['basedir'] ) );
 		}
 		return $this->base_path;
 	}

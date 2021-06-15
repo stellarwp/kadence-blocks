@@ -43,16 +43,16 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/advancedheading', {
-	title: __( 'Advanced Heading' ),
+	title: __( 'Advanced Heading', 'kadence-blocks' ),
 	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
 	icon: {
 		src: icons.block,
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'title' ),
-		__( 'heading' ),
-		__( 'KT' ),
+		__( 'title', 'kadence-blocks' ),
+		__( 'heading', 'kadence-blocks' ),
+		'KB',
 	],
 	supports: {
 		ktanimate: true,
@@ -315,6 +315,21 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'boolean',
 			default: false,
 		},
+		link: {
+			type: 'string',
+		},
+		linkTarget: {
+			type: 'boolean',
+			default: false,
+		},
+		linkNoFollow: {
+			type: 'boolean',
+			default: false,
+		},
+		linkSponsored: {
+			type: 'boolean',
+			default: false,
+		},
 	},
 	transforms: {
 		from: [
@@ -362,7 +377,7 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag } } = props;
+		const { attributes: { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget } } = props;
 		const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 		const mType = ( marginType ? marginType : 'px' );
 		const textColorClass = getColorClassName( 'color', colorClass );
@@ -375,6 +390,17 @@ registerBlockType( 'kadence/advancedheading', {
 			[ textColorClass ]: textColorClass,
 			'has-text-color': textColorClass,
 		} );
+		let relAttr;
+		if ( linkTarget ) {
+			relAttr = 'noopener noreferrer';
+		}
+		if ( undefined !== linkNoFollow && true === linkNoFollow ) {
+			relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+		}
+		if ( undefined !== linkSponsored && true === linkSponsored ) {
+			relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+		}
+		//const readyContent = ( link ? `<a href="${link}" class="kb-advanced-heading-link"${ linkTarget ? ' target="_blank"' : '' }${ relAttr ? ` rel="${relAttr}"` : '' }>${content}</a>` : content );
 		const htmlItem = (
 			<RichText.Content
 				tagName={ tagName }
@@ -390,15 +416,26 @@ registerBlockType( 'kadence/advancedheading', {
 				value={ content }
 			/>
 		);
+		const linkHTMLItem = (
+			<a
+				href={ link }
+				className={ 'kb-advanced-heading-link' }
+				target={ linkTarget ? '_blank' : undefined }
+				relAttr={ relAttr ? relAttr : undefined }
+			>
+				{ htmlItem }
+			</a>
+		);
+		const readyContent = ( link ? linkHTMLItem : htmlItem );
 		return (
 			<Fragment>
 				{ wrapper && (
 					<div className={ `kb-adv-heading-wrap${ uniqueID } kadence-advanced-heading-wrapper${ ( revealAnimation ? ' kadence-heading-clip-animation' : '' ) }${ ( className ? ' ' + className : '' ) }` }>
-						{ htmlItem }
+						{ readyContent }
 					</div>
 				) }
 				{ ! wrapper && (
-					htmlItem
+					readyContent
 				) }
 			</Fragment>
 		);

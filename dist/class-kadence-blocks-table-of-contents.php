@@ -276,7 +276,19 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		} else {
 			// Only one page, so return headings from entire post_content.
-			return $this->table_of_contents_get_headings_from_content( $post->post_content, 1, 1, $attributes );
+			$blocks = parse_blocks( $post->post_content );
+			$output = '';
+			foreach( $blocks as $block ) {
+				if ( 'kadence/tableofcontents' !== $block['blockName'] ) {
+					$output .= render_block( $block );
+				}
+			}
+			if ( $output ) {
+				$page_content = do_shortcode( $output );
+			} else {
+				$page_content = do_shortcode( $post->post_content );
+			}
+			return $this->table_of_contents_get_headings_from_content( $page_content, 1, 1, $attributes );
 		}
 	}
 	/**

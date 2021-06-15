@@ -93,6 +93,16 @@
       "pg" : 0,
       "sct" : 1
     },
+    "\/dist\/assets\/images\/ajax-loader.gif" : {
+      "ft" : 4194304,
+      "iS" : 174994,
+      "oA" : 0,
+      "oAP" : "\/dist\/assets\/images\/ajax-loader.gif",
+      "oF" : 0,
+      "opt" : 0,
+      "ou" : "lpckwebp-none",
+      "rq" : 75
+    },
     "\/dist\/assets\/js\/gumshoe.min.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -472,72 +482,6 @@
       "oAP" : "\/dist\/blocks\/testimonials.style.build-min.css",
       "oF" : 0,
       "pg" : 0
-    },
-    "\/dist\/build\/blocks.asset.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.asset.php",
-      "oF" : 0
-    },
-    "\/dist\/build\/blocks.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
-    "\/dist\/build\/blocks.css.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.css.map",
-      "oF" : 0
-    },
-    "\/dist\/build\/blocks.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/dist\/build\/blocks.js.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.js.map",
-      "oF" : 0
-    },
-    "\/dist\/build\/vendors\/blocks.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/dist\/build\/vendors\/blocks.js.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/vendors\/blocks.js.map",
-      "oF" : 0
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -6533,6 +6477,53 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/components\/background\/background-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/background\/background-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/background\/dynamic-background-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/background\/dynamic-background-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/background\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/background\/editor.css",
+      "oF" : 1,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/src\/components\/background\/kadence-focal-picker.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/background\/kadence-focal-picker-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/components\/color\/color-control.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -6588,6 +6579,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/components\/common\/dynamic-text-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/common\/dynamic-text-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/components\/common\/fetch.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -6599,24 +6601,35 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/components\/common\/inline-link-control.js" : {
+    "\/src\/components\/common\/icons.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
       "oA" : 1,
-      "oAP" : "\/src\/components\/common\/inline-link-control-min.js",
+      "oAP" : "\/src\/components\/common\/icons-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/components\/common\/link-control.js" : {
+    "\/src\/components\/common\/kadence-media-placeholder.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
       "oA" : 1,
-      "oAP" : "\/src\/components\/common\/link-control-min.js",
+      "oAP" : "\/src\/components\/common\/kadence-media-placeholder-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/common\/kadence-radio-buttons.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/common\/kadence-radio-buttons-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -6661,6 +6674,109 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/components\/icons\/icon-render-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/links\/dynamic-link-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/links\/dynamic-link-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/links\/editor.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/components\/links\/editor-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
+    "\/src\/components\/links\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/components\/links\/editor.css",
+      "oF" : 0,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/src\/components\/links\/get-post-search-results.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/links\/get-post-search-results-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/links\/inline-link-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/links\/inline-link-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/links\/input-search.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/links\/input-search-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/links\/link-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/links\/link-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/links\/link-input-search.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/links\/link-input-search-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/links\/text-highlight.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/links\/text-highlight-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -6764,6 +6880,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/components\/typography\/fontloader.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/typography\/fontloader-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/components\/typography\/heading-icons.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -6771,6 +6898,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/components\/typography\/heading-icons-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/typography\/inline-typography-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/typography\/inline-typography-control-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -6873,17 +7011,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/faicons-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/fontloader.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/fontloader-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -7005,17 +7132,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/inline-link-control-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/inline-typography-control.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/inline-typography-control-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0

@@ -55,6 +55,9 @@ registerBlockType( 'kadence/infobox', {
 	],
 	attributes,
 	edit,
+	// supports: {
+	// 	kbdynamic: true,
+	// },
 
 	save: props => {
 		const { attributes: { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored, mediaNumber, number }, className } = props;

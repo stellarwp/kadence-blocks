@@ -2377,7 +2377,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][ 0 ] ) && is_array( $attr['labelFont'][ 0 ] ) ) {
 			$label_font = $attr['labelFont'][ 0 ];
-			$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field label {';
+			$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field > label {';
 			if ( isset( $label_font['color'] ) && ! empty( $label_font['color'] ) ) {
 				$css .= 'color:' . $this->kadence_color_output( $label_font['color'] ) . ';';
 			}
@@ -2436,7 +2436,7 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][1] ) ) || ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][1] ) ) ) {
 				$css .= '@media (max-width: 1024px) {';
-				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field label {';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field > label {';
 				if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][1] ) ) {
 					$css .= 'font-size:' . $label_font['size'][1] . ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) . ';';
 				}
@@ -2455,7 +2455,7 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][2] ) ) || ( isset( $label_font['lineHeight'] ) && is_array( $label_font['lineHeight'] ) && is_numeric( $label_font['lineHeight'][2] ) ) ) {
 				$css .= '@media (max-width: 767px) {';
-				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field label {';
+				$css .= '.kadence-form-' . $unique_id . ' .kb-form .kadence-blocks-form-field > label {';
 				if ( isset( $label_font['size'] ) && is_array( $label_font['size'] ) && is_numeric( $label_font['size'][2] ) ) {
 					$css .= 'font-size:' . $label_font['size'][2] . ( isset( $label_font['sizeType'] ) && ! empty( $label_font['sizeType'] ) ? $label_font['sizeType'] : 'px' ) . ';';
 				}
@@ -2745,7 +2745,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css .= '}';
 			}
-			$css .= '.kadence-form-' . $unique_id . ' .kadence-blocks-form-message {';
+			$css .= '.kadence-form-' . $unique_id . ' .kadence-blocks-form-message, .kadence-form-' . $unique_id . ' .kb-form-error-msg {';
 			if ( isset( $message_font['borderRadius'] ) && ! empty( $message_font['borderRadius'] ) ) {
 				$css .= 'border-radius:' . $message_font['borderRadius'] . 'px;';
 			}
@@ -3141,7 +3141,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( ( ( isset( $attr['mediaType'] ) && 'icon' === $attr['mediaType'] || ! isset( $attr['mediaType'] ) ) && isset( $media_icon['hoverAnimation'] ) && 'drawborder' === $media_icon['hoverAnimation'] ) || ( isset( $attr['mediaType'] ) && 'number' === $attr['mediaType'] && isset( $media_number['hoverAnimation'] ) && 'drawborder' === $media_number['hoverAnimation'] ) || ( isset( $attr['mediaType'] ) && 'image' === $attr['mediaType'] && isset( $media_image['hoverAnimation'] ) && ( 'drawborder' === $media_image['hoverAnimation'] || 'grayscale-border-draw' === $media_image['hoverAnimation'] ) ) ) {
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media' );
-			$css->add_property( 'border-width', '0' );
+			$css->add_property( 'border-width', '0px' );
 			if ( isset( $media_style['borderWidth'] ) && is_array( $media_style['borderWidth'] ) ) {
 				$css->add_property( 'box-shadow', 'inset 0 0 0 ' . $media_style['borderWidth'][ 0 ] . 'px ' . ( isset( $media_style['border'] ) && ! empty( $media_style['border'] ) ? $media_style['border'] : '#444444' ) );
 			}
@@ -3154,7 +3154,7 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'border-width', $media_style['borderWidth'][ 0 ] . 'px' );
 			}
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media:after' );
-			$css->set_selector( 'border-width', '0' );
+			$css->set_selector( 'border-width', '0px' );
 			if ( isset( $media_style['borderWidth'] ) && is_array( $media_style['borderWidth'] ) ) {
 				$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media:after' );
 				$css->add_property( 'border-right-color', ( isset( $media_style['hoverBorder'] ) && ! empty( $media_style['hoverBorder'] ) ? $css->render_color( $media_style['hoverBorder'] ) : '#444444' ) );
@@ -5182,6 +5182,17 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		if ( isset( $attr['displayShadow'] ) && ! empty( $attr['displayShadow'] ) && true === $attr['displayShadow'] ) {
+			if ( ! isset( $attr['shadow'] ) ) {
+				$attr['shadow'] = array();
+				$attr['shadow'][0] = array(
+					'hOffset' => 4,
+					'vOffset'=> 2,
+					'blur' => 14,
+					'spread' => 0,
+					'color' => '#000000',
+					'opacity' => 0.2
+				);
+			}
 			if ( isset( $attr['shadow'] ) && is_array( $attr['shadow'] ) && is_array( $attr['shadow'][ 0 ] ) ) {
 				$shadow = $attr['shadow'][ 0 ];
 				$css .= '.kb-gallery-id-' . $unique_id . ' .kadence-blocks-gallery-item .kb-gal-image-radius {';
@@ -7248,7 +7259,36 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function kadence_color_output( $color, $opacity = null ) {
 		if ( strpos( $color, 'palette' ) === 0 ) {
-			$color = 'var(--global-' . $color . ')';
+			switch ($color) {
+				case 'palette2':
+					$fallback = '#2B6CB0';
+					break;
+				case 'palette3':
+					$fallback = '#1A202C';
+					break;
+				case 'palette4':
+					$fallback = '#2D3748';
+					break;
+				case 'palette5':
+					$fallback = '#4A5568';
+					break;
+				case 'palette6':
+					$fallback = '#718096';
+					break;
+				case 'palette7':
+					$fallback = '#EDF2F7';
+					break;
+				case 'palette8':
+					$fallback = '#F7FAFC';
+					break;
+				case 'palette9':
+					$fallback = '#ffffff';
+					break;
+				default:
+					$fallback = '#3182CE';
+					break;
+			}
+			$color = 'var(--global-' . $color . ', ' . $fallback . ')';
 		} else if ( isset( $opacity ) && is_numeric( $opacity ) ) {
 			$color = $this->hex2rgba( $color, $opacity );
 		}

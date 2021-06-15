@@ -60,6 +60,7 @@ class KadenceConfig extends Component {
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			controls: applyFilters( 'kadence.block_controls_sidebar', [] ),
 			blocks: applyFilters( 'kadence.block_blocks_sidebar', [] ),
+			extraPanels: applyFilters( 'kadence.block_panels_sidebar', [] ),
 			deviceType: 'Desktop',
 		};
 	}
@@ -193,6 +194,9 @@ class KadenceConfig extends Component {
 							<KadenceGlobalTypography />
 						) }
 					</PanelBody> */}
+					{ map( this.state.extraPanels, ( { Panel } ) => (
+						<Panel />
+					) ) }
 				</PluginSidebar>
 			</Fragment>
 		);

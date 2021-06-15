@@ -34,7 +34,7 @@ import { useSelect } from '@wordpress/data';
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-export default function ColorControls( {
+export default function AdvancedPopColorControl( {
 	label,
 	onChange,
 	onChangeTablet,

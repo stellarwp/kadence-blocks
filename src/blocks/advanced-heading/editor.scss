@@ -69,6 +69,10 @@
 .kb-tag-level-control .components-icon-button:not(:disabled).is-active:hover:after, .kb-tag-level-control .components-button:not(:disabled).is-active:hover:after {
     color:#191e23;
 }
+.kb-tag-level-control .components-toolbar__control.components-button:before {
+    left: 4px;
+    right: 4px;
+}
 .kb-tag-level-control .components-icon-button.is-active, .kb-tag-level-control .components-button.is-active {
     outline: none;
     color: #fff;

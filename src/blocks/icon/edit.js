@@ -17,6 +17,8 @@ import IconRender from '../../components/icons/icon-render';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import StepControl from '../../step-control';
+import URLInputControl from '../../components/links/link-control';
+
 /**
  * Import Css
  */
@@ -29,7 +31,6 @@ import { __ } from '@wordpress/i18n';
 
 const {
 	InspectorControls,
-	URLInput,
 	BlockControls,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
@@ -437,25 +438,23 @@ class KadenceIcons extends Component {
 							/>
 						</Fragment>
 					) }
-					<p className="components-base-control__label">{ __( 'Link' ) }</p>
-					<URLInput
-						autoFocus={ false }
-						value={ icons[ index ].link }
-						className="kt-btn-link-input"
-						onChange={ value => {
+					<URLInputControl
+						label={ __( 'Link', 'kadence-blocks' ) }
+						url={ icons[ index ].link }
+						onChangeUrl={ value => {
 							this.saveArrayUpdate( { link: value }, index );
 						} }
-					/>
-					<SelectControl
-						label={ __( 'Link Target' ) }
-						value={ icons[ index ].target }
-						options={ [
-							{ value: '_self', label: __( 'Same Window' ) },
-							{ value: '_blank', label: __( 'New Window' ) },
-						] }
-						onChange={ value => {
-							this.saveArrayUpdate( { target: value }, index );
+						additionalControls={ true }
+						opensInNewTab={ ( icons[ index ].target && '_blank' == icons[ index ].target ? true : false ) }
+						onChangeTarget={ value => {
+							if ( value ) {
+									this.saveArrayUpdate( { target: '_blank' }, index );
+							} else {
+									this.saveArrayUpdate( { target: '_self' }, index );
+							}
 						} }
+						dynamicAttribute={ 'icons:' + index }
+						{ ...this.props }
 					/>
 					<TextControl
 						label={ __( 'Title for Accessibility' ) }

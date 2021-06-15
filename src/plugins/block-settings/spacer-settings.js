@@ -50,11 +50,7 @@ class KadenceSpacerSettings extends Component {
 		const spacerSettings = ( settings && settings[ 'kadence/spacer' ] ? settings[ 'kadence/spacer' ] : {} );
 		return (
 			<Fragment>
-				<Tooltip text="Block Settings Visibility">
-					<Button className="kt-block-settings" onClick={ () => this.setState( { isOpen: true } ) }>
-						<Dashicon icon="visibility" />
-					</Button>
-				</Tooltip>
+				<Button className="kt-block-settings" icon="visibility" label={ __( 'Block Settings Visibility', 'kadence-blocks' ) } onClick={ () => this.setState( { isOpen: true } ) }/>
 				{ isOpen ?
 					<Modal
 						className="kt-block-settings-modal"

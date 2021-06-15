@@ -35,16 +35,19 @@ const {
  */
 registerBlockType( 'kadence/icon', {
 	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-	title: __( 'Icon' ), // Block title.
+	title: __( 'Icon', 'kadence-blocks' ), // Block title.
 	icon: {
 		src: itemicons.block,
 	},
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [
-		__( 'icon' ),
-		__( 'svg' ),
-		__( 'KT' ),
+		__( 'icon', 'kadence-blocks' ),
+		__( 'svg', 'kadence-blocks' ),
+		'KB',
 	],
+	// supports: {
+	// 	kbdynamic: true,
+	// },
 	attributes: {
 		icons: {
 			type: 'array',

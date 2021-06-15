@@ -106,6 +106,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		array(
 			'ajax_url'       => admin_url( 'admin-ajax.php' ),
 			'ajax_nonce'     => wp_create_nonce( 'kadence-blocks-ajax-verification' ),
+			'ajax_loader'    => KADENCE_BLOCKS_URL . 'dist/assets/images/ajax-loader.gif',
 			'sidebar_size'   => $sidebar_size,
 			'nosidebar_size' => $nosidebar_size,
 			'default_size'   => $jssize,
@@ -132,13 +133,26 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'c_fonts'        => apply_filters( 'kadence_blocks_custom_fonts', array() ),
 			'fluentCRM'      => defined( 'FLUENTCRM' ),
 			'cloud_enabled'  => apply_filters( 'kadence_blocks_cloud_enabled', true ),
+			'dynamic_enabled'  => apply_filters( 'kadence_blocks_dynamic_enabled', false ),
 			'cloud_settings' => get_option( 'kadence_blocks_cloud' ),
 			'prebuilt_libraries' => apply_filters( 'kadence_blocks_custom_prebuilt_libraries', array() ),
 			'showDesignLibrary' => apply_filters( 'kadence_blocks_design_library_enabled', true ),
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
-			'icon_names'     => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
-			'icons_ico'      => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
-			'icons_fa'       => file_exists( $icons_path ) ? include $icons_path : array(),
+			'icon_names' => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
+		)
+	);
+	wp_localize_script(
+		'kadence-blocks-js',
+		'kadence_blocks_params_ico',
+		array(
+			'icons' => file_exists( $icon_ico_path ) ? include $icon_ico_path : array(),
+		)
+	);
+	wp_localize_script(
+		'kadence-blocks-js',
+		'kadence_blocks_params_fa',
+		array(
+			'icons' => file_exists( $icons_path ) ? include $icons_path : array(),
 		)
 	);
 }
@@ -455,6 +469,21 @@ function kadence_blocks_admin_theme_content_width() {
 		echo '<style id="kt-block-content-width">';
 		echo '.wp-block-kadence-rowlayout > .innerblocks-wrap.kb-theme-content-width {
 			max-width:' . esc_attr( $content_width ) . 'px;
+		}';
+		echo '</style>';
+	}
+	if ( ! class_exists( 'Kadence\Theme' ) ) {
+		echo '<style id="kt-block-global-colors">';
+		echo ':root {
+			--global-palette1: #3182CE;
+			--global-palette2: #2B6CB0;
+			--global-palette3: #1A202C;
+			--global-palette4: #2D3748;
+			--global-palette5: #4A5568;
+			--global-palette6: #718096;
+			--global-palette7: #EDF2F7;
+			--global-palette8: #F7FAFC;
+			--global-palette9: #ffffff;
 		}';
 		echo '</style>';
 	}

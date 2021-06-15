@@ -18,7 +18,7 @@ import times from 'lodash/times';
 import classnames from 'classnames';
 import memoize from 'memize';
 import map from 'lodash/map';
-import WebfontLoader from '../../fontloader';
+import WebfontLoader from '../../components/typography/fontloader';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';

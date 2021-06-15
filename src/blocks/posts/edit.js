@@ -297,12 +297,12 @@ class KadencePosts extends Component {
 										<Select
 											value={ taxonomyList.filter( ( { value } ) => value === taxType ) }
 											onChange={ ( select ) => {
-												setAttributes( { taxType: select.value } );
-												setAttributes( { categories: [] } );
+												setAttributes( { taxType: ( select && select.value ? select.value : '' ), categories: [] } );
 											} }
 											id={ 'tax-selection' }
 											options={ taxonomyList }
 											isMulti={ false }
+											isClearable={ true }
 											maxMenuHeight={ 300 }
 											placeholder={ __( 'Select Taxonomy', 'kadence-blocks' ) }
 										/>
@@ -322,8 +322,9 @@ class KadencePosts extends Component {
 												id={ 'terms-selection' }
 												options={ taxonomyOptions }
 												isMulti={ true }
+												isClearable={ true }
 												maxMenuHeight={ 300 }
-												placeholder={ __( 'All', 'kadence-blocks' ) }
+												placeholder={ __( 'Select', 'kadence-blocks' ) }
 											/>
 										</div>
 										<RadioControl

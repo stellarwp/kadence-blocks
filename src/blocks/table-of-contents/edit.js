@@ -12,7 +12,7 @@ import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
 import classnames from 'classnames';
 import memoize from 'memize';
-import WebfontLoader from '../../fontloader';
+import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';

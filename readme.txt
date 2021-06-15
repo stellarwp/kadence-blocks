@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.7.2
-Stable tag: 2.0.7
+Stable tag: 2.0.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,20 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.0.8 =
+Release Date: June 15th, 2021
+* Add: Output for kadence palette if Kadence Theme is not used.
+* Add: Jost Google Font.
+* Update: Table of Contents for better support with dynamically added content.
+* Update: Form Block Fluent CRM field Mapping.
+* Update: Move design library folder into uploads folder for better cross server support.
+* Fix: Issue with info box animation border spin.
+* Fix: Issue with columns having a background not updating correctly.
+* Fix: Message styling in form block.
+* Fix: Issue with gallery shadow.
+* Fix: Possible issue with Substitute Max Line Length preventing editor load.
+* Fix: Checkbox labels being styled with top tier label styling.
 
 = 2.0.7 =
 Release Date: May 26th, 2021

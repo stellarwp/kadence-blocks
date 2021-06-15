@@ -16,13 +16,14 @@ import classnames from 'classnames';
 import times from 'lodash/times';
 import filter from 'lodash/filter';
 import MeasurementControls from '../../measurement-control';
-import WebfontLoader from '../../fontloader';
+import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../box-shadow-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import URLInputControl from '../../components/links/link-control';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
 /**
@@ -40,7 +41,6 @@ const {
 } = wp.element;
 const {
 	RichText,
-	URLInput,
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
@@ -854,7 +854,7 @@ class KadenceForm extends Component {
 								{ value: 'accept', label: __( 'Accept', 'kadence-blocks' ) },
 								{ value: 'select', label: __( 'Select', 'kadence-blocks' ) },
 								{ value: 'tel', label: __( 'Telephone', 'kadence-blocks' ) },
-								{ value: 'checkbox', label: __( 'CheckBoxes', 'kadence-blocks' ) },
+								{ value: 'checkbox', label: __( 'Checkboxes', 'kadence-blocks' ) },
 								{ value: 'radio', label: __( 'Radio', 'kadence-blocks' ) },
 								{ value: 'hidden', label: __( 'Hidden', 'kadence-blocks' ) },
 							] }
@@ -892,7 +892,7 @@ class KadenceForm extends Component {
 							{ value: 'accept', label: __( 'Accept', 'kadence-blocks' ) },
 							{ value: 'select', label: __( 'Select', 'kadence-blocks' ) },
 							{ value: 'tel', label: __( 'Telephone', 'kadence-blocks' ) },
-							{ value: 'checkbox', label: __( 'CheckBoxes', 'kadence-blocks' ) },
+							{ value: 'checkbox', label: __( 'Checkboxes', 'kadence-blocks' ) },
 							{ value: 'radio', label: __( 'Radio', 'kadence-blocks' ) },
 							{ value: 'hidden', label: __( 'Hidden', 'kadence-blocks' ) },
 						] }
@@ -1003,13 +1003,13 @@ class KadenceForm extends Component {
 								value={ ( undefined !== fields[ index ].placeholder ? fields[ index ].placeholder : '' ) }
 								onChange={ ( value ) => this.saveFields( { placeholder: value }, index ) }
 							/>
-							<div className="components-base-control">
-								<p className="components-base-control__label">{ __( 'Link URL', 'kadence-blocks' ) }</p>
-								<URLInput
-									value={ ( undefined !== fields[ index ].default ? fields[ index ].default : '' ) }
-									onChange={ ( value ) => this.saveFields( { default: value }, index ) }
-								/>
-							</div>
+							<URLInputControl
+								label={ __( 'Link URL', 'kadence-blocks' ) }
+								url={ ( undefined !== fields[ index ].default ? fields[ index ].default : '' ) }
+								onChangeUrl={ ( value ) => this.saveFields( { default: value }, index ) }
+								additionalControls={ false }
+								{ ...this.props }
+							/>
 						</Fragment>
 					) }
 					{ ( 'accept' === fields[ index ].type ) && (
@@ -1355,7 +1355,7 @@ class KadenceForm extends Component {
 								</select>
 							) }
 							{ 'checkbox' === fields[ index ].type && (
-								<div data-type={ fields[ index ].type } className={ `kb-field kb-checkbox-style-field kb-${ fields[ index ].type }-field kb-field-${ index }kb-radio-style-${ fields[ index ].inline ? 'inline' : 'normal' }` }>
+								<div data-type={ fields[ index ].type } className={ `kb-field kb-checkbox-style-field kb-${ fields[ index ].type }-field kb-field-${ index } kb-radio-style-${ fields[ index ].inline ? 'inline' : 'normal' }` }>
 									{ times( fields[ index ].options.length, n => (
 										<div key={ n } data-type={ fields[ index ].type } className={ `kb-checkbox-item kb-checkbox-item-${ n }` }>
 											<input type="checkbox" name={ `kb_field_${ index }[]${ n }` } id={ `kb_field_${ index }[]${ n }` } className={ 'kb-sub-field kb-checkbox-style' } value={ ( undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '' ) } checked={ ( undefined !== fields[ index ].options[ n ].value && fields[ index ].options[ n ].value === fields[ index ].default ? true : false ) } style={ {
@@ -1697,10 +1697,12 @@ class KadenceForm extends Component {
 							title={ __( 'Redirect Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
-							<p className="components-base-control__label">{ __( 'Redirect to', 'kadence-blocks' ) }</p>
-							<URLInput
-								value={ redirect }
-								onChange={ value=> setAttributes( { redirect: value } ) }
+							<URLInputControl
+								label={ __( 'Redirect to', 'kadence-blocks' ) }
+								url={ redirect }
+								onChangeUrl={ value=> setAttributes( { redirect: value } ) }
+								additionalControls={ false }
+								{ ...this.props }
 							/>
 						</PanelBody>
 					) }

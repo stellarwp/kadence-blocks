@@ -24,7 +24,7 @@ import times from 'lodash/times';
  */
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import WebfontLoader from '../../fontloader';
+import WebfontLoader from '../../components/typography/fontloader';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import KadenceMediaPlaceholder from '../../kadence-media-placeholder';

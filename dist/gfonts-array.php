@@ -410,6 +410,7 @@ $gfonts['Jolly Lodger'] = array('v' => array('regular'), 's' => array('latin-ext
 $gfonts['Jomhuria'] = array('v' => array('regular'), 's' => array('latin-ext','arabic','latin'), 'w' => array('regular'), 'i' => array('normal'));
 $gfonts['Josefin Sans'] = array('v' => array('100','100italic','300','300italic','regular','italic','600','600italic','700','700italic'), 's' => array('latin-ext','vietnamese','latin'), 'w' => array('100','300','regular','600','700'), 'i' => array('normal','italic'));
 $gfonts['Josefin Slab'] = array('v' => array('100','100italic','300','300italic','regular','italic','600','600italic','700','700italic'), 's' => array('latin'), 'w' => array('100','300','regular','600','700'), 'i' => array('normal','italic'));
+$gfonts['Jost'] = array( 'v' => array('100','200','300','regular','500','600','700','800','900','100italic','200italic','300italic','italic','500italic','600italic','700italic','800italic','900italic'),'w' => array('100','200','300','regular','500','600','700','800','900','200italic','italic','600italic','800italic'),'i' => array('normal','italic'));
 $gfonts['Joti One'] = array('v' => array('regular'), 's' => array('latin-ext','latin'), 'w' => array('regular'), 'i' => array('normal'));
 $gfonts['Jua'] = array('v' => array('regular'), 's' => array('korean','latin'), 'w' => array('regular'), 'i' => array('normal'));
 $gfonts['Judson'] = array('v' => array('regular','italic','700'), 's' => array('latin-ext','vietnamese','latin'), 'w' => array('regular','700'), 'i' => array('normal','italic'));

@@ -14,13 +14,13 @@ import classnames from 'classnames';
  */
 import icons from '../../icons';
 import MeasurementControls from '../../measurement-control';
-import WebfontLoader from '../../fontloader';
+import WebfontLoader from '../../components/typography/fontloader';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
-import URLInputControl from '../../components/common/link-control';
+import URLInputControl from '../../components/links/link-control';
 import TypographyControls from '../../components/typography/typography-control';
 import KadenceRange from '../../components/range/range-control';
 
@@ -672,6 +672,7 @@ class KadenceCountdown extends Component {
 													url={ redirectURL }
 													onChangeUrl={ value => setAttributes( { redirectURL: value } ) }
 													additionalControls={false}
+													{ ...this.props }
 												/>
 											</Fragment>
 										) }

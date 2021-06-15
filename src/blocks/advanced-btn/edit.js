@@ -9,8 +9,7 @@ import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../box-shadow-control';
-import WebfontLoader from '../../fontloader';
-import URLInputInline from '../../inline-link-control';
+import WebfontLoader from '../../components/typography/fontloader';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import classnames from 'classnames';
@@ -19,7 +18,9 @@ import flow from 'lodash/flow';
 import filter from 'lodash/filter';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
-import URLInputControl from '../../components/common/link-control';
+import URLInputControl from '../../components/links/link-control';
+import URLInputInline from '../../components/links/inline-link-control';
+import DynamicTextControl from '../../components/common/dynamic-text-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 
 const POPOVER_PROPS = {
@@ -50,7 +51,6 @@ import {
 import { Component, Fragment } from '@wordpress/element';
 import {
 	RichText,
-	URLInput,
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
@@ -295,7 +295,7 @@ class KadenceAdvancedButton extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, margin, marginUnit, kadenceAOSOptions, kadenceAnimation, collapseFullwidth }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, margin, marginUnit, kadenceAOSOptions, kadenceAnimation, collapseFullwidth }, attributes, className, setAttributes, isSelected } = this.props;
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -444,7 +444,7 @@ class KadenceAdvancedButton extends Component {
 									paddingLeft: ( leftIconPadding ? leftIconPadding + 'px' : undefined ),
 								} } />
 							) }
-							<RichText
+							{ applyFilters( 'kadence.dynamicContent', <RichText
 								tagName="div"
 								placeholder={ __( 'Button...', 'kadence-blocks' ) }
 								value={ btns[ index ].text }
@@ -464,10 +464,10 @@ class KadenceAdvancedButton extends Component {
 								onChange={ value => {
 									this.saveArrayUpdate( { text: value }, index );
 								} }
-								allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
+								allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ], 'kadence/advancedbtn' ) }
 								className={ 'kt-button-text' }
 								keepPlaceholderOnFocus
-							/>
+							/>, attributes, 'btns:' + index ) }
 							{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
 								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '1em' } style={ {
 									fontSize: ( undefined !== btns[ index ].iconSize ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ) + ( undefined !== btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) : undefined ),
@@ -482,17 +482,15 @@ class KadenceAdvancedButton extends Component {
 					</span>
 					{ isButtonSelected && (
 						<URLInputInline
-							url={ btns[ index ].link || '' }
+							url={ btns[ index ].link }
 							onChangeUrl={ value => {
 								this.saveArrayUpdate( { link: value }, index );
 							} }
-							opensInNewTab={ ( undefined !== btns[ index ].target && '_blank' === btns[ index ].target ? true : false ) }
+							additionalControls={ true }
+							changeTargetType={ true }
+							opensInNewTab={ ( undefined !== btns[ index ].target ? btns[ index ].target : '' ) }
 							onChangeTarget={ value => {
-								if ( true === value ) {
-									this.saveArrayUpdate( { target: '_blank' }, index );
-								} else {
-									this.saveArrayUpdate( { target: '_self' }, index );
-								}
+								this.saveArrayUpdate( { target: value }, index );
 							} }
 							linkNoFollow={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
 							onChangeFollow={ value => {
@@ -506,6 +504,8 @@ class KadenceAdvancedButton extends Component {
 							onChangeDownload={ value => {
 								this.saveArrayUpdate( { download: value }, index );
 							} }
+							dynamicAttribute={ 'btns:' + index }
+							{ ...this.props }
 						/>
 					) }
 					{ isButtonSelected && (
@@ -631,6 +631,13 @@ class KadenceAdvancedButton extends Component {
 			// { key: 'overlay', name: __( 'Overlay' ), icon: icons.infoTopOverlay },
 			// { key: 'overlayleft', name: __( 'Overlay Left' ), icon: icons.infoLeftOverlay },
 		];
+		const blockToolControls = ( index ) => {
+			const isButtonSelected = ( isSelected && this.state.selectedButton === index && kadence_blocks_params.dynamic_enabled );
+			if ( ! isButtonSelected ) {
+				return;
+			}
+			return <DynamicTextControl dynamicAttribute={ 'btns:' + index } {...this.props} />;
+		}
 		const tabControls = ( index ) => {
 			const isButtonSelected = ( isSelected && this.state.selectedButton === index );
 			return (
@@ -687,6 +694,8 @@ class KadenceAdvancedButton extends Component {
 						onChangeDownload={ value => {
 							this.saveArrayUpdate( { download: value }, index );
 						} }
+						dynamicAttribute={ 'btns:' + index }
+						{ ...this.props }
 					/>
 					{ this.showSettings( 'sizeSettings' ) && (
 						<Fragment>
@@ -1585,6 +1594,11 @@ class KadenceAdvancedButton extends Component {
 				{ times( btnCount, n => tabControls( n ) ) }
 			</Fragment>
 		);
+		const renderControlsArray = (
+			<Fragment>
+				{ times( btnCount, n => blockToolControls( n ) ) }
+			</Fragment>
+		);
 		const renderPreviewArray = (
 			<div>
 				{ times( btnCount, n => renderBtns( n ) ) }
@@ -1649,6 +1663,7 @@ class KadenceAdvancedButton extends Component {
 							value={ hAlign }
 							onChange={ ( value ) => setAttributes( { hAlign: value } ) }
 						/>
+						{ renderControlsArray }
 					</BlockControls>
 					{ this.showSettings( 'allSettings' ) && (
 						<Fragment>

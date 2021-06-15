@@ -80,6 +80,10 @@ class Kadence_FluentCRM_REST_Controller extends WP_REST_Controller {
 		} elseif ( 'fields' === $end_point ) {
 			$fields = array(
 				array(
+					'key' => 'prefix',
+					'title' => __( 'Name Prefix', 'kadence-blocks' ),
+				),
+				array(
 					'key' => 'first_name',
 					'title' => __( 'First Name', 'kadence-blocks' ),
 				),
@@ -87,7 +91,56 @@ class Kadence_FluentCRM_REST_Controller extends WP_REST_Controller {
 					'key' => 'last_name',
 					'title' => __( 'Last Name', 'kadence-blocks' ),
 				),
+				array(
+					'key' => 'full_name',
+					'title' => __( 'Full Name', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'timezone',
+					'title' => __( 'Timezone', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'address_line_1',
+					'title' => __( 'Address Line 1', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'address_line_2',
+					'title' => __( 'Address Line 2', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'city',
+					'title' => __( 'City', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'state',
+					'title' => __( 'State', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'postal_code',
+					'title' => __( 'Postal Code', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'country',
+					'title' => __( 'Country', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'phone',
+					'title' => __( 'Phone', 'kadence-blocks' ),
+				),
+				array(
+					'key' => 'source',
+					'title' => __( 'Source', 'kadence-blocks' ),
+				),
 			);
+			if ( function_exists( 'fluentcrm_get_option' ) ) {
+				$fluent_fields = fluentcrm_get_option( 'contact_custom_fields', array() );
+				foreach ( $fluent_fields as $field ) {
+					$fields[] = array(
+						'key' => $field['slug'],
+						'title' => $field['label'],
+					);
+				}
+			}
 			return apply_filters( 'kadence_blocks_form_fluentcrm_fields', $fields );
 		} else {
 			return array();

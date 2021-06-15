@@ -13,7 +13,7 @@ import icons from '../../icons';
 import times from 'lodash/times';
 import MeasurementControls from '../../measurement-control';
 import TypographyControls from '../../components/typography/typography-control';
-import WebfontLoader from '../../fontloader';
+import WebfontLoader from '../../components/typography/fontloader';
 import map from 'lodash/map';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
@@ -21,6 +21,7 @@ import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import URLInputControl from '../../components/links/link-control';
 /**
  * Import Css
  */
@@ -33,7 +34,6 @@ import { __ } from '@wordpress/i18n';
 
 const {
 	InspectorControls,
-	URLInput,
 	RichText,
 	BlockControls,
 	BlockAlignmentToolbar,
@@ -352,23 +352,23 @@ class KadenceIconLists extends Component {
 					title={ __( 'Item', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === listCount ? true : false ) }
 				>
-					<p className="components-base-control__label">{ __( 'Link' ) }</p>
-					<URLInput
-						value={ items[ index ].link }
-						onChange={ value => {
+					<URLInputControl
+						label={ __( 'Link', 'kadence-blocks' ) }
+						url={ items[ index ].link }
+						onChangeUrl={ value => {
 							this.saveListItem( { link: value }, index );
 						} }
-					/>
-					<SelectControl
-						label={ __( 'Link Target', 'kadence-blocks' ) }
-						value={ items[ index ].target }
-						options={ [
-							{ value: '_self', label: __( 'Same Window', 'kadence-blocks' ) },
-							{ value: '_blank', label: __( 'New Window', 'kadence-blocks' ) },
-						] }
-						onChange={ value => {
-							this.saveListItem( { target: value }, index );
+						additionalControls={ true }
+						opensInNewTab={ ( items[ index ].target && '_blank' == items[ index ].target ? true : false ) }
+						onChangeTarget={ value => {
+							if ( value ) {
+									this.saveListItem( { target: '_blank' }, index );
+							} else {
+									this.saveListItem( { target: '_self' }, index );
+							}
 						} }
+						dynamicAttribute={ 'items:' + index }
+						{ ...this.props }
 					/>
 					<IconControl
 						value={ items[ index ].icon }

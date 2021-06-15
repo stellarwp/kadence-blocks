@@ -79,6 +79,7 @@ class PrebuiltSections extends Component {
 			categories: {
 				'category': __( 'Category', 'kadence-blocks' ),
 				'pro': __( 'Pro', 'kadence-blocks' ),
+				'new': __( 'New', 'kadence-blocks' ),
 				'feature': __( 'Feature', 'kadence-blocks' ),
 				'hero': __( 'Hero', 'kadence-blocks' ),
 				'form': __( 'Form', 'kadence-blocks' ),

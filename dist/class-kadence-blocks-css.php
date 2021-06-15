@@ -596,7 +596,36 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		if ( ! is_array( $color ) && strpos( $color, 'palette' ) === 0 ) {
-			$color = 'var(--global-' . $color . ')';
+			switch ($color) {
+				case 'palette2':
+					$fallback = '#2B6CB0';
+					break;
+				case 'palette3':
+					$fallback = '#1A202C';
+					break;
+				case 'palette4':
+					$fallback = '#2D3748';
+					break;
+				case 'palette5':
+					$fallback = '#4A5568';
+					break;
+				case 'palette6':
+					$fallback = '#718096';
+					break;
+				case 'palette7':
+					$fallback = '#EDF2F7';
+					break;
+				case 'palette8':
+					$fallback = '#F7FAFC';
+					break;
+				case 'palette9':
+					$fallback = '#ffffff';
+					break;
+				default:
+					$fallback = '#3182CE';
+					break;
+			}
+			$color = 'var(--global-' . $color . ', ' . $fallback . ')';
 		} elseif ( isset( $opacity ) && is_numeric( $opacity ) && 1 !== (int) $opacity ) {
 			$color = kadence_blocks_hex2rgba( $color, $opacity );
 		}

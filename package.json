@@ -12,7 +12,7 @@
   "dependencies": {
     "@dr-kobros/react-webfont-loader": "^8.0.0",
     "@fonticonpicker/react-fonticonpicker": "^1.2.0",
-    "@wordpress/icons": "^4.0.0",
+    "@wordpress/icons": "^4.0.1",
     "classnames": "^2.2.6",
     "eslint": "^4.15.0",
     "eslint-config-wordpress": "^2.0.0",

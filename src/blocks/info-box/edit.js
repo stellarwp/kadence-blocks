@@ -19,14 +19,16 @@ import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import ImageSizeControl from '../../image-size-control';
-import WebfontLoader from '../../fontloader';
+import WebfontLoader from '../../components/typography/fontloader';
 import IconRender from '../../components/icons/icon-render';
 import IconControl from '../../components/icons/icon-control';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import URLInputControl from '../../components/links/link-control';
+
 
 
 /**
@@ -41,7 +43,6 @@ const { compose } = wp.compose;
 const { withSelect } = wp.data;
 const {
 	MediaUpload,
-	URLInput,
 	RichText,
 	AlignmentToolbar,
 	InspectorControls,
@@ -203,19 +204,19 @@ class KadenceInfoBox extends Component {
 		const marginMax = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 24 : 200 );
 		const marginStep = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 );
 		const startlayoutOptions = [
-			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
-			{ key: 'simple', name: __( 'Simple' ), icon: icons.infoSimple },
-			{ key: 'left', name: __( 'Align Left' ), icon: icons.infoLeft },
-			{ key: 'bold', name: __( 'Bold Background' ), icon: icons.infoBackground },
-			{ key: 'image', name: __( 'Circle Image' ), icon: icons.infoImage },
+			{ key: 'skip', name: __( 'Skip', 'kadence-blocks' ), icon: __( 'Skip' ) },
+			{ key: 'simple', name: __( 'Simple', 'kadence-blocks' ), icon: icons.infoSimple },
+			{ key: 'left', name: __( 'Align Left', 'kadence-blocks' ), icon: icons.infoLeft },
+			{ key: 'bold', name: __( 'Bold Background', 'kadence-blocks' ), icon: icons.infoBackground },
+			{ key: 'image', name: __( 'Circle Image', 'kadence-blocks' ), icon: icons.infoImage },
 		];
 		const layoutPresetOptions = [
-			{ key: 'simple', name: __( 'Basic' ), icon: icons.infoStart },
-			{ key: 'basic', name: __( 'Basic' ), icon: icons.infoBasic },
-			{ key: 'leftabove', name: __( 'Left Above' ), icon: icons.infoLeftAbove },
-			{ key: 'left', name: __( 'Left' ), icon: icons.infoLeft },
-			{ key: 'overlay', name: __( 'Overlay' ), icon: icons.infoTopOverlay },
-			{ key: 'overlayleft', name: __( 'Overlay Left' ), icon: icons.infoLeftOverlay },
+			{ key: 'simple', name: __( 'Basic', 'kadence-blocks' ), icon: icons.infoStart },
+			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: icons.infoBasic },
+			{ key: 'leftabove', name: __( 'Left Above', 'kadence-blocks' ), icon: icons.infoLeftAbove },
+			{ key: 'left', name: __( 'Left', 'kadence-blocks' ), icon: icons.infoLeft },
+			{ key: 'overlay', name: __( 'Overlay', 'kadence-blocks' ), icon: icons.infoTopOverlay },
+			{ key: 'overlayleft', name: __( 'Overlay Left', 'kadence-blocks' ), icon: icons.infoLeftOverlay },
 		];
 		const setPresetLayout = ( key ) => {
 			if ( 'simple' === key ) {
@@ -1394,44 +1395,26 @@ class KadenceInfoBox extends Component {
 									) ) }
 								</ButtonGroup>
 							</Fragment>
-							<h2 className="side-h2-label">{ __( 'Link', 'kadence-blocks' ) }</h2>
-							<div className="kt-btn-link-group">
-								<URLInput
-									className="kt-btn-link-input"
-									value={ link }
-									onChange={ value => setAttributes( { link: value } ) }
-								/>
-								<IconButton
-									className="kt-link-settings"
-									icon={ 'arrow-down-alt2' }
-									label={ __( 'Link Settings', 'kadence-blocks' ) }
-									onClick={ () => this.setState( { btnLink: ( this.state.btnLink ? false : true ) } ) }
-								/>
-							</div>
-							{ this.state.btnLink && (
-								<Fragment>
-									<div className="kt-spacer-sidebar-15"></div>
-									<SelectControl
-										label={ __( 'Link Target', 'kadence-blocks' ) }
-										value={ target }
-										options={ [
-											{ value: '_self', label: __( 'Same Window', 'kadence-blocks' ) },
-											{ value: '_blank', label: __( 'New Window', 'kadence-blocks' ) },
-										] }
-										onChange={ value => setAttributes( { target: value } ) }
-									/>
-									<ToggleControl
-										label={ __( 'Set link to nofollow?', 'kadence-blocks' ) }
-										checked={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
-										onChange={ ( value ) => setAttributes( { linkNoFollow: value } ) }
-									/>
-									<ToggleControl
-										label={ __( 'Set link attribute Sponsored?', 'kadence-blocks' ) }
-										checked={ ( undefined !== linkSponsored ? linkSponsored : false ) }
-										onChange={ ( value ) => setAttributes( { linkSponsored: value } ) }
-									/>
-								</Fragment>
-							) }
+							<URLInputControl
+								label={ __( 'Link', 'kadence-blocks' ) }
+								url={ link }
+								onChangeUrl={ value => setAttributes( { link: value } ) }
+								additionalControls={ true }
+								opensInNewTab={ ( target && '_blank' == target ? true : false ) }
+								onChangeTarget={ value => {
+									if ( value ) {
+										setAttributes( { target: '_blank' } );
+									} else {
+										setAttributes( { target: '_self' } );
+									}
+								} }
+								linkNoFollow={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
+								onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
+								linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
+								onChangeSponsored={ value => setAttributes( { sponsored: value } ) }
+								dynamicAttribute={ 'link' }
+								{ ...this.props }
+							/>
 							<SelectControl
 								label={ __( 'Link Content', 'kadence-blocks' ) }
 								value={ linkProperty }
@@ -1783,7 +1766,7 @@ class KadenceInfoBox extends Component {
 													) }
 												/>
 												<IconButton
-													label={ __( 'clear' ) }
+													label={ __( 'clear', 'kadence-blocks' ) }
 													className="kb-clear-image-btn"
 													icon="no-alt"
 													onClick={ clearImage }
@@ -1810,7 +1793,7 @@ class KadenceInfoBox extends Component {
 											label={ __( 'Image Hover Animation', 'kadence-blocks' ) }
 											value={ mediaImage[ 0 ].hoverAnimation }
 											options={ [
-												{ value: 'none', label: __( 'None' ) },
+												{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
 												{ value: 'grayscale', label: __( 'Grayscale to Color', 'kadence-blocks' ) },
 												{ value: 'drawborder', label: __( 'Border Spin In', 'kadence-blocks' ) },
 												{ value: 'grayscale-border-draw', label: __( 'Grayscale to Color & Border Spin In', 'kadence-blocks' ) },
@@ -1873,7 +1856,7 @@ class KadenceInfoBox extends Component {
 											</Fragment>
 										) }
 										<MeasurementControls
-											label={ __( 'Image Border' ) }
+											label={ __( 'Image Border', 'kadence-blocks' ) }
 											measurement={ mediaStyle[ 0 ].borderWidth }
 											control={ mediaBorderControl }
 											onChange={ ( value ) => saveMediaStyle( { borderWidth: value } ) }
@@ -2019,7 +2002,7 @@ class KadenceInfoBox extends Component {
 											max={ 200 }
 										/>
 										<SelectControl
-											label={ __( 'Icon Hover Animation' ) }
+											label={ __( 'Icon Hover Animation', 'kadence-blocks' ) }
 											value={ mediaIcon[ 0 ].hoverAnimation }
 											options={ [
 												{ value: 'none', label: __( 'None', 'kadence-blocks' ) },

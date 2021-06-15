@@ -8,13 +8,13 @@
 /**
  * Import Icons
  */
-import icons from './icons';
+import icons from '../../icons';
 /**
  * Import External
  */
 //import gFonts from './gfonts';
 //import fonts from './fonts';
-import capitalizeFirstLetter from './capitalfirst';
+import capitalizeFirstLetter from './../common/capitalfirst';
 import Select from 'react-select';
 import map from 'lodash/map';
 
@@ -144,23 +144,25 @@ class InlineTypographyControl extends Component {
 	}
 	setTypographyOptions( typographySelectOptions ) {
 		let standardWeights = [
-			{ value: 'regular', label: 'Normal' },
-			{ value: 'bold', label: 'Bold' },
+			{ value: 'inherit', label: __( 'Inherit', 'kadence-blocks' ) },
+			{ value: '400', label: __( 'Normal', 'kadence-blocks' ) },
+			{ value: 'bold', label: __( 'Bold', 'kadence-blocks' ) },
 		];
 		const systemWeights = [
-			{ value: '100', label: 'Thin 100' },
-			{ value: '200', label: 'Extra-Light 200' },
-			{ value: '300', label: 'Light 300' },
-			{ value: 'regular', label: 'Regular' },
-			{ value: '500', label: 'Medium 500' },
-			{ value: '600', label: 'Semi-Bold 600' },
-			{ value: '700', label: 'Bold 700' },
-			{ value: '800', label: 'Extra-Bold 800' },
-			{ value: '900', label: 'Ultra-Bold 900' },
+			{ value: 'inherit', label: __( 'Inherit', 'kadence-blocks' ) },
+			{ value: '100', label: __( 'Thin 100', 'kadence-blocks' ) },
+			{ value: '200', label: __( 'Extra-Light 200', 'kadence-blocks' ) },
+			{ value: '300', label: __( 'Light 300', 'kadence-blocks' ) },
+			{ value: '400', label: __( 'Regular', 'kadence-blocks' ) },
+			{ value: '500', label: __( 'Medium 500', 'kadence-blocks' ) },
+			{ value: '600', label: __( 'Semi-Bold 600', 'kadence-blocks' ) },
+			{ value: '700', label: __( 'Bold 700', 'kadence-blocks' ) },
+			{ value: '800', label: __( 'Extra-Bold 800', 'kadence-blocks' ) },
+			{ value: '900', label: __( 'Ultra-Bold 900', 'kadence-blocks' ) },
 		];
 		const standardStyles = [
-			{ value: 'normal', label: 'Normal' },
-			{ value: 'italic', label: 'Italic' },
+			{ value: 'normal', label: __( 'Normal', 'kadence-blocks' ) },
+			{ value: 'italic', label: __( 'Italic', 'kadence-blocks' ) },
 		];
 		const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );
 		const headingWeights = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.headingWeights ? kadence_blocks_params.headingWeights : [] );

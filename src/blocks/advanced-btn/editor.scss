@@ -11,7 +11,7 @@
     .kb-link-control-inner-row {
         display: flex;
         flex-grow: 1;
-        max-width: 100%;
+        max-width: calc( 100% - 38px );
     }
     .kb-link-control-inner {
         display: flex;

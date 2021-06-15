@@ -25,11 +25,11 @@ class IconRender extends Component {
 		};
 	}
 	componentDidMount() {
-		const icons = { ...kadence_blocks_params.icons_ico, ...kadence_blocks_params.icons_fa };
+		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
 		this.setState( { iconOptions: applyFilters( 'kadence.icon_options', icons ) } );
 	}
 	updateIcons() {
-		const icons = { ...kadence_blocks_params.icons_ico, ...kadence_blocks_params.icons_fa };
+		const icons = { ...kadence_blocks_params_ico.icons, ...kadence_blocks_params_fa.icons };
 		const filteredIcons = applyFilters( 'kadence.icon_options', icons );
 		this.setState( { iconOptions: filteredIcons } );
 		return filteredIcons;

@@ -8,17 +8,18 @@
  */
 import map from 'lodash/map';
 import classnames from 'classnames';
-import TypographyControls from '../../typography-control';
-import InlineTypographyControls from '../../inline-typography-control';
+import TypographyControls from '../../components/typography/typography-control';
+import InlineTypographyControls from '../../components/typography/inline-typography-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import InlineAdvancedPopColorControl from '../../advanced-inline-pop-color-control';
-import KadenceColorOutput from '../../kadence-color-output';
-import WebfontLoader from '../../fontloader';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
+import WebfontLoader from '../../components/typography/fontloader';
 import TextShadowControl from '../../text-shadow-control';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import URLInputControl from '../../components/links/link-control';
 
 /**
  * Block dependencies
@@ -167,7 +168,7 @@ class KadenceAdvancedHeading extends Component {
 	}
 	render() {
 		const { attributes, className, setAttributes, mergeBlocks, onReplace, clientId } = this.props;
-		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic } = attributes;
+		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic, link, linkTarget, linkNoFollow, linkSponsored } = attributes;
 		const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -274,6 +275,7 @@ class KadenceAdvancedHeading extends Component {
 		const classes = classnames( {
 			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
 			[ className ]: className,
+			//'kb-content-is-dynamic': undefined !== kadenceDynamic && undefined !== kadenceDynamic['content'] && undefined !== kadenceDynamic['content'].enable && kadenceDynamic['content'].enable,
 		} );
 		const dynamicHeadingContent = (
 			<TagHTML
@@ -299,12 +301,13 @@ class KadenceAdvancedHeading extends Component {
 				} }
 				className={ classes }
 			>
-				{ undefined !== kadenceDynamic && undefined !== kadenceDynamic[0] && undefined !== kadenceDynamic[0].enable && kadenceDynamic[0].enable ? applyFilters( 'kadence.dynamicText', <Spinner />, attributes, clientId ) : <Spinner /> }
+				{ undefined !== kadenceDynamic && undefined !== kadenceDynamic['content'] && undefined !== kadenceDynamic['content'].enable && kadenceDynamic['content'].enable ? applyFilters( 'kadence.dynamicContent', <Spinner />, attributes, 'content' ) : <Spinner /> }
 			</TagHTML>
 		);
 		const headingContent = (
 			<RichText
 				tagName={ tagName }
+				allowedFormats={ ( link ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'kadence/insert-dynamic', 'kadence/mark', 'core/strikethrough', 'core/superscript', 'core/superscript', 'toolset/inline-field' ], 'kadence/advancedheading' ) : undefined ) }
 				value={ content }
 				onChange={ ( value ) => setAttributes( { content: value } ) }
 				onMerge={ mergeBlocks }
@@ -342,6 +345,17 @@ class KadenceAdvancedHeading extends Component {
 				className={ classes }
 				placeholder={ __( 'Write heading…', 'kadence-blocks' ) }
 			/>
+		);
+		const headingLinkContent = (
+			<a
+				href={ link }
+				className={ 'kb-advanced-heading-link' }
+				onClick={ ( event ) => {
+					event.preventDefault();
+				} }
+			>
+				{ headingContent }
+			</a>
 		);
 		return (
 			<Fragment>
@@ -568,9 +582,9 @@ class KadenceAdvancedHeading extends Component {
 									label={ __( 'Highlight Border Style', 'kadence-blocks' ) }
 									value={ markBorderStyle }
 									options={ [
-										{ value: 'solid', label: __( 'Solid' ) },
-										{ value: 'dashed', label: __( 'Dashed' ) },
-										{ value: 'dotted', label: __( 'Dotted' ) },
+										{ value: 'solid', label: __( 'Solid', 'kadence-blocks' ) },
+										{ value: 'dashed', label: __( 'Dashed', 'kadence-blocks' ) },
+										{ value: 'dotted', label: __( 'Dotted', 'kadence-blocks' ) },
 									] }
 									onChange={ value => setAttributes( { markBorderStyle: value } ) }
 								/>
@@ -666,6 +680,27 @@ class KadenceAdvancedHeading extends Component {
 								/>
 							</PanelBody>
 						) }
+						{ this.showSettings( 'linkSettings' ) && (
+							<PanelBody
+								title={ __( 'Link Settings', 'kadence-blocks' ) }
+								initialOpen={ false }
+							>
+								<URLInputControl
+									label={ __( 'Heading Wrap Link', 'kadence-blocks' ) }
+									url={ link }
+									onChangeUrl={ value => setAttributes( { link: value } ) }
+									additionalControls={ true }
+									opensInNewTab={ ( undefined !== linkTarget ? linkTarget : false ) }
+									onChangeTarget={ value => setAttributes( { linkTarget: value } ) }
+									linkNoFollow={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
+									onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
+									linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
+									onChangeSponsored={ value => setAttributes( { sponsored: value } ) }
+									dynamicAttribute={ 'link' }
+									{ ...this.props }
+								/>
+							</PanelBody>
+						) }
 						{ this.showSettings( 'marginSettings' ) && (
 							<PanelBody
 								title={ __( 'Spacing Settings', 'kadence-blocks' ) }
@@ -710,7 +745,7 @@ class KadenceAdvancedHeading extends Component {
 							</PanelBody>
 						) }
 						<PanelBody
-							title={ __( 'Text Shadow Settings' ) }
+							title={ __( 'Text Shadow Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
 							<TextShadowControl
@@ -742,8 +777,8 @@ class KadenceAdvancedHeading extends Component {
 				) }
 				<InspectorAdvancedControls>
 					<TextControl
-						label={ __( 'HTML Anchor' ) }
-						help={ __( 'Anchors lets you link directly to a section on a page.' ) }
+						label={ __( 'HTML Anchor', 'kadence-blocks' ) }
+						help={ __( 'Anchors lets you link directly to a section on a page.', 'kadence-blocks' ) }
 						value={ anchor || '' }
 						onChange={ ( nextValue ) => {
 							nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
@@ -758,12 +793,12 @@ class KadenceAdvancedHeading extends Component {
 							data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) }
 							data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) }
 						>
-							{ undefined !== kadenceDynamic && undefined !== kadenceDynamic[0] && undefined !== kadenceDynamic[0].enable && kadenceDynamic[0].enable ? dynamicHeadingContent : headingContent }
+							{ link ? headingLinkContent : headingContent }
 						</div>
 					</div>
 				) }
 				{ ! kadenceAnimation && (
-					undefined !== kadenceDynamic && undefined !== kadenceDynamic[0] && undefined !== kadenceDynamic[0].enable && kadenceDynamic[0].enable ? dynamicHeadingContent : headingContent
+					link ? headingLinkContent : headingContent
 				) }
 				{ googleFont && (
 					<WebfontLoader config={ config }>

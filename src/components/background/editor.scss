@@ -1,0 +1,58 @@
+.kadence-image-background-control{
+	margin-bottom: 24px;
+	.kadence-image-upload {
+		margin: 0;
+		min-height: 0;
+		.components-placeholder__fieldset {
+			flex-direction: row;
+			flex-wrap: wrap;
+		}
+		.components-button.is-primary {
+			height: 100px;
+			width: 100%;
+			justify-content: center;
+			background: rgba(0,0,0,.04);
+			color: var(--wp-admin-theme-color);
+			&:hover:not(:disabled) {
+				background: var(--wp-admin-theme-color-darker-10);
+				color: #fff;
+			}
+		}
+	}
+	.kb-dynamic-background-sidebar-wrap {
+		display: inline-block;
+	}
+	> .kb-dynamic-background-sidebar-wrap .kb-dynamic-background-sidebar.has-icon, > .kb-dynamic-background-sidebar-top .kb-dynamic-background-sidebar.has-icon {
+		border: 1px solid #ddd;
+		margin-bottom: 10px;
+		margin-left: 5px;
+		color: #1e1e1e;
+		border-radius: 4px;
+		&.is-pressed {
+			color:white;
+		}
+		svg {
+			max-width: 14px;
+		}
+	}
+	> .kb-dynamic-background-sidebar-top .kb-dynamic-background-sidebar.has-icon {
+		margin-left: 0;
+	}
+	.components-kadence-image-background__label {
+		margin-bottom: 6px;
+	}
+	.block-editor-media-placeholder__dynamic-input-container {
+		margin-left: auto;
+		margin-right: 0;
+	}
+}
+.kadence-image-background-control .block-editor-media-placeholder__dynamic-input-container .kb-dynamic-background-sidebar {
+    margin-bottom: 0;
+}
+.kadence-image-background-control .block-editor-media-placeholder__dynamic-input-container .kb-dynamic-background-sidebar svg {
+    max-width: 16px;
+}
+.kadence-image-background-control .kadence-image-upload .components-placeholder__label:empty {
+    padding: 0;
+    margin: 0;
+}

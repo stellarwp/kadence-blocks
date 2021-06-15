@@ -16,6 +16,10 @@
 .kt-inspect-tabs.kt-spacer-tabs .components-tab-panel__tabs {
 	margin-bottom: 10px;
 }
+.block-editor-block-list__block[data-type="kadence/spacer"]{
+    margin-top:0;
+    margin-bottom:0;
+}
 .kadence-spacer__resize-handler-top,
 .kadence-spacer__resize-handler-bottom {
 	display: none;
