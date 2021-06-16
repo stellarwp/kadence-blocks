@@ -2941,7 +2941,7 @@ class KadenceInfoBox extends Component {
 										<div className={ 'kadence-info-box-number-inner-container' } >
 											<RichText
 												className="kt-blocks-info-box-number"
-												allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
+												allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
 												tagName={ 'div' }
 												placeholder={ '1' }
 												onChange={ onChangeNumber }
@@ -2972,7 +2972,7 @@ class KadenceInfoBox extends Component {
 						{ displayTitle && (
 							<RichText
 								className="kt-blocks-info-box-title"
-								allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
+								allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
 								tagName={ titleTagName }
 								placeholder={ __( 'Title', 'kadence-blocks' ) }
 								onChange={ onChangeTitle }
@@ -2999,7 +2999,7 @@ class KadenceInfoBox extends Component {
 						{ displayText && (
 							<RichText
 								className="kt-blocks-info-box-text"
-								allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
+								allowedFormats={ ( linkProperty === 'learnmore' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
 								tagName={ 'p' }
 								placeholder={ __( 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean diam dolor, accumsan sed rutrum vel, dapibus et leo.', 'kadence-blocks' ) }
 								onChange={ ( value ) => setAttributes( { contentText: value } ) }
@@ -3028,7 +3028,7 @@ class KadenceInfoBox extends Component {
 								margin: ( learnMoreStyles[ 0 ].margin ? learnMoreStyles[ 0 ].margin[ 0 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 1 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 2 ] + 'px ' + learnMoreStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 							} } >
 								<RichText
-									allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'toolset/inline-field' ] ) }
+									allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) }
 									className="kt-blocks-info-box-learnmore"
 									tagName={ 'div' }
 									placeholder={ __( 'Learn More', 'kadence-blocks' ) }

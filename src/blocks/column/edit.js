@@ -112,8 +112,8 @@ class KadenceColumn extends Component {
 		} else {
 			this.setState( { borderRadiusControl: 'individual' } );
 		}
-		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['backgroundImg'] && this.props.attributes.kadenceDynamic['backgroundImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'backgroundImg' );
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['backgroundImg:0:bgImg'] && this.props.attributes.kadenceDynamic['backgroundImg:0:bgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'backgroundImg:0:bgImg' );
 		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/column' ] !== undefined && typeof blockSettings[ 'kadence/column' ] === 'object' ) {
@@ -283,7 +283,7 @@ class KadenceColumn extends Component {
 											onSaveRepeat={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
 											onSaveAttachment={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
 											disableMediaButtons={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
-											dynamicAttribute="backgroundImg"
+											dynamicAttribute="backgroundImg:0:bgImg"
 											{ ...this.props }
 										/>
 										<AdvancedPopColorControl

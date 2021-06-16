@@ -60,7 +60,21 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 			imageSize,
 			imageRepeat,
 			imageAttachment,
+			imageAttachmentParallax = false,
+			inlineImage,
+			onSaveInlineImage,
 			dynamicAttribute = '' } = this.props;
+			let attachmentOptions = [
+				{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
+				{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
+			];
+			if ( imageAttachmentParallax ) {
+				attachmentOptions = [
+					{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
+					{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
+					{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
+				];
+			}
 		return (
 			<div className="kadence-image-background-control">
 				{ ! hasImage && (
@@ -149,12 +163,16 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 						<KadenceRadioButtons
 							label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
 							value={ ( imageAttachment ? imageAttachment : 'scroll' ) }
-							options={ [
-								{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-								{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-							] }
+							options={ attachmentOptions }
 							onChange={ value => onSaveAttachment( value ) }
 						/>
+						{ onSaveInlineImage && (
+							<ToggleControl
+								label={ __( 'Force Background Image inline?', 'kadence-blocks' ) }
+								checked={ ( undefined !== inlineImage ? inlineImage : false ) }
+								onChange={ ( value ) => sonSaveInlineImage( value ) }
+							/>
+						) }
 					</Fragment>
 				) }
 			</div>

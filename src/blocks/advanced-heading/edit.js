@@ -275,7 +275,7 @@ class KadenceAdvancedHeading extends Component {
 		const classes = classnames( {
 			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
 			[ className ]: className,
-			//'kb-content-is-dynamic': undefined !== kadenceDynamic && undefined !== kadenceDynamic['content'] && undefined !== kadenceDynamic['content'].enable && kadenceDynamic['content'].enable,
+			'kb-content-is-dynamic': undefined !== kadenceDynamic && undefined !== kadenceDynamic['content'] && undefined !== kadenceDynamic['content'].enable && kadenceDynamic['content'].enable,
 		} );
 		const dynamicHeadingContent = (
 			<TagHTML
@@ -301,7 +301,7 @@ class KadenceAdvancedHeading extends Component {
 				} }
 				className={ classes }
 			>
-				{ undefined !== kadenceDynamic && undefined !== kadenceDynamic['content'] && undefined !== kadenceDynamic['content'].enable && kadenceDynamic['content'].enable ? applyFilters( 'kadence.dynamicContent', <Spinner />, attributes, 'content' ) : <Spinner /> }
+				{ applyFilters( 'kadence.dynamicContent', <Spinner />, attributes, 'content' ) }
 			</TagHTML>
 		);
 		const headingContent = (
@@ -354,7 +354,7 @@ class KadenceAdvancedHeading extends Component {
 					event.preventDefault();
 				} }
 			>
-				{ headingContent }
+				{ undefined !== kadenceDynamic && undefined !== kadenceDynamic['content'] && undefined !== kadenceDynamic['content'].enable && kadenceDynamic['content'].enable ? dynamicHeadingContent :  headingContent }
 			</a>
 		);
 		return (

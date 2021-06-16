@@ -31,6 +31,7 @@ import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import KadenceBackgroundControl from '../../components/background/background-control';
 /**
  * Import Block Specific Components
  */
@@ -78,6 +79,7 @@ import { createBlock } from '@wordpress/blocks';
 import {
 	image,
 } from '@wordpress/icons';
+import { applyFilters } from '@wordpress/hooks';
 /**
  * Returns the layouts configuration for a given number of columns.
  *
@@ -147,6 +149,9 @@ class KadenceRowLayout extends Component {
 			ktrowUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktrowUniqueIDs.push( this.props.attributes.uniqueID );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['bgImg'] && this.props.attributes.kadenceDynamic['bgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'bgImg' );
 		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/rowlayout' ] !== undefined && typeof blockSettings[ 'kadence/rowlayout' ] === 'object' ) {
@@ -1754,100 +1759,41 @@ class KadenceRowLayout extends Component {
 														onColorChange={ value => setAttributes( { bgColor: value } ) }
 														onColorClassChange={ value => setAttributes( { bgColorClass: value } ) }
 													/>
-													{ ! bgImg && (
-														<Fragment>
-															<KadenceMediaPlaceholder
-																labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
-																onSelect={ ( img ) => {
-																	setAttributes( {
-																		bgImgID: img.id,
-																		bgImg: img.url,
-																	} );
-																} }
-																onSelectURL={ ( newURL ) => {
-																	if ( newURL !== bgImg ) {
-																		setAttributes( {
-																			bgImgID: undefined,
-																			bgImg: newURL,
-																		} );
-																	}
-																} }
-																accept="image/*"
-																className={ 'kadence-image-upload' }
-																allowedTypes={ ALLOWED_MEDIA_TYPES }
-																value={ { bgImgID, bgImg } }
-																disableMediaButtons={ bgImg }
-															/>
-														</Fragment>
-													) }
-													{ bgImg && (
-														<Fragment>
-															<MediaUpload
-																onSelect={ onSelectImage }
-																type="image"
-																value={ bgImgID }
-																render={ ( { open } ) => (
-																	<Button
-																		className={ 'components-button components-icon-button kt-cta-upload-btn' }
-																		onClick={ open }
-																		icon="format-image"
-																	>
-																		{ __( 'Edit Image', 'kadence-blocks' ) }
-																	</Button>
-																) }
-															/>
-															<Button
-																label={ __( 'Remove Image', 'kadence-blocks' ) }
-																className={ 'kt-remove-img kt-cta-upload-btn' }
-																onClick={ onRemoveImage }
-																icon="no-alt"
-																showTooltip={ true }
-															/>
-															<KadenceFocalPicker
-																url={ bgImg }
-																value={ bgImgPosition }
-																onChange={ value => setAttributes( { bgImgPosition: value } ) }
-															/>
-															<KadenceRadioButtons
-																label={ __( 'Background Image Size', 'kadence-blocks' ) }
-																value={ bgImgSize }
-																options={ [
-																	{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-																	{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-																	{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-																] }
-																onChange={ value => setAttributes( { bgImgSize: value } ) }
-															/>
-															{ bgImgSize !== 'cover' && (
-																<KadenceRadioButtons
-																	label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
-																	value={ bgImgRepeat }
-																	options={ [
-																		{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-																		{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-																		{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-																		{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-																	] }
-																	onChange={ value => setAttributes( { bgImgRepeat: value } ) }
-																/>
-															) }
-															<KadenceRadioButtons
-																label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
-																value={ bgImgAttachment }
-																options={ [
-																	{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-																	{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-																	{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
-																] }
-																onChange={ value => setAttributes( { bgImgAttachment: value } ) }
-															/>
-															<ToggleControl
-																label={ __( 'Force Background Image inline?', 'kadence-blocks' ) }
-																checked={ ( undefined !== backgroundInline ? backgroundInline : false ) }
-																onChange={ ( value ) => setAttributes( { backgroundInline: value } ) }
-															/>
-														</Fragment>
-													) }
+													<KadenceBackgroundControl
+														label={ __( 'Background Image', 'kadence-blocks' ) }
+														hasImage={ bgImg }
+														imageURL={ bgImg }
+														imageID={ bgImgID }
+														imagePosition={ ( bgImgPosition ? bgImgPosition : 'center center' ) }
+														imageSize={ ( bgImgSize ? bgImgSize : 'cover' ) }
+														imageRepeat={ ( bgImgRepeat ? bgImgRepeat : 'no-repeat' ) }
+														imageAttachment={ ( bgImgAttachment ? bgImgAttachment : 'scroll' ) }
+														imageAttachmentParallax={ true }
+														onRemoveImage={ onRemoveImage }
+														onSaveImage={ ( img ) => {
+															setAttributes( {
+																bgImgID: img.id,
+																bgImg: img.url,
+															} );
+														} }
+														onSaveURL={ ( newURL ) => {
+															if ( newURL !== bgImg ) {
+																setAttributes( {
+																	bgImgID: undefined,
+																	bgImg: newURL,
+																} );
+															}
+														} }
+														onSavePosition={ value => setAttributes( { bgImgPosition: value } ) }
+														onSaveSize={ value => setAttributes( { bgImgSize: value } ) }
+														onSaveRepeat={ value => setAttributes( { bgImgRepeat: value } ) }
+														onSaveAttachment={ value => setAttributes( { bgImgAttachment: value } ) }
+														inlineImage={ backgroundInline }
+														onSaveInlineImage={ ( value ) => setAttributes( { backgroundInline: value } ) }
+														disableMediaButtons={ bgImg }
+														dynamicAttribute="bgImg"
+														{ ...this.props }
+													/>
 												</Fragment>
 											);
 										}

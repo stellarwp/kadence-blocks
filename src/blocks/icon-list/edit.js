@@ -22,6 +22,7 @@ import filter from 'lodash/filter';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import URLInputControl from '../../components/links/link-control';
+import DynamicTextControl from '../../components/common/dynamic-text-control';
 /**
  * Import Css
  */
@@ -61,6 +62,9 @@ import {
 	chevronDown,
 	close,
 } from '@wordpress/icons';
+import {
+	applyFilters,
+} from '@wordpress/hooks';
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -196,7 +200,7 @@ class KadenceIconLists extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign }, attributes, className, setAttributes, isSelected } = this.props;
 		const { marginControl } = this.state;
 		const gconfig = {
 			google: {
@@ -346,6 +350,13 @@ class KadenceIconLists extends Component {
 				}
 			}, 100);
 		};
+		const blockToolControls = ( index ) => {
+			const isLineSelected = ( isSelected && this.state.focusIndex === index && kadence_blocks_params.dynamic_enabled );
+			if ( ! isLineSelected ) {
+				return;
+			}
+			return <DynamicTextControl dynamicAttribute={ 'items:' + index + ':text' } {...this.props} />;
+		}
 		const renderIconSettings = ( index ) => {
 			return (
 				<PanelBody
@@ -367,7 +378,7 @@ class KadenceIconLists extends Component {
 									this.saveListItem( { target: '_self' }, index );
 							}
 						} }
-						dynamicAttribute={ 'items:' + index }
+						dynamicAttribute={ 'items:' + index + ':link' }
 						{ ...this.props }
 					/>
 					<IconControl
@@ -477,6 +488,11 @@ class KadenceIconLists extends Component {
 				{ times( listCount, n => renderIconSettings( n ) ) }
 			</div>
 		);
+		const renderToolControls = (
+			<div>
+				{ times( listCount, n => blockToolControls( n ) ) }
+			</div>
+		);
 		const renderIconsPreview = ( index ) => {
 			return (
 				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` } >
@@ -490,6 +506,29 @@ class KadenceIconLists extends Component {
 							borderRadius: ( items[ index ].borderRadius && items[ index ].style !== 'default' ? items[ index ].borderRadius + '%' : undefined ),
 						} } />
 					) }
+					{/* { applyFilters( 'kadence.dynamicContent', <RichText
+						tagName="div"
+						value={ items[ index ].text }
+						onChange={ value => {
+							this.saveListItem( { text: value }, index );
+						} }
+						onSplit={ ( value ) => {
+							if ( ! value ) {
+								return createNewListItem( '', items[ index ].text, index );
+							}
+							return createNewListItem( value, items[ index ].text, index );
+						} }
+						onRemove={ ( value ) => {
+							removeListItem( value, index );
+						} }
+						//isSelected={ this.state.focusIndex === index }
+						unstableOnFocus={ this.onSelectItem( index ) }
+						onReplace={ ( value ) => {
+							stopOnReplace( value, index );
+						} }
+						className={ 'kt-svg-icon-list-text' }
+						allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/link', 'core/strikethrough', 'core/subscript', 'core/superscript', 'core/text-color', 'toolset/inline-field' ], 'kadence/iconlist' ) }
+					/>, attributes, 'items:' + index + ':text' ) } */}
 					<RichText
 						tagName="div"
 						value={ items[ index ].text }

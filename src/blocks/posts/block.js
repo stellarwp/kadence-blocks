@@ -187,7 +187,7 @@ registerBlockType( 'kadence/posts', {
 			type: 'bool',
 			default: false,
 		},
-		dateUpdateLabel: {
+		dateUpdatedLabel: {
 			type: 'string',
 			default: '',
 		},

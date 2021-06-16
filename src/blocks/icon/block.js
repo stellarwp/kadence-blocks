@@ -45,9 +45,9 @@ registerBlockType( 'kadence/icon', {
 		__( 'svg', 'kadence-blocks' ),
 		'KB',
 	],
-	// supports: {
-	// 	kbdynamic: true,
-	// },
+	supports: {
+		//kbdynamic: true,
+	},
 	attributes: {
 		icons: {
 			type: 'array',

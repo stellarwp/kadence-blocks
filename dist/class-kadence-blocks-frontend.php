@@ -1264,6 +1264,7 @@ class Kadence_Blocks_Frontend {
 		// 		'sitekey' => $recaptcha_site_key,
 		// 	)
 		// );
+		//$recaptcha_v2_script = "var kbOnloadV2Callback = function(){ var kb_block_forms = document.getElementsByClassName('.kadence-blocks-g-recaptcha-v2'); if ( ! kb_block_forms ) { return; } for (var i = 0; i < kb_block_forms.length; i++) { const e = kb_block_forms[i].id; grecaptcha.render( kb_block_forms[i].id, {'sitekey' : '" . esc_attr( $recaptcha_site_key ) . "',}); }}";
 		$recaptcha_v2_script = "var kbOnloadV2Callback = function(){jQuery( '.wp-block-kadence-form' ).find( '.kadence-blocks-g-recaptcha-v2' ).each( function() {grecaptcha.render( jQuery( this ).attr( 'id' ), {'sitekey' : '" . esc_attr( $recaptcha_site_key ) . "',});});}";
 		wp_add_inline_script( 'kadence-blocks-google-recaptcha-v2', $recaptcha_v2_script, 'before' );
 

@@ -35,6 +35,13 @@ class Kadence_Blocks_Table_Of_Contents {
 	public static $headings = array();
 
 	/**
+	 * Post content.
+	 *
+	 * @var string
+	 */
+	public static $output_content = '';
+
+	/**
 	 * Instance of this class
 	 *
 	 * @var null
@@ -277,18 +284,32 @@ class Kadence_Blocks_Table_Of_Contents {
 		} else {
 			// Only one page, so return headings from entire post_content.
 			$blocks = parse_blocks( $post->post_content );
-			$output = '';
+			self::$output_content = '';
 			foreach( $blocks as $block ) {
-				if ( 'kadence/tableofcontents' !== $block['blockName'] ) {
-					$output .= render_block( $block );
-				}
+				$this->recursively_parse_blocks( $block );
 			}
-			if ( $output ) {
-				$page_content = do_shortcode( $output );
+			if ( self::$output_content ) {
+				$page_content = do_shortcode( self::$output_content );
 			} else {
 				$page_content = do_shortcode( $post->post_content );
 			}
 			return $this->table_of_contents_get_headings_from_content( $page_content, 1, 1, $attributes );
+		}
+	}
+	/**
+	 * Renders blocks to allow dynamic blocks that bring in headings to be accounted for.
+	 *
+	 * @access private
+	 *
+	 * @param string $block The page content content.
+	 */
+	private function recursively_parse_blocks( $block ) {
+		if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+			foreach( $block['innerBlocks'] as $inner_block ) {
+				$this->recursively_parse_blocks( $inner_block );
+			}
+		} elseif ( 'kadence/tableofcontents' !== $block['blockName'] && 'core/block' !== $block['blockName'] ) {
+			self::$output_content .= render_block( $block );
 		}
 	}
 	/**

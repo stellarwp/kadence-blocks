@@ -1,3 +1,34 @@
+.kb-dynamic-popover-inner-wrap {
+    min-width: 280px;
+    padding: 12px;
+	h2 {
+		font-size: 13px;
+		margin-top:1em;
+		margin-bottom: 0.3em;
+	}
+}
+.kb-dynamic-menu.has-icon svg {
+    width: 20px;
+}
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu.has-icon svg {
+    width: 20px;
+    min-width:20px;
+}
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:first-child, .block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:last-child {
+    min-width: 48px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:first-child:before, .block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:last-child:before {
+    left: 8px;
+    right: 8px;
+}
+.kb-pro-notice {
+    padding:12px;
+}
+.kb-pro-notice h2 {
+    margin-top: 0;
+}
 .kb-side-link-control {
 	.components-base-control {
 		margin:0;

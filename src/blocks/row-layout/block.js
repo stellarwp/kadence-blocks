@@ -63,6 +63,7 @@ registerBlockType( 'kadence/rowlayout', {
 	supports: {
 		anchor: true,
 		kbcss: true,
+		//kbdynamic: true,
 		// Add EditorsKit block navigator toolbar
 		editorsKitBlockNavigator: true,
 	},

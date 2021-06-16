@@ -453,7 +453,7 @@ class KadenceIcons extends Component {
 									this.saveArrayUpdate( { target: '_self' }, index );
 							}
 						} }
-						dynamicAttribute={ 'icons:' + index }
+						dynamicAttribute={ 'icons:' + index + ':link' }
 						{ ...this.props }
 					/>
 					<TextControl

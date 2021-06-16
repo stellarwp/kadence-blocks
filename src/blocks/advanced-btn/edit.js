@@ -444,7 +444,7 @@ class KadenceAdvancedButton extends Component {
 									paddingLeft: ( leftIconPadding ? leftIconPadding + 'px' : undefined ),
 								} } />
 							) }
-							{ applyFilters( 'kadence.dynamicContent', <RichText
+							{/* { applyFilters( 'kadence.dynamicContent', <RichText
 								tagName="div"
 								placeholder={ __( 'Button...', 'kadence-blocks' ) }
 								value={ btns[ index ].text }
@@ -467,7 +467,31 @@ class KadenceAdvancedButton extends Component {
 								allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ], 'kadence/advancedbtn' ) }
 								className={ 'kt-button-text' }
 								keepPlaceholderOnFocus
-							/>, attributes, 'btns:' + index ) }
+							/>, attributes, 'btns:' + index + ':text' ) } */}
+							<RichText
+								tagName="div"
+								placeholder={ __( 'Button...', 'kadence-blocks' ) }
+								value={ btns[ index ].text }
+								unstableOnFocus={ () => {
+									if ( 1 === index ) {
+										onFocusBtn1();
+									} else if ( 2 === index ) {
+										onFocusBtn2();
+									} else if ( 3 === index ) {
+										onFocusBtn3();
+									} else if ( 4 === index ) {
+										onFocusBtn4();
+									} else {
+										onFocusBtn();
+									}
+								} }
+								onChange={ value => {
+									this.saveArrayUpdate( { text: value }, index );
+								} }
+								allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ], 'kadence/advancedbtn' ) }
+								className={ 'kt-button-text' }
+								keepPlaceholderOnFocus
+							/>
 							{ btns[ index ].icon && 'left' !== btns[ index ].iconSide && (
 								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ btns[ index ].icon } kt-btn-side-${ btns[ index ].iconSide }` } name={ btns[ index ].icon } size={ '1em' } style={ {
 									fontSize: ( undefined !== btns[ index ].iconSize ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 0 ] ? btns[ index ].iconSize[ 0 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 1 ] ? btns[ index ].iconSize[ 1 ] : '' ), ( undefined !== btns[ index ].iconSize && undefined !== btns[ index ].iconSize[ 2 ] ? btns[ index ].iconSize[ 2 ] : '' ) ) + ( undefined !== btns[ index ].iconSizeType ? btns[ index ].iconSizeType : 'px' ) : undefined ),
@@ -504,7 +528,7 @@ class KadenceAdvancedButton extends Component {
 							onChangeDownload={ value => {
 								this.saveArrayUpdate( { download: value }, index );
 							} }
-							dynamicAttribute={ 'btns:' + index }
+							dynamicAttribute={ 'btns:' + index + ':link' }
 							{ ...this.props }
 						/>
 					) }
@@ -636,7 +660,7 @@ class KadenceAdvancedButton extends Component {
 			if ( ! isButtonSelected ) {
 				return;
 			}
-			return <DynamicTextControl dynamicAttribute={ 'btns:' + index } {...this.props} />;
+			return <DynamicTextControl dynamicAttribute={ 'btns:' + index + ':text' } {...this.props} />;
 		}
 		const tabControls = ( index ) => {
 			const isButtonSelected = ( isSelected && this.state.selectedButton === index );
@@ -694,7 +718,7 @@ class KadenceAdvancedButton extends Component {
 						onChangeDownload={ value => {
 							this.saveArrayUpdate( { download: value }, index );
 						} }
-						dynamicAttribute={ 'btns:' + index }
+						dynamicAttribute={ 'btns:' + index + ':link' }
 						{ ...this.props }
 					/>
 					{ this.showSettings( 'sizeSettings' ) && (
@@ -1663,7 +1687,6 @@ class KadenceAdvancedButton extends Component {
 							value={ hAlign }
 							onChange={ ( value ) => setAttributes( { hAlign: value } ) }
 						/>
-						{ renderControlsArray }
 					</BlockControls>
 					{ this.showSettings( 'allSettings' ) && (
 						<Fragment>
