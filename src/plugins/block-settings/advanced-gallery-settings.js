@@ -66,12 +66,12 @@ class KadenceGallerySettings extends Component {
 							label={ __( 'Enabled All Settings For' ) }
 							value={ ( gallerySettings.allSettings ? gallerySettings.allSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'allSettings', value ) }
 						/>
@@ -81,12 +81,12 @@ class KadenceGallerySettings extends Component {
 							label={ __( 'Enable Gutter Settings' ) }
 							value={ ( gallerySettings.gutterSettings ? gallerySettings.gutterSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'gutterSettings', value ) }
 						/>
@@ -94,12 +94,12 @@ class KadenceGallerySettings extends Component {
 							label={ __( 'Enable Lightbox Settings' ) }
 							value={ ( gallerySettings.lightboxSettings ? gallerySettings.lightboxSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'lightboxSettings', value ) }
 						/>
@@ -107,12 +107,12 @@ class KadenceGallerySettings extends Component {
 							label={ __( 'Enable Image Style Settings' ) }
 							value={ ( gallerySettings.styleSettings ? gallerySettings.styleSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'styleSettings', value ) }
 						/>
@@ -120,12 +120,12 @@ class KadenceGallerySettings extends Component {
 							label={ __( 'Enable Caption Settings' ) }
 							value={ ( gallerySettings.captionSettings ? gallerySettings.captionSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'captionSettings', value ) }
 						/>
@@ -133,12 +133,12 @@ class KadenceGallerySettings extends Component {
 							label={ __( 'Enable Image Shadow Settings' ) }
 							value={ ( gallerySettings.shadowSettings ? gallerySettings.shadowSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'shadowSettings', value ) }
 						/>
@@ -146,12 +146,12 @@ class KadenceGallerySettings extends Component {
 							label={ __( 'Enable Gallery Spacing Settings' ) }
 							value={ ( gallerySettings.spacingSettings ? gallerySettings.spacingSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'spacingSettings', value ) }
 						/>

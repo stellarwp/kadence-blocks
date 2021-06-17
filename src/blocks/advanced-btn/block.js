@@ -56,7 +56,7 @@ registerBlockType( 'kadence/advancedbtn', {
 		ktanimate: true,
 		ktanimateadd: true,
 		ktanimatepreview: true,
-		//kbdynamic: true,
+		ktdynamic: true,
 	},
 	attributes: {
 		hAlign: {

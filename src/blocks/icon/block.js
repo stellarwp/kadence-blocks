@@ -46,7 +46,7 @@ registerBlockType( 'kadence/icon', {
 		'KB',
 	],
 	supports: {
-		//kbdynamic: true,
+		ktdynamic: true,
 	},
 	attributes: {
 		icons: {

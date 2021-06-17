@@ -203,6 +203,10 @@ registerBlockType( 'kadence/posts', {
 			type: 'string',
 			default: '',
 		},
+		comments: {
+			type: 'bool',
+			default: false,
+		},
 		excerpt: {
 			type: 'bool',
 			default: true,

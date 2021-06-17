@@ -40,15 +40,15 @@ const changeBodyClass = ( key ) => {
 };
 function CustomComponent( { meta, oldMeta, onUpdateWidth } ) {
 	const editorWidthOptions = [
-		{ key: 'default', name: __( 'Default' ) },
-		{ key: 'nosidebar', name: __( 'Large' ) },
-		{ key: 'sidebar', name: __( 'Small' ) },
-		{ key: 'fullwidth', name: __( 'Full Screen Width' ) },
+		{ key: 'default', name: __( 'Default', 'kadence-blocks'  ) },
+		{ key: 'nosidebar', name: __( 'Large', 'kadence-blocks'  ) },
+		{ key: 'sidebar', name: __( 'Small', 'kadence-blocks'  ) },
+		{ key: 'fullwidth', name: __( 'Full Screen Width', 'kadence-blocks'  ) },
 	];
 	return (
 		<div className="kt-blocks-width-control">
-			<h2 className="kt-blocks-width-heading">{ __( 'Editor Max Width' ) }</h2>
-			<ButtonGroup aria-label={ __( 'Editor Max Width' ) }>
+			<h2 className="kt-blocks-width-heading">{ __( 'Editor Max Width', 'kadence-blocks'  ) }</h2>
+			<ButtonGroup aria-label={ __( 'Editor Max Width', 'kadence-blocks'  ) }>
 				{ map( editorWidthOptions, ( { name, key } ) => (
 					<Button
 						key={ key }
@@ -65,7 +65,7 @@ function CustomComponent( { meta, oldMeta, onUpdateWidth } ) {
 					</Button>
 				) ) }
 			</ButtonGroup>
-			<p>{ __( '*Note: You can define these widths in your Kadence Blocks settings.' ) }</p>
+			<p>{ __( '*Note: You can define these widths in your Kadence Blocks settings.', 'kadence-blocks'  ) }</p>
 		</div>
 	);
 }

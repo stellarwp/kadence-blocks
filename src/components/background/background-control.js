@@ -85,7 +85,7 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 						<KadenceMediaPlaceholder
 							labels={ '' }
 							selectIcon={ plusCircleFilled }
-							selectLabel={ __( 'Select Image' ) }
+							selectLabel={ __( 'Select Image', 'kadence-blocks' ) }
 							onSelect={ ( img ) => onSaveImage( img ) }
 							onSelectURL={ ( newURL ) => onSaveURL( newURL) }
 							accept="image/*"

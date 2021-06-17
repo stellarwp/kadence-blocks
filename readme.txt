@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.7.2
-Stable tag: 2.0.9
+Stable tag: 2.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.0.10 =
+Release Date: June 17th, 2021
+* Add: Info Box ratio sized image options.
+* Fix: Issue with overlay not showing unless set for desktop.
+* Fix: Issue with comments count not showing in post block.
+* Fix: Issue with checkout page in woocommerce when rendering terms page.
+* Fix: Issue with table of contents block and Accordion.
 
 = 2.0.9 =
 Release Date: June 16th, 2021

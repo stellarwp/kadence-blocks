@@ -25,7 +25,7 @@ $date_updated_enable_label    = ( isset( $attributes ) && is_array( $attributes 
 $date_updated_label           = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['dateUpdatedLabel'] ) && ! empty( $attributes['dateUpdatedLabel'] ) ? $attributes['dateUpdatedLabel'] : __( 'Updated on', 'kadence-blocks' ) );
 $meta_categories              = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['metaCategories'] ) && $attributes['metaCategories'] ? true : false );
 $meta_categories_enable_label = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['categoriesEnabledLabel'] ) && $attributes['categoriesEnabledLabel'] ? true : false );
-$meta_categories_label        = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['categoriesLabel'] ) && ! empty( $attributes['categoriesLabel'] ) ? $attributes['categoriesLabel'] : __( 'Posted in', 'kadence-blocks' ) );
+$meta_categories_label        = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['metaCategoriesLabel'] ) && ! empty( $attributes['metaCategoriesLabel'] ) ? $attributes['metaCategoriesLabel'] : __( 'Posted in', 'kadence-blocks' ) );
 $meta_comments                = ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['comments'] ) && $attributes['comments'] ? true : false );
 
 if ( $enabled ) {

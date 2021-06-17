@@ -369,5 +369,9 @@ const attributes = {
 			loadGoogle: true,
 		} ],
 	},
+	imageRatio: {
+		type: 'string',
+		default: 'inherit',
+	},
 };
 export default attributes;

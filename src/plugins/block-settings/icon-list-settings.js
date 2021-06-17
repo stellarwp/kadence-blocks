@@ -66,12 +66,12 @@ class KadenceiconlistSettings extends Component {
 							label={ __( 'Enabled All Settings For' ) }
 							value={ ( iconlistSettings.allSettings ? iconlistSettings.allSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'allSettings', value ) }
 						/>
@@ -81,12 +81,12 @@ class KadenceiconlistSettings extends Component {
 							label={ __( 'Enable List Column Settings' ) }
 							value={ ( iconlistSettings.column ? iconlistSettings.column : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'column', value ) }
 						/>
@@ -94,12 +94,12 @@ class KadenceiconlistSettings extends Component {
 							label={ __( 'Enable List Spacing Settings' ) }
 							value={ ( iconlistSettings.spacing ? iconlistSettings.spacing : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'spacing', value ) }
 						/>
@@ -107,12 +107,12 @@ class KadenceiconlistSettings extends Component {
 							label={ __( 'Enable Text Style Settings' ) }
 							value={ ( iconlistSettings.textStyle ? iconlistSettings.textStyle : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'textStyle', value ) }
 						/>
@@ -120,12 +120,12 @@ class KadenceiconlistSettings extends Component {
 							label={ __( 'Enable All List Icon Control' ) }
 							value={ ( iconlistSettings.joinedIcons ? iconlistSettings.joinedIcons : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'joinedIcons', value ) }
 						/>
@@ -133,12 +133,12 @@ class KadenceiconlistSettings extends Component {
 							label={ __( 'Enable individual List Item Control' ) }
 							value={ ( iconlistSettings.individualIcons ? iconlistSettings.individualIcons : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'individualIcons', value ) }
 						/>

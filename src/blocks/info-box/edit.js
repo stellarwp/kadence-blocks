@@ -28,7 +28,8 @@ import KadenceColorOutput from '../../components/color/kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import URLInputControl from '../../components/links/link-control';
-
+import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
+import KadenceImageControl from '../../components/common/kadence-image-control';
 
 
 /**
@@ -65,6 +66,11 @@ const {
 const {
 	applyFilters,
 } = wp.hooks;
+import {
+	image,
+	closeSmall,
+	plusCircleFilled,
+} from '@wordpress/icons';
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -112,6 +118,9 @@ class KadenceInfoBox extends Component {
 			ktinfoboxUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktinfoboxUniqueIDs.push( this.props.attributes.uniqueID );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mediaImage:0:url'] && this.props.attributes.kadenceDynamic['mediaImage:0:url'].enable ) {
+			applyFilters( 'kadence.dynamicImage', '', this.props.attributes, this.props.setAttributes, 'mediaImage:0:url' );
 		}
 		if ( this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 1 ] && this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 2 ] && this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 3 ] ) {
 			this.setState( { mediaBorderControl: 'linked' } );
@@ -177,7 +186,7 @@ class KadenceInfoBox extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, containerPaddingType, containerMobilePadding, containerTabletPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored, number, mediaNumber }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, containerPaddingType, containerMobilePadding, containerTabletPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored, number, mediaNumber, imageRatio, kadenceDynamic }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, containerMarginControl } = this.state;
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 		const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );
@@ -1269,7 +1278,7 @@ class KadenceInfoBox extends Component {
 		const renderCSS = (
 			<style>
 				{ ( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${ KadenceColorOutput( mediaIcon[ 0 ].hoverColor ) } !important; }` : '' ) }
-				{ ( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media img, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .editor-media-placeholder { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }` : '' ) }
+				{ ( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) img, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) .editor-media-placeholder { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }` : '' ) }
 				{ ( titleHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${ KadenceColorOutput( titleHoverColor ) } !important; }` : '' ) }
 				{ ( textHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${ KadenceColorOutput( textHoverColor ) } !important; }` : '' ) }
 				{ ( learnMoreStyles[ 0 ].colorHover ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-learnmore { color: ${ KadenceColorOutput( learnMoreStyles[ 0 ].colorHover ) } !important; }` : '' ) }
@@ -1308,11 +1317,51 @@ class KadenceInfoBox extends Component {
 				) }
 			</style>
 		);
+		let imageRatioPadding = isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%';
+		let imageRatioHeight = isNaN( mediaImage[ 0 ].height ) ? undefined : 0;
+		let hasRatio = false;
+		if ( imageRatio && 'inherit' !== imageRatio ) {
+			hasRatio = true;
+			imageRatioHeight = 0;
+			switch ( imageRatio ) {
+				case 'land43':
+					imageRatioPadding = '75%';
+					break;
+				case 'land32':
+					imageRatioPadding = '66.67%';
+					break;
+				case 'land169':
+					imageRatioPadding = '56.25%';
+					break;
+				case 'land21':
+					imageRatioPadding = '50%';
+					break;
+				case 'land31':
+					imageRatioPadding = '33%';
+					break;
+				case 'land41':
+					imageRatioPadding = '25%';
+					break;
+				case 'port34':
+					imageRatioPadding = '133.33%';
+					break;
+				case 'port23':
+					imageRatioPadding = '150%';
+					break;
+				default:
+					imageRatioPadding = '100%';
+					break;
+			}
+		}
+		let showImageToolbar = ( 'image' === mediaType && mediaImage[ 0 ].url ? true : false );
+		if ( showImageToolbar && kadenceDynamic && kadenceDynamic['mediaImage:0:url'] && kadenceDynamic['mediaImage:0:url'].enable ) {
+			showImageToolbar = false;
+		}
 		return (
 			<div id={ `kt-info-box${ uniqueID }` } className={ className }>
 				{ renderCSS }
 				<BlockControls key="controls">
-					{ 'image' === mediaType && mediaImage[ 0 ].url && (
+					{ showImageToolbar  && (
 						<Toolbar>
 							<MediaUpload
 								onSelect={ onSelectImage }
@@ -1320,10 +1369,10 @@ class KadenceInfoBox extends Component {
 								value={ mediaImage[ 0 ].id }
 								allowedTypes={ ALLOWED_MEDIA_TYPES }
 								render={ ( { open } ) => (
-									<IconButton
+									<Button
 										className="components-toolbar__control"
 										label={ __( 'Edit Media', 'kadence-blocks' ) }
-										icon="format-image"
+										icon={ image }
 										onClick={ open }
 									/>
 								) }
@@ -1748,31 +1797,17 @@ class KadenceInfoBox extends Component {
 								/>
 								{ 'image' === mediaType && (
 									<Fragment>
-										{ mediaImage[ 0 ].url && (
-											<div className="kb-image-edit-settings-container">
-												<MediaUpload
-													onSelect={ onSelectImage }
-													type="image"
-													value={ mediaImage[ 0 ].id }
-													allowedTypes={ ALLOWED_MEDIA_TYPES }
-													render={ ( { open } ) => (
-														<Button
-															className={ 'components-button components-icon-button kt-cta-upload-btn kb-upload-inline-btn' }
-															onClick={ open }
-														>
-															<Dashicon icon="format-image" />
-															{ __( 'Edit Media', 'kadence-blocks' ) }
-														</Button>
-													) }
-												/>
-												<IconButton
-													label={ __( 'clear', 'kadence-blocks' ) }
-													className="kb-clear-image-btn"
-													icon="no-alt"
-													onClick={ clearImage }
-												/>
-											</div>
-										) }
+										<KadenceImageControl
+											label={ __( 'Image', 'kadence-blocks' ) }
+											hasImage={ ( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].url ? true : false ) }
+											imageURL={ ( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].url ? mediaImage[ 0 ].url : '' ) }
+											imageID={ ( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].id ? mediaImage[ 0 ].id : '' ) }
+											onRemoveImage={ clearImage }
+											onSaveImage={ onSelectImage }
+											disableMediaButtons={ ( mediaImage[ 0 ].url ? true : false ) }
+											dynamicAttribute="mediaImage:0:url"
+											{ ...this.props }
+										/>
 										{ mediaImage[ 0 ].id && 'svg+xml' !== mediaImage[ 0 ].subtype && (
 											<ImageSizeControl
 												label={ __( 'Image File Size', 'kadence-blocks' ) }
@@ -1790,6 +1825,53 @@ class KadenceInfoBox extends Component {
 											step={ 1 }
 										/>
 										<SelectControl
+											label={ __( 'Image ratio', 'kadence-blocks' ) }
+											options={ [
+												{
+													label: __( 'Inherit', 'kadence-blocks' ),
+													value: 'inherit',
+												},
+												{
+													label: __( 'Landscape 4:3', 'kadence-blocks' ),
+													value: 'land43',
+												},
+												{
+													label: __( 'Landscape 3:2', 'kadence-blocks' ),
+													value: 'land32',
+												},
+												{
+													label: __( 'Landscape 16:9', 'kadence-blocks' ),
+													value: 'land169',
+												},
+												{
+													label: __( 'Landscape 2:1', 'kadence-blocks' ),
+													value: 'land21',
+												},
+												{
+													label: __( 'Landscape 3:1', 'kadence-blocks' ),
+													value: 'land31',
+												},
+												{
+													label: __( 'Landscape 4:1', 'kadence-blocks' ),
+													value: 'land41',
+												},
+												{
+													label: __( 'Portrait 3:4', 'kadence-blocks' ),
+													value: 'port34',
+												},
+												{
+													label: __( 'Portrait 2:3', 'kadence-blocks' ),
+													value: 'port23',
+												},
+												{
+													label: __( 'Square 1:1', 'kadence-blocks' ),
+													value: 'square',
+												},
+											] }
+											value={ imageRatio }
+											onChange={ ( value ) => setAttributes( { imageRatio: value } ) }
+										/>
+										<SelectControl
 											label={ __( 'Image Hover Animation', 'kadence-blocks' ) }
 											value={ mediaImage[ 0 ].hoverAnimation }
 											options={ [
@@ -1804,47 +1886,16 @@ class KadenceInfoBox extends Component {
 										{ 'flip' === mediaImage[ 0 ].hoverAnimation && (
 											<Fragment>
 												<h2>{ __( 'Flip Image (Use same size as start image', 'kadence-blocks' ) }</h2>
-												{ ! mediaImage[ 0 ].flipUrl && (
-													<MediaUpload
-														onSelect={ onSelectFlipImage }
-														type="image"
-														value={ '' }
-														render={ ( { open } ) => (
-															<Button
-																className={ 'components-button components-icon-button kt-cta-upload-btn' }
-																onClick={ open }
-															>
-																<Dashicon icon="format-image" />
-																{ __( 'Select Image', 'kadence-blocks' ) }
-															</Button>
-														) }
-													/>
-												) }
-												{ mediaImage[ 0 ].flipUrl && (
-													<div className="kb-image-edit-settings-container">
-														<MediaUpload
-															onSelect={ onSelectFlipImage }
-															type="image"
-															value={ mediaImage[ 0 ].flipId }
-															allowedTypes={ ALLOWED_MEDIA_TYPES }
-															render={ ( { open } ) => (
-																<Button
-																	className={ 'components-button components-icon-button kt-cta-upload-btn kb-upload-inline-btn' }
-																	onClick={ open }
-																>
-																	<Dashicon icon="format-image" />
-																	{ __( 'Edit Media', 'kadence-blocks' ) }
-																</Button>
-															) }
-														/>
-														<IconButton
-															label={ __( 'clear', 'kadence-blocks' ) }
-															className="kb-clear-image-btn"
-															icon="no-alt"
-															onClick={ clearFlipImage }
-														/>
-													</div>
-												) }
+												<KadenceImageControl
+													label={ __( 'Image', 'kadence-blocks' ) }
+													hasImage={ ( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipUrl ? true : false ) }
+													imageURL={ ( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipUrl ? mediaImage[ 0 ].flipUrl : '' ) }
+													imageID={ ( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipId ? mediaImage[ 0 ].flipId : '' ) }
+													onRemoveImage={ clearFlipImage }
+													onSaveImage={ onSelectFlipImage }
+													disableMediaButtons={ ( mediaImage && mediaImage[ 0 ] && mediaImage[ 0 ].flipUrl ? true : false ) }
+													{ ...this.props }
+												/>
 												{ mediaImage[ 0 ].flipId && 'svg+xml' !== mediaImage[ 0 ].flipSubtype && (
 													<ImageSizeControl
 														label={ __( 'Image File Size', 'kadence-blocks' ) }
@@ -2881,23 +2932,28 @@ class KadenceInfoBox extends Component {
 								padding: ( mediaStyle[ 0 ].padding ? mediaStyle[ 0 ].padding[ 0 ] + 'px ' + mediaStyle[ 0 ].padding[ 1 ] + 'px ' + mediaStyle[ 0 ].padding[ 2 ] + 'px ' + mediaStyle[ 0 ].padding[ 3 ] + 'px' : '' ),
 							} } >
 								{ ! mediaImage[ 0 ].url && 'image' === mediaType && (
-									<MediaPlaceholder
-										icon="format-image"
-										labels={ {
-											title: __( 'Media area', 'kadence-blocks' ),
-										} }
-										onSelect={ onSelectImage }
-										accept="image/*"
-										allowedTypes={ ALLOWED_MEDIA_TYPES }
-									/>
+									<Fragment>
+										<KadenceMediaPlaceholder
+											labels={ '' }
+											selectIcon={ plusCircleFilled }
+											selectLabel={ __( 'Select Image', 'kadence-blocks' ) }
+											onSelect={ onSelectImage }
+											accept="image/*"
+											className={ 'kadence-image-upload' }
+											allowedTypes={ ALLOWED_MEDIA_TYPES }
+											disableMediaButtons={ false }
+										/>
+									</Fragment>
 								) }
 								{ mediaImage[ 0 ].url && 'image' === mediaType && (
 									<div className="kadence-info-box-image-inner-intrisic-container" style={ {
 										maxWidth: mediaImage[ 0 ].maxWidth + 'px',
 									} } >
-										<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }` } style={ {
-											paddingBottom: isNaN( mediaImage[ 0 ].height ) ? undefined : ( ( mediaImage[ 0 ].height / mediaImage[ 0 ].width ) * 100 ) + '%',
-											height: isNaN( mediaImage[ 0 ].height ) ? undefined : 0,
+										<div className={ `kadence-info-box-image-intrisic kt-info-animate-${ mediaImage[ 0 ].hoverAnimation }${ ( 'svg+xml' === mediaImage[ 0 ].subtype ? ' kb-info-box-image-type-svg' : '' ) }${ hasRatio ? ' kb-info-box-image-ratio kb-info-box-image-ratio-' + imageRatio : '' }` } style={ {
+											paddingBottom: imageRatioPadding,
+											height: imageRatioHeight,
+											width: isNaN( mediaImage[ 0 ].width ) ? undefined : mediaImage[ 0 ].width + 'px',
+											maxWidth: '100%',
 										} } >
 											<div className="kadence-info-box-image-inner-intrisic">
 												<img

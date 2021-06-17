@@ -66,12 +66,12 @@ class KadenceButtonSettings extends Component {
 							label={ __( 'Enabled All Settings For' ) }
 							value={ ( btnSettings.allSettings ? btnSettings.allSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'allSettings', value ) }
 						/>
@@ -81,12 +81,12 @@ class KadenceButtonSettings extends Component {
 							label={ __( 'Enable Count Settings' ) }
 							value={ ( btnSettings.countSettings ? btnSettings.countSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'countSettings', value ) }
 						/>
@@ -94,12 +94,12 @@ class KadenceButtonSettings extends Component {
 							label={ __( 'Enable Size Settings' ) }
 							value={ ( btnSettings.sizeSettings ? btnSettings.sizeSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'sizeSettings', value ) }
 						/>
@@ -107,12 +107,12 @@ class KadenceButtonSettings extends Component {
 							label={ __( 'Enable Color Settings' ) }
 							value={ ( btnSettings.colorSettings ? btnSettings.colorSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'colorSettings', value ) }
 						/>
@@ -120,12 +120,12 @@ class KadenceButtonSettings extends Component {
 							label={ __( 'Enable Icon Settings' ) }
 							value={ ( btnSettings.iconSettings ? btnSettings.iconSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'iconSettings', value ) }
 						/>
@@ -133,12 +133,12 @@ class KadenceButtonSettings extends Component {
 							label={ __( 'Enable Font Family Settings' ) }
 							value={ ( btnSettings.fontSettings ? btnSettings.fontSettings : 'all' ) }
 							options={ [
-								{ value: 'all', label: __( 'All Users' ) },
-								{ value: 'contributor', label: __( 'Minimum User Role Contributor' ) },
-								{ value: 'author', label: __( 'Minimum User Role Author' ) },
-								{ value: 'editor', label: __( 'Minimum User Role Editor' ) },
-								{ value: 'admin', label: __( 'Minimum User Role Admin' ) },
-								{ value: 'none', label: __( 'No Users' ) },
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'fontSettings', value ) }
 						/>

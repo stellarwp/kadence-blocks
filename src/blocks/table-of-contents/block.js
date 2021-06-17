@@ -18,7 +18,6 @@ import './editor.scss';
 
 
 import edit from './edit';
-import KadenceColorOutput from '../../kadence-color-output';
 /**
  * Internal block libraries
  */

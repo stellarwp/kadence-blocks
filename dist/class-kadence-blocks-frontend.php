@@ -3013,6 +3013,54 @@ class Kadence_Blocks_Frontend {
 		} else {
 			$media_number = array();
 		}
+		if ( isset( $attr['mediaType'] ) && 'image' === $attr['mediaType'] ) {
+			if ( isset( $media_image['maxWidth'] ) && ! empty( $media_image['maxWidth'] ) ) {
+				$css->set_selector( '#kt-info-box' . $unique_id . ' .kadence-info-box-image-inner-intrisic-container' );
+				$css->add_property( 'max-width', $media_image['maxWidth'] . 'px' );
+			}
+			$css->set_selector( '#kt-info-box' . $unique_id . ' .kadence-info-box-image-inner-intrisic-container .kadence-info-box-image-intrisic' );
+			if ( isset( $attr['imageRatio'] ) && ! empty( $attr['imageRatio'] ) && 'inherit' !== $attr['imageRatio'] ) {
+				switch ( $attr['imageRatio'] ) {
+					case 'land43':
+						$image_ratio_padding = '75%';
+						break;
+					case 'land32':
+						$image_ratio_padding = '66.67%';
+						break;
+					case 'land169':
+						$image_ratio_padding = '56.25%';
+						break;
+					case 'land21':
+						$image_ratio_padding = '50%';
+						break;
+					case 'land31':
+						$image_ratio_padding = '33%';
+						break;
+					case 'land41':
+						$image_ratio_padding = '25%';
+						break;
+					case 'port34':
+						$image_ratio_padding = '133.33%';
+						break;
+					case 'port23':
+						$image_ratio_padding = '150%';
+						break;
+					default:
+						$image_ratio_padding = '100%';
+						break;
+				}
+				$css->add_property( 'padding-bottom', $image_ratio_padding );
+			} elseif ( isset( $media_image['height'] ) && is_numeric( $media_image['height'] ) && isset( $media_image['width'] ) && is_numeric( $media_image['width'] ) ) {
+				$css->add_property( 'padding-bottom', round( ( absint( $media_image['height'] ) / absint( $media_image['width'] ) ) * 100, 4 ) . '%' );
+			}
+			if ( isset( $media_image['width'] ) && ! empty( $media_image['width'] ) ) {
+				$css->add_property( 'width', $media_image['width'] . 'px' );
+			}
+			if ( isset( $media_image['height'] ) && ! empty( $media_image['height'] ) ) {
+				$css->add_property( 'height', '0px' );
+			}
+			$css->add_property( 'max-width', '100%' );
+		}
 		if ( isset( $media_image['subtype'] ) && 'svg+xml' === $media_image['subtype'] ) {
 			if ( isset( $media_image['maxWidth'] ) && ! empty( $media_image['maxWidth'] ) ) {
 				$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-media .kt-info-box-image' );
@@ -3127,7 +3175,7 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( isset( $media_style['borderRadius'] ) && ! empty( $media_style['borderRadius'] ) ) {
-			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-media img' );
+			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) img' );
 			$css->add_property( 'border-radius', $media_style['borderRadius'] . 'px' );
 		}
 		$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-media' );

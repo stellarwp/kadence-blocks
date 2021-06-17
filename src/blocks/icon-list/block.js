@@ -65,7 +65,7 @@ registerBlockType( 'kadence/iconlist', {
 		'KB',
 	],
 	supports: {
-		//kbdynamic: true,
+		ktdynamic: true,
 	},
 	attributes: {
 		items: {

@@ -251,3 +251,27 @@ text-decoration: none;
 		height: 1em !important;
 	}
 }
+.kt-blocks-info-box-media {
+    overflow: hidden;
+}
+.kadence-info-box-image-intrisic.kb-info-box-image-ratio {
+    position: relative;
+    overflow: hidden;
+	.kadence-info-box-image-inner-intrisic {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+	}
+	.kt-info-box-image {
+		position: absolute;
+		flex: 1;
+		height: 100%;
+		-o-object-fit: cover;
+		object-fit: cover;
+		width: 100%;
+		top: 0;
+		left: 0;
+	}
+}

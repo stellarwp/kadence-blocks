@@ -83,21 +83,21 @@ class KadenceConfig extends Component {
 					target="kadence-controls"
 					icon={ icons.kadenceNew }
 				>
-					{ __( 'Kadence Blocks Controls' ) }
+					{ __( 'Kadence Blocks Controls', 'kadence-blocks' ) }
 				</PluginSidebarMoreMenuItem>
 				<PluginSidebar
 					isPinnable={ true }
 					name="kadence-controls"
-					title={ __( 'Kadence Blocks Controls' ) }
+					title={ __( 'Kadence Blocks Controls', 'kadence-blocks'  ) }
 				>
 					<PanelBody
-						title={ __( 'Color Palette' ) }
+						title={ __( 'Color Palette', 'kadence-blocks'  ) }
 						initialOpen={ true }
 					>
 						<KadenceColors />
 					</PanelBody>
 					<PanelBody
-						title={ __( 'Block Defaults' ) }
+						title={ __( 'Block Defaults', 'kadence-blocks'  ) }
 						initialOpen={ false }
 					>
 						<div className="kt-blocks-control-wrap">
@@ -170,7 +170,7 @@ class KadenceConfig extends Component {
 							{ map( this.state.blocks, ( { Control } ) => (
 								<Control />
 							) ) }
-							<h3>{ __( 'Components' ) }</h3>
+							<h3>{ __( 'Components', 'kadence-blocks'  ) }</h3>
 							<KadenceFontFamily />
 							<KadenceDesignLibrarySettings />
 							{ map( this.state.controls, ( { Control } ) => (
@@ -180,7 +180,7 @@ class KadenceConfig extends Component {
 					</PanelBody>
 					{ ( ( undefined === kadence_blocks_params ) || ( undefined !== kadence_blocks_params && undefined === kadence_blocks_params.editor_width ) || ( undefined !== kadence_blocks_params && undefined !== kadence_blocks_params.editor_width && kadence_blocks_params.editor_width ) ) && (
 						<PanelBody
-							title={ __( 'Editor Width' ) }
+							title={ __( 'Editor Width', 'kadence-blocks'  ) }
 							initialOpen={ false }
 						>
 							<KadenceEditorWidth />

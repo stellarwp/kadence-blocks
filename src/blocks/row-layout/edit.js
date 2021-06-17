@@ -24,10 +24,8 @@ import ContainerDimensions from 'react-container-dimensions';
  */
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveControl from '../../components/responsive/responsive-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
 import MeasurementControls from '../../components/measurement/measurement-control';
-import KadenceFocalPicker from '../../kadence-focal-picker';
-import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
@@ -61,11 +59,9 @@ import {
 	ButtonGroup,
 	Tooltip,
 	TabPanel,
-	FocalPointPicker,
 	Popover,
 	ToolbarGroup,
 	TextControl,
-	IconButton,
 	Dashicon,
 	PanelBody,
 	RangeControl,
@@ -152,6 +148,21 @@ class KadenceRowLayout extends Component {
 		}
 		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['bgImg'] && this.props.attributes.kadenceDynamic['bgImg'].enable ) {
 			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'bgImg' );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['overlayBgImg'] && this.props.attributes.kadenceDynamic['overlayBgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'overlayBgImg' );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['tabletBackground:0:bgImg'] && this.props.attributes.kadenceDynamic['tabletBackground:0:bgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'tabletBackground:0:bgImg' );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'] && this.props.attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'tabletOverlay:0:overlayBgImg' );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mobileBackground:0:bgImg'] && this.props.attributes.kadenceDynamic['mobileBackground:0:bgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'mobileBackground:0:bgImg' );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'] && this.props.attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'mobileOverlay:0:overlayBgImg' );
 		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/rowlayout' ] !== undefined && typeof blockSettings[ 'kadence/rowlayout' ] === 'object' ) {
@@ -773,86 +784,39 @@ class KadenceRowLayout extends Component {
 										onChange={ ( value ) => saveMobileBackground( { forceOverDesk: value } ) }
 									/>
 								) }
-								{ ! mobileBackground[ 0 ].bgImg && (
-									<KadenceMediaPlaceholder
-										labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
-										onSelect={ value => saveMobileBackground( { bgImgID: value.id, bgImg: value.url } ) }
-										onSelectURL={ ( newURL ) => {
-											if ( newURL !== bgImg ) {
-												saveMobileBackground( {
-													bgImgID: undefined,
-													bgImg: newURL,
-												} );
-											}
-										} }
-										accept="image/*"
-										className={ 'kadence-image-upload' }
-										allowedTypes={ ALLOWED_MEDIA_TYPES }
-									/>
-								) }
-								{ mobileBackground[ 0 ].bgImg && (
-									<Fragment>
-										<MediaUpload
-											onSelect={ value => saveMobileBackground( { bgImgID: value.id, bgImg: value.url } ) }
-											type="image"
-											value={ mobileBackground[ 0 ].bgImgID }
-											render={ ( { open } ) => (
-												<Button
-													className={ 'components-button components-icon-button kt-cta-upload-btn' }
-													onClick={ open }
-												>
-													<Dashicon icon="format-image" />
-													{ __( 'Edit Image', 'kadence-blocks' ) }
-												</Button>
-											) }
-										/>
-										<Button
-											label={ __( 'Remove Image', 'kadence-blocks' ) }
-											className={ 'kt-remove-img kt-cta-upload-btn' }
-											onClick={ onRemoveMobileImage }
-											icon="no-alt"
-											showTooltip={ true }
-										/>
-										<KadenceFocalPicker
-											url={ mobileBackground[ 0 ].bgImg }
-											value={ mobileBackground[ 0 ].bgImgPosition }
-											onChange={ value => saveMobileBackground( { bgImgPosition: value } ) }
-										/>
-										<KadenceRadioButtons
-											label={ __( 'Background Image Size', 'kadence-blocks' ) }
-											value={ mobileBackground[ 0 ].bgImgSize }
-											options={ [
-												{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-												{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-												{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-											] }
-											onChange={ value => saveMobileBackground( { bgImgSize: value } ) }
-										/>
-										{ mobileBackground[ 0 ].bgImgSize !== 'cover' && (
-											<KadenceRadioButtons
-												label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
-												value={ mobileBackground[ 0 ].bgImgRepeat }
-												options={ [
-													{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-													{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-													{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-													{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-												] }
-												onChange={ value => saveMobileBackground( { bgImgRepeat: value } ) }
-											/>
-										) }
-										<KadenceRadioButtons
-											label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
-											value={ mobileBackground[ 0 ].bgImgAttachment }
-											options={ [
-												{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-												{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-												{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
-											] }
-											onChange={ value => saveMobileBackground( { bgImgAttachment: value } ) }
-										/>
-									</Fragment>
-								) }
+								<KadenceBackgroundControl
+									label={ __( 'Background Image', 'kadence-blocks' ) }
+									hasImage={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? true : false ) }
+									imageURL={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
+									imageID={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgID ? mobileBackground[ 0 ].bgImgID : '' ) }
+									imagePosition={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgPosition ? mobileBackground[ 0 ].bgImgPosition : 'center center' ) }
+									imageSize={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgSize ? mobileBackground[ 0 ].bgImgSize : 'cover' ) }
+									imageRepeat={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgRepeat ? mobileBackground[ 0 ].bgImgRepeat : 'no-repeat' ) }
+									imageAttachment={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImgAttachment ? mobileBackground[ 0 ].bgImgAttachment : 'scroll' ) }
+									imageAttachmentParallax={ true }
+									onRemoveImage={ onRemoveMobileImage }
+									onSaveImage={ ( img ) => {
+										saveMobileBackground( {
+											bgImgID: img.id,
+											bgImg: img.url,
+										} );
+									} }
+									onSaveURL={ ( newURL ) => {
+										if ( newURL !== ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) ) {
+											saveMobileBackground( {
+												bgImgID: undefined,
+												bgImg: newURL,
+											} );
+										}
+									} }
+									onSavePosition={ value => saveMobileBackground( { bgImgPosition: value } ) }
+									onSaveSize={ value => saveMobileBackground( { bgImgSize: value } ) }
+									onSaveRepeat={ value => saveMobileBackground( { bgImgRepeat: value } ) }
+									onSaveAttachment={ value => saveMobileBackground( { bgImgAttachment: value } ) }
+									disableMediaButtons={ ( mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].bgImg ? mobileBackground[ 0 ].bgImg : '' ) }
+									dynamicAttribute="mobileBackground:0:bgImg"
+									{ ...this.props }
+								/>
 							</Fragment>
 						) }
 					</PanelBody>
@@ -1037,86 +1001,39 @@ class KadenceRowLayout extends Component {
 										onChange={ ( value ) => saveTabletBackground( { forceOverDesk: value } ) }
 									/>
 								) }
-								{ ! tabletBackground[ 0 ].bgImg && (
-									<KadenceMediaPlaceholder
-										labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
-										onSelect={ value => saveTabletBackground( { bgImgID: value.id, bgImg: value.url } ) }
-										onSelectURL={ ( newURL ) => {
-											if ( newURL !== bgImg ) {
-												saveTabletBackground( {
-													bgImgID: undefined,
-													bgImg: newURL,
-												} );
-											}
-										} }
-										accept="image/*"
-										className={ 'kadence-image-upload' }
-										allowedTypes={ ALLOWED_MEDIA_TYPES }
-									/>
-								) }
-								{ tabletBackground[ 0 ].bgImg && (
-									<Fragment>
-										<MediaUpload
-											onSelect={ value => saveTabletBackground( { bgImgID: value.id, bgImg: value.url } ) }
-											type="image"
-											value={ tabletBackground[ 0 ].bgImgID }
-											render={ ( { open } ) => (
-												<Button
-													className={ 'components-button components-icon-button kt-cta-upload-btn' }
-													onClick={ open }
-												>
-													<Dashicon icon="format-image" />
-													{ __( 'Edit Image', 'kadence-blocks' ) }
-												</Button>
-											) }
-										/>
-										<Button
-											label={ __( 'Remove Image', 'kadence-blocks' ) }
-											className={ 'kt-remove-img kt-cta-upload-btn' }
-											onClick={ onRemoveTabletImage }
-											icon="no-alt"
-											showTooltip={ true }
-										/>
-										<KadenceFocalPicker
-											url={ tabletBackground[ 0 ].bgImg }
-											value={ tabletBackground[ 0 ].bgImgPosition }
-											onChange={ value => saveTabletBackground( { bgImgPosition: value } ) }
-										/>
-										<KadenceRadioButtons
-											label={ __( 'Background Image Size', 'kadence-blocks' ) }
-											value={ tabletBackground[ 0 ].bgImgSize }
-											options={ [
-												{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-												{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-												{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-											] }
-											onChange={ value => saveTabletBackground( { bgImgSize: value } ) }
-										/>
-										{ tabletBackground[ 0 ].bgImgSize !== 'cover' && (
-											<KadenceRadioButtons
-												label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
-												value={ tabletBackground[ 0 ].bgImgRepeat }
-												options={ [
-													{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-													{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-													{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-													{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-												] }
-												onChange={ value => saveTabletBackground( { bgImgRepeat: value } ) }
-											/>
-										) }
-										<KadenceRadioButtons
-											label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
-											value={ tabletBackground[ 0 ].bgImgAttachment }
-											options={ [
-												{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-												{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-												{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
-											] }
-											onChange={ value => saveTabletBackground( { bgImgAttachment: value } ) }
-										/>
-									</Fragment>
-								) }
+								<KadenceBackgroundControl
+									label={ __( 'Background Image', 'kadence-blocks' ) }
+									hasImage={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? true : false ) }
+									imageURL={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
+									imageID={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgID ? tabletBackground[ 0 ].bgImgID : '' ) }
+									imagePosition={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgPosition ? tabletBackground[ 0 ].bgImgPosition : 'center center' ) }
+									imageSize={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgSize ? tabletBackground[ 0 ].bgImgSize : 'cover' ) }
+									imageRepeat={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgRepeat ? tabletBackground[ 0 ].bgImgRepeat : 'no-repeat' ) }
+									imageAttachment={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImgAttachment ? tabletBackground[ 0 ].bgImgAttachment : 'scroll' ) }
+									imageAttachmentParallax={ true }
+									onRemoveImage={ onRemoveTabletImage }
+									onSaveImage={ ( img ) => {
+										saveTabletBackground( {
+											bgImgID: img.id,
+											bgImg: img.url,
+										} );
+									} }
+									onSaveURL={ ( newURL ) => {
+										if ( newURL !== ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) ) {
+											saveTabletBackground( {
+												bgImgID: undefined,
+												bgImg: newURL,
+											} );
+										}
+									} }
+									onSavePosition={ value => saveTabletBackground( { bgImgPosition: value } ) }
+									onSaveSize={ value => saveTabletBackground( { bgImgSize: value } ) }
+									onSaveRepeat={ value => saveTabletBackground( { bgImgRepeat: value } ) }
+									onSaveAttachment={ value => saveTabletBackground( { bgImgAttachment: value } ) }
+									disableMediaButtons={ ( tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].bgImg ? tabletBackground[ 0 ].bgImg : '' ) }
+									dynamicAttribute="tabletBackground:0:bgImg"
+									{ ...this.props }
+								/>
 							</Fragment>
 						) }
 					</PanelBody>
@@ -1911,95 +1828,39 @@ class KadenceRowLayout extends Component {
 					opacityValue={ ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) }
 					onOpacityChange={ value => setAttributes( { overlayFirstOpacity: value } ) }
 				/>
-				{ ! overlayBgImg && (
-					<Fragment>
-						<KadenceMediaPlaceholder
-							labels={ { title: __( 'Background Image', 'kadence-blocks' ) } }
-							onSelect={ ( img ) => {
-								setAttributes( {
-									overlayBgImgID: img.id,
-									overlayBgImg: img.url,
-								} );
-							} }
-							onSelectURL={ ( newURL ) => {
-								if ( newURL !== bgImg ) {
-									setAttributes( {
-										overlayBgImgID: undefined,
-										overlayBgImg: newURL,
-									} );
-								}
-							} }
-							accept="image/*"
-							className={ 'kadence-image-upload' }
-							allowedTypes={ ALLOWED_MEDIA_TYPES }
-							value={ { overlayBgImgID, overlayBgImg } }
-							disableMediaButtons={ overlayBgImg }
-						/>
-					</Fragment>
-				) }
-				{ overlayBgImg && (
-					<Fragment>
-						<MediaUpload
-							onSelect={ onSelectOverlayImage }
-							type="image"
-							value={ overlayBgImgID }
-							render={ ( { open } ) => (
-								<Button
-									className={ 'components-button components-icon-button kt-cta-upload-btn' }
-									onClick={ open }
-									icon="format-image"
-								>
-									{ __( 'Edit Image', 'kadence-blocks' ) }
-								</Button>
-							) }
-						/>
-						<Button
-							label={ __( 'Remove Image', 'kadence-blocks' ) }
-							className={ 'kt-remove-img kt-cta-upload-btn' }
-							onClick={ onRemoveOverlayImage }
-							icon="no-alt"
-							showTooltip={ true }
-						/>
-						<KadenceFocalPicker
-							url={ overlayBgImg }
-							value={ overlayBgImgPosition }
-							onChange={ value => setAttributes( { overlayBgImgPosition: value } ) }
-						/>
-						<KadenceRadioButtons
-							label={ __( 'Background Image Size', 'kadence-blocks' ) }
-							value={ overlayBgImgSize }
-							options={ [
-								{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-								{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-								{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-							] }
-							onChange={ value => setAttributes( { overlayBgImgSize: value } ) }
-						/>
-						{ overlayBgImgSize !== 'cover' && (
-							<KadenceRadioButtons
-								label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
-								value={ overlayBgImgRepeat }
-								options={ [
-									{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-									{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-									{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-									{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-								] }
-								onChange={ value => setAttributes( { overlayBgImgRepeat: value } ) }
-							/>
-						) }
-						<KadenceRadioButtons
-							label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
-							value={ overlayBgImgAttachment }
-							options={ [
-								{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-								{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-								{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
-							] }
-							onChange={ value => setAttributes( { overlayBgImgAttachment: value } ) }
-						/>
-					</Fragment>
-				) }
+				<KadenceBackgroundControl
+					label={ __( 'Background Image', 'kadence-blocks' ) }
+					hasImage={ overlayBgImg }
+					imageURL={ overlayBgImg }
+					imageID={ overlayBgImgID }
+					imagePosition={ ( overlayBgImgPosition ? overlayBgImgPosition : 'center center' ) }
+					imageSize={ ( overlayBgImgSize ? overlayBgImgSize : 'cover' ) }
+					imageRepeat={ ( overlayBgImgRepeat ? overlayBgImgRepeat : 'no-repeat' ) }
+					imageAttachment={ ( overlayBgImgAttachment ? overlayBgImgAttachment : 'scroll' ) }
+					imageAttachmentParallax={ true }
+					onRemoveImage={ onRemoveOverlayImage }
+					onSaveImage={ ( img ) => {
+						setAttributes( {
+							overlayBgImgID: img.id,
+							overlayBgImg: img.url,
+						} );
+					} }
+					onSaveURL={ ( newURL ) => {
+						if ( newURL !== overlayBgImg ) {
+							setAttributes( {
+								overlayBgImgID: undefined,
+								overlayBgImg: newURL,
+							} );
+						}
+					} }
+					onSavePosition={ value => setAttributes( { overlayBgImgPosition: value } ) }
+					onSaveSize={ value => setAttributes( { overlayBgImgSize: value } ) }
+					onSaveRepeat={ value => setAttributes( { overlayBgImgRepeat: value } ) }
+					onSaveAttachment={ value => setAttributes( { overlayBgImgAttachment: value } ) }
+					disableMediaButtons={ overlayBgImg }
+					dynamicAttribute="overlayBgImg"
+					{ ...this.props }
+				/>
 				<SelectControl
 					label={ __( 'Blend Mode' ) }
 					value={ overlayBlendMode }
@@ -2160,76 +2021,38 @@ class KadenceRowLayout extends Component {
 					colorDefault={ '' }
 					onColorChange={ value => saveTabletOverlay( { overlay: value } ) }
 				/>
-				<MediaUpload
-					onSelect={ value => saveTabletOverlay( { overlayBgImg: value.url, overlayBgImgID: value.id } ) }
-					type="image"
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgID : '' ) }
-					render={ ( { open } ) => (
-						<Button
-							className={ 'components-button components-icon-button kt-cta-upload-btn' }
-							onClick={ open }
-						>
-							<Dashicon icon="format-image" />
-							{ __( 'Select Image', 'kadence-blocks' ) }
-						</Button>
-					) }
-				/>
-				{ tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg && (
-					<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
-						<Button
-							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-							onClick={ onRemoveTabletOverlayImage }
-						>
-							<Dashicon icon="no-alt" />
-						</Button>
-					</Tooltip>
-				) }
-				<SelectControl
-					label={ __( 'Background Image Size', 'kadence-blocks' ) }
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
-					options={ [
-						{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-						{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-						{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-					] }
-					onChange={ value => saveTabletOverlay( { overlayBgImgSize: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Position', 'kadence-blocks' ) }
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
-					options={ [
-						{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-						{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-						{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-						{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-						{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-						{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-						{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-						{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-						{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-					] }
-					onChange={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Repeat' ) }
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
-					options={ [
-						{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-						{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-						{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-						{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-					] }
-					onChange={ value => saveTabletOverlay( { overlayBgImgRepeat: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
-					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlayBgImgAttachment : 'scroll' ) }
-					options={ [
-						{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-						{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-						{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
-					] }
-					onChange={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
+				<KadenceBackgroundControl
+					label={ __( 'Overlay Image', 'kadence-blocks' ) }
+					hasImage={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? true : false ) }
+					imageURL={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? true : false ) }
+					imageID={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgID ? tabletOverlay[ 0 ].overlayBgImgID : '' ) }
+					imagePosition={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgPosition ? tabletOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
+					imageSize={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgSize ? tabletOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
+					imageRepeat={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImgRepeat ? tabletOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
+					imageAttachment={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].bgImgAttachment ? tabletOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
+					imageAttachmentParallax={ true }
+					onRemoveImage={ onRemoveTabletOverlayImage }
+					onSaveImage={ ( img ) => {
+						saveTabletOverlay( {
+							overlayBgImgID: img.id,
+							overlayBgImg: img.url,
+						} );
+					} }
+					onSaveURL={ ( newURL ) => {
+						if ( newURL !== ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) ) {
+							saveTabletOverlay( {
+								overlayBgImgID: undefined,
+								overlayBgImg: newURL,
+							} );
+						}
+					} }
+					onSavePosition={ value => saveTabletOverlay( { overlayBgImgPosition: value } ) }
+					onSaveSize={ value => saveTabletOverlay( { overlayBgImgSize: value } ) }
+					onSaveRepeat={ value => saveTabletOverlay( { overlayBgImgRepeat: value } ) }
+					onSaveAttachment={ value => saveTabletOverlay( { overlayBgImgAttachment: value } ) }
+					disableMediaButtons={ ( tabletOverlay && tabletOverlay[ 0 ] && tabletOverlay[ 0 ].overlayBgImg ? tabletOverlay[ 0 ].overlayBgImg : '' ) }
+					dynamicAttribute="tabletOverlay:0:overlayBgImg"
+					{ ...this.props }
 				/>
 				<SelectControl
 					label={ __( 'Blend Mode' ) }
@@ -2387,76 +2210,38 @@ class KadenceRowLayout extends Component {
 					colorDefault={ '' }
 					onColorChange={ value => saveMobileOverlay( { overlay: value } ) }
 				/>
-				<MediaUpload
-					onSelect={ value => saveMobileOverlay( { overlayBgImg: value.url, overlayBgImgID: value.id } ) }
-					type="image"
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgID : '' ) }
-					render={ ( { open } ) => (
-						<Button
-							className={ 'components-button components-icon-button kt-cta-upload-btn' }
-							onClick={ open }
-						>
-							<Dashicon icon="format-image" />
-							{ __( 'Select Image', 'kadence-blocks' ) }
-						</Button>
-					) }
-				/>
-				{ mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg && (
-					<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
-						<Button
-							className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-							onClick={ onRemoveMobileOverlayImage }
-						>
-							<Dashicon icon="no-alt" />
-						</Button>
-					</Tooltip>
-				) }
-				<SelectControl
-					label={ __( 'Background Image Size', 'kadence-blocks' ) }
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
-					options={ [
-						{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-						{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-						{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-					] }
-					onChange={ value => saveMobileOverlay( { overlayBgImgSize: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Position', 'kadence-blocks' ) }
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
-					options={ [
-						{ value: 'center top', label: __( 'Center Top' ) },
-						{ value: 'center center', label: __( 'Center Center' ) },
-						{ value: 'center bottom', label: __( 'Center Bottom' ) },
-						{ value: 'left top', label: __( 'Left Top' ) },
-						{ value: 'left center', label: __( 'Left Center' ) },
-						{ value: 'left bottom', label: __( 'Left Bottom' ) },
-						{ value: 'right top', label: __( 'Right Top' ) },
-						{ value: 'right center', label: __( 'Right Center' ) },
-						{ value: 'right bottom', label: __( 'Right Bottom' ) },
-					] }
-					onChange={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Repeat', 'kadence-blocks' ) }
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
-					options={ [
-						{ value: 'no-repeat', label: __( 'No Repeat' ) },
-						{ value: 'repeat', label: __( 'Repeat' ) },
-						{ value: 'repeat-x', label: __( 'Repeat-x' ) },
-						{ value: 'repeat-y', label: __( 'Repeat-y' ) },
-					] }
-					onChange={ value => saveMobileOverlay( { overlayBgImgRepeat: value } ) }
-				/>
-				<SelectControl
-					label={ __( 'Background Image Attachment', 'kadence-blocks' ) }
-					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlayBgImgAttachment : 'scroll' ) }
-					options={ [
-						{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-						{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-						{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
-					] }
-					onChange={ value => saveMobileOverlay( { overlayBgImgAttachment: value } ) }
+				<KadenceBackgroundControl
+					label={ __( 'Overlay Image', 'kadence-blocks' ) }
+					hasImage={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? true : false ) }
+					imageURL={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? true : false ) }
+					imageID={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgID ? mobileOverlay[ 0 ].overlayBgImgID : '' ) }
+					imagePosition={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgPosition ? mobileOverlay[ 0 ].overlayBgImgPosition : 'center center' ) }
+					imageSize={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgSize ? mobileOverlay[ 0 ].overlayBgImgSize : 'cover' ) }
+					imageRepeat={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImgRepeat ? mobileOverlay[ 0 ].overlayBgImgRepeat : 'no-repeat' ) }
+					imageAttachment={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].bgImgAttachment ? mobileOverlay[ 0 ].bgImgAttachment : 'scroll' ) }
+					imageAttachmentParallax={ true }
+					onRemoveImage={ onRemoveMobileOverlayImage }
+					onSaveImage={ ( img ) => {
+						saveMobileOverlay( {
+							overlayBgImgID: img.id,
+							overlayBgImg: img.url,
+						} );
+					} }
+					onSaveURL={ ( newURL ) => {
+						if ( newURL !== ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) ) {
+							saveMobileOverlay( {
+								overlayBgImgID: undefined,
+								overlayBgImg: newURL,
+							} );
+						}
+					} }
+					onSavePosition={ value => saveMobileOverlay( { overlayBgImgPosition: value } ) }
+					onSaveSize={ value => saveMobileOverlay( { overlayBgImgSize: value } ) }
+					onSaveRepeat={ value => saveMobileOverlay( { overlayBgImgRepeat: value } ) }
+					onSaveAttachment={ value => saveMobileOverlay( { overlayBgImgAttachment: value } ) }
+					disableMediaButtons={ ( mobileOverlay && mobileOverlay[ 0 ] && mobileOverlay[ 0 ].overlayBgImg ? mobileOverlay[ 0 ].overlayBgImg : '' ) }
+					dynamicAttribute="mobileOverlay:0:overlayBgImg"
+					{ ...this.props }
 				/>
 				<SelectControl
 					label={ __( 'Blend Mode', 'kadence-blocks' ) }

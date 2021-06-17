@@ -49,6 +49,13 @@ class Kadence_Blocks_Table_Of_Contents {
 	private static $instance = null;
 
 	/**
+	 * Instance of this class
+	 *
+	 * @var null
+	 */
+	private static $is_started = '';
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -259,6 +266,12 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	private function table_of_contents_get_headings( $post, $attributes = array() ) {
 		global $multipage, $page, $pages;
+		// Prevent endless looping.
+		if ( self::$is_started === $attributes['uniqueID'] ) {
+			return array();
+		} else {
+			self::$is_started = $attributes['uniqueID'];
+		}
 		if ( $multipage ) {
 			// Creates a list of heading lists, one list per page.
 			$pages_of_headings = array_map(
@@ -305,8 +318,13 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	private function recursively_parse_blocks( $block ) {
 		if ( isset( $block['innerBlocks'] ) && ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
-			foreach( $block['innerBlocks'] as $inner_block ) {
-				$this->recursively_parse_blocks( $inner_block );
+			// Can't link to inner blocks to ignore.
+			if ( 'kadence/accordion' === $block['blockName'] || 'kadence/tabs' === $block['blockName'] ) {
+				self::$output_content .= render_block( $block );
+			} else {
+				foreach( $block['innerBlocks'] as $inner_block ) {
+					$this->recursively_parse_blocks( $inner_block );
+				}
 			}
 		} elseif ( 'kadence/tableofcontents' !== $block['blockName'] && 'core/block' !== $block['blockName'] ) {
 			self::$output_content .= render_block( $block );
@@ -518,6 +536,10 @@ class Kadence_Blocks_Table_Of_Contents {
 		// posts with post content blocks render themselves recursively.
 		if ( is_admin() || defined( 'REST_REQUEST' ) ) {
 			return null;
+		}
+		// Prevent an issue with the terms and conditions page in the woocommerce checkout.
+		if ( class_exists( 'woocommerce' ) && is_checkout() ) {
+			return '';
 		}
 		// Bug when called in via a hook on the front page.
 		// if ( ! in_the_loop() && ! is_front_page() ) {

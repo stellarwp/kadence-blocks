@@ -4,7 +4,7 @@
 
 import classnames from 'classnames';
 import times from 'lodash/times';
-import KadenceColorOutput from '../../kadence-color-output';
+import KadenceColorOutput from '../../components/color/kadence-color-output';
 import { __ } from '@wordpress/i18n';
 const {
 	Component,
@@ -17,7 +17,7 @@ import {
 
 class KadenceRowLayoutSave extends Component {
 	render() {
-		const { attributes: { columns, blockAlignment, inheritMaxWidth, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo, bgColorClass, vsdesk, vstablet, vsmobile } } = this.props;
+		const { attributes: { columns, blockAlignment, inheritMaxWidth, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo, bgColorClass, vsdesk, vstablet, vsmobile, tabletOverlay, mobileOverlay } } = this.props;
 		let bottomSVGDivider;
 		if ( 'ct' === bottomSep ) {
 			bottomSVGDivider = <path d="M1000,0l-500,98l-500,-98l0,100l1000,0l0,-100Z" />;
@@ -154,6 +154,13 @@ class KadenceRowLayoutSave extends Component {
 			'kt-inner-column-height-full': ( undefined !== columnsInnerHeight && true === columnsInnerHeight ),
 			'kb-theme-content-width': inheritMaxWidth,
 		} );
+		let hasOverlay = ( overlay || overlayBgImg ? true : false );
+		if ( ! hasOverlay ) {
+			hasOverlay = ( tabletOverlay && tabletOverlay[0] && tabletOverlay[0].enable ? true : false );
+		}
+		if ( ! hasOverlay ) {
+			hasOverlay = ( mobileOverlay && mobileOverlay[0] && mobileOverlay[0].enable ? true : false );
+		}
 		const renderSliderImages = ( index ) => {
 			let bgSlider;
 			if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
@@ -243,7 +250,7 @@ class KadenceRowLayoutSave extends Component {
 							) }
 						</div>
 					) }
-					{ ( overlay || overlayBgImg ) && (
+					{ hasOverlay && (
 						<div className={ `kt-row-layout-overlay kt-row-overlay-${ overlayType }${ overlayBgImg && 'gradient' !== overlayType && overlayBgImgAttachment === 'parallax' ? ' kt-jarallax' : '' }` }></div>
 					) }
 					{ topSep && 'none' !== topSep && '' !== topSep && (

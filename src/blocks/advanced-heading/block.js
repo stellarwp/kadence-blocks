@@ -58,7 +58,7 @@ registerBlockType( 'kadence/advancedheading', {
 		ktanimate: true,
 		ktanimatereveal: true,
 		ktanimatepreview: true,
-		//kbdynamic: true,
+		ktdynamic: true,
 	},
 	attributes: {
 		content: {
