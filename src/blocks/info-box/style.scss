@@ -254,6 +254,9 @@ text-decoration: none;
 .kt-blocks-info-box-media {
     overflow: hidden;
 }
+.kt-blocks-info-box-media.kt-info-media-animate-flip {
+    overflow: visible;
+}
 .kadence-info-box-image-intrisic.kb-info-box-image-ratio {
     position: relative;
     overflow: hidden;
