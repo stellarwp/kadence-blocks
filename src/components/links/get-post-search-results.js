@@ -6,7 +6,8 @@ const { addQueryArgs } = wp.url;
  /**
   * External dependencies
   */
- import { flatten, map } from 'lodash';
+ import map from 'lodash/map';
+ import flatten from 'lodash/flatten';
 const { decodeEntities } = wp.htmlEntities;
  import { __ } from '@wordpress/i18n';
  

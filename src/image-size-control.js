@@ -19,12 +19,8 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
-	withSelect,
-} = wp.data;
-const {
-	compose,
-} = wp.compose;
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.

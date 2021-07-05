@@ -32,7 +32,7 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const { withSelect } = wp.data;
+import { withSelect } from '@wordpress/data';
 const { dateI18n, format, __experimentalGetSettings } = wp.date;
 const {
 	Component,

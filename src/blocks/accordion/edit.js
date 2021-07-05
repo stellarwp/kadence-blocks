@@ -38,13 +38,13 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import { 
 	InnerBlocks,
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 const {
 	TabPanel,
 	Button,
@@ -56,8 +56,8 @@ const {
 	SelectControl,
 	IconButton,
 } = wp.components;
-const { withSelect, withDispatch } = wp.data;
-const { compose } = wp.compose;
+import { withSelect, withDispatch } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 /**
  * Internal block libraries
  */

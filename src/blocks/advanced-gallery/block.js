@@ -19,9 +19,9 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 const { registerBlockType, createBlock } = wp.blocks;
 const { Fragment } = wp.element;
-const {
+import { 
 	RichText,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 
 import { pickRelevantMediaFiles, pickRelevantMediaFilesCore, columnConvert } from './shared';
 /**

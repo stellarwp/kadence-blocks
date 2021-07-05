@@ -296,15 +296,19 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		} else {
 			// Only one page, so return headings from entire post_content.
-			$blocks = parse_blocks( $post->post_content );
-			self::$output_content = '';
-			foreach( $blocks as $block ) {
-				$this->recursively_parse_blocks( $block );
-			}
-			if ( self::$output_content ) {
-				$page_content = do_shortcode( self::$output_content );
+			if ( isset( $attributes['enableDynamicSearch'] ) && $attributes['enableDynamicSearch'] ) {
+				$blocks = parse_blocks( $post->post_content );
+				self::$output_content = '';
+				foreach ( $blocks as $block ) {
+					$this->recursively_parse_blocks( $block );
+				}
+				if ( self::$output_content ) {
+					$page_content = do_shortcode( self::$output_content );
+				} else {
+					$page_content = do_shortcode( $post->post_content );
+				}
 			} else {
-				$page_content = do_shortcode( $post->post_content );
+				$page_content = $post->post_content;
 			}
 			return $this->table_of_contents_get_headings_from_content( $page_content, 1, 1, $attributes );
 		}

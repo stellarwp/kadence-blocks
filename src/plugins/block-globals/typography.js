@@ -1,6 +1,5 @@
 /* global kadence_blocks_params */
-
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import map from 'lodash/map';
 import AdvancedColorControl from '../../advanced-color-control';

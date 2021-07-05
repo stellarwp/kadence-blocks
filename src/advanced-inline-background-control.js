@@ -30,9 +30,7 @@ const {
 	SVG,
 	Path,
 } = wp.components;
-const {
-	withSelect,
-} = wp.data;
+import { withSelect } from '@wordpress/data';
 const { DOWN } = wp.keycodes;
 /* global kadence_blocks_params */
 // eslint-disable-next-line camelcase

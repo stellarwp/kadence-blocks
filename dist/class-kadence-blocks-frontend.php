@@ -6863,7 +6863,9 @@ class Kadence_Blocks_Frontend {
 					$css->add_property( 'background-attachment', $bg_attach );
 					$css->add_property( 'background-repeat', ( ! empty( $tablet_background['bgImgRepeat'] ) ? $tablet_background['bgImgRepeat'] : 'no-repeat' ) );
 				} else if ( isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
-					$css->add_property( 'background-image', 'none' );
+					$css->add_property( 'background-image', 'none !important' );
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
+					$css->add_property( 'display', 'none !important' );
 				}
 				if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] &&  isset( $tablet_background['bgImg'] ) && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ) {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
@@ -6876,7 +6878,7 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( ! empty( $tablet_overlay['enable'] ) && $tablet_overlay['enable'] ) {
 				$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay' );
-				if ( ! empty( $tablet_overlay['overlayOpacity'] ) ) {
+				if ( isset( $tablet_overlay['overlayOpacity'] ) && is_numeric( $tablet_overlay['overlayOpacity'] ) ) {
 					if ( $tablet_overlay['overlayOpacity'] < 10 ) {
 						$css->add_property( 'opacity', '0.0' . $tablet_overlay['overlayOpacity'] );
 					} else if ( $tablet_overlay['overlayOpacity'] >= 100 ) {
@@ -7012,9 +7014,11 @@ class Kadence_Blocks_Frontend {
 					$css->add_property( 'background-attachment', $bg_attach );
 					$css->add_property( 'background-repeat', ( ! empty( $mobile_background['bgImgRepeat'] ) ? $mobile_background['bgImgRepeat'] : 'no-repeat' ) );
 				} else if ( isset( $mobile_background['forceOverDesk'] ) && $mobile_background['forceOverDesk'] ) {
-					$css->add_property( 'background-image', 'none' );
+					$css->add_property( 'background-image', 'none !important' );
+					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
+					$css->add_property( 'display', 'none !important' );
 				}
-				if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] &&  isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
+				if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] && isset( $mobile_background['bgImg'] ) && ! empty( $mobile_background['bgImg'] ) && isset( $mobile_background['bgImgAttachment'] ) && 'parallax' !== $mobile_background['bgImgAttachment'] ) {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
 					$css->add_property( 'display', 'none !important' );
 				}
@@ -7025,7 +7029,7 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $mobile_overlay['enable'] ) && $mobile_overlay['enable'] ) {
 				$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-layout-overlay' );
-				if ( ! empty( $mobile_overlay['overlayOpacity'] ) ) {
+				if ( isset( $mobile_overlay['overlayOpacity'] ) && is_numeric( $mobile_overlay['overlayOpacity'] ) ) {
 					if ( $mobile_overlay['overlayOpacity'] < 10 ) {
 						$css->add_property( 'opacity', '0.0' . $mobile_overlay['overlayOpacity'] );
 					} else if ( $mobile_overlay['overlayOpacity'] >= 100 ) {
@@ -7338,7 +7342,7 @@ class Kadence_Blocks_Frontend {
 					break;
 			}
 			$color = 'var(--global-' . $color . ', ' . $fallback . ')';
-		} else if ( isset( $opacity ) && is_numeric( $opacity ) ) {
+		} elseif ( isset( $opacity ) && is_numeric( $opacity ) && 1 !== (int) $opacity ) {
 			$color = $this->hex2rgba( $color, $opacity );
 		}
 		return $color;

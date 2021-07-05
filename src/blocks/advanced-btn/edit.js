@@ -529,6 +529,7 @@ class KadenceAdvancedButton extends Component {
 								this.saveArrayUpdate( { download: value }, index );
 							} }
 							dynamicAttribute={ 'btns:' + index + ':link' }
+							allowClear={ true }
 							{ ...this.props }
 						/>
 					) }
@@ -719,6 +720,7 @@ class KadenceAdvancedButton extends Component {
 							this.saveArrayUpdate( { download: value }, index );
 						} }
 						dynamicAttribute={ 'btns:' + index + ':link' }
+						allowClear={ true }
 						{ ...this.props }
 					/>
 					{ this.showSettings( 'sizeSettings' ) && (

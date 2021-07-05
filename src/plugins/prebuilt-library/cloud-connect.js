@@ -1,4 +1,4 @@
-const { withSelect, withDispatch } = wp.data;
+import { withSelect, withDispatch } from '@wordpress/data';
 const {
 	rawHandler,
 } = wp.blocks;
@@ -32,7 +32,7 @@ import {
 const {
 	applyFilters,
 } = wp.hooks;
-const { compose } = wp.compose;
+import { compose } from '@wordpress/compose';
 import { __, sprintf } from '@wordpress/i18n';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';

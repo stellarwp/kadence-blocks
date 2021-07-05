@@ -20,9 +20,7 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
-	MediaUpload,
-} = wp.blockEditor;
+import { MediaUpload } from '@wordpress/block-editor';
 const {
 	Button,
 	Popover,
@@ -34,9 +32,7 @@ const {
 	FocalPointPicker,
 	TabPanel,
 } = wp.components;
-const {
-	withSelect,
-} = wp.data;
+import { withSelect } from '@wordpress/data';
 /* global kadence_blocks_params */
 // eslint-disable-next-line camelcase
 const isKadenceT = ( typeof kadence_blocks_params !== 'undefined' && kadence_blocks_params.isKadenceT ? true : false );

@@ -36,18 +36,18 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 const {
 	createBlock,
 } = wp.blocks;
-const {
+import { 
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
 	InspectorAdvancedControls,
 	RichText,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 const {
 	Component,
 	Fragment,
@@ -697,6 +697,7 @@ class KadenceAdvancedHeading extends Component {
 									linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
 									onChangeSponsored={ value => setAttributes( { sponsored: value } ) }
 									dynamicAttribute={ 'link' }
+									allowClear={ true }
 									{ ...this.props }
 								/>
 							</PanelBody>

@@ -23,9 +23,7 @@ const {
 const {
 	RangeControl,
 } = wp.components;
-const {
-	useInstanceId,
-} = wp.compose;
+import { useInstanceId } from '@wordpress/compose';
 
 /**
  * Build the Measure controls

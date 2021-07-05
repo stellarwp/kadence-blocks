@@ -27,7 +27,7 @@ import icons from '../../icons';
 /**
  * WordPress dependencies
  */
-const { compose } = wp.compose;
+import { compose } from '@wordpress/compose';
 const {
 	IconButton,
 	Button,
@@ -42,17 +42,17 @@ const {
 	Dashicon,
 	withNotices,
 } = wp.components;
-const {
+import { 
 	BlockControls,
 	BlockIcon,
 	MediaPlaceholder,
 	MediaUpload,
 	InspectorControls,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 const { Component, Fragment } = wp.element;
 import { __, sprintf } from '@wordpress/i18n';
 const { getBlobByURL, isBlobURL, revokeBlobURL } = wp.blob;
-const { withSelect } = wp.data;
+import { withSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies

@@ -29,10 +29,10 @@ const {
 const {
 	Fragment,
 } = wp.element;
-const {
+import { 
 	RichText,
 	getColorClassName,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 /**
  * Register: a Gutenberg Block.
  *

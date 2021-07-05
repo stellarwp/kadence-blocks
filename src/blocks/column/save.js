@@ -14,7 +14,7 @@ import KadenceColorOutput from '../../components/color/kadence-color-output';
 /**
  * WordPress dependencies
  */
-import { getColorClassName, InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, getColorClassName } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
 	const { id, background, backgroundOpacity, backgroundImg, uniqueID, vsdesk, vstablet, vsmobile, bgColorClass } = attributes;

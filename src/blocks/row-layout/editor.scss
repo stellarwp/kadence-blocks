@@ -23,6 +23,20 @@
 		margin-top: 30px;
 	}
 }
+// Full height experiment.
+.kt-inner-column-height-full.wp-block-kadence-rowlayout>.innerblocks-wrap {
+    flex-grow: 1;
+}
+
+.kt-inner-column-height-full.wp-block-kadence-rowlayout>.innerblocks-wrap > .block-editor-inner-blocks {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.kt-inner-column-height-full.wp-block-kadence-rowlayout>.innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout {
+    flex-grow: 1;
+}
 // Sidebar Tabs Update
 .kt-inspect-tabs.kb-responsive-control {
     padding-top: 0;

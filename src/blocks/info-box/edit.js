@@ -40,8 +40,8 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const { compose } = wp.compose;
-const { withSelect } = wp.data;
+import { compose } from '@wordpress/compose';
+import { withSelect } from '@wordpress/data';
 const {
 	MediaUpload,
 	RichText,
@@ -69,6 +69,7 @@ const {
 import {
 	image,
 	closeSmall,
+	starFilled,
 	plusCircleFilled,
 } from '@wordpress/icons';
 /**
@@ -1385,11 +1386,7 @@ class KadenceInfoBox extends Component {
 							contentClassName="kb-popover-inline-icon"
 							position="top center"
 							renderToggle={ ( { isOpen, onToggle } ) => (
-								<Fragment>
-									<IconButton className="components-dropdown-menu__toggle kb-inline-icon-toolbar-icon" label={ __( 'Icon Settings', 'kadence-blocks' ) } tooltip={ __( 'Icon Settings', 'kadence-blocks' ) } icon={ 'star-filled' } onClick={ onToggle } aria-expanded={ isOpen }>
-										<span className="components-dropdown-menu__indicator" />
-									</IconButton>
-								</Fragment>
+								<Button className="components-dropdown-menu__toggle kb-inline-icon-toolbar-icon" label={ __( 'Icon Settings', 'kadence-blocks' ) } icon={ starFilled } onClick={ onToggle } aria-expanded={ isOpen }/>
 							) }
 							renderContent={ () => (
 								<Fragment>

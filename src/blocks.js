@@ -2,7 +2,6 @@
  * Kadence Blocks
  *
  */
-
 // Utils
 import TypographyControls from './components/typography/typography-control';
 import AdvancedColorControl from './advanced-color-control.js';
@@ -40,13 +39,11 @@ import './blocks/posts/block.js';
 import './blocks/countdown/block.js';
 import './blocks/countdown/countdown-timer/block.js';
 import './blocks/countdown/countdown-inner/block.js';
-// import './blocks/restaurant-menu/block.js';
-// import './blocks/restaurant-menu/menu-category/block.js';
-// import './blocks/restaurant-menu/menu-category/category-item/block.js';
 
 import './plugins/kadence-control.js';
 import './plugins/editor-width.js';
 import './plugins/prebuilt-library/toolbar-library';
+
 // Brand Icon.
 import icons from './brand-icon';
 if ( typeof kt_blocks_default_size !== 'undefined' ) {

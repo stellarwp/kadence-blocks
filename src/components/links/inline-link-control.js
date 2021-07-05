@@ -47,6 +47,7 @@ class URLInputInline extends Component {
 			linkTitle,
 			onChangeTitle,
 			changeTargetType = false,
+			allowClear = false,
 			dynamicAttribute = '' } = this.props;
 		const { urlInput, isEditingLink, isSettingsExpanded } = this.state;
 		const stopPropagation = ( event ) => {
@@ -167,6 +168,7 @@ class URLInputInline extends Component {
 						advancedOptions={ advancedOptions }
 						isSettingsExpanded={ isSettingsExpanded }
 						onExpandSettings={ toggleSettingsVisibility }
+						allowClear={ allowClear }
 						{ ...this.props }
 					/>
 				</div>

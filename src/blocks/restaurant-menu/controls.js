@@ -5,7 +5,7 @@ import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { BlockControls }       = wp.blockEditor;
 const { Toolbar }             = wp.components;
-const { select, dispatch }    = wp.data;
+import { select, dispatch } from '@wordpress/data';
 const { createBlock }         = wp.blocks;
 
 /**

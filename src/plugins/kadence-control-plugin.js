@@ -1,16 +1,20 @@
-const {
-	Component,
-	Fragment,
-} = wp.element;
+
+import map from 'lodash/map';
+
 const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
 import { __ } from '@wordpress/i18n';
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
-const { applyFilters } = wp.hooks;
-const {
+import {
+	withSelect,
+} from '@wordpress/data';
+import { 
+	Component,
+	Fragment,
+} from '@wordpress/element';
+import {
 	PanelBody,
-} = wp.components;
-import map from 'lodash/map';
+} from '@wordpress/components';
+import { compose } from '@wordpress/compose';
+import { applyFilters } from '@wordpress/hooks';
 /**
  * Import Icons
  */

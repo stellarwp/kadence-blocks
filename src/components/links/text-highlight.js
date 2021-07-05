@@ -2,7 +2,7 @@
 /**
  * External dependencies
  */
- import { escapeRegExp } from 'lodash';
+ import escapeRegExp from 'lodash/escapeRegExp';
 
  /**
   * WordPress dependencies

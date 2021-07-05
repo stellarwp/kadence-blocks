@@ -14,12 +14,6 @@
     "@fonticonpicker/react-fonticonpicker": "^1.2.0",
     "@wordpress/icons": "^4.0.1",
     "classnames": "^2.2.6",
-    "eslint": "^4.15.0",
-    "eslint-config-wordpress": "^2.0.0",
-    "eslint-plugin-jest": "^21.6.1",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.5.1",
-    "eslint-plugin-wordpress": "^0.1.0",
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",
     "re-resizable": "^4.7.1",
@@ -34,8 +28,8 @@
     "react-transition-group": "^2.4.0"
   },
   "devDependencies": {
-    "@wordpress/i18n": "^4.1.0",
-    "@wordpress/scripts": "^16.1.0",
+    "@wordpress/i18n": "^4.1.1",
+    "@wordpress/scripts": "^16.1.4",
     "install": "^0.13.0"
   }
 }

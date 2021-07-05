@@ -10,10 +10,10 @@ import KadenceColorOutput from '../../components/color/deprecated-kadence-color-
 const {
 	Fragment,
 } = wp.element;
-const {
+import { 
 	RichText,
 	getColorClassName,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 const {
 	getBlockDefaultClassName,
 } = wp.blocks;

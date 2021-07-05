@@ -87,6 +87,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.0.11 =
+Release Date: July 5th, 2021
+* Add: Option to toggle on dynamic content rendering in TOC block.
+* Update: Recompile to resolve issue with Twentig plugin.
+* Update: Add link clear button for heading block link removal.
+* Fix: Issue with overlay opacity set to 0.
+* Fix: Issue with tablet and mobile overlay image.
+* Fix: Issue with background image showing in editor for mobile preview when disabled.
+* Fix: Issue with hiding mobile background when changing screen size.
+
 = 2.0.10 =
 Release Date: June 17th, 2021
 * Add: Info Box ratio sized image options.

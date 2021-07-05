@@ -29,8 +29,8 @@ import './editor.scss';
 const {
 	createBlock,
 } = wp.blocks;
-const { withSelect, withDispatch } = wp.data;
-const { compose } = wp.compose;
+import { withSelect, withDispatch } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 const {
 	Component,
 	Fragment,

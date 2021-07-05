@@ -1,4 +1,4 @@
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import range from 'lodash/range';
 import map from 'lodash/map';
 import AdvancedPopColorControl from '../../advanced-pop-color-control-default';

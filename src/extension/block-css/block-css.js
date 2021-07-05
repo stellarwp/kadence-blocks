@@ -19,7 +19,6 @@ import {
 import { createHigherOrderComponent } from '@wordpress/compose';
 import { hasBlockSupport } from '@wordpress/blocks';
 import {
-	applyFilters,
 	addFilter,
 } from '@wordpress/hooks';
 import { __, sprintf } from '@wordpress/i18n';
@@ -109,5 +108,5 @@ addFilter( 'blocks.registerBlockType', 'kadence/blockCSS', blockCSSAttribute );
 		}
 		return <BlockEdit { ...props } />;
 	};
-}, 'withInspectorControl' );
+}, 'BlockCSSComponent' );
 addFilter( 'editor.BlockEdit', 'kadence/blockCSSControls', BlockCSSComponent );

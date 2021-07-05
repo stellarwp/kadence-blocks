@@ -21,8 +21,8 @@ const {
 	ToggleControl,
 	SelectControl,
 } = wp.components;
-const { withSelect, withDispatch } = wp.data;
-const { compose } = wp.compose;
+import { withSelect, withDispatch } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */

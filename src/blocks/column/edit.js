@@ -35,15 +35,15 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
-const {
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
+import { 
 	InnerBlocks,
 	MediaUpload,
 	BlockControls,
 	InspectorAdvancedControls,
 	InspectorControls,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 const {
 	Dashicon,
 	PanelBody,

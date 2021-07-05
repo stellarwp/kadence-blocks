@@ -10,7 +10,7 @@ const { Component, Fragment } = wp.element;
 const { IconButton, Spinner, ToggleControl } = wp.components;
 import { __ } from '@wordpress/i18n';
 const { BACKSPACE, DELETE } = wp.keycodes;
-const { withSelect } = wp.data;
+import { withSelect } from '@wordpress/data';
 const { RichText, URLPopover, URLInput } = wp.blockEditor;
 const { isBlobURL } = wp.blob;
 

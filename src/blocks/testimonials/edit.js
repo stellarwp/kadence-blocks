@@ -47,8 +47,8 @@ const {
 	InspectorControls,
 	BlockControls,
 } = wp.blockEditor;
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 const {
 	Button,
 	ButtonGroup,

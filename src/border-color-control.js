@@ -21,8 +21,6 @@ const {
 	Fragment,
 } = wp.element;
 const {
-} = wp.blockEditor;
-const {
 	Button,
 	ButtonGroup,
 	Tooltip,

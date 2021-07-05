@@ -28,9 +28,9 @@ import edit from './edit';
  */
 import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
-const {
+import { 
 	RichText,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 /**
  * Register: a Gutenberg Block.
  *

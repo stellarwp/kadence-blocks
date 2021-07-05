@@ -5,9 +5,9 @@ import classnames from 'classnames';
 const {
 	Component,
 } = wp.element;
-const {
+import { 
 	InnerBlocks,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 
 class KadenceAccordionSave extends Component {
 	stripStringRender( string ) {

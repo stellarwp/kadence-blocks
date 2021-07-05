@@ -1,4 +1,4 @@
-import TypographyControls from '../../typography-control';
+import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import IconControl from '../../components/icons/icon-control';
 /**

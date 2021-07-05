@@ -54,8 +54,8 @@ const {
 	SelectControl,
 } = wp.components;
 
-const { compose } = wp.compose;
-const { withDispatch } = wp.data;
+import { compose } from '@wordpress/compose';
+import { withDispatch } from '@wordpress/data';
 import {
 	plus,
 	chevronUp,

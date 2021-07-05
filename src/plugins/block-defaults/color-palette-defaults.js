@@ -13,10 +13,8 @@ const {
 	Button,
 	Tooltip,
 } = wp.components;
-const { withSelect, withDispatch } = wp.data;
-const {
-	compose,
-} = wp.compose;
+import { withSelect, withDispatch } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 const kbColorUniqueIDs = [];
 /**
  * Internal block libraries

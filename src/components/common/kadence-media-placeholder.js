@@ -25,9 +25,7 @@
 	 Placeholder,
 	 DropZone,
  } = wp.components;
- const {
-	 withSelect,
- } = wp.data;
+ import { withSelect } from '@wordpress/data';
  import { __ } from '@wordpress/i18n';
  /**
   * Build the Measure controls

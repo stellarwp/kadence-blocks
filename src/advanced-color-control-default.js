@@ -25,9 +25,7 @@ const {
 	Tooltip,
 	Dashicon,
 } = wp.components;
-const {
-	withSelect,
-} = wp.data;
+import { withSelect } from '@wordpress/data';
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.

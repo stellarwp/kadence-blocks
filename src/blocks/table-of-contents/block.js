@@ -317,6 +317,10 @@ registerBlockType( 'kadence/tableofcontents', {
 			type: 'array',
 			default: [ '', '', '', '' ],
 		},
+		enableDynamicSearch: {
+			type: 'boolean',
+			default: false,
+		},
 	},
 	edit,
 	save() {

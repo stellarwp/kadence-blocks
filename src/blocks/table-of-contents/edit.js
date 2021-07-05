@@ -39,8 +39,8 @@ import icons from '../../icons';
 import TableOfContentsList from './list';
 import { getHeadingsFromContent, linearToNestedHeadingList } from './utils';
 const { ENTER } = wp.keycodes;
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 const {
 	Component,
 	Fragment,
@@ -220,7 +220,7 @@ class KadenceTableOfContents extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll, containerMobileMargin, containerTabletMargin, containerMargin, enableScrollSpy, contentActiveColor }, clientId, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll, containerMobileMargin, containerTabletMargin, containerMargin, enableScrollSpy, contentActiveColor, enableDynamicSearch }, clientId, className, setAttributes } = this.props;
 		const { titlePaddingControl, containerBorderControl, containerPaddingControl, contentMarginControl, titleBorderControl, headings, showContent, borderRadiusControl, containerMobileMarginControl, containerTabletMarginControl, containerMarginControl } = this.state;
 		const onToggle = () => {
 			if ( enableToggle ) {
@@ -817,6 +817,20 @@ class KadenceTableOfContents extends Component {
 											onColorChange={ ( value ) => setAttributes( { contentActiveColor: value } ) }
 										/>
 									) }
+								</PanelBody>
+							</Fragment>
+						) }
+						{ this.showSettings( 'container' ) && (
+							<Fragment>
+								<PanelBody
+									title={ __( 'Non static content', 'kadence-blocks' ) }
+									initialOpen={ false }
+								>
+									<ToggleControl
+										label={ __( 'Search for Headings in Non static content?', 'kadence-blocks' ) }
+										checked={ enableDynamicSearch }
+										onChange={ value => setAttributes( { enableDynamicSearch: value } ) }
+									/>
 								</PanelBody>
 							</Fragment>
 						) }

@@ -1,7 +1,8 @@
 /**
  * External dependencies
  */
- import { noop, omit } from 'lodash';
+import noop from 'lodash/noop';
+import omit from 'lodash/omit';
 
  /**
   * WordPress dependencies
@@ -122,7 +123,7 @@
 					 className={ className }
 					 value={ value }
 					 onChange={ onInputChange }
-					 placeholder={ placeholder ?? __( 'Search or type url' ) }
+					 placeholder={ placeholder ?? __( 'Search or type url', 'kadence-blocks' ) }
 					 __experimentalRenderSuggestions={
 						 showSuggestions ? handleRenderSuggestions : null
 					 }

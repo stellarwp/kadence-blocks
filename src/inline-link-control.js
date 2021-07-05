@@ -7,7 +7,7 @@ const {
 	IconButton,
 	ToggleControl,
 } = wp.components;
-const { URLPopover } = wp.blockEditor;
+import { URLPopover } from '@wordpress/block-editor';
 const { LEFT, RIGHT, UP, DOWN, BACKSPACE, ENTER } = wp.keycodes;
 
 const URLInputInline = ( {

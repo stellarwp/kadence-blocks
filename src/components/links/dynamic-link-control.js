@@ -57,9 +57,9 @@ class DynamicLinkControl extends Component {
 					>
 						<div className="kb-dynamic-popover-inner-wrap">
 							<div className="kb-pro-notice">
-								<h2>{ __( 'Dynamic links', 'kadence-blocks-pro' ) } </h2>
-								<p>{ __( 'Create dynamic sites by populating links from various sources.', 'kadence-blocks-pro' ) } </p>
-								<ExternalLink href={ 'https://www.kadenceblocks.com/pro/' }>{ __( 'Upgrade to Pro', 'kadence-blocks-pro' ) }</ExternalLink>
+								<h2>{ __( 'Dynamic links', 'kadence-blocks' ) } </h2>
+								<p>{ __( 'Create dynamic sites by populating links from various sources.', 'kadence-blocks' ) } </p>
+								<ExternalLink href={ 'https://www.kadenceblocks.com/pro/' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
 							</div>
 						</div>
 					</Popover>

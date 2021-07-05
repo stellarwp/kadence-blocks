@@ -9,8 +9,8 @@ import { __ } from '@wordpress/i18n';
 const {
 	InnerBlocks,
 } = wp.blockEditor;
-const { withSelect } = wp.data;
-const { compose } = wp.compose;
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 import {
 	Fragment,
 	Component,

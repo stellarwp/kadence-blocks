@@ -11,7 +11,7 @@ import map from 'lodash/map';
  * Internal dependencies
  */
 import AdvancedPopColorControl from '../../../../advanced-pop-color-control';
-import TypographyControls from '../../../../typography-control';
+import TypographyControls from '../../../../components/typography/typography-control';
 import KadenceRange from '../../../../kadence-range-control';
 import MeasurementControls from '../../../../measurement-control';
 

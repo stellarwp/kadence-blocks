@@ -1,6 +1,6 @@
 .kb-dynamic-popover-inner-wrap {
     min-width: 280px;
-    padding: 12px;
+    padding: 20px;
 	h2 {
 		font-size: 13px;
 		margin-top:1em;
@@ -9,6 +9,13 @@
 }
 .kb-dynamic-menu.has-icon svg {
     width: 20px;
+}
+.kb-side-link-control .kb-search-selection-name .kb-search-url-clear.has-icon {
+    position: absolute;
+    top: 0;
+    right: 28px;
+    z-index: 1;
+    display: block;
 }
 .block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu.has-icon svg {
     width: 20px;

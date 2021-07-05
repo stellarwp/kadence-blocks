@@ -47,6 +47,7 @@ class URLInputControl extends Component {
 			linkTitle,
 			onChangeTitle,
 			changeTargetType = false,
+			allowClear = false,
 			dynamicAttribute = '' } = this.props;
 		const { urlInput, isEditingLink, isSettingsExpanded } = this.state;
 		const stopPropagation = ( event ) => {
@@ -159,7 +160,7 @@ class URLInputControl extends Component {
 					<label className="components-base-control__label">{ label }</label>
 				) }
 				<InputSearch
-					url={ linkEditorValue }
+					url={ url }
 					onChange={ ( url ) => onSubmitLinkChange( url ) }
 					attributes={ this.props.attributes }
 					dynamicAttribute={ dynamicAttribute }
@@ -167,6 +168,7 @@ class URLInputControl extends Component {
 					advancedOptions={ advancedOptions }
 					isSettingsExpanded={ isSettingsExpanded }
 					onExpandSettings={ toggleSettingsVisibility }
+					allowClear={ allowClear }
 					{ ...this.props }
 				/>
 			</div>

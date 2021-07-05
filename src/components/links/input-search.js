@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
- import { debounce, isFunction } from 'lodash';
+ import debounce from 'lodash/debounce';
  import classnames from 'classnames';
  import fetchSearchResults from './get-post-search-results';
  import TextHighlight from './text-highlight';
@@ -14,8 +14,8 @@
  import { safeDecodeURI, filterURLForDisplay } from '@wordpress/url';
  import { applyFilters } from '@wordpress/hooks';
 const { UP, DOWN, ENTER, TAB } = wp.keycodes;
- import { BaseControl, Button, Spinner, ToggleControl, ExternalLink, TextControl, SelectControl } from '@wordpress/components';
-const { withInstanceId, withSafeTimeout, compose } = wp.compose;
+import { BaseControl, Button, Spinner, ToggleControl, ExternalLink, TextControl, SelectControl } from '@wordpress/components';
+import { withInstanceId, withSafeTimeout, compose } from '@wordpress/compose';
 import DynamicLinkControl from './dynamic-link-control';
  class InputSearch extends Component {
 	 constructor( props ) {
@@ -254,6 +254,7 @@ import DynamicLinkControl from './dynamic-link-control';
 			 additionalControls,
 			 advancedOptions,
 			 onExpandSettings,
+			 allowClear,
 		 } = this.props;
  
 		 const {
@@ -329,6 +330,21 @@ import DynamicLinkControl from './dynamic-link-control';
 								<input { ...inputProps } />
 							</div>
 							{ loading && <Spinner /> }
+							{ allowClear && ! this.state.search && url && (
+								<Button
+									className="kb-search-url-clear"
+									icon={ cancelCircleFilled }
+									label={ __( 'Clear', 'kadence-blocks' ) }
+									onClick={ () => {
+										this.props.onChange( '', '' );
+										this.setState( {
+											isEditing: false,
+											selectedSuggestion: null,
+											showSuggestions: false,
+										} );
+									} }
+								/>
+							) }
 							<Button
 								className="kb-search-url-submit"
 								icon={ keyboardReturn }
