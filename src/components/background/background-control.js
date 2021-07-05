@@ -170,7 +170,7 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 							<ToggleControl
 								label={ __( 'Force Background Image inline?', 'kadence-blocks' ) }
 								checked={ ( undefined !== inlineImage ? inlineImage : false ) }
-								onChange={ ( value ) => sonSaveInlineImage( value ) }
+								onChange={ ( value ) => onSaveInlineImage( value ) }
 							/>
 						) }
 					</Fragment>

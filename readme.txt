@@ -96,6 +96,7 @@ Release Date: July 5th, 2021
 * Fix: Issue with tablet and mobile overlay image.
 * Fix: Issue with background image showing in editor for mobile preview when disabled.
 * Fix: Issue with hiding mobile background when changing screen size.
+* Fix: Issue with saving inline image setting.
 
 = 2.0.10 =
 Release Date: June 17th, 2021
