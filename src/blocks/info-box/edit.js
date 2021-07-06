@@ -1459,6 +1459,7 @@ class KadenceInfoBox extends Component {
 								linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
 								onChangeSponsored={ value => setAttributes( { sponsored: value } ) }
 								dynamicAttribute={ 'link' }
+								allowClear={ true }
 								{ ...this.props }
 							/>
 							<SelectControl
