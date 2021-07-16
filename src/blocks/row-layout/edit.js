@@ -2967,7 +2967,7 @@ class KadenceRowLayout extends Component {
 												</Button>
 											) ) }
 										</ButtonGroup>
-										<h2 className="kt-heading-size-title">{ __( 'Minimium Height', 'kadence-blocks' ) }</h2>
+										<h2 className="kt-heading-size-title">{ __( 'Minimum Height', 'kadence-blocks' ) }</h2>
 										<TabPanel className="kt-size-tabs"
 											activeClass="active-tab"
 											tabs={ [

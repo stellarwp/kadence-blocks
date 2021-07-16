@@ -154,6 +154,7 @@ class Kadence_Blocks_Prebuilt_Library {
 			add_action( 'wp_ajax_kadence_import_get_prebuilt_templates_data', array( $this, 'prebuilt_templates_data_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_reload_prebuilt_templates_data', array( $this, 'prebuilt_templates_data_reload_ajax_callback' ) );
 			add_action( 'wp_ajax_kadence_import_process_data', array( $this, 'process_data_ajax_callback' ) );
+			add_action( 'wp_ajax_kadence_subscribe_process_data', array( $this, 'process_subscribe_ajax_callback' ) );
 		}
 
 		// Add a cleanup routine.
@@ -558,7 +559,53 @@ class Kadence_Blocks_Prebuilt_Library {
 		}
 		die;
 	}
-
+	/**
+	 * Ajax function for processing the import data.
+	 */
+	public function process_subscribe_ajax_callback() {
+		// Verify if the AJAX call is valid (checks nonce and current_user_can).
+		$this->verify_ajax_call();
+		$email = empty( $_POST['email'] ) ? '' : sanitize_text_field( $_POST['email'] );
+		// Do you have the data?
+		if ( $email && is_email( $email ) && filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+			list( $user, $domain ) = explode( '@', $email );
+			list( $pre_domain, $post_domain ) = explode( '.', $domain );
+			$spell_issue_domains = array( 'gmaiil', 'gmai', 'gmaill' );
+			$spell_issue_domain_ends = array( 'local', 'comm', 'orgg', 'cmm' );
+			if ( in_array( $pre_domain, $spell_issue_domain_ends, true ) ) {
+				return wp_send_json( 'emailDomainPreError' );
+			}
+			if ( in_array( $post_domain, $spell_issue_domain_ends, true ) ) {
+				return wp_send_json( 'emailDomainPostError' );
+			}
+			$args = array(
+				'email'  => $email,
+				'tag'    => 'wire',
+			);
+			// Get the response.
+			$api_url  = add_query_arg( $args, 'https://www.kadencewp.com/kadence-blocks/wp-json/kadence-subscribe/v1/subscribe/' );
+			$response = wp_remote_get( $api_url );
+			// Early exit if there was an error.
+			if ( is_wp_error( $response ) ) {
+				return wp_send_json( 'retryError' );
+			}
+			// Get the CSS from our response.
+			$contents = wp_remote_retrieve_body( $response );
+			// Early exit if there was an error.
+			if ( is_wp_error( $contents ) ) {
+				return wp_send_json( 'retryError' );
+			}
+			if ( ! $contents ) {
+				// Send JSON Error response to the AJAX call.
+				wp_send_json( 'retryError' );
+			} else {
+				wp_send_json( $contents );
+			}
+		}
+		// Send JSON Error response to the AJAX call.
+		wp_send_json( 'emailError' );
+		die;
+	}
 	/**
 	 * Ajax function for processing the import data.
 	 */

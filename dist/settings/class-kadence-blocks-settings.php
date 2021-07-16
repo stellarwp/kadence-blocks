@@ -447,6 +447,17 @@ class Kadence_Blocks_Settings {
 				'default'           => '',
 			)
 		);
+		register_setting(
+			'kadence_blocks_wire_subscribe',
+			'kadence_blocks_wire_subscribe',
+			array(
+				'type'              => 'boolean',
+				'description'       => __( 'Subscribe to Wireframe library', 'kadence-blocks' ),
+				'sanitize_callback' => 'rest_sanitize_boolean',
+				'show_in_rest'      => true,
+				'default'           => false,
+			)
+		);
 	}
 	/**
 	 * Register settings

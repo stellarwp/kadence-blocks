@@ -2383,6 +2383,8 @@ class KadenceInfoBox extends Component {
 											onGoogleFont={ ( value ) => saveTitleFont( { google: value } ) }
 											loadGoogleFont={ titleFont[ 0 ].loadGoogle }
 											onLoadGoogleFont={ ( value ) => saveTitleFont( { loadGoogle: value } ) }
+											textTransform={ titleFont[ 0 ].textTransform }
+											onTextTransform={ ( value ) => saveTitleFont( { textTransform: value } ) }
 											fontVariant={ titleFont[ 0 ].variant }
 											onFontVariant={ ( value ) => saveTitleFont( { variant: value } ) }
 											fontWeight={ titleFont[ 0 ].weight }
@@ -3034,6 +3036,7 @@ class KadenceInfoBox extends Component {
 								style={ {
 									fontWeight: titleFont[ 0 ].weight,
 									fontStyle: titleFont[ 0 ].style,
+									textTransform: titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined,
 									color: KadenceColorOutput( titleColor ),
 									fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
 									lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),

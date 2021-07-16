@@ -1358,7 +1358,7 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( ! empty( $gfont_values['fontsubsets'] ) ) {
 				foreach ( $gfont_values['fontsubsets'] as $subset ) {
-					if ( ! in_array( $subset, $subsets ) ) {
+					if ( ! empty( $subset ) && ! in_array( $subset, $subsets ) ) {
 						array_push( $subsets, $subset );
 					}
 				}
@@ -3077,18 +3077,18 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( isset( $media_icon['size'] ) && ! empty( $media_icon['size'] ) ) {
-			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
+			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-info-svg-icon-flip, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
 			$css->add_property( 'font-size', $media_icon['size'] . 'px' );
 		}
 		if ( isset( $media_icon['tabletSize'] ) && is_numeric( $media_icon['tabletSize'] ) ) {
 			$css->start_media_query( $media_query['tablet'] );
-			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
+			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-info-svg-icon-flip, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
 			$css->add_property( 'font-size', $media_icon['tabletSize'] . 'px' );
 			$css->stop_media_query();
 		}
 		if ( isset( $media_icon['mobileSize'] ) && is_numeric( $media_icon['mobileSize'] ) ) {
 			$css->start_media_query( $media_query['mobile'] );
-			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
+			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-info-svg-icon, #kt-info-box' . $unique_id . ' .kt-info-svg-icon-flip, #kt-info-box' . $unique_id . ' .kt-blocks-info-box-number' );
 			$css->add_property( 'font-size', $media_icon['mobileSize'] . 'px' );
 			$css->stop_media_query();
 		}
@@ -3670,7 +3670,7 @@ class Kadence_Blocks_Frontend {
 				$css .= '}';
 			}
 		}
-		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['titleBorderWidth'] ) || isset( $attr['titleBorderRadius'] ) || isset( $attr['titlePadding'] ) || isset( $attr['titleBorder'] ) || isset( $attr['titleColor'] ) || isset( $attr['titleBg'] ) ) {
+		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['titleBorderWidth'] ) || isset( $attr['textTransform'] ) || isset( $attr['titleBorderRadius'] ) || isset( $attr['titlePadding'] ) || isset( $attr['titleBorder'] ) || isset( $attr['titleColor'] ) || isset( $attr['titleBg'] ) ) {
 			$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title, .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .kt-tabs-accordion-title .kt-tab-title {';
 			if ( isset( $attr['size'] ) && ! empty( $attr['size'] ) ) {
 				$css .= 'font-size:' . $attr['size'] . ( ! isset( $attr['sizeType'] ) ? 'px' : $attr['sizeType'] ) . ';';
@@ -3686,6 +3686,9 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['fontStyle'] ) && ! empty( $attr['fontStyle'] ) ) {
 				$css .= 'font-style:' . $attr['fontStyle'] . ';';
+			}
+			if ( isset( $attr['textTransform'] ) && ! empty( $attr['textTransform'] ) ) {
+				$css .= 'text-transform:' . $attr['textTransform'] . ';';
 			}
 			if ( isset( $attr['titleBorderWidth'] ) && ! empty( $attr['titleBorderWidth'] ) && is_array( $attr['titleBorderWidth'] ) ) {
 				$css .= 'border-width:' . $attr['titleBorderWidth'][0] . 'px ' . $attr['titleBorderWidth'][1] . 'px ' . $attr['titleBorderWidth'][2] . 'px ' . $attr['titleBorderWidth'][3] . 'px ;';
@@ -5205,22 +5208,23 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['margin'] ) && is_array( $attr['margin'] ) && is_array( $attr['margin'][0] ) ) {
 			$margin = $attr['margin'][0];
+			$margin_unit = $attr['marginUnit'] ? $attr['marginUnit'] : 'px';
 			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) && is_numeric( $margin['desk'][0] ) ) {
 				$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
-				$css .= 'margin:' . $margin['desk'][0] . 'px ' . $margin['desk'][1] . 'px ' . $margin['desk'][2] . 'px ' . $margin['desk'][3] . 'px;';
+				$css .= 'margin:' . $margin['desk'][0] . $margin_unit . ' ' . $margin['desk'][1] . $margin_unit . ' ' . $margin['desk'][2] . $margin_unit . ' ' . $margin['desk'][3] . $margin_unit . ';';
 				$css .= '}';
 			}
 			if ( isset( $margin['tablet'] ) && is_array( $margin['tablet'] ) && is_numeric( $margin['tablet'][0] ) ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
 				$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
-				$css .= 'margin:' . $margin['tablet'][0] . 'px ' . $margin['tablet'][1] . 'px ' . $margin['tablet'][2] . 'px ' . $margin['tablet'][3] . 'px;';
+				$css .= 'margin:' . $margin['tablet'][0] . $margin_unit . ' ' . $margin['tablet'][1] . $margin_unit . ' ' . $margin['tablet'][2] . $margin_unit . ' ' . $margin['tablet'][3] . $margin_unit . ';';
 				$css .= '}';
 				$css .= '}';
 			}
 			if ( isset( $margin['mobile'] ) && is_array( $margin['mobile'] ) && is_numeric( $margin['mobile'][0] ) ) {
 				$css .= '@media (max-width: 767px) {';
 				$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
-				$css .= 'margin:' . $margin['mobile'][0] . 'px ' . $margin['mobile'][1] . 'px ' . $margin['mobile'][2] . 'px ' . $margin['mobile'][3] . 'px;';
+				$css .= 'margin:' . $margin['mobile'][0] . $margin_unit . ' ' . $margin['mobile'][1] . $margin_unit . ' ' . $margin['mobile'][2] . $margin_unit . ' ' . $margin['mobile'][3] . $margin_unit . ';';
 				$css .= '}';
 				$css .= '}';
 			}
@@ -5819,6 +5823,11 @@ class Kadence_Blocks_Frontend {
 					$css->add_property( 'color', $css->render_color( $attr['color'] ) );
 				}
 			}
+			if ( isset( $attr['background'] ) && ! empty( $attr['background'] ) ) {
+				if ( isset( $attr['backgroundColorClass'] ) && empty( $attr['backgroundColorClass'] ) || ! isset( $attr['backgroundColorClass'] ) ) {
+					$css->add_property( 'background-color', $css->render_color( $attr['background'] ) );
+				}
+			}
 			if ( isset( $attr['textShadow'] ) && is_array( $attr['textShadow'] ) && isset( $attr['textShadow'][0] ) && is_array( $attr['textShadow'][0] ) && isset( $attr['textShadow'][0]['enable'] ) && $attr['textShadow'][0]['enable'] ) {
 				$css->add_property( 'text-shadow', ( isset( $attr['textShadow'][0]['hOffset'] ) ? $attr['textShadow'][0]['hOffset'] : 1 ) . 'px ' . ( isset( $attr['textShadow'][0]['vOffset'] ) ? $attr['textShadow'][0]['vOffset'] : 1 ) . 'px ' . ( isset( $attr['textShadow'][0]['blur'] ) ? $attr['textShadow'][0]['blur'] : 1 ) . 'px ' . ( isset( $attr['textShadow'][0]['color'] ) ? $this->kadence_color_output( $attr['textShadow'][0]['color'] ) : 'rgba(0,0,0,0.2)' ) );
 			}
@@ -6345,6 +6354,8 @@ class Kadence_Blocks_Frontend {
 							$css->add_property( 'font-size', $btnvalue['iconSize'][0] . ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) );
 						}
 						if ( isset( $btnvalue['iconColorHover'] ) && !empty( $btnvalue['iconColorHover'] ) ) {
+							$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button .kt-btn-svg-icon' );
+							$css->add_property( 'transition', 'all .3s ease-in-out' );
 							$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button:hover .kt-btn-svg-icon' );
 							$css->add_property( 'color', $css->render_color( $btnvalue['iconColorHover'] ) );
 						}
@@ -6363,37 +6374,49 @@ class Kadence_Blocks_Frontend {
 								$css->add_property( 'padding-left', $btnvalue['iconPadding'][3] . 'px' );
 							}
 						}
-						if ( isset( $btnvalue['iconTabletPadding'] ) && is_array( $btnvalue['iconTabletPadding'] ) ) {
+						if ( ( isset( $btnvalue['iconTabletPadding'] ) && is_array( $btnvalue['iconTabletPadding'] ) ) || ( isset( $btnvalue['iconSize'] ) && isset( $btnvalue['iconSize'][1] ) && is_numeric( $btnvalue['iconSize'][1] ) ) ) {
 							$css->start_media_query( $media_query['tablet'] );
-							$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
-							if ( isset( $btnvalue['iconTabletPadding'][0] ) && is_numeric( $btnvalue['iconTabletPadding'][0] ) ) {
-								$css->add_property( 'padding-top', $btnvalue['iconTabletPadding'][0] . 'px' );
+							if ( isset( $btnvalue['iconSize'] ) && isset( $btnvalue['iconSize'][1] ) && is_numeric( $btnvalue['iconSize'][1] ) ) {
+								$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button .kt-btn-svg-icon' );
+								$css->add_property( 'font-size', $btnvalue['iconSize'][1] . ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) );
 							}
-							if ( isset( $btnvalue['iconTabletPadding'][1] ) && is_numeric( $btnvalue['iconTabletPadding'][1] ) ) {
-								$css->add_property( 'padding-right', $btnvalue['iconTabletPadding'][1] . 'px' );
-							}
-							if ( isset( $btnvalue['iconTabletPadding'][2] ) && is_numeric( $btnvalue['iconTabletPadding'][2] ) ) {
-								$css->add_property( 'padding-bottom', $btnvalue['iconTabletPadding'][2] . 'px' );
-							}
-							if ( isset( $btnvalue['iconTabletPadding'][3] ) && is_numeric( $btnvalue['iconTabletPadding'][3] ) ) {
-								$css->add_property( 'padding-left', $btnvalue['iconTabletPadding'][3] . 'px' );
+							if ( isset( $btnvalue['iconTabletPadding'] ) && is_array( $btnvalue['iconTabletPadding'] ) ) {
+								$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
+								if ( isset( $btnvalue['iconTabletPadding'][0] ) && is_numeric( $btnvalue['iconTabletPadding'][0] ) ) {
+									$css->add_property( 'padding-top', $btnvalue['iconTabletPadding'][0] . 'px' );
+								}
+								if ( isset( $btnvalue['iconTabletPadding'][1] ) && is_numeric( $btnvalue['iconTabletPadding'][1] ) ) {
+									$css->add_property( 'padding-right', $btnvalue['iconTabletPadding'][1] . 'px' );
+								}
+								if ( isset( $btnvalue['iconTabletPadding'][2] ) && is_numeric( $btnvalue['iconTabletPadding'][2] ) ) {
+									$css->add_property( 'padding-bottom', $btnvalue['iconTabletPadding'][2] . 'px' );
+								}
+								if ( isset( $btnvalue['iconTabletPadding'][3] ) && is_numeric( $btnvalue['iconTabletPadding'][3] ) ) {
+									$css->add_property( 'padding-left', $btnvalue['iconTabletPadding'][3] . 'px' );
+								}
 							}
 							$css->stop_media_query();
 						}
-						if ( isset( $btnvalue['iconMobilePadding'] ) && is_array( $btnvalue['iconMobilePadding'] ) ) {
+						if ( ( isset( $btnvalue['iconMobilePadding'] ) && is_array( $btnvalue['iconMobilePadding'] ) ) || ( isset( $btnvalue['iconSize'] ) && isset( $btnvalue['iconSize'][2] ) && is_numeric( $btnvalue['iconSize'][2] ) ) ) {
 							$css->start_media_query( $media_query['mobile'] );
-							$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
-							if ( isset( $btnvalue['iconMobilePadding'][0] ) && is_numeric( $btnvalue['iconMobilePadding'][0] ) ) {
-								$css->add_property( 'padding-top', $btnvalue['iconMobilePadding'][0] . 'px' );
+							if ( isset( $btnvalue['iconSize'] ) && isset( $btnvalue['iconSize'][2] ) && is_numeric( $btnvalue['iconSize'][2] ) ) {
+								$css->set_selector( '.wp-block-kadence-advancedbtn.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-button .kt-btn-svg-icon' );
+								$css->add_property( 'font-size', $btnvalue['iconSize'][2] . ( isset( $btnvalue['iconSizeType'] ) && ! empty( $btnvalue['iconSizeType'] ) ? $btnvalue['iconSizeType'] : 'px' ) );
 							}
-							if ( isset( $btnvalue['iconMobilePadding'][1] ) && is_numeric( $btnvalue['iconMobilePadding'][1] ) ) {
-								$css->add_property( 'padding-right', $btnvalue['iconMobilePadding'][1] . 'px' );
-							}
-							if ( isset( $btnvalue['iconMobilePadding'][2] ) && is_numeric( $btnvalue['iconMobilePadding'][2] ) ) {
-								$css->add_property( 'padding-bottom', $btnvalue['iconMobilePadding'][2] . 'px' );
-							}
-							if ( isset( $btnvalue['iconMobilePadding'][3] ) && is_numeric( $btnvalue['iconMobilePadding'][3] ) ) {
-								$css->add_property( 'padding-left', $btnvalue['iconMobilePadding'][3] . 'px' );
+							if ( isset( $btnvalue['iconMobilePadding'] ) && is_array( $btnvalue['iconMobilePadding'] ) ) {
+								$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey . ' .kt-btn-svg-icon' );
+								if ( isset( $btnvalue['iconMobilePadding'][0] ) && is_numeric( $btnvalue['iconMobilePadding'][0] ) ) {
+									$css->add_property( 'padding-top', $btnvalue['iconMobilePadding'][0] . 'px' );
+								}
+								if ( isset( $btnvalue['iconMobilePadding'][1] ) && is_numeric( $btnvalue['iconMobilePadding'][1] ) ) {
+									$css->add_property( 'padding-right', $btnvalue['iconMobilePadding'][1] . 'px' );
+								}
+								if ( isset( $btnvalue['iconMobilePadding'][2] ) && is_numeric( $btnvalue['iconMobilePadding'][2] ) ) {
+									$css->add_property( 'padding-bottom', $btnvalue['iconMobilePadding'][2] . 'px' );
+								}
+								if ( isset( $btnvalue['iconMobilePadding'][3] ) && is_numeric( $btnvalue['iconMobilePadding'][3] ) ) {
+									$css->add_property( 'padding-left', $btnvalue['iconMobilePadding'][3] . 'px' );
+								}
 							}
 							$css->stop_media_query();
 						}

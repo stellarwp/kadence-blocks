@@ -95,11 +95,14 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
 		$pro_data = kadence_blocks_get_pro_license_data();
 	}
+	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'dist/gfonts-array.php';
 	$gfont_names_path = KADENCE_BLOCKS_PATH . 'dist/gfonts-names-array.php';
 	$icon_names_path  = KADENCE_BLOCKS_PATH . 'dist/icon-names-array.php';
 	$icon_ico_path    = KADENCE_BLOCKS_PATH . 'dist/icons-ico-array.php';
 	$icons_path       = KADENCE_BLOCKS_PATH . 'dist/icons-array.php';
+	$current_user     = wp_get_current_user();
+	$user_email       = $current_user->user_email;
 	wp_localize_script(
 		'kadence-blocks-js',
 		'kadence_blocks_params',
@@ -135,6 +138,10 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'cloud_enabled'  => apply_filters( 'kadence_blocks_cloud_enabled', true ),
 			'dynamic_enabled'  => apply_filters( 'kadence_blocks_dynamic_enabled', false ),
 			'cloud_settings' => get_option( 'kadence_blocks_cloud' ),
+			'subscribed' => $subscribed,
+			'showWire' => apply_filters( 'kadence_blocks_wireframe_library_enabled', true ),
+			'wireImage' => KADENCE_BLOCKS_URL . 'dist/assets/images/graphy.png',
+			'user_email' => $user_email,
 			'prebuilt_libraries' => apply_filters( 'kadence_blocks_custom_prebuilt_libraries', array() ),
 			'showDesignLibrary' => apply_filters( 'kadence_blocks_design_library_enabled', true ),
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
@@ -613,6 +620,24 @@ function kadence_blocks_block_category( $categories, $post ) {
 	);
 }
 add_filter( 'block_categories', 'kadence_blocks_block_category', 10, 2 );
+/**
+ * Add block category for Kadence Blocks.
+ *
+ * @param array  $categories the array of block categories.
+ * @param WP_Block_Editor_Context $block_editor_context The current block editor context.
+ */
+function kadence_blocks_block_category_all( $categories, $block_editor_context ) {
+	return array_merge(
+		array(
+			array(
+				'slug'  => 'kadence-blocks',
+				'title' => __( 'Kadence Blocks', 'kadence-blocks' ),
+			),
+		),
+		$categories
+	);
+}
+add_filter( 'block_categories_all', 'kadence_blocks_block_category_all', 10, 2 );
 
 /**
  * Get other templates (e.g. product attributes) passing attributes and including the file.

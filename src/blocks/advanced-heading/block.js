@@ -330,6 +330,12 @@ registerBlockType( 'kadence/advancedheading', {
 			type: 'boolean',
 			default: false,
 		},
+		background: {
+			type: 'string',
+		},
+		backgroundColorClass: {
+			type: 'string',
+		},
 	},
 	transforms: {
 		from: [
@@ -377,10 +383,11 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget } } = props;
+		const { attributes: { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget, backgroundColorClass } } = props;
 		const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 		const mType = ( marginType ? marginType : 'px' );
 		const textColorClass = getColorClassName( 'color', colorClass );
+		const textBackgroundColorClass = getColorClassName( 'background-color', backgroundColorClass );
 		const revealAnimation = ( kadenceAnimation && ( 'reveal-left' === kadenceAnimation || 'reveal-right' === kadenceAnimation || 'reveal-up' === kadenceAnimation || 'reveal-down' === kadenceAnimation ) ? true : false );
 		const wrapper = ( revealAnimation ? true : false );
 		const classes = classnames( {
@@ -389,6 +396,8 @@ registerBlockType( 'kadence/advancedheading', {
 			[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
 			[ textColorClass ]: textColorClass,
 			'has-text-color': textColorClass,
+			[ textBackgroundColorClass ]: textBackgroundColorClass,
+			'has-background': textBackgroundColorClass,
 		} );
 		let relAttr;
 		if ( linkTarget ) {

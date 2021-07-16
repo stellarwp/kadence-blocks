@@ -208,6 +208,9 @@ const attributes = {
 		type: 'string',
 		default: 'regular',
 	},
+	textTransform: {
+		type: 'string',
+	},
 	fontStyle: {
 		type: 'string',
 		default: 'normal',

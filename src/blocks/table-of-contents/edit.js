@@ -891,7 +891,7 @@ class KadenceTableOfContents extends Component {
 									onChange={ value => {
 										setAttributes( { title: value } );
 									} }
-									allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
+									allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 									className={ 'kb-table-of-contents-title' }
 									style={ {
 										color: 'inherit',

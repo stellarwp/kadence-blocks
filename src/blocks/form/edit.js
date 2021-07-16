@@ -73,7 +73,6 @@ const {
 } = wp.hooks;
 const { DELETE } = wp.keycodes;
 
-const { getCurrentPostId } = wp.data.select( 'core/editor' );
 const RETRIEVE_KEY_URL = 'https://g.co/recaptcha/v3';
 const HELP_URL = 'https://developers.google.com/recaptcha/docs/v3';
 
@@ -185,14 +184,23 @@ class KadenceForm extends Component {
 		} else {
 			kbFormIDs.push( this.props.attributes.uniqueID );
 		}
-		if ( ! this.props.attributes.postID ) {
-			this.props.setAttributes( {
-				postID: getCurrentPostId(),
-			} );
-		} else if ( getCurrentPostId() !== this.props.attributes.postID ) {
-			this.props.setAttributes( {
-				postID: getCurrentPostId(),
-			} );
+		if ( wp.data.select( 'core/editor' ) ) {
+			const { getCurrentPostId } = wp.data.select( 'core/editor' );
+			if ( ! this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: getCurrentPostId(),
+				} );
+			} else if ( getCurrentPostId() !== this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: getCurrentPostId(),
+				} );
+			}
+		} else {
+			if ( ! this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: 0,
+				} );
+			}
 		}
 		this.setState( { actionOptions: applyFilters( 'kadence.actionOptions', actionOptionsList ) } );
 		if ( this.props.attributes.style && this.props.attributes.style[ 0 ] ) {
@@ -3524,7 +3532,7 @@ class KadenceForm extends Component {
 								onChange={ value => {
 									this.saveSubmit( { label: value } );
 								} }
-								allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
+								allowedFormats={ applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] ) }
 								className={ `kb-forms-submit kb-button-size-${ submit[ 0 ].size } kb-button-width-${ submit[ 0 ].widthType }` }
 								style={ {
 									background: ( undefined !== btnBG ? btnBG : undefined ),

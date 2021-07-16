@@ -1,7 +1,7 @@
 
 import map from 'lodash/map';
 
-const { PluginSidebar, PluginSidebarMoreMenuItem } = wp.editPost;
+import { PluginSidebar, PluginSidebarMoreMenuItem } from '@wordpress/edit-post';
 import { __ } from '@wordpress/i18n';
 import {
 	withSelect,

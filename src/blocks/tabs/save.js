@@ -28,9 +28,10 @@ class KadenceTabsSave extends Component {
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const accordionClass = ( ( mobileLayout && 'accordion' === mobileLayout ) || ( tabletLayout && 'accordion' === tabletLayout ) ? 'kt-create-accordion' : '' );
 		const classId = ( ! uniqueID ? 'notset' : uniqueID );
+		const theTabAlignment = ( tabAlignment ? tabAlignment : 'left' );
 		const classes = classnames( `align${ blockAlignment }` );
 		const activeTab = ( startTab ? startTab : currentTab );
-		const innerClasses = classnames( `kt-tabs-wrap kt-tabs-id${ classId } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ activeTab } kt-tabs-layout-${ layoutClass } kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment } ${ accordionClass }` );
+		const innerClasses = classnames( `kt-tabs-wrap kt-tabs-id${ classId } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ activeTab } kt-tabs-layout-${ layoutClass } kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ theTabAlignment } ${ accordionClass }` );
 		const renderTitles = ( index ) => {
 			const backupAnchor = `tab-${ ( titles[ index ] && titles[ index ].text ? this.stripStringRender( titles[ index ].text.toString() ) : this.stripStringRender( __( 'Tab' ) + ( 1 + index ) ) ) }`;
 			return (

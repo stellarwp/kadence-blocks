@@ -47,6 +47,7 @@ import {
 	AlignmentToolbar,
 	InspectorAdvancedControls,
 	RichText,
+	getColorClassName,
 } from '@wordpress/block-editor';
 const {
 	Component,
@@ -168,7 +169,8 @@ class KadenceAdvancedHeading extends Component {
 	}
 	render() {
 		const { attributes, className, setAttributes, mergeBlocks, onReplace, clientId } = this.props;
-		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic, link, linkTarget, linkNoFollow, linkSponsored } = attributes;
+		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic, link, linkTarget, linkNoFollow, linkSponsored, background, backgroundColorClass } = attributes;
+		const renderTypography = typography ? "'" + typography + "'" : '';
 		const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
@@ -181,6 +183,8 @@ class KadenceAdvancedHeading extends Component {
 				families: [ markTypography + ( markFontVariant ? ':' + markFontVariant : '' ) ],
 			},
 		};
+		const textColorClass = getColorClassName( 'color', colorClass );
+		const textBackgroundColorClass = getColorClassName( 'background-color', backgroundColorClass );
 		const config = ( googleFont ? gconfig : '' );
 		const sconfig = ( markGoogleFont ? sgconfig : '' );
 		const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
@@ -276,19 +280,24 @@ class KadenceAdvancedHeading extends Component {
 			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
 			[ className ]: className,
 			'kb-content-is-dynamic': undefined !== kadenceDynamic && undefined !== kadenceDynamic['content'] && undefined !== kadenceDynamic['content'].enable && kadenceDynamic['content'].enable,
+			[ textColorClass ]: textColorClass,
+			'has-text-color': textColorClass,
+			[ textBackgroundColorClass ]: textBackgroundColorClass,
+			'has-background': textBackgroundColorClass,
 		} );
 		const dynamicHeadingContent = (
 			<TagHTML
 				style={ {
 					textAlign: previewAlign,
 					color: color ? KadenceColorOutput( color ) : undefined,
+					backgroundColor: background ? KadenceColorOutput( background ) : undefined,
 					fontWeight: fontWeight,
 					fontStyle: fontStyle,
 					fontSize: ( previewFontSize ? previewFontSize + sizeType : undefined ),
 					lineHeight: ( previewLineHeight ? previewLineHeight + lineType : undefined ),
 					letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 					textTransform: ( textTransform ? textTransform : undefined ),
-					fontFamily: ( typography ? typography : '' ),
+					fontFamily: ( typography ? renderTypography : '' ),
 					paddingTop: ( undefined !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
 					paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
 					paddingBottom: ( undefined !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
@@ -325,13 +334,14 @@ class KadenceAdvancedHeading extends Component {
 				style={ {
 					textAlign: previewAlign,
 					color: color ? KadenceColorOutput( color ) : undefined,
+					backgroundColor: background ? KadenceColorOutput( background ) : undefined,
 					fontWeight: fontWeight,
 					fontStyle: fontStyle,
 					fontSize: ( previewFontSize ? previewFontSize + sizeType : undefined ),
 					lineHeight: ( previewLineHeight ? previewLineHeight + lineType : undefined ),
 					letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 					textTransform: ( textTransform ? textTransform : undefined ),
-					fontFamily: ( typography ? typography : '' ),
+					fontFamily: ( typography ? renderTypography : '' ),
 					paddingTop: ( undefined !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
 					paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
 					paddingBottom: ( undefined !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
@@ -363,8 +373,8 @@ class KadenceAdvancedHeading extends Component {
 					{ `.kt-adv-heading${ uniqueID } mark, .kt-adv-heading${ uniqueID }.rich-text:focus mark[data-rich-text-format-boundary] {
 						color: ${ KadenceColorOutput( markColor ) };
 						background: ${ ( markBG ? markBGString : 'transparent' ) };
-						font-weight: ${ ( markTypography && markFontWeight ? markFontWeight : 'inherit' ) };
-						font-style: ${ ( markTypography && markFontStyle ? markFontStyle : 'inherit' ) };
+						font-weight: ${ ( markFontWeight ? markFontWeight : 'inherit' ) };
+						font-style: ${ ( markFontStyle ? markFontStyle : 'inherit' ) };
 						font-size: ${ ( previewMarkSize ? previewMarkSize + markSizeType : 'inherit' ) };
 						line-height: ${ ( previewMarkLineHeight ? previewMarkLineHeight + markLineType : 'inherit' ) };
 						letter-spacing: ${ ( markLetterSpacing ? markLetterSpacing + 'px' : 'inherit' ) };
@@ -472,13 +482,22 @@ class KadenceAdvancedHeading extends Component {
 								onChangeMobile={ ( nextAlign ) => setAttributes( { mobileAlign: nextAlign } ) }
 							/>
 							{ this.showSettings( 'colorSettings' ) && (
-								<AdvancedPopColorControl
-									label={ __( 'Heading Color', 'kadence-blocks' ) }
-									colorValue={ ( color ? color : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => setAttributes( { color: value } ) }
-									onColorClassChange={ value => setAttributes( { colorClass: value } ) }
-								/>
+								<Fragment>
+									<AdvancedPopColorControl
+										label={ __( 'Heading Color', 'kadence-blocks' ) }
+										colorValue={ ( color ? color : '' ) }
+										colorDefault={ '' }
+										onColorChange={ value => setAttributes( { color: value } ) }
+										onColorClassChange={ value => setAttributes( { colorClass: value } ) }
+									/>
+									<AdvancedPopColorControl
+										label={ __( 'Heading Background Color', 'kadence-blocks' ) }
+										colorValue={ ( background ? background : '' ) }
+										colorDefault={ '' }
+										onColorChange={ value => setAttributes( { background: value } ) }
+										onColorClassChange={ value => setAttributes( { backgroundColorClass: value } ) }
+									/>
+								</Fragment>
 							) }
 							{ this.showSettings( 'sizeSettings' ) && (
 								<Fragment>
@@ -596,38 +615,8 @@ class KadenceAdvancedHeading extends Component {
 									max={ 20 }
 									step={ 1 }
 								/>
-								<ResponsiveRangeControls
-									label={ __( 'Font Size', 'kadence-blocks' ) }
-									value={ ( markSize && markSize[ 0 ] ? markSize[ 0 ] : '' ) }
-									onChange={ ( value ) => setAttributes( { markSize: [ value, ( markSize && markSize[ 1 ] ? markSize[ 1 ] : '' ), ( markSize && markSize[ 2 ] ? markSize[ 2 ] : '' ) ] } ) }
-									tabletValue={ ( markSize && markSize[ 1 ] ? markSize[ 1 ] : '' ) }
-									onChangeTablet={ ( value ) => setAttributes( { markSize: [ ( markSize && markSize[ 0 ] ? markSize[ 0 ] : '' ), value, ( markSize && markSize[ 2 ] ? markSize[ 2 ] : '' ) ] } ) }
-									mobileValue={ ( markSize && markSize[ 2 ] ? markSize[ 2 ] : '' ) }
-									onChangeMobile={ ( value ) => setAttributes( { markSize: [ ( markSize && markSize[ 0 ] ? markSize[ 0 ] : '' ), ( markSize && markSize[ 1 ] ? markSize[ 1 ] : '' ), value ] } ) }
-									min={ fontMin }
-									max={ fontMax }
-									step={ fontStep }
-									unit={ markSizeType }
-									onUnit={ ( value ) => setAttributes( { markSizeType: value } ) }
-									units={ [ 'px', 'em', 'rem' ] }
-								/>
-								<ResponsiveRangeControls
-									label={ __( 'Line Height', 'kadence-blocks' ) }
-									value={ ( markLineHeight && markLineHeight[ 0 ] ? markLineHeight[ 0 ] : '' ) }
-									onChange={ ( value ) => setAttributes( { markLineHeight: [ value, ( markLineHeight && markLineHeight[ 1 ] ? markLineHeight[ 1 ] : '' ), ( markLineHeight && markLineHeight[ 2 ] ? markLineHeight[ 2 ] : '' ) ] } ) }
-									tabletValue={ ( markLineHeight && markLineHeight[ 1 ] ? markLineHeight[ 1 ] : '' ) }
-									onChangeTablet={ ( value ) => setAttributes( { markLineHeight: [ ( markLineHeight && markLineHeight[ 0 ] ? markLineHeight[ 0 ] : '' ), value, ( markLineHeight && markLineHeight[ 2 ] ? markLineHeight[ 2 ] : '' ) ] } ) }
-									mobileValue={ ( markLineHeight && markLineHeight[ 2 ] ? markLineHeight[ 2 ] : '' ) }
-									onChangeMobile={ ( value ) => setAttributes( { markLineHeight: [ ( markLineHeight && markLineHeight[ 0 ] ? markLineHeight[ 0 ] : '' ), ( markLineHeight && markLineHeight[ 1 ] ? markLineHeight[ 1 ] : '' ), value ] } ) }
-									min={ lineMin }
-									max={ lineMax }
-									step={ lineStep }
-									unit={ lineType }
-									onUnit={ ( value ) => setAttributes( { lineType: value } ) }
-									units={ [ 'px', 'em', 'rem' ] }
-								/>
 								<TypographyControls
-									fontGroup={ 'heading' }
+									fontGroup={ 'markheading' }
 									fontSize={ markSize }
 									onFontSize={ ( value ) => setAttributes( { markSize: value } ) }
 									fontSizeType={ markSizeType }

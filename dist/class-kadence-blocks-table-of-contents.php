@@ -266,12 +266,6 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	private function table_of_contents_get_headings( $post, $attributes = array() ) {
 		global $multipage, $page, $pages;
-		// Prevent endless looping.
-		if ( self::$is_started === $attributes['uniqueID'] ) {
-			return array();
-		} else {
-			self::$is_started = $attributes['uniqueID'];
-		}
 		if ( $multipage ) {
 			// Creates a list of heading lists, one list per page.
 			$pages_of_headings = array_map(
@@ -677,7 +671,6 @@ class Kadence_Blocks_Table_Of_Contents {
 	 */
 	public function render_table_of_content( $attributes, $content ) {
 		$the_post = $this->get_post_from_context();
-
 		// CSS class string.
 		$class = 'wp-block-kadence-tableofcontents kb-table-of-content-nav kb-table-of-content-id' . $attributes['uniqueID'];
 

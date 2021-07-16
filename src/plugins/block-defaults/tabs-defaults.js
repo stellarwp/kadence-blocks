@@ -615,7 +615,7 @@ class KadenceTabsDefault extends Component {
 							initialOpen={ false }
 						>
 							<RangeControl
-								label={ __( 'Content Minimium Height', 'kadence-blocks' ) }
+								label={ __( 'Content Minimum Height', 'kadence-blocks' ) }
 								value={ ( tabsConfig.minHeight ? tabsConfig.minHeight : '' ) }
 								onChange={ ( value ) => this.saveConfigState( 'minHeight', value ) }
 								min={ 0 }

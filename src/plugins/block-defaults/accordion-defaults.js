@@ -520,7 +520,7 @@ class KadenceAccordionDefault extends Component {
 							initialOpen={ false }
 						>
 							<RangeControl
-								label={ __( 'Content Minimium Height' ) }
+								label={ __( 'Content Minimum Height' ) }
 								value={ ( undefined !== accordionConfig.minHeight ? accordionConfig.minHeight : '' ) }
 								onChange={ ( value ) => this.saveConfigState( 'minHeight', value ) }
 								min={ 0 }

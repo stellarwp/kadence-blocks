@@ -3,8 +3,8 @@ Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
-Tested up to: 5.7.2
-Stable tag: 2.0.12
+Tested up to: 5.8
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,6 +86,25 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.1.0 =
+Release Date: July 13th, 2021
+* Add: Wireframe library.
+* Add: Background Color to Advanced Heading Block.
+* Add: Text transform to infobox title.
+* Add: Text transform controls to tabs title.
+* Update: Google font list.
+* Fix: Issue with tab block alignment.
+* Fix: Issue with possible font url.
+* Fix: Issue with TOC and some plugins.
+* Fix: Issue with margin unit in gallery block.
+* Fix: Issue with highlight font weight.
+* Fix: Issue with flip icon tablet and mobile size.
+* Fix: Button Icons animation time is not correct.
+* Fix: Issue with padding in editor around Countdown block.
+* Fix: Issue with button icons size not changing.
+* Fix: Issue with form padding preview.
+* Fix: Issues with blocks in widget area.
 
 = 2.0.12 =
 Release Date: July 6th, 2021

@@ -50,6 +50,7 @@ import SectionLibrary from './section-library';
 import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
+import WireframeLibrary from './wire-library';
 import KadenceTryParseJSON from '../../components/common/parse-json'
 
 const normal_actions =[
@@ -62,6 +63,11 @@ const normal_actions =[
 		slug: 'templates',
 		title: __( 'Starter Packs', 'kadence-blocks' ),
 		key: 'kb-templates-tab',
+	},
+	{
+		slug: 'wire',
+		title: 'Wireframe',
+		key: 'kb-wire-tab',
 	},
 	{
 		slug: 'cloud',
@@ -80,12 +86,18 @@ const no_connect_actions = [
 		title: __( 'Starter Packs', 'kadence-blocks' ),
 		key: 'kb-templates-tab',
 	},
+	{
+		slug: 'wire',
+		title: 'Wireframe',
+		key: 'kb-wire-tab',
+	},
 ];
 class PrebuiltModal extends Component {
 	constructor() {
 		super( ...arguments );
 		this.saveSettings = this.saveSettings.bind( this );
 		this.reloadAllActions = this.reloadAllActions.bind( this );
+		this.showSettings = this.showSettings.bind( this );
 		this.state = {
 			reload:false,
 			reloadActions:false,
@@ -96,7 +108,23 @@ class PrebuiltModal extends Component {
 			section: null,
 			cloudSettings: kadence_blocks_params.cloud_settings ? JSON.parse( kadence_blocks_params.cloud_settings ) : {},
 			actions: kadence_blocks_params.cloud_enabled ? normal_actions : no_connect_actions,
+			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
+			wireSettings: {},
 		};
+	}
+	showSettings( key ) {
+		if ( undefined === this.state.wireSettings[ key ] || 'all' === this.state.wireSettings[ key ] ) {
+			return true;
+		} else if ( 'contributor' === this.state.wireSettings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'author' === this.state.wireSettings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'editor' === this.state.wireSettings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+			return true;
+		} else if ( 'admin' === this.state.wireSettings[ key ] && 'admin' === this.state.user ) {
+			return true;
+		}
+		return false;
 	}
 	componentDidMount() {
 		if ( this.props.open && this.props.onlyModal ) {
@@ -107,6 +135,10 @@ class PrebuiltModal extends Component {
 		}
 		if ( typeof kadence_blocks_params.prebuilt_libraries === 'object' && kadence_blocks_params.prebuilt_libraries !== null ) {
 			this.setState( { actions: kadence_blocks_params.prebuilt_libraries.concat( this.state.actions ) } );
+		}
+		const blockSettings = ( kadence_blocks_params.configuration ? KadenceTryParseJSON( kadence_blocks_params.configuration, true ) : {} );
+		if ( blockSettings[ 'kadence/designlibrary' ] !== undefined && typeof blockSettings[ 'kadence/designlibrary' ] === 'object' ) {
+			this.setState( { wireSettings: blockSettings[ 'kadence/designlibrary' ] } );
 		}
 	}
 	reloadAllActions() {
@@ -171,48 +203,67 @@ class PrebuiltModal extends Component {
 								) }
 								{ ! this.state.reloadActions && (
 									<div class="kb-prebuilt-library-actions">
-										{ actions.map( ( action, index ) =>
-											<Button
-												key={ `${ action.slug }-${ index }` }
-												className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
-												aria-pressed={ active_tab === action.slug }
-												icon={ action.slug === 'cloud' ? plusCircle : undefined }
-												onClick={ () => {
-													const activeTab = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
-													activeTab['activeTab'] = action.slug;
-													localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeTab ) );
-													this.setState( { section: action.slug } );
-												} }
-											>
-												{ action.slug === 'cloud' ? undefined : <span> { action.title } </span> }
-											</Button>
+										{ actions.map( ( action, index ) => 
+											<Fragment>
+												{ action.slug !== 'wire' && (
+													<Button
+														key={ `${ action.slug }-${ index }` }
+														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
+														aria-pressed={ active_tab === action.slug }
+														icon={ action.slug === 'cloud' ? plusCircle : undefined }
+														label={ action.slug === 'cloud' ? __( 'Cloud Connect', 'kadence-blocks' ) : undefined }
+														onClick={ () => {
+															const activeTab = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+															activeTab['activeTab'] = action.slug;
+															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeTab ) );
+															this.setState( { section: action.slug } );
+														} }
+													>
+														{ action.slug === 'cloud' ? undefined : <span> { action.title } </span> }
+													</Button>
+												) }
+												{ action.slug === 'wire' && this.showSettings( 'wire' ) && kadence_blocks_params.showWire && ( ( ! kadence_blocks_params.subscribed && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) || kadence_blocks_params.subscribed ) && (
+													<Button
+														key={ `${ action.slug }-${ index }` }
+														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }
+														aria-pressed={ active_tab === action.slug }
+														icon={ action.slug === 'cloud' ? plusCircle : undefined }
+														onClick={ () => {
+															const activeTab = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+															activeTab['activeTab'] = action.slug;
+															localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeTab ) );
+															this.setState( { section: action.slug } );
+														} }
+													>
+														{ action.slug === 'cloud' ? undefined : <span> { action.title } <span className="new-notice">{ __( 'New', 'kadence-blocks' ) }</span></span> }
+													</Button>
+												) }
+											</Fragment>
 										) }
 									</div>
 								) }
 								{ 'cloud' !== active_tab && (
 									<div class="kb-prebuilt-library-reload">
-										<Tooltip text={ __( 'Sync with Cloud' ) }>
-											<Button 
-												className="kt-reload-templates"
-												icon={ update }
-												onClick={ () => this.setState( { reload: true } ) }
-											/>
-										</Tooltip>
+										<Button 
+											className="kt-reload-templates"
+											icon={ update }
+											label={ __( 'Sync with Cloud', 'kadence-blocks' ) }
+											onClick={ () => this.setState( { reload: true } ) }
+										/>
 									</div>
 								) }
 								<div class="kb-prebuilt-header-close-wrap">
-									<Tooltip text={ __( 'Close Dialog' ) }>
-										<Button 
-											className="kb-prebuilt-header-close"
-											icon={ close }
-											onClick={ () => {
-												this.setState( { modalOpen: false } );
-												if ( this.state.onlyModal ) {
-													this.props.removeBlock( this.props.clientId );
-												}
-											} }
-										/>
-									</Tooltip>
+									<Button 
+										className="kb-prebuilt-header-close"
+										icon={ close }
+										label={ __( 'Close Dialog', 'kadence-blocks') }
+										onClick={ () => {
+											this.setState( { modalOpen: false } );
+											if ( this.state.onlyModal ) {
+												this.props.removeBlock( this.props.clientId );
+											}
+										} }
+									/>
 								</div>
 							</div>
 							{ 'templates' === active_tab && (
@@ -230,13 +281,21 @@ class PrebuiltModal extends Component {
 									onReload={ () => this.setState( { reload: false } ) }
 								/>
 							) }
+							{ 'wire' === active_tab && (
+								<WireframeLibrary
+									clientId={ this.props.clientId }
+									tab={ active_tab }
+									reload={ this.state.reload }
+									onReload={ () => this.setState( { reload: false } ) }
+								/>
+							) }
 							{ 'cloud' === active_tab && (
 								<CloudConnect
 									clientId={ this.props.clientId }
 									onReload={ () => this.setState( { reloadActions: true } ) }
 								/>
 							) }
-							{ 'templates' !== active_tab && 'cloud' !== active_tab && 'section' !== active_tab && (
+							{ 'templates' !== active_tab && 'cloud' !== active_tab && 'section' !== active_tab && 'wire' !== active_tab && (
 								<CloudSections
 									clientId={ this.props.clientId }
 									tab={ active_tab }

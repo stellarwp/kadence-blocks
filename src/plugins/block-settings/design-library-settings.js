@@ -79,6 +79,19 @@ class KadenceDesignLibrarySettings extends Component {
 							] }
 							onChange={ value => this.saveConfigState( 'show', value ) }
 						/>
+						<SelectControl
+							label={ __( 'Show Wireframe Library For', 'kadence-blocks' ) }
+							value={ ( designConfig.wire ? designConfig.wire : 'all' ) }
+							options={ [
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
+							] }
+							onChange={ value => this.saveConfigState( 'wire', value ) }
+						/>
 						<Button className="kt-defaults-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/designlibrary', designConfig );
 						} }>
