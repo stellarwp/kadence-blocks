@@ -1,7 +1,7 @@
 /**
  * Tabs that can create an accordion for mobile.
  */
-jQuery( document ).ready( function( $ ) {
+jQuery( function( $ ) {
 	$( '.kt-tabs-wrap' ).each( function( a ) {
 		var ktStartTab = $( this ).find( '> .kt-tabs-title-list .kt-tab-title-active a' ).attr( 'data-tab' );
 		var ktTabsList = $( this ).find( '> .kt-tabs-title-list' ).attr( {
@@ -29,7 +29,7 @@ jQuery( document ).ready( function( $ ) {
 			'aria-selected': 'true',
 			tabindex: '0',
 		} ).parent().attr( 'role', 'presentation' );
-		$( ktTabsList ).delegate( 'a', 'keydown', function( e ) {
+		$( ktTabsList ).on( 'keydown', 'a', function( e ) {
 			switch ( e.which ) {
 				case 37: case 38:
 					if ( $( this ).parent().prev().length != 0 ) {

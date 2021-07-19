@@ -5208,7 +5208,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['margin'] ) && is_array( $attr['margin'] ) && is_array( $attr['margin'][0] ) ) {
 			$margin = $attr['margin'][0];
-			$margin_unit = $attr['marginUnit'] ? $attr['marginUnit'] : 'px';
+			$margin_unit = isset( $attr['marginUnit'] ) && ! empty( $attr['marginUnit'] ) ? $attr['marginUnit'] : 'px';
 			if ( isset( $margin['desk'] ) && is_array( $margin['desk'] ) && is_numeric( $margin['desk'][0] ) ) {
 				$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
 				$css .= 'margin:' . $margin['desk'][0] . $margin_unit . ' ' . $margin['desk'][1] . $margin_unit . ' ' . $margin['desk'][2] . $margin_unit . ' ' . $margin['desk'][3] . $margin_unit . ';';
@@ -5344,18 +5344,18 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		if ( isset( $attr['listGap'] ) && ! empty( $attr['listGap'] ) ) {
-			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child) {';
+			$css .= '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap:not(:last-child) {';
 				$css .= 'margin-bottom:' . $attr['listGap'] . 'px;';
 			$css .= '}';
-			$css .= '.kt-svg-icon-list-columns-2.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list {';
+			$css .= '.wp-block-kadence-iconlist.kt-svg-icon-list-columns-2.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list {';
 				$css .= 'grid-row-gap:' . $attr['listGap'] . 'px;';
 			$css .= '}';
-			$css .= '.kt-svg-icon-list-columns-2.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {';
+			$css .= '.wp-block-kadence-iconlist.kt-svg-icon-list-columns-2.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap {';
 				$css .= 'margin:0px;';
 			$css .= '}';
 		}
 		if ( isset( $attr['listLabelGap'] ) && ! empty( $attr['listLabelGap'] ) ) {
-			$css .= '.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single {';
+			$css .= '.wp-block-kadence-iconlist.kt-svg-icon-list-items' . $unique_id . ' ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap .kt-svg-icon-list-single {';
 				$css .= 'margin-right:' . $attr['listLabelGap'] . 'px;';
 			$css .= '}';
 		}

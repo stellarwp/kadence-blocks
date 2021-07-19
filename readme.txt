@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.8
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,8 +87,15 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.1.1 =
+Release Date: July 19th, 2021
+* Fix: CSS specificity in infobox.
+* Fix: tabs js, deprecated jquery.
+* Fix: php notice of undefined marginUnit.
+* Fix: CSS specificity in icon list.
+
 = 2.1.0 =
-Release Date: July 13th, 2021
+Release Date: July 16th, 2021
 * Add: Wireframe library.
 * Add: Background Color to Advanced Heading Block.
 * Add: Text transform to infobox title.
