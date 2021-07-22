@@ -13,6 +13,11 @@ export default function getQuery( blockAttributes, queryType ) {
 		order,
 		postIds,
 	} = blockAttributes;
+	let theCurrentID = '';
+	if ( wp.data.select( 'core/editor' ) ) {
+		const { getCurrentPostId } = wp.data.select( 'core/editor' );
+		theCurrentID = getCurrentPostId();
+	}
 	const query = {
 		query: queryType,
 		per_page: postsToShow,
@@ -21,7 +26,8 @@ export default function getQuery( blockAttributes, queryType ) {
 		allow_sticky: ( allowSticky ? true : false ),
 		exclude: ( excludeTax ? excludeTax : 'include' ),
 		post_tax: ( postTax ? true : false ),
-		tax_type: ( taxType ? taxType : '' )
+		tax_type: ( taxType ? taxType : '' ),
+		post_id: theCurrentID
 	};
 	if ( categories && categories.length ) {
 		const ids = categories.map( ( { value } ) => value );

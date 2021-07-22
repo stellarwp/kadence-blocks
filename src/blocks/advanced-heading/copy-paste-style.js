@@ -124,8 +124,38 @@ class HeadingStyleCopyPaste extends Component {
 			if ( blockAttributes.bottomMargin ) {
 				copyStyles.bottomMargin = blockAttributes.bottomMargin;
 			}
+			if ( blockAttributes.leftMargin ) {
+				copyStyles.leftMargin = blockAttributes.leftMargin;
+			}
+			if ( blockAttributes.rightMargin ) {
+				copyStyles.rightMargin = blockAttributes.rightMargin;
+			}
+			if ( blockAttributes.tabletMargin ) {
+				copyStyles.tabletMargin = blockAttributes.tabletMargin;
+			}
+			if ( blockAttributes.mobileMargin ) {
+				copyStyles.mobileMargin = blockAttributes.mobileMargin;
+			}
+			if ( blockAttributes.tabletMarginType ) {
+				copyStyles.tabletMarginType = blockAttributes.tabletMarginType;
+			}
+			if ( blockAttributes.mobileMarginType ) {
+				copyStyles.mobileMarginType = blockAttributes.mobileMarginType;
+			}
 			if ( blockAttributes.marginType ) {
 				copyStyles.marginType = blockAttributes.marginType;
+			}
+			if ( blockAttributes.paddingType ) {
+				copyStyles.paddingType = blockAttributes.paddingType;
+			}
+			if ( blockAttributes.padding ) {
+				copyStyles.padding = blockAttributes.padding;
+			}
+			if ( blockAttributes.tabletPadding ) {
+				copyStyles.tabletPadding = blockAttributes.tabletPadding;
+			}
+			if ( blockAttributes.mobilePadding ) {
+				copyStyles.mobilePadding = blockAttributes.mobilePadding;
 			}
 			if ( blockAttributes.markSize ) {
 				copyStyles.markSize = blockAttributes.markSize;
@@ -213,6 +243,12 @@ class HeadingStyleCopyPaste extends Component {
 			}
 			if ( blockAttributes.textShadow ) {
 				copyStyles.textShadow = blockAttributes.textShadow;
+			}
+			if ( blockAttributes.background ) {
+				copyStyles.background = blockAttributes.background;
+			}
+			if ( blockAttributes.backgroundColorClass ) {
+				copyStyles.backgroundColorClass = blockAttributes.backgroundColorClass;
 			}
 			localStorage.setItem( 'kadenceHeadingStyle', JSON.stringify( copyStyles ) );
 		};

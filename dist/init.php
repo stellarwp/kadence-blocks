@@ -619,7 +619,16 @@ function kadence_blocks_block_category( $categories, $post ) {
 		$categories
 	);
 }
-add_filter( 'block_categories', 'kadence_blocks_block_category', 10, 2 );
+
+/**
+ * Add old categories filter if needed.
+ */
+function kadence_blocks_check_for_old_wp_block_category_filter() {
+	if ( version_compare( get_bloginfo( 'version' ), '5.8', '<' ) ) {
+		add_filter( 'block_categories', 'kadence_blocks_block_category', 10, 2 );
+	}
+}
+add_action( 'init', 'kadence_blocks_check_for_old_wp_block_category_filter' );
 /**
  * Add block category for Kadence Blocks.
  *

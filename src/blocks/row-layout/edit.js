@@ -139,9 +139,6 @@ class KadenceRowLayout extends Component {
 			ktrowUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktrowUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
 			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
 			ktrowUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktrowUniqueIDs.push( this.props.attributes.uniqueID );

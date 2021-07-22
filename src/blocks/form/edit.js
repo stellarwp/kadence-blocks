@@ -177,9 +177,7 @@ class KadenceForm extends Component {
 			} );
 			kbFormIDs.push( this.props.clientId.substr( 2, 9 ) );
 		} else if ( kbFormIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
+			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			kbFormIDs.push( this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kbFormIDs.push( this.props.attributes.uniqueID );
@@ -3073,7 +3071,7 @@ class KadenceForm extends Component {
 														</div>
 													) }
 													<AdvancedPopColorControl
-														label={ __( 'Input Border', 'kadence-blocks' ) }
+														label={ __( 'Button Border', 'kadence-blocks' ) }
 														colorValue={ ( submit[ 0 ].border ? submit[ 0 ].border : '' ) }
 														colorDefault={ '' }
 														onColorChange={ value => {
@@ -3084,7 +3082,7 @@ class KadenceForm extends Component {
 														onArrayChange={ ( color, opacity ) => this.saveSubmit( { border: color, borderOpacity: opacity } ) }
 													/>
 													<BoxShadowControl
-														label={ __( 'Input Box Shadow', 'kadence-blocks' ) }
+														label={ __( 'Button Box Shadow', 'kadence-blocks' ) }
 														enable={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 0 ] ? submit[ 0 ].boxShadow[ 0 ] : false ) }
 														color={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 1 ] ? submit[ 0 ].boxShadow[ 1 ] : '#000000' ) }
 														colorDefault={ '#000000' }

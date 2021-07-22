@@ -114,9 +114,7 @@ class KadenceTableOfContents extends Component {
 			} );
 			kbtableUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( kbtableUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
+			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			kbtableUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kbtableUniqueIDs.push( this.props.attributes.uniqueID );

@@ -67,9 +67,7 @@ class KadenceSpacerDivider extends Component {
 			} );
 			ktspacerUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktspacerUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
+			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			ktspacerUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktspacerUniqueIDs.push( this.props.attributes.uniqueID );

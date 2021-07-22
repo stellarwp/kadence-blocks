@@ -333,7 +333,7 @@ class InlineTypographyControl extends Component {
 				} else {
 					subset = '';
 					variant = '';
-					weight = '400';
+					weight = 'inherit';
 				}
 				if ( onFontArrayChange ) {
 					onFontArrayChange( { google: selected.google, family: selected.value, variant: variant, weight: weight, style: 'normal', subset: subset } );
@@ -348,12 +348,12 @@ class InlineTypographyControl extends Component {
 		};
 		const onTypoFontClear = () => {
 			if ( onFontArrayChange ) {
-				onFontArrayChange( { google: false, family: '', variant: '', weight: 'regular', style: 'normal', subset: '' } );
+				onFontArrayChange( { google: false, family: '', variant: '', weight: 'inherit', style: 'normal', subset: '' } );
 			} else {
 				onGoogleFont( false );
 				onFontFamily( '' );
 				onFontVariant( '' );
-				onFontWeight( 'regular' );
+				onFontWeight( 'inherit' );
 				onFontStyle( 'normal' );
 				onFontSubset( '' );
 			}

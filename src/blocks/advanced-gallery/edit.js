@@ -321,9 +321,7 @@ class GalleryEdit extends Component {
 			} );
 			kbGalleryUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( kbGalleryUniqueIDs.includes( uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
+			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			kbGalleryUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kbGalleryUniqueIDs.push( uniqueID );

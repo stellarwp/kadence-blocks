@@ -114,9 +114,7 @@ class KadenceIconLists extends Component {
 			} );
 			kticonlistUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( kticonlistUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
+			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			kticonlistUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kticonlistUniqueIDs.push( this.props.attributes.uniqueID );

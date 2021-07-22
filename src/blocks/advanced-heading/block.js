@@ -130,7 +130,7 @@ registerBlockType( 'kadence/advancedheading', {
 		},
 		fontWeight: {
 			type: 'string',
-			default: 'regular',
+			default: '',
 		},
 		fontStyle: {
 			type: 'string',
@@ -229,7 +229,7 @@ registerBlockType( 'kadence/advancedheading', {
 		},
 		markFontWeight: {
 			type: 'string',
-			default: 'regular',
+			default: '',
 		},
 		markFontStyle: {
 			type: 'string',

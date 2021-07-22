@@ -459,6 +459,10 @@
 .kb-gallery-main-contain.kb-gallery-type-carousel .kb-has-image-ratio-inherit .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-slider .kb-has-image-ratio-inherit .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-thumbslider .kb-has-image-ratio-inherit .kb-gal-image-radius {
 	border-radius:0;
 }
+.kt-blocks-carousel .slick-dots {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
 // Filters
 .kb-gallery-filter-vintage .kb-gallery-image-contain {
 	&:after {

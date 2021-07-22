@@ -95,6 +95,11 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 	const PROP_PER_PAGE = 'per_page';
 
 	/**
+	 * Per page property name.
+	 */
+	const PROP_POST_ID = 'post_id';
+
+	/**
 	 * Page property name.
 	 */
 	const PROP_PAGE = 'page';
@@ -177,6 +182,10 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			$query_args['offset']              = $request->get_param( self::PROP_OFFSET );
 			$query_args['post_status']         = 'publish';
 			$query_args['ignore_sticky_posts'] = $request->get_param( self::PROP_ALLOW_STICKY );
+			$current_post_id                   = $request->get_param( self::PROP_POST_ID );
+			if ( ! empty( $current_post_id ) ) {
+				$query_args['post__not_in']        = array( $current_post_id );
+			}
 			if ( 'post' !== $prop_type || $request->get_param( self::PROP_CUSTOM_TAX ) ) {
 				if ( $tax_type ) {
 					$query_args['tax_query'][] = array(
@@ -369,6 +378,10 @@ class Kadence_Blocks_Post_Rest_Controller extends WP_REST_Controller {
 			'type'        => 'number',
 			'sanitize_callback' => array( $this, 'sanitize_results_page_number' ),
 			'default' => 0,
+		);
+		$query_params[ self::PROP_POST_ID ] = array(
+			'description' => __( 'The Current Post ID.', 'kadence-blocks' ),
+			'type'        => 'number',
 		);
 		$query_params[ self::PROP_CUSTOM_TAX ] = array(
 			'description' => __( 'Check if using a custom Taxonomy', 'kadence-blocks' ),

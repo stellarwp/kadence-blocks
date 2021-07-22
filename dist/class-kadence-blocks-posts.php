@@ -304,6 +304,11 @@ class Kadence_Blocks_Posts {
 		}
 		$classes = apply_filters( 'kadence_blocks_posts_container_classes', $classes );
 		do_action( 'kadence_blocks_posts_before_query', $attributes );
+		if ( apply_filters( 'kadence_blocks_posts_block_exclude_current', true ) ) {
+			if ( ! in_array( get_the_ID(), $kadence_blocks_posts_not_in, true ) ) {
+				$kadence_blocks_posts_not_in[] = get_the_ID();
+			}
+		}
 		$post_type = ( isset( $attributes['postType'] ) && ! empty( $attributes['postType'] ) ? $attributes['postType'] : 'post' );
 		$args = array(
 			'post_type'           => $post_type,

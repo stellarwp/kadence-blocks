@@ -100,9 +100,7 @@ class KadenceColumn extends Component {
 			} );
 			ktcolumnUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktcolumnUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
+			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			ktcolumnUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktcolumnUniqueIDs.push( this.props.attributes.uniqueID );
