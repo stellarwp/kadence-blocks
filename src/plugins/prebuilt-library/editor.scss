@@ -246,6 +246,10 @@ button.components-button.kb-category-button {
 }
 .components-modal__frame.kt-prebuilt-modal.kb-prebuilt-library-modal .components-modal__content {
     padding: 0 24px 24px;
+	margin:0;
+	&:before {
+		margin:0;
+	}
 }
 .kb-prebuilt-library-reload, .kb-prebuilt-header-close-wrap {
 	.components-button.has-icon {

@@ -219,6 +219,25 @@ const attributes = {
 	},
 	templateLock: {
 		type: 'string',
-	}
+	},
+	direction: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
+	justifyContent: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
+	gutter: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
+	gutterUnit: {
+		type: 'string',
+		default: 'px',
+	},
+	verticalAlignment: {
+		type: 'string',
+	},
 };
 export default attributes;

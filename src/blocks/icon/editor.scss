@@ -86,3 +86,19 @@ i.fipicon-angle-left:before {
 	border: 0px solid #444444;
 	transition: all .3s ease-in-out;
 }
+.kb-icon-valign-top {
+    align-items: flex-start;
+    display: flex;
+}
+.kb-icon-valign-middle {
+    align-items: center;
+    display: flex;
+}
+.kb-icon-valign-bottom {
+    align-items: flex-end;
+    display: flex;
+}
+.editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"], .editor-styles-wrapper .block-editor-block-list__block[data-type="kadence/icon"] > .wp-block {
+    margin-bottom: 0;
+    margin-top: 0;
+}

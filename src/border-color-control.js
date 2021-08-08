@@ -36,6 +36,7 @@ export default function BorderColorControls( {
 	control,
 	onChange,
 	onControl,
+	colorDefault = '',
 	controlTypes = [
 		{ key: 'linked', name: __( 'Linked' ), icon: icons.linked },
 		{ key: 'individual', name: __( 'Individual' ), icon: icons.individual },
@@ -70,7 +71,7 @@ export default function BorderColorControls( {
 						<AdvancedPopColorControl
 							label={ icons.linked }
 							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ '' }
+							colorDefault={ colorDefault }
 							onColorChange={ ( value ) => onChange( [ value, value, value, value ] ) }
 						/>
 					</Fragment>
@@ -81,25 +82,25 @@ export default function BorderColorControls( {
 						<AdvancedPopColorControl
 							label={ firstIcon }
 							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ '' }
+							colorDefault={ colorDefault }
 							onColorChange={ ( value ) => onChange( [ value, values[ 1 ], values[ 2 ], values[ 3 ] ] ) }
 						/>
 						<AdvancedPopColorControl
 							label={ secondIcon }
 							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ '' }
+							colorDefault={ colorDefault }
 							onColorChange={ ( value ) => onChange( [ values[ 0 ], value, values[ 2 ], values[ 3 ] ] ) }
 						/>
 						<AdvancedPopColorControl
 							label={ thirdIcon }
 							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ '' }
+							colorDefault={ colorDefault }
 							onColorChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], value, values[ 3 ] ] ) }
 						/>
 						<AdvancedPopColorControl
 							label={ fourthIcon }
 							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ '' }
+							colorDefault={ colorDefault }
 							onColorChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], values[ 2 ], value ] ) }
 						/>
 					</div>

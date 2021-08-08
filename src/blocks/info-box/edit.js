@@ -185,7 +185,7 @@ class KadenceInfoBox extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, containerPaddingType, containerMobilePadding, containerTabletPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored, number, mediaNumber, imageRatio, kadenceDynamic }, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, link, linkProperty, target, hAlign, containerBackground, containerHoverBackground, containerBorder, containerHoverBorder, containerBorderWidth, containerBorderRadius, containerPadding, containerPaddingType, containerMobilePadding, containerTabletPadding, mediaType, mediaImage, mediaIcon, mediaStyle, mediaAlign, displayTitle, title, titleColor, titleHoverColor, titleFont, displayText, contentText, textColor, textHoverColor, textFont, textSpacing, displayLearnMore, learnMore, learnMoreStyles, displayShadow, shadow, shadowHover, containerHoverBackgroundOpacity, containerBackgroundOpacity, containerHoverBorderOpacity, containerBorderOpacity, textMinHeight, titleMinHeight, maxWidthUnit, maxWidth, mediaVAlign, mediaAlignMobile, mediaAlignTablet, hAlignMobile, hAlignTablet, containerMargin, containerMarginUnit, linkNoFollow, linkSponsored, number, mediaNumber, imageRatio, linkTitle, kadenceDynamic }, className, setAttributes, isSelected } = this.props;
 		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, containerMarginControl } = this.state;
 		const widthMax = ( maxWidthUnit === 'px' ? 2000 : 100 );
 		const previewPaddingType = ( undefined !== containerPaddingType ? containerPaddingType : 'px' );
@@ -1456,6 +1456,10 @@ class KadenceInfoBox extends Component {
 								onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
 								linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
 								onChangeSponsored={ value => setAttributes( { sponsored: value } ) }
+								linkTitle={ linkTitle }
+								onChangeTitle={ value => {
+									setAttributes( { linkTitle: value } )
+								} }
 								dynamicAttribute={ 'link' }
 								allowClear={ true }
 								{ ...this.props }

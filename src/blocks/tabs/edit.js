@@ -744,7 +744,7 @@ class KadenceTabs extends Component {
 				<AdvancedPopColorControl
 					label={ __( 'Title Color', 'kadence-blocks' ) }
 					colorValue={ ( titleColor ? titleColor : '' ) }
-					colorDefault={ '' }
+					colorDefault={ '#444444' }
 					onColorChange={ ( value ) => setAttributes( { titleColor: value } ) }
 				/>
 				<AdvancedPopColorControl
@@ -766,19 +766,19 @@ class KadenceTabs extends Component {
 				<AdvancedPopColorControl
 					label={ __( 'Hover Color', 'kadence-blocks' ) }
 					colorValue={ ( titleColorHover ? titleColorHover : '' ) }
-					colorDefault={ '' }
+					colorDefault={ '#222222' }
 					onColorChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
 				/>
 				<AdvancedPopColorControl
 					label={ __( 'Hover Background', 'kadence-blocks' ) }
 					colorValue={ ( titleBgHover ? titleBgHover : '' ) }
-					colorDefault={ '' }
+					colorDefault={ '#e2e2e2' }
 					onColorChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
 				/>
 				<AdvancedPopColorControl
 					label={ __( 'Hover Border Color', 'kadence-blocks' ) }
 					colorValue={ ( titleBorderHover ? titleBorderHover : '' ) }
-					colorDefault={ '' }
+					colorDefault={ '#eeeeee' }
 					onColorChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
 				/>
 			</Fragment>
@@ -788,19 +788,19 @@ class KadenceTabs extends Component {
 				<AdvancedPopColorControl
 					label={ __( 'Active Color', 'kadence-blocks' ) }
 					colorValue={ ( titleColorActive ? titleColorActive : '' ) }
-					colorDefault={ '' }
+					colorDefault={ '#222222' }
 					onColorChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
 				/>
 				<AdvancedPopColorControl
 					label={ __( 'Active Background', 'kadence-blocks' ) }
 					colorValue={ ( titleBgActive ? titleBgActive : '' ) }
-					colorDefault={ '' }
+					colorDefault={ '#eeeeee' }
 					onColorChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
 				/>
 				<AdvancedPopColorControl
 					label={ __( 'Active Border Color', 'kadence-blocks' ) }
 					colorValue={ ( titleBorderActive ? titleBorderActive : '' ) }
-					colorDefault={ '' }
+					colorDefault={ '#eeeeee' }
 					onColorChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
 				/>
 			</Fragment>

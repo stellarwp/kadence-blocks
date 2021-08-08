@@ -21,6 +21,10 @@ import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
+import KadenceRadioButtons from '../../components/common/kadence-radio-buttons';
+import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
+import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 /**
  * Blocks Specific.
  */
@@ -39,20 +43,16 @@ import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import { 
 	InnerBlocks,
-	MediaUpload,
 	BlockControls,
 	InspectorAdvancedControls,
 	InspectorControls,
 } from '@wordpress/block-editor';
 const {
-	Dashicon,
 	PanelBody,
 	Panel,
 	ToggleControl,
-	Button,
-	Spinner,
-	Tooltip,
-	RangeControl,
+	SelectControl,
+	ToolbarGroup,
 } = wp.components;
 const {
 	applyFilters,
@@ -162,7 +162,7 @@ class KadenceColumn extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic }, setAttributes, className, clientId } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent }, setAttributes, className, clientId } = this.props;
 		const { borderWidthControl, borderRadiusControl, mobilePaddingControl, mobileMarginControl, tabletPaddingControl, tabletMarginControl, deskPaddingControl, deskMarginControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
@@ -181,6 +181,8 @@ class KadenceColumn extends Component {
 				bgImg: '',
 			} );
 		};
+		const gutterMax = ( gutterUnit !== 'px' ? 12 : 200 );
+		const gutterStep = ( gutterUnit !== 'px' ? 0.1 : 1 );
 		const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -200 );
 		const marginMax = ( marginType === 'em' || marginType === 'rem' ? 12 : 200 );
 		const marginStep = ( marginType === 'em' || marginType === 'rem' ? 0.1 : 1 );
@@ -202,6 +204,9 @@ class KadenceColumn extends Component {
 		const previewBorderBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 2 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 2 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 2 ] : '' ) );
 		const previewBorderLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== borderWidth ? borderWidth[ 3 ] : '' ), ( undefined !== tabletBorderWidth ? tabletBorderWidth[ 3 ] : '' ), ( undefined !== mobileBorderWidth ? mobileBorderWidth[ 3 ] : '' ) );
 		const previewAlign = this.getPreviewSize( this.props.getPreviewDevice, ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ) , ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) );
+		const previewGutter = this.getPreviewSize( this.props.getPreviewDevice, ( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : '' ) , ( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' ) );
+		const previewDirection = this.getPreviewSize( this.props.getPreviewDevice, ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : '' ) , ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : '' ) );
+		const previewJustify = this.getPreviewSize( this.props.getPreviewDevice, ( justifyContent && '' !== justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) , ( justifyContent && '' !== justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && '' !== justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) );
 		const backgroundString = ( background ? KadenceColorOutput( background, backgroundOpacity ) : 'transparent' );
 		const borderString = ( border ? KadenceColorOutput( border, borderOpacity ) : 'transparent' );
 		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
@@ -215,14 +220,43 @@ class KadenceColumn extends Component {
 			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 		} );
 		const hasBackgroundImage = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? true : false );
+		const verticalAlignOptions = [
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'top' } isPressed={ ( verticalAlignment === 'top' ? true : false ) } />,
+					title: __( 'Align Top', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'top' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'top' } ),
+				},
+			],
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'middle' } isPressed={ ( verticalAlignment === 'middle' ? true : false ) } />,
+					title: __( 'Align Middle', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'middle' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'middle' } ),
+				},
+			],
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'bottom' } isPressed={ ( verticalAlignment === 'bottom' ? true : false ) } />,
+					title: __( 'Align Bottom', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'bottom' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'bottom' } ),
+				},
+			],
+		];
 		return (
 			<div className={ classes } >
-				{ ( textColor || linkColor || linkHoverColor || ( undefined !== zIndex && '' !== zIndex ) || kadenceBlockCSS ) && (
+				{ ( textColor || linkColor || linkHoverColor || ( undefined !== zIndex && '' !== zIndex ) || kadenceBlockCSS || ( '' !== previewGutter ) || '' !== previewJustify ) && (
 					<style>
 						{ ( ( undefined !== zIndex && '' !== zIndex ) ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
 						{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 						{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 						{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
+						{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout { margin-left: -${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }.kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block:not([data-type="kadence/advancedheading"]),.kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-editor-block-list__block:not([data-type="kadence/advancedheading"]), .kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-editor-block-list__block[data-type="kadence/advancedheading"] > * { margin-left: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' ) }; }` : '' ) }
+						{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout { justify-content: ${ previewJustify }; }` : '' ) }
+						{ ( previewJustify && ( 'space-around' == previewJustify || 'space-between' == previewJustify || 'space-evenly' == previewJustify ) ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender { display:none; }` : '' ) }
 						{ kadenceBlockCSS && (
 							<Fragment>
 								{ kadenceBlockCSS.replace( /selector/g, `kadence-column-${ uniqueID }` ) }
@@ -233,6 +267,12 @@ class KadenceColumn extends Component {
 				{ this.showSettings( 'allSettings' ) && (
 					<Fragment>
 						<BlockControls>
+							<ToolbarGroup
+								isCollapsed={ true }
+								icon={ <VerticalAlignmentIcon value={ ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) ) } /> }
+								label={ __( 'Vertical Align', 'kadence-blocks' )  }
+								controls={ verticalAlignOptions }
+							/>
 							<ColumnStyleCopyPaste
 								onPaste={ value => setAttributes( value ) }
 								blockAttributes={ this.props.attributes }
@@ -370,6 +410,100 @@ class KadenceColumn extends Component {
 								) }
 								{ this.showSettings( 'textAlign' ) && (
 									<Fragment>
+										<SmallResponsiveControl
+											label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
+											desktopChildren={ <KadenceRadioButtons
+												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
+												value={ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ) }
+												options={ [
+													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
+													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
+												] }
+												onChange={ value => setAttributes( { direction: [ value, ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) ] } ) }
+											/> }
+											tabletChildren={ <KadenceRadioButtons
+												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
+												value={  ( direction && direction[ 1 ] ? direction[ 1 ] : '' ) }
+												options={ [
+													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
+													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
+												] }
+												onChange={ value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), value, ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) ] } ) }
+											/> }
+											mobileChildren={ <KadenceRadioButtons
+												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
+												value={  ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) }
+												options={ [
+													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
+													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
+												] }
+												onChange={ value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), value ] } ) }
+											/> }
+										/>
+										{ ( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' && (
+											<Fragment>
+												<ResponsiveRangeControls
+													label={ __( 'Default Horizontal Block Gap', 'kadence-blocks' ) }
+													value={ ( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 ) }
+													onChange={ value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } ) }
+													tabletValue={ ( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' ) }
+													onChangeTablet={ value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), value, ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } ) }
+													mobileValue={ ( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' ) }
+													onChangeMobile={ value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ), value ] } ) }
+													min={ 0 }
+													max={ gutterMax }
+													step={ gutterStep }
+													unit={ gutterUnit }
+													onUnit={ ( value ) => setAttributes( { gutterUnit: value } ) }
+													units={ [ 'px', 'em', 'rem' ] }
+												/>
+												<SmallResponsiveControl
+													label={ __( 'Justify Content', 'kadence-blocks' ) }
+													desktopChildren={ <SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) }
+														options={ [
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														] }
+														onChange={ value => setAttributes( { justifyContent: [ value, ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } ) }
+													/> }
+													tabletChildren={ <SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={ ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ) }
+														options={ [
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														] }
+														onChange={ value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), value, ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } ) }
+													/> }
+													mobileChildren={ <SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={ ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) }
+														options={ [
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														] }
+														onChange={ value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), value ] } ) }
+													/> }
+												/>
+											</Fragment>
+										) }
 										<ResponsiveAlignControls
 											label={ __( 'Text Alignment', 'kadence-blocks' ) }
 											value={ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ) }
@@ -518,7 +652,7 @@ class KadenceColumn extends Component {
 						max={ 10 }
 					/>
 				</InspectorAdvancedControls>
-				<div id={ `animate-id${ uniqueID }` } className="kadence-inner-column-inner aos-animate kt-animation-wrap" data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
+				<div id={ `animate-id${ uniqueID }` } className={ `kadence-inner-column-inner aos-animate kt-animation-wrap kadence-inner-column-direction-${ ( previewDirection ? previewDirection : 'vertical' ) } kadence-inner-column-text-align-${ previewAlign ? previewAlign : 'normal' } kadence-inner-column-vertical-align-${ verticalAlignment ? verticalAlignment : 'inherit' }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
 					paddingLeft: ( undefined !== previewPaddingLeft ? previewPaddingLeft + previewPaddingType : undefined ),
 					paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + previewPaddingType : undefined ),
 					paddingTop: ( undefined !== previewPaddingTop ? previewPaddingTop + previewPaddingType : undefined ),
@@ -543,11 +677,12 @@ class KadenceColumn extends Component {
 					boxShadow: ( undefined !== displayShadow && displayShadow && undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? ( undefined !== shadow[ 0 ].inset && shadow[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 1 ) ) : undefined ),
 				} } >
 					<InnerBlocks
+						orientation={ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ) }
 						templateLock={ templateLock ? templateLock : false }
 						renderAppender={ (
 							hasChildBlocks ?
 								undefined :
-								() => <InnerBlocks.ButtonBlockAppender />
+								InnerBlocks.ButtonBlockAppender
 						) }
 					/>
 				</div>

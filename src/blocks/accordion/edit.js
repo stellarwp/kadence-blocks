@@ -486,6 +486,7 @@ class KadenceAccordionComponent extends Component {
 				/>
 				<BorderColorControls
 					label={ __( 'Active Border Color' ) }
+					colorDefault={ ( titleStyles[ 0 ].border && titleStyles[ 0 ].border[0] ? KadenceColorOutput( titleStyles[ 0 ].border[0] ) : '#444444' ) }
 					values={ titleStyles[ 0 ].borderActive }
 					control={ titleBorderActiveColorControl }
 					onChange={ ( value ) => saveTitleStyles( { borderActive: value } ) }

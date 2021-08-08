@@ -37,7 +37,7 @@ import ThreeColumnDrag from './threecolumndrag';
 import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
 import Overlay from './row-overlay';
 import RowBackground from './row-background';
-import VerticalAlignmentIcon from './vertical-align-icons';
+import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
 import ContentWidthIcon from './content-width-icons';
 /**
  * Import Css

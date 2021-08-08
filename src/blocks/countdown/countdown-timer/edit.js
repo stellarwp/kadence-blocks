@@ -31,9 +31,7 @@ class KadenceCoundownTimer extends Component {
 			} );
 			kbTimerUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( kbTimerUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-			} );
+			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			kbTimerUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kbTimerUniqueIDs.push( this.props.attributes.uniqueID );

@@ -67,7 +67,7 @@ registerBlockType( 'kadence/form', {
 			default: '',
 		},
 		postID: {
-			type: 'number',
+			type: 'string',
 			default: '',
 		},
 		hAlign: {

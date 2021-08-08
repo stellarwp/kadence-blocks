@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.8
-Stable tag: 2.1.2
+Stable tag: 2.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,51 +12,44 @@ Custom Blocks for for Gutenberg to help extend the editing capabilities.
 
 == Description ==
 
-This plugin adds custom blocks and options to extend Gutenberg's editing capabilities so you can create custom layouts and more engaging content. This plugin is meant to be a toolkit that makes the WordPress block editor capable of creating content usually only possible through popular page builder plugins. For example, with the [Kadence Row Layout Block](https://www.kadenceblocks.com/row-layout-block/) you can better control columns for different screen sizes plus it gives you full row editing tools like padding, backgrounds, overlays with gradients, vertical-align and much more.
+Kadence Blocks adds custom blocks and options to extend Gutenberg’s editing capabilities so you can create stunning websites with ease – no code required. Kadence Blocks is your toolkit that makes the WordPress block editor capable of creating beautiful content that’s usually only possible through page builder plugins. Each block is crafted with care with regard to performance, accessibility, and extensibility.
 
 = Try Kadence Blocks =
-[Demo Testing](http://demo.kadencethemes.com/kadence-blocks/)
+See Kadence Blocks in action with [the live Demo Testing](http://demo.kadencethemes.com/kadence-blocks/)
 
 = Custom Blocks Include =
-* Row Layout - [demo](https://www.kadenceblocks.com/row-layout-block/)
-* Advanced Gallery - [demo](https://www.kadenceblocks.com/custom-blocks/advanced-gallery/)
-* Form - [demo](https://www.kadenceblocks.com/form-block/)
-* Advanced Heading - [demo](https://www.kadenceblocks.com/advanced-heading-block/)
-* Advanced Button - [demo](https://www.kadenceblocks.com/advanced-button-block/)
-* Tabs - [demo](https://www.kadenceblocks.com/tabs-block/)
-* Accordion - [demo](https://www.kadenceblocks.com/accordion-block/)
-* Testimonials - [demo](https://www.kadenceblocks.com/testimonial-block/)
-* Icon - [demo](https://www.kadenceblocks.com/icon-block/)
-* Spacer / Divider - [demo](https://www.kadenceblocks.com/spacer-divider-block/)
-* Info Box - [demo](https://www.kadenceblocks.com/info-box-block/)
-* Icon List - [demo](https://www.kadenceblocks.com/icon-list-block/)
+* Row Layout - Create rows with nested blocks either in columns or as a container. Give style to your rows with a background, overlay, padding, etc. [Learn more](https://www.kadencewp.com/kadence-blocks/row-layout-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Advanced Gallery - Create stunning photo galleries, carousels, and sliders! Enable custom links, captions, and more. Plus you can select the image size for performance. [Learn more](https://www.kadencewp.com/kadence-blocks/custom-blocks/advanced-gallery/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Form - Our powerful form block allows you to easily create a contact or marketing form and style it within the block editor. [Learn more](https://www.kadencewp.com/kadence-blocks/form-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Advanced Heading - Transform your headings to Advanced Headings and customize the font family (even Google fonts), color, size, style, and highlight words. [Learn more](https://www.kadencewp.com/kadence-blocks/advanced-heading-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Advanced Button - Create an advanced button or a row of buttons. Style each one, including hover controls. Plus you can use an icon and display them side-by-side. [Learn more](https://www.kadencewp.com/kadence-blocks/advanced-button-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Tabs - Create custom vertical or horizontal tabs with advanced styling controls. Each tab content is an empty canvas able to contain any other blocks. [Learn more](https://www.kadencewp.com/kadence-blocks/tabs-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Accordion - Create beautiful accordions! Each pane is able to contain any other block, customize title styles, content background, and borders. [Learn more](https://www.kadencewp.com/kadence-blocks/accordion-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Testimonials - Create confidence in your brand or product by showing off beautiful and unique testimonials. Display add as a carousel or a grid. [Learn more](https://www.kadencewp.com/kadence-blocks/testimonial-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Icon - Choose from over 1500+ SVG icons to add into your page and style the size, colors, background, border, etc. You can also add multiple icons side-by-side. [Learn more](https://www.kadencewp.com/kadence-blocks/icon-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Spacer / Divider - Easily create a divider and determine the space around it or just create some space in your content. You can even define the height per screen size. [Learn more](https://www.kadencewp.com/kadence-blocks/spacer-divider-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Info Box - Create a box containing an icon or image and, optionally, a title, description, and learn more text. Style static and hover separately. [Learn more](https://www.kadencewp.com/kadence-blocks/info-box-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Icon List - Add beautiful icons to your lists and make them more engaging and attract viewers’ attention. Over 1500 icons to choose from and unlimited styles. [Learn more](https://www.kadencewp.com/kadence-blocks/icon-list-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Countdown - Increase your conversions by adding a sense of urgency to your offering. Pro includes evergreen campaigns as well. [Learn more](https://www.kadencewp.com/kadence-blocks/countdown-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Posts - Display a clean grid of posts anywhere on your site, great for your homepage where you want to tease your blog. [Learn more](https://www.kadencewp.com/kadence-blocks/custom-blocks/post-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
+* Table of Contents - Allow your readers to navigate your content easily with a table of contents block. Includes smooth scroll to anchor. [Learn more](https://www.kadencewp.com/kadence-blocks/table-of-contents/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
 
 = Video Tutorial =
 https://www.youtube.com/watch?v=SYb24ncjVsY
 
 = Key Block Features =
-The Row Layout block can have 1-6 columns, and any other blocks can be nested inside. So as a single column block, it's a robust wrapper because you can create very custom backgrounds and define padding, margin, and dividers both for desktop and mobile layouts.
+* Intelligent Load – Kadence Blocks only loads CSS or Javascript when you need it and only for the blocks you are using on a specific page.
+* Responsive Controls – Tweak your design for each screen size. Edit tablet and mobile settings while previewing in WordPress editor.
+* Typography Controls – Choose from 900+ Google fonts and design your site with complete typography control.
+* Color & Background Controls – Gradients, overlays, parallax backgrounds, borders, etc. You can control all the design settings!
+* Configurable Defaults – Make development a breeze. Once the default settings are defined, every time you add a block those settings will automatically be applied.
+* Setting Visibility Controls – Hide block settings from certain user roles so they can focus on content and you can keep them out of the block designs.
+* Spacing Controls – Control paddings and margins for your blocks in whatever units you like. Customize responsively for precision spacing and design.
 
-The Advanced Gallery block allows you to add photo galleries in a masonry, grid, carousel, fluid width carousel or slider style. Enjoy four different optional caption locations, each with options to style font, background, etc.  Within each gallery, you can define the thumbnail ratio, add an image filter, set a border radius, and add box shadows.  You can make each image a custom link to another page or website. Or you can easily enable a built-in lightbox.  Plus you can select which image size to use for your thumbnails, and lightbox image for ultimate performance.
+= Custom Editor Max Width Settings =
+One of the challenges with creating column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template, this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don’t have a sidebar, it is a poor representation of what you are going to get on the front end of your site. Not to mention, it makes for a cramped space to work in if you are trying to manage a row with three columns.
 
-The Advanced Heading block provides full control for your headings, including font family (all google fonts), font weight, font style, font size (with tablet and mobile options), line height, color, letter spacing, alignment, and margin. Plus you can define part of the heading as a highlight and style it uniquely.
-
-The Advanced Button block allows you to have up to five buttons side by side. You can control each individually, both with static and hover styles, and each button can have an added icon next to the text. This block even supports video links that open in a popup all built in!
-
-The Tabs block is highly customizable with unique tab title settings for spacing, color, icons, and text. You can set up vertical or horizontal tabs, plus there are options to switch to an accordion setup for mobile. Each tab content is an empty canvas able to contain any other block within it.
-
-The Testimonial block has four built-in preset styles to choose from and allows you to add a carousel or grid of testimonials right into your page or post. You can then customize the colors, fonts, size, border, and shadow to your liking.
-
-The Icon block enables you to add an SVG icon right into your page. There are over 1500 icons to choose from, and with each, you can control the size, color, background, border and add a link.
-
-The Spacer / Divider block allows you to optionally show a divider inside an area with a drag-able height. The divider has style options allowing you to set the width, height, color, line style, and opacity.
-
-The Info Box Block is a box link containing an icon or image and optionally a title, description and "learn more" text. Configure padding, fonts, backgrounds, borders, and style static and hover colors even show a box shadow.
-
-= Editor Max Width =
-One of the challenges with creating column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template, this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don't have a sidebar, it is a poor representation of what you are going to get on the front end of your site. Not to mention, it makes for a cramped space to work in if you are trying to manage a row with three columns.
-
-In an effort to create an easier way to use Gutenberg in a more "page building experience" we created a simple method that allows you to change the default max width for pages and posts, as well as individually through a page by page setting.
+In an effort to create an easier way to use Gutenberg in a more “page building experience” we created a simple method that allows you to change the default max width for pages and posts, as well as individually through a page by page setting.
 
 
 = Source files =
@@ -86,6 +79,24 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.1.3 =
+Release Date: August 8th, 2021
+* Add: Section block direction, vertical alignment and justify control.
+* Add: Individual Button margin support.
+* Add: Option in info box block to add an aria label to link.
+* Update: Testimonial Carousel Block JS Performance.
+* Update: Form to work in widget area.
+* Update: Post Block css to prevent conflicts in other themes.
+* Update: Correct Tab title default colors for editor.
+* Update: aria-hidden="true" to icon list SVGs
+* Update: aria-hidden to icon block when icon has no title.
+* Update: aria-hidden to infobox icon when icon has no title.
+* Fix: Accordion block border color preview.
+* Fix: Issue with letter spacing in tabs title.
+* Fix: Response content max width settings not taking effect.
+* Fix: Accordion title text transform default.
+* Fix: Icon Block spacing in editor.
 
 = 2.1.2 =
 Release Date: July 22nd, 2021

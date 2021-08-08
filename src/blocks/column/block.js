@@ -59,6 +59,11 @@ registerBlockType( 'kadence/column', {
 		// Add EditorsKit block navigator toolbar.
 		editorsKitBlockNavigator: true,
 	},
+	getEditWrapperProps( { verticalAlignment } ) {
+		if ( 'top' === verticalAlignment || 'middle' === verticalAlignment || 'bottom' === verticalAlignment ) {
+			return { 'data-vertical-align': verticalAlignment };
+		}
+	},
 	attributes,
 	edit,
 	save,

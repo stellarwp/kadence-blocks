@@ -133,6 +133,10 @@ registerBlockType( 'kadence/advancedbtn', {
 				sizeType: 'px',
 				iconSizeType: 'px',
 				label: '',
+				marginUnit: 'px',
+				margin: [ '', '', '', '' ],
+				tabletMargin: [ '', '', '', '' ],
+				mobileMargin: [ '', '', '', '' ],
 			} ],
 		},
 		letterSpacing: {

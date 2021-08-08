@@ -177,7 +177,7 @@ class InfoBoxStyleCopyPaste extends Component {
 			if ( blockAttributes.mediaStyle ) {
 				copyStyles.mediaStyle = blockAttributes.mediaStyle;
 			}
-			if ( blockAttributes.displayTitle ) {
+			if ( undefined !== blockAttributes.displayTitle ) {
 				copyStyles.displayTitle = blockAttributes.displayTitle;
 			}
 			if ( blockAttributes.titleColor ) {
@@ -192,7 +192,7 @@ class InfoBoxStyleCopyPaste extends Component {
 			if ( blockAttributes.titleFont ) {
 				copyStyles.titleFont = blockAttributes.titleFont;
 			}
-			if ( blockAttributes.displayText ) {
+			if ( undefined !== blockAttributes.displayText ) {
 				copyStyles.displayText = blockAttributes.displayText;
 			}
 			if ( blockAttributes.textColor ) {
@@ -207,13 +207,13 @@ class InfoBoxStyleCopyPaste extends Component {
 			if ( blockAttributes.textFont ) {
 				copyStyles.textFont = blockAttributes.textFont;
 			}
-			if ( blockAttributes.displayLearnMore ) {
+			if ( undefined !== blockAttributes.displayLearnMore ) {
 				copyStyles.displayLearnMore = blockAttributes.displayLearnMore;
 			}
 			if ( blockAttributes.learnMoreStyles ) {
 				copyStyles.learnMoreStyles = blockAttributes.learnMoreStyles;
 			}
-			if ( blockAttributes.displayShadow ) {
+			if ( undefined !== blockAttributes.displayShadow ) {
 				copyStyles.displayShadow = blockAttributes.displayShadow;
 			}
 			if ( blockAttributes.shadow ) {

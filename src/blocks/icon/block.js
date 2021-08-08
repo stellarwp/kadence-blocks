@@ -72,6 +72,7 @@ registerBlockType( 'kadence/icon', {
 				hColor: '',
 				hBackground: '',
 				hBorder: '',
+				linkTitle: '',
 			} ],
 		},
 		iconCount: {
@@ -84,7 +85,7 @@ registerBlockType( 'kadence/icon', {
 		},
 		blockAlignment: {
 			type: 'string',
-			default: 'center',
+			default: '',
 		},
 		textAlignment: {
 			type: 'string',
@@ -96,6 +97,9 @@ registerBlockType( 'kadence/icon', {
 		mobileTextAlignment: {
 			type: 'string',
 		},
+		verticalAlignment: {
+			type: 'string',
+		},
 	},
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {
@@ -105,19 +109,19 @@ registerBlockType( 'kadence/icon', {
 	edit,
 
 	save: props => {
-		const { attributes: { icons, iconCount, blockAlignment, textAlignment, uniqueID } } = props;
+		const { attributes: { icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } } = props;
 		const renderSaveIcons = ( index ) => {
 			return (
 				<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
 					{ icons[ index ].icon && icons[ index ].link && (
-						<a href={ icons[ index ].link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === icons[ index ].target ? icons[ index ].target : undefined ) } rel={ '_blank' === icons[ index ].target ? 'noopener noreferrer' : undefined } style={ {
+						<a href={ icons[ index ].link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === icons[ index ].target ? icons[ index ].target : undefined ) } rel={ '_blank' === icons[ index ].target ? 'noopener noreferrer' : undefined } aria-label={ ( undefined !== icons[ index ].linkTitle && '' !== icons[ index ].linkTitle ? icons[ index ].linkTitle : undefined ) } style={ {
 							marginTop: ( icons[ index ].marginTop ? icons[ index ].marginTop + 'px' : undefined ),
 							marginRight: ( icons[ index ].marginRight ? icons[ index ].marginRight + 'px' : undefined ),
 							marginBottom: ( icons[ index ].marginBottom ? icons[ index ].marginBottom + 'px' : undefined ),
 							marginLeft: ( icons[ index ].marginLeft ? icons[ index ].marginLeft + 'px' : undefined ),
 						} }
 						>
-							<IconRender className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
+							<IconRender className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } ariaHidden={ ( icons[ index ].title ? undefined : 'true' ) } style={ {
 								color: ( icons[ index ].color ? KadenceColorOutput( icons[ index ].color ) : undefined ),
 								backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].background ) : undefined ),
 								padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
@@ -128,7 +132,7 @@ registerBlockType( 'kadence/icon', {
 						</a>
 					) }
 					{ icons[ index ].icon && ! icons[ index ].link && (
-						<IconRender className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
+						<IconRender className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } ariaHidden={ ( icons[ index ].title ? undefined : 'true' ) } style={ {
 							color: ( icons[ index ].color ? KadenceColorOutput( icons[ index ].color ) : undefined ),
 							backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].background ) : undefined ),
 							padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
@@ -145,7 +149,7 @@ registerBlockType( 'kadence/icon', {
 			);
 		};
 		return (
-			<div className={ `kt-svg-icons kt-svg-icons${ uniqueID } align${ ( blockAlignment ? blockAlignment : 'center' ) }` } style={ {
+			<div className={ `kt-svg-icons kt-svg-icons${ uniqueID } align${ ( blockAlignment ? blockAlignment : 'center' ) }${ ( verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : '' ) }` } style={ {
 				textAlign: ( textAlignment ? textAlignment : 'center' ),
 			} } >
 				{ times( iconCount, n => renderSaveIcons( n ) ) }
@@ -153,6 +157,105 @@ registerBlockType( 'kadence/icon', {
 		);
 	},
 	deprecated: [
+		{ 
+			attributes: {
+				icons: {
+					type: 'array',
+					default: [ {
+						icon: 'fe_aperture',
+						link: '',
+						target: '_self',
+						size: 50,
+						width: 2,
+						title: '',
+						color: '#444444',
+						background: 'transparent',
+						border: '#444444',
+						borderRadius: 0,
+						borderWidth: 2,
+						padding: 20,
+						style: 'default',
+						marginTop: 0,
+						marginRight: 0,
+						marginBottom: 0,
+						marginLeft: 0,
+						hColor: '',
+						hBackground: '',
+						hBorder: '',
+					} ],
+				},
+				iconCount: {
+					type: 'number',
+					default: 1,
+				},
+				uniqueID: {
+					type: 'string',
+					default: '',
+				},
+				blockAlignment: {
+					type: 'string',
+					default: 'center',
+				},
+				textAlignment: {
+					type: 'string',
+					default: 'center',
+				},
+				tabletTextAlignment: {
+					type: 'string',
+				},
+				mobileTextAlignment: {
+					type: 'string',
+				},
+			},
+			save: ( { attributes } ) => {
+				const { icons, iconCount, blockAlignment, textAlignment, uniqueID, verticalAlignment } = attributes;
+				const renderSaveIcons = ( index ) => {
+					return (
+						<div className={ `kt-svg-style-${ icons[ index ].style } kt-svg-icon-wrap kt-svg-item-${ index }` }>
+							{ icons[ index ].icon && icons[ index ].link && (
+								<a href={ icons[ index ].link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === icons[ index ].target ? icons[ index ].target : undefined ) } rel={ '_blank' === icons[ index ].target ? 'noopener noreferrer' : undefined } aria-label={ ( undefined !== icons[ index ].linkTitle && '' !== icons[ index ].linkTitle ? icons[ index ].linkTitle : undefined ) } style={ {
+									marginTop: ( icons[ index ].marginTop ? icons[ index ].marginTop + 'px' : undefined ),
+									marginRight: ( icons[ index ].marginRight ? icons[ index ].marginRight + 'px' : undefined ),
+									marginBottom: ( icons[ index ].marginBottom ? icons[ index ].marginBottom + 'px' : undefined ),
+									marginLeft: ( icons[ index ].marginLeft ? icons[ index ].marginLeft + 'px' : undefined ),
+								} }
+								>
+									<IconRender className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
+										color: ( icons[ index ].color ? KadenceColorOutput( icons[ index ].color ) : undefined ),
+										backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].background ) : undefined ),
+										padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
+										borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].border ) : undefined ),
+										borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
+										borderRadius: ( icons[ index ].borderRadius && icons[ index ].style !== 'default' ? icons[ index ].borderRadius + '%' : undefined ),
+									} } />
+								</a>
+							) }
+							{ icons[ index ].icon && ! icons[ index ].link && (
+								<IconRender className={ `kt-svg-icon kt-svg-icon-${ icons[ index ].icon }` } name={ icons[ index ].icon } size={ icons[ index ].size } strokeWidth={ ( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined ) } title={ ( icons[ index ].title ? icons[ index ].title : '' ) } style={ {
+									color: ( icons[ index ].color ? KadenceColorOutput( icons[ index ].color ) : undefined ),
+									backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].background ) : undefined ),
+									padding: ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
+									borderColor: ( icons[ index ].border && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].border ) : undefined ),
+									borderWidth: ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
+									borderRadius: ( icons[ index ].borderRadius && icons[ index ].style !== 'default' ? icons[ index ].borderRadius + '%' : undefined ),
+									marginTop: ( icons[ index ].marginTop ? icons[ index ].marginTop + 'px' : undefined ),
+									marginRight: ( icons[ index ].marginRight ? icons[ index ].marginRight + 'px' : undefined ),
+									marginBottom: ( icons[ index ].marginBottom ? icons[ index ].marginBottom + 'px' : undefined ),
+									marginLeft: ( icons[ index ].marginLeft ? icons[ index ].marginLeft + 'px' : undefined ),
+								} } />
+							) }
+						</div>
+					);
+				};
+				return (
+					<div className={ `kt-svg-icons kt-svg-icons${ uniqueID } align${ ( blockAlignment ? blockAlignment : 'none' ) }${ ( verticalAlignment ? verticalAlignment : '' ) }` } style={ {
+						textAlign: ( textAlignment ? textAlignment : 'center' ),
+					} } >
+						{ times( iconCount, n => renderSaveIcons( n ) ) }
+					</div>
+				);
+			}
+		},
 		{
 			attributes: {
 				icons: {

@@ -49,7 +49,7 @@ class KB_Ajax_Form {
 			if ( $valid ) {
 				// Lets get form data.
 				$form_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_id'] ) );
-				$post_id = absint( wp_unslash( $_POST['_kb_form_post_id'] ) );
+				$post_id = sanitize_text_field( wp_unslash( $_POST['_kb_form_post_id'] ) );
 				$form_args = $this->get_form_args( $post_id, $form_id );
 				if ( ! $form_args ) {
 					$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Data not Found', 'kadence-blocks' ) );
@@ -668,10 +668,20 @@ class KB_Ajax_Form {
 	 */
 	private function get_form_args( $post_id, $form_id ) {
 		$form_args = false;
-		$post_data = get_post( $post_id );
-		$content   = $post_data->post_content;
-
-		$blocks = $this->parse_blocks( $post_data->post_content );
+		$blocks = '';
+		if ( strpos( $post_id, 'block' ) !== false ) {
+			$widget_data = get_option( 'widget_block' );
+			$post_id_int = preg_replace('/[^0-9]/', '', $post_id);
+			if ( ! empty( $widget_data[ absint( $post_id_int ) ] ) ) {
+				$form_content = $widget_data[ absint( $post_id_int ) ];
+				$blocks = $this->parse_blocks( $form_content['content'] );
+			}
+		} else {
+			$post_data = get_post( absint( $post_id ) );
+			if ( is_object( $post_data ) ) {
+				$blocks = $this->parse_blocks( $post_data->post_content );
+			}
+		}
 		if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 			$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Data not found', 'kadence-blocks' ) );
 		}

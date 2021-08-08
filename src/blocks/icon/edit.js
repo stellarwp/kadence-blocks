@@ -17,6 +17,7 @@ import IconRender from '../../components/icons/icon-render';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import StepControl from '../../step-control';
+import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
 import URLInputControl from '../../components/links/link-control';
 
 /**
@@ -47,6 +48,7 @@ const {
 	Button,
 	Dashicon,
 	TabPanel,
+	ToolbarGroup,
 	ButtonGroup,
 	Tooltip,
 } = wp.components;
@@ -94,11 +96,37 @@ class KadenceIcons extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { iconCount, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID }, className, setAttributes, clientId } = this.props;
+		const { attributes: { iconCount, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment }, className, setAttributes, clientId } = this.props;
 		const { marginControl } = this.state;
 		const controlTypes = [
-			{ key: 'linked', name: __( 'Linked' ), micon: editorIcons.linked },
-			{ key: 'individual', name: __( 'Individual' ), micon: editorIcons.individual },
+			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), micon: editorIcons.linked },
+			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), micon: editorIcons.individual },
+		];
+		const verticalAlignOptions = [
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'top' } isPressed={ ( verticalAlignment === 'top' ? true : false ) } />,
+					title: __( 'Align Top', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'top' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'top' } ),
+				},
+			],
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'middle' } isPressed={ ( verticalAlignment === 'middle' ? true : false ) } />,
+					title: __( 'Align Middle', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'middle' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'middle' } ),
+				},
+			],
+			[
+				{
+					icon: <VerticalAlignmentIcon value={ 'bottom' } isPressed={ ( verticalAlignment === 'bottom' ? true : false ) } />,
+					title: __( 'Align Bottom', 'kadence-blocks' ),
+					isActive: ( verticalAlignment === 'bottom' ? true : false ),
+					onClick: () => setAttributes( { verticalAlignment: 'bottom' } ),
+				},
+			],
 		];
 		const tabAlignControls = (
 			<TabPanel className="kt-size-tabs"
@@ -165,7 +193,7 @@ class KadenceIcons extends Component {
 			return (
 				<Fragment>
 					<AdvancedPopColorControl
-						label={ __( 'Icon Hover Color' ) }
+						label={ __( 'Icon Hover Color', 'kadence-blocks' ) }
 						colorValue={ ( icons[ index ].hColor ? icons[ index ].hColor : '' ) }
 						colorDefault={ '' }
 						onColorChange={ value => {
@@ -173,11 +201,11 @@ class KadenceIcons extends Component {
 						} }
 					/>
 					<SelectControl
-						label={ __( 'Icon Style' ) }
+						label={ __( 'Icon Style', 'kadence-blocks' ) }
 						value={ icons[ index ].style }
 						options={ [
-							{ value: 'default', label: __( 'Default' ) },
-							{ value: 'stacked', label: __( 'Stacked' ) },
+							{ value: 'default', label: __( 'Default', 'kadence-blocks' ) },
+							{ value: 'stacked', label: __( 'Stacked', 'kadence-blocks' ) },
 						] }
 						onChange={ value => {
 							this.saveArrayUpdate( { style: value }, index );
@@ -186,7 +214,7 @@ class KadenceIcons extends Component {
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
 							<AdvancedPopColorControl
-								label={ __( 'Hover Background Color' ) }
+								label={ __( 'Hover Background Color', 'kadence-blocks' ) }
 								colorValue={ ( icons[ index ].hBackground ? icons[ index ].hBackground : '' ) }
 								colorDefault={ '' }
 								onColorChange={ value => {
@@ -198,7 +226,7 @@ class KadenceIcons extends Component {
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
 							<AdvancedPopColorControl
-								label={ __( 'Hover Border Color' ) }
+								label={ __( 'Hover Border Color', 'kadence-blocks' ) }
 								colorValue={ ( icons[ index ].hBorder ? icons[ index ].hBorder : '' ) }
 								colorDefault={ '' }
 								onColorChange={ value => {
@@ -214,7 +242,7 @@ class KadenceIcons extends Component {
 			return (
 				<Fragment>
 					<AdvancedPopColorControl
-						label={ __( 'Icon Color' ) }
+						label={ __( 'Icon Color', 'kadence-blocks' ) }
 						colorValue={ ( icons[ index ].color ? icons[ index ].color : '' ) }
 						colorDefault={ '' }
 						onColorChange={ value => {
@@ -222,11 +250,11 @@ class KadenceIcons extends Component {
 						} }
 					/>
 					<SelectControl
-						label={ __( 'Icon Style' ) }
+						label={ __( 'Icon Style', 'kadence-blocks' ) }
 						value={ icons[ index ].style }
 						options={ [
-							{ value: 'default', label: __( 'Default' ) },
-							{ value: 'stacked', label: __( 'Stacked' ) },
+							{ value: 'default', label: __( 'Default', 'kadence-blocks' ) },
+							{ value: 'stacked', label: __( 'Stacked', 'kadence-blocks' ) },
 						] }
 						onChange={ value => {
 							this.saveArrayUpdate( { style: value }, index );
@@ -235,7 +263,7 @@ class KadenceIcons extends Component {
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
 							<AdvancedPopColorControl
-								label={ __( 'background Color' ) }
+								label={ __( 'background Color', 'kadence-blocks' ) }
 								colorValue={ ( icons[ index ].background ? icons[ index ].background : '' ) }
 								colorDefault={ '' }
 								onColorChange={ value => {
@@ -247,7 +275,7 @@ class KadenceIcons extends Component {
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
 							<AdvancedPopColorControl
-								label={ __( 'Border Color' ) }
+								label={ __( 'Border Color', 'kadence-blocks' ) }
 								colorValue={ ( icons[ index ].border ? icons[ index ].border : '' ) }
 								colorDefault={ '' }
 								onColorChange={ value => {
@@ -262,7 +290,7 @@ class KadenceIcons extends Component {
 		const renderIconSettings = ( index ) => {
 			return (
 				<PanelBody
-					title={ __( 'Icon' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings' ) }
+					title={ __( 'Icon', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === iconCount ? true : false ) }
 				>
 					<IconControl
@@ -272,7 +300,7 @@ class KadenceIcons extends Component {
 						} }
 					/>
 					<RangeControl
-						label={ __( 'Icon Size' ) }
+						label={ __( 'Icon Size', 'kadence-blocks' ) }
 						value={ icons[ index ].size }
 						onChange={ value => {
 							this.saveArrayUpdate( { size: value }, index );
@@ -298,12 +326,12 @@ class KadenceIcons extends Component {
 						tabs={ [
 							{
 								name: 'normal' + index,
-								title: __( 'Normal' ),
+								title: __( 'Normal', 'kadence-blocks' ),
 								className: 'kt-normal-tab',
 							},
 							{
 								name: 'hover' + index,
-								title: __( 'Hover' ),
+								title: __( 'Hover', 'kadence-blocks' ),
 								className: 'kt-hover-tab',
 							},
 						] }>
@@ -323,7 +351,7 @@ class KadenceIcons extends Component {
 					</TabPanel>
 					{ icons[ index ].style !== 'default' && (
 						<RangeControl
-							label={ __( 'Border Size (px)' ) }
+							label={ __( 'Border Size (px)', 'kadence-blocks' ) }
 							value={ icons[ index ].borderWidth }
 							onChange={ value => {
 								this.saveArrayUpdate( { borderWidth: value }, index );
@@ -334,7 +362,7 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<RangeControl
-							label={ __( 'Border Radius (%)' ) }
+							label={ __( 'Border Radius (%)', 'kadence-blocks' ) }
 							value={ icons[ index ].borderRadius }
 							onChange={ value => {
 								this.saveArrayUpdate( { borderRadius: value }, index );
@@ -345,7 +373,7 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<RangeControl
-							label={ __( 'Padding (px)' ) }
+							label={ __( 'Padding (px)', 'kadence-blocks' ) }
 							value={ icons[ index ].padding }
 							onChange={ value => {
 								this.saveArrayUpdate( { padding: value }, index );
@@ -354,7 +382,7 @@ class KadenceIcons extends Component {
 							max={ 180 }
 						/>
 					) }
-					<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Margin Control Type' ) }>
+					<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Margin Control Type', 'kadence-blocks' ) }>
 						{ map( controlTypes, ( { name, key, micon } ) => (
 							<Tooltip text={ name }>
 								<Button
@@ -372,7 +400,7 @@ class KadenceIcons extends Component {
 					</ButtonGroup>
 					{ marginControl && marginControl !== 'individual' && (
 						<RangeControl
-							label={ __( 'Margin (px)' ) }
+							label={ __( 'Margin (px)', 'kadence-blocks' ) }
 							value={ ( icons[ index ].marginTop ? icons[ index ].marginTop : 0 ) }
 							onChange={ ( value ) => {
 								this.saveArrayUpdate( {
@@ -389,7 +417,7 @@ class KadenceIcons extends Component {
 					) }
 					{ marginControl && marginControl === 'individual' && (
 						<Fragment>
-							<p>{ __( 'Margin (px)' ) }</p>
+							<p>{ __( 'Margin (px)', 'kadence-blocks' ) }</p>
 							<RangeControl
 								className="kt-icon-rangecontrol"
 								label={ editorIcons.outlinetop }
@@ -452,10 +480,14 @@ class KadenceIcons extends Component {
 							}
 						} }
 						dynamicAttribute={ 'icons:' + index + ':link' }
+						linkTitle={ icons[ index ].linkTitle }
+						onChangeTitle={ value => {
+							this.saveArrayUpdate( { linkTitle: value }, index );
+						} }
 						{ ...this.props }
 					/>
 					<TextControl
-						label={ __( 'Title for Accessibility' ) }
+						label={ __( 'Title for Accessibility', 'kadence-blocks' ) }
 						value={ icons[ index ].title }
 						onChange={ value => {
 							this.saveArrayUpdate( { title: value }, index );
@@ -512,6 +544,12 @@ class KadenceIcons extends Component {
 						controls={ [ 'center', 'left', 'right' ] }
 						onChange={ value => setAttributes( { blockAlignment: value } ) }
 					/>
+					<ToolbarGroup
+						isCollapsed={ true }
+						icon={ <VerticalAlignmentIcon value={ ( verticalAlignment ? verticalAlignment : 'bottom' ) } /> }
+						label={ __( 'Vertical Align', 'kadence-blocks' )  }
+						controls={ verticalAlignOptions }
+					/>
 					<AlignmentToolbar
 						value={ textAlignment }
 						onChange={ value => setAttributes( { textAlignment: value } ) }
@@ -519,11 +557,11 @@ class KadenceIcons extends Component {
 				</BlockControls>
 				<InspectorControls>
 					<PanelBody
-						title={ __( 'Icon Count' ) }
+						title={ __( 'Icon Count', 'kadence-blocks' ) }
 						initialOpen={ true }
 					>
 						<StepControl
-							label={ __( 'Number of Icons' ) }
+							label={ __( 'Number of Icons', 'kadence-blocks' ) }
 							value={ iconCount }
 							onChange={ newcount => {
 								const newicons = icons;
@@ -568,7 +606,7 @@ class KadenceIcons extends Component {
 					</PanelBody>
 					{ renderSettings }
 				</InspectorControls>
-				<div className={ `kt-svg-icons ${ clientId } kt-svg-icons-${ uniqueID }` } style={ {
+				<div className={ `kt-svg-icons ${ clientId } kt-svg-icons-${ uniqueID }${ verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : '' }` } style={ {
 					textAlign: ( textAlignment ? textAlignment : 'center' ),
 				} } >
 					{ times( iconCount, n => renderIconsPreview( n ) ) }

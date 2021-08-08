@@ -67,18 +67,6 @@
       "pg" : 0,
       "sct" : 1
     },
-    "\/dist\/assets\/css\/src\/tiny-slider.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/assets\/css\/src\/tiny-slider-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
     "\/dist\/assets\/css\/src\/tiny-slider.scss" : {
       "aP" : 0,
       "bl" : 0,
@@ -87,11 +75,23 @@
       "ft" : 4,
       "ma" : 0,
       "oA" : 0,
-      "oAP" : "\/dist\/assets\/css\/src\/tiny-slider.css",
-      "oF" : 0,
-      "oS" : 0,
+      "oAP" : "\/dist\/assets\/css\/tiny-slider.css",
+      "oF" : 2,
+      "oS" : 3,
       "pg" : 0,
       "sct" : 1
+    },
+    "\/dist\/assets\/css\/tiny-slider.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/assets\/css\/tiny-slider-min.css",
+      "oF" : 0,
+      "pg" : 0
     },
     "\/dist\/assets\/images\/ajax-loader.gif" : {
       "ft" : 4194304,
@@ -193,6 +193,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/dist\/assets\/js\/kb-tiny-init.min.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/kb-tiny-init.min-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/dist\/assets\/js\/simplelightbox.min.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -255,6 +266,17 @@
       "mi" : 1,
       "oA" : 0,
       "oAP" : "\/dist\/assets\/js\/kb-table-of-contents.min.js",
+      "oF" : 3,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/assets\/js\/src\/kb-tiny-init.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/dist\/assets\/js\/kb-tiny-init.min.js",
       "oF" : 3,
       "sC" : 0,
       "tS" : 0
@@ -6078,17 +6100,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/row-layout\/vertical-align-icons.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/row-layout\/vertical-align-icons-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/src\/blocks\/spacer\/block.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -6687,6 +6698,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/components\/common\/parse-json-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/common\/vertical-align-icons.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/common\/vertical-align-icons-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0

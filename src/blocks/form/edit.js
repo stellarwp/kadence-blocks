@@ -35,6 +35,7 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
+import { getWidgetIdFromBlock } from '@wordpress/widgets';
 const {
 	Component,
 	Fragment,
@@ -182,7 +183,17 @@ class KadenceForm extends Component {
 		} else {
 			kbFormIDs.push( this.props.attributes.uniqueID );
 		}
-		if ( wp.data.select( 'core/editor' ) ) {
+		if ( getWidgetIdFromBlock( this.props ) ) {
+			if ( ! this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: getWidgetIdFromBlock( this.props ),
+				} );
+			} else if ( getWidgetIdFromBlock( this.props ) !== this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: getWidgetIdFromBlock( this.props ),
+				} );
+			}
+		} else if ( wp.data.select( 'core/editor' ) ) {
 			const { getCurrentPostId } = wp.data.select( 'core/editor' );
 			if ( ! this.props.attributes.postID ) {
 				this.props.setAttributes( {

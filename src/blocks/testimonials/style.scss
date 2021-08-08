@@ -13,7 +13,11 @@
 	.kt-blocks-carousel.kt-carousel-container-dotstyle-none {
 		padding-bottom: 0;
 	}
-	.kt-blocks-carousel .kt-blocks-carousel-init:not(.kt-carousel-arrowstyle-none) {
+	&.tns-carousel-wrap .kt-blocks-carousel:not(.kt-carousel-container-arrowstyle-none) {
+		padding-left: 35px;
+		padding-right: 35px;
+	}
+	.kt-blocks-carousel .kt-blocks-carousel-init:not(.kt-carousel-arrowstyle-none):not(.tns-slider) {
 		padding-left: 35px;
 		padding-right: 35px;
 	}
@@ -21,10 +25,10 @@
 		padding: 0 15px;
 	}
 }
-.kt-blocks-carousel-init:not(.slick-initialized) .kt-blocks-testimonial-carousel-item {
+.kt-blocks-carousel-init:not(.slick-initialized):not(.tns-slider) .kt-blocks-testimonial-carousel-item {
     display: none;
 }
-.kt-blocks-carousel-init:not(.slick-initialized) .kt-blocks-testimonial-carousel-item:first-child {
+.kt-blocks-carousel-init:not(.slick-initialized):not(.tns-slider) .kt-blocks-testimonial-carousel-item:first-child {
     display: block;
 }
 .kt-testimonial-grid-wrap {

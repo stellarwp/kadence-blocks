@@ -373,5 +373,9 @@ const attributes = {
 		type: 'string',
 		default: 'inherit',
 	},
+	linkTitle: {
+		type: 'string',
+		default: '',
+	},
 };
 export default attributes;

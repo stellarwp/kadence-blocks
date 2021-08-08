@@ -250,9 +250,9 @@ registerBlockType( 'kadence/testimonials', {
 			);
 		};
 		return (
-			<div className={ `kt-testimonial-halign-${ hAlign } kt-testimonial-style-${ style } kt-testimonials-media-${ ( displayMedia ? 'on' : 'off' ) } kt-testimonials-icon-${ ( displayIcon ? 'on' : 'off' ) } kt-testimonial-columns-${ columns[ 0 ] } kt-t-xxl-col-${ columns[ 0 ] } kt-t-xl-col-${ columns[ 1 ] } kt-t-lg-col-${ columns[ 2 ] } kt-t-md-col-${ columns[ 3 ] } kt-t-sm-col-${ columns[ 4 ] } kt-t-xs-col-${ columns[ 5 ] } kt-blocks-testimonials-wrap${ uniqueID }` }>
+			<div className={ `kt-testimonial-halign-${ hAlign } kt-testimonial-style-${ style } kt-testimonials-media-${ ( displayMedia ? 'on' : 'off' ) } kt-testimonials-icon-${ ( displayIcon ? 'on' : 'off' ) } kt-testimonial-columns-${ columns[ 0 ] } kt-t-xxl-col-${ columns[ 0 ] } kt-t-xl-col-${ columns[ 1 ] } kt-t-lg-col-${ columns[ 2 ] } kt-t-md-col-${ columns[ 3 ] } kt-t-sm-col-${ columns[ 4 ] } kt-t-xs-col-${ columns[ 5 ] } kt-blocks-testimonials-wrap${ uniqueID }${ layout && layout === 'carousel' ? ' tns-carousel-wrap' : '' }` }>
 				{ layout && layout === 'carousel' && (
-					<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ dotStyle }` }>
+					<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ dotStyle } kt-carousel-container-arrowstyle-${ arrowStyle }` }>
 						<div className={ `kt-blocks-carousel-init kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } data-columns-xxl={ columns[ 0 ] } data-columns-xl={ columns[ 1 ] } data-columns-md={ columns[ 2 ] } data-columns-sm={ columns[ 3 ] } data-columns-xs={ columns[ 4 ] } data-columns-ss={ columns[ 5 ] } data-slider-anim-speed={ transSpeed } data-slider-scroll={ slidesScroll } data-slider-arrows={ ( 'none' === arrowStyle ? false : true ) } data-slider-dots={ ( 'none' === dotStyle ? false : true ) } data-slider-hover-pause="false" data-slider-auto={ autoPlay } data-slider-speed={ autoSpeed }>
 							{ times( itemsCount, n =>
 								<div className="kt-blocks-testimonial-carousel-item kb-slide-item" key={ n }>

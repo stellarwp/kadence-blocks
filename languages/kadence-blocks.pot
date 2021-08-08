@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Kadence Blocks – Gutenberg Blocks for Page Builder Features plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 2.1.0\n"
+"Project-Id-Version: Kadence Blocks – Gutenberg Blocks for Page Builder Features 2.1.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/kadence-blocks\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-07-16T15:57:50+00:00\n"
+"POT-Creation-Date: 2021-08-08T18:18:13+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: kadence-blocks\n"
@@ -111,84 +111,88 @@ msgstr ""
 msgid "Secs"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1241
+#: dist/class-kadence-blocks-frontend.php:1232
 #: dist/build/blocks.js:36
 msgid "Please fix the errors to proceed"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1243
+#: dist/class-kadence-blocks-frontend.php:1234
 #: dist/build/blocks.js:34
 msgid "is required"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1244
+#: dist/class-kadence-blocks-frontend.php:1235
 msgid "does not match"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1245
+#: dist/class-kadence-blocks-frontend.php:1236
 #: dist/build/blocks.js:34
 msgid "is not valid"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1246
+#: dist/class-kadence-blocks-frontend.php:1237
 msgid "requires a unique entry and this value has already been used"
 msgstr ""
 
-#: dist/class-kadence-blocks-frontend.php:1247
+#: dist/class-kadence-blocks-frontend.php:1238
 #: dist/build/blocks.js:32
 msgid "Item"
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:316
+#: dist/class-kadence-blocks-posts-rest-api.php:325
 msgid "Limit results to items of a specific post type."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:335
+#: dist/class-kadence-blocks-posts-rest-api.php:344
 msgid "Include posts by ID."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:341
+#: dist/class-kadence-blocks-posts-rest-api.php:350
 msgid "Number of results to return."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:347
+#: dist/class-kadence-blocks-posts-rest-api.php:356
 msgid "Define Type of Query."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:351
+#: dist/class-kadence-blocks-posts-rest-api.php:360
 msgid "Define Query Order."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:355
-#: dist/class-kadence-blocks-posts-rest-api.php:379
+#: dist/class-kadence-blocks-posts-rest-api.php:364
+#: dist/class-kadence-blocks-posts-rest-api.php:392
 msgid "Define Query Order By."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:359
+#: dist/class-kadence-blocks-posts-rest-api.php:368
 msgid "Allow Sticky in Query."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:364
+#: dist/class-kadence-blocks-posts-rest-api.php:373
 msgid "Exclude Category."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:368
+#: dist/class-kadence-blocks-posts-rest-api.php:377
 msgid "Number of items to offset in query."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:374
+#: dist/class-kadence-blocks-posts-rest-api.php:383
+msgid "The Current Post ID."
+msgstr ""
+
+#: dist/class-kadence-blocks-posts-rest-api.php:387
 msgid "Check if using a custom Taxonomy"
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:383
+#: dist/class-kadence-blocks-posts-rest-api.php:396
 msgid "Include posts category."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts-rest-api.php:388
+#: dist/class-kadence-blocks-posts-rest-api.php:401
 msgid "Include posts tags."
 msgstr ""
 
-#: dist/class-kadence-blocks-posts.php:371
+#: dist/class-kadence-blocks-posts.php:376
 msgid "No posts"
 msgstr ""
 
@@ -230,7 +234,7 @@ msgstr ""
 
 #: dist/form-ajax.php:55
 #: dist/form-ajax.php:75
-#: dist/form-ajax.php:676
+#: dist/form-ajax.php:686
 #: dist/build/blocks.js:36
 msgid "Submission Failed"
 msgstr ""
@@ -308,7 +312,7 @@ msgstr ""
 msgid "Accept"
 msgstr ""
 
-#: dist/form-ajax.php:676
+#: dist/form-ajax.php:686
 msgid "Data not found"
 msgstr ""
 
@@ -317,6 +321,7 @@ msgstr ""
 #: dist/init.php:339
 #: dist/init.php:368
 #: dist/build/blocks.js:1
+#: dist/build/blocks.js:21
 #: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 #: dist/build/blocks.js:34
@@ -408,6 +413,7 @@ msgid "Ultra-Bold 900"
 msgstr ""
 
 #: dist/init.php:616
+#: dist/init.php:643
 #: dist/settings/class-kadence-blocks-settings.php:264
 msgid "Kadence Blocks"
 msgstr ""
@@ -688,6 +694,7 @@ msgstr ""
 msgid "Choose from over 1500+ SVG Icons to add into your page and style the size, colors, background, border, etc."
 msgstr ""
 
+#. translators: %s: color hex code e.g: "#f00".
 #: dist/settings/class-kadence-blocks-settings.php:703
 #: dist/build/blocks.js:11
 msgid "Spacer/Divider"
@@ -770,6 +777,7 @@ msgstr ""
 #: dist/settings/class-kadence-blocks-settings.php:878
 #: dist/build/blocks.js:11
 #: dist/build/blocks.js:21
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 #: dist/build/blocks.js:34
 msgid "Settings"
@@ -862,6 +870,7 @@ msgstr ""
 
 #: dist/build/blocks.js:1
 #: dist/build/blocks.js:21
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 #: dist/build/blocks.js:34
 #: dist/build/blocks.js:36
@@ -872,6 +881,7 @@ msgstr ""
 
 #: dist/build/blocks.js:1
 #: dist/build/blocks.js:21
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 #: dist/build/blocks.js:34
 #: dist/build/blocks.js:36
@@ -1003,10 +1013,12 @@ msgid "Load Italic Styles Also"
 msgstr ""
 
 #: dist/build/blocks.js:3
+#: dist/build/blocks.js:29
 msgid "Padding (px)"
 msgstr ""
 
 #: dist/build/blocks.js:3
+#: dist/build/blocks.js:29
 msgid "Margin (px)"
 msgstr ""
 
@@ -1020,7 +1032,14 @@ msgstr ""
 msgid "Use %s rule to change block styles."
 msgstr ""
 
-#. translators: %s: color hex code e.g: "#f00".
+#: dist/build/blocks.js:11
+msgid "spacer"
+msgstr ""
+
+#: dist/build/blocks.js:11
+msgid "divider"
+msgstr ""
+
 #: dist/build/blocks.js:11
 msgid "Height"
 msgstr ""
@@ -1132,14 +1151,6 @@ msgid "Hide on Mobile"
 msgstr ""
 
 #: dist/build/blocks.js:11
-msgid "spacer"
-msgstr ""
-
-#: dist/build/blocks.js:11
-msgid "divider"
-msgstr ""
-
-#: dist/build/blocks.js:11
 #: dist/build/blocks.js:21
 #: dist/build/blocks.js:32
 msgid "Copy/Paste Styles"
@@ -1243,6 +1254,7 @@ msgid "Remove Button"
 msgstr ""
 
 #: dist/build/blocks.js:11
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:34
 #: dist/build/blocks.js:60
 #: dist/build/blocks.js:63
@@ -1320,16 +1332,22 @@ msgid "Border Radius"
 msgstr ""
 
 #: dist/build/blocks.js:11
+msgid "Button Margin"
+msgstr ""
+
+#: dist/build/blocks.js:11
 #: dist/build/blocks.js:32
 msgid "Icon Settings"
 msgstr ""
 
 #: dist/build/blocks.js:11
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 msgid "Icon Size"
 msgstr ""
 
 #: dist/build/blocks.js:11
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 #: dist/build/blocks.js:36
 msgid "Hover"
@@ -1340,6 +1358,7 @@ msgid "Hover Icon Color"
 msgstr ""
 
 #: dist/build/blocks.js:11
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 msgid "Icon Color"
 msgstr ""
@@ -1479,6 +1498,7 @@ msgid "Right Bottom"
 msgstr ""
 
 #: dist/build/blocks.js:11
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 msgid "Hover Border Color"
 msgstr ""
@@ -1497,6 +1517,7 @@ msgstr ""
 
 #: dist/build/blocks.js:11
 #: dist/build/blocks.js:21
+#: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 #: dist/build/blocks.js:36
 #: dist/build/blocks.js:44
@@ -1526,15 +1547,6 @@ msgstr ""
 #: dist/build/blocks.js:36
 #: dist/build/blocks.js:44
 msgid "Container Margin"
-msgstr ""
-
-#: dist/build/blocks.js:11
-#: dist/build/blocks.js:21
-#: dist/build/blocks.js:32
-#: dist/build/blocks.js:34
-#: dist/build/blocks.js:36
-#: dist/build/blocks.js:63
-msgid "Margin"
 msgstr ""
 
 #: dist/build/blocks.js:11
@@ -1857,7 +1869,7 @@ msgid "Please Accept Privacy Policy"
 msgstr ""
 
 #: dist/build/blocks.js:19
-msgid "Subscribe"
+msgid "Subscribe for Access"
 msgstr ""
 
 #: dist/build/blocks.js:19
@@ -2080,6 +2092,14 @@ msgstr ""
 
 #: dist/build/blocks.js:21
 msgid "Mobile Padding/Margin"
+msgstr ""
+
+#: dist/build/blocks.js:21
+#: dist/build/blocks.js:32
+#: dist/build/blocks.js:34
+#: dist/build/blocks.js:36
+#: dist/build/blocks.js:63
+msgid "Margin"
 msgstr ""
 
 #: dist/build/blocks.js:21
@@ -2483,14 +2503,17 @@ msgid "Size Controls"
 msgstr ""
 
 #: dist/build/blocks.js:21
+#: dist/build/blocks.js:29
 msgid "Align Top"
 msgstr ""
 
 #: dist/build/blocks.js:21
+#: dist/build/blocks.js:29
 msgid "Align Middle"
 msgstr ""
 
 #: dist/build/blocks.js:21
+#: dist/build/blocks.js:29
 msgid "Align Bottom"
 msgstr ""
 
@@ -2507,6 +2530,7 @@ msgid "Custom Content Max Width"
 msgstr ""
 
 #: dist/build/blocks.js:21
+#: dist/build/blocks.js:29
 msgid "Vertical Align"
 msgstr ""
 
@@ -2607,6 +2631,51 @@ msgid "column"
 msgstr ""
 
 #: dist/build/blocks.js:21
+msgid "Inner Block Direction"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "Vertical"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "Horizontal"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "Default Horizontal Block Gap"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "Justify Content"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "Start"
+msgstr ""
+
+#: dist/build/blocks.js:21
+#: dist/build/blocks.js:63
+msgid "Center"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "End"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "Space Between"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "Space Around"
+msgstr ""
+
+#: dist/build/blocks.js:21
+msgid "Space Evenly"
+msgstr ""
+
+#: dist/build/blocks.js:21
 #: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
 #: dist/build/blocks.js:63
@@ -2639,7 +2708,54 @@ msgstr ""
 
 #: dist/build/blocks.js:29
 #: dist/build/blocks.js:32
+msgid "Icon Hover Color"
+msgstr ""
+
+#: dist/build/blocks.js:29
+#: dist/build/blocks.js:32
+#: dist/build/blocks.js:36
+msgid "Icon Style"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "Stacked"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "Hover Background Color"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "background Color"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "Border Size (px)"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "Border Radius (%)"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "Margin Control Type"
+msgstr ""
+
+#: dist/build/blocks.js:29
+#: dist/build/blocks.js:32
 msgid "Link"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "Title for Accessibility"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "Icon Count"
+msgstr ""
+
+#: dist/build/blocks.js:29
+msgid "Number of Icons"
 msgstr ""
 
 #: dist/build/blocks.js:32
@@ -3322,10 +3438,6 @@ msgid "Flip to Another Icon"
 msgstr ""
 
 #: dist/build/blocks.js:32
-msgid "Icon Hover Color"
-msgstr ""
-
-#: dist/build/blocks.js:32
 msgid "Icon Hover Background"
 msgstr ""
 
@@ -3522,11 +3634,6 @@ msgstr ""
 
 #: dist/build/blocks.js:32
 msgid "Show Icon"
-msgstr ""
-
-#: dist/build/blocks.js:32
-#: dist/build/blocks.js:36
-msgid "Icon Style"
 msgstr ""
 
 #: dist/build/blocks.js:32
@@ -4744,6 +4851,14 @@ msgid "Button Background"
 msgstr ""
 
 #: dist/build/blocks.js:36
+msgid "Button Border"
+msgstr ""
+
+#: dist/build/blocks.js:36
+msgid "Button Box Shadow"
+msgstr ""
+
+#: dist/build/blocks.js:36
 msgid "Advanced Button Settings"
 msgstr ""
 
@@ -5471,10 +5586,6 @@ msgstr ""
 
 #: dist/build/blocks.js:63
 msgid "Tab Title Alignment"
-msgstr ""
-
-#: dist/build/blocks.js:63
-msgid "Center"
 msgstr ""
 
 #: dist/build/blocks.js:63

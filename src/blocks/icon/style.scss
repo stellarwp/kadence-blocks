@@ -20,3 +20,15 @@
 		}
 	}
 }
+.kb-icon-valign-top {
+    align-items: flex-start;
+    display: flex;
+}
+.kb-icon-valign-middle {
+    align-items: center;
+    display: flex;
+}
+.kb-icon-valign-bottom {
+    align-items: flex-end;
+    display: flex;
+}

@@ -296,14 +296,14 @@ class KadenceAdvancedHeading extends Component {
 					letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 					textTransform: ( textTransform ? textTransform : undefined ),
 					fontFamily: ( typography ? renderTypography : '' ),
-					paddingTop: ( undefined !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
-					paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
-					paddingBottom: ( undefined !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
-					paddingLeft: ( undefined !== previewPaddingLeft ? previewPaddingLeft + paddingType : undefined ),
-					marginTop: ( undefined !== previewMarginTop ? previewMarginTop + marginType : undefined ),
-					marginRight: ( undefined !== previewMarginRight ? previewMarginRight + marginType : undefined ),
-					marginBottom: ( undefined !== previewMarginBottom ? previewMarginBottom + marginType : undefined ),
-					marginLeft: ( undefined !== previewMarginLeft ? previewMarginLeft + marginType : undefined ),
+					paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
+					paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
+					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
+					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingType : undefined ),
+					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginType : undefined ),
+					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginType : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginType : undefined ),
+					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginType : undefined ),
 					textShadow: ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
 				} }
 				className={ classes }
@@ -340,14 +340,14 @@ class KadenceAdvancedHeading extends Component {
 					letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),
 					textTransform: ( textTransform ? textTransform : undefined ),
 					fontFamily: ( typography ? renderTypography : '' ),
-					paddingTop: ( undefined !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
-					paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
-					paddingBottom: ( undefined !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
-					paddingLeft: ( undefined !== previewPaddingLeft ? previewPaddingLeft + paddingType : undefined ),
-					marginTop: ( undefined !== previewMarginTop ? previewMarginTop + marginType : undefined ),
-					marginRight: ( undefined !== previewMarginRight ? previewMarginRight + marginType : undefined ),
-					marginBottom: ( undefined !== previewMarginBottom ? previewMarginBottom + marginType : undefined ),
-					marginLeft: ( undefined !== previewMarginLeft ? previewMarginLeft + marginType : undefined ),
+					paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingType : undefined ),
+					paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingType : undefined ),
+					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingType : undefined ),
+					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingType : undefined ),
+					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginType : undefined ),
+					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginType : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginType : undefined ),
+					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginType : undefined ),
 					textShadow: ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
 				} }
 				className={ classes }
@@ -614,7 +614,7 @@ class KadenceAdvancedHeading extends Component {
 									step={ 1 }
 								/>
 								<TypographyControls
-									fontGroup={ 'markheading' }
+									fontGroup={ 'heading' }
 									fontSize={ markSize }
 									onFontSize={ ( value ) => setAttributes( { markSize: value } ) }
 									fontSizeType={ markSizeType }

@@ -274,6 +274,7 @@ class KadenceAdvancedButton extends Component {
 
 			return item;
 		} );
+		console.log( value );
 		setAttributes( {
 			btns: newItems,
 		} );
@@ -317,13 +318,6 @@ class KadenceAdvancedButton extends Component {
 		const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
 		const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
 		const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
-		const marginTypes = [
-			{ key: 'px', name: 'px' },
-			{ key: 'em', name: 'em' },
-			{ key: '%', name: '%' },
-			{ key: 'vh', name: 'vh' },
-			{ key: 'rem', name: 'rem' },
-		];
 		const btnSizes = [
 			{ key: 'small', name: __( 'S' ) },
 			{ key: 'standard', name: __( 'M' ) },
@@ -334,10 +328,6 @@ class KadenceAdvancedButton extends Component {
 			{ key: 'auto', name: __( 'Auto' ) },
 			{ key: 'fixed', name: __( 'Fixed' ) },
 			{ key: 'full', name: __( 'Full' ) },
-		];
-		const unitTypes = [
-			{ key: 'px', name: __( 'px' ) },
-			{ key: '%', name: __( '%' ) },
 		];
 		const gradTypes = [
 			{ key: 'linear', name: __( 'Linear' ) },
@@ -393,6 +383,10 @@ class KadenceAdvancedButton extends Component {
 			const rightIconPadding = ( btns[ index ].icon ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[1] && '' !== btns[ index ].iconPadding[1] ? btns[ index ].iconPadding[1] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[1] && '' !== btns[ index ].iconTabletPadding[1] ? btns[ index ].iconTabletPadding[1] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[1] && '' !== btns[ index ].iconMobilePadding[1] ? btns[ index ].iconMobilePadding[1] : '' ) ) : '' );
 			const bottomIconPadding = ( btns[ index ].icon ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[2] && '' !== btns[ index ].iconPadding[2] ? btns[ index ].iconPadding[2] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[2] && '' !== btns[ index ].iconTabletPadding[2] ? btns[ index ].iconTabletPadding[2] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[2] && '' !== btns[ index ].iconMobilePadding[2] ? btns[ index ].iconMobilePadding[2] : '' ) ) : '' );
 			const leftIconPadding = ( btns[ index ].icon ? this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].iconPadding && undefined !== btns[ index ].iconPadding[3] && '' !== btns[ index ].iconPadding[3] ? btns[ index ].iconPadding[3] : '' ), ( undefined !== btns[ index ].iconTabletPadding && undefined !== btns[ index ].iconTabletPadding[3] && '' !== btns[ index ].iconTabletPadding[3] ? btns[ index ].iconTabletPadding[3] : '' ), ( undefined !== btns[ index ].iconMobilePadding && undefined !== btns[ index ].iconMobilePadding[3] && '' !== btns[ index ].iconMobilePadding[3] ? btns[ index ].iconMobilePadding[3] : '' ) ) : '' );
+			const topBtnMargin = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[0] && '' !== btns[ index ].margin[0] ? btns[ index ].margin[0] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[0] && '' !== btns[ index ].tabletMargin[0] ? btns[ index ].tabletMargin[0] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[0] && '' !== btns[ index ].mobileMargin[0] ? btns[ index ].mobileMargin[0] : '' ) );
+			const rightBtnMargin = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[1] && '' !== btns[ index ].margin[1] ? btns[ index ].margin[1] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[1] && '' !== btns[ index ].tabletMargin[1] ? btns[ index ].tabletMargin[1] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[1] && '' !== btns[ index ].mobileMargin[1] ? btns[ index ].mobileMargin[1] : '' ) );
+			const bottomBtnMargin = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[2] && '' !== btns[ index ].margin[2] ? btns[ index ].margin[2] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[2] && '' !== btns[ index ].tabletMargin[2] ? btns[ index ].tabletMargin[2] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[2] && '' !== btns[ index ].mobileMargin[2] ? btns[ index ].mobileMargin[2] : '' ) );
+			const leftBtnMargin = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[3] && '' !== btns[ index ].margin[3] ? btns[ index ].margin[3] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[3] && '' !== btns[ index ].tabletMargin[3] ? btns[ index ].tabletMargin[3] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[3] && '' !== btns[ index ].mobileMargin[3] ? btns[ index ].mobileMargin[3] : '' ) );
 			return (
 				<div
 					className={ fieldClassName }
@@ -429,6 +423,10 @@ class KadenceAdvancedButton extends Component {
 							paddingRight: ( undefined !== btns[ index ].paddingLR && 'custom' === btns[ index ].btnSize ? btns[ index ].paddingLR + 'px' : undefined ),
 							paddingTop: ( undefined !== btns[ index ].paddingBT && 'custom' === btns[ index ].btnSize ? btns[ index ].paddingBT + 'px' : undefined ),
 							paddingBottom: ( undefined !== btns[ index ].paddingBT && 'custom' === btns[ index ].btnSize ? btns[ index ].paddingBT + 'px' : undefined ),
+							marginTop: ( '' !== topBtnMargin ? topBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
+							marginRight: ( '' !== rightBtnMargin ? rightBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
+							marginBottom: ( '' !== bottomBtnMargin ? bottomBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
+							marginLeft: ( '' !== leftBtnMargin ? leftBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
 							width: ( undefined !== widthType && 'fixed' === widthType && undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] + ( undefined !== widthUnit ? widthUnit : 'px' ) : undefined ),
 							boxShadow: ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] && btns[ index ].boxShadow[ 0 ] ? ( undefined !== btns[ index ].boxShadow[ 7 ] && btns[ index ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ), ( undefined !== btns[ index ].boxShadow[ 2 ] ? btns[ index ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 						} } >
@@ -1014,6 +1012,25 @@ class KadenceAdvancedButton extends Component {
 								} }
 								min={ 0 }
 								max={ 50 }
+							/>
+							<ResponsiveMeasuremenuControls
+								label={ __( 'Button Margin', 'kadence-blocks' ) }
+								value={ undefined !== btns[ index ].margin ? btns[ index ].margin : [ '', '', '', '' ] }
+								control={ 'individual' }
+								tabletValue={ undefined !== btns[ index ].tabletMargin ? btns[ index ].tabletMargin : [ '', '', '', '' ] }
+								mobileValue={ undefined !== btns[ index ].mobileMargin ? btns[ index ].mobileMargin : [ '', '', '', '' ] }
+								onChange={ ( value ) => {
+									console.log( value );
+									this.saveArrayUpdate( { margin: value }, index  );
+								} }
+								onChangeTablet={ ( value ) => this.saveArrayUpdate( { tabletMargin: value }, index  ) }
+								onChangeMobile={ ( value ) => this.saveArrayUpdate( { mobileMargin: value }, index  ) }
+								min={ 0 }
+								max={ ( ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) !== 'px' ? 12 : 200 ) }
+								step={ ( ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) !== 'px' ? 0.1 : 1 ) }
+								unit={ undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' }
+								units={ [ 'px', 'em', 'rem' ] }
+								onUnit={ ( value ) => this.saveArrayUpdate( { marginUnit: value }, index  ) }
 							/>
 						</Fragment>
 					) }
@@ -1751,6 +1768,15 @@ class KadenceAdvancedButton extends Component {
 														iconTabletPadding: ( newbtns[ 0 ].iconTabletPadding ? newbtns[ 0 ].iconTabletPadding : [ '', '', '', '' ] ),
 														iconMobilePadding: ( newbtns[ 0 ].iconMobilePadding ? newbtns[ 0 ].iconMobilePadding : [ '', '', '', '' ] ),
 														onlyIcon: ( newbtns[ 0 ].onlyIcon ? newbtns[ 0 ].onlyIcon : [ false, '', '' ] ),
+														iconColor: ( newbtns[ 0 ].iconColor ? newbtns[ 0 ].iconColor : '' ),
+														iconColorHover: ( newbtns[ 0 ].iconColorHover ? newbtns[ 0 ].iconColorHover : '' ),
+														sizeType: ( newbtns[ 0 ].sizeType ? newbtns[ 0 ].sizeType : 'px' ),
+														iconSizeType: ( newbtns[ 0 ].iconSizeType ? newbtns[ 0 ].iconSizeType : 'px' ),
+														label: ( newbtns[ 0 ].label ? newbtns[ 0 ].label : '' ),
+														marginUnit: ( newbtns[ 0 ].marginUnit ? newbtns[ 0 ].marginUnit : 'px' ),
+														margin: ( newbtns[ 0 ].margin ? newbtns[ 0 ].margin : [ '', '', '', '' ] ),
+														tabletMargin: ( newbtns[ 0 ].tabletMargin ? newbtns[ 0 ].tabletMargin : [ '', '', '', '' ] ),
+														mobileMargin: ( newbtns[ 0 ].mobileMargin ? newbtns[ 0 ].mobileMargin : [ '', '', '', '' ] ),
 													} );
 													setAttributes( { btns: newbtns } );
 													this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
@@ -1858,7 +1884,7 @@ class KadenceAdvancedButton extends Component {
 										initialOpen={ false }
 									>
 										<ResponsiveMeasuremenuControls
-											label={ __( 'Margin', 'kadence-blocks' ) }
+											label={ __( 'Container Margin', 'kadence-blocks' ) }
 											value={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ] }
 											control={ this.state.marginControl }
 											tabletValue={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet ? margin[ 0 ].tablet : [ '', '', '', '' ] }
