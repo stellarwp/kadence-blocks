@@ -932,13 +932,13 @@ class Kadence_Blocks_Frontend {
 				$attributes = apply_filters( 'kadence_blocks_testimonials_render_block_attributes', $attributes );
 				if ( isset( $attributes['layout'] ) && 'carousel' === $attributes['layout'] ) {
 					if ( $this->it_is_not_amp() ) {
-						wp_enqueue_style( 'kadence-blocks-pro-slick' );
+						wp_enqueue_style( 'kadence-blocks-tiny-slider' );
 						if ( ! doing_filter( 'the_content' ) ) {
-							if ( ! wp_style_is( 'kadence-blocks-pro-slick', 'done' ) ) {
-								wp_print_styles( 'kadence-blocks-pro-slick' );
+							if ( ! wp_style_is( 'kadence-blocks-tiny-slider', 'done' ) ) {
+								wp_print_styles( 'kadence-blocks-tiny-slider' );
 							}
 						}
-						wp_enqueue_script( 'kadence-blocks-slick-init' );
+						wp_enqueue_script( 'kadence-blocks-tiny-slider-init' );
 					}
 				}
 				if ( ! doing_filter( 'the_content' ) ) {
@@ -3963,8 +3963,6 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_testimonials_scripts_gfonts( $attr ) {
 		if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] ) {
-			// $this->enqueue_style( 'kadence-blocks-pro-slick' );
-			// $this->enqueue_script( 'kadence-blocks-slick-init' );
 			$this->enqueue_style( 'kadence-blocks-tiny-slider' );
 			$this->enqueue_script( 'kadence-blocks-tiny-slider-init' );
 		}
@@ -4146,7 +4144,7 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['layout'] ) && 'carousel' === $attr['layout'] && isset( $attr['columnGap'] ) && ! empty( $attr['columnGap'] ) ) {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
 			$css->add_property( 'padding', '0 ' . ( $attr['columnGap'] / 2 ) . 'px' );
-			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel' );
 			$css->add_property( 'margin', '0 -' . ( $attr['columnGap'] / 2 ) . 'px' );
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .slick-prev' );
 			$css->add_property( 'left', ( $attr['columnGap'] / 2 ) . 'px' );

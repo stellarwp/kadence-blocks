@@ -90,7 +90,7 @@
 		 * Initiate the script to process all
 		 */
 		initAll: function( element ) {
-			document.querySelectorAll( '.kt-blocks-carousel-init' ).forEach(function ( element ) {
+			document.querySelectorAll( '.wp-block-kadence-testimonials .kt-blocks-carousel-init' ).forEach(function ( element ) {
 				window.kadenceTinySlide.start( element );
 			} );
 		},

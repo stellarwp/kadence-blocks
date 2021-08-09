@@ -116,6 +116,10 @@
 				}
 			}
 		}
+		&:focus button {
+			opacity: 1;
+			outline: 5px auto -webkit-focus-ring-color;
+		}
 	}
 }
 .tns-carousel-wrap .kt-blocks-carousel:not(.kt-carousel-container-arrowstyle-none) {

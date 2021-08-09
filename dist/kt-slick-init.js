@@ -222,7 +222,7 @@ jQuery( document ).ready( function( $ ) {
 			} );
 		}
 	}
-	$( '.kt-blocks-carousel-init' ).each( function() {
+	$( '.wp-block-kadence-advancedgallery .kt-blocks-carousel-init' ).each( function() {
 		var container = $( this );
 		kbSlickSliderInit( container );
 	} );
