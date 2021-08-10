@@ -410,6 +410,9 @@ class Kadence_Blocks_Prebuilt_Library {
 				$kb_api = $kbp_data['api_key'];
 			}
 		}
+		if ( 'templates' !== $this->package && 'section' !== $this->package && ! $this->is_template && $this->key ) {
+			$kb_api = $this->key;
+		}
 		return md5( $this->get_base_url() . $this->get_base_path() . $this->package . KADENCE_BLOCKS_VERSION . $kb_api );
 	}
 	/**

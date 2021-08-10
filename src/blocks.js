@@ -43,7 +43,6 @@ import './blocks/countdown/countdown-inner/block.js';
 import './plugins/kadence-control.js';
 import './plugins/editor-width.js';
 import './plugins/prebuilt-library/toolbar-library';
-
 // Brand Icon.
 import icons from './brand-icon';
 if ( typeof kt_blocks_default_size !== 'undefined' ) {
