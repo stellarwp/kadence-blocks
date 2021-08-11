@@ -211,7 +211,6 @@ class KadenceForm extends Component {
 				} );
 			}
 		}
-		console.log( this.props.attributes.postID );
 		this.setState( { actionOptions: applyFilters( 'kadence.actionOptions', actionOptionsList ) } );
 		if ( this.props.attributes.style && this.props.attributes.style[ 0 ] ) {
 			if ( this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 1 ] && this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 2 ] && this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 3 ] ) {

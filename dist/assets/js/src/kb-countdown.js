@@ -289,15 +289,12 @@
 				}
 			}
 		},
-		init: function() {
-			window.kadenceCountdown.initTimer();
-		}
 	}
 	if ( 'loading' === document.readyState ) {
 		// The DOM has not yet been loaded.
-		document.addEventListener( 'DOMContentLoaded', window.kadenceCountdown.init );
+		document.addEventListener( 'DOMContentLoaded', window.kadenceCountdown.initTimer );
 	} else {
 		// The DOM has already been loaded.
-		window.kadenceCountdown.init();
+		window.kadenceCountdown.initTimer();
 	}
 }() );

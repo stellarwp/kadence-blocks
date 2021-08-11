@@ -118,45 +118,45 @@ class KadenceCountdown extends Component {
 		};
 	}
 	componentDidMount() {
-		// if ( ! this.props.attributes.uniqueID ) {
-		// 	const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-		// 	// Before applying defaults lets check to see if the user wants it.
-		// 	if ( undefined === this.props.attributes.noCustomDefaults || ! this.props.attributes.noCustomDefaults ) {
-		// 		if ( blockConfigObject[ 'kadence/countdown' ] !== undefined && typeof blockConfigObject[ 'kadence/countdown' ] === 'object' ) {
-		// 			Object.keys( blockConfigObject[ 'kadence/countdown' ] ).map( ( attribute ) => {
-		// 				this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/countdown' ][ attribute ];
-		// 			} );
-		// 		}
-		// 	}
-		// 	this.props.setAttributes( {
-		// 		uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
-		// 	} );
-		// 	ktcountdownUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
-		// } else if ( ktcountdownUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-		// 	this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
-		// 	ktcountdownUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
-		// } else {
-		// 	ktcountdownUniqueIDs.push( this.props.attributes.uniqueID );
-		// }
-		// if ( this.props.attributes.borderRadius && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 1 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 2 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 3 ] ) {
-		// 	this.setState( { borderRadiusControl: 'linked' } );
-		// } else {
-		// 	this.setState( { borderRadiusControl: 'individual' } );
-		// }
-		// if ( ! this.props.attributes.date ) {
-		// 	const settings = getDateSettings();
-		// 	const { timezone } = settings;
-        //     const today = new Date();
-        //     const newDate = new Date();
-        //     newDate.setDate( today.getDate() + 2 );
-		// 	const theTimeOffset = ( timezone && timezone.offset ? timezone.offset : 0 );
-		// 	const theSiteTimezoneTimestamp = this.getTimestamp( newDate, theTimeOffset );
-        //     this.props.setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
-        // }
-		// const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
-		// if ( blockSettings[ 'kadence/countdown' ] !== undefined && typeof blockSettings[ 'kadence/countdown' ] === 'object' ) {
-		// 	this.setState( { settings: blockSettings[ 'kadence/countdown' ] } );
-		// }
+		if ( ! this.props.attributes.uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			// Before applying defaults lets check to see if the user wants it.
+			if ( undefined === this.props.attributes.noCustomDefaults || ! this.props.attributes.noCustomDefaults ) {
+				if ( blockConfigObject[ 'kadence/countdown' ] !== undefined && typeof blockConfigObject[ 'kadence/countdown' ] === 'object' ) {
+					Object.keys( blockConfigObject[ 'kadence/countdown' ] ).map( ( attribute ) => {
+						this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/countdown' ][ attribute ];
+					} );
+				}
+			}
+			this.props.setAttributes( {
+				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+			} );
+			ktcountdownUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
+		} else if ( ktcountdownUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
+			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
+			ktcountdownUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
+		} else {
+			ktcountdownUniqueIDs.push( this.props.attributes.uniqueID );
+		}
+		if ( this.props.attributes.borderRadius && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 1 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 2 ] && this.props.attributes.borderRadius[ 0 ] === this.props.attributes.borderRadius[ 3 ] ) {
+			this.setState( { borderRadiusControl: 'linked' } );
+		} else {
+			this.setState( { borderRadiusControl: 'individual' } );
+		}
+		if ( ! this.props.attributes.date ) {
+			const settings = getDateSettings();
+			const { timezone } = settings;
+            const today = new Date();
+            const newDate = new Date();
+            newDate.setDate( today.getDate() + 2 );
+			const theTimeOffset = ( timezone && timezone.offset ? timezone.offset : 0 );
+			const theSiteTimezoneTimestamp = this.getTimestamp( newDate, theTimeOffset );
+            this.props.setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
+        }
+		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
+		if ( blockSettings[ 'kadence/countdown' ] !== undefined && typeof blockSettings[ 'kadence/countdown' ] === 'object' ) {
+			this.setState( { settings: blockSettings[ 'kadence/countdown' ] } );
+		}
 	}
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {

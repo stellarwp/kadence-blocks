@@ -168,7 +168,7 @@ class KadenceAdvancedHeading extends Component {
 	render() {
 		const { attributes, className, setAttributes, mergeBlocks, onReplace, clientId } = this.props;
 		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic, link, linkTarget, linkNoFollow, linkSponsored, background, backgroundColorClass } = attributes;
-		const renderTypography = typography ? "'" + typography + "'" : '';
+		const renderTypography = typography && ! typography.includes(',') ? "'" + typography + "'" : typography;
 		const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
 		const gconfig = {
