@@ -7,6 +7,7 @@
  * Internal block libraries
  */
 import { useSelect, useDispatch } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import map from 'lodash/map';
 import MeasurementControls from './measurement-control';
@@ -51,15 +52,28 @@ export default function ResponsiveMeasurementControls( {
 	const realOnChangeTabletControl = onChangeTabletControl ? onChangeTabletControl : onChangeControl;
 	const realOnChangeMobileControl = onChangeMobileControl ? onChangeMobileControl : onChangeControl;
 	const zero = ( allowEmpty ? true : false );
-	const deviceType = useSelect( ( select ) => {
-		return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
-	}, [] );
-	const {
-		__experimentalSetPreviewDeviceType: setPreviewDeviceType,
-	} = useDispatch( 'core/edit-post' );
-	const customSetPreviewDeviceType = ( device ) => {
-		setPreviewDeviceType( capitalizeFirstLetter( device ) );
+	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
+	let customSetPreviewDeviceType = ( device ) => {
+		setDeviceType( capitalizeFirstLetter( device ) );
 	};
+	if ( wp.data.select( 'core/edit-post' ) ) {
+		const theDevice = useSelect( ( select ) => {
+			const {
+				__experimentalGetPreviewDeviceType = null,
+			} = select( 'core/edit-post' );
+			return __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop';
+		}, [] );
+		if ( theDevice !== deviceType ) {
+			setDeviceType( theDevice );
+		}
+		const {
+			__experimentalSetPreviewDeviceType = null,
+		} = useDispatch( 'core/edit-post' );
+		customSetPreviewDeviceType = ( device ) => {
+			__experimentalSetPreviewDeviceType( capitalizeFirstLetter( device ) );
+			setDeviceType( capitalizeFirstLetter( device ) );
+		};
+	}
 	const devices = [
 		{
 			name: 'Desktop',

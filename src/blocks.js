@@ -40,12 +40,9 @@ import './blocks/countdown/block.js';
 import './blocks/countdown/countdown-timer/block.js';
 import './blocks/countdown/countdown-inner/block.js';
 
-import './plugins/kadence-control.js';
-import './plugins/editor-width.js';
+// import './plugins/kadence-control.js';
+// import './plugins/editor-width.js';
 import './plugins/prebuilt-library/toolbar-library';
 // Brand Icon.
 import icons from './brand-icon';
-if ( typeof kt_blocks_default_size !== 'undefined' ) {
-	wp.data.dispatch( 'core/editor' ).updateEditorSettings( { maxWidth: kt_blocks_default_size } );
-}
 wp.blocks.updateCategory( 'kadence-blocks', { icon: icons.kadenceCatNew } );

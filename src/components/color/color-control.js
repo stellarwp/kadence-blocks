@@ -41,15 +41,6 @@ export default function AdvancedPopColorControl( {
 	tabletValue,
 	value,
 } ) {
-	const deviceType = useSelect( ( select ) => {
-		return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
-	}, [] );
-	const {
-		__experimentalSetPreviewDeviceType: setPreviewDeviceType,
-	} = useDispatch( 'core/edit-post' );
-	const customSetPreviewDeviceType = ( device ) => {
-		setPreviewDeviceType( capitalizeFirstLetter( device ) );
-	};
 	return [
 	constructor() {
 		super( ...arguments );

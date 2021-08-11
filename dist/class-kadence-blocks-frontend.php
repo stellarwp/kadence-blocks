@@ -5435,6 +5435,8 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['backgroundSettingTab'] ) && 'slider' === $attr['backgroundSettingTab'] ) {
 			$this->enqueue_style( 'kadence-blocks-pro-slick' );
 			$this->enqueue_script( 'kadence-blocks-slick-init' );
+			// $this->enqueue_style( 'kadence-blocks-tiny-slider' );
+			// $this->enqueue_script( 'kadence-blocks-tiny-slider-init' );
 		}
 		if ( isset( $attr['backgroundSettingTab'] ) && 'video' === $attr['backgroundSettingTab'] && isset( $attr['backgroundVideo'] ) && isset( $attr['backgroundVideo'][0] ) && isset( $attr['backgroundVideo'][0]['btns'] ) && true === $attr['backgroundVideo'][0]['btns'] ) {
 			$this->enqueue_script( 'kadence-blocks-video-bg' );

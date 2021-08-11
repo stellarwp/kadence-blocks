@@ -195,13 +195,13 @@ class KadenceForm extends Component {
 			}
 		} else if ( wp.data.select( 'core/editor' ) ) {
 			const { getCurrentPostId } = wp.data.select( 'core/editor' );
-			if ( ! this.props.attributes.postID ) {
+			if ( ! this.props.attributes.postID && getCurrentPostId() ) {
 				this.props.setAttributes( {
-					postID: getCurrentPostId(),
+					postID: getCurrentPostId().toString(),
 				} );
-			} else if ( getCurrentPostId() !== this.props.attributes.postID ) {
+			} else if ( getCurrentPostId() && getCurrentPostId().toString() !== this.props.attributes.postID ) {
 				this.props.setAttributes( {
-					postID: getCurrentPostId(),
+					postID: getCurrentPostId().toString(),
 				} );
 			}
 		} else {
@@ -211,6 +211,7 @@ class KadenceForm extends Component {
 				} );
 			}
 		}
+		console.log( this.props.attributes.postID );
 		this.setState( { actionOptions: applyFilters( 'kadence.actionOptions', actionOptionsList ) } );
 		if ( this.props.attributes.style && this.props.attributes.style[ 0 ] ) {
 			if ( this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 1 ] && this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 2 ] && this.props.attributes.style[ 0 ].deskPadding[ 0 ] === this.props.attributes.style[ 0 ].deskPadding[ 3 ] ) {
@@ -3582,7 +3583,7 @@ class KadenceForm extends Component {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		const {
-			__experimentalGetPreviewDeviceType,
+			__experimentalGetPreviewDeviceType = null,
 		} = select( 'core/edit-post' );
 		return {
 			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',

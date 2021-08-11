@@ -967,7 +967,7 @@ export default compose( [
 			getBlockOrder,
 		} = select( 'core/block-editor' );
 		const {
-			__experimentalGetPreviewDeviceType,
+			__experimentalGetPreviewDeviceType = null,
 		} = select( 'core/edit-post' );
 		const postContent = select( 'core/editor' ).getEditedPostContent();
 

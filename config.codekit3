@@ -835,6 +835,37 @@
       "pg" : 0,
       "sct" : 1
     },
+    "\/dist\/plugin\/plugin.asset.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/plugin\/plugin.asset.php",
+      "oF" : 0
+    },
+    "\/dist\/plugin\/plugin.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/plugin\/plugin-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
+    "\/dist\/plugin\/plugin.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/plugin\/plugin-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/dist\/settings\/blocks-deregister.js" : {
       "bF" : 0,
       "ft" : 64,

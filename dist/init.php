@@ -21,16 +21,31 @@ function kadence_gutenberg_editor_assets() {
 	if ( ! is_admin() ) {
 		return;
 	}
+	// Runtime Script Not using right now.
+	// wp_register_script( 'kadence-blocks-runtime', KADENCE_BLOCKS_URL . 'dist/build/runtime.js', array(), $asset_meta['version'], true );
+
+	$plugin_asset_meta = kadence_blocks_get_asset_file( 'dist/plugin/plugin' );
+	if ( version_compare( get_bloginfo( 'version' ), '5.8', '<' ) ) {
+		$plugin_dependencies = array( 'react', 'react-dom', 'wp-components', 'wp-compose', 'wp-data', 'wp-edit-post', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-plugins', 'wp-polyfill', 'wp-primitives' );
+	} else {
+		$plugin_dependencies = $plugin_asset_meta['dependencies'];
+	}
+
+	// Plugin Scripts.
+	wp_register_script( 'kadence-blocks-plugin-js', KADENCE_BLOCKS_URL . 'dist/plugin/plugin.js', array_merge( $plugin_dependencies, array( 'wp-api' ) ), $plugin_asset_meta['version'], true );
+	// Plugin Styles.
+	wp_register_style( 'kadence-blocks-editor-plugin-css', KADENCE_BLOCKS_URL . 'dist/plugin/plugin.css', array( 'wp-edit-blocks' ), $plugin_asset_meta['version'] );
 	$asset_meta = kadence_blocks_get_asset_file( 'dist/build/blocks' );
 	if ( version_compare( get_bloginfo( 'version' ), '5.8', '<' ) ) {
-		$dependencies = array( 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-data', 'wp-date', 'wp-edit-post', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-keycodes', 'wp-plugins', 'wp-polyfill', 'wp-primitives', 'wp-url' );
+		$dependencies = array( 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-data', 'wp-date', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-keycodes', 'wp-polyfill', 'wp-primitives', 'wp-url' );
 	} else {
 		$dependencies = $asset_meta['dependencies'];
+		//$dependencies = array( 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-data', 'wp-date', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-keycodes', 'wp-polyfill', 'wp-primitives', 'wp-url', 'wp-widgets' );
 	}
-	// Scripts.
+	// Blocks Scripts.
 	wp_register_script( 'kadence-blocks-vendor', KADENCE_BLOCKS_URL . 'dist/build/vendors/blocks.js', array_merge( $dependencies, array( 'wp-api' ) ), $asset_meta['version'], true );
 	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/build/blocks.js', array_merge( $dependencies, array( 'wp-api', 'kadence-blocks-vendor' ) ), $asset_meta['version'], true );
-	// Styles.
+	// Blocks Styles.
 	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), $asset_meta['version'] );
 	if ( function_exists( 'wp_set_script_translations' ) ) {
 		wp_set_script_translations( 'kadence-blocks-js', 'kadence-blocks' );
@@ -170,7 +185,17 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 }
 add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_assets_variables' );
 
-
+/**
+ * Enqueue block plugin for backend editor.
+ */
+function kadence_blocks_gutenberg_editor_plugin_enqueue() {
+	global $pagenow;
+    if ( $pagenow !== 'widgets.php' ) {
+		wp_enqueue_script( 'kadence-blocks-plugin-js' );
+		wp_enqueue_style( 'kadence-blocks-editor-plugin-css' );
+	}
+}
+add_action( 'enqueue_block_editor_assets', 'kadence_blocks_gutenberg_editor_plugin_enqueue' );
 /**
  * Get the asset file produced by wp scripts.
  *

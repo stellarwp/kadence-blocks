@@ -226,4 +226,8 @@ jQuery( document ).ready( function( $ ) {
 		var container = $( this );
 		kbSlickSliderInit( container );
 	} );
+	$( '.kb-blocks-bg-slider > .kt-blocks-carousel-init' ).each( function() {
+		var container = $( this );
+		kbSlickSliderInit( container );
+	} );
 } );

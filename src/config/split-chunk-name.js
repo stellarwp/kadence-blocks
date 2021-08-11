@@ -7,7 +7,7 @@ class SplitChunksName {
 
 	name( module, chunks, cacheGroup ) {
 		const automaticNamePrefix = cacheGroup === 'vendors' ? 'vendors' : '',
-			automaticNameDelimiter = '~';
+			automaticNameDelimiter = '-';
 
 		let cacheEntry = this.cache.get( chunks );
 		if ( cacheEntry === undefined ) {

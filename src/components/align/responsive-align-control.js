@@ -35,13 +35,18 @@ export default function ResponsiveAlignControls( {
 	isCollapsed = false,
 } ) {
 	const deviceType = useSelect( ( select ) => {
-		return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
+		const {
+			__experimentalGetPreviewDeviceType = null,
+		} = select( 'core/edit-post' );
+		return __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop';
 	}, [] );
 	const {
-		__experimentalSetPreviewDeviceType: setPreviewDeviceType,
+		__experimentalSetPreviewDeviceType = null,
 	} = useDispatch( 'core/edit-post' );
 	const customSetPreviewDeviceType = ( device ) => {
-		setPreviewDeviceType( capitalizeFirstLetter( device ) );
+		if ( wp.data.select( 'core/edit-post' ) ) {
+			__experimentalSetPreviewDeviceType( capitalizeFirstLetter( device ) );
+		}
 	};
 	const devices = [
 		{

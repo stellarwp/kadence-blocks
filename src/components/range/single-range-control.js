@@ -11,12 +11,12 @@ import icons from './../../icons';
  */
 import { __ } from '@wordpress/i18n';
 import KadenceRange from './range-control';
-const {
+import {
 	Dashicon,
 	Button,
 	ButtonGroup,
 	DropdownMenu,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * Build the Measure controls

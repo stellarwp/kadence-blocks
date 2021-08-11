@@ -1087,7 +1087,7 @@ export default compose( [
 	withSelect( ( select, ownProps ) => {
 		const { clientId } = ownProps;
 		const {
-			__experimentalGetPreviewDeviceType,
+			__experimentalGetPreviewDeviceType = null,
 		} = select( 'core/edit-post' );
 		const {
 			getBlock,

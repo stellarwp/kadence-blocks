@@ -970,7 +970,7 @@ export default withSelect( ( select, props ) => {
 	const { postsToShow, order, orderBy, categories, tags, postTax, postType, taxType, offsetQuery, excludeTax } = props.attributes;
 	const { getEntityRecords } = select( 'core' );
 	const {
-		__experimentalGetPreviewDeviceType,
+		__experimentalGetPreviewDeviceType = null,
 	} = select( 'core/edit-post' );
 	const theType = ( postType ? postType : 'post' );
 	const taxonomyList = ( taxonomies[ theType ] && taxonomies[ theType ].taxonomy ? taxonomies[ theType ].taxonomy : [] );

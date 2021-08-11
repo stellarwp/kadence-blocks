@@ -13,7 +13,7 @@ export default function getQuery( blockAttributes, queryType ) {
 		order,
 		postIds,
 	} = blockAttributes;
-	let theCurrentID = '';
+	let theCurrentID = 0;
 	if ( wp.data.select( 'core/editor' ) ) {
 		const { getCurrentPostId } = wp.data.select( 'core/editor' );
 		theCurrentID = getCurrentPostId();

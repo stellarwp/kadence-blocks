@@ -804,7 +804,7 @@ class KadenceAdvancedHeading extends Component {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		const {
-			__experimentalGetPreviewDeviceType,
+			__experimentalGetPreviewDeviceType = null,
 		} = select( 'core/edit-post' );
 		return {
 			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',

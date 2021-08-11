@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.5
 Tested up to: 5.8
-Stable tag: 2.1.4
+Stable tag: 2.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,12 +80,25 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.1.6 =
+Release Date: August 10th, 2021
+* Fix: Issue with dividers style not previewing in responsive mode.
+* Fix: Row layout slider issue.
+* Fix: Issue with Form block in widget area.
+* Fix: Issue with icon alignment in some cases.
+
+= 2.1.5 =
+Release Date: August 10th, 2021
+* Fix: Issue with block width not filling the space.
+* Fix: Issue with form showing broken.
+* Fix: Split off plugin scripts for widget page support.
+
 = 2.1.4 =
-Release Date: August 8th, 2021
+Release Date: August 9th, 2021
 * Fix: Issue with installs not using WP 5.8
 
 = 2.1.3 =
-Release Date: August 8th, 2021
+Release Date: August 9th, 2021
 * Add: Section block direction, vertical alignment and justify control.
 * Add: Individual Button margin support.
 * Add: Option in info box block to add an aria label to link.

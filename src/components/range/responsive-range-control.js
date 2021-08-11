@@ -6,17 +6,18 @@
  * Internal block libraries
  */
 import { useSelect, useDispatch } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
 import { undo } from '@wordpress/icons';
 import capitalizeFirstLetter from './../common/capitalfirst';
 import ResponsiveSingleRangeControl from './single-range-control';
-const {
+import {
 	Dashicon,
 	Button,
 	ButtonGroup,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * Build the Measure controls
@@ -41,15 +42,28 @@ export default function ResponsiveRangeControls( {
 	className = '',
 	reset,
 } ) {
-	const deviceType = useSelect( ( select ) => {
-		return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
-	}, [] );
-	const {
-		__experimentalSetPreviewDeviceType: setPreviewDeviceType,
-	} = useDispatch( 'core/edit-post' );
-	const customSetPreviewDeviceType = ( device ) => {
-		setPreviewDeviceType( capitalizeFirstLetter( device ) );
+	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
+	let customSetPreviewDeviceType = ( device ) => {
+		setDeviceType( capitalizeFirstLetter( device ) );
 	};
+	if ( wp.data.select( 'core/edit-post' ) ) {
+		const theDevice = useSelect( ( select ) => {
+			const {
+				__experimentalGetPreviewDeviceType = null,
+			} = select( 'core/edit-post' );
+			return __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop';
+		}, [] );
+		if ( theDevice !== deviceType ) {
+			setDeviceType( theDevice );
+		}
+		const {
+			__experimentalSetPreviewDeviceType = null,
+		} = useDispatch( 'core/edit-post' );
+		customSetPreviewDeviceType = ( device ) => {
+			__experimentalSetPreviewDeviceType( capitalizeFirstLetter( device ) );
+			setDeviceType( capitalizeFirstLetter( device ) );
+		};
+	}
 	const devices = [
 		{
 			name: 'Desktop',

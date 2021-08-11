@@ -30,6 +30,7 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadenceBackgroundControl from '../../components/background/background-control';
+import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 /**
  * Import Block Specific Components
  */
@@ -288,6 +289,10 @@ class KadenceRowLayout extends Component {
 		const previewPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 2 ] : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ) );
 		const previewPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== leftPadding ? leftPadding : '' ), ( undefined !== tabletPadding ? tabletPadding[ 3 ] : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) );
 		const previewMaxWidth = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== maxWidth ? maxWidth : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[0] ? responsiveMaxWidth[ 0 ] : '' ), ( undefined !== responsiveMaxWidth && responsiveMaxWidth[ 1 ] ? responsiveMaxWidth[ 1 ] : '' ) );
+		const previewTopSepHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== topSepHeight ? topSepHeight : '' ), ( undefined !== topSepHeightTab ? topSepHeightTab : '' ), ( undefined !== topSepHeightMobile ? topSepHeightMobile : '' ) );
+		const previewTopSepWidth = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== topSepWidth ? topSepWidth : '' ), ( undefined !== topSepWidthTab ? topSepWidthTab : '' ), ( undefined !== topSepWidthMobile ? topSepWidthMobile : '' ) );
+		const previewBottomSepHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomSepHeight ? bottomSepHeight : '' ), ( undefined !== bottomSepHeightTab ? bottomSepHeightTab : '' ), ( undefined !== bottomSepHeightMobile ? bottomSepHeightMobile : '' ) );
+		const previewBottomSepWidth = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== bottomSepWidth ? bottomSepWidth : '' ), ( undefined !== bottomSepWidthTab ? bottomSepWidthTab : '' ), ( undefined !== bottomSepWidthMobile ? bottomSepWidthMobile : '' ) );
 		let hasBorderRadius = false;
 		if ( undefined !== borderRadius && undefined !== borderRadius[0] && borderRadius[0] ) {
 			hasBorderRadius = true;
@@ -2639,42 +2644,12 @@ class KadenceRowLayout extends Component {
 					colorDefault={ '#ffffff' }
 					onColorChange={ value => setAttributes( { topSepColor: value } ) }
 				/>
-				<h2 className="kt-heading-size-title">{ __( 'Size Controls', 'kadence-blocks' ) }</h2>
-				<TabPanel className="kt-size-tabs"
-					activeClass="active-tab"
-					tabs={ [
-						{
-							name: 'desk',
-							title: <Dashicon icon="desktop" />,
-							className: 'kt-desk-tab',
-						},
-						{
-							name: 'tablet',
-							title: <Dashicon icon="tablet" />,
-							className: 'kt-tablet-tab',
-						},
-						{
-							name: 'mobile',
-							title: <Dashicon icon="smartphone" />,
-							className: 'kt-mobile-tab',
-						},
-					] }>
-					{
-						( tab ) => {
-							let tabout;
-							if ( tab.name ) {
-								if ( 'mobile' === tab.name ) {
-									tabout = topSepSizesMobile;
-								} else if ( 'tablet' === tab.name ) {
-									tabout = topSepSizesTablet;
-								} else {
-									tabout = topSepSizes;
-								}
-							}
-							return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-						}
-					}
-				</TabPanel>
+				<SmallResponsiveControl
+					label={ __( 'Size Controls', 'kadence-blocks' ) }
+					desktopChildren={ topSepSizes }
+					tabletChildren={ topSepSizesTablet }
+					mobileChildren={ topSepSizesMobile }
+				/>
 			</Fragment>
 		);
 		const bottomDividerSettings = (
@@ -2719,42 +2694,12 @@ class KadenceRowLayout extends Component {
 					colorDefault={ '#ffffff' }
 					onColorChange={ value => setAttributes( { bottomSepColor: value } ) }
 				/>
-				<h2 className="kt-heading-size-title">{ __( 'Size Controls', 'kadence-blocks' ) }</h2>
-				<TabPanel className="kt-size-tabs"
-					activeClass="active-tab"
-					tabs={ [
-						{
-							name: 'desk',
-							title: <Dashicon icon="desktop" />,
-							className: 'kt-desk-tab',
-						},
-						{
-							name: 'tablet',
-							title: <Dashicon icon="tablet" />,
-							className: 'kt-tablet-tab',
-						},
-						{
-							name: 'mobile',
-							title: <Dashicon icon="smartphone" />,
-							className: 'kt-mobile-tab',
-						},
-					] }>
-					{
-						( tab ) => {
-							let tabout;
-							if ( tab.name ) {
-								if ( 'mobile' === tab.name ) {
-									tabout = bottomSepSizesMobile;
-								} else if ( 'tablet' === tab.name ) {
-									tabout = bottomSepSizesTablet;
-								} else {
-									tabout = bottomSepSizes;
-								}
-							}
-							return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-						}
-					}
-				</TabPanel>
+				<SmallResponsiveControl
+					label={ __( 'Size Controls', 'kadence-blocks' ) }
+					desktopChildren={ bottomSepSizes }
+					tabletChildren={ bottomSepSizesTablet }
+					mobileChildren={ bottomSepSizesMobile }
+				/>
 			</Fragment>
 		);
 		const verticalAlignOptions = [
@@ -3207,9 +3152,9 @@ class KadenceRowLayout extends Component {
 					) }
 					{ colLayout && 'none' !== topSep && '' !== topSep && (
 						<div className={ `kt-row-layout-top-sep kt-row-sep-type-${ topSep }` } style={ {
-							height: topSepHeight + 'px',
+							height: previewTopSepHeight + 'px',
 						} }>
-							<svg style={ { fill: KadenceColorOutput( topSepColor ), width: topSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+							<svg style={ { fill: KadenceColorOutput( topSepColor ), width: previewTopSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
 								{ topSVGDivider[ topSep ] }
 							</svg>
 						</div>
@@ -3449,9 +3394,9 @@ class KadenceRowLayout extends Component {
 					<div style={ { height: '1px' } }></div>
 					{ colLayout && 'none' !== bottomSep && '' !== bottomSep && (
 						<div className={ `kt-row-layout-bottom-sep kt-row-sep-type-${ bottomSep }` } style={ {
-							height: bottomSepHeight + 'px',
+							height: previewBottomSepHeight + 'px',
 						} }>
-							<svg style={ { fill: KadenceColorOutput( bottomSepColor ), width: bottomSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
+							<svg style={ { fill: KadenceColorOutput( bottomSepColor ), width: previewBottomSepWidth + '%' } } viewBox="0 0 1000 100" preserveAspectRatio="none">
 								{ bottomSVGDivider[ bottomSep ] }
 							</svg>
 						</div>
@@ -3470,7 +3415,7 @@ export default compose( [
 		} = select( 'core/block-editor' );
 		const block = getBlock( clientId );
 		const {
-			__experimentalGetPreviewDeviceType,
+			__experimentalGetPreviewDeviceType = null,
 		} = select( 'core/edit-post' );
 		return {
 			rowBlock: block,

@@ -93,6 +93,9 @@
 			document.querySelectorAll( '.wp-block-kadence-testimonials .kt-blocks-carousel-init' ).forEach(function ( element ) {
 				window.kadenceTinySlide.start( element );
 			} );
+			// document.querySelectorAll( '.kb-blocks-bg-slider > .kt-blocks-carousel-init' ).forEach(function ( element ) {
+			// 	window.kadenceTinySlide.start( element );
+			// } );
 		},
 		// Initiate the menus when the DOM loads.
 		init: function() {
