@@ -110,7 +110,7 @@ class PrebuiltSections extends Component {
 		} )
 		.done( function( response, status, stately ) {
 			if ( response ) {
-				control.props.import( response );
+				control.props.import( response, control.props.clientId );
 				control.setState( { isImporting: false } );
 			}
 		})
@@ -402,18 +402,15 @@ class PrebuiltSections extends Component {
 }
 
 export default compose(
-	withSelect( ( select, { clientId } ) => {
-		const { getBlock } = select( 'core/block-editor' );
+	withSelect( ( select ) => {
 		const { canUserUseUnfilteredHTML } = select( 'core/editor' );
-		const block = getBlock( clientId );
 		return {
-			block,
 			canUserUseUnfilteredHTML: canUserUseUnfilteredHTML(),
 		};
 	} ),
-	withDispatch( ( dispatch, { block, canUserUseUnfilteredHTML } ) => ( {
-		import: ( blockcode ) => dispatch( 'core/block-editor' ).replaceBlocks(
-			block.clientId,
+	withDispatch( ( dispatch, { canUserUseUnfilteredHTML } ) => ( {
+		import: ( blockcode, clientId ) => dispatch( 'core/block-editor' ).replaceBlocks(
+			clientId,
 			rawHandler( {
 				HTML: blockcode,
 				mode: 'BLOCKS',

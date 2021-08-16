@@ -2,9 +2,9 @@
 Contributors: britner
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.5
+Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 2.1.7
+Stable tag: 2.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.1.8 =
+Release Date: August 16th, 2021
+* Fix: Issue testimonial title margin.
+* Fix: Issue with accordion and double clicks.
+* Fix: Small issue with section block and 5.7
+* Fix: Issue with heading and icon not rendering correclty in some cases.
 
 = 2.1.7 =
 Release Date: August 11th, 2021

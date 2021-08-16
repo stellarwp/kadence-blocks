@@ -1087,16 +1087,23 @@ export default compose( [
 	withSelect( ( select, ownProps ) => {
 		const { clientId } = ownProps;
 		const {
-			__experimentalGetPreviewDeviceType = null,
-		} = select( 'core/edit-post' );
-		const {
 			getBlock,
 		} = select( 'core/block-editor' );
 		const block = getBlock( clientId );
+		if ( select( 'core/edit-post' ) ) {
+			const {
+				__experimentalGetPreviewDeviceType = null,
+			} = select( 'core/edit-post' );
+			return {
+				accordionBlock: block,
+				realPaneCount: block.innerBlocks.length,
+				getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			};
+		}
 		return {
 			accordionBlock: block,
 			realPaneCount: block.innerBlocks.length,
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: 'Desktop',
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {

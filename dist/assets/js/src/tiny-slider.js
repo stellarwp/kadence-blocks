@@ -297,7 +297,6 @@ var tns = (function (){
 		if (Object.prototype.toString.call(attrs) !== '[object Object]') { return; }
 		for (var i = els.length; i--;) {
 			var childs = els[i].getElementsByTagName('a');
-			console.log(childs );
 			for (var n = childs.length; n--;) {
 				for(var key in attrs) {
 					childs[n].setAttribute(key, attrs[key]);

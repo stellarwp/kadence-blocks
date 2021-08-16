@@ -458,6 +458,11 @@ function () {
           // const clickedEl = event.target;
           _this.handleClick(header, index);
         });
+		header.addEventListener('startOpen', function () {
+			// Getting the target of the click
+			// const clickedEl = event.target;
+			_this.handleClick(header, index, true );
+		  });
 	  });
     }
     /**
@@ -469,28 +474,26 @@ function () {
 
   }, {
     key: "handleClick",
-    value: function handleClick(targetHeader, headerIndex) {
-      var _this10 = this;
-      // Removing current `.` from `this.settings.headerClass` class so it can
-      // be checked against the `targetHeader` classList
-      var targetHeaderClass = this.settings.headerClass.substr(1); // Checking that the thing that was clicked on was the accordions header
+    value: function handleClick(targetHeader, headerIndex, forceOpen = false ) {
+		var _this10 = this;
+		// Removing current `.` from `this.settings.headerClass` class so it can
+		// be checked against the `targetHeader` classList
+		var targetHeaderClass = this.settings.headerClass.substr(1); // Checking that the thing that was clicked on was the accordions header
 
-      if (targetHeader.classList.contains(targetHeaderClass) && this.toggling === false) {
-        this.toggling = true; // Updating states
-        this.setState(headerIndex); // Render DOM as per the updates `this.states` object
-
-        this._renderDom();
-      } else {
-				var initLoadDelay = setInterval( function(){ 
-          if ( _this10.toggling === false ) { 
-            _this10.toggling = true; // Updating states
-            _this10.setState( headerIndex ); // Render DOM as per the updates `this.states` object
-
-            _this10._renderDom();
-            clearInterval(initLoadDelay);
-          }
-        }, 50 );
-			}
+		if ( targetHeader.classList.contains(targetHeaderClass) && this.toggling === false ) {
+			this.toggling = true; // Updating states
+			this.setState(headerIndex); // Render DOM as per the updates `this.states` object
+			this._renderDom();
+		} else if ( forceOpen ) {
+			var initLoadDelay = setInterval( function() { 
+				if ( _this10.toggling === false ) { 
+					_this10.toggling = true; // Updating states
+					_this10.setState( headerIndex ); // Render DOM as per the updates `this.states` object
+					_this10._renderDom();
+					clearInterval(initLoadDelay);
+				}
+			}, 50 );
+		}
     }
     /**
      *  SET STATES
@@ -901,10 +904,12 @@ return KadenceAccordion;
             if ( ! child.classList.contains( 'kt-accordion-panel-active' ) ) {
               if ( e.type && e.type === 'initialized' ) {
                 window.setTimeout(function() {
-                  child.click();
+                  //child.click();
+				  child.dispatchEvent(new Event( 'startOpen' ) );
                 }, 50 );
               } else {
-                child.click();
+				child.dispatchEvent(new Event( 'startOpen' ) );
+               // child.click();
               }
             }
             // if ( e.type && e.type === 'initialized' ) {

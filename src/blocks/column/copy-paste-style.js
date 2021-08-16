@@ -221,34 +221,36 @@ class ColumnStyleCopyPaste extends Component {
 			}
 		};
 		return (
-			<ToolbarDropdownMenu
-				className="block-editor-block-settings-menu"
-				icon={ copyIcon }
-				label={ __( 'Copy/Paste Styles', 'kadence-blocks' ) }
-				popoverProps={ POPOVER_PROPS }
-			>
-				{ ( { onClose } ) => (
-					<Fragment>
-						<MenuGroup>
-							<MenuItem
-								icon={ 'clipboard' }
-								onClick={ flow( onClose, copyAction ) }
-								label={ __( 'Copy Styles', 'kadence-blocks' ) }
-							>
-								{ __( 'Copy Styles', 'kadence-blocks' ) }
-							</MenuItem>
-							<MenuItem
-								icon={ 'editor-paste-text' }
-								onClick={ flow( onClose, pasteAction ) }
-								disabled={ ! headingCopiedStyles }
-								label={ __( 'Paste Styles', 'kadence-blocks' ) }
-							>
-								{ __( 'Paste Styles', 'kadence-blocks' ) }
-							</MenuItem>
-						</MenuGroup>
-					</Fragment>
-				) }
-			</ToolbarDropdownMenu>
+			<Toolbar>
+				<DropdownMenu
+					className="block-editor-block-settings-menu"
+					icon={ copyIcon }
+					label={ __( 'Copy/Paste Styles', 'kadence-blocks' ) }
+					popoverProps={ POPOVER_PROPS }
+				>
+					{ ( { onClose } ) => (
+						<Fragment>
+							<MenuGroup>
+								<MenuItem
+									icon={ 'clipboard' }
+									onClick={ flow( onClose, copyAction ) }
+									label={ __( 'Copy Styles', 'kadence-blocks' ) }
+								>
+									{ __( 'Copy Styles', 'kadence-blocks' ) }
+								</MenuItem>
+								<MenuItem
+									icon={ 'editor-paste-text' }
+									onClick={ flow( onClose, pasteAction ) }
+									disabled={ ! headingCopiedStyles }
+									label={ __( 'Paste Styles', 'kadence-blocks' ) }
+								>
+									{ __( 'Paste Styles', 'kadence-blocks' ) }
+								</MenuItem>
+							</MenuGroup>
+						</Fragment>
+					) }
+				</DropdownMenu>
+			</Toolbar>
 		);
 	}
 }

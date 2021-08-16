@@ -461,7 +461,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function render_advanced_heading_css( $attributes, $content ) {
 		if ( ! wp_style_is( 'kadence-blocks-heading', 'enqueued' ) ) {
-			wp_enqueue_style( 'kadence-blocks-heading' );
+			$this->enqueue_style( 'kadence-blocks-heading' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
@@ -703,7 +703,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function render_icon_css( $attributes, $content ) {
 		if ( ! wp_style_is( 'kadence-blocks-icon', 'enqueued' ) ) {
-			wp_enqueue_style( 'kadence-blocks-icon' );
+			$this->enqueue_style( 'kadence-blocks-icon' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
@@ -4204,6 +4204,30 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) && 'regular' !== $title_font['weight'] ) {
 				$css->add_property( 'font-weight', $css->render_font_weight( $title_font['weight'] ) );
 			}
+			if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && iseet( $title_font['margin'][0] ) && is_numeric( $title_font['margin'][0] ) ) {
+				$css->add_property( 'margin-top', $title_font['margin'][0] . 'px' );
+			}
+			if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && iseet( $title_font['margin'][1] ) && is_numeric( $title_font['margin'][1] ) ) {
+				$css->add_property( 'margin-right', $title_font['margin'][1] . 'px' );
+			}
+			if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && iseet( $title_font['margin'][2] ) && is_numeric( $title_font['margin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $title_font['margin'][2] . 'px' );
+			}
+			if ( isset( $title_font['margin'] ) && is_array( $title_font['margin'] ) && iseet( $title_font['margin'][3] ) && is_numeric( $title_font['margin'][3] ) ) {
+				$css->add_property( 'margin-left', $title_font['margin'][3] . 'px' );
+			}
+			if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && iseet( $title_font['padding'][0] ) && is_numeric( $title_font['padding'][0] ) ) {
+				$css->add_property( 'padding-top', $title_font['padding'][0] . 'px' );
+			}
+			if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && iseet( $title_font['padding'][1] ) && is_numeric( $title_font['padding'][1] ) ) {
+				$css->add_property( 'padding-right', $title_font['padding'][1] . 'px' );
+			}
+			if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && iseet( $title_font['padding'][2] ) && is_numeric( $title_font['padding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $title_font['padding'][2] . 'px' );
+			}
+			if ( isset( $title_font['padding'] ) && is_array( $title_font['padding'] ) && iseet( $title_font['padding'][3] ) && is_numeric( $title_font['padding'][3] ) ) {
+				$css->add_property( 'padding-left', $title_font['padding'][3] . 'px' );
+			}
 			if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) && is_numeric( $attr['titleMinHeight'][0] ) ) {
 				$css->add_property( 'min-height', $attr['titleMinHeight'][0] . 'px' );
 			}
@@ -4262,6 +4286,30 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $content_font['weight'] ) && ! empty( $content_font['weight'] ) && 'regular' !== $content_font['weight'] ) {
 				$css->add_property( 'font-weight', $css->render_font_weight( $content_font['weight'] ) );
+			}
+			if ( isset( $content_font['margin'] ) && is_array( $content_font['margin'] ) && iseet( $content_font['margin'][0] ) && is_numeric( $content_font['margin'][0] ) ) {
+				$css->add_property( 'margin-top', $content_font['margin'][0] . 'px' );
+			}
+			if ( isset( $content_font['margin'] ) && is_array( $content_font['margin'] ) && iseet( $content_font['margin'][1] ) && is_numeric( $content_font['margin'][1] ) ) {
+				$css->add_property( 'margin-right', $content_font['margin'][1] . 'px' );
+			}
+			if ( isset( $content_font['margin'] ) && is_array( $content_font['margin'] ) && iseet( $content_font['margin'][2] ) && is_numeric( $content_font['margin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $content_font['margin'][2] . 'px' );
+			}
+			if ( isset( $content_font['margin'] ) && is_array( $content_font['margin'] ) && iseet( $content_font['margin'][3] ) && is_numeric( $content_font['margin'][3] ) ) {
+				$css->add_property( 'margin-left', $content_font['margin'][3] . 'px' );
+			}
+			if ( isset( $content_font['padding'] ) && is_array( $content_font['padding'] ) && iseet( $content_font['padding'][0] ) && is_numeric( $content_font['padding'][0] ) ) {
+				$css->add_property( 'padding-top', $content_font['padding'][0] . 'px' );
+			}
+			if ( isset( $content_font['padding'] ) && is_array( $content_font['padding'] ) && iseet( $content_font['padding'][1] ) && is_numeric( $content_font['padding'][1] ) ) {
+				$css->add_property( 'padding-right', $content_font['padding'][1] . 'px' );
+			}
+			if ( isset( $content_font['padding'] ) && is_array( $content_font['padding'] ) && iseet( $content_font['padding'][2] ) && is_numeric( $content_font['padding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $content_font['padding'][2] . 'px' );
+			}
+			if ( isset( $content_font['padding'] ) && is_array( $content_font['padding'] ) && iseet( $content_font['padding'][3] ) && is_numeric( $content_font['padding'][3] ) ) {
+				$css->add_property( 'padding-left', $content_font['padding'][3] . 'px' );
 			}
 			if ( isset( $attr['contentMinHeight'] ) && is_array( $attr['contentMinHeight'] ) && isset( $attr['contentMinHeight'][0] ) && is_numeric( $attr['contentMinHeight'][0] ) ) {
 				$css->add_property( 'min-height', $attr['contentMinHeight'][0] . 'px' );
@@ -7268,7 +7316,7 @@ class Kadence_Blocks_Frontend {
 			$gutter = isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][ 0 ] ) && is_numeric( $attr['gutter'][ 0 ] ) ? $attr['gutter'][ 0 ] : 10;
 			$gutter_unit = ! empty( $attr['gutterUnit'] ) ? $attr['gutterUnit'] : 'px';
 			$css->add_property( 'margin-left', '-' . $gutter . $gutter_unit );
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image' );
 			$css->add_property( 'margin-left', $gutter . $gutter_unit );
 			$css->add_property( 'margin-right', '0px' );
 			$css->add_property( 'margin-top', '0px' );
