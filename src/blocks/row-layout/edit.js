@@ -3414,9 +3414,10 @@ export default compose( [
 			getBlock,
 		} = select( 'core/block-editor' );
 		const block = getBlock( clientId );
-		const {
-			__experimentalGetPreviewDeviceType = null,
-		} = select( 'core/edit-post' );
+		let __experimentalGetPreviewDeviceType = false;
+		if ( select( 'core/edit-post' ) ) {
+			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
+		}
 		return {
 			rowBlock: block,
 			realColumnCount: block.innerBlocks.length,

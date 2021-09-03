@@ -274,7 +274,6 @@ class KadenceAdvancedButton extends Component {
 
 			return item;
 		} );
-		console.log( value );
 		setAttributes( {
 			btns: newItems,
 		} );
@@ -375,6 +374,7 @@ class KadenceAdvancedButton extends Component {
 				[ `kt-btn-style-${ ( btns[ index ].btnStyle ? btns[ index ].btnStyle : 'basic' ) }` ]: true,
 				[ `kb-btn-global-${ btns[ index ].inheritStyles }` ]: btns[ index ].inheritStyles,
 				'wp-block-button__link': btns[ index ].inheritStyles && 'inherit' === btns[ index ].inheritStyles,
+				[ `kb-btn-has-icon` ]: btns[ index ].icon,
 				[ `kb-btn-only-icon` ]: ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[0] ),
 				[ `kb-btn-tablet-only-icon` ]:( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[1] ),
 				[ `kb-btn-mobile-only-icon` ]: ( btns[ index ].icon && btns[ index ].onlyIcon && btns[ index ].onlyIcon[2] ),
@@ -1939,9 +1939,10 @@ class KadenceAdvancedButton extends Component {
 //export default ( KadenceAdvancedButton );
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		const {
-			__experimentalGetPreviewDeviceType = null,
-		} = select( 'core/edit-post' );
+		let __experimentalGetPreviewDeviceType = false;
+		if ( select( 'core/edit-post' ) ) {
+			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
+		}
 		return {
 			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
 		};

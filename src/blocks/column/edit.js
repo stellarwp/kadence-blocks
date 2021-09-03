@@ -259,7 +259,7 @@ class KadenceColumn extends Component {
 						{ ( previewJustify && ( 'space-around' == previewJustify || 'space-between' == previewJustify || 'space-evenly' == previewJustify ) ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender { display:none; }` : '' ) }
 						{ kadenceBlockCSS && (
 							<Fragment>
-								{ kadenceBlockCSS.replace( /selector/g, `kadence-column-${ uniqueID }` ) }
+								{ kadenceBlockCSS.replace( /selector/g, `.kadence-column-${ uniqueID }` ) }
 							</Fragment>
 						) }
 					</style>
@@ -693,9 +693,10 @@ class KadenceColumn extends Component {
 //export default ( KadenceColumn );
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		const {
-			__experimentalGetPreviewDeviceType = null,
-		} = select( 'core/edit-post' );
+		let __experimentalGetPreviewDeviceType = false;
+		if ( select( 'core/edit-post' ) ) {
+			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
+		}
 		return {
 			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
 		};

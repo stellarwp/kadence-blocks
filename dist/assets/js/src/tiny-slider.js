@@ -2644,7 +2644,6 @@ var tns = (function (){
 	
 		  // pause autoplay when click or keydown from user
 		  if (animating && e && ['click', 'keydown'].indexOf(e.type) >= 0) { stopAutoplay(); }
-	
 		  running = true;
 		  transformCore();
 		}
@@ -3082,7 +3081,7 @@ var tns = (function (){
 		  lastPosition.x = $.clientX;
 		  lastPosition.y = $.clientY;
 		  var dist = getDist(lastPosition, initPosition);
-	
+
 		  if (Math.abs(dist)) {
 			// drag vs click
 			if (!isTouchEvent(e)) {
@@ -3102,8 +3101,6 @@ var tns = (function (){
 				  index += indexMoved;
 				  if (textDirection === 'rtl') { 
 					index += indexMoved * -1;
-				  } else {
-					index += indexMoved;
 				  }
 				} else {
 				  var moved = - (translateInit + dist);
@@ -3120,7 +3117,6 @@ var tns = (function (){
 					}
 				  }
 				}
-	
 				render(e, dist);
 				events.emit(isTouchEvent(e) ? 'touchEnd' : 'dragEnd', info(e));
 			  });

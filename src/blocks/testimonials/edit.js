@@ -804,11 +804,15 @@ class KadenceTestimonials extends Component {
 			marginBottom: layout && layout === 'carousel' && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
 		};
 		const renderTestimonialPreview = ( index, isCarousel = false ) => {
+			let iconPadding = ( displayIcon && iconStyles[ 0 ].icon && iconStyles[ 0 ].margin && iconStyles[ 0 ].margin[ 0 ] && ( iconStyles[ 0 ].margin[ 0 ] < 0 ) ? Math.abs( iconStyles[ 0 ].margin[ 0 ] ) + 'px' : undefined );
+			if ( iconPadding === undefined && iconStyles[ 0 ].icon && iconStyles[ 0 ].margin && iconStyles[ 0 ].margin[ 0 ] && ( iconStyles[ 0 ].margin[ 0 ] >= 0 ) ) {
+				iconPadding = '0px';
+			}
 			return (
 				<div className={ `kt-testimonial-item-wrap kt-testimonial-item-${ index }${ ( containerVAlign ? ' testimonial-valign-' + containerVAlign : '' ) }` } style={ ( 'bubble' !== style && 'inlineimage' !== style ? containerStyles : {
 					maxWidth: containerMaxWidth + 'px',
 					minHeight: ( previewContainerMinHeight ? previewContainerMinHeight + 'px' : undefined ),
-					paddingTop: ( displayIcon && iconStyles[ 0 ].icon && iconStyles[ 0 ].margin && iconStyles[ 0 ].margin[ 0 ] && ( iconStyles[ 0 ].margin[ 0 ] < 0 ) ? Math.abs( iconStyles[ 0 ].margin[ 0 ] ) + 'px' : undefined ),
+					paddingTop: ( iconPadding ? iconPadding : undefined ),
 					marginTop: isCarousel && previewWrapperPaddingTop ? previewWrapperPaddingTop + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
 					marginBottom: isCarousel && previewWrapperPaddingBottom ? previewWrapperPaddingBottom + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
 				} ) }>
@@ -1997,9 +2001,10 @@ class KadenceTestimonials extends Component {
 }
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		const {
-			__experimentalGetPreviewDeviceType = null,
-		} = select( 'core/edit-post' );
+		let __experimentalGetPreviewDeviceType = false;
+		if ( select( 'core/edit-post' ) ) {
+			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
+		}
 		return {
 			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
 		};

@@ -1,23 +1,11 @@
 /**
- * BLOCK: Kadence Map
+ * BLOCK: Kadence Theme Header
  */
 
 /**
  * Import Icons
  */
 import icons from '../../icons';
-/**
- * Import attributes
- */
-import attributes from './attributes';
-/**
- * Import edit
- */
-import edit from './edit';
-/**
- * Import save
- */
-import save from './save';
 /**
  * Import Css
  */
@@ -28,8 +16,9 @@ import save from './save';
  * Internal block libraries
  */
 const { __, sprintf } = wp.i18n;
-const { registerBlockType } = wp.blocks;
-
+import { registerBlockType } from '@wordpress/blocks';
+import ServerSideRender from '@wordpress/server-side-render';
+import { useBlockProps } from '@wordpress/block-editor';
 /**
  * Register: a Gutenberg Block.
  *
@@ -39,22 +28,33 @@ const { registerBlockType } = wp.blocks;
  * @return {?WPBlock}          The block, if it has been successfully
  *                             registered; otherwise `undefined`.
  */
-registerBlockType( 'kadence/header', {
-	title: __( 'Header' ),
+registerBlockType( 'kadence/theme-header', {
+	title: __( 'Theme Header', 'kadence-blocks' ),
 	icon: {
 		src: icons.blocktabs,
 	},
 	category: 'kadence-blocks',
 	keywords: [
-		__( 'header' ),
-		__( 'navigation' ),
-		__( 'KB' ),
+		__( 'header', 'kadence-blocks' ),
+		__( 'theme', 'kadence-blocks' ),
+		'KB',
 	],
 	supports: {
 		anchor: true,
 		align: [ 'wide', 'full' ],
 	},
-	attributes,
-	edit,
-	save,
+	edit: function ( props ) {
+        const blockProps = useBlockProps();
+        return (
+            <div { ...blockProps }>
+                <ServerSideRender
+                    block="kadence/theme-header"
+                    attributes={ props.attributes }
+                />
+            </div>
+        );
+    },
+	save() {
+		return null;
+	},
 } );

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 2.1.9
+Stable tag: 2.1.11
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,20 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.1.11 =
+Release Date: September 3rd, 2021
+* Fix: Issue with tablet divider alignment.
+* Fix: Issue with widgets screen and some blocks.
+* Fix: Issue with info box and tablet align.
+* Fix: Padding issue with testimonial icon.
+* Fix: Testimonial carousel with one column in mobile skips one column on swipe.
+
+= 2.1.10 =
+Release Date: August 17th, 2021
+* Fix: Possible issue with transparent input as a color.
+* Fix: Button with icon issue using inherit styles.
+* Update: is_rest request.
 
 = 2.1.9 =
 Release Date: August 17th, 2021

@@ -65,6 +65,7 @@
 				nav: ( 'false' === sliderDots ? false : true ),
 				gutter: 0,
 				textDirection: slideRtl,
+				preventScrollOnTouch:'auto',
 				loop:( 'false' === sliderLoop ? false : true ),
 				rewind:( 'false' === sliderLoop ? true : false ),
 				responsive: {

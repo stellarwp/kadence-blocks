@@ -1587,7 +1587,7 @@ class KadenceTabs extends Component {
 							} }>
 								<InnerBlocks
 									template={ getPanesTemplate( tabCount ) }
-									templateLock={ false }
+									templateLock="all"
 									allowedBlocks={ ALLOWED_BLOCKS } />
 							</div>
 						</div>

@@ -170,9 +170,10 @@ class RowBackground extends Component {
 }
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		const {
-			__experimentalGetPreviewDeviceType = null,
-		} = select( 'core/edit-post' );
+		let __experimentalGetPreviewDeviceType = false;
+		if ( select( 'core/edit-post' ) ) {
+			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
+		}
 		return {
 			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
 		};

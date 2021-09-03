@@ -582,6 +582,10 @@
 .kb-btn-only-icon .kt-btn-svg-icon {
     padding: 0 !important;
 }
+.wp-block-kadence-advancedbtn .kb-btn-global-inherit.kb-btn-has-icon {
+    display: flex;
+}
+
 #start-resizable-editor-section {
     display: none;
 }

@@ -19,6 +19,7 @@ $ratio    = apply_filters( 'kadence_blocks_posts_image_ratio', ( isset( $attribu
 $size     = apply_filters( 'kadence_blocks_posts_image_size', ( isset( $attributes ) && is_array( $attributes ) && isset( $attributes['imageSize'] ) && $attributes['imageSize'] ? $attributes['imageSize'] : 'medium_large' ), $attributes );
 
 if ( $enabled ) {
+	$alt = get_post_meta( get_post_thumbnail_id(), '_wp_attachment_image_alt', true );
 	if ( $img_link ) {
 		?>
 		<a class="post-thumbnail kadence-thumbnail-ratio-<?php echo esc_attr( $ratio ); ?>" href="<?php the_permalink(); ?>">
@@ -27,7 +28,7 @@ if ( $enabled ) {
 				the_post_thumbnail(
 					$size,
 					array(
-						'alt' => the_title_attribute(
+						'alt' => $alt ? $alt : the_title_attribute(
 							array(
 								'echo' => false,
 							)
@@ -46,7 +47,7 @@ if ( $enabled ) {
 				the_post_thumbnail(
 					$size,
 					array(
-						'alt' => the_title_attribute(
+						'alt' => $alt ? $alt : the_title_attribute(
 							array(
 								'echo' => false,
 							)

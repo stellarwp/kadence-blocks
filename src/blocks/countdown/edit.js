@@ -1201,9 +1201,10 @@ class KadenceCountdown extends Component {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		const { clientId } = ownProps;
-		const {
-			__experimentalGetPreviewDeviceType = null,
-		} = select( 'core/edit-post' );
+		let __experimentalGetPreviewDeviceType = false;
+		if ( select( 'core/edit-post' ) ) {
+			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
+		}
 		let isNested = false;
 		const {
 			getBlock,

@@ -963,18 +963,5 @@ class Kadence_Blocks_Table_Of_Contents {
 		self::$gfonts = $css->fonts_output();
 		return $css->css_output();
 	}
-	/**
-	 * Adds var to color output if needed.
-	 *
-	 * @param string $color the output color.
-	 */
-	public function kadence_color_output( $color, $opacity = null ) {
-		if ( strpos( $color, 'palette' ) === 0 ) {
-			$color = 'var(--global-' . $color . ')';
-		} else if ( isset( $opacity ) && is_numeric( $opacity ) ) {
-			$color = $this->hex2rgba( $color, $opacity );
-		}
-		return $color;
-	}
 }
 Kadence_Blocks_Table_Of_Contents::get_instance();

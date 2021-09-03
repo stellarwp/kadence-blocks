@@ -50,17 +50,17 @@
 .wp-block-kadence-spacer.aligncenter{
     width: 100%;
 }
-@media (min-width: 768px) and (max-width: 1024px) {
-    .kt-block-spacer.kt-block-spacer-talign-center .kt-divider, .kt-block-spacer.kt-block-spacer-talign-center .kt-divider-stripe {
+@media (max-width: 1024px) {
+    .kt-block-spacer.kt-block-spacer-thalign-center .kt-divider, .kt-block-spacer.kt-block-spacer-thalign-center .kt-divider-stripe {
         left: 50%;
         right:auto;
         transform: perspective(1px) translate(-50%, -50%);
     }
-    .kt-block-spacer.kt-block-spacer-talign-left .kt-divider, .kt-block-spacer.kt-block-spacer-talign-left .kt-divider-stripe {
+    .kt-block-spacer.kt-block-spacer-thalign-left .kt-divider, .kt-block-spacer.kt-block-spacer-thalign-left .kt-divider-stripe {
         left: 0;
         transform: perspective(1px) translate(0%, -50%);
     }
-    .kt-block-spacer.kt-block-spacer-talign-right .kt-divider, .kt-block-spacer.kt-block-spacer-talign-right .kt-divider-stripe  {
+    .kt-block-spacer.kt-block-spacer-thalign-right .kt-divider, .kt-block-spacer.kt-block-spacer-thalign-right .kt-divider-stripe  {
         left: auto;
         right:0;
         transform: perspective(1px) translate(0%, -50%);

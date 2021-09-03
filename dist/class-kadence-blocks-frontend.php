@@ -259,15 +259,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_row_layout_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_rowlayout_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-rowlayout', 'enqueued' ) ) {
 			wp_enqueue_style( 'kadence-blocks-rowlayout' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'rowlayout', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'rowlayout', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_rowlayout_render_block_attributes', $attributes );
 				$css = $this->row_layout_array_css( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$css = apply_filters( 'as3cf_filter_post_local_to_provider', $css );
@@ -317,12 +317,12 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_column_layout_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
 		if ( isset( $attributes['uniqueID'] ) && ! empty( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'column', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'column', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
 				$css = $this->column_layout_css( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$css = apply_filters( 'as3cf_filter_post_local_to_provider', $css );
@@ -369,15 +369,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_advanced_btn_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_advancedbtn_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-btn', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-btn' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedbtn', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedbtn', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_advancedbtn_render_block_attributes', $attributes );
 				$css = $this->blocks_advanced_btn_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -437,15 +437,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array  $attributes the blocks attribtues.
 	 */
 	public function render_advanced_heading_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_advancedheading_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-heading', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-heading' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedheading', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedheading', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_advancedheading_render_block_attributes', $attributes );
 				$css = $this->blocks_advanced_heading_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -487,17 +487,14 @@ class Kadence_Blocks_Frontend {
 	 *
 	 * @param array $attributes the blocks attribtues.
 	 */
-	public function render_restaurant_menu_css_head( $block ) {
+	public function render_restaurant_menu_css_head( $attributes ) {
 		if ( ! wp_style_is( 'kadence-blocks-restaurant-menu', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-restaurant-menu' );
 		}
-		$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
-
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'restaurantmenu_root', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'restaurantmenu_root', $attributes ) ) {
 				$css = $this->blocks_restaurantmenu_root_array( $attributes, $unique_id );
 
 				if ( ! empty( $css ) ) {
@@ -554,15 +551,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_tabs_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_tabs_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-tabs', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-tabs' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'tabs', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'tabs', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_tabs_render_block_attributes', $attributes );
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -631,15 +628,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_spacer_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-spacer', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-spacer' );
 		}
 		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'spacer', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'spacer', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
 				$css = $this->blocks_spacer_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -679,15 +676,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_icon_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_icon_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-icon', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-icon' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'icon', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'icon', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_icon_render_block_attributes', $attributes );
 				$css = $this->blocks_icon_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -729,15 +726,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_infobox_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_infobox_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-infobox', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-infobox' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'infobox', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'infobox', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_infobox_render_block_attributes', $attributes );
 				$css = $this->blocks_infobox_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -784,8 +781,6 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_accordion_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-accordion', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-accordion' );
 		}
@@ -798,7 +793,9 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'accordion', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
 				$css = $this->blocks_accordion_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -898,15 +895,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_testimonials_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_testimonials_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-testimonials', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-testimonials' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'testimonials', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'testimonials', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_testimonials_render_block_attributes', $attributes );
 				$css = $this->blocks_testimonials_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -964,15 +961,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attributes.
 	 */
 	public function render_form_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_form_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-form', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-form' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'form', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_form_render_block_attributes', $attributes );
 				$css = $this->blocks_form_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -1022,15 +1019,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_advancedgallery_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_advancedgallery_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-gallery', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-gallery' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedgallery', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedgallery', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_advancedgallery_render_block_attributes', $attributes );
 				$css = $this->blocks_advancedgallery_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -1099,15 +1096,15 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_iconlist_css_head( $attributes ) {
-		// Filter attributes for easier dynamic css.
-		$attributes = apply_filters( 'kadence_blocks_iconlist_render_block_attributes', $attributes );
 		if ( ! wp_style_is( 'kadence-blocks-iconlist', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-iconlist' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'iconlist', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'iconlist', $attributes ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_iconlist_render_block_attributes', $attributes );
 				$css = $this->blocks_iconlist_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					$this->render_inline_css( $css, $style_id );
@@ -1158,7 +1155,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function is_rest() {
 		$prefix = rest_get_url_prefix();
-		if ( ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( isset( $_GET['rest_route'] ) && strpos( trim( $_GET['rest_route'], '\\/' ), $prefix, 0 ) === 0 ) ) {
+		if ( ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( isset( $_GET['rest_route'] ) && strpos( $_GET['rest_route'], '/', 0 ) === 0 ) ) {
 			return true;
 		}
 		// (#3).
@@ -1312,6 +1309,9 @@ class Kadence_Blocks_Frontend {
 	public function hex2rgba( $hex, $alpha ) {
 		if ( empty( $hex ) ) {
 			return '';
+		}
+		if ( 'transparent' === $hex ) {
+			return $hex;
 		}
 		$hex = str_replace( '#', '', $hex );
 
@@ -3347,8 +3347,14 @@ class Kadence_Blocks_Frontend {
 			if ( ! empty( $content ) ) {
 				$css->add_property( 'justify-content', $content );
 			}
-			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media' );
-			$css->add_property( 'display', 'block' );
+			if ( 'top' === $attr['mediaAlignTablet'] ) {
+				$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media' );
+				$css->add_property( 'display', 'inline-block' );
+				$css->add_property( 'max-width', '100%' );
+			} else {
+				$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media' );
+				$css->add_property( 'display', 'block' );
+			}
 			$css->stop_media_query();
 		}
 		if ( isset( $attr['mediaAlignMobile'] ) && ! empty( $attr['mediaAlignMobile'] ) ) {

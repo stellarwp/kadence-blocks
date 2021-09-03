@@ -966,9 +966,10 @@ export default compose( [
 			getBlockName,
 			getBlockOrder,
 		} = select( 'core/block-editor' );
-		const {
-			__experimentalGetPreviewDeviceType = null,
-		} = select( 'core/edit-post' );
+		let __experimentalGetPreviewDeviceType = false;
+		if ( select( 'core/edit-post' ) ) {
+			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
+		}
 		const postContent = select( 'core/editor' ).getEditedPostContent();
 
 		const blockIndex = getBlockIndex( clientId );
