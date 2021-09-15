@@ -85,7 +85,7 @@
 			appearance: auto;
 			box-sizing: border-box;
 			margin: 3px 5px 3px 0;
-			border-color: #818a91;
+			border-color: var( --global-gray-500, #818a91 );
 			box-shadow: none;
 			width:auto;
 			&:before {
@@ -93,8 +93,8 @@
 			}
 		}
 		.kb-select-style-field {
-			color: #373a3c;
-			border: 1px solid #818a91;
+			color: var( --global-palette4, #373a3c );
+			border: 1px solid var( --global-gray-500, #818a91 );
 			border-radius: 3px;
 			padding: 10px 12px;
 			min-height: 40px;
@@ -128,9 +128,9 @@
 			flex-basis: 100%;
 			max-width: 100%;
 			width: 100%;
-			border: 1px solid #818a91;
-			background-color: #fff;
-			color: #373a3c;
+			border: 1px solid var( --global-gray-500, #818a91 );
+			background-color: var( --global-palette9, #fff );
+			color: var( --global-palette4, #373a3c );
 			vertical-align: middle;
 			flex-grow: 1;
 			z-index: 10;
@@ -228,7 +228,7 @@
 			opacity: 1;
 		}
 		.kb-field-help {
-			color: #777;
+			color: var( --global-palette6, #777 );
 			margin: 2px 0 5px 0;
 			font-size: 80%;
 			font-style: italic;
@@ -240,29 +240,6 @@
 			display: block;
 			flex-basis: 100%;
 			width: 0;
-		}
-	}
-	.kadence-blocks-form-field.is-selected {
-		padding-top: 24px;
-		position:relative;
-		&:before {
-			content: '';
-			position: absolute;
-			border: 4px solid #0085ba;
-			left: 0;
-			right: 0;
-			top: 0;
-			bottom: -4px;
-			z-index: 1;
-		}
-		&:after {
-			content: '';
-			left: 0;
-			right: 0;
-			position: absolute;
-			top: 0;
-			height: 24px;
-			background: #0085ba;
 		}
 	}
 	input.kadence-blocks-field.verify {

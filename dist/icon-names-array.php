@@ -622,6 +622,7 @@ return array(
 		'fa_google-plus-g',
 		'fa_google-plus-square',
 		'fa_google-wallet',
+		'fa_google-pay',
 		'fa_gratipay',
 		'fa_grav',
 		'fa_gripfire',

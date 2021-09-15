@@ -2482,3 +2482,7 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {transform: 
 .wp-block[data-type="kadence/column"][data-vertical-align="bottom"] {
 	align-self: flex-end;
 }
+// Temp Fix for WordPress bug.
+.kb-responsive-control-inner .components-select-control {
+    max-height: 60px;
+}

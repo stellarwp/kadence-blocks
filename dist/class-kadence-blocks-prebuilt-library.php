@@ -779,6 +779,10 @@ class Kadence_Blocks_Prebuilt_Library {
 	 */
 	public static function verify_ajax_call() {
 		check_ajax_referer( 'kadence-blocks-ajax-verification', 'security' );
+		// Make sure we are working with a user that can edit posts.
+		if ( ! current_user_can( 'edit_posts' ) ) {
+			wp_die( -1, 403 );
+		}
 	}
 	/**
 	 * Main AJAX callback function for:

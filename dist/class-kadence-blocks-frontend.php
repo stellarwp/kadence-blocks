@@ -113,9 +113,25 @@ class Kadence_Blocks_Frontend {
 		return $block_content;
 	}
 	/**
+	 * Adds a filter to the head filter for compatibility with toolset.
+	 *
+	 * @param boolean $render_inline_css
+	 * @param string  $block_name
+	 * @param array   $attributes
+	 *
+	 * @return boolean
+	 */
+	public function add_toolset_depreciated_filter_compatibility( $render_css, $block_name, $attributes ) {
+		$unique_id = ( ! empty( $attributes['uniqueID'] ) ? $attributes['uniqueID'] : '' );
+		return apply_filters( 'kadence_blocks_render_inline_css', $render_css, $block_name, $unique_id );
+	}
+	/**
 	 * On init startup.
 	 */
 	public function on_init() {
+		if ( defined( 'TOOLSET_VERSION' ) ) {
+			add_filter( 'kadence_blocks_render_head_css', array( $this, 'add_toolset_depreciated_filter_compatibility' ), 10, 3 );
+		}
 		// Only load if Gutenberg is available.
 		if ( ! function_exists( 'register_block_type' ) ) {
 			return;
@@ -5164,7 +5180,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init {';
 				$css .= 'margin: 0 -' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
-			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kt-blocks-carousel-init:not(.slick-initialized) .kb-slide-item {';
+			$css .= '.kb-gallery-type-carousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init .kb-slide-item, .kb-gallery-type-carousel .kt-blocks-carousel-init:not(.slick-initialized) .kb-slide-item {';
 				$css .= 'padding: 4px ' . ( $attr['gutter'][0] / 2 ) . 'px;';
 			$css .= '}';
 			$css .= '.kb-gallery-type-fluidcarousel.kb-gallery-id-' . $unique_id . ' .kt-blocks-carousel .kt-blocks-carousel-init.kb-carousel-mode-align-left .kb-slide-item {';

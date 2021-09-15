@@ -655,7 +655,7 @@ class KadenceTabs extends Component {
 								/>
 							) }
 							{ tabCount > 1 && (
-								<IconButton
+								<Button
 									icon="no-alt"
 									onClick={ () => {
 										const removeClientId = this.props.tabsBlock.innerBlocks[ index ].clientId;
@@ -669,8 +669,8 @@ class KadenceTabs extends Component {
 										} else {
 											newStartTab = startTab;
 										}
+										this.props.removeTab( index );
 										setAttributes( { titles: currentItems, tabCount: newCount, currentTab: ( index === 0 ? 1 : index ), startTab: newStartTab } );
-										this.props.removeTab( removeClientId );
 										this.props.resetOrder();
 									} }
 									className="kadence-blocks-tab-item__remove"
@@ -1614,14 +1614,16 @@ export default compose( [
 	withDispatch( ( dispatch, { clientId }, { select } ) => {
 		const {
 			getBlock,
+			getBlocks,
 		} = select( 'core/block-editor' );
 		const {
 			moveBlockToPosition,
-			removeBlock,
 			updateBlockAttributes,
 			insertBlock,
+			replaceInnerBlocks,
 		} = dispatch( 'core/block-editor' );
 		const block = getBlock( clientId );
+		const innerBlocks = getBlocks( clientId );
 		return {
 			resetOrder() {
 				times( block.innerBlocks.length, n => {
@@ -1637,7 +1639,8 @@ export default compose( [
 				insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );
 			},
 			removeTab( tabId ) {
-				removeBlock( tabId );
+				innerBlocks.splice( tabId, 1 );
+				replaceInnerBlocks( clientId, innerBlocks );
 			},
 		};
 	} ),

@@ -455,7 +455,7 @@ class Kadence_Blocks_Posts {
 			}
 		}
 		$css->start_media_query( $media_query['tablet'] );
-		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry .entry-title' );
+		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
 		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][1] ) && ! empty( $title_font['size'][1] ) ) {
 			$css->add_property( 'font-size', $title_font['size'][1] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
 		}
@@ -467,7 +467,7 @@ class Kadence_Blocks_Posts {
 		}
 		$css->stop_media_query();
 		$css->start_media_query( $media_query['mobile'] );
-		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .loop-entry .entry-title' );
+		$css->set_selector( '.kb-posts-id-' . $unique_id . ' .entry.loop-entry .entry-header .entry-title' );
 		if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && isset( $title_font['size'][2] ) && ! empty( $title_font['size'][2] ) ) {
 			$css->add_property( 'font-size', $title_font['size'][2] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
 		}

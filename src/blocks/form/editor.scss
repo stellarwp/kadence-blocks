@@ -101,15 +101,15 @@
 			appearance: checkbox;
 			box-sizing: border-box;
 			margin: 3px 5px 3px 0;
-			border-color: #818a91;
+			border-color: var( --global-gray-500, #818a91 );
 			box-shadow: none;
 			&:before {
 				display:none;
 			}
 		}
 		.kb-select-style-field {
-			color: #373a3c;
-			border: 1px solid #818a91;
+			color: var( --global-palette4, #373a3c );
+			border: 1px solid var( --global-gray-500, #818a91 );
 			border-radius: 3px;
 			padding: 10px 12px;
 			min-height: 40px;
@@ -148,9 +148,9 @@
 			flex-basis: 100%;
 			max-width: 100%;
 			width: 100%;
-			border: 1px solid #818a91;
-			background-color: #fff;
-			color: #373a3c;
+			border: 1px solid var( --global-gray-500, #818a91 );
+			background-color: var( --global-palette9, #fff );
+			color: var( --global-palette4, #373a3c );
 			vertical-align: middle;
 			flex-grow: 1;
 			z-index: 10;

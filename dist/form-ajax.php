@@ -187,7 +187,9 @@ class KB_Ajax_Form {
 							'value' => $this->sanitize_field( $data['type'], wp_unslash( $_POST[ 'kb_field_' . $key ] ), $data['multiSelect'] ),
 						);
 						if ( 'hidden' === $data['type'] ) {
-							$fields[ $key ]['value'] = str_replace( '{page_title}', get_the_title( $post->$ID ), $fields[ $key ]['value'] );
+							global $post;
+							$refer_id = is_object( $post ) ? $post->ID : url_to_postid( wp_get_referer() );
+							$fields[ $key ]['value'] = str_replace( '{page_title}', get_the_title( $refer_id ), $fields[ $key ]['value'] );
 							$fields[ $key ]['value'] = str_replace( '{page_url}', wp_get_referer(), $fields[ $key ]['value'] );
 						}
 						unset( $_POST[ 'kb_field_' . $key ] );
@@ -216,7 +218,8 @@ class KB_Ajax_Form {
 							}
 							if ( strpos( $subject, '{page_title}' ) !== false ) {
 								global $post;
-								$subject = str_replace( '{page_title}', get_the_title( $post->$ID ), $subject );
+								$refer_id = is_object( $post ) ? $post->ID : url_to_postid( wp_get_referer() );
+								$subject = str_replace( '{page_title}', get_the_title( $refer_id ), $subject );
 							}
 							$email_content = '';
 							$reply_email   = false;

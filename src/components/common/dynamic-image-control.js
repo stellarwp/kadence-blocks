@@ -60,7 +60,7 @@ class DynamicImageControl extends Component {
 							<div className="kb-pro-notice">
 								<h2>{ __( 'Dynamic Image', 'kadence-blocks' ) } </h2>
 								<p>{ __( 'Create dynamic sites by populating images from various sources.', 'kadence-blocks' ) } </p>
-								<ExternalLink href={ 'https://www.kadenceblocks.com/pro/' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
+								<ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
 							</div>
 						</div>
 					</Popover>
