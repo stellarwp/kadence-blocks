@@ -21,6 +21,14 @@ defined( 'ABSPATH' ) || exit;
 				<a href="<?php the_permalink(); ?>" class="post-more-link">
 					<?php
 						echo esc_html( $label );
+						echo wp_kses(
+							'<span class="screen-reader-text"> ' . get_the_title() . '</span>',
+							array(
+								'span' => array(
+									'class' => array(),
+								),
+							)
+						);
 						kadence_blocks_print_icon( 'arrow-right-alt' );
 					?>
 				</a>

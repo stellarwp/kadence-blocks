@@ -13,6 +13,9 @@ const { BACKSPACE, DELETE } = wp.keycodes;
 import { withSelect } from '@wordpress/data';
 const { RichText, URLPopover, URLInput } = wp.blockEditor;
 const { isBlobURL } = wp.blob;
+const {
+	applyFilters,
+} = wp.hooks;
 
 class GalleryImage extends Component {
 	constructor() {
@@ -170,6 +173,7 @@ class GalleryImage extends Component {
 				onChange={ ( newCaption ) => setAttributes( { caption: newCaption } ) }
 				unstableOnFocus={ this.onSelectCaption }
 				inlineToolbar={ this.state.captionSelected ? true : false }
+				allowedFormats={ ( linkTo === 'none' ? applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/link', 'toolset/inline-field' ] ) : applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'toolset/inline-field' ] ) ) }
 				keepPlaceholderOnFocus
 				style={ {
 					fontWeight: '' !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : undefined,

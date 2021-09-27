@@ -26,6 +26,13 @@ class Kadence_Blocks_Frontend {
 	public static $gfonts = array();
 
 	/**
+	 * Google fonts to enqueue
+	 *
+	 * @var array
+	 */
+	public static $footer_gfonts = array();
+
+	/**
 	 * Google schema to add to head
 	 *
 	 * @var null
@@ -57,6 +64,7 @@ class Kadence_Blocks_Frontend {
 		//add_action( 'wp_enqueue_scripts', array( $this, 'global_inline_css' ), 101 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_inline_css' ), 20 );
 		add_action( 'wp_head', array( $this, 'frontend_gfonts' ), 90 );
+		add_action( 'wp_footer', array( $this, 'frontend_footer_gfonts' ), 90 );
 		add_action( 'wp_head', array( $this, 'faq_schema' ), 91 );
 		if ( ! is_admin() ) {
 			add_action( 'render_block', array( $this, 'conditionally_render_block' ), 6, 2 );
@@ -1367,9 +1375,28 @@ class Kadence_Blocks_Frontend {
 		if ( ! $print_google_fonts ) {
 			return;
 		}
+		$this->print_gfonts( self::$gfonts );
+	}
+	/**
+	 * Load the front end Google Fonts
+	 */
+	public function frontend_footer_gfonts() {
+		if ( empty( self::$footer_gfonts ) ) {
+			return;
+		}
+		$print_google_fonts = apply_filters( 'kadence_blocks_print_footer_google_fonts', true );
+		if ( ! $print_google_fonts ) {
+			return;
+		}
+		$this->print_gfonts( self::$footer_gfonts );
+	}
+	/**
+	 * Print gFonts
+	 */
+	public function print_gfonts( $gfonts ) {
 		$link    = '';
 		$subsets = array();
-		foreach ( self::$gfonts as $key => $gfont_values ) {
+		foreach ( $gfonts as $key => $gfont_values ) {
 			if ( ! empty( $link ) ) {
 				$link .= '%7C'; // Append a new font to the string.
 			}
@@ -1393,7 +1420,6 @@ class Kadence_Blocks_Frontend {
 			$link .= '&amp;display=swap';
 		}
 		echo '<link href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
-
 	}
 	/**
 	 * Gets the parsed blocks, need to use this becuase wordpress 5 doesn't seem to include gutenberg_parse_blocks
@@ -1619,14 +1645,12 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
 							$this->render_advanced_heading_css_head( $blockattr );
-							$this->blocks_advanced_heading_gfont( $blockattr );
 						}
 					}
 					if ( 'kadence/advancedbtn' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
 							$this->render_advanced_btn_css_head( $blockattr );
-							$this->blocks_advanced_btn_gfont( $blockattr );
 						}
 					}
 					if ( 'kadence/accordion' === $block['blockName'] ) {
@@ -1654,7 +1678,6 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
 							$this->render_infobox_css_head( $blockattr );
-							$this->blocks_infobox_scripts_gfonts( $blockattr );
 						}
 					}
 					if ( 'kadence/iconlist' === $block['blockName'] ) {
@@ -1760,7 +1783,6 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
 						$this->render_advanced_heading_css_head( $blockattr );
-						$this->blocks_advanced_heading_gfont( $blockattr );
 					}
 				}
 				if ( 'kadence/accordion' === $inner_block['blockName'] ) {
@@ -1781,7 +1803,6 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
 						$this->render_advanced_btn_css_head( $blockattr );
-						$this->blocks_advanced_btn_gfont( $blockattr );
 					}
 				}
 				if ( 'kadence/tabs' === $inner_block['blockName'] ) {
@@ -1795,7 +1816,6 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
 						$this->render_infobox_css_head( $blockattr );
-						$this->blocks_infobox_scripts_gfonts( $blockattr );
 					}
 				}
 				if ( 'kadence/iconlist' === $inner_block['blockName'] ) {
@@ -2070,63 +2090,6 @@ class Kadence_Blocks_Frontend {
 				$this->enqueue_script( 'kadence-blocks-google-recaptcha-v3' );
 			}
 		}
-		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
-			$label_font = $attr['labelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $label_font['family'],
-					'fontvariants' => ( isset( $label_font['variant'] ) && ! empty( $label_font['variant'] ) ? array( $label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $label_font['subset'] ) && ! empty( $label_font['subset'] ) ? array( $label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $label_font['variant'], self::$gfonts[ $label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontvariants'], $label_font['variant'] );
-				}
-				if ( ! in_array( $label_font['subset'], self::$gfonts[ $label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontsubsets'], $label_font['subset'] );
-				}
-			}
-		}
-		if ( isset( $attr['submitFont'] ) && is_array( $attr['submitFont'] ) && isset( $attr['submitFont'][0] ) && is_array( $attr['submitFont'][0] ) && isset( $attr['submitFont'][0]['google'] ) && $attr['submitFont'][0]['google'] && ( ! isset( $attr['submitFont'][0]['loadGoogle'] ) || true === $attr['submitFont'][0]['loadGoogle'] ) && isset( $attr['submitFont'][0]['family'] ) ) {
-			$submit_font = $attr['submitFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $submit_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $submit_font['family'],
-					'fontvariants' => ( isset( $submit_font['variant'] ) && ! empty( $submit_font['variant'] ) ? array( $submit_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $submit_font['subset'] ) && ! empty( $submit_font['subset'] ) ? array( $submit_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $submit_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $submit_font['variant'], self::$gfonts[ $submit_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $submit_font['family'] ]['fontvariants'], $submit_font['variant'] );
-				}
-				if ( ! in_array( $submit_font['subset'], self::$gfonts[ $submit_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $submit_font['family'] ]['fontsubsets'], $submit_font['subset'] );
-				}
-			}
-		}
-		if ( isset( $attr['messageFont'] ) && is_array( $attr['messageFont'] ) && isset( $attr['messageFont'][0] ) && is_array( $attr['messageFont'][0] ) && isset( $attr['messageFont'][0]['google'] ) && $attr['messageFont'][0]['google'] && ( ! isset( $attr['messageFont'][0]['loadGoogle'] ) || true === $attr['messageFont'][0]['loadGoogle'] ) && isset( $attr['messageFont'][0]['family'] ) ) {
-			$message_font = $attr['messageFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $message_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $message_font['family'],
-					'fontvariants' => ( isset( $message_font['variant'] ) && ! empty( $message_font['variant'] ) ? array( $message_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $message_font['subset'] ) && ! empty( $message_font['subset'] ) ? array( $message_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $message_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $message_font['variant'], self::$gfonts[ $message_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $message_font['family'] ]['fontvariants'], $message_font['variant'] );
-				}
-				if ( ! in_array( $message_font['subset'], self::$gfonts[ $message_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $message_font['family'] ]['fontsubsets'], $message_font['subset'] );
-				}
-			}
-		}
 	}
 	/**
 	 * Builds CSS for form block.
@@ -2135,6 +2098,48 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_form_array( $attr, $unique_id ) {
+		// Add Label heading font.
+		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
+			$label_font = $attr['labelFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
+					'fontVariant' => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
+		// Add submit font.
+		if ( isset( $attr['submitFont'] ) && is_array( $attr['submitFont'] ) && isset( $attr['submitFont'][0] ) && is_array( $attr['submitFont'][0] ) && isset( $attr['submitFont'][0]['google'] ) && $attr['submitFont'][0]['google'] && ( ! isset( $attr['submitFont'][0]['loadGoogle'] ) || true === $attr['submitFont'][0]['loadGoogle'] ) && isset( $attr['submitFont'][0]['family'] ) ) {
+			$submit_font = $attr['submitFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $submit_font['google'] ) ? $submit_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $submit_font['loadGoogle'] ) ? $submit_font['loadGoogle'] : true ),
+					'typography' => ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' ),
+					'fontVariant' => ( isset( $submit_font['variant'] ) ? $submit_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $submit_font['subset'] ) ? $submit_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
+		// Add Message font.
+		if ( isset( $attr['messageFont'] ) && is_array( $attr['messageFont'] ) && isset( $attr['messageFont'][0] ) && is_array( $attr['messageFont'][0] ) && isset( $attr['messageFont'][0]['google'] ) && $attr['messageFont'][0]['google'] && ( ! isset( $attr['messageFont'][0]['loadGoogle'] ) || true === $attr['messageFont'][0]['loadGoogle'] ) && isset( $attr['messageFont'][0]['family'] ) ) {
+			$message_font = $attr['messageFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $message_font['google'] ) ? $message_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $message_font['loadGoogle'] ) ? $message_font['loadGoogle'] : true ),
+					'typography' => ( isset( $message_font['family'] ) ? $message_font['family'] : '' ),
+					'fontVariant' => ( isset( $message_font['variant'] ) ? $message_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $message_font['subset'] ) ? $message_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
 		$css = '';
 		if ( isset( $attr['containerMargin'] ) && is_array( $attr['containerMargin'] ) ) {
 			$css .= '.wp-block-kadence-form.kadence-form-' . $unique_id . '.kb-form-wrap {';
@@ -2903,6 +2908,59 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_infobox_array( $attr, $unique_id ) {
+		if ( isset( $attr['mediaType'] ) && 'number' === $attr['mediaType'] && isset( $attr['mediaNumber'] ) && is_array( $attr['mediaNumber'] ) && isset( $attr['mediaNumber'][0] ) && is_array( $attr['mediaNumber'][0] ) && isset( $attr['mediaNumber'][0]['google'] ) && $attr['mediaNumber'][0]['google'] && ( ! isset( $attr['mediaNumber'][0]['loadGoogle'] ) || true === $attr['mediaNumber'][0]['loadGoogle'] ) && isset( $attr['mediaNumber'][0]['family'] ) ) {
+			$number_font = $attr['mediaNumber'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $number_font['google'] ) ? $number_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $number_font['loadGoogle'] ) ? $number_font['loadGoogle'] : true ),
+					'typography' => ( isset( $number_font['family'] ) ? $number_font['family'] : '' ),
+					'fontVariant' => ( isset( $number_font['variant'] ) ? $number_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $number_font['subset'] ) ? $number_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
+
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
+			$title_font = $attr['titleFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $title_font['google'] ) ? $title_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $title_font['loadGoogle'] ) ? $title_font['loadGoogle'] : true ),
+					'typography' => ( isset( $title_font['family'] ) ? $title_font['family'] : '' ),
+					'fontVariant' => ( isset( $title_font['variant'] ) ? $title_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $title_font['subset'] ) ? $title_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
+		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && isset( $attr['textFont'][0]['google'] ) && $attr['textFont'][0]['google'] && ( ! isset( $attr['textFont'][0]['loadGoogle'] ) || true === $attr['textFont'][0]['loadGoogle'] ) &&  isset( $attr['textFont'][0]['family'] ) ) {
+			$text_font = $attr['textFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $text_font['google'] ) ? $text_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $text_font['loadGoogle'] ) ? $text_font['loadGoogle'] : true ),
+					'typography' => ( isset( $text_font['family'] ) ? $text_font['family'] : '' ),
+					'fontVariant' => ( isset( $text_font['variant'] ) ? $text_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $text_font['subset'] ) ? $text_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
+		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && isset( $attr['learnMoreStyles'][0]['google'] ) && $attr['learnMoreStyles'][0]['google'] && ( ! isset( $attr['learnMoreStyles'][0]['loadGoogle'] ) || true === $attr['learnMoreStyles'][0]['loadGoogle'] ) &&  isset( $attr['learnMoreStyles'][0]['family'] ) ) {
+			$learn_more_font = $attr['learnMoreStyles'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $learn_more_font['google'] ) ? $learn_more_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $learn_more_font['loadGoogle'] ) ? $learn_more_font['loadGoogle'] : true ),
+					'typography' => ( isset( $learn_more_font['family'] ) ? $learn_more_font['family'] : '' ),
+					'fontVariant' => ( isset( $learn_more_font['variant'] ) ? $learn_more_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $learn_more_font['subset'] ) ? $learn_more_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
 		$css                    = new Kadence_Blocks_CSS();
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
@@ -3862,95 +3920,10 @@ class Kadence_Blocks_Frontend {
 	public function blocks_restaurantmenu_scripts_gfonts( $block ) {
 		$inner_blocks = empty( $block['innerBlocks'] ) ? [] : $block['innerBlocks'];
 
-		foreach ( $inner_blocks as $key => $block ) {
-			$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
-			$this->blocks_infobox_scripts_gfonts( $attributes );
-		}
-	}
-
-	/**
-	 * Adds Google fonts for infobox block.
-	 *
-	 * @param array $attr the blocks attr.
-	 */
-	public function blocks_infobox_scripts_gfonts( $attr ) {
-		if ( isset( $attr['mediaType'] ) && 'number' === $attr['mediaType'] && isset( $attr['mediaNumber'] ) && is_array( $attr['mediaNumber'] ) && isset( $attr['mediaNumber'][0] ) && is_array( $attr['mediaNumber'][0] ) && isset( $attr['mediaNumber'][0]['google'] ) && $attr['mediaNumber'][0]['google'] && ( ! isset( $attr['mediaNumber'][0]['loadGoogle'] ) || true === $attr['mediaNumber'][0]['loadGoogle'] ) && isset( $attr['mediaNumber'][0]['family'] ) ) {
-			$number_font = $attr['mediaNumber'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $number_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $number_font['family'],
-					'fontvariants' => ( isset( $number_font['variant'] ) && ! empty( $number_font['variant'] ) ? array( $number_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $number_font['subset'] ) && ! empty( $number_font['subset'] ) ? array( $number_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $number_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $number_font['variant'], self::$gfonts[ $number_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $number_font['family'] ]['fontvariants'], $number_font['variant'] );
-				}
-				if ( ! in_array( $number_font['subset'], self::$gfonts[ $number_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $number_font['family'] ]['fontsubsets'], $number_font['subset'] );
-				}
-			}
-		}
-
-		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
-			$title_font = $attr['titleFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $title_font['family'],
-					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $title_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
-				}
-				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
-				}
-			}
-		}
-		if ( isset( $attr['textFont'] ) && is_array( $attr['textFont'] ) && isset( $attr['textFont'][0] ) && is_array( $attr['textFont'][0] ) && isset( $attr['textFont'][0]['google'] ) && $attr['textFont'][0]['google'] && ( ! isset( $attr['textFont'][0]['loadGoogle'] ) || true === $attr['textFont'][0]['loadGoogle'] ) &&  isset( $attr['textFont'][0]['family'] ) ) {
-			$text_font = $attr['textFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $text_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $text_font['family'],
-					'fontvariants' => ( isset( $text_font['variant'] ) && ! empty( $text_font['variant'] ) ? array( $text_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $text_font['subset'] ) && ! empty( $text_font['subset'] ) ? array( $text_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $text_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $text_font['variant'], self::$gfonts[ $text_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $text_font['family'] ]['fontvariants'], $text_font['variant'] );
-				}
-				if ( ! in_array( $text_font['subset'], self::$gfonts[ $text_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $text_font['family'] ]['fontsubsets'], $text_font['subset'] );
-				}
-			}
-		}
-		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && isset( $attr['learnMoreStyles'][0]['google'] ) && $attr['learnMoreStyles'][0]['google'] && ( ! isset( $attr['learnMoreStyles'][0]['loadGoogle'] ) || true === $attr['learnMoreStyles'][0]['loadGoogle'] ) &&  isset( $attr['learnMoreStyles'][0]['family'] ) ) {
-			$learn_more_font = $attr['learnMoreStyles'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $learn_more_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $learn_more_font['family'],
-					'fontvariants' => ( isset( $learn_more_font['variant'] ) && ! empty( $learn_more_font['variant'] ) ? array( $learn_more_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $learn_more_font['subset'] ) && !empty( $learn_more_font['subset'] ) ? array( $learn_more_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $learn_more_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $learn_more_font['variant'], self::$gfonts[ $learn_more_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $learn_more_font['family'] ]['fontvariants'], $learn_more_font['variant'] );
-				}
-				if ( ! in_array( $learn_more_font['subset'], self::$gfonts[ $learn_more_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $learn_more_font['family'] ]['fontsubsets'], $learn_more_font['subset'] );
-				}
-			}
-		}
+		// foreach ( $inner_blocks as $key => $block ) {
+		// 	$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
+		// 	$this->blocks_infobox_scripts_gfonts( $attributes );
+		// }
 	}
 	/**
 	 * Adds Google fonts for iconlist block.
@@ -3988,82 +3961,6 @@ class Kadence_Blocks_Frontend {
 			$this->enqueue_style( 'kadence-blocks-tiny-slider' );
 			$this->enqueue_script( 'kadence-blocks-tiny-slider-init' );
 		}
-		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) && isset( $attr['titleFont'][0]['family'] ) ) {
-			$title_font = $attr['titleFont'][0];
-			// Check if the font has been added yet
-			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $title_font['family'],
-					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $title_font['subset'] ) && !empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $title_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
-				}
-				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
-				}
-			}
-		}
-		if ( isset( $attr['contentFont'] ) && is_array( $attr['contentFont'] ) && isset( $attr['contentFont'][0] ) && is_array( $attr['contentFont'][0] ) && isset( $attr['contentFont'][0]['google'] ) && $attr['contentFont'][0]['google'] && ( ! isset( $attr['contentFont'][0]['loadGoogle'] ) || true === $attr['contentFont'][0]['loadGoogle'] ) && isset( $attr['contentFont'][0]['family'] ) ) {
-			$content_font = $attr['contentFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $content_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $content_font['family'],
-					'fontvariants' => ( isset( $content_font['variant'] ) && ! empty( $content_font['variant'] ) ? array( $content_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $content_font['subset'] ) && ! empty( $content_font['subset'] ) ? array( $content_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $content_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $content_font['variant'], self::$gfonts[ $content_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $content_font['family'] ]['fontvariants'], $content_font['variant'] );
-				}
-				if ( ! in_array( $content_font['subset'], self::$gfonts[ $content_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $content_font['family'] ]['fontsubsets'], $content_font['subset'] );
-				}
-			}
-		}
-		if ( isset( $attr['nameFont'] ) && is_array( $attr['nameFont'] ) && isset( $attr['nameFont'][0] ) && is_array( $attr['nameFont'][0] ) && isset( $attr['nameFont'][0]['google'] ) && $attr['nameFont'][0]['google'] && ( ! isset( $attr['nameFont'][0]['loadGoogle'] ) || true === $attr['nameFont'][0]['loadGoogle'] ) && isset( $attr['nameFont'][0]['family'] ) ) {
-			$name_font = $attr['nameFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $name_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $name_font['family'],
-					'fontvariants' => ( isset( $name_font['variant'] ) && ! empty( $name_font['variant'] ) ? array( $name_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $name_font['subset'] ) && ! empty( $name_font['subset'] ) ? array( $name_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $name_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $name_font['variant'], self::$gfonts[ $name_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $name_font['family'] ]['fontvariants'], $name_font['variant'] );
-				}
-				if ( ! in_array( $name_font['subset'], self::$gfonts[ $name_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $name_font['family'] ]['fontsubsets'], $name_font['subset'] );
-				}
-			}
-		}
-		if ( isset( $attr['occupationFont'] ) && is_array( $attr['occupationFont'] ) && isset( $attr['occupationFont'][0] ) && is_array( $attr['occupationFont'][0] ) && isset( $attr['occupationFont'][0]['google'] ) && $attr['occupationFont'][0]['google'] && ( ! isset( $attr['occupationFont'][0]['loadGoogle'] ) || true === $attr['occupationFont'][0]['loadGoogle'] ) && isset( $attr['occupationFont'][0]['family'] ) ) {
-			$occupation_font = $attr['occupationFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $occupation_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $occupation_font['family'],
-					'fontvariants' => ( isset( $occupation_font['variant'] ) && ! empty( $occupation_font['variant'] ) ? array( $occupation_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $occupation_font['subset'] ) && ! empty( $occupation_font['subset'] ) ? array( $occupation_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $occupation_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $occupation_font['variant'], self::$gfonts[ $occupation_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $occupation_font['family'] ]['fontvariants'], $occupation_font['variant'] );
-				}
-				if ( ! in_array( $occupation_font['subset'], self::$gfonts[ $occupation_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $occupation_font['family'] ]['fontsubsets'], $occupation_font['subset'] );
-				}
-			}
-		}
 	}
 	/**
 	 * Builds CSS for Testimonial block.
@@ -4072,6 +3969,58 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_testimonials_array( $attr, $unique_id ) {
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) && isset( $attr['titleFont'][0]['family'] ) ) {
+			$title_font = $attr['titleFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $title_font['google'] ) ? $title_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $title_font['loadGoogle'] ) ? $title_font['loadGoogle'] : true ),
+					'typography' => ( isset( $title_font['family'] ) ? $title_font['family'] : '' ),
+					'fontVariant' => ( isset( $title_font['variant'] ) ? $title_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $title_font['subset'] ) ? $title_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
+		if ( isset( $attr['contentFont'] ) && is_array( $attr['contentFont'] ) && isset( $attr['contentFont'][0] ) && is_array( $attr['contentFont'][0] ) && isset( $attr['contentFont'][0]['google'] ) && $attr['contentFont'][0]['google'] && ( ! isset( $attr['contentFont'][0]['loadGoogle'] ) || true === $attr['contentFont'][0]['loadGoogle'] ) && isset( $attr['contentFont'][0]['family'] ) ) {
+			$content_font = $attr['contentFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $content_font['google'] ) ? $content_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $content_font['loadGoogle'] ) ? $content_font['loadGoogle'] : true ),
+					'typography' => ( isset( $content_font['family'] ) ? $content_font['family'] : '' ),
+					'fontVariant' => ( isset( $content_font['variant'] ) ? $content_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $content_font['subset'] ) ? $content_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
+		if ( isset( $attr['nameFont'] ) && is_array( $attr['nameFont'] ) && isset( $attr['nameFont'][0] ) && is_array( $attr['nameFont'][0] ) && isset( $attr['nameFont'][0]['google'] ) && $attr['nameFont'][0]['google'] && ( ! isset( $attr['nameFont'][0]['loadGoogle'] ) || true === $attr['nameFont'][0]['loadGoogle'] ) && isset( $attr['nameFont'][0]['family'] ) ) {
+			$name_font = $attr['nameFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $name_font['google'] ) ? $name_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $name_font['loadGoogle'] ) ? $name_font['loadGoogle'] : true ),
+					'typography' => ( isset( $name_font['family'] ) ? $name_font['family'] : '' ),
+					'fontVariant' => ( isset( $name_font['variant'] ) ? $name_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $name_font['subset'] ) ? $name_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
+		if ( isset( $attr['occupationFont'] ) && is_array( $attr['occupationFont'] ) && isset( $attr['occupationFont'][0] ) && is_array( $attr['occupationFont'][0] ) && isset( $attr['occupationFont'][0]['google'] ) && $attr['occupationFont'][0]['google'] && ( ! isset( $attr['occupationFont'][0]['loadGoogle'] ) || true === $attr['occupationFont'][0]['loadGoogle'] ) && isset( $attr['occupationFont'][0]['family'] ) ) {
+			$occupation_font = $attr['occupationFont'][0];
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $occupation_font['google'] ) ? $occupation_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $occupation_font['loadGoogle'] ) ? $occupation_font['loadGoogle'] : true ),
+					'typography' => ( isset( $occupation_font['family'] ) ? $occupation_font['family'] : '' ),
+					'fontVariant' => ( isset( $occupation_font['variant'] ) ? $occupation_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $occupation_font['subset'] ) ? $occupation_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
 		$css                          = new Kadence_Blocks_CSS();
 		$media_query                  = array();
 		$media_query['mobile']        = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
@@ -5867,6 +5816,28 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_advanced_heading_array( $attr, $unique_id ) {
+		// Add Main heading font.
+		$this->add_gfont(
+			array(
+				'googleFont' => ( isset( $attr['googleFont'] ) ? $attr['googleFont'] : false ),
+				'loadGoogleFont' => ( isset( $attr['loadGoogleFont'] ) ? $attr['loadGoogleFont'] : true ),
+				'typography' => ( isset( $attr['typography'] ) ? $attr['typography'] : '' ),
+				'fontVariant' => ( isset( $attr['fontVariant'] ) ? $attr['fontVariant'] : '' ),
+				'fontSubset' =>  ( isset( $attr['fontSubset'] ) ? $attr['fontSubset'] : '' ),
+				'loadItalic' =>  ( isset( $attr['loadItalic'] ) ? $attr['loadItalic'] : false ),
+			)
+		);
+		// Add Mark heading font.
+		$this->add_gfont(
+			array(
+				'googleFont' =>  ( isset( $attr['markGoogleFont'] ) ? $attr['markGoogleFont'] : false ),
+				'loadGoogleFont' =>  ( isset( $attr['markLoadGoogleFont'] ) ? $attr['markLoadGoogleFont'] : true ),
+				'typography' =>  ( isset( $attr['markTypography'] ) ? $attr['markTypography'] : '' ),
+				'fontVariant' =>  ( isset( $attr['markFontVariant'] ) ? $attr['markFontVariant'] : '' ),
+				'fontSubset' =>  ( isset( $attr['markFontSubset'] ) ? $attr['markFontSubset'] : '' ),
+				'loadItalic' => false,
+			)
+		);
 		$css                    = new Kadence_Blocks_CSS();
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
@@ -6110,12 +6081,21 @@ class Kadence_Blocks_Frontend {
 		return $css->css_output();
 	}
 	/**
-	 * Adds Google fonts for Advanced Heading block.
+	 * Adds Google fonts for loading later
 	 *
 	 * @param array $attr the blocks attr.
 	 */
-	public function blocks_advanced_heading_gfont( $attr ) {
-		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
+	public function add_gfont( $attr ) {
+		$defaults = array(
+			'googleFont' => false,
+			'loadGoogleFont' => true,
+			'typography' => '',
+			'fontVariant' => '',
+			'fontSubset' => '',
+			'loadItalic' => false,
+		);
+		$attr    = wp_parse_args( $attr, $defaults );
+		if ( true == $attr['googleFont'] && true == $attr['loadGoogleFont'] && ! empty( $attr['typography'] ) ) {
 			// Check if the font has been added yet.
 			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {
 				$add_font = array(
@@ -6124,15 +6104,43 @@ class Kadence_Blocks_Frontend {
 					'fontsubsets' => ( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ? array( $attr['fontSubset'] ) : array() ),
 				);
 				self::$gfonts[ $attr['typography'] ] = $add_font;
+				// Check if wp_head has already run in which case we need to add to footer fonts.
+				if ( did_action( 'wp_body_open')  >= 1 ) {
+					self::$footer_gfonts[ $attr['typography'] ] = $add_font;
+				}
 			} else {
 				if ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ) {
 					if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
 						array_push( self::$gfonts[ $attr['typography'] ]['fontvariants'], $attr['fontVariant'] );
+						if ( did_action( 'wp_body_open')  >= 1 ) {
+							if ( ! array_key_exists( $attr['typography'], self::$footer_gfonts ) ) {
+								$add_font = array(
+									'fontfamily' => $attr['typography'],
+									'fontvariants' => ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ? array( $attr['fontVariant'] ) : array() ),
+									'fontsubsets' => ( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ? array( $attr['fontSubset'] ) : array() ),
+								);
+								self::$footer_gfonts[ $attr['typography'] ] = $add_font;
+							} else {
+								array_push( self::$footer_gfonts[ $attr['typography'] ]['fontvariants'], $attr['fontVariant'] );
+							}
+						}
 					}
 				}
 				if ( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ) {
 					if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
 						array_push( self::$gfonts[ $attr['typography'] ]['fontsubsets'], $attr['fontSubset'] );
+						if ( did_action( 'wp_body_open')  >= 1 ) {
+							if ( ! array_key_exists( $attr['typography'], self::$footer_gfonts ) ) {
+								$add_font = array(
+									'fontfamily' => $attr['typography'],
+									'fontvariants' => ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ? array( $attr['fontVariant'] ) : array() ),
+									'fontsubsets' => ( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ? array( $attr['fontSubset'] ) : array() ),
+								);
+								self::$footer_gfonts[ $attr['typography'] ] = $add_font;
+							} else {
+								array_push( self::$footer_gfonts[ $attr['typography'] ]['fontsubsets'], $attr['fontSubset'] );
+							}
+						}
 					}
 				}
 			}
@@ -6141,28 +6149,11 @@ class Kadence_Blocks_Frontend {
 					$italicVersion = ( $attr['fontVariant'] === 'regular' ? 'italic' : $attr['fontVariant'] . 'italic' );
 					if ( ! in_array( $italicVersion, self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
 						array_push( self::$gfonts[ $attr['typography'] ]['fontvariants'], $italicVersion );
-					}
-				}
-			}
-		}
-		if ( isset( $attr['markGoogleFont'] ) && $attr['markGoogleFont'] && ( ! isset( $attr['markLoadGoogleFont'] ) || true == $attr['markLoadGoogleFont'] ) && isset( $attr['markTypography'] ) ) {
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $attr['markTypography'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $attr['markTypography'],
-					'fontvariants' => ( isset( $attr['markFontVariant'] ) && ! empty( $attr['markFontVariant'] ) ? array( $attr['markFontVariant'] ) : array() ),
-					'fontsubsets' => ( isset( $attr['markFontSubset'] ) && ! empty( $attr['markFontSubset'] ) ? array( $attr['markFontSubset'] ) : array() ),
-				);
-				self::$gfonts[ $attr['markTypography'] ] = $add_font;
-			} else {
-				if ( isset( $attr['markFontVariant'] ) && ! empty( $attr['markFontVariant'] ) ) {
-					if ( ! in_array( $attr['markFontVariant'], self::$gfonts[ $attr['markTypography'] ]['fontvariants'], true ) ) {
-						array_push( self::$gfonts[ $attr['markTypography'] ]['fontvariants'], $attr['markFontVariant'] );
-					}
-				}
-				if ( isset( $attr['markFontSubset'] ) && ! empty( $attr['markFontSubset'] ) ) {
-					if ( ! in_array( $attr['markFontSubset'], self::$gfonts[ $attr['markTypography'] ]['fontsubsets'], true ) ) {
-						array_push( self::$gfonts[ $attr['markTypography'] ]['fontsubsets'], $attr['markFontSubset'] );
+						if ( did_action( 'wp_body_open')  >= 1 ) {
+							if ( ! array_key_exists( $attr['typography'], self::$footer_gfonts ) ) {
+								array_push( self::$footer_gfonts[ $attr['typography'] ]['fontvariants'], $italicVersion );
+							}
+						}
 					}
 				}
 			}
@@ -6175,6 +6166,19 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_advanced_btn_array( $attr, $unique_id ) {
+		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
+			// Add Button font.
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $attr['googleFont'] ) ? $attr['googleFont'] : false ),
+					'loadGoogleFont' => ( isset( $attr['loadGoogleFont'] ) ? $attr['loadGoogleFont'] : true ),
+					'typography' => ( isset( $attr['typography'] ) ? $attr['typography'] : '' ),
+					'fontVariant' => ( isset( $attr['fontVariant'] ) ? $attr['fontVariant'] : '' ),
+					'fontSubset' =>  ( isset( $attr['fontSubset'] ) ? $attr['fontSubset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
+		}
 		$css                    = new Kadence_Blocks_CSS();
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
@@ -6267,7 +6271,7 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $btnvalue['gap'] ) && is_numeric( $btnvalue['gap'] ) ) {
 						$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
 						$css->add_property( 'margin-right',  $btnvalue['gap'] . 'px' );
-						$css->set_selector( 'rtl .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
+						$css->set_selector( '.rtl .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
 						$css->add_property( 'margin-left',  $btnvalue['gap'] . 'px' );
 						$css->add_property( 'margin-right',  '0px' );
 					}
@@ -6542,35 +6546,6 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		return $css->css_output();
-	}
-	/**
-	 * Builds CSS for Advanced Button block.
-	 *
-	 * @param array $attr the blocks attr.
-	 */
-	public function blocks_advanced_btn_gfont( $attr ) {
-		if ( isset( $attr['googleFont'] ) && $attr['googleFont'] && ( ! isset( $attr['loadGoogleFont'] ) || true == $attr['loadGoogleFont'] ) && isset( $attr['typography'] ) ) {
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $attr['typography'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $attr['typography'],
-					'fontvariants' => ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ? array( $attr['fontVariant'] ) : array() ),
-					'fontsubsets' => ( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ? array( $attr['fontSubset'] ) : array() ),
-				);
-				self::$gfonts[ $attr['typography'] ] = $add_font;
-			} else {
-				if ( isset( $attr['fontVariant'] ) && ! empty( $attr['fontVariant'] ) ) {
-					if ( ! in_array( $attr['fontVariant'], self::$gfonts[ $attr['typography'] ]['fontvariants'], true ) ) {
-						array_push( self::$gfonts[ $attr['typography'] ]['fontvariants'], $attr['fontVariant'] );
-					}
-				}
-				if ( isset( $attr['fontSubset'] ) && ! empty( $attr['fontSubset'] ) ) {
-					if ( ! in_array( $attr['fontSubset'], self::$gfonts[ $attr['typography'] ]['fontsubsets'], true ) ) {
-						array_push( self::$gfonts[ $attr['typography'] ]['fontsubsets'], $attr['fontSubset'] );
-					}
-				}
-			}
-		}
 	}
 	/**
 	 * Builds Css for row layout block.

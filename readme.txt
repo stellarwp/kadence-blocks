@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 2.1.12
+Stable tag: 2.1.13
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.1.13 =
+Release Date: September 27th, 2021
+* Fix: Issue with google font weight selection.
+* Fix: Better Screen reader text for read more.
+* Fix: Widget screen color picker.
+* Fix: Remove max width from accordion.
+* Fix: possible z-index issue in the editor.
+* Fix: Issue with google font loading in widget area.
+* Fix: Moving Tab Order.
 
 = 2.1.12 =
 Release Date: September 15th, 2021

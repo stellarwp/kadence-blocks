@@ -470,7 +470,7 @@ class TypographyControls extends Component {
 						{ onFontWeight && (
 							<SelectControl
 								label={ __( 'Font Weight', 'kadence-blocks' ) }
-								value={ ( 'regular' === fontWeight ? '400' : fontWeight ) }
+								value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
 								options={ typographyWeights }
 								onChange={ onTypoFontWeightChange }
 							/>

@@ -3094,7 +3094,7 @@ class KadenceRowLayout extends Component {
 						) }
 					</InspectorControls>
 				) }
-				{ ( textColor || linkColor || linkHoverColor || columns ) && (
+				{ ( textColor || linkColor || linkHoverColor || columns || zIndex || kadenceBlockCSS ) && (
 					<style>
 						{ ( textColor ? `#kt-layout-id${ uniqueID }, #kt-layout-id${ uniqueID } p, #kt-layout-id${ uniqueID } h1, #kt-layout-id${ uniqueID } h2, #kt-layout-id${ uniqueID } h3, #kt-layout-id${ uniqueID } h4, #kt-layout-id${ uniqueID } h5, #kt-layout-id${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 						{ ( linkColor ? `#kt-layout-id${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
@@ -3110,6 +3110,11 @@ class KadenceRowLayout extends Component {
 								{ ( firstColumnWidth || temporaryColumnWidth ? `#kt-layout-id${ uniqueID } > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:nth-child(1) { flex: 0 1 ${ parseFloat( widthString ) }%; }` : '' ) }
 								{ ( secondColumnWidth || temporarySecondColumnWidth ? `#kt-layout-id${ uniqueID } > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:nth-child(2) { flex: 0 1 ${ parseFloat( secondWidthString ) }%; }` : '' ) }
 								{ ( secondColumnWidth || temporarySecondColumnWidth ? `#kt-layout-id${ uniqueID } > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:nth-child(3) { flex: 0 1 ${ parseFloat( thirdWidthString ) }%; }` : '' ) }
+							</Fragment>
+						) }
+						{ zIndex && zIndex > 30 && (
+							<Fragment>
+								{ `.components-popover.block-editor-block-list__block-popover { z-index: ${ zIndex + 1000 }` };
 							</Fragment>
 						) }
 						{ kadenceBlockCSS && (

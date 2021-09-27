@@ -173,7 +173,8 @@ class KadenceTabs extends Component {
 		} else if ( this.props.attributes.startTab === ( newIndex + 1 ) ) {
 			this.props.setAttributes( { startTab: ( oldIndex + 1 ) } );
 		}
-		this.props.moveTab( this.props.tabsBlock.innerBlocks[ oldIndex ].clientId, newIndex );
+		//this.props.moveTab( this.props.tabsBlock.innerBlocks[ oldIndex ].clientId, newIndex );
+		this.props.moveTab( oldIndex, newIndex );
 		this.props.resetOrder();
 		this.props.setAttributes( { currentTab: parseInt( newIndex + 1 ) } );
 	}
@@ -1633,7 +1634,8 @@ export default compose( [
 				} );
 			},
 			moveTab( tabId, newIndex ) {
-				moveBlockToPosition( tabId, clientId, clientId, parseInt( newIndex ) );
+				innerBlocks.splice( newIndex, 0, innerBlocks.splice( tabId, 1 )[0] );
+				replaceInnerBlocks( clientId, innerBlocks );
 			},
 			insertTab( newBlock ) {
 				insertBlock( newBlock, parseInt( block.innerBlocks.length ), clientId );

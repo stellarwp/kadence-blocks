@@ -26,6 +26,7 @@ import BorderColorControls from '../../border-color-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import KadenceRange from '../../components/range/range-control';
 
 /**
  * Import Css
@@ -976,7 +977,7 @@ class KadenceAccordionComponent extends Component {
 								title={ __( 'Structure Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<RangeControl
+								<KadenceRange
 									label={ __( 'Content Minimum Height', 'kadence-blocks' ) }
 									value={ minHeight }
 									onChange={ ( value ) => {
@@ -987,7 +988,7 @@ class KadenceAccordionComponent extends Component {
 									min={ 0 }
 									max={ 1000 }
 								/>
-								<RangeControl
+								<KadenceRange
 									label={ __( 'Max Width', 'kadence-blocks' ) }
 									value={ maxWidth }
 									onChange={ ( value ) => {

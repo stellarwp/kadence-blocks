@@ -596,7 +596,7 @@ class Kadence_Blocks_CSS {
 			return false;
 		}
 		if ( ! is_array( $color ) && strpos( $color, 'palette' ) === 0 ) {
-			switch ($color) {
+			switch ( $color ) {
 				case 'palette2':
 					$fallback = '#2B6CB0';
 					break;
