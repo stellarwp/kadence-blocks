@@ -61,6 +61,7 @@ registerBlockType( 'kadence/form', {
 		ktanimatepreview: true,
 		ktanimateswipe: true,
 	},
+	usesContext: [ 'postId' ],
 	attributes: {
 		uniqueID: {
 			type: 'string',

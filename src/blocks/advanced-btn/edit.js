@@ -158,6 +158,17 @@ class KadenceAdvancedButton extends Component {
 		} else {
 			this.setState( { marginControl: 'individual' } );
 		}
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			if ( ! this.props.attributes.inQueryBlock ) {
+				this.props.setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( this.props.attributes.inQueryBlock ) {
+			this.props.setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
 	}
 	componentDidUpdate( prevProps ) {
 		if ( ! this.props.isSelected && prevProps.isSelected && this.state.btnFocused ) {

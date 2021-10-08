@@ -963,6 +963,7 @@ button.components-button.kb-sidebar-image {
 // When using CSS grid, margins do not collapse on the container.
 .kadence-inner-column-inner {
 	border: 0 solid transparent;
+	transition: all 0.3s ease;
 }
 .wp-block-kadence-rowlayout .block-editor-block-list__layout {
 	margin-left: 0;

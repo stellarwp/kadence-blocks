@@ -13,6 +13,7 @@ import icons from '../../icons';
 import Select from 'react-select';
 import times from 'lodash/times';
 import dropRight from 'lodash/dropRight';
+import debounce from 'lodash/debounce';
 import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
@@ -107,6 +108,7 @@ class KadenceRowLayout extends Component {
 		this.showSettings = this.showSettings.bind( this );
 		this.saveSlideItem = this.saveSlideItem.bind( this );
 		this.getPreviewSize = this.getPreviewSize.bind( this );
+		this.getDynamic = this.getDynamic.bind( this );
 		this.state = {
 			firstWidth: null,
 			secondWidth: null,
@@ -117,6 +119,7 @@ class KadenceRowLayout extends Component {
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
+		this.debouncedUpdateDynamic = debounce( this.getDynamic.bind( this ), 200 );
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
@@ -144,24 +147,6 @@ class KadenceRowLayout extends Component {
 		} else {
 			ktrowUniqueIDs.push( this.props.attributes.uniqueID );
 		}
-		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['bgImg'] && this.props.attributes.kadenceDynamic['bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'bgImg' );
-		}
-		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['overlayBgImg'] && this.props.attributes.kadenceDynamic['overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'overlayBgImg' );
-		}
-		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['tabletBackground:0:bgImg'] && this.props.attributes.kadenceDynamic['tabletBackground:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'tabletBackground:0:bgImg' );
-		}
-		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'] && this.props.attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'tabletOverlay:0:overlayBgImg' );
-		}
-		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mobileBackground:0:bgImg'] && this.props.attributes.kadenceDynamic['mobileBackground:0:bgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'mobileBackground:0:bgImg' );
-		}
-		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'] && this.props.attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'].enable ) {
-			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'mobileOverlay:0:overlayBgImg' );
-		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/rowlayout' ] !== undefined && typeof blockSettings[ 'kadence/rowlayout' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/rowlayout' ] } );
@@ -170,6 +155,42 @@ class KadenceRowLayout extends Component {
 			this.setState( { borderRadiusControl: 'linked' } );
 		} else {
 			this.setState( { borderRadiusControl: 'individual' } );
+		}
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			if ( ! this.props.attributes.inQueryBlock ) {
+				this.props.setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( this.props.attributes.inQueryBlock ) {
+			this.props.setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
+		this.debouncedUpdateDynamic();
+	}
+	getDynamic() {
+		let contextPost = null;
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			contextPost = this.props.context.postId;
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['bgImg'] && this.props.attributes.kadenceDynamic['bgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'bgImg', contextPost );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['overlayBgImg'] && this.props.attributes.kadenceDynamic['overlayBgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'overlayBgImg', contextPost );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['tabletBackground:0:bgImg'] && this.props.attributes.kadenceDynamic['tabletBackground:0:bgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'tabletBackground:0:bgImg', contextPost );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'] && this.props.attributes.kadenceDynamic['tabletOverlay:0:overlayBgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'tabletOverlay:0:overlayBgImg', contextPost );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mobileBackground:0:bgImg'] && this.props.attributes.kadenceDynamic['mobileBackground:0:bgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'mobileBackground:0:bgImg', contextPost );
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'] && this.props.attributes.kadenceDynamic['mobileOverlay:0:overlayBgImg'].enable ) {
+			applyFilters( 'kadence.dynamicBackground', '', this.props.attributes, this.props.setAttributes, 'mobileOverlay:0:overlayBgImg', contextPost );
 		}
 	}
 	showSettings( key ) {

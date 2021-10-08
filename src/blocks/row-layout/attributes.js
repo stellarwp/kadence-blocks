@@ -543,6 +543,10 @@ const attributes = {
 	responsiveMaxWidth: {
 		type: 'array',
 		default: [ '', '' ],
-	}
+	},
+	inQueryBlock: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

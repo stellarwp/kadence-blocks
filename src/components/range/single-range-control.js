@@ -17,12 +17,14 @@ import {
 	ButtonGroup,
 	DropdownMenu,
 } from '@wordpress/components';
+import { useInstanceId } from '@wordpress/compose';
 
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
 export default function ResponsiveSingleRangeControl( {
+	device = 'device',
 	onChange,
 	value,
 	step = 1,

@@ -672,9 +672,19 @@ class KB_Ajax_Form {
 	private function get_form_args( $post_id, $form_id ) {
 		$form_args = false;
 		$blocks = '';
-		if ( strpos( $post_id, 'block' ) !== false ) {
+		if ( strpos( $post_id, 'block-unknown' ) !== false ) {
 			$widget_data = get_option( 'widget_block' );
-			$post_id_int = preg_replace('/[^0-9]/', '', $post_id);
+			if ( is_array( $widget_data ) ) {
+				foreach ( $widget_data as $key => $data_array ) {
+					if ( ! empty( $data_array['content'] ) && strpos( $data_array['content'], '<!-- wp:kadence/form {"uniqueID":"' . $form_id . '"' ) !== false ) {
+						$blocks = $this->parse_blocks( $data_array['content'] );
+						break;
+					}
+				}
+			}
+		} else if ( strpos( $post_id, 'block' ) !== false ) {
+			$widget_data = get_option( 'widget_block' );
+			$post_id_int = preg_replace( '/[^0-9]/', '', $post_id );
 			if ( ! empty( $widget_data[ absint( $post_id_int ) ] ) ) {
 				$form_content = $widget_data[ absint( $post_id_int ) ];
 				$blocks = $this->parse_blocks( $form_content['content'] );

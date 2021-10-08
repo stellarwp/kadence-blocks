@@ -211,6 +211,14 @@ registerBlockType( 'kadence/posts', {
 			type: 'bool',
 			default: true,
 		},
+		excerptCustomLength: {
+			type: 'bool',
+			default: false,
+		},
+		excerptLength: {
+			type: 'number',
+			default: 40,
+		},
 		readmore: {
 			type: 'bool',
 			default: true,

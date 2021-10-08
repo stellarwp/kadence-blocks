@@ -60,6 +60,7 @@ registerBlockType( 'kadence/advancedheading', {
 		ktanimatepreview: true,
 		ktdynamic: true,
 	},
+	usesContext: [ 'postId', 'queryId' ],
 	attributes: {
 		content: {
 			type: 'string',
@@ -335,6 +336,10 @@ registerBlockType( 'kadence/advancedheading', {
 		},
 		backgroundColorClass: {
 			type: 'string',
+		},
+		inQueryBlock: {
+			type: 'bool',
+			default: false,
 		},
 	},
 	transforms: {

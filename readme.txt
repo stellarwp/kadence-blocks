@@ -4,9 +4,9 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 2.1.13
+Stable tag: 2.1.14
 License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Custom Blocks for for Gutenberg to help extend the editing capabilities.
 
@@ -15,7 +15,7 @@ Custom Blocks for for Gutenberg to help extend the editing capabilities.
 Kadence Blocks adds custom blocks and options to extend Gutenberg’s editing capabilities so you can create stunning websites with ease – no code required. Kadence Blocks is your toolkit that makes the WordPress block editor capable of creating beautiful content that’s usually only possible through page builder plugins. Each block is crafted with care with regard to performance, accessibility, and extensibility.
 
 = Try Kadence Blocks =
-See Kadence Blocks in action with [the live Demo Testing](http://demo.kadencethemes.com/kadence-blocks/)
+See Kadence Blocks in action with [the live Demo Testing](https://www.kadencewp.com/kadence-blocks/try/)
 
 = Custom Blocks Include =
 * Row Layout - Create rows with nested blocks either in columns or as a container. Give style to your rows with a background, overlay, padding, etc. [Learn more](https://www.kadencewp.com/kadence-blocks/row-layout-block/?utm_source=wordpress&utm_medium=referral&utm_campaign=read-me&utm_content=kadence-blocks)
@@ -79,6 +79,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.1.14 =
+Release Date: October 8th, 2021
+* Add: Hover Options to columns.
+* Update: Testimonial container padding controls.
+* Update: Post excerpt length options for post block.
+* Fix: Issue widgets and form block.
 
 = 2.1.13 =
 Release Date: September 27th, 2021

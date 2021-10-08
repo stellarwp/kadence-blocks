@@ -239,5 +239,72 @@ const attributes = {
 	verticalAlignment: {
 		type: 'string',
 	},
+	backgroundImgHover: {
+		type: 'array',
+		default: [ {
+			bgImg: '',
+			bgImgID: '',
+			bgImgSize: 'cover',
+			bgImgPosition: 'center center',
+			bgImgAttachment: 'scroll',
+			bgImgRepeat: 'no-repeat',
+		} ],
+	},
+	backgroundHover: {
+		type: 'string',
+		default: '',
+	},
+	borderHover: {
+		type: 'string',
+		default: '',
+	},
+	borderHoverWidth: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	tabletBorderHoverWidth: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	mobileBorderHoverWidth: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	borderHoverRadius: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	displayHoverShadow: {
+		type: 'bool',
+		default: false,
+	},
+	shadowHover: {
+		type: 'array',
+		default: [ {
+			color: '#000000',
+			opacity: 0.2,
+			spread: 0,
+			blur: 14,
+			hOffset: 0,
+			vOffset: 0,
+			inset: false,
+		} ],
+	},
+	textColorHover: {
+		type: 'string',
+		default: '',
+	},
+	linkColorHover: {
+		type: 'string',
+		default: '',
+	},
+	linkHoverColorHover: {
+		type: 'string',
+		default: '',
+	},
+	inQueryBlock: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

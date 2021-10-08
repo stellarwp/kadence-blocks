@@ -58,6 +58,7 @@ registerBlockType( 'kadence/advancedbtn', {
 		ktanimatepreview: true,
 		ktdynamic: true,
 	},
+	usesContext: [ 'postId', 'queryId' ],
 	attributes: {
 		hAlign: {
 			type: 'string',
@@ -201,6 +202,10 @@ registerBlockType( 'kadence/advancedbtn', {
 		marginUnit: {
 			type: 'string',
 			default: 'px',
+		},
+		inQueryBlock: {
+			type: 'bool',
+			default: false,
 		},
 	},
 	edit,

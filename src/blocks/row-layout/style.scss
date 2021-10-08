@@ -68,10 +68,12 @@
     height: 100%;
     width: 100%;
     z-index: 0;
+	filter: opacity(100%);
 }
 .kt-inside-inner-col {
 	border: 0 solid transparent;
     -ms-flex-negative: 0;
+	transition: all 0.3s ease;
 }
 .kt-row-valign-middle > .wp-block-kadence-column {
     justify-content: center;

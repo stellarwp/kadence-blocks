@@ -139,7 +139,7 @@ class KadencePosts extends Component {
 			} );
 	}
 	render() {
-		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont }, className, setAttributes, taxList, taxOptions, taxFilterOptions } = this.props;
+		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont, excerptCustomLength, excerptLength }, className, setAttributes, taxList, taxOptions, taxFilterOptions } = this.props;
 		const { latestPosts, loaded } = this.state;
 		const taxonomyList = [];
 		const taxonomyOptions = [];
@@ -741,6 +741,20 @@ class KadencePosts extends Component {
 							onChange={ ( value ) => setAttributes( { excerpt: value } ) }
 						/>
 						<ToggleControl
+							label={ __( 'Enable Custom Excerpt Length', 'kadence-blocks' ) }
+							checked={ excerptCustomLength }
+							onChange={ ( value ) => setAttributes( { excerptCustomLength: value } ) }
+						/>
+						{ excerptCustomLength && (
+							<KadenceRange
+								label={ __( 'Max number of words in excerpt', 'kadence-blocks' ) }
+								value={ excerptLength }
+								onChange={ ( value ) => setAttributes( { excerptLength: value } ) }
+								min={ 10 }
+								max={ 100 }
+							/>
+						) }
+						<ToggleControl
 							label={ __( 'Enable Read More', 'kadence-blocks' ) }
 							checked={ readmore }
 							onChange={ ( value ) => setAttributes( { readmore: value } ) }
@@ -789,6 +803,26 @@ class KadencePosts extends Component {
 		// Removing posts from display should be instant.
 		const displayPosts = latestPosts.length > postsToShow ? latestPosts.slice( 0, postsToShow ) : latestPosts;
 		const renderPosts = ( post, i ) => {
+			let theExcerpt = ( undefined !== post.excerpt && post.excerpt && undefined !== post.excerpt.rendered ? post.excerpt.rendered : '' );
+			const excerptElement = document.createElement( 'div' );
+			excerptElement.innerHTML = theExcerpt;
+			theExcerpt = excerptElement.textContent || excerptElement.innerText || '';
+			let postExcerpt = '';
+			if ( excerptCustomLength && theExcerpt ) {
+				const needsTrim = excerptLength < theExcerpt.trim().split( ' ' ).length && post.excerpt.raw === '';
+				postExcerpt = needsTrim ? (
+					<Fragment>
+						{ theExcerpt
+							.trim()
+							.split( ' ', excerptLength )
+							.join( ' ' ) }
+					</Fragment>
+				) : (
+					theExcerpt
+				);
+			} else {
+				postExcerpt = theExcerpt;
+			}
 			return (
 				<article
 					key={ i }
@@ -938,7 +972,9 @@ class KadencePosts extends Component {
 							) }
 						</header>
 						{ excerpt && post.excerpt && post.excerpt.rendered && (
-							<div className="entry-summary" dangerouslySetInnerHTML={ { __html: post.excerpt.rendered } } />
+							<div className="entry-summary">
+								{ postExcerpt }
+							</div>
 						) }
 						<footer className="entry-footer">
 							{ readmore && (

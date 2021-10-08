@@ -45,6 +45,7 @@ function CustomComponent( { meta, oldMeta, onUpdateWidth } ) {
 		{ key: 'sidebar', name: __( 'Small', 'kadence-blocks'  ) },
 		{ key: 'fullwidth', name: __( 'Full Screen Width', 'kadence-blocks'  ) },
 	];
+	const block_editor_width = ( undefined !== meta && undefined !== meta.kt_blocks_editor_width ? meta.kt_blocks_editor_width : '' );
 	return (
 		<div className="kt-blocks-width-control">
 			<h2 className="kt-blocks-width-heading">{ __( 'Editor Max Width', 'kadence-blocks'  ) }</h2>
@@ -54,8 +55,8 @@ function CustomComponent( { meta, oldMeta, onUpdateWidth } ) {
 						key={ key }
 						className="kt-editor-width-btn"
 						isSmall
-						isPrimary={ ( undefined !== meta && undefined !== meta.kt_blocks_editor_width && meta.kt_blocks_editor_width === key ) || ( undefined === meta && 'default' === key ) || ( undefined === meta.kt_blocks_editor_width && 'default' === key ) }
-						aria-pressed={ ( undefined !== meta && undefined !== meta.kt_blocks_editor_width && meta.kt_blocks_editor_width === key ) || ( undefined === meta && 'default' === key ) || ( undefined === meta.kt_blocks_editor_width && 'default' === key ) }
+						isPrimary={ ( block_editor_width === key ) || ( '' === block_editor_width && 'default' === key ) }
+						aria-pressed={ ( block_editor_width === key ) || ( '' === block_editor_width && 'default' === key ) }
 						onClick={ () => {
 							changeBodyClass( key );
 							onUpdateWidth( key, meta, oldMeta );

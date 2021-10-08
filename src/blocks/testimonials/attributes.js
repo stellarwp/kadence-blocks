@@ -315,5 +315,21 @@ const attributes = {
 		type: 'array',
 		default: [ '', '', '', '' ],
 	},
+	tabletContainerPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	mobileContainerPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	containerPaddingType: {
+		type: 'string',
+		default: 'px',
+	},
+	inQueryBlock: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

@@ -377,5 +377,9 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	inQueryBlock: {
+		type: 'bool',
+		default: false,
+	},
 };
 export default attributes;

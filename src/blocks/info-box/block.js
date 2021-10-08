@@ -58,7 +58,7 @@ registerBlockType( 'kadence/infobox', {
 	supports: {
 		ktdynamic: true,
 	},
-
+	usesContext: [ 'postId', 'queryId' ],
 	save: props => {
 		const { attributes: { uniqueID, link, linkProperty, target, hAlign, mediaType, mediaImage, mediaIcon, mediaAlign, displayTitle, title, titleFont, displayText, contentText, displayLearnMore, learnMore, mediaVAlign, hAlignMobile, hAlignTablet, linkNoFollow, linkSponsored, mediaNumber, number, kadenceDynamic, imageRatio, linkTitle }, className } = props;
 		const titleTagName = 'h' + titleFont[ 0 ].level;

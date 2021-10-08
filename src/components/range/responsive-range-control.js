@@ -67,11 +67,13 @@ export default function ResponsiveRangeControls( {
 	const devices = [
 		{
 			name: 'Desktop',
+			key: 'desktop',
 			title: <Dashicon icon="desktop" />,
 			itemClass: 'kb-desk-tab',
 		},
 		{
 			name: 'Tablet',
+			key: 'tablet',
 			title: <Dashicon icon="tablet" />,
 			itemClass: 'kb-tablet-tab',
 		},
@@ -85,6 +87,7 @@ export default function ResponsiveRangeControls( {
 	const output = {};
 	output.Mobile = (
 		<ResponsiveSingleRangeControl
+			device={ 'mobile' }
 			value={ ( undefined !== mobileValue ? mobileValue : '' ) }
 			onChange={ ( size ) => onChangeMobile( size ) }
 			min={ min }
@@ -98,6 +101,7 @@ export default function ResponsiveRangeControls( {
 	);
 	output.Tablet = (
 		<ResponsiveSingleRangeControl
+			device={ 'tablet' }
 			value={ ( undefined !== tabletValue ? tabletValue : '' ) }
 			onChange={ ( size ) => onChangeTablet( size ) }
 			min={ min }
@@ -111,6 +115,7 @@ export default function ResponsiveRangeControls( {
 	);
 	output.Desktop = (
 		<ResponsiveSingleRangeControl
+			device={ 'desktop' }
 			value={ ( undefined !== value ? value : '' ) }
 			onChange={ ( size ) => onChange( size ) }
 			min={ min }

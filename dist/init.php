@@ -490,13 +490,23 @@ function kt_blocks_init_post_meta() {
 		'kt_blocks_editor_width',
 		array(
 			'show_in_rest' => true,
-			'single' => true,
-			'type' => 'string',
+			'single'       => true,
+			'type'         => 'string',
 		)
 	);
 }
 add_action( 'init', 'kt_blocks_init_post_meta' );
-
+/**
+ * Callback for the excerpt_length filter used by
+ * the Latest Posts block at render time.
+ *
+ * @return int Returns the global $kadence_blocks_post_block_get_excerpt_length variable
+ *             to allow the excerpt_length filter respect the Latest Block setting.
+ */
+function kadence_blocks_post_block_get_excerpt_length() {
+	global $kadence_blocks_post_block_get_excerpt_length;
+	return $kadence_blocks_post_block_get_excerpt_length;
+}
 /**
  * Add inline css editor width
  */

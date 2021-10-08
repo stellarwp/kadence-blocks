@@ -159,7 +159,7 @@ class RowBackground extends Component {
 							<video className="kb-blocks-bg-video" playsinline="" loop="" src={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : undefined ) }></video>
 						) }
 						{ ( 'youtube' === backgroundVideoType ) && (
-							<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(http://img.youtube.com/vi/${ backgroundVideo[ 0 ].youtube }/maxresdefault.jpg)` } }></div>
+							<div className="kb-blocks-bg-video" style={ { backgroundImage: `url(https://img.youtube.com/vi/${ backgroundVideo[ 0 ].youtube }/maxresdefault.jpg)` } }></div>
 						) }
 					</div>
 				) }

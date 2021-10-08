@@ -83,6 +83,8 @@ class KadenceTestimonials extends Component {
 		this.getPreviewSize = this.getPreviewSize.bind( this );
 		this.state = {
 			containerPaddingControl: 'linked',
+			tabletContainerPaddingControl: 'linked',
+			mobileContainerPaddingControl: 'linked',
 			containerBorderControl: 'linked',
 			mediaBorderControl: 'linked',
 			mediaPaddingControl: 'linked',
@@ -154,6 +156,16 @@ class KadenceTestimonials extends Component {
 		} else {
 			this.setState( { containerPaddingControl: 'individual' } );
 		}
+		if ( this.props.attributes.tabletContainerPadding[ 0 ] === this.props.attributes.tabletContainerPadding[ 1 ] && this.props.attributes.tabletContainerPadding[ 0 ] === this.props.attributes.tabletContainerPadding[ 2 ] && this.props.attributes.tabletContainerPadding[ 0 ] === this.props.attributes.tabletContainerPadding[ 3 ] ) {
+			this.setState( { tabletContainerPaddingControl: 'linked' } );
+		} else {
+			this.setState( { tabletContainerPaddingControl: 'individual' } );
+		}
+		if ( this.props.attributes.mobileContainerPadding[ 0 ] === this.props.attributes.mobileContainerPadding[ 1 ] && this.props.attributes.mobileContainerPadding[ 0 ] === this.props.attributes.mobileContainerPadding[ 2 ] && this.props.attributes.mobileContainerPadding[ 0 ] === this.props.attributes.mobileContainerPadding[ 3 ] ) {
+			this.setState( { mobileContainerPaddingControl: 'linked' } );
+		} else {
+			this.setState( { mobileContainerPaddingControl: 'individual' } );
+		}
 		if ( this.props.attributes.ratingStyles[ 0 ] && this.props.attributes.ratingStyles[ 0 ].margin && this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 1 ] && this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 2 ] && this.props.attributes.ratingStyles[ 0 ].margin[ 0 ] === this.props.attributes.ratingStyles[ 0 ].margin[ 3 ] ) {
 			this.setState( { ratingMarginControl: 'linked' } );
 		} else {
@@ -177,6 +189,17 @@ class KadenceTestimonials extends Component {
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/testimonials' ] !== undefined && typeof blockSettings[ 'kadence/testimonials' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/testimonials' ] } );
+		}
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			if ( this.props.context.queryId !== this.props.attributes.inQueryBlock ) {
+				this.props.setAttributes( {
+					inQueryBlock: this.props.context.queryId,
+				} );
+			}
+		} else if ( this.props.attributes.inQueryBlock ) {
+			this.props.setAttributes( {
+				inQueryBlock: false,
+			} );
 		}
 	}
 	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
@@ -232,8 +255,8 @@ class KadenceTestimonials extends Component {
 		return false;
 	}
 	render() {
-		const { attributes: { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, titleMinHeight, containerMinHeight, containerVAlign, contentMinHeight, displayContent, contentFont, displayName, displayMedia, nameFont, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, occupationFont, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, columnControl, displayIcon, iconStyles, wrapperPaddingType, wrapperPadding, wrapperTabletPadding, wrapperMobilePadding }, setAttributes, isSelected } = this.props;
-		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, titlePaddingControl, titleMarginControl, ratingMarginControl, iconBorderControl, iconPaddingControl, iconMarginControl } = this.state;
+		const { attributes: { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, tabletContainerPadding, mobileContainerPadding, containerPaddingType, mediaStyles, displayTitle, titleFont, titleMinHeight, containerMinHeight, containerVAlign, contentMinHeight, displayContent, contentFont, displayName, displayMedia, nameFont, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, occupationFont, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, columnControl, displayIcon, iconStyles, wrapperPaddingType, wrapperPadding, wrapperTabletPadding, wrapperMobilePadding }, setAttributes, isSelected } = this.props;
+		const { containerBorderControl, mediaBorderControl, mediaPaddingControl, mediaMarginControl, containerPaddingControl, tabletContainerPaddingControl, mobileContainerPaddingControl, titlePaddingControl, titleMarginControl, ratingMarginControl, iconBorderControl, iconPaddingControl, iconMarginControl } = this.state;
 		const onColumnChange = ( value ) => {
 			let columnarray = [];
 			if ( 1 === value ) {
@@ -293,6 +316,10 @@ class KadenceTestimonials extends Component {
 		const previewWrapperPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== wrapperPadding && undefined !== wrapperPadding[ 1 ] ? wrapperPadding[ 1 ] : '' ), ( undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[ 1 ] ? wrapperTabletPadding[ 1 ] : '' ), ( undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[ 1 ] ? wrapperMobilePadding[ 1 ] : '' ) );
 		const previewWrapperPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== wrapperPadding && undefined !== wrapperPadding[ 2 ] ? wrapperPadding[ 2 ] : '' ), ( undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[ 2 ] ? wrapperTabletPadding[ 2 ] : '' ), ( undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[ 2 ] ? wrapperMobilePadding[ 2 ] : '' ) );
 		const previewWrapperPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== wrapperPadding && undefined !== wrapperPadding[ 3 ] ? wrapperPadding[ 3 ] : '' ), ( undefined !== wrapperTabletPadding && undefined !== wrapperTabletPadding[ 3 ] ? wrapperTabletPadding[ 3 ] : '' ), ( undefined !== wrapperMobilePadding && undefined !== wrapperMobilePadding[ 3 ] ? wrapperMobilePadding[ 3 ] : '' ) );
+		const previewContainerPaddingTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 0 ] ? containerPadding[ 0 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 0 ] ? tabletContainerPadding[ 0 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 0 ] ? mobileContainerPadding[ 0 ] : '' ) );
+		const previewContainerPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 1 ] ? tabletContainerPadding[ 1 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 1 ] ? mobileContainerPadding[ 1 ] : '' ) );
+		const previewContainerPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 2 ] ? tabletContainerPadding[ 2 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 2 ] ? mobileContainerPadding[ 2 ] : '' ) );
+		const previewContainerPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 3 ] ? tabletContainerPadding[ 3 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 3 ] ? mobileContainerPadding[ 3 ] : '' ) );
 		const columnControls = (
 			<Fragment>
 				<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type', 'kadence-blocks' ) }>
@@ -797,7 +824,10 @@ class KadenceTestimonials extends Component {
 			borderRightWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 1 ] ? containerBorderWidth[ 1 ] + 'px' : undefined ),
 			borderBottomWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 2 ] ? containerBorderWidth[ 2 ] + 'px' : undefined ),
 			borderLeftWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 3 ] ? containerBorderWidth[ 3 ] + 'px' : undefined ),
-			padding: ( containerPadding ? containerPadding[ 0 ] + 'px ' + containerPadding[ 1 ] + 'px ' + containerPadding[ 2 ] + 'px ' + containerPadding[ 3 ] + 'px' : '' ),
+			paddingTop: ( previewContainerPaddingTop ? previewContainerPaddingTop + ( containerPaddingType ? containerPaddingType : 'px' ) : undefined ),
+			paddingRight: ( previewContainerPaddingRight ? previewContainerPaddingRight + ( containerPaddingType ? containerPaddingType : 'px' ) : undefined ),
+			paddingBottom: ( previewContainerPaddingBottom ? previewContainerPaddingBottom + ( containerPaddingType ? containerPaddingType : 'px' ) : undefined ),
+			paddingLeft: ( previewContainerPaddingLeft ? previewContainerPaddingLeft + ( containerPaddingType ? containerPaddingType : 'px' ) : undefined ),
 			maxWidth: ( 'bubble' === style || 'inlineimage' === style ? undefined : containerMaxWidth + 'px' ),
 			minHeight: ( 'bubble' === style || 'inlineimage' === style || ! previewContainerMinHeight ? undefined : previewContainerMinHeight + 'px' ),
 			marginTop: layout && layout === 'carousel' && previewWrapperPaddingTop ? previewWrapperPaddingTop + ( wrapperPaddingType ? wrapperPaddingType : 'px' ) : undefined,
@@ -1220,15 +1250,27 @@ class KadenceTestimonials extends Component {
 										onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 									/>
 									<div className="kt-spacer-sidebar-15"></div>
-									<MeasurementControls
+									<ResponsiveMeasuremenuControls
 										label={ __( 'Container Padding', 'kadence-blocks' ) }
-										measurement={ containerPadding }
 										control={ containerPaddingControl }
+										tabletControl={ tabletContainerPaddingControl }
+										mobileControl={ mobileContainerPaddingControl }
+										value={ containerPadding }
+										tabletValue={ tabletContainerPadding }
+										mobileValue={ mobileContainerPadding }
 										onChange={ ( value ) => setAttributes( { containerPadding: value } ) }
-										onControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
+										onChangeTablet={ ( value ) => setAttributes( { tabletContainerPadding: value } ) }
+										onChangeMobile={ ( value ) => setAttributes( { mobileContainerPadding: value } ) }
+										onChangeControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
+										onChangeTabletControl={ ( value ) => this.setState( { tabletContainerPaddingControl: value } ) }
+										onChangeMobileControl={ ( value ) => this.setState( { mobileContainerPaddingControl: value } ) }
+										allowEmpty={ true }
 										min={ 0 }
-										max={ 100 }
-										step={ 1 }
+										max={ ( containerPaddingType === 'em' || containerPaddingType === 'rem' ? 12 : 200 ) }
+										step={ ( containerPaddingType === 'em' || containerPaddingType === 'rem' ? 0.1 : 1 ) }
+										unit={ ( containerPaddingType ? containerPaddingType : 'px' ) }
+										units={ [ 'px', 'em', 'rem' ] }
+										onUnit={ ( value ) => setAttributes( { containerPaddingType: value } ) }
 									/>
 									<RangeControl
 										label={ __( 'Container Max Width (px)', 'kadence-blocks' ) }

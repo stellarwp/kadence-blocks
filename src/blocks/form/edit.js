@@ -15,6 +15,7 @@ import map from 'lodash/map';
 import classnames from 'classnames';
 import times from 'lodash/times';
 import filter from 'lodash/filter';
+import debounce from 'lodash/debounce';
 import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
@@ -130,6 +131,7 @@ class KadenceForm extends Component {
 		this.onOptionMove = this.onOptionMove.bind( this );
 		this.onOptionMoveUp = this.onOptionMoveUp.bind( this );
 		this.onOptionMoveDown = this.onOptionMoveDown.bind( this );
+		this.getID = this.getID.bind( this );
 
 		this.state = {
 			actionOptions: null,
@@ -156,6 +158,7 @@ class KadenceForm extends Component {
 			isSaving: false,
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
+		this.debouncedGetID = debounce( this.getID.bind( this ), 200 );
 	}
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
@@ -182,34 +185,6 @@ class KadenceForm extends Component {
 			kbFormIDs.push( this.props.clientId.substr( 2, 9 ) );
 		} else {
 			kbFormIDs.push( this.props.attributes.uniqueID );
-		}
-		if ( getWidgetIdFromBlock( this.props ) ) {
-			if ( ! this.props.attributes.postID ) {
-				this.props.setAttributes( {
-					postID: getWidgetIdFromBlock( this.props ),
-				} );
-			} else if ( getWidgetIdFromBlock( this.props ) !== this.props.attributes.postID ) {
-				this.props.setAttributes( {
-					postID: getWidgetIdFromBlock( this.props ),
-				} );
-			}
-		} else if ( wp.data.select( 'core/editor' ) ) {
-			const { getCurrentPostId } = wp.data.select( 'core/editor' );
-			if ( ! this.props.attributes.postID && getCurrentPostId() ) {
-				this.props.setAttributes( {
-					postID: getCurrentPostId().toString(),
-				} );
-			} else if ( getCurrentPostId() && getCurrentPostId().toString() !== this.props.attributes.postID ) {
-				this.props.setAttributes( {
-					postID: getCurrentPostId().toString(),
-				} );
-			}
-		} else {
-			if ( ! this.props.attributes.postID ) {
-				this.props.setAttributes( {
-					postID: 0,
-				} );
-			}
 		}
 		this.setState( { actionOptions: applyFilters( 'kadence.actionOptions', actionOptionsList ) } );
 		if ( this.props.attributes.style && this.props.attributes.style[ 0 ] ) {
@@ -263,6 +238,7 @@ class KadenceForm extends Component {
 				this.setState( { messageFontBorderControl: 'individual' } );
 			}
 		}
+		this.debouncedGetID()
 		/**
 		 * Get settings
 		 */
@@ -279,6 +255,36 @@ class KadenceForm extends Component {
 				}
 			} );
 		} );
+	}
+	getID() {
+		if ( getWidgetIdFromBlock( this.props ) ) {
+			if ( ! this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: getWidgetIdFromBlock( this.props ),
+				} );
+			} else if ( getWidgetIdFromBlock( this.props ) !== this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: getWidgetIdFromBlock( this.props ),
+				} );
+			}
+		} else if ( wp.data.select( 'core/editor' ) ) {
+			const { getCurrentPostId } = wp.data.select( 'core/editor' );
+			if ( ! this.props.attributes.postID && getCurrentPostId() ) {
+				this.props.setAttributes( {
+					postID: getCurrentPostId().toString(),
+				} );
+			} else if ( getCurrentPostId() && getCurrentPostId().toString() !== this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: getCurrentPostId().toString(),
+				} );
+			}
+		} else {
+			if ( ! this.props.attributes.postID ) {
+				this.props.setAttributes( {
+					postID: 'block-unknown',
+				} );
+			}
+		}
 	}
 	componentDidUpdate( prevProps ) {
 		// Deselect field when deselecting the block
@@ -859,6 +865,7 @@ class KadenceForm extends Component {
 					<PanelBody
 						title={ ( undefined !== fields[ index ].label && null !== fields[ index ].label && '' !== fields[ index ].label ? fields[ index ].label : __( 'Field', 'kadence-blocks' ) + ' ' + ( index + 1 ) ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						key={ 'field-panel-' + index.toString() }
 						opened={ ( true === isFieldSelected ? true : undefined ) }
 					>
 						<SelectControl
@@ -897,6 +904,7 @@ class KadenceForm extends Component {
 				<PanelBody
 					title={ ( undefined !== fields[ index ].label && null !== fields[ index ].label && '' !== fields[ index ].label ? fields[ index ].label : __( 'Field', 'kadence-blocks' ) + ' ' + ( index + 1 ) ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
+					key={ 'field-panel-' + index.toString() }
 					opened={ ( true === isFieldSelected ? true : undefined ) }
 				>
 					<SelectControl
@@ -1250,6 +1258,7 @@ class KadenceForm extends Component {
 			}
 			return (
 				<div
+					key={ 'field-' + index.toString() }
 					className={ fieldClassName }
 					style={ {
 						width: ( '33' === fields[ index ].width[ 0 ] ? '33.33' : fields[ index ].width[ 0 ] ) + '%',
@@ -1262,7 +1271,7 @@ class KadenceForm extends Component {
 					aria-label={ ariaLabel }
 					role="button"
 					onClick={ this.onSelectField( index ) }
-					unstableOnFocus={ this.onSelectField( index ) }
+					onFocus={ this.onSelectField( index ) }
 					onKeyDown={ ( event ) => {
 						const { keyCode } = event;
 						if ( keyCode === DELETE ) {
@@ -1321,7 +1330,7 @@ class KadenceForm extends Component {
 								} }>{ ( fields[ index ].label ? fields[ index ].label : <span className="kb-placeholder">{ 'Field Label' }</span> ) } { ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required" style={ { color: style[ 0 ].requiredColor } }>*</span> : '' ) }</label>
 							) }
 							{ 'textarea' === fields[ index ].type && (
-								<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } style={ {
+								<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } readOnly style={ {
 									paddingTop: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 0 ] ? style[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
 									paddingRight: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 1 ] ? style[ 0 ].deskPadding[ 1 ] + 'px' : undefined ),
 									paddingBottom: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 2 ] ? style[ 0 ].deskPadding[ 2 ] + 'px' : undefined ),
@@ -1400,6 +1409,7 @@ class KadenceForm extends Component {
 									name={ `kb_field_${ index }` }
 									id={ `kb_field_${ index }` }
 									type={ 'text' }
+									readOnly
 									placeholder={ fields[ index ].placeholder }
 									value={ fields[ index ].default }
 									data-type={ fields[ index ].type }
@@ -1435,6 +1445,7 @@ class KadenceForm extends Component {
 									data-type={ fields[ index ].type }
 									className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` }
 									autoComplete="off"
+									readOnly
 									data-required={ ( fields[ index ].required ? 'yes' : undefined ) }
 									style={ {
 										paddingTop: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 0 ] ? style[ 0 ].deskPadding[ 0 ] + 'px' : undefined ),
@@ -1510,6 +1521,7 @@ class KadenceForm extends Component {
 			const actionOptions = this.state.actionOptions;
 			return (
 				<CheckboxControl
+					key={ 'action-controls-' + index.toString() }
 					label={ actionOptions[ index ].label }
 					help={ ( '' !== actionOptions[ index ].help ? actionOptions[ index ].help : undefined ) }
 					checked={ actions.includes( actionOptions[ index ].value ) }
@@ -3530,13 +3542,13 @@ class KadenceForm extends Component {
 							tabIndex="0"
 							role="button"
 							onClick={ this.deselectField }
-							unstableOnFocus={ this.deselectField }
+							onFocus={ this.deselectField }
 							onKeyDown={ this.deselectField }
 						>
 							<RichText
 								tagName="div"
 								placeholder={ __( 'Submit' ) }
-								unstableOnFocus={ this.deselectField }
+								onFocus={ this.deselectField }
 								value={ submit[ 0 ].label }
 								onChange={ value => {
 									this.saveSubmit( { label: value } );

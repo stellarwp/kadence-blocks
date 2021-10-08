@@ -71,6 +71,7 @@ registerBlockType( 'kadence/rowlayout', {
 		// Add EditorsKit block navigator toolbar
 		editorsKitBlockNavigator: true,
 	},
+	usesContext: [ 'postId', 'queryId' ],
 	attributes,
 	getEditWrapperProps( { align } ) {
 		if ( 'full' === align || 'wide' === align || 'center' === align ) {

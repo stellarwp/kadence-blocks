@@ -23,6 +23,7 @@ class KTWebfontLoader extends Component {
 		this.loadFonts = this.loadFonts.bind( this );
 		this.state = {
 			status: undefined,
+			mounted: false,
 		};
 	}
 	addFont( font ) {
@@ -43,19 +44,22 @@ class KTWebfontLoader extends Component {
 	}
 
 	loadFonts() {
-		//if ( ! this.state.fonts.includes( this.props.config.google.families[ 0 ] ) ) {
-		if ( ! ktgooglefonts.includes( this.props.config.google.families[ 0 ] ) ) {
-			WebFont.load( {
-				...this.props.config,
-				loading: this.handleLoading,
-				active: this.handleActive,
-				inactive: this.handleInactive,
-			} );
-			this.addFont( this.props.config.google.families[ 0 ] );
+		if ( this.state.mounted ) {
+			//if ( ! this.state.fonts.includes( this.props.config.google.families[ 0 ] ) ) {
+			if ( ! ktgooglefonts.includes( this.props.config.google.families[ 0 ] ) ) {
+				WebFont.load( {
+					...this.props.config,
+					loading: this.handleLoading,
+					active: this.handleActive,
+					inactive: this.handleInactive,
+				} );
+				this.addFont( this.props.config.google.families[ 0 ] );
+			}
 		}
 	}
 
 	componentDidMount() {
+		this.setState( { mounted: true } );
 		this.loadFonts();
 	}
 
@@ -69,7 +73,9 @@ class KTWebfontLoader extends Component {
 			this.loadFonts();
 		}
 	}
-
+	componentWillUnmount() {
+		this.setState( { mounted: false } );
+	}
 	render() {
 		const { children } = this.props;
 		return children || null;

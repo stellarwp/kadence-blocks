@@ -15,6 +15,7 @@ import './editor.scss';
 import icons from '../../icons';
 import map from 'lodash/map';
 import get from 'lodash/get';
+import debounce from 'lodash/debounce';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
@@ -84,6 +85,7 @@ class KadenceInfoBox extends Component {
 		super( ...arguments );
 		this.showSettings = this.showSettings.bind( this );
 		this.getPreviewSize = this.getPreviewSize.bind( this );
+		this.getDynamic = this.getDynamic.bind( this );
 		this.state = {
 			containerPaddingControl: 'linked',
 			containerBorderControl: 'linked',
@@ -96,6 +98,7 @@ class KadenceInfoBox extends Component {
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
+		this.debouncedUpdateDynamic = debounce( this.getDynamic.bind( this ), 200 );
 	}
 	componentDidMount() {
 		if ( ! this.props.attributes.uniqueID ) {
@@ -117,9 +120,6 @@ class KadenceInfoBox extends Component {
 			ktinfoboxUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
 			ktinfoboxUniqueIDs.push( this.props.attributes.uniqueID );
-		}
-		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mediaImage:0:url'] && this.props.attributes.kadenceDynamic['mediaImage:0:url'].enable ) {
-			applyFilters( 'kadence.dynamicImage', '', this.props.attributes, this.props.setAttributes, 'mediaImage:0:url' );
 		}
 		if ( this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 1 ] && this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 2 ] && this.props.attributes.mediaStyle[ 0 ].borderWidth[ 0 ] === this.props.attributes.mediaStyle[ 0 ].borderWidth[ 3 ] ) {
 			this.setState( { mediaBorderControl: 'linked' } );
@@ -154,6 +154,27 @@ class KadenceInfoBox extends Component {
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/infobox' ] !== undefined && typeof blockSettings[ 'kadence/infobox' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/infobox' ] } );
+		}
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			if ( ! this.props.attributes.inQueryBlock ) {
+				this.props.setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( this.props.attributes.inQueryBlock ) {
+			this.props.setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
+		this.debouncedUpdateDynamic();
+	}
+	getDynamic() {
+		let contextPost = null;
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			contextPost = this.props.context.postId;
+		}
+		if ( this.props.attributes.kadenceDynamic && this.props.attributes.kadenceDynamic['mediaImage:0:url'] && this.props.attributes.kadenceDynamic['mediaImage:0:url'].enable ) {
+			applyFilters( 'kadence.dynamicImage', '', this.props.attributes, this.props.setAttributes, 'mediaImage:0:url', contextPost );
 		}
 	}
 	showSettings( key ) {

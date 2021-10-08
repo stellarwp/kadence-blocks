@@ -283,7 +283,6 @@ class GalleryImage extends Component {
 export default withSelect( ( select, ownProps ) => {
 	const { getMedia } = select( 'core' );
 	const { id } = ownProps;
-
 	return {
 		image: id ? getMedia( id ) : null,
 	};

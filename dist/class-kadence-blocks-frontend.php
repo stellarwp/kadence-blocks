@@ -4132,6 +4132,40 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'border-top-color', $css->render_color( $attr['containerBorder'], $alpha ) );
 			}
 		}
+		if ( isset( $attr['tabletContainerPadding'] ) && is_array( $attr['tabletContainerPadding'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
+			if ( isset( $attr['tabletContainerPadding'][0] ) && is_numeric( $attr['tabletContainerPadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['tabletContainerPadding'][0] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) . ' !important' );
+			}
+			if ( isset( $attr['tabletContainerPadding'][2] ) && is_numeric( $attr['tabletContainerPadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['tabletContainerPadding'][2] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) . ' !important' );
+			}
+			if ( isset( $attr['tabletContainerPadding'][1] ) && is_numeric( $attr['tabletContainerPadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['tabletContainerPadding'][1] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) . ' !important' );
+			}
+			if ( isset( $attr['tabletContainerPadding'][3] ) && is_numeric( $attr['tabletContainerPadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['tabletContainerPadding'][3] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) . ' !important' );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['mobileContainerPadding'] ) && is_array( $attr['mobileContainerPadding'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
+			if ( isset( $attr['mobileContainerPadding'][0] ) && is_numeric( $attr['mobileContainerPadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['mobileContainerPadding'][0] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) . ' !important' );
+			}
+			if ( isset( $attr['mobileContainerPadding'][2] ) && is_numeric( $attr['mobileContainerPadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['mobileContainerPadding'][2] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) . ' !important' );
+			}
+			if ( isset( $attr['mobileContainerPadding'][1] ) && is_numeric( $attr['mobileContainerPadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['mobileContainerPadding'][1] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) . ' !important' );
+			}
+			if ( isset( $attr['mobileContainerPadding'][3] ) && is_numeric( $attr['mobileContainerPadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['mobileContainerPadding'][3] . ( isset( $attr['containerPaddingType'] ) && ! empty( $attr['containerPaddingType'] ) ? $attr['containerPaddingType'] : 'px' ) . ' !important' );
+			}
+			$css->stop_media_query();
+		}
 		if ( isset( $attr['containerMinHeight'] ) && is_array( $attr['containerMinHeight'] ) && isset( $attr['containerMinHeight'][0] ) && is_numeric( $attr['containerMinHeight'][0] ) ) {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap' );
 			$css->add_property( 'min-height', $attr['containerMinHeight'][0] . 'px' );
@@ -7276,6 +7310,49 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+		// Hover Styles.
+		if ( isset( $attr['borderHover'] ) || isset( $attr['borderHoverRadius'] ) || isset( $attr['borderHoverWidth'] ) || ( isset( $attr['displayHoverShadow'] ) && true == $attr['displayHoverShadow'] ) ) {
+			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
+			if ( isset( $attr['borderHover'] ) ) {
+				$css->add_property( 'border-color', $css->render_color( $attr['borderHover'] ) );
+			}
+			if ( isset( $attr['borderHoverWidth'] ) && ! empty( $attr['borderHoverWidth'] ) && is_array( $attr['borderHoverWidth'] ) ) {
+				if ( isset( $attr['borderHoverWidth'][0] ) && is_numeric( $attr['borderHoverWidth'][0] ) ) {
+					$css->add_property( 'border-top-width', $attr['borderHoverWidth'][0] . 'px' );
+				}
+				if ( isset( $attr['borderHoverWidth'][1] ) && is_numeric( $attr['borderHoverWidth'][1] ) ) {
+					$css->add_property( 'border-right-width', $attr['borderHoverWidth'][1] . 'px' );
+				}
+				if ( isset( $attr['borderHoverWidth'][2] ) && is_numeric( $attr['borderHoverWidth'][2] ) ) {
+					$css->add_property( 'border-bottom-width', $attr['borderHoverWidth'][2] . 'px' );
+				}
+				if ( isset( $attr['borderHoverWidth'][3] ) && is_numeric( $attr['borderHoverWidth'][3] ) ) {
+					$css->add_property( 'border-left-width', $attr['borderHoverWidth'][3] . 'px' );
+				}
+			}
+			if ( isset( $attr['borderHoverRadius'] ) && ! empty( $attr['borderHoverRadius'] ) && is_array( $attr['borderHoverRadius'] ) ) {
+				if ( isset( $attr['borderHoverRadius'][0] ) && is_numeric( $attr['borderHoverRadius'][0] ) ) {
+					$css->add_property( 'border-top-left-radius', $attr['borderHoverRadius'][0] . 'px' );
+				}
+				if ( isset( $attr['borderHoverRadius'][1] ) && is_numeric( $attr['borderHoverRadius'][1] ) ) {
+					$css->add_property( 'border-top-right-radius', $attr['borderHoverRadius'][1] . 'px' );
+				}
+				if ( isset( $attr['borderHoverRadius'][2] ) && is_numeric( $attr['borderHoverRadius'][2] ) ) {
+					$css->add_property( 'border-bottom-right-radius', $attr['borderHoverRadius'][2] . 'px' );
+				}
+				if ( isset( $attr['borderHoverRadius'][3] ) && is_numeric( $attr['borderHoverRadius'][3] ) ) {
+					$css->add_property( 'border-bottom-left-radius', $attr['borderHoverRadius'][3] . 'px' );
+				}
+			}
+			if ( isset( $attr['displayHoverShadow'] ) && true == $attr['displayHoverShadow'] ) {
+				if ( isset( $attr['shadowHover'] ) && is_array( $attr['shadowHover'] ) && isset( $attr['shadowHover'][0] ) && is_array( $attr['shadowHover'][0] ) ) {
+					$css->add_property( 'box-shadow', ( isset( $attr['shadowHover'][0]['inset'] ) && true === $attr['shadowHover'][0]['inset'] ? 'inset ' : '' ) . ( isset( $attr['shadowHover'][0]['hOffset'] ) && is_numeric( $attr['shadowHover'][0]['hOffset'] ) ? $attr['shadowHover'][0]['hOffset'] : '0' ) . 'px ' . ( isset( $attr['shadowHover'][0]['vOffset'] ) && is_numeric( $attr['shadowHover'][0]['vOffset'] ) ? $attr['shadowHover'][0]['vOffset'] : '0' ) . 'px ' . ( isset( $attr['shadowHover'][0]['blur'] ) && is_numeric( $attr['shadowHover'][0]['blur'] ) ? $attr['shadowHover'][0]['blur'] : '14' ) . 'px ' . ( isset( $attr['shadowHover'][0]['spread'] ) && is_numeric( $attr['shadowHover'][0]['spread'] ) ? $attr['shadowHover'][0]['spread'] : '0' ) . 'px ' . $css->render_color( ( isset( $attr['shadowHover'][0]['color'] ) && ! empty( $attr['shadowHover'][0]['color'] ) ? $attr['shadowHover'][0]['color'] : '#000000' ), ( isset( $attr['shadowHover'][0]['opacity'] ) && is_numeric( $attr['shadowHover'][0]['opacity'] ) ? $attr['shadowHover'][0]['opacity'] : 0.2 ) ) );
+				} else {
+					$css->add_property( 'box-shadow', 'rgba(0, 0, 0, 0.2) 0px 0px 14px 0px' );
+				}
+			}
+		}
+		// Direction Styles.
 		if ( isset( $attr['direction'] ) && is_array( $attr['direction'] ) && ! empty( $attr['direction'][ 0 ] ) && $attr['direction'][ 0 ] === 'horizontal' ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'display', 'flex' );
@@ -7334,6 +7411,7 @@ class Kadence_Blocks_Frontend {
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'align-self', $align );
 		}
+		// Background.
 		if( isset( $attr['backgroundImg'] ) && is_array( $attr['backgroundImg'] ) && isset( $attr['backgroundImg'][ 0 ] ) && is_array( $attr['backgroundImg'][0] ) && isset( $attr['backgroundImg'][0]['bgImg'] ) && ! empty( $attr['backgroundImg'][0]['bgImg'] ) ) {
 			$bg_img = $attr['backgroundImg'][ 0 ];
 			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
@@ -7347,10 +7425,25 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'background-attachment', ( ! empty( $bg_img['bgImgAttachment'] ) ? $bg_img['bgImgAttachment'] : 'scroll' ) );
 			$css->add_property( 'background-repeat', ( ! empty( $bg_img['bgImgRepeat'] ) ? $bg_img['bgImgRepeat'] : 'no-repeat' ) );
 		}
+		// Background Hover.
+		if( isset( $attr['backgroundImgHover'] ) && is_array( $attr['backgroundImgHover'] ) && isset( $attr['backgroundImgHover'][ 0 ] ) && is_array( $attr['backgroundImgHover'][0] ) && isset( $attr['backgroundImgHover'][0]['bgImg'] ) && ! empty( $attr['backgroundImgHover'][0]['bgImg'] ) ) {
+			$bg_img_hover = $attr['backgroundImgHover'][ 0 ];
+			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
+			if ( isset( $attr['backgroundHover'] ) && ! empty( $attr['backgroundHover'] ) ) {
+				$alpha = ( isset( $attr['backgroundOpacity'] ) && ! empty( $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] : 1 );
+				$css->add_property( 'background-color', $css->render_color( $attr['backgroundHover'], $alpha ) );
+			}
+			$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img_hover['bgImg'] ) );
+			$css->add_property( 'background-size', ( ! empty( $bg_img_hover['bgImgSize'] ) ? $bg_img_hover['bgImgSize'] : 'cover' ) );
+			$css->add_property( 'background-position', ( ! empty( $bg_img_hover['bgImgPosition'] ) ? $bg_img_hover['bgImgPosition'] : 'center center' ) );
+			$css->add_property( 'background-attachment', ( ! empty( $bg_img_hover['bgImgAttachment'] ) ? $bg_img_hover['bgImgAttachment'] : 'scroll' ) );
+			$css->add_property( 'background-repeat', ( ! empty( $bg_img_hover['bgImgRepeat'] ) ? $bg_img_hover['bgImgRepeat'] : 'no-repeat' ) );
+		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 0 ] ) && ! empty( $attr['textAlign'][ 0 ] ) ) {
 			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );
 			$css->add_property( 'text-align',  $attr['textAlign'][ 0 ] );
 		}
+		// Text Colors.
 		if ( isset( $attr['textColor'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ', .kadence-column' . $unique_id . ' h1, .kadence-column' . $unique_id . ' h2, .kadence-column' . $unique_id . ' h3, .kadence-column' . $unique_id . ' h4, .kadence-column' . $unique_id . ' h5, .kadence-column' . $unique_id . ' h6' );
 			$css->add_property( 'color',  $css->render_color( $attr['textColor'] ) );
@@ -7362,6 +7455,19 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['linkHoverColor'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' a:hover' );
 			$css->add_property( 'color',  $css->render_color( $attr['linkHoverColor'] ) );
+		}
+		// Hover Text colors.
+		if ( isset( $attr['textColorHover'] ) ) {
+			$css->set_selector( '.kadence-column' . $unique_id . ', .kadence-column' . $unique_id . ' h1, .kadence-column' . $unique_id . ' h2, .kadence-column' . $unique_id . ' h3, .kadence-column' . $unique_id . ' h4, .kadence-column' . $unique_id . ' h5, .kadence-column' . $unique_id . ' h6' );
+			$css->add_property( 'color',  $css->render_color( $attr['textColorHover'] ) );
+		}
+		if ( isset( $attr['linkColorHover'] ) ) {
+			$css->set_selector( '.kadence-column' . $unique_id . ' a' );
+			$css->add_property( 'color',  $css->render_color( $attr['linkColorHover'] ) );
+		}
+		if ( isset( $attr['linkHoverColorHover'] ) ) {
+			$css->set_selector( '.kadence-column' . $unique_id . ' a:hover' );
+			$css->add_property( 'color',  $css->render_color( $attr['linkHoverColorHover'] ) );
 		}
 		if ( isset( $attr['zIndex'] ) ) {
 			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );

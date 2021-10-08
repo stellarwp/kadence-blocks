@@ -116,6 +116,17 @@ class KadenceAdvancedHeading extends Component {
 		if ( blockSettings[ 'kadence/advancedheading' ] !== undefined && typeof blockSettings[ 'kadence/advancedheading' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/advancedheading' ] } );
 		}
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			if ( ! this.props.attributes.inQueryBlock ) {
+				this.props.setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( this.props.attributes.inQueryBlock ) {
+			this.props.setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
 	}
 	// componentDidUpdate( prevProps ) {
 	// 	if ( prevProps.getPreviewDevice !== this.props.getPreviewDevice ) {
