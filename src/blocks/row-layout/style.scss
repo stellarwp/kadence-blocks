@@ -70,6 +70,9 @@
     z-index: 0;
 	filter: opacity(100%);
 }
+.kt-row-layout-overlay.kt-jarallax {
+    filter: none;
+}
 .kt-inside-inner-col {
 	border: 0 solid transparent;
     -ms-flex-negative: 0;

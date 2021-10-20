@@ -474,7 +474,10 @@ function () {
 
   }, {
     key: "handleClick",
-    value: function handleClick(targetHeader, headerIndex, forceOpen = false ) {
+    value: function handleClick(targetHeader, headerIndex, forceOpen ) {
+		if ( ! forceOpen ) {
+			forceOpen = false;
+		}
 		var _this10 = this;
 		// Removing current `.` from `this.settings.headerClass` class so it can
 		// be checked against the `targetHeader` classList

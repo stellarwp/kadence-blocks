@@ -76,6 +76,7 @@ class PrebuiltSections extends Component {
 			isImporting: false,
 			isLoading: false,
 			sidebar: false,
+			gridSize: 'normal',
 			categories: {
 				'category': __( 'Category', 'kadence-blocks' ),
 				'pro': __( 'Pro', 'kadence-blocks' ),
@@ -212,7 +213,9 @@ class PrebuiltSections extends Component {
 		}
 		const activePanel = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
 		const sidebar_saved_enabled = ( activePanel && activePanel['sidebar'] ? activePanel['sidebar'] : 'hide' );
+		const savedGridSize = ( activePanel && activePanel['grid'] ? activePanel['grid'] : 'normal' );
 		const sidebarEnabled = ( this.state.sidebar ? this.state.sidebar : sidebar_saved_enabled );
+		const gridSize = ( this.state.gridSize ? this.state.gridSize : savedGridSize );
 		const control = this;
 		const roundAccurately = (number, decimalPlaces) => Number(Math.round(Number(number + "e" + decimalPlaces)) + "e" + decimalPlaces * -1);
 		const libraryItems = this.state.items;
@@ -280,6 +283,26 @@ class PrebuiltSections extends Component {
 							/>
 						</div>
 						<div className="kb-library-header-right">
+							{/* <Button
+								className={ 'kb-trigger-normal-grid-size' }
+								icon={ next }
+								onClick={ () => {
+									const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeSidebar['grid'] = 'normal';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									this.setState( { gridSize: 'normal' } );
+								} }
+							/>
+							<Button
+								className={ 'kb-trigger-large-grid-size' }
+								icon={ next }
+								onClick={ () => {
+									const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeSidebar['grid'] = 'large';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									this.setState( { gridSize: 'large' } );
+								} }
+							/> */}
 							<TextControl
 								type="text"
 								value={ this.state.search }
@@ -322,7 +345,7 @@ class PrebuiltSections extends Component {
 					</Fragment>
 				) : (
 					<Masonry
-						className={ 'kb-prebuilt-grid kb-prebuilt-masonry-grid kb-core-section-library' }
+						className={ `kb-prebuilt-grid kb-prebuilt-masonry-grid kb-core-section-library${gridSize && gridSize !== 'normal' ? 'kb-grid-size-'  + gridSize : '' }` }
 						elementType={ 'div' }
 						options={ {
 							transitionDuration: 0,

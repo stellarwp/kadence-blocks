@@ -81,3 +81,43 @@
 .kt-list-icon-alignbottom .kt-svg-icon-list-item-wrap {
 	align-items: flex-end;
 }
+
+#start-resizable-editor-section {
+    display: none;
+}
+
+/* add all responsive styles here */
+@media (max-width: 1024px) {
+	.kt-tablet-svg-icon-list-columns-1 {
+		display: block;
+	}
+	.kt-tablet-svg-icon-list-columns-2 {
+		grid-template-columns: 50% auto;
+		grid-template-rows: auto;
+		display: grid;
+	}
+	.kt-tablet-svg-icon-list-columns-3 {
+		grid-template-columns: 33% 33% auto;
+		grid-template-rows: auto;
+		display: grid;
+	}
+}
+@media (max-width: 767px) {
+	.kt-mobile-svg-icon-list-columns-1 {
+		display: block;
+	}
+	.kt-mobile-svg-icon-list-columns-2 {
+		grid-template-columns: 50% auto;
+		grid-template-rows: auto;
+		display: grid;
+	}
+	.kt-mobile-svg-icon-list-columns-3 {
+		grid-template-columns: 33% 33% auto;
+		grid-template-rows: auto;
+		display: grid;
+	}
+}
+
+#end-resizable-editor-section {
+    display: none;
+}

@@ -466,17 +466,14 @@ function kadence_blocks_early_editor_assets() {
 		return;
 	}
 	global $pagenow;
-	if ( 'post.php' === $pagenow || 'post-new.php' === $pagenow ) {
-		$current_screen = get_current_screen();
-		if ( method_exists( $current_screen, 'is_block_editor' ) && $current_screen->is_block_editor() ) {
-			wp_localize_script(
-				'kadence-blocks-js',
-				'kadence_blocks_user_params',
-				array(
-					'userVisibility'  => kadence_blocks_get_user_visibility_options(),
-				)
-			);
-		}
+	if ( 'post.php' === $pagenow || 'post-new.php' === $pagenow || 'widgets.php' === $pagenow ) {
+		wp_localize_script(
+			'kadence-blocks-js',
+			'kadence_blocks_user_params',
+			array(
+				'userVisibility'  => kadence_blocks_get_user_visibility_options(),
+			)
+		);
 	}
 }
 add_action( 'current_screen', 'kadence_blocks_early_editor_assets' );

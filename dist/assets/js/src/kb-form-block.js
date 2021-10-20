@@ -363,14 +363,19 @@
 			}
 
 		},
+		checkParentClass( element, classname ) {
+			if ( element.className.split(' ').indexOf( classname ) >=0 ) return element.id;
+			return element.parentNode && window.kadenceForm.checkParentClass( element.parentNode, classname );
+		},
 		verifySource( form ) {
 			var input = form.querySelector( 'input[name="_kb_form_post_id"]' );
 			if ( ! input ) {
 				return;
 			}
-			if ( ! input.value || 'block-unknown' ) {
-				if ( form.parentNode.parentNode.classList.contains( 'widget_block' ) ) {
-					input.value = form.parentNode.parentNode.id;
+			if ( ! input.value || 'block-unknown' === input.value ) {
+				var theID = window.kadenceForm.checkParentClass( form.parentNode, 'widget_block' );
+				if ( theID ) {
+					input.value = theID;
 				}
 			}
 		},

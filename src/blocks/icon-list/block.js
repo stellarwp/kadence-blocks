@@ -113,6 +113,14 @@ registerBlockType( 'kadence/iconlist', {
 			type: 'number',
 			default: 1,
 		},
+		tabletColumns: {
+			type: 'number',
+			default: '',
+		},
+		mobileColumns: {
+			type: 'number',
+			default: '',
+		},
 		listGap: {
 			type: 'number',
 			default: 5,
@@ -216,7 +224,7 @@ registerBlockType( 'kadence/iconlist', {
 	edit,
 
 	save: props => {
-		const { attributes: { items, listCount, columns, blockAlignment, iconAlign, uniqueID } } = props;
+		const { attributes: { items, listCount, columns, blockAlignment, iconAlign, uniqueID, tabletColumns, mobileColumns } } = props;
 		const renderItems = ( index ) => {
 			return (
 				<li className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` }>
@@ -262,7 +270,7 @@ registerBlockType( 'kadence/iconlist', {
 			);
 		};
 		return (
-			<div className={ `kt-svg-icon-list-items kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns } align${ ( blockAlignment ? blockAlignment : 'none' ) }${ ( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' ) }` }>
+			<div className={ `kt-svg-icon-list-items kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns } align${ ( blockAlignment ? blockAlignment : 'none' ) }${ ( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' ) }${ ( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' ) }${ ( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' ) }` }>
 				<ul className="kt-svg-icon-list">
 					{ times( listCount, n => renderItems( n ) ) }
 				</ul>

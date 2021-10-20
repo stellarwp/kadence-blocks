@@ -646,7 +646,7 @@ class Kadence_Blocks_Settings {
 							<div class="components-panel__body is-opened">
 								<h2><?php esc_html_e( 'Documentation', 'kadence' ); ?></h2>
 								<p><?php esc_html_e( 'Need help? We have a knowledge base full of articles to get you started.', 'kadence' ); ?></p>
-								<a href="https://www.kadencewp.com/kadence-blocks/docs/" target="_blank" class="sidebar-link"><?php esc_html_e( 'Browse Docs', 'kadence' ); ?></a>
+								<a href="https://www.kadencewp.com/kadence-blocks/documentation/" target="_blank" class="sidebar-link"><?php esc_html_e( 'Browse Docs', 'kadence' ); ?></a>
 							</div>
 						</div>
 						<div class="support-section sidebar-section components-panel">

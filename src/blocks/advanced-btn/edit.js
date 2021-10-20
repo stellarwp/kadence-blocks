@@ -1031,7 +1031,6 @@ class KadenceAdvancedButton extends Component {
 								tabletValue={ undefined !== btns[ index ].tabletMargin ? btns[ index ].tabletMargin : [ '', '', '', '' ] }
 								mobileValue={ undefined !== btns[ index ].mobileMargin ? btns[ index ].mobileMargin : [ '', '', '', '' ] }
 								onChange={ ( value ) => {
-									console.log( value );
 									this.saveArrayUpdate( { margin: value }, index  );
 								} }
 								onChangeTablet={ ( value ) => this.saveArrayUpdate( { tabletMargin: value }, index  ) }

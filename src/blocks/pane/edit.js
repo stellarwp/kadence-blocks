@@ -20,6 +20,7 @@ const {
 	PanelBody,
 	ToggleControl,
 	SelectControl,
+	TextControl,
 } = wp.components;
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
@@ -74,7 +75,7 @@ class KadencePane extends Component {
 		}
 	}
 	render() {
-		const { attributes: { id, uniqueID, title, icon, iconSide, hideLabel, titleTag }, setAttributes } = this.props;
+		const { attributes: { id, uniqueID, title, icon, iconSide, hideLabel, titleTag, ariaLabel }, setAttributes } = this.props;
 		const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
 		return (
 			<div className={ `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }` }>
@@ -100,6 +101,11 @@ class KadencePane extends Component {
 							label={ __( 'Show only Icon', 'kadence-blocks' ) }
 							checked={ hideLabel }
 							onChange={ value => setAttributes( { hideLabel: value } ) }
+						/>
+						<TextControl
+							label={ __( 'Button Label Attribute for Accessibility', 'kadence-blocks' ) }
+							value={ ariaLabel }
+							onChange={ value => setAttributes( { ariaLabel: value } ) }
 						/>
 					</PanelBody>
 				</InspectorControls>

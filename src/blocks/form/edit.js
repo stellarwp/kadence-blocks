@@ -95,7 +95,7 @@ const actionOptionsList = [
 const kbFormIDs = [];
 
 /**
- * Build the overlay edit
+ * Build the form edit
  */
 class KadenceForm extends Component {
 	constructor() {
@@ -238,7 +238,7 @@ class KadenceForm extends Component {
 				this.setState( { messageFontBorderControl: 'individual' } );
 			}
 		}
-		this.debouncedGetID()
+		this.debouncedGetID();
 		/**
 		 * Get settings
 		 */

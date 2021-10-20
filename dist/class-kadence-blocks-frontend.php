@@ -325,7 +325,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->row_layout_array_css( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'rowlayout', $unique_id ) ) {
+					if ( $this->should_render_inline( 'rowlayout', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -378,7 +378,7 @@ class Kadence_Blocks_Frontend {
 			$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
 			$css = $this->column_layout_css( $attributes, $unique_id );
 			if ( ! empty( $css ) ) {
-				if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'column', $unique_id ) ) {
+				if ( $this->should_render_inline( 'column', $unique_id ) ) {
 					$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 				} else {
 					$this->render_inline_css( $css, $style_id, true );
@@ -386,6 +386,18 @@ class Kadence_Blocks_Frontend {
 			}
 		};
 		return $content;
+	}
+	/**
+	 * Check if block should render inline.
+	 *
+	 * @param string $name the blocks name.
+	 * @param string $unique_id the blocks unique id.
+	 */
+	public function should_render_inline( $name, $unique_id ) {
+		if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, $name, $unique_id ) || is_customize_preview() ) {
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * Render Advanced Btn Block CSS
@@ -445,7 +457,7 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_advanced_btn_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
 					// This only runs if the content if loaded via the rest API. Normally the css would already be added in the head.
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'advancedbtn', $unique_id ) ) {
+					if ( $this->should_render_inline( 'advancedbtn', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -495,7 +507,7 @@ class Kadence_Blocks_Frontend {
 				$attributes = apply_filters( 'kadence_blocks_advancedheading_render_block_attributes', $attributes );
 				$css = $this->blocks_advanced_heading_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'advancedheading', $unique_id ) ) {
+					if ( $this->should_render_inline( 'advancedheading', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -625,7 +637,7 @@ class Kadence_Blocks_Frontend {
 				$attributes = apply_filters( 'kadence_blocks_tabs_render_block_attributes', $attributes );
 				$css = $this->blocks_tabs_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'tabs', $unique_id ) ) {
+					if ( $this->should_render_inline( 'tabs', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -685,7 +697,7 @@ class Kadence_Blocks_Frontend {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
 				$css = $this->blocks_spacer_array( $attributes, $unique_id );
-				if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'spacer', $unique_id ) ) {
+				if ( $this->should_render_inline( 'spacer', $unique_id ) ) {
 					$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 				} else {
 					$this->render_inline_css( $css, $style_id, true );
@@ -734,7 +746,7 @@ class Kadence_Blocks_Frontend {
 				$attributes = apply_filters( 'kadence_blocks_icon_render_block_attributes', $attributes );
 				$css = $this->blocks_icon_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'icon', $unique_id ) ) {
+					if ( $this->should_render_inline( 'icon', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -789,7 +801,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_infobox_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'infobox', $unique_id ) ) {
+					if ( $this->should_render_inline( 'infobox', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -903,7 +915,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_accordion_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'accordion', $unique_id ) ) {
+					if ( $this->should_render_inline( 'accordion', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -969,7 +981,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_testimonials_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'testimonials', $unique_id ) ) {
+					if ( $this->should_render_inline( 'testimonials', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -1027,7 +1039,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_form_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'form', $unique_id ) ) {
+					if ( $this->should_render_inline( 'form', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -1104,7 +1116,7 @@ class Kadence_Blocks_Frontend {
 				}
 				$css = $this->blocks_advancedgallery_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'advancedgallery', $unique_id ) ) {
+					if ( $this->should_render_inline( 'advancedgallery', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -1154,7 +1166,7 @@ class Kadence_Blocks_Frontend {
 				$attributes = apply_filters( 'kadence_blocks_iconlist_render_block_attributes', $attributes );
 				$css = $this->blocks_iconlist_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( doing_filter( 'the_content' ) || apply_filters( 'kadence_blocks_force_render_inline_css_in_content', false, 'iconlist', $unique_id ) ) {
+					if ( $this->should_render_inline( 'iconlist', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
@@ -4184,7 +4196,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && is_array( $attr['titleFont'][0] ) ) || ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) && is_numeric( $attr['titleMinHeight'][0] ) ) ) {
 			$title_font = $attr['titleFont'][0];
-			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-title' );
+			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-testimonial-item-wrap .kt-testimonial-title' );
 			if ( isset( $title_font['color'] ) && ! empty( $title_font['color'] ) ) {
 				$css->add_property( 'color', $css->render_color( $title_font['color'] ) );
 			}
@@ -6593,7 +6605,7 @@ class Kadence_Blocks_Frontend {
 		$media_query['mobile']        = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
 		$media_query['tablet']        = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '@media (min-width: 768px) and (max-width: 1024px)' );
+		$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px)' );
 		$media_query['desktop']       = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		if ( isset( $attr['inheritMaxWidth'] ) && $attr['inheritMaxWidth'] ) {
 			global $content_width;
@@ -7011,10 +7023,6 @@ class Kadence_Blocks_Frontend {
 					$css->add_property( 'background-position', ( ! empty( $tablet_background['bgImgPosition'] ) ? $tablet_background['bgImgPosition'] : 'center center' ) );
 					$css->add_property( 'background-attachment', $bg_attach );
 					$css->add_property( 'background-repeat', ( ! empty( $tablet_background['bgImgRepeat'] ) ? $tablet_background['bgImgRepeat'] : 'no-repeat' ) );
-				} else if ( isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
-					$css->add_property( 'background-image', 'none !important' );
-					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
-					$css->add_property( 'display', 'none !important' );
 				}
 				if ( isset( $attr['bgImg'] ) && ! empty( $attr['bgImg'] ) && isset( $attr['bgImgAttachment'] ) && 'parallax' === $attr['bgImgAttachment'] &&  isset( $tablet_background['bgImg'] ) && ! empty( $tablet_background['bgImg'] ) && isset( $tablet_background['bgImgAttachment'] ) && 'parallax' !== $tablet_background['bgImgAttachment'] ) {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
@@ -7072,8 +7080,17 @@ class Kadence_Blocks_Frontend {
 				if ( ! empty( $tablet_overlay['overlayBlendMode'] ) ) {
 					$css->add_property( 'mix-blend-mode', $tablet_overlay['overlayBlendMode'] );
 				}
+				
 			}
 			$css->stop_media_query();
+			if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] && isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
+				$css->start_media_query( $media_query['tabletOnly'] );
+				$css->set_selector( '#kt-layout-id' . $unique_id );
+				$css->add_property( 'background-image', 'none !important' );
+				$css->set_selector( '#kt-layout-id' . $unique_id . ' [id*="jarallax-container-"]' );
+				$css->add_property( 'display', 'none !important' );
+				$css->stop_media_query();
+			}
 		}
 		$mobile_overlay = ( isset( $attr['mobileOverlay'] ) && is_array( $attr['mobileOverlay'] ) && isset( $attr['mobileOverlay'][0] ) && is_array( $attr['mobileOverlay'][0] ) ? $attr['mobileOverlay'][0] : array() );
 		$mobile_background = ( isset( $attr['mobileBackground'] ) && is_array( $attr['mobileBackground'] ) && isset( $attr['mobileBackground'][0] ) && is_array( $attr['mobileBackground'][0] ) ? $attr['mobileBackground'][0] : array() );
@@ -7410,6 +7427,12 @@ class Kadence_Blocks_Frontend {
 			}
 			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'align-self', $align );
+			$css->set_selector( '.kt-inner-column-height-full > .wp-block-kadence-column.kadence-column' . $unique_id );
+			$css->add_property( 'align-self', 'auto' );
+			$css->set_selector( '.kt-inner-column-height-full > .wp-block-kadence-column.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->add_property( 'display', 'flex' );
+			$css->add_property( 'flex-direction', 'column' );
+			$css->add_property( 'justify-content', $align );
 		}
 		// Background.
 		if( isset( $attr['backgroundImg'] ) && is_array( $attr['backgroundImg'] ) && isset( $attr['backgroundImg'][ 0 ] ) && is_array( $attr['backgroundImg'][0] ) && isset( $attr['backgroundImg'][0]['bgImg'] ) && ! empty( $attr['backgroundImg'][0]['bgImg'] ) ) {

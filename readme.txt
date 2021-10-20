@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 2.1.14
+Stable tag: 2.1.15
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,20 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.1.15 =
+Release Date: October 20th, 2021
+* Update: Icon list to have responsive column options.
+* Update: Accordion with button label option.
+* Update: Full height columns with alignment.
+* Update: Row layout overlay for better parallax support in chrome.
+* Update: Accordion JS for better old browser support.
+* Fix: Better style reload for widgets in customizer.
+* Fix: issue with alpha colors in some cases.
+* Fix: Issue with user visibility settings and widget area.
+* Fix: Tablet layout settings.
+* Fix: Possible issue with form in sidebar.
+* Fix: Infobox sponsored link.
 
 = 2.1.14 =
 Release Date: October 8th, 2021

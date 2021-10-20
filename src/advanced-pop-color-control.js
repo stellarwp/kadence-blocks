@@ -67,6 +67,9 @@ class AdvancedPopColorControl extends Component {
 		const convertedOpacityValue = ( 100 === this.props.opacityUnit ? convertOpacity( this.props.opacityValue ) : this.props.opacityValue );
 		const colorVal = ( this.state.currentColor ? this.state.currentColor : this.props.colorValue );
 		let currentColorString = ( this.state.isPalette && this.props.colors && this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ] ? this.props.colors[ parseInt( colorVal.slice( -1 ), 10 ) - 1 ].color : colorVal );
+		// if ( 'transparent' === currentColorString ) {
+		// 	currentColorString = '#000000';
+		// }
 		if ( '' === currentColorString ) {
 			currentColorString = this.props.colorDefault;
 		}
@@ -220,7 +223,11 @@ class AdvancedPopColorControl extends Component {
 			newColor = palette;
 		} else if ( undefined !== color.rgb && undefined !== color.rgb.a && 1 !== color.rgb.a ) {
 			if ( this.props.onOpacityChange ) {
-				newColor = color.hex;
+				if ( color.hex === 'transparent' ) {
+					newColor = '#000000';
+				} else {
+					newColor = color.hex;
+				}
 				opacity = ( 100 === this.props.opacityUnit ? this.unConvertOpacity( color.rgb.a ) : color.rgb.a );
 			} else {
 				newColor = 'rgba(' + color.rgb.r + ',' + color.rgb.g + ',' + color.rgb.b + ',' + color.rgb.a + ')';
@@ -242,7 +249,11 @@ class AdvancedPopColorControl extends Component {
 			newColor = palette;
 		} else if ( undefined !== color.rgb && undefined !== color.rgb.a && 1 !== color.rgb.a ) {
 			if ( this.props.onOpacityChange ) {
-				newColor = color.hex;
+				if ( color.hex === 'transparent' ) {
+					newColor = '#000000';
+				} else {
+					newColor = color.hex;
+				}
 				opacity = ( 100 === this.props.opacityUnit ? this.unConvertOpacity( color.rgb.a ) : color.rgb.a );
 			} else {
 				newColor = 'rgba(' + color.rgb.r + ',' + color.rgb.g + ',' + color.rgb.b + ',' + color.rgb.a + ')';

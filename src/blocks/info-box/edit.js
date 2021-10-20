@@ -1476,7 +1476,7 @@ class KadenceInfoBox extends Component {
 								linkNoFollow={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
 								onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
 								linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
-								onChangeSponsored={ value => setAttributes( { sponsored: value } ) }
+								onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
 								linkTitle={ linkTitle }
 								onChangeTitle={ value => {
 									setAttributes( { linkTitle: value } )
