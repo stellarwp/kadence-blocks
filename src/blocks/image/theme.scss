@@ -1,0 +1,9 @@
+.wp-block-kadence-image figcaption {
+  color: #555;
+  font-size: 13px;
+  text-align: center;
+
+  .is-dark-theme & {
+	color: rgba(#FFF, 0.65);
+  }
+}
