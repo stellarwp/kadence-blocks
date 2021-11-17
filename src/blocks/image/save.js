@@ -4,6 +4,15 @@
 import classnames from 'classnames';
 import { isEmpty } from 'lodash';
 
+const {
+	registerBlockType,
+	createBlock,
+	getBlockDefaultClassName,
+} = wp.blocks;
+const {
+	Fragment,
+} = wp.element;
+
 /**
  * WordPress dependencies
  */
@@ -24,11 +33,14 @@ export default function save( { attributes } ) {
 		linkTarget,
 		sizeSlug,
 		title,
+		uniqueID,
 	} = attributes;
 
 	const newRel = isEmpty( rel ) ? undefined : rel;
 
 	const classes = classnames( {
+		[ `kt-image${ uniqueID }` ]: uniqueID,
+		[ getBlockDefaultClassName( 'kadence/image' ) ]: getBlockDefaultClassName( 'kadence/image' ),
 		[ `align${ align }` ]: align,
 		[ `size-${ sizeSlug }` ]: sizeSlug,
 		'is-resized': width || height,
@@ -38,7 +50,7 @@ export default function save( { attributes } ) {
 		<img
 			src={ url }
 			alt={ alt }
-			className={ id ? `wp-image-${ id }` : null }
+			className={ id ? `kadence-image-${ id }` : null }
 			width={ width }
 			height={ height }
 			title={ title }
@@ -74,7 +86,7 @@ export default function save( { attributes } ) {
 	}
 
 	return (
-		<figure { ...useBlockProps.save( { className: classes } ) }>
+		<figure { ...useBlockProps.save( { className: classes } ) } >
 			{ figure }
 		</figure>
 	);

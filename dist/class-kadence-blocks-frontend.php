@@ -217,6 +217,15 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
+			'kadence/image',
+			array(
+				'render_callback' => array( $this, 'render_image_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
+
+		register_block_type(
 			'kadence/iconlist',
 			array(
 				'render_callback' => array( $this, 'render_iconlist_css' ),
@@ -926,6 +935,42 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
+	 * Render Image CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_image_css( $attributes, $content ) {
+		if ( ! wp_style_is( 'kadence-blocks-image', 'enqueued' ) ) {
+			wp_enqueue_style( 'kadence-blocks-image' );
+		}
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-image' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
+				if ( $this->it_is_not_amp() ) {
+					wp_enqueue_script( 'kadence-blocks-image-js' );
+				}
+				if ( ! doing_filter( 'the_content' ) ) {
+					if ( ! wp_style_is( 'kadence-blocks-image', 'done' ) ) {
+						wp_print_styles( 'kadence-blocks-image' );
+					}
+				}
+				$css = $this->blocks_image_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'image', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
+	}
+	/**
 	 * Render Testimonials CSS in Head
 	 *
 	 * @param array $attributes the blocks attribtues.
@@ -1234,6 +1279,7 @@ class Kadence_Blocks_Frontend {
 		//wp_register_style( 'kadence-blocks-icon', KADENCE_BLOCKS_URL . 'dist/blocks/icon.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-icon', false );
 		wp_register_style( 'kadence-blocks-iconlist', KADENCE_BLOCKS_URL . 'dist/blocks/iconlist.style.build.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-image', KADENCE_BLOCKS_URL . 'dist/blocks/image.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-tabs', KADENCE_BLOCKS_URL . 'dist/blocks/tabs.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-spacer', KADENCE_BLOCKS_URL . 'dist/blocks/spacer.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-infobox', KADENCE_BLOCKS_URL . 'dist/blocks/infobox.style.build.css', array(), KADENCE_BLOCKS_VERSION );
@@ -5587,6 +5633,89 @@ class Kadence_Blocks_Frontend {
 		}
 	}
 	/**
+	 * Builds CSS for Image block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_image_array( $attr, $unique_id ) {
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$key_positions = [ 'top', 'right', 'bottom', 'left'];
+
+//			$css .= '.kt-image' . $unique_id . ' img { padding: 50px; }' ;
+
+		$css->set_selector( '.kt-image' . $unique_id . ' img');
+
+		if( isset( $attr['marginDesktop'] ) && is_array( $attr['marginDesktop'] ) ){
+			foreach($attr['marginDesktop'] as $key => $mDesktop ){
+				if( is_numeric( $mDesktop ) ){
+					$css->add_property( 'margin-' . $key_positions[$key], $mDesktop . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+
+				}
+			}
+		}
+
+		$css->start_media_query( $media_query['tablet'] );
+		if( isset( $attr['marginTablet'] ) && is_array( $attr['marginTablet'] ) ){
+			foreach($attr['marginTablet'] as $key => $mTablet ){
+				if( is_numeric( $mTablet ) ){
+					$css->add_property( 'margin-' . $key_positions[$key], $mTablet . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+
+				}
+			}
+		}
+		$css->stop_media_query();
+
+		$css->start_media_query( $media_query['mobile'] );
+		if( isset( $attr['marginMobile'] ) && is_array( $attr['marginMobile'] ) ){
+			foreach($attr['marginMobile'] as $key => $mMobile ){
+				if( is_numeric( $mMobile ) ){
+					$css->add_property( 'margin-' . $key_positions[$key], $mMobile . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+
+				}
+			}
+		}
+		$css->stop_media_query();
+
+		if( isset( $attr['paddingDesktop'] ) && is_array( $attr['paddingDesktop'] ) ){
+			foreach($attr['paddingDesktop'] as $key => $pDesktop ){
+				if( is_numeric( $pDesktop ) ){
+					$css->add_property( 'padding-' . $key_positions[$key], $pDesktop . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+
+				}
+			}
+		}
+
+		$css->start_media_query( $media_query['tablet'] );
+		if( isset( $attr['paddingTablet'] ) && is_array( $attr['paddingTablet'] ) ){
+			foreach($attr['paddingTablet'] as $key => $pTablet ){
+				if( is_numeric( $pTablet ) ){
+					$css->add_property( 'padding-' . $key_positions[$key], $pTablet . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+
+				}
+			}
+		}
+		$css->stop_media_query();
+
+		$css->start_media_query( $media_query['mobile'] );
+		if( isset( $attr['paddingMobile'] ) && is_array( $attr['paddingMobile'] ) ){
+			foreach($attr['paddingMobile'] as $key => $pMobile ){
+				if( is_numeric( $pMobile ) ){
+					$css->add_property( 'padding-' . $key_positions[$key], $pMobile . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+
+				}
+			}
+		}
+		$css->stop_media_query();
+
+		return $css->css_output();
+	}
+		/**
 	 * Builds CSS for Accordion block.
 	 *
 	 * @param array  $attr the blocks attr.
@@ -7080,7 +7209,7 @@ class Kadence_Blocks_Frontend {
 				if ( ! empty( $tablet_overlay['overlayBlendMode'] ) ) {
 					$css->add_property( 'mix-blend-mode', $tablet_overlay['overlayBlendMode'] );
 				}
-				
+
 			}
 			$css->stop_media_query();
 			if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] && isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {

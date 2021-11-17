@@ -40,6 +40,9 @@ import './blocks/countdown/block.js';
 import './blocks/countdown/countdown-timer/block.js';
 import './blocks/countdown/countdown-inner/block.js';
 
+/* block.json styles */
+import './blocks/image/index.js';
+
 // import './plugins/kadence-control.js';
 // import './plugins/editor-width.js';
 import './plugins/prebuilt-library/toolbar-library';

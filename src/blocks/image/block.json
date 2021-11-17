@@ -73,6 +73,41 @@
 		"source": "attribute",
 		"selector": "figure > a",
 		"attribute": "target"
+	  },
+	  "uniqueID": {
+		"type": "string"
+	  },
+	  "marginDesktop": {
+		"type": "array",
+		"default":  [ "", "", "", "" ]
+	  },
+	  "marginTablet": {
+		"type": "array",
+		"default":  [ "", "", "", "" ]
+	  },
+	  "marginMobile": {
+		"type": "array",
+		"default":  [ "", "", "", "" ]
+	  },
+	  "marginUnit": {
+		"type": "string",
+		"default": "px"
+	  },
+	  "paddingDesktop": {
+		"type": "array",
+		"default":  [ "", "", "", "" ]
+	  },
+	  "paddingTablet": {
+		"type": "array",
+		"default":  [ "", "", "", "" ]
+	  },
+	  "paddingMobile": {
+		"type": "array",
+		"default":  [ "", "", "", "" ]
+	  },
+	  "paddingUnit": {
+		"type": "string",
+		"default": "px"
 	  }
 	},
 	"supports": {

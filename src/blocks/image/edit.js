@@ -9,7 +9,8 @@ import { get, has, omit, pick } from 'lodash';
  */
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
 import { withNotices } from '@wordpress/components';
-import { useSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
+import { useSelect, withSelect } from '@wordpress/data';
 import {
 	BlockAlignmentControl,
 	BlockControls,
@@ -98,6 +99,7 @@ export function ImageEdit( {
 	onReplace,
 	context,
 	clientId,
+	getPreviewDevice,
 } ) {
 	const {
 		url = '',
@@ -313,6 +315,7 @@ export function ImageEdit( {
 			{ ( temporaryURL || url ) && (
 				<Image
 					temporaryURL={ temporaryURL }
+					previewDevice={ getPreviewDevice }
 					attributes={ attributes }
 					setAttributes={ setAttributes }
 					isSelected={ isSelected }
@@ -350,4 +353,15 @@ export function ImageEdit( {
 	);
 }
 
-export default withNotices( ImageEdit );
+// export default withNotices( ImageEdit );
+export default compose( [
+	withSelect( ( select, ownProps ) => {
+		let __experimentalGetPreviewDeviceType = false;
+		if ( select( 'core/edit-post' ) ) {
+			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
+		}
+		return {
+			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+		};
+	} ),
+] )( ImageEdit );

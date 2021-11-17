@@ -47,6 +47,13 @@ import { isExternalImage } from './edit';
  * Module constants
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
+import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control'
+import AdvancedPopColorControl from '../../advanced-pop-color-control'
+
+/**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+const ktimageUniqueIDs = [];
 
 export default function Image( {
 	temporaryURL,
@@ -65,6 +72,15 @@ export default function Image( {
 		height,
 		linkTarget,
 		sizeSlug,
+		uniqueID,
+		marginDesktop,
+		marginTablet,
+		marginMobile,
+		marginUnit,
+		paddingDesktop,
+		paddingTablet,
+		paddingMobile,
+		paddingUnit
 	},
 	setAttributes,
 	isSelected,
@@ -76,7 +92,61 @@ export default function Image( {
 	containerRef,
 	context,
 	clientId,
+	previewDevice,
 } ) {
+
+
+	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
+	};
+
+	if ( ! uniqueID ) {
+		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+		if ( blockConfigObject[ 'kadence/image' ] !== undefined && typeof blockConfigObject[ 'kadence/image' ] === 'object' ) {
+			Object.keys( blockConfigObject[ 'kadence/image' ] ).map( ( attribute ) => {
+				uniqueID = blockConfigObject[ 'kadence/image' ][ attribute ];
+			} );
+		}
+		setAttributes( {
+			uniqueID: '_' + clientId.substr( 2, 9 ),
+		} );
+		ktimageUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+	} else if ( ktimageUniqueIDs.includes( uniqueID ) ) {
+		uniqueID = '_' + clientId.substr( 2, 9 );
+		ktimageUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+	} else {
+		ktimageUniqueIDs.push( uniqueID );
+	}
+
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[3] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
+
+	const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
+	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
+	const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
+
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[0] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[1] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
+
+	const paddingMin = ( paddingUnit === 'em' || paddingUnit === 'rem' ? -12 : -200 );
+	const paddingMax = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 );
+	const paddingStep = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 );
+
 	const captionRef = useRef();
 	const prevUrl = usePrevious( url );
 	const { allowResize = true } = context;
@@ -133,6 +203,8 @@ export default function Image( {
 	const isWideAligned = includes( [ 'wide', 'full' ], align );
 	const [ { naturalWidth, naturalHeight }, setNaturalSize ] = useState( {} );
 	const [ isEditingImage, setIsEditingImage ] = useState( false );
+	const [ marginControl, setMarginControl ] = useState( 'individual');
+	const [ paddingControl, setPaddingControl ] = useState( 'individual');
 	const [ externalBlob, setExternalBlob ] = useState();
 	const clientWidth = useClientWidth( containerRef, [ align ] );
 	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport );
@@ -142,6 +214,9 @@ export default function Image( {
 		),
 		( { name, slug } ) => ( { value: slug, label: name } )
 	);
+
+	console.log('marginControl');
+	console.log(marginControl);
 
 	// If an image is externally hosted, try to fetch the image data. This may
 	// fail if the image host doesn't allow CORS with the domain. If it works,
@@ -339,6 +414,49 @@ export default function Image( {
 						imageHeight={ naturalHeight }
 					/>
 				</PanelBody>
+			{ true && ( // this.showSettings( 'marginSettings' )
+				<PanelBody
+					title={ __( 'Spacing Settings', 'kadence-blocks' ) }
+					initialOpen={ false }
+				>
+					<ResponsiveMeasurementControls
+						label={ __( 'Padding', 'kadence-blocks' ) }
+						value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
+						control={ paddingControl }
+						tabletValue={ paddingTablet }
+						mobileValue={ paddingMobile }
+						onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
+						onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
+						onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
+						onChangeControl={ ( value ) => setPaddingControl( value ) }
+						min={ paddingMin }
+						max={ paddingMax }
+						step={ paddingStep }
+						unit={ paddingUnit }
+						units={ [ 'px', 'em', 'rem', '%' ] }
+						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+					/>
+					<ResponsiveMeasurementControls
+						label={ __( 'Margin', 'kadence-blocks' ) }
+						value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
+						control={ marginControl }
+						tabletValue={ marginTablet }
+						mobileValue={ marginMobile }
+						onChange={ ( value ) => {
+							setAttributes( { marginDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
+						} }
+						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
+						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
+						onChangeControl={ ( value ) => setMarginControl( value ) }
+						min={ marginMin }
+						max={ marginMax }
+						step={ marginStep }
+						unit={ marginUnit }
+						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+					/>
+				</PanelBody>
+			) }
 			</InspectorControls>
 			<InspectorControls __experimentalGroup="advanced">
 				<TextControl
@@ -398,6 +516,17 @@ export default function Image( {
 			<img
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
+				style={ {
+					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
+					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
+					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
+					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+
+					paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
+					paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
+					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
+					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
+				} }
 				onError={ () => onImageError() }
 				onLoad={ ( event ) => {
 					setNaturalSize(
