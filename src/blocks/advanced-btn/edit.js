@@ -22,12 +22,18 @@ import URLInputControl from '../../components/links/link-control';
 import URLInputInline from '../../components/links/inline-link-control';
 import DynamicTextControl from '../../components/common/dynamic-text-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
 	position: 'bottom right',
 };
-
+/**
+ * Regular expression matching invalid anchor characters for replacement.
+ *
+ * @type {RegExp}
+ */
+ const ANCHOR_REGEX = /[\s#]/g;
 /**
  * Import Css
  */
@@ -428,7 +434,8 @@ class KadenceAdvancedButton extends Component {
 							textTransform: ( textTransform ? textTransform : undefined ),
 							fontFamily: ( typography ? typography : '' ),
 							borderRadius: ( undefined !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
-							borderWidth: ( undefined !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
+							borderWidth: ( undefined !== btns[ index ].borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
+							borderStyle: ( undefined !== btns[ index ].borderStyle && '' !== btns[ index ].borderStyle ? btns[ index ].borderStyle : undefined ),
 							borderColor: ( undefined === btns[ index ].border ? '#555555' : KadenceColorOutput( btns[ index ].border, ( btns[ index ].borderOpacity !== undefined ? btns[ index ].borderOpacity : 1 ) ) ),
 							paddingLeft: ( undefined !== btns[ index ].paddingLR && 'custom' === btns[ index ].btnSize ? btns[ index ].paddingLR + 'px' : undefined ),
 							paddingRight: ( undefined !== btns[ index ].paddingLR && 'custom' === btns[ index ].btnSize ? btns[ index ].paddingLR + 'px' : undefined ),
@@ -1015,6 +1022,22 @@ class KadenceAdvancedButton extends Component {
 								min={ 0 }
 								max={ 20 }
 							/>
+							<SelectControl
+									label={ __( 'Border Style', 'kadence-blocks' ) }
+									value={ ( undefined !== btns[ index ].borderStyle && btns[ index ].borderStyle ? btns[ index ].borderStyle : '' ) }
+									options={ [
+										{ value: '', label: __( 'Default', 'kadence-blocks' ) },
+										{ value: 'solid', label: __( 'Solid', 'kadence-blocks' ) },
+										{ value: 'dashed', label: __( 'Dashed', 'kadence-blocks' ) },
+										{ value: 'dotted', label: __( 'Dotted', 'kadence-blocks' ) },
+										{ value: 'double', label: __( 'Double', 'kadence-blocks' ) },
+										{ value: 'groove', label: __( 'Groove', 'kadence-blocks' ) },
+										{ value: 'ridge', label: __( 'Ridge', 'kadence-blocks' ) },
+									] }
+									onChange={ value => {
+										this.saveArrayUpdate( { borderStyle: value }, index );
+									} }
+								/>
 							<RangeControl
 								label={ __( 'Border Radius', 'kadence-blocks' ) }
 								value={ btns[ index ].borderRadius }
@@ -1174,6 +1197,14 @@ class KadenceAdvancedButton extends Component {
 						label={ __( 'Add Custom CSS Class', 'kadence-blocks' ) }
 						value={ ( btns[ index ].cssClass ? btns[ index ].cssClass : '' ) }
 						onChange={ ( value ) => this.saveArrayUpdate( { cssClass: value }, index ) }
+					/>
+					<TextControl
+						label={ __( 'Add HTML ID', 'kadence-blocks' ) }
+						value={ ( btns[ index ].anchor ? btns[ index ].anchor : '' ) }
+						onChange={ ( nextValue ) => {
+							nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
+							this.saveArrayUpdate( { anchor: value }, index )
+						} }
 					/>
 					<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Gap Between Next', 'kadence-blocks' ) }</h2>
 					<TabPanel className="kt-size-tabs"
@@ -1708,7 +1739,7 @@ class KadenceAdvancedButton extends Component {
 		return (
 			<Fragment>
 				{ renderCSS }
-				<div id={ `kt-btns_${ uniqueID }` } className={ `${ className } kt-btn-align-${ hAlign }${ ( forceFullwidth ? ' kt-force-btn-fullwidth' : '' ) }` }>
+				<div id={ `kt-btns_${ uniqueID }` } className={ `${ className } kt-btn-align-${ hAlign }${ thAlign ? ` kt-btn-tab-align-${ thAlign }` : '' }${ mhAlign ? ` kt-btn-mobile-align-${ mhAlign }` : '' }${ ( forceFullwidth ? ' kt-force-btn-fullwidth' : '' ) }` }>
 					<BlockControls>
 						<AlignmentToolbar
 							value={ hAlign }
@@ -1787,6 +1818,8 @@ class KadenceAdvancedButton extends Component {
 														margin: ( newbtns[ 0 ].margin ? newbtns[ 0 ].margin : [ '', '', '', '' ] ),
 														tabletMargin: ( newbtns[ 0 ].tabletMargin ? newbtns[ 0 ].tabletMargin : [ '', '', '', '' ] ),
 														mobileMargin: ( newbtns[ 0 ].mobileMargin ? newbtns[ 0 ].mobileMargin : [ '', '', '', '' ] ),
+														anchor: ( newbtns[ 0 ].anchor ? newbtns[ 0 ].anchor : '' ),
+														borderStyle: ( newbtns[ 0 ].borderStyle ? newbtns[ 0 ].borderStyle : '' )
 													} );
 													setAttributes( { btns: newbtns } );
 													this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
@@ -1796,60 +1829,15 @@ class KadenceAdvancedButton extends Component {
 												{ __( 'Add Button', 'kadence-blocks' ) }
 											</Button>
 										</PanelRow>
-										<h2 className="kt-heading-size-title">{ __( 'Button Alignment', 'kadence-blocks' ) }</h2>
-										<TabPanel className="kt-size-tabs kb-sidebar-alignment"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'desk',
-													title: <Dashicon icon="desktop" />,
-													className: 'kt-desk-tab',
-												},
-												{
-													name: 'tablet',
-													title: <Dashicon icon="tablet" />,
-													className: 'kt-tablet-tab',
-												},
-												{
-													name: 'mobile',
-													title: <Dashicon icon="smartphone" />,
-													className: 'kt-mobile-tab',
-												},
-											] }>
-											{
-												( tab ) => {
-													let tabout;
-													if ( tab.name ) {
-														if ( 'mobile' === tab.name ) {
-															tabout = (
-																<AlignmentToolbar
-																	isCollapsed={ false }
-																	value={ mhAlign }
-																	onChange={ ( value ) => setAttributes( { mhAlign: value } ) }
-																/>
-															);
-														} else if ( 'tablet' === tab.name ) {
-															tabout = (
-																<AlignmentToolbar
-																	isCollapsed={ false }
-																	value={ thAlign }
-																	onChange={ ( value ) => setAttributes( { thAlign: value } ) }
-																/>
-															);
-														} else {
-															tabout = (
-																<AlignmentToolbar
-																	isCollapsed={ false }
-																	value={ hAlign }
-																	onChange={ ( value ) => setAttributes( { hAlign: value } ) }
-																/>
-															);
-														}
-													}
-													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-												}
-											}
-										</TabPanel>
+										<ResponsiveAlignControls
+											label={ __( 'Button Alignment', 'kadence-blocks' ) }
+											value={ ( hAlign ? hAlign : '' ) }
+											mobileValue={ ( mhAlign ? mhAlign : '' ) }
+											tabletValue={ ( thAlign ? thAlign : '' ) }
+											onChange={ ( nextAlign ) => setAttributes( { hAlign: nextAlign } ) }
+											onChangeTablet={ ( nextAlign ) => setAttributes( { thAlign: nextAlign } ) }
+											onChangeMobile={ ( nextAlign ) => setAttributes( { mhAlign: nextAlign } ) }
+										/>
 									</PanelBody>
 								) }
 								{ renderArray }

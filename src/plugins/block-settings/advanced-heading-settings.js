@@ -78,7 +78,7 @@ class KadenceHeadingSettings extends Component {
 						<hr />
 						<h2>{ __( 'Control Individual Settings' ) }</h2>
 						<SelectControl
-							label={ __( 'Enable Inline Toolbar Settings' ) }
+							label={ __( 'Enable Typography Settings in Toolbar' ) }
 							value={ ( btnSettings.toolbarTypography ? btnSettings.toolbarTypography : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -89,6 +89,19 @@ class KadenceHeadingSettings extends Component {
 								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
 							] }
 							onChange={ value => this.saveConfigState( 'toolbarTypography', value ) }
+						/>
+						<SelectControl
+							label={ __( 'Enable Color Settings in Toolbar' ) }
+							value={ ( btnSettings.toolbarColor ? btnSettings.toolbarColor : 'all' ) }
+							options={ [
+								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+								{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+								{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+								{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+								{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+								{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
+							] }
+							onChange={ value => this.saveConfigState( 'toolbarColor', value ) }
 						/>
 						<SelectControl
 							label={ __( 'Enable Color Settings' ) }

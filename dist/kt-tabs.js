@@ -22,11 +22,13 @@ jQuery( function( $ ) {
 				role: 'tab',
 				'aria-selected': 'false',
 				tabindex: '-1',
+				'aria-controls': $( this ).parent().attr( 'id' ),
 			} ).parent().attr( 'role', 'presentation' );
 		} );
 		$( this ).find( '> .kt-tabs-title-list li.kt-tab-title-active a' ).attr( {
 			role: 'tab',
 			'aria-selected': 'true',
+			'aria-controls': $( this ).find( '> .kt-tabs-title-list li.kt-tab-title-active a' ).parent().attr( 'id' ),
 			tabindex: '0',
 		} ).parent().attr( 'role', 'presentation' );
 		$( ktTabsList ).on( 'keydown', 'a', function( e ) {
@@ -47,6 +49,9 @@ jQuery( function( $ ) {
 					break;
 			}
 		} );
+		var resizeEvent = window.document.createEvent( 'UIEvents' );
+		resizeEvent.initUIEvent( 'resize', true, false, window, 0 );
+		window.dispatchEvent( resizeEvent );
 	} );
 	$( '.kt-tabs-title-list li a' ).on( 'click', function( e ) {
 		e.preventDefault();

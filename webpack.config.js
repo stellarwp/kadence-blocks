@@ -5,6 +5,7 @@ defaultConfig.optimization.splitChunks.chunks = 'all';
 defaultConfig.optimization.splitChunks.maxInitialRequests = 30;
 defaultConfig.optimization.splitChunks.hidePathInfo = true;
 defaultConfig.optimization.splitChunks.name = splitChunkName.name.bind( splitChunkName );
+
 //defaultConfig.optimization.runtimeChunk = 'single';
 //defaultConfig.output.filename = '[name].js';
 defaultConfig.output.path = __dirname + '/dist/build';

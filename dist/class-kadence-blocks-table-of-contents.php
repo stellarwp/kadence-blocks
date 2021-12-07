@@ -35,6 +35,13 @@ class Kadence_Blocks_Table_Of_Contents {
 	public static $headings = array();
 
 	/**
+	 * Anchors that are used, prevent duplicates.
+	 *
+	 * @var null
+	 */
+	public static $anchors = array();
+
+	/**
 	 * Post content.
 	 *
 	 * @var string
@@ -440,17 +447,36 @@ class Kadence_Blocks_Table_Of_Contents {
 			$query .= ']';
 		}
 		// Get all heading elements in the post content.
-		$headings = iterator_to_array(
+		$temp_headings = iterator_to_array(
 			$xpath->query( $query )
 		);
-
+		$headings = array();
+		foreach ( $temp_headings as $temp_heading ) {
+			if ( isset( $temp_heading->attributes ) ) {
+				$heading_classes_string = $temp_heading->attributes->getNamedItem( 'class' );
+				if ( null !== $heading_classes_string ) {
+					$heading_classes = explode( ' ', trim( $heading_classes_string->nodeValue ) );
+					$exclude_classes = array( 'kt-testimonial-title', 'image-overlay-title', 'image-overlay-subtitle', 'toc-ignore' );
+					$exclude         = false;
+					foreach ( $exclude_classes as $exclude_class ) {
+						if ( in_array( $exclude_class, $heading_classes ) ) {
+							$exclude = true;
+							break;
+						}
+					}
+					if ( $exclude ) {
+						continue;
+					}
+				}
+			}
+			$headings[] = $temp_heading;
+		}
 		return array_map(
 			function ( $heading ) use ( $headings_page, $current_page ) {
 				$anchor_string = false;
 				$anchor        = '';
 				if ( isset( $heading->attributes ) ) {
 					$id_attribute = $heading->attributes->getNamedItem( 'id' );
-
 					if ( null !== $id_attribute ) {
 						// The id attribute may contain many ids, so just use the first.
 						$first_id = explode( ' ', trim( $id_attribute->nodeValue ) )[0];
@@ -466,15 +492,25 @@ class Kadence_Blocks_Table_Of_Contents {
 						}
 					} else {
 						$anchor_string = $this->convert_text_to_anchor( $heading->textContent );
-						if ( $anchor_string ) {
-							$anchor = '#' . $anchor_string;
+						if ( ! $anchor_string ) {
+							$anchor_string = uniqid( 'hd-' );
 						}
+						if ( in_array( $anchor_string, self::$anchors ) ) {
+							$anchor_string = $anchor_string . uniqid( '-hd-' );
+						}
+						self::$anchors[] = $anchor_string;
+						$anchor = '#' . $anchor_string;
 					}
 				} else {
 					$anchor_string = $this->convert_text_to_anchor( $heading->textContent );
-					if ( $anchor_string ) {
-						$anchor = '#' . $anchor_string;
+					if ( ! $anchor_string ) {
+						$anchor_string = uniqid( 'hd-' );
 					}
+					if ( in_array( $anchor_string, self::$anchors ) ) {
+						$anchor_string = $anchor_string . uniqid( '-hd-' );
+					}
+					self::$anchors[] = $anchor_string;
+					$anchor = '#' . $anchor_string;
 				}
 
 				switch ( $heading->nodeName ) {
@@ -697,13 +733,16 @@ class Kadence_Blocks_Table_Of_Contents {
 			if ( isset( $attributes['enableToggle'] ) && $attributes['enableToggle'] ) {
 				$enable_toggle = true;
 				$start_closed  = ( isset( $attributes['startClosed'] ) && $attributes['startClosed'] ? true : false );
+				$title_toggle  = ( isset( $attributes['enableTitleToggle'] ) && $attributes['enableTitleToggle'] ? true : false );
 			} else {
 				$enable_toggle = false;
 				$start_closed  = false;
+				$title_toggle  = false;
 			}
 		} else {
 			$enable_toggle = false;
 			$start_closed  = false;
+			$title_toggle  = false;
 		}
 		$enable_scroll = false;
 		$scroll_offset = '40';
@@ -717,11 +756,21 @@ class Kadence_Blocks_Table_Of_Contents {
 		$output .= '<div class="kb-table-of-content-wrap">';
 		if ( ! isset( $attributes['enableTitle'] ) || isset( $attributes['enableTitle'] ) && $attributes['enableTitle'] ) {
 			$output .= '<div class="kb-table-of-contents-title-wrap kb-toggle-icon-style-' . ( $enable_toggle && isset( $attributes['toggleIcon'] ) && $attributes['toggleIcon'] ? $attributes['toggleIcon'] : 'arrow' ) . '">';
-			$output .= '<div class="kb-table-of-contents-title">';
+			if ( $title_toggle ) {
+				$output .= '<button class="kb-table-of-contents-title-btn kb-table-of-contents-toggle" aria-expanded="' . esc_attr( $start_closed ? 'false' : 'true' ) . '" aria-label="' . ( $start_closed ? esc_attr__( 'Expand Table of Contents', 'kadence-blocks' ) : esc_attr__( 'Collapse Table of Contents', 'kadence-blocks' ) ) . '">';
+			}
+			$output .= '<span class="kb-table-of-contents-title">';
 			$output .= ( isset( $attributes['title'] ) ? $attributes['title'] : __( 'Table of Contents', 'kadence-blocks' ) );
-			$output .= '</div>';
+			$output .= '</span>';
 			if ( $enable_toggle ) {
-				$output .= '<button class="kb-table-of-contents-icon-trigger" aria-expanded="' . esc_attr( $start_closed ? 'false' : 'true' ) . '" aria-label="' . ( $start_closed ? esc_attr__( 'Expand Table of Contents', 'kadence-blocks' ) : esc_attr__( 'Collapse Table of Contents', 'kadence-blocks' ) ) . '"></button>';
+				if ( $title_toggle ) {
+					$output .= '<span class="kb-table-of-contents-icon-trigger"></span>';
+				} else {
+					$output .= '<button class="kb-table-of-contents-icon-trigger kb-table-of-contents-toggle" aria-expanded="' . esc_attr( $start_closed ? 'false' : 'true' ) . '" aria-label="' . ( $start_closed ? esc_attr__( 'Expand Table of Contents', 'kadence-blocks' ) : esc_attr__( 'Collapse Table of Contents', 'kadence-blocks' ) ) . '"></button>';
+				}
+			}
+			if ( $title_toggle ) {
+				$output .= '</button>';
 			}
 			$output .= '</div>';
 		}
@@ -919,7 +968,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		if ( isset( $attributes['titleLineHeight'] ) && is_array( $attributes['titleLineHeight'] ) && isset( $attributes['titleLineHeight'][1] ) && ! empty( $attributes['titleLineHeight'][1] ) ) {
 			$css->add_property( 'line-height', $attributes['titleLineHeight'][1] . ( isset( $attributes['titleLineType'] ) && ! empty( $attributes['titleLineType'] ) ? $attributes['titleLineType'] : 'px' ) );
 		}
-		$css->set_selector( '.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list' );
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list' );
 		if ( isset( $attributes['contentSize'] ) && is_array( $attributes['contentSize'] ) && isset( $attributes['contentSize'][1] ) && ! empty( $attributes['contentSize'][1] ) ) {
 			$css->add_property( 'font-size', $attributes['contentSize'][1] . ( isset( $attributes['contentSizeType'] ) && ! empty( $attributes['contentSizeType'] ) ? $attributes['contentSizeType'] : 'px' ) );
 		}
@@ -946,7 +995,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		if ( isset( $attributes['titleLineHeight'] ) && is_array( $attributes['titleLineHeight'] ) && isset( $attributes['titleLineHeight'][2] ) && ! empty( $attributes['titleLineHeight'][2] ) ) {
 			$css->add_property( 'line-height', $attributes['titleLineHeight'][2] . ( isset( $attributes['titleLineType'] ) && ! empty( $attributes['titleLineType'] ) ? $attributes['titleLineType'] : 'px' ) );
 		}
-		$css->set_selector( '.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list' );
+		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap .kb-table-of-content-list' );
 		if ( isset( $attributes['contentSize'] ) && is_array( $attributes['contentSize'] ) && isset( $attributes['contentSize'][2] ) && ! empty( $attributes['contentSize'][2] ) ) {
 			$css->add_property( 'font-size', $attributes['contentSize'][2] . ( isset( $attributes['contentSizeType'] ) && ! empty( $attributes['contentSizeType'] ) ? $attributes['contentSizeType'] : 'px' ) );
 		}

@@ -99,6 +99,8 @@ registerBlockType( 'kadence/form', {
 				auto: '',
 				errorMessage: '',
 				requiredMessage: '',
+				slug: '',
+				ariaLabel: '',
 			},
 			{
 				label: 'Email',
@@ -122,6 +124,8 @@ registerBlockType( 'kadence/form', {
 				auto: '',
 				errorMessage: '',
 				requiredMessage: '',
+				slug: '',
+				ariaLabel: '',
 			},
 			{
 				label: 'Message',
@@ -145,6 +149,8 @@ registerBlockType( 'kadence/form', {
 				auto: '',
 				errorMessage: '',
 				requiredMessage: '',
+				slug: '',
+				ariaLabel: '',
 			} ],
 		},
 		messages: {
@@ -381,11 +387,15 @@ registerBlockType( 'kadence/form', {
 			type: 'array',
 			default: [ '', '', '', '' ],
 		},
+		submitLabel: {
+			type: 'string',
+			default: '',
+		},
 	},
 	edit,
 
 	save: props => {
-		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha, recaptchaVersion, honeyPot, messages } } = props;
+		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha, recaptchaVersion, honeyPot, messages, submitLabel } } = props;
 		const fieldOutput = ( index ) => {
 			if ( 'hidden' === fields[ index ].type ) {
 				return (
@@ -422,7 +432,10 @@ registerBlockType( 'kadence/form', {
 							{ fields[ index ].showLink && (
 								<a href={ ( undefined !== fields[ index ].default && '' !== fields[ index ].default ? fields[ index ].default : '#' ) } target="_blank" rel="noopener noreferrer" className={ 'kb-accept-link' }>{ ( undefined !== fields[ index ].placeholder && '' !== fields[ index ].placeholder ? fields[ index ].placeholder : 'View Privacy Policy' ) }</a>
 							) }
-							<input type="checkbox" name={ `kb_field_${ index }` } id={ `kb_field_${ uniqueID }_${ index }` } className={ `kb-field kb-checkbox-style kb-${ fields[ index ].type }` } value={ 'accept' } checked={ fields[ index ].inline ? true : false } data-type={ fields[ index ].type } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } data-required-message={ fields[ index ].requiredMessage ? fields[ index ].requiredMessage : undefined } data-validation-message={ fields[ index ].errorMessage ? fields[ index ].errorMessage : undefined } />
+							{ undefined !== fields[ index ].ariaLabel && fields[ index ].ariaLabel && (
+								<span id={ `kb_field_desc_${ uniqueID }_${ index }` } className="screen-reader-text kb-field-desc-label">{ fields[ index ].ariaLabel }</span>
+							) }
+							<input type="checkbox" name={ `kb_field_${ index }` } id={ `kb_field_${ uniqueID }_${ index }` } className={ `kb-field kb-checkbox-style kb-${ fields[ index ].type }` } value={ 'accept' } checked={ fields[ index ].inline ? true : false } data-type={ fields[ index ].type } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } data-required-message={ fields[ index ].requiredMessage ? fields[ index ].requiredMessage : undefined } data-validation-message={ fields[ index ].errorMessage ? fields[ index ].errorMessage : undefined } aria-describedby={ undefined !== fields[ index ].ariaLabel && fields[ index ].ariaLabel ? `kb_field_desc_${ uniqueID }_${ index }` : undefined } />
 							<label htmlFor={ `kb_field_${ uniqueID }_${ index }` }>{ ( fields[ index ].label ? acceptLabel : '' ) }{ ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required">*</span> : '' ) }</label>
 						</Fragment>
 					) }
@@ -431,11 +444,14 @@ registerBlockType( 'kadence/form', {
 							{ fields[ index ].showLabel && (
 								<label htmlFor={ `kb_field_${ uniqueID }_${ index }` }>{ ( fields[ index ].label ? fields[ index ].label : '' ) }{ ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required">*</span> : '' ) }</label>
 							) }
+							{ undefined !== fields[ index ].ariaLabel && fields[ index ].ariaLabel && (
+								<span id={ `kb_field_desc_${ uniqueID }_${ index }` } className="screen-reader-text">{ fields[ index ].ariaLabel }</span>
+							) }
 							{ 'textarea' === fields[ index ].type && (
-								<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ uniqueID }_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } data-required-message={ fields[ index ].requiredMessage ? fields[ index ].requiredMessage : undefined } data-validation-message={ fields[ index ].errorMessage ? fields[ index ].errorMessage : undefined } />
+								<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ uniqueID }_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } data-required-message={ fields[ index ].requiredMessage ? fields[ index ].requiredMessage : undefined } data-validation-message={ fields[ index ].errorMessage ? fields[ index ].errorMessage : undefined } aria-describedby={ undefined !== fields[ index ].ariaLabel && fields[ index ].ariaLabel ? `kb_field_desc_${ uniqueID }_${ index }` : undefined } />
 							) }
 							{ 'select' === fields[ index ].type && (
-								<select name={ ( fields[ index ].multiSelect ? `kb_field_${ index }[]` : `kb_field_${ index }` ) } id={ `kb_field_${ uniqueID }_${ index }` } multiple={ ( fields[ index ].multiSelect ? true : false ) } data-label={ fields[ index ].label } type={ fields[ index ].type } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-select-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } data-required-message={ fields[ index ].requiredMessage ? fields[ index ].requiredMessage : undefined } data-validation-message={ fields[ index ].errorMessage ? fields[ index ].errorMessage : undefined }>
+								<select name={ ( fields[ index ].multiSelect ? `kb_field_${ index }[]` : `kb_field_${ index }` ) } id={ `kb_field_${ uniqueID }_${ index }` } multiple={ ( fields[ index ].multiSelect ? true : false ) } data-label={ fields[ index ].label } type={ fields[ index ].type } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-select-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } data-required-message={ fields[ index ].requiredMessage ? fields[ index ].requiredMessage : undefined } data-validation-message={ fields[ index ].errorMessage ? fields[ index ].errorMessage : undefined } aria-describedby={ undefined !== fields[ index ].ariaLabel && fields[ index ].ariaLabel ? `kb_field_desc_${ uniqueID }_${ index }` : undefined } >
 									{ undefined !== fields[ index ].placeholder && '' !== fields[ index ].placeholder && (
 										<option
 											value=""
@@ -475,7 +491,7 @@ registerBlockType( 'kadence/form', {
 								</div>
 							) }
 							{ 'textarea' !== fields[ index ].type && 'select' !== fields[ index ].type && 'checkbox' !== fields[ index ].type && 'radio' !== fields[ index ].type && (
-								<input name={ `kb_field_${ index }` } id={ `kb_field_${ uniqueID }_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete={ ( '' !== fields[ index ].auto ? fields[ index ].auto : undefined ) } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } data-required-message={ fields[ index ].requiredMessage ? fields[ index ].requiredMessage : undefined } data-validation-message={ fields[ index ].errorMessage ? fields[ index ].errorMessage : undefined } />
+								<input name={ `kb_field_${ index }` } id={ `kb_field_${ uniqueID }_${ index }` } data-label={ fields[ index ].label } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } autoComplete={ ( '' !== fields[ index ].auto ? fields[ index ].auto : undefined ) } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } data-required-message={ fields[ index ].requiredMessage ? fields[ index ].requiredMessage : undefined } data-validation-message={ fields[ index ].errorMessage ? fields[ index ].errorMessage : undefined } aria-describedby={ undefined !== fields[ index ].ariaLabel && fields[ index ].ariaLabel ? `kb_field_desc_${ uniqueID }_${ index }` : undefined } />
 							) }
 						</Fragment>
 					) }
@@ -525,8 +541,12 @@ registerBlockType( 'kadence/form', {
 						<input className="kadence-blocks-field verify" type="text" name="_kb_verify_email" autoComplete="off" aria-hidden="true" placeholder="Email" tabIndex="-1" />
 					) }
 					<div className={ submitClassName }>
+						{ submitLabel && (
+							<span id={ `kb_submit_label_${ uniqueID }` } className="screen-reader-text kb-submit-desc-label">{ submitLabel }</span>
+						) }
 						<RichText.Content
 							tagName="button"
+							aria-describedby={ submitLabel ? `kb_submit_label_${ uniqueID }` : undefined }
 							value={ ( '' !== submit[ 0 ].label ? submit[ 0 ].label : 'Submit' ) }
 							className={ `kb-forms-submit button kb-button-size-${ ( submit[ 0 ].size ? submit[ 0 ].size : 'standard' ) } kb-button-width-${ ( submit[ 0 ].widthType ? submit[ 0 ].widthType : 'auto' ) }` }
 						/>

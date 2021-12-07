@@ -10,7 +10,7 @@ import map from 'lodash/map';
 import classnames from 'classnames';
 import TypographyControls from '../../components/typography/typography-control';
 import InlineTypographyControls from '../../components/typography/inline-typography-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import InlineAdvancedPopColorControl from '../../advanced-inline-pop-color-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import WebfontLoader from '../../components/typography/fontloader';
@@ -178,7 +178,7 @@ class KadenceAdvancedHeading extends Component {
 	}
 	render() {
 		const { attributes, className, setAttributes, mergeBlocks, onReplace, clientId } = this.props;
-		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic, link, linkTarget, linkNoFollow, linkSponsored, background, backgroundColorClass } = attributes;
+		const { uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic, link, linkTarget, linkNoFollow, linkSponsored, background, backgroundColorClass, linkStyle, linkColor, linkHoverColor } = attributes;
 		const renderTypography = typography && ! typography.includes(',') ? "'" + typography + "'" : typography;
 		const markBGString = ( markBG ? KadenceColorOutput( markBG, markBGOpacity ) : '' );
 		const markBorderString = ( markBorder ? KadenceColorOutput( markBorder, markBorderOpacity ) : '' );
@@ -293,6 +293,7 @@ class KadenceAdvancedHeading extends Component {
 			'has-text-color': textColorClass,
 			[ textBackgroundColorClass ]: textBackgroundColorClass,
 			'has-background': textBackgroundColorClass,
+			[ `hls-${ linkStyle }` ]: ! link && linkStyle
 		} );
 		const dynamicHeadingContent = (
 			<TagHTML
@@ -368,7 +369,7 @@ class KadenceAdvancedHeading extends Component {
 		const headingLinkContent = (
 			<a
 				href={ link }
-				className={ 'kb-advanced-heading-link' }
+				className={ `kb-advanced-heading-link${ ( linkStyle ? ' hls-' + linkStyle : '' ) }` }
 				onClick={ ( event ) => {
 					event.preventDefault();
 				} }
@@ -397,6 +398,16 @@ class KadenceAdvancedHeading extends Component {
 						padding-bottom: ${ ( previewMarkPaddingBottom ? previewMarkPaddingBottom + 'px ' : '0' ) };
 						padding-left: ${ ( previewMarkPaddingLeft ? previewMarkPaddingLeft + 'px ' : '0' ) };
 					}` }
+					{ linkColor && (
+						`.kt-adv-heading${ uniqueID } a, #block-${clientId} a.kb-advanced-heading-link, #block-${clientId} a.kb-advanced-heading-link > .wp-block-kadence-advancedheading {
+							color: ${ KadenceColorOutput( linkColor ) } !important;
+						}`
+					) }
+					{ linkHoverColor && (
+						`.kt-adv-heading${ uniqueID } a:hover, #block-${clientId} a.kb-advanced-heading-link:hover, #block-${clientId} a.kb-advanced-heading-link:hover > .wp-block-kadence-advancedheading {
+							color: ${ KadenceColorOutput( linkHoverColor ) }!important;
+						}`
+					) }
 				</style>
 				<BlockControls>
 					<ToolbarGroup
@@ -452,13 +463,15 @@ class KadenceAdvancedHeading extends Component {
 							onMobileLineHeight={ ( value ) => setAttributes( { mobileLineHeight: value } ) }
 						/>
 					) }
-					<InlineAdvancedPopColorControl
-						label={ __( 'Heading Color', 'kadence-blocks' ) }
-						colorValue={ ( color ? color : '' ) }
-						colorDefault={ '' }
-						onColorChange={ value => setAttributes( { color: value } ) }
-						onColorClassChange={ value => setAttributes( { colorClass: value } ) }
-					/>
+					{ this.showSettings( 'allSettings' ) && this.showSettings( 'toolbarColor' ) && (
+						<InlineAdvancedPopColorControl
+							label={ __( 'Heading Color', 'kadence-blocks' ) }
+							colorValue={ ( color ? color : '' ) }
+							colorDefault={ '' }
+							onColorChange={ value => setAttributes( { color: value } ) }
+							onColorClassChange={ value => setAttributes( { colorClass: value } ) }
+						/>
+					) }
 					<AlignmentToolbar
 						value={ align }
 						onChange={ ( nextAlign ) => {
@@ -492,19 +505,19 @@ class KadenceAdvancedHeading extends Component {
 							/>
 							{ this.showSettings( 'colorSettings' ) && (
 								<Fragment>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Heading Color', 'kadence-blocks' ) }
-										colorValue={ ( color ? color : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { color: value } ) }
-										onColorClassChange={ value => setAttributes( { colorClass: value } ) }
+										value={ ( color ? color : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { color: value } ) }
+										onClassChange={ value => setAttributes( { colorClass: value } ) }
 									/>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Heading Background Color', 'kadence-blocks' ) }
-										colorValue={ ( background ? background : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { background: value } ) }
-										onColorClassChange={ value => setAttributes( { backgroundColorClass: value } ) }
+										value={ ( background ? background : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { background: value } ) }
+										onClassChange={ value => setAttributes( { backgroundColorClass: value } ) }
 									/>
 								</Fragment>
 							) }
@@ -584,27 +597,29 @@ class KadenceAdvancedHeading extends Component {
 								title={ __( 'Highlight Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Highlight Color', 'kadence-blocks' ) }
-									colorValue={ ( markColor ? markColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => setAttributes( { markColor: value } ) }
+									value={ ( markColor ? markColor : '' ) }
+									default={ '' }
+									onChange={ value => setAttributes( { markColor: value } ) }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Highlight Background', 'kadence-blocks' ) }
-									colorValue={ ( markBG ? markBG : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => setAttributes( { markBG: value } ) }
+									value={ ( markBG ? markBG : '' ) }
+									default={ '' }
+									onChange={ value => setAttributes( { markBG: value } ) }
 									opacityValue={ markBGOpacity }
 									onOpacityChange={ value => setAttributes( { markBGOpacity: value } ) }
+									onArrayChange={ ( color, opacity ) => setAttributes( { markBG: color, markBGOpacity: opacity } ) }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Highlight Border Color', 'kadence-blocks' ) }
-									colorValue={ ( markBorder ? markBorder : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => setAttributes( { markBorder: value } ) }
+									value={ ( markBorder ? markBorder : '' ) }
+									default={ '' }
+									onChange={ value => setAttributes( { markBorder: value } ) }
 									opacityValue={ markBorderOpacity }
 									onOpacityChange={ value => setAttributes( { markBorderOpacity: value } ) }
+									onArrayChange={ ( color, opacity ) => setAttributes( { markBorder: color, markBorderOpacity: opacity } ) }
 								/>
 								<SelectControl
 									label={ __( 'Highlight Border Style', 'kadence-blocks' ) }
@@ -683,6 +698,28 @@ class KadenceAdvancedHeading extends Component {
 								title={ __( 'Link Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
+								<PopColorControl
+									label={ __( 'Link Color', 'kadence-blocks' ) }
+									swatchLabel={ __( 'Link Color', 'kadence-blocks' ) }
+									value={ ( linkColor ? linkColor : '' ) }
+									default={ '' }
+									onChange={ value => setAttributes( { linkColor: value } ) }
+									swatchLabel2={ __( 'Hover Color', 'kadence-blocks' ) }
+									value2={ ( linkHoverColor ? linkHoverColor : '' ) }
+									default2={ '' }
+									onChange2={ value => setAttributes( { linkHoverColor: value } ) }
+								/>
+								<SelectControl
+									label={ __( 'Link Style', 'kadence-blocks' ) }
+									value={ linkStyle }
+									options={ [
+										{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
+										{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+										{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
+										{ value: 'hover_underline', label: __( 'Underline on Hover', 'kadence-blocks' ) },
+									] }
+									onChange={ value => setAttributes( { linkStyle: value } ) }
+								/>
 								<URLInputControl
 									label={ __( 'Heading Wrap Link', 'kadence-blocks' ) }
 									url={ link }

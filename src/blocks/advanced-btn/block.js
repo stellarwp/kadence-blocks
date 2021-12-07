@@ -138,6 +138,8 @@ registerBlockType( 'kadence/advancedbtn', {
 				margin: [ '', '', '', '' ],
 				tabletMargin: [ '', '', '', '' ],
 				mobileMargin: [ '', '', '', '' ],
+				anchor: '',
+				borderStyle: '',
 			} ],
 		},
 		letterSpacing: {
@@ -259,7 +261,7 @@ registerBlockType( 'kadence/advancedbtn', {
 			} );
 			return (
 				<div className={ `kt-btn-wrap kt-btn-wrap-${ index }` }>
-					<a className={ btnClasses } aria-label={ btns[ index ].label ? btns[ index ].label : undefined } download={ ( undefined !== btns[ index ].download && true === btns[ index ].download ? '' : undefined ) } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
+					<a id={ btns[ index ].anchor ? btns[ index ].anchor : undefined } className={ btnClasses } aria-label={ btns[ index ].label ? btns[ index ].label : undefined } download={ ( undefined !== btns[ index ].download && true === btns[ index ].download ? '' : undefined ) } href={ ( ! btns[ index ].link ? '#' : btns[ index ].link ) } target={ ( '_blank' === btns[ index ].target ? btns[ index ].target : undefined ) } rel={ relAttr } style={ {
 						borderRadius: ( undefined !== btns[ index ].borderRadius && '' !== btns[ index ].borderRadius ? btns[ index ].borderRadius + 'px' : undefined ),
 						borderWidth: ( undefined !== btns[ index ].borderWidth && '' !== btns[ index ].borderWidth ? btns[ index ].borderWidth + 'px' : undefined ),
 						letterSpacing: ( undefined !== letterSpacing && '' !== letterSpacing ? letterSpacing + 'px' : undefined ),

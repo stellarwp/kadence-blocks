@@ -321,6 +321,10 @@ registerBlockType( 'kadence/tableofcontents', {
 			type: 'boolean',
 			default: false,
 		},
+		enableTitleToggle: {
+			type: 'boolean',
+			default: false,
+		},
 	},
 	edit,
 	save() {

@@ -21,7 +21,7 @@ import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../box-shadow-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import URLInputControl from '../../components/links/link-control';
@@ -710,7 +710,7 @@ class KadenceForm extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion, mailerlite, fluentcrm, containerMargin, tabletContainerMargin, mobileContainerMargin, containerMarginType }, className, isSelected, setAttributes } = this.props;
+		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion, mailerlite, fluentcrm, containerMargin, tabletContainerMargin, mobileContainerMargin, containerMarginType, submitLabel }, className, isSelected, setAttributes } = this.props;
 		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl, deskMarginControl, tabletMarginControl, mobileMarginControl } = this.state;
 		const previewContainerMarginType = ( undefined !== containerMarginType ? containerMarginType : 'px' );
 		const previewContainerMarginTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
@@ -1074,7 +1074,13 @@ class KadenceForm extends Component {
 						value={ ( undefined !== fields[ index ].description ? fields[ index ].description : '' ) }
 						onChange={ ( value ) => this.saveFields( { description: value }, index ) }
 					/>
-					{ ( 'text' === fields[ index ].type || 'email' === fields[ index ].type ) && (
+					<TextControl
+							label={ __( 'Input aria description', 'kadence-blocks' ) }
+							help={ __( 'Provide more context for screen readers', 'kadence-blocks' ) }
+							value={ ( undefined !== fields[ index ].ariaLabel ? fields[ index ].ariaLabel : '' ) }
+							onChange={ ( value ) => this.saveFields( { ariaLabel: value }, index ) }
+						/>
+					{ ( 'text' === fields[ index ].type || 'email' === fields[ index ].type || 'tel' === fields[ index ].type ) && (
 						<SelectControl
 							label={ __( 'Field Auto Fill', 'kadence-blocks' ) }
 							value={ fields[ index ].auto }
@@ -1304,7 +1310,7 @@ class KadenceForm extends Component {
 								marginRight: ( '' !== labelFont[ 0 ].margin[ 1 ] ? labelFont[ 0 ].margin[ 1 ] + 'px' : undefined ),
 								marginBottom: ( '' !== labelFont[ 0 ].margin[ 2 ] ? labelFont[ 0 ].margin[ 2 ] + 'px' : undefined ),
 								marginLeft: ( '' !== labelFont[ 0 ].margin[ 3 ] ? labelFont[ 0 ].margin[ 3 ] + 'px' : undefined ),
-							} }>{ ( fields[ index ].label ? acceptLabel : <span className="kb-placeholder">{ 'Field Label' }</span> ) } { ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required" style={ { color: style[ 0 ].requiredColor } }>*</span> : '' ) }</label>
+							} }>{ ( fields[ index ].label ? acceptLabel : <span className="kb-placeholder">{ 'Field Label' }</span> ) } { ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required" style={ { color: KadenceColorOutput( style[ 0 ].requiredColor ) } }>*</span> : '' ) }</label>
 						</Fragment>
 					) }
 					{ 'accept' !== fields[ index ].type && (
@@ -1327,7 +1333,7 @@ class KadenceForm extends Component {
 									marginRight: ( '' !== labelFont[ 0 ].margin[ 1 ] ? labelFont[ 0 ].margin[ 1 ] + 'px' : undefined ),
 									marginBottom: ( '' !== labelFont[ 0 ].margin[ 2 ] ? labelFont[ 0 ].margin[ 2 ] + 'px' : undefined ),
 									marginLeft: ( '' !== labelFont[ 0 ].margin[ 3 ] ? labelFont[ 0 ].margin[ 3 ] + 'px' : undefined ),
-								} }>{ ( fields[ index ].label ? fields[ index ].label : <span className="kb-placeholder">{ 'Field Label' }</span> ) } { ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required" style={ { color: style[ 0 ].requiredColor } }>*</span> : '' ) }</label>
+								} }>{ ( fields[ index ].label ? fields[ index ].label : <span className="kb-placeholder">{ 'Field Label' }</span> ) } { ( fields[ index ].required && style[ 0 ].showRequired ? <span className="required" style={ { color: KadenceColorOutput( style[ 0 ].requiredColor ) } }>*</span> : '' ) }</label>
 							) }
 							{ 'textarea' === fields[ index ].type && (
 								<textarea name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } placeholder={ fields[ index ].placeholder } value={ fields[ index ].default } data-type={ fields[ index ].type } className={ `kb-field kb-text-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } rows={ fields[ index ].rows } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } readOnly style={ {
@@ -1942,11 +1948,11 @@ class KadenceForm extends Component {
 										if ( 'focus' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Input Focus Color', 'kadence-blocks' ) }
-														colorValue={ ( style[ 0 ].colorActive ? style[ 0 ].colorActive : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
+														value={ ( style[ 0 ].colorActive ? style[ 0 ].colorActive : '' ) }
+														default={ '' }
+														onChange={ value => {
 															this.saveStyle( { colorActive: value } );
 														} }
 													/>
@@ -1969,11 +1975,11 @@ class KadenceForm extends Component {
 													</div>
 													{ 'gradient' !== style[ 0 ].backgroundActiveType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Input Focus Background', 'kadence-blocks' ) }
-																colorValue={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => {
+																value={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
+																default={ '' }
+																onChange={ value => {
 																	this.saveStyle( { backgroundActive: value } );
 																} }
 																opacityValue={ style[ 0 ].backgroundActiveOpacity }
@@ -1984,11 +1990,11 @@ class KadenceForm extends Component {
 													) }
 													{ 'gradient' === style[ 0 ].backgroundActiveType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
-																colorValue={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => {
+																value={ ( style[ 0 ].backgroundActive ? style[ 0 ].backgroundActive : '' ) }
+																default={ '' }
+																onChange={ value => {
 																	this.saveStyle( { backgroundActive: value } );
 																} }
 																opacityValue={ style[ 0 ].backgroundActiveOpacity }
@@ -2004,12 +2010,12 @@ class KadenceForm extends Component {
 																min={ 0 }
 																max={ 100 }
 															/>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
-																colorValue={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 0 ] ? style[ 0 ].gradientActive[ 0 ] : '#999999' ) }
-																colorDefault={ '#999999' }
+																value={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 0 ] ? style[ 0 ].gradientActive[ 0 ] : '#999999' ) }
+																default={ '#999999' }
 																opacityValue={ ( style[ 0 ].gradientActive && undefined !== style[ 0 ].gradientActive[ 1 ] ? style[ 0 ].gradientActive[ 1 ] : 1 ) }
-																onColorChange={ value => {
+																onChange={ value => {
 																	this.saveStyleGradientActive( value, 0 );
 																} }
 																onOpacityChange={ value => {
@@ -2077,11 +2083,11 @@ class KadenceForm extends Component {
 															) }
 														</div>
 													) }
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Input Focus Border', 'kadence-blocks' ) }
-														colorValue={ ( style[ 0 ].borderActive ? style[ 0 ].borderActive : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
+														value={ ( style[ 0 ].borderActive ? style[ 0 ].borderActive : '' ) }
+														default={ '' }
+														onChange={ value => {
 															this.saveStyle( { borderActive: value } );
 														} }
 														opacityValue={ style[ 0 ].borderActiveOpacity }
@@ -2092,7 +2098,7 @@ class KadenceForm extends Component {
 														label={ __( 'Input Focus Box Shadow', 'kadence-blocks' ) }
 														enable={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 0 ] ? style[ 0 ].boxShadowActive[ 0 ] : false ) }
 														color={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 1 ] ? style[ 0 ].boxShadowActive[ 1 ] : '#000000' ) }
-														colorDefault={ '#000000' }
+														default={ '#000000' }
 														opacity={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 2 ] ? style[ 0 ].boxShadowActive[ 2 ] : 0.4 ) }
 														hOffset={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 3 ] ? style[ 0 ].boxShadowActive[ 3 ] : 2 ) }
 														vOffset={ ( undefined !== style[ 0 ].boxShadowActive && undefined !== style[ 0 ].boxShadowActive[ 4 ] ? style[ 0 ].boxShadowActive[ 4 ] : 2 ) }
@@ -2129,11 +2135,11 @@ class KadenceForm extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Input Color', 'kadence-blocks' ) }
-														colorValue={ ( style[ 0 ].color ? style[ 0 ].color : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
+														value={ ( style[ 0 ].color ? style[ 0 ].color : '' ) }
+														default={ '' }
+														onChange={ value => {
 															this.saveStyle( { color: value } );
 														} }
 													/>
@@ -2156,11 +2162,11 @@ class KadenceForm extends Component {
 													</div>
 													{ 'gradient' !== style[ 0 ].backgroundType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Input Background', 'kadence-blocks' ) }
-																colorValue={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => {
+																value={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
+																default={ '' }
+																onChange={ value => {
 																	this.saveStyle( { background: value } );
 																} }
 																opacityValue={ style[ 0 ].backgroundOpacity }
@@ -2171,11 +2177,11 @@ class KadenceForm extends Component {
 													) }
 													{ 'gradient' === style[ 0 ].backgroundType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
-																colorValue={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => {
+																value={ ( style[ 0 ].background ? style[ 0 ].background : '' ) }
+																default={ '' }
+																onChange={ value => {
 																	this.saveStyle( { background: value } );
 																} }
 																opacityValue={ style[ 0 ].backgroundOpacity }
@@ -2191,12 +2197,12 @@ class KadenceForm extends Component {
 																min={ 0 }
 																max={ 100 }
 															/>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
-																colorValue={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 0 ] ? style[ 0 ].gradient[ 0 ] : '#999999' ) }
-																colorDefault={ '#999999' }
+																value={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 0 ] ? style[ 0 ].gradient[ 0 ] : '#999999' ) }
+																default={ '#999999' }
 																opacityValue={ ( style[ 0 ].gradient && undefined !== style[ 0 ].gradient[ 1 ] ? style[ 0 ].gradient[ 1 ] : 1 ) }
-																onColorChange={ value => {
+																onChange={ value => {
 																	this.saveStyleGradient( value, 0 );
 																} }
 																onOpacityChange={ value => {
@@ -2264,11 +2270,11 @@ class KadenceForm extends Component {
 															) }
 														</div>
 													) }
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Input Border', 'kadence-blocks' ) }
-														colorValue={ ( style[ 0 ].border ? style[ 0 ].border : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
+														value={ ( style[ 0 ].border ? style[ 0 ].border : '' ) }
+														default={ '' }
+														onChange={ value => {
 															this.saveStyle( { border: value } );
 														} }
 														opacityValue={ style[ 0 ].borderOpacity }
@@ -2279,7 +2285,7 @@ class KadenceForm extends Component {
 														label={ __( 'Input Box Shadow', 'kadence-blocks' ) }
 														enable={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 0 ] ? style[ 0 ].boxShadow[ 0 ] : false ) }
 														color={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 1 ] ? style[ 0 ].boxShadow[ 1 ] : '#000000' ) }
-														colorDefault={ '#000000' }
+														default={ '#000000' }
 														opacity={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 2 ] ? style[ 0 ].boxShadow[ 2 ] : 0.4 ) }
 														hOffset={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 3 ] ? style[ 0 ].boxShadow[ 3 ] : 2 ) }
 														vOffset={ ( undefined !== style[ 0 ].boxShadow && undefined !== style[ 0 ].boxShadow[ 4 ] ? style[ 0 ].boxShadow[ 4 ] : 2 ) }
@@ -2386,11 +2392,11 @@ class KadenceForm extends Component {
 						title={ __( 'Label Styles', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Label Color', 'kadence-blocks' ) }
-							colorValue={ ( labelFont[ 0 ].color ? labelFont[ 0 ].color : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => {
+							value={ ( labelFont[ 0 ].color ? labelFont[ 0 ].color : '' ) }
+							default={ '' }
+							onChange={ value => {
 								this.saveLabelFont( { color: value } );
 							} }
 						/>
@@ -2401,11 +2407,11 @@ class KadenceForm extends Component {
 							onChange={ ( value ) => this.saveStyle( { showRequired: value } ) }
 						/>
 						{ style[ 0 ].showRequired && (
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Required Color', 'kadence-blocks' ) }
-								colorValue={ ( style[ 0 ].requiredColor ? style[ 0 ].requiredColor : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( style[ 0 ].requiredColor ? style[ 0 ].requiredColor : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveStyle( { requiredColor: value } );
 								} }
 							/>
@@ -2462,7 +2468,7 @@ class KadenceForm extends Component {
 						</PanelBody>
 					</PanelBody>
 					<PanelBody
-						title={ __( 'Button Styles', 'kadence-blocks' ) }
+						title={ __( 'Submit Styles', 'kadence-blocks' ) }
 						initialOpen={ false }
 					>
 						<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Column Width', 'kadence-blocks' ) }</h2>
@@ -2771,11 +2777,11 @@ class KadenceForm extends Component {
 										if ( 'hover' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Text Hover Color', 'kadence-blocks' ) }
-														colorValue={ ( submit[ 0 ].colorHover ? submit[ 0 ].colorHover : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
+														value={ ( submit[ 0 ].colorHover ? submit[ 0 ].colorHover : '' ) }
+														default={ '' }
+														onChange={ value => {
 															this.saveSubmit( { colorHover: value } );
 														} }
 													/>
@@ -2798,11 +2804,11 @@ class KadenceForm extends Component {
 													</div>
 													{ 'gradient' !== submit[ 0 ].backgroundHoverType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Button Hover Background', 'kadence-blocks' ) }
-																colorValue={ ( submit[ 0 ].backgroundHover ? submit[ 0 ].backgroundHover : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => {
+																value={ ( submit[ 0 ].backgroundHover ? submit[ 0 ].backgroundHover : '' ) }
+																default={ '' }
+																onChange={ value => {
 																	this.saveSubmit( { backgroundHover: value } );
 																} }
 																opacityValue={ submit[ 0 ].backgroundHoverOpacity }
@@ -2813,11 +2819,11 @@ class KadenceForm extends Component {
 													) }
 													{ 'gradient' === submit[ 0 ].backgroundHoverType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
-																colorValue={ ( submit[ 0 ].backgroundHover ? submit[ 0 ].backgroundHover : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => {
+																value={ ( submit[ 0 ].backgroundHover ? submit[ 0 ].backgroundHover : '' ) }
+																default={ '' }
+																onChange={ value => {
 																	this.saveSubmit( { backgroundHover: value } );
 																} }
 																opacityValue={ submit[ 0 ].backgroundHoverOpacity }
@@ -2833,12 +2839,12 @@ class KadenceForm extends Component {
 																min={ 0 }
 																max={ 100 }
 															/>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
-																colorValue={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 0 ] ? submit[ 0 ].gradientHover[ 0 ] : '#999999' ) }
-																colorDefault={ '#999999' }
+																value={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 0 ] ? submit[ 0 ].gradientHover[ 0 ] : '#999999' ) }
+																default={ '#999999' }
 																opacityValue={ ( submit[ 0 ].gradientHover && undefined !== submit[ 0 ].gradientHover[ 1 ] ? submit[ 0 ].gradientHover[ 1 ] : 1 ) }
-																onColorChange={ value => {
+																onChange={ value => {
 																	this.saveSubmitGradientHover( value, 0 );
 																} }
 																onOpacityChange={ value => {
@@ -2906,11 +2912,11 @@ class KadenceForm extends Component {
 															) }
 														</div>
 													) }
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Button Hover Border', 'kadence-blocks' ) }
-														colorValue={ ( submit[ 0 ].borderHover ? submit[ 0 ].borderHover : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
+														value={ ( submit[ 0 ].borderHover ? submit[ 0 ].borderHover : '' ) }
+														default={ '' }
+														onChange={ value => {
 															this.saveSubmit( { borderHover: value } );
 														} }
 														opacityValue={ submit[ 0 ].borderHoverOpacity }
@@ -2921,7 +2927,7 @@ class KadenceForm extends Component {
 														label={ __( 'Button Hover Box Shadow', 'kadence-blocks' ) }
 														enable={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 0 ] ? submit[ 0 ].boxShadowHover[ 0 ] : false ) }
 														color={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 1 ] ? submit[ 0 ].boxShadowHover[ 1 ] : '#000000' ) }
-														colorDefault={ '#000000' }
+														default={ '#000000' }
 														opacity={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 2 ] ? submit[ 0 ].boxShadowHover[ 2 ] : 0.4 ) }
 														hOffset={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 3 ] ? submit[ 0 ].boxShadowHover[ 3 ] : 2 ) }
 														vOffset={ ( undefined !== submit[ 0 ].boxShadowHover && undefined !== submit[ 0 ].boxShadowHover[ 4 ] ? submit[ 0 ].boxShadowHover[ 4 ] : 2 ) }
@@ -2958,11 +2964,11 @@ class KadenceForm extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Text Color', 'kadence-blocks' ) }
-														colorValue={ ( submit[ 0 ].color ? submit[ 0 ].color : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
+														value={ ( submit[ 0 ].color ? submit[ 0 ].color : '' ) }
+														default={ '' }
+														onChange={ value => {
 															this.saveSubmit( { color: value } );
 														} }
 													/>
@@ -2985,11 +2991,11 @@ class KadenceForm extends Component {
 													</div>
 													{ 'gradient' !== submit[ 0 ].backgroundType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Button Background', 'kadence-blocks' ) }
-																colorValue={ ( submit[ 0 ].background ? submit[ 0 ].background : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => {
+																value={ ( submit[ 0 ].background ? submit[ 0 ].background : '' ) }
+																default={ '' }
+																onChange={ value => {
 																	this.saveSubmit( { background: value } );
 																} }
 																opacityValue={ submit[ 0 ].backgroundOpacity }
@@ -3000,11 +3006,11 @@ class KadenceForm extends Component {
 													) }
 													{ 'gradient' === submit[ 0 ].backgroundType && (
 														<div className="kt-inner-sub-section">
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
-																colorValue={ ( submit[ 0 ].background ? submit[ 0 ].background : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => {
+																value={ ( submit[ 0 ].background ? submit[ 0 ].background : '' ) }
+																default={ '' }
+																onChange={ value => {
 																	this.saveSubmit( { background: value } );
 																} }
 																opacityValue={ submit[ 0 ].backgroundOpacity }
@@ -3020,12 +3026,12 @@ class KadenceForm extends Component {
 																min={ 0 }
 																max={ 100 }
 															/>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
-																colorValue={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 0 ] ? submit[ 0 ].gradient[ 0 ] : '#999999' ) }
-																colorDefault={ '#999999' }
+																value={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 0 ] ? submit[ 0 ].gradient[ 0 ] : '#999999' ) }
+																default={ '#999999' }
 																opacityValue={ ( submit[ 0 ].gradient && undefined !== submit[ 0 ].gradient[ 1 ] ? submit[ 0 ].gradient[ 1 ] : 1 ) }
-																onColorChange={ value => {
+																onChange={ value => {
 																	this.saveSubmitGradient( value, 0 );
 																} }
 																onOpacityChange={ value => {
@@ -3093,11 +3099,11 @@ class KadenceForm extends Component {
 															) }
 														</div>
 													) }
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Button Border', 'kadence-blocks' ) }
-														colorValue={ ( submit[ 0 ].border ? submit[ 0 ].border : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => {
+														value={ ( submit[ 0 ].border ? submit[ 0 ].border : '' ) }
+														default={ '' }
+														onChange={ value => {
 															this.saveSubmit( { border: value } );
 														} }
 														opacityValue={ submit[ 0 ].borderOpacity }
@@ -3108,7 +3114,7 @@ class KadenceForm extends Component {
 														label={ __( 'Button Box Shadow', 'kadence-blocks' ) }
 														enable={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 0 ] ? submit[ 0 ].boxShadow[ 0 ] : false ) }
 														color={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 1 ] ? submit[ 0 ].boxShadow[ 1 ] : '#000000' ) }
-														colorDefault={ '#000000' }
+														default={ '#000000' }
 														opacity={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 2 ] ? submit[ 0 ].boxShadow[ 2 ] : 0.4 ) }
 														hOffset={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 3 ] ? submit[ 0 ].boxShadow[ 3 ] : 2 ) }
 														vOffset={ ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 4 ] ? submit[ 0 ].boxShadow[ 4 ] : 2 ) }
@@ -3303,6 +3309,12 @@ class KadenceForm extends Component {
 								}
 							</TabPanel>
 						</PanelBody>
+						<TextControl
+							label={ __( 'Submit aria description', 'kadence-blocks' ) }
+							help={ __( 'Provide more context for screen readers', 'kadence-blocks' ) }
+							value={ ( undefined !== submitLabel ? submitLabel : '' ) }
+							onChange={ ( value ) => setAttributes( { submitLabel: value } ) }
+						/>
 					</PanelBody>
 					<PanelBody
 						title={ __( 'Message Settings', 'kadence-blocks' ) }
@@ -3318,29 +3330,29 @@ class KadenceForm extends Component {
 							title={ __( 'Success Message Colors', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Success Message Color', 'kadence-blocks' ) }
-								colorValue={ ( messageFont[ 0 ].colorSuccess ? messageFont[ 0 ].colorSuccess : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( messageFont[ 0 ].colorSuccess ? messageFont[ 0 ].colorSuccess : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveMessageFont( { colorSuccess: value } );
 								} }
 							/>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Success Message Background', 'kadence-blocks' ) }
-								colorValue={ ( messageFont[ 0 ].backgroundSuccess ? messageFont[ 0 ].backgroundSuccess : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( messageFont[ 0 ].backgroundSuccess ? messageFont[ 0 ].backgroundSuccess : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveMessageFont( { backgroundSuccess: value } );
 								} }
 								opacityValue={ messageFont[ 0 ].backgroundSuccessOpacity }
 								onOpacityChange={ value => this.saveMessageFont( { backgroundSuccessOpacity: value } ) }
 							/>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Success Message Border', 'kadence-blocks' ) }
-								colorValue={ ( messageFont[ 0 ].borderSuccess ? messageFont[ 0 ].borderSuccess : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( messageFont[ 0 ].borderSuccess ? messageFont[ 0 ].borderSuccess : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveMessageFont( { borderSuccess: value } );
 								} }
 							/>
@@ -3375,29 +3387,29 @@ class KadenceForm extends Component {
 							title={ __( 'Error Message Colors', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Error Message Color', 'kadence-blocks' ) }
-								colorValue={ ( messageFont[ 0 ].colorError ? messageFont[ 0 ].colorError : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( messageFont[ 0 ].colorError ? messageFont[ 0 ].colorError : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveMessageFont( { colorError: value } );
 								} }
 							/>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Error Message Background', 'kadence-blocks' ) }
-								colorValue={ ( messageFont[ 0 ].backgroundError ? messageFont[ 0 ].backgroundError : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( messageFont[ 0 ].backgroundError ? messageFont[ 0 ].backgroundError : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveMessageFont( { backgroundError: value } );
 								} }
 								opacityValue={ messageFont[ 0 ].backgroundErrorOpacity }
 								onOpacityChange={ value => this.saveMessageFont( { backgroundErrorOpacity: value } ) }
 							/>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Error Message Border', 'kadence-blocks' ) }
-								colorValue={ ( messageFont[ 0 ].borderError ? messageFont[ 0 ].borderError : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( messageFont[ 0 ].borderError ? messageFont[ 0 ].borderError : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveMessageFont( { borderError: value } );
 								} }
 							/>

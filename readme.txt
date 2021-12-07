@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 2.1.15
+Stable tag: 2.1.16
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,32 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.1.16 =
+Release Date: December 7th, 2021
+* Add: Aria Description Label options for form inputs and form submit button.
+* Add: Anchor for each button in advanced buttons block.
+* Add: Border Style option for buttons.
+* Add: Option to disable inline color settings in advanced heading block.
+* Add: Link styling options to advanced heading block.
+* Add: Option to make table of contents text part of the expand toggle.
+* Update: Accordion block keyboard navigation.
+* Update: Tabs JS for better load support.
+* Update: Icon block alignment css.
+* Update: Excerpt Wrapper Blocks.
+* Update: Color Picker for better third-party support.
+* Update: Table of contents better special character support.
+* Update: Table of contents support if there are two equal headings.
+* Fix: Section Background Color Hover not showing.
+* Fix: Issue with gallery box shadow being cut off.
+* Fix: Issue with table of contents responsive text size settings.
+* Fix: Issue with custom class in wrapped link heading.
+* Fix: Icon List block - Responsive font size not taking effect in Gutenberg preview
+* Fix: Icon list block not rendering if no icon selected.
+* Fix: Testimonial Blocks responsive title sizes not taking effect.
+* Fix: Button block editor responsve alignment previews.
+* Fix: Table of Contents expand icon not flipping.
+* Fix: Possible PHP notice with excerpt length.
 
 = 2.1.15 =
 Release Date: October 20th, 2021

@@ -18,6 +18,7 @@ import MeasurementControls from '../../measurement-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import BoxShadowControl from '../../box-shadow-control';
 import KadenceRange from '../../components/range/range-control';
@@ -218,7 +219,7 @@ class KadenceTableOfContents extends Component {
 		} );
 	}
 	render() {
-		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll, containerMobileMargin, containerTabletMargin, containerMargin, enableScrollSpy, contentActiveColor, enableDynamicSearch }, clientId, className, setAttributes } = this.props;
+		const { attributes: { uniqueID, allowedHeaders, columns, listStyle, listGap, title, enableTitle, titleColor, titleSize, titleSizeType, titleLineHeight, titleLineType, titleLetterSpacing, titleTypography, titleGoogleFont, titleLoadGoogleFont, titleFontSubset, titleFontVariant, titleFontWeight, titleFontStyle, titlePadding, titleBorder, titleBorderColor, titleCollapseBorderColor, titleTextTransform, contentColor, contentHoverColor, contentSize, contentSizeType, contentLineHeight, contentLineType, contentLetterSpacing, contentTypography, contentGoogleFont, contentLoadGoogleFont, contentFontSubset, contentFontVariant, contentFontWeight, contentFontStyle, contentMargin, contentTextTransform, containerPadding, containerBorder, containerBorderColor, containerBackground, enableToggle, startClosed, toggleIcon, linkStyle, borderRadius, shadow, displayShadow, maxWidth, smoothScrollOffset, enableSmoothScroll, containerMobileMargin, containerTabletMargin, containerMargin, enableScrollSpy, contentActiveColor, enableDynamicSearch, enableTitleToggle }, clientId, className, setAttributes } = this.props;
 		const { titlePaddingControl, containerBorderControl, containerPaddingControl, contentMarginControl, titleBorderControl, headings, showContent, borderRadiusControl, containerMobileMarginControl, containerTabletMarginControl, containerMarginControl } = this.state;
 		const onToggle = () => {
 			if ( enableToggle ) {
@@ -400,11 +401,11 @@ class KadenceTableOfContents extends Component {
 								/>
 								{ enableTitle && (
 									<Fragment>
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'Title Color', 'kadence-blocks' ) }
-											colorValue={ ( titleColor ? titleColor : '' ) }
-											colorDefault={ '' }
-											onColorChange={ ( value ) => setAttributes( { titleColor: value } ) }
+											value={ ( titleColor ? titleColor : '' ) }
+											default={ '' }
+											onChange={ ( value ) => setAttributes( { titleColor: value } ) }
 										/>
 										<TypographyControls
 											fontSize={ titleSize }
@@ -454,48 +455,17 @@ class KadenceTableOfContents extends Component {
 											max={ 100 }
 											step={ 1 }
 										/>
-										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Collapsed', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
-											{
-												( tab ) => {
-													let tabout;
-													if ( tab.name ) {
-														if ( 'hover' === tab.name ) {
-															tabout = (
-																<AdvancedPopColorControl
-																	label={ __( 'Collapsed Title Border Color', 'kadence-blocks' ) }
-																	colorValue={ ( titleCollapseBorderColor ? titleCollapseBorderColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ ( value ) => setAttributes( { titleCollapseBorderColor: value } ) }
-																/>
-															);
-														} else {
-															tabout = (
-																<AdvancedPopColorControl
-																	label={ __( 'Title Border Color', 'kadence-blocks' ) }
-																	colorValue={ ( titleBorderColor ? titleBorderColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ ( value ) => setAttributes( { titleBorderColor: value } ) }
-																/>
-															);
-														}
-													}
-													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-												}
-											}
-										</TabPanel>
+										<PopColorControl
+											label={ __( 'Title Border Color', 'kadence-blocks' ) }
+											swatchLabel={ __( 'Normal Color', 'kadence-blocks' ) }
+											value={ ( titleBorderColor ? titleBorderColor : '' ) }
+											default={ '' }
+											onChange={ ( value ) => setAttributes( { titleBorderColor: value } ) }
+											swatchLabel2={ __( 'Collapsed Color', 'kadence-blocks' ) }
+											value2={ ( titleCollapseBorderColor ? titleCollapseBorderColor : '' ) }
+											default2={ '' }
+											onChange2={ ( value ) => setAttributes( { titleCollapseBorderColor: value } ) }
+										/>
 									</Fragment>
 								) }
 							</PanelBody>
@@ -538,6 +508,11 @@ class KadenceTableOfContents extends Component {
 													noSelectedPlaceholder={ __( 'Select Icon Set', 'kadence-blocks' ) }
 													isMulti={ false }
 												/>
+												<ToggleControl
+													label={ __( 'Enable title to toggle as well as icon', 'kadence-blocks' ) }
+													checked={ enableTitleToggle }
+													onChange={ value => setAttributes( { enableTitleToggle: value } ) }
+												/>
 											</Fragment>
 										) }
 									</PanelBody>
@@ -561,48 +536,17 @@ class KadenceTableOfContents extends Component {
 									max={ 60 }
 									step={ 1 }
 								/>
-								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal', 'kadence-blocks' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover', 'kadence-blocks' ),
-											className: 'kt-hover-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = (
-														<AdvancedPopColorControl
-															label={ __( 'List Items Hover Color', 'kadence-blocks' ) }
-															colorValue={ ( contentHoverColor ? contentHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ ( value ) => setAttributes( { contentHoverColor: value } ) }
-														/>
-													);
-												} else {
-													tabout = (
-														<AdvancedPopColorControl
-															label={ __( 'List Items Color', 'kadence-blocks' ) }
-															colorValue={ ( contentColor ? contentColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ ( value ) => setAttributes( { contentColor: value } ) }
-														/>
-													);
-												}
-											}
-											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-										}
-									}
-								</TabPanel>
+								<PopColorControl
+									label={ __( 'List Items Color', 'kadence-blocks' ) }
+									swatchLabel={ __( 'Normal Color', 'kadence-blocks' ) }
+									value={ ( contentColor ? contentColor : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { contentColor: value } ) }
+									swatchLabel2={ __( 'Hover Color', 'kadence-blocks' ) }
+									value2={ ( contentHoverColor ? contentHoverColor : '' ) }
+									default2={ '' }
+									onChange2={ ( value ) => setAttributes( { contentHoverColor: value } ) }
+								/>
 								<SelectControl
 									label={ __( 'List Link Style', 'kadence-blocks' ) }
 									value={ linkStyle }
@@ -664,11 +608,11 @@ class KadenceTableOfContents extends Component {
 								title={ __( 'Container Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
 							>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Container Background', 'kadence-blocks' ) }
-									colorValue={ ( containerBackground ? containerBackground : '' ) }
-									colorDefault={ '' }
-									onColorChange={ ( value ) => setAttributes( { containerBackground: value } ) }
+									value={ ( containerBackground ? containerBackground : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { containerBackground: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Container Padding', 'kadence-blocks' ) }
@@ -680,11 +624,11 @@ class KadenceTableOfContents extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Border Color', 'kadence-blocks' ) }
-									colorValue={ ( containerBorderColor ? containerBorderColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ ( value ) => setAttributes( { containerBorderColor: value } ) }
+									value={ ( containerBorderColor ? containerBorderColor : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { containerBorderColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Content Border Width (px)', 'kadence-blocks' ) }
@@ -808,11 +752,11 @@ class KadenceTableOfContents extends Component {
 										onChange={ value => setAttributes( { enableScrollSpy: value } ) }
 									/>
 									{ enableScrollSpy && (
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'List Items Active Color', 'kadence-blocks' ) }
-											colorValue={ ( contentActiveColor ? contentActiveColor : '' ) }
-											colorDefault={ '' }
-											onColorChange={ ( value ) => setAttributes( { contentActiveColor: value } ) }
+											value={ ( contentActiveColor ? contentActiveColor : '' ) }
+											default={ '' }
+											onChange={ ( value ) => setAttributes( { contentActiveColor: value } ) }
 										/>
 									) }
 								</PanelBody>

@@ -337,6 +337,15 @@ registerBlockType( 'kadence/advancedheading', {
 		backgroundColorClass: {
 			type: 'string',
 		},
+		linkStyle: {
+			type: 'string',
+		},
+		linkColor: {
+			type: 'string',
+		},
+		linkHoverColor: {
+			type: 'string',
+		},
 		inQueryBlock: {
 			type: 'bool',
 			default: false,
@@ -388,7 +397,7 @@ registerBlockType( 'kadence/advancedheading', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget, backgroundColorClass } } = props;
+		const { attributes: { anchor, level, content, colorClass, color, textShadow, letterSpacing, topMargin, bottomMargin, marginType, align, uniqueID, className, kadenceAnimation, kadenceAOSOptions, htmlTag, link, linkNoFollow, linkSponsored, linkTarget, backgroundColorClass, linkStyle } } = props;
 		const tagName = htmlTag && htmlTag !== 'heading' ? htmlTag : 'h' + level;
 		const mType = ( marginType ? marginType : 'px' );
 		const textColorClass = getColorClassName( 'color', colorClass );
@@ -397,12 +406,13 @@ registerBlockType( 'kadence/advancedheading', {
 		const wrapper = ( revealAnimation ? true : false );
 		const classes = classnames( {
 			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
-			[ className ]: ! wrapper && className,
+			[ className ]: ! wrapper && ! link && className,
 			[ getBlockDefaultClassName( 'kadence/advancedheading' ) ]: getBlockDefaultClassName( 'kadence/advancedheading' ),
 			[ textColorClass ]: textColorClass,
 			'has-text-color': textColorClass,
 			[ textBackgroundColorClass ]: textBackgroundColorClass,
 			'has-background': textBackgroundColorClass,
+			[ `hls-${ linkStyle }` ]: ! link && linkStyle
 		} );
 		let relAttr;
 		if ( linkTarget ) {
@@ -433,7 +443,7 @@ registerBlockType( 'kadence/advancedheading', {
 		const linkHTMLItem = (
 			<a
 				href={ link }
-				className={ 'kb-advanced-heading-link' }
+				className={ `kb-advanced-heading-link kt-adv-heading-link${ uniqueID }${ ( ! wrapper && className ? ' ' + className : '' ) }${ ( linkStyle ? ' hls-' + linkStyle : '' ) }` }
 				target={ linkTarget ? '_blank' : undefined }
 				relAttr={ relAttr ? relAttr : undefined }
 			>

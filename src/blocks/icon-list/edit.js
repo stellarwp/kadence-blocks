@@ -83,6 +83,7 @@ class KadenceIconLists extends Component {
 		this.onMoveUp = this.onMoveUp.bind( this );
 		this.createNewListItem = this.createNewListItem.bind( this );
 		this.setFocusOnNewItem = this.setFocusOnNewItem.bind( this );
+		this.getPreviewSize = this.getPreviewSize.bind( this );
 		this.state = {
 			focusIndex: null,
 			settings: {},
@@ -298,6 +299,20 @@ class KadenceIconLists extends Component {
 			items: newUpdate,
 		} );
 	}
+	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
+	}
 	render() {
 		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns }, attributes, className, setAttributes, isSelected } = this.props;
 		const { marginControl } = this.state;
@@ -307,6 +322,8 @@ class KadenceIconLists extends Component {
 			},
 		};
 		const config = ( listStyles[ 0 ].google ? gconfig : '' );
+		const previewFontSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 0 ] ? listStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 1 ] ? listStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 2 ] ? listStyles[ 0 ].size[ 2 ] : '' ) );
+		const previewLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 0 ] ? listStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 1 ] ? listStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 2 ] ? listStyles[ 0 ].lineHeight[ 2 ] : '' ) );
 		const saveListStyles = ( value ) => {
 			const newUpdate = listStyles.map( ( item, index ) => {
 				if ( index === 0 ) {
@@ -874,8 +891,8 @@ class KadenceIconLists extends Component {
 							font-weight: ${ ( listStyles[ 0 ].weight ? listStyles[ 0 ].weight : '' ) };
 							font-style: ${ ( listStyles[ 0 ].style ? listStyles[ 0 ].style : '' ) };
 							color:  ${ ( listStyles[ 0 ].color ? KadenceColorOutput( listStyles[ 0 ].color ) : '' ) };
-							font-size: ${ ( listStyles[ 0 ].size && listStyles[ 0 ].size[ 0 ] ? listStyles[ 0 ].size[ 0 ] + listStyles[ 0 ].sizeType : '' ) };
-							line-height: ${ ( listStyles[ 0 ].lineHeight && listStyles[ 0 ].lineHeight[ 0 ] ? listStyles[ 0 ].lineHeight[ 0 ] + listStyles[ 0 ].lineType : '' ) };
+							font-size: ${ ( previewFontSize ? previewFontSize + listStyles[ 0 ].sizeType : '' ) };
+							line-height: ${ ( previewLineHeight ? previewLineHeight + listStyles[ 0 ].lineType : '' ) };
 							letter-spacing: ${ ( listStyles[ 0 ].letterSpacing ? listStyles[ 0 ].letterSpacing + 'px' : '' ) };
 							font-family: ${ ( listStyles[ 0 ].family ? listStyles[ 0 ].family : '' ) };
 							text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };

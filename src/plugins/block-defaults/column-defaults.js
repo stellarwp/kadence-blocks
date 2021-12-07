@@ -350,22 +350,22 @@ class KadenceColumnDefault extends Component {
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
 					<span className="kt-block-icon">{ icons.blockColumn }</span>
-					{ __( 'Column' ) }
+					{ __( 'Section', 'kadence-blocks' ) }
 				</Button>
 				{ isOpen ?
 					<Modal
 						className="kt-block-defaults-modal"
-						title={ __( 'Kadence Columns' ) }
+						title={ __( 'Kadence Section', 'kadence-blocks' ) }
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/column', columnConfig );
 						} }>
 						<PanelBody
-							title={ __( 'Kadence Column Controls' ) }
+							title={ __( 'Kadence Section Controls', 'kadence-blocks' ) }
 							initialOpen={ true }
 						>
 							<div className="components-base-control">
 								<AdvancedPopColorControl
-									label={ __( 'Background Color' ) }
+									label={ __( 'Background Color', 'kadence-blocks' ) }
 									colorValue={ ( undefined !== columnConfig.background ? columnConfig.background : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => this.saveConfigState( 'background', value ) }
@@ -375,7 +375,7 @@ class KadenceColumnDefault extends Component {
 							</div>
 							<div className="components-base-control">
 								<AdvancedPopColorControl
-									label={ __( 'Border Color' ) }
+									label={ __( 'Border Color', 'kadence-blocks' ) }
 									colorValue={ ( undefined !== columnConfig.border ? columnConfig.border : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => this.saveConfigState( 'border', value ) }
@@ -384,7 +384,7 @@ class KadenceColumnDefault extends Component {
 								/>
 							</div>
 							<MeasurementControls
-								label={ __( 'Border Width' ) }
+								label={ __( 'Border Width', 'kadence-blocks' ) }
 								reset={ () => {
 									this.clearDefaults( 'borderWidth' );
 								} }

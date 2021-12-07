@@ -444,27 +444,52 @@ function () {
      *
      *  Adds click event to each header
      */
-
   }, {
     key: "_addListeners",
     value: function _addListeners() {
-      // So we can reference the badger-accordion object inside out eventListener
-      var _this = this; // Adding click event to accordion
+		// So we can reference the badger-accordion object inside out eventListener
+		var _this = this; // Adding click event to accordion
 
-
-      this.headers.forEach(function (header, index) {
-        header.addEventListener('click', function () {
-          // Getting the target of the click
-          // const clickedEl = event.target;
-          _this.handleClick(header, index);
-        });
-		header.addEventListener('startOpen', function () {
+		this.headers.forEach(function (header, index) {
+			header.addEventListener('click', function () {
 			// Getting the target of the click
 			// const clickedEl = event.target;
-			_this.handleClick(header, index, true );
-		  });
-	  });
-    }
+			_this.handleClick(header, index);
+			});
+			header.addEventListener( 'keydown', function (event) {
+				var key = event.which.toString();
+				// 33 = Page Up, 34 = Page Down
+				var ctrlModifier = (event.ctrlKey && key.match(/33|34/));
+				// Up/ Down arrow and Control + Page Up/ Page Down keyboard operations
+				// 38 = Up, 40 = Down
+				if (key.match(/38|40/) || ctrlModifier) {
+					var direction = (key.match(/34|40/)) ? 1 : -1;
+					var length = _this.headers.length;
+					var newIndex = (index + length + direction) % length;
+					_this.headers[newIndex].focus();
+					event.preventDefault();
+				} else if (key.match(/35|36/) ) {
+					// 35 = End, 36 = Home keyboard operations
+					switch (key) {
+						// Go to first accordion
+						case '36':
+						_this.headers[0].focus();
+						break;
+						// Go to last accordion
+						case '35':
+						_this.headers[_this.headers.length - 1].focus();
+						break;
+					}
+					event.preventDefault();
+				}
+			});
+			header.addEventListener('startOpen', function () {
+				// Getting the target of the click
+				// const clickedEl = event.target;
+				_this.handleClick(header, index, true );
+			});
+		});
+	}
     /**
      *  HANDLE CLICK
      *
