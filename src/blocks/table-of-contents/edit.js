@@ -17,7 +17,6 @@ import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import KadenceColorOutput from '../../kadence-color-output';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import PopColorControl from '../../components/color/pop-color-control';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import BoxShadowControl from '../../box-shadow-control';

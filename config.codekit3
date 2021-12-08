@@ -520,6 +520,48 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks.asset.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.asset.php",
+      "oF" : 0
+    },
+    "\/dist\/build\/blocks.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
+    "\/dist\/build\/blocks.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/build\/blocks-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/build\/vendors\/blocks.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -4740,28 +4782,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/advanced-inline-background-control.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/advanced-inline-background-control-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/advanced-inline-pop-color-control.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/advanced-inline-pop-color-control-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/src\/advanced-pop-background-control.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -6700,6 +6720,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/components\/color\/inline-pop-color.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/color\/inline-pop-color-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/components\/color\/kadence-color-output.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -7230,17 +7261,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/fonts.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/fonts-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/src\/genicon.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -7248,17 +7268,6 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/genicon-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/gfonts.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/gfonts-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0

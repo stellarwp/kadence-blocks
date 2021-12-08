@@ -376,6 +376,9 @@ class TypographyControls extends Component {
 		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
 		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
 		const lineStep = ( lineHeightType !== 'px' ? 0.1 : 1 );
+		const usingReg = typographyWeights.some(function(el) {
+			return el.value === 'regular';
+		});
 		return (
 			<Fragment>
 				{ onTagLevel && (
@@ -470,7 +473,7 @@ class TypographyControls extends Component {
 						{ onFontWeight && (
 							<SelectControl
 								label={ __( 'Font Weight', 'kadence-blocks' ) }
-								value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
+								value={ ( '400' === fontWeight && usingReg ? 'regular' : fontWeight ) }
 								options={ typographyWeights }
 								onChange={ onTypoFontWeightChange }
 							/>

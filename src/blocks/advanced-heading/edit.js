@@ -11,7 +11,7 @@ import classnames from 'classnames';
 import TypographyControls from '../../components/typography/typography-control';
 import InlineTypographyControls from '../../components/typography/inline-typography-control';
 import PopColorControl from '../../components/color/pop-color-control';
-import InlineAdvancedPopColorControl from '../../advanced-inline-pop-color-control';
+import InlinePopColorControl from '../../components/color/inline-pop-color';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import WebfontLoader from '../../components/typography/fontloader';
 import TextShadowControl from '../../text-shadow-control';
@@ -464,12 +464,12 @@ class KadenceAdvancedHeading extends Component {
 						/>
 					) }
 					{ this.showSettings( 'allSettings' ) && this.showSettings( 'toolbarColor' ) && (
-						<InlineAdvancedPopColorControl
+						<InlinePopColorControl
 							label={ __( 'Heading Color', 'kadence-blocks' ) }
-							colorValue={ ( color ? color : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => setAttributes( { color: value } ) }
-							onColorClassChange={ value => setAttributes( { colorClass: value } ) }
+							value={ ( color ? color : '' ) }
+							default={ '' }
+							onChange={ ( value ) => setAttributes( { color: value } ) }
+							onClassChange={ value => setAttributes( { colorClass: value } ) }							
 						/>
 					) }
 					<AlignmentToolbar
