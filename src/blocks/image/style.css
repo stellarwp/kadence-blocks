@@ -2,8 +2,6 @@
   margin: 0 0 1em 0; }
   .wp-block-kadence-image img {
     max-width: 100%; }
-  .wp-block-kadence-image:not(.is-style-rounded) img {
-    border-radius: inherit; }
   .wp-block-kadence-image.aligncenter {
     text-align: center; }
   .wp-block-kadence-image.alignfull img, .wp-block-kadence-image.alignwide img {

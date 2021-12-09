@@ -24,16 +24,19 @@ export default function save( { attributes } ) {
 		alt,
 		caption,
 		align,
-		href,
 		rel,
-		linkClass,
+		href,
 		width,
 		height,
 		id,
 		linkTarget,
+		linkNoFollow,
+		linkSponsored,
+		showCaption,
 		sizeSlug,
 		title,
 		uniqueID,
+		imageFilter,
 	} = attributes;
 
 	const newRel = isEmpty( rel ) ? undefined : rel;
@@ -45,6 +48,17 @@ export default function save( { attributes } ) {
 		[ `size-${ sizeSlug }` ]: sizeSlug,
 		'is-resized': width || height,
 	} );
+
+	let relAttr;
+	if ( linkTarget ) {
+		relAttr = 'noopener noreferrer';
+	}
+	if ( undefined !== linkNoFollow && true === linkNoFollow ) {
+		relAttr = ( relAttr ? relAttr.concat( ' nofollow' ) : 'nofollow' );
+	}
+	if ( undefined !== linkSponsored && true === linkSponsored ) {
+		relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
+	}
 
 	const image = (
 		<img
@@ -58,23 +72,23 @@ export default function save( { attributes } ) {
 	);
 
 	const figure = (
-		<>
-			{ href ? (
-				<a
-					className={ linkClass }
-					href={ href }
-					target={ linkTarget }
-					rel={ newRel }
-				>
-					{ image }
-				</a>
+		<div className={ (imageFilter !== 'none' ? 'filter-' + imageFilter : null)}>
+			{ href && true ? (
+					<a
+						href={ href }
+						className={ 'kb-advanced-image-link' }
+						target={ linkTarget ? '_blank' : undefined }
+						relAttr={ relAttr ? relAttr : undefined }
+					>
+						{ image }
+					</a>
 			) : (
 				image
 			) }
-			{ ! RichText.isEmpty( caption ) && (
+			{ ! RichText.isEmpty( caption ) && showCaption !== false  && (
 				<RichText.Content tagName="figcaption" value={ caption } />
 			) }
-		</>
+		</div>
 	);
 
 	if ( 'left' === align || 'right' === align || 'center' === align ) {

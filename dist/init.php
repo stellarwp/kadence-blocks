@@ -166,6 +166,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'showDesignLibrary' => apply_filters( 'kadence_blocks_design_library_enabled', true ),
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
 			'icon_names' => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
+			'svgMaskPath' => KADENCE_BLOCKS_URL . 'dist/assets/images/masks/',
 		)
 	);
 	wp_localize_script(

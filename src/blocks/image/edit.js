@@ -26,6 +26,11 @@ import { image as icon } from '@wordpress/icons';
 /* global wp */
 
 /**
+ * Import Css
+ */
+import './editor.scss';
+
+/**
  * Internal dependencies
  */
 import Image from './image';
