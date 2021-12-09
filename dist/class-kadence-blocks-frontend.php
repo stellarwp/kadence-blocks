@@ -5736,19 +5736,6 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 
-		if( $_GET['dump'] ) {
-			echo '<pre>';
-
-			if( isset( $attr['displayDropShadow'] ) && true == $attr['displayDropShadow'] ){
-				echo 'true';
-			} else {
-				echo 'false';
-			}
-
-			print_r($attr);
-			die();
-		}
-
 		// Drop Shadow
 		if ( isset( $attr['displayDropShadow'] ) && true == $attr['displayDropShadow'] ) {
 			if ( isset( $attr['dropShadow'] ) && is_array( $attr['dropShadow'] ) && isset( $attr['dropShadow'][0] ) && is_array( $attr['dropShadow'][0] ) ) {
