@@ -520,47 +520,21 @@
       "oF" : 0,
       "pg" : 0
     },
-    "\/dist\/build\/blocks.asset.php" : {
+    "\/dist\/build\/blocks.css.map" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.asset.php",
+      "oAP" : "\/dist\/build\/blocks.css.map",
       "oF" : 0
     },
-    "\/dist\/build\/blocks.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
+    "\/dist\/build\/blocks.js.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
       "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
-    "\/dist\/build\/blocks.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/dist\/build\/vendors\/blocks.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
+      "oAP" : "\/dist\/build\/blocks.js.map",
+      "oF" : 0
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,

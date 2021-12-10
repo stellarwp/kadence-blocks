@@ -56,6 +56,13 @@ class Kadence_Blocks_Table_Of_Contents {
 	private static $instance = null;
 
 	/**
+	 * headings that are used, prevent duplicates.
+	 *
+	 * @var null
+	 */
+	public static $the_headings = null;
+
+	/**
 	 * Instance of this class
 	 *
 	 * @var null
@@ -718,11 +725,13 @@ class Kadence_Blocks_Table_Of_Contents {
 		if ( ! $the_post ) {
 			return '';
 		}
-
-		$headings = $this->table_of_contents_get_headings(
-			$the_post,
-			$attributes
-		);
+		if ( is_null( self::$the_headings ) ) {
+			self::$the_headings = $this->table_of_contents_get_headings(
+				$the_post,
+				$attributes
+			);
+		}
+		$headings = self::$the_headings;
 		$list_tag = ( isset( $attributes['listStyle'] ) && 'numbered' === $attributes['listStyle'] ? 'ol' : 'ul' );
 
 		// If there are no headings or the only heading is empty.

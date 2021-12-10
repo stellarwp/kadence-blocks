@@ -48,6 +48,7 @@ registerBlockType( 'kadence/icon', {
 	supports: {
 		ktdynamic: true,
 	},
+	usesContext: [ 'postId', 'queryId' ],
 	attributes: {
 		icons: {
 			type: 'array',
@@ -99,6 +100,10 @@ registerBlockType( 'kadence/icon', {
 		},
 		verticalAlignment: {
 			type: 'string',
+		},
+		inQueryBlock: {
+			type: 'bool',
+			default: false,
 		},
 	},
 	getEditWrapperProps( { blockAlignment } ) {

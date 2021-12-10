@@ -79,6 +79,17 @@ class KadenceIcons extends Component {
 		} else {
 			kticonUniqueIDs.push( this.props.attributes.uniqueID );
 		}
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			if ( ! this.props.attributes.inQueryBlock ) {
+				this.props.setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( this.props.attributes.inQueryBlock ) {
+			this.props.setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
 	}
 	saveArrayUpdate( value, index ) {
 		const { attributes, setAttributes } = this.props;
