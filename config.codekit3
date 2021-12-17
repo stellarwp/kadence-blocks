@@ -520,22 +520,6 @@
       "oF" : 0,
       "pg" : 0
     },
-    "\/dist\/build\/blocks.css.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.css.map",
-      "oF" : 0
-    },
-    "\/dist\/build\/blocks.js.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.js.map",
-      "oF" : 0
-    },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
       "ft" : 8192,

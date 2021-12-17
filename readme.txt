@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 2.1.18
+Stable tag: 2.1.19
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,8 +80,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.1.19 =
+Release Date: December 16th, 2021
+* Add: Link overlay option to section block.
+* Fix: rel issue in heading link.
+
 = 2.1.18 =
-Release Date: December 8th, 2021
+Release Date: December 10th, 2021
 * Fix: Issue with multiple table of contents on a page.
 
 = 2.1.17 =

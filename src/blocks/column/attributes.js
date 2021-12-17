@@ -302,6 +302,26 @@ const attributes = {
 		type: 'string',
 		default: '',
 	},
+	link: {
+		type: 'string',
+		default: '',
+	},
+	linkTitle: {
+		type: 'string',
+		default: '',
+	},
+	linkTarget: {
+		type: 'boolean',
+		default: false,
+	},
+	linkNoFollow: {
+		type: 'boolean',
+		default: false,
+	},
+	linkSponsored: {
+		type: 'boolean',
+		default: false,
+	},
 	inQueryBlock: {
 		type: 'bool',
 		default: false,

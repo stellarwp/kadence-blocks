@@ -445,7 +445,7 @@ registerBlockType( 'kadence/advancedheading', {
 				href={ link }
 				className={ `kb-advanced-heading-link kt-adv-heading-link${ uniqueID }${ ( ! wrapper && className ? ' ' + className : '' ) }${ ( linkStyle ? ' hls-' + linkStyle : '' ) }` }
 				target={ linkTarget ? '_blank' : undefined }
-				relAttr={ relAttr ? relAttr : undefined }
+				rel={ relAttr ? relAttr : undefined }
 			>
 				{ htmlItem }
 			</a>

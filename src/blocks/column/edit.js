@@ -26,6 +26,7 @@ import KadenceRadioButtons from '../../components/common/kadence-radio-buttons';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import URLInputControl from '../../components/links/link-control';
 /**
  * Blocks Specific.
  */
@@ -205,7 +206,7 @@ class KadenceColumn extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover }, setAttributes, className, clientId } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle }, setAttributes, className, clientId } = this.props;
 		const { borderWidthControl, borderHoverWidthControl, borderRadiusControl, borderHoverRadiusControl, mobilePaddingControl, mobileMarginControl, tabletPaddingControl, tabletMarginControl, deskPaddingControl, deskMarginControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
@@ -889,6 +890,33 @@ class KadenceColumn extends Component {
 										unit={ marginType }
 										units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 										onUnit={ ( value ) => setAttributes( { marginType: value } ) }
+									/>
+								</PanelBody>
+							) }
+							{ this.showSettings( 'overlayLink' ) && (
+								<PanelBody
+									title={ __( 'Overlay Link', 'kadence-blocks' ) }
+									initialOpen={ false }
+								>
+									<p className="kadence-sidebar-notice">{ __( 'Please note, If a link is added nothing else inside of the section will be selectable.', 'kadence-blocks' ) }</p>
+									<URLInputControl
+										label={ __( 'Link entire section', 'kadence-blocks' ) }
+										url={ link }
+										onChangeUrl={ value => setAttributes( { link: value } ) }
+										additionalControls={ true }
+										opensInNewTab={ ( undefined !== linkTarget ? linkTarget : false ) }
+										onChangeTarget={ value => setAttributes( { linkTarget: value } ) }
+										linkNoFollow={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
+										onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
+										linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
+										onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
+										linkTitle={ linkTitle }
+										onChangeTitle={ value => {
+											setAttributes( { linkTitle: value } )
+										} }
+										dynamicAttribute={ 'link' }
+										allowClear={ true }
+										{ ...this.props }
 									/>
 								</PanelBody>
 							) }
