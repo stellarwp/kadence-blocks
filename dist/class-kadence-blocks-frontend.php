@@ -3748,6 +3748,10 @@ class Kadence_Blocks_Frontend {
 				$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 					$css .= 'margin-right:' . $attr['gutter'][0] . 'px;';
 				$css .= '}';
+				$css .= '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+					$css .= 'margin-right:0px;';
+					$css .= 'margin-left:' . $attr['gutter'][0] . 'px;';
+				$css .= '}';
 			}
 			if ( isset( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'] ) && is_array( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'][1] ) && '' !== $attr['tabWidth'][1] ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
@@ -3760,6 +3764,10 @@ class Kadence_Blocks_Frontend {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
 				$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 				$css .= 'margin-right:' . $attr['gutter'][1] . 'px;';
+				$css .= '}';
+				$css .= '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+				$css .= 'margin-right:0px;';
+				$css .= 'margin-left:' . $attr['gutter'][1] . 'px;';
 				$css .= '}';
 				$css .= '}';
 			}
@@ -3774,6 +3782,10 @@ class Kadence_Blocks_Frontend {
 				$css .= '@media (max-width: 767px) {';
 					$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 						$css .= 'margin-right:' . $attr['gutter'][2] . 'px;';
+					$css .= '}';
+					$css .= '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+					$css .= 'margin-right:0px;';
+					$css .= 'margin-left:' . $attr['gutter'][2] . 'px;';
 					$css .= '}';
 				$css .= '}';
 			}

@@ -7,7 +7,7 @@
       "uuidString" : "4A0AC384-49F1-4908-A230-491BE3A9C306"
     }
   ],
-  "creatorBuild" : "34214",
+  "creatorBuild" : "34264",
   "files" : {
     "\/.editorconfig" : {
       "cB" : 0,
@@ -519,6 +519,48 @@
       "oAP" : "\/dist\/blocks\/testimonials.style.build-min.css",
       "oF" : 0,
       "pg" : 0
+    },
+    "\/dist\/build\/blocks.asset.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.asset.php",
+      "oF" : 0
+    },
+    "\/dist\/build\/blocks.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
+    "\/dist\/build\/blocks.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/build\/blocks-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/build\/vendors\/blocks.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -9172,6 +9214,9 @@
       },
       "no-unused-labels" : {
         "active" : 1
+      },
+      "no-unused-private-class-members" : {
+        "active" : 0
       },
       "no-unused-vars" : {
         "active" : 1,

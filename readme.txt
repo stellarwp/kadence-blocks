@@ -80,6 +80,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.2.0 =
+Release Date: December 16th, 2021
+** Add: Advanced Image Block.
+** Fix: RTL tabs styling issue.
+** Update: more tablet and mobile live previews.
+
 = 2.1.19 =
 Release Date: December 16th, 2021
 * Add: Link overlay option to section block.
