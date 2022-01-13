@@ -156,7 +156,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'c_fonts'        => apply_filters( 'kadence_blocks_custom_fonts', array() ),
 			'fluentCRM'      => defined( 'FLUENTCRM' ),
 			'cloud_enabled'  => apply_filters( 'kadence_blocks_cloud_enabled', true ),
-			'dynamic_enabled'  => apply_filters( 'kadence_blocks_dynamic_enabled', false ),
+			'dynamic_enabled'  => apply_filters( 'kadence_blocks_dynamic_enabled', true ),
 			'cloud_settings' => get_option( 'kadence_blocks_cloud' ),
 			'subscribed' => $subscribed,
 			'showWire' => apply_filters( 'kadence_blocks_wireframe_library_enabled', true ),
@@ -166,6 +166,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'showDesignLibrary' => apply_filters( 'kadence_blocks_design_library_enabled', true ),
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
 			'icon_names' => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
+			'svgMaskPath' => KADENCE_BLOCKS_URL . 'dist/assets/images/masks/',
 		)
 	);
 	wp_localize_script(
@@ -730,7 +731,7 @@ function kadence_blocks_get_template( $template_name, $args = array(), $template
 
 	include $action_args['located'];
 
-	do_action( 'kadence_blocks_before_template_part', $action_args['template_name'], $action_args['template_path'], $action_args['located'], $action_args['args'] );
+	do_action( 'kadence_blocks_after_template_part', $action_args['template_name'], $action_args['template_path'], $action_args['located'], $action_args['args'] );
 }
 /**
  * Like kadence_blocks_get_template, but returns the HTML instead of outputting.

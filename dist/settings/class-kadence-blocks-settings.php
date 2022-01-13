@@ -646,14 +646,14 @@ class Kadence_Blocks_Settings {
 							<div class="components-panel__body is-opened">
 								<h2><?php esc_html_e( 'Documentation', 'kadence' ); ?></h2>
 								<p><?php esc_html_e( 'Need help? We have a knowledge base full of articles to get you started.', 'kadence' ); ?></p>
-								<a href="https://www.kadencewp.com/kadence-blocks/documentation/" target="_blank" class="sidebar-link"><?php esc_html_e( 'Browse Docs', 'kadence' ); ?></a>
+								<a href="https://www.kadencewp.com/kadence-blocks/documentation/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-link"><?php esc_html_e( 'Browse Docs', 'kadence' ); ?></a>
 							</div>
 						</div>
 						<div class="support-section sidebar-section components-panel">
 							<div class="components-panel__body is-opened">
 								<h2><?php esc_html_e( 'Support', 'kadence' ); ?></h2>
 								<p><?php esc_html_e( 'Have a question, we are happy to help! Get in touch with our support team.', 'kadence' ); ?></p>
-								<a href="https://www.kadencewp.com/free-support/" target="_blank" class="sidebar-link"><?php esc_html_e( 'Submit a Ticket', 'kadence' ); ?></a>
+								<a href="https://www.kadencewp.com/free-support/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=dashboard" target="_blank" class="sidebar-link"><?php esc_html_e( 'Submit a Ticket', 'kadence' ); ?></a>
 							</div>
 						</div>
 						<?php do_action( 'kadence_blocks_dash_below_side_panel' ); ?>

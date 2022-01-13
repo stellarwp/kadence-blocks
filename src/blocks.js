@@ -5,7 +5,7 @@
 // Utils
 import TypographyControls from './components/typography/typography-control';
 import AdvancedColorControl from './advanced-color-control.js';
-import BoxShadowControl from './box-shadow-control';
+import BoxShadowControl from './components/common/box-shadow-control';
 import IconControl from './components/icons/icon-control';
 import IconRender from './components/icons/icon-render';
 window.kb = {
@@ -39,6 +39,9 @@ import './blocks/posts/block.js';
 import './blocks/countdown/block.js';
 import './blocks/countdown/countdown-timer/block.js';
 import './blocks/countdown/countdown-inner/block.js';
+
+/* block.json styles */
+import './blocks/image/index.js';
 
 // import './plugins/kadence-control.js';
 // import './plugins/editor-width.js';

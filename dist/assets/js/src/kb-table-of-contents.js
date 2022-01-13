@@ -13,7 +13,6 @@
 		 */
 		initAddAnchors: function() {
 			var headings = JSON.parse( kadence_blocks_toc.headings );
-			//console.log( headings );
 			for ( let i = 0; i < headings.length; i++ ) {
 				var heading_items = document.querySelectorAll( 'h' + headings[ i ].level );
 				if ( ! heading_items.length ) {
@@ -21,10 +20,7 @@
 				}
 				var first_string = encodeURIComponent( headings[ i ].content ).toString().normalize().replace(/[^\w\s]/gi, '');
 				for ( let n = 0; n < heading_items.length; n++ ) {
-					// console.log( heading_items[ n ].textContent.replace(/–/g, '-').replace(/’/g, "'").replace(/“/g, '"').replace(/”/g, '"') );
-					// console.log ( headings[ i ].content.replace(/–/g, '-') );
-					// console.log ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '') );
-					// console.log ( headings[ i ].content.replace(/[^\w\s]/gi, '') );
+					heading_items[ n ].textContent = heading_items[ n ].textContent.replace(/–/g, '-').replace(/—/g, '-').replace(/…/g, '...').replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, '"').replace(/”/g, '"');
 					var second_string = encodeURIComponent( heading_items[ n ].textContent ).toString().normalize().replace(/[^\w\s]/gi, '');
 					if ( first_string === second_string ) {
 						if ( ! heading_items[ n ].getAttribute( 'id' ) ) {

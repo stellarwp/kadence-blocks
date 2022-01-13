@@ -408,7 +408,7 @@ class PrebuiltSections extends Component {
 												{ locked && (
 													<div className="kt-popover-pro-notice">
 														<h2>{ __( 'Kadence Blocks Pro required for this item' ) } </h2>
-														<ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
+														<ExternalLink href={ 'https://www.kadencewp.com/kadence-blocks/pro/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'Upgrade to Pro', 'kadence-blocks' ) }</ExternalLink>
 													</div>
 												) }
 											</Fragment>

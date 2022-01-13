@@ -184,7 +184,7 @@ class CloudConnect extends Component {
 					</div>
 					<div className="kb-connection-info">
 						{ __( 'Learn about connecting libraries at:', 'kadence-blocks' ) + ' ' } 
-						<ExternalLink href={ 'https://www.kadencecloud.com/' }>{ __( 'Kadence Cloud', 'kadence-blocks' ) }</ExternalLink>
+						<ExternalLink href={ 'https://www.kadencewp.com/kadence-cloud/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'Kadence Cloud', 'kadence-blocks' ) }</ExternalLink>
 					</div>
 					</Fragment>
 				) }

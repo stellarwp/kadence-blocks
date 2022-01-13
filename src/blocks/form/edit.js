@@ -19,7 +19,7 @@ import debounce from 'lodash/debounce';
 import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
-import BoxShadowControl from '../../box-shadow-control';
+import BoxShadowControl from '../../components/common/box-shadow-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import PopColorControl from '../../components/color/pop-color-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
