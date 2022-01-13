@@ -228,6 +228,10 @@ const attributes = {
 		type: 'array',
 		default: [ '', '', '' ],
 	},
+	wrapContent: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
 	gutter: {
 		type: 'array',
 		default: [ '', '', '' ],

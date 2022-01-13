@@ -13,7 +13,7 @@ import icons from '../../icons';
  * Import Controls
  */
 import MeasurementControls from '../../measurement-control';
-import BoxShadowControl from '../../box-shadow-control';
+import BoxShadowControl from '../../components/common/box-shadow-control';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
@@ -206,7 +206,7 @@ class KadenceColumn extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle }, setAttributes, className, clientId } = this.props;
+		const { attributes: { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent }, setAttributes, className, clientId } = this.props;
 		const { borderWidthControl, borderHoverWidthControl, borderRadiusControl, borderHoverRadiusControl, mobilePaddingControl, mobileMarginControl, tabletPaddingControl, tabletMarginControl, deskPaddingControl, deskMarginControl } = this.state;
 		const saveBackgroundImage = ( value ) => {
 			const newUpdate = backgroundImg.map( ( item, index ) => {
@@ -272,6 +272,7 @@ class KadenceColumn extends Component {
 		const previewGutter = this.getPreviewSize( this.props.getPreviewDevice, ( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : '' ) , ( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' ) );
 		const previewDirection = this.getPreviewSize( this.props.getPreviewDevice, ( direction && '' !== direction[ 0 ] ? direction[ 0 ] : '' ) , ( direction && '' !== direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && '' !== direction[ 2 ] ? direction[ 2 ] : '' ) );
 		const previewJustify = this.getPreviewSize( this.props.getPreviewDevice, ( justifyContent && '' !== justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) , ( justifyContent && '' !== justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && '' !== justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) );
+		const previewWrap = this.getPreviewSize( this.props.getPreviewDevice, ( wrapContent && '' !== wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ) , ( wrapContent && '' !== wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && '' !== wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) );
 		const backgroundString = ( background ? KadenceColorOutput( background, backgroundOpacity ) : 'transparent' );
 		const borderString = ( border ? KadenceColorOutput( border, borderOpacity ) : 'transparent' );
 		const hasChildBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId ).length > 0;
@@ -321,6 +322,7 @@ class KadenceColumn extends Component {
 					{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
 					{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout { margin-left: -${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }.kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block:not([data-type="kadence/advancedheading"]),.kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-editor-block-list__block:not([data-type="kadence/advancedheading"]), .kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-editor-block-list__block[data-type="kadence/advancedheading"] > * { margin-left: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' ) }; }` : '' ) }
 					{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout { justify-content: ${ previewJustify }; }` : '' ) }
+					{ ( previewWrap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout { flex-wrap: ${ previewWrap }; }` : '' ) }
 					{ ( previewJustify && ( 'space-around' == previewJustify || 'space-between' == previewJustify || 'space-evenly' == previewJustify ) ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout > .block-list-appender { display:none; }` : '' ) }
 					{ ( textColorHover ? `.kadence-column-${ uniqueID }:hover, .kadence-column-${ uniqueID }:hover p, .kadence-column-${ uniqueID }:hover h1, .kadence-column-${ uniqueID }:hover h2, .kadence-column-${ uniqueID }:hover h3, .kadence-column-${ uniqueID }:hover h4, .kadence-column-${ uniqueID }:hover h5, .kadence-column-${ uniqueID }:hover h6 { color: ${ KadenceColorOutput( textColorHover ) }; }` : '' ) }
 					{ ( linkColorHover ? `.kadence-column-${ uniqueID }:hover a { color: ${ KadenceColorOutput( linkColorHover ) }; }` : '' ) }
@@ -473,6 +475,9 @@ class KadenceColumn extends Component {
 																enable={ ( undefined !== displayHoverShadow ? displayHoverShadow : false ) }
 																color={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' ) }
 																colorDefault={ '#000000' }
+																onArrayChange={ ( color, opacity ) => {
+																	this.saveShadowHover( { color: color, opacity: opacity } );
+																} }
 																opacity={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 0.2 ) }
 																hOffset={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 ) }
 																vOffset={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 ) }
@@ -600,6 +605,9 @@ class KadenceColumn extends Component {
 																enable={ ( undefined !== displayShadow ? displayShadow : false ) }
 																color={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ) }
 																colorDefault={ '#000000' }
+																onArrayChange={ ( color, opacity ) => {
+																	this.saveShadow( { color: color, opacity: opacity } );
+																} }
 																opacity={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) }
 																hOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) }
 																vOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) }
@@ -738,6 +746,42 @@ class KadenceColumn extends Component {
 														{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
 													] }
 													onChange={ value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), value ] } ) }
+												/> }
+											/>
+											<SmallResponsiveControl
+												label={ __( 'Wrap Content', 'kadence-blocks' ) }
+												desktopChildren={ <SelectControl
+													//label={ __( 'Justify Content', 'kadence-blocks' ) }
+													value={ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ) }
+													options={ [
+														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+														{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
+														{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
+														{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
+													] }
+													onChange={ value => setAttributes( { wrapContent: [ value, ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } ) }
+												/> }
+												tabletChildren={ <SelectControl
+													//label={ __( 'Justify Content', 'kadence-blocks' ) }
+													value={ ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ) }
+													options={ [
+														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+														{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
+														{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
+														{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
+													] }
+													onChange={ value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), value, ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } ) }
+												/> }
+												mobileChildren={ <SelectControl
+													//label={ __( 'Justify Content', 'kadence-blocks' ) }
+													value={ ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) }
+													options={ [
+														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+														{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
+														{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
+														{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
+													] }
+													onChange={ value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), value ] } ) }
 												/> }
 											/>
 										</Fragment>

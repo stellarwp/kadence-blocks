@@ -1,12 +1,12 @@
 /**
- * DropShadow Component
+ * BoxShadow Component
  *
  */
 
 /**
  * Import Externals
  */
- import PopColorControl from '../color/pop-color-control';
+import PopColorControl from '../color/pop-color-control';
 /**
  * Internal block libraries
  */
@@ -18,11 +18,11 @@ const {
 	ToggleControl,
 } = wp.components;
 /**
- * Build the DropShadow controls
- * @returns {object} DropShadow settings.
+ * Build the BoxShadow controls
+ * @returns {object} BoxShadow settings.
  */
-class DropShadowControl extends Component {
-	constructor( label, enable = true, color, colorDefault, opacity, blur, hOffset, vOffset, onColorChange, onOpacityChange, onBlurChange, onHOffsetChange, onVOffsetChange, onEnableChange ) {
+class BoxShadowControl extends Component {
+	constructor( label, enable = true, color, colorDefault, opacity, spread, blur, hOffset, vOffset, inset, onColorChange, onOpacityChange, onSpreadChange, onBlurChange, onHOffsetChange, onVOffsetChange, onInsetChange, onEnableChange ) {
 		super( ...arguments );
 	}
 	render() {
@@ -101,11 +101,36 @@ class DropShadowControl extends Component {
 									</div>
 								</div>
 							</div>
+							<div className="kt-box-spread-settings kt-box-shadow-subset">
+								<p className="kt-box-shadow-title">{ __( 'Spread' ) }</p>
+								<div className="components-base-control kt-boxshadow-number-input">
+									<div className="components-base-control__field">
+										<input
+											value={ ( undefined !== this.props.spread ? this.props.spread : '' ) }
+											onChange={ event => this.props.onSpreadChange( Number( event.target.value ) ) }
+											min={ -200 }
+											max={ 200 }
+											step={ 1 }
+											type="number"
+											className="components-text-control__input"
+										/>
+									</div>
+								</div>
+							</div>
 						</div>
+						{ this.props.onInsetChange && (
+							<div className="kt-box-inset-settings">
+								<ToggleControl
+									label={ __( 'Inset' ) }
+									checked={ this.props.inset }
+									onChange={ value => this.props.onInsetChange( value ) }
+								/>
+							</div>
+						) }
 					</div>
 				) }
 			</div>
 		);
 	}
 }
-export default ( DropShadowControl );
+export default ( BoxShadowControl );

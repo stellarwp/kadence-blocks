@@ -24,8 +24,6 @@ import {
 	BlockControls,
 	InspectorControls,
 	RichText,
-	__experimentalImageSizeControl as ImageSizeControl,
-	__experimentalImageURLInputUI as ImageURLInputUI,
 	MediaReplaceFlow,
 	store as blockEditorStore,
 	BlockAlignmentControl,
@@ -44,29 +42,41 @@ import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
-import BoxShadowControl from '../../box-shadow-control';
 import { isExternalImage } from './edit';
 
 /**
  * Module constants
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control'
-import AdvancedPopColorControl from '../../advanced-pop-color-control'
-import MeasurementControls from '../../components/measurement/measurement-control'
-import icons from '../../icons'
-import DropShadowControl from '../../components/background/drop-shadow-control'
-import TypographyControls from '../../components/typography/typography-control'
-import URLInputControl from '../../components/links/link-control'
-
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const ktimageUniqueIDs = [];
+import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
+import PopColorControl from '../../components/color/pop-color-control';
+import MeasurementControls from '../../components/measurement/measurement-control';
+import KadenceImageSizeControl from '../../components/common/image-size-control';
+import BoxShadowControl from '../../components/common/box-shadow-control';
+import KadenceImageControl from '../../components/common/kadence-image-control';
+import icons from '../../icons';
+import DropShadowControl from '../../components/background/drop-shadow-control';
+import TypographyControls from '../../components/typography/typography-control';
+import URLInputControl from '../../components/links/link-control';
+import KadenceRange from '../../components/range/range-control';
+import KadenceImageURLInputUI from '../../components/links/image-url-input-link-control';
 
 export default function Image( {
 	temporaryURL,
-	attributes: {
+	attributes,
+	setAttributes,
+	isSelected,
+	insertBlocksAfter,
+	onReplace,
+	onSelectImage,
+	onSelectURL,
+	onUploadError,
+	containerRef,
+	context,
+	clientId,
+	previewDevice,
+} ) {
+	const {
 		url = '',
 		alt,
 		caption,
@@ -76,6 +86,9 @@ export default function Image( {
 		width,
 		height,
 		sizeSlug,
+		useRatio,
+		ratio,
+		imgMaxWidth,
 		uniqueID,
 		marginDesktop,
 		marginTablet,
@@ -86,9 +99,7 @@ export default function Image( {
 		paddingMobile,
 		paddingUnit,
 		backgroundColor,
-		backgroundOpacity,
 		borderColor,
-		borderOpacity,
 		borderRadius,
 		borderWidthUnit,
 		borderRadiusUnit,
@@ -103,24 +114,16 @@ export default function Image( {
 		showCaption,
 		captionStyles,
 		maskSvg,
-		href,
+		maskSize,
+		maskPosition,
+		maskRepeat,
+		maskUrl,
+		link,
 		linkTarget,
 		linkNoFollow,
-		linkSponsored
-	},
-	setAttributes,
-	isSelected,
-	insertBlocksAfter,
-	onReplace,
-	onSelectImage,
-	onSelectURL,
-	onUploadError,
-	containerRef,
-	context,
-	clientId,
-	previewDevice,
-} ) {
-
+		linkSponsored,
+		linkDestination,
+	} = attributes;
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
 			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
@@ -135,51 +138,20 @@ export default function Image( {
 		}
 		return desktopSize;
 	};
-
-	if ( ! uniqueID ) {
-		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-		if ( blockConfigObject[ 'kadence/image' ] !== undefined && typeof blockConfigObject[ 'kadence/image' ] === 'object' ) {
-			Object.keys( blockConfigObject[ 'kadence/image' ] ).map( ( attribute ) => {
-				uniqueID = blockConfigObject[ 'kadence/image' ][ attribute ];
-			} );
-		}
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );
-		ktimageUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else if ( ktimageUniqueIDs.includes( uniqueID ) ) {
-		uniqueID = '_' + clientId.substr( 2, 9 );
-		ktimageUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else {
-		ktimageUniqueIDs.push( uniqueID );
-	}
-
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
 	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[3] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
-
-	const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 );
-	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 );
-	const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 
 	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[0] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
 	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[1] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
-	const paddingMin = ( paddingUnit === 'em' || paddingUnit === 'rem' ? -12 : -200 );
-	const paddingMax = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 );
-	const paddingStep = ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 );
-
 	const previewBorderTop = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[0] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 0 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 0 ] : '' ) );
 	const previewBorderRight = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[1] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 1 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 1 ] : '' ) );
 	const previewBorderBottom = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[2] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 2 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 2 ] : '' ) );
 	const previewBorderLeft = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[3] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 3 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 3 ] : '' ) );
-
-	const borderMin = 0;
-	const borderMax = ( borderWidthUnit === 'em' || borderWidthUnit === 'rem' ? 24 : 200 );
-	const borderStep = ( borderWidthUnit === 'em' || borderWidthUnit === 'rem' ? 0.1 : 1 );
 
 	const previewCaptionFontSizeUnit = captionStyles[ 0 ].sizeType !== undefined ? captionStyles[ 0 ].sizeType : 'px';
 	const previewCaptionFontSize = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].size[0] ? captionStyles[ 0 ].size[0] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[1] ? captionStyles[ 0 ].size[ 1 ] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[2] ? captionStyles[ 0 ].size[ 2 ] + previewCaptionFontSizeUnit : 'inherit' ) );
@@ -190,20 +162,6 @@ export default function Image( {
 	const captionRef = useRef();
 	const prevUrl = usePrevious( url );
 	const { allowResize = true } = context;
-	const { getBlock } = useSelect( blockEditorStore );
-
-	function saveBoxShadow( value ) {
-		const newItems = boxShadow.map( ( item, thisIndex ) => {
-			if ( 0 === thisIndex ) {
-				item = { ...item, ...value };
-			}
-			return item;
-		} );
-
-		setAttributes( {
-			boxShadow: newItems,
-		} );
-	}
 
 	function saveDropShadow( value ) {
 		const newItems = dropShadow.map( ( item, thisIndex ) => {
@@ -215,6 +173,18 @@ export default function Image( {
 
 		setAttributes( {
 			dropShadow: newItems,
+		} );
+	}
+	function saveBoxShadow( value ) {
+		const newItems = boxShadow.map( ( item, thisIndex ) => {
+			if ( 0 === thisIndex ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+
+		setAttributes( {
+			boxShadow: newItems,
 		} );
 	}
 
@@ -232,26 +202,31 @@ export default function Image( {
 			captionStyles: newUpdate
 		});
 	};
-
-	const { image, multiImageSelection } = useSelect(
+	const { image } = useSelect(
 		( select ) => {
 			const { getMedia } = select( coreStore );
-			const { getMultiSelectedBlockClientIds, getBlockName } = select(
-				blockEditorStore
-			);
-			const multiSelectedClientIds = getMultiSelectedBlockClientIds();
 			return {
 				image: id && isSelected ? getMedia( id ) : null,
-				multiImageSelection:
-					multiSelectedClientIds.length &&
-					multiSelectedClientIds.every(
-						( _clientId ) =>
-							getBlockName( _clientId ) === 'core/image'
-					),
 			};
 		},
 		[ id, isSelected ]
 	);
+	const { replaceBlocks, toggleSelection } = useDispatch( blockEditorStore );
+	const { createErrorNotice, createSuccessNotice } = useDispatch(
+		noticesStore
+	);
+	const isLargeViewport = useViewportMatch( 'medium' );
+	const isWideAligned = includes( [ 'wide', 'full' ], align );
+	const [ { naturalWidth, naturalHeight }, setNaturalSize ] = useState( {} );
+	const [ isEditingImage, setIsEditingImage ] = useState( false );
+	const [ marginControl, setMarginControl ] = useState( 'individual');
+	const [ paddingControl, setPaddingControl ] = useState( 'individual');
+	const [ borderControl, setBorderControl ] = useState( 'individual');
+	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'individual');
+
+	const [ externalBlob, setExternalBlob ] = useState();
+	const clientWidth = useClientWidth( containerRef, [ align ] );
+	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport );
 	const {
 		imageEditing,
 		imageSizes,
@@ -276,29 +251,12 @@ export default function Image( {
 		},
 		[ clientId ]
 	);
-	const { replaceBlocks, toggleSelection } = useDispatch( blockEditorStore );
-	const { createErrorNotice, createSuccessNotice } = useDispatch(
-		noticesStore
-	);
-	const isLargeViewport = useViewportMatch( 'medium' );
-	const isWideAligned = includes( [ 'wide', 'full' ], align );
-	const [ { naturalWidth, naturalHeight }, setNaturalSize ] = useState( {} );
-	const [ isEditingImage, setIsEditingImage ] = useState( false );
-	const [ marginControl, setMarginControl ] = useState( 'individual');
-	const [ paddingControl, setPaddingControl ] = useState( 'individual');
-	const [ borderControl, setBorderControl ] = useState( 'individual');
-	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'individual');
-
-	const [ externalBlob, setExternalBlob ] = useState();
-	const clientWidth = useClientWidth( containerRef, [ align ] );
-	const isResizable = allowResize && ! ( isWideAligned && isLargeViewport );
 	const imageSizeOptions = map(
 		filter( imageSizes, ( { slug } ) =>
 			get( image, [ 'media_details', 'sizes', slug, 'source_url' ] )
 		),
 		( { name, slug } ) => ( { value: slug, label: name } )
 	);
-
 	// If an image is externally hosted, try to fetch the image data. This may
 	// fail if the image host doesn't allow CORS with the domain. If it works,
 	// we can enable a button in the toolbar to upload the image.
@@ -343,7 +301,7 @@ export default function Image( {
 		}
 	}
 
-	function onSetHref( props ) {
+	function onSetLink( props ) {
 		setAttributes( props );
 	}
 
@@ -375,7 +333,31 @@ export default function Image( {
 			sizeSlug: newSizeSlug,
 		} );
 	}
-
+	function onUpdateSelectImage( image ) {
+		setAttributes( {
+			url: image.url,
+			width: undefined,
+			height: undefined,
+			sizeSlug: undefined,
+		} );
+	}
+	function clearImage() {
+		setAttributes( {
+			url: undefined,
+			width: undefined,
+			height: undefined,
+			sizeSlug: undefined,
+		} );
+	}
+	function changeImageSize( imgData ) {
+		setAttributes( {
+			url: imgData.value,
+			width: undefined,
+			height: undefined,
+			sizeSlug: imgData.slug,
+			imgMaxWidth: imgData.width,
+		} );
+	}
 	function uploadExternal() {
 		mediaUpload( {
 			filesList: [ externalBlob ],
@@ -387,7 +369,7 @@ export default function Image( {
 				}
 
 				setExternalBlob();
-				createSuccessNotice( __( 'Image uploaded.' ), {
+				createSuccessNotice( __( 'Image uploaded.', 'kadence-blocks' ), {
 					type: 'snackbar',
 				} );
 			},
@@ -413,10 +395,10 @@ export default function Image( {
 			setIsEditingImage( false );
 		}
 	}, [ isSelected ] );
-
-	const canEditImage = id && naturalWidth && naturalHeight && imageEditing;
-	const allowCrop = ! multiImageSelection && canEditImage && ! isEditingImage;
-
+	const isDynamic = attributes.kadenceDynamic && attributes.kadenceDynamic.url && attributes.kadenceDynamic.url.enable ? true : false;
+	const isDynamicLink = attributes.kadenceDynamic && attributes.kadenceDynamic.link && attributes.kadenceDynamic.link.enable ? true : false;
+	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic;
+	const allowCrop = canEditImage && ! isEditingImage;
 	const controls = (
 		<>
 			<BlockControls group="block">
@@ -424,6 +406,31 @@ export default function Image( {
 					value={ align }
 					onChange={ updateAlignment }
 				/>
+				{ ! isEditingImage && ! isDynamic && ! isDynamicLink && (
+					<KadenceImageURLInputUI
+						url={ link || '' }
+						onChangeUrl={ value => setAttributes( { link: value } ) }
+						linkDestination={ linkDestination }
+						mediaUrl={ ( image && image.source_url ) || url }
+						mediaLink={ image && image.link }
+						onChangeLinkDestination={ value => setAttributes( { linkDestination: value } ) }
+						onChangeAttribute={ value => setAttributes( value ) }
+						additionalControls={ true }
+						opensInNewTab={ ( undefined !== linkTarget ? linkTarget : false ) }
+						onChangeTarget={ value => setAttributes( { linkTarget: value } ) }
+						linkNoFollow={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
+						onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
+						linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
+						onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
+						allowClear={ true }
+						dynamicAttribute={ 'link' }
+						isSelected={ isSelected }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						name={ 'kadence/image' }
+						clientId={ clientId }
+					/>
+				) }
 				{ allowCrop && (
 					<ToolbarButton
 						onClick={ () => setIsEditingImage( true ) }
@@ -431,15 +438,15 @@ export default function Image( {
 						label={ __( 'Crop' ) }
 					/>
 				) }
-				{ externalBlob && (
+				{ externalBlob && ! isDynamic && (
 					<ToolbarButton
 						onClick={ uploadExternal }
 						icon={ upload }
-						label={ __( 'Upload external image' ) }
+						label={ __( 'Upload external image', 'kadence-blocks' ) }
 					/>
 				) }
 			</BlockControls>
-			{ ! multiImageSelection && ! isEditingImage && (
+			{ ! isEditingImage && ! isDynamic && (
 				<BlockControls group="other">
 					<MediaReplaceFlow
 						mediaId={ id }
@@ -453,50 +460,112 @@ export default function Image( {
 				</BlockControls>
 			) }
 			<InspectorControls>
-				<PanelBody title={ __( 'Image settings' ) } initialOpen={ false } >
-					{ ! multiImageSelection && (
-						<TextareaControl
-							label={ __( 'Alt text (alternative text)' ) }
-							value={ alt }
-							onChange={ updateAlt }
-							help={
-								<>
-									<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
-										{ __(
-											'Describe the purpose of the image'
-										) }
-									</ExternalLink>
-									{ __(
-										'Leave empty if the image is purely decorative.'
-									) }
-								</>
-							}
+				<PanelBody title={ __( 'Image settings', 'kadence-blocks' ) } initialOpen={ true } >
+					<KadenceImageControl
+						label={ __( 'Image', 'kadence-blocks' ) }
+						hasImage={ ( url ? true : false ) }
+						imageURL={ ( url ? url : '' ) }
+						imageID={ id }
+						onRemoveImage={ clearImage }
+						onSaveImage={ onUpdateSelectImage }
+						disableMediaButtons={ ( url ? true : false ) }
+						dynamicAttribute="url"
+						isSelected={ isSelected }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						name={ 'kadence/image' }
+						clientId={ clientId }
+					/>
+					{ id && (
+						<KadenceImageSizeControl
+							label={ __( 'Image File Size', 'kadence-blocks' ) }
+							id={ id }
+							url={ url }
+							fullSelection={ true }
+							selectByValue={ true }
+							onChange={ changeImageSize }
 						/>
 					) }
-					<ImageSizeControl
-						onChangeImage={ updateImage }
-						onChange={ ( value ) => setAttributes( value ) }
-						slug={ sizeSlug }
-						width={ width }
-						height={ height }
-						imageSizeOptions={ imageSizeOptions }
-						isResizable={ isResizable }
-						imageWidth={ naturalWidth }
-						imageHeight={ naturalHeight }
+					<ToggleControl
+							label={ __( 'Use ratio size instead of image size', 'kadence-blocks' ) }
+							checked={ useRatio }
+							onChange={ ( value ) => setAttributes( { useRatio: value } ) }
+						/>
+						{ useRatio && (
+							<SelectControl
+								label={ __( 'Size Ratio', 'kadence-blocks' ) }
+								value={ ratio }
+								options={ [
+									{
+										label: __( 'Landscape 4:3', 'kadence-blocks' ),
+										value: 'land43',
+									},
+									{
+										label: __( 'Landscape 3:2', 'kadence-blocks' ),
+										value: 'land32',
+									},
+									{
+										label: __( 'Landscape 16:9', 'kadence-blocks' ),
+										value: 'land169',
+									},
+									{
+										label: __( 'Landscape 2:1', 'kadence-blocks' ),
+										value: 'land21',
+									},
+									{
+										label: __( 'Landscape 3:1', 'kadence-blocks' ),
+										value: 'land31',
+									},
+									{
+										label: __( 'Landscape 4:1', 'kadence-blocks' ),
+										value: 'land41',
+									},
+									{
+										label: __( 'Portrait 3:4', 'kadence-blocks' ),
+										value: 'port34',
+									},
+									{
+										label: __( 'Portrait 2:3', 'kadence-blocks' ),
+										value: 'port23',
+									},
+									{
+										label: __( 'Square 1:1', 'kadence-blocks' ),
+										value: 'square',
+									},
+								] }
+								onChange={ value => setAttributes( { ratio: value } ) }
+							/>
+						) }
+					<KadenceRange
+						label={ __( 'Max Image Width', 'kadence-blocks' ) }
+						value={ imgMaxWidth }
+						onChange={ value => setAttributes( { imgMaxWidth: value } ) }
+						min={ 5 }
+						max={ 3000 }
+						step={ 1 }
+					/>
+					<TextareaControl
+						label={ __( 'Alt text (alternative text)' ) }
+						value={ alt }
+						onChange={ updateAlt }
+						help={
+							<>
+								<ExternalLink href="https://www.w3.org/WAI/tutorials/images/decision-tree">
+									{ __( 'Describe the purpose of the image', 'kadence-blocks' ) }
+								</ExternalLink>
+								{ __( 'Leave empty if the image is purely decorative.', 'kadence-blocks' ) }
+							</>
+						}
 					/>
 					<TextControl
-						label={ __( 'Title attribute' ) }
+						label={ __( 'Title attribute', 'kadence-blocks' ) }
 						value={ title || '' }
 						onChange={ onSetTitle }
 						help={
 							<>
-								{ __(
-									'Describe the role of this image on the page.'
-								) }
+								{ __( 'Describe the role of this image on the page.', 'kadence-blocks' ) }
 								<ExternalLink href="https://www.w3.org/TR/html52/dom.html#the-title-attribute">
-									{ __(
-										'(Note: many devices and browsers do not display this text.)'
-									) }
+									{ __( '(Note: many devices and browsers do not display this text.)', 'kadence-blocks' ) }
 								</ExternalLink>
 							</>
 						}
@@ -516,9 +585,9 @@ export default function Image( {
 						onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
 						onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
 						onChangeControl={ ( value ) => setPaddingControl( value ) }
-						min={ paddingMin }
-						max={ paddingMax }
-						step={ paddingStep }
+						min={ 0 }
+						max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
+						step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
 						unit={ paddingUnit }
 						units={ [ 'px', 'em', 'rem', '%' ] }
 						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
@@ -535,9 +604,9 @@ export default function Image( {
 						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
 						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
 						onChangeControl={ ( value ) => setMarginControl( value ) }
-						min={ marginMin }
-						max={ marginMax }
-						step={ marginStep }
+						min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
+						max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+						step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
 						unit={ marginUnit }
 						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
@@ -548,31 +617,21 @@ export default function Image( {
 					title={ __('Border Settings', 'kadence-blocks') }
 					initialOpen={ false }
 				>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Background Color', 'kadence-blocks' ) }
-						colorValue={ ( backgroundColor ? backgroundColor : '#FFFFFF' ) }
-						colorDefault={ '' }
-						opacityValue={ backgroundOpacity }
-						onColorChange={ value => {
+						value={ ( backgroundColor ? backgroundColor : '' ) }
+						default={ '' }
+						onChange={ value => {
 							setAttributes( { backgroundColor: value } );
 						} }
-						onOpacityChange={ value => {
-							setAttributes( { backgroundOpacity: value } );
-						} }
-						onArrayChange={ ( color, opacity ) => setAttributes( { backgroundColor: color, backgroundOpacity: opacity } ) }
 					/>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Border Color', 'kadence-blocks' ) }
-						colorValue={ ( borderColor ? borderColor : '#555555' ) }
-						colorDefault={ '' }
-						opacityValue={ borderOpacity }
-						onColorChange={ value => {
+						value={ ( borderColor ? borderColor : '' ) }
+						default={ '' }
+						onChange={ value => {
 							setAttributes( { borderColor: value } );
 						} }
-						onOpacityChange={ value => {
-							setAttributes( { borderOpacity: value } );
-						} }
-						onArrayChange={ ( color, opacity ) => setAttributes( { borderColor: color, borderOpacity: opacity } ) }
 					/>
 					<ResponsiveMeasurementControls
 						label={ __( 'Border Width', 'kadence-blocks' ) }
@@ -586,9 +645,9 @@ export default function Image( {
 						onChangeTablet={ ( value ) => setAttributes( { borderWidthTablet: value } ) }
 						onChangeMobile={ ( value ) => setAttributes( { borderWidthMobile: value } ) }
 						onChangeControl={ ( value ) => setBorderControl( value ) }
-						min={ borderMin }
-						max={ borderMax }
-						step={ borderStep }
+						min={ 0 }
+						max={ ( borderWidthUnit === 'em' || borderWidthUnit === 'rem' ? 24 : 200 ) }
+						step={ ( borderWidthUnit === 'em' || borderWidthUnit === 'rem' ? 0.1 : 1 ) }
 						unit={ borderWidthUnit }
 						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						onUnit={ ( value ) => setAttributes( { borderWidthUnit: value } ) }
@@ -619,8 +678,8 @@ export default function Image( {
 				>
 					<URLInputControl
 						label={ __( 'Image Link', 'kadence-blocks' ) }
-						url={ href }
-						onChangeUrl={ value => setAttributes( { href: value } ) }
+						url={ link }
+						onChangeUrl={ value => setAttributes( { link: value } ) }
 						additionalControls={ true }
 						opensInNewTab={ ( undefined !== linkTarget ? linkTarget : false ) }
 						onChangeTarget={ value => setAttributes( { linkTarget: value } ) }
@@ -628,8 +687,13 @@ export default function Image( {
 						onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
 						linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
 						onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
-						dynamicAttribute={ 'link' }
 						allowClear={ true }
+						dynamicAttribute={ 'link' }
+						isSelected={ isSelected }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						name={ 'kadence/image' }
+						clientId={ clientId }
 					/>
 				</PanelBody>
 				<PanelBody
@@ -641,6 +705,7 @@ export default function Image( {
 						enable={ ( undefined !== displayBoxShadow ? displayBoxShadow : false ) }
 						color={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].color ? boxShadow[ 0 ].color : '#000000' ) }
 						colorDefault={ '#000000' }
+						onArrayChange={ ( color, opacity ) => saveBoxShadow( { color: color, opacity: opacity } ) }
 						opacity={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].opacity ? boxShadow[ 0 ].opacity : 0.2 ) }
 						hOffset={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].hOffset ? boxShadow[ 0 ].hOffset : 0 ) }
 						vOffset={ ( undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].vOffset ? boxShadow[ 0 ].vOffset : 0 ) }
@@ -679,6 +744,7 @@ export default function Image( {
 						enable={ ( undefined !== displayDropShadow ? displayDropShadow : false ) }
 						color={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].color ? dropShadow[ 0 ].color : '#000000' ) }
 						colorDefault={ '#000000' }
+						onArrayChange={ ( color, opacity ) => saveDropShadow( { color: color, opacity: opacity } ) }
 						opacity={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].opacity ? dropShadow[ 0 ].opacity : 0.2 ) }
 						hOffset={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].hOffset ? dropShadow[ 0 ].hOffset : 0 ) }
 						vOffset={ ( undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].vOffset ? dropShadow[ 0 ].vOffset : 0 ) }
@@ -704,6 +770,13 @@ export default function Image( {
 							saveDropShadow( { blur: value } );
 						} }
 					/>
+					<p className="kb-sidebar-help">
+						{ __( 'Learn about the differences:', 'kadence-blocks' ) }
+						<br></br>
+						<ExternalLink href="https://css-tricks.com/breaking-css-box-shadow-vs-drop-shadow/">
+							{ __( 'Box Shadow vs. Drop Shadow', 'kadence-blocks' ) }
+						</ExternalLink>
+					</p>
 				</PanelBody>
 				<PanelBody
 					title={ __( 'Mask Settings', 'kadence-blocks' ) }
@@ -744,10 +817,81 @@ export default function Image( {
 								label: __( 'Blob 3', 'kadence-blocks' ),
 								value: 'blob3',
 							},
+							{
+								label: __( 'Custom', 'kadence-blocks' ),
+								value: 'custom',
+							},
 						] }
 						value={ maskSvg }
 						onChange={ ( value ) => setAttributes( { maskSvg: value } ) }
 					/>
+					{ maskSvg === 'custom' && (
+						<>
+							<KadenceImageControl
+								label={ __( 'Custom Mask Image', 'kadence-blocks' ) }
+								hasImage={ ( maskUrl ? true : false ) }
+								imageURL={ ( maskUrl ? maskUrl : '' ) }
+								imageID={ '' }
+								onRemoveImage={ () => {
+									setAttributes( {
+										maskUrl: undefined,
+									} );
+								} }
+								onSaveImage={ ( image ) => {
+									setAttributes( {
+										maskUrl: image.url,
+									} )
+								} }
+								disableMediaButtons={ ( maskUrl ? true : false ) }
+							/>
+							<SelectControl
+								label={ __( 'Mask Size', 'kadence-blocks' ) }
+								options={ [
+									{
+										label: __( 'Auto', 'kadence-blocks' ),
+										value: 'auto',
+									},
+									{
+										label: __( 'Contain', 'kadence-blocks' ),
+										value: 'contain',
+									},
+									{
+										label: __( 'Cover', 'kadence-blocks' ),
+										value: 'cover',
+									},
+								] }
+								value={ maskSize }
+								onChange={ ( value ) => setAttributes( { maskSize: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Mask Position', 'kadence-blocks' ) }
+								options={ [
+									{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+									{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+									{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+									{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+									{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+									{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+									{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+									{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+									{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
+								] }
+								value={ maskPosition }
+								onChange={ ( value ) => setAttributes( { maskPosition: value } ) }
+							/>
+							<SelectControl
+								label={ __( 'Mask Repeat', 'kadence-blocks' ) }
+								options={ [
+									{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
+									{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
+									{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
+									{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
+								] }
+								value={ maskRepeat }
+								onChange={ ( value ) => setAttributes( { maskRepeat: value } ) }
+							/>
+						</>
+					) }
 				</PanelBody>
 				<PanelBody
 					title={ __( 'Caption Settings', 'kadence-blocks' ) }
@@ -760,20 +904,18 @@ export default function Image( {
 					/>
 					{ showCaption && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Caption Color', 'kadence-blocks' ) }
-								colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => saveCaptionFont( { color: value } ) }
+								value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
+								default={ '' }
+								onChange={ value => saveCaptionFont( { color: value } ) }
 							/>
-							<AdvancedPopColorControl
+							{/* <PopColorControl
 								label={ __( 'Caption Background', 'kadence-blocks' ) }
-								colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
-								colorDefault={ '#000000' }
-								onColorChange={ value => saveCaptionFont( { background: value } ) }
-								opacityValue={ ( captionStyles && captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) }
-								onOpacityChange={ value => saveCaptionFont( { backgroundOpacity: value } ) }
-							/>
+								value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
+								default={ '' }
+								onChange={ value => saveCaptionFont( { background: value } ) }
+							/> */}
 							<TypographyControls
 								fontSize={ captionStyles[ 0 ].size }
 								onFontSize={ ( value ) => saveCaptionFont( { size: value } ) }
@@ -813,7 +955,7 @@ export default function Image( {
 					) }
 				</PanelBody>
 				<PanelBody
-					title={ __( 'Image Style', 'kadence-blocks' ) }
+					title={ __( 'Image Filter', 'kadence-blocks' ) }
 					initialOpen={ false }
 				>
 					<SelectControl
@@ -888,25 +1030,38 @@ export default function Image( {
 	} else {
 		defaultedAlt = __( 'This image has an empty alt attribute' );
 	}
-
+	let hasMask = false;
+	let theMaskRepeat = 'no-repeat';
+	let theMaskSize = 'auto';
+	let theMaskPosition = 'center center';
+	if ( maskSvg === 'custom' ) {
+		if ( maskUrl ) {
+			hasMask = true;
+			theMaskRepeat = maskRepeat ? maskRepeat : 'no-repeat';
+			theMaskSize = maskSize ? maskSize : 'auto';
+			theMaskPosition = maskPosition ? maskPosition : 'center center';
+		}
+	} else if ( maskSvg !== 'none' ) {
+		hasMask = true;
+	}
 	let img = (
-		// Disable reason: Image itself is not meant to be interactive, but
-		// should direct focus to block.
-		/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
-		<div className={ (imageFilter !== 'none' ? 'filter-' + imageFilter : null)}>
+			// Disable reason: Image itself is not meant to be interactive, but
+			// should direct focus to block.
+			/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
+		<>
 			<img
 				src={ temporaryURL || url }
 				alt={ defaultedAlt }
 				style={ {
-					WebkitMaskImage: ( maskSvg !== 'none' ? 'url(' + kadence_blocks_params.svgMaskPath + maskSvg + '.svg)' : 'none'),
-					WebkitMaskRepeat: ( maskSvg !== 'none' ? 'no-repeat' : undefined ),
-					WebkitMaskSize: ( maskSvg !== 'none' ? 'auto' : undefined ),
-					WebkitMaskPosition: ( maskSvg !== 'none' ? 'center' : undefined ),
+					WebkitMaskImage: ( hasMask ? 'url(' + ( maskSvg === 'custom' ? maskUrl : kadence_blocks_params.svgMaskPath + maskSvg + '.svg' ) + ')' : undefined ),
+					WebkitMaskRepeat: ( hasMask ? theMaskRepeat : undefined ),
+					WebkitMaskSize: ( hasMask ? theMaskSize : undefined ),
+					WebkitMaskPosition: ( hasMask ? theMaskPosition : undefined ),
 
-					maskImage: ( maskSvg !== 'none' ? 'url(' + kadence_blocks_params.svgMaskPath + maskSvg + '.svg)' : 'none'),
-					maskRepeat: ( maskSvg !== 'none' ? 'no-repeat' : undefined ),
-					maskSize: ( maskSvg !== 'none' ? 'auto' : undefined ),
-					maskPosition: ( maskSvg !== 'none' ? 'center' : undefined ),
+					maskImage: ( hasMask ? 'url(' + ( maskSvg === 'custom' ? maskUrl : kadence_blocks_params.svgMaskPath + maskSvg + '.svg' ) + ')' : undefined ),
+					maskRepeat: ( hasMask ? theMaskRepeat : undefined ),
+					maskSize: ( hasMask ? theMaskSize : undefined ),
+					maskPosition: ( hasMask ? theMaskPosition : undefined ),
 
 					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
 					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
@@ -918,7 +1073,7 @@ export default function Image( {
 					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
 					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
 
-					borderColor: ( '' !== borderColor ? KadenceColorOutput( borderColor, borderOpacity ) : undefined ),
+					borderColor: ( '' !== borderColor ? KadenceColorOutput( borderColor ) : undefined ),
 					borderStyle: 'solid',
 					borderTopWidth: ( '' !== previewBorderTop ? previewBorderTop + borderWidthUnit : 'inherit' ),
 					borderRightWidth: ( '' !== previewBorderRight ? previewBorderRight + borderWidthUnit : 'inherit' ),
@@ -926,10 +1081,10 @@ export default function Image( {
 					borderLeftWidth: ( '' !== previewBorderLeft ? previewBorderLeft + borderWidthUnit : 'inherit' ),
 					borderRadius:  ( '' !== borderRadius[0] ? borderRadius[0] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[1] ? borderRadius[1] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[2] ? borderRadius[2] + borderRadiusUnit : '0' ) + ' ' + ( '' !== borderRadius[3] ? borderRadius[3] + borderRadiusUnit : '0' ),
 
-					backgroundColor: ( '' !== backgroundColor ? KadenceColorOutput( backgroundColor, backgroundOpacity ) : undefined ),
+					backgroundColor: ( '' !== backgroundColor ? KadenceColorOutput( backgroundColor ) : undefined ),
 
-					boxShadow: ( undefined !== displayBoxShadow && displayBoxShadow && undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].color ? ( undefined !== boxShadow[ 0 ].inset && boxShadow[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== boxShadow[ 0 ].hOffset ? boxShadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== boxShadow[ 0 ].vOffset ? boxShadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== boxShadow[ 0 ].blur ? boxShadow[ 0 ].blur : 14 ) + 'px ' + ( undefined !== boxShadow[ 0 ].spread ? boxShadow[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== boxShadow[ 0 ].color ? boxShadow[ 0 ].color : '#000000' ), ( undefined !== boxShadow[ 0 ].opacity ? boxShadow[ 0 ].opacity : 1 ) ) : undefined ),
-					filter: ( undefined !== displayDropShadow && displayDropShadow ? 'drop-shadow(' + ( undefined !== displayDropShadow && displayDropShadow && undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].color ? ( undefined !== dropShadow[ 0 ].hOffset ? dropShadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== dropShadow[ 0 ].vOffset ? dropShadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== dropShadow[ 0 ].blur ? dropShadow[ 0 ].blur : 14 ) + 'px ' + KadenceColorOutput( ( undefined !== dropShadow[ 0 ].color ? dropShadow[ 0 ].color : '#000000' ) ) : undefined ) + ')' : undefined ),
+					boxShadow: ( undefined !== displayBoxShadow && displayBoxShadow && undefined !== boxShadow && undefined !== boxShadow[ 0 ] && undefined !== boxShadow[ 0 ].color ? ( undefined !== boxShadow[ 0 ].inset && boxShadow[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== boxShadow[ 0 ].hOffset ? boxShadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== boxShadow[ 0 ].vOffset ? boxShadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== boxShadow[ 0 ].blur ? boxShadow[ 0 ].blur : 14 ) + 'px ' + ( undefined !== boxShadow[ 0 ].spread ? boxShadow[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== boxShadow[ 0 ].color ? boxShadow[ 0 ].color : '#000000' ), ( undefined !== boxShadow[ 0 ].opacity ? boxShadow[ 0 ].opacity : 0.2 ) ) : undefined ),
+					filter: ( undefined !== displayDropShadow && displayDropShadow ? 'drop-shadow(' + ( undefined !== displayDropShadow && displayDropShadow && undefined !== dropShadow && undefined !== dropShadow[ 0 ] && undefined !== dropShadow[ 0 ].color ? ( undefined !== dropShadow[ 0 ].hOffset ? dropShadow[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== dropShadow[ 0 ].vOffset ? dropShadow[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== dropShadow[ 0 ].blur ? dropShadow[ 0 ].blur : 14 ) + 'px ' + KadenceColorOutput( ( undefined !== dropShadow[ 0 ].color ? dropShadow[ 0 ].color : '#000000' ), ( undefined !== dropShadow[ 0 ].opacity ? dropShadow[ 0 ].opacity : 0.2 ) ) : undefined ) + ')' : undefined ),
 
 				} }
 				onError={ () => onImageError() }
@@ -943,19 +1098,22 @@ export default function Image( {
 				} }
 			/>
 			{ temporaryURL && <Spinner /> }
-		</div>
+		</>
 		/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events */
 	);
+	if ( useRatio ){
+		img = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}` }>{ img }</div>;
+	}
 
 	let imageWidthWithinContainer;
 	let imageHeightWithinContainer;
 
 	if ( clientWidth && naturalWidth && naturalHeight ) {
 		const exceedMaxWidth = naturalWidth > clientWidth;
-		const ratio = naturalHeight / naturalWidth;
+		const imgRatio = naturalHeight / naturalWidth;
 		imageWidthWithinContainer = exceedMaxWidth ? clientWidth : naturalWidth;
 		imageHeightWithinContainer = exceedMaxWidth
-			? clientWidth * ratio
+			? clientWidth * imgRatio
 			: naturalHeight;
 	}
 
@@ -971,16 +1129,50 @@ export default function Image( {
 			/>
 		);
 	} else if ( ! isResizable || ! imageWidthWithinContainer ) {
-		img = <div style={ { width, height } }>{ img }</div>;
+		img = <div style={ { maxwidth: imgMaxWidth || width } }>{ img }</div>;
 	} else {
-		const currentWidth = width || imageWidthWithinContainer;
+		const currentWidth = imgMaxWidth || width || imageWidthWithinContainer;
 		const currentHeight = height || imageHeightWithinContainer;
 
-		const ratio = naturalWidth / naturalHeight;
+		let imgRatio = naturalWidth / naturalHeight;
+		if ( useRatio ){
+			switch ( ratio ) {
+				case 'land43':
+					imgRatio = 4 / 3;
+					break;
+				case 'land32':
+					imgRatio = 3 / 2;
+					break;
+				case 'land169':
+					imgRatio = 16 / 9;
+					break;
+				case 'land21':
+					imgRatio = 2 / 1;
+					break;
+				case 'land31':
+					imgRatio = 3 / 1;
+					break;
+				case 'land41':
+					imgRatio = 4 / 1;
+					break;
+				case 'port34':
+					imgRatio = 3 / 4;
+					break;
+				case 'port23':
+					imgRatio = 2 / 3;
+					break;
+				case 'port916':
+					imgRatio = 9 / 16;
+					break;
+				case 'square':
+					imgRatio = 1 / 1;
+					break;
+			}
+		}
 		const minWidth =
-			naturalWidth < naturalHeight ? MIN_SIZE : MIN_SIZE * ratio;
+			naturalWidth < naturalHeight ? MIN_SIZE : MIN_SIZE * imgRatio;
 		const minHeight =
-			naturalHeight < naturalWidth ? MIN_SIZE : MIN_SIZE / ratio;
+			naturalHeight < naturalWidth ? MIN_SIZE : MIN_SIZE / imgRatio;
 
 		// With the current implementation of ResizableBox, an image needs an
 		// explicit pixel value for the max-width. In absence of being able to
@@ -1025,27 +1217,26 @@ export default function Image( {
 		img = (
 			<ResizableBox
 				size={ {
-					width: width ?? 'auto',
-					height: height ?? 'auto',
+					width: imgMaxWidth ?? width ?? 'auto',
+					height: 'auto',
 				} }
 				showHandle={ isSelected }
 				minWidth={ minWidth }
 				maxWidth={ maxWidthBuffer }
 				minHeight={ minHeight }
-				maxHeight={ maxWidthBuffer / ratio }
+				maxHeight={ maxWidthBuffer / imgRatio }
 				lockAspectRatio
 				enable={ {
 					top: false,
 					right: showRightHandle,
-					bottom: true,
+					bottom: false,
 					left: showLeftHandle,
 				} }
 				onResizeStart={ onResizeStart }
 				onResizeStop={ ( event, direction, elt, delta ) => {
 					onResizeStop();
 					setAttributes( {
-						width: parseInt( currentWidth + delta.width, 10 ),
-						height: parseInt( currentHeight + delta.height, 10 ),
+						imgMaxWidth: parseInt( currentWidth + delta.width, 10 ),
 					} );
 				} }
 			>
@@ -1082,14 +1273,13 @@ export default function Image( {
 						setAttributes( { caption: value } )
 					}
 					style={ {
-						paddingTop: (( '' !== previewBorderBottom ? previewBorderBottom : 0 ) + ( '' !== previewPaddingBottom ? previewPaddingBottom : 0 )) + 'px',
-						background: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#FFFFFF' ), ( undefined !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 1 ) ) : 'inherit' ),
-						color: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color ?  KadenceColorOutput( captionStyles[ 0 ].color ) : 'inherit' ),
-						fontFamily: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].family ? captionStyles[ 0 ].family : 'inherit' ),
-						fontStyle: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].style ? captionStyles[ 0 ].style : 'inherit' ),
-						fontWeight: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : 'inherit' ),
-						textTransform: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].textTransform ? captionStyles[ 0 ].textTransform : 'inherit' ),
-						letterSpacing: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].letterSpacing ? captionStyles[ 0 ].letterSpacing : 'inherit' ),
+						//background: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? KadenceColorOutput( captionStyles[ 0 ].background ) : undefined ),
+						color: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color ?  KadenceColorOutput( captionStyles[ 0 ].color ) : undefined ),
+						fontFamily: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].family ? captionStyles[ 0 ].family : undefined ),
+						fontStyle: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].style ? captionStyles[ 0 ].style : undefined ),
+						fontWeight: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : undefined ),
+						textTransform: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].textTransform ? captionStyles[ 0 ].textTransform : undefined ),
+						letterSpacing: ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].letterSpacing ? captionStyles[ 0 ].letterSpacing : undefined ),
 						lineHeight: previewCaptionLineHeight,
 						fontSize: previewCaptionFontSize
 					} }

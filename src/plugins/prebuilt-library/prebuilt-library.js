@@ -51,7 +51,8 @@ import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
-import KadenceTryParseJSON from '../../components/common/parse-json'
+import KadenceTryParseJSON from '../../components/common/parse-json';
+import { applyFilters } from '@wordpress/hooks';
 
 const normal_actions =[
 	{
@@ -134,7 +135,9 @@ class PrebuiltModal extends Component {
 			} );
 		}
 		if ( typeof kadence_blocks_params.prebuilt_libraries === 'object' && kadence_blocks_params.prebuilt_libraries !== null ) {
-			this.setState( { actions: kadence_blocks_params.prebuilt_libraries.concat( this.state.actions ) } );
+			this.setState( { actions: applyFilters( 'kadence.prebuilt_library_tabs', kadence_blocks_params.prebuilt_libraries.concat( this.state.actions ) ) } );
+		} else {
+			this.setState( { actions: applyFilters( 'kadence.prebuilt_library_tabs', this.state.actions ) } );
 		}
 		const blockSettings = ( kadence_blocks_params.configuration ? KadenceTryParseJSON( kadence_blocks_params.configuration, true ) : {} );
 		if ( blockSettings[ 'kadence/designlibrary' ] !== undefined && typeof blockSettings[ 'kadence/designlibrary' ] === 'object' ) {

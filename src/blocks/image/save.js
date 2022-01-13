@@ -24,8 +24,7 @@ export default function save( { attributes } ) {
 		alt,
 		caption,
 		align,
-		rel,
-		href,
+		link,
 		width,
 		height,
 		id,
@@ -37,16 +36,31 @@ export default function save( { attributes } ) {
 		title,
 		uniqueID,
 		imageFilter,
+		useRatio,
+		ratio,
 	} = attributes;
 
-	const newRel = isEmpty( rel ) ? undefined : rel;
-
 	const classes = classnames( {
-		[ `kt-image${ uniqueID }` ]: uniqueID,
+		[ `align${ align }` ]: align,
+		[ `size-${ sizeSlug }` ]: sizeSlug,
+		'is-resized': width || height,
+		[ `kb-filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
+		[ `kb-image-is-ratio-size` ]: useRatio,
+	} );
+
+	const allClasses = classnames( {
+		[ `kb-image${ uniqueID }` ]: uniqueID,
 		[ getBlockDefaultClassName( 'kadence/image' ) ]: getBlockDefaultClassName( 'kadence/image' ),
 		[ `align${ align }` ]: align,
 		[ `size-${ sizeSlug }` ]: sizeSlug,
 		'is-resized': width || height,
+		[ `kb-filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
+		[ `kb-image-is-ratio-size` ]: useRatio,
+	} );
+
+	const containerClasses = classnames( {
+		[ `kb-image${ uniqueID }` ]: uniqueID,
+		[ getBlockDefaultClassName( 'kadence/image' ) ]: getBlockDefaultClassName( 'kadence/image' ),
 	} );
 
 	let relAttr;
@@ -60,25 +74,28 @@ export default function save( { attributes } ) {
 		relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 	}
 
-	const image = (
+	let image = (
 		<img
 			src={ url }
 			alt={ alt }
-			className={ id ? `kadence-image-${ id }` : null }
+			className={ id ? `kb-img kadence-image-${ id }` : 'kb-img' }
 			width={ width }
 			height={ height }
 			title={ title }
 		/>
 	);
+	if ( useRatio ){
+		image = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}` }>{ image }</div>;
+	}
 
 	const figure = (
-		<div className={ (imageFilter !== 'none' ? 'filter-' + imageFilter : null)}>
-			{ href && true ? (
+		<>
+			{ link && true ? (
 					<a
-						href={ href }
+						href={ link }
 						className={ 'kb-advanced-image-link' }
 						target={ linkTarget ? '_blank' : undefined }
-						relAttr={ relAttr ? relAttr : undefined }
+						rel={ relAttr ? relAttr : undefined }
 					>
 						{ image }
 					</a>
@@ -88,19 +105,19 @@ export default function save( { attributes } ) {
 			{ ! RichText.isEmpty( caption ) && showCaption !== false  && (
 				<RichText.Content tagName="figcaption" value={ caption } />
 			) }
-		</div>
+		</>
 	);
 
 	if ( 'left' === align || 'right' === align || 'center' === align ) {
 		return (
-			<div { ...useBlockProps.save() }>
+			<div { ...useBlockProps.save( { className: containerClasses }) }>
 				<figure className={ classes }>{ figure }</figure>
 			</div>
 		);
 	}
 
 	return (
-		<figure { ...useBlockProps.save( { className: classes } ) } >
+		<figure { ...useBlockProps.save( { className: allClasses } ) } >
 			{ figure }
 		</figure>
 	);

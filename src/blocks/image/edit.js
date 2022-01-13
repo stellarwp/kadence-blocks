@@ -2,26 +2,32 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { get, has, omit, pick } from 'lodash';
+import { get, has, omit, pick, debounce } from 'lodash';
 
 /**
  * WordPress dependencies
  */
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
-import { withNotices } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { useSelect, withSelect } from '@wordpress/data';
 import {
 	BlockAlignmentControl,
 	BlockControls,
-	BlockIcon,
-	MediaPlaceholder,
+	InspectorControls,
 	useBlockProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
+import { applyFilters } from '@wordpress/hooks';
+import {
+	PanelBody,
+	withNotices
+} from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { image as icon } from '@wordpress/icons';
+import { plusCircleFilled } from '@wordpress/icons';
+import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
+import KadenceImageControl from '../../components/common/kadence-image-control';
+import itemicons from '../../icons';
 
 /* global wp */
 
@@ -92,6 +98,10 @@ function hasDefaultSize( image, defaultSize ) {
 		has( image, [ 'media_details', 'sizes', defaultSize, 'source_url' ] )
 	);
 }
+/**
+ * This allows for checking to see if the block needs to generate a new ID.
+ */
+ const ktimageUniqueIDs = [];
 
 export function ImageEdit( {
 	attributes,
@@ -114,10 +124,59 @@ export function ImageEdit( {
 		id,
 		width,
 		height,
+		uniqueID,
 		sizeSlug,
+		imageFilter,
+		useRatio,
+		kadenceAnimation,
+		kadenceAOSOptions,
 	} = attributes;
+	function getDynamic() {
+		let contextPost = null;
+		if ( context && context.queryId && context.postId ) {
+			contextPost = context.postId;
+		}
+		if ( attributes.kadenceDynamic && attributes.kadenceDynamic['url'] && attributes.kadenceDynamic['url'].enable ) {
+			applyFilters( 'kadence.dynamicImage', '', attributes, setAttributes, 'url', contextPost );
+		}
+	}
+	useEffect( () => {
+		if ( ! uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/image' ] !== undefined && typeof blockConfigObject[ 'kadence/image' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/image' ] ).map( ( attribute ) => {
+					attributes[ attribute ] = blockConfigObject[ 'kadence/image' ][ attribute ];
+				} );
+			}
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
+			ktimageUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else if ( ktimageUniqueIDs.includes( uniqueID ) ) {
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
+			ktimageUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else {
+			ktimageUniqueIDs.push( uniqueID );
+		}
+		if ( context && context.queryId && context.postId ) {
+			if ( ! attributes.inQueryBlock ) {
+				setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( attributes.inQueryBlock ) {
+			setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
+		const debouncedContent = debounce( () => {
+			getDynamic();
+		}, 200 );
+		debouncedContent();
+	}, [] );
 	const [ temporaryURL, setTemporaryURL ] = useState();
-
 	const altRef = useRef();
 	useEffect( () => {
 		altRef.current = alt;
@@ -133,7 +192,6 @@ export function ImageEdit( {
 		const { getSettings } = select( blockEditorStore );
 		return pick( getSettings(), [ 'imageDefaultSize', 'mediaUpload' ] );
 	}, [] );
-
 	function onUploadError( message ) {
 		noticeOperations.removeAllNotices();
 		noticeOperations.createErrorNotice( message );
@@ -184,7 +242,6 @@ export function ImageEdit( {
 			// option is not changed.
 			additionalAttributes = { url };
 		}
-
 		// Check if default link setting should be used.
 		let linkDestination = attributes.linkDestination;
 		if ( ! linkDestination ) {
@@ -222,7 +279,7 @@ export function ImageEdit( {
 				href = media.link;
 				break;
 		}
-		mediaAttributes.href = href;
+		mediaAttributes.link = href;
 
 		setAttributes( {
 			...mediaAttributes,
@@ -307,7 +364,10 @@ export function ImageEdit( {
 	const classes = classnames( className, {
 		'is-transient': temporaryURL,
 		'is-resized': !! width || !! height,
+		'aos-animate': 'aos-animate',
 		[ `size-${ sizeSlug }` ]: sizeSlug,
+		[ `filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
+		[ `kb-image-is-ratio-size` ]: useRatio,
 	} );
 
 	const blockProps = useBlockProps( {
@@ -316,7 +376,7 @@ export function ImageEdit( {
 	} );
 
 	return (
-		<figure { ...blockProps }>
+		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps }>
 			{ ( temporaryURL || url ) && (
 				<Image
 					temporaryURL={ temporaryURL }
@@ -335,30 +395,59 @@ export function ImageEdit( {
 				/>
 			) }
 			{ ! url && (
-				<BlockControls group="block">
-					<BlockAlignmentControl
-						value={ align }
-						onChange={ updateAlignment }
-					/>
-				</BlockControls>
+				<>
+					<BlockControls group="block">
+						<BlockAlignmentControl
+							value={ align }
+							onChange={ updateAlignment }
+						/>
+					</BlockControls>
+					<InspectorControls>
+						<PanelBody title={ __( 'Image settings', 'kadence-blocks' ) } initialOpen={ true } >
+							<KadenceImageControl
+								label={ __( 'Image', 'kadence-blocks' ) }
+								hasImage={ ( url ? true : false ) }
+								imageURL={ ( url ? url : '' ) }
+								imageID={ id ? id : '' }
+								onRemoveImage={ () => {
+									setAttributes( {
+										url: undefined,
+										width: undefined,
+										height: undefined,
+										sizeSlug: undefined,
+									} );
+								} }
+								onSaveImage={ onSelectImage }
+								disableMediaButtons={ ( url ? true : false ) }
+								dynamicAttribute="url"
+								isSelected={ isSelected }
+								attributes={ attributes }
+								setAttributes={ setAttributes }
+								name={ 'kadence/image' }
+								clientId={ clientId }
+							/>
+						</PanelBody>
+					</InspectorControls>
+				</>
 			) }
-			<MediaPlaceholder
-				icon={ <BlockIcon icon={ icon } /> }
+			<KadenceMediaPlaceholder
+				labels={ { 'title': __( 'Advanced Image', 'kadence-blocks' ) } }
+				icon={ itemicons.image }
+				selectIcon={ plusCircleFilled }
+				selectLabel={ __( 'Select Image', 'kadence-blocks' ) }
 				onSelect={ onSelectImage }
 				onSelectURL={ onSelectURL }
+				accept="image/*"
 				notices={ noticeUI }
 				onError={ onUploadError }
-				accept="image/*"
+				className={ 'kadence-image-upload' }
 				allowedTypes={ ALLOWED_MEDIA_TYPES }
-				value={ { id, src } }
 				mediaPreview={ mediaPreview }
 				disableMediaButtons={ temporaryURL || url }
 			/>
 		</figure>
 	);
 }
-
-// export default withNotices( ImageEdit );
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		let __experimentalGetPreviewDeviceType = false;
@@ -369,4 +458,5 @@ export default compose( [
 			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
 		};
 	} ),
+	withNotices,
 ] )( ImageEdit );

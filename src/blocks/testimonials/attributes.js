@@ -331,5 +331,9 @@ const attributes = {
 		type: 'bool',
 		default: false,
 	},
+	useBlockQuoteTags: {
+		type: 'bool',
+		default: true,
+	},
 };
 export default attributes;

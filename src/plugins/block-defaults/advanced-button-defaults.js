@@ -1,8 +1,8 @@
 import TypographyControls from '../../components/typography/typography-control';
 import map from 'lodash/map';
-import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
-import BoxShadowControl from '../../box-shadow-control';
+import BoxShadowControl from '../../components/common/box-shadow-control';
 import IconControl from '../../components/icons/icon-control';
+import PopColorControl from '../../components/color/pop-color-control';
 /**
  * Internal block libraries
  */
@@ -31,9 +31,12 @@ class KadenceButtonDefault extends Component {
 		super( ...arguments );
 		this.saveConfig = this.saveConfig.bind( this );
 		this.saveConfigState = this.saveConfigState.bind( this );
+		this.clearDefaults = this.clearDefaults.bind( this );
+		this.clearAllDefaults = this.clearAllDefaults.bind( this );
 		this.state = {
 			isOpen: false,
 			isSaving: false,
+			resetConfirm: false,
 			configuration: ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} ),
 		};
 	}
@@ -67,6 +70,21 @@ class KadenceButtonDefault extends Component {
 			config[ 'kadence/advancedbtn' ] = {};
 		}
 		config[ 'kadence/advancedbtn' ][ key ] = value;
+		this.setState( { configuration: config } );
+	}
+	clearDefaults( key ) {
+		const config = this.state.configuration;
+		if ( config[ 'kadence/advancedbtn' ] === undefined || config[ 'kadence/advancedbtn' ].length == 0 ) {
+			config[ 'kadence/advancedbtn' ] = {};
+		}
+		if ( undefined !== config[ 'kadence/advancedbtn' ][ key ] ) {
+			delete config[ 'kadence/advancedbtn' ][ key ];
+		}
+		this.setState( { configuration: config } );
+	}
+	clearAllDefaults() {
+		const config = this.state.configuration;
+		config[ 'kadence/advancedbtn' ] = {};
 		this.setState( { configuration: config } );
 	}
 	render() {
@@ -495,11 +513,11 @@ class KadenceButtonDefault extends Component {
 											if ( 'hover' === tab.name ) {
 												tabout = (
 													<Fragment>
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Text Color' ) }
-															colorValue={ ( btns[ 0 ].colorHover ? btns[ 0 ].colorHover : '#ffffff' ) }
-															colorDefault={ '#ffffff' }
-															onColorChange={ value => {
+															value={ ( btns[ 0 ].colorHover ? btns[ 0 ].colorHover : '#ffffff' ) }
+															default={ '#ffffff' }
+															onChange={ value => {
 																saveBtnArray( { colorHover: value } );
 															} }
 														/>
@@ -522,12 +540,12 @@ class KadenceButtonDefault extends Component {
 														</div>
 														{ 'gradient' !== btns[ 0 ].backgroundHoverType && (
 															<div className="kt-inner-sub-section">
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Background Color' ) }
-																	colorValue={ ( btns[ 0 ].backgroundHover ? btns[ 0 ].backgroundHover : '#444444' ) }
-																	colorDefault={ '#444444' }
+																	value={ ( btns[ 0 ].backgroundHover ? btns[ 0 ].backgroundHover : '#444444' ) }
+																	default={ '#444444' }
 																	opacityValue={ btns[ 0 ].backgroundHoverOpacity }
-																	onColorChange={ value => {
+																	onChange={ value => {
 																		saveBtnArray( { backgroundHover: value } );
 																	} }
 																	onOpacityChange={ value => {
@@ -538,12 +556,12 @@ class KadenceButtonDefault extends Component {
 														) }
 														{ 'gradient' === btns[ 0 ].backgroundHoverType && (
 															<div className="kt-inner-sub-section">
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Gradient Color 1' ) }
-																	colorValue={ ( btns[ 0 ].backgroundHover ? btns[ 0 ].backgroundHover : '#444444' ) }
-																	colorDefault={ '#444444' }
+																	value={ ( btns[ 0 ].backgroundHover ? btns[ 0 ].backgroundHover : '#444444' ) }
+																	default={ '#444444' }
 																	opacityValue={ btns[ 0 ].backgroundHoverOpacity }
-																	onColorChange={ value => {
+																	onChange={ value => {
 																		saveBtnArray( { backgroundHover: value } );
 																	} }
 																	onOpacityChange={ value => {
@@ -559,12 +577,12 @@ class KadenceButtonDefault extends Component {
 																	min={ 0 }
 																	max={ 100 }
 																/>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Gradient Color 2' ) }
-																	colorValue={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ) }
-																	colorDefault={ '#777777' }
+																	value={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 0 ] ? btns[ 0 ].gradientHover[ 0 ] : '#777777' ) }
+																	default={ '#777777' }
 																	opacityValue={ ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ) }
-																	onColorChange={ value => {
+																	onChange={ value => {
 																		saveBtnArray( { gradientHover: [ value, ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 1 ] ? btns[ 0 ].gradientHover[ 1 ] : 1 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 2 ] ? btns[ 0 ].gradientHover[ 2 ] : 0 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 3 ] ? btns[ 0 ].gradientHover[ 3 ] : 100 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 4 ] ? btns[ 0 ].gradientHover[ 4 ] : 'linear' ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 5 ] ? btns[ 0 ].gradientHover[ 5 ] : 180 ), ( btns[ 0 ].gradientHover && undefined !== btns[ 0 ].gradientHover[ 6 ] ? btns[ 0 ].gradientHover[ 6 ] : 'center center' ) ] } );
 																	} }
 																	onOpacityChange={ value => {
@@ -632,12 +650,12 @@ class KadenceButtonDefault extends Component {
 																) }
 															</div>
 														) }
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Border Color' ) }
-															colorValue={ ( btns[ 0 ].borderHover ? btns[ 0 ].borderHover : '#444444' ) }
-															colorDefault={ '#444444' }
+															value={ ( btns[ 0 ].borderHover ? btns[ 0 ].borderHover : '#444444' ) }
+															default={ '#444444' }
 															opacityValue={ btns[ 0 ].borderHoverOpacity }
-															onColorChange={ value => {
+															onChange={ value => {
 																saveBtnArray( { borderHover: value } );
 															} }
 															onOpacityChange={ value => {
@@ -649,6 +667,9 @@ class KadenceButtonDefault extends Component {
 															enable={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 0 ] ? btns[ 0 ].boxShadowHover[ 0 ] : false ) }
 															color={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 1 ] ? btns[ 0 ].boxShadowHover[ 1 ] : '#000000' ) }
 															colorDefault={ '#000000' }
+															onArrayChange={ ( color, opacity ) => {
+																saveBtnArray( { boxShadowHover: [ ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 0 ] ? btns[ index ].boxShadowHover[ 0 ] : false ), color, opacity, ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 3 ] ? btns[ index ].boxShadowHover[ 3 ] : 2 ), ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 4 ] ? btns[ index ].boxShadowHover[ 4 ] : 2 ), ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 5 ] ? btns[ index ].boxShadowHover[ 5 ] : 3 ), ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 6 ] ? btns[ index ].boxShadowHover[ 6 ] : 0 ), ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 7 ] ? btns[ index ].boxShadowHover[ 7 ] : false ) ] }, index );
+															} }
 															opacity={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 2 ] ? btns[ 0 ].boxShadowHover[ 2 ] : 0.4 ) }
 															hOffset={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 3 ] ? btns[ 0 ].boxShadowHover[ 3 ] : 2 ) }
 															vOffset={ ( undefined !== btns[ 0 ].boxShadowHover && undefined !== btns[ 0 ].boxShadowHover[ 4 ] ? btns[ 0 ].boxShadowHover[ 4 ] : 2 ) }
@@ -685,11 +706,11 @@ class KadenceButtonDefault extends Component {
 											} else {
 												tabout = (
 													<Fragment>
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Text Color' ) }
-															colorValue={ btns[ 0 ].color }
-															colorDefault={ '#555555' }
-															onColorChange={ value => {
+															value={ btns[ 0 ].color }
+															default={ '#555555' }
+															onChange={ value => {
 																saveBtnArray( { color: value } );
 															} }
 														/>
@@ -712,12 +733,12 @@ class KadenceButtonDefault extends Component {
 														</div>
 														{ 'gradient' !== btns[ 0 ].backgroundType && (
 															<div className="kt-inner-sub-section">
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Background Color' ) }
-																	colorValue={ btns[ 0 ].background }
-																	colorDefault={ '' }
+																	value={ btns[ 0 ].background }
+																	default={ '' }
 																	opacityValue={ btns[ 0 ].backgroundOpacity }
-																	onColorChange={ value => {
+																	onChange={ value => {
 																		saveBtnArray( { background: value } );
 																	} }
 																	onOpacityChange={ value => {
@@ -728,12 +749,12 @@ class KadenceButtonDefault extends Component {
 														) }
 														{ 'gradient' === btns[ 0 ].backgroundType && (
 															<div className="kt-inner-sub-section">
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Gradient Color 1' ) }
-																	colorValue={ btns[ 0 ].background }
-																	colorDefault={ '' }
+																	value={ btns[ 0 ].background }
+																	default={ '' }
 																	opacityValue={ btns[ 0 ].backgroundOpacity }
-																	onColorChange={ value => {
+																	onChange={ value => {
 																		saveBtnArray( { background: value } );
 																	} }
 																	onOpacityChange={ value => {
@@ -749,12 +770,12 @@ class KadenceButtonDefault extends Component {
 																	min={ 0 }
 																	max={ 100 }
 																/>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Gradient Color 2' ) }
-																	colorValue={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ) }
-																	colorDefault={ '#999999' }
+																	value={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 0 ] ? btns[ 0 ].gradient[ 0 ] : '#999999' ) }
+																	default={ '#999999' }
 																	opacityValue={ ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ) }
-																	onColorChange={ value => {
+																	onChange={ value => {
 																		saveBtnArray( { gradient: [ value, ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 1 ] ? btns[ 0 ].gradient[ 1 ] : 1 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 2 ] ? btns[ 0 ].gradient[ 2 ] : 0 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 3 ] ? btns[ 0 ].gradient[ 3 ] : 100 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 4 ] ? btns[ 0 ].gradient[ 4 ] : 'linear' ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 5 ] ? btns[ 0 ].gradient[ 5 ] : 180 ), ( btns[ 0 ].gradient && undefined !== btns[ 0 ].gradient[ 6 ] ? btns[ 0 ].gradient[ 6 ] : 'center center' ) ] } );
 																	} }
 																	onOpacityChange={ value => {
@@ -822,12 +843,12 @@ class KadenceButtonDefault extends Component {
 																) }
 															</div>
 														) }
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Border Color' ) }
-															colorValue={ ( btns[ 0 ].border ? btns[ 0 ].border : '#555555' ) }
-															colorDefault={ '#555555' }
+															value={ ( btns[ 0 ].border ? btns[ 0 ].border : '#555555' ) }
+															default={ '#555555' }
 															opacityValue={ btns[ 0 ].borderOpacity }
-															onColorChange={ value => {
+															onChange={ value => {
 																saveBtnArray( { border: value } );
 															} }
 															onOpacityChange={ value => {
@@ -839,6 +860,9 @@ class KadenceButtonDefault extends Component {
 															enable={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 0 ] ? btns[ 0 ].boxShadow[ 0 ] : false ) }
 															color={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 1 ] ? btns[ 0 ].boxShadow[ 1 ] : '#000000' ) }
 															colorDefault={ '#000000' }
+															onArrayChange={ ( color, opacity ) => {
+																saveBtnArray( { boxShadow: [ ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] ? btns[ index ].boxShadow[ 0 ] : false ), color, opacity, ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ), ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ), ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ), ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ), ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 7 ] ? btns[ index ].boxShadow[ 7 ] : false ) ] }, index );
+															} }
 															opacity={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 2 ] ? btns[ 0 ].boxShadow[ 2 ] : 0.2 ) }
 															hOffset={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 3 ] ? btns[ 0 ].boxShadow[ 3 ] : 1 ) }
 															vOffset={ ( undefined !== btns[ 0 ].boxShadow && undefined !== btns[ 0 ].boxShadow[ 4 ] ? btns[ 0 ].boxShadow[ 4 ] : 1 ) }
@@ -960,11 +984,28 @@ class KadenceButtonDefault extends Component {
 								onFontSubset={ ( value ) => this.saveConfigState( 'fontSubset', value ) }
 							/>
 						</PanelBody>
-						<Button className="kt-defaults-save" isPrimary onClick={ () => {
-							this.saveConfig( 'kadence/advancedbtn', buttonConfig );
-						} }>
-							{ __( 'Save/Close' ) }
-						</Button>
+						<div className="kb-modal-footer">
+							{ ! this.state.resetConfirm && (
+								<Button className="kt-defaults-save" isDestructive disabled={ ( JSON.stringify( this.state.configuration[ 'kadence/advancedbtn' ] ) === JSON.stringify( {} ) ? true : false ) } onClick={ () => {
+									this.setState( { resetConfirm: true } );
+								} }>
+									{ __( 'Reset', 'kadence-blocks' ) }
+								</Button>
+							) }
+							{ this.state.resetConfirm && (
+								<Button className="kt-defaults-save" isDestructive onClick={ () => {
+									this.clearAllDefaults();
+									this.setState( { resetConfirm: false } );
+								} }>
+									{ __( 'Confirm Reset', 'kadence-blocks' ) }
+								</Button>
+							) }
+							<Button className="kt-defaults-save" isPrimary onClick={ () => {
+								this.saveConfig( 'kadence/advancedbtn', buttonConfig );
+							} }>
+								{ __( 'Save/Close', 'kadence-blocks' ) }
+							</Button>
+						</div>
 					</Modal>
 					: null }
 			</Fragment>

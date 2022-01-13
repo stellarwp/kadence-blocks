@@ -18,6 +18,9 @@ export default function getQuery( blockAttributes, queryType ) {
 		const { getCurrentPostId } = wp.data.select( 'core/editor' );
 		theCurrentID = getCurrentPostId();
 	}
+	if ( null === theCurrentID ) {
+		theCurrentID = 0;
+	}
 	const query = {
 		query: queryType,
 		per_page: postsToShow,
@@ -79,6 +82,5 @@ export default function getQuery( blockAttributes, queryType ) {
 			}
 			break;
 	}
-
 	return query;
 }

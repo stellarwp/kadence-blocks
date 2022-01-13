@@ -322,7 +322,7 @@ class WireSections extends Component {
 								) }
 								<CheckboxControl
 									label={ __( 'Accept Privacy Policy', 'kadence-blocks' ) }
-									help={ <Fragment>{ __( 'We do not spam, unsubscribe anytime.', 'kadence-blocks' ) } <ExternalLink href={ 'https://www.kadencewp.com/privacy-policy/' }>{ __( 'View Privacy Policy', 'kadence-blocks' ) }</ExternalLink></Fragment> }
+									help={ <Fragment>{ __( 'We do not spam, unsubscribe anytime.', 'kadence-blocks' ) } <ExternalLink href={ 'https://www.kadencewp.com/privacy-policy/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'View Privacy Policy', 'kadence-blocks' ) }</ExternalLink></Fragment> }
 									checked={ this.state.privacy }
 									onChange={ value => this.setState( { privacy: value } ) }
 								/>

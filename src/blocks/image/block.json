@@ -3,9 +3,9 @@
 	"name": "kadence/image",
 	"title": "Advanced Image",
 	"category": "kadence-blocks",
-	"usesContext": [ "allowResize", "imageCrop" ],
-	"description": "Kadence advanced images",
-	"keywords": [ "kb", "photo", "picture" ],
+	"usesContext": [ "postId", "queryId", "allowResize", "imageCrop" ],
+	"description": "Image block with greater controls and advanced features",
+	"keywords": [ "kb", "photo", "image" ],
 	"textdomain": "kadence-blocks",
 	"attributes": {
 	  "align": {
@@ -44,10 +44,20 @@
 	  "height": {
 		"type": "number"
 	  },
+	  "imgMaxWidth": {
+		"type": "number"
+	  },
 	  "sizeSlug": {
 		"type": "string"
 	  },
-	  "href": {
+	  "ratio": {
+		"type": "string"
+	  },
+	  "useRatio": {
+		"type": "boolean",
+		"default": false
+	  },
+	  "link": {
 		"type": "string"
 	  },
 	  "linkTarget": {
@@ -61,6 +71,15 @@
 	  "linkSponsored": {
 		"type": "boolean",
 		"default": false
+	  },
+	  "linkDestination": {
+		"type": "string"
+	  },
+	  "linkClass": {
+		"type": "string",
+		"source": "attribute",
+		"selector": "figure > a",
+		"attribute": "class"
 	  },
 	  "uniqueID": {
 		"type": "string"
@@ -101,17 +120,9 @@
 		"type": "string",
 		"default": "#555555"
 	  },
-	  "borderOpacity": {
-		"type": "number",
-		"default": 1
-	  },
 	  "backgroundColor": {
 		"type": "string",
 		"default": "#FFFFFF"
-	  },
-	  "backgroundOpacity": {
-		"type": "number",
-		"default": 1
 	  },
 	  "borderRadius": {
 		"type": "array",
@@ -192,18 +203,40 @@
 		  "subset": "",
 		  "loadGoogle": true,
 		  "color": "",
-		  "background": "",
-		  "backgroundOpacity": 1
+		  "background": ""
 		} ]
 	  },
 	  "maskSvg": {
 		"type": "string",
 		"default": "none"
+	  },
+	  "maskUrl": {
+		"type": "string"
+	  },
+	  "maskSize": {
+		"type": "string",
+		"default": "auto"
+	  },
+	  "maskPosition": {
+		"type": "string",
+		"default": "center center"
+	  },
+	  "maskRepeat": {
+		"type": "string",
+		"default": "no-repeat"
+	  },
+	  "inQueryBlock": {
+	  	"type": "boolean",
+		"default": false
 	  }
 	},
 	"supports": {
-		"anchor": true
+		"anchor": true,
+		"ktanimate": true,
+		"ktanimateadd": true,
+		"ktanimatepreview": true,
+		"ktdynamic": true
 	},
-	"editorStyle": "file:../../wp-block-image-editor",
-	"style": "file:../../wp-block-image"
+	"editorStyle": "kadence-blocks-editor-css",
+	"style": "kadence-blocks-image"
 }

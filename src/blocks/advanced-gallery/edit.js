@@ -8,7 +8,7 @@ import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
 import Masonry from 'react-masonry-component';
-import ImageSizeControl from '../../image-size-control';
+import ImageSizeControl from '../../components/common/image-size-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';

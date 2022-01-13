@@ -5,7 +5,7 @@
 // Utils
 import TypographyControls from './components/typography/typography-control';
 import AdvancedColorControl from './advanced-color-control.js';
-import BoxShadowControl from './box-shadow-control';
+import BoxShadowControl from './components/common/box-shadow-control';
 import IconControl from './components/icons/icon-control';
 import IconRender from './components/icons/icon-render';
 window.kb = {

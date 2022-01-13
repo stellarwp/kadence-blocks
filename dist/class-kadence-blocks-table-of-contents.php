@@ -379,7 +379,9 @@ class Kadence_Blocks_Table_Of_Contents {
 		/* phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase */
 		// Disabled because of PHP DOMDoument and DOMXPath APIs using camelCase.
 		// Create a document to load the post content into.
-		$doc = new DOMDocument();
+		//$doc = new DOMDocument();
+		$wp_charset = get_bloginfo( 'charset' );
+		$doc = new DOMDocument( '1.0', $wp_charset );
 		// Enable user error handling for the HTML parsing. HTML5 elements aren't
 		// supported (as of PHP 7.4) and There's no way to guarantee that the markup
 		// is valid anyway, so we're just going to ignore all errors in parsing.
@@ -399,7 +401,7 @@ class Kadence_Blocks_Table_Of_Contents {
 				utf8_decode(
 					htmlentities(
 						'<!DOCTYPE html><html><head><title>:D</title><body>' .
-							$content .
+						htmlspecialchars( $content ) .
 							'</body></html>',
 						ENT_COMPAT,
 						'UTF-8',
@@ -426,7 +428,6 @@ class Kadence_Blocks_Table_Of_Contents {
 		foreach ( $templates as $template ) {
 			$this->table_of_contents_delete_node_and_children( $template );
 		}
-
 		$xpath = new DOMXPath( $doc );
 		$query = '//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]';
 		if ( $attributes && isset( $attributes['allowedHeaders'] ) && isset( $attributes['allowedHeaders'][0] ) && is_array( $attributes['allowedHeaders'][0] ) ) {
@@ -550,7 +551,7 @@ class Kadence_Blocks_Table_Of_Contents {
 					if ( $add ) {
 						self::$headings[] = array(
 							'anchor'  => $anchor_string,
-							'content' => $heading->textContent,
+							'content' => $this->convert_smart_quotes( $heading->textContent ),
 							'level'   => $level,
 							'page'    => $headings_page,
 						);
@@ -558,7 +559,7 @@ class Kadence_Blocks_Table_Of_Contents {
 				}
 				return array(
 					'anchor'  => $anchor,
-					'content' => $heading->textContent,
+					'content' => $this->convert_smart_quotes( $heading->textContent ),
 					'level'   => $level,
 					'page'    => $headings_page,
 				);
@@ -567,6 +568,30 @@ class Kadence_Blocks_Table_Of_Contents {
 		);
 		/* phpcs:enable */
 	}
+	/**
+	 * converts special quotes characters in string to normal.
+	 *
+	 * @param string $string The string to convert.
+	 * @return string The string converted.
+	 */
+	public function convert_smart_quotes( $string ) { 
+		$search = array("’",
+						"‘",
+						"”", 
+						"“", 
+						"–",
+						"—",
+						"…"); 
+		$replace = array("'",
+						 "'",  
+						 '"', 
+						 '"', 
+						 '-',
+						 '-',
+						 '...'); 
+	
+		return str_replace( $search, $replace, $string ); 
+	} 
 	/**
 	 * Sets the current post for usage in template blocks.
 	 *
@@ -843,7 +868,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		// Container.
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ':not(.this-class-is-for-specificity):not(.class-is-for-specificity)' );
 		if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) ) {
-			$css->add_property( 'margin', $css->render_measure( $attributes['containerMargin'], 'px' ) );
+			$css->add_property( 'margin', $css->render_measure( $attributes['containerMargin'], ( ! empty( $attributes['containerMarginUnit'] ) ? $attributes['containerMarginUnit'] : 'px' ) ) );
 		}
 		$css->set_selector( '.kb-table-of-content-nav.kb-table-of-content-id' . $unique_id . ' .kb-table-of-content-wrap' );
 		if ( isset( $attributes['containerPadding'] ) && is_array( $attributes['containerPadding'] ) ) {

@@ -3,6 +3,8 @@
 
 	img {
 		max-width: 100%;
+		border-style: solid;
+		border-color: currentColor;
 	}
 
 	&.aligncenter {
@@ -49,7 +51,54 @@
 		margin-left: auto;
 		margin-right: auto;
 	}
-
+	figcaption {
+		margin-top: 0.5em;
+		font-size: 90%;
+		img {
+			display: inline;
+		}
+	}
+	.kb-is-ratio-image {
+		height: 0;
+		position: relative;
+		img {
+			position: absolute;
+			flex: 1;
+			height: 100%;
+			-o-object-fit: cover;
+			object-fit: cover;
+			width: 100%;
+			top: 0;
+			left: 0;
+		}
+	}
+	.kb-image-ratio-square {
+		padding-bottom: 100%;
+	}
+	.kb-image-ratio-land43 {
+		padding-bottom: 75%;
+	}
+	.kb-image-ratio-land32 {
+		padding-bottom: 66.67%;
+	}
+	.kb-image-ratio-land169 {
+		padding-bottom: 56.25%;
+	}
+	.kb-image-ratio-land21 {
+		padding-bottom: 50%;
+	}
+	.kb-image-ratio-land31 {
+		padding-bottom: 33%;
+	}
+	.kb-image-ratio-land41 {
+		padding-bottom: 25%;
+	}
+	.kb-image-ratio-port34 {
+		padding-bottom: 133.33%;
+	}
+	.kb-image-ratio-port23 {
+		padding-bottom: 150%;
+	}
 	// Supply caption styles to images, even if the theme hasn't opted in.
 	// Reason being: the new markup, <figcaptions>, are not likely to be styled in the majority of existing themes,
 	// so we supply the styles so as to not appear broken or unstyled in those themes.
@@ -60,27 +109,27 @@
 	//}
 
   /* Image filters */
-
-  .filter-earlybird {
+}
+  /* Image filters */
+.kb-filter-earlybird {
 	img::before {
-
-	  background: radial-gradient(circle, #d0ba8e 20%, #360309 85%, #1d0210 100%);
-	  mix-blend-mode: overlay;
-	  content: '';
-	  position: absolute;
-	  left: 0;
-	  right: 0;
-	  top: 40px;
-	  bottom: 40px;
-	  z-index: 1;
+		background: radial-gradient(circle, #d0ba8e 20%, #360309 85%, #1d0210 100%);
+		mix-blend-mode: overlay;
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 40px;
+		bottom: 40px;
+		z-index: 1;
 	}
 
 	img {
-	  filter: contrast(.9) sepia(.2);
+		filter: contrast(.9) sepia(.2);
 	}
-  }
+}
 
-  .filter-vintage {
+.kb-filter-vintage {
 
 	img:after {
 	  content: "";
@@ -98,19 +147,19 @@
 	}
   }
 
-  .filter-grayscale img {
+.kb-filter-grayscale img {
 	filter: grayscale(1);
   }
 
-  .filter-sepia img {
+.kb-filter-sepia img {
 	filter: sepia(0.5);
   }
 
-  .filter-saturation img {
+.kb-filter-saturation img {
 	filter: saturate(1.6);
   }
 
-  .filter-toaster {
+.kb-filter-toaster {
 	img::after {
 	  background: radial-gradient(circle, #804e0f, #3b003b);
 	  mix-blend-mode: screen;
@@ -127,7 +176,7 @@
 	}
   }
 
-  .filter-mayfair {
+.kb-filter-mayfair {
 	img::after {
 	  background: radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.8), rgba(255, 200, 200, 0.6), #111 60%);
 	  mix-blend-mode: overlay;
@@ -144,8 +193,6 @@
 	  filter: contrast(1.1) saturate(1.1);
 	}
   }
-
-}
 
 .wp-block-kadence-image figure {
 	margin: 0;

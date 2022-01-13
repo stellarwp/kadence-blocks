@@ -32,9 +32,12 @@ class KadenceAdvancedHeadingDefault extends Component {
 		super( ...arguments );
 		this.saveConfig = this.saveConfig.bind( this );
 		this.saveConfigState = this.saveConfigState.bind( this );
+		this.clearDefaults = this.clearDefaults.bind( this );
+		this.clearAllDefaults = this.clearAllDefaults.bind( this );
 		this.state = {
 			isOpen: false,
 			isSaving: false,
+			resetConfirm: false,
 			configuration: ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : {} ),
 		};
 	}
@@ -57,6 +60,21 @@ class KadenceAdvancedHeadingDefault extends Component {
 			config[ 'kadence/advancedheading' ] = {};
 		}
 		config[ 'kadence/advancedheading' ][ key ] = value;
+		this.setState( { configuration: config } );
+	}
+	clearDefaults( key ) {
+		const config = this.state.configuration;
+		if ( config[ 'kadence/advancedheading' ] === undefined || config[ 'kadence/advancedheading' ].length == 0 ) {
+			config[ 'kadence/advancedheading' ] = {};
+		}
+		if ( undefined !== config[ 'kadence/advancedheading' ][ key ] ) {
+			delete config[ 'kadence/advancedheading' ][ key ];
+		}
+		this.setState( { configuration: config } );
+	}
+	clearAllDefaults() {
+		const config = this.state.configuration;
+		config[ 'kadence/advancedheading' ] = {};
 		this.setState( { configuration: config } );
 	}
 	render() {
@@ -432,11 +450,28 @@ class KadenceAdvancedHeadingDefault extends Component {
 								step={ marginStep }
 							/>
 						</PanelBody>
-						<Button className="kt-defaults-save" isPrimary onClick={ () => {
-							this.saveConfig( 'kadence/advancedheading', headingConfig );
-						} }>
-							{ __( 'Save/Close' ) }
-						</Button>
+						<div className="kb-modal-footer">
+							{ ! this.state.resetConfirm && (
+								<Button className="kt-defaults-save" isDestructive disabled={ ( JSON.stringify( this.state.configuration[ 'kadence/advancedheading' ] ) === JSON.stringify( {} ) ? true : false ) } onClick={ () => {
+									this.setState( { resetConfirm: true } );
+								} }>
+									{ __( 'Reset', 'kadence-blocks' ) }
+								</Button>
+							) }
+							{ this.state.resetConfirm && (
+								<Button className="kt-defaults-save" isDestructive onClick={ () => {
+									this.clearAllDefaults();
+									this.setState( { resetConfirm: false } );
+								} }>
+									{ __( 'Confirm Reset', 'kadence-blocks' ) }
+								</Button>
+							) }
+							<Button className="kt-defaults-save" isPrimary onClick={ () => {
+								this.saveConfig( 'kadence/advancedheading', headingConfig );
+							} }>
+								{ __( 'Save/Close', 'kadence-blocks' ) }
+							</Button>
+						</div>
 					</Modal>
 					: null }
 			</Fragment>
