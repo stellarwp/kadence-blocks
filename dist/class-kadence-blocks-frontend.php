@@ -5713,9 +5713,16 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'width', '100%' );
 			}
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' .kb-img' );
-		if ( isset( $attr['imgMaxWidth'] ) && is_numeric( $attr['imgMaxWidth'] ) && $align !== 'wide' && $align !== 'full' ) {
-			$css->add_property( 'max-width', $attr['imgMaxWidth'] . 'px' );
+		if ( $align === 'center' || $align === 'right' || $align === 'left' ) {
+			$css->set_selector( '.kb-image' . $unique_id . ' figure' );
+			if ( isset( $attr['imgMaxWidth'] ) && is_numeric( $attr['imgMaxWidth'] ) ) {
+				$css->add_property( 'max-width', $attr['imgMaxWidth'] . 'px' );
+			}
+		} else if ( $align !== 'wide' && $align !== 'full' ) {
+			$css->set_selector( '.kb-image' . $unique_id );
+			if ( isset( $attr['imgMaxWidth'] ) && is_numeric( $attr['imgMaxWidth'] ) ) {
+				$css->add_property( 'max-width', $attr['imgMaxWidth'] . 'px' );
+			}
 		}
 		// Padding
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {

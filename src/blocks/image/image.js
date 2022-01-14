@@ -487,63 +487,65 @@ export default function Image( {
 						/>
 					) }
 					<ToggleControl
-							label={ __( 'Use ratio size instead of image size', 'kadence-blocks' ) }
+							label={ __( 'Use fixed ratio instead of image ratio', 'kadence-blocks' ) }
 							checked={ useRatio }
 							onChange={ ( value ) => setAttributes( { useRatio: value } ) }
 						/>
-						{ useRatio && (
-							<SelectControl
-								label={ __( 'Size Ratio', 'kadence-blocks' ) }
-								value={ ratio }
-								options={ [
-									{
-										label: __( 'Landscape 4:3', 'kadence-blocks' ),
-										value: 'land43',
-									},
-									{
-										label: __( 'Landscape 3:2', 'kadence-blocks' ),
-										value: 'land32',
-									},
-									{
-										label: __( 'Landscape 16:9', 'kadence-blocks' ),
-										value: 'land169',
-									},
-									{
-										label: __( 'Landscape 2:1', 'kadence-blocks' ),
-										value: 'land21',
-									},
-									{
-										label: __( 'Landscape 3:1', 'kadence-blocks' ),
-										value: 'land31',
-									},
-									{
-										label: __( 'Landscape 4:1', 'kadence-blocks' ),
-										value: 'land41',
-									},
-									{
-										label: __( 'Portrait 3:4', 'kadence-blocks' ),
-										value: 'port34',
-									},
-									{
-										label: __( 'Portrait 2:3', 'kadence-blocks' ),
-										value: 'port23',
-									},
-									{
-										label: __( 'Square 1:1', 'kadence-blocks' ),
-										value: 'square',
-									},
-								] }
-								onChange={ value => setAttributes( { ratio: value } ) }
-							/>
-						) }
-					<KadenceRange
-						label={ __( 'Max Image Width', 'kadence-blocks' ) }
-						value={ imgMaxWidth }
-						onChange={ value => setAttributes( { imgMaxWidth: value } ) }
-						min={ 5 }
-						max={ 3000 }
-						step={ 1 }
-					/>
+					{ useRatio && (
+						<SelectControl
+							label={ __( 'Size Ratio', 'kadence-blocks' ) }
+							value={ ratio }
+							options={ [
+								{
+									label: __( 'Landscape 4:3', 'kadence-blocks' ),
+									value: 'land43',
+								},
+								{
+									label: __( 'Landscape 3:2', 'kadence-blocks' ),
+									value: 'land32',
+								},
+								{
+									label: __( 'Landscape 16:9', 'kadence-blocks' ),
+									value: 'land169',
+								},
+								{
+									label: __( 'Landscape 2:1', 'kadence-blocks' ),
+									value: 'land21',
+								},
+								{
+									label: __( 'Landscape 3:1', 'kadence-blocks' ),
+									value: 'land31',
+								},
+								{
+									label: __( 'Landscape 4:1', 'kadence-blocks' ),
+									value: 'land41',
+								},
+								{
+									label: __( 'Portrait 3:4', 'kadence-blocks' ),
+									value: 'port34',
+								},
+								{
+									label: __( 'Portrait 2:3', 'kadence-blocks' ),
+									value: 'port23',
+								},
+								{
+									label: __( 'Square 1:1', 'kadence-blocks' ),
+									value: 'square',
+								},
+							] }
+							onChange={ value => setAttributes( { ratio: value } ) }
+						/>
+					) }
+					{ isResizable && (
+						<KadenceRange
+							label={ __( 'Max Image Width', 'kadence-blocks' ) }
+							value={ imgMaxWidth }
+							onChange={ value => setAttributes( { imgMaxWidth: value } ) }
+							min={ 5 }
+							max={ 3000 }
+							step={ 1 }
+						/>
+					) }
 					<TextareaControl
 						label={ __( 'Alt text (alternative text)' ) }
 						value={ alt }
