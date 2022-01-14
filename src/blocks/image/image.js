@@ -1219,7 +1219,7 @@ export default function Image( {
 		img = (
 			<ResizableBox
 				size={ {
-					width: imgMaxWidth ?? width ?? 'auto',
+					width: imgMaxWidth ?? width ?? '100%',
 					height: 'auto',
 				} }
 				showHandle={ isSelected }

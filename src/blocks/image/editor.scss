@@ -225,11 +225,11 @@ figure.wp-block-kadence-image:not(.wp-block) {
 	margin-right: auto;
 	text-align: center;
 }
-:not([data-align])>.wp-block-kadence-image:not(.has-warning) {
+:not([data-align])>.wp-block-kadence-image:not(.has-warning):not(.kb-image-is-ratio-size) {
     display: grid;
     grid-template-columns: [image] minmax(0,max-content) [placeholder] auto;
 }
-:not([data-align])>.wp-block-kadence-image:not(.has-warning)>figcaption {
+:not([data-align])>.wp-block-kadence-image:not(.has-warning):not(.kb-image-is-ratio-size)>figcaption {
     grid-column: image;
     display: table-caption;
     caption-side: bottom;
