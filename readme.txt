@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.8
-Stable tag: 2.2.0
+Stable tag: 2.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,8 +80,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.2.1 =
+Release Date: January 17th, 2022
+* Fix: Possible issue with Table of Contents.
+
+
 = 2.2.0 =
-Release Date: January 13th, 2021
+Release Date: January 14th, 2022
 * Add: Advanced Image Block.
 * Add: Flex Wrapping options for section block.
 * Update: add more tablet and mobile live previews in editor.
