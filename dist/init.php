@@ -166,6 +166,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'showDesignLibrary' => apply_filters( 'kadence_blocks_design_library_enabled', true ),
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
 			'icon_names' => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
+			'rest_url' => get_rest_url(),
 		)
 	);
 	wp_localize_script(
@@ -876,6 +877,10 @@ function kadence_blocks_register_api_endpoints() {
 	$mailerlite_controller->register_routes();
 	$fluentcrm_controller = new Kadence_FluentCRM_REST_Controller();
 	$fluentcrm_controller->register_routes();
+	$lottieanimation_conteoller_get = new Kadence_LottieAnimation_get_REST_Controller();
+	$lottieanimation_conteoller_get->register_routes();
+	$lottieanimation_conteoller_upload = new Kadence_LottieAnimation_post_REST_Controller();
+	$lottieanimation_conteoller_upload->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 
@@ -914,3 +919,34 @@ function kadence_blocks_get_pro_license_data() {
 	}
 	return $data;
 }
+
+function register_lottie_custom_post_type() {
+	register_post_type(
+		'kadence_lottie',
+		array(
+			'label'        => _x( 'Lotte Animations', 'Lottie animation' ),
+			'description'  => __( 'Lottie Animations imported in Kadence' ),
+			'public'       => false,
+			'show_ui'      => true,
+			'show_in_rest' => true,
+			'rewrite'      => false,
+			'capabilities' => array(
+				'read'                   => 'edit_theme_options',
+				'create_posts'           => 'edit_theme_options',
+				'edit_posts'             => 'edit_theme_options',
+				'edit_published_posts'   => 'edit_theme_options',
+				'delete_published_posts' => 'edit_theme_options',
+				'edit_others_posts'      => 'edit_theme_options',
+				'delete_others_posts'    => 'edit_theme_options',
+			),
+			'map_meta_cap' => true,
+			'supports'     => array(
+				'title',
+				'editor',
+				'revisions',
+			),
+		)
+	);
+}
+
+add_action( 'init', 'register_lottie_custom_post_type' );
