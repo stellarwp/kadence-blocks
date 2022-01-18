@@ -5724,6 +5724,7 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'max-width', $attr['imgMaxWidth'] . 'px' );
 			}
 		}
+		$css->set_selector( '.kb-image' . $unique_id . ' .kb-img' );
 		// Padding
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
 			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
@@ -6936,8 +6937,8 @@ class Kadence_Blocks_Frontend {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap.kb-theme-content-width' );
 					$css->add_property( 'max-width', absint( $content_width ) . 'px' );
 					$css->set_selector( '.kt-layout-id' . $unique_id . ' > .kb-theme-content-width' );
-					$css->add_property( 'padding-left', 'var(--global-sm-spacing)' );
-					$css->add_property( 'padding-right', 'var(--global-sm-spacing)' );
+					$css->add_property( 'padding-left', 'var(--global-content-edge-padding)' );
+					$css->add_property( 'padding-right', 'var(--global-content-edge-padding)' );
 				} else {
 					$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap.kb-theme-content-width' );
 					$css->add_property( 'max-width', absint( $content_width ) . 'px' );
