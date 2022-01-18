@@ -225,6 +225,14 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
+			'kadence/lottie',
+			array(
+				'render_callback' => array( $this, 'render_lottie_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
+		register_block_type(
 			'kadence/testimonials',
 			array(
 				'render_callback' => array( $this, 'render_testimonials_css' ),
@@ -926,6 +934,69 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
+	 * Render Image CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_lottie_css( $attributes, $content ) {
+		if ( ! wp_script_is( 'kadence-blocks-lottieplayer-js', 'enqueued' ) ) {
+			wp_enqueue_script( 'kadence-blocks-lottieplayer-js' );
+		}
+
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$player_style_id = 'kb-lottie-player' . esc_attr( $unique_id );
+			$player_simple_style_id = str_replace(array('-'), '', $player_style_id);
+
+			if ( ! wp_style_is( 'kb-lottie-container', 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
+
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
+
+				$css = $this->blocks_lottie_array( $attributes, $unique_id );
+
+				// Include lottie interactive if using scroll animation
+				if ( isset($attributes['onlyPlayOnScroll']) && $attributes['onlyPlayOnScroll'] === true ) {
+					if( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
+						wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
+					}
+
+					$content = $content . "
+					<script>
+						var waitForLoittieInteractive" . $player_simple_style_id . " = setInterval(function () {
+					    if (typeof LottieInteractivity !== 'undefined') {
+
+					        LottieInteractivity.create({
+							  mode: 'scroll',
+							  player: '#" . $player_style_id . "',
+							  actions: [
+							    {
+							      visibility: [0,1],
+							      type: 'seek',
+							      frames: [0, 100],
+							    },
+							  ],
+							});
+
+					        clearInterval(waitForLoittieInteractive" . $simple_style_id . ");
+					    }
+					}, 125);
+				</script>";
+				}
+
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'image', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
+	}
+	/**
 	 * Render Testimonials CSS in Head
 	 *
 	 * @param array $attributes the blocks attribtues.
@@ -1247,6 +1318,8 @@ class Kadence_Blocks_Frontend {
 		// Next all the extras that are shared.
 		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'dist/assets/css/simplelightbox.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'dist/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'dist/magnific.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'magnific-popup', KADENCE_BLOCKS_URL . 'dist/magnific.js', array(), KADENCE_BLOCKS_VERSION, true );
@@ -2866,6 +2939,54 @@ class Kadence_Blocks_Frontend {
 
 		return $css;
 	}
+
+	/**
+	 * Builds CSS for Lottie Anmiation block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_lottie_array( $attr, $unique_id  ) {
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$key_positions = [ 'top', 'right', 'bottom', 'left'];
+		$css->set_selector( '.kb-lottie-container' . $unique_id );
+
+		// Margins
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( isset( $attr['margin' . $breakpoint] ) && is_array( $attr['margin' . $breakpoint] ) ) {
+				foreach ( $attr['margin' . $breakpoint] as $key => $marginValue ) {
+					if ( is_numeric( $marginValue ) ) {
+						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+
+					}
+				}
+			}
+			$css->stop_media_query();
+		}
+
+		// Padding
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
+			if ( isset( $attr['padding' . $breakpoint] ) && is_array( $attr['padding' . $breakpoint] ) ) {
+				foreach ( $attr['padding' . $breakpoint] as $key => $paddingValue ) {
+					if ( is_numeric( $paddingValue ) ) {
+						$css->add_property( 'padding-' . $key_positions[ $key ], $paddingValue . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+
+					}
+				}
+			}
+			$css->stop_media_query();
+		}
+
+		return $css->css_output();
+	}
+
 	/**
 	 * Builds CSS for Icon block.
 	 *
@@ -7080,7 +7201,7 @@ class Kadence_Blocks_Frontend {
 				if ( ! empty( $tablet_overlay['overlayBlendMode'] ) ) {
 					$css->add_property( 'mix-blend-mode', $tablet_overlay['overlayBlendMode'] );
 				}
-				
+
 			}
 			$css->stop_media_query();
 			if ( isset( $tablet_background['enable'] ) && $tablet_background['enable'] && isset( $tablet_background['forceOverDesk'] ) && $tablet_background['forceOverDesk'] ) {
