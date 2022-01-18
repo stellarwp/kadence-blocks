@@ -599,6 +599,15 @@
     .kb-btn-tablet-only-icon .kt-btn-svg-icon {
         padding: 0 !important;
     }
+	.wp-block-kadence-advancedbtn.kt-btn-tab-align-center {
+		text-align: center;
+	}
+	.wp-block-kadence-advancedbtn.kt-btn-tab-align-left {
+		text-align: left;
+	}
+	.wp-block-kadence-advancedbtn.kt-btn-tab-align-right {
+		text-align: right;
+	}
 }
 @media (max-width: 767px) {
     .kb-btn-mobile-only-icon .kt-button-text {
@@ -607,6 +616,15 @@
     .kb-btn-mobile-only-icon .kt-btn-svg-icon {
         padding: 0 !important;
     }
+	.wp-block-kadence-advancedbtn.kt-btn-mobile-align-center {
+		text-align: center;
+	}
+	.wp-block-kadence-advancedbtn.kt-btn-mobile-align-left {
+		text-align: left;
+	}
+	.wp-block-kadence-advancedbtn.kt-btn-mobile-align-right {
+		text-align: right;
+	}
 }
 #end-resizable-editor-section {
     display: none;

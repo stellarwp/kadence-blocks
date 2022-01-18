@@ -166,6 +166,11 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 							options={ attachmentOptions }
 							onChange={ value => onSaveAttachment( value ) }
 						/>
+						{ ( imageAttachment ? imageAttachment : 'scroll' ) === 'fixed' && (
+							<p className="kb-sidebar-help">
+								{ __( 'Note: Attachment Fixed works only on desktop.', 'kadence-blocks' ) }
+							</p>
+						) }
 						{ onSaveInlineImage && (
 							<ToggleControl
 								label={ __( 'Force Background Image inline?', 'kadence-blocks' ) }

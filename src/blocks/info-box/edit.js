@@ -19,7 +19,7 @@ import debounce from 'lodash/debounce';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
-import ImageSizeControl from '../../image-size-control';
+import ImageSizeControl from '../../components/common/image-size-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import IconRender from '../../components/icons/icon-render';
 import IconControl from '../../components/icons/icon-control';

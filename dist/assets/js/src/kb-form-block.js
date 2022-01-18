@@ -323,9 +323,9 @@
 						//console.log( JSON.parse( this.response ) );
 						var response = JSON.parse( this.response );
 						if ( response.success ) {
-							var event = new Event( 'kb-form-success', {
-								formID: form.id,
-							  } );
+							var event = new CustomEvent( 'kb-form-success', {
+								'detail': ( form.querySelector( 'input[name="_kb_form_id"]' ) ? form.querySelector( 'input[name="_kb_form_id"]' ).value : '' ),
+							} );
 							// Dispatch the event.
 							window.document.body.dispatchEvent(event);
 							if ( response.redirect ) {

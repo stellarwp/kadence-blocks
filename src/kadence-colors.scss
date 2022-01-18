@@ -89,6 +89,14 @@
 		vertical-align: top;
 		transform: scale(1);
 		transition: transform .1s ease;
+		background-image: linear-gradient( 
+	45deg, #ddd 25%, transparent 0), linear-gradient( 
+	-45deg, #ddd 25%, transparent 0), linear-gradient( 
+	45deg, transparent 75%, #ddd 0), linear-gradient( 
+	-45deg, transparent 75%, #ddd 0);
+		background-size: 10px 10px;
+		background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+		border-radius: 50%;
 		.components-color-palette__item {
 			display: inline-block;
 			vertical-align: top;

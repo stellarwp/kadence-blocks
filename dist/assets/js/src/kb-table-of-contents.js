@@ -13,21 +13,25 @@
 		 */
 		initAddAnchors: function() {
 			var headings = JSON.parse( kadence_blocks_toc.headings );
-			//console.log( headings );
 			for ( let i = 0; i < headings.length; i++ ) {
 				var heading_items = document.querySelectorAll( 'h' + headings[ i ].level );
 				if ( ! heading_items.length ) {
 					return;
 				}
+				var first_string = encodeURIComponent( headings[ i ].content ).toString().normalize().replace(/[^\w\s]/gi, '');
 				for ( let n = 0; n < heading_items.length; n++ ) {
-					// console.log( heading_items[ n ].textContent.replace(/–/g, '-').replace(/’/g, "'").replace(/“/g, '"').replace(/”/g, '"') );
-					// console.log ( headings[ i ].content.replace(/–/g, '-') );
-					// console.log ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '') );
-					// console.log ( headings[ i ].content.replace(/[^\w\s]/gi, '') );
-					if ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '') === headings[ i ].content.replace(/[^\w\s]/gi, '') ) {
-						heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
-						break;
+					var second_string = heading_items[ n ].textContent.replace(/–/g, '-').replace(/—/g, '-').replace(/…/g, '...').replace(/’/g, "'").replace(/‘/g, "'").replace(/“/g, '"').replace(/”/g, '"');
+					second_string = encodeURIComponent( second_string ).toString().normalize().replace(/[^\w\s]/gi, '');
+					if ( first_string === second_string ) {
+						if ( ! heading_items[ n ].getAttribute( 'id' ) ) {
+							heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
+							break;
+						}
 					}
+					// if ( heading_items[ n ].textContent.replace(/[^\w\s]/gi, '') === headings[ i ].content.replace(/[^\w\s]/gi, '') ) {
+						// heading_items[ n ].setAttribute( 'id', headings[ i ].anchor );
+					// break;
+					// }
 				}
 			}
 		},
@@ -74,7 +78,7 @@
 				return;
 			}
 			for ( let n = 0; n < collapse_items.length; n++ ) {
-				var el = collapse_items[n].querySelector( '.kb-table-of-contents-icon-trigger' );
+				var el = collapse_items[n].querySelector( '.kb-table-of-contents-toggle' );
 				el.onclick = () => {
 					window.kadenceTOC.toggleAttribute( el, 'aria-expanded', 'true', 'false' );
 					window.kadenceTOC.toggleAttribute( el, 'aria-label', kadence_blocks_toc.collapseText, kadence_blocks_toc.expandText );
@@ -88,7 +92,7 @@
 			var checkIfDone = setInterval( function() {
 				var atBottom = window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 2;
 				if ( ( Math.floor( element.getBoundingClientRect().top ) - offset === 0 ) || atBottom ) {
-					//element.tabIndex = '-1';
+					element.tabIndex = '-1';
 					element.focus();
 					if ( history ) {
 						window.history.pushState('', '', '#' + element.id );

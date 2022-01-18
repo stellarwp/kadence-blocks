@@ -8,6 +8,7 @@
 	.kb-table-of-contents-title {
 		font-size: 110%;
 		font-weight: bold;
+		display: block;
 	}
 	.kb-table-of-content-wrap {
 		border-style: solid;
@@ -122,14 +123,6 @@
 }
 // Basic
 .kb-toggle-icon-style-basic, .kb-toggle-icon-style-basiccircle {
-	&.kb-toc-toggle-active {
-		.kb-table-of-contents-icon-trigger:before {
-			transform: rotate(0deg);
-		}
-		.kb-table-of-contents-icon-trigger:after {
-			transform: rotate(0deg);
-		}
-	}
 	.kb-table-of-contents-icon-trigger:after, .kb-table-of-contents-icon-trigger:before {
 		content: "";
 		height: 4px;
@@ -147,6 +140,16 @@
 	.kb-table-of-contents-icon-trigger:after {
 		transform: rotate(0deg);
 		transform-origin: 50%;
+	}
+}
+.kb-toc-toggle-active {
+	.kb-toggle-icon-style-basic, .kb-toggle-icon-style-basiccircle {
+		.kb-table-of-contents-icon-trigger:before {
+			transform: rotate(0deg);
+		}
+		.kb-table-of-contents-icon-trigger:after {
+			transform: rotate(0deg);
+		}
 	}
 }
 // Basic Circle
@@ -164,14 +167,6 @@
 }
 // x close
 .kb-toggle-icon-style-xclose, .kb-toggle-icon-style-xclosecircle {
-	&.kb-toc-toggle-active {
-		.kb-table-of-contents-icon-trigger:before {
-			transform: rotate(45deg);
-		}
-		.kb-table-of-contents-icon-trigger:after {
-			transform: rotate(-45deg);
-		}
-	}
 	.kb-table-of-contents-icon-trigger:after, .kb-table-of-contents-icon-trigger:before {
 		content: "";
 		background-color: currentColor;
@@ -189,6 +184,16 @@
 	.kb-table-of-contents-icon-trigger:after {
 		transform: rotate(0deg);
 		transform-origin: 50%;
+	}
+}
+.kb-toc-toggle-active {
+	.kb-toggle-icon-style-xclose, .kb-toggle-icon-style-xclosecircle {
+		.kb-table-of-contents-icon-trigger:before {
+			transform: rotate(45deg);
+		}
+		.kb-table-of-contents-icon-trigger:after {
+			transform: rotate(-45deg);
+		}
 	}
 }
 // x Circle
@@ -258,4 +263,23 @@
     padding: 0 !important;
     margin: 0 !important;
     overflow: hidden;
+}
+.kb-table-of-contents-title-wrap .kb-table-of-contents-title-btn.kb-table-of-contents-toggle {
+    box-shadow: none;
+    background: transparent;
+    color: inherit;
+    text-transform: inherit;
+    display: flex;
+    align-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-style: solid;
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    text-align: inherit;
+    border-radius: 0;
+    font-size: inherit;
+    letter-spacing: inherit;
+    font-family: inherit;
 }

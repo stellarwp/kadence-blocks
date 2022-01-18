@@ -4,17 +4,11 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- @import '../../kadence-colors.scss';
  // Controls
- .components-button.components-color-palette__item:not(:disabled):not([aria-disabled=true]):not(.is-secondary):not(.is-primary):not(.is-tertiary):not(.is-link):hover {
-    background: transparent;
-    box-shadow: inset 0 0 0 14px;
-}
+ @import '../../kadence-colors.scss';
+
 .kb-colors-selector.components-dropdown-menu.components-toolbar {
     padding: 0;
-}
-.typography-family-select-form-row {
-    margin-bottom: 10px;
 }
 .kb-colors-selector {
     .kb-colors-selector__toggle {
@@ -62,6 +56,11 @@
 		}
     }
 }
+
+.typography-family-select-form-row {
+    margin-bottom: 10px;
+}
+
  .edit-post-sidebar .typography-family-select-form-row input[type=text], .kt-block-defaults-modal .typography-family-select-form-row input[type=text], .components-popover.kt-popover-font-family .components-popover__content .typography-family-select-form-row input[type=text] {
 	box-shadow:none;
 }
@@ -594,7 +593,17 @@ button.components-button.components-icon-button.kt-font-clear-btn, button.compon
     margin-bottom: 0;
 }
 .kadence-range-control-inner .components-base-control.kt-range-number-input{
-margin-left: 16px;
-margin-bottom: 0;
-flex: 0 1 65px;
+	margin-left: 16px;
+	margin-bottom: 0;
+	flex: 0 1 65px;
+}
+.kb-advanced-heading-link.hls-underline, .wp-block-kadence-advancedheading.hls-underline a {
+    text-decoration: underline;
+}
+
+.kb-advanced-heading-link.hls-hover_underline, .wp-block-kadence-advancedheading.hls-hover_underline a, .kb-advanced-heading-link.hls-none, .wp-block-kadence-advancedheading.hls-none a {
+    text-decoration: none;
+}
+.kb-advanced-heading-link.hls-hover_underline:hover, .wp-block-kadence-advancedheading.hls-hover_underline a:hover {
+    text-decoration: underline;
 }

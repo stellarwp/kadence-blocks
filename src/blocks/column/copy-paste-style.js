@@ -212,6 +212,42 @@ class ColumnStyleCopyPaste extends Component {
 			if ( blockAttributes.justifyContent ) {
 				copyStyles.justifyContent = blockAttributes.justifyContent;
 			}
+			if ( blockAttributes.backgroundImgHover ) {
+				copyStyles.backgroundImgHover = blockAttributes.backgroundImgHover;
+			}
+			if ( blockAttributes.backgroundHover ) {
+				copyStyles.backgroundHover = blockAttributes.backgroundHover;
+			}
+			if ( blockAttributes.borderHover ) {
+				copyStyles.borderHover = blockAttributes.borderHover;
+			}
+			if ( blockAttributes.borderHoverWidth ) {
+				copyStyles.borderHoverWidth = blockAttributes.borderHoverWidth;
+			}
+			if ( blockAttributes.tabletBorderHoverWidth ) {
+				copyStyles.tabletBorderHoverWidth = blockAttributes.tabletBorderHoverWidth;
+			}
+			if ( blockAttributes.mobileBorderHoverWidth ) {
+				copyStyles.mobileBorderHoverWidth = blockAttributes.mobileBorderHoverWidth;
+			}
+			if ( blockAttributes.borderHoverRadius ) {
+				copyStyles.borderHoverRadius = blockAttributes.borderHoverRadius;
+			}
+			if ( blockAttributes.displayHoverShadow ) {
+				copyStyles.displayHoverShadow = blockAttributes.displayHoverShadow;
+			}
+			if ( blockAttributes.shadowHover ) {
+				copyStyles.shadowHover = blockAttributes.shadowHover;
+			}
+			if ( blockAttributes.textColorHover ) {
+				copyStyles.textColorHover = blockAttributes.textColorHover;
+			}
+			if ( blockAttributes.linkColorHover ) {
+				copyStyles.linkColorHover = blockAttributes.linkColorHover;
+			}
+			if ( blockAttributes.linkHoverColorHover ) {
+				copyStyles.linkHoverColorHover = blockAttributes.linkHoverColorHover;
+			}
 			localStorage.setItem( 'kadenceColumnStyle', JSON.stringify( copyStyles ) );
 		};
 		const pasteAction = () => {

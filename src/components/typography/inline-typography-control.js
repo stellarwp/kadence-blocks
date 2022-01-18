@@ -420,6 +420,9 @@ class InlineTypographyControl extends Component {
 		const lineMin = ( lineHeightType !== 'px' ? 0.2 : 5 );
 		const lineMax = ( lineHeightType !== 'px' ? 12 : 200 );
 		const lineStep = ( lineHeightType !== 'px' ? 0.1 : 1 );
+		const usingReg = typographyWeights.some(function(el) {
+			return el.value === 'regular';
+		});
 		return (
 			<Fragment>
 				<Dropdown
@@ -463,8 +466,8 @@ class InlineTypographyControl extends Component {
 							<div className="typography-row-settings">
 								{ onFontWeight && (
 									<SelectControl
-										label={ __( 'Weight' ) }
-										value={ ( '400' === fontWeight ? 'regular' : fontWeight ) }
+										label={ __( 'Weight', 'kadence-blocks' ) }
+										value={ ( '400' === fontWeight && usingReg ? 'regular' : fontWeight ) }
 										options={ typographyWeights }
 										onChange={ onTypoFontWeightChange }
 									/>

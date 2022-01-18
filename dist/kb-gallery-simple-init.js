@@ -18,7 +18,7 @@
 			var canceled = !elem.dispatchEvent(evt);
 		},
 		checkImage: function( element ) {
-			return /(png|jpg|jpeg|gif|tiff|bmp)$/.test(
+			return /(png|jpg|jpeg|gif|tiff|bmp|webp)$/.test(
 				element.getAttribute( 'href' ).toLowerCase().split( '?' )[0].split( '#' )[0]
 			);
 		},

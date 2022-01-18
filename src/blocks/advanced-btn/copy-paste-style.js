@@ -202,6 +202,24 @@ class ButtonStyleCopyPaste extends Component {
 				if ( blockAttributes.btns[ buttonIndex ].label ) {
 					copyStyles.btn[ 0 ].label = blockAttributes.btns[ buttonIndex ].label;
 				}
+				if ( blockAttributes.btns[ buttonIndex ].anchor ) {
+					copyStyles.btn[ 0 ].anchor = blockAttributes.btns[ buttonIndex ].anchor;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].borderStyle ) {
+					copyStyles.btn[ 0 ].borderStyle = blockAttributes.btns[ buttonIndex ].borderStyle;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].marginUnit ) {
+					copyStyles.btn[ 0 ].marginUnit = blockAttributes.btns[ buttonIndex ].marginUnit;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].margin ) {
+					copyStyles.btn[ 0 ].margin = blockAttributes.btns[ buttonIndex ].margin;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].tabletMargin ) {
+					copyStyles.btn[ 0 ].tabletMargin = blockAttributes.btns[ buttonIndex ].tabletMargin;
+				}
+				if ( blockAttributes.btns[ buttonIndex ].mobileMargin ) {
+					copyStyles.btn[ 0 ].mobileMargin = blockAttributes.btns[ buttonIndex ].mobileMargin;
+				}
 			}
 			if ( blockAttributes.letterSpacing ) {
 				copyStyles.letterSpacing = blockAttributes.letterSpacing;

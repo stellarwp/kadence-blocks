@@ -16,7 +16,7 @@ if ( $enabled ) {
 		<?php
 		if ( isset( $attributes['excerptCustomLength'] ) && true === $attributes['excerptCustomLength'] ) {
 			global $kadence_blocks_post_block_get_excerpt_length;
-			$kadence_blocks_post_block_get_excerpt_length = ( $attributes['excerptLength'] ? $attributes['excerptLength'] : 40 );
+			$kadence_blocks_post_block_get_excerpt_length = ( ! empty( $attributes['excerptLength'] ) ? $attributes['excerptLength'] : 40 );
 			add_filter( 'excerpt_length', 'kadence_blocks_post_block_get_excerpt_length', 20 );
 			the_excerpt();
 			remove_filter( 'excerpt_length', 'kadence_blocks_post_block_get_excerpt_length', 20 );

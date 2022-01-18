@@ -1354,8 +1354,11 @@ body.rtl .wp-block-kadence-rowlayout:not(.kt-gutter-none) > .innerblocks-wrap > 
 body.rtl .editor-row-first-column__resizer {
     right: 0;
     left: auto;
-    z-index: 1;
+    z-index: 2;
     transform: rotateY(180deg);
+}
+body.rtl .editor-row-first-column__resizer.second_resizer {
+    z-index: 1;
 }
 body.rtl .editor-row-first-column__resizer .left-column-width-size {transform: rotateY(180deg);padding-left: 10px;padding-right: 0;}
 

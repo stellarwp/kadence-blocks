@@ -320,6 +320,18 @@ class KadenceTestimonials extends Component {
 		const previewContainerPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 1 ] ? containerPadding[ 1 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 1 ] ? tabletContainerPadding[ 1 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 1 ] ? mobileContainerPadding[ 1 ] : '' ) );
 		const previewContainerPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 2 ] ? containerPadding[ 2 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 2 ] ? tabletContainerPadding[ 2 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 2 ] ? mobileContainerPadding[ 2 ] : '' ) );
 		const previewContainerPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding && undefined !== containerPadding[ 3 ] ? containerPadding[ 3 ] : '' ), ( undefined !== tabletContainerPadding && undefined !== tabletContainerPadding[ 3 ] ? tabletContainerPadding[ 3 ] : '' ), ( undefined !== mobileContainerPadding && undefined !== mobileContainerPadding[ 3 ] ? mobileContainerPadding[ 3 ] : '' ) );
+		const previewTitleFont = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 0 ] && '' !== titleFont[ 0 ].size[ 0 ] ? titleFont[ 0 ].size[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 1 ] && '' !== titleFont[ 0 ].size[ 1 ] ? titleFont[ 0 ].size[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].size && undefined !== titleFont[ 0 ].size[ 2 ] && '' !== titleFont[ 0 ].size[ 2 ] ? titleFont[ 0 ].size[ 2 ] : '' ) );
+		const previewTitleLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 0 ] && '' !== titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 1 ] && '' !== titleFont[ 0 ].lineHeight[ 1 ] ? titleFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== titleFont[ 0 ].lineHeight && undefined !== titleFont[ 0 ].lineHeight[ 2 ] && '' !== titleFont[ 0 ].lineHeight[ 2 ] ? titleFont[ 0 ].lineHeight[ 2 ] : '' ) );
+
+		const previewContentFont = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== contentFont[ 0 ].size && undefined !== contentFont[ 0 ].size[ 0 ] && '' !== contentFont[ 0 ].size[ 0 ] ? contentFont[ 0 ].size[ 0 ] : '' ), ( undefined !== contentFont[ 0 ].size && undefined !== contentFont[ 0 ].size[ 1 ] && '' !== contentFont[ 0 ].size[ 1 ] ? contentFont[ 0 ].size[ 1 ] : '' ), ( undefined !== contentFont[ 0 ].size && undefined !== contentFont[ 0 ].size[ 2 ] && '' !== contentFont[ 0 ].size[ 2 ] ? contentFont[ 0 ].size[ 2 ] : '' ) );
+		const previewContentLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== contentFont[ 0 ].lineHeight && undefined !== contentFont[ 0 ].lineHeight[ 0 ] && '' !== contentFont[ 0 ].lineHeight[ 0 ] ? contentFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== contentFont[ 0 ].lineHeight && undefined !== contentFont[ 0 ].lineHeight[ 1 ] && '' !== contentFont[ 0 ].lineHeight[ 1 ] ? contentFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== contentFont[ 0 ].lineHeight && undefined !== contentFont[ 0 ].lineHeight[ 2 ] && '' !== contentFont[ 0 ].lineHeight[ 2 ] ? contentFont[ 0 ].lineHeight[ 2 ] : '' ) );
+
+		const previewNameFont = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== nameFont[ 0 ].size && undefined !== nameFont[ 0 ].size[ 0 ] && '' !== nameFont[ 0 ].size[ 0 ] ? nameFont[ 0 ].size[ 0 ] : '' ), ( undefined !== nameFont[ 0 ].size && undefined !== nameFont[ 0 ].size[ 1 ] && '' !== nameFont[ 0 ].size[ 1 ] ? nameFont[ 0 ].size[ 1 ] : '' ), ( undefined !== nameFont[ 0 ].size && undefined !== nameFont[ 0 ].size[ 2 ] && '' !== nameFont[ 0 ].size[ 2 ] ? nameFont[ 0 ].size[ 2 ] : '' ) );
+		const previewNameLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== nameFont[ 0 ].lineHeight && undefined !== nameFont[ 0 ].lineHeight[ 0 ] && '' !== nameFont[ 0 ].lineHeight[ 0 ] ? nameFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== nameFont[ 0 ].lineHeight && undefined !== nameFont[ 0 ].lineHeight[ 1 ] && '' !== nameFont[ 0 ].lineHeight[ 1 ] ? nameFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== nameFont[ 0 ].lineHeight && undefined !== nameFont[ 0 ].lineHeight[ 2 ] && '' !== nameFont[ 0 ].lineHeight[ 2 ] ? nameFont[ 0 ].lineHeight[ 2 ] : '' ) );
+
+		const previewOccupationFont = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== occupationFont[ 0 ].size && undefined !== occupationFont[ 0 ].size[ 0 ] && '' !== occupationFont[ 0 ].size[ 0 ] ? occupationFont[ 0 ].size[ 0 ] : '' ), ( undefined !== occupationFont[ 0 ].size && undefined !== occupationFont[ 0 ].size[ 1 ] && '' !== occupationFont[ 0 ].size[ 1 ] ? occupationFont[ 0 ].size[ 1 ] : '' ), ( undefined !== occupationFont[ 0 ].size && undefined !== occupationFont[ 0 ].size[ 2 ] && '' !== occupationFont[ 0 ].size[ 2 ] ? occupationFont[ 0 ].size[ 2 ] : '' ) );
+		const previewOccupationLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== occupationFont[ 0 ].lineHeight && undefined !== occupationFont[ 0 ].lineHeight[ 0 ] && '' !== occupationFont[ 0 ].lineHeight[ 0 ] ? occupationFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== occupationFont[ 0 ].lineHeight && undefined !== occupationFont[ 0 ].lineHeight[ 1 ] && '' !== occupationFont[ 0 ].lineHeight[ 1 ] ? occupationFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== occupationFont[ 0 ].lineHeight && undefined !== occupationFont[ 0 ].lineHeight[ 2 ] && '' !== occupationFont[ 0 ].lineHeight[ 2 ] ? occupationFont[ 0 ].lineHeight[ 2 ] : '' ) );
+
 		const columnControls = (
 			<Fragment>
 				<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type', 'kadence-blocks' ) }>
@@ -889,8 +901,8 @@ class KadenceTestimonials extends Component {
 										fontWeight: titleFont[ 0 ].weight,
 										fontStyle: titleFont[ 0 ].style,
 										color: KadenceColorOutput( titleFont[ 0 ].color ),
-										fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
-										lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
+										fontSize: previewTitleFont ? previewTitleFont + titleFont[ 0 ].sizeType : undefined,
+										lineHeight: ( previewTitleLineHeight ? previewTitleLineHeight + titleFont[ 0 ].lineType : undefined ),
 										letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
 										textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
 										fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
@@ -935,8 +947,8 @@ class KadenceTestimonials extends Component {
 										fontWeight: contentFont[ 0 ].weight,
 										fontStyle: contentFont[ 0 ].style,
 										color: KadenceColorOutput( contentFont[ 0 ].color ),
-										fontSize: contentFont[ 0 ].size[ 0 ] + contentFont[ 0 ].sizeType,
-										lineHeight: ( contentFont[ 0 ].lineHeight && contentFont[ 0 ].lineHeight[ 0 ] ? contentFont[ 0 ].lineHeight[ 0 ] + contentFont[ 0 ].lineType : undefined ),
+										fontSize: previewContentFont ? previewContentFont + contentFont[ 0 ].sizeType : undefined,
+										lineHeight: ( previewContentLineHeight ? previewContentLineHeight + contentFont[ 0 ].lineType : undefined ),
 										textTransform: ( contentFont[ 0 ].textTransform ? contentFont[ 0 ].textTransform : undefined ),
 										letterSpacing: contentFont[ 0 ].letterSpacing + 'px',
 										fontFamily: ( contentFont[ 0 ].family ? contentFont[ 0 ].family : '' ),
@@ -965,8 +977,8 @@ class KadenceTestimonials extends Component {
 												fontWeight: nameFont[ 0 ].weight,
 												fontStyle: nameFont[ 0 ].style,
 												color: KadenceColorOutput( nameFont[ 0 ].color ),
-												fontSize: nameFont[ 0 ].size[ 0 ] + nameFont[ 0 ].sizeType,
-												lineHeight: ( nameFont[ 0 ].lineHeight && nameFont[ 0 ].lineHeight[ 0 ] ? nameFont[ 0 ].lineHeight[ 0 ] + nameFont[ 0 ].lineType : undefined ),
+												fontSize: previewNameFont ? previewNameFont + nameFont[ 0 ].sizeType : undefined,
+												lineHeight: ( previewNameLineHeight ? previewNameLineHeight + nameFont[ 0 ].lineType : undefined ),
 												textTransform: ( nameFont[ 0 ].textTransform ? nameFont[ 0 ].textTransform : undefined ),
 												letterSpacing: nameFont[ 0 ].letterSpacing + 'px',
 												fontFamily: ( nameFont[ 0 ].family ? nameFont[ 0 ].family : '' ),
@@ -988,8 +1000,8 @@ class KadenceTestimonials extends Component {
 												fontWeight: occupationFont[ 0 ].weight,
 												fontStyle: occupationFont[ 0 ].style,
 												color: KadenceColorOutput( occupationFont[ 0 ].color ),
-												fontSize: occupationFont[ 0 ].size[ 0 ] + occupationFont[ 0 ].sizeType,
-												lineHeight: ( occupationFont[ 0 ].lineHeight && occupationFont[ 0 ].lineHeight[ 0 ] ? occupationFont[ 0 ].lineHeight[ 0 ] + occupationFont[ 0 ].lineType : undefined ),
+												fontSize: previewOccupationFont ? previewOccupationFont + occupationFont[ 0 ].sizeType : undefined,
+												lineHeight: ( previewOccupationLineHeight ? previewOccupationLineHeight + occupationFont[ 0 ].lineType : undefined ),
 												textTransform: ( occupationFont[ 0 ].textTransform ? occupationFont[ 0 ].textTransform : undefined ),
 												letterSpacing: occupationFont[ 0 ].letterSpacing + 'px',
 												fontFamily: ( occupationFont[ 0 ].family ? occupationFont[ 0 ].family : '' ),

@@ -228,6 +228,10 @@ const attributes = {
 		type: 'array',
 		default: [ '', '', '' ],
 	},
+	wrapContent: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
 	gutter: {
 		type: 'array',
 		default: [ '', '', '' ],
@@ -301,6 +305,26 @@ const attributes = {
 	linkHoverColorHover: {
 		type: 'string',
 		default: '',
+	},
+	link: {
+		type: 'string',
+		default: '',
+	},
+	linkTitle: {
+		type: 'string',
+		default: '',
+	},
+	linkTarget: {
+		type: 'boolean',
+		default: false,
+	},
+	linkNoFollow: {
+		type: 'boolean',
+		default: false,
+	},
+	linkSponsored: {
+		type: 'boolean',
+		default: false,
 	},
 	inQueryBlock: {
 		type: 'bool',

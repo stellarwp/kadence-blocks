@@ -480,6 +480,14 @@ ul.kt-tabs-title-list.kb-tab-title-columns-1 > li > .kt-tab-title {
 ul.kt-tabs-title-list.kb-tabs-list-columns > li:last-child > .kt-tab-title {
     margin-right: 0px !important;
 }
+.rtl {
+	ul.kt-tabs-title-list.kb-tab-title-columns-1 > li > .kt-tab-title {
+		margin-left: 0px !important;
+	}
+	ul.kt-tabs-title-list.kb-tabs-list-columns > li:last-child > .kt-tab-title {
+		margin-left: 0px !important;
+	}
+}
 ul.kt-tabs-title-list.kb-tabs-list-columns .kt-tab-title {
 	justify-content: center;
 	text-align: center;
@@ -492,4 +500,8 @@ ul.kt-tabs-title-list.kb-tabs-list-columns {
 }
 .kt-tab-alignment-right ul.kt-tabs-title-list.kb-tabs-list-columns .kb-tab-titles-wrap {
 	align-items:flex-end;
+}
+.rtl .wp-block-kadence-tabs .kt-tabs-title-list {
+	margin: 0;
+    padding: 0;
 }
