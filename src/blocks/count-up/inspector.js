@@ -25,10 +25,11 @@ const {
 	PanelBody,
 	RangeControl,
 	ToggleControl,
-	SelectControl,
 	TabPanel,
 	Dashicon
 } = wp.components;
+
+import { __experimentalNumberControl as NumberControl } from '@wordpress/components';
 
 /**
  * Count Up Settings
@@ -96,35 +97,28 @@ class Inspector extends Component {
 						initialOpen={ true }>
 
 						<div className="kt-columns-control">
-							<RangeControl
-								label={ __( 'Starting Number' ) }
-								value={ start }
-								onChange={ (value) => setAttributes({ start: value }) }
-								min={ -1000 }
-								max={ 1000 }
-								step={ 1 }
-								marks={ [
-									{
-										value: 0,
-										label: '0'
-									}
-								] }
-							/>
 
-							<RangeControl
-								label={ __( 'Ending Number' ) }
-								value={ end }
-								onChange={ (value) => setAttributes({ end: value }) }
-								min={ -1000 }
-								max={ 1000 }
-								step={ 1 }
-								marks={ [
-									{
-										value: 0,
-										label: '0'
-									}
-								] }
-							/>
+							<div style={ { marginBottom: '15px'} }>
+								<NumberControl
+									label={ __( 'Starting Number' ) }
+									value={ start }
+									onChange={ (value) => setAttributes({ start: parseInt(value) }) }
+									min={ 0 }
+									isShiftStepEnabled={ true }
+									shiftStep={ 10 }
+								/>
+							</div>
+
+							<div style={ { marginBottom: '15px'} }>
+								<NumberControl
+									label={ __( 'Ending Number' ) }
+									value={ end }
+									onChange={ (value) => setAttributes({ end: parseInt(value) }) }
+									min={ 0 }
+									isShiftStepEnabled={ true }
+									shiftStep={ 10 }
+								/>
+							</div>
 
 							<TextControl
 								label={ __( 'Number Prefix' ) }
