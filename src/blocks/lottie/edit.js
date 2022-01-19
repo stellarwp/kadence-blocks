@@ -3,28 +3,23 @@
  */
 
 /**
- * Import Icon stuff
- */
-import * as LottiePlayer from "@lottiefiles/lottie-player";
-import { create } from '@lottiefiles/lottie-interactivity';
-
-/**
  * Import Css
  */
 import './editor.scss';
+
+import * as LottiePlayer from "@lottiefiles/lottie-player";
+import { create } from '@lottiefiles/lottie-interactivity';
 
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useEffect, useState } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
-import KadenceIcons from '../icon/edit';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 const { rest_url } = kadence_blocks_params;
 import get from 'lodash/get';
 import has from 'lodash/has';
-
 
 const {
 	InspectorControls,

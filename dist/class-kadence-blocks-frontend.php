@@ -964,9 +964,9 @@ class Kadence_Blocks_Frontend {
 		}
 
 		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-			$player_style_id = 'kb-lottie-player' . esc_attr( $unique_id );
-			$player_simple_style_id = str_replace(array('-'), '', $player_style_id);
+			$unique_id              = $attributes['uniqueID'];
+			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
+			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
 
 			if ( ! wp_style_is( 'kb-lottie-container', 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
 
@@ -976,8 +976,8 @@ class Kadence_Blocks_Frontend {
 				$css = $this->blocks_lottie_array( $attributes, $unique_id );
 
 				// Include lottie interactive if using scroll animation
-				if ( isset($attributes['onlyPlayOnScroll']) && $attributes['onlyPlayOnScroll'] === true ) {
-					if( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
+				if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
+					if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
 						wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
 					}
 
@@ -1003,6 +1003,9 @@ class Kadence_Blocks_Frontend {
 					}, 125);
 				</script>";
 				}
+			}
+		}
+	}
 
 	/**
 	 * Render Image CSS
