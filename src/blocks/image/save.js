@@ -2,21 +2,12 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { isEmpty } from 'lodash';
-
-const {
-	registerBlockType,
-	createBlock,
-	getBlockDefaultClassName,
-} = wp.blocks;
-const {
-	Fragment,
-} = wp.element;
 
 /**
  * WordPress dependencies
  */
-import { RichText, useBlockProps } from '@wordpress/block-editor';
+ import { RichText, useBlockProps } from '@wordpress/block-editor';
+ import { getBlockDefaultClassName } from '@wordpress/blocks';
 
 export default function save( { attributes } ) {
 	const {
@@ -78,7 +69,7 @@ export default function save( { attributes } ) {
 		<img
 			src={ url }
 			alt={ alt }
-			className={ id ? `kb-img kadence-image-${ id }` : 'kb-img' }
+			className={ id ? `kb-img wp-image-${ id }` : 'kb-img' }
 			width={ width }
 			height={ height }
 			title={ title }

@@ -562,7 +562,17 @@ export default [
 			responsiveMaxWidth: {
 				type: 'array',
 				default: [ '', '' ],
-			}
+			},
+			kadenceBlockCSS: {
+				type: 'string',
+				default: '',
+			},
+			kadenceDynamic: {
+				type: 'object',
+			},
+			kadenceConditional: {
+				type: 'object',
+			},
 		},
 		save: ( { attributes } ) => {
 			const { columns, blockAlignment, inheritMaxWidth, align, mobileLayout, currentOverlayTab, overlayBgImg, overlay, colLayout, tabletLayout, collapseOrder, uniqueID, columnGutter, collapseGutter, bgColor, bgImg, verticalAlignment, htmlTag, bottomSep, bottomSepColor, topSep, topSepColor, firstColumnWidth, secondColumnWidth, overlayBgImgAttachment, bgImgAttachment, columnsInnerHeight, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSliderSettings, backgroundSlider, bgImgSize, bgImgPosition, bgImgRepeat, backgroundVideoType, backgroundVideo, bgColorClass, vsdesk, vstablet, vsmobile } = attributes;

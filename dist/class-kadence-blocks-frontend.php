@@ -5742,7 +5742,7 @@ class Kadence_Blocks_Frontend {
 		// Border Color
 		if( isset( $attr['borderColor'] ) ){
 			$css->add_property( 'border-style', 'solid' );
-			$css->add_property( 'border-color', $css->render_color( $attr['borderColor'], $attr['borderOpacity'] ) );
+			$css->add_property( 'border-color', $css->render_color( $attr['borderColor'] ) );
 		}
 
 		// Border widths
@@ -5760,7 +5760,7 @@ class Kadence_Blocks_Frontend {
 
 		// Background Color
 		if( isset( $attr['backgroundColor'] ) ){
-			$css->add_property( 'background-color', $css->render_color( $attr['backgroundColor'], empty( $attr['backgroundOpacity'] ) ? 1 : $attr['backgroundOpacity'] ) );
+			$css->add_property( 'background-color', $css->render_color( $attr['backgroundColor'] ) );
 		}
 
 		// Border Radius

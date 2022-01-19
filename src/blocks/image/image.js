@@ -355,7 +355,7 @@ export default function Image( {
 			width: undefined,
 			height: undefined,
 			sizeSlug: imgData.slug,
-			imgMaxWidth: imgData.width,
+			imgMaxWidth: undefined,
 		} );
 	}
 	function uploadExternal() {
@@ -1106,7 +1106,6 @@ export default function Image( {
 	if ( useRatio ){
 		img = <div className={ `kb-is-ratio-image kb-image-ratio-${ ( ratio ? ratio : 'land43' )}` }>{ img }</div>;
 	}
-
 	let imageWidthWithinContainer;
 	let imageHeightWithinContainer;
 

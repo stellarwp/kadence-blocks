@@ -322,6 +322,30 @@ export default [
 				type: 'bool',
 				default: false,
 			},
+			kadenceBlockCSS: {
+				type: 'string',
+				default: '',
+			},
+			kadenceAnimation: {
+				type: 'string',
+			},
+			kadenceAOSOptions: {
+				type: 'array',
+				default: [ {
+					duration: '',
+					offset: '',
+					easing: '',
+					once: '',
+					delay: '',
+					delayOffset: '',
+				} ],
+			},
+			kadenceDynamic: {
+				type: 'object',
+			},
+			kadenceConditional: {
+				type: 'object',
+			},
 		},
 		save: ( { attributes } ) => {
 			const { id, background, backgroundOpacity, backgroundImg, uniqueID, vsdesk, vstablet, vsmobile, bgColorClass } = attributes;
