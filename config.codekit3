@@ -41,6 +41,20 @@
       "oAP" : "\/.gitignore",
       "oF" : 0
     },
+    "\/.idea" : {
+      "ft" : 65536,
+      "oA" : 1,
+      "oAP" : "\/.idea",
+      "oF" : 0
+    },
+    "\/composer.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/composer-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
     "\/dist\/assets\/css\/simplelightbox.css" : {
       "aP" : 1,
       "bl" : 0,
@@ -136,6 +150,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/assets\/js\/kb-countdown.min-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/assets\/js\/kb-countup.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/kb-countup-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -236,6 +261,17 @@
       "oA" : 0,
       "oAP" : "\/dist\/assets\/js\/kb-countdown.min.js",
       "oF" : 3,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/assets\/js\/src\/kb-countup.min.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/src\/kb-countup.min-min.js",
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },
@@ -519,48 +555,6 @@
       "oAP" : "\/dist\/blocks\/testimonials.style.build-min.css",
       "oF" : 0,
       "pg" : 0
-    },
-    "\/dist\/build\/blocks.asset.php" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks.asset.php",
-      "oF" : 0
-    },
-    "\/dist\/build\/blocks.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
-    "\/dist\/build\/blocks.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/dist\/build\/vendors\/blocks.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -4585,6 +4579,14 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/node_modules\/react-countup\/build" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 1,
+      "oAP" : "\/node_modules\/react-countup\/build",
+      "oF" : 0
+    },
     "\/node_modules\/react-dom\/index.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -5242,6 +5244,102 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
+    },
+    "\/src\/blocks\/count-up\/attributes.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/count-up\/attributes-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/count-up\/block.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/count-up\/block-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/count-up\/edit.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/count-up\/edit-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/count-up\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/blocks\/count-up\/editor.css",
+      "oF" : 0,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/src\/blocks\/count-up\/icon.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/count-up\/icon-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/count-up\/inspector.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/count-up\/inspector-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/count-up\/save.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/count-up\/save-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/count-up\/style.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/blocks\/countup.style.build.css",
+      "oF" : 2,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
     },
     "\/src\/blocks\/countdown\/attributes.js" : {
       "bF" : 0,
@@ -8067,7 +8165,8 @@
     "displayValue" : "kadence-blocks New",
     "displayValueWasSetByUser" : 1,
     "iconImageName" : "brackets-verd",
-    "iconImageWasSetByUser" : 0
+    "iconImageWasSetByUser" : 0,
+    "lastBuiltDate" : 660719623.23649704
   },
   "projectSettings" : {
     "abortBuildOnError" : 1,
