@@ -8,7 +8,7 @@ const {
 /**
  * External dependencies
  */
-import Masonry from 'react-masonry-component';
+import Masonry from 'react-masonry-css'
 import debounce from 'lodash/debounce';
 import LazyLoad from 'react-lazy-load';
 
@@ -66,6 +66,7 @@ class CloudSections extends Component {
 			isLoading: false,
 			isImporting: false,
 			sidebar:false,
+			gridSize: 'normal',
 			categories: { 'category': 'Category' },
 		};
 		this.debouncedReloadTemplateData = debounce( this.reloadTemplateData.bind( this ), 200 );
@@ -225,6 +226,8 @@ class CloudSections extends Component {
 		const roundAccurately = (number, decimalPlaces) => Number(Math.round(Number(number + "e" + decimalPlaces)) + "e" + decimalPlaces * -1);
 		const libraryItems = this.props.tab !== this.state.tab ? false : this.state.items;
 		const categoryItems = this.state.categories;
+		const savedGridSize = ( activePanel && activePanel['grid'] ? activePanel['grid'] : 'normal' );
+		const gridSize = ( this.state.gridSize ? this.state.gridSize : savedGridSize );
 		const catOptions = Object.keys( categoryItems ).map( function( key, index ) {
 			return { value: ( 'category' === key ? 'all' : key ), label: categoryItems[key] }
 		} );
@@ -232,6 +235,36 @@ class CloudSections extends Component {
 			return { value: ( 'category' === key ? 'all' : key ), label: ( 'category' === key ? __( 'All', 'kadence-blocks' ) : categoryItems[key] ) }
 		} );	
 		const control = this;
+		let breakpointColumnsObj = {
+			default: 5,
+			1600: 4,
+			1200: 3,
+			500: 2,
+		};
+		if ( gridSize === 'large' ) {
+			breakpointColumnsObj = {
+				default: 4,
+				1600: 3,
+				1200: 2,
+				500: 1,
+			};
+		}
+		if ( sidebarEnabled === 'show' ) {
+			breakpointColumnsObj = {
+				default: 4,
+				1600: 3,
+				1200: 2,
+				500: 1,
+			};
+			if ( gridSize === 'large' ) {
+				breakpointColumnsObj = {
+					default: 3,
+					1600: 2,
+					1200: 2,
+					500: 1,
+				};
+			}
+		}
 		return (
 			<div className={ `kt-prebuilt-content${ ( sidebarEnabled === 'show' ? ' kb-prebuilt-has-sidebar' : '' ) }` }>
 				{ sidebarEnabled === 'show' && (
@@ -289,6 +322,42 @@ class CloudSections extends Component {
 							/>
 						</div>
 						<div className="kb-library-header-right">
+							<Button
+								icon={  <svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="32"
+									height="32"
+									viewBox="0 0 32 32"
+								  >
+									<path d="M8 15h7V8H8v7zm9-7v7h7V8h-7zm0 16h7v-7h-7v7zm-9 0h7v-7H8v7z"></path>
+								  </svg> }
+								className={ 'kb-grid-btns kb-trigger-large-grid-size' + ( gridSize === 'large' ? ' is-pressed' : '' ) }
+								aria-pressed={ gridSize === 'large' }
+								onClick={ () => {
+									const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeSidebar['grid'] = 'large';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									this.setState( { gridSize: 'large' } );
+								} }
+							/>
+							<Button
+								icon={ <svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="32"
+									height="32"
+									viewBox="0 0 32 32"
+								  >
+									<path d="M8 12h4V8H8v4zm6 0h4V8h-4v4zm6-4v4h4V8h-4zM8 18h4v-4H8v4zm6 0h4v-4h-4v4zm6 0h4v-4h-4v4zM8 24h4v-4H8v4zm6 0h4v-4h-4v4zm6 0h4v-4h-4v4z"></path>
+								  </svg> }
+								className={ 'kb-grid-btns kb-trigger-normal-grid-size' + ( gridSize === 'normal' ? ' is-pressed' : '' ) }
+								aria-pressed={ gridSize === 'normal' }
+								onClick={ () => {
+									const activeSidebar = KadenceTryParseJSON( localStorage.getItem( 'kadenceBlocksPrebuilt' ), true );
+									activeSidebar['grid'] = 'normal';
+									localStorage.setItem( 'kadenceBlocksPrebuilt', JSON.stringify( activeSidebar ) );
+									this.setState( { gridSize: 'normal' } );
+								} }
+							/>
 							<TextControl
 								type="text"
 								value={ this.state.search }
@@ -331,14 +400,17 @@ class CloudSections extends Component {
 					</Fragment>
 				) : (
 					<Masonry
-						className={ 'kb-prebuilt-grid kb-prebuilt-masonry-grid' }
-						elementType={ 'div' }
-						options={ {
-							transitionDuration: 0,
-						} }
-						disableImagesLoaded={ false }
-						enableResizableChildren={ true }
-						updateOnEachImageLoad={ false }
+						breakpointCols={breakpointColumnsObj}
+						className={ `kb-css-masonry kb-core-section-library` }
+  						columnClassName="kb-css-masonry_column"
+						// className={ 'kb-prebuilt-grid kb-prebuilt-masonry-grid' }
+						// elementType={ 'div' }
+						// options={ {
+						// 	transitionDuration: 0,
+						// } }
+						// disableImagesLoaded={ false }
+						// enableResizableChildren={ true }
+						// updateOnEachImageLoad={ false }
 					>
 						{ Object.keys( this.state.items ).map( function( key, index ) {
 							const name = control.state.items[key].name;
@@ -355,10 +427,10 @@ class CloudSections extends Component {
 							const descriptionId = `${ slug }_kb_cloud__item-description`;
 							if ( ( 'all' === control.state.category || Object.keys( categories ).includes( control.state.category ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
 								return (
-									<div className="kt-prebuilt-item">
+									<div className="kb-css-masonry-inner">
 										<Button
 											key={ key }
-											className="kt-import-btn"
+											className="kb-css-masonry-btn"
 											isSmall
 											aria-label={
 												sprintf(
@@ -372,15 +444,13 @@ class CloudSections extends Component {
 											onClick={ () => ! locked ? control.onInsertContent( content ) : '' }
 										>
 											<div
-												className="kt-import-btn-inner"
+												className="kb-css-masonry-btn-inner"
 												style={ {
 													paddingBottom: ( imageWidth && imageHeight ? roundAccurately( ( imageHeight/imageWidth * 100), 2 ) + '%' : undefined ),
 												} }
 											>
-												<LazyLoad>
-													<img src={ image } alt={ name } />
-												</LazyLoad>
-												<span className="kb-import-btn-title">{ name }</span>
+												<img src={ image } loading={ "lazy" } alt={ name } />
+												<span className="kb-import-btn-title" dangerouslySetInnerHTML={ { __html: name }} />
 											</div>
 										</Button>
 										{ !! description && (
@@ -392,7 +462,7 @@ class CloudSections extends Component {
 											<Fragment>
 												<span className="kb-pro-template">{ __( 'Pro', 'kadence-blocks' ) }</span>
 												{ locked && (
-													<div className="kt-popover-pro-notice">
+													<div className="kb-popover-pro-notice">
 														<h2>{ __( 'Pro required for this item', 'kadence-blocks' ) } </h2>
 													</div>
 												) }

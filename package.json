@@ -25,6 +25,7 @@
     "react-easy-crop": "^3.5.3",
     "react-lazy-load": "^3.0.13",
     "react-masonry-component": "^6.2.1",
+    "react-masonry-css": "^1.0.16",
     "react-select": "^2.2.0",
     "react-slick": "^0.24.0",
     "react-transition-group": "^2.4.0"

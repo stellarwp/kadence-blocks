@@ -258,7 +258,7 @@ class TemplatesLibrary extends Component {
 													<img src={ pages && pages.home && pages.home.crop_thumbnail ? pages.home.crop_thumbnail : image } alt={ name } />
 												</LazyLoad>
 												<div className="demo-title">
-													<h4>{ name }</h4>
+													<h4 dangerouslySetInnerHTML={ { __html: name }} />
 												</div>
 											</div>
 										</Button>

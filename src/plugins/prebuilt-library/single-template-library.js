@@ -263,7 +263,7 @@ class SingleTemplateLibrary extends Component {
 												<img src={ image } alt={ name } />
 											</LazyLoad>
 											<div className="demo-title">
-												<h4>{ name }</h4>
+												<h4 dangerouslySetInnerHTML={ { __html: name }} />
 											</div>
 										</div>
 									</Button>
