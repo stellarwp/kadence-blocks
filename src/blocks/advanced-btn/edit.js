@@ -107,6 +107,7 @@ class KadenceAdvancedButton extends Component {
 			selectedButton: null,
 			btnLink: false,
 			marginControl: 'individual',
+			buttonMarginControl: 'individual',
 			iconPaddingControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
@@ -1050,7 +1051,7 @@ class KadenceAdvancedButton extends Component {
 							<ResponsiveMeasuremenuControls
 								label={ __( 'Button Margin', 'kadence-blocks' ) }
 								value={ undefined !== btns[ index ].margin ? btns[ index ].margin : [ '', '', '', '' ] }
-								control={ 'individual' }
+								control={ this.state.buttonMarginControl }
 								tabletValue={ undefined !== btns[ index ].tabletMargin ? btns[ index ].tabletMargin : [ '', '', '', '' ] }
 								mobileValue={ undefined !== btns[ index ].mobileMargin ? btns[ index ].mobileMargin : [ '', '', '', '' ] }
 								onChange={ ( value ) => {
@@ -1058,6 +1059,7 @@ class KadenceAdvancedButton extends Component {
 								} }
 								onChangeTablet={ ( value ) => this.saveArrayUpdate( { tabletMargin: value }, index  ) }
 								onChangeMobile={ ( value ) => this.saveArrayUpdate( { mobileMargin: value }, index  ) }
+								onChangeControl={ ( value ) => this.setState( { buttonMarginControl: value } ) }
 								min={ 0 }
 								max={ ( ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) !== 'px' ? 12 : 200 ) }
 								step={ ( ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) !== 'px' ? 0.1 : 1 ) }
