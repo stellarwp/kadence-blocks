@@ -58,13 +58,13 @@ class Kadence_LottieAnimation_post_REST_Controller extends WP_REST_Controller {
 		$jsonParams = $request->get_json_params();
 
 		if ( empty( $jsonParams['lottieFile'] ) || ! is_array( $jsonParams['lottieFile'] ) || json_encode( $jsonParams['lottieFile'] ) === false ) {
-			return new WP_Error( 'invalid_json', __( 'Lottie animation contains invalid JSON' ), array( 'status' => 200 ) );
+			return new WP_Error( 'invalid_json', __( 'Lottie animation contains invalid JSON', 'kadence-blocks' ), array( 'status' => 200 ) );
 		}
 
 		if ( ! empty( trim( $jsonParams['title'] ) ) ) {
 			$title = trim( $jsonParams['title'] );
 		} else {
-			return array( 'error' => true, 'message' => 'Please enter an animation title' );
+			return array( 'error' => true, 'message' => __( 'Please enter an animation title', 'kadence-blocks' ) );
 		}
 
 		// Create post object

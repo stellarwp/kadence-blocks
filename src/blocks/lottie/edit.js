@@ -192,7 +192,7 @@ export function Edit( {
 			try {
 				lottieJson = JSON.parse(e.target.result)
 			} catch (e) {
-				setLottieJsonError('Invalid JSON file');
+				setLottieJsonError( __( 'Invalid JSON file', 'kadence-blocks' ) );
 				return;
 			}
 
@@ -208,7 +208,7 @@ export function Edit( {
 					} else if ( has(response, 'error') && has(response, 'message')  ) {
 						setLottieJsonError( response.message );
 					} else {
-						setLottieJsonError( 'An error occurred when uploading your file' );
+						setLottieJsonError( __( 'An error occurred when uploading your file', 'kadence-blocks' ) );
 					}
 				});
 			}
@@ -250,7 +250,7 @@ export function Edit( {
 					Upload a Lottie file
 				</Button>
 				{ isOpen && (
-					<Modal title="Upload Lottie JSON file" onRequestClose={ closeModal }>
+					<Modal title={ __( 'Upload Lottie JSON file', 'kadence-blocks' ) } onRequestClose={ closeModal }>
 
 						{lottieJsonError !== false ?
 							<Notice status="error" onRemove={ () => setLottieJsonError( false ) }>
@@ -259,7 +259,7 @@ export function Edit( {
 							: null }
 
 						<TextControl
-							label="Animation Title"
+							label={ __( 'Animation title', 'kadence-blocks' ) }
 							value={ newAnimationTitle }
 							onChange={ ( value ) => setNewAnimationTitle( value ) }
 						/>
@@ -274,13 +274,13 @@ export function Edit( {
 						>
 							Browse
 						</FormFileUpload>
-						{ lottieJsonFile ? null : 'Select a file'}
+						{ lottieJsonFile ? null : __( 'Select a file', 'kadence-blocks' )}
 
 						<br/><br/>
 
 						<Button className={ 'is-secondary' } onClick={ closeModal } text={ 'Cancel'} />
 						&nbsp;&nbsp;&nbsp;
-						<Button className={ 'is-primary' } disabled={ !lottieJsonFile } onClick={ () => parseAndUpload( lottieJsonFile, newAnimationTitle, setLottieJsonError ) } text={ 'Upload' }/>
+						<Button className={ 'is-primary' } disabled={ !lottieJsonFile } onClick={ () => parseAndUpload( lottieJsonFile, newAnimationTitle, setLottieJsonError ) } text={ __( 'Upload', 'kadence-blocks' ) }/>
 
 					</Modal>
 				) }
@@ -314,7 +314,7 @@ export function Edit( {
 
 					{ fileSrc === 'url' ?
 						<TextControl
-							label={ __('Lottie Animation URL') }
+							label={ __('Lottie Animation URL', 'kadence-blocks') }
 							value={ fileUrl }
 							onChange={ (value) => setAttributes({ fileUrl: value }) }
 						/>
