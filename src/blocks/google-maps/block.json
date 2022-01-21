@@ -1,0 +1,108 @@
+{
+  "apiVersion": 2,
+  "name": "kadence/google-maps",
+  "title": "Google Maps",
+  "category": "kadence-blocks",
+  "description": "Kadence google maps",
+  "textdomain": "kadence-google-maps",
+  "keywords": [
+	"kb",
+	"google",
+	"maps"
+  ],
+  "attributes": {
+	"uniqueID": {
+	  "type": "string"
+	},
+	"align": {
+	  "type": "string"
+	},
+	"width": {
+	  "type": "number",
+	  "default": 100
+	},
+	"height": {
+	  "type": "number",
+	  "default": 450
+	},
+	"zoom": {
+	  "type": "number",
+	  "default": "11"
+	},
+	"location": {
+	  "type": "string",
+	  "default": "Golden Gate Bridge"
+	},
+	"mapType": {
+	  "enum": ["roadmap", "satellite"],
+	  "default": "roadmap"
+	},
+	"mapMode": {
+	  "enum": ["place", "search"],
+	  "default": "place"
+	},
+	"marginDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"paddingDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	}
+  },
+  "editorScript": "file:editor.js"
+}

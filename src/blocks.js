@@ -42,6 +42,7 @@ import './blocks/countdown/countdown-inner/block.js';
 
 /* block.json styles */
 import './blocks/image/index.js';
+import './blocks/google-maps/index.js';
 
 // import './plugins/kadence-control.js';
 // import './plugins/editor-width.js';
