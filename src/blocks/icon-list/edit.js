@@ -399,6 +399,7 @@ class KadenceIconLists extends Component {
 							}
 						} }
 						dynamicAttribute={ 'items:' + index + ':link' }
+						allowClear={ true }
 						{ ...this.props }
 					/>
 					<IconControl
