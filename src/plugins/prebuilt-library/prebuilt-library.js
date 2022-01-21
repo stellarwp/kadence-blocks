@@ -110,19 +110,19 @@ class PrebuiltModal extends Component {
 			cloudSettings: kadence_blocks_params.cloud_settings ? JSON.parse( kadence_blocks_params.cloud_settings ) : {},
 			actions: kadence_blocks_params.cloud_enabled ? normal_actions : no_connect_actions,
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
-			wireSettings: {},
+			librarySettings: {},
 		};
 	}
 	showSettings( key ) {
-		if ( undefined === this.state.wireSettings[ key ] || 'all' === this.state.wireSettings[ key ] ) {
+		if ( undefined === this.state.librarySettings[ key ] || 'all' === this.state.librarySettings[ key ] ) {
 			return true;
-		} else if ( 'contributor' === this.state.wireSettings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+		} else if ( 'contributor' === this.state.librarySettings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
 			return true;
-		} else if ( 'author' === this.state.wireSettings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+		} else if ( 'author' === this.state.librarySettings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
 			return true;
-		} else if ( 'editor' === this.state.wireSettings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
+		} else if ( 'editor' === this.state.librarySettings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
 			return true;
-		} else if ( 'admin' === this.state.wireSettings[ key ] && 'admin' === this.state.user ) {
+		} else if ( 'admin' === this.state.librarySettings[ key ] && 'admin' === this.state.user ) {
 			return true;
 		}
 		return false;
@@ -141,7 +141,7 @@ class PrebuiltModal extends Component {
 		}
 		const blockSettings = ( kadence_blocks_params.configuration ? KadenceTryParseJSON( kadence_blocks_params.configuration, true ) : {} );
 		if ( blockSettings[ 'kadence/designlibrary' ] !== undefined && typeof blockSettings[ 'kadence/designlibrary' ] === 'object' ) {
-			this.setState( { wireSettings: blockSettings[ 'kadence/designlibrary' ] } );
+			this.setState( { librarySettings: blockSettings[ 'kadence/designlibrary' ] } );
 		}
 	}
 	reloadAllActions() {
@@ -208,7 +208,7 @@ class PrebuiltModal extends Component {
 									<div class="kb-prebuilt-library-actions">
 										{ actions.map( ( action, index ) => 
 											<Fragment>
-												{ action.slug !== 'wire' && (
+												{ action.slug !== 'wire' && this.showSettings( action.slug ) &&  (
 													<Button
 														key={ `${ action.slug }-${ index }` }
 														className={ 'kb-action-button' + ( active_tab === action.slug ? ' is-pressed' : '' ) }

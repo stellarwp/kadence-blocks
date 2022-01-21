@@ -9,7 +9,6 @@ const {
 	Modal,
 	SelectControl,
 } = wp.components;
-
 /**
  * Internal dependencies
  */
@@ -92,6 +91,36 @@ class KadenceDesignLibrarySettings extends Component {
 							] }
 							onChange={ value => this.saveConfigState( 'wire', value ) }
 						/>
+						{ kadence_blocks_params.pro === 'true' && (
+							<Fragment>
+								<SelectControl
+									label={ __( 'Show Sections Library For', 'kadence-blocks' ) }
+									value={ ( designConfig.section ? designConfig.section : 'all' ) }
+									options={ [
+										{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+										{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+										{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+										{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+										{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+										{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
+									] }
+									onChange={ value => this.saveConfigState( 'section', value ) }
+								/>
+								<SelectControl
+									label={ __( 'Show Starter Packs Library For', 'kadence-blocks' ) }
+									value={ ( designConfig.templates ? designConfig.templates : 'all' ) }
+									options={ [
+										{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
+										{ value: 'contributor', label: __( 'Minimum User Role Contributor', 'kadence-blocks' ) },
+										{ value: 'author', label: __( 'Minimum User Role Author', 'kadence-blocks' ) },
+										{ value: 'editor', label: __( 'Minimum User Role Editor', 'kadence-blocks' ) },
+										{ value: 'admin', label: __( 'Minimum User Role Admin', 'kadence-blocks' ) },
+										{ value: 'none', label: __( 'No Users', 'kadence-blocks' ) },
+									] }
+									onChange={ value => this.saveConfigState( 'templates', value ) }
+								/>
+							</Fragment>
+						) }
 						<Button className="kt-defaults-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/designlibrary', designConfig );
 						} }>
