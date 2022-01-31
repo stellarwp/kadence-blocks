@@ -1762,6 +1762,12 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_tabs_scripts_gfonts( $blockattr );
 						}
 					}
+					if ( 'kadence/image' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_image_css_head( $blockattr );
+						}
+					}
 					if ( 'kadence/infobox' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
