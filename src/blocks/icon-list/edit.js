@@ -283,19 +283,15 @@ class KadenceIconLists extends Component {
 
 	onMoveLeft(index) {
 		return () => {
-			console.log(`Move ${index} left (${this.props.attributes.items[index]})`);
 			if(this.props.attributes.items[index].level > 0)
 				this.props.attributes.items[index].level = this.props.attributes.items[index].level - 1;
-			console.log(this.props.attributes.items[index].level);
 			this.setState({});
 		}
 	}
 
 	onMoveRight(index) {
 		return () => {
-			console.log(`MOve ${index} right`);
 			this.props.attributes.items[index].level = this.props.attributes.items[index].level + 1;
-			console.log(this.props.attributes.items[index].level);
 			this.setState({});
 		}
 	}
@@ -341,7 +337,7 @@ class KadenceIconLists extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { level, listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns }, attributes, className, setAttributes, isSelected } = this.props;
+		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns }, attributes, className, setAttributes, isSelected } = this.props;
 		const { marginControl } = this.state;
 		const gconfig = {
 			google: {
