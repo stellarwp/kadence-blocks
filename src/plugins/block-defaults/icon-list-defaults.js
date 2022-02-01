@@ -84,6 +84,7 @@ class KadenceIconListDefault extends Component {
 			padding: 5,
 			borderWidth: 1,
 			style: 'default',
+			level: 0
 		} ];
 		const iconAlignOptions = [
 			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },

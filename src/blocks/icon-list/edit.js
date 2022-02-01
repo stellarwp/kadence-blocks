@@ -81,6 +81,8 @@ class KadenceIconLists extends Component {
 		this.onMove = this.onMove.bind( this );
 		this.onMoveDown = this.onMoveDown.bind( this );
 		this.onMoveUp = this.onMoveUp.bind( this );
+		this.onMoveLeft = this.onMoveLeft.bind( this );
+		this.onMoveRight = this.onMoveRight.bind( this );
 		this.createNewListItem = this.createNewListItem.bind( this );
 		this.setFocusOnNewItem = this.setFocusOnNewItem.bind( this );
 		this.getPreviewSize = this.getPreviewSize.bind( this );
@@ -108,6 +110,7 @@ class KadenceIconLists extends Component {
 							item.padding = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].padding;
 							item.borderWidth = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderWidth;
 							item.style = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].style;
+							item.level = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].level
 							return item;
 						} );
 					} else {
@@ -161,6 +164,7 @@ class KadenceIconLists extends Component {
 			borderWidth: currentItems[ 0 ].borderWidth,
 			padding: currentItems[ 0 ].padding,
 			style: currentItems[ 0 ].style,
+			level: currentItems[ 0 ].level
 		} ];
 		const addin = Math.abs( previousIndex + 1 );
 		{
@@ -185,6 +189,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ previousIndex ].borderWidth,
 						padding: currentItems[ previousIndex ].padding,
 						style: currentItems[ previousIndex ].style,
+						level: currentItems[ previousIndex ].level
 					} );
 				} else if ( n === previousIndex ) {
 					newItems.push( {
@@ -201,6 +206,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ previousIndex ].borderWidth,
 						padding: currentItems[ previousIndex ].padding,
 						style: currentItems[ previousIndex ].style,
+						level: currentItems[ previousIndex ].level
 					} );
 				} else {
 					if ( n > addin ) {
@@ -220,6 +226,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ ind ].borderWidth,
 						padding: currentItems[ ind ].padding,
 						style: currentItems[ ind ].style,
+						level: currentItems[ ind ].level
 					} );
 				}
 			} );
@@ -273,6 +280,26 @@ class KadenceIconLists extends Component {
 			this.onMove( oldIndex, oldIndex - 1 );
 		};
 	}
+
+	onMoveLeft(index) {
+		return () => {
+			console.log(`Move ${index} left (${this.props.attributes.items[index]})`);
+			if(this.props.attributes.items[index].level > 0)
+				this.props.attributes.items[index].level = this.props.attributes.items[index].level - 1;
+			console.log(this.props.attributes.items[index].level);
+			this.setState({});
+		}
+	}
+
+	onMoveRight(index) {
+		return () => {
+			console.log(`MOve ${index} right`);
+			this.props.attributes.items[index].level = this.props.attributes.items[index].level + 1;
+			console.log(this.props.attributes.items[index].level);
+			this.setState({});
+		}
+	}
+
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
 			return true;
@@ -314,7 +341,7 @@ class KadenceIconLists extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns }, attributes, className, setAttributes, isSelected } = this.props;
+		const { attributes: { level, listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns }, attributes, className, setAttributes, isSelected } = this.props;
 		const { marginControl } = this.state;
 		const gconfig = {
 			google: {
@@ -515,7 +542,7 @@ class KadenceIconLists extends Component {
 		);
 		const renderIconsPreview = ( index ) => {
 			return (
-				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` } >
+				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index } kt-svg-icon-list-level-${ items[index].level }` } >
 					{ items[ index ].icon && (
 						<IconRender className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
 							color: ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
@@ -589,6 +616,21 @@ class KadenceIconLists extends Component {
 							disabled={ ! this.state.focusIndex === index }
 						/>
 						<Button
+							icon="arrow-left"
+							onClick={ this.onMoveLeft(index) }
+							className="kadence-blocks-list-item__move-left"
+							label={ __('Move Item Left', 'kadence-blocks') }
+							aria-disabled={ items[index].level === 0 }
+							disabled={ ! this.state.focusIndex === index }
+						/>
+						<Button
+							icon="arrow-right"
+							onClick={ this.onMoveRight(index) }
+							className="kadence-blocks-list-item__move-right"
+							label={ __('Move Item Left', 'kadence-blocks') }
+							disabled={ ! this.state.focusIndex === index }
+						/>
+						<Button
 							icon="no-alt"
 							onClick={ () => removeListItem( null, index ) }
 							className="kadence-blocks-list-item__remove"
@@ -635,6 +677,7 @@ class KadenceIconLists extends Component {
 												borderWidth: newitems[ 0 ].borderWidth,
 												padding: newitems[ 0 ].padding,
 												style: newitems[ 0 ].style,
+												level: newitems[ 0 ].level
 											} );
 										} ); }
 										setAttributes( { items: newitems } );
@@ -931,6 +974,7 @@ class KadenceIconLists extends Component {
 												borderWidth: newitems[ 0 ].borderWidth,
 												padding: newitems[ 0 ].padding,
 												style: newitems[ 0 ].style,
+												level: newitems[ 0 ].level
 											} );
 										} ); }
 										setAttributes( { items: newitems } );
