@@ -62,52 +62,52 @@ class ColumnStyleCopyPaste extends Component {
 		const headingCopiedStyles = JSON.parse( localStorage.getItem( 'kadenceColumnStyle' ) );
 		const copyAction = () => {
 			const copyStyles = {};
-			if ( blockAttributes.topPadding ) {
+			if ( blockAttributes.topPadding || blockAttributes.topPadding === 0 ) {
 				copyStyles.topPadding = blockAttributes.topPadding;
 			}
-			if ( blockAttributes.bottomPadding ) {
+			if ( blockAttributes.bottomPadding || blockAttributes.bottomPadding === 0 ) {
 				copyStyles.bottomPadding = blockAttributes.bottomPadding;
 			}
-			if ( blockAttributes.leftPadding ) {
+			if ( blockAttributes.leftPadding || blockAttributes.leftPadding === 0 ) {
 				copyStyles.leftPadding = blockAttributes.leftPadding;
 			}
-			if ( blockAttributes.rightPadding ) {
+			if ( blockAttributes.rightPadding || blockAttributes.rightPadding === 0 ) {
 				copyStyles.rightPadding = blockAttributes.rightPadding;
 			}
-			if ( blockAttributes.topPaddingM ) {
+			if ( blockAttributes.topPaddingM || blockAttributes.topPaddingM === 0 ) {
 				copyStyles.topPaddingM = blockAttributes.topPaddingM;
 			}
-			if ( blockAttributes.bottomPaddingM ) {
+			if ( blockAttributes.bottomPaddingM || blockAttributes.bottomPaddingM === 0 ) {
 				copyStyles.bottomPaddingM = blockAttributes.bottomPaddingM;
 			}
-			if ( blockAttributes.leftPaddingM ) {
+			if ( blockAttributes.leftPaddingM || blockAttributes.leftPaddingM === 0 ) {
 				copyStyles.leftPaddingM = blockAttributes.leftPaddingM;
 			}
-			if ( blockAttributes.rightPaddingM ) {
+			if ( blockAttributes.rightPaddingM || blockAttributes.rightPaddingM === 0 ) {
 				copyStyles.rightPaddingM = blockAttributes.rightPaddingM;
 			}
-			if ( blockAttributes.topMargin ) {
+			if ( blockAttributes.topMargin || blockAttributes.topMargin === 0 ) {
 				copyStyles.topMargin = blockAttributes.topMargin;
 			}
-			if ( blockAttributes.bottomMargin ) {
+			if ( blockAttributes.bottomMargin || blockAttributes.bottomMargin === 0 ) {
 				copyStyles.bottomMargin = blockAttributes.bottomMargin;
 			}
-			if ( blockAttributes.topMarginM ) {
+			if ( blockAttributes.topMarginM || blockAttributes.topMarginM === 0 ) {
 				copyStyles.topMarginM = blockAttributes.topMarginM;
 			}
-			if ( blockAttributes.bottomMarginM ) {
+			if ( blockAttributes.bottomMarginM || blockAttributes.bottomMarginM === 0 ) {
 				copyStyles.bottomMarginM = blockAttributes.bottomMarginM;
 			}
-			if ( blockAttributes.leftMargin ) {
+			if ( blockAttributes.leftMargin || blockAttributes.leftMargin === 0 ) {
 				copyStyles.leftMargin = blockAttributes.leftMargin;
 			}
-			if ( blockAttributes.rightMargin ) {
+			if ( blockAttributes.rightMargin || blockAttributes.rightMargin === 0 ) {
 				copyStyles.rightMargin = blockAttributes.rightMargin;
 			}
-			if ( blockAttributes.leftMarginM ) {
+			if ( blockAttributes.leftMarginM || blockAttributes.leftMarginM === 0 ) {
 				copyStyles.leftMarginM = blockAttributes.leftMarginM;
 			}
-			if ( blockAttributes.rightMarginM ) {
+			if ( blockAttributes.rightMarginM || blockAttributes.rightMarginM === 0 ) {
 				copyStyles.rightMarginM = blockAttributes.rightMarginM;
 			}
 			if ( blockAttributes.zIndex ) {
@@ -152,28 +152,28 @@ class ColumnStyleCopyPaste extends Component {
 			if ( blockAttributes.linkHoverColor ) {
 				copyStyles.linkHoverColor = blockAttributes.linkHoverColor;
 			}
-			if ( blockAttributes.topPaddingT ) {
+			if ( blockAttributes.topPaddingT || blockAttributes.bottomPadding === 0 ) {
 				copyStyles.topPaddingT = blockAttributes.topPaddingT;
 			}
-			if ( blockAttributes.bottomPaddingT ) {
+			if ( blockAttributes.bottomPaddingT || blockAttributes.bottomPaddingT === 0 ) {
 				copyStyles.bottomPaddingT = blockAttributes.bottomPaddingT;
 			}
-			if ( blockAttributes.leftPaddingT ) {
+			if ( blockAttributes.leftPaddingT || blockAttributes.leftPaddingT === 0 ) {
 				copyStyles.leftPaddingT = blockAttributes.leftPaddingT;
 			}
-			if ( blockAttributes.rightPaddingT ) {
+			if ( blockAttributes.rightPaddingT || blockAttributes.rightPaddingT === 0 ) {
 				copyStyles.rightPaddingT = blockAttributes.rightPaddingT;
 			}
-			if ( blockAttributes.topMarginT ) {
+			if ( blockAttributes.topMarginT || blockAttributes.topMarginT === 0 ) {
 				copyStyles.topMarginT = blockAttributes.topMarginT;
 			}
-			if ( blockAttributes.bottomMarginT ) {
+			if ( blockAttributes.bottomMarginT || blockAttributes.bottomMarginT === 0 ) {
 				copyStyles.bottomMarginT = blockAttributes.bottomMarginT;
 			}
-			if ( blockAttributes.leftMarginT ) {
+			if ( blockAttributes.leftMarginT || blockAttributes.leftMarginT === 0 ) {
 				copyStyles.leftMarginT = blockAttributes.leftMarginT;
 			}
-			if ( blockAttributes.rightMarginT ) {
+			if ( blockAttributes.rightMarginT || blockAttributes.rightMarginT === 0 ) {
 				copyStyles.rightMarginT = blockAttributes.rightMarginT;
 			}
 			if ( blockAttributes.marginType ) {
