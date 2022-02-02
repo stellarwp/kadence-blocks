@@ -82,7 +82,7 @@ export function Edit( {
 		marginUnit,
 	} = attributes;
 
-	let rerenderKey = 'static';
+	const [ rerenderKey, setRerenderKey ] = useState( 'static' );
 	const [ lottieAnimationsCacheKey, setLottieAnimationsCacheKey ] = useState( { key: Math.random() } );
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
@@ -129,7 +129,6 @@ export function Edit( {
 
 	if(playbackSpeed){
 		playerProps.speed = playbackSpeed;
-		rerenderKey = Math.random();
 	}
 
 	if(showControls){
@@ -362,12 +361,11 @@ export function Edit( {
 					<RangeControl
 						label={ __( 'Playback Speed' ) }
 						value={ playbackSpeed }
-						onChange={ ( value ) => setAttributes( { playbackSpeed: value } ) }
+						onChange={ ( value ) => { setAttributes( { playbackSpeed: value } ); setRerenderKey( Math.random() ) } }
 						step={ 0.1 }
 						min={ 0 }
 						max={ 10 }
 					/>
-
 
 					<h3>Loop Settings</h3>
 					<ToggleControl
