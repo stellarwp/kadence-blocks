@@ -9,10 +9,6 @@ const { rest_url } = kadence_blocks_params;
 import classnames from 'classnames';
 import get from 'lodash/get';
 
-/**
- * WordPress dependencies
- */
-import { InnerBlocks } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
 	const { uniqueID } = attributes;
