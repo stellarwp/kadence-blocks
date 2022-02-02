@@ -224,7 +224,14 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-editor-css',
 			)
 		);
-
+		register_block_type(
+			'kadence/google-maps',
+			array(
+				'render_callback' => array( $this, 'render_google_maps_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
 		register_block_type(
 			'kadence/iconlist',
 			array(
@@ -944,6 +951,34 @@ class Kadence_Blocks_Frontend {
 		}
 		return $content;
 	}
+
+	/**
+	 * Render Google Maps block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_google_maps_css( $attributes, $content ){
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
+
+				$css = $this->blocks_google_map_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'accordion', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
+	}
+
 	/**
 	 * Render Image CSS
 	 *
@@ -5677,6 +5712,47 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 	}
+
+	/**
+	 * Builds CSS for Google Maps block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_google_map_array( $attr, $unique_id ) {
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+
+		$css->set_selector( '.kb-google-maps-container' . $unique_id );
+
+		// max-width
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( isset( $attr['width' . $breakpoint] ) && is_numeric(  $attr['width' . $breakpoint] ) ) {
+						$css->add_property( 'max-width', $attr['width' . $breakpoint] . 'px' );
+			}
+			$css->stop_media_query();
+		}
+
+		// height
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( isset( $attr['height' . $breakpoint] ) &&  is_numeric( $attr['height' . $breakpoint] ) ) {
+					$css->add_property( 'height', $attr['height' . $breakpoint] . 'px' );
+			} else if( $breakpoint === 'Desktop' &&  !isset( $attr['heightDesktop'] ) ){
+				$css->add_property( 'height', '450px' );
+			}
+			$css->stop_media_query();
+		}
+
+		return $css->css_output();
+
+	}
+
 	/**
 	 * Builds CSS for Image block.
 	 *
