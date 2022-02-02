@@ -967,8 +967,9 @@ class Kadence_Blocks_Frontend {
 			$unique_id              = $attributes['uniqueID'];
 			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
 			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
+			$style_id               = 'kt-blocks' . esc_attr( $unique_id );
 
-			if ( ! wp_style_is( 'kb-lottie-container', 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
 
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
@@ -1003,8 +1004,18 @@ class Kadence_Blocks_Frontend {
 					}, 125);
 				</script>";
 				}
+
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'image', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
 			}
 		}
+
+		return $content;
 	}
 
 	/**
