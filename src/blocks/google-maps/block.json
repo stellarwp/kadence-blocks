@@ -14,16 +14,33 @@
 	"uniqueID": {
 	  "type": "string"
 	},
-	"align": {
-	  "type": "string"
-	},
 	"width": {
 	  "type": "number",
-	  "default": 100
+	  "default": ""
 	},
-	"height": {
+	"heightDesktop": {
 	  "type": "number",
 	  "default": 450
+	},
+	"heightTablet": {
+	  "type": "number",
+	  "default": 450
+	},
+	"heightMobile": {
+	  "type": "number",
+	  "default": 450
+	},
+	"widthDesktop": {
+	  "type": "number",
+	  "default": ""
+	},
+	"widthTablet": {
+	  "type": "number",
+	  "default": ""
+	},
+	"widthMobile": {
+	  "type": "number",
+	  "default": ""
 	},
 	"zoom": {
 	  "type": "number",
@@ -40,68 +57,6 @@
 	"mapMode": {
 	  "enum": ["place", "search"],
 	  "default": "place"
-	},
-	"marginDesktop": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
-	},
-	"marginTablet": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
-	},
-	"marginMobile": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
-	},
-	"marginUnit": {
-	  "type": "string",
-	  "default": "px"
-	},
-	"paddingDesktop": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
-	},
-	"paddingTablet": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
-	},
-	"paddingMobile": {
-	  "type": "array",
-	  "default": [
-		"",
-		"",
-		"",
-		""
-	  ]
-	},
-	"paddingUnit": {
-	  "type": "string",
-	  "default": "px"
 	}
   },
   "editorScript": "file:editor.js"

@@ -6,8 +6,7 @@
  */
 .kb-map-container {
   width: 100%;
-  position: relative;
-}
+  position: relative; }
 
 .kb-map-container-infobar {
   position: absolute;
@@ -19,13 +18,8 @@
   text-align: center;
   font-size: 20px;
   padding-top: 20px;
-  color: #FFF;
-
-  &:hover {
-	background-color: #007cba;
-	&:after{
-	  content: 'Click here to select block';
-	}
-  }
-
-}
+  color: #FFF; }
+  .kb-map-container-infobar:hover {
+    background-color: #007cba; }
+    .kb-map-container-infobar:hover:after {
+      content: 'Click here to select block'; }
