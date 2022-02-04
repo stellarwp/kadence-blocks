@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
-Tested up to: 5.8
-Stable tag: 2.2.3
+Tested up to: 5.9
+Stable tag: 2.2.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 2.2.4 =
 Release Date: February 4th, 2022
+* Add: Lottie Animation Block.
 * Fix: Issue with image css not loading in head.
 
 
@@ -99,7 +100,6 @@ Release Date: January 18th, 2022
 = 2.2.1 =
 Release Date: January 17th, 2022
 * Fix: Possible issue with Table of Contents.
-
 
 = 2.2.0 =
 Release Date: January 14th, 2022
