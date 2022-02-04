@@ -766,7 +766,7 @@ function kadence_blocks_get_template_html( $template_name, $args = array(), $tem
  */
 function kadence_blocks_locate_template( $template_name, $template_path = '', $default_path = '' ) {
 	if ( ! $template_path ) {
-		$template_path = apply_filters( 'kadence_blocks_template_path', 'kadenceblocks/' );
+		$template_path = apply_filters( 'kadence_blocks_template_path', 'kadence-blocks/' );
 	}
 
 	if ( ! $default_path ) {
@@ -780,7 +780,16 @@ function kadence_blocks_locate_template( $template_name, $template_path = '', $d
 			$template_name,
 		)
 	);
-
+	// Check depreciated path template.
+	if ( ! $template ) {
+		$template_path = 'kadenceblocks/' );
+		$template = locate_template(
+			array(
+				trailingslashit( $template_path ) . $template_name,
+				$template_name,
+			)
+		);
+	}
 	// Get default template/.
 	if ( ! $template ) {
 		$template = $default_path . $template_name;
