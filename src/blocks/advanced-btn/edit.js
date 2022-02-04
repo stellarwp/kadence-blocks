@@ -108,6 +108,7 @@ class KadenceAdvancedButton extends Component {
 			btnLink: false,
 			buttonMarginControl: 'individual',
 			marginControl: 'individual',
+			buttonMarginControl: 'individual',
 			iconPaddingControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},

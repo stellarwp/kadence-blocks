@@ -7,7 +7,7 @@
       "uuidString" : "4A0AC384-49F1-4908-A230-491BE3A9C306"
     }
   ],
-  "creatorBuild" : "34324",
+  "creatorBuild" : "34335",
   "files" : {
     "\/.editorconfig" : {
       "cB" : 0,
@@ -39,6 +39,12 @@
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/.gitignore",
+      "oF" : 0
+    },
+    "\/.idea" : {
+      "ft" : 65536,
+      "oA" : 1,
+      "oAP" : "\/.idea",
       "oF" : 0
     },
     "\/dist\/assets\/css\/simplelightbox.css" : {
@@ -101,7 +107,7 @@
       "oA" : 0,
       "oAP" : "\/dist\/assets\/images\/ajax-loader.gif",
       "oF" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "rq" : 75
     },
@@ -111,8 +117,8 @@
       "oA" : 0,
       "oAP" : "\/dist\/assets\/images\/graphy.png",
       "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
+      "oIPL" : 1,
+      "opt" : 1,
       "oT" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
@@ -276,6 +282,28 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/dist\/assets\/js\/lottie-interactivity.min.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/lottie-interactivity.min-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/assets\/js\/lottie-player.min.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/lottie-player.min-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/dist\/assets\/js\/simplelightbox.min.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -350,6 +378,28 @@
       "oA" : 0,
       "oAP" : "\/dist\/assets\/js\/kb-tiny-init.min.js",
       "oF" : 3,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/assets\/js\/src\/lottie-interactivity.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/src\/lottie-interactivity-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/dist\/assets\/js\/src\/lottie-player.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/src\/lottie-player-min.js",
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },
@@ -489,9 +539,9 @@
       "co" : 0,
       "ft" : 16,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/blocks\/image.style.build-min.css",
-      "oF" : 1,
+      "oF" : 0,
       "pg" : 0
     },
     "\/dist\/blocks\/infobox.style.build.css" : {
@@ -525,9 +575,9 @@
       "co" : 0,
       "ft" : 16,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/blocks\/restaurant.style.build-min.css",
-      "oF" : 1,
+      "oF" : 0,
       "pg" : 0
     },
     "\/dist\/blocks\/row.style.build.css" : {
@@ -602,6 +652,29 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks-min.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks-min-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
+    "\/dist\/build\/blocks-min.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks-min-min.js",
+      "oF" : 0,
+      "sC" : 3,
+      "tS" : 0
+    },
     "\/dist\/build\/blocks.asset.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -622,27 +695,51 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks.css.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.css.map",
+      "oF" : 0
+    },
     "\/dist\/build\/blocks.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/build\/blocks-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
+    },
+    "\/dist\/build\/blocks.js.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.js.map",
+      "oF" : 0
     },
     "\/dist\/build\/vendors\/blocks.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
+    },
+    "\/dist\/build\/vendors\/blocks.js.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/vendors\/blocks.js.map",
+      "oF" : 0
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -706,6 +803,22 @@
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/dist\/class-kadence-blocks-table-of-contents.php",
+      "oF" : 0
+    },
+    "\/dist\/class-lottieanimation-get-rest-api.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/class-lottieanimation-get-rest-api.php",
+      "oF" : 0
+    },
+    "\/dist\/class-lottieanimation-post-rest-api.php" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/class-lottieanimation-post-rest-api.php",
       "oF" : 0
     },
     "\/dist\/class-mailerlite-form-rest-api.php" : {
@@ -1035,7 +1148,7 @@
       "oAP" : "\/dist\/settings\/img\/accordion.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1048,7 +1161,7 @@
       "oAP" : "\/dist\/settings\/img\/btn.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1061,7 +1174,7 @@
       "oAP" : "\/dist\/settings\/img\/form-block.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1074,7 +1187,7 @@
       "oAP" : "\/dist\/settings\/img\/gallery-block.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1087,7 +1200,7 @@
       "oAP" : "\/dist\/settings\/img\/heading.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1100,7 +1213,7 @@
       "oAP" : "\/dist\/settings\/img\/icon.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1113,7 +1226,7 @@
       "oAP" : "\/dist\/settings\/img\/iconlist.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1126,7 +1239,7 @@
       "oAP" : "\/dist\/settings\/img\/infobox.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1137,8 +1250,8 @@
       "oA" : 0,
       "oAP" : "\/dist\/settings\/img\/kadence-logo.png",
       "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
+      "oIPL" : 1,
+      "opt" : 1,
       "oT" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
@@ -1152,7 +1265,7 @@
       "oAP" : "\/dist\/settings\/img\/rowlayout.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1165,7 +1278,7 @@
       "oAP" : "\/dist\/settings\/img\/spacer.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1178,7 +1291,7 @@
       "oAP" : "\/dist\/settings\/img\/tabs.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1191,7 +1304,7 @@
       "oAP" : "\/dist\/settings\/img\/testimonials.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -2208,7 +2321,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/block-min.json",
       "oF" : 0,
-      "oO" : 0,
+      "oO" : 1,
       "oS" : 1
     },
     "\/src\/blocks\/image\/constants.js" : {
@@ -2219,7 +2332,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/constants-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/deprecated.js" : {
@@ -2227,10 +2340,10 @@
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/blocks\/image\/deprecated-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/edit.js" : {
@@ -2241,7 +2354,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/edit-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/edit.native.js" : {
@@ -2249,10 +2362,10 @@
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/blocks\/image\/edit.native-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/editor.scss" : {
@@ -2263,12 +2376,12 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/blocks\/image\/editor.css",
-      "oF" : 1,
+      "oF" : 0,
       "oS" : 0,
       "pg" : 0,
-      "sct" : 1
+      "sct" : 0
     },
     "\/src\/blocks\/image\/helpers.js" : {
       "bF" : 0,
@@ -2278,7 +2391,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/helpers-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/aspect-ratio-dropdown.js" : {
@@ -2289,7 +2402,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/aspect-ratio-dropdown-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/constants.js" : {
@@ -2300,7 +2413,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/constants-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/context.js" : {
@@ -2311,7 +2424,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/context-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/cropper.js" : {
@@ -2322,7 +2435,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/cropper-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/form-controls.js" : {
@@ -2333,7 +2446,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/form-controls-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/index.js" : {
@@ -2341,10 +2454,10 @@
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/blocks\/image\/image-editing\/index-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/rotation-button.js" : {
@@ -2355,7 +2468,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/rotation-button-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/use-save-image.js" : {
@@ -2366,7 +2479,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/use-save-image-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/use-transform-image.js" : {
@@ -2377,7 +2490,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/use-transform-image-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image-editing\/zoom-dropdown.js" : {
@@ -2388,7 +2501,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-editing\/zoom-dropdown-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/image.js" : {
@@ -2399,7 +2512,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/image-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/index.js" : {
@@ -2410,7 +2523,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/index-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/save.js" : {
@@ -2421,11 +2534,11 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/save-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/style.scss" : {
-      "aP" : 1,
+      "aP" : 0,
       "bl" : 0,
       "co" : 0,
       "dP" : 10,
@@ -2433,11 +2546,11 @@
       "ft" : 4,
       "ma" : 0,
       "oA" : 0,
-      "oAP" : "\/dist\/blocks\/image.style.build.css",
-      "oF" : 3,
-      "oS" : 3,
+      "oAP" : "\/src\/blocks\/image\/style.css",
+      "oF" : 0,
+      "oS" : 0,
       "pg" : 0,
-      "sct" : 1
+      "sct" : 0
     },
     "\/src\/blocks\/image\/theme.scss" : {
       "aP" : 0,
@@ -2447,12 +2560,12 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/blocks\/image\/theme.css",
-      "oF" : 1,
+      "oF" : 0,
       "oS" : 0,
       "pg" : 0,
-      "sct" : 1
+      "sct" : 0
     },
     "\/src\/blocks\/image\/transforms.js" : {
       "bF" : 0,
@@ -2462,7 +2575,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/transforms-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/transforms.native.js" : {
@@ -2470,10 +2583,10 @@
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/blocks\/image\/transforms.native-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/use-client-width.js" : {
@@ -2484,7 +2597,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/use-client-width-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/image\/utils.js" : {
@@ -2495,7 +2608,7 @@
       "oA" : 1,
       "oAP" : "\/src\/blocks\/image\/utils-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/blocks\/info-box\/attributes.js" : {
@@ -2572,13 +2685,69 @@
       "pg" : 0,
       "sct" : 1
     },
-    "\/src\/blocks\/lottie\/block.js" : {
+    "\/src\/blocks\/lottie\/block.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/lottie\/block-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/blocks\/lottie\/edit.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
       "oA" : 1,
-      "oAP" : "\/src\/blocks\/lottie\/block-min.js",
+      "oAP" : "\/src\/blocks\/lottie\/edit-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/lottie\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/blocks\/lottie\/editor.css",
+      "oF" : 0,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/src\/blocks\/lottie\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/lottie\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/lottie\/save.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/lottie\/save-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/lottie\/transforms.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/lottie\/transforms-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -3489,7 +3658,7 @@
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/box-shadow-control-min.js",
       "oF" : 0,
       "sC" : 0,
@@ -3562,7 +3731,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/background\/drop-shadow-control-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/background\/dynamic-background-control.js" : {
@@ -3621,7 +3790,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/color\/color-fields-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/color\/color-icons.js" : {
@@ -3632,7 +3801,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/color\/color-icons-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/color\/color-picker.js" : {
@@ -3643,7 +3812,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/color\/color-picker-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/color\/deprecated-kadence-color-output.js" : {
@@ -3676,7 +3845,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/color\/inline-pop-color-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/color\/kadence-color-output.js" : {
@@ -3698,7 +3867,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/color\/pop-color-control-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/color\/pop-color-editor.css" : {
@@ -3721,12 +3890,12 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/components\/color\/pop-color-editor.css",
-      "oF" : 1,
+      "oF" : 0,
       "oS" : 0,
       "pg" : 0,
-      "sct" : 1
+      "sct" : 0
     },
     "\/src\/components\/color\/single-pop-color.js" : {
       "bF" : 0,
@@ -3736,7 +3905,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/color\/single-pop-color-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/common\/box-shadow-control.js" : {
@@ -3747,7 +3916,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/common\/box-shadow-control-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/common\/capitalfirst.js" : {
@@ -3813,7 +3982,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/common\/image-size-control-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/common\/kadence-image-control.js" : {
@@ -3949,7 +4118,7 @@
       "oA" : 1,
       "oAP" : "\/src\/components\/links\/image-url-input-link-control-min.js",
       "oF" : 0,
-      "sC" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/links\/inline-link-control.js" : {
@@ -4038,6 +4207,17 @@
       "oAP" : "\/src\/components\/measurement\/single-input-control-min.js",
       "oF" : 0,
       "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/posts\/select-posts-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/posts\/select-posts-control-min.js",
+      "oF" : 0,
+      "sC" : 3,
       "tS" : 0
     },
     "\/src\/components\/range\/range-control.js" : {
@@ -4930,7 +5110,7 @@
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/src\/responsive-measurement-control-min.js",
       "oF" : 0,
       "sC" : 0,
@@ -5037,7 +5217,8 @@
     "displayValue" : "kadence-blocks New",
     "displayValueWasSetByUser" : 1,
     "iconImageName" : "brackets-verd",
-    "iconImageWasSetByUser" : 0
+    "iconImageWasSetByUser" : 0,
+    "lastBuiltDate" : 660719623.23649704
   },
   "projectSettings" : {
     "abortBuildOnError" : 1,
@@ -5330,7 +5511,7 @@
     "bowerTargetDependencyListType" : 1,
     "bowerUseExactVersion" : 0,
     "browserRefreshDelay" : 0,
-    "browserslistString" : ">0.2%, last 2 versions, Firefox ESR, not dead, Safari 10, Safari 9, Safari 8",
+    "browserslistString" : ">0.2%, last 2 versions, Firefox ESR, not dead",
     "buildEnvironment" : 0,
     "buildFolderActive" : 0,
     "buildFolderName" : "build",
@@ -5346,7 +5527,7 @@
     "esLintRules" : {
       "accessor-pairs" : {
         "active" : 0,
-        "optionString" : "{'setWithoutGet': true, 'getWithoutSet': false}"
+        "optionString" : "{'setWithoutGet': true, 'getWithoutSet': false, 'enforceForClassMembers': true}"
       },
       "array-bracket-newline" : {
         "active" : 0,
@@ -5393,7 +5574,7 @@
       },
       "camelcase" : {
         "active" : 0,
-        "optionString" : "{'properties': 'always', 'ignoreDestructuring': false}"
+        "optionString" : "{'properties': 'always', 'ignoreDestructuring': false, 'ignoreImports': false}"
       },
       "capitalized-comments" : {
         "active" : 0,
@@ -5401,7 +5582,7 @@
       },
       "class-methods-use-this" : {
         "active" : 0,
-        "optionString" : "{'exceptMethods': []}"
+        "optionString" : "{'exceptMethods': [], 'enforceForClassFields': true}"
       },
       "comma-dangle" : {
         "active" : 1,
@@ -5421,7 +5602,7 @@
       },
       "computed-property-spacing" : {
         "active" : 0,
-        "optionString" : "'never'"
+        "optionString" : "'never', {'enforceForClassMembers': true}"
       },
       "consistent-return" : {
         "active" : 0,
@@ -5562,7 +5743,7 @@
       },
       "max-classes-per-file" : {
         "active" : 0,
-        "optionString" : "1"
+        "optionString" : "{'ignoreExpressions': false, 'max': 1}"
       },
       "max-depth" : {
         "active" : 0,
@@ -5742,7 +5923,7 @@
       },
       "no-extra-parens" : {
         "active" : 0,
-        "optionString" : "'all', {'conditionalAssign': false, 'returnAssign': false, 'nestedBinaryExpressions': false, 'ignoreJSX': 'none', 'enforceForArrowConditionals': false}"
+        "optionString" : "'all', {'conditionalAssign': false, 'returnAssign': false, 'nestedBinaryExpressions': false, 'ignoreJSX': 'none', 'enforceForArrowConditionals': false, 'enforceForSequenceExpressions': false, 'enforceForNewInMemberExpressions': false}"
       },
       "no-extra-semi" : {
         "active" : 1
@@ -5762,7 +5943,7 @@
       },
       "no-implicit-coercion" : {
         "active" : 0,
-        "optionString" : "{'boolean': true, 'number': true, 'string': true, 'allow': []}"
+        "optionString" : "{'boolean': true, 'number': true, 'string': true, 'disallowTemplateShorthand': false, 'allow': []}"
       },
       "no-implicit-globals" : {
         "active" : 0
@@ -5786,7 +5967,7 @@
       },
       "no-invalid-this" : {
         "active" : 0,
-        "optionString" : ""
+        "optionString" : "{'capIsConstructor': true}"
       },
       "no-irregular-whitespace" : {
         "active" : 1,
@@ -5812,11 +5993,11 @@
         "active" : 0
       },
       "no-loss-of-precision" : {
-        "active" : 0
+        "active" : 1
       },
       "no-magic-numbers" : {
         "active" : 0,
-        "optionString" : "{'ignore': [], 'ignoreArrayIndexes': true, 'enforceConst': false, 'detectObjects': false}"
+        "optionString" : "{'ignore': [], 'ignoreArrayIndexes': true, 'ignoreDefaultValues': false, 'enforceConst': false, 'detectObjects': false}"
       },
       "no-misleading-character-class" : {
         "active" : 0
@@ -5873,7 +6054,7 @@
         "active" : 0
       },
       "no-nonoctal-decimal-escape" : {
-        "active" : 0
+        "active" : 1
       },
       "no-obj-calls" : {
         "active" : 1
@@ -6010,7 +6191,7 @@
       },
       "no-underscore-dangle" : {
         "active" : 0,
-        "optionString" : "{'allow': [], 'allowAfterThis': false, 'allowAfterSuper': false, 'enforceInMethodNames': false}"
+        "optionString" : "{'allow': [], 'allowAfterThis': false, 'allowAfterSuper': false, 'allowAfterThisConstructor': false, 'enforceInMethodNames': false, 'allowFunctionParams': true}"
       },
       "no-unexpected-multiline" : {
         "active" : 1
@@ -6034,15 +6215,15 @@
       },
       "no-unsafe-negation" : {
         "active" : 1,
-        "optionString" : ""
+        "optionString" : "{'enforceForOrderingRelations': false}"
       },
       "no-unsafe-optional-chaining" : {
-        "active" : 0,
+        "active" : 1,
         "optionString" : "{'disallowArithmeticOperators': false}"
       },
       "no-unused-expressions" : {
         "active" : 0,
-        "optionString" : "{'allowShortCircuit': false, 'allowTernary': false, 'allowTaggedTemplates': false}"
+        "optionString" : "{'allowShortCircuit': false, 'allowTernary': false, 'allowTaggedTemplates': false, 'enforceForJSX': false}"
       },
       "no-unused-labels" : {
         "active" : 1
@@ -6059,7 +6240,7 @@
         "optionString" : "{'functions': true, 'classes': true, 'variables': true}"
       },
       "no-useless-backreference" : {
-        "active" : 0
+        "active" : 1
       },
       "no-useless-call" : {
         "active" : 0
@@ -6069,7 +6250,7 @@
       },
       "no-useless-computed-key" : {
         "active" : 0,
-        "optionString" : ""
+        "optionString" : "{'enforceForClassMembers': false}"
       },
       "no-useless-concat" : {
         "active" : 0
@@ -6092,7 +6273,7 @@
       },
       "no-void" : {
         "active" : 0,
-        "optionString" : ""
+        "optionString" : "{'allowAsStatement': false}"
       },
       "no-warning-comments" : {
         "active" : 0,
@@ -6237,7 +6418,7 @@
       },
       "sort-imports" : {
         "active" : 0,
-        "optionString" : "{'ignoreCase': false, 'ignoreMemberSort': true, 'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single']}"
+        "optionString" : "{'ignoreCase': false, 'ignoreMemberSort': true, 'memberSyntaxSortOrder': ['none', 'all', 'multiple', 'single'], 'allowSeparatedGroups': false}"
       },
       "sort-keys" : {
         "active" : 0,
@@ -6296,7 +6477,7 @@
       },
       "use-isnan" : {
         "active" : 1,
-        "optionString" : ""
+        "optionString" : "{'enforceForSwitchCase': true, 'enforceForIndexOf': false}"
       },
       "valid-jsdoc" : {
         "active" : 0,
@@ -6337,7 +6518,7 @@
       "autoOutputPathReplace1" : "",
       "autoOutputPathReplace2" : "",
       "autoOutputPathStyle" : 0,
-      "minifierStyle" : 1,
+      "minifierStyle" : 0,
       "outputStyle" : 0,
       "sourceMapStyle" : 0,
       "transpilerStyle" : 1
@@ -6395,7 +6576,7 @@
       "webpRGBQuality" : 75
     },
     "languageDefaultsJS" : {
-      "autoOutputAction" : 1,
+      "autoOutputAction" : 0,
       "autoOutputPathFilenamePattern" : "*-min.js",
       "autoOutputPathRelativePath" : "\/min",
       "autoOutputPathReplace1" : "",
@@ -6404,7 +6585,7 @@
       "bundleFormat" : 0,
       "minifierStyle" : 1,
       "sourceMapStyle" : 0,
-      "syntaxCheckerStyle" : 0,
+      "syntaxCheckerStyle" : 3,
       "transpilerStyle" : 0
     },
     "languageDefaultsJSON" : {
@@ -6414,7 +6595,7 @@
       "autoOutputPathReplace1" : "",
       "autoOutputPathReplace2" : "",
       "autoOutputPathStyle" : 0,
-      "orderOutput" : 0,
+      "orderOutput" : 1,
       "outputStyle" : 1
     },
     "languageDefaultsKIT" : {
@@ -6443,7 +6624,7 @@
       "rewriteURLStyle" : 0,
       "shouldRunAutoprefixer" : 0,
       "shouldRunBless" : 0,
-      "sourceMapStyle" : 1,
+      "sourceMapStyle" : 0,
       "strictImports" : 0,
       "strictUnits" : 0
     },
@@ -6499,7 +6680,7 @@
       "autoOutputPathStyle" : 0,
       "compileDebug" : 1,
       "htmlMinifierStyle" : 0,
-      "outputStyle" : 0,
+      "outputStyle" : 1,
       "shouldRunCacheBuster" : 0
     },
     "languageDefaultsSASS" : {
@@ -6509,7 +6690,7 @@
       "autoOutputPathReplace1" : "sass",
       "autoOutputPathReplace2" : "css",
       "autoOutputPathStyle" : 0,
-      "compilerType" : 1,
+      "compilerType" : 0,
       "cssoStyle" : 0,
       "decimalPrecision" : 10,
       "emitCharset" : 1,
