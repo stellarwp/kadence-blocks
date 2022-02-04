@@ -1939,6 +1939,12 @@ class Kadence_Blocks_Frontend {
 						$this->blocks_advancedgallery_scripts_gfonts( $blockattr );
 					}
 				}
+				if ( 'kadence/image' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_image_css_head( $blockattr );
+					}
+				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];

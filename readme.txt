@@ -80,6 +80,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.2.4 =
+Release Date: February 4th, 2022
+* Fix: Issue with image css not loading in head.
+
+
 = 2.2.3 =
 Release Date: January 19th, 2022
 * Update: Improve loading of design library.
