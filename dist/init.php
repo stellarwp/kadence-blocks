@@ -782,7 +782,7 @@ function kadence_blocks_locate_template( $template_name, $template_path = '', $d
 	);
 	// Check depreciated path template.
 	if ( ! $template ) {
-		$template_path = 'kadenceblocks/' );
+		$template_path = 'kadenceblocks/';
 		$template = locate_template(
 			array(
 				trailingslashit( $template_path ) . $template_name,

@@ -303,14 +303,20 @@ export function Edit( {
 							{ value: 'url', label: __( 'Remote URL', 'kadence-blocks' ) },
 							{ value: 'file', label: __( 'Local File', 'kadence-blocks' ) },
 						] }
-						onChange={ value => setAttributes( { fileSrc: value } ) }
+						onChange={ value => {
+							setAttributes( { fileSrc: value } );
+							setRerenderKey( Math.random() );
+						} }
 					/>
 
 					{ fileSrc === 'url' ?
 						<TextControl
 							label={ __('Lottie Animation URL', 'kadence-blocks') }
 							value={ fileUrl }
-							onChange={ (value) => setAttributes({ fileUrl: value }) }
+							onChange={ (value) => {
+								setAttributes({ fileUrl: value });
+								setRerenderKey( Math.random() );
+							} }
 						/>
 						:
 						<>
@@ -321,7 +327,8 @@ export function Edit( {
 								fieldId={ 'lottie-select-src' }
 								value={ localFile }
 								onChange={ (value) => {
-									setAttributes({ localFile: (value ? [value] : []) })
+									setAttributes({ localFile: (value ? [value] : []) });
+									setRerenderKey( Math.random() );
 								} }
 							/>
 
@@ -340,26 +347,38 @@ export function Edit( {
 					<ToggleControl
 						label={ __( 'Show Controls', 'kadence-blocks' ) }
 						checked={ showControls }
-						onChange={ ( value ) => setAttributes( { showControls: value } ) }
+						onChange={ ( value ) => {
+							setAttributes( { showControls: value } );
+							setRerenderKey( Math.random() );
+						}}
 					/>
 					<ToggleControl
 						label={ __( 'Autoplay', 'kadence-blocks' ) }
 						checked={ autoplay }
-						onChange={ ( value ) => setAttributes( { autoplay: value } ) }
+						onChange={ ( value ) => {
+							setAttributes( { autoplay: value } );
+							setRerenderKey( Math.random() );
+						}}
 					/>
 					<ToggleControl
 						label={ __( 'Only play on hover', 'kadence-blocks' ) }
 						checked={ onlyPlayOnHover }
-						onChange={ ( value ) => setAttributes( { onlyPlayOnHover: value, autoplay: (value ? false : autoplay), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } ) }
+						onChange={ ( value ) => {
+							setAttributes( { onlyPlayOnHover: value, autoplay: (value ? false : autoplay), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
+							setRerenderKey( Math.random() );
+						} }
 					/>
 					<ToggleControl
 						label={ __( 'Only play on page scroll', 'kadence-blocks' ) }
-						help={ 'This will override most settings such as autoplay, playback speed, bounce, loop, and play on hover. This will not work when previewing in the block editor'}
+						help={ __( 'This will override most settings such as autoplay, playback speed, bounce, loop, and play on hover. This will not work when previewing in the block editor', 'kadence-blocks' ) }
 						checked={ onlyPlayOnScroll }
-						onChange={ ( value ) => setAttributes( { onlyPlayOnScroll: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover) } ) }
+						onChange={ ( value ) => {
+							setAttributes( { onlyPlayOnScroll: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover) } );
+							setRerenderKey( Math.random() );
+						} }
 					/>
 					<RangeControl
-						label={ __( 'Playback Speed' ) }
+						label={ __( 'Playback Speed', 'kadence-blocks' ) }
 						value={ playbackSpeed }
 						onChange={ ( value ) => { setAttributes( { playbackSpeed: value } ); setRerenderKey( Math.random() ) } }
 						step={ 0.1 }
@@ -367,21 +386,30 @@ export function Edit( {
 						max={ 10 }
 					/>
 
-					<h3>Loop Settings</h3>
+					<h3>{ __( 'Loop Settings', 'kadence-blocks' ) }</h3>
 					<ToggleControl
 						label={ __( 'Loop playback', 'kadence-blocks' ) }
 						checked={ loop }
-						onChange={ ( value ) => setAttributes( { loop: value, onlyPlayOnScroll: false } ) }
+						onChange={ ( value ) => {
+							setAttributes( { loop: value, onlyPlayOnScroll: false } );
+							setRerenderKey( Math.random() );
+						} }
 					/>
 					<ToggleControl
 						label={ __( 'Bounce playback', 'kadence-blocks' ) }
 						checked={ bouncePlayback }
-						onChange={ ( value ) => setAttributes( { bouncePlayback: value, loop: (value ? true : loop), onlyPlayOnScroll: false } ) }
+						onChange={ ( value ) => {
+							setAttributes( { bouncePlayback: value, loop: (value ? true : loop), onlyPlayOnScroll: false } );
+							setRerenderKey( Math.random() );
+						} }
 					/>
 					<RangeControl
 						label={ __( 'Delay between loops (seconds)' ) }
 						value={ delay }
-						onChange={ ( value ) => setAttributes( { delay: value } ) }
+						onChange={ ( value ) => {
+							setAttributes( { delay: value } );
+							setRerenderKey( Math.random() );
+						} }
 						step={ 0.1 }
 						min={ 0 }
 						max={ 60 }
@@ -389,7 +417,10 @@ export function Edit( {
 					<RangeControl
 						label={ __( 'Limit Loops' ) }
 						value={ loopLimit }
-						onChange={ ( value ) => setAttributes( { loopLimit: value } ) }
+						onChange={ ( value ) => {
+							setAttributes( { loopLimit: value } );
+							setRerenderKey( Math.random() );
+						} }
 						step={ 1 }
 						min={ 0 }
 						max={ 100 }

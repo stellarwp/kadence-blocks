@@ -88,6 +88,7 @@ Release Date: February 4th, 2022
 * Fix: Issue with removing link from list item.
 * Fix: Issue with copying padding style when 0.
 * Fix: Issue with template path.
+* Fix: Possible issue with two table of contents.
 
 = 2.2.3 =
 Release Date: January 19th, 2022
