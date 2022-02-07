@@ -1206,7 +1206,7 @@ class KadenceAdvancedButton extends Component {
 						value={ ( btns[ index ].anchor ? btns[ index ].anchor : '' ) }
 						onChange={ ( nextValue ) => {
 							nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
-							this.saveArrayUpdate( { anchor: value }, index )
+							this.saveArrayUpdate( { anchor: nextValue }, index )
 						} }
 					/>
 					<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Gap Between Next', 'kadence-blocks' ) }</h2>

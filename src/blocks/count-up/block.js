@@ -47,11 +47,11 @@ const { Icon }              = wp.components;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/countup', {
-	title: __( 'Count Up' ),
+	title: __( 'Count Up', 'kadence-blocks' ),
 	icon: <Icon icon={ icons.block } />,
 	category: 'kadence-blocks',
 	keywords: ['count down', 'counter', 'count up', 'number spinner'],
-	description: __( 'An animated count up or down to a specific value.' ),
+	description: __( 'An animated count up or down to a specific value.', 'kadence-blocks' ),
 	attributes,
 	edit,
 	save

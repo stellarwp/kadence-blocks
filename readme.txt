@@ -81,7 +81,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 2.2.4 =
-Release Date: February 4th, 2022
+Release Date: February 7th, 2022
 * Add: Lottie Animation Block.
 * Add: Count Up Block.
 * Fix: Issue with image css not loading in head.
@@ -89,6 +89,7 @@ Release Date: February 4th, 2022
 * Fix: Issue with copying padding style when 0.
 * Fix: Issue with template path.
 * Fix: Possible issue with two table of contents.
+* Fix: Issue with buttons ID.
 
 = 2.2.3 =
 Release Date: January 19th, 2022

@@ -46,6 +46,14 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"startFrame": {
+		"type": "number",
+		"default": "0"
+	},
+	"endFrame": {
+		"type": "number",
+		"default": "100"
+	},
 	"bouncePlayback": {
 	  "type": "boolean",
 	  "default": false

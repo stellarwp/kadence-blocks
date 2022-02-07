@@ -188,6 +188,17 @@
       "plM" : 52780316221407,
       "prP" : 0
     },
+    "\/dist\/assets\/js\/countUp.min.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/countUp.min-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/dist\/assets\/js\/gumshoe.min.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -210,13 +221,13 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/dist\/assets\/js\/kb-countup.js" : {
+    "\/dist\/assets\/js\/kb-countup.min.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
       "oA" : 1,
-      "oAP" : "\/dist\/assets\/js\/kb-countup-min.js",
+      "oAP" : "\/dist\/assets\/js\/kb-countup.min-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -320,6 +331,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/dist\/assets\/js\/src\/countUp.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/dist\/assets\/js\/src\/countUp-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/dist\/assets\/js\/src\/gumshoe.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -342,14 +364,14 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/dist\/assets\/js\/src\/kb-countup.min.js" : {
+    "\/dist\/assets\/js\/src\/kb-countup.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/assets\/js\/src\/kb-countup.min-min.js",
-      "oF" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/assets\/js\/kb-countup.min.js",
+      "oF" : 3,
       "sC" : 0,
       "tS" : 0
     },
@@ -2024,18 +2046,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/count-up\/editor.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/count-up\/editor-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
     "\/src\/blocks\/count-up\/editor.scss" : {
       "aP" : 0,
       "bl" : 0,
@@ -2083,18 +2093,6 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
-    },
-    "\/src\/blocks\/count-up\/style.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/count-up\/style-min.css",
-      "oF" : 0,
-      "pg" : 0
     },
     "\/src\/blocks\/count-up\/style.scss" : {
       "aP" : 0,
@@ -2825,9 +2823,9 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/src\/blocks\/lottie\/editor.css",
-      "oF" : 0,
+      "oF" : 1,
       "oS" : 0,
       "pg" : 0,
       "sct" : 1

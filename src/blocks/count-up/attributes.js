@@ -27,32 +27,57 @@ const attributes = {
 		type: 'array',
 		default: [ {
 			level: 4,
-			size: [ '50', '', '' ],
+			htmlTag: 'div',
+			size: [ '', '', '' ],
 			sizeType: 'px',
 			lineHeight: [ '', '', '' ],
 			lineType: 'px',
 			letterSpacing: '',
 			textTransform: '',
-			family: "'Open Sans', sans-serif",
+			family: '',
 			google: false,
 			style: '',
-			weight: '600',
+			weight: '',
 			variant: '',
 			subset: '',
 			loadGoogle: true,
-			padding: [ 0, 0, 0, 0 ],
-			paddingControl: 'linked',
-			margin: [ 0, 0, 0, 0 ],
-			marginControl: 'linked',
 		} ],
 	},
+	titlePaddingType: {
+		type: 'string',
+		default: 'px',
+	},
+	titlePadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	titleTabletPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	titleMobilePadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	titleMarginType: {
+		type: 'string',
+		default: 'px',
+	},
+	titleMargin: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	titleTabletMargin: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	titleMobileMargin: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
 	titleAlign: {
-		type: 'object',
-		default: {
-			desktop: '',
-			tablet: '',
-			mobile: ''
-		}
+		type: 'array',
+		default: [ '', '', '' ],
 	},
 	titleColor: {
 		type: 'string',
@@ -69,33 +94,56 @@ const attributes = {
 	numberFont: {
 		type: 'array',
 		default: [ {
-			level: 4,
 			size: [ '50', '', '' ],
 			sizeType: 'px',
 			lineHeight: [ '', '', '' ],
 			lineType: 'px',
 			letterSpacing: '',
 			textTransform: '',
-			family: "'Open Sans', sans-serif",
+			family: '',
 			google: false,
 			style: '',
-			weight: '600',
+			weight: '',
 			variant: '',
 			subset: '',
 			loadGoogle: true,
-			padding: [ 0, 0, 0, 0 ],
-			paddingControl: 'linked',
-			margin: [ 0, 0, 0, 0 ],
-			marginControl: 'linked',
 		} ],
 	},
+	numberPaddingType: {
+		type: 'string',
+		default: 'px',
+	},
+	numberPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	numberTabletPadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	numberMobilePadding: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	numberMarginType: {
+		type: 'string',
+		default: 'px',
+	},
+	numberMargin: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	numberTabletMargin: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
+	numberMobileMargin: {
+		type: 'array',
+		default: [ '', '', '', '' ],
+	},
 	numberAlign: {
-		type: 'object',
-		default: {
-			desktop: '',
-			tablet: '',
-			mobile: ''
-		}
+		type: 'array',
+		default: [ '', '', '' ],
 	},
 	numberColor: {
 		type: 'string',
@@ -127,7 +175,7 @@ const attributes = {
 	},
 	duration: {
 		type: 'number',
-		default: 2.75,
+		default: 2.5,
 	},
 	separator: {
 		type: 'boolean',

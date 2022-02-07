@@ -9,12 +9,11 @@ import './editor.scss';
 
 import * as LottiePlayer from "@lottiefiles/lottie-player";
 import { create } from '@lottiefiles/lottie-interactivity';
-
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useRef, useEffect } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 const { rest_url } = kadence_blocks_params;
@@ -39,7 +38,7 @@ const {
 	Notice,
 } = wp.components;
 
-
+import { __experimentalNumberControl as NumberControl } from '@wordpress/components';
 /**
  * Internal dependencies
  */
@@ -72,6 +71,8 @@ export function Edit( {
 		align,
 		width,
 		sizeSlug,
+		startFrame,
+		endFrame,
 		paddingTablet,
 		paddingDesktop,
 		paddingMobile,
@@ -99,6 +100,7 @@ export function Edit( {
 		}
 		return desktopSize;
 	};
+	const ref = useRef();
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
@@ -175,7 +177,10 @@ export function Edit( {
 	} else {
 		ktlottieUniqueIDs.push( uniqueID );
 	}
-
+	const containerClasses = classnames( {
+		'kb-lottie-container': true,
+		[ `kb-lottie-container${ uniqueID }` ] : true,
+	} );
 	function parseAndUpload(file, title, setLottieJsonError) {
 
 		let fileread = new FileReader()
@@ -228,7 +233,6 @@ export function Edit( {
 
 		return url;
 	}
-
 	const UploadModal = () => {
 		const [ isOpen, setOpen ] = useState( false );
 		const [ lottieJsonError, setLottieJsonError ] = useState( false );
@@ -241,7 +245,7 @@ export function Edit( {
 		return (
 			<>
 				<Button variant="primary" className={ 'is-primary' } onClick={ openModal }>
-					Upload a Lottie file
+					{ __( 'Upload a Lottie file', 'kadence-blocks' ) }
 				</Button>
 				{ isOpen && (
 					<Modal title={ __( 'Upload Lottie JSON file', 'kadence-blocks' ) } onRequestClose={ closeModal }>
@@ -266,13 +270,13 @@ export function Edit( {
 							align={ 'center' }
 							onChange={ ( event ) => { setLottieJsonFile( event.target.files[0] ); } }
 						>
-							Browse
+							{ __( 'Browse', 'kadence-blocks' ) }
 						</FormFileUpload>
 						{ lottieJsonFile ? null : __( 'Select a file', 'kadence-blocks' )}
 
 						<br/><br/>
 
-						<Button className={ 'is-secondary' } onClick={ closeModal } text={ 'Cancel'} />
+						<Button className={ 'is-secondary' } onClick={ closeModal } text={ __( 'Cancel', 'kadence-blocks' ) } />
 						&nbsp;&nbsp;&nbsp;
 						<Button className={ 'is-primary' } disabled={ !lottieJsonFile } onClick={ () => parseAndUpload( lottieJsonFile, newAnimationTitle, setLottieJsonError ) } text={ __( 'Upload', 'kadence-blocks' ) }/>
 
@@ -283,7 +287,7 @@ export function Edit( {
 	};
 
 	return (
-		<figure { ...blockProps }>
+		<div { ...blockProps }>
 			<BlockControls group="block">
 				<BlockAlignmentControl
 					value={ align }
@@ -311,7 +315,7 @@ export function Edit( {
 
 					{ fileSrc === 'url' ?
 						<TextControl
-							label={ __('Lottie Animation URL', 'kadence-blocks') }
+							label={ __( 'Lottie Animation URL', 'kadence-blocks') }
 							value={ fileUrl }
 							onChange={ (value) => {
 								setAttributes({ fileUrl: value });
@@ -321,7 +325,7 @@ export function Edit( {
 						:
 						<>
 							<KadenceSelectPosts
-								placeholder={ __('Select Lottie File', 'kadence-blocks') }
+								placeholder={ __( 'Select Lottie File', 'kadence-blocks' ) }
 								restBase={ 'wp/v2/kadence_lottie' }
 								key={ lottieAnimationsCacheKey }
 								fieldId={ 'lottie-select-src' }
@@ -356,7 +360,7 @@ export function Edit( {
 						label={ __( 'Autoplay', 'kadence-blocks' ) }
 						checked={ autoplay }
 						onChange={ ( value ) => {
-							setAttributes( { autoplay: value } );
+							setAttributes( { autoplay: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
 							setRerenderKey( Math.random() );
 						}}
 					/>
@@ -373,10 +377,35 @@ export function Edit( {
 						help={ __( 'This will override most settings such as autoplay, playback speed, bounce, loop, and play on hover. This will not work when previewing in the block editor', 'kadence-blocks' ) }
 						checked={ onlyPlayOnScroll }
 						onChange={ ( value ) => {
-							setAttributes( { onlyPlayOnScroll: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover) } );
+							setAttributes( { onlyPlayOnScroll: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover), autoplay: (value ? false : autoplay), loop: (value ? false : loop), bouncePlayback: (value ? false : bouncePlayback) } );
 							setRerenderKey( Math.random() );
 						} }
 					/>
+					{ onlyPlayOnScroll && (
+						<>
+							<div style={ { marginBottom: '15px'} }>
+								<NumberControl
+									label={ __( 'Starting Frame' ) }
+									value={ startFrame }
+									onChange={ (value) => setAttributes({ startFrame: parseInt(value) }) }
+									min={ 0 }
+									isShiftStepEnabled={ true }
+									shiftStep={ 10 }
+								/>
+							</div>
+
+							<div style={ { marginBottom: '15px'} }>
+								<NumberControl
+									label={ __( 'Ending Frame' ) }
+									value={ endFrame }
+									onChange={ (value) => setAttributes({ endFrame: parseInt(value) }) }
+									min={ 0 }
+									isShiftStepEnabled={ true }
+									shiftStep={ 10 }
+								/>
+							</div>
+						</>
+					) }
 					<RangeControl
 						label={ __( 'Playback Speed', 'kadence-blocks' ) }
 						value={ playbackSpeed }
@@ -391,7 +420,7 @@ export function Edit( {
 						label={ __( 'Loop playback', 'kadence-blocks' ) }
 						checked={ loop }
 						onChange={ ( value ) => {
-							setAttributes( { loop: value, onlyPlayOnScroll: false } );
+							setAttributes( { loop: value, onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
 							setRerenderKey( Math.random() );
 						} }
 					/>
@@ -399,12 +428,12 @@ export function Edit( {
 						label={ __( 'Bounce playback', 'kadence-blocks' ) }
 						checked={ bouncePlayback }
 						onChange={ ( value ) => {
-							setAttributes( { bouncePlayback: value, loop: (value ? true : loop), onlyPlayOnScroll: false } );
+							setAttributes( { bouncePlayback: value, loop: (value ? true : loop), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
 							setRerenderKey( Math.random() );
 						} }
 					/>
 					<RangeControl
-						label={ __( 'Delay between loops (seconds)' ) }
+						label={ __( 'Delay between loops (seconds)', 'kadence-blocks' ) }
 						value={ delay }
 						onChange={ ( value ) => {
 							setAttributes( { delay: value } );
@@ -415,7 +444,7 @@ export function Edit( {
 						max={ 60 }
 					/>
 					<RangeControl
-						label={ __( 'Limit Loops' ) }
+						label={ __( 'Limit Loops', 'kadence-blocks' ) }
 						value={ loopLimit }
 						onChange={ ( value ) => {
 							setAttributes( { loopLimit: value } );
@@ -468,7 +497,7 @@ export function Edit( {
 					/>
 
 					<RangeControl
-						label={ __( 'Max Width' ) }
+						label={ __( 'Max Width', 'kadence-blocks' ) }
 						value={ width }
 						onChange={ ( value ) => setAttributes( { width: value } ) }
 						allowReset={ true }
@@ -478,7 +507,7 @@ export function Edit( {
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<div style={
+			<div className={ containerClasses } style={
 				{
 					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
 					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
@@ -492,10 +521,11 @@ export function Edit( {
 				}
 			}>
 				<lottie-player
+					ref={ ref }
 					{ ...playerProps }
+					id={ 'kb-lottie-player' + uniqueID }
 					key={ rerenderKey }
 					src={ getAnimationUrl(fileSrc, fileUrl, localFile, rest_url) }
-					// src={ file }
 					style={ {
 						maxWidth: (width === '0' ? 'auto' : width + 'px'),
 						// height: ( width === "0" ? 'auto' : width + 'px'),
@@ -504,7 +534,7 @@ export function Edit( {
 				>
 				</lottie-player>
 			</div>
-		</figure>
+		</div>
 	);
 }
 
