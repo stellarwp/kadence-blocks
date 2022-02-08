@@ -44,6 +44,8 @@ import './blocks/countdown/countdown-inner/block.js';
 /* block.json styles */
 import './blocks/lottie/index.js';
 import './blocks/image/index.js';
+import './blocks/block-template/index.js';
+
 
 // import './plugins/kadence-control.js';
 // import './plugins/editor-width.js';
