@@ -11,12 +11,9 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState } from '@wordpress/element';
+import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps } from '@wordpress/block-editor';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-const { rest_url } = kadence_blocks_params;
-import get from 'lodash/get';
-import has from 'lodash/has';
 
 const {
 	InspectorControls,
@@ -28,6 +25,7 @@ const {
 	RangeControl,
 	TextControl,
 	SelectControl,
+	Button
 } = wp.components;
 
 
@@ -35,8 +33,8 @@ const {
  * Internal dependencies
  */
 import classnames from 'classnames';
-import ResponsiveRangeControl from '../../responsive-range-control'
-import ResponsiveRangeControls from '../../components/range/responsive-range-control'
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import isEmpty from 'lodash/isEmpty';
 
 const ktlottieUniqueIDs = [];
 
@@ -56,12 +54,25 @@ export function Edit( {
 		widthDesktop,
 		widthTablet,
 		widthMobile,
+		marginDesktop,
+		marginTablet,
+		marginMobile,
+		marginUnit,
+		paddingDesktop,
+		paddingTablet,
+		paddingMobile,
+		paddingUnit,
 		location,
 		zoom,
 		mapType,
 		mapMode,
 		sizeSlug,
 	} = attributes;
+
+	let includedGoogleApiKey = 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk';
+	const [ customGoogleApiKey, setCustomGoogleApiKey ] = useState('');
+
+	let googleApiKey = isEmpty(customGoogleApiKey) ? includedGoogleApiKey : customGoogleApiKey;
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -80,6 +91,49 @@ export function Edit( {
 
 	const previewHeight = getPreviewSize( previewDevice, ( undefined !== heightDesktop ? heightDesktop : '450' ), ( undefined !== heightTablet ? heightTablet : '450' ), ( undefined !== heightMobile ? heightMobile : '450' ) );
 	const previewWidth = getPreviewSize( previewDevice, ( undefined !== widthDesktop ? widthDesktop : '' ), ( undefined !== widthTablet ? widthTablet : '' ), ( undefined !== widthMobile ? widthMobile : '' ) );
+
+	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
+	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
+	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
+	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[3] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
+
+	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[0] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
+	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[1] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
+	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
+	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
+
+	const [ marginControl, setMarginControl ] = useState( 'individual');
+	const [ paddingControl, setPaddingControl ] = useState( 'individual');
+
+	useEffect(() => {
+		/**
+		 * Get settings
+		 */
+		let settings;
+		wp.api.loadPromise.then( () => {
+			settings = new wp.api.models.Settings();
+			settings.fetch().then( response => {
+				setCustomGoogleApiKey(response.kadence_blocks_google_maps_api);
+			} );
+		} );
+	}, []);
+
+	function setGoogleApiKey() {
+		const settingModel = new wp.api.models.Settings( {
+			kadence_blocks_google_maps_api: customGoogleApiKey,
+		} );
+		settingModel.save().then( response => {
+		} );
+	}
+
+	function removeGoogleApiKey() {
+		setCustomGoogleApiKey('');
+		const settingModel = new wp.api.models.Settings( {
+			kadence_blocks_google_maps_api: '',
+		} );
+		settingModel.save().then( response => {
+		} );
+	}
 
 	const classes = classnames( className, {
 		[ `size-${ sizeSlug }` ]: sizeSlug,
@@ -109,7 +163,7 @@ export function Edit( {
 	}
 
 	let mapQueryParams = {
-		key: 'AIzaSyBGsB_DXmwf1WoHqBk0Jrt4VhyChI1mLjg',
+		key: googleApiKey,
 		zoom: zoom,
 		maptype: mapType,
 		q: location
@@ -211,18 +265,100 @@ export function Edit( {
 						reset={ () => setAttributes( { widthDesktop: '', widthTablet: '', widthMobile: '' } ) }
 					/>
 
+					<ResponsiveMeasurementControls
+						label={ __( 'Padding', 'kadence-blocks' ) }
+						value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
+						control={ paddingControl }
+						tabletValue={ paddingTablet }
+						mobileValue={ paddingMobile }
+						onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
+						onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
+						onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
+						onChangeControl={ ( value ) => setPaddingControl( value ) }
+						min={ 0 }
+						max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
+						step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+						unit={ paddingUnit }
+						units={ [ 'px', 'em', 'rem', '%' ] }
+						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+					/>
+					<ResponsiveMeasurementControls
+						label={ __( 'Margin', 'kadence-blocks' ) }
+						value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
+						control={ marginControl }
+						tabletValue={ marginTablet }
+						mobileValue={ marginMobile }
+						onChange={ ( value ) => {
+							setAttributes( { marginDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
+						} }
+						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
+						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
+						onChangeControl={ ( value ) => setMarginControl( value ) }
+						min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
+						max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+						step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
+						unit={ marginUnit }
+						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+					/>
+
+				</PanelBody>
+				<PanelBody
+					title={ __( 'API Key', 'kadence-blocks' ) }
+					initialOpen={ false }
+				>
+					This blocks ships with an API key, but a custom key can be used.
+					The required API permission is "Maps Embed API"
+
+					<TextControl
+						label={ __( 'API Key', 'kadence-blocks' ) }
+						value={ customGoogleApiKey }
+						onChange={ value => setCustomGoogleApiKey( value ) }
+					/>
+						<Button
+							isPrimary
+							onClick={ setGoogleApiKey }
+							disabled={ '' === customGoogleApiKey }
+						>
+							Save
+					</Button>
+
+					{ '' !== customGoogleApiKey ?
+						<>
+							&nbsp;
+							<Button
+								isDefault
+								onClick={ removeGoogleApiKey }
+								disabled={ '' === customGoogleApiKey }
+							>
+								Remove
+							</Button>
+						</>
+						: null }
 
 				</PanelBody>
 			</InspectorControls>
 
-			<div className={ 'kb-map-container' } style={ {
-				height: previewHeight + 'px',
-				maxWidth: ( previewWidth === '' ? '100%' : previewWidth + 'px' ),
+			<div style={ {
+				marginTop: ('' !== previewMarginTop ? previewMarginTop + marginUnit : undefined),
+				marginRight: ('' !== previewMarginRight ? previewMarginRight + marginUnit : undefined),
+				marginBottom: ('' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined),
+				marginLeft: ('' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined),
+
+				paddingTop: ('' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined),
+				paddingRight: ('' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined),
+				paddingBottom: ('' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined),
+				paddingLeft: ('' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined)
 			} }>
-				<div className={ 'kb-map-container-infobar' }>
+				<div className={ 'kb-map-container' } style={ {
+					height: previewHeight + 'px',
+					maxWidth: (previewWidth === '' ? '100%' : previewWidth + 'px'),
+				} }>
+					<div className={ 'kb-map-container-infobar' }>
+					</div>
+					<iframe width={ '100%' } height={ '100%' } loading={ 'lazy' }
+									src={ 'https://www.google.com/maps/embed/v1/' + mapMode + '?' + qs }></iframe>
 				</div>
-				<iframe width={ '100%' } height={ '100%' } loading={ 'lazy' }
-								src={ 'https://www.google.com/maps/embed/v1/' + mapMode + '?' + qs }></iframe>
 			</div>
 		</figure>
 	);

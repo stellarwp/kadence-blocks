@@ -1,23 +1,13 @@
 /**
- * BLOCK: Kadence Countdown
+ * BLOCK: Kadence Google Map
  */
-const { rest_url } = kadence_blocks_params;
 
 /**
  * External dependencies
  */
 import classnames from 'classnames';
-import get from 'lodash/get';
 
-/**
- * WordPress dependencies
- */
-import { InnerBlocks } from '@wordpress/block-editor';
-
-// const encodedLocation = encodeURIComponent( location );
-const apiKey = 'AIzaSyBGsB_DXmwf1WoHqBk0Jrt4VhyChI1mLjg';
-
-function Save( { attributes } ) {
+export function Save( { attributes } ) {
 	const { uniqueID, mapMode, zoom, mapType, location } = attributes;
 	const classes = classnames( {
 		'kb-google-maps-container': true,
@@ -26,7 +16,7 @@ function Save( { attributes } ) {
 	} );
 
 	let mapQueryParams = {
-		key: 'AIzaSyBGsB_DXmwf1WoHqBk0Jrt4VhyChI1mLjg',
+		key: 'KADENCE_GOOGLE_MAPS_KEY',
 		zoom: zoom,
 		maptype: mapType,
 		q: location
@@ -43,4 +33,5 @@ function Save( { attributes } ) {
 		</div>
 	);
 }
-export default Save;
+
+export default ( Save );
