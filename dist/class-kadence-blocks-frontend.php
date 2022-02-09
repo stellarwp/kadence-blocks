@@ -1971,6 +1971,14 @@ class Kadence_Blocks_Frontend {
 						$this->render_row_layout_scripts( $blockattr );
 					}
 				}
+				if ( 'kadence/countup' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_countup_layout_css_head( $blockattr );
+						$this->render_countup_layout_scripts( $blockattr );
+						$this->blocks_countup_scripts_gfonts( $blockattr );
+					}
+				}
 				if ( 'kadence/column' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
