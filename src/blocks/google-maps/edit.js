@@ -116,6 +116,26 @@ export function Edit( {
 				setCustomGoogleApiKey(response.kadence_blocks_google_maps_api);
 			} );
 		} );
+
+		if ( ! uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
+					uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
+				} );
+			}
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
+			ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else {
+			ktlottieUniqueIDs.push( uniqueID );
+		}
+
 	}, []);
 
 	function setGoogleApiKey() {
@@ -142,25 +162,6 @@ export function Edit( {
 	const blockProps = useBlockProps( {
 		className: classes,
 	} );
-
-	if ( ! uniqueID ) {
-		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-		if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
-			Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
-				uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
-			} );
-		}
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );
-		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else {
-		ktlottieUniqueIDs.push( uniqueID );
-	}
 
 	let mapQueryParams = {
 		key: googleApiKey,
