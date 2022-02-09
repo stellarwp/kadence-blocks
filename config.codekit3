@@ -734,6 +734,14 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks.css.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.css.map",
+      "oF" : 0
+    },
     "\/dist\/build\/blocks.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -745,6 +753,14 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/dist\/build\/blocks.js.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.js.map",
+      "oF" : 0
+    },
     "\/dist\/build\/vendors\/blocks.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -755,6 +771,14 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
+    },
+    "\/dist\/build\/vendors\/blocks.js.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/vendors\/blocks.js.map",
+      "oF" : 0
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -4437,6 +4461,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/components\/typography\/typography-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/utilities\/kadence-store.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/utilities\/kadence-store-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0

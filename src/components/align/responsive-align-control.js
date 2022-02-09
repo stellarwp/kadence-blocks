@@ -39,16 +39,13 @@ export default function ResponsiveAlignControls( {
 	let customSetPreviewDeviceType = ( device ) => {
 		setDeviceType( capitalizeFirstLetter( device ) );
 	};
+	const theDevice = useSelect( ( select ) => {
+		return select( 'kadenceblocks/data' ).getDevice();
+	}, [] );
+	if ( theDevice !== deviceType ) {
+		setDeviceType( theDevice );
+	}
 	if ( wp.data.select( 'core/edit-post' ) ) {
-		const theDevice = useSelect( ( select ) => {
-			const {
-				__experimentalGetPreviewDeviceType = null,
-			} = select( 'core/edit-post' );
-			return __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop';
-		}, [] );
-		if ( theDevice !== deviceType ) {
-			setDeviceType( theDevice );
-		}
 		const {
 			__experimentalSetPreviewDeviceType = null,
 		} = useDispatch( 'core/edit-post' );

@@ -934,7 +934,7 @@ function register_lottie_custom_post_type() {
 	register_post_type(
 		'kadence_lottie',
 		array(
-			'label'        => _x( 'Lotte Animations', 'Lottie animation' ),
+			'label'        => _x( 'Lottie Animations', 'Lottie animation' ),
 			'description'  => __( 'Lottie Animations imported in Kadence' ),
 			'public'       => false,
 			'show_ui'      => false,

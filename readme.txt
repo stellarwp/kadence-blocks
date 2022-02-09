@@ -80,6 +80,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.2.5 =
+Release Date: February 8th, 2022
+* Fix: Issue with google font not loading in mobile/tablet preview.
+* Fix: Issue with info box number hover color.
+** Fix: Issue with lottie block in some cases.
+** Add: Testimonial copy/paste style.
+** Add: 
+
 = 2.2.4 =
 Release Date: February 7th, 2022
 * Add: Lottie Animation Block.

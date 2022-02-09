@@ -939,10 +939,6 @@ export default compose( [
 			getBlockName,
 			getBlockOrder,
 		} = select( 'core/block-editor' );
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		const postContent = select( 'core/editor' ).getEditedPostContent();
 
 		const blockIndex = getBlockIndex( clientId );
@@ -965,7 +961,7 @@ export default compose( [
 			postContent: postContent,
 			getBlock,
 			pageIndex: page,
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
 		};
 	} ),
 ] )( KadenceTableOfContents );

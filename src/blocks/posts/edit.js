@@ -1005,9 +1005,6 @@ class KadencePosts extends Component {
 export default withSelect( ( select, props ) => {
 	const { postsToShow, order, orderBy, categories, tags, postTax, postType, taxType, offsetQuery, excludeTax } = props.attributes;
 	const { getEntityRecords } = select( 'core' );
-	const {
-		__experimentalGetPreviewDeviceType = null,
-	} = select( 'core/edit-post' );
 	const theType = ( postType ? postType : 'post' );
 	const taxonomyList = ( taxonomies[ theType ] && taxonomies[ theType ].taxonomy ? taxonomies[ theType ].taxonomy : [] );
 	let taxonomyOptions = [];
@@ -1027,6 +1024,6 @@ export default withSelect( ( select, props ) => {
 	return {
 		taxList: taxonomyList,
 		taxOptions: taxonomyOptions,
-		getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+		getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
 	};
 } )( KadencePosts );
