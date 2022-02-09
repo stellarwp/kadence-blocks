@@ -265,6 +265,14 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-editor-css',
 			)
 		);
+		register_block_type(
+			'kadence/countup',
+			array(
+				'render_callback' => array( $this, 'render_countup_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 		add_filter( 'excerpt_allowed_wrapper_blocks', array( $this, 'add_wrapper_blocks_to_excerpt' ), 20 );
 	}
@@ -309,13 +317,14 @@ class Kadence_Blocks_Frontend {
 	 *
 	 * @param array $attributes the blocks attribtues.
 	 */
-	public function render_countup_layout_css_head($attributes) {
+	public function render_countup_layout_css_head( $attributes ) {
 
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 
-			if ( apply_filters( 'kadence_blocks_render_inline_css', true, 'countup', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'countup', $attributes ) ) {
+				$attributes = apply_filters( 'kadence_blocks_countup_render_block_attributes', $attributes );
 				$css = $this->blocks_countup_array( $attributes, $unique_id );
 
 				if ( ! empty( $css ) ) {
@@ -323,6 +332,33 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+	}
+	/**
+	 * Render Count Up  Block
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 */
+	public function render_countup_css( $attributes, $content ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( $this->it_is_not_amp() ) {
+				wp_enqueue_script( 'kadence-count-up' );
+			}
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'countup', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_countup_render_block_attributes', $attributes );
+				$css = $this->blocks_countup_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'tabs', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
 	}
 	/**
 	 * Render Row  Block
