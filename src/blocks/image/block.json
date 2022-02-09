@@ -118,11 +118,11 @@
 	  },
 	  "borderColor": {
 		"type": "string",
-		"default": "#555555"
+		"default": ""
 	  },
 	  "backgroundColor": {
 		"type": "string",
-		"default": "#FFFFFF"
+		"default": ""
 	  },
 	  "borderRadius": {
 		"type": "array",

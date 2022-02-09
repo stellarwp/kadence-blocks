@@ -80,6 +80,7 @@ export function Edit( {
 		marginDesktop,
 		marginMobile,
 		marginUnit,
+		label,
 	} = attributes;
 
 	const [ rerenderKey, setRerenderKey ] = useState( 'static' );
@@ -336,6 +337,14 @@ export function Edit( {
 							<UploadModal />
 						</>
 					}
+					<TextControl
+						label={ __( 'Aria Label', 'kadence-blocks' ) }
+						value={ label || '' }
+						onChange={ ( value ) => {
+							setAttributes( { label: value });
+						} }
+						help={ __( 'Describe the purpose of this animation on the page.', 'kadence-blocks' ) }
+					/>
 
 
 
