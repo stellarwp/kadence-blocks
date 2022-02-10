@@ -32,6 +32,13 @@ class Kadence_Blocks_Settings {
 	private static $instance = null;
 
 	/**
+	 * Instance of this class
+	 *
+	 * @var null
+	 */
+	private static $editor_width = null;
+
+	/**
 	 * Instance Control
 	 */
 	public static function get_instance() {
@@ -57,7 +64,110 @@ class Kadence_Blocks_Settings {
 		add_action( 'admin_init', array( $this, 'load_settings' ) );
 		add_action( 'init', array( $this, 'load_api_settings' ) );
 		add_action( 'after_setup_theme', array( $this, 'load_color_palette' ), 999 );
+		add_action( 'init',  array( $this, 'init_post_meta' ) );
+		add_action( 'admin_head-post.php', array( $this, 'admin_editor_width' ), 100 );
+		add_action( 'admin_head-post-new.php', array( $this, 'admin_editor_width' ), 100 );
 
+	}
+	/**
+	 * Add inline css editor width
+	 */
+	public function admin_editor_width() {
+		if ( apply_filters( 'kadence_blocks_editor_width', $this->show_editor_width() ) ) {
+			$editor_widths = get_option( 'kt_blocks_editor_width', array() );
+			if ( ( ! isset( $editor_widths['enable_editor_width'] ) || 'true' === $editor_widths['enable_editor_width'] ) && apply_filters( 'kadence_blocks_editor_width', true ) ) {
+				if ( isset( $editor_widths['limited_margins'] ) && 'true' === $editor_widths['limited_margins'] ) {
+					$add_size = 10;
+				} else {
+					$add_size = 30;
+				}
+				$post_type = get_post_type();
+				if ( isset( $editor_widths['page_default'] ) && ! empty( $editor_widths['page_default'] ) && isset( $editor_widths['post_default'] ) && ! empty( $editor_widths['post_default'] ) ) {
+					if ( isset( $post_type ) && 'page' === $post_type ) {
+						$defualt_size_type = $editor_widths['page_default'];
+					} else {
+						$defualt_size_type = $editor_widths['post_default'];
+					}
+				} else {
+					$defualt_size_type = 'sidebar';
+				}
+				if ( isset( $editor_widths['sidebar'] ) && ! empty( $editor_widths['sidebar'] ) ) {
+					$sidebar_size = $editor_widths['sidebar'] + $add_size;
+				} else {
+					$sidebar_size = 750;
+				}
+				if ( isset( $editor_widths['nosidebar'] ) && ! empty( $editor_widths['nosidebar'] ) ) {
+					$nosidebar_size = $editor_widths['nosidebar'] + $add_size;
+				} else {
+					$nosidebar_size = 1140 + $add_size;
+				}
+				if ( 'sidebar' == $defualt_size_type ) {
+					$default_size = $sidebar_size;
+				} elseif ( 'fullwidth' == $defualt_size_type ) {
+					$default_size = 'none';
+				} else {
+					$default_size = $nosidebar_size;
+				}
+				if ( 'none' === $default_size ) {
+					$jssize = 2000;
+				} else {
+					$jssize = $default_size;
+				}
+				echo '<style id="kt-block-editor-width">';
+				echo 'body.gutenberg-editor-page.kt-editor-width-default .editor-post-title__block,
+				body.gutenberg-editor-page.kt-editor-width-default .editor-default-block-appender,
+				body.gutenberg-editor-page.kt-editor-width-default .block-editor-block-list__block,
+				body.block-editor-page.kt-editor-width-default .wp-block {
+					max-width: ' . esc_attr( $default_size ) . ( is_numeric( $default_size ) ? 'px' : '' ) . ';
+				}';
+				echo 'body.gutenberg-editor-page.kt-editor-width-sidebar .editor-post-title__block,
+				body.gutenberg-editor-page.kt-editor-width-sidebar .editor-default-block-appender,
+				body.gutenberg-editor-page.kt-editor-width-sidebar .block-editor-block-list__block,
+				body.block-editor-page.kt-editor-width-sidebar .wp-block {
+					max-width: ' . esc_attr( $sidebar_size ) . 'px;
+				}';
+				echo 'body.gutenberg-editor-page.kt-editor-width-nosidebar .editor-post-title__block,
+				body.gutenberg-editor-page.kt-editor-width-nosidebar .editor-default-block-appender,
+				body.gutenberg-editor-page.kt-editor-width-nosidebar .block-editor-block-list__block,
+				body.block-editor-page.kt-editor-width-nosidebar .wp-block {
+					max-width: ' . esc_attr( $nosidebar_size ) . 'px;
+				}';
+				echo 'body.gutenberg-editor-page.kt-editor-width-fullwidth .editor-post-title__block,
+				body.gutenberg-editor-page.kt-editor-width-fullwidth .editor-default-block-appender,
+				body.gutenberg-editor-page.kt-editor-width-fullwidth .block-editor-block-list__block,
+				body.block-editor-page.kt-editor-width-fullwidth .wp-block {
+					max-width: none;
+				}';
+				echo 'body.gutenberg-editor-page .block-editor-block-list__layout .block-editor-block-list__block[data-align=wide],
+				body.block-editor-page .block-editor-block-list__layout .wp-block[data-align=wide] {
+					width: auto;
+					max-width: ' . esc_attr( $nosidebar_size + 200 ) . 'px;
+				}';
+
+				echo 'body.gutenberg-editor-page .block-editor-block-list__layout .block-editor-block-list__block[data-align=full],
+				body.block-editor-page .block-editor-block-list__layout .wp-block[data-align=full] {
+					max-width: none;
+				}';
+				echo '</style>';
+				echo '<script> var kt_blocks_sidebar_size = ' . esc_attr( $sidebar_size ) . '; var kt_blocks_nosidebar_size = ' . esc_attr( $nosidebar_size ) . '; var kt_blocks_default_size = ' . esc_attr( $jssize ) . ';</script>';
+			}
+		}
+	}
+	/**
+	 * Register Meta for blocks width
+	 */
+	public function init_post_meta() {
+		if ( apply_filters( 'kadence_blocks_editor_width', $this->show_editor_width() ) ) {
+			register_post_meta(
+				'',
+				'kt_blocks_editor_width',
+				array(
+					'show_in_rest' => true,
+					'single'       => true,
+					'type'         => 'string',
+				)
+			);
+		}
 	}
 	/**
 	 * Load Gutenberg Palette
@@ -573,6 +683,23 @@ class Kadence_Blocks_Settings {
 		return $input;
 	}
 	/**
+	 * Checks for kadence classic themes when returning defualt.
+	 */
+	public function show_editor_width() {
+		if ( is_null( self::$editor_width ) ) {
+			$show = false;
+			$current_theme = wp_get_theme();
+			$current_theme_name = $current_theme->get( 'Name' );
+			$current_theme_template = $current_theme->get( 'Template' );
+			// Check for a kadence classic theme support.
+			if ( 'Pinnacle' == $current_theme_name || 'pinnacle' == $current_theme_template || 'Pinnacle Premium' == $current_theme_name || 'pinnacle_premium' == $current_theme_template || 'Ascend - Premium' == $current_theme_name || 'ascend_premium' == $current_theme_template || 'Ascend' == $current_theme_name || 'ascend' == $current_theme_template || 'Virtue - Premium' == $current_theme_name || 'virtue_premium' == $current_theme_template || 'Virtue' == $current_theme_name || 'virtue' == $current_theme_template ) {
+				$show = true;
+			}
+			self::$editor_width = $show;
+		}
+		return self::$editor_width;
+	}
+	/**
 	 * Loads config page
 	 */
 	public function config_page() {
@@ -614,24 +741,27 @@ class Kadence_Blocks_Settings {
 								echo '<div class="kadence_blocks_item ' . esc_attr( $enabled_class ) . '">';
 								echo '<h3>' . esc_html( $block['name'] ) . '</h3>';
 								echo '<p>' . wp_kses_post( $block['desc'] ) . '</p>';
+								echo '<div class="kadence_blocks_item_footer">';
 								if ( in_array( $block['slug'], $unregistered_blocks ) ) {
 									$btntitle = __( 'Activate', 'kadence-blocks' );
+									echo '<a class="kt_block_button button ' . esc_attr( $btn_enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
 								} else {
 									$btntitle = __( 'Deactivate', 'kadence-blocks' );
 								}
-								echo '<div class="kadence_blocks_item_footer">';
-								echo '<a class="kt_block_button button ' . esc_attr( $btn_enabled_class ) . '" data-inactive-label="' . esc_attr__( 'Activate', 'kadence-blocks' ) . '" data-active-label="' . esc_attr__( 'Deactivate', 'kadence-blocks' ) . '" data-activating-label="' . esc_attr__( 'Activating...', 'kadence-blocks' ) . '" data-activated-label="' . esc_attr__( 'Activated', 'kadence-blocks' ) . '"  data-deactivating-label="' . esc_attr__( 'Deactivating...', 'kadence-blocks' ) . '"  data-deactivated-label="' . esc_attr__( 'Deactivated', 'kadence-blocks' ) . '" data-block-slug="' . esc_attr( $block['slug'] ) . '" href="#">' . esc_html( $btntitle ) . '</a>';
+								if ( 'kadence/lottie' === $block['slug'] ) {
+									echo '<a class="button" href="' . admin_url( 'edit.php?post_type=kadence_lottie' ) . '">' . esc_html__( 'Manage Lottie Animations', 'kadence-blocks' ) . '</a>';
+								}
 								echo '</div>';
 								echo '</div>';
 							}
 							?>
 						</div>
 						<div class="kt-dashboard-spacer"></div>
-						<?php if ( apply_filters( 'kadence_blocks_editor_width', true ) ) { ?>
-							<h2><?php echo esc_html__( 'Editor Max Widths', 'kadence-blocks' ); ?><span class="kt-main-subtitle"><?php echo esc_html__( 'Match the editor width to your sites width.', 'kadence-blocks' ); ?></span></h2>
+						<?php if ( apply_filters( 'kadence_blocks_editor_width', $this->show_editor_width() ) ) { ?>
+							<h2><?php echo esc_html__( 'Editor Max Widths', 'kadence-blocks' ); ?></br><small class="kt-main-subtitle"><?php echo esc_html__( 'Match the editor width to your sites width.', 'kadence-blocks' ); ?></small></h2>
 							<?php global $content_width; ?>
 								<div class="kt-main-description-notice"><?php echo esc_html__( 'Note: The current active themes "content_width" is set to:', 'kadence-blocks' ) . ' ' . esc_html( $content_width ); ?>px</div>
-								<div class="kt-promo-row">
+								<div class="kt-promo-row-area">
 								<?php
 								echo '<form action="options.php" method="post">';
 									settings_fields( 'kt_blocks_editor_width' );
@@ -703,6 +833,11 @@ class Kadence_Blocks_Settings {
 				'desc'  => __( 'Create an advanced button or a row of buttons. Style each one including hover controls plus you can use an icon and display them side by side', 'kadence-blocks' ),
 				'image' => KADENCE_BLOCKS_URL . 'dist/settings/img/btn.jpg',
 			),
+			'kadence/lottie'        => array(
+				'slug'  => 'kadence/lottie',
+				'name'  => __( 'Lottie Animations', 'kadence-blocks' ),
+				'desc'  => __( 'Add an extra "wow" factor to your site with engaging Lottie animations.', 'kadence-blocks' ),
+			),
 			'kadence/icon'        => array(
 				'slug'  => 'kadence/icon',
 				'name'  => __( 'Icon', 'kadence-blocks' ),
@@ -730,7 +865,7 @@ class Kadence_Blocks_Settings {
 			'kadence/infobox'      => array(
 				'slug'  => 'kadence/infobox',
 				'name'  => __( 'Info Box', 'kadence-blocks' ),
-				'desc'  => __( 'Create a box link containing an icon or image and optionally a title, description, and learn more text. Style static and hover colors even show a box-shadow.', 'kadence-blocks' ),
+				'desc'  => __( 'Create a box containing an icon or image and, optionally, a title, description, and learn more text. Style static and hover separately.', 'kadence-blocks' ),
 				'image' => KADENCE_BLOCKS_URL . 'dist/settings/img/infobox.jpg',
 			),
 			'kadence/accordion'      => array(
@@ -744,6 +879,21 @@ class Kadence_Blocks_Settings {
 				'name'  => __( 'Icon List', 'kadence-blocks' ),
 				'desc'  => __( 'Add beautiful icons to your lists and make them more engaging. Over 1500 icons to choose from and unlimited styles.', 'kadence-blocks' ),
 				'image' => KADENCE_BLOCKS_URL . 'dist/settings/img/iconlist.jpg',
+			),
+			'kadence/tableofcontents'      => array(
+				'slug'  => 'kadence/tableofcontents',
+				'name'  => __( 'Table of Contents', 'kadence-blocks' ),
+				'desc'  => __( 'Allow your readers to navigate your content easily with a table of contents block. Includes smooth scroll to anchor.', 'kadence-blocks' ),
+			),
+			'kadence/posts'      => array(
+				'slug'  => 'kadence/posts',
+				'name'  => __( 'Posts', 'kadence-blocks' ),
+				'desc'  => __( 'Display a clean grid of posts anywhere on your site, great for your home page where you want to tease your blog.', 'kadence-blocks' ),
+			),
+			'kadence/countdown'      => array(
+				'slug'  => 'kadence/countdown',
+				'name'  => __( 'Countdown', 'kadence-blocks' ),
+				'desc'  => __( 'Increase your conversions by adding a sense of urgency to your offering. Pro includes evergreen campaigns as well.', 'kadence-blocks' ),
 			),
 			'kadence/testimonials'      => array(
 				'slug'  => 'kadence/testimonials',

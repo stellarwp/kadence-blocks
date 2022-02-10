@@ -10,7 +10,6 @@ const {
  */
 import Masonry from 'react-masonry-css'
 import debounce from 'lodash/debounce';
-import LazyLoad from 'react-lazy-load';
 
 /**
  * WordPress dependencies

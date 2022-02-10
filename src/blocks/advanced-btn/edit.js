@@ -108,6 +108,7 @@ class KadenceAdvancedButton extends Component {
 			btnLink: false,
 			buttonMarginControl: 'individual',
 			marginControl: 'individual',
+			buttonMarginControl: 'individual',
 			iconPaddingControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
@@ -1205,7 +1206,7 @@ class KadenceAdvancedButton extends Component {
 						value={ ( btns[ index ].anchor ? btns[ index ].anchor : '' ) }
 						onChange={ ( nextValue ) => {
 							nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
-							this.saveArrayUpdate( { anchor: value }, index )
+							this.saveArrayUpdate( { anchor: nextValue }, index )
 						} }
 					/>
 					<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Gap Between Next', 'kadence-blocks' ) }</h2>
@@ -1945,12 +1946,8 @@ class KadenceAdvancedButton extends Component {
 //export default ( KadenceAdvancedButton );
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		return {
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
 		};
 	} ),
 ] )( KadenceAdvancedButton );

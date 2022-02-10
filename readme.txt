@@ -3,8 +3,8 @@ Contributors: britner, oakesjosh
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
-Tested up to: 5.8
-Stable tag: 2.2.3
+Tested up to: 5.9
+Stable tag: 2.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,27 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.2.5 =
+Release Date: February 9th, 2022
+* Add: Option to add a aria label to lottie block.
+* Add: Option to manage lottie animations.
+* Update: Deprecate Editor Width.
+* Fix: Issue with countup block not rendering correclty.
+* Fix: Issue with google font not loading in mobile/tablet preview.
+* Fix: Issue with info box number hover color.
+* Fix: Issue with lottie block not loading in the editor in some cases.
+
+= 2.2.4 =
+Release Date: February 7th, 2022
+* Add: Lottie Animation Block.
+* Add: Count Up Block.
+* Fix: Issue with image css not loading in head.
+* Fix: Issue with removing link from list item.
+* Fix: Issue with copying padding style when 0.
+* Fix: Issue with template path.
+* Fix: Possible issue with two table of contents.
+* Fix: Issue with buttons ID.
+
 = 2.2.3 =
 Release Date: January 19th, 2022
 * Update: Improve loading of design library.
@@ -94,7 +115,6 @@ Release Date: January 18th, 2022
 = 2.2.1 =
 Release Date: January 17th, 2022
 * Fix: Possible issue with Table of Contents.
-
 
 = 2.2.0 =
 Release Date: January 14th, 2022

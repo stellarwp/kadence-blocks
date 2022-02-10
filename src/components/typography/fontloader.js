@@ -6,6 +6,8 @@ const {
 } = wp.element;
 import PropTypes from "prop-types";
 import WebFont from "webfontloader";
+import { withSelect } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 const statuses = {
 	inactive: 'inactive',
 	active: 'active',
@@ -45,13 +47,13 @@ class KTWebfontLoader extends Component {
 
 	loadFonts() {
 		if ( this.state.mounted ) {
-			//if ( ! this.state.fonts.includes( this.props.config.google.families[ 0 ] ) ) {
 			if ( ! ktgooglefonts.includes( this.props.config.google.families[ 0 ] ) ) {
 				WebFont.load( {
 					...this.props.config,
 					loading: this.handleLoading,
 					active: this.handleActive,
 					inactive: this.handleInactive,
+					context: frames['editor-canvas'],
 				} );
 				this.addFont( this.props.config.google.families[ 0 ] );
 			}
@@ -59,17 +61,22 @@ class KTWebfontLoader extends Component {
 	}
 
 	componentDidMount() {
-		this.setState( { mounted: true } );
+		ktgooglefonts = [];
+		this.setState( { mounted: true, device: this.props.getPreviewDevice } );
 		this.loadFonts();
 	}
 
 	componentDidUpdate( prevProps, prevState ) {
-		const { onStatus, config } = this.props;
+		const { onStatus, config, getPreviewDevice } = this.props;
 
 		if ( prevState.status !== this.state.status ) {
 			onStatus( this.state.status );
 		}
-		if ( prevProps.config !== config ) {
+		if ( this.state.device !== getPreviewDevice ) {
+			ktgooglefonts = [];
+			this.setState( { device: getPreviewDevice } );
+			this.loadFonts();
+		} else if ( prevProps.config !== config ) {
 			this.loadFonts();
 		}
 	}
@@ -92,4 +99,10 @@ KTWebfontLoader.defaultProps = {
 	onStatus: noop,
 };
 
-export default KTWebfontLoader;
+export default compose( [
+	withSelect( ( select ) => {
+		return {
+			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+		};
+	} ),
+] )( KTWebfontLoader );

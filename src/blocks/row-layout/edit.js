@@ -3440,14 +3440,10 @@ export default compose( [
 			getBlock,
 		} = select( 'core/block-editor' );
 		const block = getBlock( clientId );
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		return {
 			rowBlock: block,
 			realColumnCount: block.innerBlocks.length,
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {

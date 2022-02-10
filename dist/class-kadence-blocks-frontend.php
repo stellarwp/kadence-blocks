@@ -241,6 +241,14 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
+			'kadence/lottie',
+			array(
+				'render_callback' => array( $this, 'render_lottie_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
+		register_block_type(
 			'kadence/testimonials',
 			array(
 				'render_callback' => array( $this, 'render_testimonials_css' ),
@@ -260,6 +268,14 @@ class Kadence_Blocks_Frontend {
 			'kadence/form',
 			array(
 				'render_callback' => array( $this, 'render_form_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
+		register_block_type(
+			'kadence/countup',
+			array(
+				'render_callback' => array( $this, 'render_countup_css' ),
 				'editor_script'   => 'kadence-blocks-js',
 				'editor_style'    => 'kadence-blocks-editor-css',
 			)
@@ -302,6 +318,54 @@ class Kadence_Blocks_Frontend {
 				wp_print_styles( $style_id );
 			}
 		}
+	}
+	/**
+	 * Render Count Up  Block
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 */
+	public function render_countup_layout_css_head( $attributes ) {
+
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'countup', $attributes ) ) {
+				$attributes = apply_filters( 'kadence_blocks_countup_render_block_attributes', $attributes );
+				$css = $this->blocks_countup_array( $attributes, $unique_id );
+
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Count Up  Block
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 */
+	public function render_countup_css( $attributes, $content ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( $this->it_is_not_amp() ) {
+				wp_enqueue_script( 'kadence-count-up' );
+			}
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'countup', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_countup_render_block_attributes', $attributes );
+				$css = $this->blocks_countup_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'tabs', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
 	}
 	/**
 	 * Render Row  Block
@@ -990,9 +1054,91 @@ class Kadence_Blocks_Frontend {
 	}
 
 	/**
-	 * Render Image CSS
+	 * Render Lottie Animation CSS
 	 *
 	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_lottie_css( $attributes, $content ) {
+		if ( ! wp_script_is( 'kadence-blocks-lottieplayer-js', 'enqueued' ) ) {
+			wp_enqueue_script( 'kadence-blocks-lottieplayer-js' );
+		}
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id              = $attributes['uniqueID'];
+			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
+			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
+			$style_id               = 'kt-blocks' . esc_attr( $unique_id );
+
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'lottie', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_lottie_render_block_attributes', $attributes );
+
+				$css = $this->blocks_lottie_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'lottie', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+			// Include lottie interactive if using scroll animation
+			if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
+				if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
+					wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
+				}
+
+				$content = $content . "
+				<script>
+					var waitForLoittieInteractive" . $player_simple_style_id . " = setInterval(function () {
+						if (typeof LottieInteractivity !== 'undefined') {
+							LottieInteractivity.create({
+								mode: 'scroll',
+								player: '#" . $player_style_id . "',
+								actions: [
+									{
+									visibility: [0,1],
+									type: 'seek',
+									frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "],
+									},
+								],
+							});
+							clearInterval(waitForLoittieInteractive" . $player_simple_style_id . ");
+						}
+					}, 125);
+				</script>";
+			}
+		}
+
+		return $content;
+	}
+	/**
+	 * Render Lottie CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_lottie_css_head( $attributes ) {
+		if ( ! wp_script_is( 'kadence-blocks-lottieplayer-js', 'enqueued' ) ) {
+			$this->enqueue_script( 'kadence-blocks-lottieplayer-js' );
+		}
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'lottie', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_lottie_render_block_attributes', $attributes );
+				$css = $this->blocks_lottie_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Image CSS
+	 *
+	 * @param array $attributes the blocks attribtues.
 	 * @param string $content the blocks content.
 	 */
 	public function render_image_css( $attributes, $content ) {
@@ -1035,7 +1181,7 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'image', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
 				$css = $this->blocks_image_array( $attributes, $unique_id );
@@ -1366,8 +1512,12 @@ class Kadence_Blocks_Frontend {
 		//wp_enqueue_style( 'kadence-blocks-style-css', KADENCE_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 
 		// Next all the extras that are shared.
+		wp_register_script( 'countup', KADENCE_BLOCKS_URL . 'dist/assets/js/countUp.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-count-up', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-countup.min.js', array('countup'), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'dist/assets/css/simplelightbox.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'dist/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'dist/magnific.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'magnific-popup', KADENCE_BLOCKS_URL . 'dist/magnific.js', array(), KADENCE_BLOCKS_VERSION, true );
@@ -1768,6 +1918,14 @@ class Kadence_Blocks_Frontend {
 							$this->render_row_layout_scripts( $blockattr );
 						}
 					}
+					if ( 'kadence/countup' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_countup_layout_css_head( $blockattr );
+							$this->render_countup_layout_scripts( $blockattr );
+							$this->blocks_countup_scripts_gfonts( $blockattr );
+						}
+					}
 					if ( 'kadence/column' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -1805,6 +1963,18 @@ class Kadence_Blocks_Frontend {
 							$blockattr = $block['attrs'];
 							$this->render_tabs_css_head( $blockattr );
 							$this->blocks_tabs_scripts_gfonts( $blockattr );
+						}
+					}
+					if ( 'kadence/image' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_image_css_head( $blockattr );
+						}
+					}
+					if ( 'kadence/lottie' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_lottie_css_head( $blockattr );
 						}
 					}
 					if ( 'kadence/infobox' === $block['blockName'] ) {
@@ -1906,6 +2076,14 @@ class Kadence_Blocks_Frontend {
 						$this->render_row_layout_scripts( $blockattr );
 					}
 				}
+				if ( 'kadence/countup' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_countup_layout_css_head( $blockattr );
+						$this->render_countup_layout_scripts( $blockattr );
+						$this->blocks_countup_scripts_gfonts( $blockattr );
+					}
+				}
 				if ( 'kadence/column' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -1976,6 +2154,18 @@ class Kadence_Blocks_Frontend {
 						$blockattr = $inner_block['attrs'];
 						$this->render_advancedgallery_css_head( $blockattr );
 						$this->blocks_advancedgallery_scripts_gfonts( $blockattr );
+					}
+				}
+				if ( 'kadence/image' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_image_css_head( $blockattr );
+					}
+				}
+				if ( 'kadence/lottie' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_lottie_css_head( $blockattr );
 					}
 				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
@@ -2987,6 +3177,54 @@ class Kadence_Blocks_Frontend {
 
 		return $css;
 	}
+
+	/**
+	 * Builds CSS for Lottie Anmiation block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_lottie_array( $attr, $unique_id  ) {
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$key_positions = [ 'top', 'right', 'bottom', 'left'];
+		$css->set_selector( '.kb-lottie-container' . $unique_id );
+
+		// Margins
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( isset( $attr['margin' . $breakpoint] ) && is_array( $attr['margin' . $breakpoint] ) ) {
+				foreach ( $attr['margin' . $breakpoint] as $key => $marginValue ) {
+					if ( is_numeric( $marginValue ) ) {
+						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+
+					}
+				}
+			}
+			$css->stop_media_query();
+		}
+
+		// Padding
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
+			if ( isset( $attr['padding' . $breakpoint] ) && is_array( $attr['padding' . $breakpoint] ) ) {
+				foreach ( $attr['padding' . $breakpoint] as $key => $paddingValue ) {
+					if ( is_numeric( $paddingValue ) ) {
+						$css->add_property( 'padding-' . $key_positions[ $key ], $paddingValue . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+
+					}
+				}
+			}
+			$css->stop_media_query();
+		}
+
+		return $css->css_output();
+	}
+
 	/**
 	 * Builds CSS for Icon block.
 	 *
@@ -3033,6 +3271,420 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		return $css;
+	}
+	/**
+	 * Builds CSS for Count Up block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_countup_array( $attr, $unique_id ) {
+		$css = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+
+		if ( isset( $attr['titleColor'] ) || isset( $attr['titleFont'] ) ) {
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
+
+			if ( isset( $attr['titleColor'] ) && ! empty( $attr['titleColor'] ) ) {
+				$css->add_property('color', $css->render_color( $attr['titleColor'] ) );
+			}
+			if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && is_array( $attr['titleFont'][ 0 ] ) ) {
+				$title_font = $attr['titleFont'][ 0 ];
+				if ( isset( $title_font['size'] ) && is_array( $title_font['size'] ) && ! empty( $title_font['size'][0] ) ) {
+					$css->add_property('font-size', $title_font['size'][0] . ( ! isset( $title_font['sizeType'] ) ? 'px' : $title_font['sizeType'] ) );
+				}
+				if ( isset( $title_font['lineHeight'] ) && is_array( $title_font['lineHeight'] ) && ! empty( $title_font['lineHeight'][0] ) ) {
+					$css->add_property('line-height', $title_font['lineHeight'][0] . ( ! isset( $title_font['lineType'] ) ? 'px' : $title_font['lineType'] ) );
+				}
+				if ( isset( $title_font['letterSpacing'] ) && ! empty( $title_font['letterSpacing'] ) ) {
+					$css->add_property('letter-spacing', $title_font['letterSpacing'] .  'px' );
+				}
+				if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
+					$css->add_property('text-transform', $title_font['textTransform']);
+				}
+				if ( isset( $title_font['family'] ) && ! empty( $title_font['family'] ) ) {
+					$css->add_property('font-family', $title_font['family'] );
+				}
+				if ( isset( $title_font['style'] ) && ! empty( $title_font['style'] ) ) {
+					$css->add_property('font-style', $title_font['style']);
+				}
+				if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) ) {
+					$css->add_property('font-weight', $title_font['weight']);
+				}
+			} else {
+				$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
+				$css->add_property('font-size', '50px' );
+			}
+		} else {
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
+			$css->add_property('font-size', '50px' );
+		}
+		if ( isset( $attr['titlePadding'] ) && is_array( $attr['titlePadding'] ) ) {
+			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
+			if ( isset( $attr['titlePadding'][0] ) && is_numeric( $attr['titlePadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['titlePadding'][0] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titlePadding'][1] ) && is_numeric( $attr['titlePadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['titlePadding'][1] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titlePadding'][2] ) && is_numeric( $attr['titlePadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['titlePadding'][2] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titlePadding'][3] ) && is_numeric( $attr['titlePadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['titlePadding'][3] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+		}
+		if ( isset( $attr['titleMargin'] ) && is_array( $attr['titleMargin'] ) ) {
+			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
+			if ( isset( $attr['titleMargin'][0] ) && is_numeric( $attr['titleMargin'][0] ) ) {
+				$css->add_property( 'margin-top', $attr['titleMargin'][0] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMargin'][1] ) && is_numeric( $attr['titleMargin'][1] ) ) {
+				$css->add_property( 'margin-right', $attr['titleMargin'][1] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMargin'][2] ) && is_numeric( $attr['titleMargin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $attr['titleMargin'][2] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMargin'][3] ) && is_numeric( $attr['titleMargin'][3] ) ) {
+				$css->add_property( 'margin-left', $attr['titleMargin'][3] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+		}
+		if ( isset( $attr['titleTabletPadding'] ) && is_array( $attr['titleTabletPadding'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
+			if ( isset( $attr['titleTabletPadding'][0] ) && is_numeric( $attr['titleTabletPadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['titleTabletPadding'][0] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleTabletPadding'][1] ) && is_numeric( $attr['titleTabletPadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['titleTabletPadding'][1] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleTabletPadding'][2] ) && is_numeric( $attr['titleTabletPadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['titleTabletPadding'][2] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleTabletPadding'][3] ) && is_numeric( $attr['titleTabletPadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['titleTabletPadding'][3] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['titleMobilePadding'] ) && is_array( $attr['titleMobilePadding'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
+			if ( isset( $attr['titleMobilePadding'][0] ) && is_numeric( $attr['titleMobilePadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['titleMobilePadding'][0] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMobilePadding'][1] ) && is_numeric( $attr['titleMobilePadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['titleMobilePadding'][1] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMobilePadding'][2] ) && is_numeric( $attr['titleMobilePadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['titleMobilePadding'][2] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMobilePadding'][3] ) && is_numeric( $attr['titleMobilePadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['titleMobilePadding'][3] . ( isset( $attr['titlePaddingType'] ) ? $attr['titlePaddingType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['titleTabletMargin'] ) && is_array( $attr['titleTabletMargin'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
+			if ( isset( $attr['titleTabletMargin'][0] ) && is_numeric( $attr['titleTabletMargin'][0] ) ) {
+				$css->add_property( 'margin-top', $attr['titleTabletMargin'][0] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleTabletMargin'][1] ) && is_numeric( $attr['titleTabletMargin'][1] ) ) {
+				$css->add_property( 'margin-right', $attr['titleTabletMargin'][1] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleTabletMargin'][2] ) && is_numeric( $attr['titleTabletMargin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $attr['titleTabletMargin'][2] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleTabletMargin'][3] ) && is_numeric( $attr['titleTabletMargin'][3] ) ) {
+				$css->add_property( 'margin-left', $attr['titleTabletMargin'][3] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['titleMobileMargin'] ) && is_array( $attr['titleMobileMargin'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title' );
+			if ( isset( $attr['titleMobileMargin'][0] ) && is_numeric( $attr['titleMobileMargin'][0] ) ) {
+				$css->add_property( 'margin-top', $attr['titleMobileMargin'][0] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMobileMargin'][1] ) && is_numeric( $attr['titleMobileMargin'][1] ) ) {
+				$css->add_property( 'margin-right', $attr['titleMobileMargin'][1] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMobileMargin'][2] ) && is_numeric( $attr['titleMobileMargin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $attr['titleMobileMargin'][2] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['titleMobileMargin'][3] ) && is_numeric( $attr['titleMobileMargin'][3] ) ) {
+				$css->add_property( 'margin-left', $attr['titleMobileMargin'][3] . ( isset( $attr['titleMarginType'] ) ? $attr['titleMarginType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css->start_media_query( $media_query['tablet'] ); //  767px) and (max-width: 1024px
+			$css->set_selector( '.kb-count-up-' . $unique_id . ' .kb-count-up-title');
+
+			if ( isset( $attr['titleFont'][0]['size'][1] ) && ! empty( $attr['titleFont'][0]['size'][1] ) ) {
+				$css->add_property( 'font-size', $attr['titleFont'][0]['size'][1] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ));
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) {
+				$css->add_property('line-height', $attr['titleFont'][0]['lineHeight'][1] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ));
+			}
+			$css->stop_media_quey();
+		}
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css->start_media_query( $media_query['mobile'] ); // max-width: 767px
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-titletle');
+
+			if ( isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) {
+				$css->add_property( 'font-size', $attr['titleFont'][0]['size'][2] . ( ! isset( $attr['titleFont'][0]['sizeType'] ) ? 'px' : $attr['titleFont'][0]['sizeType'] ));
+			}
+			if ( isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) {
+				$css->add_property('line-height', $attr['titleFont'][0]['lineHeight'][2] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ));
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['titleMinHeight'] ) && is_array( $attr['titleMinHeight'] ) && isset( $attr['titleMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['titleMinHeight'][0] ) ) {
+				$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
+				$css->add_property('min-height', $attr['titleMinHeight'][0] . 'px');
+			}
+			if ( isset( $attr['titleMinHeight'][1] ) && is_numeric( $attr['titleMinHeight'][1] ) ) {
+				$css->start_media_query( $media_query['tablet'] ); //  767px) and (max-width: 1024px
+				$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
+				$css->add_property('min-height', $attr['titleMinHeight'][1] . 'px');
+				$css->stop_media_query();
+			}
+			if ( isset( $attr['titleMinHeight'][2] ) && is_numeric( $attr['titleMinHeight'][2] ) ) {
+				$css->start_media_query( $media_query['mobile'] ); //  767px
+				$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
+				$css->add_property('min-height', $attr['titleMinHeight'][2] . 'px');
+				$css->stop_media_query();
+			}
+		}
+		if( isset( $attr['titleAlign'] ) ){
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
+
+			if( !empty($attr['titleAlign'][0]) ){
+				$css->add_property('text-align', $attr['titleAlign'][0]);
+			}
+
+			if( !empty($attr['titleAlign'][1]) ) {
+				$css->start_media_query( $media_query['tablet'] ); //  767px) and (max-width: 1024px
+				$css->add_property('text-align', $attr['titleAlign'][1]);
+				$css->stop_media_query();
+			}
+
+			if( !empty($attr['titleAlign'][2]) ){
+				$css->start_media_query( $media_query['mobile'] ); //  767px) and (max-width: 1024px
+				$css->add_property('text-align', $attr['titleAlign'][2]);
+				$css->stop_media_query();
+			}
+
+		}
+
+		if ( isset( $attr['numberColor'] ) || isset( $attr['numberFont'] ) ) {
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+
+			if ( isset( $attr['numberColor'] ) && ! empty( $attr['numberColor'] ) ) {
+				$css->add_property('color', $css->render_color( $attr['numberColor'] ));
+			}
+
+			if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && is_array( $attr['numberFont'][ 0 ] ) ) {
+				$number_font = $attr['numberFont'][ 0 ];
+				if ( isset( $number_font['size'] ) && is_array( $number_font['size'] ) && ! empty( $number_font['size'][0] ) ) {
+					$css->add_property('font-size', $number_font['size'][0] . ( ! isset( $number_font['sizeType'] ) ? 'px' : $number_font['sizeType'] ));
+				}
+				if ( isset( $number_font['lineHeight'] ) && is_array( $number_font['lineHeight'] ) && ! empty( $number_font['lineHeight'][0] ) ) {
+					$css->add_property('line-height', $number_font['lineHeight'][0] . ( ! isset( $number_font['lineType'] ) ? 'px' : $number_font['lineType'] ) );
+				}
+				if ( isset( $number_font['letterSpacing'] ) && ! empty( $number_font['letterSpacing'] ) ) {
+					$css->add_property('letter-spacing', $number_font['letterSpacing'] .  'px' );
+				}
+				if ( isset( $number_font['textTransform'] ) && ! empty( $number_font['textTransform'] ) ) {
+					$css->add_property('text-transform', $number_font['textTransform'] );
+				}
+				if ( isset( $number_font['family'] ) && ! empty( $number_font['family'] ) ) {
+					$css->add_property('font-family', $number_font['family'] );
+				}
+				if ( isset( $number_font['style'] ) && ! empty( $number_font['style'] ) ) {
+					$css->add_property('font-style', $number_font['style'] );
+				}
+				if ( isset( $number_font['weight'] ) && ! empty( $number_font['weight'] ) ) {
+					$css->add_property('font-weight', $number_font['weight'] );
+				}
+				if ( isset( $number_font['padding'] ) && is_array( $number_font['padding'] ) ) {
+					$css->add_property('padding', $number_font['padding'][0] . 'px ' . $number_font['padding'][1] . 'px ' . $number_font['padding'][2] . 'px ' . $number_font['padding'][3] . 'px' );
+				}
+				if ( isset( $number_font['margin'] ) && is_array( $number_font['margin'] ) ) {
+					$css->add_property('margin', $number_font['margin'][0] . 'px ' . $number_font['margin'][1] . 'px ' . $number_font['margin'][2] . 'px ' . $number_font['margin'][3] . 'px' );
+				}
+			}
+		}
+		if ( isset( $attr['numberPadding'] ) && is_array( $attr['numberPadding'] ) ) {
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+			if ( isset( $attr['numberPadding'][0] ) && is_numeric( $attr['numberPadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['numberPadding'][0] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberPadding'][1] ) && is_numeric( $attr['numberPadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['numberPadding'][1] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberPadding'][2] ) && is_numeric( $attr['numberPadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['numberPadding'][2] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberPadding'][3] ) && is_numeric( $attr['numberPadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['numberPadding'][3] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+		}
+		if ( isset( $attr['numberMargin'] ) && is_array( $attr['numberMargin'] ) ) {
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+			if ( isset( $attr['numberMargin'][0] ) && is_numeric( $attr['numberMargin'][0] ) ) {
+				$css->add_property( 'margin-top', $attr['numberMargin'][0] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMargin'][1] ) && is_numeric( $attr['numberMargin'][1] ) ) {
+				$css->add_property( 'margin-right', $attr['numberMargin'][1] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMargin'][2] ) && is_numeric( $attr['numberMargin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $attr['numberMargin'][2] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMargin'][3] ) && is_numeric( $attr['numberMargin'][3] ) ) {
+				$css->add_property( 'margin-left', $attr['numberMargin'][3] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+		}
+		if ( isset( $attr['numberTabletPadding'] ) && is_array( $attr['numberTabletPadding'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+			if ( isset( $attr['numberTabletPadding'][0] ) && is_numeric( $attr['numberTabletPadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['numberTabletPadding'][0] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberTabletPadding'][1] ) && is_numeric( $attr['numberTabletPadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['numberTabletPadding'][1] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberTabletPadding'][2] ) && is_numeric( $attr['numberTabletPadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['numberTabletPadding'][2] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberTabletPadding'][3] ) && is_numeric( $attr['numberTabletPadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['numberTabletPadding'][3] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['numberMobilePadding'] ) && is_array( $attr['numberMobilePadding'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+			if ( isset( $attr['numberMobilePadding'][0] ) && is_numeric( $attr['numberMobilePadding'][0] ) ) {
+				$css->add_property( 'padding-top', $attr['numberMobilePadding'][0] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMobilePadding'][1] ) && is_numeric( $attr['numberMobilePadding'][1] ) ) {
+				$css->add_property( 'padding-right', $attr['numberMobilePadding'][1] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMobilePadding'][2] ) && is_numeric( $attr['numberMobilePadding'][2] ) ) {
+				$css->add_property( 'padding-bottom', $attr['numberMobilePadding'][2] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMobilePadding'][3] ) && is_numeric( $attr['numberMobilePadding'][3] ) ) {
+				$css->add_property( 'padding-left', $attr['numberMobilePadding'][3] . ( isset( $attr['numberPaddingType'] ) ? $attr['numberPaddingType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['numberTabletMargin'] ) && is_array( $attr['numberTabletMargin'] ) ) {
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+			if ( isset( $attr['numberTabletMargin'][0] ) && is_numeric( $attr['numberTabletMargin'][0] ) ) {
+				$css->add_property( 'margin-top', $attr['numberTabletMargin'][0] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberTabletMargin'][1] ) && is_numeric( $attr['numberTabletMargin'][1] ) ) {
+				$css->add_property( 'margin-right', $attr['numberTabletMargin'][1] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberTabletMargin'][2] ) && is_numeric( $attr['numberTabletMargin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $attr['numberTabletMargin'][2] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberTabletMargin'][3] ) && is_numeric( $attr['numberTabletMargin'][3] ) ) {
+				$css->add_property( 'margin-left', $attr['numberTabletMargin'][3] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['numberMobileMargin'] ) && is_array( $attr['numberMobileMargin'] ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+			if ( isset( $attr['numberMobileMargin'][0] ) && is_numeric( $attr['numberMobileMargin'][0] ) ) {
+				$css->add_property( 'margin-top', $attr['numberMobileMargin'][0] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMobileMargin'][1] ) && is_numeric( $attr['numberMobileMargin'][1] ) ) {
+				$css->add_property( 'margin-right', $attr['numberMobileMargin'][1] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMobileMargin'][2] ) && is_numeric( $attr['numberMobileMargin'][2] ) ) {
+				$css->add_property( 'margin-bottom', $attr['numberMobileMargin'][2] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			if ( isset( $attr['numberMobileMargin'][3] ) && is_numeric( $attr['numberMobileMargin'][3] ) ) {
+				$css->add_property( 'margin-left', $attr['numberMobileMargin'][3] . ( isset( $attr['numberMarginType'] ) ? $attr['numberMarginType'] : 'px' ) );
+			}
+			$css->stop_media_query();
+		}
+		if( isset( $attr['numberAlign'] ) ){
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+
+			if( !empty($attr['numberAlign'][0]) ){
+				$css->add_property('text-align', $attr['numberAlign'][0]);
+			}
+
+			if( !empty($attr['numberAlign'][1]) ) {
+				$css->start_media_query( $media_query['tablet'] ); //  767px) and (max-width: 1024px
+				$css->add_property('text-align', $attr['numberAlign'][1]);
+				$css->stop_media_query();
+			}
+
+			if( !empty($attr['numberAlign'][2]) ){
+				$css->start_media_query( $media_query['mobile'] ); //  767px) and (max-width: 1024px
+				$css->add_property('text-align', $attr['numberAlign'][2]);
+				$css->stop_media_query();
+			}
+
+		}
+		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && ( ( isset( $attr['numberFont'][0]['size'] ) && is_array( $attr['numberFont'][0]['size'] ) && isset( $attr['numberFont'][0]['size'][1] ) && ! empty( $attr['numberFont'][0]['size'][1] ) ) || ( isset( $attr['numberFont'][0]['lineHeight'] ) && is_array( $attr['numberFont'][0]['lineHeight'] ) && isset( $attr['numberFont'][0]['lineHeight'][1] ) && ! empty( $attr['numberFont'][0]['lineHeight'][1] ) ) ) ) {
+			$css->start_media_query( $media_query['tablet'] ); //  767px) and (max-width: 1024px
+			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+
+
+			if ( isset( $attr['numberFont'][0]['size'][1] ) && ! empty( $attr['numberFont'][0]['size'][1] ) ) {
+				$css->add_property('font-size', $attr['numberFont'][0]['size'][1] . ( ! isset( $attr['numberFont'][0]['sizeType'] ) ? 'px' : $attr['numberFont'][0]['sizeType'] ));
+			}
+			if ( isset( $attr['numberFont'][0]['lineHeight'][1] ) && ! empty( $attr['numberFont'][0]['lineHeight'][1] ) ) {
+				$css->add_property('line-height', $attr['numberFont'][0]['lineHeight'][1] . ( ! isset( $attr['numberFont'][0]['lineType'] ) ? 'px' : $attr['numberFont'][0]['lineType'] ));
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && ( ( isset( $attr['numberFont'][0]['size'] ) && is_array( $attr['numberFont'][0]['size'] ) && isset( $attr['numberFont'][0]['size'][2] ) && ! empty( $attr['numberFont'][0]['size'][2] ) ) || ( isset( $attr['numberFont'][0]['lineHeight'] ) && is_array( $attr['numberFont'][0]['lineHeight'] ) && isset( $attr['numberFont'][0]['lineHeight'][2] ) && ! empty( $attr['numberFont'][0]['lineHeight'][2] ) ) ) ) {
+			$css->start_media_query( $media_query['mobile'] );
+			$css->add_property('.kb-count-up-' . $unique_id . ' .kb-count-up-numbertle');
+
+			if ( isset( $attr['numberFont'][0]['size'][2] ) && ! empty( $attr['numberFont'][0]['size'][2] ) ) {
+				$css->add_property('font-size', $attr['numberFont'][0]['size'][2] . ( ! isset( $attr['numberFont'][0]['sizeType'] ) ? 'px' : $attr['numberFont'][0]['sizeType'] ));
+			}
+			if ( isset( $attr['numberFont'][0]['lineHeight'][2] ) && ! empty( $attr['numberFont'][0]['lineHeight'][2] ) ) {
+				$css->add_property('line-height', $attr['numberFont'][0]['lineHeight'][2] . ( ! isset( $attr['numberFont'][0]['lineType'] ) ? 'px' : $attr['numberFont'][0]['lineType'] ));
+			}
+			$css->stop_media_query();
+		}
+		if ( isset( $attr['numberMinHeight'] ) && is_array( $attr['numberMinHeight'] ) && isset( $attr['numberMinHeight'][0] ) ) {
+			if ( is_numeric( $attr['numberMinHeight'][0] ) ) {
+				$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+				$css->add_property('min-height', $attr['numberMinHeight'][0] . 'px');
+			}
+			if ( isset( $attr['numberMinHeight'][1] ) && is_numeric( $attr['numberMinHeight'][1] ) ) {
+				$css->start_media_query( $media_query['tablet'] );
+				$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+				$css->add_property('min-height', $attr['numberMinHeight'][1] . 'px');
+				$css->stop_media_query();
+			}
+			if ( isset( $attr['numberMinHeight'][2] ) && is_numeric( $attr['numberMinHeight'][2] ) ) {
+				$css->start_media_query( $media_query['mobile'] );
+				$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-number');
+				$css->add_property('min-height', $attr['numberMinHeight'][2] . 'px');
+				$css->stop_media_query();
+			}
+		}
+
+		return $css->css_output();
 	}
 	/**
 	 * Builds CSS for InfoBox block.
@@ -4069,6 +4721,52 @@ class Kadence_Blocks_Frontend {
 		// 	$attributes = empty( $block['attrs'] ) ? [] : $block['attrs'];
 		// 	$this->blocks_infobox_scripts_gfonts( $attributes );
 		// }
+	}
+	/**
+	 * Adds Google fonts for Count Up block.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function blocks_countup_scripts_gfonts( $attr ) {
+		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && isset( $attr['titleFont'][0]['google'] ) && $attr['titleFont'][0]['google'] && ( ! isset( $attr['titleFont'][0]['loadGoogle'] ) || true === $attr['titleFont'][0]['loadGoogle'] ) &&  isset( $attr['titleFont'][0]['family'] ) ) {
+			$title_font = $attr['titleFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
+
+		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && isset( $attr['numberFont'][0]['google'] ) && $attr['numberFont'][0]['google'] && ( ! isset( $attr['numberFont'][0]['loadGoogle'] ) || true === $attr['numberFont'][0]['loadGoogle'] ) &&  isset( $attr['numberFont'][0]['family'] ) ) {
+			$title_font = $attr['numberFont'][0];
+			// Check if the font has been added yet.
+			if ( ! array_key_exists( $title_font['family'], self::$gfonts ) ) {
+				$add_font = array(
+					'fontfamily'   => $title_font['family'],
+					'fontvariants' => ( isset( $title_font['variant'] ) && ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : array() ),
+					'fontsubsets'  => ( isset( $title_font['subset'] ) && ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : array() ),
+				);
+				self::$gfonts[ $title_font['family'] ] = $add_font;
+			} else {
+				if ( ! in_array( $title_font['variant'], self::$gfonts[ $title_font['family'] ]['fontvariants'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontvariants'], $title_font['variant'] );
+				}
+				if ( ! in_array( $title_font['subset'], self::$gfonts[ $title_font['family'] ]['fontsubsets'], true ) ) {
+					array_push( self::$gfonts[ $title_font['family'] ]['fontsubsets'], $title_font['subset'] );
+				}
+			}
+		}
 	}
 	/**
 	 * Adds Google fonts for iconlist block.
@@ -5623,6 +6321,14 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		return $css;
+	}
+	/**
+	 * Adds Scripts for Count-Up block.
+	 *
+	 * @param array $attr the blocks attr.
+	 */
+	public function render_countup_layout_scripts( $attr ) {
+		$this->enqueue_script( 'kadence-count-up' );
 	}
 	/**
 	 * Adds Scripts for row block.
@@ -7303,13 +8009,13 @@ class Kadence_Blocks_Frontend {
 				$css->stop_media_query();
 			}
 		}
-		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['minHeight'] ) ||  isset( $attr['maxWidth'] ) ) {
+		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['paddingUnit'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['minHeight'] ) ||  isset( $attr['maxWidth'] ) ) {
 			$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
-			if ( isset( $attr['topPadding'] ) ) {
-				$css->add_property( 'padding-top', $attr['topPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
+			if ( isset( $attr['topPadding'] ) || isset( $attr['paddingUnit'] ) ) {
+				$css->add_property( 'padding-top', ( isset( $attr['topPadding'] ) ? $attr['topPadding'] : '25' )  . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
 			}
-			if ( isset( $attr['bottomPadding'] ) ) {
-				$css->add_property( 'padding-bottom', $attr['bottomPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
+			if ( isset( $attr['bottomPadding'] ) || isset( $attr['paddingUnit'] ) ) {
+				$css->add_property( 'padding-bottom', ( isset( $attr['bottomPadding'] ) ? $attr['bottomPadding'] : '25' ) . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['leftPadding'] ) ) {
 				$css->add_property( 'padding-left', $attr['leftPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
