@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 2.2.4
+Stable tag: 2.2.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -79,6 +79,16 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.2.5 =
+Release Date: February 9th, 2022
+* Add: Option to add a aria label to lottie block.
+* Add: Option to manage lottie animations.
+* Update: Deprecate Editor Width.
+* Fix: Issue with countup block not rendering correclty.
+* Fix: Issue with google font not loading in mobile/tablet preview.
+* Fix: Issue with info box number hover color.
+* Fix: Issue with lottie block not loading in the editor in some cases.
 
 = 2.2.4 =
 Release Date: February 7th, 2022

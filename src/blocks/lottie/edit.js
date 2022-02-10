@@ -70,7 +70,6 @@ export function Edit( {
 		delay,
 		align,
 		width,
-		sizeSlug,
 		startFrame,
 		endFrame,
 		paddingTablet,
@@ -81,6 +80,7 @@ export function Edit( {
 		marginDesktop,
 		marginMobile,
 		marginUnit,
+		label,
 	} = attributes;
 
 	const [ rerenderKey, setRerenderKey ] = useState( 'static' );
@@ -115,10 +115,7 @@ export function Edit( {
 	const [ marginControl, setMarginControl ] = useState( 'individual');
 	const [ paddingControl, setPaddingControl ] = useState( 'individual');
 
-	const classes = classnames( className, {
-		[ `size-${ sizeSlug }` ]: sizeSlug,
-	} );
-
+	const classes = classnames( className );
 	const blockProps = useBlockProps( {
 		className: classes,
 	} );
@@ -158,25 +155,26 @@ export function Edit( {
 	if( loopLimit !== 0 ) {
 		playerProps.count = loopLimit;
 	}
-
-	if ( ! uniqueID ) {
-		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-		if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
-			Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
-				uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
+	useEffect( () => {
+		if ( ! uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
+					uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
+				} );
+			}
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
+			ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else {
+			ktlottieUniqueIDs.push( uniqueID );
 		}
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );
-		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else {
-		ktlottieUniqueIDs.push( uniqueID );
-	}
+	}, [] );
 	const containerClasses = classnames( {
 		'kb-lottie-container': true,
 		[ `kb-lottie-container${ uniqueID }` ] : true,
@@ -339,6 +337,14 @@ export function Edit( {
 							<UploadModal />
 						</>
 					}
+					<TextControl
+						label={ __( 'Aria Label', 'kadence-blocks' ) }
+						value={ label || '' }
+						onChange={ ( value ) => {
+							setAttributes( { label: value });
+						} }
+						help={ __( 'Describe the purpose of this animation on the page.', 'kadence-blocks' ) }
+					/>
 
 
 

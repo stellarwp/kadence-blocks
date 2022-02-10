@@ -76,6 +76,7 @@ function Save( { attributes } ) {
 				{...playerProps}
 				id={ 'kb-lottie-player' + uniqueID }
 				src={ getAnimationUrl(attributes.fileSrc, attributes.fileUrl, attributes.localFile, rest_url) }
+				aria-label={ attributes.label ? attributes.label : undefined }
 				style={ {
 					maxWidth: ( attributes.width === "0" ? 'auto' : attributes.width + 'px'),
 					height: 'auto',

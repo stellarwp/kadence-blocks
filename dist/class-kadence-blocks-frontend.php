@@ -265,6 +265,14 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-editor-css',
 			)
 		);
+		register_block_type(
+			'kadence/countup',
+			array(
+				'render_callback' => array( $this, 'render_countup_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );
 		add_filter( 'excerpt_allowed_wrapper_blocks', array( $this, 'add_wrapper_blocks_to_excerpt' ), 20 );
 	}
@@ -309,13 +317,14 @@ class Kadence_Blocks_Frontend {
 	 *
 	 * @param array $attributes the blocks attribtues.
 	 */
-	public function render_countup_layout_css_head($attributes) {
+	public function render_countup_layout_css_head( $attributes ) {
 
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
 
-			if ( apply_filters( 'kadence_blocks_render_inline_css', true, 'countup', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'countup', $attributes ) ) {
+				$attributes = apply_filters( 'kadence_blocks_countup_render_block_attributes', $attributes );
 				$css = $this->blocks_countup_array( $attributes, $unique_id );
 
 				if ( ! empty( $css ) ) {
@@ -323,6 +332,33 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 		}
+	}
+	/**
+	 * Render Count Up  Block
+	 *
+	 * @param array $attributes the blocks attribtues.
+	 */
+	public function render_countup_css( $attributes, $content ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( $this->it_is_not_amp() ) {
+				wp_enqueue_script( 'kadence-count-up' );
+			}
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'countup', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_countup_render_block_attributes', $attributes );
+				$css = $this->blocks_countup_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'tabs', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+		}
+		return $content;
 	}
 	/**
 	 * Render Row  Block
@@ -982,60 +1018,78 @@ class Kadence_Blocks_Frontend {
 		if ( ! wp_script_is( 'kadence-blocks-lottieplayer-js', 'enqueued' ) ) {
 			wp_enqueue_script( 'kadence-blocks-lottieplayer-js' );
 		}
-
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id              = $attributes['uniqueID'];
 			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
 			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
 			$style_id               = 'kt-blocks' . esc_attr( $unique_id );
 
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
-
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'lottie', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
+				$attributes = apply_filters( 'kadence_blocks_lottie_render_block_attributes', $attributes );
 
 				$css = $this->blocks_lottie_array( $attributes, $unique_id );
-
-				// Include lottie interactive if using scroll animation
-				if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
-					if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
-						wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
-					}
-
-					$content = $content . "
-					<script>
-						var waitForLoittieInteractive" . $player_simple_style_id . " = setInterval(function () {
-					    	if (typeof LottieInteractivity !== 'undefined') {
-								LottieInteractivity.create({
-									mode: 'scroll',
-									player: '#" . $player_style_id . "',
-									actions: [
-										{
-										visibility: [0,1],
-										type: 'seek',
-										frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "],
-										},
-									],
-								});
-								clearInterval(waitForLoittieInteractive" . $player_simple_style_id . ");
-							}
-						}, 125);
-					</script>";
-				}
-
 				if ( ! empty( $css ) ) {
-					if ( $this->should_render_inline( 'image', $unique_id ) ) {
+					if ( $this->should_render_inline( 'lottie', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
 				}
 			}
+			// Include lottie interactive if using scroll animation
+			if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
+				if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
+					wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
+				}
+
+				$content = $content . "
+				<script>
+					var waitForLoittieInteractive" . $player_simple_style_id . " = setInterval(function () {
+						if (typeof LottieInteractivity !== 'undefined') {
+							LottieInteractivity.create({
+								mode: 'scroll',
+								player: '#" . $player_style_id . "',
+								actions: [
+									{
+									visibility: [0,1],
+									type: 'seek',
+									frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "],
+									},
+								],
+							});
+							clearInterval(waitForLoittieInteractive" . $player_simple_style_id . ");
+						}
+					}, 125);
+				</script>";
+			}
 		}
 
 		return $content;
 	}
-
+	/**
+	 * Render Lottie CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_lottie_css_head( $attributes ) {
+		if ( ! wp_script_is( 'kadence-blocks-lottieplayer-js', 'enqueued' ) ) {
+			$this->enqueue_script( 'kadence-blocks-lottieplayer-js' );
+		}
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'lottie', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_lottie_render_block_attributes', $attributes );
+				$css = $this->blocks_lottie_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
 	/**
 	 * Render Image CSS
 	 *
@@ -1082,7 +1136,7 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'image', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
 				$css = $this->blocks_image_array( $attributes, $unique_id );
@@ -1872,6 +1926,12 @@ class Kadence_Blocks_Frontend {
 							$this->render_image_css_head( $blockattr );
 						}
 					}
+					if ( 'kadence/lottie' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_lottie_css_head( $blockattr );
+						}
+					}
 					if ( 'kadence/infobox' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -1971,6 +2031,14 @@ class Kadence_Blocks_Frontend {
 						$this->render_row_layout_scripts( $blockattr );
 					}
 				}
+				if ( 'kadence/countup' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_countup_layout_css_head( $blockattr );
+						$this->render_countup_layout_scripts( $blockattr );
+						$this->blocks_countup_scripts_gfonts( $blockattr );
+					}
+				}
 				if ( 'kadence/column' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -2047,6 +2115,12 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
 						$this->render_image_css_head( $blockattr );
+					}
+				}
+				if ( 'kadence/lottie' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_lottie_css_head( $blockattr );
 					}
 				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
@@ -7820,13 +7894,13 @@ class Kadence_Blocks_Frontend {
 				$css->stop_media_query();
 			}
 		}
-		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['minHeight'] ) ||  isset( $attr['maxWidth'] ) ) {
+		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['paddingUnit'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['minHeight'] ) ||  isset( $attr['maxWidth'] ) ) {
 			$css->set_selector( '#kt-layout-id' . $unique_id . ' > .kt-row-column-wrap' );
-			if ( isset( $attr['topPadding'] ) ) {
-				$css->add_property( 'padding-top', $attr['topPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
+			if ( isset( $attr['topPadding'] ) || isset( $attr['paddingUnit'] ) ) {
+				$css->add_property( 'padding-top', ( isset( $attr['topPadding'] ) ? $attr['topPadding'] : '25' )  . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
 			}
-			if ( isset( $attr['bottomPadding'] ) ) {
-				$css->add_property( 'padding-bottom', $attr['bottomPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
+			if ( isset( $attr['bottomPadding'] ) || isset( $attr['paddingUnit'] ) ) {
+				$css->add_property( 'padding-bottom', ( isset( $attr['bottomPadding'] ) ? $attr['bottomPadding'] : '25' ) . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['leftPadding'] ) ) {
 				$css->add_property( 'padding-left', $attr['leftPadding'] . ( isset( $attr['paddingUnit'] ) && ! empty( $attr['paddingUnit'] ) ? $attr['paddingUnit'] : 'px' ) );

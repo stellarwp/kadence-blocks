@@ -62,6 +62,10 @@
 	  "type": "number",
 	  "default": 1
 	},
+	"label": {
+		"type": "string",
+		"default": ""
+	  },
 	"loopLimit": {
 	  "type": "number",
 	  "default": 0

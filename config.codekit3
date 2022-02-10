@@ -4441,6 +4441,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/components\/utilities\/kadence-store.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/utilities\/kadence-store-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/config\/split-chunk-name.js" : {
       "bF" : 0,
       "ft" : 64,

@@ -1091,20 +1091,10 @@ export default compose( [
 			getBlock,
 		} = select( 'core/block-editor' );
 		const block = getBlock( clientId );
-		if ( select( 'core/edit-post' ) ) {
-			const {
-				__experimentalGetPreviewDeviceType = null,
-			} = select( 'core/edit-post' );
-			return {
-				accordionBlock: block,
-				realPaneCount: block.innerBlocks.length,
-				getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
-			};
-		}
 		return {
 			accordionBlock: block,
 			realPaneCount: block.innerBlocks.length,
-			getPreviewDevice: 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {

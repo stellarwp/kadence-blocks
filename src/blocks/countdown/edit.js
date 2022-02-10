@@ -1201,10 +1201,6 @@ class KadenceCountdown extends Component {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		const { clientId } = ownProps;
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		let isNested = false;
 		const {
 			getBlock,
@@ -1217,7 +1213,7 @@ export default compose( [
 		return {
 			isNested: isNested,
 			parentBlock: ( isNested ? getBlock( parentBlocks[0] ) : '' ),
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId } ) => {

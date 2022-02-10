@@ -3,6 +3,7 @@
  *
  */
 // Utils
+import './components/utilities/kadence-store';
 import TypographyControls from './components/typography/typography-control';
 import AdvancedColorControl from './advanced-color-control.js';
 import BoxShadowControl from './components/common/box-shadow-control';
