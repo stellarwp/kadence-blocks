@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Icon
+ * BLOCK: Kadence Google Maps
  */
 
 /**
@@ -19,7 +19,6 @@ const {
 	InspectorControls,
 } = wp.blockEditor;
 
-const { apiFetch } = wp;
 const {
 	PanelBody,
 	RangeControl,
@@ -27,7 +26,6 @@ const {
 	SelectControl,
 	Button
 } = wp.components;
-
 
 /**
  * Internal dependencies
@@ -186,7 +184,7 @@ export function Edit( {
 						label={ __('Map Mode', 'kadence-blocks') }
 						value={ mapMode }
 						onChange={ (value) => setAttributes( { mapMode: value } ) }
-						help={ 'Place: Display a pinpoint at a specific place or address. Search: results for a search across the visible map region'}
+						help={ __('Place: Display a pinpoint at a specific place or address. Search: results for a search across the visible map region', 'kadence-blocks' ) }
 						options={ [
 							{
 								label: __( 'Place', 'kadence-blocks'),
@@ -308,9 +306,11 @@ export function Edit( {
 					title={ __( 'API Key', 'kadence-blocks' ) }
 					initialOpen={ false }
 				>
-					This blocks ships with an API key, but a custom key can be used.
-					The required API permission is "Maps Embed API"
 
+					{ __('This block includes an API key, but a custom key can be used. The key uses the "Maps Embed API" permission. This key publicly visible so make sure it is restricted to only this permission.', 'kadence-blocks') }
+
+					<br/><br/>
+					
 					<TextControl
 						label={ __( 'API Key', 'kadence-blocks' ) }
 						value={ customGoogleApiKey }
