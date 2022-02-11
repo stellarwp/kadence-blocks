@@ -23,6 +23,7 @@
 
   &:hover {
 	background-color: #007cba;
+	-webkit-filter: none;
 	&:after{
 	  content: 'Click here to select block';
 	}

@@ -6494,6 +6494,13 @@ class Kadence_Blocks_Frontend {
 			$css->stop_media_query();
 		}
 
+		// Filters
+		if( isset($attr['mapStyle']) && $attr['mapStyle'] !== 'standard' ){
+			$css->set_selector( '.kb-google-maps-container' . $unique_id . ' iframe');
+
+			$css->add_property('filter', $attr['mapStyle'] . '(' . $attr['mapStyleAmount'] . '%)');
+		}
+
 		return $css->css_output();
 
 	}

@@ -54,6 +54,14 @@
 	  "enum": ["roadmap", "satellite"],
 	  "default": "roadmap"
 	},
+	"mapStyle": {
+	  "enum": ["standard", "grayscale", "invert", "saturate", "sepia"],
+	  "default": "standard"
+	},
+	"mapStyleAmount": {
+	  "type": "number",
+	  "default": "50"
+	},
 	"mapMode": {
 	  "enum": ["place", "search"],
 	  "default": "place"

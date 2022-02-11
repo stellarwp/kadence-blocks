@@ -11616,6 +11616,7 @@ figure.wp-block-kadence-image:not(.wp-block) {
 }
 .kb-map-container-infobar:hover {
   background-color: #007cba;
+  -webkit-filter: none;
 }
 .kb-map-container-infobar:hover:after {
   content: "Click here to select block";

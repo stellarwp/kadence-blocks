@@ -33,6 +33,7 @@ const {
 import classnames from 'classnames';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import isEmpty from 'lodash/isEmpty';
+import KadenceRange from '../../components/range/range-control'
 
 const ktlottieUniqueIDs = [];
 
@@ -64,6 +65,8 @@ export function Edit( {
 		zoom,
 		mapType,
 		mapMode,
+		mapStyle,
+		mapStyleAmount,
 		sizeSlug,
 	} = attributes;
 
@@ -153,6 +156,23 @@ export function Edit( {
 		} );
 	}
 
+	const getSaneDefaultForFilter = ( filter ) => {
+		switch (filter) {
+			case "standard":
+				return "0";
+			case "grayscale":
+				return "100";
+			case "invert":
+				return "100";
+			case "saturate":
+				return "150";
+			case "sepia":
+					return "30";
+			default:
+					return "50";
+		}
+	}
+
 	const classes = classnames( className, {
 		[ `size-${ sizeSlug }` ]: sizeSlug,
 	} );
@@ -224,6 +244,42 @@ export function Edit( {
 								value: 'satellite'
 							}
 						] } />
+
+					<SelectControl
+						label={ __('Map Style', 'kadence-blocks') }
+						value={ mapStyle }
+						onChange={ (value) => setAttributes( { mapStyle: value, mapStyleAmount: getSaneDefaultForFilter( value ) } ) }
+						options={ [
+							{
+								label: 'Standard',
+								value: 'standard'
+							},
+							{
+								label: 'Grayscale',
+								value: 'grayscale'
+							},
+							{
+								label: 'Invert',
+								value: 'invert'
+							},
+							{
+								label: 'Saturate',
+								value: 'saturate'
+							},
+							{
+								label: 'Sepia',
+								value: 'sepia'
+							}
+						] } />
+
+					{ mapStyle !== 'standard' ?
+					<KadenceRange
+						label={ __('Map Style Strength ', 'kadence-blocks') }
+						value={ mapStyleAmount }
+						onChange={ (value) => setAttributes( { mapStyleAmount: value } ) }
+						min={ 0 }
+						max={ (mapStyle === 'saturate') ? 250 : 100 }
+					/> : null }
 
 				</PanelBody>
 
@@ -310,7 +366,7 @@ export function Edit( {
 					{ __('This block includes an API key, but a custom key can be used. The key uses the "Maps Embed API" permission. This key publicly visible so make sure it is restricted to only this permission.', 'kadence-blocks') }
 
 					<br/><br/>
-					
+
 					<TextControl
 						label={ __( 'API Key', 'kadence-blocks' ) }
 						value={ customGoogleApiKey }
@@ -353,11 +409,12 @@ export function Edit( {
 			} }>
 				<div className={ 'kb-map-container' } style={ {
 					height: previewHeight + 'px',
-					maxWidth: (previewWidth === '' ? '100%' : previewWidth + 'px'),
+					maxWidth: (previewWidth === '' ? '100%' : previewWidth + 'px')
 				} }>
 					<div className={ 'kb-map-container-infobar' }>
 					</div>
 					<iframe width={ '100%' } height={ '100%' } loading={ 'lazy' }
+									style={ ( mapStyle !== 'standard' ? { webkitFilter: mapStyle + '(' + mapStyleAmount + '%)' } : {} ) }
 									src={ 'https://www.google.com/maps/embed/v1/' + mapMode + '?' + qs }></iframe>
 				</div>
 			</div>
