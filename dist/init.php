@@ -70,11 +70,11 @@ function kadence_blocks_show_editor_width() {
  * Enqueue block settings for backend editor.
  */
 function kadence_blocks_gutenberg_editor_assets_variables() {
+	$sidebar_size   = 750;
+	$nosidebar_size = 1140;
+	$jssize         = 2000;
 	if ( apply_filters( 'kadence_blocks_editor_width', kadence_blocks_show_editor_width() ) ) {
 		$editor_widths  = get_option( 'kt_blocks_editor_width', array() );
-		$sidebar_size   = 750;
-		$nosidebar_size = 1140;
-		$jssize         = 2000;
 		if ( ! isset( $editor_widths['enable_editor_width'] ) || 'true' === $editor_widths['enable_editor_width'] ) {
 			$add_size = 30;
 			$post_type = get_post_type();
@@ -110,17 +110,6 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 				$jssize = $default_size;
 			}
 		}
-		if ( current_user_can( apply_filters( 'kadence_blocks_admin_role', 'manage_options' ) ) ) {
-			$userrole = 'admin';
-		} else if ( current_user_can( apply_filters( 'kadence_blocks_editor_role', 'delete_others_pages' ) ) ) {
-			$userrole = 'editor';
-		} else if ( current_user_can( apply_filters( 'kadence_blocks_author_role', 'publish_posts' ) ) ) {
-			$userrole = 'author';
-		} else if ( current_user_can( apply_filters( 'kadence_blocks_contributor_role', 'edit_posts' ) ) ) {
-			$userrole = 'contributor';
-		} else {
-			$userrole = 'none';
-		}
 		if ( isset( $editor_widths['enable_editor_width'] ) && 'false' === $editor_widths['enable_editor_width'] ) {
 			$enable_editor_width = false;
 		} else {
@@ -129,9 +118,35 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	} else {
 		$enable_editor_width = false;
 	}
+	$userrole = 'none';
+	if ( current_user_can( apply_filters( 'kadence_blocks_admin_role', 'manage_options' ) ) ) {
+		$userrole = 'admin';
+	} else if ( current_user_can( apply_filters( 'kadence_blocks_editor_role', 'delete_others_pages' ) ) ) {
+		$userrole = 'editor';
+	} else if ( current_user_can( apply_filters( 'kadence_blocks_author_role', 'publish_posts' ) ) ) {
+		$userrole = 'author';
+	} else if ( current_user_can( apply_filters( 'kadence_blocks_contributor_role', 'edit_posts' ) ) ) {
+		$userrole = 'contributor';
+	}
 	$pro_data = false;
 	if ( class_exists( 'Kadence_Blocks_Pro' ) ) {
 		$pro_data = kadence_blocks_get_pro_license_data();
+	}
+	$access_levels = false;
+	$level_ids = false;
+	if ( function_exists( 'rcp_get_access_levels' ) ) {
+		foreach ( rcp_get_access_levels() as $key => $access_level_label ) {
+			$access_levels[] = array(
+				'value' => $key,
+				'label' => sprintf( __( '%s and higher', 'kadence-blocks' ), $key ),
+			);
+		}
+		foreach( rcp_get_membership_levels( array( 'number' => 999 ) ) as $level ) {
+			$level_ids[] = array(
+				'value' => $level->get_id(),
+				'label' => esc_attr( $level->get_name() ),
+			);
+		}
 	}
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
 	$gfonts_path      = KADENCE_BLOCKS_PATH . 'dist/gfonts-array.php';
@@ -185,6 +200,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'postQueryEndpoint'  => '/kbp/v1/post-query',
 			'icon_names' => file_exists( $icon_names_path ) ? include $icon_names_path : array(),
 			'rest_url' => get_rest_url(),
+			'rcp_levels' => $level_ids,
+			'rcp_access' => $access_levels,
 			'svgMaskPath' => KADENCE_BLOCKS_URL . 'dist/assets/images/masks/',
 		)
 	);

@@ -1094,7 +1094,7 @@ export default compose( [
 		return {
 			accordionBlock: block,
 			realPaneCount: block.innerBlocks.length,
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {

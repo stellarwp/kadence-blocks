@@ -102,7 +102,7 @@ KTWebfontLoader.defaultProps = {
 export default compose( [
 	withSelect( ( select ) => {
 		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( KTWebfontLoader );

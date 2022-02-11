@@ -3141,7 +3141,7 @@ class KadenceInfoBox extends Component {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( KadenceInfoBox );

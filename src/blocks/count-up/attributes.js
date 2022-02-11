@@ -178,8 +178,8 @@ const attributes = {
 		default: 2.5,
 	},
 	separator: {
-		type: 'boolean',
-		default: false,
+		type: 'string',
+		default: '',
 	}
 };
 export default attributes;

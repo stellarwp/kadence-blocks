@@ -40,7 +40,7 @@ export default function ResponsiveAlignControls( {
 		setDeviceType( capitalizeFirstLetter( device ) );
 	};
 	const theDevice = useSelect( ( select ) => {
-		return select( 'kadenceblocks/data' ).getDevice();
+		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
 	}, [] );
 	if ( theDevice !== deviceType ) {
 		setDeviceType( theDevice );

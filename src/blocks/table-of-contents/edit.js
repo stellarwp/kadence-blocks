@@ -961,7 +961,7 @@ export default compose( [
 			postContent: postContent,
 			getBlock,
 			pageIndex: page,
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( KadenceTableOfContents );

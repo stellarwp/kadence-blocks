@@ -162,6 +162,8 @@ class KadenceCounterUp extends Component {
 			[ `kb-count-up-${ uniqueID }` ]: uniqueID,
 			'kb-count-up': true
 		} );
+		let theSeparator = ( separator === true ? ',' : separator );
+		theSeparator = ( theSeparator === false ? '' : theSeparator );
 		return (
 			<Fragment>
 				{ isSelected && <Inspector {...this.props} /> }
@@ -200,7 +202,7 @@ class KadenceCounterUp extends Component {
 							start={ start }
 							end={ end }
 							duration={ duration }
-							separator={ separator ? ',' : '' }
+							separator={ theSeparator }
 							prefix={ prefix }
 							suffix={ suffix }
 						/>
@@ -243,7 +245,7 @@ class KadenceCounterUp extends Component {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( KadenceCounterUp );

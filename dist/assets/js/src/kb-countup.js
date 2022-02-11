@@ -64,17 +64,17 @@
 					prefix     = self.dataset.prefix,
 					suffix    = self.dataset.suffix,
 					duration  = self.dataset.duration,
-					seperator = self.dataset.separator,
+					separator = self.dataset.separator,
 					el = self.querySelector('.kb-count-up-process');
-
+				let theSeparator = ( separator === 'true' ? ',' : separator );
+				theSeparator = ( theSeparator === 'false' ? '' : theSeparator );
 				let KbCounterOptions = {
 					startVal: start ? start : 0,
 					duration: duration ? duration : 2,
 					prefix: prefix ? prefix : '',
 					suffix: suffix ? suffix : '',
-					separator: seperator ? ',' : ''
+					separator: theSeparator,
 				};
-
 				window.kadenceCountUp.cache[n] = new countUp.CountUp( el, end, KbCounterOptions);
 				// Initialize listener
 				window.kadenceCountUp.listenerCache[n] = window.kadenceCountUp.listener( n );

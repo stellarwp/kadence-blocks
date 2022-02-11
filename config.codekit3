@@ -2035,6 +2035,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/blocks\/count-up\/deprecated.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/count-up\/deprecated-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/blocks\/count-up\/edit.js" : {
       "bF" : 0,
       "ft" : 64,

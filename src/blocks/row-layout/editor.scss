@@ -2518,3 +2518,23 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {transform: 
 .kb-responsive-control-inner .components-select-control {
     max-height: 60px;
 }
+
+.kadence-has-rcp-display {
+	border: 1px dashed #2091F9;
+}
+.wp-block:not(.is-selected):not(.has-child-selected) > .kadence-has-rcp-display:after {
+	background-color:#2091F9;
+    content:"";
+    height:100%;
+    left:0;
+    mask-image:url("data:image/svg+xml,%3Csvg width='100%25' height='100%25' viewBox='0 0 70 70' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xml:space='preserve' xmlns:serif='http://www.serif.com/' style='fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;'%3E%3Cg id='Icon' transform='matrix(0.119508,0,0,0.119508,0,0)'%3E%3Cpath d='M81.592,582.676L582.404,582.676L582.404,81.629L81.592,81.629L81.592,582.676ZM531.356,531.512L359.422,531.512L313.463,378.82C340.828,364.038 359.422,335.091 359.422,301.799C359.422,253.482 320.275,214.317 271.982,214.317C271.958,214.317 271.934,214.32 271.934,214.32L271.982,531.437L132.64,531.437L132.64,131.864L378.792,131.864C463.052,131.864 531.359,200.2 531.359,284.499C531.359,338.548 503.256,385.995 460.902,413.119L531.356,531.512ZM500.812,40.983L40.963,40.983L40.963,501.045L0,501.045L0,0L500.812,0L500.812,40.983Z' style='fill:rgb(42,118,210);'/%3E%3C/g%3E%3C/svg%3E%0A");
+    mask-position:calc(100% - 6px) 6px;
+    mask-repeat:no-repeat;
+    mask-size:24px 24px;
+    min-height:28px;
+    min-width:28px;
+    position:absolute;
+    top:0;
+    width:100%;
+    z-index:1;
+}

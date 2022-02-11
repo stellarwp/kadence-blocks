@@ -116,6 +116,30 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $block['attrs']['loggedOut'] ) && $block['attrs']['loggedOut'] && ! is_user_logged_in() ) {
 				return '';
 			}
+			if ( function_exists( 'rcp_user_has_access' ) && isset( $block['attrs']['rcpMembership'] ) && $block['attrs']['rcpMembership'] ) {
+				if ( ! is_user_logged_in() ) {
+					return '';
+				}
+				$hide = true;
+				$access_level = (int) ( isset( $block['attrs']['rcpAccess'] ) ? $block['attrs']['rcpAccess'] : '0' );
+				if ( rcp_user_has_access( get_current_user_id(), $access_level ) ) {
+					$hide = false;
+				}
+				if ( $hide ) {
+					return '';
+				}
+				if ( isset( $block['attrs']['rcpMembershipLevel'] ) && !empty( $block['attrs']['rcpMembershipLevel'] ) && is_array( $block['attrs']['rcpMembershipLevel'] ) ) {
+					$hide = true;
+					foreach( $block['attrs']['rcpMembershipLevel'] as $key => $level ) {
+						if ( in_array( $level['value'], rcp_get_customer_membership_level_ids() ) ) {
+							$hide = false;
+						}
+					}
+				}
+				if ( $hide ) {
+					return '';
+				}
+			}
 		}
 
 		return $block_content;
@@ -3688,7 +3712,7 @@ class Kadence_Blocks_Frontend {
 				)
 			);
 		}
-		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && isset( $attr['learnMoreStyles'][0]['google'] ) && $attr['learnMoreStyles'][0]['google'] && ( ! isset( $attr['learnMoreStyles'][0]['loadGoogle'] ) || true === $attr['learnMoreStyles'][0]['loadGoogle'] ) &&  isset( $attr['learnMoreStyles'][0]['family'] ) ) {
+		if ( isset( $attr['displayLearnMore'] ) && $attr['displayLearnMore'] && isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && isset( $attr['learnMoreStyles'][0]['google'] ) && $attr['learnMoreStyles'][0]['google'] && ( ! isset( $attr['learnMoreStyles'][0]['loadGoogle'] ) || true === $attr['learnMoreStyles'][0]['loadGoogle'] ) &&  isset( $attr['learnMoreStyles'][0]['family'] ) ) {
 			$learn_more_font = $attr['learnMoreStyles'][0];
 			$this->add_gfont(
 				array(
