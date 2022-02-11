@@ -236,11 +236,11 @@ export function Edit( {
 						onChange={ (value) => setAttributes( { mapType: value } ) }
 						options={ [
 							{
-								label: 'Road Map',
+								label: __('Road Map', 'kadence-blocks'),
 								value: 'roadmap'
 							},
 							{
-								label: 'Satellite',
+								label: __('Satellite', 'kadence-blocks'),
 								value: 'satellite'
 							}
 						] } />
@@ -251,23 +251,23 @@ export function Edit( {
 						onChange={ (value) => setAttributes( { mapStyle: value, mapStyleAmount: getSaneDefaultForFilter( value ) } ) }
 						options={ [
 							{
-								label: 'Standard',
+								label: __('Standard', 'kadence-blocks'),
 								value: 'standard'
 							},
 							{
-								label: 'Grayscale',
+								label: __('Grayscale', 'kadence-blocks'),
 								value: 'grayscale'
 							},
 							{
-								label: 'Invert',
+								label: __('Invert', 'kadence-blocks'),
 								value: 'invert'
 							},
 							{
-								label: 'Saturate',
+								label: __('Saturate', 'kadence-blocks'),
 								value: 'saturate'
 							},
 							{
-								label: 'Sepia',
+								label: __('Sepia', 'kadence-blocks'),
 								value: 'sepia'
 							}
 						] } />
