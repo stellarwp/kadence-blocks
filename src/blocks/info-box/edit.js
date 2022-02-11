@@ -230,9 +230,7 @@ class KadenceInfoBox extends Component {
 		const previewLearnMoreLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== learnMoreStyles[0].lineHeight  &&  undefined !== learnMoreStyles[0].lineHeight[0] ? learnMoreStyles[0].lineHeight[0] : '' ), ( undefined !== learnMoreStyles[0].lineHeight &&  undefined !== learnMoreStyles[0].lineHeight[1] ? learnMoreStyles[0].lineHeight[1] : '' ), ( undefined !== learnMoreStyles[0].lineHeight &&  undefined !== learnMoreStyles[0].lineHeight[2] ? learnMoreStyles[0].lineHeight[2] : '' ) );
 
 		const previewMediaIconSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== mediaIcon[0]  &&  undefined !== mediaIcon[0].size ? mediaIcon[0].size : '14' ), ( undefined !== mediaIcon[0].tabletSize &&  undefined !== mediaIcon[0].tabletSize ? mediaIcon[0].tabletSize : '' ), ( undefined !== mediaIcon[0].mobileSize &&  undefined !== mediaIcon[0].mobileSize ? mediaIcon[0].mobileSize : '' ) );
-
-		console.log(previewMediaIconSize);
-
+		
 		const widthTypes = [
 			{ key: 'px', name: 'px' },
 			{ key: '%', name: '%' },
