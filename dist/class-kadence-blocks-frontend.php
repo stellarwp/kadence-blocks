@@ -6454,7 +6454,7 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'max-width', $attr['imgMaxWidth'] . 'px' );
 			}
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' .kb-img' );
+		$css->set_selector( '.kb-image' . $unique_id . ' .kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Padding
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
 			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
