@@ -1,14 +1,14 @@
 /**
  * BLOCK: Kadence Block Template
  */
-const { rest_url } = kadence_blocks_params;
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * External dependencies
  */
 import classnames from 'classnames';
 
-function Save( { attributes } ) {
+function Save( { attributes, innerBlocks } ) {
 	const { uniqueID } = attributes;
 	const classes = classnames( {
 		'kb-block-template-container': true,
@@ -17,7 +17,7 @@ function Save( { attributes } ) {
 
 	return (
 		<div className={ classes }>
-			Block template content
+			<InnerBlocks.Content />
 		</div>
 	);
 }

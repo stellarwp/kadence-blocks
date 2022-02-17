@@ -1,13 +1,13 @@
 {
   "apiVersion": 2,
-  "name": "kadence/block-template",
-  "title": "Block Template",
+  "name": "kadence/show-more",
+  "title": "Show More",
   "category": "kadence-blocks",
-  "description": "Kadence block template",
+  "description": "Kadence Show More",
   "textdomain": "kadence-blocks",
   "keywords": [
 	"kb",
-	"block-template",
+	"show-more"
   ],
   "attributes": {
 	"align": {
