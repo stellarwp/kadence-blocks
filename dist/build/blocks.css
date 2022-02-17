@@ -3653,13 +3653,12 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {
 
 @media (max-width: 600px) {
   .wp-block-kadence-rowlayout > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout {
-    flex-direction: column;
+    flex-direction: row;
   }
 
   .wp-block-kadence-rowlayout > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] {
     flex: none !important;
     width: 100%;
-    margin-right: 0;
   }
 
   .kt-resizeable-column-container {
@@ -3984,6 +3983,22 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {
     width: 0;
   }
 
+  .kt-row-column-wrap.kt-mobile-layout-left-forty > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] {
+    flex: 1 !important;
+    width: 0;
+  }
+  .kt-row-column-wrap.kt-mobile-layout-left-forty > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:first-child {
+    flex: 2 !important;
+  }
+
+  .kt-row-column-wrap.kt-mobile-layout-right-forty > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] {
+    flex: 1 !important;
+    width: 0;
+  }
+  .kt-row-column-wrap.kt-mobile-layout-right-forty > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:last-child {
+    flex: 2 !important;
+  }
+
   .kt-row-column-wrap.kt-mobile-layout-row > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout {
     flex-direction: column;
   }
@@ -3996,6 +4011,50 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {
     flex: none !important;
     width: 100%;
     margin-right: 0;
+  }
+
+  .kt-mobile-layout-left-half > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] {
+    flex: 1 !important;
+  }
+  .kt-mobile-layout-left-half > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:first-child {
+    flex: 2 !important;
+  }
+
+  .kt-mobile-layout-center-half > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] {
+    flex: 2 !important;
+  }
+  .kt-mobile-layout-center-half > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:first-child {
+    flex: 1 !important;
+  }
+  .kt-mobile-layout-center-half > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:last-child {
+    flex: 1 !important;
+  }
+
+  .kt-mobile-layout-center-wide > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] {
+    flex: 6 !important;
+  }
+  .kt-mobile-layout-center-wide > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:first-child {
+    flex: 2 !important;
+  }
+  .kt-mobile-layout-center-wide > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:last-child {
+    flex: 2 !important;
+  }
+
+  .kt-mobile-layout-center-exwide > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] {
+    flex: 70 !important;
+  }
+  .kt-mobile-layout-center-exwide > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:first-child {
+    flex: 15 !important;
+  }
+  .kt-mobile-layout-center-exwide > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:last-child {
+    flex: 15 !important;
+  }
+
+  .kt-mobile-layout-right-half > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"] {
+    flex: 1 !important;
+  }
+  .kt-mobile-layout-right-half > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:last-child {
+    flex: 2 !important;
   }
 
   .kt-mobile-layout-left-golden > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > [data-type="kadence/column"]:first-child {
