@@ -7,7 +7,7 @@
   "textdomain": "kadence-blocks",
   "keywords": [
 	"kb",
-	"block-template",
+	"block-template"
   ],
   "attributes": {
 	"align": {

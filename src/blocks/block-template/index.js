@@ -22,7 +22,7 @@ export const settings = {
 registerBlockType('kadence/block-template', {
 	...metadata,
 	icon: {
-		src: itemicons.block-template,
+		src: itemicons.row,
 	},
 	...settings
 

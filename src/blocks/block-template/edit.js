@@ -14,34 +14,21 @@ import { __ } from '@wordpress/i18n';
 import { useState  } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import get from 'lodash/get';
-import has from 'lodash/has';
 
 const {
 	InspectorControls,
 	BlockControls,
 } = wp.blockEditor;
 
-const { apiFetch } = wp;
 const {
 	PanelBody,
-	RangeControl,
-	ToggleControl,
-	TextControl,
-	Modal,
-	SelectControl,
-	FormFileUpload,
-	Button,
-	Notice,
 } = wp.components;
 
-import { __experimentalNumberControl as NumberControl } from '@wordpress/components';
 /**
  * Internal dependencies
  */
 import classnames from 'classnames';
-import KadenceSelectPosts from '../../components/posts/select-posts-control'
-const ktlottieUniqueIDs = [];
+const ktUniqueIDs = [];
 
 export function Edit( {
 	attributes,
@@ -92,6 +79,10 @@ export function Edit( {
 	const [ marginControl, setMarginControl ] = useState( 'individual');
 	const [ paddingControl, setPaddingControl ] = useState( 'individual');
 
+	const classes = classnames( className, {
+		[ `kt-block-template${ uniqueID }` ]: uniqueID,
+	} );
+
 	const blockProps = useBlockProps( {
 		className: classes,
 	} );
@@ -106,13 +97,13 @@ export function Edit( {
 		setAttributes( {
 			uniqueID: '_' + clientId.substr( 2, 9 ),
 		} );
-		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
+		ktUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+	} else if ( ktUniqueIDs.includes( uniqueID ) ) {
 		setAttributes( {
 			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} );		ktUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 	} else {
-		ktlottieUniqueIDs.push( uniqueID );
+		ktUniqueIDs.push( uniqueID );
 	}
 	const containerClasses = classnames( {
 		'kb-lottie-container': true,
