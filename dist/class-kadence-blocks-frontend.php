@@ -242,6 +242,14 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
+			'kadence/block-template',
+			array(
+				'render_callback' => array( $this, 'render_block_template_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
+		register_block_type(
 			'kadence/testimonials',
 			array(
 				'render_callback' => array( $this, 'render_testimonials_css' ),
@@ -1091,6 +1099,59 @@ class Kadence_Blocks_Frontend {
 		}
 	}
 	/**
+	 * Render Block Template CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_block_template_css( $attributes, $content ) {
+
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id              = $attributes['uniqueID'];
+			$player_style_id        = 'kb-block-template' . esc_attr( $unique_id );
+			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
+			$style_id               = 'kt-blocks' . esc_attr( $unique_id );
+
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'block-template', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_block_template_render_block_attributes', $attributes );
+
+				$css = $this->blocks_block_template_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'block_template', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+
+		}
+
+		return $content;
+	}
+	/**
+	 * Render Block Template CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_block_template_css_head( $attributes ) {
+
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'lottie', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_block_template_render_block_attributes', $attributes );
+				$css = $this->blocks_block_template_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
 	 * Render Image CSS
 	 *
 	 * @param array $attributes the blocks attribtues.
@@ -1932,6 +1993,12 @@ class Kadence_Blocks_Frontend {
 							$this->render_lottie_css_head( $blockattr );
 						}
 					}
+					if ( 'kadence/block-template' === $inner_block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_block_template_css_head( $blockattr );
+						}
+					}
 					if ( 'kadence/infobox' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -2121,6 +2188,12 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
 						$this->render_lottie_css_head( $blockattr );
+					}
+				}
+				if ( 'kadence/block-template' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_block_template_css_head( $blockattr );
 					}
 				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
@@ -3148,6 +3221,53 @@ class Kadence_Blocks_Frontend {
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		$key_positions = [ 'top', 'right', 'bottom', 'left'];
 		$css->set_selector( '.kb-lottie-container' . $unique_id );
+
+		// Margins
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( isset( $attr['margin' . $breakpoint] ) && is_array( $attr['margin' . $breakpoint] ) ) {
+				foreach ( $attr['margin' . $breakpoint] as $key => $marginValue ) {
+					if ( is_numeric( $marginValue ) ) {
+						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+
+					}
+				}
+			}
+			$css->stop_media_query();
+		}
+
+		// Padding
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
+			if ( isset( $attr['padding' . $breakpoint] ) && is_array( $attr['padding' . $breakpoint] ) ) {
+				foreach ( $attr['padding' . $breakpoint] as $key => $paddingValue ) {
+					if ( is_numeric( $paddingValue ) ) {
+						$css->add_property( 'padding-' . $key_positions[ $key ], $paddingValue . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+
+					}
+				}
+			}
+			$css->stop_media_query();
+		}
+
+		return $css->css_output();
+	}
+
+	/**
+	 * Builds CSS for Block Template block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_block_template_array( $attr, $unique_id  ) {
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$key_positions = [ 'top', 'right', 'bottom', 'left'];
+		$css->set_selector( '.kb-block-template-container' . $unique_id );
 
 		// Margins
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {

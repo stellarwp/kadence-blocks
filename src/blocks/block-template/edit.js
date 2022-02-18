@@ -89,9 +89,9 @@ export function Edit( {
 
 	if ( ! uniqueID ) {
 		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-		if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
-			Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
-				uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
+		if ( blockConfigObject[ 'kadence/block-template' ] !== undefined && typeof blockConfigObject[ 'kadence/block-template' ] === 'object' ) {
+			Object.keys( blockConfigObject[ 'kadence/block-template' ] ).map( ( attribute ) => {
+				uniqueID = blockConfigObject[ 'kadence/block-template' ][ attribute ];
 			} );
 		}
 		setAttributes( {
@@ -106,8 +106,8 @@ export function Edit( {
 		ktUniqueIDs.push( uniqueID );
 	}
 	const containerClasses = classnames( {
-		'kb-lottie-container': true,
-		[ `kb-lottie-container${ uniqueID }` ] : true,
+		'kb-block-template-container': true,
+		[ `kb-block-template-container${ uniqueID }` ] : true,
 	} );
 
 	return (
