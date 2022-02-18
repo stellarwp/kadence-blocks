@@ -191,6 +191,7 @@ class KB_Ajax_Form {
 							$refer_id = is_object( $post ) ? $post->ID : url_to_postid( wp_get_referer() );
 							$fields[ $key ]['value'] = str_replace( '{page_title}', get_the_title( $refer_id ), $fields[ $key ]['value'] );
 							$fields[ $key ]['value'] = str_replace( '{page_url}', wp_get_referer(), $fields[ $key ]['value'] );
+							$fields[ $key ]['value'] = str_replace( '{remoteip}', $_SERVER['REMOTE_ADDR'], $fields[ $key ]['value']);
 						}
 						unset( $_POST[ 'kb_field_' . $key ] );
 					}

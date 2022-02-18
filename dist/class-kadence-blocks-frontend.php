@@ -3410,7 +3410,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) {
 				$css->add_property('line-height', $attr['titleFont'][0]['lineHeight'][1] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ));
 			}
-			$css->stop_media_quey();
+			$css->stop_media_query();
 		}
 		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) {
 			$css->start_media_query( $media_query['mobile'] ); // max-width: 767px
@@ -6454,7 +6454,7 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'max-width', $attr['imgMaxWidth'] . 'px' );
 			}
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' .kb-img' );
+		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Padding
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
 			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
