@@ -59,6 +59,10 @@
 }
 .wp-block-kadence-advancedgallery {
     overflow: hidden;
+
+   .kt-blocks-carousel.kt-carousel-container-dotstyle-none {
+		padding-bottom: 0;
+   }
 }
 .kb-gallery-main-contain {
 	li {
