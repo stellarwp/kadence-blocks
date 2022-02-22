@@ -9670,6 +9670,9 @@ button.components-button.kt-accordion-add.is-primary svg {
 .wp-block-kadence-advancedgallery {
   overflow: hidden;
 }
+.wp-block-kadence-advancedgallery .kt-blocks-carousel.kt-carousel-container-dotstyle-none {
+  padding-bottom: 0;
+}
 
 .kb-gallery-main-contain li {
   list-style-type: none;
