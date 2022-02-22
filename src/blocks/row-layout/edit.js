@@ -3125,7 +3125,7 @@ class KadenceRowLayout extends Component {
 											{ rcpMembership && (
 												<Fragment>
 													<SelectControl
-														label={ __( 'Minimim Access Level', 'kadence-blocks' ) }
+														label={ __( 'Minimum Access Level', 'kadence-blocks' ) }
 														value={ rcpAccess }
 														options={ ( kadence_blocks_params && kadence_blocks_params.rcp_access ? kadence_blocks_params.rcp_access : [] ) }
 														onChange={ ( value ) => setAttributes( { rcpAccess: value } ) }
