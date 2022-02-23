@@ -2,6 +2,7 @@ import {createReduxStore, register, createRegistrySelector, createRegistryContro
 
 const DEFAULT_STATE = {
 	previewDevice: 'Desktop',
+	uniqueIDs: [],
 };
 
 const actions = {
@@ -18,6 +19,12 @@ const actions = {
 			};
 		}
 	},
+	addUniqueID( uniqueID ) {
+		return {
+			type: 'ADD_UNIQUE_ID',
+			uniqueID,
+		};
+	}
 };
 
 const controls = {
@@ -66,6 +73,13 @@ const store = createReduxStore( 'kadenceblocks/data', {
 					...state,
 					previewDevice: action.deviceType,
 				};
+			case 'ADD_UNIQUE_ID':
+				const updatedIDs = state.uniqueIDs;
+				updatedIDs.push( action.uniqueID );
+				return {
+					...state,
+					uniqueIDs: updatedIDs,
+				};
 			default:
 				return state;
 		}
@@ -74,6 +88,10 @@ const store = createReduxStore( 'kadenceblocks/data', {
 	controls,
 	selectors: {
 		getPreviewDeviceType,
+		getUniqueIDs( state ) {
+			const { uniqueIDs } = state;
+			return uniqueIDs;
+		},
 	},
 } );
 

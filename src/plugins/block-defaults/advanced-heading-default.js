@@ -192,25 +192,25 @@ class KadenceAdvancedHeadingDefault extends Component {
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
 					<span className="kt-block-icon">{ icons.headingBlock }</span>
-					{ __( 'Advanced Heading' ) }
+					{ __( 'Advanced Text', 'kadence-blocks' ) }
 				</Button>
 				{ isOpen ?
 					<Modal
 						className="kt-block-defaults-modal"
-						title={ __( 'Kadence Advanced Heading' ) }
+						title={ __( 'Kadence Advanced Text', 'kadence-blocks' ) }
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/advancedheading', headingConfig );
 						} }>
 						<PanelBody
-							title={ __( 'Advanced Heading Controls' ) }
+							title={ __( 'Advanced Text Controls', 'kadence-blocks' ) }
 							initialOpen={ true }
 						>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'HTML Tag' ) }</p>
+								<p className="kt-setting-label">{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
 								<Toolbar controls={ headingOptions } />
 							</div>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Text Alignment' ) }</p>
+								<p className="kt-setting-label">{ __( 'Alignment', 'kadence-blocks' ) }</p>
 								<AlignmentToolbar
 									value={ ( undefined !== headingConfig.align ? headingConfig.align : '' ) }
 									onChange={ ( nextAlign ) => {
@@ -220,14 +220,14 @@ class KadenceAdvancedHeadingDefault extends Component {
 							</div>
 							<div className="components-base-control">
 								<AdvancedPopColorControl
-									label={ __( 'Heading Color' ) }
+									label={ __( 'Color', 'kadence-blocks' ) }
 									colorValue={ ( undefined !== headingConfig.color ? headingConfig.color : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => this.saveConfigState( 'color', value ) }
 								/>
 							</div>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Heading Font Size Units' ) }</p>
+								<p className="kt-setting-label">{ __( 'Font Size Units', 'kadence-blocks' ) }</p>
 								<ButtonGroup className="kt-size-type-options-defaults" aria-label={ __( 'Size Type' ) }>
 									{ map( sizeTypes, ( { name, key } ) => (
 										<Button
@@ -244,8 +244,8 @@ class KadenceAdvancedHeadingDefault extends Component {
 								</ButtonGroup>
 							</div>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Heading Line Heights Units' ) }</p>
-								<ButtonGroup className="kt-size-type-options-defaults" aria-label={ __( 'Size Type' ) }>
+								<p className="kt-setting-label">{ __( 'Line Heights Units', 'kadence-blocks' ) }</p>
+								<ButtonGroup className="kt-size-type-options-defaults" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 									{ map( sizeTypes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -262,7 +262,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 							</div>
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Advanced Typography Settings' ) }
+							title={ __( 'Advanced Typography Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
 							<TypographyControls
@@ -291,12 +291,12 @@ class KadenceAdvancedHeadingDefault extends Component {
 							/>
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Highlight Settings' ) }
+							title={ __( 'Highlight Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
 							<div className="components-base-control">
 								<AdvancedPopColorControl
-									label={ __( 'Highlight Color' ) }
+									label={ __( 'Highlight Color', 'kadence-blocks' ) }
 									colorValue={ ( undefined !== headingConfig.markColor ? headingConfig.markColor : '#f76a0c' ) }
 									colorDefault={ '#f76a0c' }
 									onColorChange={ value => this.saveConfigState( 'markColor', value ) }
@@ -304,7 +304,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 							</div>
 							<div className="components-base-control">
 								<AdvancedPopColorControl
-									label={ __( 'Highlight Background' ) }
+									label={ __( 'Highlight Background', 'kadence-blocks' ) }
 									colorValue={ ( undefined !== headingConfig.markBG ? headingConfig.markBG : '' ) }
 									colorDefault={ '' }
 									onColorChange={ value => this.saveConfigState( 'markBG', value ) }
@@ -313,7 +313,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 								/>
 							</div>
 							<AdvancedPopColorControl
-								label={ __( 'Highlight Border Color' ) }
+								label={ __( 'Highlight Border Color', 'kadence-blocks' ) }
 								colorValue={ ( undefined !== headingConfig.markBorder ? headingConfig.markBorder : '' ) }
 								colorDefault={ '' }
 								onColorChange={ value => this.saveConfigState( 'markBorder', value ) }
@@ -321,7 +321,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 								onOpacityChange={ value => this.saveConfigState( 'markBorderOpacity', value ) }
 							/>
 							<SelectControl
-								label={ __( 'Highlight Border Style' ) }
+								label={ __( 'Highlight Border Style', 'kadence-blocks' ) }
 								value={ ( undefined !== headingConfig.markBorderStyle ? headingConfig.markBorderStyle : 'solid' ) }
 								options={ [
 									{ value: 'solid', label: __( 'Solid' ) },
@@ -331,7 +331,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 								onChange={ value => this.saveConfigState( 'markBorderStyle', value ) }
 							/>
 							<RangeControl
-								label={ __( 'Highlight Border Width' ) }
+								label={ __( 'Highlight Border Width', 'kadence-blocks' ) }
 								value={ ( undefined !== headingConfig.markBorderWidth ? headingConfig.markBorderWidth : 0 ) }
 								onChange={ value => this.saveConfigState( 'markBorderWidth', value ) }
 								min={ 0 }
@@ -339,8 +339,8 @@ class KadenceAdvancedHeadingDefault extends Component {
 								step={ 1 }
 							/>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Mark Font Size Units' ) }</p>
-								<ButtonGroup className="kt-size-type-options-defaults" aria-label={ __( 'Size Type' ) }>
+								<p className="kt-setting-label">{ __( 'Mark Font Size Units', 'kadence-blocks' ) }</p>
+								<ButtonGroup className="kt-size-type-options-defaults" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 									{ map( sizeTypes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -356,8 +356,8 @@ class KadenceAdvancedHeadingDefault extends Component {
 								</ButtonGroup>
 							</div>
 							<div className="components-base-control">
-								<p className="kt-setting-label">{ __( 'Mark Line Heights Units' ) }</p>
-								<ButtonGroup className="kt-size-type-options-defaults" aria-label={ __( 'Size Type' ) }>
+								<p className="kt-setting-label">{ __( 'Mark Line Heights Units', 'kadence-blocks' ) }</p>
+								<ButtonGroup className="kt-size-type-options-defaults" aria-label={ __( 'Size Type', 'kadence-blocks' ) }>
 									{ map( sizeTypes, ( { name, key } ) => (
 										<Button
 											key={ key }
@@ -402,10 +402,10 @@ class KadenceAdvancedHeadingDefault extends Component {
 							/>
 						</PanelBody>
 						<PanelBody
-							title={ __( 'Margin Settings' ) }
+							title={ __( 'Margin Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
 						>
-							<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
+							<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
 								{ map( marginTypes, ( { name, key } ) => (
 									<Button
 										key={ key }
@@ -420,14 +420,14 @@ class KadenceAdvancedHeadingDefault extends Component {
 								) ) }
 							</ButtonGroup>
 							<RangeControl
-								label={ __( 'Top Margin' ) }
+								label={ __( 'Top Margin', 'kadence-blocks' ) }
 								value={ ( undefined !== headingConfig.topMargin ? headingConfig.topMargin : '' ) }
 								onChange={ ( value ) => this.saveConfigState( 'topMargin', value ) }
 								min={ marginMin }
 								max={ marginMax }
 								step={ marginStep }
 							/>
-							<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type' ) }>
+							<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
 								{ map( marginTypes, ( { name, key } ) => (
 									<Button
 										key={ key }
@@ -442,7 +442,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 								) ) }
 							</ButtonGroup>
 							<RangeControl
-								label={ __( 'Bottom Margin' ) }
+								label={ __( 'Bottom Margin', 'kadence-blocks' ) }
 								value={ ( undefined !== headingConfig.bottomMargin ? headingConfig.bottomMargin : '' ) }
 								onChange={ ( value ) => this.saveConfigState( 'bottomMargin', value ) }
 								min={ marginMin }

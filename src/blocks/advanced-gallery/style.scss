@@ -6,9 +6,6 @@
 .kb-gallery-ul * {
 	box-sizing: border-box;
 }
-.wp-block-kadence-advancedgallery {
-    overflow: hidden;
-}
 .wp-block-kadence-advancedgallery.alignright, .wp-block-kadence-advancedgallery.alignleft {
     max-width: 420px;
     width: 100%;
@@ -72,6 +69,7 @@
 							width: 100%;
 							top: 0;
 							left: 0;
+							​outline-offset: -4px;
 						}
 					}
 				}

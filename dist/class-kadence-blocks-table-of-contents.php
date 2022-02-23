@@ -872,7 +872,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-tableofcontents' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'tableofcontent', $unique_id ) ) {
 				if ( kadence_blocks_is_not_amp() ) {
 					if ( isset( $attributes['enableScrollSpy'] ) && $attributes['enableScrollSpy'] ) {

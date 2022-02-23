@@ -58,12 +58,12 @@ class KadenceHeadingSettings extends Component {
 				{ isOpen ?
 					<Modal
 						className="kt-block-settings-modal"
-						title={ __( 'Advanced Heading Settings' ) }
+						title={ __( 'Advanced Text Settings', 'kadence-blocks' ) }
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/advancedheading', btnSettings );
 						} }>
 						<SelectControl
-							label={ __( 'Enabled All Settings For' ) }
+							label={ __( 'Enabled All Settings For', 'kadence-blocks' ) }
 							value={ ( btnSettings.allSettings ? btnSettings.allSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -76,9 +76,9 @@ class KadenceHeadingSettings extends Component {
 							onChange={ value => this.saveConfigState( 'allSettings', value ) }
 						/>
 						<hr />
-						<h2>{ __( 'Control Individual Settings' ) }</h2>
+						<h2>{ __( 'Control Individual Settings', 'kadence-blocks' ) }</h2>
 						<SelectControl
-							label={ __( 'Enable Typography Settings in Toolbar' ) }
+							label={ __( 'Enable Typography Settings in Toolbar', 'kadence-blocks' ) }
 							value={ ( btnSettings.toolbarTypography ? btnSettings.toolbarTypography : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -91,7 +91,7 @@ class KadenceHeadingSettings extends Component {
 							onChange={ value => this.saveConfigState( 'toolbarTypography', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Color Settings in Toolbar' ) }
+							label={ __( 'Enable Color Settings in Toolbar', 'kadence-blocks' ) }
 							value={ ( btnSettings.toolbarColor ? btnSettings.toolbarColor : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -104,7 +104,7 @@ class KadenceHeadingSettings extends Component {
 							onChange={ value => this.saveConfigState( 'toolbarColor', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Color Settings' ) }
+							label={ __( 'Enable Color Settings', 'kadence-blocks' ) }
 							value={ ( btnSettings.colorSettings ? btnSettings.colorSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -117,7 +117,7 @@ class KadenceHeadingSettings extends Component {
 							onChange={ value => this.saveConfigState( 'colorSettings', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Size Settings' ) }
+							label={ __( 'Enable Size Settings', 'kadence-blocks' ) }
 							value={ ( btnSettings.sizeSettings ? btnSettings.sizeSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -130,7 +130,7 @@ class KadenceHeadingSettings extends Component {
 							onChange={ value => this.saveConfigState( 'sizeSettings', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Advanced Typography Settings' ) }
+							label={ __( 'Enable Advanced Typography Settings', 'kadence-blocks'  ) }
 							value={ ( btnSettings.advancedSettings ? btnSettings.advancedSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -143,7 +143,7 @@ class KadenceHeadingSettings extends Component {
 							onChange={ value => this.saveConfigState( 'advancedSettings', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Highlight Settings' ) }
+							label={ __( 'Enable Highlight Settings', 'kadence-blocks' ) }
 							value={ ( btnSettings.highlightSettings ? btnSettings.highlightSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -156,7 +156,7 @@ class KadenceHeadingSettings extends Component {
 							onChange={ value => this.saveConfigState( 'highlightSettings', value ) }
 						/>
 						<SelectControl
-							label={ __( 'Enable Margin Settings' ) }
+							label={ __( 'Enable Margin Settings', 'kadence-blocks' ) }
 							value={ ( btnSettings.marginSettings ? btnSettings.marginSettings : 'all' ) }
 							options={ [
 								{ value: 'all', label: __( 'All Users', 'kadence-blocks' ) },
@@ -171,7 +171,7 @@ class KadenceHeadingSettings extends Component {
 						<Button className="kt-settings-save" isPrimary onClick={ () => {
 							this.saveConfig( 'kadence/advancedheading', btnSettings );
 						} }>
-							{ __( 'Save/Close' ) }
+							{ __( 'Save/Close', 'kadence-blocks' ) }
 						</Button>
 					</Modal>
 					: null }

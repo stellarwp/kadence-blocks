@@ -1214,7 +1214,6 @@ export default function Image( {
 			}
 		}
 		/* eslint-enable no-lonely-if */
-
 		img = (
 			<ResizableBox
 				size={ {
