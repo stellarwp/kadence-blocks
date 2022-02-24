@@ -6662,7 +6662,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		if ( isset( $attr['contentMobilePadding'] ) && is_array( $attr['contentMobilePadding'] ) ) {
-			$css .= '@media (max-width: 1024px) {';
+			$css .= '@media (max-width: 767px) {';
 			$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner {';
 			if ( isset( $attr['contentMobilePadding'][ 0 ] ) && is_numeric($attr['contentMobilePadding'][ 0 ] ) ) {
 				$css .= 'padding-top:' . $attr['contentMobilePadding'][ 0 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
