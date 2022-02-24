@@ -136,7 +136,7 @@ class KadenceSpacerDivider extends Component {
 		//const dataUri = `url("data:image/svg+xml,${ svgString }")`;
 		const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
 		const minD = ( dividerStyle !== 'stripe' ? 1 : 10 );
-		const maxD = ( dividerStyle !== 'stripe' ? 40 : 60 );
+		const maxD = ( dividerStyle !== 'stripe' ? 400 : 60 );
 		const tabAlignControls = (
 			<TabPanel className="kt-size-tabs"
 				activeClass="active-tab"

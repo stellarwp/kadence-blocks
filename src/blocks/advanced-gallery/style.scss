@@ -7,7 +7,9 @@
 	box-sizing: border-box;
 }
 .wp-block-kadence-advancedgallery {
-    overflow: hidden;
+   .kt-blocks-carousel.kt-carousel-container-dotstyle-none {
+		padding-bottom: 0;
+   }
 }
 .wp-block-kadence-advancedgallery.alignright, .wp-block-kadence-advancedgallery.alignleft {
     max-width: 420px;
@@ -72,6 +74,7 @@
 							width: 100%;
 							top: 0;
 							left: 0;
+							​outline-offset: -4px;
 						}
 					}
 				}

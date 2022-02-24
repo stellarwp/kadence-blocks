@@ -345,7 +345,7 @@ class Kadence_Blocks_Frontend {
 
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-countup' . esc_attr( $unique_id );
 
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'countup', $attributes ) ) {
 				$attributes = apply_filters( 'kadence_blocks_countup_render_block_attributes', $attributes );
@@ -365,7 +365,7 @@ class Kadence_Blocks_Frontend {
 	public function render_countup_css( $attributes, $content ) {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-countup' . esc_attr( $unique_id );
 			if ( $this->it_is_not_amp() ) {
 				wp_enqueue_script( 'kadence-count-up' );
 			}
@@ -395,7 +395,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id  = 'kb-rowlayout' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'rowlayout', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_rowlayout_render_block_attributes', $attributes );
@@ -420,7 +420,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-rowlayout' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'rowlayout', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_rowlayout_render_block_attributes', $attributes );
@@ -450,7 +450,7 @@ class Kadence_Blocks_Frontend {
 	public function render_column_layout_css_head( $attributes ) {
 		if ( isset( $attributes['uniqueID'] ) && ! empty( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-column' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'column', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
@@ -479,7 +479,7 @@ class Kadence_Blocks_Frontend {
 				$content = substr_replace( $content, 'kadence-column' . $unique_id . ' inner-column-', $pos, strlen( 'inner-column-' ) );
 			}
 		}
-		$style_id = 'kt-blocks' . esc_attr( $unique_id );
+		$style_id = 'kb-column' . esc_attr( $unique_id );
 		if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'column', $unique_id ) ) {
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
@@ -517,7 +517,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-advancedbtn' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedbtn', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedbtn_render_block_attributes', $attributes );
@@ -540,7 +540,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-advancedbtn' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedbtn', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedbtn_render_block_attributes', $attributes );
@@ -585,7 +585,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-advancedheading' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedheading', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedheading_render_block_attributes', $attributes );
@@ -608,7 +608,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-advancedheading' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedheading', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedheading_render_block_attributes', $attributes );
@@ -699,7 +699,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-tabs' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'tabs', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_tabs_render_block_attributes', $attributes );
@@ -735,7 +735,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-tabs' . esc_attr( $unique_id );
 			if ( $this->it_is_not_amp() ) {
 				wp_enqueue_script( 'kadence-blocks-tabs-js' );
 			}
@@ -776,7 +776,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-spacer' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'spacer', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
@@ -799,7 +799,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-spacer' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'spacer', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
@@ -824,7 +824,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-icon' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'icon', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_icon_render_block_attributes', $attributes );
@@ -847,7 +847,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-icon' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'icon', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_icon_render_block_attributes', $attributes );
@@ -874,7 +874,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-infobox' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'infobox', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_infobox_render_block_attributes', $attributes );
@@ -897,7 +897,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-infobox' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'infobox', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_infobox_render_block_attributes', $attributes );
@@ -935,7 +935,7 @@ class Kadence_Blocks_Frontend {
 					self::$faq_schema = '<script type="application/ld+json" class="kadence-faq-schema-graph kadence-faq-schema-graph--' . $faq_script_id . '">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[]}</script>';
 				}
 			}
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-accordion' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'accordion', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
@@ -1008,7 +1008,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-accordion' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
@@ -1046,7 +1046,7 @@ class Kadence_Blocks_Frontend {
 			$unique_id              = $attributes['uniqueID'];
 			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
 			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
-			$style_id               = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id               = 'kb-lottie' . esc_attr( $unique_id );
 
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'lottie', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
@@ -1061,7 +1061,7 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
-			// Include lottie interactive if using scroll animation
+			// Include lottie interactive if using scroll animation.
 			if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
 				if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
 					wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
@@ -1103,7 +1103,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-lottie' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'lottie', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_lottie_render_block_attributes', $attributes );
@@ -1126,7 +1126,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-image' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
@@ -1159,7 +1159,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-image' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'image', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
@@ -1247,7 +1247,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-form' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'form', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_form_render_block_attributes', $attributes );
@@ -1270,7 +1270,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-form' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_form_render_block_attributes', $attributes );
@@ -1305,7 +1305,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id  = 'kb-advancedgallery' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedgallery', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedgallery_render_block_attributes', $attributes );
@@ -1328,7 +1328,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id  = 'kb-advancedgallery' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedgallery', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedgallery_render_block_attributes', $attributes );
@@ -2212,7 +2212,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['uniqueID'] ) ) {
 			$unique_id = $attr['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-posts' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $pb->output_css( $attr, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -2232,7 +2232,7 @@ class Kadence_Blocks_Frontend {
 		$countdown->enqueue_script( 'kadence-blocks-countdown' );
 		if ( isset( $attr['uniqueID'] ) ) {
 			$unique_id = $attr['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-countdown' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $countdown->output_css( $attr, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -2242,79 +2242,55 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && isset( $attr['numberFont'][0]['google'] ) && $attr['numberFont'][0]['google'] && ( ! isset( $attr['numberFont'][0]['loadGoogle'] ) || true === $attr['numberFont'][0]['loadGoogle'] ) && isset( $attr['numberFont'][0]['family'] ) ) {
 			$number_font = $attr['numberFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $number_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $number_font['family'],
-					'fontvariants' => ( isset( $number_font['variant'] ) && ! empty( $number_font['variant'] ) ? array( $number_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $number_font['subset'] ) && ! empty( $number_font['subset'] ) ? array( $number_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $number_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $number_font['variant'], self::$gfonts[ $number_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $number_font['family'] ]['fontvariants'], $number_font['variant'] );
-				}
-				if ( ! in_array( $number_font['subset'], self::$gfonts[ $number_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $number_font['family'] ]['fontsubsets'], $number_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $number_font['google'] ) ? $number_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $number_font['loadGoogle'] ) ? $number_font['loadGoogle'] : true ),
+					'typography' => ( isset( $number_font['family'] ) ? $number_font['family'] : '' ),
+					'fontVariant' => ( isset( $number_font['variant'] ) ? $number_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $number_font['subset'] ) ? $number_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
 			$label_font = $attr['labelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $label_font['family'],
-					'fontvariants' => ( isset( $label_font['variant'] ) && ! empty( $label_font['variant'] ) ? array( $label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $label_font['subset'] ) && ! empty( $label_font['subset'] ) ? array( $label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $label_font['variant'], self::$gfonts[ $label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontvariants'], $label_font['variant'] );
-				}
-				if ( ! in_array( $label_font['subset'], self::$gfonts[ $label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontsubsets'], $label_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
+					'fontVariant' => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 		if ( isset( $attr['preLabelFont'] ) && is_array( $attr['preLabelFont'] ) && isset( $attr['preLabelFont'][0] ) && is_array( $attr['preLabelFont'][0] ) && isset( $attr['preLabelFont'][0]['google'] ) && $attr['preLabelFont'][0]['google'] && ( ! isset( $attr['preLabelFont'][0]['loadGoogle'] ) || true === $attr['preLabelFont'][0]['loadGoogle'] ) && isset( $attr['preLabelFont'][0]['family'] ) ) {
 			$pre_label_font = $attr['preLabelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $pre_label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $pre_label_font['family'],
-					'fontvariants' => ( isset( $pre_label_font['variant'] ) && ! empty( $pre_label_font['variant'] ) ? array( $pre_label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $pre_label_font['subset'] ) && ! empty( $pre_label_font['subset'] ) ? array( $pre_label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $pre_label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $pre_label_font['variant'], self::$gfonts[ $pre_label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $pre_label_font['family'] ]['fontvariants'], $pre_label_font['variant'] );
-				}
-				if ( ! in_array( $pre_label_font['subset'], self::$gfonts[ $pre_label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $pre_label_font['family'] ]['fontsubsets'], $pre_label_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $pre_label_font['google'] ) ? $pre_label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $pre_label_font['loadGoogle'] ) ? $pre_label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $pre_label_font['family'] ) ? $pre_label_font['family'] : '' ),
+					'fontVariant' => ( isset( $pre_label_font['variant'] ) ? $pre_label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $pre_label_font['subset'] ) ? $pre_label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 		if ( isset( $attr['postLabelFont'] ) && is_array( $attr['postLabelFont'] ) && isset( $attr['postLabelFont'][0] ) && is_array( $attr['postLabelFont'][0] ) && isset( $attr['postLabelFont'][0]['google'] ) && $attr['postLabelFont'][0]['google'] && ( ! isset( $attr['postLabelFont'][0]['loadGoogle'] ) || true === $attr['postLabelFont'][0]['loadGoogle'] ) && isset( $attr['postLabelFont'][0]['family'] ) ) {
 			$post_label_font = $attr['postLabelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $post_label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $post_label_font['family'],
-					'fontvariants' => ( isset( $post_label_font['variant'] ) && ! empty( $post_label_font['variant'] ) ? array( $post_label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $post_label_font['subset'] ) && ! empty( $post_label_font['subset'] ) ? array( $post_label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $post_label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $post_label_font['variant'], self::$gfonts[ $post_label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $post_label_font['family'] ]['fontvariants'], $post_label_font['variant'] );
-				}
-				if ( ! in_array( $post_label_font['subset'], self::$gfonts[ $post_label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $post_label_font['family'] ]['fontsubsets'], $post_label_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $post_label_font['google'] ) ? $post_label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $post_label_font['loadGoogle'] ) ? $post_label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $post_label_font['family'] ) ? $post_label_font['family'] : '' ),
+					'fontVariant' => ( isset( $post_label_font['variant'] ) ? $post_label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $post_label_font['subset'] ) ? $post_label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 	}
 	/**
@@ -2331,7 +2307,7 @@ class Kadence_Blocks_Frontend {
 		$toc->enqueue_style( 'kadence-blocks-table-of-contents' );
 		if ( isset( $attr['uniqueID'] ) ) {
 			$unique_id = $attr['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-tableofcontents' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $toc->output_css( $attr, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -2341,41 +2317,29 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
 			$label_font = $attr['labelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $label_font['family'],
-					'fontvariants' => ( isset( $label_font['variant'] ) && ! empty( $label_font['variant'] ) ? array( $label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $label_font['subset'] ) && ! empty( $label_font['subset'] ) ? array( $label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $label_font['variant'], self::$gfonts[ $label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontvariants'], $label_font['variant'] );
-				}
-				if ( ! in_array( $label_font['subset'], self::$gfonts[ $label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontsubsets'], $label_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
+					'fontVariant' => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 		if ( isset( $attr['submitFont'] ) && is_array( $attr['submitFont'] ) && isset( $attr['submitFont'][0] ) && is_array( $attr['submitFont'][0] ) && isset( $attr['submitFont'][0]['google'] ) && $attr['submitFont'][0]['google'] && ( ! isset( $attr['submitFont'][0]['loadGoogle'] ) || true === $attr['submitFont'][0]['loadGoogle'] ) && isset( $attr['submitFont'][0]['family'] ) ) {
 			$submit_font = $attr['submitFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $submit_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $submit_font['family'],
-					'fontvariants' => ( isset( $submit_font['variant'] ) && ! empty( $submit_font['variant'] ) ? array( $submit_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $submit_font['subset'] ) && ! empty( $submit_font['subset'] ) ? array( $submit_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $submit_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $submit_font['variant'], self::$gfonts[ $submit_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $submit_font['family'] ]['fontvariants'], $submit_font['variant'] );
-				}
-				if ( ! in_array( $submit_font['subset'], self::$gfonts[ $submit_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $submit_font['family'] ]['fontsubsets'], $submit_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $submit_font['google'] ) ? $submit_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $submit_font['loadGoogle'] ) ? $submit_font['loadGoogle'] : true ),
+					'typography' => ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' ),
+					'fontVariant' => ( isset( $submit_font['variant'] ) ? $submit_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $submit_font['subset'] ) ? $submit_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 	}
 	/**
@@ -5970,9 +5934,9 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_advancedgallery_array( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['type'] ) && 'grid' === $attr['type'] && isset( $attr['displayShadow'] ) && ! empty( $attr['displayShadow'] ) && true === $attr['displayShadow'] ) {
+		if ( isset( $attr['type'] ) && 'carousel' === $attr['type'] ) {
 			$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
-				$css .= 'overflow: visible;';
+				$css .= 'overflow: hidden;';
 			$css .= '}';
 		}
 		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][0] ) && is_numeric( $attr['gutter'][0] ) ) {
@@ -6670,7 +6634,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		if ( isset( $attr['contentMobilePadding'] ) && is_array( $attr['contentMobilePadding'] ) ) {
-			$css .= '@media (max-width: 1024px) {';
+			$css .= '@media (max-width: 767px) {';
 			$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner {';
 			if ( isset( $attr['contentMobilePadding'][ 0 ] ) && is_numeric($attr['contentMobilePadding'][ 0 ] ) ) {
 				$css .= 'padding-top:' . $attr['contentMobilePadding'][ 0 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
@@ -6958,6 +6922,10 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['topMargin'] ) && is_numeric( $attr['topMargin'] ) ) {
 				$css->add_property( 'margin-top', $attr['topMargin'] . ( ! isset( $attr['marginType'] ) ? 'px' : $attr['marginType'] ) );
+				// This fixes an issue where the background doesn't show over the top of the item that is above it.
+				if ( $attr['topMargin'] < 0 && isset( $attr['background'] ) && ! empty( $attr['background'] ) ) {
+					$css->add_property( 'position', 'relative' );
+				}
 			}
 			if ( isset( $attr['rightMargin'] ) && is_numeric( $attr['rightMargin'] ) ) {
 				$css->add_property( 'margin-right', $attr['rightMargin'] . ( ! isset( $attr['marginType'] ) ? 'px' : $attr['marginType'] ) );

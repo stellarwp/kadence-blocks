@@ -20,6 +20,9 @@ window.kb = {
 	},
 };
 import './extension/block-css/block-css';
+/* block.json styles */
+import './blocks/lottie/index.js';
+import './blocks/image/index.js';
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
 import './blocks/count-up/block.js';
@@ -41,10 +44,6 @@ import './blocks/posts/block.js';
 import './blocks/countdown/block.js';
 import './blocks/countdown/countdown-timer/block.js';
 import './blocks/countdown/countdown-inner/block.js';
-
-/* block.json styles */
-import './blocks/lottie/index.js';
-import './blocks/image/index.js';
 
 // import './plugins/kadence-control.js';
 // import './plugins/editor-width.js';

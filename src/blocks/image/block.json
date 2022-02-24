@@ -5,7 +5,7 @@
 	"category": "kadence-blocks",
 	"usesContext": [ "postId", "queryId", "allowResize", "imageCrop" ],
 	"description": "Image block with greater controls and advanced features",
-	"keywords": [ "kb", "photo", "image" ],
+	"keywords": [ "img", "image", "photo", "kb" ],
 	"textdomain": "kadence-blocks",
 	"attributes": {
 	  "align": {

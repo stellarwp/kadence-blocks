@@ -301,7 +301,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					return createBlock( 'kadence/advancedgallery', {
 						align: ( attributes.align ? attributes.align : 'none' ),
 						columns: columnConvert( ( attributes.columns ? attributes.columns : 3 ) ),
-						images: attributes.images.map( ( image ) => pickRelevantMediaFiles( image, 'large', 'full' ) ),
+						images: attributes.images ? attributes.images.map( ( image ) => pickRelevantMediaFiles( image, 'large', 'full' ) ) : [],
 						linkTo: ( attributes.linkTo ? attributes.linkTo : 'none' ),
 						ids: attributes.ids,
 					} );

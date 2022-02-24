@@ -121,11 +121,11 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 	$userrole = 'none';
 	if ( current_user_can( apply_filters( 'kadence_blocks_admin_role', 'manage_options' ) ) ) {
 		$userrole = 'admin';
-	} else if ( current_user_can( apply_filters( 'kadence_blocks_editor_role', 'delete_others_pages' ) ) ) {
+	} elseif ( current_user_can( apply_filters( 'kadence_blocks_editor_role', 'delete_others_pages' ) ) ) {
 		$userrole = 'editor';
-	} else if ( current_user_can( apply_filters( 'kadence_blocks_author_role', 'publish_posts' ) ) ) {
+	} elseif ( current_user_can( apply_filters( 'kadence_blocks_author_role', 'publish_posts' ) ) ) {
 		$userrole = 'author';
-	} else if ( current_user_can( apply_filters( 'kadence_blocks_contributor_role', 'edit_posts' ) ) ) {
+	} elseif ( current_user_can( apply_filters( 'kadence_blocks_contributor_role', 'edit_posts' ) ) ) {
 		$userrole = 'contributor';
 	}
 	$pro_data = false;
@@ -141,7 +141,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 				'label' => sprintf( __( '%s and higher', 'kadence-blocks' ), $key ),
 			);
 		}
-		foreach( rcp_get_membership_levels( array( 'number' => 999 ) ) as $level ) {
+		foreach ( rcp_get_membership_levels( array( 'number' => 999 ) ) as $level ) {
 			$level_ids[] = array(
 				'value' => $level->get_id(),
 				'label' => esc_attr( $level->get_name() ),

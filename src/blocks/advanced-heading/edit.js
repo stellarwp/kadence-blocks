@@ -7,6 +7,7 @@
  * Internal dependencies
  */
 import map from 'lodash/map';
+import uniqueId from 'lodash/uniqueId';
 import classnames from 'classnames';
 import TypographyControls from '../../components/typography/typography-control';
 import InlineTypographyControls from '../../components/typography/inline-typography-control';
@@ -36,7 +37,7 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { withSelect } from '@wordpress/data';
+import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 const {
 	createBlock,
@@ -95,6 +96,7 @@ class KadenceAdvancedHeading extends Component {
 		};
 	}
 	componentDidMount() {
+		let smallID = '_' + this.props.clientId.substr( 2, 9 );
 		if ( ! this.props.attributes.uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/advancedheading' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedheading' ] === 'object' ) {
@@ -102,15 +104,21 @@ class KadenceAdvancedHeading extends Component {
 					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/advancedheading' ][ attribute ];
 				} );
 			}
+			if ( this.props.getUniqueIDs.includes( smallID ) ) {
+				smallID = uniqueId( smallID );
+			}
 			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+				uniqueID: smallID,
 			} );
-			ktadvancedheadingUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
-		} else if ( ktadvancedheadingUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
-			ktadvancedheadingUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
+			this.props.addUniqueID( smallID );
+		} else if ( this.props.getUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
+			if ( this.props.getUniqueIDs.includes( smallID ) ) {
+				smallID = uniqueId( smallID );
+			}
+			this.props.attributes.uniqueID = smallID;
+			this.props.addUniqueID( smallID );
 		} else {
-			ktadvancedheadingUniqueIDs.push( this.props.attributes.uniqueID );
+			this.props.addUniqueID( this.props.attributes.uniqueID );
 		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/advancedheading' ] !== undefined && typeof blockSettings[ 'kadence/advancedheading' ] === 'object' ) {
@@ -284,6 +292,22 @@ class KadenceAdvancedHeading extends Component {
 					onClick: () => setAttributes( { htmlTag: 'p' } ),
 				},
 			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 'span' } isPressed={ ( htmlTag && htmlTag === 'span' ? true : false ) } />,
+					title: __( 'Span', 'kadence-blocks' ),
+					isActive: ( htmlTag && htmlTag === 'span' ? true : false ),
+					onClick: () => setAttributes( { htmlTag: 'span' } ),
+				},
+			],
+			[
+				{
+					icon: <HeadingLevelIcon level={ 'div' } isPressed={ ( htmlTag && htmlTag === 'div' ? true : false ) } />,
+					title: __( 'div', 'kadence-blocks' ),
+					isActive: ( htmlTag && htmlTag === 'div' ? true : false ),
+					onClick: () => setAttributes( { htmlTag: 'div' } ),
+				},
+			],
 		];
 		const classes = classnames( {
 			[ `kt-adv-heading${ uniqueID }` ]: uniqueID,
@@ -363,7 +387,7 @@ class KadenceAdvancedHeading extends Component {
 					textShadow: ( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable && textShadow[ 0 ].enable ? ( undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 ) + 'px ' + ( undefined !== textShadow[ 0 ].color ? KadenceColorOutput( textShadow[ 0 ].color ) : 'rgba(0,0,0,0.2)' ) : undefined ),
 				} }
 				className={ classes }
-				placeholder={ __( 'Write heading…', 'kadence-blocks' ) }
+				placeholder={ __( 'Write something…', 'kadence-blocks' ) }
 			/>
 		);
 		const headingLinkContent = (
@@ -412,8 +436,8 @@ class KadenceAdvancedHeading extends Component {
 				<BlockControls>
 					<ToolbarGroup
 						isCollapsed={ true }
-						icon={ <HeadingLevelIcon level={ ( htmlTag === 'p' ? 'p' : level ) } /> }
-						label={ __( 'Change Heading Level', 'kadence-blocks' ) }
+						icon={ <HeadingLevelIcon level={ ( htmlTag !== 'heading' ? htmlTag : level ) } /> }
+						label={ __( 'Change heading tag', 'kadence-blocks' ) }
 						controls={ headingOptions }
 					/>
 					{ this.showSettings( 'allSettings' ) && this.showSettings( 'toolbarTypography' ) && (
@@ -465,7 +489,7 @@ class KadenceAdvancedHeading extends Component {
 					) }
 					{ this.showSettings( 'allSettings' ) && this.showSettings( 'toolbarColor' ) && (
 						<InlinePopColorControl
-							label={ __( 'Heading Color', 'kadence-blocks' ) }
+							label={ __( 'Color', 'kadence-blocks' ) }
 							value={ ( color ? color : '' ) }
 							default={ '' }
 							onChange={ ( value ) => setAttributes( { color: value } ) }
@@ -485,12 +509,12 @@ class KadenceAdvancedHeading extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody title={ __( 'Heading Settings', 'kadence-blocks' ) }>
+						<PanelBody title={ __( 'Settings', 'kadence-blocks' ) }>
 							<div className="kb-tag-level-control components-base-control">
 								<p className="kb-component-label">{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
 								<ToolbarGroup
 									isCollapsed={ false }
-									label={ __( 'Change Heading Level', 'kadence-blocks' ) }
+									label={ __( 'Change HTML Tag', 'kadence-blocks' ) }
 									controls={ headingOptions }
 								/>
 							</div>
@@ -506,14 +530,14 @@ class KadenceAdvancedHeading extends Component {
 							{ this.showSettings( 'colorSettings' ) && (
 								<Fragment>
 									<PopColorControl
-										label={ __( 'Heading Color', 'kadence-blocks' ) }
+										label={ __( 'Color', 'kadence-blocks' ) }
 										value={ ( color ? color : '' ) }
 										default={ '' }
 										onChange={ value => setAttributes( { color: value } ) }
 										onClassChange={ value => setAttributes( { colorClass: value } ) }
 									/>
 									<PopColorControl
-										label={ __( 'Heading Background Color', 'kadence-blocks' ) }
+										label={ __( 'Background Color', 'kadence-blocks' ) }
 										value={ ( background ? background : '' ) }
 										default={ '' }
 										onChange={ value => setAttributes( { background: value } ) }
@@ -848,11 +872,14 @@ class KadenceAdvancedHeading extends Component {
 		);
 	}
 }
-//export default ( KadenceAdvancedHeading );
 export default compose( [
-	withSelect( ( select, ownProps ) => {
+	withSelect( ( select ) => {
 		return {
 			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			getUniqueIDs: select( 'kadenceblocks/data' ).getUniqueIDs(),
 		};
 	} ),
+	withDispatch( ( dispatch ) => ( {
+		addUniqueID: ( value ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value ),
+	} ) ),
 ] )( KadenceAdvancedHeading );
