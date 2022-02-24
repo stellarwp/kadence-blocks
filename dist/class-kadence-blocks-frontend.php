@@ -4423,7 +4423,30 @@ class Kadence_Blocks_Frontend {
 			$divider_height = ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ? $attr['dividerHeight'] : '10' );
 			$css->add_property( 'height', $divider_height . 'px' );
 			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
-			$css->add_property( 'width', $divider_width . '%' );
+			$divider_width_units = ( isset( $attr['dividerWidthUnits'] ) && ! empty( $attr['dividerWidthUnits'] ) ? $attr['dividerWidthUnits'] : '%' );
+			$css->add_property( 'width', $divider_width . $divider_width_units );
+			if ( ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) || ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) ) {
+				$css->start_media_query( $media_query['tablet'] );
+				$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
+				if ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) {
+					$css->add_property( 'height', $attr['tabletSpacerHeight'] . 'px !important' );
+				}
+				if ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) {
+					$css->add_property( 'width', $attr['tabletDividerWidth'] . $divider_width_units . '!important' );
+				}
+				$css->stop_media_query();
+			}
+			if ( ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) || ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) ) {
+				$css->start_media_query( $media_query['mobile'] );
+				$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
+				if ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) {
+					$css->add_property( 'height', $attr['mobileSpacerHeight'] . 'px !important' );
+				}
+				if ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) {
+					$css->add_property( 'width', $attr['mobileDividerWidth'] . $divider_width_units . '!important' );
+				}
+				$css->stop_media_query();
+			}
 		} else {
 			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider' );
 			if ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ) {
@@ -4433,9 +4456,32 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'border-top-color', $css->render_color( $attr['dividerBorderColor'] ) );
 			}
 			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
-			$css->add_property( 'width', $divider_width . '%' );
+			$divider_width_units = ( isset( $attr['dividerWidthUnits'] ) && ! empty( $attr['dividerWidthUnits'] ) ? $attr['dividerWidthUnits'] : '%' );
+			$css->add_property( 'width', $divider_width . $divider_width_units );
 			if ( isset( $attr['dividerStyle'] ) && ! empty( $attr['dividerStyle'] ) ) {
 				$css->add_property( 'border-top-style', $attr['dividerStyle'] );
+			}
+			if ( ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) || ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) ) {
+				$css->start_media_query( $media_query['tablet'] );
+				$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider' );
+				if ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) {
+					$css->add_property( 'border-top-width', $attr['tabletSpacerHeight'] . 'px !important' );
+				}
+				if ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) {
+					$css->add_property( 'width', $attr['tabletDividerWidth'] . $divider_width_units . '!important' );
+				}
+				$css->stop_media_query();
+			}
+			if ( ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) || ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) ) {
+				$css->start_media_query( $media_query['mobile'] );
+				$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider' );
+				if ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) {
+					$css->add_property( 'border-top-width', $attr['mobileSpacerHeight'] . 'px !important' );
+				}
+				if ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) {
+					$css->add_property( 'width', $attr['mobileDividerWidth'] . $divider_width_units . '!important' );
+				}
+				$css->stop_media_query();
 			}
 		}
 		return $css->css_output();

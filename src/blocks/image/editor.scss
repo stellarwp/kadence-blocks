@@ -6,7 +6,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 }
 .wp-block-kadence-image {
 	position: relative;
-
+	&.image-is-svg {
+		width: 100%;
+	}
 	.is-applying img,
 	&.is-transient img {
 		opacity: 0.3;

@@ -396,8 +396,9 @@ export default function Image( {
 		}
 	}, [ isSelected ] );
 	const isDynamic = attributes.kadenceDynamic && attributes.kadenceDynamic.url && attributes.kadenceDynamic.url.enable ? true : false;
+	const isSVG = url && url.endsWith( '.svg' ) ? true : false;
 	const isDynamicLink = attributes.kadenceDynamic && attributes.kadenceDynamic.link && attributes.kadenceDynamic.link.enable ? true : false;
-	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic;
+	const canEditImage = id && naturalWidth && naturalHeight && imageEditing && ! isDynamic && ! isSVG;
 	const allowCrop = canEditImage && ! isEditingImage;
 	const controls = (
 		<>

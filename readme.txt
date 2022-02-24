@@ -81,11 +81,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 2.2.8 =
-Release Date: February 21st, 2022
+Release Date: February 24th, 2022
 * Update: Rename Heading Block to Advanced Text Block.
 * Update: Allow Advanced Text Block to be span or div tag.
-** Update: More Editor Responsive Changes live preview (Spacing Block).
-** Fix: Issues with using an SVG in advanced image block.
+* Update: Table and mobile live preview changes for Spacing Block.
+* Fix: Issues with using an SVG in advanced image block when svg is uploaded without size information.
 * Fix: Issue with the full width button not working when inheriting styles from theme.
 * Fix: Issue with some image plugins (picture markup) breaking the image block.
 * Fix: Issue with 0 margins not copying in heading styles.

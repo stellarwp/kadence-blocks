@@ -98,9 +98,25 @@ registerBlockType( 'kadence/spacer', {
 			type: 'number',
 			default: 80,
 		},
+		dividerWidthUnits: {
+			type: 'string',
+			default: '%',
+		},
+		tabletDividerWidth: {
+			type: 'number',
+		},
+		mobileDividerWidth: {
+			type: 'number',
+		},
 		dividerHeight: {
 			type: 'number',
 			default: 1,
+		},
+		tabletDividerHeight: {
+			type: 'number',
+		},
+		mobileDividerHeight: {
+			type: 'number',
 		},
 		uniqueID: {
 			type: 'string',

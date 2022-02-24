@@ -369,6 +369,7 @@ export function ImageEdit( {
 		[ `size-${ sizeSlug }` ]: sizeSlug,
 		[ `filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
 		[ `kb-image-is-ratio-size` ]: useRatio,
+		'image-is-svg': url && url.endsWith( '.svg' ),
 	} );
 
 	const blockProps = useBlockProps( {

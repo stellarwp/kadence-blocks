@@ -108,7 +108,7 @@ class KadenceSpacerDivider extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, mobileHAlign, tabletHAlign, vsdesk, vstablet, vsmobile }, className, setAttributes, toggleSelection } = this.props;
+		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, mobileHAlign, tabletHAlign, dividerWidthUnits, tabletDividerWidth, mobileDividerWidth, tabletDividerHeight, mobileDividerHeight, vsdesk, vstablet, vsmobile }, className, setAttributes, toggleSelection } = this.props;
 		let alp;
 		if ( dividerOpacity < 10 ) {
 			alp = '0.0' + dividerOpacity;
@@ -126,6 +126,8 @@ class KadenceSpacerDivider extends Component {
 		const previewHAlign = this.getPreviewSize( this.props.getPreviewDevice, ( '' !== hAlign ? hAlign : '' ), ( '' !== tabletHAlign ? tabletHAlign : '' ), ( '' !== mobileHAlign ? mobileHAlign : '' ) );
 		const minD = ( dividerStyle !== 'stripe' ? 1 : 10 );
 		const maxD = ( dividerStyle !== 'stripe' ? 400 : 60 );
+		const previewDividerHeight = this.getPreviewSize( this.props.getPreviewDevice, ( '' !== dividerHeight ? dividerHeight : 1 ), ( '' !== tabletDividerHeight ? tabletDividerHeight : '' ), ( '' !== mobileDividerHeight ? mobileDividerHeight : '' ) );
+		const previewDividerWidth = this.getPreviewSize( this.props.getPreviewDevice, ( '' !== dividerWidth ? dividerWidth : 1 ), ( '' !== tabletDividerWidth ? tabletDividerWidth : '' ), ( '' !== mobileDividerWidth ? mobileDividerWidth : '' ) );
 		return (
 			<div className={ className }>
 				{ this.showSettings( 'spacerDivider' ) && (
@@ -161,7 +163,7 @@ class KadenceSpacerDivider extends Component {
 										unit={ spacerHeightUnits }
 										onUnit={ this.showSettings( 'spacerHeightUnits' ) ? ( value ) => setAttributes( { spacerHeightUnits: value } ) : false }
 										units={ [ 'px', 'vh' ] }
-									/>									
+									/>
 								) }
 							</PanelBody>
 							<PanelBody
@@ -231,19 +233,33 @@ class KadenceSpacerDivider extends Component {
 												/>
 											</Fragment>
 										) }
-										<RangeControl
-											label={ __( 'Divider Height in px', 'kadence-blocks' ) }
+										<ResponsiveRangeControls
+											label={ __( 'Divider Height', 'kadence-blocks' ) }
 											value={ dividerHeight }
 											onChange={ value => setAttributes( { dividerHeight: value } ) }
+											tabletValue={ ( tabletDividerHeight ? tabletDividerHeight : '' ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletDividerHeight: value } ) }
+											mobileValue={ ( mobileDividerHeight ? mobileDividerHeight : '' ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileDividerHeight: value } ) }
 											min={ minD }
 											max={ maxD }
+											step={ 1 }
+											unit={ 'px' }
 										/>
-										<RangeControl
-											label={ __( 'Divider Width by %', 'kadence-blocks' ) }
+										<ResponsiveRangeControls
+											label={ __( 'Divider Width', 'kadence-blocks' ) }
 											value={ dividerWidth }
 											onChange={ value => setAttributes( { dividerWidth: value } ) }
+											tabletValue={ ( tabletDividerWidth ? tabletDividerWidth : '' ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletDividerWidth: value } ) }
+											mobileValue={ ( mobileDividerWidth ? mobileDividerWidth : '' ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileDividerWidth: value } ) }
 											min={ 0 }
-											max={ 100 }
+											max={ ( dividerWidthUnits == 'px' ? 3000 : 100 ) }
+											step={ 1 }
+											unit={ dividerWidthUnits }
+											onUnit={ ( value ) => setAttributes( { dividerWidthUnits: value } ) }
+											units={ [ 'px', '%' ] }
 										/>
 									</Fragment>
 								) }
@@ -276,8 +292,8 @@ class KadenceSpacerDivider extends Component {
 						<Fragment>
 							{ dividerStyle === 'stripe' && (
 								<span className="kt-divider-stripe" style={ {
-									height: ( dividerHeight < 10 ? 10 : dividerHeight ) + 'px',
-									width: dividerWidth + '%',
+									height: ( previewDividerHeight < 10 ? 10 : previewDividerHeight ) + 'px',
+									width: previewDividerWidth + ( dividerWidthUnits ? dividerWidthUnits : '%' ),
 								} }>
 									<SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
 								</span>
@@ -285,8 +301,8 @@ class KadenceSpacerDivider extends Component {
 							{ dividerStyle !== 'stripe' && (
 								<hr className="kt-divider" style={ {
 									borderTopColor: dividerBorderColor,
-									borderTopWidth: dividerHeight + 'px',
-									width: dividerWidth + '%',
+									borderTopWidth: previewDividerHeight + 'px',
+									width: previewDividerWidth + ( dividerWidthUnits ? dividerWidthUnits : '%' ),
 									borderTopStyle: dividerStyle,
 								} } />
 							) }
