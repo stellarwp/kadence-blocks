@@ -22,7 +22,7 @@
 }
 .kadence-spacer__resize-handler-top,
 .kadence-spacer__resize-handler-bottom {
-	display: none;
+	//display: none;
 	border-radius: 50%;
 	border: 2px solid white;
 	width: 15px !important;
@@ -33,6 +33,7 @@
 	cursor: se-resize;
 	left: 50% !important;
 	margin-left: -7.5px;
+	bottom: -7.5px;
 }
 .kt-spacer-height-preview {
     display: flex;
@@ -54,7 +55,6 @@
 // Item
 .kt-block-spacer {
     position: relative;
-    height: 100%;
     border: dashed 1px #eee;
 }
 .kt-block-spacer .kt-divider {

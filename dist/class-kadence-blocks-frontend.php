@@ -774,7 +774,7 @@ class Kadence_Blocks_Frontend {
 		if ( ! wp_style_is( 'kadence-blocks-spacer', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-spacer' );
 		}
-		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kb-spacer' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'spacer', $attributes ) ) {
@@ -797,7 +797,7 @@ class Kadence_Blocks_Frontend {
 		if ( ! wp_style_is( 'kadence-blocks-spacer', 'enqueued' ) ) {
 			wp_enqueue_style( 'kadence-blocks-spacer' );
 		}
-		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kb-spacer' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'spacer', $unique_id ) ) {
@@ -4395,22 +4395,50 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_spacer_array( $attr, $unique_id ) {
-		$css = '';
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+
+		if ( isset( $attr['spacerHeight'] ) && ! empty( $attr['spacerHeight'] ) ) {
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
+			$css->add_property( 'height', $attr['spacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) );
+		}
 		if ( isset( $attr['tabletSpacerHeight'] ) && ! empty( $attr['tabletSpacerHeight'] ) ) {
-			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
-			$css .= 'height:' . $attr['tabletSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . ' !important;';
-			$css .= '}';
-			$css .= '}';
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
+			$css->add_property( 'height', $attr['tabletSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . '!important' );
+			$css->stop_media_query();
 		}
 		if ( isset( $attr['mobileSpacerHeight'] ) && ! empty( $attr['mobileSpacerHeight'] ) ) {
-			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
-			$css .= 'height:' . $attr['mobileSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . ' !important;';
-			$css .= '}';
-			$css .= '}';
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
+			$css->add_property( 'height', $attr['mobileSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . '!important' );
+			$css->stop_media_query();
 		}
-		return $css;
+		if ( isset( $attr['dividerStyle'] ) && ! empty( $attr['dividerStyle'] ) && 'stripe' === $attr['dividerStyle'] ) {
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
+			$divider_height = ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ? $attr['dividerHeight'] : '10' );
+			$css->add_property( 'height', $divider_height . 'px' );
+			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
+			$css->add_property( 'width', $divider_width . '%' );
+		} else {
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider' );
+			if ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ) {
+				$css->add_property( 'border-top-width', $attr['dividerHeight'] . 'px' );
+			}
+			if ( isset( $attr['dividerBorderColor'] ) && ! empty( $attr['dividerBorderColor'] ) ) {
+				$css->add_property( 'border-top-color', $css->render_color( $attr['dividerBorderColor'] ) );
+			}
+			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
+			$css->add_property( 'width', $divider_width . '%' );
+			if ( isset( $attr['dividerStyle'] ) && ! empty( $attr['dividerStyle'] ) ) {
+				$css->add_property( 'border-top-style', $attr['dividerStyle'] );
+			}
+		}
+		return $css->css_output();
 	}
 
 	/**
@@ -6880,6 +6908,11 @@ class Kadence_Blocks_Frontend {
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		// Issue with span tag.
+		if ( isset( $attr['htmlTag'] ) && 'span' === $attr['htmlTag'] ) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+			$css->add_property( 'display', 'block' );
+		}
 		// Style.
 		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['fontWeight'] ) || isset( $attr['fontStyle'] ) || isset( $attr['textTransform'] ) || isset( $attr['letterSpacing'] ) || isset( $attr['color'] ) || isset( $attr['topMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['leftMargin'] ) || isset( $attr['textShadow'] ) || isset( $attr['align'] ) || isset( $attr['padding'] ) ) {
 			$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );

@@ -20,7 +20,6 @@ import classnames from 'classnames';
 //import './editor.scss';
 const {
 	Fragment,
-	renderToString,
 } = wp.element;
 /**
  * Internal block libraries
@@ -48,7 +47,8 @@ registerBlockType( 'kadence/spacer', {
 	keywords: [
 		__( 'spacer', 'kadence-blocks' ),
 		__( 'divider', 'kadence-blocks' ),
-		'KB',
+		__( 'separator', 'kadence-blocks' ),
+		'kb',
 	],
 	supports: {
 		anchor: true,
@@ -188,7 +188,7 @@ registerBlockType( 'kadence/spacer', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, tabletHAlign, mobileHAlign, vsdesk, vstablet, vsmobile } } = props;
+		const { attributes: { blockAlignment, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, uniqueID, rotate, strokeWidth, strokeGap, tabletHAlign, mobileHAlign, vsdesk, vstablet, vsmobile } } = props;
 		let alp;
 		if ( dividerOpacity < 10 ) {
 			alp = '0.0' + dividerOpacity;
@@ -197,14 +197,6 @@ registerBlockType( 'kadence/spacer', {
 		} else {
 			alp = '0.' + dividerOpacity;
 		}
-		const dividerBorderColor = ( ! dividerColor ? KadenceColorOutput( '#eeeeee', alp ) : KadenceColorOutput( dividerColor, alp ) );
-		const getDataUri = () => {
-			let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
-			svgStringPre = svgStringPre.replace( 'patterntransform', 'patternTransform' );
-			svgStringPre = svgStringPre.replace( 'patternunits', 'patternUnits' );
-			const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
-			return dataUri;
-		};
 		const classes = classnames( {
 			[ `align${ ( blockAlignment ? blockAlignment : 'none' ) }` ]: true,
 			[ `kt-block-spacer-${ uniqueID }` ]: uniqueID,
@@ -220,26 +212,16 @@ registerBlockType( 'kadence/spacer', {
 		} );
 		return (
 			<div className={ classes }>
-				<div className={ innerSpacerClasses } style={ {
-					height: spacerHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ),
-				} } >
+				<div className={ innerSpacerClasses }>
 					{ dividerEnable && (
 						<Fragment>
 							{ dividerStyle === 'stripe' && (
-								<span className="kt-divider-stripe" style={ {
-									height: ( dividerHeight < 10 ? 10 : dividerHeight ) + 'px',
-									width: dividerWidth + '%',
-								} }>
+								<span className="kt-divider-stripe">
 									<SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
 								</span>
 							) }
 							{ dividerStyle !== 'stripe' && (
-								<hr className="kt-divider" style={ {
-									borderTopColor: dividerBorderColor,
-									borderTopWidth: dividerHeight + 'px',
-									width: dividerWidth + '%',
-									borderTopStyle: dividerStyle,
-								} } />
+								<hr className="kt-divider"/>
 							) }
 						</Fragment>
 					) }

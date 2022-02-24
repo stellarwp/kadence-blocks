@@ -83,6 +83,7 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 2.2.8 =
 Release Date: February 21st, 2022
 * Update: Rename Heading Block to Advanced Text Block.
+* Update: Allow Advanced Text Block to be span or div tag.
 ** Update: More Editor Responsive Changes live preview (Spacing Block).
 ** Fix: Issues with using an SVG in advanced image block.
 * Fix: Issue with the full width button not working when inheriting styles from theme.

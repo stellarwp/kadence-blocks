@@ -66,7 +66,7 @@ registerBlockType( 'kadence/advancedheading', {
 		content: {
 			type: 'string',
 			source: 'html',
-			selector: 'h1,h2,h3,h4,h5,h6,p',
+			selector: 'h1,h2,h3,h4,h5,h6,p,span,div',
 		},
 		level: {
 			type: 'number',

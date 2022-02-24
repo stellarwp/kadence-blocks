@@ -17,7 +17,6 @@ import debounce from 'lodash/debounce';
 import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
-import ResizableBox from 're-resizable';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 /**
@@ -70,6 +69,7 @@ import {
 	Toolbar,
 	ToggleControl,
 	SelectControl,
+	ResizableBox,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
@@ -243,6 +243,7 @@ class KadenceRowLayout extends Component {
 	render() {
 		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const { borderWidthControl, borderRadiusControl, contentWidthPop } = this.state;
+		const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -343,8 +344,8 @@ class KadenceRowLayout extends Component {
 			this.setState( {
 				secondWidth: secondCol,
 			} );
-			document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = firstCol + '%';
-			document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = secondCol + '%';
+			editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = firstCol + '%';
+			editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = secondCol + '%';
 		};
 		const onResizeStop = ( event, direction, elt ) => {
 			let firstCol;
@@ -3248,7 +3249,7 @@ class KadenceRowLayout extends Component {
 							className={ 'kt-top-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
 								event.preventDefault();
-								document.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( previewPaddingTop + delta.height, 10 ) + 'px';
+								editorDocument.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( previewPaddingTop + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
 								if ( 'Mobile' === this.props.getPreviewDevice ) {
@@ -3412,7 +3413,7 @@ class KadenceRowLayout extends Component {
 							} }
 							className={ 'kt-bottom-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
-								document.getElementById( 'row-bottom-' + uniqueID ).innerHTML = parseInt( previewPaddingBottom + delta.height, 10 ) + 'px';
+								editorDocument.getElementById( 'row-bottom-' + uniqueID ).innerHTML = parseInt( previewPaddingBottom + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
 								if ( 'Mobile' === this.props.getPreviewDevice ) {
