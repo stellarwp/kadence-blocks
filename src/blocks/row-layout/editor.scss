@@ -1464,6 +1464,11 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {transform: 
 	padding-left: 10px;
     margin-left: -10px;
 }
+.block-editor-block-list__block[data-type="kadence/rowlayout"] .components-resizable-box__container .components-resizable-box__handle {
+	height: 100%;
+    top: 0px;
+	display: none;
+}
 .block-editor-block-list__block.is-selected[data-type="kadence/rowlayout"] .editor-row-first-column__resizer .components-resizable-box__handle {
     display: block;
 }
