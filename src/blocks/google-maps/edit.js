@@ -11,9 +11,11 @@ import './editor.scss';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { store as noticesStore } from '@wordpress/notices';
+import { useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps } from '@wordpress/block-editor';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
+import has from 'lodash/has';
 
 const {
 	InspectorControls,
@@ -23,7 +25,10 @@ const {
 	PanelBody,
 	RangeControl,
 	TextControl,
+	TextareaControl,
 	SelectControl,
+	ToggleControl,
+	Modal,
 	Button
 } = wp.components;
 
@@ -33,7 +38,9 @@ const {
 import classnames from 'classnames';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import isEmpty from 'lodash/isEmpty';
-import KadenceRange from '../../components/range/range-control'
+import KadenceRange from '../../components/range/range-control';
+import EditJsMap from './editJsMap';
+import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 
 const ktlottieUniqueIDs = [];
 
@@ -62,11 +69,16 @@ export function Edit( {
 		paddingMobile,
 		paddingUnit,
 		location,
-		zoom,
-		mapType,
-		mapMode,
+		showMarker,
 		mapStyle,
-		mapStyleAmount,
+		customSnazzy,
+		lat,
+		lng,
+		zoom,
+		apiType,
+		mapType,
+		mapFilter,
+		mapFilterAmount,
 		sizeSlug,
 	} = attributes;
 
@@ -74,6 +86,35 @@ export function Edit( {
 	const [ customGoogleApiKey, setCustomGoogleApiKey ] = useState('');
 
 	let googleApiKey = isEmpty(customGoogleApiKey) ? includedGoogleApiKey : customGoogleApiKey;
+
+	/*
+	 * Geocode friendly address into Lat/Lng
+	 * Wait 0.5 seconds after last change to prevent unnecessary requests
+	 * Also skip if using Embed API as we don't need Lat/Lng for that
+	 */
+	useEffect(() => {
+		const timeOutId = setTimeout(() => locationChange( location ), 600);
+		return () => clearTimeout(timeOutId);
+	}, [ location, apiType ]);
+
+	const locationChange = async (address) => {
+
+		try {
+			const geocoder = new window.google.maps.Geocoder()
+			const response = await geocoder.geocode({ address: address })
+
+			if (has(response.results, [0])) {
+				setAttributes({
+					lat: response.results[0].geometry.location.lat(),
+					lng: response.results[0].geometry.location.lng()
+				})
+			} else {
+				createErrorNotice( __('Could not find location', 'kadence-blocks') + ': ' + address, { type: 'snackbar' } );
+			}
+		} catch (error) {
+			createErrorNotice( __('Could not find location', 'kadence-blocks') + ': ' + address, { type: 'snackbar' } );
+		}
+	}
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -105,6 +146,15 @@ export function Edit( {
 
 	const [ marginControl, setMarginControl ] = useState( 'individual');
 	const [ paddingControl, setPaddingControl ] = useState( 'individual');
+
+	const [ isOpen, setOpen ] = useState( false );
+
+	const openModal = () => setOpen( true );
+	const closeModal = () => setOpen( false );
+
+	const { createErrorNotice } = useDispatch(
+		noticesStore
+	);
 
 	useEffect(() => {
 		/**
@@ -200,28 +250,27 @@ export function Edit( {
 					initialOpen={ true }
 				>
 
-					<SelectControl
-						label={ __('Map Mode', 'kadence-blocks') }
-						value={ mapMode }
-						onChange={ (value) => setAttributes( { mapMode: value } ) }
-						help={ __('Place: Display a pinpoint at a specific place or address. Search: results for a search across the visible map region', 'kadence-blocks' ) }
-						options={ [
-							{
-								label: __( 'Place', 'kadence-blocks'),
-								value: 'place'
-							},
-							{
-								label: __( 'Search', 'kadence-blocks'),
-								value: 'search'
-							}
-						] } />
-
 					<TextControl
-						label={ ( mapMode === 'search' ? __('Search', 'kadence-blocks') : __('Pinpoint', 'kadence-blocks') ) }
-						help={ ( mapMode === 'search' ? __('Example: BBQ in Austin, TX', 'kadence-blocks') : __('Example: 42 Wallaby Way, Sydney', 'kadence-blocks') ) }
+						label={ __('Location', 'kadence-blocks') }
 						value={ location }
-						onChange={ (value) => setAttributes( { location: value} ) }
+						onChange={ (value) => { setAttributes( { location: value} ); } }
 					/>
+
+					{ apiType === 'javascript' ?
+						<>
+							<ToggleControl
+								label={ __('Show Marker', 'kadence-blocks') }
+								checked={ (showMarker) }
+								onChange={ (value) => { setAttributes({ showMarker: (value) }) } }
+							/>
+							{/*<ToggleControl*/}
+							{/*	label={ __('Show Controls', 'kadence-blocks') }*/}
+							{/*	checked={ (showControls) }*/}
+							{/*	onChange={ (value) => { setAttributes({ showControls: (value) }) } }*/}
+							{/*/>*/}
+						</>
+						: null }
+
 					<RangeControl
 						label={ __( 'Zoom', 'kadence-blocks') }
 						value={ parseInt(zoom) }
@@ -245,46 +294,114 @@ export function Edit( {
 							}
 						] } />
 
-					<SelectControl
-						label={ __('Map Style', 'kadence-blocks') }
-						value={ mapStyle }
-						onChange={ (value) => setAttributes( { mapStyle: value, mapStyleAmount: getSaneDefaultForFilter( value ) } ) }
-						options={ [
-							{
-								label: __('Standard', 'kadence-blocks'),
-								value: 'standard'
-							},
-							{
-								label: __('Grayscale', 'kadence-blocks'),
-								value: 'grayscale'
-							},
-							{
-								label: __('Invert', 'kadence-blocks'),
-								value: 'invert'
-							},
-							{
-								label: __('Saturate', 'kadence-blocks'),
-								value: 'saturate'
-							},
-							{
-								label: __('Sepia', 'kadence-blocks'),
-								value: 'sepia'
-							}
-						] } />
+						<SelectControl
+								label={ __('Map Filter', 'kadence-blocks') }
+								value={ mapFilter }
+								onChange={ (value) => setAttributes({
+									mapFilter: value,
+									mapFilterAmount: getSaneDefaultForFilter(value)
+								}) }
+								options={ [
+									{
+										label: __('None', 'kadence-blocks'),
+										value: 'standard'
+									},
+									{
+										label: __('Grayscale', 'kadence-blocks'),
+										value: 'grayscale'
+									},
+									{
+										label: __('Invert', 'kadence-blocks'),
+										value: 'invert'
+									},
+									{
+										label: __('Saturate', 'kadence-blocks'),
+										value: 'saturate'
+									},
+									{
+										label: __('Sepia', 'kadence-blocks'),
+										value: 'sepia'
+									}
+								] } />
 
-					{ mapStyle !== 'standard' ?
-					<KadenceRange
-						label={ __('Map Style Strength ', 'kadence-blocks') }
-						value={ mapStyleAmount }
-						onChange={ (value) => setAttributes( { mapStyleAmount: value } ) }
-						min={ 0 }
-						max={ (mapStyle === 'saturate') ? 250 : 100 }
-					/> : null }
+							{ mapFilter !== 'standard' ?
+								<KadenceRange
+									label={ __('Map Filter Strength ', 'kadence-blocks') }
+									value={ mapFilterAmount }
+									onChange={ (value) => setAttributes({ mapFilterAmount: value }) }
+									min={ 0 }
+									max={ (mapFilter === 'saturate') ? 250 : 100 }
+								/> : null }
+
+					{ apiType === 'javascript' && mapType === 'roadmap' ?
+						<>
+							<SelectControl
+								label={ __('Map Style', 'kadence-blocks') }
+								value={ mapStyle }
+								onChange={ (value) => setAttributes({
+									mapStyle: value
+								}) }
+								options={ [
+									{
+										label: __('None', 'kadence-blocks'),
+										value: 'standard'
+									},
+									{
+										label: __('Apple Maps Esque', 'kadence-blocks'),
+										value: 'apple_maps_esque'
+									},
+									{
+										label: __('Avocado', 'kadence-blocks'),
+										value: 'avocado'
+									},
+									{
+										label: __('Clean Interface', 'kadence-blocks'),
+										value: 'clean_interface'
+									},
+									{
+										label: __('Cobalt', 'kadence-blocks'),
+										value: 'cobalt'
+									},
+									{
+										label: __('Midnight Commander', 'kadence-blocks'),
+										value: 'midnight_commander'
+									},
+									{
+										label: __('Night Mode', 'kadence-blocks'),
+										value: 'night_mode'
+									},
+									{
+										label: __('No labels, Bright Colors', 'kadence-blocks'),
+										value: 'no_label_bright_colors'
+									},
+									{
+										label: __('Shades of Grey', 'kadence-blocks'),
+										value: 'shades_of_grey'
+									},
+									{
+										label: __('Custom Snazzy Map', 'kadence-blocks'),
+										value: 'custom'
+									}
+								] } />
+						</> : null }
+
+					{ apiType === 'javascript' && mapType === 'roadmap' && mapStyle === 'custom' ?
+							<>
+								<TextareaControl
+									label={ __('Custom Map Style', 'kadence-blocks') }
+									help={ __( 'Copy the "Javascript Style Array" from a Snazzy Maps style', 'kadence-blocks') }
+									value={ customSnazzy }
+									onChange={ (value) => setAttributes( { customSnazzy: value } ) }
+								/>
+								
+								<a href={'https://snazzymaps.com'} target={'_blank'}> { __('Visit Snazzy Maps', 'kadence-blocks') } </a>
+							</>
+						: null }
 
 				</PanelBody>
 
 				<PanelBody
-					title={ __( 'Size Controls', 'kadence-blocks' ) }
+					title={ __( 'Container Size', 'kadence-blocks' ) }
 					initialOpen={ false }
 				>
 					<ResponsiveRangeControls
@@ -359,13 +476,31 @@ export function Edit( {
 
 				</PanelBody>
 				<PanelBody
-					title={ __( 'API Key', 'kadence-blocks' ) }
+					title={ __( 'API Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 				>
 
-					{ __('This block includes an API key, but a custom key can be used. The key uses the "Maps Embed API" permission. This key publicly visible so make sure it is restricted to only this permission.', 'kadence-blocks') }
+					{ __('This block includes an API key, but a custom key can be used. A custom key is required to use the Javascript API.', 'kadence-blocks') }
 
-					<br/><br/>
+					<br/>
+
+					<a href={'https://developers.google.com/maps/documentation/embed/get-api-key'} target={'_blank'}>{ __('How to create an API Key', 'kadence-blocks') }</a>
+
+
+					<br/>
+
+					<h2 style={ { marginBottom: '0px'} }>Required Permissions</h2>
+					<ul style={ { marginTop: '5px'} }>
+						{ apiType === 'javascript' ?
+							<>
+								<li>- Maps Javascript API</li>
+								<li>- Geocoding API</li>
+							</>
+							:
+							<li>- Maps Embed API</li> }
+					</ul>
+
+					<br/>
 
 					<TextControl
 						label={ __( 'API Key', 'kadence-blocks' ) }
@@ -390,6 +525,14 @@ export function Edit( {
 							>
 								Remove
 							</Button>
+
+							<br/><br/>
+
+							<ToggleControl
+								label={ __( 'Use Javascript API', 'kadence-blocks' ) }
+								checked={ (apiType === 'javascript') }
+								onChange={ ( value ) => { setAttributes( { apiType: (value ? 'javascript' : 'embed'), mapFilter: 'standard' } );  if(value) { openModal(); } } }
+							/>
 						</>
 						: null }
 
@@ -409,15 +552,50 @@ export function Edit( {
 			} }>
 				<div className={ 'kb-map-container' } style={ {
 					height: previewHeight + 'px',
-					maxWidth: (previewWidth === '' ? '100%' : previewWidth + 'px')
+					maxWidth: (previewWidth === '' ? '100%' : previewWidth + 'px'),
+					webkitFilter: (mapFilter !== 'standard' ? mapFilter + '(' + mapFilterAmount + '%)' : 'none' )
 				} }>
-					<div className={ 'kb-map-container-infobar' }>
+						<div className={ 'kb-map-container-infobar' }></div>
+					{ apiType === 'embed' ? <>
+
+						<iframe width={ '100%' } height={ '100%' }
+										src={ 'https://www.google.com/maps/embed/v1/place?' + qs }>
+						</iframe>
+							</> :
+							<>
+								<EditJsMap zoom={ zoom } customSnazzy={ customSnazzy } lat={ lat } lng={ lng } showMarker={showMarker} mapType={mapType} mapStyle={ mapStyle } googleApiKey={ 'AIzaSyDzwRtJXFMk604PIwm2H667t8_ex4QqOyI' } />
+							</>
+					}
 					</div>
-					<iframe width={ '100%' } height={ '100%' } loading={ 'lazy' }
-									style={ ( mapStyle !== 'standard' ? { webkitFilter: mapStyle + '(' + mapStyleAmount + '%)' } : {} ) }
-									src={ 'https://www.google.com/maps/embed/v1/' + mapMode + '?' + qs }></iframe>
-				</div>
 			</div>
+			{ isOpen && (
+				<Modal title={ __( 'Google Maps Javascript API', 'kadence-blocks' ) } onRequestClose={ closeModal }>
+					<div style={ { maxWidth: '600px' } }>
+						The Google Maps Javascript API is paid service and costs per request.
+						Currently, the Google Maps Platform offers a $200 monthly credit.
+						With the $200 monthly credit, some users will incur no cost.<br />
+						<a href={ 'https://mapsplatform.google.com/pricing/' } target={ '_blank' }>Click here to view the latest
+							pricing</a>.
+
+						<br /><br />
+
+						This API key you enter is here visible by users, so make sure to restrict the key to specific endpoints and
+						web addresses. <br />
+						<a href={ 'https://developers.google.com/maps/api-security-best-practices#restricting-api-keys' }
+							 target={ '_blank' }>More informaiton on that can be found here</a>
+
+						<br /><br />
+
+						<Button className={ 'is-secondary' } onClick={ () => {
+							setAttributes({ apiType: 'embed' })
+							closeModal()
+						} } text={ __('Cancel', 'kadence-blocks') } />
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<Button className={ 'is-primary' } onClick={ closeModal } text={ __('Continue', 'kadence-blocks') } />
+
+					</div>
+				</Modal>
+			) }
 		</figure>
 	);
 }

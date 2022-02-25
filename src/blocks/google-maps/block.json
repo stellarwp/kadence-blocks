@@ -50,21 +50,45 @@
 	  "type": "string",
 	  "default": "Golden Gate Bridge"
 	},
+	"lat": {
+	  "type": "string",
+	  "default": ""
+	},
+	"lng": {
+	  "type": "string",
+	  "default": ""
+	},
+	"apiType": {
+	  "enum": ["embed", "javascript"],
+	  "default": "embed"
+	},
+	"showMarker": {
+	  "type": "boolean",
+	  "default": true
+	},
 	"mapType": {
 	  "enum": ["roadmap", "satellite"],
 	  "default": "roadmap"
 	},
-	"mapStyle": {
+	"mapFilter": {
 	  "enum": ["standard", "grayscale", "invert", "saturate", "sepia"],
 	  "default": "standard"
 	},
-	"mapStyleAmount": {
+	"mapStyle": {
+	  "enum": ["standard", "shades_of_grey", "invert", "saturate", "custom"],
+	  "default": "standard"
+	},
+	"showControls": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"customSnazzy": {
+	  "type": "string",
+	  "default": ""
+	},
+	"mapFilterAmount": {
 	  "type": "number",
 	  "default": "50"
-	},
-	"mapMode": {
-	  "enum": ["place", "search"],
-	  "default": "place"
 	},
 	"marginDesktop": {
 	  "type": "array",
