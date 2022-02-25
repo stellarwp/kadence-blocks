@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 2.2.9
+Stable tag: 2.2.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+
+= 2.2.10 =
+Release Date: February 25th, 2022
+* Fix: issue with separator color.
 
 = 2.2.9 =
 Release Date: February 24th, 2022
