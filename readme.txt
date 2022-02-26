@@ -80,6 +80,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.2.11 =
+Release Date: February 25th, 2022
+* Fix: issue with separator color.
 
 = 2.2.10 =
 Release Date: February 25th, 2022
