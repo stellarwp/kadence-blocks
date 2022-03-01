@@ -1,4 +1,5 @@
 import {createReduxStore, register, createRegistrySelector, createRegistryControl} from '@wordpress/data';
+import get from 'lodash/get';
 
 const DEFAULT_STATE = {
 	previewDevice: 'Desktop',
@@ -17,6 +18,13 @@ const actions = {
 				type: 'SET_PREVIEW_DEVICE_TYPE',
 				deviceType,
 			};
+		}
+	},
+	*toggleEditorPanelOpened ( panelName, defaultValue ) {
+		return {
+			type: 'TOGGLE_EDITOR_PANEL_OPENED',
+			panelName,
+			defaultValue
 		}
 	},
 	addUniqueID( uniqueID ) {
@@ -68,6 +76,21 @@ const getPreviewDeviceType = createRegistrySelector( ( select ) => ( state ) => 
 const store = createReduxStore( 'kadenceblocks/data', {
 	reducer( state = DEFAULT_STATE, action ) {
 		switch ( action.type ) {
+			case 'TOGGLE_EDITOR_PANEL_OPENED':
+				const { panelName, defaultValue } = action;
+				const isOpen =
+					state[ panelName ] === true ||
+					get( state, [ 'editorPanels', panelName, 'opened' ], defaultValue );
+				return {
+					...state,
+					'editorPanels': {
+						...state.editorPanels,
+						[panelName]: {
+							...state[panelName],
+							opened: !isOpen,
+						}
+					}
+				};
 			case 'SET_PREVIEW_DEVICE_TYPE':
 				return {
 					...state,
@@ -91,6 +114,13 @@ const store = createReduxStore( 'kadenceblocks/data', {
 		getUniqueIDs( state ) {
 			const { uniqueIDs } = state;
 			return uniqueIDs;
+		},
+		isEditorPanelOpened( state, panelName, defaultValue ) {
+			const panels = get( state, ['editorPanels'], {} );
+
+			return (
+				get( panels, [ panelName ] ) === true || get( panels, [ panelName, 'opened' ], defaultValue ) === true
+			);
 		},
 	},
 } );
