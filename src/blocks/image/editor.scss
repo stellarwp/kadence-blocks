@@ -227,6 +227,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 	margin-right: auto;
 	text-align: center;
 }
+.wp-block[data-align=center] > .wp-block-kadence-image.kb-image-is-ratio-size {
+	width: 100%;
+}
 :not([data-align])>.wp-block-kadence-image:not(.has-warning):not(.kb-image-is-ratio-size) {
     display: grid;
     grid-template-columns: [image] minmax(0,max-content) [placeholder] auto;
