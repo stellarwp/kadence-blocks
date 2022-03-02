@@ -536,15 +536,26 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
-			'kadence_blocks_mailerlite_api',
-			'kadence_blocks_mailerlite_api',
-			array(
-				'type'              => 'string',
-				'description'       => __( 'MailerLite API Key', 'kadence-blocks-pro' ),
-				'sanitize_callback' => 'sanitize_text_field',
-				'show_in_rest'      => true,
-				'default'           => '',
-			)
+				'kadence_blocks_mailerlite_api',
+				'kadence_blocks_mailerlite_api',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'MailerLite API Key', 'kadence-blocks-pro' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => true,
+						'default'           => '',
+				)
+		);
+		register_setting(
+				'kadence_blocks_google_maps_api',
+				'kadence_blocks_google_maps_api',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'Google Maps API Key', 'kadence-blocks-pro' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => true,
+						'default'           => '',
+				)
 		);
 		register_setting(
 			'kadence_blocks_cloud',

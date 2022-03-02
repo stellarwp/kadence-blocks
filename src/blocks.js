@@ -23,6 +23,7 @@ import './extension/block-css/block-css';
 /* block.json styles */
 import './blocks/lottie/index.js';
 import './blocks/image/index.js';
+import './blocks/google-maps/index.js';
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
 import './blocks/count-up/block.js';
