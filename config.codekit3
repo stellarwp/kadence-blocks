@@ -271,17 +271,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/dist\/assets\/js\/kb-init-google-maps.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/assets\/js\/kb-init-google-maps-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/dist\/assets\/js\/kb-init-video-popup.min.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -400,17 +389,6 @@
       "oA" : 0,
       "oAP" : "\/dist\/assets\/js\/kb-form-block.min.js",
       "oF" : 3,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/dist\/assets\/js\/src\/kb-init-google-maps.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/dist\/assets\/js\/src\/kb-init-google-maps-min.js",
-      "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },
@@ -739,18 +717,6 @@
       "ma" : 0,
       "oA" : 0,
       "oAP" : "\/dist\/blocks\/testimonials.style.build-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
-    "\/dist\/build\/blocks-min.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks-min-min.css",
       "oF" : 0,
       "pg" : 0
     },
@@ -1153,18 +1119,6 @@
       "oS" : 3,
       "pg" : 0,
       "sct" : 1
-    },
-    "\/dist\/plugin\/plugin-min.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/plugin\/plugin-min-min.css",
-      "oF" : 0,
-      "pg" : 0
     },
     "\/dist\/plugin\/plugin.asset.php" : {
       "cB" : 0,
@@ -2377,107 +2331,6 @@
       "pg" : 0,
       "sct" : 1
     },
-    "\/src\/blocks\/google-maps\/block.json" : {
-      "ft" : 524288,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/google-maps\/block-min.json",
-      "oF" : 0,
-      "oO" : 0,
-      "oS" : 1
-    },
-    "\/src\/blocks\/google-maps\/edit.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/google-maps\/edit-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/google-maps\/editJsMap.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/google-maps\/editJsMap-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/google-maps\/editor.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/google-maps\/editor-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
-    "\/src\/blocks\/google-maps\/editor.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/google-maps\/editor.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
-    },
-    "\/src\/blocks\/google-maps\/index.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/google-maps\/index-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/google-maps\/save.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/google-maps\/save-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/google-maps\/snazzyMapStyles.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/google-maps\/snazzyMapStyles-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/google-maps\/transforms.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/google-maps\/transforms-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/src\/blocks\/header\/block.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3575,6 +3428,85 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/blocks\/row-layout\/threecolumndrag-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/show-more\/block.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/block-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/blocks\/show-more\/edit.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/edit-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/show-more\/editor.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/blocks\/show-more\/editor-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
+    "\/src\/blocks\/show-more\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/blocks\/show-more\/editor.css",
+      "oF" : 0,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/src\/blocks\/show-more\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/show-more\/save.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/save-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/show-more\/transforms.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/transforms-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
