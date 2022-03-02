@@ -4452,8 +4452,8 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ) {
 				$css->add_property( 'border-top-width', $attr['dividerHeight'] . 'px' );
 			}
-			if ( isset( $attr['dividerBorderColor'] ) && ! empty( $attr['dividerBorderColor'] ) ) {
-				$css->add_property( 'border-top-color', $css->render_color( $attr['dividerBorderColor'] ) );
+			if ( isset( $attr['dividerColor'] ) && ! empty( $attr['dividerColor'] ) ) {
+				$css->add_property( 'border-top-color', $css->render_color( $attr['dividerColor'] ) );
 			}
 			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
 			$divider_width_units = ( isset( $attr['dividerWidthUnits'] ) && ! empty( $attr['dividerWidthUnits'] ) ? $attr['dividerWidthUnits'] : '%' );
