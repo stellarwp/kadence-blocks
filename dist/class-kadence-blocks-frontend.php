@@ -249,7 +249,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/google-maps',
+			'kadence/googlemaps',
 			array(
 				'render_callback' => array( $this, 'render_google_maps_css' ),
 				'editor_script'   => 'kadence-blocks-js',
@@ -1039,19 +1039,38 @@ class Kadence_Blocks_Frontend {
 		}
 		return $content;
 	}
+	/**
+	 * Render Google Maps block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_google_maps_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kb-google-maps' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'google_maps', $unique_id ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_google_maps_render_block_attributes', $attributes );
 
+				$css = $this->blocks_google_map_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
 	/**
 	 * Render Google Maps block CSS
 	 *
 	 * @param array  $attributes the blocks attribtues.
 	 * @param string $content the blocks content.
 	 */
-	public function render_google_maps_css( $attributes, $content ){
+	public function render_google_maps_css( $attributes, $content ) {
 
 		// Replace API key with default or users set key
-		$user_google_maps_key = get_option('kadence_blocks_google_maps_api', '');
+		$user_google_maps_key = get_option( 'kadence_blocks_google_maps_api', '' );
 
-		if( $user_google_maps_key === '') {
+		if ( empty( $user_google_maps_key ) ) {
 			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk', $content );
 		} else {
 			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', $user_google_maps_key, $content );
@@ -1059,29 +1078,27 @@ class Kadence_Blocks_Frontend {
 
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
+			$style_id = 'kb-google-maps' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'google_maps', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
+				$attributes = apply_filters( 'kadence_blocks_google_maps_render_block_attributes', $attributes );
 
 				$css = $this->blocks_google_map_array( $attributes, $unique_id );
 				if ( ! empty( $css ) ) {
-					if ( $this->should_render_inline( 'accordion', $unique_id ) ) {
+					if ( $this->should_render_inline( 'google_maps', $unique_id ) ) {
 						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
 					} else {
 						$this->render_inline_css( $css, $style_id, true );
 					}
 				}
-
-
-				if( $attributes['apiType'] === 'javascript') {
-					if ( ! wp_script_is( 'kadence-blocks-google-maps-js', 'enqueued' ) ) {
-						wp_enqueue_script( 'kadence-blocks-google-maps-init-js' );
-						wp_enqueue_script( 'kadence-blocks-google-maps-js' );
-					}
-
-					$content .= $this->block_google_map_javascript( $attributes, $unique_id );
+			}
+			if ( isset( $attributes['apiType'] ) && $attributes['apiType'] === 'javascript' ) {
+				if ( ! wp_script_is( 'kadence-blocks-google-maps-js', 'enqueued' ) ) {
+					wp_enqueue_script( 'kadence-blocks-google-maps-init-js' );
+					wp_enqueue_script( 'kadence-blocks-google-maps-js' );
 				}
+
+				$content .= $this->block_google_map_javascript( $attributes, $unique_id );
 			}
 		}
 		return $content;
@@ -2018,6 +2035,12 @@ class Kadence_Blocks_Frontend {
 							$this->render_lottie_css_head( $blockattr );
 						}
 					}
+					if ( 'kadence/googlemaps' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_google_maps_css_head( $blockattr );
+						}
+					}
 					if ( 'kadence/infobox' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -2207,6 +2230,12 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
 						$this->render_lottie_css_head( $blockattr );
+					}
+				}
+				if ( 'kadence/googlemaps' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_google_maps_css_head( $blockattr );
 					}
 				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
@@ -6570,41 +6599,70 @@ class Kadence_Blocks_Frontend {
 
 		// max-width
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
-			if ( isset( $attr['width' . $breakpoint] ) && is_numeric(  $attr['width' . $breakpoint] ) ) {
-						$css->add_property( 'max-width', $attr['width' . $breakpoint] . 'px' );
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
 			}
-			$css->stop_media_query();
+			if ( isset( $attr['width' . $breakpoint] ) && is_numeric(  $attr['width' . $breakpoint] ) ) {
+				$css->add_property( 'max-width', $attr['width' . $breakpoint] . 'px' );
+			}
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
 		}
-
 		// height
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
-			if ( isset( $attr['height' . $breakpoint] ) &&  is_numeric( $attr['height' . $breakpoint] ) ) {
-					$css->add_property( 'height', $attr['height' . $breakpoint] . 'px' );
-			} else if( $breakpoint === 'Desktop' &&  !isset( $attr['heightDesktop'] ) ){
-				$css->add_property( 'height', '450px' );
+			if ( $breakpoint == 'Desktop' ) {
+				$height = ( isset( $attr[ 'height' . $breakpoint ] ) && is_numeric( $attr[ 'height' . $breakpoint ] ) ? $attr[ 'height' . $breakpoint ] : 450 );
+				$css->add_property( 'height', $height . 'px' );
+			} else {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+				if ( isset( $attr[ 'height' . $breakpoint ] ) && is_numeric( $attr[ 'height' . $breakpoint ] ) ) {
+					$css->add_property( 'height', $attr[ 'height' . $breakpoint ] . 'px' );
+				}
+				$css->stop_media_query();
 			}
-			$css->stop_media_query();
 		}
 
 		// Margins
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
 			if ( isset( $attr['margin' . $breakpoint] ) && is_array( $attr['margin' . $breakpoint] ) ) {
 				foreach ( $attr['margin' . $breakpoint] as $key => $marginValue ) {
 					if ( is_numeric( $marginValue ) ) {
 						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( empty( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
-
 					}
 				}
 			}
-			$css->stop_media_query();
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
 		}
-
+		// align
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $index => $breakpoint ) {
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
+			if ( ! empty( $attr['textAlign'][$index] ) ) {
+				if ( $attr['textAlign'][$index] === 'center' ) {
+					$css->add_property( 'margin-left', 'auto !important' );
+					$css->add_property( 'margin-right', 'auto !important' );
+				} else if ( $attr['textAlign'][$index] === 'left' ) {
+					$css->add_property( 'margin-right', 'auto !important' );
+				} else if ( $attr['textAlign'][$index] === 'right' ) {
+					$css->add_property( 'margin-left', 'auto !important' );
+				}
+			}
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
+		}
 		// Padding
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
 			if ( isset( $attr['padding' . $breakpoint] ) && is_array( $attr['padding' . $breakpoint] ) ) {
 				foreach ( $attr['padding' . $breakpoint] as $key => $marginValue ) {
 					if ( is_numeric( $marginValue ) ) {
@@ -6613,11 +6671,13 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
-			$css->stop_media_query();
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
 		}
 
 		// Filters
-		if( isset($attr['mapFilter']) && $attr['mapFilter'] !== 'standard' ){
+		if ( isset($attr['mapFilter']) && $attr['mapFilter'] !== 'standard' ) {
 			$css->set_selector( '.kb-google-maps-container' . $unique_id);
 
 			$css->add_property('filter', $attr['mapFilter'] . '(' . $attr['mapFilterAmount'] . '%)');

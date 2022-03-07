@@ -536,26 +536,26 @@ class Kadence_Blocks_Settings {
 			)
 		);
 		register_setting(
-				'kadence_blocks_mailerlite_api',
-				'kadence_blocks_mailerlite_api',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'MailerLite API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_mailerlite_api',
+			'kadence_blocks_mailerlite_api',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'MailerLite API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 		register_setting(
-				'kadence_blocks_google_maps_api',
-				'kadence_blocks_google_maps_api',
-				array(
-						'type'              => 'string',
-						'description'       => __( 'Google Maps API Key', 'kadence-blocks-pro' ),
-						'sanitize_callback' => 'sanitize_text_field',
-						'show_in_rest'      => true,
-						'default'           => '',
-				)
+			'kadence_blocks_google_maps_api',
+			'kadence_blocks_google_maps_api',
+			array(
+				'type'              => 'string',
+				'description'       => __( 'Google Maps API Key', 'kadence-blocks-pro' ),
+				'sanitize_callback' => 'sanitize_text_field',
+				'show_in_rest'      => true,
+				'default'           => '',
+			)
 		);
 		register_setting(
 			'kadence_blocks_cloud',
@@ -852,8 +852,8 @@ class Kadence_Blocks_Settings {
 			),
 			'kadence/advancedheading'      => array(
 				'slug'  => 'kadence/advancedheading',
-				'name'  => __( 'Advanced Heading', 'kadence-blocks' ),
-				'desc'  => __( 'Transform your headings to Advanced Headings and customize the font family (even google fonts), color, and size.', 'kadence-blocks' ),
+				'name'  => __( 'Advanced Text', 'kadence-blocks' ),
+				'desc'  => __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
 				'image' => KADENCE_BLOCKS_URL . 'dist/settings/img/heading.jpg',
 			),
 			'kadence/tabs'      => array(

@@ -24,7 +24,7 @@ export const settings = {
 	save,
 };
 
-registerBlockType('kadence/google-maps', {
+registerBlockType('kadence/googlemaps', {
 	...metadata,
 	icon: {
 		src: itemicons.googleMaps,

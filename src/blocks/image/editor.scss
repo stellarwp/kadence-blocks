@@ -292,3 +292,6 @@ figure.wp-block-kadence-image:not(.wp-block) {
     width: 100%;
 	text-align: left;
 }
+.wp-block[data-align="center"] > .wp-block-kadence-image.kb-image-is-ratio-size {
+	width: 100%;
+}

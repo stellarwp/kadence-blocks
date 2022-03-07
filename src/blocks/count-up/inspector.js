@@ -121,7 +121,8 @@ class Inspector extends Component {
 			numberMargin,
 			numberPaddingType,
 			numberMarginType,
-
+			decimalSpaces,
+			decimal,
 		} = attributes;
 		const { titlePaddingControl, titleMarginControl, numberPaddingControl, numberMarginControl } = this.state;
 		const saveTitleFont = ( value ) => {
@@ -210,7 +211,27 @@ class Inspector extends Component {
 									{ value: '.', label: '.' },
 								] }
 								onChange={ value => setAttributes( { separator: value } ) }
-							/> 
+							/>
+							<SelectControl
+								label={ __( 'Decimal', 'kadence-blocks' ) }
+								value={ decimal }
+								options={ [
+									{ value: '', label: __( 'None', 'kadence-blocks' ) },
+									{ value: '.', label: '.' },
+									{ value: ',', label: ',' },
+								] }
+								onChange={ value => setAttributes( { decimal: value } ) }
+							/>
+							{ decimal && (
+								<RangeControl
+									label={ __( 'Decimal Spaces', 'kadence-blocks' ) }
+									value={ decimalSpaces }
+									onChange={ (value) => setAttributes({ decimalSpaces: value }) }
+									min={ 1 }
+									max={ 25 }
+									step={ 1 }
+								/>
+							) }
 						</div>
 					</PanelBody>
 

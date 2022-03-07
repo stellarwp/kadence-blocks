@@ -11,6 +11,9 @@
 	&.aligncenter {
 		text-align: center;
 	}
+	.aligncenter.kb-image-is-ratio-size {
+		width: 100%;
+	}
 
 	&.alignfull img,
 	&.alignwide img {

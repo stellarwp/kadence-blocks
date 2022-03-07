@@ -12,7 +12,7 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
-import { useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps } from '@wordpress/block-editor';
 import has from 'lodash/has';
@@ -41,14 +41,14 @@ import isEmpty from 'lodash/isEmpty';
 import KadenceRange from '../../components/range/range-control';
 import EditJsMap from './editJsMap';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
+import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 
-const ktlottieUniqueIDs = [];
+const ktmapsUniqueIDs = [];
 
 export function Edit( {
 	attributes,
 	setAttributes,
 	className,
-	previewDevice,
 	clientId,
 } ) {
 
@@ -80,8 +80,11 @@ export function Edit( {
 		mapFilter,
 		mapFilterAmount,
 		sizeSlug,
+		textAlign,
 	} = attributes;
-
+	const previewDevice = useSelect( ( select ) => {
+		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
+	}, [] );
 	let includedGoogleApiKey = 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk';
 	const [ customGoogleApiKey, setCustomGoogleApiKey ] = useState('');
 
@@ -93,8 +96,11 @@ export function Edit( {
 	 * Also skip if using Embed API as we don't need Lat/Lng for that
 	 */
 	useEffect(() => {
-		const timeOutId = setTimeout(() => locationChange( location ), 600);
-		return () => clearTimeout(timeOutId);
+		if ( apiType === 'javascript' ) {
+			const timeOutId = setTimeout(() => locationChange( location ), 600);
+			return () => clearTimeout(timeOutId);
+		}
+		
 	}, [ location, apiType ]);
 
 	const locationChange = async (address) => {
@@ -102,16 +108,15 @@ export function Edit( {
 		try {
 			const geocoder = new window.google.maps.Geocoder()
 			const response = await geocoder.geocode({ address: address })
-
-			if (has(response.results, [0])) {
-				setAttributes({
+			if ( has( response.results, [0] ) ) {
+				setAttributes( {
 					lat: response.results[0].geometry.location.lat(),
 					lng: response.results[0].geometry.location.lng()
-				})
+				} );
 			} else {
 				createErrorNotice( __('Could not find location', 'kadence-blocks') + ': ' + address, { type: 'snackbar' } );
 			}
-		} catch (error) {
+		} catch ( error ) {
 			createErrorNotice( __('Could not find location', 'kadence-blocks') + ': ' + address, { type: 'snackbar' } );
 		}
 	}
@@ -131,7 +136,7 @@ export function Edit( {
 		return desktopSize;
 	};
 
-	const previewHeight = getPreviewSize( previewDevice, ( undefined !== heightDesktop ? heightDesktop : '450' ), ( undefined !== heightTablet ? heightTablet : '450' ), ( undefined !== heightMobile ? heightMobile : '450' ) );
+	const previewHeight = getPreviewSize( previewDevice, ( undefined !== heightDesktop ? heightDesktop : '450' ), ( undefined !== heightTablet ? heightTablet : '' ), ( undefined !== heightMobile ? heightMobile : '' ) );
 	const previewWidth = getPreviewSize( previewDevice, ( undefined !== widthDesktop ? widthDesktop : '' ), ( undefined !== widthTablet ? widthTablet : '' ), ( undefined !== widthMobile ? widthMobile : '' ) );
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
@@ -143,6 +148,8 @@ export function Edit( {
 	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[1] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
+
+	const previewTextAlign = getPreviewSize( previewDevice, ( undefined !== textAlign && undefined !== textAlign[0] ? textAlign[0] : '' ), ( undefined !== textAlign && undefined !== textAlign[1] ? textAlign[1] : '' ), ( undefined !== textAlign && undefined !== textAlign[2] ? textAlign[2] : '' ) );
 
 	const [ marginControl, setMarginControl ] = useState( 'individual');
 	const [ paddingControl, setPaddingControl ] = useState( 'individual');
@@ -170,21 +177,22 @@ export function Edit( {
 
 		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
-					uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
+			if ( blockConfigObject[ 'kadence/googlemaps' ] !== undefined && typeof blockConfigObject[ 'kadence/googlemaps' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/googlemaps' ] ).map( ( attribute ) => {
+					uniqueID = blockConfigObject[ 'kadence/googlemaps' ][ attribute ];
 				} );
 			}
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
-			ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
+			ktmapsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else if ( ktmapsUniqueIDs.includes( uniqueID ) ) {
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			} );
+			ktmapsUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
-			ktlottieUniqueIDs.push( uniqueID );
+			ktmapsUniqueIDs.push( uniqueID );
 		}
 
 	}, []);
@@ -426,7 +434,7 @@ export function Edit( {
 						onChange={ value => setAttributes( { widthDesktop: value } ) }
 						tabletValue={ ( widthTablet ? widthTablet : '' ) }
 						onChangeTablet={ ( value ) => setAttributes( { widthTablet: value } ) }
-						mobileValue={ ( widthMobile ? heightMobile : '' ) }
+						mobileValue={ ( widthMobile ? widthMobile : '' ) }
 						onChangeMobile={ ( value ) => setAttributes( { widthMobile: value } ) }
 						min={ 100 }
 						max={ 1250 }
@@ -436,6 +444,17 @@ export function Edit( {
 						showUnit={ true }
 						reset={ () => setAttributes( { widthDesktop: '', widthTablet: '', widthMobile: '' } ) }
 					/>
+					{ ( widthDesktop || widthTablet || widthMobile ) && (
+						<ResponsiveAlignControls
+							label={ __( 'Alignment', 'kadence-blocks' ) }
+							value={ ( textAlign && textAlign[0] ? textAlign[0] : '' ) }
+							mobileValue={ ( textAlign && textAlign[1] ? textAlign[1] : '' ) }
+							tabletValue={ ( textAlign && textAlign[2] ? textAlign[2] : '' ) }
+							onChange={ ( nextAlign ) => setAttributes( { textAlign: [ nextAlign, ( textAlign && textAlign[1] ? textAlign[1] : '' ), ( textAlign && textAlign[2] ? textAlign[2] : '' ) ] } ) }
+							onChangeTablet={ ( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[0] ? textAlign[0] : '' ), nextAlign, ( textAlign && textAlign[2] ? textAlign[2] : '' ) ] } ) }
+							onChangeMobile={ ( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[0] ? textAlign[0] : '' ), ( textAlign && textAlign[1] ? textAlign[1] : '' ), nextAlign ] } ) }
+						/>
+					) }
 
 					<ResponsiveMeasurementControls
 						label={ __( 'Padding', 'kadence-blocks' ) }
@@ -550,16 +569,16 @@ export function Edit( {
 				paddingBottom: ('' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined),
 				paddingLeft: ('' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined)
 			} }>
-				<div className={ 'kb-map-container' } style={ {
+				<div className={ `kb-map-container kb-map-align-${ previewTextAlign }` } style={ {
 					height: previewHeight + 'px',
-					maxWidth: (previewWidth === '' ? '100%' : previewWidth + 'px'),
+					maxWidth: ( previewWidth === '' ? '100%' : previewWidth + 'px' ),
 					webkitFilter: (mapFilter !== 'standard' ? mapFilter + '(' + mapFilterAmount + '%)' : 'none' )
 				} }>
-						<div className={ 'kb-map-container-infobar' }></div>
+					<div className={ 'kb-map-container-infobar' }></div>
 					{ apiType === 'embed' ? <>
 
 						<iframe width={ '100%' } height={ '100%' }
-										src={ 'https://www.google.com/maps/embed/v1/place?' + qs }>
+							src={ 'https://www.google.com/maps/embed/v1/place?' + qs }>
 						</iframe>
 							</> :
 							<>
@@ -571,27 +590,23 @@ export function Edit( {
 			{ isOpen && (
 				<Modal title={ __( 'Google Maps Javascript API', 'kadence-blocks' ) } onRequestClose={ closeModal }>
 					<div style={ { maxWidth: '600px' } }>
-						The Google Maps Javascript API is paid service and costs per request.
-						Currently, the Google Maps Platform offers a $200 monthly credit.
-						With the $200 monthly credit, some users will incur no cost.<br />
-						<a href={ 'https://mapsplatform.google.com/pricing/' } target={ '_blank' }>Click here to view the latest
-							pricing</a>.
-
+						{ __( 'The Google Maps Javascript API is paid service and costs per request.', 'kadence-blocks' ) }
+						<br />
+						<a href={ 'https://mapsplatform.google.com/pricing/' } target={ '_blank' }>{ __( 'Click here to view the latest pricing', 'kadence-blocks' ) } </a>.
 						<br /><br />
 
-						This API key you enter is here visible by users, so make sure to restrict the key to specific endpoints and
-						web addresses. <br />
-						<a href={ 'https://developers.google.com/maps/api-security-best-practices#restricting-api-keys' }
-							 target={ '_blank' }>More informaiton on that can be found here</a>
+						{ __( 'This API key you enter is here visible by users, so make sure to restrict the key to specific endpoints and web addresses.', 'kadence-blocks' ) }
+						<br />
+						<a href={ 'https://developers.google.com/maps/api-security-best-practices#restricting-api-keys' } target={ '_blank' }>{ __( 'More informaiton on that can be found here', 'kadence-blocks' ) }</a>
 
 						<br /><br />
 
 						<Button className={ 'is-secondary' } onClick={ () => {
 							setAttributes({ apiType: 'embed' })
 							closeModal()
-						} } text={ __('Cancel', 'kadence-blocks') } />
+						} } text={ __( 'Cancel', 'kadence-blocks' ) } />
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<Button className={ 'is-primary' } onClick={ closeModal } text={ __('Continue', 'kadence-blocks') } />
+						<Button className={ 'is-primary' } onClick={ closeModal } text={ __( 'Continue', 'kadence-blocks' ) } />
 
 					</div>
 				</Modal>

@@ -1,6 +1,6 @@
 {
   "apiVersion": 2,
-  "name": "kadence/google-maps",
+  "name": "kadence/googlemaps",
   "title": "Google Maps",
   "category": "kadence-blocks",
   "description": "Kadence google maps",
@@ -24,11 +24,11 @@
 	},
 	"heightTablet": {
 	  "type": "number",
-	  "default": 450
+	  "default": ""
 	},
 	"heightMobile": {
 	  "type": "number",
-	  "default": 450
+	  "default": ""
 	},
 	"widthDesktop": {
 	  "type": "number",
@@ -121,6 +121,10 @@
 	"paddingUnit": {
 	  "type": "string",
 	  "default": "px"
+	},
+	"textAlign": {
+		"type": "array",
+		"default":  [ "", "", "" ]
 	}
   },
   "editorScript": "file:editor.js"
