@@ -62,6 +62,7 @@ export function Edit( {
 		loop,
 		onlyPlayOnHover,
 		onlyPlayOnScroll,
+		waitUntilInView,
 		bouncePlayback,
 		playbackSpeed,
 		loopLimit,
@@ -353,7 +354,8 @@ export function Edit( {
 							setRerenderKey( Math.random() );
 						} }
 					/>
-					{ onlyPlayOnScroll && (
+
+					{ onlyPlayOnScroll ?
 						<>
 							<div style={ { marginBottom: '15px'} }>
 								<NumberControl
@@ -379,7 +381,17 @@ export function Edit( {
 								/>
 							</div>
 						</>
-					) }
+					 :
+						<div style={ { marginBottom: '15px'} }>
+							<ToggleControl
+							label={ __( 'Don\'t play until in view', 'kadence-blocks' ) }
+							help={ __('Prevent playback from starting until animation is in view', 'kadence-blocks') }
+							checked={ waitUntilInView }
+							onChange={ (value) => { setAttributes( { waitUntilInView: value } ) } }
+							/>
+						</div>
+					}
+
 					<RangeControl
 						label={ __( 'Playback Speed', 'kadence-blocks' ) }
 						value={ playbackSpeed }
