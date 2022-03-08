@@ -1141,8 +1141,10 @@ class Kadence_Blocks_Frontend {
 
 				if( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ){
 					$play_type = 'seek';
+					$frames = "frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "]";
 				} else {
 					$play_type = 'play';
+					$frames = '';
 				}
 
 				$content = $content . "
@@ -1154,9 +1156,9 @@ class Kadence_Blocks_Frontend {
 								player: '#" . $player_style_id . "',
 								actions: [
 									{
-									visibility: [0,1],
+									visibility: [0,1.0],
 									type: '" . $play_type . "',
-									frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "],
+									$frames
 									},
 								],
 							});

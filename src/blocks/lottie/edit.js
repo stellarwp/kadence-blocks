@@ -333,7 +333,7 @@ export function Edit( {
 						label={ __( 'Autoplay', 'kadence-blocks' ) }
 						checked={ autoplay }
 						onChange={ ( value ) => {
-							setAttributes( { autoplay: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
+							setAttributes( { autoplay: value, waitUntilInView: ( value ? waitUntilInView : false ), onlyPlayOnHover: (value ? false : onlyPlayOnHover), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
 							setRerenderKey( Math.random() );
 						}}
 					/>
@@ -387,7 +387,7 @@ export function Edit( {
 							label={ __( 'Don\'t play until in view', 'kadence-blocks' ) }
 							help={ __('Prevent playback from starting until animation is in view', 'kadence-blocks') }
 							checked={ waitUntilInView }
-							onChange={ (value) => { setAttributes( { waitUntilInView: value } ) } }
+							onChange={ (value) => { setAttributes( { waitUntilInView: value, autoplay: ( value ? true : autoplay ) } ) } }
 							/>
 						</div>
 					}
