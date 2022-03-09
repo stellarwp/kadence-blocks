@@ -27,7 +27,6 @@ const {
 
 const { apiFetch } = wp;
 const {
-	PanelBody,
 	RangeControl,
 	ToggleControl,
 	TextControl,
@@ -44,6 +43,7 @@ import { __experimentalNumberControl as NumberControl } from '@wordpress/compone
  */
 import classnames from 'classnames';
 import KadenceSelectPosts from '../../components/posts/select-posts-control'
+import KadencePanelBody from '../../components/KadencePanelBody'
 const ktlottieUniqueIDs = [];
 
 export function Edit( {
@@ -293,9 +293,10 @@ export function Edit( {
 				/>
 			</BlockControls>
 			<InspectorControls>
-				<PanelBody
+				<KadencePanelBody
 					title={ __('Source File', 'kadence-blocks') }
 					initialOpen={ true }
+					panelName={ 'kb-lottie-source-file' }
 				>
 
 					<SelectControl
@@ -348,11 +349,12 @@ export function Edit( {
 
 
 
-				</PanelBody>
+				</KadencePanelBody>
 
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Playback Settings', 'kadence-blocks' ) }
 					initialOpen={ true }
+					panelName={ 'kb-lottie-playback-settings' }
 				>
 					<ToggleControl
 						label={ __( 'Show Controls', 'kadence-blocks' ) }
@@ -460,10 +462,11 @@ export function Edit( {
 						min={ 0 }
 						max={ 100 }
 					/>
-				</PanelBody>
-				<PanelBody
+				</KadencePanelBody>
+				<KadencePanelBody
 					title={ __( 'Size Controls', 'kadence-blocks' ) }
 					initialOpen={ false }
+					panelName={ 'kb-lottie-size' }
 				>
 					<ResponsiveMeasurementControls
 						label={ __( 'Padding', 'kadence-blocks' ) }
@@ -511,7 +514,7 @@ export function Edit( {
 						min={ 25 }
 						max={ 1000 }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 			</InspectorControls>
 			<div className={ containerClasses } style={
 				{

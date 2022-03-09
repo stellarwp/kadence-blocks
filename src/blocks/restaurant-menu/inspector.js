@@ -11,9 +11,9 @@ import map from 'lodash/map';
  * Internal dependencies
  */
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
-import TypographyControls from '../../components/typography/typography-control';
 import KadenceRange from '../../kadence-range-control';
 import MeasurementControls from '../../measurement-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * WordPress dependencies
@@ -22,18 +22,8 @@ import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
 const {
-	TextControl,
-	SelectControl,
-	PanelBody,
-	RangeControl,
-	ToggleControl,
-	BaseControl,
 	ButtonGroup,
 	Button,
-	ColorPicker,
-	TextareaControl,
-	CheckboxControl,
-	Tooltip,
 	TabPanel,
 	Dashicon
 } = wp.components;
@@ -117,9 +107,11 @@ class Inspector extends Component {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Container Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-restaurant-container' }
+					>
 
 						<h2 className="kt-heading-size-title">{ __( 'Menu Title Align' ) }</h2>
 						<TabPanel className="kt-size-tabs kb-sidebar-alignment"
@@ -375,7 +367,7 @@ class Inspector extends Component {
 							min={ 0 }
 							max={ widthMax }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 	            </InspectorControls>
 	        </Fragment>
 		);

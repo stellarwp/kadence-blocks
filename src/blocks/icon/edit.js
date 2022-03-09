@@ -18,6 +18,7 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import StepControl from '../../step-control';
 import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import URLInputControl from '../../components/links/link-control';
 
 /**
@@ -41,7 +42,6 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	PanelBody,
 	RangeControl,
 	TextControl,
 	SelectControl,
@@ -300,9 +300,10 @@ class KadenceIcons extends Component {
 		};
 		const renderIconSettings = ( index ) => {
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Icon', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === iconCount ? true : false ) }
+					panelName={ 'kb-icon-settings-' + index }
 				>
 					<IconControl
 						value={ icons[ index ].icon }
@@ -504,7 +505,7 @@ class KadenceIcons extends Component {
 							this.saveArrayUpdate( { title: value }, index );
 						} }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const renderSettings = (
@@ -567,9 +568,10 @@ class KadenceIcons extends Component {
 					/>
 				</BlockControls>
 				<InspectorControls>
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Icon Count', 'kadence-blocks' ) }
 						initialOpen={ true }
+						panelName={ 'kb-icon-count' }
 					>
 						<StepControl
 							label={ __( 'Number of Icons', 'kadence-blocks' ) }
@@ -614,7 +616,7 @@ class KadenceIcons extends Component {
 							<p className="kb-component-label kb-responsive-label">{ __( 'Text Alignment', 'kadence-blocks' ) }</p>
 							{ tabAlignControls }
 						</div>
-					</PanelBody>
+					</KadencePanelBody>
 					{ renderSettings }
 				</InspectorControls>
 				<div className={ `kt-svg-icons ${ clientId } kt-svg-icons-${ uniqueID }${ verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : '' }` } style={ {
