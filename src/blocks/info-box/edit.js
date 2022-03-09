@@ -29,9 +29,9 @@ import KadenceColorOutput from '../../components/color/kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import URLInputControl from '../../components/links/link-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
 import KadenceImageControl from '../../components/common/kadence-image-control';
-
 
 /**
  * Internal block libraries
@@ -49,16 +49,13 @@ const {
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
-	MediaPlaceholder,
 } = wp.blockEditor;
 const {
 	Button,
-	IconButton,
 	Dropdown,
 	ButtonGroup,
 	TabPanel,
 	Dashicon,
-	PanelBody,
 	Toolbar,
 	TextControl,
 	ToggleControl,
@@ -73,6 +70,7 @@ import {
 	starFilled,
 	plusCircleFilled,
 } from '@wordpress/icons';
+
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -230,7 +228,7 @@ class KadenceInfoBox extends Component {
 		const previewLearnMoreLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== learnMoreStyles[0].lineHeight  &&  undefined !== learnMoreStyles[0].lineHeight[0] ? learnMoreStyles[0].lineHeight[0] : '' ), ( undefined !== learnMoreStyles[0].lineHeight &&  undefined !== learnMoreStyles[0].lineHeight[1] ? learnMoreStyles[0].lineHeight[1] : '' ), ( undefined !== learnMoreStyles[0].lineHeight &&  undefined !== learnMoreStyles[0].lineHeight[2] ? learnMoreStyles[0].lineHeight[2] : '' ) );
 
 		const previewMediaIconSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== mediaIcon[0]  &&  undefined !== mediaIcon[0].size ? mediaIcon[0].size : '14' ), ( undefined !== mediaIcon[0].tabletSize &&  undefined !== mediaIcon[0].tabletSize ? mediaIcon[0].tabletSize : '' ), ( undefined !== mediaIcon[0].mobileSize &&  undefined !== mediaIcon[0].mobileSize ? mediaIcon[0].mobileSize : '' ) );
-		
+
 		const widthTypes = [
 			{ key: 'px', name: 'px' },
 			{ key: '%', name: '%' },
@@ -1454,7 +1452,7 @@ class KadenceInfoBox extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody>
+						<KadencePanelBody panelName={'kb-info-all-settings'}>
 							<Fragment>
 								<h2>{ __( 'InfoBox Quick Layout Presets', 'kadence-blocks' ) }</h2>
 								<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={ __( 'InfoBox Style', 'kadence-blocks' ) }>
@@ -1562,11 +1560,12 @@ class KadenceInfoBox extends Component {
 									}
 								}
 							</TabPanel>
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'containerSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Container Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-container-settings' }
 							>
 								<MeasurementControls
 									label={ __( 'Container Border Width (px)', 'kadence-blocks' ) }
@@ -1730,12 +1729,13 @@ class KadenceInfoBox extends Component {
 									min={ 0 }
 									max={ widthMax }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'mediaSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Media Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-media-settings' }
 							>
 								<TabPanel className="kt-inspect-tabs kt-spacer-tabs"
 													activeClass="active-tab"
@@ -2336,12 +2336,13 @@ class KadenceInfoBox extends Component {
 									max={ 200 }
 									step={ 1 }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Title Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-title-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Show Title', 'kadence-blocks' ) }
@@ -2501,12 +2502,13 @@ class KadenceInfoBox extends Component {
 										</TabPanel>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'textSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Text Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-text-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Show Text', 'kadence-blocks' ) }
@@ -2663,12 +2665,13 @@ class KadenceInfoBox extends Component {
 										</TabPanel>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'learnMoreSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Learn More Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-learn-more' }
 							>
 								<ToggleControl
 									label={ __( 'Show Learn More', 'kadence-blocks' ) }
@@ -2809,12 +2812,13 @@ class KadenceInfoBox extends Component {
 										/>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'shadowSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Container Shadow', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-container-shadow' }
 							>
 								<ToggleControl
 									label={ __( 'Enable Shadow', 'kadence-blocks' ) }
@@ -2937,7 +2941,7 @@ class KadenceInfoBox extends Component {
 										}
 									</TabPanel>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 					</InspectorControls>
 				) }
