@@ -23,6 +23,7 @@ import URLInputInline from '../../components/links/inline-link-control';
 import DynamicTextControl from '../../components/common/dynamic-text-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
@@ -67,7 +68,6 @@ import {
 	TabPanel,
 	Button,
 	PanelRow,
-	PanelBody,
 	RangeControl,
 	TextControl,
 	ButtonGroup,
@@ -79,7 +79,6 @@ import {
 	Icon,
 } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { hasBlockSupport } from '@wordpress/blocks';
 import {
 	applyFilters,
 } from '@wordpress/hooks';
@@ -683,10 +682,11 @@ class KadenceAdvancedButton extends Component {
 		const tabControls = ( index ) => {
 			const isButtonSelected = ( isSelected && this.state.selectedButton === index );
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Button', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 					opened={ ( true === isButtonSelected ? true : undefined ) }
+					panelName={ 'kb-adv-btn-' + index }
 				>
 					<Fragment>
 						<h2 className="side-h2-label">{ __( 'Button Inherit Styles', 'kadence-blocks' ) }</h2>
@@ -1238,7 +1238,7 @@ class KadenceAdvancedButton extends Component {
 						value={ ( btns[ index ].label ? btns[ index ].label : '' ) }
 						onChange={ ( value ) => this.saveArrayUpdate( { label: value }, index ) }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const hoverSettings = ( index ) => {
@@ -1714,9 +1714,10 @@ class KadenceAdvancedButton extends Component {
 						<Fragment>
 							<InspectorControls>
 								{ this.showSettings( 'countSettings' ) && (
-									<PanelBody
+									<KadencePanelBody
 										title={ __( 'Button Count', 'kadence-blocks' ) }
 										initialOpen={ true }
+										panelName={ 'kb-adv-btn-count-' + index }
 									>
 										<PanelRow>
 											<Button
@@ -1802,14 +1803,15 @@ class KadenceAdvancedButton extends Component {
 											onChangeTablet={ ( nextAlign ) => setAttributes( { thAlign: nextAlign } ) }
 											onChangeMobile={ ( nextAlign ) => setAttributes( { mhAlign: nextAlign } ) }
 										/>
-									</PanelBody>
+									</KadencePanelBody>
 								) }
 								{ renderArray }
 								{ this.showSettings( 'fontSettings' ) && (
-									<PanelBody
+									<KadencePanelBody
 										title={ __( 'Font Family', 'kadence-blocks' ) }
 										initialOpen={ false }
 										className="kt-font-family-area"
+										panelName={ 'kb-adv-btn-font-family' }
 									>
 										<TypographyControls
 											fontGroup={ 'button' }
@@ -1838,12 +1840,13 @@ class KadenceAdvancedButton extends Component {
 											fontSubset={ fontSubset }
 											onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
 										/>
-									</PanelBody>
+									</KadencePanelBody>
 								) }
 								{ this.showSettings( 'marginSettings' ) && (
-									<PanelBody
+									<KadencePanelBody
 										title={ __( 'Container Margin', 'kadence-blocks' ) }
 										initialOpen={ false }
+										panelName={ 'kb-adv-btn-container-margin' }
 									>
 										<ResponsiveMeasuremenuControls
 											label={ __( 'Container Margin', 'kadence-blocks' ) }
@@ -1862,7 +1865,7 @@ class KadenceAdvancedButton extends Component {
 											units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 											onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 										/>
-									</PanelBody>
+									</KadencePanelBody>
 								) }
 							</InspectorControls>
 							<InspectorAdvancedControls>

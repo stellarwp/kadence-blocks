@@ -51,7 +51,6 @@ const {
 	TabPanel,
 	Button,
 	ButtonGroup,
-	PanelBody,
 	Dashicon,
 	RangeControl,
 	ToggleControl,
@@ -607,7 +606,7 @@ class KadenceAccordionComponent extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody>
+						<KadencePanelBody panelName={ 'kb-accordion-all' }>
 							{ this.showSettings( 'paneControl' ) && (
 								<Fragment>
 									<ToggleControl
@@ -661,7 +660,7 @@ class KadenceAccordionComponent extends Component {
 									) }
 								</Fragment>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'titleColors' ) && (
 							<KadencePanelBody
 								title={ __( 'Pane Title Color Settings', 'kadence-blocks' ) }
