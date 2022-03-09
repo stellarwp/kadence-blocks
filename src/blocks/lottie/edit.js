@@ -7,13 +7,13 @@
  */
 import './editor.scss';
 
-import * as LottiePlayer from "@lottiefiles/lottie-player";
-import { create } from '@lottiefiles/lottie-interactivity';
+import { Player, Controls } from '@lottiefiles/react-lottie-player';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
+import { useSelect } from '@wordpress/data';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 const { rest_url } = kadence_blocks_params;
@@ -50,7 +50,6 @@ export function Edit( {
 	attributes,
 	setAttributes,
 	className,
-	previewDevice,
 	clientId,
 } ) {
 
@@ -82,7 +81,9 @@ export function Edit( {
 		marginUnit,
 		label,
 	} = attributes;
-
+	const previewDevice = useSelect( ( select ) => {
+		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
+	}, [] );
 	const [ rerenderKey, setRerenderKey ] = useState( 'static' );
 	const [ lottieAnimationsCacheKey, setLottieAnimationsCacheKey ] = useState( { key: Math.random() } );
 
@@ -100,7 +101,6 @@ export function Edit( {
 		}
 		return desktopSize;
 	};
-	const ref = useRef();
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
@@ -120,41 +120,6 @@ export function Edit( {
 		className: classes,
 	} );
 
-	let playerProps = {};
-
-	if(loop){
-		playerProps.loop = '';
-	}
-
-	if(playbackSpeed){
-		playerProps.speed = playbackSpeed;
-	}
-
-	if(showControls){
-		playerProps.controls = '';
-	}
-
-	if(autoplay){
-		playerProps.autoplay = '';
-	}
-
-	if(onlyPlayOnHover){
-		playerProps.hover = '';
-	}
-
-	if(bouncePlayback) {
-		playerProps.mode = 'bounce';
-	} else {
-		playerProps.mode = 'normal';
-	}
-
-	if( delay !== 0){
-		playerProps.intermission = 1000 * delay;
-	}
-
-	if( loopLimit !== 0 ) {
-		playerProps.count = loopLimit;
-	}
 	useEffect( () => {
 		if ( ! uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
@@ -201,6 +166,7 @@ export function Edit( {
 				} ).then( (response) => {
 					if( has(response, 'value') && has(response, 'label') ){
 						setAttributes( { localFile: [ response ], fileSrc: 'local' } );
+						setRerenderKey( Math.random() );
 						setLottieAnimationsCacheKey( Math.random() );
 					} else if ( has(response, 'error') && has(response, 'message')  ) {
 						setLottieJsonError( response.message );
@@ -399,6 +365,7 @@ export function Edit( {
 									min={ 0 }
 									isShiftStepEnabled={ true }
 									shiftStep={ 10 }
+									help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 								/>
 							</div>
 
@@ -410,6 +377,7 @@ export function Edit( {
 									min={ 0 }
 									isShiftStepEnabled={ true }
 									shiftStep={ 10 }
+									help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 								/>
 							</div>
 						</>
@@ -437,30 +405,30 @@ export function Edit( {
 						checked={ bouncePlayback }
 						onChange={ ( value ) => {
 							setAttributes( { bouncePlayback: value, loop: (value ? true : loop), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
-							setRerenderKey( Math.random() );
 						} }
+						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 					/>
 					<RangeControl
 						label={ __( 'Delay between loops (seconds)', 'kadence-blocks' ) }
 						value={ delay }
 						onChange={ ( value ) => {
 							setAttributes( { delay: value } );
-							setRerenderKey( Math.random() );
 						} }
 						step={ 0.1 }
 						min={ 0 }
 						max={ 60 }
+						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 					/>
 					<RangeControl
 						label={ __( 'Limit Loops', 'kadence-blocks' ) }
 						value={ loopLimit }
 						onChange={ ( value ) => {
 							setAttributes( { loopLimit: value } );
-							setRerenderKey( Math.random() );
 						} }
 						step={ 1 }
 						min={ 0 }
 						max={ 100 }
+						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 					/>
 				</KadencePanelBody>
 				<KadencePanelBody
@@ -529,9 +497,12 @@ export function Edit( {
 					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
 				}
 			}>
-				<lottie-player
-					ref={ ref }
-					{ ...playerProps }
+				<Player
+					speed={ undefined !== playbackSpeed ? playbackSpeed : 1 }
+					autoplay={ autoplay ? true : false }
+					count={ loopLimit !== 0 ? loopLimit : 0 }
+					hover={ onlyPlayOnHover ? true : false }
+					loop={ loop ? true : false }
 					id={ 'kb-lottie-player' + uniqueID }
 					key={ rerenderKey }
 					src={ getAnimationUrl(fileSrc, fileUrl, localFile, rest_url) }
@@ -541,7 +512,8 @@ export function Edit( {
 						margin: '0 auto'
 					} }
 				>
-				</lottie-player>
+					<Controls visible={ showControls ? true : false } buttons={['play', 'frame']} />
+				</Player>
 			</div>
 		</div>
 	);

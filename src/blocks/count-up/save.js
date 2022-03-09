@@ -36,6 +36,8 @@ class KadenceCounterUpSave extends Component {
 			separator,
 			titleFont,
 			displayTitle,
+			decimal,
+			decimalSpaces,
 		} = attributes
 		const classes = classnames( {
 			[ `kb-count-up-${ uniqueID }` ]: uniqueID,
@@ -51,6 +53,8 @@ class KadenceCounterUpSave extends Component {
 				data-suffix={ suffix }
 				data-duration={ duration }
 				data-separator={ separator }
+				data-decimal={ decimal ? decimal : undefined }
+				data-decimal-spaces={ decimal ? decimalSpaces : undefined }
 			>
 				<div className={ 'kb-count-up-process kb-count-up-number' } />
 				{ title && displayTitle && (

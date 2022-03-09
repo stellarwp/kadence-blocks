@@ -71,11 +71,6 @@ const {
  */
 const ANCHOR_REGEX = /[\s#]/g;
 
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const ktadvancedheadingUniqueIDs = [];
-
 class KadenceAdvancedHeading extends Component {
 	constructor() {
 		super( ...arguments );
