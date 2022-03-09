@@ -24,6 +24,7 @@ import KadenceColorOutput from '../../components/color/kadence-color-output';
 import PopColorControl from '../../components/color/pop-color-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import URLInputControl from '../../components/links/link-control';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
@@ -46,13 +47,10 @@ const {
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
-	BlockAlignmentToolbar,
 } = wp.blockEditor;
 const {
 	Button,
 	IconButton,
-	PanelBody,
-	Tooltip,
 	ToggleControl,
 	PanelRow,
 	ButtonGroup,
@@ -60,8 +58,6 @@ const {
 	Dashicon,
 	RangeControl,
 	CheckboxControl,
-	TextareaControl,
-	Toolbar,
 	SelectControl,
 	TabPanel,
 	ExternalLink,
@@ -862,11 +858,12 @@ class KadenceForm extends Component {
 			const isFieldSelected = ( isSelected && this.state.selectedField === index );
 			if ( 'hidden' === fields[ index ].type ) {
 				return (
-					<PanelBody
+					<KadencePanelBody
 						title={ ( undefined !== fields[ index ].label && null !== fields[ index ].label && '' !== fields[ index ].label ? fields[ index ].label : __( 'Field', 'kadence-blocks' ) + ' ' + ( index + 1 ) ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
 						key={ 'field-panel-' + index.toString() }
 						opened={ ( true === isFieldSelected ? true : undefined ) }
+						panelName={ 'kb-form-field-' + index }
 					>
 						<SelectControl
 							label={ __( 'Field Type', 'kadence-blocks' ) }
@@ -897,15 +894,16 @@ class KadenceForm extends Component {
 							value={ ( undefined !== fields[ index ].default ? fields[ index ].default : '' ) }
 							onChange={ ( value ) => this.saveFields( { default: value }, index ) }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				);
 			}
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ ( undefined !== fields[ index ].label && null !== fields[ index ].label && '' !== fields[ index ].label ? fields[ index ].label : __( 'Field', 'kadence-blocks' ) + ' ' + ( index + 1 ) ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 					key={ 'field-panel-' + index.toString() }
 					opened={ ( true === isFieldSelected ? true : undefined ) }
+					panelName={ 'kb-form-field-label-' + index }
 				>
 					<SelectControl
 						label={ __( 'Field Type', 'kadence-blocks' ) }
@@ -945,7 +943,7 @@ class KadenceForm extends Component {
 							<Fragment>
 								{ times( fields[ index ].options.length, n => (
 									<div className="field-options-wrap">
-										
+
 										<TextControl
 											className={ 'kb-option-text-control' }
 											key={ n }
@@ -1222,7 +1220,7 @@ class KadenceForm extends Component {
 							placeholder={ ( undefined !== fields[ index ].label ? fields[ index ].label : '' ) + ' ' + __( 'is not valid', 'kadence-blocks' ) }
 						/>
 					) }
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const renderFieldControls = (
@@ -1663,18 +1661,20 @@ class KadenceForm extends Component {
 							{ __( 'Add Field', 'kadence-blocks' ) }
 						</Button>
 					</PanelRow>
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Actions After Submit', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-form-action-after-submit' }
 					>
 						{ this.state.actionOptions &&
 							times( this.state.actionOptions.length, n => actionControls( n ) )
 						}
-					</PanelBody>
+					</KadencePanelBody>
 					{ actions.includes( 'email' ) && (
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Email Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-form-email-settings' }
 						>
 							<TextControl
 								label={ __( 'Email To Address', 'kadence-blocks' ) }
@@ -1725,12 +1725,13 @@ class KadenceForm extends Component {
 								checked={ ( undefined !== email[ 0 ].html ? email[ 0 ].html : true ) }
 								onChange={ ( value ) => this.saveEmail( { html: value } ) }
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 					) }
 					{ actions.includes( 'redirect' ) && (
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Redirect Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-form-redirect-settings' }
 						>
 							<URLInputControl
 								label={ __( 'Redirect to', 'kadence-blocks' ) }
@@ -1739,11 +1740,12 @@ class KadenceForm extends Component {
 								additionalControls={ false }
 								{ ...this.props }
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 					) }
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Basic Spam Check', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-form-basic-spam-check' }
 					>
 						<ToggleControl
 							label={ __( 'Enable Basic Honey Pot Spam Check', 'kadence-blocks' ) }
@@ -1751,10 +1753,11 @@ class KadenceForm extends Component {
 							checked={ honeyPot }
 							onChange={ ( value ) => setAttributes( { honeyPot: value } ) }
 						/>
-					</PanelBody>
-					<PanelBody
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Google reCAPTCHA', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelname={ 'kb-form-google-recaptcha' }
 					>
 						<ToggleControl
 							label={ __( 'Enable Google reCAPTCHA', 'kadence-blocks' ) }
@@ -1819,10 +1822,11 @@ class KadenceForm extends Component {
 								</div>
 							</Fragment>
 						) }
-					</PanelBody>
-					<PanelBody
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Field Styles', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-form-field-styles' }
 					>
 						<TypographyControls
 							fontSize={ style[ 0 ].fontSize }
@@ -2387,10 +2391,11 @@ class KadenceForm extends Component {
 							unit={ 'px' }
 							units={ [ 'px' ] }
 						/>
-					</PanelBody>
-					<PanelBody
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Label Styles', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-form-label-styles' }
 					>
 						<PopColorControl
 							label={ __( 'Label Color', 'kadence-blocks' ) }
@@ -2426,9 +2431,10 @@ class KadenceForm extends Component {
 							lineHeightType={ labelFont[ 0 ].lineType }
 							onLineHeightType={ ( value ) => this.saveLabelFont( { lineType: value } ) }
 						/>
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Advanced Label Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-form-advanced-label-settings' }
 						>
 							<TypographyControls
 								letterSpacing={ labelFont[ 0 ].letterSpacing }
@@ -2465,11 +2471,12 @@ class KadenceForm extends Component {
 								marginControl={ labelMarginControl }
 								onMarginControl={ ( value ) => this.setState( { labelMarginControl: value } ) }
 							/>
-						</PanelBody>
-					</PanelBody>
-					<PanelBody
+						</KadencePanelBody>
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Submit Styles', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-form-submit-styles' }
 					>
 						<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Column Width', 'kadence-blocks' ) }</h2>
 						<TabPanel className="kt-size-tabs"
@@ -3184,9 +3191,10 @@ class KadenceForm extends Component {
 							lineHeightType={ submitFont[ 0 ].lineType }
 							onLineHeightType={ ( value ) => this.saveSubmitFont( { lineType: value } ) }
 						/>
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Advanced Button Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-form-advanced-button-settings' }
 						>
 							<TypographyControls
 								letterSpacing={ submitFont[ 0 ].letterSpacing }
@@ -3308,17 +3316,18 @@ class KadenceForm extends Component {
 									}
 								}
 							</TabPanel>
-						</PanelBody>
+						</KadencePanelBody>
 						<TextControl
 							label={ __( 'Submit aria description', 'kadence-blocks' ) }
 							help={ __( 'Provide more context for screen readers', 'kadence-blocks' ) }
 							value={ ( undefined !== submitLabel ? submitLabel : '' ) }
 							onChange={ ( value ) => setAttributes( { submitLabel: value } ) }
 						/>
-					</PanelBody>
-					<PanelBody
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Message Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-form-message-settings' }
 					>
 						<TextControl
 							label={ __( 'Success Message', 'kadence-blocks' ) }
@@ -3326,9 +3335,10 @@ class KadenceForm extends Component {
 							value={ ( undefined !== messages[ 0 ].success ? messages[ 0 ].success : '' ) }
 							onChange={ ( value ) => this.saveMessages( { success: value } ) }
 						/>
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Success Message Colors', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-form-success-message-colors' }
 						>
 							<PopColorControl
 								label={ __( 'Success Message Color', 'kadence-blocks' ) }
@@ -3356,7 +3366,7 @@ class KadenceForm extends Component {
 									this.saveMessageFont( { borderSuccess: value } );
 								} }
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 						<PanelRow>
 							<TextControl
 								label={ __( 'Pre Submit Form Validation Error Message', 'kadence-blocks' ) }
@@ -3383,9 +3393,10 @@ class KadenceForm extends Component {
 								/>
 							</PanelRow>
 						) }
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Error Message Colors', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-form-error-message-colors' }
 						>
 							<PopColorControl
 								label={ __( 'Error Message Color', 'kadence-blocks' ) }
@@ -3413,7 +3424,7 @@ class KadenceForm extends Component {
 									this.saveMessageFont( { borderError: value } );
 								} }
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 						<TypographyControls
 							fontSize={ messageFont[ 0 ].size }
 							onFontSize={ ( value ) => this.saveMessageFont( { size: value } ) }
@@ -3444,9 +3455,10 @@ class KadenceForm extends Component {
 							min={ 0 }
 							max={ 50 }
 						/>
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Advanced Message Font Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-form-advanced-message-font-settings' }
 						>
 							<TypographyControls
 								letterSpacing={ messageFont[ 0 ].letterSpacing }
@@ -3481,11 +3493,12 @@ class KadenceForm extends Component {
 								marginControl={ messageMarginControl }
 								onMarginControl={ ( value ) => this.setState( { messageMarginControl: value } ) }
 							/>
-						</PanelBody>
-					</PanelBody>
-					<PanelBody
+						</KadencePanelBody>
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Container Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-form-container-settings' }
 					>
 						<ResponsiveMeasuremenuControls
 							label={ __( 'Container Margin', 'kadence-blocks' ) }
@@ -3515,7 +3528,7 @@ class KadenceForm extends Component {
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 							onUnit={ ( value ) => setAttributes( { containerMarginType: value } ) }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 					{ actions.includes( 'mailerlite' ) && (
 						<MailerLiteControls
 							fields={ fields }
