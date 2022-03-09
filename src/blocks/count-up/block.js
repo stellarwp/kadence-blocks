@@ -25,6 +25,8 @@ import edit from './edit';
  * Import save
  */
 import save from './save';
+
+import deprecated from './deprecated';
 /**
  * Import Css
  */
@@ -54,5 +56,6 @@ registerBlockType( 'kadence/countup', {
 	description: __( 'An animated count up or down to a specific value.', 'kadence-blocks' ),
 	attributes,
 	edit,
-	save
+	save,
+	deprecated,
 } );

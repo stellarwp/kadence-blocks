@@ -116,6 +116,30 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $block['attrs']['loggedOut'] ) && $block['attrs']['loggedOut'] && ! is_user_logged_in() ) {
 				return '';
 			}
+			if ( function_exists( 'rcp_user_has_access' ) && isset( $block['attrs']['rcpMembership'] ) && $block['attrs']['rcpMembership'] ) {
+				if ( ! is_user_logged_in() ) {
+					return '';
+				}
+				$hide = true;
+				$access_level = (int) ( isset( $block['attrs']['rcpAccess'] ) ? $block['attrs']['rcpAccess'] : '0' );
+				if ( rcp_user_has_access( get_current_user_id(), $access_level ) ) {
+					$hide = false;
+				}
+				if ( $hide ) {
+					return '';
+				}
+				if ( isset( $block['attrs']['rcpMembershipLevel'] ) && !empty( $block['attrs']['rcpMembershipLevel'] ) && is_array( $block['attrs']['rcpMembershipLevel'] ) ) {
+					$hide = true;
+					foreach( $block['attrs']['rcpMembershipLevel'] as $key => $level ) {
+						if ( in_array( $level['value'], rcp_get_customer_membership_level_ids() ) ) {
+							$hide = false;
+						}
+					}
+				}
+				if ( $hide ) {
+					return '';
+				}
+			}
 		}
 
 		return $block_content;
@@ -224,7 +248,14 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-editor-css',
 			)
 		);
-
+		register_block_type(
+			'kadence/googlemaps',
+			array(
+				'render_callback' => array( $this, 'render_google_maps_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
 		register_block_type(
 			'kadence/iconlist',
 			array(
@@ -321,7 +352,7 @@ class Kadence_Blocks_Frontend {
 
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-countup' . esc_attr( $unique_id );
 
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'countup', $attributes ) ) {
 				$attributes = apply_filters( 'kadence_blocks_countup_render_block_attributes', $attributes );
@@ -341,7 +372,7 @@ class Kadence_Blocks_Frontend {
 	public function render_countup_css( $attributes, $content ) {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-countup' . esc_attr( $unique_id );
 			if ( $this->it_is_not_amp() ) {
 				wp_enqueue_script( 'kadence-count-up' );
 			}
@@ -371,7 +402,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id  = 'kb-rowlayout' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'rowlayout', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_rowlayout_render_block_attributes', $attributes );
@@ -396,7 +427,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-rowlayout' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'rowlayout', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_rowlayout_render_block_attributes', $attributes );
@@ -426,7 +457,7 @@ class Kadence_Blocks_Frontend {
 	public function render_column_layout_css_head( $attributes ) {
 		if ( isset( $attributes['uniqueID'] ) && ! empty( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-column' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'column', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
@@ -455,7 +486,7 @@ class Kadence_Blocks_Frontend {
 				$content = substr_replace( $content, 'kadence-column' . $unique_id . ' inner-column-', $pos, strlen( 'inner-column-' ) );
 			}
 		}
-		$style_id = 'kt-blocks' . esc_attr( $unique_id );
+		$style_id = 'kb-column' . esc_attr( $unique_id );
 		if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'column', $unique_id ) ) {
 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 			$attributes = apply_filters( 'kadence_blocks_column_render_block_attributes', $attributes );
@@ -493,7 +524,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-advancedbtn' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedbtn', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedbtn_render_block_attributes', $attributes );
@@ -516,7 +547,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-advancedbtn' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedbtn', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedbtn_render_block_attributes', $attributes );
@@ -561,7 +592,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-advancedheading' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedheading', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedheading_render_block_attributes', $attributes );
@@ -584,7 +615,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-advancedheading' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedheading', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedheading_render_block_attributes', $attributes );
@@ -675,7 +706,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-tabs' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'tabs', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_tabs_render_block_attributes', $attributes );
@@ -711,7 +742,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-tabs' . esc_attr( $unique_id );
 			if ( $this->it_is_not_amp() ) {
 				wp_enqueue_script( 'kadence-blocks-tabs-js' );
 			}
@@ -750,9 +781,9 @@ class Kadence_Blocks_Frontend {
 		if ( ! wp_style_is( 'kadence-blocks-spacer', 'enqueued' ) ) {
 			$this->enqueue_style( 'kadence-blocks-spacer' );
 		}
-		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-spacer' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'spacer', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
@@ -773,9 +804,9 @@ class Kadence_Blocks_Frontend {
 		if ( ! wp_style_is( 'kadence-blocks-spacer', 'enqueued' ) ) {
 			wp_enqueue_style( 'kadence-blocks-spacer' );
 		}
-		if ( isset( $attributes['uniqueID'] ) && ( ( isset( $attributes['tabletSpacerHeight'] ) && ! empty( $attributes['tabletSpacerHeight'] ) ) || isset( $attributes['mobileSpacerHeight'] ) && ! empty( $attributes['mobileSpacerHeight'] ) ) ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-spacer' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'spacer', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
@@ -800,7 +831,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-icon' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'icon', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_icon_render_block_attributes', $attributes );
@@ -823,7 +854,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-icon' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'icon', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_icon_render_block_attributes', $attributes );
@@ -850,7 +881,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-infobox' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'infobox', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_infobox_render_block_attributes', $attributes );
@@ -873,7 +904,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-infobox' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'infobox', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_infobox_render_block_attributes', $attributes );
@@ -911,7 +942,7 @@ class Kadence_Blocks_Frontend {
 					self::$faq_schema = '<script type="application/ld+json" class="kadence-faq-schema-graph kadence-faq-schema-graph--' . $faq_script_id . '">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[]}</script>';
 				}
 			}
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-accordion' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'accordion', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
@@ -984,7 +1015,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-accordion' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
@@ -1009,6 +1040,71 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 	/**
+	 * Render Google Maps block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 */
+	public function render_google_maps_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kb-google-maps' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'google_maps', $unique_id ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_google_maps_render_block_attributes', $attributes );
+
+				$css = $this->blocks_google_map_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
+	/**
+	 * Render Google Maps block CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_google_maps_css( $attributes, $content ) {
+
+		// Replace API key with default or users set key
+		$user_google_maps_key = get_option( 'kadence_blocks_google_maps_api', '' );
+
+		if ( empty( $user_google_maps_key ) ) {
+			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk', $content );
+		} else {
+			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', $user_google_maps_key, $content );
+		}
+
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id = $attributes['uniqueID'];
+			$style_id = 'kb-google-maps' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'google_maps', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_google_maps_render_block_attributes', $attributes );
+
+				$css = $this->blocks_google_map_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'google_maps', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+			if ( isset( $attributes['apiType'] ) && $attributes['apiType'] === 'javascript' ) {
+				if ( ! wp_script_is( 'kadence-blocks-google-maps-js', 'enqueued' ) ) {
+					wp_enqueue_script( 'kadence-blocks-google-maps-init-js' );
+					wp_enqueue_script( 'kadence-blocks-google-maps-js' );
+				}
+
+				$content .= $this->block_google_map_javascript( $attributes, $unique_id );
+			}
+		}
+		return $content;
+	}
+
+	/**
 	 * Render Lottie Animation CSS
 	 *
 	 * @param array  $attributes the blocks attribtues.
@@ -1022,7 +1118,7 @@ class Kadence_Blocks_Frontend {
 			$unique_id              = $attributes['uniqueID'];
 			$player_style_id        = 'kb-lottie-player' . esc_attr( $unique_id );
 			$player_simple_style_id = str_replace( array( '-' ), '', $player_style_id );
-			$style_id               = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id               = 'kb-lottie' . esc_attr( $unique_id );
 
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'lottie', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
@@ -1037,7 +1133,7 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
-			// Include lottie interactive if using scroll animation
+			// Include lottie interactive if using scroll animation.
 			if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
 				if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
 					wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
@@ -1079,7 +1175,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-lottie' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'lottie', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_lottie_render_block_attributes', $attributes );
@@ -1102,7 +1198,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-image' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'image', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
@@ -1135,7 +1231,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-image' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'image', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_image_render_block_attributes', $attributes );
@@ -1223,7 +1319,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-form' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'form', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_form_render_block_attributes', $attributes );
@@ -1246,7 +1342,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-form' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_form_render_block_attributes', $attributes );
@@ -1281,7 +1377,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id  = 'kb-advancedgallery' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'advancedgallery', $attributes ) ) {
 				// Filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedgallery_render_block_attributes', $attributes );
@@ -1304,7 +1400,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id  = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id  = 'kb-advancedgallery' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'advancedgallery', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_advancedgallery_render_block_attributes', $attributes );
@@ -1473,6 +1569,13 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'dist/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+
+		// Google Maps
+		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api',  'missingkey');
+		wp_register_script( 'kadence-blocks-google-maps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-google-maps-init-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-google-maps.js', array(), KADENCE_BLOCKS_VERSION, true );
+
+
 		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'dist/magnific.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'magnific-popup', KADENCE_BLOCKS_URL . 'dist/magnific.js', array(), KADENCE_BLOCKS_VERSION, true );
@@ -1932,6 +2035,12 @@ class Kadence_Blocks_Frontend {
 							$this->render_lottie_css_head( $blockattr );
 						}
 					}
+					if ( 'kadence/googlemaps' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_google_maps_css_head( $blockattr );
+						}
+					}
 					if ( 'kadence/infobox' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -2123,6 +2232,12 @@ class Kadence_Blocks_Frontend {
 						$this->render_lottie_css_head( $blockattr );
 					}
 				}
+				if ( 'kadence/googlemaps' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_google_maps_css_head( $blockattr );
+					}
+				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -2188,7 +2303,7 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['uniqueID'] ) ) {
 			$unique_id = $attr['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-posts' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $pb->output_css( $attr, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -2208,7 +2323,7 @@ class Kadence_Blocks_Frontend {
 		$countdown->enqueue_script( 'kadence-blocks-countdown' );
 		if ( isset( $attr['uniqueID'] ) ) {
 			$unique_id = $attr['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-countdown' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $countdown->output_css( $attr, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -2218,79 +2333,55 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['numberFont'] ) && is_array( $attr['numberFont'] ) && isset( $attr['numberFont'][0] ) && is_array( $attr['numberFont'][0] ) && isset( $attr['numberFont'][0]['google'] ) && $attr['numberFont'][0]['google'] && ( ! isset( $attr['numberFont'][0]['loadGoogle'] ) || true === $attr['numberFont'][0]['loadGoogle'] ) && isset( $attr['numberFont'][0]['family'] ) ) {
 			$number_font = $attr['numberFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $number_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $number_font['family'],
-					'fontvariants' => ( isset( $number_font['variant'] ) && ! empty( $number_font['variant'] ) ? array( $number_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $number_font['subset'] ) && ! empty( $number_font['subset'] ) ? array( $number_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $number_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $number_font['variant'], self::$gfonts[ $number_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $number_font['family'] ]['fontvariants'], $number_font['variant'] );
-				}
-				if ( ! in_array( $number_font['subset'], self::$gfonts[ $number_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $number_font['family'] ]['fontsubsets'], $number_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $number_font['google'] ) ? $number_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $number_font['loadGoogle'] ) ? $number_font['loadGoogle'] : true ),
+					'typography' => ( isset( $number_font['family'] ) ? $number_font['family'] : '' ),
+					'fontVariant' => ( isset( $number_font['variant'] ) ? $number_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $number_font['subset'] ) ? $number_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
 			$label_font = $attr['labelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $label_font['family'],
-					'fontvariants' => ( isset( $label_font['variant'] ) && ! empty( $label_font['variant'] ) ? array( $label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $label_font['subset'] ) && ! empty( $label_font['subset'] ) ? array( $label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $label_font['variant'], self::$gfonts[ $label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontvariants'], $label_font['variant'] );
-				}
-				if ( ! in_array( $label_font['subset'], self::$gfonts[ $label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontsubsets'], $label_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
+					'fontVariant' => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 		if ( isset( $attr['preLabelFont'] ) && is_array( $attr['preLabelFont'] ) && isset( $attr['preLabelFont'][0] ) && is_array( $attr['preLabelFont'][0] ) && isset( $attr['preLabelFont'][0]['google'] ) && $attr['preLabelFont'][0]['google'] && ( ! isset( $attr['preLabelFont'][0]['loadGoogle'] ) || true === $attr['preLabelFont'][0]['loadGoogle'] ) && isset( $attr['preLabelFont'][0]['family'] ) ) {
 			$pre_label_font = $attr['preLabelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $pre_label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $pre_label_font['family'],
-					'fontvariants' => ( isset( $pre_label_font['variant'] ) && ! empty( $pre_label_font['variant'] ) ? array( $pre_label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $pre_label_font['subset'] ) && ! empty( $pre_label_font['subset'] ) ? array( $pre_label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $pre_label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $pre_label_font['variant'], self::$gfonts[ $pre_label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $pre_label_font['family'] ]['fontvariants'], $pre_label_font['variant'] );
-				}
-				if ( ! in_array( $pre_label_font['subset'], self::$gfonts[ $pre_label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $pre_label_font['family'] ]['fontsubsets'], $pre_label_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $pre_label_font['google'] ) ? $pre_label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $pre_label_font['loadGoogle'] ) ? $pre_label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $pre_label_font['family'] ) ? $pre_label_font['family'] : '' ),
+					'fontVariant' => ( isset( $pre_label_font['variant'] ) ? $pre_label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $pre_label_font['subset'] ) ? $pre_label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 		if ( isset( $attr['postLabelFont'] ) && is_array( $attr['postLabelFont'] ) && isset( $attr['postLabelFont'][0] ) && is_array( $attr['postLabelFont'][0] ) && isset( $attr['postLabelFont'][0]['google'] ) && $attr['postLabelFont'][0]['google'] && ( ! isset( $attr['postLabelFont'][0]['loadGoogle'] ) || true === $attr['postLabelFont'][0]['loadGoogle'] ) && isset( $attr['postLabelFont'][0]['family'] ) ) {
 			$post_label_font = $attr['postLabelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $post_label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $post_label_font['family'],
-					'fontvariants' => ( isset( $post_label_font['variant'] ) && ! empty( $post_label_font['variant'] ) ? array( $post_label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $post_label_font['subset'] ) && ! empty( $post_label_font['subset'] ) ? array( $post_label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $post_label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $post_label_font['variant'], self::$gfonts[ $post_label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $post_label_font['family'] ]['fontvariants'], $post_label_font['variant'] );
-				}
-				if ( ! in_array( $post_label_font['subset'], self::$gfonts[ $post_label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $post_label_font['family'] ]['fontsubsets'], $post_label_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $post_label_font['google'] ) ? $post_label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $post_label_font['loadGoogle'] ) ? $post_label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $post_label_font['family'] ) ? $post_label_font['family'] : '' ),
+					'fontVariant' => ( isset( $post_label_font['variant'] ) ? $post_label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $post_label_font['subset'] ) ? $post_label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 	}
 	/**
@@ -2307,7 +2398,7 @@ class Kadence_Blocks_Frontend {
 		$toc->enqueue_style( 'kadence-blocks-table-of-contents' );
 		if ( isset( $attr['uniqueID'] ) ) {
 			$unique_id = $attr['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-tableofcontents' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				$css = $toc->output_css( $attr, $unique_id );
 				if ( ! empty( $css ) ) {
@@ -2317,41 +2408,29 @@ class Kadence_Blocks_Frontend {
 		}
 		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
 			$label_font = $attr['labelFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $label_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily'   => $label_font['family'],
-					'fontvariants' => ( isset( $label_font['variant'] ) && ! empty( $label_font['variant'] ) ? array( $label_font['variant'] ) : array() ),
-					'fontsubsets'  => ( isset( $label_font['subset'] ) && ! empty( $label_font['subset'] ) ? array( $label_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $label_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $label_font['variant'], self::$gfonts[ $label_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontvariants'], $label_font['variant'] );
-				}
-				if ( ! in_array( $label_font['subset'], self::$gfonts[ $label_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $label_font['family'] ]['fontsubsets'], $label_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
+					'typography' => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
+					'fontVariant' => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 		if ( isset( $attr['submitFont'] ) && is_array( $attr['submitFont'] ) && isset( $attr['submitFont'][0] ) && is_array( $attr['submitFont'][0] ) && isset( $attr['submitFont'][0]['google'] ) && $attr['submitFont'][0]['google'] && ( ! isset( $attr['submitFont'][0]['loadGoogle'] ) || true === $attr['submitFont'][0]['loadGoogle'] ) && isset( $attr['submitFont'][0]['family'] ) ) {
 			$submit_font = $attr['submitFont'][0];
-			// Check if the font has been added yet.
-			if ( ! array_key_exists( $submit_font['family'], self::$gfonts ) ) {
-				$add_font = array(
-					'fontfamily' => $submit_font['family'],
-					'fontvariants' => ( isset( $submit_font['variant'] ) && ! empty( $submit_font['variant'] ) ? array( $submit_font['variant'] ) : array() ),
-					'fontsubsets' => ( isset( $submit_font['subset'] ) && ! empty( $submit_font['subset'] ) ? array( $submit_font['subset'] ) : array() ),
-				);
-				self::$gfonts[ $submit_font['family'] ] = $add_font;
-			} else {
-				if ( ! in_array( $submit_font['variant'], self::$gfonts[ $submit_font['family'] ]['fontvariants'], true ) ) {
-					array_push( self::$gfonts[ $submit_font['family'] ]['fontvariants'], $submit_font['variant'] );
-				}
-				if ( ! in_array( $submit_font['subset'], self::$gfonts[ $submit_font['family'] ]['fontsubsets'], true ) ) {
-					array_push( self::$gfonts[ $submit_font['family'] ]['fontsubsets'], $submit_font['subset'] );
-				}
-			}
+			$this->add_gfont(
+				array(
+					'googleFont' => ( isset( $submit_font['google'] ) ? $submit_font['google'] : false ),
+					'loadGoogleFont' => ( isset( $submit_font['loadGoogle'] ) ? $submit_font['loadGoogle'] : true ),
+					'typography' => ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' ),
+					'fontVariant' => ( isset( $submit_font['variant'] ) ? $submit_font['variant'] : '' ),
+					'fontSubset' =>  ( isset( $submit_font['subset'] ) ? $submit_font['subset'] : '' ),
+					'loadItalic' =>  false,
+				)
+			);
 		}
 	}
 	/**
@@ -3386,7 +3465,7 @@ class Kadence_Blocks_Frontend {
 			if ( isset( $attr['titleFont'][0]['lineHeight'][1] ) && ! empty( $attr['titleFont'][0]['lineHeight'][1] ) ) {
 				$css->add_property('line-height', $attr['titleFont'][0]['lineHeight'][1] . ( ! isset( $attr['titleFont'][0]['lineType'] ) ? 'px' : $attr['titleFont'][0]['lineType'] ));
 			}
-			$css->stop_media_quey();
+			$css->stop_media_query();
 		}
 		if ( isset( $attr['titleFont'] ) && is_array( $attr['titleFont'] ) && isset( $attr['titleFont'][0] ) && is_array( $attr['titleFont'][0] ) && ( ( isset( $attr['titleFont'][0]['size'] ) && is_array( $attr['titleFont'][0]['size'] ) && isset( $attr['titleFont'][0]['size'][2] ) && ! empty( $attr['titleFont'][0]['size'][2] ) ) || ( isset( $attr['titleFont'][0]['lineHeight'] ) && is_array( $attr['titleFont'][0]['lineHeight'] ) && isset( $attr['titleFont'][0]['lineHeight'][2] ) && ! empty( $attr['titleFont'][0]['lineHeight'][2] ) ) ) ) {
 			$css->start_media_query( $media_query['mobile'] ); // max-width: 767px
@@ -3688,7 +3767,7 @@ class Kadence_Blocks_Frontend {
 				)
 			);
 		}
-		if ( isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && isset( $attr['learnMoreStyles'][0]['google'] ) && $attr['learnMoreStyles'][0]['google'] && ( ! isset( $attr['learnMoreStyles'][0]['loadGoogle'] ) || true === $attr['learnMoreStyles'][0]['loadGoogle'] ) &&  isset( $attr['learnMoreStyles'][0]['family'] ) ) {
+		if ( isset( $attr['displayLearnMore'] ) && $attr['displayLearnMore'] && isset( $attr['learnMoreStyles'] ) && is_array( $attr['learnMoreStyles'] ) && isset( $attr['learnMoreStyles'][0] ) && is_array( $attr['learnMoreStyles'][0] ) && isset( $attr['learnMoreStyles'][0]['google'] ) && $attr['learnMoreStyles'][0]['google'] && ( ! isset( $attr['learnMoreStyles'][0]['loadGoogle'] ) || true === $attr['learnMoreStyles'][0]['loadGoogle'] ) &&  isset( $attr['learnMoreStyles'][0]['family'] ) ) {
 			$learn_more_font = $attr['learnMoreStyles'][0];
 			$this->add_gfont(
 				array(
@@ -4407,22 +4486,96 @@ class Kadence_Blocks_Frontend {
 	 * @param string $unique_id the blocks attr ID.
 	 */
 	public function blocks_spacer_array( $attr, $unique_id ) {
-		$css = '';
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+
+		if ( isset( $attr['spacerHeight'] ) && ! empty( $attr['spacerHeight'] ) ) {
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
+			$css->add_property( 'height', $attr['spacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) );
+		}
 		if ( isset( $attr['tabletSpacerHeight'] ) && ! empty( $attr['tabletSpacerHeight'] ) ) {
-			$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
-			$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
-			$css .= 'height:' . $attr['tabletSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . ' !important;';
-			$css .= '}';
-			$css .= '}';
+			$css->start_media_query( $media_query['tablet'] );
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
+			$css->add_property( 'height', $attr['tabletSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . '!important' );
+			$css->stop_media_query();
 		}
 		if ( isset( $attr['mobileSpacerHeight'] ) && ! empty( $attr['mobileSpacerHeight'] ) ) {
-			$css .= '@media (max-width: 767px) {';
-			$css .= '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer {';
-			$css .= 'height:' . $attr['mobileSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . ' !important;';
-			$css .= '}';
-			$css .= '}';
+			$css->start_media_query( $media_query['mobile'] );
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
+			$css->add_property( 'height', $attr['mobileSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . '!important' );
+			$css->stop_media_query();
 		}
-		return $css;
+		if ( isset( $attr['dividerStyle'] ) && ! empty( $attr['dividerStyle'] ) && 'stripe' === $attr['dividerStyle'] ) {
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
+			$divider_height = ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ? $attr['dividerHeight'] : '10' );
+			$css->add_property( 'height', $divider_height . 'px' );
+			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
+			$divider_width_units = ( isset( $attr['dividerWidthUnits'] ) && ! empty( $attr['dividerWidthUnits'] ) ? $attr['dividerWidthUnits'] : '%' );
+			$css->add_property( 'width', $divider_width . $divider_width_units );
+			if ( ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) || ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) ) {
+				$css->start_media_query( $media_query['tablet'] );
+				$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
+				if ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) {
+					$css->add_property( 'height', $attr['tabletSpacerHeight'] . 'px !important' );
+				}
+				if ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) {
+					$css->add_property( 'width', $attr['tabletDividerWidth'] . $divider_width_units . '!important' );
+				}
+				$css->stop_media_query();
+			}
+			if ( ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) || ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) ) {
+				$css->start_media_query( $media_query['mobile'] );
+				$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
+				if ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) {
+					$css->add_property( 'height', $attr['mobileSpacerHeight'] . 'px !important' );
+				}
+				if ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) {
+					$css->add_property( 'width', $attr['mobileDividerWidth'] . $divider_width_units . '!important' );
+				}
+				$css->stop_media_query();
+			}
+		} else {
+			$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider' );
+			if ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ) {
+				$css->add_property( 'border-top-width', $attr['dividerHeight'] . 'px' );
+			}
+			if ( isset( $attr['dividerColor'] ) && ! empty( $attr['dividerColor'] ) ) {
+				$css->add_property( 'border-top-color', $css->render_color( $attr['dividerColor'] ) );
+			}
+			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
+			$divider_width_units = ( isset( $attr['dividerWidthUnits'] ) && ! empty( $attr['dividerWidthUnits'] ) ? $attr['dividerWidthUnits'] : '%' );
+			$css->add_property( 'width', $divider_width . $divider_width_units );
+			if ( isset( $attr['dividerStyle'] ) && ! empty( $attr['dividerStyle'] ) ) {
+				$css->add_property( 'border-top-style', $attr['dividerStyle'] );
+			}
+			if ( ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) || ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) ) {
+				$css->start_media_query( $media_query['tablet'] );
+				$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider' );
+				if ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) {
+					$css->add_property( 'border-top-width', $attr['tabletSpacerHeight'] . 'px !important' );
+				}
+				if ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) {
+					$css->add_property( 'width', $attr['tabletDividerWidth'] . $divider_width_units . '!important' );
+				}
+				$css->stop_media_query();
+			}
+			if ( ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) || ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) ) {
+				$css->start_media_query( $media_query['mobile'] );
+				$css->set_selector( '.kt-block-spacer-' . $unique_id . ' .kt-divider' );
+				if ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) {
+					$css->add_property( 'border-top-width', $attr['mobileSpacerHeight'] . 'px !important' );
+				}
+				if ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) {
+					$css->add_property( 'width', $attr['mobileDividerWidth'] . $divider_width_units . '!important' );
+				}
+				$css->stop_media_query();
+			}
+		}
+		return $css->css_output();
 	}
 
 	/**
@@ -5946,9 +6099,9 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function blocks_advancedgallery_array( $attr, $unique_id ) {
 		$css = '';
-		if ( isset( $attr['type'] ) && 'grid' === $attr['type'] && isset( $attr['displayShadow'] ) && ! empty( $attr['displayShadow'] ) && true === $attr['displayShadow'] ) {
+		if ( isset( $attr['type'] ) && 'carousel' === $attr['type'] ) {
 			$css .= '.wp-block-kadence-advancedgallery.kb-gallery-wrap-id-' . $unique_id . ' {';
-				$css .= 'overflow: visible;';
+				$css .= 'overflow: hidden;';
 			$css .= '}';
 		}
 		if ( isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][0] ) && is_numeric( $attr['gutter'][0] ) ) {
@@ -6383,6 +6536,157 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 	}
+
+	public function block_google_map_javascript( $attr, $unique_id ) {
+
+
+		$snazzyStyles = [
+			'shades_of_grey'         => "[{'featureType':'all','elementType':'labels.text.fill','stylers':[{'saturation':36},{'color':'#000000'},{'lightness':40}]},{'featureType':'all','elementType':'labels.text.stroke','stylers':[{'visibility':'on'},{'color':'#000000'},{'lightness':16}]},{'featureType':'all','elementType':'labels.icon','stylers':[{'visibility':'off'}]},{'featureType':'administrative','elementType':'geometry.fill','stylers':[{'color':'#000000'},{'lightness':20}]},{'featureType':'administrative','elementType':'geometry.stroke','stylers':[{'color':'#000000'},{'lightness':17},{'weight':1.2}]},{'featureType':'landscape','elementType':'geometry','stylers':[{'color':'#000000'},{'lightness':20}]},{'featureType':'poi','elementType':'geometry','stylers':[{'color':'#000000'},{'lightness':21}]},{'featureType':'road.highway','elementType':'geometry.fill','stylers':[{'color':'#000000'},{'lightness':17}]},{'featureType':'road.highway','elementType':'geometry.stroke','stylers':[{'color':'#000000'},{'lightness':29},{'weight':0.2}]},{'featureType':'road.arterial','elementType':'geometry','stylers':[{'color':'#000000'},{'lightness':18}]},{'featureType':'road.local','elementType':'geometry','stylers':[{'color':'#000000'},{'lightness':16}]},{'featureType':'transit','elementType':'geometry','stylers':[{'color':'#000000'},{'lightness':19}]},{'featureType':'water','elementType':'geometry','stylers':[{'color':'#000000'},{'lightness':17}]}]",
+			'no_label_bright_colors' => '[{"featureType":"all","elementType":"all","stylers":[{"saturation":"32"},{"lightness":"-3"},{"visibility":"on"},{"weight":"1.18"}]},{"featureType":"administrative","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"landscape.man_made","elementType":"all","stylers":[{"saturation":"-70"},{"lightness":"14"}]},{"featureType":"poi","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"transit","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"all","stylers":[{"saturation":"100"},{"lightness":"-14"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"off"},{"lightness":"12"}]}]',
+			'clean_interface'        => '[{"featureType":"all","elementType":"labels.text","stylers":[{"color":"#878787"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#f9f5ed"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"color":"#f5f5f5"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#c9c9c9"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#aee0f4"}]}]',
+			'midnight_commander'     => '[{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":"#ffffff"}]},{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"color":"#000000"},{"lightness":13}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":"#144b53"},{"lightness":14},{"weight":1.4}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#08304b"}]},{"featureType":"poi","elementType":"geometry","stylers":[{"color":"#0c4152"},{"lightness":5}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":"#0b434f"},{"lightness":25}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"color":"#000000"}]},{"featureType":"road.arterial","elementType":"geometry.stroke","stylers":[{"color":"#0b3d51"},{"lightness":16}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#000000"}]},{"featureType":"transit","elementType":"all","stylers":[{"color":"#146474"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#021019"}]}]',
+			'apple_maps_esque'       => '[{"featureType":"administrative.country","elementType":"labels.text","stylers":[{"lightness":"29"}]},{"featureType":"administrative.province","elementType":"labels.text.fill","stylers":[{"lightness":"-12"},{"color":"#796340"}]},{"featureType":"administrative.locality","elementType":"labels.text.fill","stylers":[{"lightness":"15"},{"saturation":"15"}]},{"featureType":"landscape.man_made","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#fbf5ed"}]},{"featureType":"landscape.natural","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#fbf5ed"}]},{"featureType":"poi","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"poi.attraction","elementType":"all","stylers":[{"visibility":"on"},{"lightness":"30"},{"saturation":"-41"},{"gamma":"0.84"}]},{"featureType":"poi.attraction","elementType":"labels","stylers":[{"visibility":"on"}]},{"featureType":"poi.business","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.business","elementType":"labels","stylers":[{"visibility":"off"}]},{"featureType":"poi.medical","elementType":"geometry","stylers":[{"color":"#fbd3da"}]},{"featureType":"poi.medical","elementType":"labels","stylers":[{"visibility":"on"}]},{"featureType":"poi.park","elementType":"geometry","stylers":[{"color":"#b0e9ac"},{"visibility":"on"}]},{"featureType":"poi.park","elementType":"labels","stylers":[{"visibility":"on"}]},{"featureType":"poi.park","elementType":"labels.text.fill","stylers":[{"hue":"#68ff00"},{"lightness":"-24"},{"gamma":"1.59"}]},{"featureType":"poi.sports_complex","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"poi.sports_complex","elementType":"geometry","stylers":[{"saturation":"10"},{"color":"#c3eb9a"}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"lightness":"30"},{"color":"#e7ded6"}]},{"featureType":"road","elementType":"labels","stylers":[{"visibility":"on"},{"saturation":"-39"},{"lightness":"28"},{"gamma":"0.86"}]},{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":"#ffe523"},{"visibility":"on"}]},{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"saturation":"0"},{"gamma":"1.44"},{"color":"#fbc28b"}]},{"featureType":"road.highway","elementType":"labels","stylers":[{"visibility":"on"},{"saturation":"-40"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#fed7a5"}]},{"featureType":"road.arterial","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"gamma":"1.54"},{"color":"#fbe38b"}]},{"featureType":"road.local","elementType":"geometry.fill","stylers":[{"color":"#ffffff"},{"visibility":"on"},{"gamma":"2.62"},{"lightness":"10"}]},{"featureType":"road.local","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"weight":"0.50"},{"gamma":"1.04"}]},{"featureType":"transit.station.airport","elementType":"geometry.fill","stylers":[{"color":"#dee3fb"}]},{"featureType":"water","elementType":"geometry","stylers":[{"saturation":"46"},{"color":"#a4e1ff"}]}]',
+			'cobalt'                 => '[{"featureType":"all","elementType":"all","stylers":[{"invert_lightness":true},{"saturation":10},{"lightness":30},{"gamma":0.5},{"hue":"#435158"}]}]',
+			'avocado'                => '[{"featureType":"water","elementType":"geometry","stylers":[{"visibility":"on"},{"color":"#aee2e0"}]},{"featureType":"landscape","elementType":"geometry.fill","stylers":[{"color":"#abce83"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"color":"#769E72"}]},{"featureType":"poi","elementType":"labels.text.fill","stylers":[{"color":"#7B8758"}]},{"featureType":"poi","elementType":"labels.text.stroke","stylers":[{"color":"#EBF4A4"}]},{"featureType":"poi.park","elementType":"geometry","stylers":[{"visibility":"simplified"},{"color":"#8dab68"}]},{"featureType":"road","elementType":"geometry.fill","stylers":[{"visibility":"simplified"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"color":"#5B5B3F"}]},{"featureType":"road","elementType":"labels.text.stroke","stylers":[{"color":"#ABCE83"}]},{"featureType":"road","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry","stylers":[{"color":"#A4C67D"}]},{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":"#9BBF72"}]},{"featureType":"road.highway","elementType":"geometry","stylers":[{"color":"#EBF4A4"}]},{"featureType":"transit","stylers":[{"visibility":"off"}]},{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#87ae79"}]},{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":"#7f2200"},{"visibility":"off"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"color":"#ffffff"},{"visibility":"on"},{"weight":4.1}]},{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#495421"}]},{"featureType":"administrative.neighborhood","elementType":"labels","stylers":[{"visibility":"off"}]}]',
+			'night_mode'             => '[{elementType:"geometry",stylers:[{color:"#242f3e"}]},{elementType:"labels.text.stroke",stylers:[{color:"#242f3e"}]},{elementType:"labels.text.fill",stylers:[{color:"#746855"}]},{featureType:"administrative.locality",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"poi",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"poi.park",elementType:"geometry",stylers:[{color:"#263c3f"}]},{featureType:"poi.park",elementType:"labels.text.fill",stylers:[{color:"#6b9a76"}]},{featureType:"road",elementType:"geometry",stylers:[{color:"#38414e"}]},{featureType:"road",elementType:"geometry.stroke",stylers:[{color:"#212a37"}]},{featureType:"road",elementType:"labels.text.fill",stylers:[{color:"#9ca5b3"}]},{featureType:"road.highway",elementType:"geometry",stylers:[{color:"#746855"}]},{featureType:"road.highway",elementType:"geometry.stroke",stylers:[{color:"#1f2835"}]},{featureType:"road.highway",elementType:"labels.text.fill",stylers:[{color:"#f3d19c"}]},{featureType:"transit",elementType:"geometry",stylers:[{color:"#2f3948"}]},{featureType:"transit.station",elementType:"labels.text.fill",stylers:[{color:"#d59563"}]},{featureType:"water",elementType:"geometry",stylers:[{color:"#17263c"}]},{featureType:"water",elementType:"labels.text.fill",stylers:[{color:"#515c6d"}]},{featureType:"water",elementType:"labels.text.stroke",stylers:[{color:"#17263c"}]}]',
+			'custom'                 => isset( $attr['customSnazzy'] ) ? $attr['customSnazzy'] : '[]'
+		];
+
+		$zoom = empty( $attr['zoom'] ) ? 11 : $attr['zoom'];
+
+		$response = '<script>';
+		$response .= 'function kb_google_map' . str_replace('-', '_', $unique_id) . '() {';
+		$response .= ' let center = { lat: ' . $attr['lat'] . ', lng: ' . $attr['lng'] . '};';
+
+		$response .= ' let map = new google.maps.Map(document.getElementById("kb-google-map'.$unique_id.'"), {
+					    zoom: '. $zoom . ',
+					    center: center,';
+
+		if( isset($attr['mapStyle']) && $attr['mapType'] !== 'standard' ){ $response .= 'styles: '. $snazzyStyles[$attr['mapStyle']].','; }
+		if( isset($attr['mapType']) && $attr['mapType'] === 'satellite' ){ $response .= 'mapTypeId: "satellite",'; }
+
+		$response .= '});';
+
+		if ( ! isset( $attr['showMarker'] ) || ( isset( $attr['showMarker'] ) && $attr['showMarker'] ) ) {
+			$response .= 'let marker = new google.maps.Marker({';
+			$response .= '   position: { lat: ' . $attr['lat'] . ', lng: ' . $attr['lng'] . '},';
+			$response .= '    map: map,';
+			$response .= '  });';
+		}
+
+		$response .= '}';
+		$response .= '</script>';
+
+		return $response;
+	}
+
+	/**
+	 * Builds CSS for Google Maps block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_google_map_array( $attr, $unique_id ) {
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$key_positions = [ 'top', 'right', 'bottom', 'left'];
+
+		$css->set_selector( '.kb-google-maps-container' . $unique_id );
+
+		// max-width
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
+			if ( isset( $attr['width' . $breakpoint] ) && is_numeric(  $attr['width' . $breakpoint] ) ) {
+				$css->add_property( 'max-width', $attr['width' . $breakpoint] . 'px' );
+			}
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
+		}
+		// height
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			if ( $breakpoint == 'Desktop' ) {
+				$height = ( isset( $attr[ 'height' . $breakpoint ] ) && is_numeric( $attr[ 'height' . $breakpoint ] ) ? $attr[ 'height' . $breakpoint ] : 450 );
+				$css->add_property( 'height', $height . 'px' );
+			} else {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+				if ( isset( $attr[ 'height' . $breakpoint ] ) && is_numeric( $attr[ 'height' . $breakpoint ] ) ) {
+					$css->add_property( 'height', $attr[ 'height' . $breakpoint ] . 'px' );
+				}
+				$css->stop_media_query();
+			}
+		}
+
+		// Margins
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
+			if ( isset( $attr['margin' . $breakpoint] ) && is_array( $attr['margin' . $breakpoint] ) ) {
+				foreach ( $attr['margin' . $breakpoint] as $key => $marginValue ) {
+					if ( is_numeric( $marginValue ) ) {
+						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( empty( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+					}
+				}
+			}
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
+		}
+		// align
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $index => $breakpoint ) {
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
+			if ( ! empty( $attr['textAlign'][$index] ) ) {
+				if ( $attr['textAlign'][$index] === 'center' ) {
+					$css->add_property( 'margin-left', 'auto !important' );
+					$css->add_property( 'margin-right', 'auto !important' );
+				} else if ( $attr['textAlign'][$index] === 'left' ) {
+					$css->add_property( 'margin-right', 'auto !important' );
+				} else if ( $attr['textAlign'][$index] === 'right' ) {
+					$css->add_property( 'margin-left', 'auto !important' );
+				}
+			}
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
+		}
+		// Padding
+		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
+			if ( isset( $attr['padding' . $breakpoint] ) && is_array( $attr['padding' . $breakpoint] ) ) {
+				foreach ( $attr['padding' . $breakpoint] as $key => $marginValue ) {
+					if ( is_numeric( $marginValue ) ) {
+						$css->add_property( 'padding-' . $key_positions[ $key ], $marginValue . ( empty( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+
+					}
+				}
+			}
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
+		}
+
+		// Filters
+		if ( isset($attr['mapFilter']) && $attr['mapFilter'] !== 'standard' ) {
+			$css->set_selector( '.kb-google-maps-container' . $unique_id);
+
+			$css->add_property('filter', $attr['mapFilter'] . '(' . $attr['mapFilterAmount'] . '%)');
+		}
+
+		return $css->css_output();
+
+	}
+
 	/**
 	 * Builds CSS for Image block.
 	 *
@@ -6430,7 +6734,7 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'max-width', $attr['imgMaxWidth'] . 'px' );
 			}
 		}
-		$css->set_selector( '.kb-image' . $unique_id . ' .kb-img' );
+		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Padding
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
 			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
@@ -6646,7 +6950,7 @@ class Kadence_Blocks_Frontend {
 			$css .= '}';
 		}
 		if ( isset( $attr['contentMobilePadding'] ) && is_array( $attr['contentMobilePadding'] ) ) {
-			$css .= '@media (max-width: 1024px) {';
+			$css .= '@media (max-width: 767px) {';
 			$css .= '.kt-accordion-id' . $unique_id . ' .kt-accordion-panel-inner {';
 			if ( isset( $attr['contentMobilePadding'][ 0 ] ) && is_numeric($attr['contentMobilePadding'][ 0 ] ) ) {
 				$css .= 'padding-top:' . $attr['contentMobilePadding'][ 0 ] . ( isset( $attr['contentPaddingType'] ) && ! empty( $attr['contentPaddingType'] ) ? $attr['contentPaddingType'] : 'px' ) . ';';
@@ -6892,6 +7196,11 @@ class Kadence_Blocks_Frontend {
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		// Issue with span tag.
+		if ( isset( $attr['htmlTag'] ) && 'span' === $attr['htmlTag'] ) {
+			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
+			$css->add_property( 'display', 'block' );
+		}
 		// Style.
 		if ( isset( $attr['size'] ) || isset( $attr['lineHeight'] ) || isset( $attr['typography'] ) || isset( $attr['fontWeight'] ) || isset( $attr['fontStyle'] ) || isset( $attr['textTransform'] ) || isset( $attr['letterSpacing'] ) || isset( $attr['color'] ) || isset( $attr['topMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['leftMargin'] ) || isset( $attr['textShadow'] ) || isset( $attr['align'] ) || isset( $attr['padding'] ) ) {
 			$css->set_selector( '#kt-adv-heading' . $unique_id . ', #kt-adv-heading' . $unique_id . ' .wp-block-kadence-advancedheading, .wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"], .kadence-advanced-heading-wrapper .kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
@@ -6934,6 +7243,10 @@ class Kadence_Blocks_Frontend {
 			}
 			if ( isset( $attr['topMargin'] ) && is_numeric( $attr['topMargin'] ) ) {
 				$css->add_property( 'margin-top', $attr['topMargin'] . ( ! isset( $attr['marginType'] ) ? 'px' : $attr['marginType'] ) );
+				// This fixes an issue where the background doesn't show over the top of the item that is above it.
+				if ( $attr['topMargin'] < 0 && isset( $attr['background'] ) && ! empty( $attr['background'] ) ) {
+					$css->add_property( 'position', 'relative' );
+				}
 			}
 			if ( isset( $attr['rightMargin'] ) && is_numeric( $attr['rightMargin'] ) ) {
 				$css->add_property( 'margin-right', $attr['rightMargin'] . ( ! isset( $attr['marginType'] ) ? 'px' : $attr['marginType'] ) );

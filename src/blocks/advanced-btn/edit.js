@@ -406,6 +406,7 @@ class KadenceAdvancedButton extends Component {
 			const rightBtnMargin = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[1] && '' !== btns[ index ].margin[1] ? btns[ index ].margin[1] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[1] && '' !== btns[ index ].tabletMargin[1] ? btns[ index ].tabletMargin[1] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[1] && '' !== btns[ index ].mobileMargin[1] ? btns[ index ].mobileMargin[1] : '' ) );
 			const bottomBtnMargin = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[2] && '' !== btns[ index ].margin[2] ? btns[ index ].margin[2] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[2] && '' !== btns[ index ].tabletMargin[2] ? btns[ index ].tabletMargin[2] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[2] && '' !== btns[ index ].mobileMargin[2] ? btns[ index ].mobileMargin[2] : '' ) );
 			const leftBtnMargin = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== btns[ index ].margin && undefined !== btns[ index ].margin[3] && '' !== btns[ index ].margin[3] ? btns[ index ].margin[3] : '' ), ( undefined !== btns[ index ].tabletMargin && undefined !== btns[ index ].tabletMargin[3] && '' !== btns[ index ].tabletMargin[3] ? btns[ index ].tabletMargin[3] : '' ), ( undefined !== btns[ index ].mobileMargin && undefined !== btns[ index ].mobileMargin[3] && '' !== btns[ index ].mobileMargin[3] ? btns[ index ].mobileMargin[3] : '' ) );
+			const previewFixedWidth = this.getPreviewSize( this.props.getPreviewDevice, ( btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] : undefined ), ( btns[ index ].width && undefined !== btns[ index ].width[ 1 ] ? btns[ index ].width[ 1 ] : undefined ), ( btns[ index ].width && undefined !== btns[ index ].width[ 2 ] ? btns[ index ].width[ 2 ] : undefined ) );
 			return (
 				<div
 					className={ fieldClassName }
@@ -447,7 +448,7 @@ class KadenceAdvancedButton extends Component {
 							marginRight: ( '' !== rightBtnMargin ? rightBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
 							marginBottom: ( '' !== bottomBtnMargin ? bottomBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
 							marginLeft: ( '' !== leftBtnMargin ? leftBtnMargin + ( undefined !== btns[ index ].marginUnit ? btns[ index ].marginUnit : 'px' ) : undefined ),
-							width: ( undefined !== widthType && 'fixed' === widthType && undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] + ( undefined !== widthUnit ? widthUnit : 'px' ) : undefined ),
+							width: ( undefined !== widthType && 'fixed' === widthType && undefined !== previewFixedWidth ? previewFixedWidth + ( undefined !== widthUnit ? widthUnit : 'px' ) : undefined ),
 							boxShadow: ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] && btns[ index ].boxShadow[ 0 ] ? ( undefined !== btns[ index ].boxShadow[ 7 ] && btns[ index ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ), ( undefined !== btns[ index ].boxShadow[ 2 ] ? btns[ index ].boxShadow[ 2 ] : 1 ) ) : undefined ),
 						} } >
 							{ btns[ index ].icon && 'left' === btns[ index ].iconSide && (
@@ -910,75 +911,29 @@ class KadenceAdvancedButton extends Component {
 							) }
 							{ 'fixed' === widthType && (
 								<div className="kt-inner-sub-section">
-									<h2 className="kt-heading-size-title kt-secondary-color-size">{ __( 'Fixed Width', 'kadence-blocks' ) }</h2>
-									<TabPanel className="kt-size-tabs"
-										activeClass="active-tab"
-										tabs={ [
-											{
-												name: 'desk',
-												title: <Dashicon icon="desktop" />,
-												className: 'kt-desk-tab',
-											},
-											{
-												name: 'tablet',
-												title: <Dashicon icon="tablet" />,
-												className: 'kt-tablet-tab',
-											},
-											{
-												name: 'mobile',
-												title: <Dashicon icon="smartphone" />,
-												className: 'kt-mobile-tab',
-											},
-										] }>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'mobile' === tab.name ) {
-														tabout = (
-															<Fragment>
-																<RangeControl
-																	value={ ( btns[ index ].width && undefined !== btns[ index ].width[ 2 ] ? btns[ index ].width[ 2 ] : undefined ) }
-																	onChange={ value => {
-																		this.saveArrayUpdate( { width: [ ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] : '' ), ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 1 ] ? btns[ index ].width[ 1 ] : '' ), value ] }, index );
-																	} }
-																	min={ 10 }
-																	max={ 500 }
-																/>
-															</Fragment>
-														);
-													} else if ( 'tablet' === tab.name ) {
-														tabout = (
-															<Fragment>
-																<RangeControl
-																	value={ ( btns[ index ].width && undefined !== btns[ index ].width[ 1 ] ? btns[ index ].width[ 1 ] : undefined ) }
-																	onChange={ value => {
-																		this.saveArrayUpdate( { width: [ ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] : '' ), value, ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 2 ] ? btns[ index ].width[ 2 ] : '' ) ] }, index );
-																	} }
-																	min={ 10 }
-																	max={ 500 }
-																/>
-															</Fragment>
-														);
-													} else {
-														tabout = (
-															<Fragment>
-																<RangeControl
-																	value={ ( btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] : undefined ) }
-																	onChange={ value => {
-																		this.saveArrayUpdate( { width: [ value, ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 1 ] ? btns[ index ].width[ 1 ] : '' ), ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 2 ] ? btns[ index ].width[ 2 ] : '' ) ] }, index );
-																	} }
-																	min={ 10 }
-																	max={ 500 }
-																/>
-															</Fragment>
-														);
-													}
-												}
-												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-											}
-										}
-									</TabPanel>
+									<ResponsiveRangeControls
+										label={ __( 'Fixed Width', 'kadence-blocks' ) }
+										value={ ( btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] : undefined ) }
+										onChange={ value => {
+											this.saveArrayUpdate( { width: [ value, ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 1 ] ? btns[ index ].width[ 1 ] : '' ), ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 2 ] ? btns[ index ].width[ 2 ] : '' ) ] }, index );
+										} }
+										tabletValue={ ( btns[ index ].width && undefined !== btns[ index ].width[ 1 ] ? btns[ index ].width[ 1 ] : undefined ) }
+										onChangeTablet={ value => {
+											this.saveArrayUpdate( { width: [ ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] : '' ), value, ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 2 ] ? btns[ index ].width[ 2 ] : '' ) ] }, index );
+										} }
+										mobileValue={ ( btns[ index ].width && undefined !== btns[ index ].width[ 2 ] ? btns[ index ].width[ 2 ] : undefined ) }
+										onChangeMobile={ value => {
+											this.saveArrayUpdate( { width: [ ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 0 ] ? btns[ index ].width[ 0 ] : '' ), ( undefined !== btns[ index ].width && undefined !== btns[ index ].width[ 1 ] ? btns[ index ].width[ 1 ] : '' ), value ] }, index );
+										} }
+										min={ 10 }
+										max={ ( ( widthUnit ? widthUnit : 'px' ) !== 'px' ? 100 : 600 ) }
+										step={ 1 }
+										unit={ widthUnit ? widthUnit : 'px' }
+										onUnit={ ( value ) => {
+											setAttributes( { widthUnit: value } );
+										} }
+										units={ [ 'px', '%' ] }
+									/>
 								</div>
 							) }
 						</Fragment>
@@ -1947,7 +1902,7 @@ class KadenceAdvancedButton extends Component {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( KadenceAdvancedButton );

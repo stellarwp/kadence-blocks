@@ -500,6 +500,17 @@ const attributes = {
 	loggedInShow: {
 		type: 'array',
 	},
+	rcpAccess: {
+		type: 'string',
+		default: '',
+	},
+	rcpMembership: {
+		type: 'bool',
+		default: false,
+	},
+	rcpMembershipLevel: {
+		type: 'array',
+	},
 	loggedOut: {
 		type: 'bool',
 		default: false,

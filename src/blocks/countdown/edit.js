@@ -1213,7 +1213,7 @@ export default compose( [
 		return {
 			isNested: isNested,
 			parentBlock: ( isNested ? getBlock( parentBlocks[0] ) : '' ),
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId } ) => {

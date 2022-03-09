@@ -106,6 +106,8 @@ class KadenceCounterUp extends Component {
 			titleMargin,
 			titlePaddingType,
 			titleMarginType,
+			decimal,
+			decimalSpaces,
 		} = attributes
 		const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
 
@@ -162,6 +164,8 @@ class KadenceCounterUp extends Component {
 			[ `kb-count-up-${ uniqueID }` ]: uniqueID,
 			'kb-count-up': true
 		} );
+		let theSeparator = ( separator === true ? ',' : separator );
+		theSeparator = ( theSeparator === false ? '' : theSeparator );
 		return (
 			<Fragment>
 				{ isSelected && <Inspector {...this.props} /> }
@@ -200,7 +204,9 @@ class KadenceCounterUp extends Component {
 							start={ start }
 							end={ end }
 							duration={ duration }
-							separator={ separator ? ',' : '' }
+							separator={ theSeparator }
+							decimal={ decimal ? decimal : undefined }
+							decimals={ decimal && decimalSpaces ? decimalSpaces : undefined }
 							prefix={ prefix }
 							suffix={ suffix }
 						/>
@@ -243,7 +249,7 @@ class KadenceCounterUp extends Component {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( KadenceCounterUp );

@@ -128,6 +128,7 @@ export function ImageEdit( {
 		sizeSlug,
 		imageFilter,
 		useRatio,
+		imgMaxWidth,
 		kadenceAnimation,
 		kadenceAOSOptions,
 	} = attributes;
@@ -368,6 +369,7 @@ export function ImageEdit( {
 		[ `size-${ sizeSlug }` ]: sizeSlug,
 		[ `filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
 		[ `kb-image-is-ratio-size` ]: useRatio,
+		'image-is-svg': url && url.endsWith( '.svg' ),
 	} );
 
 	const blockProps = useBlockProps( {
@@ -376,7 +378,9 @@ export function ImageEdit( {
 	} );
 
 	return (
-		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps }>
+		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{
+			maxWidth: ( imgMaxWidth && ( align === 'left' || align === 'right' ) ) ? imgMaxWidth + 'px' : undefined,
+		}}>
 			{ ( temporaryURL || url ) && (
 				<Image
 					temporaryURL={ temporaryURL }
@@ -451,7 +455,7 @@ export function ImageEdit( {
 export default compose( [
 	withSelect( ( select, ownProps ) => {
 		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 	withNotices,

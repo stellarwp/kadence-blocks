@@ -12,8 +12,8 @@
   "dependencies": {
     "@dr-kobros/react-webfont-loader": "^8.0.0",
     "@fonticonpicker/react-fonticonpicker": "^1.2.0",
-    "@lottiefiles/lottie-interactivity": "^1.3.0",
-    "@lottiefiles/lottie-player": "^1.5.3",
+    "@lottiefiles/react-lottie-player": "^3.4.2",
+    "@react-google-maps/api": "^2.7.0",
     "@wordpress/icons": "^4.0.1",
     "@wordpress/url": "^3.2.3",
     "classnames": "^2.2.6",

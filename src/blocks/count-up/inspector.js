@@ -27,7 +27,8 @@ const {
 	RangeControl,
 	ToggleControl,
 	TabPanel,
-	Dashicon
+	Dashicon,
+	SelectControl,
 } = wp.components;
 
 import { __experimentalNumberControl as NumberControl } from '@wordpress/components';
@@ -120,7 +121,8 @@ class Inspector extends Component {
 			numberMargin,
 			numberPaddingType,
 			numberMarginType,
-
+			decimalSpaces,
+			decimal,
 		} = attributes;
 		const { titlePaddingControl, titleMarginControl, numberPaddingControl, numberMarginControl } = this.state;
 		const saveTitleFont = ( value ) => {
@@ -146,7 +148,8 @@ class Inspector extends Component {
 				numberFont: newUpdate,
 			} );
 		};
-
+		let theSeparator = ( separator === true ? ',' : separator );
+		theSeparator = ( theSeparator === false ? '' : theSeparator );
 		return (
 			<Fragment>
 				<InspectorControls>
@@ -199,11 +202,36 @@ class Inspector extends Component {
 								step={ 0.1 }
 							/>
 
-							<ToggleControl
+							<SelectControl
 								label={ __( 'Thousand Separator', 'kadence-blocks' ) }
-								checked={ separator }
-								onChange={ ( value ) => setAttributes( { separator: value } ) }
+								value={ theSeparator }
+								options={ [
+									{ value: '', label: __( 'None', 'kadence-blocks' ) },
+									{ value: ',', label: ',' },
+									{ value: '.', label: '.' },
+								] }
+								onChange={ value => setAttributes( { separator: value } ) }
 							/>
+							<SelectControl
+								label={ __( 'Decimal', 'kadence-blocks' ) }
+								value={ decimal }
+								options={ [
+									{ value: '', label: __( 'None', 'kadence-blocks' ) },
+									{ value: '.', label: '.' },
+									{ value: ',', label: ',' },
+								] }
+								onChange={ value => setAttributes( { decimal: value } ) }
+							/>
+							{ decimal && (
+								<RangeControl
+									label={ __( 'Decimal Spaces', 'kadence-blocks' ) }
+									value={ decimalSpaces }
+									onChange={ (value) => setAttributes({ decimalSpaces: value }) }
+									min={ 1 }
+									max={ 25 }
+									step={ 1 }
+								/>
+							) }
 						</div>
 					</PanelBody>
 

@@ -1,0 +1,131 @@
+{
+  "apiVersion": 2,
+  "name": "kadence/googlemaps",
+  "title": "Google Maps",
+  "category": "kadence-blocks",
+  "description": "Kadence google maps",
+  "textdomain": "kadence-google-maps",
+  "keywords": [
+	"kb",
+	"google",
+	"maps"
+  ],
+  "attributes": {
+	"uniqueID": {
+	  "type": "string"
+	},
+	"width": {
+	  "type": "number",
+	  "default": ""
+	},
+	"heightDesktop": {
+	  "type": "number",
+	  "default": 450
+	},
+	"heightTablet": {
+	  "type": "number",
+	  "default": ""
+	},
+	"heightMobile": {
+	  "type": "number",
+	  "default": ""
+	},
+	"widthDesktop": {
+	  "type": "number",
+	  "default": ""
+	},
+	"widthTablet": {
+	  "type": "number",
+	  "default": ""
+	},
+	"widthMobile": {
+	  "type": "number",
+	  "default": ""
+	},
+	"zoom": {
+	  "type": "number",
+	  "default": "11"
+	},
+	"location": {
+	  "type": "string",
+	  "default": "Golden Gate Bridge"
+	},
+	"lat": {
+	  "type": "string",
+	  "default": ""
+	},
+	"lng": {
+	  "type": "string",
+	  "default": ""
+	},
+	"apiType": {
+	  "enum": ["embed", "javascript"],
+	  "default": "embed"
+	},
+	"showMarker": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"mapType": {
+	  "enum": ["roadmap", "satellite"],
+	  "default": "roadmap"
+	},
+	"mapFilter": {
+	  "enum": ["standard", "grayscale", "invert", "saturate", "sepia"],
+	  "default": "standard"
+	},
+	"mapStyle": {
+	  "enum": ["standard", "shades_of_grey", "invert", "saturate", "custom"],
+	  "default": "standard"
+	},
+	"showControls": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"customSnazzy": {
+	  "type": "string",
+	  "default": ""
+	},
+	"mapFilterAmount": {
+	  "type": "number",
+	  "default": "50"
+	},
+	"marginDesktop": {
+	  "type": "array",
+	  "default":  [ "", "", "", "" ]
+	},
+	"marginTablet": {
+	  "type": "array",
+	  "default":  [ "", "", "", "" ]
+	},
+	"marginMobile": {
+	  "type": "array",
+	  "default":  [ "", "", "", "" ]
+	},
+	"marginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"paddingDesktop": {
+	  "type": "array",
+	  "default":  [ "", "", "", "" ]
+	},
+	"paddingTablet": {
+	  "type": "array",
+	  "default":  [ "", "", "", "" ]
+	},
+	"paddingMobile": {
+	  "type": "array",
+	  "default":  [ "", "", "", "" ]
+	},
+	"paddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"textAlign": {
+		"type": "array",
+		"default":  [ "", "", "" ]
+	}
+  },
+  "editorScript": "file:editor.js"
+}

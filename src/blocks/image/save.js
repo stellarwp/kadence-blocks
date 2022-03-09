@@ -37,6 +37,7 @@ export default function save( { attributes } ) {
 		'is-resized': width || height,
 		[ `kb-filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
 		[ `kb-image-is-ratio-size` ]: useRatio,
+		'image-is-svg': url && url.endsWith( '.svg' ),
 	} );
 
 	const allClasses = classnames( {
@@ -47,6 +48,7 @@ export default function save( { attributes } ) {
 		'is-resized': width || height,
 		[ `kb-filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
 		[ `kb-image-is-ratio-size` ]: useRatio,
+		'image-is-svg': url && url.endsWith( '.svg' ),
 	} );
 
 	const containerClasses = classnames( {
@@ -64,7 +66,6 @@ export default function save( { attributes } ) {
 	if ( undefined !== linkSponsored && true === linkSponsored ) {
 		relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 	}
-
 	let image = (
 		<img
 			src={ url }

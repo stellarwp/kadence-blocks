@@ -1024,6 +1024,6 @@ export default withSelect( ( select, props ) => {
 	return {
 		taxList: taxonomyList,
 		taxOptions: taxonomyOptions,
-		getPreviewDevice: select( 'kadenceblocks/data' ).getDevice(),
+		getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 	};
 } )( KadencePosts );

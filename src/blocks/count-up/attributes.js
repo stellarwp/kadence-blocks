@@ -178,8 +178,16 @@ const attributes = {
 		default: 2.5,
 	},
 	separator: {
-		type: 'boolean',
-		default: false,
+		type: 'string',
+		default: '',
+	},
+	decimal: {
+		type: 'string',
+		default: '',
+	},
+	decimalSpaces: {
+		type: 'number',
+		default: 2
 	}
 };
 export default attributes;

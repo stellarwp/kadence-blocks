@@ -386,7 +386,7 @@ class Kadence_Blocks_Posts {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-posts' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'posts', $unique_id ) ) {
 				if ( ! doing_filter( 'the_content' ) ) {
 					if ( ! class_exists( 'Kadence\Theme' ) && ! wp_style_is( 'kadence-blocks-posts', 'done' ) ) {

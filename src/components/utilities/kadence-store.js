@@ -1,49 +1,98 @@
-import { createReduxStore, register, createRegistrySelector, controls } from '@wordpress/data';
+import {createReduxStore, register, createRegistrySelector, createRegistryControl} from '@wordpress/data';
+
 const DEFAULT_STATE = {
-    previewDevice: 'Desktop',
+	previewDevice: 'Desktop',
+	uniqueIDs: [],
 };
- 
+
 const actions = {
-	setDevice( device ) {
-		return {
-			type: 'SET_DEVICE',
-			device,
-		};
+	*setPreviewDeviceType( deviceType ) {
+		const setForCore = yield {
+			type: 'SET_PREVIEW_DEVICE_TYPE_FOR_CORE',
+			deviceType,
+		}
+
+		if ( !setForCore ) {
+			return {
+				type: 'SET_PREVIEW_DEVICE_TYPE',
+				deviceType,
+			};
+		}
 	},
-};
-const getDevice = createRegistrySelector( ( select ) => ( state ) => {
-	if ( select( 'core/edit-post' ) ) {
-		return select( 'core/edit-post' ).__experimentalGetPreviewDeviceType();
-	} else if ( select( 'core/edit-site' ) ) {
-		return select( 'core/edit-site' ).__experimentalGetPreviewDeviceType();
+	addUniqueID( uniqueID ) {
+		return {
+			type: 'ADD_UNIQUE_ID',
+			uniqueID,
+		};
 	}
+};
+
+const controls = {
+	'SET_PREVIEW_DEVICE_TYPE_FOR_CORE': createRegistryControl( ( registry ) => function *setPreviewDeviceTypeForCore( { deviceType } ) {
+		const editPost = registry.dispatch( 'core/edit-post' );
+
+		if ( editPost ) {
+			yield editPost.__experimentalSetPreviewDeviceType( deviceType );
+
+			return true;
+		}
+
+		const editSite = registry.dispatch( 'core/edit-site' );
+
+		if ( editSite ) {
+			yield editSite.__experimentalSetPreviewDeviceType( deviceType );
+
+			return true;
+		}
+
+		return false;
+	} ),
+};
+
+const getPreviewDeviceType = createRegistrySelector( ( select ) => ( state ) => {
+	const editPost = select( 'core/edit-post' );
+
+	if ( editPost ) {
+		return editPost.__experimentalGetPreviewDeviceType();
+	}
+
+	const editSite = select( 'core/edit-site' );
+
+	if ( editSite ) {
+		return editSite.__experimentalGetPreviewDeviceType();
+	}
+
 	return state.previewDevice;
 } );
- 
+
 const store = createReduxStore( 'kadenceblocks/data', {
-    reducer( state = DEFAULT_STATE, action ) {
-        switch ( action.type ) {
-            case 'SET_DEVICE':
+	reducer( state = DEFAULT_STATE, action ) {
+		switch ( action.type ) {
+			case 'SET_PREVIEW_DEVICE_TYPE':
 				return {
 					...state,
-					previewDevice: action.device,
+					previewDevice: action.deviceType,
 				};
-        }
- 
-        return state;
-    },
- 
-    actions,
- 
-    selectors: {
-		getDevice,
-    },
-   	controls: {
-		
+			case 'ADD_UNIQUE_ID':
+				const updatedIDs = state.uniqueIDs;
+				updatedIDs.push( action.uniqueID );
+				return {
+					...state,
+					uniqueIDs: updatedIDs,
+				};
+			default:
+				return state;
+		}
 	},
- 
-    resolvers: {
-    },
+	actions,
+	controls,
+	selectors: {
+		getPreviewDeviceType,
+		getUniqueIDs( state ) {
+			const { uniqueIDs } = state;
+			return uniqueIDs;
+		},
+	},
 } );
- 
+
 register( store );

@@ -6,7 +6,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 }
 .wp-block-kadence-image {
 	position: relative;
-
+	&.image-is-svg {
+		width: 100%;
+	}
 	.is-applying img,
 	&.is-transient img {
 		opacity: 0.3;
@@ -281,4 +283,15 @@ figure.wp-block-kadence-image:not(.wp-block) {
 		padding-left: 0;
 		padding-right: 0;
 	}
+}
+.wp-block[data-align=right]>.wp-block-kadence-image.kb-image-is-ratio-size{
+	width: 100%;
+	text-align: right;
+}
+.wp-block[data-align=left]>.wp-block-kadence-image.kb-image-is-ratio-size {
+    width: 100%;
+	text-align: left;
+}
+.wp-block[data-align="center"] > .wp-block-kadence-image.kb-image-is-ratio-size {
+	width: 100%;
 }

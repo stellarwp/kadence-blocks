@@ -1,16 +1,14 @@
-const {
-	Fragment,
-} = wp.element;
-const {
+import { Fragment } from '@wordpress/element';
+import {
 	Button,
 	Tooltip,
-} = wp.components;
+	ResizableBox,
+} from '@wordpress/components';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 import ContainerDimensions from 'react-container-dimensions';
-import ResizableBox from 're-resizable';
 export default function ThreeColumnDrag( {
 	uniqueID,
 	onSetState,
@@ -23,6 +21,7 @@ export default function ThreeColumnDrag( {
 	leftPadding,
 	rightPadding,
 } ) {
+	const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 	let widthNumberThirds;
 	if ( Math.abs( widthString ) === parseFloat( widthString ) ) {
 		widthNumberThirds = widthString;
@@ -92,10 +91,10 @@ export default function ThreeColumnDrag( {
 			firstWidth: tempfirstW,
 			secondWidth: tempsecondW,
 		} );
-		document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempfirstW + '%';
-		document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = tempsecondW + '%';
-		document.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = tempsecondW + '%';
-		document.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( ( tempsecondW + tempfirstW ) - 100 ) * 10 ) / 10 ) + '%';
+		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempfirstW + '%';
+		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = tempsecondW + '%';
+		editorDocument.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = tempsecondW + '%';
+		editorDocument.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( ( tempsecondW + tempfirstW ) - 100 ) * 10 ) / 10 ) + '%';
 	};
 	const onResizeStopThirds = ( event, direction, elt ) => {
 		let tempfirstW;
@@ -134,10 +133,10 @@ export default function ThreeColumnDrag( {
 			firstWidth: tempfirstW,
 			secondWidth: tempsecondWidth,
 		} );
-		document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempfirstW + '%';
-		document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = ( tempsecondWidth ) + '%';
-		document.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = ( tempsecondWidth ) + '%';
-		document.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( parseFloat( tempsecondWidth ) + parseFloat( tempfirstW ) - 100 ) * 10 ) / 10 ) + '%';
+		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempfirstW + '%';
+		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = ( tempsecondWidth ) + '%';
+		editorDocument.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = ( tempsecondWidth ) + '%';
+		editorDocument.getElementById( 'third-column-width-' + uniqueID ).innerHTML = Math.abs( Math.round( ( parseFloat( tempsecondWidth ) + parseFloat( tempfirstW ) - 100 ) * 10 ) / 10 ) + '%';
 	};
 	const onResizeStopSecond = ( event, direction, elt ) => {
 		let tempfirstW;
