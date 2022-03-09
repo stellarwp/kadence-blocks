@@ -36,14 +36,18 @@ function KadencePanelBody ({
 export default compose([
 	withSelect((select, ownProps) => {
 		return {
-			isOpened: select('kadenceblocks/data').isEditorPanelOpened(ownProps.panelName, ownProps.initialOpen),
+			isOpened: select('kadenceblocks/data').isEditorPanelOpened(ownProps.panelName + select('core/block-editor').getSelectedBlockClientId(), ownProps.initialOpen),
 		}
 	}),
-	withDispatch((dispatch, ownProps) => ({
-		toggleOpened: () => {
-			dispatch('kadenceblocks/data').toggleEditorPanelOpened(ownProps.panelName, ownProps.initialOpen)
-		},
-	}))
+	withDispatch((dispatch, ownProps, { select }) => {
+		const { getSelectedBlockClientId } = select('core/block-editor')
+
+		return {
+			toggleOpened: () => {
+				dispatch('kadenceblocks/data').toggleEditorPanelOpened(ownProps.panelName + getSelectedBlockClientId(), ownProps.initialOpen)
+			},
+		}
+	})
 ])(KadencePanelBody)
 
 
