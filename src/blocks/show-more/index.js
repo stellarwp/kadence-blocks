@@ -3,6 +3,7 @@ import itemicons from '../../icons';
 const el = wp.element.createElement;
 import { registerBlockType } from '@wordpress/blocks';
 const { InnerBlocks } = wp.blockEditor;
+import uniqueId from 'lodash/uniqueId';
 
 /**
  * Internal dependencies
@@ -17,17 +18,7 @@ export { metadata, name };
 
 export const settings = {
 	transforms,
-	edit: ( props ) => {
-		return el( InnerBlocks, {
-			template: [
-				[ 'core/group', { innerBlocks: 'core/paragraph' } ],
-				[ 'kadence/advancedbtn', { lock: { remove: true, move: true }, hAlign: 'left', btnCount: 1, btns: [ { text: 'Show More' } ] } ],
-				[ 'core/group', {} ],
-				[ 'kadence/advancedbtn', { lock: { remove: true, move: true }, hAlign: 'left', btnCount: 1, btns: [ { text: 'Show More' } ] } ]
-			],
-			templateLock: 'all',
-		} );
-	},
+	edit,
 	save
 	// save: ( props ) => {
 	// 	return el( InnerBlocks.Content );
@@ -37,7 +28,7 @@ export const settings = {
 registerBlockType('kadence/show-more', {
 	...metadata,
 	icon: {
-		src: itemicons.row,
+		src: itemicons.showMore,
 	},
 	...settings
 });

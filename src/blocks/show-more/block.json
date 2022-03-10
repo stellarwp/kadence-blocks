@@ -23,6 +23,22 @@
 	"uniqueID": {
 	  "type": "string"
 	},
+	"showHideMore": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"defaultExpandedMobile": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"defaultExpandedTablet": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"defaultExpandedDesktop": {
+	  "type": "boolean",
+	  "default": false
+	},
 	"marginDesktop": {
 	  "type": "array",
 	  "default": [

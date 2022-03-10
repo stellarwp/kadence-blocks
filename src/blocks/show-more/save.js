@@ -1,7 +1,7 @@
 /**
  * BLOCK: Kadence Block Template
  */
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { InnerBlocks } from '@wordpress/block-editor';
 
 /**
  * External dependencies
@@ -11,8 +11,8 @@ import classnames from 'classnames';
 function Save( { attributes, innerBlocks } ) {
 	const { uniqueID } = attributes;
 	const classes = classnames( {
-		'kb-block-template-container': true,
-		[ `kb-block-template-container${ uniqueID }` ] : true
+		'kb-block-show-more-container': true,
+		[ `kb-block-show-more-container${ uniqueID }` ] : true
 	} );
 
 	return (

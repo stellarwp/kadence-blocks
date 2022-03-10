@@ -5,24 +5,27 @@
 /**
  * Import Css
  */
-import './editor.scss';
+import './editor.scss'
 
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
-import { useState  } from '@wordpress/element';
-import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import get from 'lodash/get';
-import has from 'lodash/has';
+import { __ } from '@wordpress/i18n'
+import { useState } from '@wordpress/element'
+import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor'
+import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control'
 
 const {
 	InspectorControls,
 	BlockControls,
-} = wp.blockEditor;
+} = wp.blockEditor
 
-const { apiFetch } = wp;
+const el = wp.element.createElement
+
+const { InnerBlocks } = wp.blockEditor
+import uniqueId from 'lodash/uniqueId'
+
+const { apiFetch } = wp
 const {
 	PanelBody,
 	RangeControl,
@@ -33,166 +36,321 @@ const {
 	FormFileUpload,
 	Button,
 	Notice,
-} = wp.components;
+} = wp.components
 
-import { __experimentalNumberControl as NumberControl } from '@wordpress/components';
 /**
  * Internal dependencies
  */
-import classnames from 'classnames';
-import KadenceSelectPosts from '../../components/posts/select-posts-control'
-const ktlottieUniqueIDs = [];
+import classnames from 'classnames'
+import { Fragment } from 'react'
 
-export function Edit( {
+const ktShowMoreUniqueIDs = []
+
+export function Edit ({
 	attributes,
 	setAttributes,
 	className,
-	previewDevice,
 	clientId,
-} ) {
+}) {
 
 	const {
 		uniqueID,
-		align,
-		paddingTablet,
-		paddingDesktop,
-		paddingMobile,
-		paddingUnit,
-		marginTablet,
-		marginDesktop,
-		marginMobile,
-		marginUnit,
-	} = attributes;
+		showHideMore,
+		defaultExpandedMobile,
+		defaultExpandedTablet,
+		defaultExpandedDesktop
+	} = attributes
 
-	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
-		if ( device === 'Mobile' ) {
-			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
-				return mobileSize;
-			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
-				return tabletSize;
-			}
-		} else if ( device === 'Tablet' ) {
-			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
-				return tabletSize;
-			}
+	if (!uniqueID) {
+		const blockConfigObject = (kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : [])
+		if (blockConfigObject['kadence/show-more'] !== undefined && typeof blockConfigObject['kadence/show-more'] === 'object') {
+			Object.keys(blockConfigObject['kadence/show-more']).map((attribute) => {
+				uniqueID = blockConfigObject['kadence/show-more'][attribute]
+			})
 		}
-		return desktopSize;
-	};
-
-	const classes = classnames( {
-		[ `kb-show-more-${ uniqueID }` ]: uniqueID,
-		'kb-show-more': true
-	} );
-
-	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
-	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
-	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[2] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
-	const previewMarginLeft = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[3] : '' ), ( undefined !== marginTablet ? marginTablet[ 3 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 3 ] : '' ) );
-
-	const previewPaddingTop = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[0] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 0 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 0 ] : '' ) );
-	const previewPaddingRight = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[1] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 1 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 1 ] : '' ) );
-	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
-	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
-
-	const [ marginControl, setMarginControl ] = useState( 'individual');
-	const [ paddingControl, setPaddingControl ] = useState( 'individual');
-
-	const blockProps = useBlockProps( {
-		className: classes,
-	} );
-
-	if ( ! uniqueID ) {
-		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-		if ( blockConfigObject[ 'kadence/lottie' ] !== undefined && typeof blockConfigObject[ 'kadence/lottie' ] === 'object' ) {
-			Object.keys( blockConfigObject[ 'kadence/lottie' ] ).map( ( attribute ) => {
-				uniqueID = blockConfigObject[ 'kadence/lottie' ][ attribute ];
-			} );
-		}
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );
-		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else if ( ktlottieUniqueIDs.includes( uniqueID ) ) {
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );		ktlottieUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		setAttributes({
+			uniqueID: '_' + clientId.substr(2, 9),
+		})
+		ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
+	} else if (ktShowMoreUniqueIDs.includes(uniqueID)) {
+		setAttributes({
+			uniqueID: '_' + clientId.substr(2, 9),
+		})
+		ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
 	} else {
-		ktlottieUniqueIDs.push( uniqueID );
+		ktShowMoreUniqueIDs.push(uniqueID)
 	}
-	const containerClasses = classnames( {
-		'kb-lottie-container': true,
-		[ `kb-lottie-container${ uniqueID }` ] : true,
-	} );
+
+	const childBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId );
+
+	console.log('childBlocks');
+	console.log(childBlocks);
+
+	const buttonOneUniqueID = childBlocks[1] ? childBlocks[1].substr( 2, 9 ) : uniqueId('button-one-');
+	const buttonTwoUniqueID = childBlocks[3] ? childBlocks[3].substr( 2, 9 ) : uniqueId('button-two-');
+
+
+	console.log('buttonTwoUniqueID');
+	console.log(buttonOneUniqueID);
+	console.log(buttonTwoUniqueID);
 
 	return (
-		<div { ...blockProps }>
-			<BlockControls group="block">
-				<BlockAlignmentControl
-					value={ align }
-					onChange={ ( value ) => setAttributes( { align: value } ) }
-				/>
-			</BlockControls>
+		<Fragment>
 			<InspectorControls>
-
 				<PanelBody
-					title={ __( 'Size Controls', 'kadence-blocks' ) }
-					initialOpen={ false }
+					title={ __('Show More Settings', 'kadence-blocks') }
+					initialOpen={ true }
 				>
-					<ResponsiveMeasurementControls
-						label={ __( 'Padding', 'kadence-blocks' ) }
-						value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
-						control={ paddingControl }
-						tabletValue={ paddingTablet }
-						mobileValue={ paddingMobile }
-						onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
-						onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
-						onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
-						onChangeControl={ ( value ) => setPaddingControl( value ) }
-						min={ 0 }
-						max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
-						step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-						unit={ paddingUnit }
-						units={ [ 'px', 'em', 'rem', '%' ] }
-						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+					<ToggleControl
+						label={ __( 'Display "Hide" button once expanded', 'kadence-blocks' ) }
+						checked={ showHideMore }
+						onChange={ ( value ) => setAttributes( { showHideMore: value } ) }
 					/>
-					<ResponsiveMeasurementControls
-						label={ __( 'Margin', 'kadence-blocks' ) }
-						value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
-						control={ marginControl }
-						tabletValue={ marginTablet }
-						mobileValue={ marginMobile }
-						onChange={ ( value ) => {
-							setAttributes( { marginDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
-						} }
-						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
-						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
-						onChangeControl={ ( value ) => setMarginControl( value ) }
-						min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-						max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
-						step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
-						unit={ marginUnit }
-						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+				</PanelBody>
+				<PanelBody
+					title={ __('Expand Settings', 'kadence-blocks') }
+					initialOpen={ true }
+				>
+					<ToggleControl
+						label={ __( 'Default Expanded on Desktop', 'kadence-blocks' ) }
+						checked={ defaultExpandedDesktop }
+						onChange={ ( value ) => setAttributes( { defaultExpandedDesktop: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Default Expanded on Tablet', 'kadence-blocks' ) }
+						checked={ defaultExpandedTablet }
+						onChange={ ( value ) => setAttributes( { defaultExpandedTablet: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Default Expanded on Mobile', 'kadence-blocks' ) }
+						checked={ defaultExpandedMobile }
+						onChange={ ( value ) => setAttributes( { defaultExpandedMobile: value } ) }
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<div className={ containerClasses } style={
-				{
-					marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
-					marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
-					marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
-					marginLeft: ( '' !== previewMarginLeft ? previewMarginLeft + marginUnit : undefined ),
+			<Fragment>
+				{ el(InnerBlocks, {
+					template: [
+						['core/group', {
+							lock: {
+								remove: true,
+								move: true
+							},
+							className: 'kt-show-more-preview',
+						}, { innerBlocks: ['core/paragraph', { placeholder: __('Add new content to this group blocks to customize your page', 'kadence-blocks') }] }],
+						['kadence/advancedbtn', {
+							lock: { remove: true, move: true },
+							hAlign: 'left',
+							uniqueID: buttonOneUniqueID,
+							className: 'kt-show-more-button',
+							btns: [
+								{
+									'text': 'Show More',
+									'link': '',
+									'target': '_self',
+									'size': '',
+									'paddingBT': '',
+									'paddingLR': '',
+									'color': '',
+									'background': '',
+									'border': '',
+									'backgroundOpacity': 1,
+									'borderOpacity': 1,
+									'borderRadius': '',
+									'borderWidth': '',
+									'colorHover': '',
+									'backgroundHover': '',
+									'borderHover': '',
+									'backgroundHoverOpacity': 1,
+									'borderHoverOpacity': 1,
+									'icon': '',
+									'iconSide': 'right',
+									'iconHover': false,
+									'cssClass': '',
+									'noFollow': false,
+									'gap': 5,
+									'responsiveSize': [
+										'',
+										''
+									],
+									'gradient': [
+										'#999999',
+										1,
+										0,
+										100,
+										'linear',
+										180,
+										'center center'
+									],
+									'gradientHover': [
+										'#777777',
+										1,
+										0,
+										100,
+										'linear',
+										180,
+										'center center'
+									],
+									'btnStyle': 'basic',
+									'btnSize': 'small',
+									'backgroundType': 'solid',
+									'backgroundHoverType': 'solid',
+									'width': [
+										'',
+										'',
+										''
+									],
+									'responsivePaddingBT': [
+										'',
+										''
+									],
+									'responsivePaddingLR': [
+										'',
+										''
+									],
+									'boxShadow': [
+										true,
+										'#000000',
+										0.2,
+										1,
+										1,
+										2,
+										0,
+										false
+									],
+									'boxShadowHover': [
+										true,
+										'#000000',
+										0.4,
+										2,
+										2,
+										3,
+										0,
+										false
+									],
+									'inheritStyles': 'inherit',
+									'borderStyle': '',
+									'onlyIcon': [
+										false,
+										'',
+										''
+									]
+								}
+							]
+						}],
+						['core/group', {
+							lock: {
+								remove: true,
+								move: true
+							},
+							className: 'kt-show-more-expanded',
+						}, { innerBlocks: ['core/paragraph', { placeholder:  __('This group block is initially hidden. Content here will replace the top content when expanded.', 'kadence-blocks') }] }],
+						['kadence/advancedbtn', {
+							lock: { remove: true, move: true },
+							hAlign: 'left',
+							uniqueID: buttonTwoUniqueID,
+							className: 'kt-hide-more-button',
+							btns: [
+								{
+									'text': 'Show Less',
+									'link': '',
+									'target': '_self',
+									'size': '',
+									'paddingBT': '',
+									'paddingLR': '',
+									'color': '',
+									'background': '',
+									'border': '',
+									'backgroundOpacity': 1,
+									'borderOpacity': 1,
+									'borderRadius': '',
+									'borderWidth': '',
+									'colorHover': '',
+									'backgroundHover': '',
+									'borderHover': '',
+									'backgroundHoverOpacity': 1,
+									'borderHoverOpacity': 1,
+									'icon': '',
+									'iconSide': 'right',
+									'iconHover': false,
+									'cssClass': '',
+									'noFollow': false,
+									'gap': 5,
+									'responsiveSize': [
+										'',
+										''
+									],
+									'gradient': [
+										'#999999',
+										1,
+										0,
+										100,
+										'linear',
+										180,
+										'center center'
+									],
+									'gradientHover': [
+										'#777777',
+										1,
+										0,
+										100,
+										'linear',
+										180,
+										'center center'
+									],
+									'btnStyle': 'basic',
+									'btnSize': 'small',
+									'backgroundType': 'solid',
+									'backgroundHoverType': 'solid',
+									'width': [
+										'',
+										'',
+										''
+									],
+									'responsivePaddingBT': [
+										'',
+										''
+									],
+									'responsivePaddingLR': [
+										'',
+										''
+									],
+									'boxShadow': [
+										true,
+										'#000000',
+										0.2,
+										1,
+										1,
+										2,
+										0,
+										false
+									],
+									'boxShadowHover': [
+										true,
+										'#000000',
+										0.4,
+										2,
+										2,
+										3,
+										0,
+										false
+									],
+									'inheritStyles': 'inherit',
+									'borderStyle': '',
+									'onlyIcon': [
+										false,
+										'',
+										''
+									]
+								}
+							]
+						}]
+					],
+				}) }
+			</Fragment>
+		</Fragment>
+	)
 
-					paddingTop: ( '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined ),
-					paddingRight: ( '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined ),
-					paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
-					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
-				}
-			}>
-				Block template content
-			</div>
-		</div>
-	);
 }
 
-export default ( Edit );
+export default (Edit)

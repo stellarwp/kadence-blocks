@@ -28,7 +28,7 @@ import edit from './edit';
  */
 import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
-import { 
+import {
 	RichText,
 } from '@wordpress/block-editor';
 /**
@@ -288,7 +288,7 @@ registerBlockType( 'kadence/advancedbtn', {
 		);
 	},
 	deprecated: [
-		{ 
+		{
 			attributes: {
 				hAlign: {
 					type: 'string',
