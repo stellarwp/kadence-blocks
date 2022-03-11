@@ -27,6 +27,8 @@ import ResponsiveRangeControls from '../../components/range/responsive-range-con
 import URLInputControl from '../../components/links/link-control';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
+import { getPreviewSize } from '../../helpers/helpers';
+
 /**
  * Import Css
  */
@@ -695,30 +697,17 @@ class KadenceForm extends Component {
 			this.onOptionMove( oldIndex, oldIndex - 1, fieldIndex );
 		};
 	}
-	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
-		if ( device === 'Mobile' ) {
-			if ( undefined !== mobileSize && '' !== mobileSize ) {
-				return mobileSize;
-			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
-				return tabletSize;
-			}
-		} else if ( device === 'Tablet' ) {
-			if ( undefined !== tabletSize && '' !== tabletSize ) {
-				return tabletSize;
-			}
-		}
-		return desktopSize;
-	}
+
 	render() {
 		const { attributes: { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion, mailerlite, fluentcrm, containerMargin, tabletContainerMargin, mobileContainerMargin, containerMarginType, submitLabel }, className, isSelected, setAttributes } = this.props;
 		const { deskPaddingControl, tabletPaddingControl, mobilePaddingControl, borderControl, labelPaddingControl, labelMarginControl, submitDeskPaddingControl, submitTabletPaddingControl, submitMobilePaddingControl, submitBorderControl, messageFontBorderControl, messagePaddingControl, messageMarginControl, deskMarginControl, tabletMarginControl, mobileMarginControl } = this.state;
 		const previewContainerMarginType = ( undefined !== containerMarginType ? containerMarginType : 'px' );
-		const previewContainerMarginTop = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
-		const previewContainerMarginRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
-		const previewContainerMarginBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
-		const previewContainerMarginLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
-		const previewRowGap = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : '' ), ( undefined !== style[ 0 ].tabletRowGap && '' !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap + 'px' : '' ), ( undefined !== style[ 0 ].mobileRowGap && '' !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap + 'px' : '' ) );
-		const previewGutter = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ), ( undefined !== style[ 0 ].tabletGutter && '' !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ), ( undefined !== style[ 0 ].mobileGutter && '' !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) );
+		const previewContainerMarginTop = getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
+		const previewContainerMarginRight = getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
+		const previewContainerMarginBottom = getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
+		const previewContainerMarginLeft = getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
+		const previewRowGap = getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : '' ), ( undefined !== style[ 0 ].tabletRowGap && '' !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap + 'px' : '' ), ( undefined !== style[ 0 ].mobileRowGap && '' !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap + 'px' : '' ) );
+		const previewGutter = getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ), ( undefined !== style[ 0 ].tabletGutter && '' !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ), ( undefined !== style[ 0 ].mobileGutter && '' !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) );
 		const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -2 : -200 );
 		const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 12 : 200 );
 		const containerMarginStep = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1 );
@@ -945,7 +934,7 @@ class KadenceForm extends Component {
 							<Fragment>
 								{ times( fields[ index ].options.length, n => (
 									<div className="field-options-wrap">
-										
+
 										<TextControl
 											className={ 'kb-option-text-control' }
 											key={ n }
