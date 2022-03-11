@@ -712,6 +712,14 @@ class KadenceForm extends Component {
 		const previewStyleLineHeight = getPreviewSize( this.props.getPreviewDevice, style[ 0 ].lineHeight[0], style[ 0 ].lineHeight[1], style[ 0 ].lineHeight[2] );
 		const previewStyleLineHeightType = style[ 0 ].lineType;
 
+		const previewLabelFontSize = getPreviewSize(this.props.getPreviewDevice, labelFont[ 0 ].size[0], labelFont[ 0 ].size[1], labelFont[ 0 ].size[2] );
+		const previewLabelFontSizeType = labelFont[ 0 ].sizeType;
+		const previewLabelLineHeight = getPreviewSize(this.props.getPreviewDevice, labelFont[ 0 ].lineHeight[0], labelFont[ 0 ].lineHeight[1], labelFont[ 0 ].lineHeight[2] );
+		const previewLabelLineHeightType = labelFont[ 0 ].lineType;
+
+		const previewSubmitFontSize = getPreviewSize(this.props.getPreviewDevice, submitFont[ 0 ].size[0], submitFont[ 0 ].size[1], submitFont[ 0 ].size[2] );
+		const previewSubmitFontSizeType = submitFont[ 0 ].sizeType;
+
 		const previewRowGap = getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : '' ), ( undefined !== style[ 0 ].tabletRowGap && '' !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap + 'px' : '' ), ( undefined !== style[ 0 ].mobileRowGap && '' !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap + 'px' : '' ) );
 		const previewGutter = getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ), ( undefined !== style[ 0 ].tabletGutter && '' !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ), ( undefined !== style[ 0 ].mobileGutter && '' !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) );
 		const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -2 : -200 );
@@ -1294,8 +1302,8 @@ class KadenceForm extends Component {
 								fontWeight: labelFont[ 0 ].weight,
 								fontStyle: labelFont[ 0 ].style,
 								color: KadenceColorOutput( labelFont[ 0 ].color ),
-								fontSize: labelFont[ 0 ].size[ 0 ] + labelFont[ 0 ].sizeType,
-								lineHeight: ( labelFont[ 0 ].lineHeight && labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] + labelFont[ 0 ].lineType : undefined ),
+								fontSize: previewLabelFontSize + previewLabelFontSizeType,
+								lineHeight: previewLabelLineHeight + previewLabelLineHeightType,
 								letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
 								textTransform: ( labelFont[ 0 ].textTransform ? labelFont[ 0 ].textTransform  : undefined ),
 								fontFamily: ( labelFont[ 0 ].family ? labelFont[ 0 ].family : undefined ),
@@ -1317,8 +1325,8 @@ class KadenceForm extends Component {
 									fontWeight: labelFont[ 0 ].weight,
 									fontStyle: labelFont[ 0 ].style,
 									color: KadenceColorOutput( labelFont[ 0 ].color ),
-									fontSize: labelFont[ 0 ].size[ 0 ] + labelFont[ 0 ].sizeType,
-									lineHeight: ( labelFont[ 0 ].lineHeight && labelFont[ 0 ].lineHeight[ 0 ] ? labelFont[ 0 ].lineHeight[ 0 ] + labelFont[ 0 ].lineType : undefined ),
+									fontSize: previewLabelFontSize + previewLabelFontSizeType,
+									lineHeight: previewLabelLineHeight + previewLabelLineHeightType,
 									letterSpacing: labelFont[ 0 ].letterSpacing + 'px',
 									textTransform: ( labelFont[ 0 ].textTransform ? labelFont[ 0 ].textTransform  : undefined ),
 									fontFamily: ( labelFont[ 0 ].family ? labelFont[ 0 ].family : undefined ),
@@ -3568,7 +3576,7 @@ class KadenceForm extends Component {
 								style={ {
 									background: ( undefined !== btnBG ? btnBG : undefined ),
 									color: ( undefined !== submit[ 0 ].color ? KadenceColorOutput( submit[ 0 ].color ) : undefined ),
-									fontSize: ( submitFont[ 0 ].size && submitFont[ 0 ].size[ 0 ] ? submitFont[ 0 ].size[ 0 ] + submitFont[ 0 ].sizeType : undefined ),
+									fontSize: previewSubmitFontSize + previewSubmitFontSizeType,
 									lineHeight: ( submitFont[ 0 ].lineHeight && submitFont[ 0 ].lineHeight[ 0 ] ? submitFont[ 0 ].lineHeight[ 0 ] + submitFont[ 0 ].lineType : undefined ),
 									fontWeight: submitFont[ 0 ].weight,
 									fontStyle: submitFont[ 0 ].style,
