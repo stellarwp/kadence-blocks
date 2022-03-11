@@ -706,11 +706,19 @@ class KadenceForm extends Component {
 		const previewContainerMarginRight = getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
 		const previewContainerMarginBottom = getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
 		const previewContainerMarginLeft = getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
+
+		const previewStyleFontSize = getPreviewSize( this.props.getPreviewDevice, style[ 0 ].fontSize[0], style[ 0 ].fontSize[1], style[ 0 ].fontSize[2] );
+		const previewStyleFontSizeType = style[ 0 ].fontSizeType;
+		const previewStyleLineHeight = getPreviewSize( this.props.getPreviewDevice, style[ 0 ].lineHeight[0], style[ 0 ].lineHeight[1], style[ 0 ].lineHeight[2] );
+		const previewStyleLineHeightType = style[ 0 ].lineType;
+
 		const previewRowGap = getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : '' ), ( undefined !== style[ 0 ].tabletRowGap && '' !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap + 'px' : '' ), ( undefined !== style[ 0 ].mobileRowGap && '' !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap + 'px' : '' ) );
 		const previewGutter = getPreviewSize( this.props.getPreviewDevice, ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ), ( undefined !== style[ 0 ].tabletGutter && '' !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ), ( undefined !== style[ 0 ].mobileGutter && '' !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) );
 		const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -2 : -200 );
 		const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 12 : 200 );
 		const containerMarginStep = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1 );
+
+
 		const saveMailerlite = ( value ) => {
 			const newItems = mailerlite.map( ( item, thisIndex ) => {
 				if ( 0 === thisIndex ) {
@@ -1332,8 +1340,8 @@ class KadenceForm extends Component {
 									paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 									background: ( undefined !== inputBG ? inputBG : undefined ),
 									color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
-									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+									fontSize: previewStyleFontSize + previewStyleFontSizeType,
+									lineHeight: previewStyleLineHeight + previewStyleLineHeightType,
 									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 									borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
 									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
@@ -1347,8 +1355,8 @@ class KadenceForm extends Component {
 								<select name={ `kb_field_${ index }` } id={ `kb_field_${ index }` } type={ fields[ index ].type } data-type={ fields[ index ].type } multiple={ ( fields[ index ].multiSelect ? true : false ) } className={ `kb-field kb-select-style-field kb-${ fields[ index ].type }-field kb-field-${ index }` } data-required={ ( fields[ index ].required ? 'yes' : undefined ) } style={ {
 									background: ( undefined !== inputBG ? inputBG : undefined ),
 									color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-									fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
-									lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+									fontSize: previewStyleFontSize + previewStyleFontSizeType,
+									lineHeight: previewStyleLineHeight + previewStyleLineHeightType,
 									borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 									borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
 									borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
@@ -1418,8 +1426,8 @@ class KadenceForm extends Component {
 										paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 										background: ( undefined !== inputBG ? inputBG : undefined ),
 										color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-										fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
-										lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+										fontSize: previewStyleFontSize + previewStyleFontSizeType,
+										lineHeight: previewStyleLineHeight + previewStyleLineHeightType,
 										borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 										borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
 										borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
@@ -1449,8 +1457,8 @@ class KadenceForm extends Component {
 										paddingLeft: ( 'custom' === style[ 0 ].size && '' !== style[ 0 ].deskPadding[ 3 ] ? style[ 0 ].deskPadding[ 3 ] + 'px' : undefined ),
 										background: ( undefined !== inputBG ? inputBG : undefined ),
 										color: ( undefined !== style[ 0 ].color ? KadenceColorOutput( style[ 0 ].color ) : undefined ),
-										fontSize: ( style[ 0 ].fontSize && style[ 0 ].fontSize[ 0 ] ? style[ 0 ].fontSize[ 0 ] + style[ 0 ].fontSizeType : undefined ),
-										lineHeight: ( style[ 0 ].lineHeight && style[ 0 ].lineHeight[ 0 ] ? style[ 0 ].lineHeight[ 0 ] + style[ 0 ].lineType : undefined ),
+										fontSize: previewStyleFontSize + previewStyleFontSizeType,
+										lineHeight: previewStyleLineHeight + previewStyleLineHeightType,
 										borderRadius: ( undefined !== style[ 0 ].borderRadius ? style[ 0 ].borderRadius + 'px' : undefined ),
 										borderTopWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 0 ] ? style[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
 										borderRightWidth: ( style[ 0 ].borderWidth && '' !== style[ 0 ].borderWidth[ 1 ] ? style[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
@@ -1823,6 +1831,7 @@ class KadenceForm extends Component {
 							lineHeightType={ style[ 0 ].lineType }
 							onLineHeightType={ ( value ) => this.saveStyle( { lineType: value } ) }
 						/>
+
 						<div className="kt-btn-size-settings-container">
 							<h2 className="kt-beside-btn-group">{ __( 'Input Size' ) }</h2>
 							<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Input Size', 'kadence-blocks' ) }>
