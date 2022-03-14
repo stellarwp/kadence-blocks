@@ -18,9 +18,9 @@ import ResponsiveMeasurementControls from '../../components/measurement/responsi
 
 const { InspectorControls } = wp.blockEditor
 
-const el = wp.element.createElement
 
-const { InnerBlocks } = wp.blockEditor
+import { createElement } from '@wordpress/element'
+import { InnerBlocks } from '@wordpress/block-editor';
 import uniqueId from 'lodash/uniqueId'
 
 const { PanelBody, ToggleControl } = wp.components
@@ -35,7 +35,6 @@ const ktShowMoreUniqueIDs = []
 export function Edit ({
 	attributes,
 	setAttributes,
-	className,
 	clientId,
   	previewDevice
 } ) {
@@ -204,7 +203,7 @@ export function Edit ({
 				paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
 				paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
 			} }>
-				{ el(InnerBlocks, {
+				{ createElement(InnerBlocks, {
 					template: [
 						['core/group', {
 							lock: {
@@ -216,6 +215,9 @@ export function Edit ({
 						['kadence/advancedbtn', {
 							lock: { remove: true, move: true },
 							hAlign: 'left',
+							thAlign: "",
+							mhAlign: "",
+							btnCount: 1,
 							uniqueID: buttonOneUniqueID,
 							className: 'kt-show-more-button',
 							btns: [
@@ -310,6 +312,52 @@ export function Edit ({
 										'',
 										''
 									]
+								}
+							],
+							"typography": "",
+							"googleFont": false,
+							"loadGoogleFont": true,
+							"fontSubset": "",
+							"fontVariant": "",
+							"fontWeight": "regular",
+							"fontStyle": "normal",
+							"textTransform": "",
+							"widthType": "auto",
+							"widthUnit": "px",
+							"forceFullwidth": false,
+							"collapseFullwidth": false,
+							"margin": [
+								{
+									"desk": [
+										"",
+										"",
+										"",
+										""
+									],
+									"tablet": [
+										"",
+										"",
+										"",
+										""
+									],
+									"mobile": [
+										"",
+										"",
+										"",
+										""
+									]
+								}
+							],
+							"marginUnit": "px",
+							"inQueryBlock": false,
+							"kadenceAOSOptions": [
+								{
+									"duration": "",
+									"offset": "",
+									"easing": "",
+									"once": "",
+									"delay": "",
+									"delayOffset": ""
 								}
 							]
 						}],
@@ -417,6 +465,52 @@ export function Edit ({
 										'',
 										''
 									]
+								}
+							],
+							"typography": "",
+							"googleFont": false,
+							"loadGoogleFont": true,
+							"fontSubset": "",
+							"fontVariant": "",
+							"fontWeight": "regular",
+							"fontStyle": "normal",
+							"textTransform": "",
+							"widthType": "auto",
+							"widthUnit": "px",
+							"forceFullwidth": false,
+							"collapseFullwidth": false,
+							"margin": [
+								{
+									"desk": [
+										"",
+										"",
+										"",
+										""
+									],
+									"tablet": [
+										"",
+										"",
+										"",
+										""
+									],
+									"mobile": [
+										"",
+										"",
+										"",
+										""
+									]
+								}
+							],
+							"marginUnit": "px",
+							"inQueryBlock": false,
+							"kadenceAOSOptions": [
+								{
+									"duration": "",
+									"offset": "",
+									"easing": "",
+									"once": "",
+									"delay": "",
+									"delayOffset": ""
 								}
 							]
 						}]
