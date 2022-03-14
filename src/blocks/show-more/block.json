@@ -16,10 +16,6 @@
 	"id": {
 	  "type": "number"
 	},
-	"width": {
-	  "type": "number",
-	  "default": "0"
-	},
 	"uniqueID": {
 	  "type": "string"
 	},
