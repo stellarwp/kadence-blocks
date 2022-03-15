@@ -20,6 +20,7 @@ import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
+import get from 'lodash/get';
 import KadenceColorOutput from '../../kadence-color-output';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import URLInputControl from '../../components/links/link-control';
@@ -110,7 +111,7 @@ class KadenceIconLists extends Component {
 							item.padding = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].padding;
 							item.borderWidth = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderWidth;
 							item.style = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].style;
-							item.level = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].level
+							item.level = get( blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ], 'level', 0)
 							return item;
 						} );
 					} else {
@@ -164,7 +165,7 @@ class KadenceIconLists extends Component {
 			borderWidth: currentItems[ 0 ].borderWidth,
 			padding: currentItems[ 0 ].padding,
 			style: currentItems[ 0 ].style,
-			level: currentItems[ 0 ].level
+			level: get(currentItems[ 0 ], 'level', 0)
 		} ];
 		const addin = Math.abs( previousIndex + 1 );
 		{
@@ -189,7 +190,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ previousIndex ].borderWidth,
 						padding: currentItems[ previousIndex ].padding,
 						style: currentItems[ previousIndex ].style,
-						level: currentItems[ previousIndex ].level
+						level: get(currentItems[ previousIndex ], 'level', 0)
 					} );
 				} else if ( n === previousIndex ) {
 					newItems.push( {
@@ -206,7 +207,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ previousIndex ].borderWidth,
 						padding: currentItems[ previousIndex ].padding,
 						style: currentItems[ previousIndex ].style,
-						level: currentItems[ previousIndex ].level
+						level: get(currentItems[ previousIndex ], 'level', 0)
 					} );
 				} else {
 					if ( n > addin ) {
@@ -226,7 +227,7 @@ class KadenceIconLists extends Component {
 						borderWidth: currentItems[ ind ].borderWidth,
 						padding: currentItems[ ind ].padding,
 						style: currentItems[ ind ].style,
-						level: currentItems[ ind ].level
+						level: get(currentItems[ ind ], 'level', 0)
 					} );
 				}
 			} );
@@ -289,9 +290,6 @@ class KadenceIconLists extends Component {
 
 	onMoveLeft(index) {
 		return () => {
-			console.log('Attempting to move left');
-			console.log(index);
-
 			if(this.props.attributes.items[index].level === 0) {
 				return;
 			}
@@ -301,11 +299,13 @@ class KadenceIconLists extends Component {
 
 	onMoveRight(index) {
 		return () => {
-			if(this.props.attributes.items[index].level === 5) {
+			let currentLevel = get( this.props.attributes.items[index], 'level', 0);
+
+			if(currentLevel === 5) {
 				return;
 			}
 
-			this.onMoveHorizontal(index, this.props.attributes.items[index].level + 1);
+			this.onMoveHorizontal(index, currentLevel + 1);
 		}
 	}
 
@@ -551,7 +551,7 @@ class KadenceIconLists extends Component {
 		);
 		const renderIconsPreview = ( index ) => {
 			return (
-				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index } kt-svg-icon-list-level-${ items[index].level }` } >
+				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index } kt-svg-icon-list-level-${ get( items[index], 'level', 0 ) }` } >
 					{ items[ index ].icon && (
 						<IconRender className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
 							color: ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
@@ -625,7 +625,7 @@ class KadenceIconLists extends Component {
 						onMoveLeft={ value => this.onMoveLeft( value ) }
 						focusIndex={ this.state.focusIndex }
 						itemCount={ this.props.attributes.items.length }
-						level={  this.props.attributes.items[ ( this.state.focusIndex ? this.state.focusIndex : 0 ) ].level }
+						level={  get( this.props.attributes.items[ ( this.state.focusIndex ? this.state.focusIndex : 0 ) ], 'level', 0) }
 					/>
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
@@ -655,7 +655,7 @@ class KadenceIconLists extends Component {
 												borderWidth: newitems[ 0 ].borderWidth,
 												padding: newitems[ 0 ].padding,
 												style: newitems[ 0 ].style,
-												level: newitems[ 0 ].level
+												level: get(newitems[ 0 ], 'level', 0)
 											} );
 										} ); }
 										setAttributes( { items: newitems } );
@@ -952,7 +952,7 @@ class KadenceIconLists extends Component {
 												borderWidth: newitems[ 0 ].borderWidth,
 												padding: newitems[ 0 ].padding,
 												style: newitems[ 0 ].style,
-												level: newitems[ 0 ].level
+												level: get(newitems[ 0 ], 'level', 0)
 											} );
 										} ); }
 										setAttributes( { items: newitems } );
