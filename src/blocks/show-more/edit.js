@@ -108,14 +108,6 @@ export function Edit ({
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
-
-
-	console.log('previewMarginLeft', previewMarginLeft);
-
-	console.log('marginDesktop', marginDesktop);
-	console.log('marginTablet', marginTablet);
-	console.log('marginMobile', marginMobile);
-
 	return (
 		<Fragment>
 			<InspectorControls>
