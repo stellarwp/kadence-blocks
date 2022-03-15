@@ -1,5 +1,5 @@
 /**
- * BLOCK: Kadence Block Template
+ * BLOCK: Kadence Show More Block
  */
 
 /**
@@ -11,16 +11,15 @@ import './editor.scss'
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n'
-import { useState } from '@wordpress/element'
+import { useRef, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control'
 
 const { InspectorControls } = wp.blockEditor
 
-
 import { createElement } from '@wordpress/element'
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import uniqueId from 'lodash/uniqueId'
 
 const { PanelBody, ToggleControl } = wp.components
@@ -108,6 +107,11 @@ export function Edit ({
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
+	const ref = useRef();
+	const blockProps = useBlockProps( {
+		ref,
+	} );
+
 	return (
 		<Fragment>
 			<InspectorControls>
@@ -184,7 +188,8 @@ export function Edit ({
 					/>
 				</PanelBody>
 			</InspectorControls>
-			<div style={ {
+			<div {...blockProps}
+				style={ {
 				marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
 				marginRight: ( '' !== previewMarginRight ? previewMarginRight + marginUnit : undefined ),
 				marginBottom: ( '' !== previewMarginBottom ? previewMarginBottom + marginUnit : undefined ),
@@ -203,7 +208,7 @@ export function Edit ({
 								move: true
 							},
 							className: 'kt-show-more-preview',
-						}, { innerBlocks: ['core/paragraph', { placeholder: __('Add new content to this group blocks to customize your page', 'kadence-blocks') }] }],
+						}, { innerBlocks: ['core/paragraph', { dropCap: false, placeholder: __('Add content to this group blocks to customize your page', 'kadence-blocks') }] }],
 						['kadence/advancedbtn', {
 							lock: { remove: true, move: true },
 							hAlign: 'left',
@@ -359,7 +364,7 @@ export function Edit ({
 								move: true
 							},
 							className: 'kt-show-more-expanded',
-						}, { innerBlocks: ['core/paragraph', { placeholder:  __('This group block is initially hidden. Content here will replace the top content when expanded.', 'kadence-blocks') }] }],
+						}, { innerBlocks: ['core/paragraph', { dropCap: false, placeholder:  __('This group block is initially hidden. Content here will replace the top content when expanded.', 'kadence-blocks') }] }],
 						['kadence/advancedbtn', {
 							lock: { remove: true, move: true },
 							hAlign: 'left',

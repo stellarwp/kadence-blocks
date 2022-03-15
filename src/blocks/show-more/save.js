@@ -1,7 +1,7 @@
 /**
- * BLOCK: Kadence Block Template
+ * BLOCK: Kadence Show More Block
  */
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * External dependencies
@@ -16,7 +16,7 @@ function Save( { attributes, innerBlocks } ) {
 	} );
 
 	return (
-		<div className={ classes }>
+		<div { ...useBlockProps.save( { className: classes }) }>
 			<InnerBlocks.Content />
 		</div>
 	);
