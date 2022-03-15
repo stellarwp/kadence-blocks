@@ -4,9 +4,6 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .kadence-blocks-list-item__control-menu {
-    display: flex;
-}
  .kt-btn-size-settings-container .components-button-group .components-button.is-primary svg {
     fill: white;
 }
@@ -22,25 +19,6 @@
 }
 .rtl .kt-svg-icon-list-item-wrap {
 	text-align: right;
-}
-.kadence-blocks-list-item__control-menu {
-    position: absolute;
-    top: -10px;
-    right:0;
-}
-.rtl .kadence-blocks-list-item__control-menu {
-	left:0;
-	right:auto;
-}
-.kadence-blocks-list-item__control-menu button.components-button {
-    height: 16px;
-    width:auto;
-	.dashicon {
-		margin:0;
-	}
-}
-.kadence-blocks-list-item__control-menu button.components-button svg {
-    height:16px
 }
 .kt-svg-icon-list-single {
 	margin-right: 10px;
@@ -120,4 +98,28 @@
 
 #end-resizable-editor-section {
     display: none;
+}
+
+.kt-svg-icon-list-level-0 {
+	padding-left: 0rem;
+}
+
+.kt-svg-icon-list-level-1 {
+	padding-left: 2rem;
+}
+
+.kt-svg-icon-list-level-2 {
+	padding-left: 4rem;
+}
+
+.kt-svg-icon-list-level-3 {
+	padding-left: 6rem;
+}
+
+.kt-svg-icon-list-level-4 {
+	padding-left: 8rem;
+}
+
+.kt-svg-icon-list-level-5 {
+	padding-left: 10rem;
 }

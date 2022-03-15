@@ -25,6 +25,8 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import URLInputControl from '../../components/links/link-control';
 import DynamicTextControl from '../../components/common/dynamic-text-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import MoveItem from './moveItem';
+
 /**
  * Import Css
  */
@@ -59,10 +61,7 @@ const {
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import {
-	plus,
-	chevronUp,
-	chevronDown,
-	close,
+	plus
 } from '@wordpress/icons';
 import {
 	applyFilters,
@@ -78,7 +77,8 @@ class KadenceIconLists extends Component {
 		this.showSettings = this.showSettings.bind( this );
 		this.saveListItem = this.saveListItem.bind( this );
 		this.onSelectItem = this.onSelectItem.bind( this );
-		this.onMove = this.onMove.bind( this );
+		this.onMoveVertical = this.onMoveVertical.bind( this );
+		this.onMoveHorizontal = this.onMoveHorizontal.bind( this );
 		this.onMoveDown = this.onMoveDown.bind( this );
 		this.onMoveUp = this.onMoveUp.bind( this );
 		this.onMoveLeft = this.onMoveLeft.bind( this );
@@ -238,7 +238,7 @@ class KadenceIconLists extends Component {
 	};
 	// Silly Hack to handle focus.
 	setFocusOnNewItem( index, uniqueID ) {
-		setTimeout( function(){ 
+		setTimeout( function(){
 			if ( document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` ) ) {
 				const parent = document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` );
 				const rich = parent.querySelector( '.rich-text' );
@@ -255,11 +255,17 @@ class KadenceIconLists extends Component {
 			}
 		};
 	}
-	onMove( oldIndex, newIndex ) {
+	onMoveVertical( oldIndex, newIndex ) {
 		const items = [ ...this.props.attributes.items ];
 		items.splice( newIndex, 1, this.props.attributes.items[ oldIndex ] );
 		items.splice( oldIndex, 1, this.props.attributes.items[ newIndex ] );
 		this.setState( { focusIndex: newIndex } );
+		this.props.setAttributes( { items } );
+	}
+	onMoveHorizontal( index, newLevel ) {
+		const items = [ ...this.props.attributes.items ];
+		items[index].level = newLevel;
+
 		this.props.setAttributes( { items } );
 	}
 
@@ -268,7 +274,7 @@ class KadenceIconLists extends Component {
 			if ( oldIndex === this.props.attributes.items.length - 1 ) {
 				return;
 			}
-			this.onMove( oldIndex, oldIndex + 1 );
+			this.onMoveVertical( oldIndex, oldIndex + 1 );
 		};
 	}
 
@@ -277,22 +283,29 @@ class KadenceIconLists extends Component {
 			if ( oldIndex === 0 ) {
 				return;
 			}
-			this.onMove( oldIndex, oldIndex - 1 );
+			this.onMoveVertical( oldIndex, oldIndex - 1 );
 		};
 	}
 
 	onMoveLeft(index) {
 		return () => {
-			if(this.props.attributes.items[index].level > 0)
-				this.props.attributes.items[index].level = this.props.attributes.items[index].level - 1;
-			this.setState({});
+			console.log('Attempting to move left');
+			console.log(index);
+
+			if(this.props.attributes.items[index].level === 0) {
+				return;
+			}
+			this.onMoveHorizontal(index, this.props.attributes.items[index].level - 1);
 		}
 	}
 
 	onMoveRight(index) {
 		return () => {
-			this.props.attributes.items[index].level = this.props.attributes.items[index].level + 1;
-			this.setState({});
+			if(this.props.attributes.items[index].level === 5) {
+				return;
+			}
+
+			this.onMoveHorizontal(index, this.props.attributes.items[index].level + 1);
 		}
 	}
 
@@ -594,46 +607,6 @@ class KadenceIconLists extends Component {
 						} }
 						className={ 'kt-svg-icon-list-text' }
 					/>
-					<div className="kadence-blocks-list-item__control-menu">
-						<Button
-							icon="arrow-up"
-							onClick={ index === 0 ? undefined : this.onMoveUp( index ) }
-							className="kadence-blocks-list-item__move-up"
-							label={ __( 'Move Item Up', 'kadence-blocks' ) }
-							aria-disabled={ index === 0 }
-							disabled={ ! this.state.focusIndex === index }
-						/>
-						<Button
-							icon="arrow-down"
-							onClick={ ( index + 1 ) === listCount ? undefined : this.onMoveDown( index ) }
-							className="kadence-blocks-list-item__move-down"
-							label={ __( 'Move Item Down', 'kadence-blocks' ) }
-							aria-disabled={ ( index + 1 ) === listCount }
-							disabled={ ! this.state.focusIndex === index }
-						/>
-						<Button
-							icon="arrow-left"
-							onClick={ this.onMoveLeft(index) }
-							className="kadence-blocks-list-item__move-left"
-							label={ __('Move Item Left', 'kadence-blocks') }
-							aria-disabled={ items[index].level === 0 }
-							disabled={ ! this.state.focusIndex === index }
-						/>
-						<Button
-							icon="arrow-right"
-							onClick={ this.onMoveRight(index) }
-							className="kadence-blocks-list-item__move-right"
-							label={ __('Move Item Left', 'kadence-blocks') }
-							disabled={ ! this.state.focusIndex === index }
-						/>
-						<Button
-							icon="no-alt"
-							onClick={ () => removeListItem( null, index ) }
-							className="kadence-blocks-list-item__remove"
-							label={ __( 'Remove Item', 'kadence-blocks' ) }
-							disabled={ ! this.state.focusIndex === index }
-						/>
-					</div>
 				</div>
 			);
 		};
@@ -644,6 +617,15 @@ class KadenceIconLists extends Component {
 						value={ blockAlignment }
 						controls={ [ 'center', 'left', 'right' ] }
 						onChange={ value => setAttributes( { blockAlignment: value } ) }
+					/>
+					<MoveItem
+						onMoveUp={ value => this.onMoveUp( value ) }
+						onMoveDown={ value => this.onMoveDown( value ) }
+						onMoveRight={ value => this.onMoveRight( value ) }
+						onMoveLeft={ value => this.onMoveLeft( value ) }
+						focusIndex={ this.state.focusIndex }
+						itemCount={ this.props.attributes.items.length }
+						level={  this.props.attributes.items[ ( this.state.focusIndex ? this.state.focusIndex : 0 ) ].level }
 					/>
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
