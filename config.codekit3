@@ -7,7 +7,7 @@
       "uuidString" : "4A0AC384-49F1-4908-A230-491BE3A9C306"
     }
   ],
-  "creatorBuild" : "34324",
+  "creatorBuild" : "34335",
   "files" : {
     "\/.editorconfig" : {
       "cB" : 0,
@@ -39,6 +39,12 @@
       "hM" : 0,
       "oA" : 0,
       "oAP" : "\/.gitignore",
+      "oF" : 0
+    },
+    "\/.idea" : {
+      "ft" : 65536,
+      "oA" : 1,
+      "oAP" : "\/.idea",
       "oF" : 0
     },
     "\/dist\/assets\/css\/simplelightbox.css" : {
@@ -101,7 +107,7 @@
       "oA" : 0,
       "oAP" : "\/dist\/assets\/images\/ajax-loader.gif",
       "oF" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "rq" : 75
     },
@@ -111,8 +117,8 @@
       "oA" : 0,
       "oAP" : "\/dist\/assets\/images\/graphy.png",
       "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
+      "oIPL" : 1,
+      "opt" : 1,
       "oT" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
@@ -602,6 +608,18 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks-min.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks-min-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
     "\/dist\/build\/blocks.asset.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -622,6 +640,14 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks.css.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.css.map",
+      "oF" : 0
+    },
     "\/dist\/build\/blocks.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -633,6 +659,14 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/dist\/build\/blocks.js.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks.js.map",
+      "oF" : 0
+    },
     "\/dist\/build\/vendors\/blocks.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -643,6 +677,14 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
+    },
+    "\/dist\/build\/vendors\/blocks.js.map" : {
+      "cB" : 0,
+      "ft" : 8192,
+      "hM" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/vendors\/blocks.js.map",
+      "oF" : 0
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -962,6 +1004,18 @@
       "pg" : 0,
       "sct" : 1
     },
+    "\/dist\/plugin\/plugin-min.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/plugin\/plugin-min-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
     "\/dist\/plugin\/plugin.asset.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -1035,7 +1089,7 @@
       "oAP" : "\/dist\/settings\/img\/accordion.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1048,7 +1102,7 @@
       "oAP" : "\/dist\/settings\/img\/btn.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1061,7 +1115,7 @@
       "oAP" : "\/dist\/settings\/img\/form-block.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1074,7 +1128,7 @@
       "oAP" : "\/dist\/settings\/img\/gallery-block.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1087,7 +1141,7 @@
       "oAP" : "\/dist\/settings\/img\/heading.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1100,7 +1154,7 @@
       "oAP" : "\/dist\/settings\/img\/icon.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1113,7 +1167,7 @@
       "oAP" : "\/dist\/settings\/img\/iconlist.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1126,19 +1180,19 @@
       "oAP" : "\/dist\/settings\/img\/infobox.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
     },
     "\/dist\/settings\/img\/kadence-logo.png" : {
       "ft" : 32768,
-      "iS" : 23850,
+      "iS" : 12074,
       "oA" : 0,
       "oAP" : "\/dist\/settings\/img\/kadence-logo.png",
       "oF" : 0,
-      "oIPL" : 0,
-      "opt" : 0,
+      "oIPL" : 1,
+      "opt" : 1,
       "oT" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
@@ -1152,7 +1206,7 @@
       "oAP" : "\/dist\/settings\/img\/rowlayout.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1165,7 +1219,7 @@
       "oAP" : "\/dist\/settings\/img\/spacer.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1178,7 +1232,7 @@
       "oAP" : "\/dist\/settings\/img\/tabs.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -1191,7 +1245,7 @@
       "oAP" : "\/dist\/settings\/img\/testimonials.jpg",
       "oF" : 0,
       "oIPL" : 0,
-      "opt" : 0,
+      "opt" : 1,
       "ou" : "lpckwebp-none",
       "q" : 100,
       "rq" : 75
@@ -2124,6 +2178,17 @@
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
+    },
+    "\/src\/blocks\/icon-list\/moveUp.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/icon-list\/moveUp-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
     },
     "\/src\/blocks\/icon-list\/style.scss" : {
       "aP" : 1,
@@ -5037,7 +5102,8 @@
     "displayValue" : "kadence-blocks New",
     "displayValueWasSetByUser" : 1,
     "iconImageName" : "brackets-verd",
-    "iconImageWasSetByUser" : 0
+    "iconImageWasSetByUser" : 0,
+    "lastBuiltDate" : 669074957.59204102
   },
   "projectSettings" : {
     "abortBuildOnError" : 1,
