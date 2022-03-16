@@ -19,7 +19,6 @@ import {
 } from '@wordpress/block-editor';
 import { applyFilters } from '@wordpress/hooks';
 import {
-	PanelBody,
 	withNotices
 } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
@@ -27,6 +26,7 @@ import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
 import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
 import KadenceImageControl from '../../components/common/kadence-image-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import itemicons from '../../icons';
 
 /* global wp */
@@ -407,7 +407,11 @@ export function ImageEdit( {
 						/>
 					</BlockControls>
 					<InspectorControls>
-						<PanelBody title={ __( 'Image settings', 'kadence-blocks' ) } initialOpen={ true } >
+						<KadencePanelBody
+							title={ __( 'Image settings', 'kadence-blocks' ) }
+							initialOpen={ true }
+							panelName={ 'kb-image-settings-edit' }
+						>
 							<KadenceImageControl
 								label={ __( 'Image', 'kadence-blocks' ) }
 								hasImage={ ( url ? true : false ) }
@@ -430,7 +434,7 @@ export function ImageEdit( {
 								name={ 'kadence/image' }
 								clientId={ clientId }
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 					</InspectorControls>
 				</>
 			) }

@@ -7,11 +7,9 @@
 /**
  * Import External
  */
-import times from 'lodash/times';
 import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
 import classnames from 'classnames';
-import memoize from 'memize';
 import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
@@ -37,6 +35,7 @@ import icons from '../../icons';
  * Internal dependencies
  */
 import TableOfContentsList from './list';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import { getHeadingsFromContent, linearToNestedHeadingList } from './utils';
 const { ENTER } = wp.keycodes;
 import { withSelect } from '@wordpress/data';
@@ -51,9 +50,7 @@ const {
 	BlockControls,
 } = wp.blockEditor;
 const {
-	TabPanel,
 	ToolbarGroup,
-	PanelBody,
 	ToggleControl,
 	SelectControl,
 } = wp.components;
@@ -376,9 +373,10 @@ class KadenceTableOfContents extends Component {
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
 						{ this.showSettings( 'container' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Allowed Headers', 'kadence-blocks' ) }
 								initialOpen={ true }
+								panelName={ 'kb-toc-allowed-headers' }
 							>
 								<ToggleControl
 									label={ 'h1' }
@@ -410,12 +408,13 @@ class KadenceTableOfContents extends Component {
 									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h6 ? allowedHeaders[ 0 ].h6 : true }
 									onChange={ value => saveAllowedHeaders( { h6: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'title' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Title Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-toc-title-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Enable Title', 'kadence-blocks' ) }
@@ -491,14 +490,15 @@ class KadenceTableOfContents extends Component {
 										/>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'collapse' ) && (
 							<Fragment>
 								{ enableTitle && (
-									<PanelBody
+									<KadencePanelBody
 										title={ __( 'Collapsible Settings', 'kadence-blocks' ) }
 										initialOpen={ false }
+										panelName={ 'kb-toc-collapsible-settings' }
 									>
 										<ToggleControl
 											label={ __( 'Enable Collapsible Content', 'kadence-blocks' ) }
@@ -538,14 +538,15 @@ class KadenceTableOfContents extends Component {
 												/>
 											</Fragment>
 										) }
-									</PanelBody>
+									</KadencePanelBody>
 								) }
 							</Fragment>
 						) }
 						{ this.showSettings( 'content' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'List Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-toc-list-settings' }
 							>
 								<ResponsiveRangeControl
 									label={ __( 'List Item Gap', 'kadence-blocks' ) }
@@ -624,12 +625,13 @@ class KadenceTableOfContents extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'container' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Container Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-toc-container-settings' }
 							>
 								<PopColorControl
 									label={ __( 'Container Background', 'kadence-blocks' ) }
@@ -749,13 +751,14 @@ class KadenceTableOfContents extends Component {
 									units={ [ 'px', 'em', 'rem' ] }
 									onUnit={ ( value ) => setAttributes( { containerMarginUnit: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'container' ) && (
 							<Fragment>
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Scroll Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-toc-scroll-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Enable Smooth Scroll to ID', 'kadence-blocks' ) }
@@ -785,21 +788,22 @@ class KadenceTableOfContents extends Component {
 											onChange={ ( value ) => setAttributes( { contentActiveColor: value } ) }
 										/>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							</Fragment>
 						) }
 						{ this.showSettings( 'container' ) && (
 							<Fragment>
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Non static content', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-toc-non-static-content' }
 								>
 									<ToggleControl
 										label={ __( 'Search for Headings in Non static content?', 'kadence-blocks' ) }
 										checked={ enableDynamicSearch }
 										onChange={ value => setAttributes( { enableDynamicSearch: value } ) }
 									/>
-								</PanelBody>
+								</KadencePanelBody>
 							</Fragment>
 						) }
 					</InspectorControls>

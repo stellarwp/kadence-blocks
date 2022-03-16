@@ -27,6 +27,7 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import KadenceRange from '../../components/range/range-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * Import Css
@@ -39,7 +40,7 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-import { 
+import {
 	InnerBlocks,
 	InspectorControls,
 	BlockControls,
@@ -50,7 +51,6 @@ const {
 	TabPanel,
 	Button,
 	ButtonGroup,
-	PanelBody,
 	Dashicon,
 	RangeControl,
 	ToggleControl,
@@ -606,7 +606,7 @@ class KadenceAccordionComponent extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody>
+						<KadencePanelBody panelName={ 'kb-accordion-all' }>
 							{ this.showSettings( 'paneControl' ) && (
 								<Fragment>
 									<ToggleControl
@@ -660,11 +660,12 @@ class KadenceAccordionComponent extends Component {
 									) }
 								</Fragment>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'titleColors' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Color Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-pane-title-color-settings' }
 							>
 								<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
 									activeClass="active-tab"
@@ -701,12 +702,13 @@ class KadenceAccordionComponent extends Component {
 										}
 									}
 								</TabPanel>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleIcon' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Trigger Icon', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-acordion-panel-title-trigger-icon' }
 							>
 								<ToggleControl
 									label={ __( 'Show Icon', 'kadence-blocks' ) }
@@ -741,12 +743,13 @@ class KadenceAccordionComponent extends Component {
 									] }
 									onChange={ value => setAttributes( { iconSide: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleSpacing' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Spacing', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-pane-title-spacing' }
 							>
 								{/* <MeasurementControls
 									label={ __( 'Pane Title Padding (px)', 'kadence-blocks' ) }
@@ -795,12 +798,13 @@ class KadenceAccordionComponent extends Component {
 									min={ 1 }
 									max={ 120 }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleBorder' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Border', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-pane-title-border' }
 							>
 								<MeasurementControls
 									label={ __( 'Pane Title Border Width (px)', 'kadence-blocks' ) }
@@ -830,12 +834,13 @@ class KadenceAccordionComponent extends Component {
 									thirdIcon={ icons.bottomright }
 									fourthIcon={ icons.bottomleft }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleFont' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Pane Title Font Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-pane-title-font-settings' }
 							>
 								<TypographyControls
 									fontSize={ titleStyles[ 0 ].size }
@@ -872,12 +877,13 @@ class KadenceAccordionComponent extends Component {
 									fontSubset={ titleStyles[ 0 ].subset }
 									onFontSubset={ ( value ) => saveTitleStyles( { subset: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'paneContent' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Inner Content Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-inner-content-settings' }
 							>
 								<ResponsiveMeasuremenuControls
 									label={ __( 'Inner Content Padding', 'kadence-blocks' ) }
@@ -947,12 +953,13 @@ class KadenceAccordionComponent extends Component {
 									thirdIcon={ icons.bottomright }
 									fourthIcon={ icons.bottomleft }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleTag' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Title Tag Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-title-tag-settings' }
 							>
 								<SelectControl
 									label={ __( 'Title Tag', 'kadence-blocks' ) }
@@ -970,12 +977,13 @@ class KadenceAccordionComponent extends Component {
 										this.setState( { titleTag: value } );
 									} }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'structure' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Structure Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-accordion-structure-settings' }
 							>
 								<KadenceRange
 									label={ __( 'Content Minimum Height', 'kadence-blocks' ) }
@@ -1007,7 +1015,7 @@ class KadenceAccordionComponent extends Component {
 										setAttributes( { faqSchema: value } );
 									} }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 					</InspectorControls>
 				) }

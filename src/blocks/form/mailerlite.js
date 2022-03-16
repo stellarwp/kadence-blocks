@@ -9,6 +9,8 @@
 import Select from 'react-select';
 const { addQueryArgs } = wp.url;
 const { apiFetch } = wp;
+import KadencePanelBody from '../../components/KadencePanelBody';
+
 /**
  * Internal block libraries
  */
@@ -18,7 +20,6 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	PanelBody,
 	TextControl,
 	Button,
 	Spinner,
@@ -152,9 +153,10 @@ class MailerLiteControls extends Component {
 		const hasGroup = Array.isArray( group ) && group.length;
 		const hasFields = Array.isArray( this.state.groupFields ) && this.state.groupFields.length;
 		return (
-			<PanelBody
+			<KadencePanelBody
 				title={ __( 'MailerLite Settings', 'kadence-blocks-pro' ) }
 				initialOpen={ false }
+				panelName={ 'kb-mailerlite-settings' }
 			>
 				<p>
 					<Fragment>
@@ -266,7 +268,7 @@ class MailerLiteControls extends Component {
 						) }
 					</Fragment>
 				) }
-			</PanelBody>
+			</KadencePanelBody>
 		);
 	}
 }

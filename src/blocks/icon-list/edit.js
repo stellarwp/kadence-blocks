@@ -25,6 +25,8 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import URLInputControl from '../../components/links/link-control';
 import DynamicTextControl from '../../components/common/dynamic-text-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
+
 /**
  * Import Css
  */
@@ -44,14 +46,11 @@ const {
 const {
 	Component,
 	Fragment,
-	findDOMNode,
 } = wp.element;
 const {
-	PanelBody,
 	RangeControl,
 	ButtonGroup,
 	Tooltip,
-	IconButton,
 	Button,
 	SelectControl,
 } = wp.components;
@@ -231,7 +230,7 @@ class KadenceIconLists extends Component {
 	};
 	// Silly Hack to handle focus.
 	setFocusOnNewItem( index, uniqueID ) {
-		setTimeout( function(){ 
+		setTimeout( function(){
 			if ( document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` ) ) {
 				const parent = document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` );
 				const rich = parent.querySelector( '.rich-text' );
@@ -379,9 +378,10 @@ class KadenceIconLists extends Component {
 		}
 		const renderIconSettings = ( index ) => {
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Item', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === listCount ? true : false ) }
+					panelName={ 'kb-icon-item-' + index }
 				>
 					<URLInputControl
 						label={ __( 'Link', 'kadence-blocks' ) }
@@ -501,7 +501,7 @@ class KadenceIconLists extends Component {
 							max={ 180 }
 						/>
 					) }
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const renderSettings = (
@@ -611,9 +611,10 @@ class KadenceIconLists extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'List Controls' ) }
 							initialOpen={ true }
+							panelName={ 'kb-icon-list-controls' }
 						>
 							<StepControl
 								label={ __( 'Number of Items' ) }
@@ -713,11 +714,12 @@ class KadenceIconLists extends Component {
 									/>
 								</Fragment>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'textStyle' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'List Text Styling' ) }
 								initialOpen={ false }
+								panelName={ 'kb-list-text-styling' }
 							>
 								<AdvancedPopColorControl
 									label={ __( 'Color Settings' ) }
@@ -762,12 +764,13 @@ class KadenceIconLists extends Component {
 									textTransform={ listStyles[ 0 ].textTransform }
 									onTextTransform={ ( value ) => saveListStyles( { textTransform: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'joinedIcons' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Edit All Icon Styles Together' ) }
 								initialOpen={ false }
+								panelName={ 'kb-icon-all-styles' }
 							>
 								<p>{ __( 'PLEASE NOTE: This will override individual list item settings.' ) }</p>
 								<IconControl
@@ -871,16 +874,17 @@ class KadenceIconLists extends Component {
 										max={ 180 }
 									/>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						<div className="kt-sidebar-settings-spacer"></div>
 						{ this.showSettings( 'individualIcons' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Individual list Item Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-list-individual-item-settings' }
 							>
 								{ renderSettings }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 					</InspectorControls>
 				) }

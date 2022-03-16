@@ -9,7 +9,6 @@ import { get, filter, map, pick, includes } from 'lodash';
 import { isBlobURL } from '@wordpress/blob';
 import {
 	ExternalLink,
-	PanelBody,
 	ResizableBox,
 	SelectControl,
 	Spinner,
@@ -60,6 +59,7 @@ import TypographyControls from '../../components/typography/typography-control';
 import URLInputControl from '../../components/links/link-control';
 import KadenceRange from '../../components/range/range-control';
 import KadenceImageURLInputUI from '../../components/links/image-url-input-link-control';
+import KadencePanelBody from '../../components/KadencePanelBody'
 
 export default function Image( {
 	temporaryURL,
@@ -461,7 +461,11 @@ export default function Image( {
 				</BlockControls>
 			) }
 			<InspectorControls>
-				<PanelBody title={ __( 'Image settings', 'kadence-blocks' ) } initialOpen={ true } >
+				<KadencePanelBody
+					title={ __('Image settings', 'kadence-blocks') }
+					initialOpen={ true }
+					panelName={ 'kb-image-settings' }
+				>
 					<KadenceImageControl
 						label={ __( 'Image', 'kadence-blocks' ) }
 						hasImage={ ( url ? true : false ) }
@@ -573,10 +577,11 @@ export default function Image( {
 							</>
 						}
 					/>
-				</PanelBody>
-				<PanelBody
+				</KadencePanelBody>
+				<KadencePanelBody
 					title={ __( 'Spacing Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
+					panelName={ 'kb-image-spacing' }
 				>
 					<ResponsiveMeasurementControls
 						label={ __( 'Padding', 'kadence-blocks' ) }
@@ -614,11 +619,12 @@ export default function Image( {
 						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 
-				<PanelBody
+				<KadencePanelBody
 					title={ __('Border Settings', 'kadence-blocks') }
 					initialOpen={ false }
+					panelName={ 'kb-image-border-settings' }
 				>
 					<PopColorControl
 						label={ __( 'Background Color', 'kadence-blocks' ) }
@@ -674,10 +680,11 @@ export default function Image( {
 						thirdIcon={ icons.bottomright }
 						fourthIcon={ icons.bottomleft }
 					/>
-				</PanelBody>
-				<PanelBody
+				</KadencePanelBody>
+				<KadencePanelBody
 					title={ __( 'Link Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
+					panelName={ 'kb-image-link-settings' }
 				>
 					<URLInputControl
 						label={ __( 'Image Link', 'kadence-blocks' ) }
@@ -698,10 +705,11 @@ export default function Image( {
 						name={ 'kadence/image' }
 						clientId={ clientId }
 					/>
-				</PanelBody>
-				<PanelBody
+				</KadencePanelBody>
+				<KadencePanelBody
 					title={ __('Shadow Settings', 'kadence-blocks') }
 					initialOpen={ false }
+					panelTitle={ 'kb-image-shadow-settings' }
 				>
 					<BoxShadowControl
 						label={ __( 'Box Shadow', 'kadence-blocks' ) }
@@ -780,10 +788,11 @@ export default function Image( {
 							{ __( 'Box Shadow vs. Drop Shadow', 'kadence-blocks' ) }
 						</ExternalLink>
 					</p>
-				</PanelBody>
-				<PanelBody
+				</KadencePanelBody>
+				<KadencePanelBody
 					title={ __( 'Mask Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
+					panelName={ 'kb-image-mask-settings' }
 				>
 					<SelectControl
 						label={ __( 'Mask Shape', 'kadence-blocks' ) }
@@ -895,10 +904,11 @@ export default function Image( {
 							/>
 						</>
 					) }
-				</PanelBody>
-				<PanelBody
+				</KadencePanelBody>
+				<KadencePanelBody
 					title={ __( 'Caption Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
+					panelName={ 'kb-image-caption-settings' }
 				>
 					<ToggleControl
 						label={ __( 'Show Caption', 'kadence-blocks' ) }
@@ -956,10 +966,11 @@ export default function Image( {
 							/>
 						</Fragment>
 					) }
-				</PanelBody>
-				<PanelBody
+				</KadencePanelBody>
+				<KadencePanelBody
 					title={ __( 'Image Filter', 'kadence-blocks' ) }
 					initialOpen={ false }
+					panelName={ 'kb-image-filter' }
 				>
 					<SelectControl
 						label={ __( 'Image Filter', 'kadence-blocks' ) }
@@ -1001,7 +1012,7 @@ export default function Image( {
 						value={ imageFilter }
 						onChange={ ( value ) => setAttributes( { imageFilter: value } ) }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 			</InspectorControls>
 		</>
 	);

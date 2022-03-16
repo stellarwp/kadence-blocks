@@ -20,6 +20,7 @@ import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import URLInputControl from '../../components/links/link-control';
 
 /**
@@ -42,7 +43,7 @@ import { compose } from '@wordpress/compose';
 const {
 	createBlock,
 } = wp.blocks;
-import { 
+import {
 	InspectorControls,
 	BlockControls,
 	AlignmentToolbar,
@@ -55,12 +56,7 @@ const {
 	Fragment,
 } = wp.element;
 const {
-	PanelBody,
-	ButtonGroup,
-	Button,
 	ToolbarGroup,
-	Dashicon,
-	TabPanel,
 	Spinner,
 	SelectControl,
 	TextControl,
@@ -488,7 +484,7 @@ class KadenceAdvancedHeading extends Component {
 							value={ ( color ? color : '' ) }
 							default={ '' }
 							onChange={ ( value ) => setAttributes( { color: value } ) }
-							onClassChange={ value => setAttributes( { colorClass: value } ) }							
+							onClassChange={ value => setAttributes( { colorClass: value } ) }
 						/>
 					) }
 					<AlignmentToolbar
@@ -504,7 +500,10 @@ class KadenceAdvancedHeading extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody title={ __( 'Settings', 'kadence-blocks' ) }>
+						<KadencePanelBody
+							title={ __( 'Settings', 'kadence-blocks' ) }
+							panelName={ 'kb-adv-heading-settings' }
+						>
 							<div className="kb-tag-level-control components-base-control">
 								<p className="kb-component-label">{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
 								<ToolbarGroup
@@ -574,11 +573,12 @@ class KadenceAdvancedHeading extends Component {
 									/>
 								</Fragment>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'advancedSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Advanced Typography Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-adv-heading-typography-settings' }
 							>
 								<TypographyControls
 									fontGroup={ 'heading' }
@@ -609,12 +609,13 @@ class KadenceAdvancedHeading extends Component {
 									loadItalic={ loadItalic }
 									onLoadItalic={ ( value ) => setAttributes( { loadItalic: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'highlightSettings', 'kadence-blocks' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Highlight Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-adv-heading-highlight-settings' }
 							>
 								<PopColorControl
 									label={ __( 'Highlight Color', 'kadence-blocks' ) }
@@ -710,12 +711,13 @@ class KadenceAdvancedHeading extends Component {
 									units={ [ 'px' ] }
 									showUnit={ true }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'linkSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Link Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-adv-heading-link-settings' }
 							>
 								<PopColorControl
 									label={ __( 'Link Color', 'kadence-blocks' ) }
@@ -754,12 +756,13 @@ class KadenceAdvancedHeading extends Component {
 									allowClear={ true }
 									{ ...this.props }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'marginSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Spacing Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-adv-heading-spacing-settings' }
 							>
 								<ResponsiveMeasurementControls
 									label={ __( 'Padding', 'kadence-blocks' ) }
@@ -797,11 +800,12 @@ class KadenceAdvancedHeading extends Component {
 									units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 									onUnit={ ( value ) => setAttributes( { marginType: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Text Shadow Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-adv-heading-text-shadow' }
 						>
 							<TextShadowControl
 								label={ __( 'Text Shadow', 'kadence-blocks' ) }
@@ -827,7 +831,7 @@ class KadenceAdvancedHeading extends Component {
 									this.saveShadow( { blur: value } );
 								} }
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 					</InspectorControls>
 				) }
 				<InspectorAdvancedControls>

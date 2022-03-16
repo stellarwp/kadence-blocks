@@ -32,6 +32,8 @@ import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
+
 /**
  * Internal block libraries
  */
@@ -53,10 +55,7 @@ const {
 	Button,
 	ButtonGroup,
 	Dashicon,
-	PanelBody,
 	RangeControl,
-	Toolbar,
-	TextControl,
 	ToggleControl,
 	SelectControl,
 	Tooltip,
@@ -572,9 +571,10 @@ class KadenceTestimonials extends Component {
 		};
 		const renderTestimonialSettings = ( index ) => {
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Testimonial', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === itemsCount ? true : false ) }
+					panelName={ 'kb-testimonials-' + index }
 				>
 					<SelectControl
 						label={ __( 'Media Type', 'kadence-blocks' ) }
@@ -632,7 +632,7 @@ class KadenceTestimonials extends Component {
 						min={ 1 }
 						max={ 5 }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const renderSettings = (
@@ -1035,7 +1035,9 @@ class KadenceTestimonials extends Component {
 							/>
 						</BlockControls>
 						<InspectorControls>
-							<PanelBody>
+							<KadencePanelBody
+								panelName={ 'kb-testimonials-settings' }
+							>
 								{ this.showSettings( 'layoutSettings' ) && (
 									<SelectControl
 										label={ __( 'Layout', 'kadence-blocks' ) }
@@ -1117,13 +1119,14 @@ class KadenceTestimonials extends Component {
 										/>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 							{ layout && layout === 'carousel' && (
 								<Fragment>
 									{ this.showSettings( 'carouselSettings' ) && (
-										<PanelBody
+										<KadencePanelBody
 											title={ __( 'Carousel Settings', 'kadence-blocks' ) }
 											initialOpen={ false }
+											panelName={ 'kb-testimonials-carousel'}
 										>
 											<ToggleControl
 												label={ __( 'Carousel Auto Play', 'kadence-blocks' ) }
@@ -1217,14 +1220,15 @@ class KadenceTestimonials extends Component {
 												value={ dotStyle }
 												onChange={ ( value ) => setAttributes( { dotStyle: value } ) }
 											/>
-										</PanelBody>
+										</KadencePanelBody>
 									) }
 								</Fragment>
 							) }
 							{ this.showSettings( 'containerSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Container Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-container-settings' }
 								>
 									<div className="kt-spacer-sidebar-15"></div>
 									<MeasurementControls
@@ -1328,12 +1332,13 @@ class KadenceTestimonials extends Component {
 											</ButtonGroup>
 										</div>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'iconSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Icon Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-icon-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Top Icon', 'kadence-blocks' ) }
@@ -1434,12 +1439,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'titleSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Title Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-title-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Title', 'kadence-blocks' ) }
@@ -1518,12 +1524,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'ratingSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Rating Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-rating-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Rating', 'kadence-blocks' ) }
@@ -1558,12 +1565,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'contentSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Content Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-content-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Content', 'kadence-blocks' ) }
@@ -1630,12 +1638,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'mediaSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Media Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-media-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Media', 'kadence-blocks' ) }
@@ -1767,12 +1776,13 @@ class KadenceTestimonials extends Component {
 											) }
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'nameSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Name Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-name-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Name', 'kadence-blocks' ) }
@@ -1824,12 +1834,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'occupationSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Occupation Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonails-occupation-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Show Occupation', 'kadence-blocks' ) }
@@ -1881,12 +1892,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'shadowSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Container Shadow', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-container-shadow' }
 								>
 									<ToggleControl
 										label={ __( 'Enable Shadow', 'kadence-blocks' ) }
@@ -1938,12 +1950,13 @@ class KadenceTestimonials extends Component {
 											/>
 										</Fragment>
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'wrapperSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Wrapper Padding', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-wrapper-padding' }
 								>
 									<ResponsiveMeasuremenuControls
 										label={ __( 'Wrapper Padding', 'kadence-blocks' ) }
@@ -1962,16 +1975,17 @@ class KadenceTestimonials extends Component {
 										units={ [ 'px', 'em', 'rem', '%' ] }
 										onUnit={ ( value ) => setAttributes( { wrapperPaddingType: value } ) }
 									/>
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							<div className="kt-sidebar-settings-spacer"></div>
 							{ this.showSettings( 'individualSettings' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Individual Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-testimonials-individual-settings' }
 								>
 									{ renderSettings }
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 						</InspectorControls>
 					</Fragment>

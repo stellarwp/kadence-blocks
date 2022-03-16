@@ -14,6 +14,7 @@ import PopColorControl from '../../components/color/pop-color-control';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * WordPress dependencies
@@ -23,7 +24,6 @@ const { Component, Fragment } = wp.element;
 const { InspectorControls } = wp.blockEditor;
 const {
 	TextControl,
-	PanelBody,
 	RangeControl,
 	ToggleControl,
 	TabPanel,
@@ -153,9 +153,11 @@ class Inspector extends Component {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Count Up Settings' ) }
-						initialOpen={ true }>
+						initialOpen={ true }
+						panelName={ 'kb-inspector-countup-settings' }
+					>
 
 						<div className="kt-columns-control">
 
@@ -233,11 +235,13 @@ class Inspector extends Component {
 								/>
 							) }
 						</div>
-					</PanelBody>
+					</KadencePanelBody>
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Title Settings', 'kadence-blocks' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-inspector-title-settings' }
+					>
 						<ToggleControl
 							label={ __( 'Show Title', 'kadence-blocks' ) }
 							checked={ displayTitle }
@@ -400,11 +404,13 @@ class Inspector extends Component {
 								/>
 							</Fragment>
 						}
-					</PanelBody>
+					</KadencePanelBody>
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Number Settings', 'kadence-blocks' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-inspector-number-settings' }
+					>
 						<PopColorControl
 							label={ __( 'Number Color', 'kadence-blocks' ) }
 							value={ ( numberColor ? numberColor : '' ) }
@@ -548,7 +554,7 @@ class Inspector extends Component {
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 							onUnit={ ( value ) => setAttributes( { numberMarginType: value } ) }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				</InspectorControls>
 			</Fragment>
 		);

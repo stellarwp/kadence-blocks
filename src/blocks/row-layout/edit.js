@@ -31,6 +31,7 @@ import KadenceRadioButtons from '../../kadence-radio-buttons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadenceBackgroundControl from '../../components/background/background-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 /**
  * Import Block Specific Components
  */
@@ -64,7 +65,6 @@ import {
 	ToolbarGroup,
 	TextControl,
 	Dashicon,
-	PanelBody,
 	RangeControl,
 	Toolbar,
 	ToggleControl,
@@ -698,7 +698,7 @@ class KadenceRowLayout extends Component {
 		const mobileControls = (
 			<Fragment>
 				{ this.showSettings( 'basicLayout' ) && (
-					<PanelBody>
+					<KadencePanelBody panelName={ 'kb-row-basic-settings' }>
 						{ columns > 1 && (
 							<Fragment>
 								<p className="components-base-control__label">{ __( 'Mobile Layout', 'kadence-blocks' ) }</p>
@@ -747,12 +747,13 @@ class KadenceRowLayout extends Component {
 								onChange={ value => setAttributes( { collapseOrder: value } ) }
 							/>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'paddingMargin' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Mobile Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-mobile-padding' }
 					>
 						<MeasurementControls
 							label={ __( 'Padding', 'kadence-blocks' ) }
@@ -782,12 +783,13 @@ class KadenceRowLayout extends Component {
 							showUnit={ true }
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'background' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Mobile Background', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-mobile-background' }
 					>
 						<ToggleControl
 							label={ __( 'Set custom background for Mobile?', 'kadence-blocks' ) }
@@ -844,12 +846,13 @@ class KadenceRowLayout extends Component {
 								/>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'backgroundOverlay' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Mobile Background Overlay' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-mobile-bg-overlay' }
 					>
 						<ToggleControl
 							label={ __( 'Set custom background overlay for mobile?', 'kadence-blocks' ) }
@@ -888,12 +891,13 @@ class KadenceRowLayout extends Component {
 								}
 							</TabPanel>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'border' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Border Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-border-settings' }
 					>
 						<AdvancedPopColorControl
 							label={ __( 'Mobile Border Color', 'kadence-blocks' ) }
@@ -935,14 +939,14 @@ class KadenceRowLayout extends Component {
 							thirdIcon={ icons.bottomright }
 							fourthIcon={ icons.bottomleft }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 			</Fragment>
 		);
 		const tabletControls = (
 			<Fragment>
 				{ this.showSettings( 'basicLayout' ) && (
-					<PanelBody>
+					<KadencePanelBody panelName={ 'kb-row-basic-layout' }>
 						{ columns > 1 && (
 							<Fragment>
 								<p className="components-base-control__label">{ __( 'Tablet Layout', 'kadence-blocks' ) }</p>
@@ -964,12 +968,13 @@ class KadenceRowLayout extends Component {
 								</ButtonGroup>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'paddingMargin' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Tablet Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-tablet-padding' }
 					>
 						<MeasurementControls
 							label={ __( 'Padding', 'kadence-blocks' ) }
@@ -999,12 +1004,13 @@ class KadenceRowLayout extends Component {
 							showUnit={ true }
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'background' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Tablet Background', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-tablet-bg' }
 					>
 						<ToggleControl
 							label={ __( 'Set custom background for tablets?', 'kadence-blocks' ) }
@@ -1061,12 +1067,13 @@ class KadenceRowLayout extends Component {
 								/>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'backgroundOverlay' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Tablet Background Overlay', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-tablet-bg-overlay' }
 					>
 						<ToggleControl
 							label={ __( 'Set custom background overlay for tablets?', 'kadence-blocks' ) }
@@ -1105,12 +1112,13 @@ class KadenceRowLayout extends Component {
 								}
 							</TabPanel>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'border' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Border Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-border-settings' }
 					>
 						<AdvancedPopColorControl
 							label={ __( 'Tablet Border Color', 'kadence-blocks' ) }
@@ -1152,7 +1160,7 @@ class KadenceRowLayout extends Component {
 							thirdIcon={ icons.bottomright }
 							fourthIcon={ icons.bottomleft }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 			</Fragment>
 		);
@@ -1247,7 +1255,7 @@ class KadenceRowLayout extends Component {
 		const deskControls = (
 			<Fragment>
 				{ this.showSettings( 'basicLayout' ) && (
-					<PanelBody>
+					<KadencePanelBody panelName={ 'kb-row-basic-layout' }>
 						<RangeControl
 							label={ __( 'Columns', 'kadence-blocks' ) }
 							value={ columns }
@@ -1310,12 +1318,13 @@ class KadenceRowLayout extends Component {
 								onChange={ ( value ) => setAttributes( { columnGutter: value } ) }
 							/>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'paddingMargin' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-padding' }
 					>
 						<MeasurementControls
 							label={ __( 'Padding', 'kadence-blocks' ) }
@@ -1345,12 +1354,13 @@ class KadenceRowLayout extends Component {
 							showUnit={ true }
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'background' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Background Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-bg-settings' }
 					>
 						<TabPanel className="kt-inspect-tabs"
 							initialTabName={ backgroundSettingTab }
@@ -1744,12 +1754,13 @@ class KadenceRowLayout extends Component {
 								}
 							}
 						</TabPanel>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'backgroundOverlay' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-bg-overlay' }
 					>
 						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
 							activeClass="active-tab"
@@ -1781,12 +1792,13 @@ class KadenceRowLayout extends Component {
 								}
 							}
 						</TabPanel>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'border' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Border Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-border-settings' }
 					>
 						<AdvancedPopColorControl
 							label={ __( 'Border Color', 'kadence-blocks' ) }
@@ -1828,7 +1840,7 @@ class KadenceRowLayout extends Component {
 							thirdIcon={ icons.bottomright }
 							fourthIcon={ icons.bottomleft }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 			</Fragment>
 		);
@@ -2406,9 +2418,10 @@ class KadenceRowLayout extends Component {
 			</div>
 		);
 		const colorControls = (
-			<PanelBody
+			<KadencePanelBody
 				title={ __( 'Text Color Settings', 'kadence-blocks' ) }
 				initialOpen={ false }
+				panelName={ 'kb-row-text-color' }
 			>
 				<AdvancedPopColorControl
 					label={ __( 'Text Color', 'kadence-blocks' ) }
@@ -2428,7 +2441,7 @@ class KadenceRowLayout extends Component {
 					colorDefault={ '' }
 					onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
 				/>
-			</PanelBody>
+			</KadencePanelBody>
 		);
 		const tabControls = (
 			<TabPanel className="kt-inspect-tabs"
@@ -2860,9 +2873,10 @@ class KadenceRowLayout extends Component {
 						/>
 						<div className="kt-sidebar-settings-spacer"></div>
 						{ this.showSettings( 'dividers' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Dividers', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-row-dividers' }
 							>
 								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 									activeClass="active-tab"
@@ -2892,16 +2906,17 @@ class KadenceRowLayout extends Component {
 										}
 									}
 								</TabPanel>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'textColor' ) && (
 							colorControls
 						) }
 						{ this.showSettings( 'structure' ) && (
 							<Fragment>
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Structure Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-row-structure-settings' }
 								>
 									<SelectControl
 										label={ __( 'Container HTML tag', 'kadence-blocks' ) }
@@ -3053,10 +3068,11 @@ class KadenceRowLayout extends Component {
 										min={ -200 }
 										max={ 2000 }
 									/>
-								</PanelBody>
-								<PanelBody
+								</KadencePanelBody>
+								<KadencePanelBody
 									title={ __( 'Visibility Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-row-visibility-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
@@ -3150,7 +3166,7 @@ class KadenceRowLayout extends Component {
 										</Fragment>
 
 									) }
-								</PanelBody>
+								</KadencePanelBody>
 							</Fragment>
 						) }
 					</InspectorControls>
