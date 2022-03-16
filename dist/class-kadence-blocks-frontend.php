@@ -1134,9 +1134,17 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 			// Include lottie interactive if using scroll animation.
-			if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ) {
+			if ( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true || isset($attributes['waitUntilInView']) && $attributes['waitUntilInView'] === true ) {
 				if ( ! wp_script_is( 'kadence-blocks-lottieinteractivity-js', 'enqueued' ) ) {
 					wp_enqueue_script( 'kadence-blocks-lottieinteractivity-js' );
+				}
+
+				if( isset( $attributes['onlyPlayOnScroll'] ) && $attributes['onlyPlayOnScroll'] === true ){
+					$play_type = 'seek';
+					$frames = "frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "]";
+				} else {
+					$play_type = 'play';
+					$frames = '';
 				}
 
 				$content = $content . "
@@ -1148,9 +1156,9 @@ class Kadence_Blocks_Frontend {
 								player: '#" . $player_style_id . "',
 								actions: [
 									{
-									visibility: [0,1],
-									type: 'seek',
-									frames: [" . ( ! empty( $attributes['startFrame'] ) ? $attributes['startFrame'] : '0' ) . ", " . ( ! empty( $attributes['endFrame'] ) ? $attributes['endFrame'] : '100' ) . "],
+									visibility: [0,1.0],
+									type: '" . $play_type . "',
+									$frames
 									},
 								],
 							});

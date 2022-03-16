@@ -46,6 +46,10 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"waitUntilInView": {
+	  "type": "boolean",
+	  "default": false
+	},
 	"startFrame": {
 		"type": "number",
 		"default": "0"
