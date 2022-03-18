@@ -209,6 +209,14 @@ registerBlockType( 'kadence/advancedbtn', {
 			type: 'bool',
 			default: false,
 		},
+		lockBtnCount: {
+			type: 'bool',
+			default: false
+		},
+		hideLink: {
+			type: 'bool',
+			default: false
+		}
 	},
 	edit,
 	save: props => {
