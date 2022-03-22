@@ -114,6 +114,7 @@ export function Edit ({
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
 	const previewPreviewHeight = getPreviewSize( previewDevice, ( undefined !== heightDesktop ? heightDesktop : '' ), ( undefined !== heightTablet ? heightTablet : '' ), ( undefined !== heightMobile ? heightMobile : '' ) );
+	const isExpanded = getPreviewSize( previewDevice, defaultExpandedDesktop, defaultExpandedTablet, defaultExpandedMobile );
 
 	const ref = useRef();
 	const blockProps = useBlockProps( {
@@ -122,7 +123,7 @@ export function Edit ({
 
 	const FadeOut = () => {
 
-		let fadeSize = enableFadeOut ? Math.abs(fadeOutSize - 100) : 100;
+		let fadeSize = enableFadeOut && !isExpanded ? Math.abs(fadeOutSize - 100) : 100;
 
 		return (
 			<div className="Class">
@@ -132,7 +133,7 @@ export function Edit ({
        	}
 
         .wp-block-kadence-show-more .kb-show-more-content:not(.is-selected, .has-child-selected) {
-		   max-height: ${ previewPreviewHeight }${ heightType };
+		   max-height: ${ isExpanded ? 'none' : ( previewPreviewHeight + heightType ) };
 		  -webkit-mask-image: linear-gradient(to bottom, black ${fadeSize}%, transparent 100%);
 		  mask-image: linear-gradient(to bottom, black ${fadeSize}%, transparent 100%);
 
