@@ -15,14 +15,15 @@ import { useRef, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control'
-
-const { InspectorControls } = wp.blockEditor
+import KadenceColorOutput from '../../kadence-color-output';
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import AdvancedPopColorControl from '../../advanced-pop-color-control';
 
 import { createElement } from '@wordpress/element'
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import uniqueId from 'lodash/uniqueId'
-
-const { PanelBody, ToggleControl } = wp.components
+const { InspectorControls } = wp.blockEditor
+const { PanelBody, ToggleControl, RangeControl } = wp.components
 
 /**
  * Internal dependencies
@@ -44,6 +45,10 @@ export function Edit ({
 		defaultExpandedMobile,
 		defaultExpandedTablet,
 		defaultExpandedDesktop,
+		heightDesktop,
+		heightTablet,
+		heightMobile,
+		heightType,
 		marginDesktop,
 		marginTablet,
 		marginMobile,
@@ -52,6 +57,8 @@ export function Edit ({
 		paddingTablet,
 		paddingMobile,
 		paddingUnit,
+		enableFadeOut,
+		fadeOutSize
 	} = attributes
 
 	if (!uniqueID) {
@@ -95,7 +102,6 @@ export function Edit ({
 	const childBlocks = wp.data.select( 'core/block-editor' ).getBlockOrder( clientId );
 
 	const buttonOneUniqueID = childBlocks[1] ? childBlocks[1].substr( 2, 9 ) : uniqueId('button-one-');
-	const buttonTwoUniqueID = childBlocks[3] ? childBlocks[3].substr( 2, 9 ) : uniqueId('button-two-');
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
@@ -107,10 +113,34 @@ export function Edit ({
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[2] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[3] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
+	const previewPreviewHeight = getPreviewSize( previewDevice, ( undefined !== heightDesktop ? heightDesktop : '' ), ( undefined !== heightTablet ? heightTablet : '' ), ( undefined !== heightMobile ? heightMobile : '' ) );
+
 	const ref = useRef();
 	const blockProps = useBlockProps( {
 		ref,
 	} );
+
+	const FadeOut = () => {
+
+		let fadeSize = enableFadeOut ? Math.abs(fadeOutSize - 100) : 100;
+
+		return (
+			<div className="Class">
+				<style>{`
+        .kb-show-more-buttons .btn-area-wrap:last-of-type {
+       	display: ${ showHideMore ? 'inline' : 'none' };
+       	}
+
+        .wp-block-kadence-show-more .kb-show-more-content:not(.is-selected, .has-child-selected) {
+		   max-height: ${ previewPreviewHeight }${ heightType };
+		  -webkit-mask-image: linear-gradient(to bottom, black ${fadeSize}%, transparent 100%);
+		  mask-image: linear-gradient(to bottom, black ${fadeSize}%, transparent 100%);
+
+        }
+      `}</style>
+			</div>
+		)
+	}
 
 	return (
 		<Fragment>
@@ -120,10 +150,45 @@ export function Edit ({
 					initialOpen={ true }
 				>
 					<ToggleControl
-						label={ __( 'Display "Hide" button once expanded', 'kadence-blocks' ) }
+						label={ __( 'Display "hide" button once expanded', 'kadence-blocks' ) }
 						checked={ showHideMore }
 						onChange={ ( value ) => setAttributes( { showHideMore: value } ) }
 					/>
+
+					<ResponsiveRangeControls
+						label={ __( 'Maximum Preview Height', 'kadence-blocks' ) }
+						value={ heightDesktop ? heightDesktop : '' }
+						onChange={ value => {
+							setAttributes( { heightDesktop: value } );
+						} }
+						tabletValue={ ( undefined !== heightTablet && undefined !== heightTablet[ 0 ] ? heightTablet[ 0 ] : '' ) }
+						onChangeTablet={ ( value ) => {
+							setAttributes( { heightTablet: value } );
+						} }
+						mobileValue={ ( undefined !== heightMobile && undefined !== heightMobile[ 1 ] ? heightMobile[ 1 ] : '' ) }
+						onChangeMobile={ ( value ) => {
+							setAttributes( { heightMobile: value } );
+						} }
+						min={ 0 }
+						max={ ( ( heightType ? heightType : 'px' ) !== 'px' ? 10 : 2000 ) }
+						step={ ( ( heightType ? heightType : 'px' ) !== 'px' ? 0.1 : 1 ) }
+						unit={ heightType ? heightType : 'px' }
+						onUnit={ ( value ) => {
+							setAttributes( { heightType: value } );
+						} }
+						units={ [ 'px', 'em', 'rem' ] }
+					/>
+
+					<ToggleControl label={ __('Fade out preview', 'kadence-blocks') }
+								   checked={ enableFadeOut }
+								   onChange={ (value) => setAttributes( { enableFadeOut: value } ) } />
+
+					{ enableFadeOut && (
+						<RangeControl label={ __( 'Fade Size', 'kadence-blocks') }
+									  value={ fadeOutSize }
+									  onChange={ (value) => setAttributes( { fadeOutSize: value } ) } />
+					)}
+
 				</PanelBody>
 				<PanelBody
 					title={ __('Spacing Settings', 'kadence-blocks') }
@@ -153,7 +218,6 @@ export function Edit ({
 						tabletValue={ marginTablet }
 						mobileValue={ marginMobile }
 						onChange={ ( value ) => {
-							console.log('test', value);
 							setAttributes( { marginDesktop: value } );
 						} }
 						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
@@ -188,6 +252,7 @@ export function Edit ({
 					/>
 				</PanelBody>
 			</InspectorControls>
+			<FadeOut/>
 			<div {...blockProps}
 				style={ {
 				marginTop: ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
@@ -203,23 +268,113 @@ export function Edit ({
 				{ createElement(InnerBlocks, {
 					template: [
 						['core/group', {
-							lock: {
-								remove: true,
-								move: true
-							},
-							className: 'kt-show-more-preview',
-						}, { innerBlocks: ['core/paragraph', { dropCap: false, placeholder: __('Add content to this group blocks to customize your page', 'kadence-blocks') }] }],
+							lock: { remove: true, move: true },
+							className: 'kb-show-more-content',
+						}, { innerBlocks: ['core/paragraph', { dropCap: false, placeholder: __('Add your content here', 'kadence-blocks') }] }],
 						['kadence/advancedbtn', {
 							lock: { remove: true, move: true },
+							lockBtnCount: true,
 							hAlign: 'left',
 							thAlign: "",
 							mhAlign: "",
-							btnCount: 1,
+							btnCount: 2,
 							uniqueID: buttonOneUniqueID,
-							className: 'kt-show-more-button',
+							className: 'kb-show-more-buttons',
 							btns: [
 								{
-									'text': 'Show More',
+									'text': __( 'Show More', 'kadence-blocks' ),
+									'link': '',
+									'target': '_self',
+									'size': '',
+									'paddingBT': '',
+									'paddingLR': '',
+									'color': '',
+									'background': '',
+									'border': '',
+									'backgroundOpacity': 1,
+									'borderOpacity': 1,
+									'borderRadius': '',
+									'borderWidth': '',
+									'colorHover': '',
+									'backgroundHover': '',
+									'borderHover': '',
+									'backgroundHoverOpacity': 1,
+									'borderHoverOpacity': 1,
+									'icon': '',
+									'iconSide': 'right',
+									'iconHover': false,
+									'cssClass': '',
+									'noFollow': false,
+									'gap': 5,
+									'responsiveSize': [
+										'',
+										''
+									],
+									'gradient': [
+										'#999999',
+										1,
+										0,
+										100,
+										'linear',
+										180,
+										'center center'
+									],
+									'gradientHover': [
+										'#777777',
+										1,
+										0,
+										100,
+										'linear',
+										180,
+										'center center'
+									],
+									'btnStyle': 'basic',
+									'btnSize': 'small',
+									'backgroundType': 'solid',
+									'backgroundHoverType': 'solid',
+									'width': [
+										'',
+										'',
+										''
+									],
+									'responsivePaddingBT': [
+										'',
+										''
+									],
+									'responsivePaddingLR': [
+										'',
+										''
+									],
+									'boxShadow': [
+										true,
+										'#000000',
+										0.2,
+										1,
+										1,
+										2,
+										0,
+										false
+									],
+									'boxShadowHover': [
+										true,
+										'#000000',
+										0.4,
+										2,
+										2,
+										3,
+										0,
+										false
+									],
+									'inheritStyles': 'inherit',
+									'borderStyle': '',
+									'onlyIcon': [
+										false,
+										'',
+										''
+									]
+								},
+								{
+									'text': __( 'Show Less', 'kadence-blocks' ),
 									'link': '',
 									'target': '_self',
 									'size': '',
@@ -358,159 +513,6 @@ export function Edit ({
 								}
 							]
 						}],
-						['core/group', {
-							lock: {
-								remove: true,
-								move: true
-							},
-							className: 'kt-show-more-expanded',
-						}, { innerBlocks: ['core/paragraph', { dropCap: false, placeholder:  __('This group block is initially hidden. Content here will replace the top content when expanded.', 'kadence-blocks') }] }],
-						['kadence/advancedbtn', {
-							lock: { remove: true, move: true },
-							hAlign: 'left',
-							uniqueID: buttonTwoUniqueID,
-							className: 'kt-hide-more-button',
-							btns: [
-								{
-									'text': 'Show Less',
-									'link': '',
-									'target': '_self',
-									'size': '',
-									'paddingBT': '',
-									'paddingLR': '',
-									'color': '',
-									'background': '',
-									'border': '',
-									'backgroundOpacity': 1,
-									'borderOpacity': 1,
-									'borderRadius': '',
-									'borderWidth': '',
-									'colorHover': '',
-									'backgroundHover': '',
-									'borderHover': '',
-									'backgroundHoverOpacity': 1,
-									'borderHoverOpacity': 1,
-									'icon': '',
-									'iconSide': 'right',
-									'iconHover': false,
-									'cssClass': '',
-									'noFollow': false,
-									'gap': 5,
-									'responsiveSize': [
-										'',
-										''
-									],
-									'gradient': [
-										'#999999',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'gradientHover': [
-										'#777777',
-										1,
-										0,
-										100,
-										'linear',
-										180,
-										'center center'
-									],
-									'btnStyle': 'basic',
-									'btnSize': 'small',
-									'backgroundType': 'solid',
-									'backgroundHoverType': 'solid',
-									'width': [
-										'',
-										'',
-										''
-									],
-									'responsivePaddingBT': [
-										'',
-										''
-									],
-									'responsivePaddingLR': [
-										'',
-										''
-									],
-									'boxShadow': [
-										true,
-										'#000000',
-										0.2,
-										1,
-										1,
-										2,
-										0,
-										false
-									],
-									'boxShadowHover': [
-										true,
-										'#000000',
-										0.4,
-										2,
-										2,
-										3,
-										0,
-										false
-									],
-									'inheritStyles': 'inherit',
-									'borderStyle': '',
-									'onlyIcon': [
-										false,
-										'',
-										''
-									]
-								}
-							],
-							"typography": "",
-							"googleFont": false,
-							"loadGoogleFont": true,
-							"fontSubset": "",
-							"fontVariant": "",
-							"fontWeight": "regular",
-							"fontStyle": "normal",
-							"textTransform": "",
-							"widthType": "auto",
-							"widthUnit": "px",
-							"forceFullwidth": false,
-							"collapseFullwidth": false,
-							"margin": [
-								{
-									"desk": [
-										"",
-										"",
-										"",
-										""
-									],
-									"tablet": [
-										"",
-										"",
-										"",
-										""
-									],
-									"mobile": [
-										"",
-										"",
-										"",
-										""
-									]
-								}
-							],
-							"marginUnit": "px",
-							"inQueryBlock": false,
-							"kadenceAOSOptions": [
-								{
-									"duration": "",
-									"offset": "",
-									"easing": "",
-									"once": "",
-									"delay": "",
-									"delayOffset": ""
-								}
-							]
-						}]
 					],
 				}) }
 			</div>

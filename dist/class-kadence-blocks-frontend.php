@@ -1140,31 +1140,39 @@ class Kadence_Blocks_Frontend {
 			}
 
 			$showHideMore = $attributes['showHideMore'] === false ? '' : "hideMoreButton" . $player_simple_style_id . ".style.display = 'block';";
+			$previewHeight = (isset($attributes['heightDesktop']) ? $attributes['heightDesktop'] : 250 ) . ( isset($attributes['heightType']) ? $attributes['heightType'] : 'px');
+
+			$maskvalue = 'none';
+			if( isset( $attributes['enableFadeOut']) && $attributes['enableFadeOut']) {
+				$maskvalue = 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize']) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)';
+			}
+
+
 			$content = $content . "
 			<script>
-				var immediateChildrenButtons" . $player_simple_style_id . " = document.querySelectorAll('." . $player_style_id . " > .wp-block-kadence-advancedbtn');
-				var showMoreButton" . $player_simple_style_id . " = immediateChildrenButtons" . $player_simple_style_id . "[0];
-				var hideMoreButton" . $player_simple_style_id . " = immediateChildrenButtons" . $player_simple_style_id . "[immediateChildrenButtons" . $player_simple_style_id . ".length - 1];
+				var showMoreContainer" . $player_simple_style_id . " = document.querySelector('." . $player_style_id . " .kb-show-more-content');
 
-				var previewContainer" . $player_simple_style_id . " = document.querySelector('." . $player_style_id . " > .kt-show-more-preview');
-				var expandedContainer" . $player_simple_style_id . " = document.querySelector('." . $player_style_id . " > .kt-show-more-expanded');
-
+				var buttons" . $player_simple_style_id . " = document.querySelectorAll('." . $player_style_id . " .kb-show-more-buttons div');
+				var showMoreButton" . $player_simple_style_id . " = buttons" . $player_simple_style_id . "[0];
+				var hideMoreButton" . $player_simple_style_id . " = buttons" . $player_simple_style_id . "[1];
 
 				showMoreButton" . $player_simple_style_id . ".addEventListener('click', function(e) {
-					previewContainer" . $player_simple_style_id . ".style.display = 'none';
-					expandedContainer" . $player_simple_style_id . ".style.display = 'block';
+					e.preventDefault();
+					showMoreContainer" . $player_simple_style_id . ".style.maxHeight = 'none';
+					showMoreContainer" . $player_simple_style_id . ".style['mask-image'] = 'none';
+					showMoreContainer" . $player_simple_style_id . ".style['-webkit-mask-image'] = 'none';
 					showMoreButton" . $player_simple_style_id . ".style.display = 'none';
 					".  $showHideMore ."
-					e.preventDefault();
 			        return false;
 				});
 
 				hideMoreButton" . $player_simple_style_id . ".addEventListener('click', function (e) {
-					previewContainer" . $player_simple_style_id . ".style.display = 'block';
-					expandedContainer" . $player_simple_style_id . ".style.display = 'none';
+			        e.preventDefault();
+					showMoreContainer" . $player_simple_style_id . ".style.maxHeight =  '" . $previewHeight . "';
 					showMoreButton" . $player_simple_style_id . ".style.display = 'block';
 					hideMoreButton" . $player_simple_style_id . ".style.display = 'none';
-			        e.preventDefault();
+					showMoreContainer" . $player_simple_style_id . ".style['mask-image'] = '". $maskvalue ."';
+					showMoreContainer" . $player_simple_style_id . ".style['-webkit-mask-image'] = '". $maskvalue ."';
           			return false;
 			    });
 
@@ -3341,98 +3349,76 @@ class Kadence_Blocks_Frontend {
 			$css->stop_media_query();
 		}
 
-		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-expanded' );
-		$css->add_property( 'display', 'none' );
-
-		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-hide-more-button' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:last-child' );
 		$css->add_property( 'display', 'none' );
 
 
-		// If "defaultExpandedDesktop" is set to true, then add property display:none
-		if ( isset( $attr['defaultExpandedDesktop'] ) && true === $attr['defaultExpandedDesktop'] ) {
+		$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+		$css->add_property( 'max-height', (  isset( $attr['heightDesktop'] ) ? $attr['heightDesktop'] : 250) .  ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+		$css->add_property( 'overflow-y', 'hidden' );
+
+		if( isset( $attr['enableFadeOut']) && $attr['enableFadeOut']) {
+			$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+			$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+		}
+
+		// Default expanded Desktop
+		if( isset( $attr['defaultExpandedDesktop']) && $attr['defaultExpandedDesktop'] ) {
+			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
 			$css->start_media_query( $media_query['desktop'] );
+			$css->add_property( 'max-height', 'none' );
+			$css->add_property( '-webkit-mask-image', 'none' );
+			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-expanded' );
-			$css->add_property( 'display', 'block' );
-
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-button' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
 			$css->add_property( 'display', 'none' );
-
-
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-preview' );
-			$css->add_property( 'display', 'none' );
-
-			if( !isset( $attr['showHideMore'] ) || ( isset($attr['showHideMore']) && $attr['showHideMore'] === true ) ){
-				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-hide-more-button' );
-				$css->add_property( 'display', 'block' );
-			}
-
 			$css->stop_media_query();
 		}
 
-		// If "defaultExpandedTablet" is set to true, then add property display:none
-		if ( isset( $attr['defaultExpandedTablet'] ) && true === $attr['defaultExpandedTablet'] ) {
+		// Default expanded Tablet
+		if( isset( $attr['defaultExpandedTablet']) && $attr['defaultExpandedTablet'] ) {
+			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
 			$css->start_media_query( $media_query['tablet'] );
+			$css->add_property( 'max-height', 'none' );
+			$css->add_property( '-webkit-mask-image', 'none' );
+			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-expanded' );
-			$css->add_property( 'display', 'block' );
-
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-button' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
 			$css->add_property( 'display', 'none' );
-
-
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-preview' );
-			$css->add_property( 'display', 'none' );
-
-			if( !isset( $attr['showHideMore'] ) || ( isset($attr['showHideMore']) && $attr['showHideMore'] === true ) ){
-				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-hide-more-button' );
-				$css->add_property( 'display', 'block' );
-			}
-
 			$css->stop_media_query();
 
-				// If expanded on tablet is set, but expanded on mobile is not
-				if ( !isset( $attr['defaultExpandedMobile'] ) || ( isset( $attr['defaultExpandedMobile'] ) && true !== $attr['defaultExpandedMobile'] ) ) {
-					$css->start_media_query( $media_query['mobile'] );
-					$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-expanded' );
-					$css->add_property( 'display', 'none' );
+			// If default expanded on tablet, but not on mobile
+			if( !isset( $attr['defaultExpandedMobile']) || ( isset( $attr['defaultExpandedMobile']) && !$attr['defaultExpandedMobile'] ) ){
+				$css->start_media_query( $media_query['mobile'] );
 
-					$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-button' );
-					$css->add_property( 'display', 'block' );
+				$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+				$css->add_property( 'max-height', (  isset( $attr['heightDesktop'] ) ? $attr['heightDesktop'] : 250) .  ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+				$css->add_property( 'overflow-y', 'hidden' );
 
-
-					$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-preview' );
-					$css->add_property( 'display', 'block' );
-
-					if( !isset( $attr['showHideMore'] ) || ( isset($attr['showHideMore']) && $attr['showHideMore'] === true ) ){
-						$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-hide-more-button' );
-						$css->add_property( 'display', 'none' );
-					}
-					$css->stop_media_query();
+				if( isset( $attr['enableFadeOut']) && $attr['enableFadeOut']) {
+					$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
 				}
+
+				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+				$css->add_property( 'display', 'inline' );
+				$css->stop_media_query();
+			}
 		}
 
-		// If "defaultExpandedTablet" is set to true, then add property display:none
-		if ( isset( $attr['defaultExpandedMobile'] ) && true === $attr['defaultExpandedMobile'] ) {
+		// Default expanded Mobile
+		if( isset( $attr['defaultExpandedMobile']) && $attr['defaultExpandedMobile'] ) {
+			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
 			$css->start_media_query( $media_query['mobile'] );
+			$css->add_property( 'max-height', 'none' );
+			$css->add_property( '-webkit-mask-image', 'none' );
+			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-expanded' );
-			$css->add_property( 'display', 'block' );
-
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-button' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
 			$css->add_property( 'display', 'none' );
-
-
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-show-more-preview' );
-			$css->add_property( 'display', 'none' );
-
-			if( !isset( $attr['showHideMore'] ) || ( isset($attr['showHideMore']) && $attr['showHideMore'] === true ) ){
-				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kt-hide-more-button' );
-				$css->add_property( 'display', 'block' );
-			}
-
 			$css->stop_media_query();
 		}
+
 
 		return $css->css_output();
 	}

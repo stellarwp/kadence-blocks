@@ -35,6 +35,30 @@
 	  "type": "boolean",
 	  "default": false
 	},
+	"heightDesktop": {
+	  "type": "number",
+	  "default": 250
+	},
+	"heightTablet": {
+	  "type": "number",
+	  "default": ""
+	},
+	"heightMobile": {
+	  "type": "number",
+	  "default": ""
+	},
+	"heightType": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"enableFadeOut": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"fadeOutSize": {
+	  "type": "number",
+	  "default": 50
+	},
 	"marginDesktop": {
 	  "type": "array",
 	  "default": [
