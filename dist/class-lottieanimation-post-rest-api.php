@@ -67,10 +67,15 @@ class Kadence_LottieAnimation_post_REST_Controller extends WP_REST_Controller {
 			return array( 'error' => true, 'message' => __( 'Please enter an animation title', 'kadence-blocks' ) );
 		}
 
+		// Replace new line characters with space.
+		array_walk_recursive($jsonParams['lottieFile'], function(&$value, $key) {
+			$value = str_replace(array("\n", "\r"), ' ', $value);
+		});
+
 		// Create post object
 		$my_post = array(
 			'post_title'     => $title,
-			'post_content'   => json_encode( $jsonParams['lottieFile'] ),
+			'post_content'   => json_encode( $jsonParams['lottieFile'], JSON_NUMERIC_CHECK ),
 			'post_type'      => 'kadence_lottie',
 			'post_status'    => 'publish',
 			'post_mime_type' => 'application/json',
