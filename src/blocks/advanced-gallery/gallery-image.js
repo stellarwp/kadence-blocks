@@ -95,7 +95,7 @@ class GalleryImage extends Component {
 	}
 
 	render() {
-		const { url, width, height, imageRatio, lightUrl, thumbUrl, customLink, linkTarget, alt, id, linkTo, link, isFirstItem, isLastItem, isSelected, showCaption, caption, captionStyle, captionStyles, onRemove, onMoveForward, onMoveBackward, setAttributes, setLinkAttributes, 'aria-label': ariaLabel, type, thumbnail } = this.props;
+		const { url, width, height, imageRatio, lightUrl, thumbUrl, customLink, linkTarget, alt, id, linkTo, link, isFirstItem, isLastItem, isSelected, showCaption, caption, captionStyle, captionStyles, onRemove, onMoveForward, onMoveBackward, setAttributes, setLinkAttributes, 'aria-label': ariaLabel, type, thumbnail, dynamicSource } = this.props;
 		let href;
 		switch ( linkTo ) {
 			case 'media':

@@ -16,6 +16,9 @@ import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import DynamicGalleryControl from '../../components/common/dynamic-gallery-control';
+import DynamicLinkControl from '../../components/links/dynamic-link-control';
+import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
 import Slider from 'react-slick';
 const {
 	applyFilters,
@@ -60,6 +63,11 @@ import { withSelect } from '@wordpress/data';
 import GalleryImage from './gallery-image';
 import icon from './icons';
 import { pickRelevantMediaFiles, pickRelevantMediaFilesUpdate } from './shared';
+import {
+	image,
+	closeSmall,
+	plusCircleFilled,
+} from '@wordpress/icons';
 
 /**
  * Import Css
@@ -339,6 +347,17 @@ class GalleryEdit extends Component {
 		if ( blockSettings[ 'kadence/advancedgallery' ] !== undefined && typeof blockSettings[ 'kadence/advancedgallery' ] === 'object' ) {
 			this.setState( { settings: blockSettings[ 'kadence/advancedgallery' ] } );
 		}
+		if ( this.props.context && this.props.context.queryId && this.props.context.postId ) {
+			if ( ! this.props.attributes.inQueryBlock ) {
+				this.props.setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( this.props.attributes.inQueryBlock ) {
+			this.props.setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -361,9 +380,11 @@ class GalleryEdit extends Component {
 	}
 	render() {
 		const { attributes, isSelected, className, noticeUI, setAttributes } = this.props;
-		const { uniqueID, images, columns, linkTo, ids, columnControl, showCaption, captionStyles, lightbox, lightSize, type, imageRatio, captionStyle, gutter, thumbSize, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, imageRadius, margin, marginUnit, displayShadow, shadow, shadowHover, carouselHeight, imageFilter, lightboxCaption, carouselAlign, thumbnailColumns, thumbnailControl, thumbnailRatio, mobileForceHover } = attributes;
+		const { uniqueID, images, columns, linkTo, ids, columnControl, showCaption, captionStyles, lightbox, lightSize, type, imageRatio, captionStyle, gutter, thumbSize, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, imageRadius, margin, marginUnit, displayShadow, shadow, shadowHover, carouselHeight, imageFilter, lightboxCaption, carouselAlign, thumbnailColumns, thumbnailControl, thumbnailRatio, mobileForceHover, kadenceDynamic, imagesDynamic } = attributes;
+		const dynamicSource = ( kadenceDynamic && kadenceDynamic['images'] && kadenceDynamic['images'].enable ? true : false );
 		const galleryTypes = applyFilters( 'kadence.galleryTypes', typeOptions );
-		const hasImages = !! images.length;
+		const theImages = dynamicSource ? imagesDynamic : images;
+		const hasImages = !! theImages.length;
 		const onColumnChange = ( value ) => {
 			let columnArray = [];
 			if ( 1 === value ) {
@@ -452,6 +473,10 @@ class GalleryEdit extends Component {
 			{ key: '%', name: '%' },
 			{ key: 'vh', name: 'vh' },
 			{ key: 'rem', name: 'rem' },
+		];
+		const columnControlTypes = [
+			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: __( 'Linked', 'kadence-blocks' ) },
+			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: __( 'Individual', 'kadence-blocks' ) },
 		];
 		const gconfig = {
 			google: {
@@ -572,7 +597,7 @@ class GalleryEdit extends Component {
 		};
 		const controls = (
 			<BlockControls>
-				{ hasImages && (
+				{ hasImages && ! dynamicSource && (
 					<Toolbar>
 						<MediaUpload
 							onSelect={ this.onSelectImages }
@@ -593,152 +618,18 @@ class GalleryEdit extends Component {
 				) }
 			</BlockControls>
 		);
-
-		const mediaPlaceholder = (
-			<MediaPlaceholder
-				addToGallery={ hasImages }
-				isAppender={ hasImages }
-				className={ className }
-				dropZoneUIOnly={ hasImages && ! isSelected }
-				icon={ ! hasImages && <BlockIcon icon={ icon } /> }
-				labels={ {
-					title: ! hasImages && __( 'Gallery', 'kadence-blocks' ),
-					instructions: ! hasImages && __( 'Drag images, upload new ones or select files from your library.', 'kadence-blocks' ),
-				} }
-				onSelect={ this.onSelectImages }
-				accept="image/*"
-				allowedTypes={ ALLOWED_MEDIA_TYPES }
-				multiple
-				value={ hasImages ? images : undefined }
-				onError={ this.onUploadError }
-				notices={ hasImages ? undefined : noticeUI }
-			/>
-		);
-		const buildCSS = (
-			<style>
-				{ `
-					.wp-block[data-type="kadence/advancedgallery"]  ul.kb-gallery-main-contain.kb-gallery-id-${ uniqueID } {
-						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
-					}
-					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item {
-						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
-					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider,
-					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails.slick-slider {
-						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: 0 -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
-					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide,
-					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide,
-					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails.slick-slider .slick-slide {
-						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
-					}
-					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel.kb-carousel-mode-align-left .slick-slider .slick-slide {
-						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] ) + 'px 4px 0;' : '' ) }
-					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-prev,
-					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails .slick-prev {
-						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'left:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
-					}
-					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-next,
-					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails .slick-next {
-						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'right:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
-					}
-					${ ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${ uniqueID }.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ' 0, ' + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), 0 ) + ' 100% );}' : '' ) }
-					${ ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${ uniqueID }.kb-gallery-caption-style-cover-hover.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption, .kb-gallery-id-${ uniqueID }.kb-gallery-caption-style-below.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background:` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ';}' : '' ) }
-					${ ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color ? `.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { color:` + KadenceColorOutput( captionStyles[ 0 ].color ) + ';}' : '' ) }
-					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kb-gal-image-radius { box-shadow:${ ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : 'none' ) }; }
-					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item:hover .kb-gal-image-radius { box-shadow:${ ( displayShadow ? shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity ) : 'none' ) }; }
-					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kb-gal-image-radius {
-						${ ( imageRadius && undefined !== imageRadius[ 0 ] && '' !== imageRadius[ 0 ] ? 'border-radius:' + imageRadius[ 0 ] + 'px ' + imageRadius[ 1 ] + 'px ' + imageRadius[ 2 ] + 'px ' + imageRadius[ 3 ] + 'px;' : '' ) }
-					}
-					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-list figure .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-list figure .kb-gal-image-radius img {
-						${ ( carouselHeight && undefined !== carouselHeight[ 0 ] && '' !== carouselHeight[ 0 ] ? 'height:' + carouselHeight[ 0 ] + 'px;' : '' ) }
-					}
-					.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${ uniqueID } > .kadence-blocks-gallery-item, .wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img {
-						${ ( carouselHeight && undefined !== carouselHeight[ 0 ] && '' !== carouselHeight[ 0 ] ? 'height:' + carouselHeight[ 0 ] + 'px;' : '' ) }
-					}
-			` }
-			</style>
-		);
-		if ( ! hasImages ) {
-			return (
-				<Fragment>
-					{ controls }
-					{ mediaPlaceholder }
-				</Fragment>
-			);
-		}
-		const columnControlTypes = [
-			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: __( 'Linked', 'kadence-blocks' ) },
-			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: __( 'Individual', 'kadence-blocks' ) },
-		];
-		const galleryClassNames = classnames(
-			'kb-gallery-main-contain',
-			{
-				[ `kb-gallery-type-${ type }` ]: type,
-				[ `kb-gallery-id-${ uniqueID }` ]: uniqueID,
-				[ `kb-gallery-caption-style-${ captionStyle }` ]: captionStyle,
-				[ `kb-gallery-filter-${ imageFilter }` ]: imageFilter,
-			}
-		);
-		const renderGalleryImages = ( img, index, thumbnail = false ) => {
-			const ariaLabel = sprintf(
-					/* translators: %1$d is the order number of the image, %2$d is the total number of images. */
-					__( 'image %1$d of %2$d in gallery', 'kadence-blocks' ),
-					( index + 1 ),
-					images.length
-				);
-			const ratio = ( thumbnail ? thumbnailRatio : imageRatio );
-			return (
-				<li className="kadence-blocks-gallery-item" key={ img.id || img.url }>
-					<div className="kadence-blocks-gallery-item-inner">
-						<GalleryImage
-							thumbUrl={ img.thumbUrl }
-							url={ img.url }
-							width={ img.width }
-							height={ img.height }
-							lightUrl={ img.lightUrl }
-							alt={ img.alt }
-							id={ img.id }
-							link={ img.link }
-							linkTo={ linkTo }
-							isFirstItem={ index === 0 }
-							isLastItem={ ( index + 1 ) === images.length }
-							isSelected={ isSelected && this.state.selectedImage === index }
-							onMoveBackward={ this.onMoveBackward( index ) }
-							onMoveForward={ this.onMoveForward( index ) }
-							onRemove={ this.onRemoveImage( index ) }
-							onSelect={ this.onSelectImage( index ) }
-							setAttributes={ ( attrs ) => this.setImageAttributes( index, attrs ) }
-							caption={ img.caption }
-							customLink={ img.customLink }
-							linkTarget={ img.linkTarget }
-							setLinkAttributes={ ( attrs ) => this.setLinkAttributes( index, attrs ) }
-							showCaption={ showCaption }
-							captionStyles={ captionStyles }
-							captionStyle={ captionStyle }
-							aria-label={ ariaLabel }
-							imageRatio={ ratio }
-							type={ type }
-							thumbnail={ thumbnail }
-						/>
-					</div>
-				</li>
-			);
-		};
 		const typeLabel = galleryTypes.filter( ( item ) => ( item.value === type ) );
-		return (
-			<div className={ `${ className } kb-gallery-container` } style={ {
-				margin: ( undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 0 ] ? margin[ 0 ].desk[ 0 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 1 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 2 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 3 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' : undefined ),
-			} } >
-				{ buildCSS }
-				{ controls }
+		const sidebarControls = (
+			<Fragment>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
 						<KadencePanelBody
 							title={ __( 'Gallery Settings', 'kadence-blocks' ) }
 							panelName={ 'kb-gallery-settings' }
 						>
+							{ kadence_blocks_params.dynamic_enabled && dynamicSource && (
+								<DynamicGalleryControl dynamicAttribute='images' { ...this.props } />
+							) }
 							<h2>{ __( 'Gallery Type:' ) + ' ' + ( undefined !== typeLabel && undefined !== typeLabel[ 0 ] && typeLabel[ 0 ].label ? typeLabel[ 0 ].label : 'Masonry' ) }</h2>
 							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type', 'kadence-blocks' ) }>
 								{ map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
@@ -1146,7 +1037,7 @@ class GalleryEdit extends Component {
 									) }
 								</Fragment>
 							) }
-							{ ids && undefined !== ids[ 0 ] && (
+							{ ids && undefined !== ids[ 0 ] && ! dynamicSource && (
 								<ImageSizeControl
 									label={ __( 'Thumbnail Image Size', 'kadence-blocks' ) }
 									slug={ thumbSize }
@@ -1276,9 +1167,12 @@ class GalleryEdit extends Component {
 								onChange={ this.setLinkTo }
 								options={ linkOptions }
 							/>
+							{ linkTo === 'custom' && dynamicSource && (
+								<DynamicLinkControl dynamicAttribute='link' { ...this.props }/>
+							) }
 							{ linkTo === 'media' && (
 								<Fragment>
-									{ ids && undefined !== ids[ 0 ] && (
+									{ ids && undefined !== ids[ 0 ] && ! dynamicSource && (
 										<ImageSizeControl
 											label={ __( 'Link Image Size', 'kadence-blocks' ) }
 											slug={ lightSize }
@@ -1707,6 +1601,150 @@ class GalleryEdit extends Component {
 						) }
 					</InspectorControls>
 				) }
+			</Fragment>
+		);
+		let instructions = '';
+		let title = '';
+		if ( ! hasImages ) {
+			title = __( 'Gallery', 'kadence-blocks' );
+			instructions = __( 'Drag images, upload new ones or select files from your library.', 'kadence-blocks' )
+		}
+		if ( theImages.constructor !== Array ) {
+			title = __( 'Gallery', 'kadence-blocks' )
+			instructions = __( 'Dynamic Source failed to load array of images.', 'kadence-blocks' )
+		}
+		const mediaPlaceholder = ( 
+			<KadenceMediaPlaceholder
+					labels={ {
+						title: title,
+						instructions: instructions,
+					} }
+					selectIcon={ plusCircleFilled }
+					selectLabel={ __( 'Select Images', 'kadence-blocks' ) }
+					onSelect={ this.onSelectImages }
+					accept="image/*"
+					multiple
+					className={ 'kadence-image-upload' }
+					allowedTypes={ ALLOWED_MEDIA_TYPES }
+					dynamicControl={ ( kadence_blocks_params.dynamic_enabled ? <DynamicGalleryControl dynamicAttribute='images' { ...this.props }/> : undefined ) }
+				/>
+		);
+		const buildCSS = (
+			<style>
+				{ `
+					.wp-block[data-type="kadence/advancedgallery"]  ul.kb-gallery-main-contain.kb-gallery-id-${ uniqueID } {
+						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+					}
+					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item {
+						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+					}
+					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider,
+					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails.slick-slider {
+						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'margin: 0 -' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+					}
+					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide,
+					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-slider .slick-slide,
+					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails.slick-slider .slick-slide {
+						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+					}
+					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel.kb-carousel-mode-align-left .slick-slider .slick-slide {
+						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'padding: 4px ' + ( gutter[ 0 ] ) + 'px 4px 0;' : '' ) }
+					}
+					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-prev,
+					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails .slick-prev {
+						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'left:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+					}
+					.kb-gallery-main-contain.kb-gallery-type-carousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-next,
+					.kb-gallery-main-contain.kb-gallery-type-thumbslider.kb-gallery-id-${ uniqueID } .kt-blocks-carousel-thumbnails .slick-next {
+						${ ( gutter && undefined !== gutter[ 0 ] && '' !== gutter[ 0 ] ? 'right:' + ( gutter[ 0 ] / 2 ) + 'px;' : '' ) }
+					}
+					${ ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${ uniqueID }.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background: linear-gradient( 0deg, ` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ' 0, ' + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), 0 ) + ' 100% );}' : '' ) }
+					${ ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].background ? `.kb-gallery-id-${ uniqueID }.kb-gallery-caption-style-cover-hover.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption, .kb-gallery-id-${ uniqueID }.kb-gallery-caption-style-below.kb-gallery-main-contain .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { background:` + KadenceColorOutput( ( captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '#000000' ), ( '' !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) ) + ';}' : '' ) }
+					${ ( captionStyles && undefined !== captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].color ? `.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner figcaption { color:` + KadenceColorOutput( captionStyles[ 0 ].color ) + ';}' : '' ) }
+					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kb-gal-image-radius { box-shadow:${ ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : 'none' ) }; }
+					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item:hover .kb-gal-image-radius { box-shadow:${ ( displayShadow ? shadowHover[ 0 ].hOffset + 'px ' + shadowHover[ 0 ].vOffset + 'px ' + shadowHover[ 0 ].blur + 'px ' + shadowHover[ 0 ].spread + 'px ' + KadenceColorOutput( shadowHover[ 0 ].color, shadowHover[ 0 ].opacity ) : 'none' ) }; }
+					.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kb-gal-image-radius {
+						${ ( imageRadius && undefined !== imageRadius[ 0 ] && '' !== imageRadius[ 0 ] ? 'border-radius:' + imageRadius[ 0 ] + 'px ' + imageRadius[ 1 ] + 'px ' + imageRadius[ 2 ] + 'px ' + imageRadius[ 3 ] + 'px;' : '' ) }
+					}
+					.kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-list figure .kb-gal-image-radius, .kb-gallery-main-contain.kb-gallery-type-fluidcarousel.kb-gallery-id-${ uniqueID } .kt-blocks-carousel .slick-list figure .kb-gal-image-radius img {
+						${ ( carouselHeight && undefined !== carouselHeight[ 0 ] && '' !== carouselHeight[ 0 ] ? 'height:' + carouselHeight[ 0 ] + 'px;' : '' ) }
+					}
+					.wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${ uniqueID } > .kadence-blocks-gallery-item, .wp-block-kadence-advancedgallery .kb-gallery-type-tiles.kb-gallery-id-${ uniqueID } .kadence-blocks-gallery-item .kadence-blocks-gallery-item-inner img {
+						${ ( carouselHeight && undefined !== carouselHeight[ 0 ] && '' !== carouselHeight[ 0 ] ? 'height:' + carouselHeight[ 0 ] + 'px;' : '' ) }
+					}
+			` }
+			</style>
+		);
+		if ( ! hasImages || theImages.constructor !== Array ) {
+			return (
+				<Fragment>
+					{ controls }
+					{ sidebarControls }
+					{ mediaPlaceholder }
+				</Fragment>
+			);
+		}
+		const galleryClassNames = classnames(
+			'kb-gallery-main-contain',
+			{
+				[ `kb-gallery-type-${ type }` ]: type,
+				[ `kb-gallery-id-${ uniqueID }` ]: uniqueID,
+				[ `kb-gallery-caption-style-${ captionStyle }` ]: captionStyle,
+				[ `kb-gallery-filter-${ imageFilter }` ]: imageFilter,
+			}
+		);
+		const renderGalleryImages = ( img, index, thumbnail = false ) => {
+			const ariaLabel = sprintf(
+					/* translators: %1$d is the order number of the image, %2$d is the total number of images. */
+					__( 'image %1$d of %2$d in gallery', 'kadence-blocks' ),
+					( index + 1 ),
+					theImages.length
+				);
+			const ratio = ( thumbnail ? thumbnailRatio : imageRatio );
+			return (
+				<li className="kadence-blocks-gallery-item" key={ img.id || img.url }>
+					<div className="kadence-blocks-gallery-item-inner">
+						<GalleryImage
+							thumbUrl={ img.thumbUrl }
+							url={ img.url }
+							width={ img.width }
+							height={ img.height }
+							lightUrl={ img.lightUrl }
+							alt={ img.alt }
+							id={ img.id }
+							link={ img.link }
+							linkTo={ linkTo }
+							isFirstItem={ index === 0 }
+							isLastItem={ ( index + 1 ) === theImages.length }
+							isSelected={ isSelected && this.state.selectedImage === index }
+							onMoveBackward={ this.onMoveBackward( index ) }
+							onMoveForward={ this.onMoveForward( index ) }
+							onRemove={ this.onRemoveImage( index ) }
+							onSelect={ this.onSelectImage( index ) }
+							setAttributes={ ( attrs ) => this.setImageAttributes( index, attrs ) }
+							caption={ img.caption }
+							customLink={ img.customLink }
+							linkTarget={ img.linkTarget }
+							setLinkAttributes={ ( attrs ) => this.setLinkAttributes( index, attrs ) }
+							showCaption={ showCaption }
+							captionStyles={ captionStyles }
+							captionStyle={ captionStyle }
+							aria-label={ ariaLabel }
+							imageRatio={ ratio }
+							type={ type }
+							thumbnail={ thumbnail }
+						/>
+					</div>
+				</li>
+			);
+		};
+		return (
+			<div className={ `${ className } kb-gallery-container` } style={ {
+				margin: ( undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 0 ] ? margin[ 0 ].desk[ 0 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 1 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 2 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 3 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' : undefined ),
+			} } >
+				{ buildCSS }
+				{ controls }
+				{ sidebarControls }
 				{ noticeUI }
 				{ showCaption && captionStyles[ 0 ].google && (
 					<WebfontLoader config={ config }>
@@ -1715,15 +1753,15 @@ class GalleryEdit extends Component {
 				{ type && type === 'fluidcarousel' && (
 					<div id={ `kb-gallery-id-${ uniqueID }` } className={ galleryClassNames }>
 						<div className={ `kt-blocks-carousel kt-blocks-fluid-carousel kt-carousel-container-dotstyle-${ dotStyle }${ ( carouselAlign === false ? ' kb-carousel-mode-align-left' : '' ) }` }>
-							{ images.length !== 1 && (
+							{ theImages.length !== 1 && (
 								<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } { ...fluidCarouselSettings }>
-									{ images.map( ( img, index ) => {
+									{ theImages.map( ( img, index ) => {
 										return renderGalleryImages( img, index );
 									} ) }
 								</Slider>
 							) }
-							{ images.length === 1 && (
-								images.map( ( img, index ) => {
+							{ theImages.length === 1 && (
+								theImages.map( ( img, index ) => {
 									return renderGalleryImages( img, index );
 								} )
 							) }
@@ -1733,15 +1771,15 @@ class GalleryEdit extends Component {
 				{ type && type === 'slider' && (
 					<div className={ galleryClassNames }>
 						<div className={ `kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${ dotStyle }` }>
-							{ images.length !== 1 && (
+							{ theImages.length !== 1 && (
 								<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } { ...sliderSettings }>
-									{ images.map( ( img, index ) => {
+									{ theImages.map( ( img, index ) => {
 										return renderGalleryImages( img, index );
 									} ) }
 								</Slider>
 							) }
-							{ images.length === 1 && (
-								images.map( ( img, index ) => {
+							{ theImages.length === 1 && (
+								theImages.map( ( img, index ) => {
 									return renderGalleryImages( img, index );
 								} )
 							) }
@@ -1751,22 +1789,22 @@ class GalleryEdit extends Component {
 				{ type && type === 'thumbslider' && (
 					<div className={ galleryClassNames }>
 						<div className={ `kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${ dotStyle }` }>
-							{ images.length !== 1 && (
+							{ theImages.length !== 1 && (
 								<Fragment>
 									<Slider asNavFor={ this.sliderThumbs } className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } ref={ this.bindSlider } { ...thumbsliderSettings }>
-										{ images.map( ( img, index ) => {
+										{ theImages.map( ( img, index ) => {
 											return renderGalleryImages( img, index );
 										} ) }
 									</Slider>
-									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-blocks-carousel-thumbnails kb-cloned-${ ( images.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' ) } kt-carousel-dotstyle-none` } asNavFor={ this.sliderSlides } ref={ this.bindThumbs } { ...thumbsliderthumbsSettings }>
-										{ images.map( ( img, index ) => {
+									<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-blocks-carousel-thumbnails kb-cloned-${ ( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' ) } kt-carousel-dotstyle-none` } asNavFor={ this.sliderSlides } ref={ this.bindThumbs } { ...thumbsliderthumbsSettings }>
+										{ theImages.map( ( img, index ) => {
 											return renderGalleryImages( img, index, true );
 										} ) }
 									</Slider>
 								</Fragment>
 							) }
-							{ images.length === 1 && (
-								images.map( ( img, index ) => {
+							{ theImages.length === 1 && (
+								theImages.map( ( img, index ) => {
 									return renderGalleryImages( img, index );
 								} )
 							) }
@@ -1783,15 +1821,15 @@ class GalleryEdit extends Component {
 						data-columns-xs={ columns[ 5 ] }
 					>
 						<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ dotStyle }` }>
-							{ images.length > columns[ 0 ] && (
+							{ theImages.length > columns[ 0 ] && (
 								<Slider className={ `kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } { ...carouselSettings }>
-									{ images.map( ( img, index ) => {
+									{ theImages.map( ( img, index ) => {
 										return renderGalleryImages( img, index );
 									} ) }
 								</Slider>
 							) }
-							{ images.length <= columns[ 0 ] && (
-								images.map( ( img, index ) => {
+							{ theImages.length <= columns[ 0 ] && (
+								theImages.map( ( img, index ) => {
 									return renderGalleryImages( img, index );
 								} )
 							) }
@@ -1815,7 +1853,7 @@ class GalleryEdit extends Component {
 						enableResizableChildren={ true }
 						updateOnEachImageLoad={ false }
 					>
-						{ images.map( ( img, index ) => {
+						{ theImages.map( ( img, index ) => {
 							return renderGalleryImages( img, index );
 						} ) }
 					</Masonry>
@@ -1830,7 +1868,7 @@ class GalleryEdit extends Component {
 						data-columns-sm={ columns[ 4 ] }
 						data-columns-xs={ columns[ 5 ] }
 					>
-						{ images.map( ( img, index ) => {
+						{ theImages.map( ( img, index ) => {
 							return renderGalleryImages( img, index );
 						} ) }
 					</ul>
@@ -1839,12 +1877,12 @@ class GalleryEdit extends Component {
 					<ul
 						className={ galleryClassNames }
 					>
-						{ images.map( ( img, index ) => {
+						{ theImages.map( ( img, index ) => {
 							return renderGalleryImages( img, index );
 						} ) }
 					</ul>
 				) }
-				{ isSelected && (
+				{ isSelected && ! dynamicSource && (
 					mediaPlaceholder
 				) }
 			</div>

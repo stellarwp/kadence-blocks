@@ -117,7 +117,6 @@ const store = createReduxStore( 'kadenceblocks/data', {
 		},
 		isEditorPanelOpened( state, panelName, defaultValue ) {
 			const panels = get( state, ['editorPanels'], {} );
-
 			return (
 				get( panels, [ panelName ] ) === true || get( panels, [ panelName, 'opened' ], defaultValue ) === true
 			);

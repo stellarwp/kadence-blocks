@@ -48,7 +48,9 @@ registerBlockType( 'kadence/advancedgallery', {
 	supports: {
 		anchor: true,
 		align: [ 'wide', 'full', 'left', 'right' ],
+		ktdynamic: true,
 	},
+	usesContext: [ 'postId', 'queryId' ],
 	attributes: {
 		uniqueID: {
 			type: 'string',
@@ -291,6 +293,14 @@ registerBlockType( 'kadence/advancedgallery', {
 			type: 'bool',
 			default: false,
 		},
+		imagesDynamic: {
+			type: 'array',
+			default: [],
+		},
+		inQueryBlock: {
+			type: 'bool',
+			default: false,
+		},
 	},
 	transforms: {
 		from: [
@@ -326,7 +336,11 @@ registerBlockType( 'kadence/advancedgallery', {
 	},
 	edit,
 	save: props => {
-		const { attributes: { uniqueID, images, columns, type, linkTo, showCaption, captionStyle, imageRatio, imageFilter, lightbox, lightboxCaption, dotStyle, transSpeed, slidesScroll, autoPlay, arrowStyle, autoSpeed, carouselAlign, thumbnailColumns, thumbnailRatio, mobileForceHover } } = props;
+		const { attributes: { uniqueID, images, columns, type, linkTo, showCaption, captionStyle, imageRatio, imageFilter, lightbox, lightboxCaption, dotStyle, transSpeed, slidesScroll, autoPlay, arrowStyle, autoSpeed, carouselAlign, thumbnailColumns, thumbnailRatio, mobileForceHover, kadenceDynamic } } = props;
+		const dynamicSource = ( kadenceDynamic && kadenceDynamic['images'] && kadenceDynamic['images'].enable ? true : false );
+		if ( dynamicSource ) {
+			return null;
+		}
 		const galleryClassNames = classnames(
 			{
 				'kb-gallery-ul': true,

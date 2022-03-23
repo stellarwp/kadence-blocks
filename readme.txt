@@ -81,6 +81,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.3.1 =
+Release Date: March 7th, 2022
+* Add: Option for Author link in post block.
+
 = 2.3.0 =
 Release Date: March 7th, 2022
 * Add: New Google Maps Block.

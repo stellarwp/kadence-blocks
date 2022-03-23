@@ -1717,7 +1717,7 @@ class KadenceAdvancedButton extends Component {
 									<KadencePanelBody
 										title={ __( 'Button Count', 'kadence-blocks' ) }
 										initialOpen={ true }
-										panelName={ 'kb-adv-btn-count-' + index }
+										panelName={ 'kb-adv-btn-count' }
 									>
 										<PanelRow>
 											<Button
