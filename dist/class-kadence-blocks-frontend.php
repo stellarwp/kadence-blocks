@@ -1579,8 +1579,8 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 
 		// Google Maps
-		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api',  'missingkey');
-		wp_register_script( 'kadence-blocks-google-maps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array(), KADENCE_BLOCKS_VERSION, true );
+		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api',  'missingkey' );
+		wp_register_script( 'kadence-blocks-google-maps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array( 'kadence-blocks-google-maps-init-js' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-google-maps-init-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-google-maps.js', array(), KADENCE_BLOCKS_VERSION, true );
 
 
