@@ -14,6 +14,6 @@ module.exports = {
 	...defaultConfig,
 	entry: {
 		'blocks': './src/blocks.js', // 'name' : 'path/file.ext'.
-		//'plugin': './src/plugin.js', // 'name' : 'path/file.ext'.
+		'plugin': './src/plugin.js', // 'name' : 'path/file.ext'.
 	},
 };

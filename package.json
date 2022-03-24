@@ -52,6 +52,7 @@
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^5.1.0",
     "gulp-zip": "^5.1.0",
-    "install": "^0.13.0"
+    "install": "^0.13.0",
+    "webpack": "^4.46.0"
   }
 }

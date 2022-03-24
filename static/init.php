@@ -24,7 +24,7 @@ function kadence_gutenberg_editor_assets() {
 	// Runtime Script Not using right now.
 	// wp_register_script( 'kadence-blocks-runtime', KADENCE_BLOCKS_URL . 'dist/build/runtime.js', array(), $asset_meta['version'], true );
 
-	$plugin_asset_meta = kadence_blocks_get_asset_file( 'dist/plugin/plugin' );
+	$plugin_asset_meta = kadence_blocks_get_asset_file( 'dist/build/plugin' );
 	if ( version_compare( get_bloginfo( 'version' ), '5.8', '<' ) ) {
 		$plugin_dependencies = array( 'react', 'react-dom', 'wp-components', 'wp-compose', 'wp-data', 'wp-edit-post', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-plugins', 'wp-polyfill', 'wp-primitives' );
 	} else {
@@ -32,9 +32,9 @@ function kadence_gutenberg_editor_assets() {
 	}
 
 	// Plugin Scripts.
-	wp_register_script( 'kadence-blocks-plugin-js', KADENCE_BLOCKS_URL . 'dist/plugin/plugin.js', array_merge( $plugin_dependencies, array( 'wp-api' ) ), $plugin_asset_meta['version'], true );
+	wp_register_script( 'kadence-blocks-plugin-js', KADENCE_BLOCKS_URL . 'dist/build/plugin.js', array_merge( $plugin_dependencies, array( 'wp-api' ) ), $plugin_asset_meta['version'], true );
 	// Plugin Styles.
-	wp_register_style( 'kadence-blocks-editor-plugin-css', KADENCE_BLOCKS_URL . 'dist/plugin/plugin.css', array( 'wp-edit-blocks' ), $plugin_asset_meta['version'] );
+	wp_register_style( 'kadence-blocks-editor-plugin-css', KADENCE_BLOCKS_URL . 'dist/build/plugin.css', array( 'wp-edit-blocks' ), $plugin_asset_meta['version'] );
 	$asset_meta = kadence_blocks_get_asset_file( 'dist/build/blocks' );
 	if ( version_compare( get_bloginfo( 'version' ), '5.8', '<' ) ) {
 		$dependencies = array( 'react', 'react-dom', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-data', 'wp-date', 'wp-element', 'wp-hooks', 'wp-i18n', 'wp-keycodes', 'wp-polyfill', 'wp-primitives', 'wp-url' );
