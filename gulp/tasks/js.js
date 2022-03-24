@@ -1,4 +1,4 @@
-const { src, dest } = require('gulp');
+const { src, dest, parallel } = require('gulp');
 const babel = require('gulp-babel');
 const rename = require('gulp-rename');
 const minify = require('gulp-minify');
@@ -6,28 +6,23 @@ const del = require('del');
 const config = require('../config');
 
 function buildJs() {
-    let transpiled =  src([
+    return src([
         'src/init/*.js',
         'src/utils/*.js'
     ])
-        .pipe(babel({
-            presets: [
-                '@babel/preset-env',
-                '@babel/preset-react'
-            ]
-        }))
-        .pipe(minify({
-            ext: {
-                min: '.min.js'
-            },
-            noSource: true
-        }))
+        .pipe(babel(config.babel))
+        .pipe(minify(config.minify))
         .pipe(dest('dist/assets/js'));
-    
-    return transpiled;
 }
 
-function copyJs() {
+function buildSettingsJs() {
+    return src('src/settings/*.js')
+        .pipe(babel(config.babel))
+        .pipe(minify(config.minify))
+        .pipe(dest('dist/settings'));
+}
+
+function copyVendorJs() {
     return src([
         config.modulesDir + '/tiny-slider/dist/min/tiny-slider.js',
         config.modulesDir + '/simplelightbox/dist/simple-lightbox.min.js',
@@ -43,5 +38,7 @@ function copyJs() {
         .pipe(dest('dist/assets/js'));
 }
 
-exports.js = buildJs;
-exports.copyJs = copyJs;
+exports.buildJs = buildJs;
+exports.copyVendorJs = copyVendorJs;
+exports.buildSettingsJs = buildSettingsJs;
+exports.js = parallel(buildJs, buildSettingsJs, copyVendorJs);
