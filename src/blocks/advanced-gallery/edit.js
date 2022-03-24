@@ -43,6 +43,7 @@ const {
 	Toolbar,
 	TabPanel,
 	Dashicon,
+	Placeholder,
 	withNotices,
 } = wp.components;
 import {
@@ -1609,10 +1610,14 @@ class GalleryEdit extends Component {
 			title = __( 'Gallery', 'kadence-blocks' );
 			instructions = __( 'Drag images, upload new ones or select files from your library.', 'kadence-blocks' )
 		}
-		if ( theImages.constructor !== Array ) {
-			title = __( 'Gallery', 'kadence-blocks' )
-			instructions = __( 'Dynamic Source failed to load array of images.', 'kadence-blocks' )
-		}
+		const dynamicMediaPlaceholder = (
+			<Placeholder
+				label={ __( 'Gallery', 'kadence-blocks' ) }
+				instructions={__( 'Dynamic source failed to load array of images.', 'kadence-blocks' ) }
+			>
+				{ ( kadence_blocks_params.dynamic_enabled ? <DynamicGalleryControl dynamicAttribute='images' { ...this.props }/> : undefined ) }
+			</Placeholder>
+		);
 		const mediaPlaceholder = ( 
 			<KadenceMediaPlaceholder
 					labels={ {
@@ -1680,7 +1685,7 @@ class GalleryEdit extends Component {
 				<Fragment>
 					{ controls }
 					{ sidebarControls }
-					{ mediaPlaceholder }
+					{ theImages.constructor !== Array && dynamicSource ? dynamicMediaPlaceholder : mediaPlaceholder }
 				</Fragment>
 			);
 		}
@@ -1725,6 +1730,7 @@ class GalleryEdit extends Component {
 							caption={ img.caption }
 							customLink={ img.customLink }
 							linkTarget={ img.linkTarget }
+							linkSponsored={ img.linkSponsored }
 							setLinkAttributes={ ( attrs ) => this.setLinkAttributes( index, attrs ) }
 							showCaption={ showCaption }
 							captionStyles={ captionStyles }
@@ -1733,6 +1739,7 @@ class GalleryEdit extends Component {
 							imageRatio={ ratio }
 							type={ type }
 							thumbnail={ thumbnail }
+							dynamicSource={ dynamicSource }
 						/>
 					</div>
 				</li>

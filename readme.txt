@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -84,6 +84,9 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 = 2.3.1 =
 Release Date: March 7th, 2022
 * Add: Option for Author link in post block.
+* Add: Option to dynamically source a gallery.
+* Add: Option to set a custom gallery image link to sponsored.
+* Update: Parallax for ipad pro.
 
 = 2.3.0 =
 Release Date: March 7th, 2022
