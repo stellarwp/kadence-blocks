@@ -15,7 +15,7 @@ import classnames from 'classnames';
 import icons from '../../icons';
 import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../components/typography/fontloader';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
@@ -787,17 +787,17 @@ class KadenceCountdown extends Component {
 									initialOpen={ false }
 									panelName={ 'kb-countdown-item-settings' }
 								>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Background Color', 'kadence-blocks' ) }
-										colorValue={ ( itemBackground ? itemBackground : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { itemBackground: value } ) }
+										value={ ( itemBackground ? itemBackground : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { itemBackground: value } ) }
 									/>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Border Color', 'kadence-blocks' ) }
-										colorValue={ ( itemBorder ? itemBorder : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { itemBorder: value } ) }
+										value={ ( itemBorder ? itemBorder : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { itemBorder: value } ) }
 									/>
 									<ResponsiveMeasurementControls
 										label={ __( 'Border Width', 'kadence-blocks' ) }
@@ -860,11 +860,11 @@ class KadenceCountdown extends Component {
 									initialOpen={ false }
 									panelName={ 'kb-countdown-number-settings' }
 								>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Color', 'kadence-blocks' ) }
-										colorValue={ ( numberColor ? numberColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { numberColor: value } ) }
+										value={ ( numberColor ? numberColor : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { numberColor: value } ) }
 									/>
 									<TypographyControls
 										fontGroup={ 'number-item' }
@@ -912,11 +912,11 @@ class KadenceCountdown extends Component {
 									initialOpen={ false }
 									panelName={ 'kb-countdown-label-settings' }
 								>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Color', 'kadence-blocks' ) }
-										colorValue={ ( labelColor ? labelColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { labelColor: value } ) }
+										value={ ( labelColor ? labelColor : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { labelColor: value } ) }
 									/>
 									<TypographyControls
 										fontGroup={ 'label-item' }
@@ -964,11 +964,11 @@ class KadenceCountdown extends Component {
 									initialOpen={ false }
 									panelName={ 'kb-countdown-pre-text' }
 								>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Color', 'kadence-blocks' ) }
-										colorValue={ ( preLabelColor ? preLabelColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { preLabelColor: value } ) }
+										value={ ( preLabelColor ? preLabelColor : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { preLabelColor: value } ) }
 									/>
 									<TypographyControls
 										fontGroup={ 'prelabel-item' }
@@ -1016,11 +1016,11 @@ class KadenceCountdown extends Component {
 									initialOpen={ false }
 									panelName={ 'kb-countdown-post-text' }
 								>
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Color', 'kadence-blocks' ) }
-										colorValue={ ( postLabelColor ? postLabelColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => setAttributes( { postLabelColor: value } ) }
+										value={ ( postLabelColor ? postLabelColor : '' ) }
+										default={ '' }
+										onChange={ value => setAttributes( { postLabelColor: value } ) }
 									/>
 									<TypographyControls
 										fontGroup={ 'postlabel-item' }
@@ -1069,17 +1069,17 @@ class KadenceCountdown extends Component {
 							>
 								{ this.showSettings( 'container' ) && (
 									<Fragment>
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'Background Color', 'kadence-blocks' ) }
-											colorValue={ ( background ? background : '' ) }
-											colorDefault={ '' }
-											onColorChange={ value => setAttributes( { background: value } ) }
+											value={ ( background ? background : '' ) }
+											default={ '' }
+											onChange={ value => setAttributes( { background: value } ) }
 										/>
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'Border Color', 'kadence-blocks' ) }
-											colorValue={ ( border ? border : '' ) }
-											colorDefault={ '' }
-											onColorChange={ value => setAttributes( { border: value } ) }
+											value={ ( border ? border : '' ) }
+											default={ '' }
+											onChange={ value => setAttributes( { border: value } ) }
 										/>
 										<ResponsiveMeasurementControls
 											label={ __( 'Border Width', 'kadence-blocks' ) }

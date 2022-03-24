@@ -21,7 +21,7 @@ import IconRender from '../../components/icons/icon-render';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import KadenceColorOutput from '../../kadence-color-output';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import URLInputControl from '../../components/links/link-control';
 import DynamicTextControl from '../../components/common/dynamic-text-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
@@ -429,11 +429,11 @@ class KadenceIconLists extends Component {
 							max={ 4 }
 						/>
 					) }
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Icon Color' ) }
-						colorValue={ ( items[ index ].color ? items[ index ].color : '' ) }
-						colorDefault={ '' }
-						onColorChange={ value => {
+						value={ ( items[ index ].color ? items[ index ].color : '' ) }
+						default={ '' }
+						onChange={ value => {
 							this.saveListItem( { color: value }, index );
 						} }
 					/>
@@ -449,21 +449,21 @@ class KadenceIconLists extends Component {
 						} }
 					/>
 					{ items[ index ].style !== 'default' && (
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Icon Background' ) }
-							colorValue={ ( items[ index ].background ? items[ index ].background : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => {
+							value={ ( items[ index ].background ? items[ index ].background : '' ) }
+							default={ '' }
+							onChange={ value => {
 								this.saveListItem( { background: value }, index );
 							} }
 						/>
 					) }
 					{ items[ index ].style !== 'default' && (
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Border Color' ) }
-							colorValue={ ( items[ index ].border ? items[ index ].border : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => {
+							value={ ( items[ index ].border ? items[ index ].border : '' ) }
+							default={ '' }
+							onChange={ value => {
 								this.saveListItem( { border: value }, index );
 							} }
 						/>
@@ -721,11 +721,11 @@ class KadenceIconLists extends Component {
 								initialOpen={ false }
 								panelName={ 'kb-list-text-styling' }
 							>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Color Settings' ) }
-									colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => {
+									value={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
+									default={ '' }
+									onChange={ value => {
 										saveListStyles( { color: value } );
 									} }
 								/>
@@ -802,11 +802,11 @@ class KadenceIconLists extends Component {
 										max={ 4 }
 									/>
 								) }
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Icon Color' ) }
-									colorValue={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => {
+									value={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
+									default={ '' }
+									onChange={ value => {
 										saveAllListItem( { color: value } );
 									} }
 								/>
@@ -822,21 +822,21 @@ class KadenceIconLists extends Component {
 									} }
 								/>
 								{ items[ 0 ].style !== 'default' && (
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Icon Background' ) }
-										colorValue={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => {
+										value={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
+										default={ '' }
+										onChange={ value => {
 											saveAllListItem( { background: value } );
 										} }
 									/>
 								) }
 								{ items[ 0 ].style !== 'default' && (
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Border Color' ) }
-										colorValue={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => {
+										value={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
+										default={ '' }
+										onChange={ value => {
 											saveAllListItem( { border: value } );
 										} }
 									/>

@@ -22,7 +22,7 @@ import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 /**
  * Import Css
  */
@@ -744,67 +744,67 @@ class KadenceTabs extends Component {
 		};
 		const normalSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Title Color', 'kadence-blocks' ) }
-					colorValue={ ( titleColor ? titleColor : '' ) }
-					colorDefault={ '#444444' }
-					onColorChange={ ( value ) => setAttributes( { titleColor: value } ) }
+					value={ ( titleColor ? titleColor : '' ) }
+					default={ '#444444' }
+					onChange={ ( value ) => setAttributes( { titleColor: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Title Background', 'kadence-blocks' ) }
-					colorValue={ ( titleBg ? titleBg : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => setAttributes( { titleBg: value } ) }
+					value={ ( titleBg ? titleBg : '' ) }
+					default={ '' }
+					onChange={ ( value ) => setAttributes( { titleBg: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Title Border Color', 'kadence-blocks' ) }
-					colorValue={ ( titleBorder ? titleBorder : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => setAttributes( { titleBorder: value } ) }
+					value={ ( titleBorder ? titleBorder : '' ) }
+					default={ '' }
+					onChange={ ( value ) => setAttributes( { titleBorder: value } ) }
 				/>
 			</Fragment>
 		);
 		const hoverSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Hover Color', 'kadence-blocks' ) }
-					colorValue={ ( titleColorHover ? titleColorHover : '' ) }
-					colorDefault={ '#222222' }
-					onColorChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
+					value={ ( titleColorHover ? titleColorHover : '' ) }
+					default={ '#222222' }
+					onChange={ ( value ) => setAttributes( { titleColorHover: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Hover Background', 'kadence-blocks' ) }
-					colorValue={ ( titleBgHover ? titleBgHover : '' ) }
-					colorDefault={ '#e2e2e2' }
-					onColorChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
+					value={ ( titleBgHover ? titleBgHover : '' ) }
+					default={ '#e2e2e2' }
+					onChange={ ( value ) => setAttributes( { titleBgHover: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Hover Border Color', 'kadence-blocks' ) }
-					colorValue={ ( titleBorderHover ? titleBorderHover : '' ) }
-					colorDefault={ '#eeeeee' }
-					onColorChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
+					value={ ( titleBorderHover ? titleBorderHover : '' ) }
+					default={ '#eeeeee' }
+					onChange={ ( value ) => setAttributes( { titleBorderHover: value } ) }
 				/>
 			</Fragment>
 		);
 		const activeSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Active Color', 'kadence-blocks' ) }
-					colorValue={ ( titleColorActive ? titleColorActive : '' ) }
-					colorDefault={ '#222222' }
-					onColorChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
+					value={ ( titleColorActive ? titleColorActive : '' ) }
+					default={ '#222222' }
+					onChange={ ( value ) => setAttributes( { titleColorActive: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Active Background', 'kadence-blocks' ) }
-					colorValue={ ( titleBgActive ? titleBgActive : '' ) }
-					colorDefault={ '#eeeeee' }
-					onColorChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
+					value={ ( titleBgActive ? titleBgActive : '' ) }
+					default={ '#eeeeee' }
+					onChange={ ( value ) => setAttributes( { titleBgActive: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Active Border Color', 'kadence-blocks' ) }
-					colorValue={ ( titleBorderActive ? titleBorderActive : '' ) }
-					colorDefault={ '#eeeeee' }
-					onColorChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
+					value={ ( titleBorderActive ? titleBorderActive : '' ) }
+					default={ '#eeeeee' }
+					onChange={ ( value ) => setAttributes( { titleBorderActive: value } ) }
 				/>
 			</Fragment>
 		);
@@ -1050,11 +1050,11 @@ class KadenceTabs extends Component {
 								initialOpen={ false }
 								panelName={ 'kb-tab-content-settings' }
 							>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Content Background', 'kadence-blocks' ) }
-									colorValue={ ( contentBgColor ? contentBgColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
+									value={ ( contentBgColor ? contentBgColor : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Inner Content Padding (px)', 'kadence-blocks' ) }
@@ -1066,11 +1066,11 @@ class KadenceTabs extends Component {
 									max={ 100 }
 									step={ 1 }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Border Color', 'kadence-blocks' ) }
-									colorValue={ ( contentBorderColor ? contentBorderColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
+									value={ ( contentBorderColor ? contentBorderColor : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Content Border Width (px)', 'kadence-blocks' ) }

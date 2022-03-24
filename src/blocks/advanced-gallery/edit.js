@@ -15,7 +15,7 @@ import MeasurementControls from '../../measurement-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import Slider from 'react-slick';
 const {
 	applyFilters,
@@ -1432,17 +1432,17 @@ class GalleryEdit extends Component {
 												onChange={ value => setAttributes( { mobileForceHover: value } ) }
 											/>
 										) }
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'Caption Color', 'kadence-blocks' ) }
-											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
-											colorDefault={ '' }
-											onColorChange={ value => saveCaptionFont( { color: value } ) }
+											value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
+											default={ '' }
+											onChange={ value => saveCaptionFont( { color: value } ) }
 										/>
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'Caption Background', 'kadence-blocks' ) }
-											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
-											colorDefault={ '#000000' }
-											onColorChange={ value => saveCaptionFont( { background: value } ) }
+											value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
+											default={ '#000000' }
+											onChange={ value => saveCaptionFont( { background: value } ) }
 											opacityValue={ ( captionStyles && captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) }
 											onOpacityChange={ value => saveCaptionFont( { backgroundOpacity: value } ) }
 										/>
@@ -1518,11 +1518,11 @@ class GalleryEdit extends Component {
 													if ( 'hover' === tab.name ) {
 														tabout = (
 															<Fragment>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Shadow Color', 'kadence-blocks' ) }
-																	colorValue={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => saveShadowHover( { color: value } ) }
+																	value={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
+																	default={ '' }
+																	onChange={ value => saveShadowHover( { color: value } ) }
 																	opacityValue={ shadowHover[ 0 ].opacity }
 																	onOpacityChange={ value => saveShadowHover( { opacity: value } ) }
 																/>
@@ -1563,11 +1563,11 @@ class GalleryEdit extends Component {
 													} else {
 														tabout = (
 															<Fragment>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Shadow Color', 'kadence-blocks' ) }
-																	colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => saveShadow( { color: value } ) }
+																	value={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
+																	default={ '' }
+																	onChange={ value => saveShadow( { color: value } ) }
 																	opacityValue={ shadow[ 0 ].opacity }
 																	onOpacityChange={ value => saveShadow( { opacity: value } ) }
 																/>

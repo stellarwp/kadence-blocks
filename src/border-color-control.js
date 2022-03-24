@@ -7,7 +7,7 @@
  * Import Icons
  */
 import icons from './icons';
-import AdvancedPopColorControl from './advanced-pop-color-control';
+import PopColorControl from './components/color/pop-color-control';
 /**
  * Import External
  */
@@ -68,40 +68,40 @@ export default function BorderColorControls( {
 				{ control && control !== 'individual' && (
 					<Fragment>
 						<p className="kt-setting-label">{ label }</p>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ icons.linked }
-							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ colorDefault }
-							onColorChange={ ( value ) => onChange( [ value, value, value, value ] ) }
+							value={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							default={ colorDefault }
+							onChange={ ( value ) => onChange( [ value, value, value, value ] ) }
 						/>
 					</Fragment>
 				) }
 				{ control && control === 'individual' && (
 					<div className="kt-border-color-array-control">
 						<p className="kt-setting-label">{ label }</p>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ firstIcon }
-							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ colorDefault }
-							onColorChange={ ( value ) => onChange( [ value, values[ 1 ], values[ 2 ], values[ 3 ] ] ) }
+							value={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							default={ colorDefault }
+							onChange={ ( value ) => onChange( [ value, values[ 1 ], values[ 2 ], values[ 3 ] ] ) }
 						/>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ secondIcon }
-							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ colorDefault }
-							onColorChange={ ( value ) => onChange( [ values[ 0 ], value, values[ 2 ], values[ 3 ] ] ) }
+							value={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							default={ colorDefault }
+							onChange={ ( value ) => onChange( [ values[ 0 ], value, values[ 2 ], values[ 3 ] ] ) }
 						/>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ thirdIcon }
-							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ colorDefault }
-							onColorChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], value, values[ 3 ] ] ) }
+							value={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							default={ colorDefault }
+							onChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], value, values[ 3 ] ] ) }
 						/>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ fourthIcon }
-							colorValue={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
-							colorDefault={ colorDefault }
-							onColorChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], values[ 2 ], value ] ) }
+							value={ ( values && values[ 0 ] ? values[ 0 ] : '' ) }
+							default={ colorDefault }
+							onChange={ ( value ) => onChange( [ values[ 0 ], values[ 1 ], values[ 2 ], value ] ) }
 						/>
 					</div>
 				) }
