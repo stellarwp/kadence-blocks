@@ -1,6 +1,7 @@
 const defaultConfig = require("@wordpress/scripts/config/webpack.config");
 const SplitChunkName = require( './src/config/split-chunk-name' );
 const splitChunkName = new SplitChunkName();
+const path = require( 'path' );
 defaultConfig.optimization.splitChunks.chunks = 'all';
 defaultConfig.optimization.splitChunks.maxInitialRequests = 30;
 defaultConfig.optimization.splitChunks.hidePathInfo = true;
@@ -15,5 +16,11 @@ module.exports = {
 	entry: {
 		'blocks': './src/blocks.js', // 'name' : 'path/file.ext'.
 		//'plugin': './src/plugin.js', // 'name' : 'path/file.ext'.
+	},
+	resolve: {
+		alias: {
+			'@kadence/components': path.resolve( __dirname, './src/packages/components/src/index.js' ),
+			'@kadence/helpers': path.resolve( __dirname, './src/packages/helpers/src/index.js' ),
+		},
 	},
 };
