@@ -12,7 +12,7 @@ import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../components/common/box-shadow-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '../../packages/components/src';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import flow from 'lodash/flow';
