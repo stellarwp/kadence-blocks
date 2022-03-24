@@ -34,8 +34,17 @@
     "react-transition-group": "^2.4.0"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.16.7",
     "@wordpress/i18n": "^4.1.1",
     "@wordpress/scripts": "^16.1.4",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
     "install": "^0.13.0"
   }
 }
