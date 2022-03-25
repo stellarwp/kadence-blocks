@@ -9,3 +9,5 @@ export { default as KadenceSelectPosts } from './select-posts-controls';
 export { default as WebfontLoader } from './web-font-loader';
 export { default as HeadingLevelIcon } from './heading-level-icon';
 export { default as BoxShadowControl } from './box-shadow-control';
+export { default as DynamicImageControl } from './dynamic-image-control';
+export { default as DynamicTextControl } from './dynamic-text-control';
