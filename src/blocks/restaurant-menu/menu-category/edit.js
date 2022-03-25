@@ -8,7 +8,7 @@
 import Inspector from './inspector';
 import Controls from './controls';
 import WebfontLoader from '../../../fontloader';
-import KadenceColorOutput from '../../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * External dependencies

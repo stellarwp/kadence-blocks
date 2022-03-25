@@ -40,7 +40,7 @@ import { store as coreStore } from '@wordpress/core-data';
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 
 /**

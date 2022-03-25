@@ -5,40 +5,45 @@
 
 /**
  * Import Icons
-*/
-import ColorIcons from './color-icons';
-import ColorPicker from './color-picker';
-import hexToRGBA from './hex-to-rgba';
+ */
+import { ColorPicker } from '@kadence/components';
+import { hexToRGBA } from '@kadence/helpers';
 import get from 'lodash/get';
 import map from 'lodash/map';
 
 /**
  * Internal block libraries
  */
-const { __, sprintf } = wp.i18n;
-const {
-	Component,
-} = wp.element;
-const {
+import { __, sprintf } from '@wordpress/i18n';
+import { Component, Fragment } from '@wordpress/element';
+import {
 	Button,
-	Popover,
-	ColorIndicator,
 	Tooltip,
 	Dashicon,
-} = wp.components;
-const {
-	withSelect,
-} = wp.data;
+	Dropdown,
+	ToolbarGroup,
+	SVG,
+	Path,
+} from '@wordpress/components';
+import { withSelect } from '@wordpress/data';
+const { DOWN } = wp.keycodes;
+
+/* global kadence_blocks_params */
+// eslint-disable-next-line camelcase
+const ColorSelectorSVGIcon = () => (
+	<SVG xmlns="https://www.w3.org/2000/svg" viewBox="0 0 20 20">
+		<Path d="M7.434 5l3.18 9.16H8.538l-.692-2.184H4.628l-.705 2.184H2L5.18 5h2.254zm-1.13 1.904h-.115l-1.148 3.593H7.44L6.304 6.904zM14.348 7.006c1.853 0 2.9.876 2.9 2.374v4.78h-1.79v-.914h-.114c-.362.64-1.123 1.022-2.031 1.022-1.346 0-2.292-.826-2.292-2.108 0-1.27.972-2.006 2.71-2.107l1.696-.102V9.38c0-.584-.42-.914-1.18-.914-.667 0-1.112.228-1.264.647h-1.701c.12-1.295 1.307-2.107 3.066-2.107zm1.079 4.1l-1.416.09c-.793.056-1.18.342-1.18.844 0 .52.45.837 1.091.837.857 0 1.505-.545 1.505-1.256v-.515z" />
+	</SVG>
+);
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-class SinglePopColorControl extends Component {
+class InlinePopColorControl extends Component {
 	constructor() {
 		super( ...arguments );
 		this.onChangeState = this.onChangeState.bind( this );
 		this.onChangeComplete = this.onChangeComplete.bind( this );
-		this.unConvertOpacity = this.unConvertOpacity.bind( this );
 		this.state = {
 			alpha: false === this.props.alpha ? false : true,
 			isVisible: false,
@@ -50,15 +55,7 @@ class SinglePopColorControl extends Component {
 			isPalette: ( this.props.value && this.props.value.startsWith( 'palette' ) ? true : false ),
 		};
 	}
-	 render() {
-		const toggleVisible = () => {
-			this.setState( { isVisible: true } );
-		};
-		const toggleClose = () => {
-			if ( this.state.isVisible === true ) {
-				this.setState( { isVisible: false } );
-			}
-		};
+	render() {
 		if ( this.props.reload ) {
 			this.props.reloaded( true );
 			this.setState( { currentColor: '', currentOpacity: '', isPalette: ( this.props.value && this.props.value.startsWith( 'palette' ) ? true : false ) } );
@@ -79,18 +76,72 @@ class SinglePopColorControl extends Component {
 		if ( '' === currentColorString ) {
 			currentColorString = this.props.default;
 		}
-		// if ( '' !== currentColorString && this.props.onOpacityChange && ! this.state.isPalette ) {
-		// 	currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
-		// }
 		if ( this.props.onOpacityChange && ! this.state.isPalette ) {
 			if ( Number( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) !== 1 ) {
 				currentColorString = hexToRGBA( ( undefined === currentColorString ? '' : currentColorString ), ( convertedOpacityValue !== undefined && convertedOpacityValue !== '' ? convertedOpacityValue : 1 ) );
 			}
 		}
+		const renderToggleComponent = () => ( {
+												  onToggle,
+												  isOpen,
+											  } ) => {
+			const openOnArrowDown = ( event ) => {
+				if ( ! isOpen && event.keyCode === DOWN ) {
+					event.preventDefault();
+					event.stopPropagation();
+					onToggle();
+				}
+			};
+			return (
+				<ToolbarGroup>
+					<Button
+						className="components-toolbar__control kb-colors-selector__toggle"
+						label={ this.props.label }
+						onClick={ onToggle }
+						onKeyDown={ openOnArrowDown }
+						icon={
+							<div className="kb-colors-selector__icon-container">
+								<div
+									className={ 'kb-colors-selector__state-selection' }
+									style={ { color: currentColorString } }
+								>
+									<ColorSelectorSVGIcon />
+								</div>
+							</div>
+						}
+					/>
+				</ToolbarGroup>
+			);
+		};
 		return (
-			<div className="single-pop-color">
-				{ this.state.isVisible && (
-					<Popover position="top left" className="kadence-pop-color-popover" onClose={ toggleClose }>
+			<Dropdown
+				position="top right"
+				className="kb-colors-selector components-dropdown-menu components-toolbar new-kadence-advanced-colors"
+				contentClassName="block-library-colors-selector__popover kt-popover-color kadence-pop-color-popover"
+				//renderToggle={ renderToggleComponent() }
+				renderToggle={ ( { isOpen, onToggle } ) => (
+					<Fragment>
+						<Button
+							className="components-toolbar__control components-dropdown-menu__toggle kb-colors-selector__toggle"
+							label={ this.props.label }
+							tooltip={ this.props.label }
+							icon={
+								<div className="kb-colors-selector__icon-container">
+									<div
+										className={ 'kb-colors-selector__state-selection' }
+										style={ { color: currentColorString } }
+									>
+										<ColorSelectorSVGIcon />
+									</div>
+								</div>
+							}
+							onClick={ onToggle }
+							aria-expanded={ isOpen }>
+						</Button>
+					</Fragment>
+				) }
+				renderContent={ () => (
+					<div className="inline-color-popup-inner-wrap block-editor-block-toolbar">
 						{ this.state.classSat === 'first' && ! this.props.disableCustomColors && (
 							<ColorPicker
 								color={ currentColorString }
@@ -98,7 +149,7 @@ class SinglePopColorControl extends Component {
 								onChangeComplete={ ( color ) => {
 									this.onChangeComplete( color, '' );
 									if ( this.props.onClassChange ) {
-									this.props.onClassChange( '' );
+										this.props.onClassChange( '' );
 									}
 								} }
 							/>
@@ -113,7 +164,7 @@ class SinglePopColorControl extends Component {
 										this.props.onClassChange( '' );
 									}
 								} }
-						/>
+							/>
 						) }
 						{ this.props.colors && (
 							<div className="kadence-pop-color-palette-swatches">
@@ -157,42 +208,10 @@ class SinglePopColorControl extends Component {
 								} ) }
 							</div>
 						) }
-					</Popover>
+					</div>
 				) }
-				{ this.state.isVisible && (
-					<Button
-						className={ `kadence-pop-color-icon-indicate ${ ( this.state.alpha ? 'kadence-has-alpha' : 'kadence-no-alpha' ) }` }
-						onClick={ toggleVisible }
-						showTooltip={ true }
-						label={ this.props.label }
-						>
-						<ColorIndicator className="kadence-pop-color-indicate" colorValue={ currentColorString } />
-						{ '' === currentColorString && this.state.inherit && (
-							<span className="color-indicator-icon">{ ColorIcons.inherit }</span>
-						) }
-						{ ( this.props.value && this.props.value.startsWith( 'palette' )  ) && (
-							<span className="color-indicator-icon">{ <Dashicon icon="admin-site" /> }</span>
-						) }
-					</Button>
-				) }
-				{ ! this.state.isVisible && (
-					<Button
-						className={ `kadence-pop-color-icon-indicate ${ ( this.state.alpha ? 'kadence-has-alpha' : 'kadence-no-alpha' ) }` }
-						onClick={ toggleVisible }
-						showTooltip={ true }
-						label={ this.props.label }
-						>
-						<ColorIndicator className="kadence-pop-color-indicate" colorValue={ currentColorString } />
-						{ '' === currentColorString && this.state.inherit && (
-							<span className="color-indicator-icon">{ ColorIcons.inherit }</span>
-						) }
-						{ ( this.props.value && this.props.value.startsWith( 'palette' )  ) && (
-							<span className="color-indicator-icon">{ <Dashicon icon="admin-site" /> }</span>
-						) }
-					</Button>
-				) }
-			</div>
-		 );
+			/>
+		);
 	}
 	unConvertOpacity( value ) {
 		let val = 100;
@@ -257,14 +276,13 @@ class SinglePopColorControl extends Component {
 			}
 		}
 	}
- }
- export default withSelect( ( select, ownProps ) => {
-	 const settings = select( 'core/block-editor' ).getSettings();
-	 const colors = get( settings, [ 'colors' ], [] );
-	 const disableCustomColors = ownProps.disableCustomColors === undefined ? settings.disableCustomColors : ownProps.disableCustomColors;
-	 return {
-		 colors,
-		 disableCustomColors,
-	 };
- } )( SinglePopColorControl );
- 
+}
+export default withSelect( ( select, ownProps ) => {
+	const settings = select( 'core/block-editor' ).getSettings();
+	const colors = get( settings, [ 'colors' ], [] );
+	const disableCustomColors = ownProps.disableCustomColors === undefined ? settings.disableCustomColors : ownProps.disableCustomColors;
+	return {
+		colors,
+		disableCustomColors,
+	};
+} )( InlinePopColorControl );

@@ -15,7 +15,7 @@ import map from 'lodash/map';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import { PopColorControl } from '@kadence/components';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import StepControl from '../../step-control';
 import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
 import KadencePanelBody from '../../components/KadencePanelBody';

@@ -4,7 +4,7 @@
 
  import times from 'lodash/times';
  import Slider from 'react-slick';
- import KadenceColorOutput from '../../components/color/kadence-color-output';
+ import { KadenceColorOutput } from '@kadence/helpers';
 
 import {
 	Component,
@@ -60,7 +60,7 @@ class RowBackground extends Component {
 		const previewBackgroundPosition = this.getPreviewSize( this.props.getPreviewDevice, ( bgImgPosition ? bgImgPosition : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgPosition && tabletBackground[0].enable ? tabletBackground[0].bgImgPosition : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgPosition && mobileBackground[0].enable ? mobileBackground[0].bgImgPosition : '' ) );
 		const previewBackgroundRepeat = this.getPreviewSize( this.props.getPreviewDevice, ( bgImgRepeat ? bgImgRepeat : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgRepeat && tabletBackground[0].enable ? tabletBackground[0].bgImgRepeat : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgRepeat && mobileBackground[0].enable ? mobileBackground[0].bgImgRepeat : '' ) );
 		const previewBackgroundAttachment = this.getPreviewSize( this.props.getPreviewDevice, ( bgImgAttachment ? bgImgAttachment : undefined ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].bgImgAttachment && tabletBackground[0].enable ? tabletBackground[0].bgImgAttachment : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].bgImgAttachment && mobileBackground[0].enable ? mobileBackground[0].bgImgAttachment : '' ) );
-		
+
 
 		const previewBackgroundSettingTab = this.getPreviewSize( this.props.getPreviewDevice, ( backgroundSettingTab ? backgroundSettingTab : 'normal' ), ( undefined !== tabletBackground && tabletBackground[0] && tabletBackground[0].enable ? 'normal' : '' ), ( undefined !== mobileBackground && mobileBackground[0] && mobileBackground[0].enable ? 'normal' : '' ) );
 

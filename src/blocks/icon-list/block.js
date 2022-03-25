@@ -8,7 +8,7 @@
 import itemicons from '../../icons';
 import times from 'lodash/times';
 import IconRender from '../../components/icons/icon-render';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 import edit from './edit';
 /**
@@ -417,7 +417,7 @@ registerBlockType( 'kadence/iconlist', {
 				);
 			}
 		},
-		{ 
+		{
 			attributes: {
 				items: {
 					type: 'array',

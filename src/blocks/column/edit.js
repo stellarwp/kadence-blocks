@@ -18,7 +18,7 @@ import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 import { PopColorControl } from '@kadence/components';
 import KadenceBackgroundControl from '../../components/background/background-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';

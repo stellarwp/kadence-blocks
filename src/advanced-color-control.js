@@ -7,7 +7,7 @@
  * Import Icons
  */
 import icons from './icons';
-import hexToRGBA from './hex-to-rgba';
+import { hexToRGBA } from '@kadence/helpers';
 import get from 'lodash/get';
 import map from 'lodash/map';
 /**

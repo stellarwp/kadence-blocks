@@ -6,14 +6,13 @@
 /**
  * Internal dependencies
  */
-import map from 'lodash/map';
+
 import uniqueId from 'lodash/uniqueId';
 import classnames from 'classnames';
 import TypographyControls from '../../components/typography/typography-control';
 import InlineTypographyControls from '../../components/typography/inline-typography-control';
-import { PopColorControl } from '@kadence/components';
-import InlinePopColorControl from '../../components/color/inline-pop-color';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { PopColorControl, InlinePopColorControl } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 import WebfontLoader from '../../components/typography/fontloader';
 import TextShadowControl from '../../text-shadow-control';
 import KadenceRange from '../../components/range/range-control';

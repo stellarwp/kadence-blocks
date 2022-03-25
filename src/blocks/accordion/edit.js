@@ -24,7 +24,7 @@ import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import BorderColorControls from '../../border-color-control';
 import { PopColorControl } from '@kadence/components';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import KadenceRange from '../../components/range/range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';

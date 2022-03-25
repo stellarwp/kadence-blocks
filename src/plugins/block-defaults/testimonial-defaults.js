@@ -2,7 +2,7 @@ import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import map from 'lodash/map';
 import OpacityControl from '../../opacity-control';
-import hexToRGBA from '../../hex-to-rgba';
+import { hexToRGBA } from '@kadence/helpers';
 import IconControl from '../../components/icons/icon-control';
 /**
  * Internal block libraries

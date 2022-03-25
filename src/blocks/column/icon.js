@@ -9,9 +9,9 @@
  */
 import icons from '../../icons';
 
-import hexToRGBA from '../../hex-to-rgba';
+import { hexToRGBA } from '@kadence/helpers';
 import classnames from 'classnames';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 /**
  * Internal dependencies
  */

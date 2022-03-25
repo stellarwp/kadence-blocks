@@ -12,7 +12,7 @@ import ImageSizeControl from '../../components/common/image-size-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import KadenceRange from '../../components/range/range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
 import { PopColorControl } from '@kadence/components';

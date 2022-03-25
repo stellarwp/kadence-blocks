@@ -8,7 +8,7 @@
  */
 import cIcons from './kadence-color-icons';
 import KadenceColorPicker from './kadence-color-picker';
-import hexToRGBA from './hex-to-rgba';
+import { hexToRGBA } from '@kadence/helpers';
 import get from 'lodash/get';
 import map from 'lodash/map';
 

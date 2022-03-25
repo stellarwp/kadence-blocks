@@ -4,7 +4,7 @@
  * @returns {string} with var if needed.
  */
 /* global kadence_blocks_params */
-import hexToRGBA from './hex-to-rgba';
+import { hexToRGBA } from '@kadence/helpers';
 // eslint-disable-next-line camelcase
 export default function KadenceColorOutput( string, opacity = null ) {
 	if ( string && string.startsWith( 'palette' ) ) {

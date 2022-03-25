@@ -25,7 +25,7 @@ import IconRender from '../../components/icons/icon-render';
 import IconControl from '../../components/icons/icon-control';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import URLInputControl from '../../components/links/link-control';

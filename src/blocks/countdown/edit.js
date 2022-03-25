@@ -17,7 +17,7 @@ import MeasurementControls from '../../measurement-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import { PopColorControl } from '@kadence/components';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import URLInputControl from '../../components/links/link-control';
