@@ -1,9 +1,7 @@
 if ( ktgooglefonts === undefined ) {
 	var ktgooglefonts = [];
 }
-const {
-	Component,
-} = wp.element;
+import { Component } from '@wordpress/element';
 import PropTypes from "prop-types";
 import WebFont from "webfontloader";
 import { withSelect } from '@wordpress/data';
@@ -16,7 +14,7 @@ const statuses = {
 
 const noop = () => {};
 
-class KTWebfontLoader extends Component {
+class WebfontLoader extends Component {
 	constructor() {
 		super( ...arguments );
 		this.handleLoading = this.handleLoading.bind( this );
@@ -105,4 +103,4 @@ export default compose( [
 			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
-] )( KTWebfontLoader );
+] )( WebfontLoader );

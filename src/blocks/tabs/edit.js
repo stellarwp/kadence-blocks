@@ -14,7 +14,6 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
-import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import filter from 'lodash/filter';
@@ -22,7 +21,7 @@ import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import { KadenceColorOutput } from '@kadence/helpers';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import { PopColorControl } from '@kadence/components';
+import { PopColorControl, WebfontLoader } from '@kadence/components';
 /**
  * Import Css
  */

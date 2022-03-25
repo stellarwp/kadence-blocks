@@ -13,7 +13,7 @@ import icons from '../../icons';
 import times from 'lodash/times';
 import MeasurementControls from '../../measurement-control';
 import TypographyControls from '../../components/typography/typography-control';
-import WebfontLoader from '../../components/typography/fontloader';
+import { WebfontLoader } from '@kadence/components';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
 import IconControl from '../../components/icons/icon-control';

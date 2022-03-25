@@ -11,9 +11,8 @@ import uniqueId from 'lodash/uniqueId';
 import classnames from 'classnames';
 import TypographyControls from '../../components/typography/typography-control';
 import InlineTypographyControls from '../../components/typography/inline-typography-control';
-import { PopColorControl, InlinePopColorControl, ResponsiveAlignControls } from '@kadence/components';
+import { PopColorControl, WebfontLoader, HeadingLevelIcon, InlinePopColorControl, ResponsiveAlignControls } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
-import WebfontLoader from '../../components/typography/fontloader';
 import TextShadowControl from '../../text-shadow-control';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
@@ -24,7 +23,6 @@ import URLInputControl from '../../components/links/link-control';
 /**
  * Block dependencies
  */
-import HeadingLevelIcon from './heading-icons';
 import HeadingStyleCopyPaste from './copy-paste-style';
 import './markformat';
 

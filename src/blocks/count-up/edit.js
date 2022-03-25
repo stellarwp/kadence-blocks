@@ -7,7 +7,7 @@
  */
 import Inspector from './inspector';
 import { KadenceColorOutput } from '@kadence/helpers';
-import WebfontLoader from '../../components/typography/fontloader';
+import { WebfontLoader } from '@kadence/components';
 
 /**
  * Import External

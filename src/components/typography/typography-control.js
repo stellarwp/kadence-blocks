@@ -18,9 +18,8 @@ import icons from './../../icons';
  */
 import capitalizeFirstLetter from './../common/capitalfirst';
 import Select from 'react-select';
-import map from 'lodash/map';
 import range from 'lodash/range';
-import HeadingLevelIcon from './heading-icons';
+import { HeadingLevelIcon } from '@kadence/components';
 import KadenceRange from './../range/range-control';
 import MeasurementControls from './../measurement/measurement-control';
 import ResponsiveRangeControls from './../range/responsive-range-control';
@@ -101,14 +100,14 @@ class TypographyControls extends Component {
 					weights.push( {
 						value: kadence_blocks_params.c_fonts[font].weights[weight],
 						label: kadence_blocks_params.c_fonts[font].weights[weight],
-					} ); 
+					} );
 				} );
 				const styles = [];
 				Object.keys( kadence_blocks_params.c_fonts[font].styles ).forEach(function ( style ) {
 					styles.push( {
 						value: kadence_blocks_params.c_fonts[font].weights[style],
 						label: kadence_blocks_params.c_fonts[font].weights[style],
-					} ); 
+					} );
 				} );
 				newOptions.push( {
 					label: name,

@@ -17,18 +17,16 @@ import times from 'lodash/times';
 import filter from 'lodash/filter';
 import debounce from 'lodash/debounce';
 import MeasurementControls from '../../measurement-control';
-import WebfontLoader from '../../components/typography/fontloader';
 import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../components/common/box-shadow-control';
-import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl } from '@kadence/components';
+import { PopColorControl, WebfontLoader } from '@kadence/components';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
 import URLInputControl from '../../components/links/link-control';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
-import { getPreviewSize } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Import Css
