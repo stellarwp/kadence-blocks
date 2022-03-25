@@ -11,7 +11,7 @@ import uniqueId from 'lodash/uniqueId';
 import classnames from 'classnames';
 import TypographyControls from '../../components/typography/typography-control';
 import InlineTypographyControls from '../../components/typography/inline-typography-control';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import InlinePopColorControl from '../../components/color/inline-pop-color';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import WebfontLoader from '../../components/typography/fontloader';

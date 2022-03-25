@@ -16,7 +16,7 @@ import MeasurementControls from '../../measurement-control';
 import BoxShadowControl from '../../components/common/box-shadow-control';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import KadenceBackgroundControl from '../../components/background/background-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';

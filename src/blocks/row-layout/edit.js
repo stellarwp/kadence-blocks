@@ -26,7 +26,7 @@ import KadenceRange from '../../components/range/range-control';
 import ResponsiveControl from '../../components/responsive/responsive-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import MeasurementControls from '../../components/measurement/measurement-control';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadenceBackgroundControl from '../../components/background/background-control';

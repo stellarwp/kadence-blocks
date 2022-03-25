@@ -9,7 +9,7 @@ import ResponsiveAlignControls from '../../components/align/responsive-align-con
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadencePanelBody from '../../components/KadencePanelBody'
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 /**
  * Import Css
  */

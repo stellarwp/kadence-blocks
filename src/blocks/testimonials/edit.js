@@ -28,7 +28,7 @@ import WebfontLoader from '../../components/typography/fontloader';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';

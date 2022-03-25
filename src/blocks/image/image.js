@@ -48,7 +48,7 @@ import { isExternalImage } from './edit';
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import MeasurementControls from '../../components/measurement/measurement-control';
 import KadenceImageSizeControl from '../../components/common/image-size-control';
 import BoxShadowControl from '../../components/common/box-shadow-control';

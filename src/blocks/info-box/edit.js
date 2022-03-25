@@ -18,7 +18,7 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import ImageSizeControl from '../../components/common/image-size-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import IconRender from '../../components/icons/icon-render';

@@ -10,7 +10,7 @@
  * Internal dependencies
  */
 import TypographyControls from '../../components/typography/typography-control';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';

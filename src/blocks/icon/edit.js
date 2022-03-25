@@ -14,7 +14,7 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import StepControl from '../../step-control';
 import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';

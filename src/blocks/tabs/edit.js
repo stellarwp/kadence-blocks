@@ -22,7 +22,7 @@ import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 /**
  * Import Css
  */

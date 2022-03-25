@@ -10,7 +10,7 @@ import map from 'lodash/map';
 /**
  * Internal dependencies
  */
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import TypographyControls from '../../../../components/typography/typography-control';
 import KadenceRange from '../../../../kadence-range-control';
 import MeasurementControls from '../../../../measurement-control';

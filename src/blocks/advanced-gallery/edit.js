@@ -15,7 +15,7 @@ import MeasurementControls from '../../measurement-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 import Slider from 'react-slick';
 const {
 	applyFilters,

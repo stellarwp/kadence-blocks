@@ -7,7 +7,7 @@
  * Import Icons
  */
 import icons from './icons';
-import PopColorControl from './components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 /**
  * Import External
  */

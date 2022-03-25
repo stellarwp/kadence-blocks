@@ -6,7 +6,7 @@
 /**
  * Import Externals
  */
- import PopColorControl from '../color/pop-color-control';
+ import { PopColorControl } from '@kadence/components';
 /**
  * Internal block libraries
  */
