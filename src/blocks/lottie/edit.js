@@ -42,7 +42,7 @@ import { __experimentalNumberControl as NumberControl } from '@wordpress/compone
  * Internal dependencies
  */
 import classnames from 'classnames';
-import KadenceSelectPosts from '../../components/posts/select-posts-control'
+import { KadenceSelectPosts } from '@kadence/components'
 import KadencePanelBody from '../../components/KadencePanelBody'
 const ktlottieUniqueIDs = [];
 

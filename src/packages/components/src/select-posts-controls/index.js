@@ -4,13 +4,11 @@ import PropTypes from 'prop-types';
 
 import _uniqBy from 'lodash/uniqBy';
 import Select from 'react-select';
-import { fetchJson } from './../common/fetch';
+import { fetchJson } from '@kadence/helpers';
 
-const { addQueryArgs } = wp.url;
-import { __ } from '@wordpress/i18n';
-const {
-	Component,
-} = wp.element;
+import { addQueryArgs } from '@wordpress/url';
+const { Component } = '@wordpress/element';
+
 class KadenceSelectPosts extends Component {
 	constructor() {
 		super( ...arguments );

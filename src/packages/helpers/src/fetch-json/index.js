@@ -1,6 +1,5 @@
 import _zipObject from 'lodash/zipObject';
-
-const { apiFetch } = wp;
+import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Fetch JSON.
@@ -10,7 +9,7 @@ const { apiFetch } = wp;
  * @param {object} args
  * @param {array} headerKeys Array of headers to include.
  */
-export const fetchJson = ( args, headerKeys = [ 'x-wp-totalpages' ] ) => {
+export default ( args, headerKeys = [ 'x-wp-totalpages' ] ) => {
 	return new Promise( resolve => {
 		apiFetch( {
 			...args,
