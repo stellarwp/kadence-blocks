@@ -11,12 +11,8 @@ import { PopColorControl } from '@kadence/components';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
-	Component,
-} = wp.element;
-const {
-	ToggleControl,
-} = wp.components;
+import { Component } from '@wordpress/element';
+import { ToggleControl } from '@wordpress/components';
 /**
  * Build the BoxShadow controls
  * @returns {object} BoxShadow settings.

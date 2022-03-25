@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { fetchJson } from '@kadence/helpers';
 
 import { addQueryArgs } from '@wordpress/url';
-const { Component } = '@wordpress/element';
+import { Component } from '@wordpress/element';
 
 class KadenceSelectPosts extends Component {
 	constructor() {

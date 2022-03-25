@@ -87,13 +87,13 @@ class WebfontLoader extends Component {
 	}
 }
 
-KTWebfontLoader.propTypes = {
+WebfontLoader.propTypes = {
 	config: PropTypes.object.isRequired,
 	children: PropTypes.element,
 	onStatus: PropTypes.func.isRequired,
 };
 
-KTWebfontLoader.defaultProps = {
+WebfontLoader.defaultProps = {
 	onStatus: noop,
 };
 

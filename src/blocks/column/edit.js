@@ -13,10 +13,9 @@ import icons from '../../icons';
  * Import Controls
  */
 import MeasurementControls from '../../measurement-control';
-import BoxShadowControl from '../../components/common/box-shadow-control';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
-import { PopColorControl, ResponsiveAlignControls } from '@kadence/components';
+import { PopColorControl, ResponsiveAlignControls, BoxShadowControl } from '@kadence/components';
 import KadenceBackgroundControl from '../../components/background/background-control';
 import { KadenceColorOutput } from '@kadence/helpers';
 import KadenceRange from '../../components/range/range-control';
