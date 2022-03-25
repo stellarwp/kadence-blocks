@@ -34,7 +34,8 @@ function buildSettingsStyles() {
 function copyVendorStyles() {
     return src([
         config.modulesDir + '/simplelightbox/dist/simple-lightbox.min.css',
-        config.modulesDir + '/tiny-slider/dist/tiny-slider.css'
+        config.modulesDir + '/tiny-slider/dist/tiny-slider.css',
+        config.modulesDir + '/magnific-popup/dist/magnific-popup.css'
     ])
         .pipe(rename((file) => {
             if(!file.basename.endsWith('.min')) {

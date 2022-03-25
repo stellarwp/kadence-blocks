@@ -20,6 +20,8 @@
     "@wordpress/url": "^3.2.3",
     "classnames": "^2.2.6",
     "gumshoejs": "^5.1.2",
+    "jarallax": "^2.0.2",
+    "magnific-popup": "^1.1.0",
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",
     "re-resizable": "^4.7.1",
@@ -36,6 +38,7 @@
     "react-slick": "^0.24.0",
     "react-transition-group": "^2.4.0",
     "simplelightbox": "^2.10.3",
+    "slick-carousel": "^1.8.1",
     "tiny-slider": "^2.9.4"
   },
   "devDependencies": {
