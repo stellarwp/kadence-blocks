@@ -3,7 +3,7 @@ import MeasurementControls from '../../measurement-control';
 import map from 'lodash/map';
 import OpacityControl from '../../opacity-control';
 import { hexToRGBA } from '@kadence/helpers';
-import IconControl from '../../components/icons/icon-control';
+import { IconControl } from '@wordpress/components';
 /**
  * Internal block libraries
  */

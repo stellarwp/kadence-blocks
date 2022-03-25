@@ -2,7 +2,7 @@
  * Typography Component
  *
  */
-import GenIcon from './genicon';
+import { GenIcon } from '@kadence/components';
 const {
 	applyFilters,
 } = wp.hooks;

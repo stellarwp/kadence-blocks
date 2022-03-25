@@ -6,9 +6,8 @@
  * Import Icons
  */
 import times from 'lodash/times';
-import { hexToRGBA } from '@kadence/helpers';
-import IconRender from '../../components/icons/icon-render';
-import { KadenceColorOutput } from '@kadence/helpers';
+import { hexToRGBA, KadenceColorOutput } from '@kadence/helpers';
+import { IconRender } from '@kadence/components';
 
 /**
  * Import attributes

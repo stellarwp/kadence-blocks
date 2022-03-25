@@ -7,8 +7,8 @@
  */
 import itemicons from '../../icons';
 import times from 'lodash/times';
-import IconRender from '../../components/icons/icon-render';
 import { KadenceColorOutput } from '@kadence/helpers';
+import { IconRender } from '@kadence/components';
 
 import edit from './edit';
 /**

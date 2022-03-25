@@ -16,12 +16,10 @@ import TypographyControls from '../../components/typography/typography-control';
 import { WebfontLoader } from '@kadence/components';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
+import { PopColorControl, IconControl, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 
 /**

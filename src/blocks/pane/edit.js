@@ -4,9 +4,7 @@
  * Registering a basic block with Gutenberg.
  */
 
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import { KadencePanelBody } from '@kadence/components';
+import { KadencePanelBody, IconControl, IconRender } from '@kadence/components';
 
 const {
 	RichText,

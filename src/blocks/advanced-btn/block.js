@@ -10,7 +10,7 @@ import times from 'lodash/times';
 /**
  * Internal libraries
  */
-import IconRender from '../../components/icons/icon-render';
+import { IconRender } from '@kadence/components';
 /**
  * Import Icons
  */

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const { createElement } = wp.element;
+import { createElement } from '@wordpress/element';
 
 const walkChildren = ( children ) => {
 	return children.map( ( child, idx ) => {

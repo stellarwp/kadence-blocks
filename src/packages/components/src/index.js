@@ -30,3 +30,7 @@ export { default as InputSearch } from './links/input-search';
 export { default as URLInputControl } from './links/link-control';
 export { default as TextHighlight } from './links/text-highlight';
 
+export { default as GenIcon } from './icons/gen-icon';
+export { default as IconControl } from './icons/icon-control';
+export { default as IconRender } from './icons/icon-render';
+

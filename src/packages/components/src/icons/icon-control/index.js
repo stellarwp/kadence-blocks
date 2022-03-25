@@ -4,15 +4,9 @@
  */
 
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import IconRender from '../../components/icons/icon-render';
-const {
-	applyFilters,
-} = wp.hooks;
-
-const {
-	Fragment,
-	Component,
-} = wp.element;
+import { IconRender } from '@kadence/components';
+import { applyFilters } from '@wordpress/hooks';
+import { Fragment, Component } from '@wordpress/element';
 
 /**
  * Build the Icon controls
