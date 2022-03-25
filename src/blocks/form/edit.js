@@ -28,7 +28,7 @@ import KadencePanelBody from '../../components/KadencePanelBody';
 import URLInputControl from '../../components/links/link-control';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
-import { getPreviewSize } from '../../helpers/helpers';
+import { getPreviewSize } from '@kadence/helpers';
 
 /**
  * Import Css
