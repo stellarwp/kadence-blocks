@@ -23,7 +23,7 @@ function buildSettingsStyles() {
         'src/settings/dashboard.scss'
     ])
         .pipe(rename((file) => {
-            file.basename = "style"
+            file.basename = "styles"
         }))
         .pipe(sass())
         .pipe(cleancss())
