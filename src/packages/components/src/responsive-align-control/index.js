@@ -9,17 +9,14 @@
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import map from 'lodash/map';
-import get from 'lodash/get';
-import capitalizeFirstLetter from './../common/capitalfirst';
-const {
+import { map, upperFirst } from 'lodash';
+
+import {
 	Dashicon,
 	Button,
 	ButtonGroup,
-} = wp.components;
-const {
-	AlignmentToolbar,
-} = wp.blockEditor;
+} from '@wordpress/components';
+import { AlignmentToolbar } from '@wordpress/blockEditor';
 
 /**
  * Build the Measure controls
@@ -37,7 +34,7 @@ export default function ResponsiveAlignControls( {
 } ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	let customSetPreviewDeviceType = ( device ) => {
-		setDeviceType( capitalizeFirstLetter( device ) );
+		setDeviceType( upperFirst( device ) );
 	};
 	const theDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
@@ -50,8 +47,8 @@ export default function ResponsiveAlignControls( {
 			__experimentalSetPreviewDeviceType = null,
 		} = useDispatch( 'core/edit-post' );
 		customSetPreviewDeviceType = ( device ) => {
-			__experimentalSetPreviewDeviceType( capitalizeFirstLetter( device ) );
-			setDeviceType( capitalizeFirstLetter( device ) );
+			__experimentalSetPreviewDeviceType( upperFirst( device ) );
+			setDeviceType( upperFirst( device ) );
 		};
 	}
 	const devices = [

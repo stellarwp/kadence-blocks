@@ -12,7 +12,7 @@ import TypographyControls from '../../components/typography/typography-control';
 import BoxShadowControl from '../../components/common/box-shadow-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl } from '@kadence/components';
+import { PopColorControl, ResponsiveAlignControls } from '@kadence/components';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import flow from 'lodash/flow';
@@ -23,7 +23,6 @@ import URLInputControl from '../../components/links/link-control';
 import URLInputInline from '../../components/links/inline-link-control';
 import DynamicTextControl from '../../components/common/dynamic-text-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
 
 const POPOVER_PROPS = {
