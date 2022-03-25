@@ -44,7 +44,8 @@ function kadence_gutenberg_editor_assets() {
 	}
 	// Blocks Scripts.
 	wp_register_script( 'kadence-blocks-vendor', KADENCE_BLOCKS_URL . 'dist/build/vendors/blocks.js', array_merge( $dependencies, array( 'wp-api' ) ), $asset_meta['version'], true );
-	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/build/blocks.js', array_merge( $dependencies, array( 'wp-api', 'kadence-blocks-vendor' ) ), $asset_meta['version'], true );
+	wp_register_script( 'kadence-blocks-vendor-plugins', KADENCE_BLOCKS_URL . 'dist/build/vendors/blocks-plugin.js', array_merge( $dependencies, array('wp-api')), $asset_meta['version'], true);
+	wp_register_script( 'kadence-blocks-js', KADENCE_BLOCKS_URL . 'dist/build/blocks.js', array_merge( $dependencies, array( 'wp-api', 'kadence-blocks-vendor', 'kadence-blocks-vendor-plugins' ) ), $asset_meta['version'], true );
 	// Blocks Styles.
 	wp_register_style( 'kadence-blocks-editor-css', KADENCE_BLOCKS_URL . 'dist/build/blocks.css', array( 'wp-edit-blocks' ), $asset_meta['version'] );
 	if ( function_exists( 'wp_set_script_translations' ) ) {
