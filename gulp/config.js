@@ -1,10 +1,13 @@
 const path = require('path');
 
 module.exports = {
-    modulesDir: path.resolve('./node_modules'),
-    baseDir: path.resolve('./'),
-    distDir: path.resolve('./dist'),
+    dirs: {
+        modules: path.resolve('./node_modules'),
+        base: path.resolve('./'),
+        dist: path.resolve('./dist')
+    },
     sass: {},
+    cleancss: {},
     babel: {
         presets: [
             '@babel/preset-env',

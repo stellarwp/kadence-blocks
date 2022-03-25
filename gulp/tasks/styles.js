@@ -13,8 +13,8 @@ const config = require('../config');
  */
 function stylesPipe(sources) {
     return src(sources)
-        .pipe(sass())
-        .pipe(cleancss());
+        .pipe(sass(config.sass))
+        .pipe(cleancss(config.cleancss));
 }
 
 /**
@@ -31,7 +31,7 @@ function blocks() {
             file.extname = '.style.build.css';
             file.dirname = '';
         }))
-        .pipe(dest('dist/blocks'));
+        .pipe(dest(config.dirs.dist + '/blocks'));
 }
 
 /**
@@ -46,7 +46,7 @@ function settings() {
         .pipe(rename((file) => {
             file.basename = "styles"
         }))
-        .pipe(dest('dist/settings'));
+        .pipe(dest(config.dirs.dist + '/settings'));
 }
 
 /**
@@ -56,16 +56,16 @@ function settings() {
  */
 function vendor() {
     return src([
-        config.modulesDir + '/simplelightbox/dist/simple-lightbox.min.css',
-        config.modulesDir + '/tiny-slider/dist/tiny-slider.css',
-        config.modulesDir + '/magnific-popup/dist/magnific-popup.css'
+        config.dirs.modules + '/simplelightbox/dist/simple-lightbox.min.css',
+        config.dirs.modules + '/tiny-slider/dist/tiny-slider.css',
+        config.dirs.modules + '/magnific-popup/dist/magnific-popup.css'
     ])
         .pipe(rename((file) => {
             if(!file.basename.endsWith('.min')) {
                 file.basename += '.min';
             }
         }))
-        .pipe(dest('dist/assets/css'));
+        .pipe(dest(config.dirs.dist + '/assets/css'));
 }
 
 exports.blocksStyles = blocks;

@@ -1,8 +1,12 @@
 const { src, dest } = require('gulp');
 const del  = require('del');
+const config = require('../config');
 
 function clean() {
-    return del(['dist/**', '!dist'], { force: true });
+    return del([
+        config.dirs.dist + '/**',
+        '!' + config.dirs.dist
+    ], { force: true });
 }
 
 exports.clean = clean;

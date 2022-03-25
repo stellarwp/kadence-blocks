@@ -1,9 +1,10 @@
 const { src, dest } = require('gulp');
 const zip = require('gulp-zip');
+const config = require('../config');
 
 function createZip() {
     return src([
-        'dist/**/*',
+        config.dirs.dist + '/**/*',
         'languages/**/*',
         'readme.txt',
         'kadence-blocks.php',
