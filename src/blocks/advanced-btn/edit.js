@@ -5,6 +5,7 @@
  */
 import times from 'lodash/times';
 import map from 'lodash/map';
+import get from 'lodash/get';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import TypographyControls from '../../components/typography/typography-control';
@@ -311,7 +312,7 @@ class KadenceAdvancedButton extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, margin, marginUnit, kadenceAOSOptions, kadenceAnimation, collapseFullwidth }, attributes, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, margin, marginUnit, kadenceAOSOptions, kadenceAnimation, collapseFullwidth, lockBtnCount, hideLink }, attributes, className, setAttributes, isSelected } = this.props;
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -603,7 +604,7 @@ class KadenceAdvancedButton extends Component {
 									onClick={ this.onRemoveButton( index ) }
 									className="kadence-blocks-button-item__remove"
 									label={ __( 'Remove Button', 'kadence-blocks' ) }
-									disabled={ ! isButtonSelected || 1 === btns.length }
+									disabled={ ! isButtonSelected || 1 === btns.length || lockBtnCount }
 								/>
 							</div>
 						</Fragment>
@@ -712,34 +713,36 @@ class KadenceAdvancedButton extends Component {
 							) ) }
 						</ButtonGroup>
 					</Fragment>
-					<URLInputControl
-						label={ __( 'Button Link', 'kadence-blocks' ) }
-						url={ btns[ index ].link }
-						onChangeUrl={ value => {
-							this.saveArrayUpdate( { link: value }, index );
-						} }
-						additionalControls={ true }
-						changeTargetType={ true }
-						opensInNewTab={ ( undefined !== btns[ index ].target ? btns[ index ].target : '' ) }
-						onChangeTarget={ value => {
-							this.saveArrayUpdate( { target: value }, index );
-						} }
-						linkNoFollow={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
-						onChangeFollow={ value => {
-							this.saveArrayUpdate( { noFollow: value }, index );
-						} }
-						linkSponsored={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
-						onChangeSponsored={ value => {
-							this.saveArrayUpdate( { sponsored: value }, index );
-						} }
-						linkDownload={ ( undefined !== btns[ index ].download ? btns[ index ].download : false ) }
-						onChangeDownload={ value => {
-							this.saveArrayUpdate( { download: value }, index );
-						} }
-						dynamicAttribute={ 'btns:' + index + ':link' }
-						allowClear={ true }
-						{ ...this.props }
-					/>
+					{ ! lockBtnCount && (
+						<URLInputControl
+							label={ __( 'Button Link', 'kadence-blocks' ) }
+							url={ btns[ index ].link }
+							onChangeUrl={ value => {
+								this.saveArrayUpdate( { link: value }, index );
+							} }
+							additionalControls={ true }
+							changeTargetType={ true }
+							opensInNewTab={ ( undefined !== btns[ index ].target ? btns[ index ].target : '' ) }
+							onChangeTarget={ value => {
+								this.saveArrayUpdate( { target: value }, index );
+							} }
+							linkNoFollow={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
+							onChangeFollow={ value => {
+								this.saveArrayUpdate( { noFollow: value }, index );
+							} }
+							linkSponsored={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
+							onChangeSponsored={ value => {
+								this.saveArrayUpdate( { sponsored: value }, index );
+							} }
+							linkDownload={ ( undefined !== btns[ index ].download ? btns[ index ].download : false ) }
+							onChangeDownload={ value => {
+								this.saveArrayUpdate( { download: value }, index );
+							} }
+							dynamicAttribute={ 'btns:' + index + ':link' }
+							allowClear={ true }
+							{ ...this.props }
+						/>
+					)}
 					{ this.showSettings( 'sizeSettings' ) && (
 						<Fragment>
 							<ResponsiveRangeControls
@@ -1719,6 +1722,7 @@ class KadenceAdvancedButton extends Component {
 										initialOpen={ true }
 										panelName={ 'kb-adv-btn-count' }
 									>
+										{ ! lockBtnCount && (
 										<PanelRow>
 											<Button
 												className="kb-add-field"
@@ -1794,6 +1798,8 @@ class KadenceAdvancedButton extends Component {
 												{ __( 'Add Button', 'kadence-blocks' ) }
 											</Button>
 										</PanelRow>
+										)}
+
 										<ResponsiveAlignControls
 											label={ __( 'Button Alignment', 'kadence-blocks' ) }
 											value={ ( hAlign ? hAlign : '' ) }

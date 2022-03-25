@@ -28,7 +28,7 @@ import edit from './edit';
  */
 import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
-import { 
+import {
 	RichText,
 } from '@wordpress/block-editor';
 /**
@@ -209,6 +209,14 @@ registerBlockType( 'kadence/advancedbtn', {
 			type: 'bool',
 			default: false,
 		},
+		lockBtnCount: {
+			type: 'bool',
+			default: false
+		},
+		hideLink: {
+			type: 'bool',
+			default: false
+		}
 	},
 	edit,
 	save: props => {
@@ -288,7 +296,7 @@ registerBlockType( 'kadence/advancedbtn', {
 		);
 	},
 	deprecated: [
-		{ 
+		{
 			attributes: {
 				hAlign: {
 					type: 'string',

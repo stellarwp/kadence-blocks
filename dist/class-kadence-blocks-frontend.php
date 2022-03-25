@@ -273,6 +273,14 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
+			'kadence/show-more',
+			array(
+				'render_callback' => array( $this, 'render_showmore_css' ),
+				'editor_script'   => 'kadence-blocks-js',
+				'editor_style'    => 'kadence-blocks-editor-css',
+			)
+		);
+		register_block_type(
 			'kadence/testimonials',
 			array(
 				'render_callback' => array( $this, 'render_testimonials_css' ),
@@ -1104,6 +1112,76 @@ class Kadence_Blocks_Frontend {
 		return $content;
 	}
 
+
+	/**
+	 * Render Show More CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_showmore_css( $attributes, $content ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id              = $attributes['uniqueID'];
+			$player_style_id        = 'kb-block-show-more-container' . esc_attr( $unique_id );
+			$player_simple_style_id = str_replace( array( '-' ), '', $unique_id );
+
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'show-more', $unique_id ) ) {
+				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_show_more_render_block_attributes', $attributes );
+
+				$css = $this->blocks_show_more_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					if ( $this->should_render_inline( 'show-more', $unique_id ) ) {
+						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+					} else {
+						$this->render_inline_css( $css, $style_id, true );
+					}
+				}
+			}
+
+			$showHideMore = $attributes['showHideMore'] === false ? '' : "hideMoreButton" . $player_simple_style_id . ".style.display = 'block';";
+			$previewHeight = (isset($attributes['heightDesktop']) ? $attributes['heightDesktop'] : 250 ) . ( isset($attributes['heightType']) ? $attributes['heightType'] : 'px');
+
+			$maskvalue = 'none';
+			if( isset( $attributes['enableFadeOut']) && $attributes['enableFadeOut']) {
+				$maskvalue = 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize']) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)';
+			}
+
+
+			$content = $content . "
+			<script>
+				var showMoreContainer" . $player_simple_style_id . " = document.querySelector('." . $player_style_id . " .kb-show-more-content');
+
+				var buttons" . $player_simple_style_id . " = document.querySelectorAll('." . $player_style_id . " .kb-show-more-buttons div');
+				var showMoreButton" . $player_simple_style_id . " = buttons" . $player_simple_style_id . "[0];
+				var hideMoreButton" . $player_simple_style_id . " = buttons" . $player_simple_style_id . "[1];
+
+				showMoreButton" . $player_simple_style_id . ".addEventListener('click', function(e) {
+					e.preventDefault();
+					showMoreContainer" . $player_simple_style_id . ".style.maxHeight = 'none';
+					showMoreContainer" . $player_simple_style_id . ".style['mask-image'] = 'none';
+					showMoreContainer" . $player_simple_style_id . ".style['-webkit-mask-image'] = 'none';
+					showMoreButton" . $player_simple_style_id . ".style.display = 'none';
+					".  $showHideMore ."
+			        return false;
+				});
+
+				hideMoreButton" . $player_simple_style_id . ".addEventListener('click', function (e) {
+			        e.preventDefault();
+					showMoreContainer" . $player_simple_style_id . ".style.maxHeight =  '" . $previewHeight . "';
+					showMoreButton" . $player_simple_style_id . ".style.display = 'block';
+					hideMoreButton" . $player_simple_style_id . ".style.display = 'none';
+					showMoreContainer" . $player_simple_style_id . ".style['mask-image'] = '". $maskvalue ."';
+					showMoreContainer" . $player_simple_style_id . ".style['-webkit-mask-image'] = '". $maskvalue ."';
+          			return false;
+			    });
+
+			</script>";
+
+		}
+
+		return $content;
+	}
 	/**
 	 * Render Lottie Animation CSS
 	 *
@@ -3218,6 +3296,139 @@ class Kadence_Blocks_Frontend {
 		}
 
 		return $css;
+	}
+
+	/**
+	 * Builds CSS for Show More block.
+	 *
+	 * @param array  $attr the blocks attr.
+	 * @param string $unique_id the blocks attr ID.
+	 */
+	public function blocks_show_more_array( $attr, $unique_id  ) {
+		$css                    = new Kadence_Blocks_CSS();
+
+		$media_query            = array();
+		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
+		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$key_positions = [ 'top', 'right', 'bottom', 'left'];
+
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id);
+
+		// Margin desktop
+		foreach( $key_positions as $key => $key_position ){
+			if( $attr['marginDesktop'][$key] && is_numeric( $attr['marginDesktop'][$key] ) ) {
+				$css->add_property( 'margin-' . $key_position, $attr['marginDesktop'][$key] . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+			}
+		}
+
+		// Margin tablet & mobile
+		foreach ( [ 'Tablet', 'Mobile' ] as $breakpoint ) {
+			$css->start_media_query( $media_query[ strtolower( $breakpoint ) ] );
+			if ( isset( $attr[ 'margin' . $breakpoint ] ) && is_array( $attr[ 'margin' . $breakpoint ] ) ) {
+				foreach ( $attr[ 'margin' . $breakpoint ] as $key => $marginValue ) {
+					if ( is_numeric( $marginValue ) ) {
+						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
+
+					}
+				}
+			}
+			$css->stop_media_query();
+		}
+
+		// Padding desktop
+		foreach( $key_positions as $key => $key_position ){
+			if( $attr['paddingDesktop'][$key] && is_numeric( $attr['paddingDesktop'][$key] ) ) {
+				$css->add_property( 'padding-' . $key_position, $attr['paddingDesktop'][$key] . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+			}
+		}
+
+		// padding tablet & mobile
+		foreach ( [ 'Tablet', 'Mobile' ] as $breakpoint ) {
+			$css->start_media_query( $media_query[ strtolower( $breakpoint ) ] );
+			if ( isset( $attr[ 'padding' . $breakpoint ] ) && is_array( $attr[ 'padding' . $breakpoint ] ) ) {
+				foreach ( $attr[ 'padding' . $breakpoint ] as $key => $paddingValue ) {
+					if ( is_numeric( $paddingValue ) ) {
+						$css->add_property( 'padding-' . $key_positions[ $key ], $paddingValue . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
+
+					}
+				}
+			}
+			$css->stop_media_query();
+		}
+
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:last-child' );
+		$css->add_property( 'display', 'none' );
+
+
+		$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+		$css->add_property( 'max-height', (  isset( $attr['heightDesktop'] ) ? $attr['heightDesktop'] : 250) .  ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+		$css->add_property( 'overflow-y', 'hidden' );
+
+		if( isset( $attr['enableFadeOut']) && $attr['enableFadeOut']) {
+			$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+			$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+		}
+
+		// Default expanded Desktop
+		if( isset( $attr['defaultExpandedDesktop']) && $attr['defaultExpandedDesktop'] ) {
+			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+			$css->start_media_query( $media_query['desktop'] );
+			$css->add_property( 'max-height', 'none' );
+			$css->add_property( '-webkit-mask-image', 'none' );
+			$css->add_property( 'mask-image', 'none' );
+
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+			$css->add_property( 'display', 'none' );
+			$css->stop_media_query();
+		}
+
+		// Default expanded Tablet
+		if( isset( $attr['defaultExpandedTablet']) && $attr['defaultExpandedTablet'] ) {
+			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+			$css->start_media_query( $media_query['tablet'] );
+			$css->add_property( 'max-height', 'none' );
+			$css->add_property( '-webkit-mask-image', 'none' );
+			$css->add_property( 'mask-image', 'none' );
+
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+			$css->add_property( 'display', 'none' );
+			$css->stop_media_query();
+
+			// If default expanded on tablet, but not on mobile
+			if( !isset( $attr['defaultExpandedMobile']) || ( isset( $attr['defaultExpandedMobile']) && !$attr['defaultExpandedMobile'] ) ){
+				$css->start_media_query( $media_query['mobile'] );
+
+				$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+				$css->add_property( 'max-height', (  isset( $attr['heightDesktop'] ) ? $attr['heightDesktop'] : 250) .  ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+				$css->add_property( 'overflow-y', 'hidden' );
+
+				if( isset( $attr['enableFadeOut']) && $attr['enableFadeOut']) {
+					$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+				}
+
+				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+				$css->add_property( 'display', 'inline' );
+				$css->stop_media_query();
+			}
+		}
+
+		// Default expanded Mobile
+		if( isset( $attr['defaultExpandedMobile']) && $attr['defaultExpandedMobile'] ) {
+			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+			$css->start_media_query( $media_query['mobile'] );
+			$css->add_property( 'max-height', 'none' );
+			$css->add_property( '-webkit-mask-image', 'none' );
+			$css->add_property( 'mask-image', 'none' );
+
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+			$css->add_property( 'display', 'none' );
+			$css->stop_media_query();
+		}
+
+
+		return $css->css_output();
 	}
 
 	/**
