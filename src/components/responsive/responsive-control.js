@@ -10,7 +10,7 @@ import { useSelect, dispatch, useDispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import map from 'lodash/map';
-import capitalizeFirstLetter from './../common/capitalfirst';
+import { capitalizeFirstLetter } from '@kadence/helpers'
 import {
 	Dashicon,
 	Button,

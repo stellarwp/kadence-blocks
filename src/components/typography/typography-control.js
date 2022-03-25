@@ -16,7 +16,7 @@ import icons from './../../icons';
 /**
  * Import External
  */
-import capitalizeFirstLetter from './../common/capitalfirst';
+import { capitalizeFirstLetter } from '@kadence/helpers'
 import Select from 'react-select';
 import range from 'lodash/range';
 import { HeadingLevelIcon } from '@kadence/components';

@@ -11,7 +11,7 @@ import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import map from 'lodash/map';
 import MeasurementControls from './measurement-control';
-import capitalizeFirstLetter from '../common/capitalfirst';
+import { capitalizeFirstLetter } from '@kadence/helpers'
 const {
 	Dashicon,
 	Button,

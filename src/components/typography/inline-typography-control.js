@@ -14,7 +14,7 @@ import icons from '../../icons';
  */
 //import gFonts from './gfonts';
 //import fonts from './fonts';
-import capitalizeFirstLetter from './../common/capitalfirst';
+import { capitalizeFirstLetter } from '@kadence/helpers'
 import Select from 'react-select';
 import map from 'lodash/map';
 
@@ -98,14 +98,14 @@ class InlineTypographyControl extends Component {
 					weights.push( {
 						value: kadence_blocks_params.c_fonts[font].weights[weight],
 						label: kadence_blocks_params.c_fonts[font].weights[weight],
-					} ); 
+					} );
 				} );
 				const styles = [];
 				Object.keys( kadence_blocks_params.c_fonts[font].styles ).forEach(function ( style ) {
 					styles.push( {
 						value: kadence_blocks_params.c_fonts[font].weights[style],
 						label: kadence_blocks_params.c_fonts[font].weights[style],
-					} ); 
+					} );
 				} );
 				newOptions.push( {
 					label: name,

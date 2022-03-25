@@ -9,7 +9,8 @@
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { map, upperFirst } from 'lodash';
+import { map } from 'lodash';
+import { capitalizeFirstLetter } from '@kadence/helpers'
 
 import {
 	Dashicon,
@@ -34,7 +35,7 @@ export default function ResponsiveAlignControls( {
 } ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	let customSetPreviewDeviceType = ( device ) => {
-		setDeviceType( upperFirst( device ) );
+		setDeviceType( capitalizeFirstLetter( device ) );
 	};
 	const theDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
@@ -47,8 +48,8 @@ export default function ResponsiveAlignControls( {
 			__experimentalSetPreviewDeviceType = null,
 		} = useDispatch( 'core/edit-post' );
 		customSetPreviewDeviceType = ( device ) => {
-			__experimentalSetPreviewDeviceType( upperFirst( device ) );
-			setDeviceType( upperFirst( device ) );
+			__experimentalSetPreviewDeviceType( capitalizeFirstLetter( device ) );
+			setDeviceType( capitalizeFirstLetter( device ) );
 		};
 	}
 	const devices = [

@@ -3,6 +3,6 @@
  * @param {string} string the word string.
  * @returns {string} with capital letter.
  */
-export default function capitalizeFirstLetter( string ) {
+export default ( string ) => {
 	return string.charAt( 0 ).toUpperCase() + string.slice( 1 );
 }

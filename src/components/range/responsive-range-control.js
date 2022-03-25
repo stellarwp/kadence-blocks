@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
 import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
 import { undo } from '@wordpress/icons';
-import capitalizeFirstLetter from './../common/capitalfirst';
+import { capitalizeFirstLetter } from '@kadence/helpers'
 import ResponsiveSingleRangeControl from './single-range-control';
 import {
 	Dashicon,
