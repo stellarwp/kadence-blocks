@@ -25,4 +25,4 @@ exports.buildStyles = stylesTasks.buildStyles;
 exports.styles = stylesTasks.styles;
 
 exports.vendor = parallel(jsTasks.vendorJs, stylesTasks.vendorStyles);
-exports.build = parallel(jsTasks.js, stylesTasks.styles, php);
+exports.build = parallel(jsTasks.js, stylesTasks.styles, php, webpack);
