@@ -33,7 +33,7 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
-import KadencePanelBody from '../../components/KadencePanelBody'
+import { KadencePanelBody } from '@kadence/components'
 const { dateI18n, format, __experimentalGetSettings } = wp.date;
 const {
 	Component,

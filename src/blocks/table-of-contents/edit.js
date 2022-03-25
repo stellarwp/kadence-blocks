@@ -33,11 +33,10 @@ import icons from '../../icons';
  * Internal dependencies
  */
 import TableOfContentsList from './list';
-import KadencePanelBody from '../../components/KadencePanelBody';
 import { getHeadingsFromContent, linearToNestedHeadingList } from './utils';
 const { ENTER } = wp.keycodes;
 import { withSelect } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
+import { compose, KadencePanelBody } from '@wordpress/compose';
 const {
 	Component,
 	Fragment,

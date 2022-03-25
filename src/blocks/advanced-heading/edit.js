@@ -11,13 +11,12 @@ import uniqueId from 'lodash/uniqueId';
 import classnames from 'classnames';
 import TypographyControls from '../../components/typography/typography-control';
 import InlineTypographyControls from '../../components/typography/inline-typography-control';
-import { PopColorControl, URLInputControl, WebfontLoader, HeadingLevelIcon, InlinePopColorControl, ResponsiveAlignControls } from '@kadence/components';
+import { PopColorControl, KadencePanelBody, URLInputControl, WebfontLoader, HeadingLevelIcon, InlinePopColorControl, ResponsiveAlignControls } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 import TextShadowControl from '../../text-shadow-control';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * Block dependencies

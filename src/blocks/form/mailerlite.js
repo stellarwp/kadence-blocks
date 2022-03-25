@@ -9,8 +9,7 @@
 import Select from 'react-select';
 const { addQueryArgs } = wp.url;
 const { apiFetch } = wp;
-import KadencePanelBody from '../../components/KadencePanelBody';
-
+import { KadencePanelBody } from '@kadence/components';
 /**
  * Internal block libraries
  */

@@ -20,6 +20,7 @@ export { default as KadenceMediaPlaceholder } from './common/media-placeholder';
 export { default as ImageSizeControl } from './common/image-size-controls';
 export { default as VerticalAlignmentIcon } from './common/vertical-align-icon';
 export { default as KadenceImageControl } from './common/image-controls';
+export { default as KadencePanelBody } from './panel-body';
 
 export { default as DynamicLinkControl } from './links/dynamic-link-control';
 export { default as fetchSearchResults } from './links/get-post-search-results';

@@ -26,11 +26,10 @@ import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
-import { PopColorControl, WebfontLoader, KadenceMediaPlaceholder } from '@kadence/components';
+import { PopColorControl, KadencePanelBody, WebfontLoader, KadenceMediaPlaceholder } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * Internal block libraries

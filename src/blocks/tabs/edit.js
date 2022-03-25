@@ -20,8 +20,7 @@ import filter from 'lodash/filter';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import { KadenceColorOutput } from '@kadence/helpers';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import { PopColorControl, WebfontLoader } from '@kadence/components';
+import { PopColorControl, WebfontLoader, KadencePanelBody } from '@kadence/components';
 /**
  * Import Css
  */

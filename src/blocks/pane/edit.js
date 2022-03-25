@@ -6,7 +6,7 @@
 
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
-import KadencePanelBody from '../../components/KadencePanelBody';
+import { KadencePanelBody } from '@kadence/components';
 
 const {
 	RichText,

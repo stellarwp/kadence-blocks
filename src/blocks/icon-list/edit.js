@@ -21,9 +21,8 @@ import IconRender from '../../components/icons/icon-render';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, URLInputControl, DynamicTextControl } from '@kadence/components';
+import { PopColorControl, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * Import Css

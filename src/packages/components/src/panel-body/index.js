@@ -1,22 +1,20 @@
 /**
  * WordPress dependencies
  */
-import {
-	PanelBody
-} from '@wordpress/components'
+import { PanelBody } from '@wordpress/components'
 import { compose } from '@wordpress/compose'
 import { withSelect, withDispatch } from '@wordpress/data'
 
 function KadencePanelBody ({
-	children,
-	title,
-	initialOpen = true,
-	isOpened,
-	toggleOpened,
-	className = '',
-	icon = '',
-	buttonProps = {}
-}) {
+							   children,
+							   title,
+							   initialOpen = true,
+							   isOpened,
+							   toggleOpened,
+							   className = '',
+							   icon = '',
+							   buttonProps = {}
+						   }) {
 
 	return (
 		<PanelBody

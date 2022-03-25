@@ -24,8 +24,7 @@ import {
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
-import { KadenceMediaPlaceholder, KadenceImageControl } from '@kadence/components';
-import KadencePanelBody from '../../components/KadencePanelBody';
+import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl } from '@kadence/components';
 import itemicons from '../../icons';
 
 /* global wp */

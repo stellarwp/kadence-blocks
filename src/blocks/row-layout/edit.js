@@ -26,10 +26,9 @@ import KadenceRange from '../../components/range/range-control';
 import ResponsiveControl from '../../components/responsive/responsive-control';
 import { KadenceColorOutput } from '@kadence/helpers';
 import MeasurementControls from '../../components/measurement/measurement-control';
-import { PopColorControl, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
+import { PopColorControl, KadencePanelBody, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
 /**
  * Import Block Specific Components
  */

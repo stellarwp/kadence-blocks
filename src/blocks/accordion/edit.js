@@ -22,11 +22,10 @@ import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import BorderColorControls from '../../border-color-control';
-import { PopColorControl, WebfontLoader } from '@kadence/components';
+import { PopColorControl, KadencePanelBody, WebfontLoader } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import KadenceRange from '../../components/range/range-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
 
 /**
  * Import Css
