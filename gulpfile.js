@@ -1,7 +1,7 @@
 const { parallel, series } = require('gulp');
 
-const { js, copyVendorJs, buildJs } = require('./gulp/tasks/js');
-const { styles } = require('./gulp/tasks/styles');
+const jsTasks = require('./gulp/tasks/js');
+const stylesTasks = require('./gulp/tasks/styles');
 const { clean } = require('./gulp/tasks/clean');
 const { php } = require('./gulp/tasks/php');
 const { zip } = require('./gulp/tasks/zip');
@@ -9,8 +9,20 @@ const { webpack } = require('./gulp/tasks/webpack');
 
 exports.clean = clean;
 exports.php = php;
-exports.js = js;
-exports.styles = styles;
-exports.build = series(clean, parallel(js, styles, php));
 exports.zip = zip;
 exports.webpack = webpack;
+
+exports.standaloneJs = jsTasks.standaloneJs;
+exports.settingsJs = jsTasks.settingsJs;
+exports.vendorJs = jsTasks.vendorJs;
+exports.buildJs = jsTasks.buildJs;
+exports.js = jsTasks.js;
+
+exports.blocksStyles = stylesTasks.blocksStyles;
+exports.settingsStyles = stylesTasks.settingsStyles;
+exports.vendorStyles = stylesTasks.vendorStyles;
+exports.buildStyles = stylesTasks.buildStyles;
+exports.styles = stylesTasks.styles;
+
+exports.vendor = parallel(jsTasks.vendorJs, stylesTasks.vendorStyles);
+exports.build = parallel(jsTasks.js, stylesTasks.styles, php);

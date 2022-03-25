@@ -5,24 +5,46 @@ const minify = require('gulp-minify');
 const del = require('del');
 const config = require('../config');
 
-function buildJs() {
-    return src([
-        'src/init/*.js',
-        'src/utils/*.js'
-    ])
+/**
+ * Create gulp pipeline for js files
+ * 
+ * @param {*} sources 
+ * @returns js build pipeline
+ */
+function jsPipe(sources) {
+    return src(sources)
         .pipe(babel(config.babel))
-        .pipe(minify(config.minify))
-        .pipe(dest('dist/assets/js'));
+        .pipe(minify(config.minify));
 }
 
-function buildSettingsJs() {
-    return src('src/settings/*.js')
-        .pipe(babel(config.babel))
-        .pipe(minify(config.minify))
+/**
+ * Build standalone js files.
+ * 
+ * @returns 
+ */
+function standalone() {
+    return jsPipe([
+        'src/init/*.js',
+        'src/utils/*.js'
+    ]).pipe(dest('dist/assets/js'));
+}
+
+/**
+ * Build settings js files.
+ * 
+ * @returns 
+ */
+function settings() {
+    return jsPipe('src/settings/*.js')
         .pipe(dest('dist/settings'));
 }
 
-function copyVendorJs() {
+/**
+ * Copy vendor scripts.
+ * 
+ * @returns 
+ */
+function vendor() {
     return src([
         config.modulesDir + '/tiny-slider/dist/min/tiny-slider.js',
         config.modulesDir + '/simplelightbox/dist/simple-lightbox.min.js',
@@ -41,7 +63,9 @@ function copyVendorJs() {
         .pipe(dest('dist/assets/js'));
 }
 
-exports.buildJs = buildJs;
-exports.copyVendorJs = copyVendorJs;
-exports.buildSettingsJs = buildSettingsJs;
-exports.js = parallel(buildJs, buildSettingsJs, copyVendorJs);
+exports.standaloneJs = standalone;
+exports.settingsJs = settings;
+exports.vendorJs = vendor;
+
+exports.buildJs = parallel(standalone, settings);
+exports.js = parallel(standalone, settings, vendor);

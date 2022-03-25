@@ -5,11 +5,27 @@ const rename = require('gulp-rename');
 const cleancss = require('gulp-clean-css')
 const config = require('../config');
 
-// TODO: handle sub-directories (like restaurant-menu has)
-function buildBlockStyles() {
-    return src('src/blocks/**/style.scss')
+/**
+ * Create gulp pipeline for scss/css files.
+ * 
+ * @param {*} sources 
+ * @returns 
+ */
+function stylesPipe(sources) {
+    return src(sources)
         .pipe(sass())
-        .pipe(cleancss())
+        .pipe(cleancss());
+}
+
+/**
+ * Build block styles.
+ * 
+ * @todo handle sub-directories like in restaurant-menu
+ * 
+ * @returns 
+ */
+function blocks() {
+    return stylesPipe('src/blocks/**/style.scss')
         .pipe(rename(function(file){
             file.basename = file.dirname.replace('/', '_');
             file.extname = '.style.build.css';
@@ -18,20 +34,27 @@ function buildBlockStyles() {
         .pipe(dest('dist/blocks'));
 }
 
-function buildSettingsStyles() {
-    return src([
+/**
+ * Build settings styles.
+ * 
+ * @returns 
+ */
+function settings() {
+    return stylesPipe([
         'src/settings/dashboard.scss'
     ])
         .pipe(rename((file) => {
             file.basename = "styles"
         }))
-        .pipe(sass())
-        .pipe(cleancss())
         .pipe(dest('dist/settings'));
 }
 
-// copy needed vendor styles from node_modules
-function copyVendorStyles() {
+/**
+ * Copy vendor styles.
+ * 
+ * @returns 
+ */
+function vendor() {
     return src([
         config.modulesDir + '/simplelightbox/dist/simple-lightbox.min.css',
         config.modulesDir + '/tiny-slider/dist/tiny-slider.css',
@@ -45,8 +68,9 @@ function copyVendorStyles() {
         .pipe(dest('dist/assets/css'));
 }
 
-exports.buildBlockStyles = buildBlockStyles;
-exports.buildSettingsStyles = buildSettingsStyles;
-exports.buildStyles = parallel(buildBlockStyles, buildSettingsStyles);
-exports.copyVendorStyles = copyVendorStyles;
-exports.styles = parallel(copyVendorStyles, exports.buildStyles);
+exports.blocksStyles = blocks;
+exports.settingsStyles = settings;
+exports.vendorStyles = vendor;
+
+exports.buildStyles = parallel(blocks, settings);
+exports.styles = parallel(blocks, settings, vendor);

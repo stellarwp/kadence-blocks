@@ -1,6 +1,11 @@
 const webpack = require('webpack');
 const webpackConfig = require('../../webpack.config.js');
 
+/**
+ * Build webpack bundle using webpack.config.js
+ * 
+ * @returns 
+ */
 function buildWebpack() {
     return new Promise((resolve, reject) => {
         webpack(webpackConfig, (err, stats) => {
