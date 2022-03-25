@@ -10,15 +10,13 @@ import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
 import TypographyControls from '../../components/typography/typography-control';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, ResponsiveAlignControls, WebfontLoader, BoxShadowControl, DynamicTextControl } from '@kadence/components';
+import { PopColorControl, URLInputControl, URLInputInline, ResponsiveAlignControls, WebfontLoader, BoxShadowControl, DynamicTextControl } from '@kadence/components';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import flow from 'lodash/flow';
 import filter from 'lodash/filter';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
-import URLInputControl from '../../components/links/link-control';
-import URLInputInline from '../../components/links/inline-link-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
 

@@ -20,3 +20,12 @@ export { default as KadenceMediaPlaceholder } from './common/media-placeholder';
 export { default as ImageSizeControl } from './common/image-size-controls';
 export { default as VerticalAlignmentIcon } from './common/vertical-align-icon';
 export { default as KadenceImageControl } from './common/image-controls';
+
+export { default as DynamicLinkControl } from './links/dynamic-link-control';
+export { default as fetchSearchResults } from './links/get-post-search-results';
+export { default as KadenceImageURLInputUI } from './links/image-url-input-link-controls';
+export { default as URLInputInline } from './links/inline-link-control';
+export { default as InputSearch } from './links/input-search';
+export { default as URLInputControl } from './links/link-control';
+export { default as TextHighlight } from './links/text-highlight';
+

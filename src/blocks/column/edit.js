@@ -15,14 +15,14 @@ import icons from '../../icons';
 import MeasurementControls from '../../measurement-control';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
-import { PopColorControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
+import { PopColorControl, URLInputControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import URLInputControl from '../../components/links/link-control';
+
 /**
  * Blocks Specific.
  */

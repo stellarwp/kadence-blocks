@@ -48,13 +48,11 @@ import { isExternalImage } from './edit';
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import { PopColorControl, BoxShadowControl, KadenceImageControl, DropShadowControl, ImageSizeControl as KadenceImageSizeControl } from '@kadence/components';
+import { PopColorControl, URLInputControl, KadenceImageURLInputUI, BoxShadowControl, KadenceImageControl, DropShadowControl, ImageSizeControl as KadenceImageSizeControl } from '@kadence/components';
 import MeasurementControls from '../../components/measurement/measurement-control';
 import icons from '../../icons';
 import TypographyControls from '../../components/typography/typography-control';
-import URLInputControl from '../../components/links/link-control';
 import KadenceRange from '../../components/range/range-control';
-import KadenceImageURLInputUI from '../../components/links/image-url-input-link-control';
 import KadencePanelBody from '../../components/KadencePanelBody'
 
 export default function Image( {

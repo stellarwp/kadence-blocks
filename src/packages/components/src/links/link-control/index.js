@@ -7,7 +7,7 @@
   */
 import { __ } from '@wordpress/i18n';
 import { Fragment, Component } from '@wordpress/element';
-import { Button, ToggleControl, ExternalLink, TextControl, SelectControl } from '@wordpress/components';
+import { ToggleControl, TextControl, SelectControl } from '@wordpress/components';
 import { LEFT, RIGHT, UP, DOWN, BACKSPACE, ENTER } from '@wordpress/keycodes';
  /**
  * Import Css
@@ -16,7 +16,7 @@ import { LEFT, RIGHT, UP, DOWN, BACKSPACE, ENTER } from '@wordpress/keycodes';
  /**
   * Internal dependencies
   */
-import InputSearch from './input-search';
+import { InputSearch } from '@kadence/components';
 
  /**
  * Build the typography controls
@@ -55,14 +55,14 @@ class URLInputControl extends Component {
 		const stopPropagation = ( event ) => {
 			event.stopPropagation();
 		};
- 
+
 		const stopPropagationRelevantKeys = ( event ) => {
 			if ( [ LEFT, DOWN, RIGHT, UP, BACKSPACE, ENTER ].indexOf( event.keyCode ) > -1 ) {
 				// Stop the key event from propagating up to ObserveTyping.startTypingInTextField.
 				event.stopPropagation();
 			}
 		};
-	
+
 		const stopEditLink = () => {
 			this.setState( { isEditingLink: false } );
 		};
@@ -79,15 +79,15 @@ class URLInputControl extends Component {
 		const onSetNewTab = ( value ) => {
 			onChangeTarget( value );
 		};
-	
+
 		const onSetLinkNoFollow = ( value ) => {
 			onChangeFollow( value );
 		};
-	
+
 		const onSetLinkSponsored = ( value ) => {
 			onChangeSponsored( value );
 		};
-	
+
 		const onSetLinkDownload = ( value ) => {
 			onChangeDownload( value );
 		};
@@ -97,7 +97,7 @@ class URLInputControl extends Component {
 		const onSetLinkClass = ( value ) => {
 			onChangeLinkClass( value );
 		};
- 
+
 		const advancedOptions = (
 			<Fragment>
 				{ onChangeTarget && (
@@ -188,4 +188,3 @@ class URLInputControl extends Component {
 	}
  };
  export default URLInputControl;
- 

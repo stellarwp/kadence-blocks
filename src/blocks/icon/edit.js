@@ -14,11 +14,10 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
-import { PopColorControl, VerticalAlignmentIcon } from '@kadence/components';
+import { PopColorControl, URLInputControl, VerticalAlignmentIcon } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 import StepControl from '../../step-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import URLInputControl from '../../components/links/link-control';
 
 /**
  * Import Css

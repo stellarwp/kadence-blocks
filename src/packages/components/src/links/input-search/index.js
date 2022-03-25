@@ -3,24 +3,22 @@
  */
  import debounce from 'lodash/debounce';
  import classnames from 'classnames';
- import fetchSearchResults from './get-post-search-results';
- import TextHighlight from './text-highlight';
- import { keyboardReturn, cancelCircleFilled, edit, chevronDown, closeSmall, globe } from '@wordpress/icons';
+ import { keyboardReturn, cancelCircleFilled, edit, chevronDown, globe } from '@wordpress/icons';
  /**
   * WordPress dependencies
   */
- import { __, sprintf, _n } from '@wordpress/i18n';
+ import { __ } from '@wordpress/i18n';
  import { Component,Fragment, createRef } from '@wordpress/element';
  import { safeDecodeURI, filterURLForDisplay } from '@wordpress/url';
  import { applyFilters } from '@wordpress/hooks';
 const { UP, DOWN, ENTER, TAB } = wp.keycodes;
-import { BaseControl, Button, Spinner, ToggleControl, ExternalLink, TextControl, SelectControl } from '@wordpress/components';
+import { BaseControl, Button, Spinner, ToggleControl, ExternalLink } from '@wordpress/components';
 import { withInstanceId, withSafeTimeout, compose } from '@wordpress/compose';
-import DynamicLinkControl from './dynamic-link-control';
+import { DynamicLinkControl, fetchSearchResults, TextHighlight } from '@kadence/components';
  class InputSearch extends Component {
 	 constructor( props ) {
 		 super( props );
- 
+
 		 this.onChange = this.onChange.bind( this );
 		 this.onFocus = this.onFocus.bind( this );
 		 this.onKeyDown = this.onKeyDown.bind( this );
@@ -32,11 +30,11 @@ import DynamicLinkControl from './dynamic-link-control';
 			 this.updateSuggestions.bind( this ),
 			 200
 		 );
- 
+
 		 this.suggestionNodes = [];
- 
+
 		 this.isUpdatingSuggestions = false;
- 
+
 		 this.state = {
 			 search: '',
 			 suggestions: [],
@@ -47,13 +45,13 @@ import DynamicLinkControl from './dynamic-link-control';
 			 isEditing: false,
 		 };
 	}
- 
+
 	updateSuggestions( value = '' ) {
 		 this.setState( {
 			selectedSuggestion: null,
 			loading: true,
 		 } );
- 
+
 		 const request = fetchSearchResults( value );
 		 request.then( ( suggestions ) => {
 			// A fetch Promise doesn't have an abort option. It's mimicked by
@@ -75,12 +73,12 @@ import DynamicLinkControl from './dynamic-link-control';
 				} );
 			}
 		} );
- 
+
 		 // Note that this assignment is handled *before* the async search request
 		 // as a Promise always resolves on the next tick of the event loop.
 		 this.suggestionsRequest = request;
 	 }
- 
+
 	 onChange( event ) {
 		 const inputValue = event.target.value;
 		 this.setState( {
@@ -88,10 +86,10 @@ import DynamicLinkControl from './dynamic-link-control';
 		} );
 		this.updateSuggestions( inputValue.trim() );
 	 }
- 
+
 	 onFocus() {
 		 const { suggestions, search } = this.state;
- 
+
 		 // When opening the link editor, if there's a value present, we want to load the suggestions pane with the results for this input search value
 		 // Don't re-run the suggestions on focus if there are already suggestions present (prevents searching again when tabbing between the input and buttons)
 		 if (
@@ -103,7 +101,7 @@ import DynamicLinkControl from './dynamic-link-control';
 			 this.updateSuggestions( search.trim() );
 		 }
 	 }
- 
+
 	 onKeyDown( event ) {
 		 const {
 			 showSuggestions,
@@ -111,7 +109,7 @@ import DynamicLinkControl from './dynamic-link-control';
 			 suggestions,
 			 loading,
 		 } = this.state;
- 
+
 		 // If the suggestions are not shown or loading, we shouldn't handle the arrow keys
 		 // We shouldn't preventDefault to allow block arrow keys navigation
 		 if ( ! showSuggestions || ! suggestions.length || loading ) {
@@ -127,7 +125,7 @@ import DynamicLinkControl from './dynamic-link-control';
 					 if ( 0 !== event.target.selectionStart ) {
 						 event.stopPropagation();
 						 event.preventDefault();
- 
+
 						 // Set the input caret to position 0
 						 event.target.setSelectionRange( 0, 0 );
 					 }
@@ -141,7 +139,7 @@ import DynamicLinkControl from './dynamic-link-control';
 					 ) {
 						 event.stopPropagation();
 						 event.preventDefault();
- 
+
 						 // Set the input caret to the last position
 						 event.target.setSelectionRange(
 							 this.state.search.length,
@@ -151,14 +149,14 @@ import DynamicLinkControl from './dynamic-link-control';
 					 break;
 				 }
 			 }
- 
+
 			 return;
 		 }
- 
+
 		 const suggestion = this.state.suggestions[
 			 this.state.selectedSuggestion
 		 ];
- 
+
 		 switch ( event.keyCode ) {
 			 case UP: {
 				 event.stopPropagation();
@@ -201,7 +199,7 @@ import DynamicLinkControl from './dynamic-link-control';
 			 }
 		 }
 	 }
- 
+
 	 selectPost( suggestion ) {
 		 this.props.onChange( suggestion.url, suggestion );
 		 this.setState( {
@@ -210,11 +208,11 @@ import DynamicLinkControl from './dynamic-link-control';
 			showSuggestions: false,
 		 } );
 	 }
- 
+
 	 handleOnClick( suggestion ) {
 		this.selectPost( suggestion );
 	 }
- 
+
 	 render() {
 		 return (
 			<Fragment>
@@ -256,7 +254,7 @@ import DynamicLinkControl from './dynamic-link-control';
 			 onExpandSettings,
 			 allowClear,
 		 } = this.props;
- 
+
 		 const {
 			 loading,
 			 showSuggestions,
@@ -265,12 +263,12 @@ import DynamicLinkControl from './dynamic-link-control';
 			 suggestionOptionIdPrefix = `block-editor-url-input-suggestion-${ instanceId }`,
 			 isEditing,
 		 } = this.state;
- 
+
 		 const controlProps = {
 			 id: `url-input-control-${ instanceId }`,
 			 className: 'kb-search-selection-name',
 		 };
- 
+
 		 const inputProps = {
 			 value: this.state.search || url,
 			 required: true,
@@ -376,12 +374,12 @@ import DynamicLinkControl from './dynamic-link-control';
 			</Fragment>
 		 );
 	 }
- 
+
 	 renderSuggestions() {
 		 const {
 			 className,
 		 } = this.props;
- 
+
 		 const {
 			 showSuggestions,
 			 suggestions,
@@ -391,7 +389,7 @@ import DynamicLinkControl from './dynamic-link-control';
 			 loading,
 			 search,
 		 } = this.state;
- 
+
 		 const suggestionsListProps = {
 			 id: suggestionsListboxId,
 			 ref: this.autocompleteRef,
@@ -474,7 +472,7 @@ import DynamicLinkControl from './dynamic-link-control';
 		 return null;
 	 }
  }
- 
+
  export default compose(
 	 withSafeTimeout,
 	 withInstanceId

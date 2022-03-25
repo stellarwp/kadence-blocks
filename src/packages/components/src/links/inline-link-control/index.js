@@ -7,7 +7,7 @@
   */
 import { __ } from '@wordpress/i18n';
 import { Fragment, Component } from '@wordpress/element';
-import { Button, ToggleControl, Popover, TextControl, SelectControl } from '@wordpress/components';
+import { ToggleControl, Popover, TextControl, SelectControl } from '@wordpress/components';
 import { LEFT, RIGHT, UP, DOWN, BACKSPACE, ENTER } from '@wordpress/keycodes';
  /**
  * Import Css
@@ -16,7 +16,7 @@ import { LEFT, RIGHT, UP, DOWN, BACKSPACE, ENTER } from '@wordpress/keycodes';
  /**
   * Internal dependencies
   */
-import InputSearch from './input-search';
+import { InputSearch } from '@kadence/components';
 
  /**
  * Build the typography controls
@@ -53,14 +53,14 @@ class URLInputInline extends Component {
 		const stopPropagation = ( event ) => {
 			event.stopPropagation();
 		};
- 
+
 		const stopPropagationRelevantKeys = ( event ) => {
 			if ( [ LEFT, DOWN, RIGHT, UP, BACKSPACE, ENTER ].indexOf( event.keyCode ) > -1 ) {
 				// Stop the key event from propagating up to ObserveTyping.startTypingInTextField.
 				event.stopPropagation();
 			}
 		};
-	
+
 		const stopEditLink = () => {
 			this.setState( { isEditingLink: false } );
 		};
@@ -77,22 +77,22 @@ class URLInputInline extends Component {
 		const onSetNewTab = ( value ) => {
 			onChangeTarget( value );
 		};
-	
+
 		const onSetLinkNoFollow = ( value ) => {
 			onChangeFollow( value );
 		};
-	
+
 		const onSetLinkSponsored = ( value ) => {
 			onChangeSponsored( value );
 		};
-	
+
 		const onSetLinkDownload = ( value ) => {
 			onChangeDownload( value );
 		};
 		const onSetLinkTitle = ( value ) => {
 			onChangeTitle( value );
 		};
- 
+
 		const advancedOptions = (
 			<Fragment>
 				{ onChangeTarget && (
@@ -177,4 +177,3 @@ class URLInputInline extends Component {
 	}
  };
  export default URLInputInline;
- 

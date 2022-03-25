@@ -14,10 +14,9 @@ import classnames from 'classnames';
  */
 import icons from '../../icons';
 import MeasurementControls from '../../measurement-control';
-import { PopColorControl, KadenceRadioButtons, ResponsiveAlignControls, WebfontLoader } from '@kadence/components';
+import { PopColorControl, URLInputControl, KadenceRadioButtons, ResponsiveAlignControls, WebfontLoader } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import URLInputControl from '../../components/links/link-control';
 import TypographyControls from '../../components/typography/typography-control';
 import KadenceRange from '../../components/range/range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';

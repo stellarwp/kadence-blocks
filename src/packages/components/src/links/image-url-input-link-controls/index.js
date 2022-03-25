@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
- import { find, isEmpty, each, map } from 'lodash';
+ import { find, map } from 'lodash';
 
  /**
   * WordPress dependencies
@@ -20,13 +20,13 @@
  } from '@wordpress/components';
  import { URLPopover } from '@wordpress/block-editor';
  import { link as linkIcon, close } from '@wordpress/icons';
- 
- 
+
+
  const LINK_DESTINATION_NONE = 'none';
  const LINK_DESTINATION_CUSTOM = 'custom';
  const LINK_DESTINATION_MEDIA = 'media';
  const LINK_DESTINATION_ATTACHMENT = 'attachment';
- 
+
  const icon = (
 	 <SVG viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 		 <Path d="M0,0h24v24H0V0z" fill="none" />
@@ -34,7 +34,7 @@
 		 <Path d="m14.14 11.86l-3 3.87-2.14-2.59-3 3.86h12l-3.86-5.14z" />
 	 </SVG>
  );
- 
+
 const KadenceImageURLInputUI = ( {
 	linkDestination = 'none',
 	onChangeUrl,
@@ -63,12 +63,12 @@ const KadenceImageURLInputUI = ( {
 	 const openLinkUI = useCallback( () => {
 		 setIsOpen( true );
 	 } );
- 
+
 	 const [ isEditingLink, setIsEditingLink ] = useState( false );
 	 const [ urlInput, setUrlInput ] = useState( null );
- 
+
 	 const autocompleteRef = useRef( null );
- 
+
 	 const startEditLink = useCallback( () => {
 		 if (
 			 linkDestination === LINK_DESTINATION_MEDIA ||
@@ -78,17 +78,17 @@ const KadenceImageURLInputUI = ( {
 		 }
 		 setIsEditingLink( true );
 	 } );
- 
+
 	 const stopEditLink = useCallback( () => {
 		 setIsEditingLink( false );
 	 } );
- 
+
 	 const closeLinkUI = useCallback( () => {
 		 setUrlInput( null );
 		 stopEditLink();
 		 setIsOpen( false );
 	 } );
- 
+
 	 const onFocusOutside = useCallback( () => {
 		 return ( event ) => {
 			 // The autocomplete suggestions list renders in a separate popover (in a portal),
@@ -107,7 +107,7 @@ const KadenceImageURLInputUI = ( {
 			 stopEditLink();
 		 };
 	 } );
- 
+
 	 const onSubmitLinkChange = useCallback( () => {
 		 return ( event ) => {
 			 if ( urlInput ) {
@@ -134,7 +134,7 @@ const KadenceImageURLInputUI = ( {
 			 event.preventDefault();
 		 };
 	 } );
- 
+
 	 const onLinkRemove = useCallback( () => {
 		if ( onChangeAttribute ) {
 			onChangeAttribute( {
@@ -148,7 +148,7 @@ const KadenceImageURLInputUI = ( {
 			}
 		}
 	 } );
- 
+
 	 const getLinkDestinations = () => {
 		 const linkDestinations = [
 			 {
@@ -173,7 +173,7 @@ const KadenceImageURLInputUI = ( {
 		 }
 		 return linkDestinations;
 	 };
- 
+
 	 const onSetHref = ( value ) => {
 		 const linkDestinations = getLinkDestinations();
 		 let linkDestinationInput;
@@ -220,7 +220,7 @@ const KadenceImageURLInputUI = ( {
 	const onSetLinkClass = ( value ) => {
 		onChangeLinkClass( value );
 	};
- 
+
 	 const advancedOptions = (
 		<Fragment>
 			{ onChangeTarget && (
@@ -288,14 +288,14 @@ const KadenceImageURLInputUI = ( {
 			) }
 		</Fragment>
 	);
- 
+
 	 const linkEditorValue = urlInput !== null ? urlInput : url;
- 
+
 	 const urlLabel = (
 		 find( getLinkDestinations(), [ 'linkDestination', linkDestination ] ) ||
 		 {}
 	 ).title;
- 
+
 	 return (
 		 <>
 			 <ToolbarButton
@@ -359,5 +359,5 @@ const KadenceImageURLInputUI = ( {
 		 </>
 	 );
  };
- 
+
  export default KadenceImageURLInputUI;

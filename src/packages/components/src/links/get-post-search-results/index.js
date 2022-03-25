@@ -1,16 +1,16 @@
 /**
  * WordPress dependencies
  */
- const { apiFetch } = wp;
-const { addQueryArgs } = wp.url;
+import apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs } from '@wordpress/url';
  /**
   * External dependencies
   */
  import map from 'lodash/map';
  import flatten from 'lodash/flatten';
-const { decodeEntities } = wp.htmlEntities;
+ import { decodeEntities } from '@wordpress/html-entities'
  import { __ } from '@wordpress/i18n';
- 
+
  /**
   * Fetches link suggestions from the API. This function is an exact copy of a function found at:
   *
@@ -28,12 +28,12 @@ const { decodeEntities } = wp.htmlEntities;
   * @param {boolean} [editorSettings.disablePostFormats=false]
   * @return {Promise<Object[]>} List of suggestions
   */
- 
+
  export default function fetchSearchResults(
 	search,
  ) {
 	const perPage = 20;
- 
+
 	const queries = [];
 	queries.push(
 		apiFetch( {
