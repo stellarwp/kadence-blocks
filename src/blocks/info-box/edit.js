@@ -18,8 +18,7 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import { PopColorControl, WebfontLoader } from '@kadence/components';
-import ImageSizeControl from '../../components/common/image-size-control';
+import { PopColorControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl } from '@kadence/components';
 import IconRender from '../../components/icons/icon-render';
 import IconControl from '../../components/icons/icon-control';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
@@ -29,8 +28,6 @@ import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import URLInputControl from '../../components/links/link-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
-import KadenceImageControl from '../../components/common/kadence-image-control';
 
 /**
  * Internal block libraries

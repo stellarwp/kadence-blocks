@@ -5,31 +5,28 @@
 /**
  * Import External
  */
- import get from 'lodash/get';
- import map from 'lodash/map';
- import classnames from 'classnames';
+import get from 'lodash/get';
+import map from 'lodash/map';
+import classnames from 'classnames';
 
- /**
+/**
  * Import Css
  */
 import './editor.scss';
 /**
  * Import Kadence Components
  */
-import KadenceMediaPlaceholder from '../common/kadence-media-placeholder';
-import KadenceFocalPicker from './kadence-focal-picker';
-import KadenceRadioButtons from '../common/kadence-radio-buttons';
-import DynamicBackgroundControl from './dynamic-background-control';
- /**
-  * WordPress dependencies
-  */
-  import { __ } from '@wordpress/i18n';
-  import { Fragment, Component } from '@wordpress/element';
-  import {
+import { DynamicBackgroundControl, KadenceMediaPlaceholder, KadenceRadioButtons, KadenceFocalPicker } from '@kadence/components';
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+import { Fragment, Component } from '@wordpress/element';
+import {
 	MediaUpload,
 } from '@wordpress/block-editor';
-  import { Button, Icon, Tooltip, ToggleControl, ExternalLink, TextControl, SelectControl } from '@wordpress/components';
-  import {
+import { Button, ToggleControl } from '@wordpress/components';
+import {
 	image,
 	closeSmall,
 	plusCircleFilled,
@@ -38,7 +35,7 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 /**
  * Basic Background Control.
  */
- class BackgroundControl extends Component {
+class BackgroundControl extends Component {
 	constructor() {
 		super( ...arguments );
 	}
@@ -64,17 +61,17 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 			inlineImage,
 			onSaveInlineImage,
 			dynamicAttribute = '' } = this.props;
-			let attachmentOptions = [
+		let attachmentOptions = [
+			{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
+			{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
+		];
+		if ( imageAttachmentParallax ) {
+			attachmentOptions = [
 				{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
 				{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
+				{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
 			];
-			if ( imageAttachmentParallax ) {
-				attachmentOptions = [
-					{ value: 'scroll', label: __( 'Scroll', 'kadence-blocks' ) },
-					{ value: 'fixed', label: __( 'Fixed', 'kadence-blocks' ) },
-					{ value: 'parallax', label: __( 'Parallax', 'kadence-blocks' ) },
-				];
-			}
+		}
 		return (
 			<div className="kadence-image-background-control">
 				{ ! hasImage && (

@@ -8,13 +8,12 @@ import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
 import Masonry from 'react-masonry-component';
-import ImageSizeControl from '../../components/common/image-size-control';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import { KadenceColorOutput } from '@kadence/helpers';
 import KadenceRange from '../../components/range/range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import { PopColorControl, WebfontLoader } from '@kadence/components';
+import { PopColorControl, WebfontLoader, ImageSizeControl } from '@kadence/components';
 import Slider from 'react-slick';
 const {
 	applyFilters,

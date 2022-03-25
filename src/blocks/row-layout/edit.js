@@ -26,10 +26,8 @@ import KadenceRange from '../../components/range/range-control';
 import ResponsiveControl from '../../components/responsive/responsive-control';
 import { KadenceColorOutput } from '@kadence/helpers';
 import MeasurementControls from '../../components/measurement/measurement-control';
-import { PopColorControl } from '@kadence/components';
-import KadenceRadioButtons from '../../kadence-radio-buttons';
+import { PopColorControl, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadenceBackgroundControl from '../../components/background/background-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
 /**
@@ -39,7 +37,6 @@ import ThreeColumnDrag from './threecolumndrag';
 import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
 import Overlay from './row-overlay';
 import RowBackground from './row-background';
-import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
 import ContentWidthIcon from './content-width-icons';
 /**
  * Import Css

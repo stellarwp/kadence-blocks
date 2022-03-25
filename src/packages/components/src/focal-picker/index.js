@@ -1,12 +1,8 @@
 /**
  * Focal Point control.
  */
-const {
-	Component,
-} = wp.element;
-const {
-	FocalPointPicker,
-} = wp.components;
+import { Component } from '@wordpress/element';
+import { FocalPointPicker } from '@wordpress/components';
 /**
  * Focal Point control
  */

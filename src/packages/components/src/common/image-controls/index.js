@@ -5,18 +5,17 @@
 /**
  * Import Kadence Components
  */
-import KadenceMediaPlaceholder from './kadence-media-placeholder';
-import { DynamicImageControl } from '@kadence/components';
- /**
-  * WordPress dependencies
-  */
-  import { __ } from '@wordpress/i18n';
-  import { Fragment, Component } from '@wordpress/element';
-  import {
+import { DynamicImageControl, KadenceMediaPlaceholder } from '@kadence/components';
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+import { Fragment, Component } from '@wordpress/element';
+import {
 	MediaUpload,
 } from '@wordpress/block-editor';
-  import { Button, Icon, Tooltip, ToggleControl, ExternalLink, TextControl, SelectControl } from '@wordpress/components';
-  import {
+import { Button } from '@wordpress/components';
+import {
 	image,
 	closeSmall,
 	plusCircleFilled,
@@ -25,7 +24,7 @@ const ALLOWED_MEDIA_TYPES = [ 'image' ];
 /**
  * Basic Image Control.
  */
- class KadenceImageControl extends Component {
+class KadenceImageControl extends Component {
 	constructor() {
 		super( ...arguments );
 	}

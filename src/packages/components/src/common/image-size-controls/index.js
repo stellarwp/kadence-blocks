@@ -14,11 +14,7 @@ import Select from 'react-select';
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
-const {
-	Component,
-	Fragment,
-} = wp.element;
+import { Component, Fragment } from '@wordpress/element';
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 /**

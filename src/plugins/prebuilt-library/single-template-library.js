@@ -3,7 +3,7 @@
  */
  import debounce from 'lodash/debounce';
  import LazyLoad from 'react-lazy-load';
- 
+
  /**
   * WordPress dependencies
   */
@@ -15,7 +15,7 @@
 	withDispatch,
 } from '@wordpress/data';
 import { rawHandler } from '@wordpress/blocks';
-import { 
+import {
 	Component,
 	Fragment,
 } from '@wordpress/element';
@@ -35,11 +35,11 @@ import { compose } from '@wordpress/compose';
 	chevronDown,
 } from '@wordpress/icons';
  import { __, sprintf } from '@wordpress/i18n';
- 
+
  /**
   * Internal dependencies
   */
-import KadenceTryParseJSON from '../../components/common/parse-json';
+import { KadenceTryParseJSON } from '@kadence/helpers';
 
 /**
  * Single Template Pages.
@@ -209,7 +209,7 @@ class SingleTemplateLibrary extends Component {
 									{ __( 'Error, Unable to access library database, please try re-syncing', 'kadence-blocks' ) }
 								</h2>
 								<div style={ { textAlign:'center' } }>
-									<Button 
+									<Button
 										className="kt-reload-templates"
 										icon={ update }
 										onClick={ () => this.reloadTemplateData() }

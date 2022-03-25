@@ -14,7 +14,7 @@ import LazyLoad from 'react-lazy-load';
  const {
 	applyFilters,
 } = wp.hooks;
-import { 
+import {
 	Component,
 	Fragment,
 } from '@wordpress/element';
@@ -30,7 +30,7 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
- import KadenceTryParseJSON from '../../components/common/parse-json'
+import { KadenceTryParseJSON } from '@kadence/helpers'
 
 /**
  * Internal block libraries
@@ -203,7 +203,7 @@ class TemplatesLibrary extends Component {
 									{ __( 'Error, Unable to access library database, please try re-syncing', 'kadence-blocks' ) }
 								</h2>
 								<div style={ { textAlign:'center' } }>
-									<Button 
+									<Button
 										className="kt-reload-templates"
 										icon={ update }
 										onClick={ () => this.reloadTemplateData() }

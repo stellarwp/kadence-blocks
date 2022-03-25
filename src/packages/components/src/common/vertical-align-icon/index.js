@@ -1,10 +1,8 @@
 /**
  * WordPress dependencies
  */
-const {
-	Path,
-	SVG,
-} = wp.components;
+import { Path, SVG } from '@wordpress/components';
+
 export default function VerticalAlignmentIcon( { value, isPressed = false } ) {
 	const iconToPath = {
 		top: 'M19.5 19.5H.5V.5h19v19zM1.607 18.392h16.786V1.608H1.607v16.784zM17.178 2.888H2.822v3.275h14.356V2.888z',
