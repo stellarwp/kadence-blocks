@@ -870,6 +870,12 @@ class KadenceForm extends Component {
 						opened={ ( true === isFieldSelected ? true : undefined ) }
 						panelName={ 'kb-form-field-' + index }
 					>
+						<TextControl
+							label={ __( 'Field Name', 'kadence-blocks' ) }
+							placeholder={ __( 'Field Name', 'kadence-blocks' ) }
+							value={ ( undefined !== fields[ index ].name ? fields[ index ].name : '' ) }
+							onChange={ ( value ) => this.saveFields( { name: value }, index ) }
+						/>
 						<SelectControl
 							label={ __( 'Field Type', 'kadence-blocks' ) }
 							value={ fields[ index ].type }
@@ -910,6 +916,12 @@ class KadenceForm extends Component {
 					opened={ ( true === isFieldSelected ? true : undefined ) }
 					panelName={ 'kb-form-field-label-' + index }
 				>
+					<TextControl
+						label={ __( 'Field Name', 'kadence-blocks' ) }
+						placeholder={ __( 'Field Name', 'kadence-blocks' ) }
+						value={ ( undefined !== fields[ index ].name ? fields[ index ].name : '' ) }
+						onChange={ ( value ) => this.saveFields( { name: value }, index ) }
+					/>
 					<SelectControl
 						label={ __( 'Field Type', 'kadence-blocks' ) }
 						value={ fields[ index ].type }
