@@ -948,14 +948,20 @@ class KadenceForm extends Component {
 							<Fragment>
 								{ times( fields[ index ].options.length, n => (
 									<div className="field-options-wrap">
-
+										<TextControl
+											className={ 'kb-option-text-control' }
+											key={ n }
+											label={ __('Value', 'kadence-blocks')  + ' ' + ( n + 1 ) }
+											value={ (undefined !== fields[ index ].options[ n ].value ? fields[ index ].options[ n ].value : '') }
+											onChange={ (val) => this.saveFieldsOptions({ value: val}, index, n ) }
+										/>
 										<TextControl
 											className={ 'kb-option-text-control' }
 											key={ n }
 											label={ __( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 ) }
 											placeholder={ __( 'Option', 'kadence-blocks' ) }
 											value={ ( undefined !== fields[ index ].options[ n ].label ? fields[ index ].options[ n ].label : '' ) }
-											onChange={ ( text ) => this.saveFieldsOptions( { label: text, value: text }, index, n ) }
+											onChange={ ( text ) => this.saveFieldsOptions( { label: text }, index, n ) }
 										/>
 										<div className="kadence-blocks-list-item__control-menu">
 											<IconButton
