@@ -24,9 +24,8 @@ import times from 'lodash/times';
  */
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import { PopColorControl, KadencePanelBody, WebfontLoader, IconControl, IconRender, KadenceMediaPlaceholder } from '@kadence/components';
+import { PopColorControl, ResponsiveRangeControls, KadencePanelBody, WebfontLoader, IconControl, IconRender, KadenceMediaPlaceholder } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 
 /**

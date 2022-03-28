@@ -19,8 +19,7 @@ import debounce from 'lodash/debounce';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, IconControl, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import { PopColorControl, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
 
 /**
  * Import Css

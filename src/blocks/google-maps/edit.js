@@ -36,12 +36,9 @@ const {
  * Internal dependencies
  */
 import classnames from 'classnames';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import isEmpty from 'lodash/isEmpty';
-import KadenceRange from '../../components/range/range-control';
 import EditJsMap from './editJsMap';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import { ResponsiveAlignControls } from '@kadence/components';
+import { ResponsiveAlignControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange } from '@kadence/components';
 
 const ktmapsUniqueIDs = [];
 

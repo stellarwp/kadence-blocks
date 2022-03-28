@@ -11,8 +11,7 @@ import Masonry from 'react-masonry-component';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import { KadenceColorOutput } from '@kadence/helpers';
-import KadenceRange from '../../components/range/range-control';
-import { PopColorControl, KadencePanelBody, WebfontLoader, ImageSizeControl } from '@kadence/components';
+import { PopColorControl, KadencePanelBody, KadenceRange, WebfontLoader, ImageSizeControl } from '@kadence/components';
 import Slider from 'react-slick';
 const {
 	applyFilters,

@@ -18,11 +18,10 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import { PopColorControl, KadencePanelBody, IconControl, IconRender, URLInputControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl } from '@kadence/components';
+import { PopColorControl, KadenceRange, KadencePanelBody, IconControl, IconRender, URLInputControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl } from '@kadence/components';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import { KadenceColorOutput } from '@kadence/helpers';
-import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 
 /**

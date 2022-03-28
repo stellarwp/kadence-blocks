@@ -16,11 +16,7 @@ import KadenceSelectTerms from '../../components/terms/select-terms-control';
 import TypographyControls from '../../components/typography/typography-control';
 import debounce from 'lodash/debounce';
 import classnames from 'classnames';
-import map from 'lodash/map';
 import Select from 'react-select';
-import pickBy from 'lodash/pickBy';
-import isUndefined from 'lodash/isUndefined';
-import KadenceRange from '../../components/range/range-control';
 import getQuery from './get-query';
 
 /**
@@ -33,7 +29,7 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
-import { KadencePanelBody } from '@kadence/components'
+import { KadencePanelBody, KadenceRange } from '@kadence/components'
 const { dateI18n, format, __experimentalGetSettings } = wp.date;
 const {
 	Component,

@@ -47,12 +47,9 @@ import { isExternalImage } from './edit';
  * Module constants
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import { PopColorControl, KadencePanelBody, URLInputControl, KadenceImageURLInputUI, BoxShadowControl, KadenceImageControl, DropShadowControl, ImageSizeControl as KadenceImageSizeControl } from '@kadence/components';
-import MeasurementControls from '../../components/measurement/measurement-control';
+import { PopColorControl, MeasurementControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, URLInputControl, KadenceImageURLInputUI, BoxShadowControl, KadenceImageControl, DropShadowControl, ImageSizeControl as KadenceImageSizeControl } from '@kadence/components';
 import icons from '../../icons';
 import TypographyControls from '../../components/typography/typography-control';
-import KadenceRange from '../../components/range/range-control';
 
 export default function Image( {
 	temporaryURL,

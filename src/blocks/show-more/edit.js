@@ -14,8 +14,7 @@ import { __ } from '@wordpress/i18n'
 import { useRef, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control'
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import { ResponsiveRangeControls, ResponsiveMeasurementControls } from '@kadence/components';
 
 import { createElement } from '@wordpress/element'
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';

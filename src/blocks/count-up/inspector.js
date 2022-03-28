@@ -10,9 +10,7 @@
  * Internal dependencies
  */
 import TypographyControls from '../../components/typography/typography-control';
-import { PopColorControl, KadencePanelBody, ResponsiveAlignControls } from '@kadence/components';
-import KadenceRange from '../../components/range/range-control';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
+import { PopColorControl, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, ResponsiveAlignControls } from '@kadence/components';
 
 /**
  * WordPress dependencies

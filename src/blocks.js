@@ -6,7 +6,7 @@
 import './components/utilities/kadence-store';
 import TypographyControls from './components/typography/typography-control';
 import AdvancedColorControl from './advanced-color-control.js';
-import { BoxShadowControl } from '@kadence/components';
+import { BoxShadowControl, IconControl, IconRender } from '@kadence/components';
 
 window.kb = {
 	// Sidebar controls.
