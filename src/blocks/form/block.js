@@ -876,7 +876,6 @@ registerBlockType( 'kadence/form', {
 			},
 			save: ( { attributes } ) => {
 				const { uniqueID, fields, submit, style, postID, hAlign, recaptcha, recaptchaVersion, honeyPot, messages } = attributes;
-				const fieldName = 'name' in fields[ index ] ? fields[ index ].name : `kb_field_${ index }`;
 				const fieldOutput = ( index ) => {
 					const fieldName = 'name' in fields[ index ] ? fields[ index ].name : `kb_field_${ index }`;
 					if ( 'hidden' === fields[ index ].type ) {
@@ -2169,6 +2168,7 @@ registerBlockType( 'kadence/form', {
 			save: ( { attributes } ) => {
 				const { uniqueID, fields, submit, style, postID, hAlign, recaptcha, honeyPot } = attributes;
 				const fieldOutput = ( index ) => {
+					const fieldName = 'name' in fields[ index ] ? fields[ index ].name : `kb_field_${ index }`;
 					const fieldClassName = classnames( {
 						'kadence-blocks-form-field': true,
 						[ `kb-form-field-${ index }` ]: index,
@@ -2535,6 +2535,7 @@ registerBlockType( 'kadence/form', {
 			save: ( { attributes } ) => {
 				const { uniqueID, fields, submit, style, postID, hAlign, recaptcha, honeyPot } = attributes;
 				const fieldOutput = ( index ) => {
+					const fieldName = 'name' in fields[ index ] ? fields[ index ].name : `kb_field_${ index }`;
 					const fieldClassName = classnames( {
 						'kadence-blocks-form-field': true,
 						[ `kb-form-field-${ index }` ]: index,
@@ -2897,6 +2898,7 @@ registerBlockType( 'kadence/form', {
 			save: ( { attributes } ) => {
 				const { uniqueID, fields, submit, style, postID, hAlign, recaptcha } = attributes;
 				const fieldOutput = ( index ) => {
+					const fieldName = 'name' in fields[ index ] ? fields[ index ].name : `kb_field_${ index }`;
 					const fieldClassName = classnames( {
 						'kadence-blocks-form-field': true,
 						[ `kb-form-field-${ index }` ]: index,
