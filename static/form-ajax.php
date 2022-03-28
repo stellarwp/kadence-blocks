@@ -177,14 +177,22 @@ class KB_Ajax_Form {
 				$privacy_title = ( get_option( 'wp_page_for_privacy_policy' ) ? get_the_title( get_option( 'wp_page_for_privacy_policy' ) ) : '' );
 				foreach ( $form_args['fields'] as $key => $data ) {
 					// check for required.
-					if ( $data['required'] && ( ! isset( $_POST[ 'kb_field_' . $key ] ) || empty( $_POST[ 'kb_field_' . $key ] ) ) ) {
-						$this->process_bail( $messages[0]['error'], __( 'Required Field Empty', 'kadence-blocks' ), 'kb_field_' . $key );
+					if ( $data['required'] ) {
+						if(! isset( $_POST[ $data['name'] ] ) || empty( $_POST[ $data['name'] ] ) ) {
+							if(! isset( $_POST[ 'kb_field_' . $key ] ) || empty( $_POST[ 'kb_field_' . $key ] ) ) {
+								$this->process_bail( $messages[0]['error'], __( 'Required Field Empty', 'kadence-blocks' ), 'kb_field_' . $key );
+							} else {
+								$this->process_bail( $messages[0]['error'], __( 'Required Field Empty', 'kadence-blocks'), $data['name'] );
+							}
+						}		
 					}
-					if ( isset( $_POST[ 'kb_field_' . $key ] ) ) {
+					if ( isset( $_POST[ 'kb_field_' . $key ] ) || isset( $_POST[$data['name']]) ) {
+						$value = isset( $_POST[$data['name']]) ? $_POST[ $data['name'] ] : $_POST[ 'kb_field_' . $key ];
 						$fields[ $key ] = array(
 							'type'  => $data['type'],
+							'name' => $data['name'],
 							'label' => str_replace( '{privacy_policy}', $privacy_title, $data['label'] ),
-							'value' => $this->sanitize_field( $data['type'], wp_unslash( $_POST[ 'kb_field_' . $key ] ), $data['multiSelect'] ),
+							'value' => $this->sanitize_field( $data['type'], wp_unslash( $value ), $data['multiSelect'] ),
 						);
 						if ( 'hidden' === $data['type'] ) {
 							global $post;
@@ -193,7 +201,11 @@ class KB_Ajax_Form {
 							$fields[ $key ]['value'] = str_replace( '{page_url}', wp_get_referer(), $fields[ $key ]['value'] );
 							$fields[ $key ]['value'] = str_replace( '{remoteip}', $_SERVER['REMOTE_ADDR'], $fields[ $key ]['value']);
 						}
-						unset( $_POST[ 'kb_field_' . $key ] );
+						if(isset( $_POST[ 'kb_field_' . $key ] ) ) {
+							unset( $_POST[ 'kb_field_' . $key ] );
+						} else {
+							unset( $_POST[ $data['name'] ] );
+						}
 					}
 				}
 				$final_data = array(
