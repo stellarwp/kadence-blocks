@@ -17,13 +17,13 @@ const {
  * @returns {object} Step settings.
  */
 export default function StepControls( {
-	label,
-	value,
-	onChange,
-	min,
-	max,
-	step = 1,
-} ) {
+										  label,
+										  value,
+										  onChange,
+										  min,
+										  max,
+										  step = 1,
+									  } ) {
 	const onMinus = () => {
 		if ( value > min ) {
 			onChange( value - step );

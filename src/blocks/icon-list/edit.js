@@ -15,10 +15,9 @@ import MeasurementControls from '../../measurement-control';
 import { WebfontLoader } from '@kadence/components';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
-import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, TypographyControls, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
+import { PopColorControl, StepControls, TypographyControls, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
 
 /**
  * Import Css
@@ -609,7 +608,7 @@ class KadenceIconLists extends Component {
 							initialOpen={ true }
 							panelName={ 'kb-icon-list-controls' }
 						>
-							<StepControl
+							<StepControls
 								label={ __( 'Number of Items' ) }
 								value={ listCount }
 								onChange={ ( newcount ) => {
