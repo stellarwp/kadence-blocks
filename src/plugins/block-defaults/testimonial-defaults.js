@@ -1,6 +1,6 @@
 import MeasurementControls from '../../measurement-control';
 import map from 'lodash/map';
-import OpacityControl from '../../opacity-control';
+import { OpacityControl } from '@kadence/components';
 import { hexToRGBA } from '@kadence/helpers';
 import { IconControl, TypographyControls } from '@wordpress/components';
 /**
