@@ -12,8 +12,7 @@ import icons from '../../icons';
 /**
  * Import External
  */
-import KadenceSelectTerms from '../../components/terms/select-terms-control';
-import TypographyControls from '../../components/typography/typography-control';
+import { KadenceSelectTerms, TypographyControls } from '@kadence/components';
 import debounce from 'lodash/debounce';
 import classnames from 'classnames';
 import Select from 'react-select';
@@ -37,10 +36,6 @@ const {
 } = wp.element;
 const {
 	InspectorControls,
-	BlockControls,
-	AlignmentToolbar,
-	BlockAlignmentToolbar,
-	InspectorAdvancedControls,
 } = wp.blockEditor;
 const {
 	TextControl,

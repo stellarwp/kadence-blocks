@@ -9,9 +9,7 @@
 
 import uniqueId from 'lodash/uniqueId';
 import classnames from 'classnames';
-import TypographyControls from '../../components/typography/typography-control';
-import InlineTypographyControls from '../../components/typography/inline-typography-control';
-import { PopColorControl, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange, KadencePanelBody, URLInputControl, WebfontLoader, HeadingLevelIcon, InlinePopColorControl, ResponsiveAlignControls } from '@kadence/components';
+import { PopColorControl, TypographyControls, InlineTypographyControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange, KadencePanelBody, URLInputControl, WebfontLoader, HeadingLevelIcon, InlinePopColorControl, ResponsiveAlignControls } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 import TextShadowControl from '../../text-shadow-control';
 

@@ -9,8 +9,7 @@
 /**
  * Internal dependencies
  */
-import TypographyControls from '../../components/typography/typography-control';
-import { PopColorControl, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, ResponsiveAlignControls } from '@kadence/components';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, ResponsiveAlignControls } from '@kadence/components';
 
 /**
  * WordPress dependencies

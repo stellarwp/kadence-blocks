@@ -22,11 +22,9 @@ import times from 'lodash/times';
 /**
  * Import Components
  */
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import { PopColorControl, ResponsiveRangeControls, KadencePanelBody, WebfontLoader, IconControl, IconRender, KadenceMediaPlaceholder } from '@kadence/components';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadencePanelBody, WebfontLoader, IconControl, IconRender, KadenceMediaPlaceholder } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 
 /**
  * Internal block libraries
@@ -1260,7 +1258,7 @@ class KadenceTestimonials extends Component {
 										onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 									/>
 									<div className="kt-spacer-sidebar-15"></div>
-									<ResponsiveMeasuremenuControls
+									<ResponsiveMeasurementControls
 										label={ __( 'Container Padding', 'kadence-blocks' ) }
 										control={ containerPaddingControl }
 										tabletControl={ tabletContainerPaddingControl }
@@ -1952,7 +1950,7 @@ class KadenceTestimonials extends Component {
 									initialOpen={ false }
 									panelName={ 'kb-testimonials-wrapper-padding' }
 								>
-									<ResponsiveMeasuremenuControls
+									<ResponsiveMeasurementControls
 										label={ __( 'Wrapper Padding', 'kadence-blocks' ) }
 										value={ wrapperPadding }
 										control={ this.state.wrapperPaddingControls }

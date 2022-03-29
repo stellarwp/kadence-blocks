@@ -14,11 +14,10 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import filter from 'lodash/filter';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, WebfontLoader, IconControl, IconRender, KadencePanelBody } from '@kadence/components';
+import { PopColorControl, TypographyControls, WebfontLoader, IconControl, IconRender, KadencePanelBody } from '@kadence/components';
 /**
  * Import Css
  */

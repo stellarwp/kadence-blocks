@@ -22,10 +22,9 @@ import ContainerDimensions from 'react-container-dimensions';
 /**
  * Import Kadence Components
  */
-import ResponsiveControl from '../../components/responsive/responsive-control';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, KadenceRange, MeasurementControls, ResponsiveRangeControls, KadencePanelBody, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
-import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
+import { PopColorControl, SmallResponsiveControl, ResponsiveControl, KadenceRange, MeasurementControls, ResponsiveRangeControls, KadencePanelBody, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
+
 /**
  * Import Block Specific Components
  */

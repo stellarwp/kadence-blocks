@@ -1,6 +1,5 @@
-import TypographyControls from '../../components/typography/typography-control';
 import map from 'lodash/map';
-import { PopColorControl, IconControl, BoxShadowControl } from '@kadence/components';
+import { PopColorControl, TypographyControls, IconControl, BoxShadowControl } from '@kadence/components';
 /**
  * Internal block libraries
  */

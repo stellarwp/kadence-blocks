@@ -10,11 +10,10 @@
 import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
 import classnames from 'classnames';
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, ResponsiveMeasurementControls, KadenceRange, WebfontLoader, BoxShadowControl } from '@kadence/components';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, WebfontLoader, BoxShadowControl } from '@kadence/components';
 import ResponsiveRangeControl from '../../responsive-range-control';
 
 /**

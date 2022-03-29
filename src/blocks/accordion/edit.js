@@ -19,12 +19,10 @@ import classnames from 'classnames';
 import memoize from 'memize';
 import map from 'lodash/map';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import BorderColorControls from '../../border-color-control';
-import { PopColorControl, KadenceRange, KadencePanelBody, WebfontLoader } from '@kadence/components';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, WebfontLoader } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 
 /**
  * Import Css
@@ -758,7 +756,7 @@ class KadenceAccordionComponent extends Component {
 									max={ 40 }
 									step={ 1 }
 								/> */}
-								<ResponsiveMeasuremenuControls
+								<ResponsiveMeasurementControls
 									label={ __( 'Pane Title Padding', 'kadence-blocks' ) }
 									control={ titlePaddingControl }
 									tabletControl={ titlePaddingControl }
@@ -882,7 +880,7 @@ class KadenceAccordionComponent extends Component {
 								initialOpen={ false }
 								panelName={ 'kb-accordion-inner-content-settings' }
 							>
-								<ResponsiveMeasuremenuControls
+								<ResponsiveMeasurementControls
 									label={ __( 'Inner Content Padding', 'kadence-blocks' ) }
 									control={ contentPaddingControl }
 									tabletControl={ contentPaddingControl }

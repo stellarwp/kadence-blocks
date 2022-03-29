@@ -16,13 +16,11 @@ import icons from '../../icons';
 import map from 'lodash/map';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import { PopColorControl, KadenceRange, KadencePanelBody, IconControl, IconRender, URLInputControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl } from '@kadence/components';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, IconControl, IconRender, URLInputControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl } from '@kadence/components';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
 import { KadenceColorOutput } from '@kadence/helpers';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 
 /**
  * Internal block libraries
@@ -1642,7 +1640,7 @@ class KadenceInfoBox extends Component {
 										}
 									}
 								</TabPanel>
-								<ResponsiveMeasuremenuControls
+								<ResponsiveMeasurementControls
 									label={ __( 'Container Padding', 'kadence-blocks' ) }
 									control={ containerPaddingControl }
 									tabletControl={ containerPaddingControl }

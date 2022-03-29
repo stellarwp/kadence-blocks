@@ -8,10 +8,9 @@ import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
 import Masonry from 'react-masonry-component';
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, KadencePanelBody, KadenceRange, WebfontLoader, ImageSizeControl } from '@kadence/components';
+import { PopColorControl, TypographyControls, KadencePanelBody, KadenceRange, WebfontLoader, ImageSizeControl } from '@kadence/components';
 import Slider from 'react-slick';
 const {
 	applyFilters,

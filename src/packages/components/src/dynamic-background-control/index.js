@@ -37,7 +37,7 @@ class DynamicBackgroundControl extends Component {
 
 		// @todo: Replace with icon from @kadence/icons once created
 		let icons = {};
-		icons.dynamic = icons.dynamic = <svg
+		icons.dynamic = <svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"
 			height="24"

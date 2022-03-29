@@ -1,4 +1,4 @@
-import TypographyControls from '../../components/typography/typography-control';
+import { TypographyControls } from '@kadence/components';
 import MeasurementControls from '../../measurement-control';
 import { IconControl } from '@wordpress/components';
 /**

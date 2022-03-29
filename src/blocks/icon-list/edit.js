@@ -12,14 +12,13 @@ import icons from '../../icons';
  */
 import times from 'lodash/times';
 import MeasurementControls from '../../measurement-control';
-import TypographyControls from '../../components/typography/typography-control';
 import { WebfontLoader } from '@kadence/components';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
 import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
+import { PopColorControl, TypographyControls, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
 
 /**
  * Import Css

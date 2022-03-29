@@ -15,10 +15,8 @@ import icons from '../../icons';
 import MeasurementControls from '../../measurement-control';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
-import { PopColorControl, KadenceRange, ResponsiveRangeControls, KadencePanelBody, URLInputControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
+import { PopColorControl, ResponsiveMeasurementControls, SmallResponsiveControl, KadenceRange, ResponsiveRangeControls, KadencePanelBody, URLInputControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 
 /**
  * Blocks Specific.
@@ -30,10 +28,7 @@ import ColumnStyleCopyPaste from './copy-paste-style';
  */
 import { __ } from '@wordpress/i18n';
 
-const {
-	Component,
-	Fragment,
-} = wp.element;
+import { Component, Fragment } from '@wordpress/element';
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import {
@@ -42,15 +37,14 @@ import {
 	InspectorAdvancedControls,
 	InspectorControls,
 } from '@wordpress/block-editor';
-const {
+import {
 	ToggleControl,
 	SelectControl,
 	ToolbarGroup,
 	TabPanel,
-} = wp.components;
-const {
-	applyFilters,
-} = wp.hooks;
+} from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
+
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -426,7 +420,7 @@ class KadenceColumn extends Component {
 																default={ '' }
 																onChange={ value => setAttributes( { borderHover: value } ) }
 															/>
-															<ResponsiveMeasuremenuControls
+															<ResponsiveMeasurementControls
 																label={ __( 'Border Width', 'kadence-blocks' ) }
 																value={ borderHoverWidth }
 																control={ borderHoverWidthControl }
@@ -556,7 +550,7 @@ class KadenceColumn extends Component {
 																onChange={ value => setAttributes( { border: value } ) }
 																onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
 															/>
-															<ResponsiveMeasuremenuControls
+															<ResponsiveMeasurementControls
 																label={ __( 'Border Width', 'kadence-blocks' ) }
 																value={ borderWidth }
 																control={ borderWidthControl }
@@ -874,7 +868,7 @@ class KadenceColumn extends Component {
 									initialOpen={ false }
 									panelName={ 'kb-col-padding-margin' }
 								>
-									<ResponsiveMeasuremenuControls
+									<ResponsiveMeasurementControls
 										label={ __( 'Padding', 'kadence-blocks' ) }
 										control={ deskPaddingControl }
 										tabletControl={ tabletPaddingControl }
@@ -902,7 +896,7 @@ class KadenceColumn extends Component {
 										units={ [ 'px', 'em', 'rem', '%' ] }
 										onUnit={ ( value ) => setAttributes( { paddingType: value } ) }
 									/>
-									<ResponsiveMeasuremenuControls
+									<ResponsiveMeasurementControls
 										label={ __( 'Margin', 'kadence-blocks' ) }
 										control={ deskMarginControl }
 										tabletControl={ tabletMarginControl }

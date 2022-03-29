@@ -17,9 +17,7 @@ import times from 'lodash/times';
 import filter from 'lodash/filter';
 import debounce from 'lodash/debounce';
 import MeasurementControls from '../../measurement-control';
-import TypographyControls from '../../components/typography/typography-control';
-import { PopColorControl, KadencePanelBody, ResponsiveRangeControls, URLInputControl, WebfontLoader, BoxShadowControl } from '@kadence/components';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadencePanelBody, ResponsiveRangeControls, URLInputControl, WebfontLoader, BoxShadowControl } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
 import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
@@ -3500,7 +3498,7 @@ class KadenceForm extends Component {
 						initialOpen={ false }
 						panelName={ 'kb-form-container-settings' }
 					>
-						<ResponsiveMeasuremenuControls
+						<ResponsiveMeasurementControls
 							label={ __( 'Container Margin', 'kadence-blocks' ) }
 							control={ deskMarginControl }
 							tabletControl={ tabletMarginControl }
