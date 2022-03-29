@@ -43,6 +43,7 @@ export { default as IconRender } from './icons/icon-render';
 /* Typography */
 export { default as TypographyControls } from './typography/typography-control';
 export { default as InlineTypographyControls } from './typography/inline-typography-control';
+export { default as TextShadowControl } from './typography/text-shadow-control';
 
 /* Range */
 export { default as KadenceRange } from './range/range-control';
