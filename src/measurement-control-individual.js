@@ -12,7 +12,7 @@ import icons from './icons';
  * Import External
  */
 import map from 'lodash/map';
-import KadenceRange from './kadence-range-control';
+import { KadenceRange } from '@kadence/components';
 
 /**
  * Internal block libraries
