@@ -4,28 +4,19 @@
  */
 
 /**
- * Import Icons
- */
-import icons from './icons';
-import map from 'lodash/map';
-/**
  * Internal block libraries
  */
-import { __, sprintf } from '@wordpress/i18n';
-const {
-	Fragment,
-	Component,
-} = wp.element;
-const {
+import { __ } from '@wordpress/i18n';
+import {	Component } from '@wordpress/element';
+import {
 	Button,
 	Popover,
-	RangeControl,
 	ColorIndicator,
 	ColorPicker,
 	TextControl,
 	Tooltip,
-	Dashicon,
-} = wp.components;
+} from '@wordpress/components';
+
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.

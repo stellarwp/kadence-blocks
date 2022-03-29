@@ -55,3 +55,7 @@ export { default as ResponsiveSingleRangeControl } from './range/single-range-co
 export { default as ResponsiveMeasurementControls } from './measurement/responsive-measurement-control';
 export { default as MeasurementControls } from './measurement/measurement-control';
 export { default as MeasurementSingleControl } from './measurement/single-input-control';
+
+/* Color */
+export { default as AdvancedColorControlPalette } from './color/advanced-color-control-palette'
+export { default as BorderColorControls } from './color/border-color-control'

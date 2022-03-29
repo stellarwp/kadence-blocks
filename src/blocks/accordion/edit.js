@@ -20,8 +20,7 @@ import memoize from 'memize';
 import map from 'lodash/map';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import MeasurementControls from '../../measurement-control';
-import BorderColorControls from '../../border-color-control';
-import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, WebfontLoader } from '@kadence/components';
+import { PopColorControl, BorderColorControls, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, WebfontLoader } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
