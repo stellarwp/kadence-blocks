@@ -12,7 +12,7 @@ import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
 import { undo } from '@wordpress/icons';
 import { capitalizeFirstLetter } from '@kadence/helpers'
-import ResponsiveSingleRangeControl from './single-range-control';
+import { ResponsiveSingleRangeControl } from '@kadence/components';
 import {
 	Dashicon,
 	Button,
@@ -24,24 +24,24 @@ import {
  * @returns {object} Measure settings.
  */
 export default function ResponsiveRangeControls( {
-	label,
-	onChange,
-	onChangeTablet,
-	onChangeMobile,
-	mobileValue,
-	tabletValue,
-	value,
-	step = 1,
-	max = 100,
-	min = 0,
-	unit = '',
-	onUnit,
-	showUnit = false,
-	units = [ 'px', 'em', 'rem' ],
-	allowEmpty = true,
-	className = '',
-	reset,
-} ) {
+													 label,
+													 onChange,
+													 onChangeTablet,
+													 onChangeMobile,
+													 mobileValue,
+													 tabletValue,
+													 value,
+													 step = 1,
+													 max = 100,
+													 min = 0,
+													 unit = '',
+													 onUnit,
+													 showUnit = false,
+													 units = [ 'px', 'em', 'rem' ],
+													 allowEmpty = true,
+													 className = '',
+													 reset,
+												 } ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();

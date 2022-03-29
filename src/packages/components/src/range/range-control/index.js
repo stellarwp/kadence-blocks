@@ -6,9 +6,7 @@
 /**
  * Internal block libraries
  */
-const {
-	RangeControl,
-} = wp.components;
+import { RangeControl } from '@wordpress/components';
 import { useInstanceId } from '@wordpress/compose';
 
 /**
@@ -16,16 +14,16 @@ import { useInstanceId } from '@wordpress/compose';
  * @returns {object} Measure settings.
  */
 export default function KadenceRange( {
-	label,
-	onChange,
-	value = '',
-	className = '',
-	step = 1,
-	max = 100,
-	min = 0,
-	beforeIcon = '',
-	help = '',
-} ) {
+										  label,
+										  onChange,
+										  value = '',
+										  className = '',
+										  step = 1,
+										  max = 100,
+										  min = 0,
+										  beforeIcon = '',
+										  help = '',
+									  } ) {
 	const onChangInput = ( event ) => {
 		if ( event.target.value === '' ) {
 			onChange( undefined );

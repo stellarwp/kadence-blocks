@@ -3,46 +3,29 @@
  *
  */
 
- /* global kadence_blocks_params */
+/* global kadence_blocks_params */
 
 /**
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
-/**
- * Import Icons
- */
-import icons from './../../icons';
+
 /**
  * Import External
  */
 import { capitalizeFirstLetter } from '@kadence/helpers'
 import Select from 'react-select';
 import range from 'lodash/range';
-import { HeadingLevelIcon } from '@kadence/components';
-import KadenceRange from './../range/range-control';
-import MeasurementControls from './../measurement/measurement-control';
-import ResponsiveRangeControls from './../range/responsive-range-control';
+import { MeasurementControls, HeadingLevelIcon, ResponsiveRangeControls, KadenceRange } from '@kadence/components';
 
-const {
-	applyFilters,
-} = wp.hooks;
+import { applyFilters } from '@wordpress/hooks';
 
-const {
-	Fragment,
-	Component,
-} = wp.element;
-const {
-	Button,
-	ButtonGroup,
-	TabPanel,
-	Dashicon,
-	PanelBody,
+import { Fragment, Component } from '@wordpress/element';
+import {
 	ToolbarGroup,
-	Toolbar,
 	ToggleControl,
 	SelectControl,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * Build the typography controls
@@ -257,7 +240,7 @@ class TypographyControls extends Component {
 					/* translators: %d: heading level e.g: "1", "2", "3" */
 					__( 'Heading %d', 'kadence-blocks' ),
 					targetLevel
-					),
+				),
 				isActive: ( targetLevel === tagLevel && htmlTag && htmlTag === 'heading' ? true : false ),
 				onClick: () => onTagLevelHTML( targetLevel, 'heading' ),
 			} ];
@@ -402,7 +385,7 @@ class TypographyControls extends Component {
 					/* translators: %d: heading level e.g: "1", "2", "3" */
 					__( 'Heading %d', 'kadence-blocks' ),
 					targetLevel
-					),
+				),
 				isActive: targetLevel === tagLevel,
 				onClick: () => onTagLevel( targetLevel ),
 			} ];
@@ -413,10 +396,8 @@ class TypographyControls extends Component {
 			{ value: 'uppercase', label: __( 'Uppercase', 'kadence-blocks' ) },
 			{ value: 'lowercase', label: __( 'Lowercase', 'kadence-blocks' ) },
 		];
-		const borderTypes = [
-			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.linked },
-			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.individual },
-		];
+
+
 		const fontMin = ( fontSizeType !== 'px' ? 0.2 : 5 );
 		const fontMax = ( fontSizeType !== 'px' ? 12 : 200 );
 		const fontStep = ( fontSizeType !== 'px' ? 0.1 : 1 );
@@ -426,6 +407,7 @@ class TypographyControls extends Component {
 		const usingReg = typographyWeights.some(function(el) {
 			return el.value === 'regular';
 		});
+
 		return (
 			<Fragment>
 				{ onTagLevel && (

@@ -22,11 +22,11 @@ import {
  * @returns {object} Measure settings.
  */
 export default function SmallResponsiveControl( {
-	label,
-	desktopChildren,
-	tabletChildren,
-	mobileChildren,
-} ) {
+													label,
+													desktopChildren,
+													tabletChildren,
+													mobileChildren,
+												} ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();

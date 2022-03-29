@@ -7,21 +7,19 @@
  * Import External
  */
 import map from 'lodash/map';
-import KadenceRange from './../range/range-control';
+import { KadenceRange } from '@kadence/components';
 
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
-	useState,
-} = wp.element;
-const {
+import { useState } from '@wordpress/element';
+import {
 	Button,
-    Popover,
+	Popover,
 	TextControl,
 	ButtonGroup,
-} = wp.components;
+} from '@wordpress/components';
 
 function useObservableState( initialState ) {
 	const [ state, setState ] = useState( initialState );
@@ -37,19 +35,19 @@ function useObservableState( initialState ) {
  * @returns {object} Measure settings.
  */
 export default function MeasurementSingleControl( {
-	label,
-	placement = 'top',
-	measurement,
-	onChange,
-	step = 1,
-	max = 100,
-	min = 0,
-	icon,
-	unit = '',
-	allowEmpty = false,
-	className = '',
-	preset = '',
-} ) {
+													  label,
+													  placement = 'top',
+													  measurement,
+													  onChange,
+													  step = 1,
+													  max = 100,
+													  min = 0,
+													  icon,
+													  unit = '',
+													  allowEmpty = false,
+													  className = '',
+													  preset = '',
+												  } ) {
 	const zero = ( allowEmpty ? '' : 0 );
 	const [ isOpen, setIsOpen ] = useObservableState( false );
 
