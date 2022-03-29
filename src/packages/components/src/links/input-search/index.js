@@ -7,11 +7,11 @@
  /**
   * WordPress dependencies
   */
- import { __ } from '@wordpress/i18n';
- import { Component,Fragment, createRef } from '@wordpress/element';
- import { safeDecodeURI, filterURLForDisplay } from '@wordpress/url';
- import { applyFilters } from '@wordpress/hooks';
-const { UP, DOWN, ENTER, TAB } = wp.keycodes;
+import { __ } from '@wordpress/i18n';
+import { Component,Fragment, createRef } from '@wordpress/element';
+import { safeDecodeURI, filterURLForDisplay } from '@wordpress/url';
+import { applyFilters } from '@wordpress/hooks';
+import { UP, DOWN, ENTER, TAB } from '@wordpress/keycodes';
 import { BaseControl, Button, Spinner, ToggleControl, ExternalLink } from '@wordpress/components';
 import { withInstanceId, withSafeTimeout, compose } from '@wordpress/compose';
 import { DynamicLinkControl, fetchSearchResults, TextHighlight } from '@kadence/components';

@@ -5,11 +5,6 @@
  */
 
 /**
- * Import Icons
- */
-import icons from '../../icons';
-
-/**
  * Import External
  */
 import { KadenceSelectTerms, TypographyControls } from '@kadence/components';
@@ -29,23 +24,23 @@ import './editor.scss';
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
 import { KadencePanelBody, KadenceRange } from '@kadence/components'
-const { dateI18n, format, __experimentalGetSettings } = wp.date;
-const {
+import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	InspectorControls,
-} = wp.blockEditor;
-const {
+} from '@wordpress/blockEditor';
+import {
 	TextControl,
 	Placeholder,
 	ToggleControl,
 	SelectControl,
 	RadioControl,
 	Spinner,
-} = wp.components;
-const { apiFetch } = wp;
+} from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
 const { postTypes, taxonomies, postQueryEndpoint } = kadence_blocks_params;
 const { addQueryArgs } = wp.url;
 const { decodeEntities } = wp.htmlEntities;

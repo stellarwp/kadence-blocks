@@ -7,10 +7,10 @@
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Button,
 	Dashicon,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * Build the Step controls

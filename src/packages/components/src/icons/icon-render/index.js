@@ -3,14 +3,9 @@
  *
  */
 import { GenIcon } from '@kadence/components';
-const {
-	applyFilters,
-} = wp.hooks;
+import { applyFilters } from '@wordpress/hooks';
 
-const {
-	Fragment,
-	Component,
-} = wp.element;
+import { Fragment, Component } from '@wordpress/element';
 
 /**
  * Build the typography controls

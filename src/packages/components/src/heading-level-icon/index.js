@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-const { Path, SVG } = '@wordpress/components';
+import { Path, SVG } from '@wordpress/components';
 
 export default function HeadingLevelIcon( { level, isPressed = false } ) {
 	const levelToPath = {

@@ -26,7 +26,7 @@ import {
 	Path,
 } from '@wordpress/components';
 import { withSelect } from '@wordpress/data';
-const { DOWN } = wp.keycodes;
+import { DOWN } from '@wordpress/keycodes';
 
 /* global kadence_blocks_params */
 // eslint-disable-next-line camelcase
