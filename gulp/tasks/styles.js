@@ -49,6 +49,14 @@ function settings() {
         .pipe(dest(config.dirs.dist + '/settings'));
 }
 
+function misc() {
+    return stylesPipe(['src/utils/*.scss'])
+        .pipe(rename((file) => {
+            file.basename += '.min'
+        }))
+        .pipe(dest(config.dirs.dist + '/assets/css'));
+}
+
 /**
  * Copy vendor styles.
  * 
@@ -71,6 +79,7 @@ function vendor() {
 exports.blocksStyles = blocks;
 exports.settingsStyles = settings;
 exports.vendorStyles = vendor;
+exports.miscStyles = misc;
 
-exports.buildStyles = parallel(blocks, settings);
-exports.styles = parallel(blocks, settings, vendor);
+exports.buildStyles = parallel(blocks, settings, misc);
+exports.styles = parallel(blocks, settings, misc, vendor);

@@ -1708,7 +1708,7 @@ class Kadence_Blocks_Frontend {
 		wp_add_inline_script( 'kadence-blocks-google-recaptcha-v2', $recaptcha_v2_script, 'before' );
 
 		wp_register_script( 'kadence-blocks-parallax-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kt-init-parallax.min.js', array( 'jarallax' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'dist/vendor/kt-blocks-slick.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'dist/assets/css/kt-blocks-slick.min.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-slick', KADENCE_BLOCKS_URL . 'dist/assets/js/slick.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-slick-init', KADENCE_BLOCKS_URL . 'dist/assets/js/kt-slick-init.min.js', array( 'jquery', 'kadence-slick' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-tiny-slider', KADENCE_BLOCKS_URL . 'dist/assets/css/tiny-slider.css', array(), KADENCE_BLOCKS_VERSION );
