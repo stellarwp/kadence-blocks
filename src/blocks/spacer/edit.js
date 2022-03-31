@@ -4,10 +4,12 @@
  * Registering a basic block with Gutenberg.
  */
 
-import ResizableBox from 're-resizable';
 import SvgPattern from './svg-pattern';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import ResponsiveAlignControls from '../../components/align/responsive-align-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import KadencePanelBody from '../../components/KadencePanelBody'
+import PopColorControl from '../../components/color/pop-color-control';
 /**
  * Import Css
  */
@@ -29,13 +31,13 @@ const {
 	BlockAlignmentToolbar,
 } = wp.blockEditor;
 const {
-	PanelBody,
 	ToggleControl,
 	RangeControl,
-	TabPanel,
-	Dashicon,
 	SelectControl,
+	ResizableBox,
 } = wp.components;
+import { withSelect, withDispatch } from '@wordpress/data';
+import { compose } from '@wordpress/compose';
 
 const ktspacerUniqueIDs = [];
 /**
@@ -91,8 +93,22 @@ class KadenceSpacerDivider extends Component {
 		}
 		return false;
 	}
+	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
+		if ( device === 'Mobile' ) {
+			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
+				return mobileSize;
+			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
+				return tabletSize;
+			}
+		} else if ( device === 'Tablet' ) {
+			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
+				return tabletSize;
+			}
+		}
+		return desktopSize;
+	}
 	render() {
-		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, mobileHAlign, tabletHAlign, vsdesk, vstablet, vsmobile }, className, setAttributes, toggleSelection } = this.props;
+		const { attributes: { blockAlignment, spacerHeight, tabletSpacerHeight, mobileSpacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth, hAlign, uniqueID, spacerHeightUnits, rotate, strokeWidth, strokeGap, mobileHAlign, tabletHAlign, dividerWidthUnits, tabletDividerWidth, mobileDividerWidth, tabletDividerHeight, mobileDividerHeight, vsdesk, vstablet, vsmobile }, className, setAttributes, toggleSelection } = this.props;
 		let alp;
 		if ( dividerOpacity < 10 ) {
 			alp = '0.0' + dividerOpacity;
@@ -101,103 +117,17 @@ class KadenceSpacerDivider extends Component {
 		} else {
 			alp = '0.' + dividerOpacity;
 		}
+		const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 		const dividerBorderColor = ( ! dividerColor ? KadenceColorOutput( '#eeeeee', alp ) : KadenceColorOutput( dividerColor, alp ) );
-		const deskControls = (
-			<RangeControl
-				label={ __( 'Height', 'kadence-blocks' ) }
-				value={ spacerHeight }
-				onChange={ value => setAttributes( { spacerHeight: value } ) }
-				min={ 6 }
-				max={ 600 }
-			/>
-		);
-		const tabletControls = (
-			<RangeControl
-				label={ __( 'Tablet Height', 'kadence-blocks' ) }
-				value={ tabletSpacerHeight }
-				onChange={ value => setAttributes( { tabletSpacerHeight: value } ) }
-				min={ 6 }
-				max={ 600 }
-			/>
-		);
-		const mobileControls = (
-			<RangeControl
-				label={ __( 'Mobile Height', 'kadence-blocks' ) }
-				value={ mobileSpacerHeight }
-				onChange={ value => setAttributes( { mobileSpacerHeight: value } ) }
-				min={ 6 }
-				max={ 600 }
-			/>
-		);
 		let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
 		svgStringPre = svgStringPre.replace( 'patterntransform', 'patternTransform' );
 		svgStringPre = svgStringPre.replace( 'patternunits', 'patternUnits' );
-		//const svgString = encodeURIComponent( svgStringPre );
-		//const dataUri = `url("data:image/svg+xml,${ svgString }")`;
-		const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
+		const previewHeight = this.getPreviewSize( this.props.getPreviewDevice, ( '' !== spacerHeight ? spacerHeight : 60 ), ( '' !== tabletSpacerHeight ? tabletSpacerHeight : '' ), ( '' !== mobileSpacerHeight ? mobileSpacerHeight : '' ) );
+		const previewHAlign = this.getPreviewSize( this.props.getPreviewDevice, ( '' !== hAlign ? hAlign : '' ), ( '' !== tabletHAlign ? tabletHAlign : '' ), ( '' !== mobileHAlign ? mobileHAlign : '' ) );
 		const minD = ( dividerStyle !== 'stripe' ? 1 : 10 );
-		const maxD = ( dividerStyle !== 'stripe' ? 40 : 60 );
-		const tabAlignControls = (
-			<TabPanel className="kt-size-tabs"
-				activeClass="active-tab"
-				tabs={ [
-					{
-						name: 'desk',
-						title: <Dashicon icon="desktop" />,
-						className: 'kt-desk-tab',
-					},
-					{
-						name: 'tablet',
-						title: <Dashicon icon="tablet" />,
-						className: 'kt-tablet-tab',
-					},
-					{
-						name: 'mobile',
-						title: <Dashicon icon="smartphone" />,
-						className: 'kt-mobile-tab',
-					},
-				] }>
-				{
-					( tab ) => {
-						let tabout;
-						if ( tab.name ) {
-							if ( 'mobile' === tab.name ) {
-								tabout = (
-									<AlignmentToolbar
-										value={ mobileHAlign }
-										isCollapsed={ false }
-										onChange={ ( nextAlign ) => {
-											setAttributes( { mobileHAlign: nextAlign } );
-										} }
-									/>
-								);
-							} else if ( 'tablet' === tab.name ) {
-								tabout = (
-									<AlignmentToolbar
-										value={ tabletHAlign }
-										isCollapsed={ false }
-										onChange={ ( nextAlign ) => {
-											setAttributes( { tabletHAlign: nextAlign } );
-										} }
-									/>
-								);
-							} else {
-								tabout = (
-									<AlignmentToolbar
-										value={ hAlign }
-										isCollapsed={ false }
-										onChange={ ( nextAlign ) => {
-											setAttributes( { hAlign: nextAlign } );
-										} }
-									/>
-								);
-							}
-						}
-						return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-					}
-				}
-			</TabPanel>
-		);
+		const maxD = ( dividerStyle !== 'stripe' ? 400 : 60 );
+		const previewDividerHeight = this.getPreviewSize( this.props.getPreviewDevice, ( '' !== dividerHeight ? dividerHeight : 1 ), ( '' !== tabletDividerHeight ? tabletDividerHeight : '' ), ( '' !== mobileDividerHeight ? mobileDividerHeight : '' ) );
+		const previewDividerWidth = this.getPreviewSize( this.props.getPreviewDevice, ( '' !== dividerWidth ? dividerWidth : 1 ), ( '' !== tabletDividerWidth ? tabletDividerWidth : '' ), ( '' !== mobileDividerWidth ? mobileDividerWidth : '' ) );
 		return (
 			<div className={ className }>
 				{ this.showSettings( 'spacerDivider' ) && (
@@ -214,62 +144,33 @@ class KadenceSpacerDivider extends Component {
 							/>
 						</BlockControls>
 						<InspectorControls>
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Spacer Settings', 'kadence-blocks' ) }
 								initialOpen={ true }
+								panelName={ 'kb-spacer-settings' }
 							>
-								{ this.showSettings( 'spacerHeightUnits' ) && (
-									<SelectControl
-										label={ __( 'Height Units', 'kadence-blocks' ) }
-										value={ spacerHeightUnits }
-										options={ [
-											{ value: 'px', label: __( 'px', 'kadence-blocks' ) },
-											{ value: 'vh', label: __( 'vh', 'kadence-blocks' ) },
-										] }
-										onChange={ value => setAttributes( { spacerHeightUnits: value } ) }
+								{ this.showSettings( 'spacerHeight' ) && (
+									<ResponsiveRangeControls
+										label={ __( 'Height', 'kadence-blocks' ) }
+										value={ spacerHeight }
+										onChange={ value => setAttributes( { spacerHeight: value } ) }
+										tabletValue={ ( tabletSpacerHeight ? tabletSpacerHeight : '' ) }
+										onChangeTablet={ ( value ) => setAttributes( { tabletSpacerHeight: value } ) }
+										mobileValue={ ( mobileSpacerHeight ? mobileSpacerHeight : '' ) }
+										onChangeMobile={ ( value ) => setAttributes( { mobileSpacerHeight: value } ) }
+										min={ 6 }
+										max={ 600 }
+										step={ 1 }
+										unit={ spacerHeightUnits }
+										onUnit={ this.showSettings( 'spacerHeightUnits' ) ? ( value ) => setAttributes( { spacerHeightUnits: value } ) : false }
+										units={ [ 'px', 'vh' ] }
 									/>
 								) }
-								{ this.showSettings( 'spacerHeight' ) && (
-									<TabPanel className="kt-inspect-tabs kt-spacer-tabs"
-										activeClass="active-tab"
-										tabs={ [
-											{
-												name: 'desk',
-												title: <Dashicon icon="desktop" />,
-												className: 'kt-desk-tab',
-											},
-											{
-												name: 'tablet',
-												title: <Dashicon icon="tablet" />,
-												className: 'kt-tablet-tab',
-											},
-											{
-												name: 'mobile',
-												title: <Dashicon icon="smartphone" />,
-												className: 'kt-mobile-tab',
-											},
-										] }>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'mobile' === tab.name ) {
-														tabout = mobileControls;
-													} else if ( 'tablet' === tab.name ) {
-														tabout = tabletControls;
-													} else {
-														tabout = deskControls;
-													}
-												}
-												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-											}
-										}
-									</TabPanel>
-								) }
-							</PanelBody>
-							<PanelBody
+							</KadencePanelBody>
+							<KadencePanelBody
 								title={ __( 'Divider Settings', 'kadence-blocks' ) }
 								initialOpen={ true }
+								panelName={ 'kb-divider-settings' }
 							>
 								{ this.showSettings( 'dividerToggle' ) && (
 									<ToggleControl
@@ -280,10 +181,15 @@ class KadenceSpacerDivider extends Component {
 								) }
 								{ dividerEnable && this.showSettings( 'dividerStyles' ) && (
 									<Fragment>
-										<div className="kb-sidebar-alignment components-base-control">
-											<p className="kb-component-label kb-responsive-label">{ __( 'Alignment', 'kadence-blocks' ) }</p>
-											{ tabAlignControls }
-										</div>
+										<ResponsiveAlignControls
+											label={ __( 'Alignment', 'kadence-blocks' ) }
+											value={ ( hAlign ? hAlign : '' ) }
+											mobileValue={ ( mobileHAlign ? mobileHAlign : '' ) }
+											tabletValue={ ( tabletHAlign ? tabletHAlign : '' ) }
+											onChange={ ( nextAlign ) => setAttributes( { hAlign: nextAlign } ) }
+											onChangeTablet={ ( nextAlign ) => setAttributes( { tabletHAlign: nextAlign } ) }
+											onChangeMobile={ ( nextAlign ) => setAttributes( { mobileHAlign: nextAlign } ) }
+										/>
 										<SelectControl
 											label={ __( 'Divider Style', 'kadence-blocks' ) }
 											value={ dividerStyle }
@@ -295,12 +201,12 @@ class KadenceSpacerDivider extends Component {
 											] }
 											onChange={ value => setAttributes( { dividerStyle: value } ) }
 										/>
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'Divider Color', 'kadence-blocks' ) }
-											colorValue={ ( dividerColor ? dividerColor : '' ) }
-											colorDefault={ '' }
+											value={ ( dividerColor ? dividerColor : '' ) }
+											default={ '' }
 											opacityValue={ dividerOpacity }
-											onColorChange={ value => setAttributes( { dividerColor: value } ) }
+											onChange={ value => setAttributes( { dividerColor: value } ) }
 											onOpacityChange={ value => setAttributes( { dividerOpacity: value } ) }
 											opacityUnit={ 100 }
 										/>
@@ -329,26 +235,41 @@ class KadenceSpacerDivider extends Component {
 												/>
 											</Fragment>
 										) }
-										<RangeControl
-											label={ __( 'Divider Height in px', 'kadence-blocks' ) }
+										<ResponsiveRangeControls
+											label={ __( 'Divider Height', 'kadence-blocks' ) }
 											value={ dividerHeight }
 											onChange={ value => setAttributes( { dividerHeight: value } ) }
+											tabletValue={ ( tabletDividerHeight ? tabletDividerHeight : '' ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletDividerHeight: value } ) }
+											mobileValue={ ( mobileDividerHeight ? mobileDividerHeight : '' ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileDividerHeight: value } ) }
 											min={ minD }
 											max={ maxD }
+											step={ 1 }
+											unit={ 'px' }
 										/>
-										<RangeControl
-											label={ __( 'Divider Width by %', 'kadence-blocks' ) }
+										<ResponsiveRangeControls
+											label={ __( 'Divider Width', 'kadence-blocks' ) }
 											value={ dividerWidth }
 											onChange={ value => setAttributes( { dividerWidth: value } ) }
+											tabletValue={ ( tabletDividerWidth ? tabletDividerWidth : '' ) }
+											onChangeTablet={ ( value ) => setAttributes( { tabletDividerWidth: value } ) }
+											mobileValue={ ( mobileDividerWidth ? mobileDividerWidth : '' ) }
+											onChangeMobile={ ( value ) => setAttributes( { mobileDividerWidth: value } ) }
 											min={ 0 }
-											max={ 100 }
+											max={ ( dividerWidthUnits == 'px' ? 3000 : 100 ) }
+											step={ 1 }
+											unit={ dividerWidthUnits }
+											onUnit={ ( value ) => setAttributes( { dividerWidthUnits: value } ) }
+											units={ [ 'px', '%' ] }
 										/>
 									</Fragment>
 								) }
-							</PanelBody>
-							<PanelBody
+							</KadencePanelBody>
+							<KadencePanelBody
 								title={ __( 'Visibility Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-visibility-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
@@ -365,17 +286,17 @@ class KadenceSpacerDivider extends Component {
 									checked={ ( undefined !== vsmobile ? vsmobile : false ) }
 									onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						</InspectorControls>
 					</Fragment>
 				) }
-				<div className={ `kt-block-spacer kt-block-spacer-halign-${ hAlign }` }>
+				<div className={ `kt-block-spacer kt-block-spacer-halign-${ previewHAlign }` }>
 					{ dividerEnable && (
 						<Fragment>
 							{ dividerStyle === 'stripe' && (
 								<span className="kt-divider-stripe" style={ {
-									height: ( dividerHeight < 10 ? 10 : dividerHeight ) + 'px',
-									width: dividerWidth + '%',
+									height: ( previewDividerHeight < 10 ? 10 : previewDividerHeight ) + 'px',
+									width: previewDividerWidth + ( dividerWidthUnits ? dividerWidthUnits : '%' ),
 								} }>
 									<SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
 								</span>
@@ -383,8 +304,8 @@ class KadenceSpacerDivider extends Component {
 							{ dividerStyle !== 'stripe' && (
 								<hr className="kt-divider" style={ {
 									borderTopColor: dividerBorderColor,
-									borderTopWidth: dividerHeight + 'px',
-									width: dividerWidth + '%',
+									borderTopWidth: previewDividerHeight + 'px',
+									width: previewDividerWidth + ( dividerWidthUnits ? dividerWidthUnits : '%' ),
 									borderTopStyle: dividerStyle,
 								} } />
 							) }
@@ -402,7 +323,7 @@ class KadenceSpacerDivider extends Component {
 					{ 'vh' !== spacerHeightUnits && this.showSettings( 'spacerDivider' ) && this.showSettings( 'spacerHeight' ) && (
 						<ResizableBox
 							size={ {
-								height: spacerHeight,
+								height: previewHeight,
 							} }
 							minHeight="20"
 							handleClasses={ {
@@ -420,13 +341,23 @@ class KadenceSpacerDivider extends Component {
 								topLeft: false,
 							} }
 							onResize={ ( event, direction, elt, delta ) => {
-								document.getElementById( 'spacing-height-' + ( uniqueID ? uniqueID : 'no-unique' ) ).innerHTML = parseInt( spacerHeight + delta.height, 10 ) + ( spacerHeightUnits ? spacerHeightUnits : 'px' );
+								editorDocument.getElementById( 'spacing-height-' + ( uniqueID ? uniqueID : 'no-unique' ) ).innerHTML = parseInt( previewHeight + delta.height, 10 ) + ( spacerHeightUnits ? spacerHeightUnits : 'px' );
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
-								setAttributes( {
-									spacerHeight: parseInt( spacerHeight + delta.height, 10 ),
-								} );
 								toggleSelection( true );
+								if ( 'Mobile' === this.props.getPreviewDevice ) {
+									setAttributes( {
+										mobileSpacerHeight: parseInt( previewHeight + delta.height, 10 ),
+									} );
+								} else if ( 'Tablet' === this.props.getPreviewDevice ) {
+									setAttributes( {
+										tabletSpacerHeight: parseInt( previewHeight + delta.height, 10 ),
+									} );
+								} else {
+									setAttributes( {
+										spacerHeight: parseInt( previewHeight + delta.height, 10 ),
+									} );
+								}
 							} }
 							onResizeStart={ () => {
 								toggleSelection( false );
@@ -435,7 +366,7 @@ class KadenceSpacerDivider extends Component {
 							{ uniqueID && (
 								<div className="kt-spacer-height-preview">
 									<span id={ `spacing-height-${ uniqueID }` } >
-										{ spacerHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ) }
+										{ previewHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ) }
 									</span>
 								</div>
 							) }
@@ -443,10 +374,10 @@ class KadenceSpacerDivider extends Component {
 					) }
 					{ 'vh' !== spacerHeightUnits && ( ! this.showSettings( 'spacerDivider' ) || ! this.showSettings( 'spacerHeight' ) ) && (
 						<div className="kt-spacer-height-preview" style={ {
-							height: spacerHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ),
+							height: previewHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ),
 						} } >
 							<span id={ `spacing-height-${ uniqueID }` } >
-								{ spacerHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ) }
+								{ previewHeight + ( spacerHeightUnits ? spacerHeightUnits : 'px' ) }
 							</span>
 						</div>
 					) }
@@ -455,4 +386,14 @@ class KadenceSpacerDivider extends Component {
 		);
 	}
 }
-export default ( KadenceSpacerDivider );
+export default compose( [
+	withSelect( ( select ) => {
+		return {
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			getUniqueIDs: select( 'kadenceblocks/data' ).getUniqueIDs(),
+		};
+	} ),
+	withDispatch( ( dispatch ) => ( {
+		addUniqueID: ( value ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value ),
+	} ) ),
+] )( KadenceSpacerDivider );

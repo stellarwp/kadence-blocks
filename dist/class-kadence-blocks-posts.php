@@ -304,7 +304,7 @@ class Kadence_Blocks_Posts {
 		}
 		$classes = apply_filters( 'kadence_blocks_posts_container_classes', $classes );
 		do_action( 'kadence_blocks_posts_before_query', $attributes );
-		if ( apply_filters( 'kadence_blocks_posts_block_exclude_current', true ) ) {
+		if ( apply_filters( 'kadence_blocks_posts_block_exclude_current', true ) && is_singular() ) {
 			if ( ! in_array( get_the_ID(), $kadence_blocks_posts_not_in, true ) ) {
 				$kadence_blocks_posts_not_in[] = get_the_ID();
 			}
@@ -386,7 +386,7 @@ class Kadence_Blocks_Posts {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-posts' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'posts', $unique_id ) ) {
 				if ( ! doing_filter( 'the_content' ) ) {
 					if ( ! class_exists( 'Kadence\Theme' ) && ! wp_style_is( 'kadence-blocks-posts', 'done' ) ) {

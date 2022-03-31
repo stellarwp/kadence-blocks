@@ -10,6 +10,9 @@
 .kb-colors-selector.components-dropdown-menu.components-toolbar {
     padding: 0;
 }
+.wp-block-kadence-advancedheading {
+	display: block;
+}
 .kb-colors-selector {
     .kb-colors-selector__toggle {
         display: block;
@@ -72,8 +75,8 @@
     color:#191e23;
 }
 .kb-tag-level-control .components-toolbar__control.components-button:before {
-    left: 4px;
-    right: 4px;
+    left: 0px;
+    right: 0px;
 }
 .kb-tag-level-control .components-icon-button.is-active, .kb-tag-level-control .components-button.is-active {
     outline: none;
@@ -83,7 +86,8 @@
 }
 .kb-tag-level-control .components-toolbar {
     width: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat( auto-fit, minmax(40px, 1fr) );
 }
 .kb-tag-level-control div.has-left-divider .components-toolbar__control.components-button[aria-label="Paragraph"] svg {
     max-height: 14px;

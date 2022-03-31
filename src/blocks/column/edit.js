@@ -26,6 +26,7 @@ import KadenceRadioButtons from '../../components/common/kadence-radio-buttons';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
 import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import URLInputControl from '../../components/links/link-control';
 /**
  * Blocks Specific.
@@ -43,15 +44,13 @@ const {
 } = wp.element;
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-import { 
+import {
 	InnerBlocks,
 	BlockControls,
 	InspectorAdvancedControls,
 	InspectorControls,
 } from '@wordpress/block-editor';
 const {
-	PanelBody,
-	Panel,
 	ToggleControl,
 	SelectControl,
 	ToolbarGroup,
@@ -365,9 +364,10 @@ class KadenceColumn extends Component {
 						</BlockControls>
 						<InspectorControls>
 							{ this.showSettings( 'container' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Container Style Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-col-container-style-settings' }
 							>
 								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 									activeClass="active-tab"
@@ -649,12 +649,13 @@ class KadenceColumn extends Component {
 										}
 									}
 								</TabPanel>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'textAlign' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Align Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-col-align-settings' }
 							>
 									<SmallResponsiveControl
 										label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
@@ -795,12 +796,13 @@ class KadenceColumn extends Component {
 										onChangeTablet={ ( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ), nextAlign, ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) ] } ) }
 										onChangeMobile={ ( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ), ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), nextAlign ] } ) }
 									/>
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'textColor' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Text Color Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-col-text-color-settings' }
 								>
 									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 										activeClass="active-tab"
@@ -872,12 +874,13 @@ class KadenceColumn extends Component {
 											}
 										}
 									</TabPanel>
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'paddingMargin' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Padding/Margin', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-col-padding-margin' }
 								>
 									<ResponsiveMeasuremenuControls
 										label={ __( 'Padding', 'kadence-blocks' ) }
@@ -935,12 +938,13 @@ class KadenceColumn extends Component {
 										units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 										onUnit={ ( value ) => setAttributes( { marginType: value } ) }
 									/>
-								</PanelBody>
+								</KadencePanelBody>
 							) }
 							{ this.showSettings( 'overlayLink' ) && (
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Overlay Link', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-col-overlay-link' }
 								>
 									<p className="kadence-sidebar-notice">{ __( 'Please note, If a link is added nothing else inside of the section will be selectable.', 'kadence-blocks' ) }</p>
 									<URLInputControl
@@ -962,11 +966,12 @@ class KadenceColumn extends Component {
 										allowClear={ true }
 										{ ...this.props }
 									/>
-								</PanelBody>
+								</KadencePanelBody>
 							) }
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Visibility Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-col-visibility-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
@@ -983,7 +988,7 @@ class KadenceColumn extends Component {
 									checked={ ( undefined !== vsmobile ? vsmobile : false ) }
 									onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						</InspectorControls>
 					</Fragment>
 				) }
@@ -1052,12 +1057,8 @@ class KadenceColumn extends Component {
 //export default ( KadenceColumn );
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		return {
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( KadenceColumn );

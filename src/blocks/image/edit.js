@@ -19,7 +19,6 @@ import {
 } from '@wordpress/block-editor';
 import { applyFilters } from '@wordpress/hooks';
 import {
-	PanelBody,
 	withNotices
 } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
@@ -27,6 +26,7 @@ import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
 import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
 import KadenceImageControl from '../../components/common/kadence-image-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import itemicons from '../../icons';
 
 /* global wp */
@@ -128,6 +128,7 @@ export function ImageEdit( {
 		sizeSlug,
 		imageFilter,
 		useRatio,
+		imgMaxWidth,
 		kadenceAnimation,
 		kadenceAOSOptions,
 	} = attributes;
@@ -368,6 +369,7 @@ export function ImageEdit( {
 		[ `size-${ sizeSlug }` ]: sizeSlug,
 		[ `filter-${ imageFilter }` ]: imageFilter && imageFilter !== 'none',
 		[ `kb-image-is-ratio-size` ]: useRatio,
+		'image-is-svg': url && url.endsWith( '.svg' ),
 	} );
 
 	const blockProps = useBlockProps( {
@@ -376,7 +378,9 @@ export function ImageEdit( {
 	} );
 
 	return (
-		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps }>
+		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{
+			maxWidth: ( imgMaxWidth && ( align === 'left' || align === 'right' ) ) ? imgMaxWidth + 'px' : undefined,
+		}}>
 			{ ( temporaryURL || url ) && (
 				<Image
 					temporaryURL={ temporaryURL }
@@ -403,7 +407,11 @@ export function ImageEdit( {
 						/>
 					</BlockControls>
 					<InspectorControls>
-						<PanelBody title={ __( 'Image settings', 'kadence-blocks' ) } initialOpen={ true } >
+						<KadencePanelBody
+							title={ __( 'Image settings', 'kadence-blocks' ) }
+							initialOpen={ true }
+							panelName={ 'kb-image-settings-edit' }
+						>
 							<KadenceImageControl
 								label={ __( 'Image', 'kadence-blocks' ) }
 								hasImage={ ( url ? true : false ) }
@@ -426,7 +434,7 @@ export function ImageEdit( {
 								name={ 'kadence/image' }
 								clientId={ clientId }
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 					</InspectorControls>
 				</>
 			) }
@@ -450,12 +458,8 @@ export function ImageEdit( {
 }
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		return {
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 	withNotices,

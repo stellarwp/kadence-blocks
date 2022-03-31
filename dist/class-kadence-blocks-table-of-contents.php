@@ -304,21 +304,70 @@ class Kadence_Blocks_Table_Of_Contents {
 			}
 		} else {
 			// Only one page, so return headings from entire post_content.
-			if ( isset( $attributes['enableDynamicSearch'] ) && $attributes['enableDynamicSearch'] ) {
-				$blocks = parse_blocks( $post->post_content );
-				self::$output_content = '';
-				foreach ( $blocks as $block ) {
-					$this->recursively_parse_blocks( $block );
-				}
-				if ( self::$output_content ) {
-					$page_content = do_shortcode( self::$output_content );
+			if ( is_null( self::$the_headings ) ) {
+				if ( isset( $attributes['enableDynamicSearch'] ) && $attributes['enableDynamicSearch'] ) {
+					$blocks = parse_blocks( $post->post_content );
+					self::$output_content = '';
+					foreach ( $blocks as $block ) {
+						$this->recursively_parse_blocks( $block );
+					}
+					if ( self::$output_content ) {
+						$page_content = do_shortcode( self::$output_content );
+					} else {
+						$page_content = do_shortcode( $post->post_content );
+					}
 				} else {
-					$page_content = do_shortcode( $post->post_content );
+					$page_content = $post->post_content;
 				}
-			} else {
-				$page_content = $post->post_content;
+				self::$the_headings = $this->table_of_contents_get_headings_from_content( $page_content, 1, 1, $attributes );
 			}
-			return $this->table_of_contents_get_headings_from_content( $page_content, 1, 1, $attributes );
+			$headings = self::$the_headings;
+		
+			if ( $attributes && isset( $attributes['allowedHeaders'] ) && isset( $attributes['allowedHeaders'][0] ) && is_array( $attributes['allowedHeaders'][0] ) ) {
+				if ( isset( $attributes['allowedHeaders'][0]['h1'] ) && ! $attributes['allowedHeaders'][0]['h1'] ) {
+					foreach ( $headings as $headkey => $headvalue ) {
+						if ( $headvalue['level'] === 1 ) {
+							unset( $headings[$headkey] );
+						}
+					}
+				}
+				if ( isset( $attributes['allowedHeaders'][0]['h2'] ) && ! $attributes['allowedHeaders'][0]['h2'] ) {
+					foreach ( $headings as $headkey => $headvalue ) {
+						if ( $headvalue['level'] === 2 ) {
+							unset( $headings[$headkey] );
+						}
+					}
+				}
+				if ( isset( $attributes['allowedHeaders'][0]['h3'] ) && ! $attributes['allowedHeaders'][0]['h3'] ) {
+					foreach ( $headings as $headkey => $headvalue ) {
+						if ( $headvalue['level'] === 3 ) {
+							unset( $headings[$headkey] );
+						}
+					}
+				}
+				if ( isset( $attributes['allowedHeaders'][0]['h4'] ) && ! $attributes['allowedHeaders'][0]['h4'] ) {
+					foreach ( $headings as $headkey => $headvalue ) {
+						if ( $headvalue['level'] === 4 ) {
+							unset( $headings[$headkey] );
+						}
+					}
+				}
+				if ( isset( $attributes['allowedHeaders'][0]['h5'] ) && ! $attributes['allowedHeaders'][0]['h5'] ) {
+					foreach ( $headings as $headkey => $headvalue ) {
+						if ( $headvalue['level'] === 5 ) {
+							unset( $headings[$headkey] );
+						}
+					}
+				}
+				if ( isset( $attributes['allowedHeaders'][0]['h6'] ) && ! $attributes['allowedHeaders'][0]['h6'] ) {
+					foreach ( $headings as $headkey => $headvalue ) {
+						if ( $headvalue['level'] === 6 ) {
+							unset( $headings[$headkey] );
+						}
+					}
+				}
+			}
+			return array_values($headings);
 		}
 	}
 	/**
@@ -430,6 +479,8 @@ class Kadence_Blocks_Table_Of_Contents {
 		}
 		$xpath = new DOMXPath( $doc );
 		$query = '//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]';
+		// Remove this since the headings are cached, instead strip out the ones we don't want from the cached response.
+		/*
 		if ( $attributes && isset( $attributes['allowedHeaders'] ) && isset( $attributes['allowedHeaders'][0] ) && is_array( $attributes['allowedHeaders'][0] ) ) {
 			$query = '//*[';
 			$arr   = array();
@@ -454,6 +505,7 @@ class Kadence_Blocks_Table_Of_Contents {
 			$query .= implode( ' or ', $arr );
 			$query .= ']';
 		}
+		*/
 		// Get all heading elements in the post content.
 		$temp_headings = iterator_to_array(
 			$xpath->query( $query )
@@ -750,13 +802,10 @@ class Kadence_Blocks_Table_Of_Contents {
 		if ( ! $the_post ) {
 			return '';
 		}
-		if ( is_null( self::$the_headings ) ) {
-			self::$the_headings = $this->table_of_contents_get_headings(
-				$the_post,
-				$attributes
-			);
-		}
-		$headings = self::$the_headings;
+		$headings = $this->table_of_contents_get_headings(
+			$the_post,
+			$attributes
+		);
 		$list_tag = ( isset( $attributes['listStyle'] ) && 'numbered' === $attributes['listStyle'] ? 'ol' : 'ul' );
 
 		// If there are no headings or the only heading is empty.
@@ -823,7 +872,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-tableofcontents' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'tableofcontent', $unique_id ) ) {
 				if ( kadence_blocks_is_not_amp() ) {
 					if ( isset( $attributes['enableScrollSpy'] ) && $attributes['enableScrollSpy'] ) {

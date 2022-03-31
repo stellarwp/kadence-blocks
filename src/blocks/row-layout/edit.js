@@ -17,7 +17,6 @@ import debounce from 'lodash/debounce';
 import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
-import ResizableBox from 're-resizable';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 /**
@@ -32,6 +31,7 @@ import KadenceRadioButtons from '../../kadence-radio-buttons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadenceBackgroundControl from '../../components/background/background-control';
 import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 /**
  * Import Block Specific Components
  */
@@ -65,11 +65,11 @@ import {
 	ToolbarGroup,
 	TextControl,
 	Dashicon,
-	PanelBody,
 	RangeControl,
 	Toolbar,
 	ToggleControl,
 	SelectControl,
+	ResizableBox,
 } from '@wordpress/components';
 import { withDispatch, withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
@@ -241,8 +241,9 @@ class KadenceRowLayout extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS }, toggleSelection, className, setAttributes, clientId } = this.props;
+		const { attributes: { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, htmlTag, minHeight, maxWidth, bottomSep, bottomSepColor, bottomSepHeight, bottomSepHeightMobile, bottomSepHeightTab, bottomSepWidth, bottomSepWidthMobile, bottomSepWidthTab, topSep, topSepColor, topSepHeight, topSepHeightMobile, topSepHeightTab, topSepWidth, topSepWidthMobile, topSepWidthTab, firstColumnWidth, secondColumnWidth, textColor, linkColor, linkHoverColor, tabletPadding, topMarginT, bottomMarginT, minHeightUnit, maxWidthUnit, marginUnit, columnsUnlocked, tabletBackground, tabletOverlay, mobileBackground, mobileOverlay, columnsInnerHeight, zIndex, backgroundInline, backgroundSettingTab, backgroundSliderCount, backgroundSlider, inheritMaxWidth, backgroundSliderSettings, backgroundVideo, backgroundVideoType, overlaySecondOpacity, overlayFirstOpacity, paddingUnit, align, minHeightTablet, minHeightMobile, bgColorClass, vsdesk, vstablet, vsmobile, loggedInUser, loggedIn, loggedOut, loggedInShow, rcpAccess, rcpMembership, rcpMembershipLevel, borderWidth, tabletBorderWidth, mobileBorderWidth, borderRadius, tabletBorderRadius, mobileBorderRadius, border, tabletBorder, mobileBorder, isPrebuiltModal, responsiveMaxWidth, kadenceBlockCSS }, toggleSelection, className, setAttributes, clientId } = this.props;
 		const { borderWidthControl, borderRadiusControl, contentWidthPop } = this.state;
+		const editorDocument = document.querySelector( 'iframe[name="editor-canvas"]' )?.contentWindow.document || document;
 		const saveTabletBackground = ( value ) => {
 			const newUpdate = tabletBackground.map( ( item, index ) => {
 				if ( 0 === index ) {
@@ -343,8 +344,8 @@ class KadenceRowLayout extends Component {
 			this.setState( {
 				secondWidth: secondCol,
 			} );
-			document.getElementById( 'left-column-width-' + uniqueID ).innerHTML = firstCol + '%';
-			document.getElementById( 'right-column-width-' + uniqueID ).innerHTML = secondCol + '%';
+			editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = firstCol + '%';
+			editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = secondCol + '%';
 		};
 		const onResizeStop = ( event, direction, elt ) => {
 			let firstCol;
@@ -416,6 +417,7 @@ class KadenceRowLayout extends Component {
 			'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 			'kvs-md-false': vstablet !== 'undefined' && vstablet,
 			'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
+			'kadence-has-rcp-display' : rcpMembership && kadence_blocks_params && kadence_blocks_params.rcp_access,
 		} );
 		// const classes = classnames( className, `kt-has-${ columns }-columns kt-row-layout-${ layoutClass } kt-row-valign-${ verticalAlignment } kt-tab-layout-${ tabLayoutClass } kt-mobile-layout-${ mobileLayoutClass } current-tab-${ currentTab } kt-gutter-${ columnGutter } kt-v-gutter-${ collapseGutter } kt-custom-first-width-${ widthString } kt-custom-second-width-${ secondWidthString } kt-custom-third-width-${ thirdWidthString } ${ hasBG }${ ( columnsInnerHeight ? ' kt-inner-column-height-full' : '' ) }` );
 		let layoutOptions;
@@ -696,7 +698,7 @@ class KadenceRowLayout extends Component {
 		const mobileControls = (
 			<Fragment>
 				{ this.showSettings( 'basicLayout' ) && (
-					<PanelBody>
+					<KadencePanelBody panelName={ 'kb-row-basic-settings' }>
 						{ columns > 1 && (
 							<Fragment>
 								<p className="components-base-control__label">{ __( 'Mobile Layout', 'kadence-blocks' ) }</p>
@@ -745,12 +747,13 @@ class KadenceRowLayout extends Component {
 								onChange={ value => setAttributes( { collapseOrder: value } ) }
 							/>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'paddingMargin' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Mobile Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-mobile-padding' }
 					>
 						<MeasurementControls
 							label={ __( 'Padding', 'kadence-blocks' ) }
@@ -780,12 +783,13 @@ class KadenceRowLayout extends Component {
 							showUnit={ true }
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'background' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Mobile Background', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-mobile-background' }
 					>
 						<ToggleControl
 							label={ __( 'Set custom background for Mobile?', 'kadence-blocks' ) }
@@ -842,12 +846,13 @@ class KadenceRowLayout extends Component {
 								/>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'backgroundOverlay' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Mobile Background Overlay' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-mobile-bg-overlay' }
 					>
 						<ToggleControl
 							label={ __( 'Set custom background overlay for mobile?', 'kadence-blocks' ) }
@@ -886,12 +891,13 @@ class KadenceRowLayout extends Component {
 								}
 							</TabPanel>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'border' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Border Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-border-settings' }
 					>
 						<AdvancedPopColorControl
 							label={ __( 'Mobile Border Color', 'kadence-blocks' ) }
@@ -933,14 +939,14 @@ class KadenceRowLayout extends Component {
 							thirdIcon={ icons.bottomright }
 							fourthIcon={ icons.bottomleft }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 			</Fragment>
 		);
 		const tabletControls = (
 			<Fragment>
 				{ this.showSettings( 'basicLayout' ) && (
-					<PanelBody>
+					<KadencePanelBody panelName={ 'kb-row-basic-layout' }>
 						{ columns > 1 && (
 							<Fragment>
 								<p className="components-base-control__label">{ __( 'Tablet Layout', 'kadence-blocks' ) }</p>
@@ -962,12 +968,13 @@ class KadenceRowLayout extends Component {
 								</ButtonGroup>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'paddingMargin' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Tablet Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-tablet-padding' }
 					>
 						<MeasurementControls
 							label={ __( 'Padding', 'kadence-blocks' ) }
@@ -997,12 +1004,13 @@ class KadenceRowLayout extends Component {
 							showUnit={ true }
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'background' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Tablet Background', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-tablet-bg' }
 					>
 						<ToggleControl
 							label={ __( 'Set custom background for tablets?', 'kadence-blocks' ) }
@@ -1059,12 +1067,13 @@ class KadenceRowLayout extends Component {
 								/>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'backgroundOverlay' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Tablet Background Overlay', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-tablet-bg-overlay' }
 					>
 						<ToggleControl
 							label={ __( 'Set custom background overlay for tablets?', 'kadence-blocks' ) }
@@ -1103,12 +1112,13 @@ class KadenceRowLayout extends Component {
 								}
 							</TabPanel>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'border' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Border Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-border-settings' }
 					>
 						<AdvancedPopColorControl
 							label={ __( 'Tablet Border Color', 'kadence-blocks' ) }
@@ -1150,7 +1160,7 @@ class KadenceRowLayout extends Component {
 							thirdIcon={ icons.bottomright }
 							fourthIcon={ icons.bottomleft }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 			</Fragment>
 		);
@@ -1245,7 +1255,7 @@ class KadenceRowLayout extends Component {
 		const deskControls = (
 			<Fragment>
 				{ this.showSettings( 'basicLayout' ) && (
-					<PanelBody>
+					<KadencePanelBody panelName={ 'kb-row-basic-layout' }>
 						<RangeControl
 							label={ __( 'Columns', 'kadence-blocks' ) }
 							value={ columns }
@@ -1308,12 +1318,13 @@ class KadenceRowLayout extends Component {
 								onChange={ ( value ) => setAttributes( { columnGutter: value } ) }
 							/>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'paddingMargin' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Padding/Margin', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-padding' }
 					>
 						<MeasurementControls
 							label={ __( 'Padding', 'kadence-blocks' ) }
@@ -1343,12 +1354,13 @@ class KadenceRowLayout extends Component {
 							showUnit={ true }
 							units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'background' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Background Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-bg-settings' }
 					>
 						<TabPanel className="kt-inspect-tabs"
 							initialTabName={ backgroundSettingTab }
@@ -1742,12 +1754,13 @@ class KadenceRowLayout extends Component {
 								}
 							}
 						</TabPanel>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'backgroundOverlay' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-bg-overlay' }
 					>
 						<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
 							activeClass="active-tab"
@@ -1779,12 +1792,13 @@ class KadenceRowLayout extends Component {
 								}
 							}
 						</TabPanel>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 				{ this.showSettings( 'border' ) && (
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Border Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-row-border-settings' }
 					>
 						<AdvancedPopColorControl
 							label={ __( 'Border Color', 'kadence-blocks' ) }
@@ -1826,7 +1840,7 @@ class KadenceRowLayout extends Component {
 							thirdIcon={ icons.bottomright }
 							fourthIcon={ icons.bottomleft }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 				) }
 			</Fragment>
 		);
@@ -2404,9 +2418,10 @@ class KadenceRowLayout extends Component {
 			</div>
 		);
 		const colorControls = (
-			<PanelBody
+			<KadencePanelBody
 				title={ __( 'Text Color Settings', 'kadence-blocks' ) }
 				initialOpen={ false }
+				panelName={ 'kb-row-text-color' }
 			>
 				<AdvancedPopColorControl
 					label={ __( 'Text Color', 'kadence-blocks' ) }
@@ -2426,7 +2441,7 @@ class KadenceRowLayout extends Component {
 					colorDefault={ '' }
 					onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
 				/>
-			</PanelBody>
+			</KadencePanelBody>
 		);
 		const tabControls = (
 			<TabPanel className="kt-inspect-tabs"
@@ -2858,9 +2873,10 @@ class KadenceRowLayout extends Component {
 						/>
 						<div className="kt-sidebar-settings-spacer"></div>
 						{ this.showSettings( 'dividers' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Dividers', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-row-dividers' }
 							>
 								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
 									activeClass="active-tab"
@@ -2890,16 +2906,17 @@ class KadenceRowLayout extends Component {
 										}
 									}
 								</TabPanel>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'textColor' ) && (
 							colorControls
 						) }
 						{ this.showSettings( 'structure' ) && (
 							<Fragment>
-								<PanelBody
+								<KadencePanelBody
 									title={ __( 'Structure Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-row-structure-settings' }
 								>
 									<SelectControl
 										label={ __( 'Container HTML tag', 'kadence-blocks' ) }
@@ -3051,10 +3068,11 @@ class KadenceRowLayout extends Component {
 										min={ -200 }
 										max={ 2000 }
 									/>
-								</PanelBody>
-								<PanelBody
+								</KadencePanelBody>
+								<KadencePanelBody
 									title={ __( 'Visibility Settings', 'kadence-blocks' ) }
 									initialOpen={ false }
+									panelName={ 'kb-row-visibility-settings' }
 								>
 									<ToggleControl
 										label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
@@ -3079,29 +3097,33 @@ class KadenceRowLayout extends Component {
 									/>
 									{ loggedIn && (
 										<Fragment>
-											<h2 className="kt-heading-fontfamily-title">{ __( 'Optional: Hide from Specific User Roles', 'kadence-blocks' ) }</h2>
-											<div className="kt-meta-select-wrap">
-												<Select
-													options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
-													value={ loggedInUser }
-													isMulti={ true }
-													maxMenuHeight={ 200 }
-													isClearable={ true }
-													placeholder={ '' }
-													onChange={ value => setAttributes( { loggedInUser: value } ) }
-												/>
+											<div className="components-base-control">
+												<span className="kadence-sidebar-label">{ __( 'Optional: Hide from Specific User Roles', 'kadence-blocks' ) }</span>
+												<div className="kt-meta-select-wrap">
+													<Select
+														options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
+														value={ loggedInUser }
+														isMulti={ true }
+														maxMenuHeight={ 200 }
+														isClearable={ true }
+														placeholder={ '' }
+														onChange={ value => setAttributes( { loggedInUser: value } ) }
+													/>
+												</div>
 											</div>
-											<h2 className="kt-heading-fontfamily-title">{ __( 'Optional: Show Only to Specific User Roles', 'kadence-blocks' ) }</h2>
-											<div className="kt-meta-select-wrap">
-												<Select
-													options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
-													value={ loggedInShow }
-													isMulti={ true }
-													maxMenuHeight={ 200 }
-													isClearable={ true }
-													placeholder={ '' }
-													onChange={ value => setAttributes( { loggedInShow: value } ) }
-												/>
+											<div className="components-base-control">
+												<span className="kadence-sidebar-label">{ __( 'Optional: Show Only to Specific User Roles', 'kadence-blocks' ) }</span>
+												<div className="kt-meta-select-wrap">
+													<Select
+														options={ ( kadence_blocks_user_params && kadence_blocks_user_params.userVisibility ? kadence_blocks_user_params.userVisibility : [] ) }
+														value={ loggedInShow }
+														isMulti={ true }
+														maxMenuHeight={ 200 }
+														isClearable={ true }
+														placeholder={ '' }
+														onChange={ value => setAttributes( { loggedInShow: value } ) }
+													/>
+												</div>
 											</div>
 										</Fragment>
 									) }
@@ -3110,7 +3132,41 @@ class KadenceRowLayout extends Component {
 										checked={ ( undefined !== loggedOut ? loggedOut : false ) }
 										onChange={ ( value ) => setAttributes( { loggedOut: value } ) }
 									/>
-								</PanelBody>
+									{ kadence_blocks_params && kadence_blocks_params.rcp_access && (
+										<Fragment>
+											<ToggleControl
+												label={ __( 'Restrict based on Membership', 'kadence-blocks' ) }
+												checked={ ( undefined !== rcpMembership ? rcpMembership : false ) }
+												onChange={ ( value ) => setAttributes( { rcpMembership: value } ) }
+											/>
+											{ rcpMembership && (
+												<Fragment>
+													<SelectControl
+														label={ __( 'Minimum Access Level', 'kadence-blocks' ) }
+														value={ rcpAccess }
+														options={ ( kadence_blocks_params && kadence_blocks_params.rcp_access ? kadence_blocks_params.rcp_access : [] ) }
+														onChange={ ( value ) => setAttributes( { rcpAccess: value } ) }
+													/>
+													<div className="components-base-control">
+														<span className="kadence-sidebar-label">{ __( 'Specific Memberships', 'kadence-blocks' ) }</span>
+														<div className="kt-meta-select-wrap">
+															<Select
+																options={ ( kadence_blocks_params && kadence_blocks_params.rcp_levels ? kadence_blocks_params.rcp_levels : [] ) }
+																value={ rcpMembershipLevel }
+																isMulti={ true }
+																maxMenuHeight={ 200 }
+																isClearable={ true }
+																placeholder={ 'Any Membership' }
+																onChange={ value => setAttributes( { rcpMembershipLevel: value } ) }
+															/>
+														</div>
+													</div>
+												</Fragment>
+											) }
+										</Fragment>
+
+									) }
+								</KadencePanelBody>
 							</Fragment>
 						) }
 					</InspectorControls>
@@ -3209,7 +3265,7 @@ class KadenceRowLayout extends Component {
 							className={ 'kt-top-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
 								event.preventDefault();
-								document.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( previewPaddingTop + delta.height, 10 ) + 'px';
+								editorDocument.getElementById( 'row-top-' + uniqueID ).innerHTML = parseInt( previewPaddingTop + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
 								if ( 'Mobile' === this.props.getPreviewDevice ) {
@@ -3373,7 +3429,7 @@ class KadenceRowLayout extends Component {
 							} }
 							className={ 'kt-bottom-padding-resize kt-padding-resize-box' }
 							onResize={ ( event, direction, elt, delta ) => {
-								document.getElementById( 'row-bottom-' + uniqueID ).innerHTML = parseInt( previewPaddingBottom + delta.height, 10 ) + 'px';
+								editorDocument.getElementById( 'row-bottom-' + uniqueID ).innerHTML = parseInt( previewPaddingBottom + delta.height, 10 ) + 'px';
 							} }
 							onResizeStop={ ( event, direction, elt, delta ) => {
 								if ( 'Mobile' === this.props.getPreviewDevice ) {
@@ -3440,14 +3496,10 @@ export default compose( [
 			getBlock,
 		} = select( 'core/block-editor' );
 		const block = getBlock( clientId );
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		return {
 			rowBlock: block,
 			realColumnCount: block.innerBlocks.length,
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 	withDispatch( ( dispatch, { clientId }, { select } ) => {

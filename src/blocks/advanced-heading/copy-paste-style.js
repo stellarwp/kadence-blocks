@@ -118,16 +118,16 @@ class HeadingStyleCopyPaste extends Component {
 			if ( blockAttributes.fontStyle ) {
 				copyStyles.fontStyle = blockAttributes.fontStyle;
 			}
-			if ( blockAttributes.topMargin ) {
+			if ( undefined !== blockAttributes.topMargin && '' !== blockAttributes.topMargin ) {
 				copyStyles.topMargin = blockAttributes.topMargin;
 			}
-			if ( blockAttributes.bottomMargin ) {
+			if ( undefined !== blockAttributes.bottomMargin && '' !== blockAttributes.bottomMargin ) {
 				copyStyles.bottomMargin = blockAttributes.bottomMargin;
 			}
-			if ( blockAttributes.leftMargin ) {
+			if ( undefined !== blockAttributes.leftMargin && '' !== blockAttributes.leftMargin ) {
 				copyStyles.leftMargin = blockAttributes.leftMargin;
 			}
-			if ( blockAttributes.rightMargin ) {
+			if ( undefined !== blockAttributes.rightMargin && '' !== blockAttributes.rightMargin ) {
 				copyStyles.rightMargin = blockAttributes.rightMargin;
 			}
 			if ( blockAttributes.tabletMargin ) {

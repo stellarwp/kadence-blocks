@@ -14,6 +14,7 @@ import AdvancedPopColorControl from '../../../../advanced-pop-color-control';
 import TypographyControls from '../../../../components/typography/typography-control';
 import KadenceRange from '../../../../kadence-range-control';
 import MeasurementControls from '../../../../measurement-control';
+import KadencePanelBody from '../../../../components/KadencePanelBody';
 
 /**
  * WordPress dependencies
@@ -22,18 +23,7 @@ import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
 const {
-	TextControl,
-	SelectControl,
-	PanelBody,
-	RangeControl,
 	ToggleControl,
-	BaseControl,
-	ButtonGroup,
-	Button,
-	ColorPicker,
-	TextareaControl,
-	CheckboxControl,
-	Tooltip,
 	TabPanel,
 	Dashicon
 } = wp.components;
@@ -140,9 +130,11 @@ class Inspector extends Component {
 			<Fragment>
 				<InspectorControls>
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Container Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-cat-item-settings' }
+					>
 						<MeasurementControls
 								label={ __( 'Container Border Width (px)' ) }
 								measurement={ containerBorderWidth }
@@ -237,11 +229,13 @@ class Inspector extends Component {
 							max={ 100 }
 							step={ 1 }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Title Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-cat-item-title-settings' }
+					>
 						<ToggleControl
 							label={ __( 'Show Title' ) }
 							checked={ displayTitle }
@@ -399,12 +393,14 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Text Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-cat-item-text' }
+					>
 						<ToggleControl
 							label={ __( 'Show Text' ) }
 							checked={ displayText }
@@ -562,12 +558,14 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Price Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-cat-item-price' }
+					>
 						<ToggleControl
 							label={ __( 'Show Price' ) }
 							checked={ displayAmount }
@@ -725,7 +723,7 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 
 	            </InspectorControls>
 	        </Fragment>

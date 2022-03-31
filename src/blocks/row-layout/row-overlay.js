@@ -62,7 +62,7 @@ class Overlay extends Component {
 		const previewOverlayBlendMode = this.getPreviewSize( this.props.getPreviewDevice, ( overlayBlendMode ? overlayBlendMode : undefined ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayBlendMod && tabletOverlay[0].enable ? tabletOverlay[0].overlayBlendMod : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayBlendMod && mobileOverlay[0].enable ? mobileOverlay[0].overlayBlendMod : '' ) );
 		const previewOverlayGradLoc = this.getPreviewSize( this.props.getPreviewDevice, ( overlayGradLoc ? overlayGradLoc : 0 ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayGradLoc && tabletOverlay[0].enable ? tabletOverlay[0].overlayGradLoc : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayGradLoc && mobileOverlay[0].enable ? mobileOverlay[0].overlayGradLoc : '' ) );
 
-		const previewOverlayGradLocSecond = this.getPreviewSize( this.props.getPreviewDevice, ( overlayGradLocSecond ? overlayGradLocSecond : 100 ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayGradLocSecond && tabletOverlay[0].enable ? tabletOverlay[0].overlayGradLocSecond : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayGradLocSecond && mobileOverlay[0].enable ? mobileOverlay[0].overlayGradLocSecond : '' ) );
+		const previewOverlayGradLocSecond = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== overlayGradLocSecond ? overlayGradLocSecond : 100 ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayGradLocSecond && tabletOverlay[0].enable ? tabletOverlay[0].overlayGradLocSecond : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayGradLocSecond && mobileOverlay[0].enable ? mobileOverlay[0].overlayGradLocSecond : '' ) );
 		return (
 			<Fragment>
 				{ ( ! previewCurrentOverlayTab || 'grad' !== previewCurrentOverlayTab ) && (
@@ -92,12 +92,8 @@ class Overlay extends Component {
 }
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		return {
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( Overlay );

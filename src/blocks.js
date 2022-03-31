@@ -3,6 +3,7 @@
  *
  */
 // Utils
+import './components/utilities/kadence-store';
 import TypographyControls from './components/typography/typography-control';
 import AdvancedColorControl from './advanced-color-control.js';
 import BoxShadowControl from './components/common/box-shadow-control';
@@ -19,8 +20,13 @@ window.kb = {
 	},
 };
 import './extension/block-css/block-css';
+/* block.json styles */
+import './blocks/lottie/index.js';
+import './blocks/image/index.js';
+import './blocks/google-maps/index.js';
 import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
+import './blocks/count-up/block.js';
 import './blocks/row-layout/block.js';
 import './blocks/column/block.js';
 import './blocks/icon/block.js';
@@ -41,7 +47,10 @@ import './blocks/countdown/countdown-timer/block.js';
 import './blocks/countdown/countdown-inner/block.js';
 
 /* block.json styles */
+import './blocks/lottie/index.js';
 import './blocks/image/index.js';
+import './blocks/show-more/index.js';
+
 
 // import './plugins/kadence-control.js';
 // import './plugins/editor-width.js';

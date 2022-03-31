@@ -43,7 +43,7 @@ import {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/advancedheading', {
-	title: __( 'Advanced Heading', 'kadence-blocks' ),
+	title: __( 'Advanced Text', 'kadence-blocks' ),
 	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
 	icon: {
 		src: icons.block,
@@ -52,7 +52,8 @@ registerBlockType( 'kadence/advancedheading', {
 	keywords: [
 		__( 'title', 'kadence-blocks' ),
 		__( 'heading', 'kadence-blocks' ),
-		'KB',
+		__( 'text', 'kadence-blocks' ),
+		'kb',
 	],
 	supports: {
 		ktanimate: true,
@@ -65,7 +66,7 @@ registerBlockType( 'kadence/advancedheading', {
 		content: {
 			type: 'string',
 			source: 'html',
-			selector: 'h1,h2,h3,h4,h5,h6,p',
+			selector: 'h1,h2,h3,h4,h5,h6,p,span,div',
 		},
 		level: {
 			type: 'number',

@@ -39,6 +39,7 @@ const {
 	TabPanel,
 	Dashicon,
 	PanelBody,
+	ToolbarGroup,
 	Toolbar,
 	ToggleControl,
 	SelectControl,
@@ -202,6 +203,7 @@ class TypographyControls extends Component {
 	}
 	render() {
 		const { tagLevel,
+			htmlTag = 'heading',
 			tagLowLevel = 1,
 			tagHighLevel = 7,
 			lineHeight,
@@ -221,6 +223,7 @@ class TypographyControls extends Component {
 			padding,
 			paddingControl,
 			onTagLevel,
+			onTagLevelHTML,
 			onLineHeight,
 			onFontSize,
 			onFontFamily,
@@ -245,8 +248,53 @@ class TypographyControls extends Component {
 			onTextTransform,
 			reLetterSpacing = false,
 			letterSpacingType = 'px',
+			otherTags = [],
 			onLetterSpacingType } = this.props;
 		const { controlSize, typographySelectOptions, typographyOptions, typographySubsets, typographyStyles, typographyWeights, fontFamilyValue } = this.state;
+		const createhtmlTagControl = ( targetLevel ) => {
+			return [ {
+				icon: <HeadingLevelIcon level={ targetLevel } isPressed={ ( 1 === tagLevel && htmlTag && htmlTag === 'heading' ? true : false ) } />,
+				title: sprintf(
+					/* translators: %d: heading level e.g: "1", "2", "3" */
+					__( 'Heading %d', 'kadence-blocks' ),
+					targetLevel
+					),
+				isActive: ( targetLevel === tagLevel && htmlTag && htmlTag === 'heading' ? true : false ),
+				onClick: () => onTagLevelHTML( targetLevel, 'heading' ),
+			} ];
+		};
+		const headingOptions = range( tagLowLevel, tagHighLevel ).map( createhtmlTagControl );
+		if ( otherTags.p ) {
+			headingOptions.push( [
+				{
+					icon: <HeadingLevelIcon level={ 'p' } isPressed={ ( htmlTag && htmlTag === 'p' ? true : false ) } />,
+					title: __( 'Paragraph', 'kadence-blocks' ),
+					isActive: ( htmlTag && htmlTag === 'p' ? true : false ),
+					onClick: () => onTagLevelHTML( 2, 'p' ),
+				},
+			] );
+		}
+		if ( otherTags.span ) {
+			headingOptions.push( [
+				{
+					icon: <HeadingLevelIcon level={ 'span' } isPressed={ ( htmlTag && htmlTag === 'span' ? true : false ) } />,
+					title: __( 'Span', 'kadence-blocks' ),
+					isActive: ( htmlTag && htmlTag === 'span' ? true : false ),
+					onClick: () => onTagLevelHTML( 2, 'span' ),
+				},
+			] );
+		}
+		if ( otherTags.div ) {
+			headingOptions.push( [
+				{
+					icon: <HeadingLevelIcon level={ 'div' } isPressed={ ( htmlTag && htmlTag === 'div' ? true : false ) } />,
+					title: __( 'Div', 'kadence-blocks' ),
+					isActive: ( htmlTag && htmlTag === 'div' ? true : false ),
+					onClick: () => onTagLevelHTML( 2, 'div' ),
+				},
+			] );
+		}
+
 		const onTypoFontChange = ( select ) => {
 			if ( select === null ) {
 				onTypoFontClear();
@@ -382,10 +430,28 @@ class TypographyControls extends Component {
 		return (
 			<Fragment>
 				{ onTagLevel && (
-					<div className="kb-tag-level-control">
-						<p>{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
-						<Toolbar controls={ range( tagLowLevel, tagHighLevel ).map( createLevelControl ) } />
-					</div>
+					<Fragment>
+						{ onTagLevelHTML && (
+							<div className="kb-tag-level-control components-base-control">
+								<p className="kb-component-label">{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
+								<ToolbarGroup
+									isCollapsed={ false }
+									label={ __( 'Change Heading Tag', 'kadence-blocks' ) }
+									controls={ headingOptions }
+								/>
+							</div>
+						) }
+						{ ! onTagLevelHTML && (
+							<div className="kb-tag-level-control">
+								<p>{ __( 'HTML Tag', 'kadence-blocks' ) }</p>
+								<ToolbarGroup
+									isCollapsed={ false }
+									label={ __( 'Change Heading Tag', 'kadence-blocks' ) }
+									controls={ range( tagLowLevel, tagHighLevel ).map( createLevelControl ) }
+								/>
+							</div>
+						) }
+					</Fragment>
 				) }
 				{ onFontSize && onFontSizeType && (
 					<ResponsiveRangeControls

@@ -29,9 +29,9 @@ import KadenceColorOutput from '../../components/color/kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import URLInputControl from '../../components/links/link-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
 import KadenceImageControl from '../../components/common/kadence-image-control';
-
 
 /**
  * Internal block libraries
@@ -49,16 +49,13 @@ const {
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
-	MediaPlaceholder,
 } = wp.blockEditor;
 const {
 	Button,
-	IconButton,
 	Dropdown,
 	ButtonGroup,
 	TabPanel,
 	Dashicon,
-	PanelBody,
 	Toolbar,
 	TextControl,
 	ToggleControl,
@@ -73,6 +70,7 @@ import {
 	starFilled,
 	plusCircleFilled,
 } from '@wordpress/icons';
+
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -217,6 +215,20 @@ class KadenceInfoBox extends Component {
 		const previewContainerPaddingRight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding &&  undefined !== containerPadding[1] ? containerPadding[1] : '' ), ( undefined !== containerTabletPadding &&  undefined !== containerTabletPadding[1] ? containerTabletPadding[1] : '' ), ( undefined !== containerMobilePadding &&  undefined !== containerMobilePadding[1] ? containerMobilePadding[1] : '' ) );
 		const previewContainerPaddingBottom = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding &&  undefined !== containerPadding[2] ? containerPadding[2] : '' ), ( undefined !== containerTabletPadding &&  undefined !== containerTabletPadding[2] ? containerTabletPadding[2] : '' ), ( undefined !== containerMobilePadding &&  undefined !== containerMobilePadding[2] ? containerMobilePadding[2] : '' ) );
 		const previewContainerPaddingLeft = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== containerPadding &&  undefined !== containerPadding[3] ? containerPadding[3] : '' ), ( undefined !== containerTabletPadding &&  undefined !== containerTabletPadding[3] ? containerTabletPadding[3] : '' ), ( undefined !== containerMobilePadding &&  undefined !== containerMobilePadding[3] ? containerMobilePadding[3] : '' ) );
+
+		const previewTitleFontSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleFont[0].size  &&  undefined !== titleFont[0].size[0] ? titleFont[0].size[0] : '' ), ( undefined !== titleFont[0].size &&  undefined !== titleFont[0].size[1] ? titleFont[0].size[1] : '' ), ( undefined !== titleFont[0].size &&  undefined !== titleFont[0].size[2] ? titleFont[0].size[2] : '' ) );
+		const previewTitleLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleFont[0].lineHeight  &&  undefined !== titleFont[0].lineHeight[0] ? titleFont[0].lineHeight[0] : '' ), ( undefined !== titleFont[0].lineHeight &&  undefined !== titleFont[0].lineHeight[1] ? titleFont[0].lineHeight[1] : '' ), ( undefined !== titleFont[0].lineHeight &&  undefined !== titleFont[0].lineHeight[2] ? titleFont[0].lineHeight[2] : '' ) );
+		const previewTitleMinHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== titleMinHeight && undefined !== titleMinHeight[0] ? titleMinHeight[0] : '' ), ( undefined !== titleMinHeight[1] &&  undefined !== titleMinHeight[1] ? titleMinHeight[1] : '' ), ( undefined !== titleMinHeight[2] &&  undefined !== titleMinHeight[2] ? titleMinHeight[2] : '' ) );
+
+		const previewTextFontSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== textFont[0].size  &&  undefined !== textFont[0].size[0] ? textFont[0].size[0] : '' ), ( undefined !== textFont[0].size &&  undefined !== textFont[0].size[1] ? textFont[0].size[1] : '' ), ( undefined !== textFont[0].size &&  undefined !== textFont[0].size[2] ? textFont[0].size[2] : '' ) );
+		const previewTextLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== textFont[0].lineHeight  &&  undefined !== textFont[0].lineHeight[0] ? textFont[0].lineHeight[0] : '' ), ( undefined !== textFont[0].lineHeight &&  undefined !== textFont[0].lineHeight[1] ? textFont[0].lineHeight[1] : '' ), ( undefined !== textFont[0].lineHeight &&  undefined !== textFont[0].lineHeight[2] ? textFont[0].lineHeight[2] : '' ) );
+		const previewTextMinHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== textMinHeight && undefined !== textMinHeight[0] ? textMinHeight[0] : '' ), ( undefined !== textMinHeight[1] &&  undefined !== textMinHeight[1] ? textMinHeight[1] : '' ), ( undefined !== textMinHeight[2] &&  undefined !== textMinHeight[2] ? textMinHeight[2] : '' ) );
+
+		const previewLearnMoreFontSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== learnMoreStyles[0].size  &&  undefined !== learnMoreStyles[0].size[0] ? learnMoreStyles[0].size[0] : '' ), ( undefined !== learnMoreStyles[0].size &&  undefined !== learnMoreStyles[0].size[1] ? learnMoreStyles[0].size[1] : '' ), ( undefined !== learnMoreStyles[0].size &&  undefined !== learnMoreStyles[0].size[2] ? learnMoreStyles[0].size[2] : '' ) );
+		const previewLearnMoreLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== learnMoreStyles[0].lineHeight  &&  undefined !== learnMoreStyles[0].lineHeight[0] ? learnMoreStyles[0].lineHeight[0] : '' ), ( undefined !== learnMoreStyles[0].lineHeight &&  undefined !== learnMoreStyles[0].lineHeight[1] ? learnMoreStyles[0].lineHeight[1] : '' ), ( undefined !== learnMoreStyles[0].lineHeight &&  undefined !== learnMoreStyles[0].lineHeight[2] ? learnMoreStyles[0].lineHeight[2] : '' ) );
+
+		const previewMediaIconSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== mediaIcon[0]  &&  undefined !== mediaIcon[0].size ? mediaIcon[0].size : '14' ), ( undefined !== mediaIcon[0].tabletSize &&  undefined !== mediaIcon[0].tabletSize ? mediaIcon[0].tabletSize : '' ), ( undefined !== mediaIcon[0].mobileSize &&  undefined !== mediaIcon[0].mobileSize ? mediaIcon[0].mobileSize : '' ) );
+
 		const widthTypes = [
 			{ key: 'px', name: 'px' },
 			{ key: '%', name: '%' },
@@ -1086,13 +1098,13 @@ class KadenceInfoBox extends Component {
 			const size = ( itemSize && '' !== itemSize ? itemSize : 'full' );
 			if ( size !== 'full' ) {
 				url =
-				get( media, [ 'sizes', size, 'url' ] ) ||
-				get( media, [
-					'media_details',
-					'sizes',
-					size,
-					'source_url',
-				] );
+					get( media, [ 'sizes', size, 'url' ] ) ||
+					get( media, [
+						'media_details',
+						'sizes',
+						size,
+						'source_url',
+					] );
 			}
 			const width = get( media, [ 'sizes', size, 'width' ] ) || get( media, [ 'media_details', 'sizes', size, 'width' ] ) || get( media, [ 'width' ] ) || get( media, [ 'media_details', 'width' ] );
 			const height = get( media, [ 'sizes', size, 'height' ] ) || get( media, [ 'media_details', 'sizes', size, 'height' ] ) || get( media, [ 'height' ] ) || get( media, [ 'media_details', 'height' ] );
@@ -1132,10 +1144,10 @@ class KadenceInfoBox extends Component {
 					'width',
 				] );
 			const height = get( media, [ 'height' ] ) ||
-			get( media, [
-				'media_details',
-				'height',
-			] );
+				get( media, [
+					'media_details',
+					'height',
+				] );
 			saveMediaImage( {
 				flipId: media.id,
 				flipUrl: media.url,
@@ -1297,7 +1309,7 @@ class KadenceInfoBox extends Component {
 		const mediaImagedraw = ( 'drawborder' === mediaImage[ 0 ].hoverAnimation || 'grayscale-border-draw' === mediaImage[ 0 ].hoverAnimation ? true : false );
 		const renderCSS = (
 			<style>
-				{ ( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${ KadenceColorOutput( mediaIcon[ 0 ].hoverColor ) } !important; }` : '' ) }
+				{ ( mediaIcon[ 0 ].hoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-info-svg-icon, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-number { color: ${ KadenceColorOutput( mediaIcon[ 0 ].hoverColor ) } !important; }` : '' ) }
 				{ ( mediaStyle[ 0 ].borderRadius ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) img, #kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap .kt-blocks-info-box-media .kadence-info-box-image-intrisic:not(.kb-info-box-image-ratio) .editor-media-placeholder { border-radius: ${ mediaStyle[ 0 ].borderRadius }px; }` : '' ) }
 				{ ( titleHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-title { color: ${ KadenceColorOutput( titleHoverColor ) } !important; }` : '' ) }
 				{ ( textHoverColor ? `#kt-info-box${ uniqueID } .kt-blocks-info-box-link-wrap:hover .kt-blocks-info-box-text { color: ${ KadenceColorOutput( textHoverColor ) } !important; }` : '' ) }
@@ -1440,7 +1452,7 @@ class KadenceInfoBox extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody>
+						<KadencePanelBody panelName={'kb-info-all-settings'}>
 							<Fragment>
 								<h2>{ __( 'InfoBox Quick Layout Presets', 'kadence-blocks' ) }</h2>
 								<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={ __( 'InfoBox Style', 'kadence-blocks' ) }>
@@ -1496,24 +1508,24 @@ class KadenceInfoBox extends Component {
 							/>
 							<h2 className="kt-heading-size-title">{ __( 'Content Align', 'kadence-blocks' ) }</h2>
 							<TabPanel className="kt-size-tabs kb-sidebar-alignment"
-								activeClass="active-tab"
-								tabs={ [
-									{
-										name: 'desk',
-										title: <Dashicon icon="desktop" />,
-										className: 'kt-desk-tab',
-									},
-									{
-										name: 'tablet',
-										title: <Dashicon icon="tablet" />,
-										className: 'kt-tablet-tab',
-									},
-									{
-										name: 'mobile',
-										title: <Dashicon icon="smartphone" />,
-										className: 'kt-mobile-tab',
-									},
-								] }>
+												activeClass="active-tab"
+												tabs={ [
+													{
+														name: 'desk',
+														title: <Dashicon icon="desktop" />,
+														className: 'kt-desk-tab',
+													},
+													{
+														name: 'tablet',
+														title: <Dashicon icon="tablet" />,
+														className: 'kt-tablet-tab',
+													},
+													{
+														name: 'mobile',
+														title: <Dashicon icon="smartphone" />,
+														className: 'kt-mobile-tab',
+													},
+												] }>
 								{
 									( tab ) => {
 										let tabout;
@@ -1548,11 +1560,12 @@ class KadenceInfoBox extends Component {
 									}
 								}
 							</TabPanel>
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'containerSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Container Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-container-settings' }
 							>
 								<MeasurementControls
 									label={ __( 'Container Border Width (px)', 'kadence-blocks' ) }
@@ -1573,19 +1586,19 @@ class KadenceInfoBox extends Component {
 									max={ 200 }
 								/>
 								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal', 'kadence-blocks' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover', 'kadence-blocks' ),
-											className: 'kt-hover-tab',
-										},
-									] }>
+													activeClass="active-tab"
+													tabs={ [
+														{
+															name: 'normal',
+															title: __( 'Normal', 'kadence-blocks' ),
+															className: 'kt-normal-tab',
+														},
+														{
+															name: 'hover',
+															title: __( 'Hover', 'kadence-blocks' ),
+															className: 'kt-hover-tab',
+														},
+													] }>
 									{
 										( tab ) => {
 											let tabout;
@@ -1716,32 +1729,33 @@ class KadenceInfoBox extends Component {
 									min={ 0 }
 									max={ widthMax }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'mediaSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Media Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-media-settings' }
 							>
 								<TabPanel className="kt-inspect-tabs kt-spacer-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'desk',
-											title: <Dashicon icon="desktop" />,
-											className: 'kt-desk-tab',
-										},
-										{
-											name: 'tablet',
-											title: <Dashicon icon="tablet" />,
-											className: 'kt-tablet-tab',
-										},
-										{
-											name: 'mobile',
-											title: <Dashicon icon="smartphone" />,
-											className: 'kt-mobile-tab',
-										},
-									] }>
+													activeClass="active-tab"
+													tabs={ [
+														{
+															name: 'desk',
+															title: <Dashicon icon="desktop" />,
+															className: 'kt-desk-tab',
+														},
+														{
+															name: 'tablet',
+															title: <Dashicon icon="tablet" />,
+															className: 'kt-tablet-tab',
+														},
+														{
+															name: 'mobile',
+															title: <Dashicon icon="smartphone" />,
+															className: 'kt-mobile-tab',
+														},
+													] }>
 									{
 										( tab ) => {
 											let tabout;
@@ -1946,19 +1960,19 @@ class KadenceInfoBox extends Component {
 											max={ 200 }
 										/>
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
+															activeClass="active-tab"
+															tabs={ [
+																{
+																	name: 'normal',
+																	title: __( 'Normal', 'kadence-blocks' ),
+																	className: 'kt-normal-tab',
+																},
+																{
+																	name: 'hover',
+																	title: __( 'Hover', 'kadence-blocks' ),
+																	className: 'kt-hover-tab',
+																},
+															] }>
 											{
 												( tab ) => {
 													let tabout;
@@ -2090,19 +2104,19 @@ class KadenceInfoBox extends Component {
 											/>
 										) }
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
+															activeClass="active-tab"
+															tabs={ [
+																{
+																	name: 'normal',
+																	title: __( 'Normal', 'kadence-blocks' ),
+																	className: 'kt-normal-tab',
+																},
+																{
+																	name: 'hover',
+																	title: __( 'Hover', 'kadence-blocks' ),
+																	className: 'kt-hover-tab',
+																},
+															] }>
 											{
 												( tab ) => {
 													let tabout;
@@ -2231,19 +2245,19 @@ class KadenceInfoBox extends Component {
 											onChange={ value => saveMediaNumber( { hoverAnimation: value } ) }
 										/>
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
+															activeClass="active-tab"
+															tabs={ [
+																{
+																	name: 'normal',
+																	title: __( 'Normal', 'kadence-blocks' ),
+																	className: 'kt-normal-tab',
+																},
+																{
+																	name: 'hover',
+																	title: __( 'Hover', 'kadence-blocks' ),
+																	className: 'kt-hover-tab',
+																},
+															] }>
 											{
 												( tab ) => {
 													let tabout;
@@ -2322,12 +2336,13 @@ class KadenceInfoBox extends Component {
 									max={ 200 }
 									step={ 1 }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'titleSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Title Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-title-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Show Title', 'kadence-blocks' ) }
@@ -2338,19 +2353,19 @@ class KadenceInfoBox extends Component {
 									<Fragment>
 										<h2 className="kt-tab-wrap-title">{ __( 'Color Settings', 'kadence-blocks' ) }</h2>
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
+															activeClass="active-tab"
+															tabs={ [
+																{
+																	name: 'normal',
+																	title: __( 'Normal', 'kadence-blocks' ),
+																	className: 'kt-normal-tab',
+																},
+																{
+																	name: 'hover',
+																	title: __( 'Hover', 'kadence-blocks' ),
+																	className: 'kt-hover-tab',
+																},
+															] }>
 											{
 												( tab ) => {
 													let tabout;
@@ -2427,24 +2442,24 @@ class KadenceInfoBox extends Component {
 										/>
 										<h2 className="kt-heading-size-title">{ __( 'Min Height', 'kadence-blocks' ) }</h2>
 										<TabPanel className="kt-size-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'desk',
-													title: <Dashicon icon="desktop" />,
-													className: 'kt-desk-tab',
-												},
-												{
-													name: 'tablet',
-													title: <Dashicon icon="tablet" />,
-													className: 'kt-tablet-tab',
-												},
-												{
-													name: 'mobile',
-													title: <Dashicon icon="smartphone" />,
-													className: 'kt-mobile-tab',
-												},
-											] }>
+															activeClass="active-tab"
+															tabs={ [
+																{
+																	name: 'desk',
+																	title: <Dashicon icon="desktop" />,
+																	className: 'kt-desk-tab',
+																},
+																{
+																	name: 'tablet',
+																	title: <Dashicon icon="tablet" />,
+																	className: 'kt-tablet-tab',
+																},
+																{
+																	name: 'mobile',
+																	title: <Dashicon icon="smartphone" />,
+																	className: 'kt-mobile-tab',
+																},
+															] }>
 											{
 												( tab ) => {
 													let tabout;
@@ -2487,12 +2502,13 @@ class KadenceInfoBox extends Component {
 										</TabPanel>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'textSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Text Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-text-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Show Text', 'kadence-blocks' ) }
@@ -2503,19 +2519,19 @@ class KadenceInfoBox extends Component {
 									<Fragment>
 										<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
+															activeClass="active-tab"
+															tabs={ [
+																{
+																	name: 'normal',
+																	title: __( 'Normal', 'kadence-blocks' ),
+																	className: 'kt-normal-tab',
+																},
+																{
+																	name: 'hover',
+																	title: __( 'Hover', 'kadence-blocks' ),
+																	className: 'kt-hover-tab',
+																},
+															] }>
 											{
 												( tab ) => {
 													let tabout;
@@ -2589,24 +2605,24 @@ class KadenceInfoBox extends Component {
 										/>
 										<h2 className="kt-heading-size-title">{ __( 'Min Height', 'kadence-blocks' ) }</h2>
 										<TabPanel className="kt-size-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'desk',
-													title: <Dashicon icon="desktop" />,
-													className: 'kt-desk-tab',
-												},
-												{
-													name: 'tablet',
-													title: <Dashicon icon="tablet" />,
-													className: 'kt-tablet-tab',
-												},
-												{
-													name: 'mobile',
-													title: <Dashicon icon="smartphone" />,
-													className: 'kt-mobile-tab',
-												},
-											] }>
+															activeClass="active-tab"
+															tabs={ [
+																{
+																	name: 'desk',
+																	title: <Dashicon icon="desktop" />,
+																	className: 'kt-desk-tab',
+																},
+																{
+																	name: 'tablet',
+																	title: <Dashicon icon="tablet" />,
+																	className: 'kt-tablet-tab',
+																},
+																{
+																	name: 'mobile',
+																	title: <Dashicon icon="smartphone" />,
+																	className: 'kt-mobile-tab',
+																},
+															] }>
 											{
 												( tab ) => {
 													let tabout;
@@ -2649,12 +2665,13 @@ class KadenceInfoBox extends Component {
 										</TabPanel>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'learnMoreSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Learn More Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-learn-more' }
 							>
 								<ToggleControl
 									label={ __( 'Show Learn More', 'kadence-blocks' ) }
@@ -2665,19 +2682,19 @@ class KadenceInfoBox extends Component {
 									<Fragment>
 										<h2 className="kt-tab-wrap-title">{ __( 'Color Settings', 'kadence-blocks' ) }</h2>
 										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
+															activeClass="active-tab"
+															tabs={ [
+																{
+																	name: 'normal',
+																	title: __( 'Normal', 'kadence-blocks' ),
+																	className: 'kt-normal-tab',
+																},
+																{
+																	name: 'hover',
+																	title: __( 'Hover', 'kadence-blocks' ),
+																	className: 'kt-hover-tab',
+																},
+															] }>
 											{
 												( tab ) => {
 													let tabout;
@@ -2795,12 +2812,13 @@ class KadenceInfoBox extends Component {
 										/>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'shadowSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Container Shadow', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-info-container-shadow' }
 							>
 								<ToggleControl
 									label={ __( 'Enable Shadow', 'kadence-blocks' ) }
@@ -2809,19 +2827,19 @@ class KadenceInfoBox extends Component {
 								/>
 								{ displayShadow && (
 									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-										activeClass="active-tab"
-										tabs={ [
-											{
-												name: 'normal',
-												title: __( 'Normal' ),
-												className: 'kt-normal-tab',
-											},
-											{
-												name: 'hover',
-												title: __( 'Hover' ),
-												className: 'kt-hover-tab',
-											},
-										] }>
+														activeClass="active-tab"
+														tabs={ [
+															{
+																name: 'normal',
+																title: __( 'Normal' ),
+																className: 'kt-normal-tab',
+															},
+															{
+																name: 'hover',
+																title: __( 'Hover' ),
+																className: 'kt-hover-tab',
+															},
+														] }>
 										{
 											( tab ) => {
 												let tabout;
@@ -2923,7 +2941,7 @@ class KadenceInfoBox extends Component {
 										}
 									</TabPanel>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 					</InspectorControls>
 				) }
@@ -3002,12 +3020,12 @@ class KadenceInfoBox extends Component {
 								{ 'icon' === mediaType && (
 									<div className={ `kadence-info-box-icon-container kt-info-icon-animate-${ mediaIcon[ 0 ].hoverAnimation }` } >
 										<div className={ 'kadence-info-box-icon-inner-container' } >
-											<IconRender className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+											<IconRender className={ `kt-info-svg-icon kt-info-svg-icon-${ mediaIcon[ 0 ].icon }` } name={ mediaIcon[ 0 ].icon } size={ previewMediaIconSize } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
 												display: 'block',
 												color: ( mediaIcon[ 0 ].color ? KadenceColorOutput( mediaIcon[ 0 ].color ) : undefined ),
 											} } />
 											{ mediaIcon[ 0 ].flipIcon && 'flip' === mediaIcon[ 0 ].hoverAnimation && (
-												<IconRender className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ ( ! mediaIcon[ 0 ].size ? '14' : mediaIcon[ 0 ].size ) } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
+												<IconRender className={ `kt-info-svg-icon-flip kt-info-svg-icon-${ mediaIcon[ 0 ].flipIcon }` } name={ mediaIcon[ 0 ].flipIcon } size={ previewMediaIconSize } htmltag="span" strokeWidth={ ( 'fe' === mediaIcon[ 0 ].flipIcon.substring( 0, 2 ) ? mediaIcon[ 0 ].width : undefined ) } style={ {
 													display: 'block',
 													color: ( mediaIcon[ 0 ].hoverColor ? KadenceColorOutput( mediaIcon[ 0 ].hoverColor ) : undefined ),
 												} } />
@@ -3061,13 +3079,13 @@ class KadenceInfoBox extends Component {
 									fontStyle: titleFont[ 0 ].style,
 									textTransform: titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined,
 									color: KadenceColorOutput( titleColor ),
-									fontSize: titleFont[ 0 ].size[ 0 ] + titleFont[ 0 ].sizeType,
-									lineHeight: ( titleFont[ 0 ].lineHeight && titleFont[ 0 ].lineHeight[ 0 ] ? titleFont[ 0 ].lineHeight[ 0 ] + titleFont[ 0 ].lineType : undefined ),
+									fontSize: previewTitleFontSize + titleFont[ 0 ].sizeType,
+									lineHeight: previewTitleLineHeight + titleFont[ 0 ].lineType,
 									letterSpacing: titleFont[ 0 ].letterSpacing + 'px',
 									fontFamily: ( titleFont[ 0 ].family ? titleFont[ 0 ].family : '' ),
 									padding: ( titleFont[ 0 ].padding ? titleFont[ 0 ].padding[ 0 ] + 'px ' + titleFont[ 0 ].padding[ 1 ] + 'px ' + titleFont[ 0 ].padding[ 2 ] + 'px ' + titleFont[ 0 ].padding[ 3 ] + 'px' : '' ),
 									margin: ( titleFont[ 0 ].margin ? titleFont[ 0 ].margin[ 0 ] + 'px ' + titleFont[ 0 ].margin[ 1 ] + 'px ' + titleFont[ 0 ].margin[ 2 ] + 'px ' + titleFont[ 0 ].margin[ 3 ] + 'px' : '' ),
-									minHeight: ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ? titleMinHeight[ 0 ] + 'px' : undefined ),
+									minHeight: previewTitleMinHeight + 'px',
 								} }
 								keepPlaceholderOnFocus
 							/>
@@ -3088,13 +3106,13 @@ class KadenceInfoBox extends Component {
 									fontWeight: textFont[ 0 ].weight,
 									fontStyle: textFont[ 0 ].style,
 									color: KadenceColorOutput( textColor ),
-									fontSize: textFont[ 0 ].size[ 0 ] + textFont[ 0 ].sizeType,
-									lineHeight: ( textFont[ 0 ].lineHeight && textFont[ 0 ].lineHeight[ 0 ] ? textFont[ 0 ].lineHeight[ 0 ] + textFont[ 0 ].lineType : undefined ),
+									fontSize: previewTextFontSize + textFont[ 0 ].sizeType,
+									lineHeight: previewTextLineHeight + textFont[ 0 ].lineType,
 									letterSpacing: textFont[ 0 ].letterSpacing + 'px',
 									fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
 									padding: ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].padding ? textSpacing[ 0 ].padding[ 0 ] + 'px ' + textSpacing[ 0 ].padding[ 1 ] + 'px ' + textSpacing[ 0 ].padding[ 2 ] + 'px ' + textSpacing[ 0 ].padding[ 3 ] + 'px' : '' ),
 									margin: ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].margin ? textSpacing[ 0 ].margin[ 0 ] + 'px ' + textSpacing[ 0 ].margin[ 1 ] + 'px ' + textSpacing[ 0 ].margin[ 2 ] + 'px ' + textSpacing[ 0 ].margin[ 3 ] + 'px' : '' ),
-									minHeight: ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ? textMinHeight[ 0 ] + 'px' : undefined ),
+									minHeight: previewTextMinHeight + 'px',
 								} }
 								keepPlaceholderOnFocus
 							/>
@@ -3121,8 +3139,8 @@ class KadenceInfoBox extends Component {
 										borderRadius: learnMoreStyles[ 0 ].borderRadius + 'px',
 										background: KadenceColorOutput( learnMoreStyles[ 0 ].background ),
 										borderColor: KadenceColorOutput( learnMoreStyles[ 0 ].border ),
-										fontSize: learnMoreStyles[ 0 ].size[ 0 ] + learnMoreStyles[ 0 ].sizeType,
-										lineHeight: ( learnMoreStyles[ 0 ].lineHeight && learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] + learnMoreStyles[ 0 ].lineType : undefined ),
+										fontSize: previewLearnMoreFontSize + learnMoreStyles[ 0 ].sizeType,
+										lineHeight:  previewLearnMoreLineHeight + learnMoreStyles[ 0 ].lineType,
 										letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
 										fontFamily: ( learnMoreStyles[ 0 ].family ? learnMoreStyles[ 0 ].family : '' ),
 										borderWidth: ( learnMoreStyles[ 0 ].borderWidth ? learnMoreStyles[ 0 ].borderWidth[ 0 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 1 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 2 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
@@ -3140,12 +3158,8 @@ class KadenceInfoBox extends Component {
 }
 export default compose( [
 	withSelect( ( select, ownProps ) => {
-		let __experimentalGetPreviewDeviceType = false;
-		if ( select( 'core/edit-post' ) ) {
-			__experimentalGetPreviewDeviceType = select( 'core/edit-post' ).__experimentalGetPreviewDeviceType;
-		}
 		return {
-			getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 		};
 	} ),
 ] )( KadenceInfoBox );

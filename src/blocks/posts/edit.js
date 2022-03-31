@@ -33,6 +33,7 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
+import KadencePanelBody from '../../components/KadencePanelBody'
 const { dateI18n, format, __experimentalGetSettings } = wp.date;
 const {
 	Component,
@@ -46,18 +47,11 @@ const {
 	InspectorAdvancedControls,
 } = wp.blockEditor;
 const {
-	Button,
-	ButtonGroup,
-	PanelBody,
-	Tooltip,
-	RangeControl,
 	TextControl,
 	Placeholder,
 	ToggleControl,
 	SelectControl,
 	RadioControl,
-	TabPanel,
-	Dashicon,
 	Spinner,
 } = wp.components;
 const { apiFetch } = wp;
@@ -207,7 +201,7 @@ class KadencePosts extends Component {
 		const settingspanel = (
 			<Fragment>
 				<InspectorControls>
-					<PanelBody>
+					<KadencePanelBody panelName={'kb-posts-settings'}>
 						<SelectControl
 							label={ __( 'Select Posts Type:', 'kadence-blocks' ) }
 							options={ postTypes }
@@ -392,10 +386,11 @@ class KadencePosts extends Component {
 							checked={ allowSticky }
 							onChange={ ( value ) => setAttributes( { allowSticky: value } ) }
 						/>
-					</PanelBody>
-					<PanelBody
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Layout Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-posts-layout-settings' }
 					>
 						<KadenceRange
 							label={ __( 'Columns', 'kadence-blocks' ) }
@@ -445,10 +440,11 @@ class KadencePosts extends Component {
 							value={ loopStyle }
 							onChange={ ( value ) => setAttributes( { loopStyle: value } ) }
 						/>
-					</PanelBody>
-					<PanelBody
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Image Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-posts-image-settings' }
 					>
 						<ToggleControl
 							label={ __( 'Enable Image', 'kadence-blocks' ) }
@@ -529,11 +525,12 @@ class KadencePosts extends Component {
 								/>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 					{ ( ! postType || postType === 'post' ) && (
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Category Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-posts-category-settings' }
 						>
 							<ToggleControl
 								label={ __( 'Enable Above Title Category', 'kadence-blocks' ) }
@@ -584,11 +581,12 @@ class KadencePosts extends Component {
 									) }
 								</Fragment>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 					) }
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Title Size', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-posts-title-settings' }
 					>
 						<TypographyControls
 							fontGroup={ 'post-title' }
@@ -609,10 +607,11 @@ class KadencePosts extends Component {
 							letterSpacingType={ titleFont[ 0 ].letterType }
 							onLetterSpacingType={ ( value ) => saveTitleFont( { letterType: value } ) }
 						/>
-					</PanelBody>
-					<PanelBody
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Meta Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-posts-meta-settings' }
 					>
 						<ToggleControl
 							label={ __( 'Enable Meta Info', 'kadence-blocks' ) }
@@ -730,10 +729,11 @@ class KadencePosts extends Component {
 								) }
 							</Fragment>
 						) }
-					</PanelBody>
-					<PanelBody
+					</KadencePanelBody>
+					<KadencePanelBody
 						title={ __( 'Content Settings', 'kadence-blocks' ) }
 						initialOpen={ false }
+						panelName={ 'kb-posts-content' }
 					>
 						<ToggleControl
 							label={ __( 'Enable Excerpt', 'kadence-blocks' ) }
@@ -766,7 +766,7 @@ class KadencePosts extends Component {
 								onChange={ ( value ) => setAttributes( { readmoreLabel: value } ) }
 							/>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 				</InspectorControls>
 			</Fragment>
 		);
@@ -778,7 +778,7 @@ class KadencePosts extends Component {
 						icon="admin-post"
 						label={ __( 'Posts', 'kadence-blocks' ) }
 					>
-						
+
 						<Spinner />
 					</Placeholder>
 				</Fragment>
@@ -792,7 +792,7 @@ class KadencePosts extends Component {
 						icon="admin-post"
 						label={ __( 'Posts', 'kadence-blocks' ) }
 					>
-						
+
 						{ ! Array.isArray( latestPosts ) ?
 							<Spinner /> :
 							__( 'No posts found.', 'kadence-blocks' ) }
@@ -1005,9 +1005,6 @@ class KadencePosts extends Component {
 export default withSelect( ( select, props ) => {
 	const { postsToShow, order, orderBy, categories, tags, postTax, postType, taxType, offsetQuery, excludeTax } = props.attributes;
 	const { getEntityRecords } = select( 'core' );
-	const {
-		__experimentalGetPreviewDeviceType = null,
-	} = select( 'core/edit-post' );
 	const theType = ( postType ? postType : 'post' );
 	const taxonomyList = ( taxonomies[ theType ] && taxonomies[ theType ].taxonomy ? taxonomies[ theType ].taxonomy : [] );
 	let taxonomyOptions = [];
@@ -1027,6 +1024,6 @@ export default withSelect( ( select, props ) => {
 	return {
 		taxList: taxonomyList,
 		taxOptions: taxonomyOptions,
-		getPreviewDevice: __experimentalGetPreviewDeviceType ? __experimentalGetPreviewDeviceType() : 'Desktop',
+		getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
 	};
 } )( KadencePosts );

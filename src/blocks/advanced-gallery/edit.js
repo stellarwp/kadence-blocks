@@ -14,6 +14,7 @@ import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
+import KadencePanelBody from '../../components/KadencePanelBody';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import Slider from 'react-slick';
 const {
@@ -32,7 +33,6 @@ const {
 	IconButton,
 	Button,
 	ButtonGroup,
-	PanelBody,
 	Tooltip,
 	RangeControl,
 	SelectControl,
@@ -42,7 +42,7 @@ const {
 	Dashicon,
 	withNotices,
 } = wp.components;
-import { 
+import {
 	BlockControls,
 	BlockIcon,
 	MediaPlaceholder,
@@ -735,7 +735,10 @@ class GalleryEdit extends Component {
 				{ controls }
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<PanelBody title={ __( 'Gallery Settings', 'kadence-blocks' ) }>
+						<KadencePanelBody
+							title={ __( 'Gallery Settings', 'kadence-blocks' ) }
+							panelName={ 'kb-gallery-settings' }
+						>
 							<h2>{ __( 'Gallery Type:' ) + ' ' + ( undefined !== typeLabel && undefined !== typeLabel[ 0 ] && typeLabel[ 0 ].label ? typeLabel[ 0 ].label : 'Masonry' ) }</h2>
 							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type', 'kadence-blocks' ) }>
 								{ map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
@@ -1153,13 +1156,14 @@ class GalleryEdit extends Component {
 									onChange={ this.changeImageThumbSize }
 								/>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 						{ type && ( type === 'carousel' || type === 'fluidcarousel' || type === 'slider' || type === 'thumbslider' ) && (
 							<Fragment>
 								{ this.showSettings( 'carouselSettings' ) && (
-									<PanelBody
+									<KadencePanelBody
 										title={ __( 'Carousel Settings', 'kadence-blocks' ) }
 										initialOpen={ false }
+										panelName={ 'kb-gallery-carousel-settings' }
 									>
 										<ToggleControl
 											label={ __( 'Carousel Auto Play', 'kadence-blocks' ) }
@@ -1257,13 +1261,14 @@ class GalleryEdit extends Component {
 												onChange={ ( value ) => setAttributes( { dotStyle: value } ) }
 											/>
 										) }
-									</PanelBody>
+									</KadencePanelBody>
 								) }
 							</Fragment>
 						) }
-						<PanelBody
+						<KadencePanelBody
 							title={ __( 'Link Settings', 'kadence-blocks' ) }
 							initialOpen={ false }
+							panelName={ 'kb-gallery-link-settings' }
 						>
 							<SelectControl
 								label={ __( 'Link To', 'kadence-blocks' ) }
@@ -1315,11 +1320,12 @@ class GalleryEdit extends Component {
 									) }
 								</Fragment>
 							) }
-						</PanelBody>
+						</KadencePanelBody>
 						{ this.showSettings( 'styleSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Image Style', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-gallery-image-style' }
 							>
 								{ ! ( type === 'carousel' && imageRatio === 'inherit' ) && ! ( type === 'slider' && imageRatio === 'inherit' ) && (
 									<MeasurementControls
@@ -1381,12 +1387,13 @@ class GalleryEdit extends Component {
 									value={ imageFilter }
 									onChange={ ( value ) => setAttributes( { imageFilter: value } ) }
 								/>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'captionSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Caption Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-gallery-caption-settings' }
 							>
 								<ToggleControl
 									label={ __( 'Show Captions', 'kadence-blocks' ) }
@@ -1476,12 +1483,13 @@ class GalleryEdit extends Component {
 										/>
 									</Fragment>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'shadowSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Image Shadow', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-gallery-image-shadow' }
 							>
 								<ToggleControl
 									label={ __( 'Enable Shadow', 'kadence-blocks' ) }
@@ -1604,12 +1612,13 @@ class GalleryEdit extends Component {
 										}
 									</TabPanel>
 								) }
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 						{ this.showSettings( 'spacingSettings' ) && (
-							<PanelBody
+							<KadencePanelBody
 								title={ __( 'Gallery Spacing', 'kadence-blocks' ) }
 								initialOpen={ false }
+								panelName={ 'kb-gallery-spacing' }
 							>
 								<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={ __( 'Margin Type', 'kadence-blocks' ) }>
 									{ map( marginTypes, ( { name, key } ) => (
@@ -1694,7 +1703,7 @@ class GalleryEdit extends Component {
 										}
 									}
 								</TabPanel>
-							</PanelBody>
+							</KadencePanelBody>
 						) }
 					</InspectorControls>
 				) }

@@ -211,7 +211,7 @@ class Kadence_Blocks_Countdown {
 				'minutesLabel' => ( isset( $attributes['minutesLabel'] ) && ! empty( $attributes['minutesLabel'] ) ? $attributes['minutesLabel'] : esc_attr__( 'Mins', 'kadence-blocks' ) ),
 				'secondsLabel' => ( isset( $attributes['secondsLabel'] ) && ! empty( $attributes['secondsLabel'] ) ? $attributes['secondsLabel'] : esc_attr__( 'Secs', 'kadence-blocks' ) ),
 			);
-			$style_id = 'kt-blocks' . esc_attr( $unique_id );
+			$style_id = 'kb-countdown' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_countdown_render_block_attributes', $attributes );

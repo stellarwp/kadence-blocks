@@ -176,7 +176,7 @@ class KadenceRowLayoutSave extends Component {
 				<div className="kb-bg-slide-contain">
 					<div className={ `kb-bg-slide kb-bg-slide-${ index }` } style={ {
 						backgroundColor: ( '' !== bgSlider[ index ].bgColor ? KadenceColorOutput( bgSlider[ index ].bgColor ) : undefined ),
-						backgroundImage: ( '' !== bgSlider[ index ].bgImg ? 'url("' + bgSlider[ index ].bgImg + '")' : undefined ),
+						backgroundImage: ( '' !== bgSlider[ index ].bgImg ? 'url(' + bgSlider[ index ].bgImg + ')' : undefined ),
 						backgroundSize: bgImgSize ? bgImgSize : undefined,
 						backgroundPosition: bgImgPosition ? bgImgPosition : undefined,
 						backgroundRepeat: bgImgRepeat ? bgImgRepeat : undefined,
