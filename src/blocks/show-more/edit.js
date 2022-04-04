@@ -15,9 +15,7 @@ import { useRef, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control'
-import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
 
 import { createElement } from '@wordpress/element'
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';

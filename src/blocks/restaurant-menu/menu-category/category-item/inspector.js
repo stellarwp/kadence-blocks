@@ -10,7 +10,7 @@ import map from 'lodash/map';
 /**
  * Internal dependencies
  */
-import AdvancedPopColorControl from '../../../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import TypographyControls from '../../../../components/typography/typography-control';
 import KadenceRange from '../../../../kadence-range-control';
 import MeasurementControls from '../../../../measurement-control';
@@ -174,20 +174,20 @@ class Inspector extends Component {
 										if ( 'hover' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Hover Background' ) }
-														colorValue={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
-														colorDefault={ '#f2f2f2' }
+														value={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
+														default={ '#f2f2f2' }
 														opacityValue={ containerHoverBackgroundOpacity }
-														onColorChange={ value => setAttributes( { containerHoverBackground: value } ) }
+														onChange={ value => setAttributes( { containerHoverBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
 													/>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Hover Border' ) }
-														colorValue={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
-														colorDefault={ '#eeeeee' }
+														value={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
+														default={ '#eeeeee' }
 														opacityValue={ containerHoverBorderOpacity }
-														onColorChange={ value => setAttributes( { containerHoverBorder: value } ) }
+														onChange={ value => setAttributes( { containerHoverBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -195,20 +195,20 @@ class Inspector extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Container Background' ) }
-														colorValue={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
-														colorDefault={ '#f2f2f2' }
+														value={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
+														default={ '#f2f2f2' }
 														opacityValue={ containerBackgroundOpacity }
-														onColorChange={ value => setAttributes( { containerBackground: value } ) }
+														onChange={ value => setAttributes( { containerBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 													/>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Container Border' ) }
-														colorValue={ ( containerBorder ? containerBorder : '#eeeeee' ) }
-														colorDefault={ '#eeeeee' }
+														value={ ( containerBorder ? containerBorder : '#eeeeee' ) }
+														default={ '#eeeeee' }
 														opacityValue={ containerBorderOpacity }
-														onColorChange={ value => setAttributes( { containerBorder: value } ) }
+														onChange={ value => setAttributes( { containerBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -265,20 +265,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Color' ) }
-															colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { titleHoverColor: value } ) }
+															value={ ( titleHoverColor ? titleHoverColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { titleHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Title Color' ) }
-															colorValue={ ( titleColor ? titleColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { titleColor: value } ) }
+															value={ ( titleColor ? titleColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { titleColor: value } ) }
 														/>
 													);
 												}
@@ -430,20 +430,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Color' ) }
-															colorValue={ ( textHoverColor ? textHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { textHoverColor: value } ) }
+															value={ ( textHoverColor ? textHoverColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { textHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Title Color' ) }
-															colorValue={ ( textColor ? textColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { textColor: value } ) }
+															value={ ( textColor ? textColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { textColor: value } ) }
 														/>
 													);
 												}
@@ -595,20 +595,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Color' ) }
-															colorValue={ ( priceHoverColor ? priceHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { priceHoverColor: value } ) }
+															value={ ( priceHoverColor ? priceHoverColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { priceHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Title Color' ) }
-															colorValue={ ( priceColor ? priceColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { priceColor: value } ) }
+															value={ ( priceColor ? priceColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { priceColor: value } ) }
 														/>
 													);
 												}

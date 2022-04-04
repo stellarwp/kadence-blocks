@@ -736,25 +736,13 @@
       "oF" : 0,
       "pg" : 0
     },
-    "\/dist\/build\/blocks-min.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/dist\/build\/blocks-min-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
     "\/dist\/build\/blocks.asset.php" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/dist\/build\/blocks.asset.php",
-      "oF" : 0
+      "oF" : 1
     },
     "\/dist\/build\/blocks.css" : {
       "aP" : 1,
@@ -763,18 +751,18 @@
       "co" : 0,
       "ft" : 16,
       "ma" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/dist\/build\/blocks-min.css",
-      "oF" : 0,
+      "oF" : 1,
       "pg" : 0
     },
     "\/dist\/build\/blocks.css.map" : {
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/dist\/build\/blocks.css.map",
-      "oF" : 0
+      "oF" : 1
     },
     "\/dist\/build\/blocks.js" : {
       "bF" : 0,
@@ -783,7 +771,7 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 0,
+      "oF" : 1,
       "sC" : 0,
       "tS" : 0
     },
@@ -791,9 +779,9 @@
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/dist\/build\/blocks.js.map",
-      "oF" : 0
+      "oF" : 1
     },
     "\/dist\/build\/vendors\/blocks.js" : {
       "bF" : 0,
@@ -802,7 +790,7 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
-      "oF" : 0,
+      "oF" : 1,
       "sC" : 0,
       "tS" : 0
     },
@@ -810,9 +798,9 @@
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/dist\/build\/vendors\/blocks.js.map",
-      "oF" : 0
+      "oF" : 1
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -2123,9 +2111,9 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/src\/blocks\/count-up\/editor.css",
-      "oF" : 0,
+      "oF" : 1,
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
@@ -2506,6 +2494,17 @@
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
+    },
+    "\/src\/blocks\/icon-list\/moveItem.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/icon-list\/moveItem-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
     },
     "\/src\/blocks\/icon-list\/style.scss" : {
       "aP" : 1,
@@ -3169,9 +3168,9 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/src\/blocks\/restaurant-menu\/editor.css",
-      "oF" : 0,
+      "oF" : 1,
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
@@ -3253,21 +3252,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/editor.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/editor.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
-    },
     "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/inspector.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3289,21 +3273,6 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
-    },
-    "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/style.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/style.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
     },
     "\/src\/blocks\/restaurant-menu\/menu-category\/controls.js" : {
       "bF" : 0,
@@ -3327,21 +3296,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/restaurant-menu\/menu-category\/editor.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/restaurant-menu\/menu-category\/editor.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
-    },
     "\/src\/blocks\/restaurant-menu\/menu-category\/inspector.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3363,21 +3317,6 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
-    },
-    "\/src\/blocks\/restaurant-menu\/menu-category\/style.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/restaurant-menu\/menu-category\/style.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
     },
     "\/src\/blocks\/restaurant-menu\/save.js" : {
       "bF" : 0,
@@ -3579,18 +3518,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/show-more\/editor.css" : {
-      "aP" : 1,
-      "bl" : 0,
-      "ci" : 0,
-      "co" : 0,
-      "ft" : 16,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/show-more\/editor-min.css",
-      "oF" : 0,
-      "pg" : 0
-    },
     "\/src\/blocks\/show-more\/editor.scss" : {
       "aP" : 0,
       "bl" : 0,
@@ -3599,9 +3526,9 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/src\/blocks\/show-more\/editor.css",
-      "oF" : 0,
+      "oF" : 1,
       "oS" : 0,
       "pg" : 0,
       "sct" : 1

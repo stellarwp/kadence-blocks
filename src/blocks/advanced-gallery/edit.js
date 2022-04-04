@@ -15,10 +15,10 @@ import MeasurementControls from '../../measurement-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
 import KadencePanelBody from '../../components/KadencePanelBody';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
 import DynamicGalleryControl from '../../components/common/dynamic-gallery-control';
 import DynamicLinkControl from '../../components/links/dynamic-link-control';
 import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
+import PopColorControl from '../../components/color/pop-color-control';
 import Slider from 'react-slick';
 const {
 	applyFilters,
@@ -63,7 +63,7 @@ import { withSelect } from '@wordpress/data';
  */
 import GalleryImage from './gallery-image';
 import icon from './icons';
-import { pickRelevantMediaFiles, pickRelevantMediaFilesUpdate } from './shared';
+import { getRelevantMediaFiles } from './shared';
 import {
 	image,
 	closeSmall,
@@ -214,10 +214,11 @@ class GalleryEdit extends Component {
 		};
 	}
 
-	onSelectImages( imgs ) {
+	async onSelectImages( imgs ) {
 		const { lightSize, thumbSize, images } = this.props.attributes;
+		const updatingImages = await getRelevantMediaFiles( imgs, lightSize, thumbSize, images );
 		this.setAttributes( {
-			images: imgs.map( ( image ) => pickRelevantMediaFiles( image, lightSize, thumbSize, images ) ),
+			images: updatingImages,
 		} );
 	}
 
@@ -227,30 +228,33 @@ class GalleryEdit extends Component {
 		noticeOperations.createErrorNotice( message );
 	}
 
-	setCaptions( value ) {
+	async setCaptions( value ) {
 		this.setAttributes( { showCaption: value } );
 		if ( value ) {
 			const { lightSize, thumbSize, images } = this.props.attributes;
 			if ( images ) {
+				const updatingImages = await getRelevantMediaFiles( images, lightSize, thumbSize );
 				this.setAttributes( {
-					images: images.map( ( image ) => pickRelevantMediaFilesUpdate( image, lightSize, thumbSize ) ),
+					images: updatingImages,
 				} );
 			}
 		}
 	}
 
-	changeImageThumbSize( img ) {
+	async changeImageThumbSize( img ) {
 		const { lightSize, images } = this.props.attributes;
 		this.setAttributes( { thumbSize: img.slug } );
+		const updatingImages = await getRelevantMediaFiles( images, lightSize, img.slug );
 		this.setAttributes( {
-			images: images.map( ( image ) => pickRelevantMediaFilesUpdate( image, lightSize, img.slug ) ),
+			images: updatingImages,
 		} );
 	}
-	changeImageLightSize( img ) {
+	async changeImageLightSize( img ) {
 		const { thumbSize, images } = this.props.attributes;
 		this.setAttributes( { lightSize: img.slug } );
+		const updatingImages = await getRelevantMediaFiles( images, img.slug, thumbSize );
 		this.setAttributes( {
-			images: images.map( ( image ) => pickRelevantMediaFilesUpdate( image, img.slug, thumbSize ) ),
+			images: updatingImages,
 		} );
 	}
 
@@ -1327,17 +1331,17 @@ class GalleryEdit extends Component {
 												onChange={ value => setAttributes( { mobileForceHover: value } ) }
 											/>
 										) }
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'Caption Color', 'kadence-blocks' ) }
-											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
-											colorDefault={ '' }
-											onColorChange={ value => saveCaptionFont( { color: value } ) }
+											value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
+											default={ '' }
+											onChange={ value => saveCaptionFont( { color: value } ) }
 										/>
-										<AdvancedPopColorControl
+										<PopColorControl
 											label={ __( 'Caption Background', 'kadence-blocks' ) }
-											colorValue={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
-											colorDefault={ '#000000' }
-											onColorChange={ value => saveCaptionFont( { background: value } ) }
+											value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
+											default={ '#000000' }
+											onChange={ value => saveCaptionFont( { background: value } ) }
 											opacityValue={ ( captionStyles && captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) }
 											onOpacityChange={ value => saveCaptionFont( { backgroundOpacity: value } ) }
 										/>
@@ -1413,11 +1417,11 @@ class GalleryEdit extends Component {
 													if ( 'hover' === tab.name ) {
 														tabout = (
 															<Fragment>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Shadow Color', 'kadence-blocks' ) }
-																	colorValue={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => saveShadowHover( { color: value } ) }
+																	value={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
+																	default={ '' }
+																	onChange={ value => saveShadowHover( { color: value } ) }
 																	opacityValue={ shadowHover[ 0 ].opacity }
 																	onOpacityChange={ value => saveShadowHover( { opacity: value } ) }
 																/>
@@ -1458,11 +1462,11 @@ class GalleryEdit extends Component {
 													} else {
 														tabout = (
 															<Fragment>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Shadow Color', 'kadence-blocks' ) }
-																	colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => saveShadow( { color: value } ) }
+																	value={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
+																	default={ '' }
+																	onChange={ value => saveShadow( { color: value } ) }
 																	opacityValue={ shadow[ 0 ].opacity }
 																	onOpacityChange={ value => saveShadow( { opacity: value } ) }
 																/>

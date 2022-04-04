@@ -14,8 +14,8 @@ import edit from './edit';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+//import './style.scss';
+//import './editor.scss';
 
 /**
  * Internal block libraries
@@ -84,6 +84,7 @@ registerBlockType( 'kadence/iconlist', {
 				padding: 5,
 				borderWidth: 1,
 				style: 'default',
+				level: 0
 			} ],
 		},
 		listStyles: {
@@ -171,6 +172,7 @@ registerBlockType( 'kadence/iconlist', {
 						padding: 5,
 						borderWidth: 1,
 						style: 'default',
+						level: 0
 					} ];
 					const amount = Math.abs( listArray.length );
 					{ times( amount, n => {
@@ -189,6 +191,7 @@ registerBlockType( 'kadence/iconlist', {
 								padding: 5,
 								borderWidth: 1,
 								style: 'default',
+								level: 0
 							} );
 						}
 					} ); }
@@ -227,7 +230,7 @@ registerBlockType( 'kadence/iconlist', {
 		const { attributes: { items, listCount, columns, blockAlignment, iconAlign, uniqueID, tabletColumns, mobileColumns } } = props;
 		const renderItems = ( index ) => {
 			return (
-				<li className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index }` }>
+				<li className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index } kt-svg-icon-list-level-${ items[index].level }` }>
 					{ items[ index ].link && (
 						<a href={ items[ index ].link } className={ 'kt-svg-icon-link' } target={ ( '_blank' === items[ index ].target ? items[ index ].target : undefined ) } rel={ '_blank' === items[ index ].target ? 'noopener noreferrer' : undefined }>
 							{ items[ index ].icon && (

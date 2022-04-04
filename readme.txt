@@ -82,11 +82,19 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 2.3.1 =
-Release Date: March 7th, 2022
+Release Date: April 4th, 2022
+** Add: Show More Block.
+** Add: 
 * Add: Option for Author link in post block.
 * Add: Option to dynamically source a gallery.
 * Add: Option to set a custom gallery image link to sponsored.
+** Add: Tablet and Mobile Max width settings for image block.
 * Update: Parallax for ipad pro.
+* Fix: Gallery thumbnail size possibly reverting to full when adding new images.
+** Fix: Issue with some lottie files not saving correctly.
+** Fix: Issue with lottie render not setting the correct aria role.
+** Fix: Issue with advanced image block not rendering correclty in flex area.
+** Fix: CSS specificity issue with divider block.
 
 = 2.3.0 =
 Release Date: March 7th, 2022

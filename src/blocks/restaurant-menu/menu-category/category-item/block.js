@@ -14,10 +14,6 @@ import save from './save';
  */
 import classnames from 'classnames';
 
-/**
- * Import Css
- */
-import './editor.scss';
 
 /**
  * Internal block libraries

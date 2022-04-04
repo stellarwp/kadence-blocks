@@ -1,4 +1,4 @@
-import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
+import PopColorControl from '../../components/color/pop-color-control';
 const {
 	Component,
 	Fragment,
@@ -171,12 +171,12 @@ class KadenceSpacerDefault extends Component {
 										{ value: 'dotted', label: __( 'Dotted' ) },
 									] }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Divider Color' ) }
-									colorValue={ ( spacerConfig.dividerColor ? spacerConfig.dividerColor : '#eeeeee' ) }
-									colorDefault={ '#eeeeee' }
+									value={ ( spacerConfig.dividerColor ? spacerConfig.dividerColor : '#eeeeee' ) }
+									default={ '#eeeeee' }
 									opacityValue={ ( spacerConfig.dividerOpacity ? spacerConfig.dividerOpacity : 100 ) }
-									onColorChange={ value => this.saveConfigState( 'dividerColor', value ) }
+									onChange={ value => this.saveConfigState( 'dividerColor', value ) }
 									onOpacityChange={ value => this.saveConfigState( 'dividerOpacity', value ) }
 									opacityUnit={ 100 }
 								/>

@@ -14,7 +14,7 @@ import times from 'lodash/times';
 import map from 'lodash/map';
 import IconControl from '../../components/icons/icon-control';
 import IconRender from '../../components/icons/icon-render';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import StepControl from '../../step-control';
 import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
@@ -203,11 +203,11 @@ class KadenceIcons extends Component {
 		const hoverSettings = ( index ) => {
 			return (
 				<Fragment>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Icon Hover Color', 'kadence-blocks' ) }
-						colorValue={ ( icons[ index ].hColor ? icons[ index ].hColor : '' ) }
-						colorDefault={ '' }
-						onColorChange={ value => {
+						value={ ( icons[ index ].hColor ? icons[ index ].hColor : '' ) }
+						default={ '' }
+						onChange={ value => {
 							this.saveArrayUpdate( { hColor: value }, index );
 						} }
 					/>
@@ -224,11 +224,11 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Hover Background Color', 'kadence-blocks' ) }
-								colorValue={ ( icons[ index ].hBackground ? icons[ index ].hBackground : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( icons[ index ].hBackground ? icons[ index ].hBackground : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveArrayUpdate( { hBackground: value }, index );
 								} }
 							/>
@@ -236,11 +236,11 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Hover Border Color', 'kadence-blocks' ) }
-								colorValue={ ( icons[ index ].hBorder ? icons[ index ].hBorder : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( icons[ index ].hBorder ? icons[ index ].hBorder : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveArrayUpdate( { hBorder: value }, index );
 								} }
 							/>
@@ -252,11 +252,11 @@ class KadenceIcons extends Component {
 		const normalSettings = ( index ) => {
 			return (
 				<Fragment>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Icon Color', 'kadence-blocks' ) }
-						colorValue={ ( icons[ index ].color ? icons[ index ].color : '' ) }
-						colorDefault={ '' }
-						onColorChange={ value => {
+						value={ ( icons[ index ].color ? icons[ index ].color : '' ) }
+						default={ '' }
+						onChange={ value => {
 							this.saveArrayUpdate( { color: value }, index );
 						} }
 					/>
@@ -273,11 +273,11 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'background Color', 'kadence-blocks' ) }
-								colorValue={ ( icons[ index ].background ? icons[ index ].background : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( icons[ index ].background ? icons[ index ].background : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveArrayUpdate( { background: value }, index );
 								} }
 							/>
@@ -285,11 +285,11 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Border Color', 'kadence-blocks' ) }
-								colorValue={ ( icons[ index ].border ? icons[ index ].border : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( icons[ index ].border ? icons[ index ].border : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveArrayUpdate( { border: value }, index );
 								} }
 							/>

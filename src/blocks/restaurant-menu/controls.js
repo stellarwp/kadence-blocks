@@ -25,14 +25,6 @@ class Controls extends Component {
 
 		const toolbarControls = [
 			{
-				icon: 'align-full-width',
-				title: __( 'Full Width' ),
-				isActive: fullWidth,
-				onClick: () => {
-					setAttributes({ fullWidth: fullWidth ? false : true })
-				}
-			},
-			{
 				icon: 'plus',
 				title: __( 'Add New Menu' ),
 				isActive: false,
