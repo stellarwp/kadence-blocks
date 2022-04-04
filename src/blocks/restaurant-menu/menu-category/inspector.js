@@ -10,7 +10,7 @@ import map from 'lodash/map';
 /**
  * Internal dependencies
  */
-import AdvancedPopColorControl from '../../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import TypographyControls from '../../components/typography/typography-control';
 import KadenceRange from '../../../kadence-range-control';
 import KadencePanelBody from '../../../components/KadencePanelBody';
@@ -286,20 +286,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Color' ) }
-															colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { titleHoverColor: value } ) }
+															value={ ( titleHoverColor ? titleHoverColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { titleHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Title Color' ) }
-															colorValue={ ( titleColor ? titleColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { titleColor: value } ) }
+															value={ ( titleColor ? titleColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { titleColor: value } ) }
 														/>
 													);
 												}

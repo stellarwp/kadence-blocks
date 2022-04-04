@@ -1,6 +1,6 @@
 import map from 'lodash/map';
 import MeasurementControls from '../../components/measurement/measurement-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
+import PopColorControl from '../../components/color/pop-color-control';
 /**
  * Internal block libraries
  */
@@ -364,21 +364,21 @@ class KadenceColumnDefault extends Component {
 							initialOpen={ true }
 						>
 							<div className="components-base-control">
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Background Color', 'kadence-blocks' ) }
-									colorValue={ ( undefined !== columnConfig.background ? columnConfig.background : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => this.saveConfigState( 'background', value ) }
+									value={ ( undefined !== columnConfig.background ? columnConfig.background : '' ) }
+									default={ '' }
+									onChange={ value => this.saveConfigState( 'background', value ) }
 									opacityValue={ ( undefined !== columnConfig.backgroundOpacity ? columnConfig.backgroundOpacity : 1 ) }
 									onOpacityChange={ value => this.saveConfigState( 'backgroundOpacity', value ) }
 								/>
 							</div>
 							<div className="components-base-control">
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Border Color', 'kadence-blocks' ) }
-									colorValue={ ( undefined !== columnConfig.border ? columnConfig.border : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => this.saveConfigState( 'border', value ) }
+									value={ ( undefined !== columnConfig.border ? columnConfig.border : '' ) }
+									default={ '' }
+									onChange={ value => this.saveConfigState( 'border', value ) }
 									opacityValue={ ( undefined !== columnConfig.borderOpacity ? columnConfig.borderOpacity : 1 ) }
 									onOpacityChange={ value => this.saveConfigState( 'borderOpacity', value ) }
 								/>
@@ -423,27 +423,27 @@ class KadenceColumnDefault extends Component {
 								initialOpen={ false }
 							>
 								<div className="components-base-control">
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Text Color', 'kadence-blocks' ) }
-										colorValue={ ( columnConfig.textColor ? columnConfig.textColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => this.saveConfigState( 'textColor', value ) }
+										value={ ( columnConfig.textColor ? columnConfig.textColor : '' ) }
+										default={ '' }
+										onChange={ value => this.saveConfigState( 'textColor', value ) }
 									/>
 								</div>
 								<div className="components-base-control">
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Link Color', 'kadence-blocks' ) }
-										colorValue={ ( columnConfig.linkColor ? columnConfig.linkColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => this.saveConfigState( 'linkColor', value ) }
+										value={ ( columnConfig.linkColor ? columnConfig.linkColor : '' ) }
+										default={ '' }
+										onChange={ value => this.saveConfigState( 'linkColor', value ) }
 									/>
 								</div>
 								<div className="components-base-control">
-									<AdvancedPopColorControl
+									<PopColorControl
 										label={ __( 'Link Hover Color', 'kadence-blocks' ) }
-										colorValue={ ( columnConfig.linkHoverColor ? columnConfig.linkHoverColor : '' ) }
-										colorDefault={ '' }
-										onColorChange={ value => this.saveConfigState( 'linkHoverColor', value ) }
+										value={ ( columnConfig.linkHoverColor ? columnConfig.linkHoverColor : '' ) }
+										default={ '' }
+										onChange={ value => this.saveConfigState( 'linkHoverColor', value ) }
 									/>
 								</div>
 							</PanelBody>

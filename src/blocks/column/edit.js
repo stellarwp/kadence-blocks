@@ -16,7 +16,7 @@ import MeasurementControls from '../../measurement-control';
 import BoxShadowControl from '../../components/common/box-shadow-control';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import KadenceBackgroundControl from '../../components/background/background-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import KadenceRange from '../../components/range/range-control';
@@ -390,11 +390,11 @@ class KadenceColumn extends Component {
 												if ( 'hover' === tab.name ) {
 													tabout = (
 														<Fragment>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Background Color', 'kadence-blocks' ) }
-																colorValue={ ( backgroundHover ? backgroundHover : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => setAttributes( { backgroundHover: value } ) }
+																value={ ( backgroundHover ? backgroundHover : '' ) }
+																default={ '' }
+																onChange={ value => setAttributes( { backgroundHover: value } ) }
 															/>
 															<KadenceBackgroundControl
 																label={ __( 'Background Image', 'kadence-blocks' ) }
@@ -428,11 +428,11 @@ class KadenceColumn extends Component {
 																dynamicAttribute="backgroundImgHover:0:bgImg"
 																{ ...this.props }
 															/>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Border Color', 'kadence-blocks' ) }
-																colorValue={ ( borderHover ? borderHover : '' ) }
-																colorDefault={ '' }
-																onColorChange={ value => setAttributes( { borderHover: value } ) }
+																value={ ( borderHover ? borderHover : '' ) }
+																default={ '' }
+																onChange={ value => setAttributes( { borderHover: value } ) }
 															/>
 															<ResponsiveMeasuremenuControls
 																label={ __( 'Border Width', 'kadence-blocks' ) }
@@ -516,12 +516,12 @@ class KadenceColumn extends Component {
 												} else {
 													tabout = (
 														<Fragment>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Background Color', 'kadence-blocks' ) }
-																colorValue={ ( background ? background : '' ) }
-																colorDefault={ '' }
+																value={ ( background ? background : '' ) }
+																default={ '' }
 																opacityValue={ backgroundOpacity }
-																onColorChange={ value => setAttributes( { background: value } ) }
+																onChange={ value => setAttributes( { background: value } ) }
 																onOpacityChange={ value => setAttributes( { backgroundOpacity: value } ) }
 															/>
 															<KadenceBackgroundControl
@@ -556,12 +556,12 @@ class KadenceColumn extends Component {
 																dynamicAttribute="backgroundImg:0:bgImg"
 																{ ...this.props }
 															/>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Border Color', 'kadence-blocks' ) }
-																colorValue={ ( border ? border : '' ) }
-																colorDefault={ '' }
+																value={ ( border ? border : '' ) }
+																default={ '' }
 																opacityValue={ borderOpacity }
-																onColorChange={ value => setAttributes( { border: value } ) }
+																onChange={ value => setAttributes( { border: value } ) }
 																onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
 															/>
 															<ResponsiveMeasuremenuControls
@@ -825,46 +825,46 @@ class KadenceColumn extends Component {
 													if ( 'hover' === tab.name ) {
 														tabout = (
 															<Fragment>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Text Color', 'kadence-blocks' ) }
-																	colorValue={ ( textColorHover ? textColorHover : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { textColorHover: value } ) }
+																	value={ ( textColorHover ? textColorHover : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { textColorHover: value } ) }
 																/>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Text Link Color', 'kadence-blocks' ) }
-																	colorValue={ ( linkColorHover ? linkColorHover : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { linkColorHover: value } ) }
+																	value={ ( linkColorHover ? linkColorHover : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { linkColorHover: value } ) }
 																/>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Text Link Hover Color', 'kadence-blocks' ) }
-																	colorValue={ ( linkHoverColorHover ? linkHoverColorHover : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { linkHoverColorHover: value } ) }
+																	value={ ( linkHoverColorHover ? linkHoverColorHover : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { linkHoverColorHover: value } ) }
 																/>
 															</Fragment>
 														);
 													} else {
 														tabout = (
 															<Fragment>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Text Color', 'kadence-blocks' ) }
-																	colorValue={ ( textColor ? textColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { textColor: value } ) }
+																	value={ ( textColor ? textColor : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { textColor: value } ) }
 																/>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Text Link Color', 'kadence-blocks' ) }
-																	colorValue={ ( linkColor ? linkColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { linkColor: value } ) }
+																	value={ ( linkColor ? linkColor : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { linkColor: value } ) }
 																/>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Text Link Hover Color', 'kadence-blocks' ) }
-																	colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
+																	value={ ( linkHoverColor ? linkHoverColor : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { linkHoverColor: value } ) }
 																/>
 															</Fragment>
 														);
