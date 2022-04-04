@@ -4,8 +4,11 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .kadence-radio-container-control {
+
+.kadence-radio-container-control {
     display: flex;
+    position: relative;
+    z-index: 0;
 }
 // Core Should fix this.
 .block-editor-media-placeholder__url-input-form input[type=url].block-editor-media-placeholder__url-input-field {

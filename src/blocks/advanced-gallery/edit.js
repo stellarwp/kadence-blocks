@@ -1620,19 +1620,39 @@ class GalleryEdit extends Component {
 		);
 		const mediaPlaceholder = ( 
 			<KadenceMediaPlaceholder
-					labels={ {
-						title: title,
-						instructions: instructions,
-					} }
-					selectIcon={ plusCircleFilled }
-					selectLabel={ __( 'Select Images', 'kadence-blocks' ) }
-					onSelect={ this.onSelectImages }
-					accept="image/*"
-					multiple
-					className={ 'kadence-image-upload' }
-					allowedTypes={ ALLOWED_MEDIA_TYPES }
-					dynamicControl={ ( kadence_blocks_params.dynamic_enabled ? <DynamicGalleryControl dynamicAttribute='images' { ...this.props }/> : undefined ) }
-				/>
+				labels={ {
+					title: title,
+					instructions: instructions,
+				} }
+				selectIcon={ plusCircleFilled }
+				selectLabel={ __( 'Select Images', 'kadence-blocks' ) }
+				onSelect={ this.onSelectImages }
+				accept="image/*"
+				multiple
+				className={ 'kadence-image-upload' }
+				allowedTypes={ ALLOWED_MEDIA_TYPES }
+				dynamicControl={ ( kadence_blocks_params.dynamic_enabled ? <DynamicGalleryControl dynamicAttribute='images' { ...this.props }/> : undefined ) }
+			/>
+		);
+		const addMediaPlaceholder = (
+			<MediaPlaceholder
+				addToGallery={ hasImages }
+				isAppender={ hasImages }
+				className={ className }
+				dropZoneUIOnly={ hasImages && ! isSelected }
+				icon={ ! hasImages && <BlockIcon icon={ icon } /> }
+				labels={ {
+					title: ! hasImages && __( 'Gallery', 'kadence-blocks' ),
+					instructions: ! hasImages && __( 'Drag images, upload new ones or select files from your library.', 'kadence-blocks' ),
+				} }
+				onSelect={ this.onSelectImages }
+				accept="image/*"
+				allowedTypes={ ALLOWED_MEDIA_TYPES }
+				multiple
+				value={ hasImages ? images : undefined }
+				onError={ this.onUploadError }
+				notices={ hasImages ? undefined : noticeUI }
+			/>
 		);
 		const buildCSS = (
 			<style>
@@ -1890,7 +1910,7 @@ class GalleryEdit extends Component {
 					</ul>
 				) }
 				{ isSelected && ! dynamicSource && (
-					mediaPlaceholder
+					addMediaPlaceholder
 				) }
 			</div>
 		);
