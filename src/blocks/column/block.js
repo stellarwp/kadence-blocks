@@ -38,7 +38,7 @@ registerBlockType( 'kadence/column', {
 	description: __( 'An inner section of content.', 'kadence-blocks' ),
 	category: 'kadence-blocks',
 	icon: icons.section,
-	parent: [ 'kadence/rowlayout' ],
+	//parent: [ 'kadence/rowlayout' ],
 	keywords: [
 		'kb',
 		/* translators: block keyword */
@@ -47,9 +47,9 @@ registerBlockType( 'kadence/column', {
 		__( 'section', 'kadence-blocks' ),
 	],
 	supports: {
-		inserter: false,
-		reusable: false,
-		html: false,
+		// inserter: false,
+		// reusable: false,
+		// html: false,
 		ktanimate: true,
 		ktanimateadd: true,
 		ktanimatepreview: true,

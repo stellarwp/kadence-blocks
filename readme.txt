@@ -89,6 +89,7 @@ Release Date: April 4th, 2022
 * Add: Option to dynamically source a gallery.
 * Add: Option to set a custom gallery image link to sponsored.
 ** Add: Tablet and Mobile Max width settings for image block.
+* Update: Allow section block to be used outside of a row.
 * Update: Parallax for ipad pro.
 * Fix: Gallery thumbnail size possibly reverting to full when adding new images.
 ** Fix: Issue with some lottie files not saving correctly.

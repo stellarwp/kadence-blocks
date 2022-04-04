@@ -1122,11 +1122,11 @@ class Kadence_Blocks_Frontend {
 	public function render_showmore_css( $attributes, $content ) {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id              = $attributes['uniqueID'];
-			$player_style_id        = 'kb-block-show-more-container' . esc_attr( $unique_id );
-			$player_simple_style_id = str_replace( array( '-' ), '', $unique_id );
-
+			$show_more_container_id        = 'kb-block-show-more-container' . esc_attr( $unique_id );
+			$show_more_id = str_replace( array( '-' ), '', $unique_id );
+			$style_id = 'kb-show-more' . esc_attr( $unique_id );
 			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'show-more', $unique_id ) ) {
-				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+				// If filter didn't run in header (which would have enqueued the specific css id) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_show_more_render_block_attributes', $attributes );
 
 				$css = $this->blocks_show_more_array( $attributes, $unique_id );
@@ -1139,40 +1139,40 @@ class Kadence_Blocks_Frontend {
 				}
 			}
 
-			$showHideMore = $attributes['showHideMore'] === false ? '' : "hideMoreButton" . $player_simple_style_id . ".style.display = 'block';";
-			$previewHeight = (isset($attributes['heightDesktop']) ? $attributes['heightDesktop'] : 250 ) . ( isset($attributes['heightType']) ? $attributes['heightType'] : 'px');
+			$show_hide_more = isset( $attributes['showHideMore'] ) && $attributes['showHideMore'] === false ? '' : "hideMoreButton" . $show_more_id . ".style.display = 'block';";
+			$preview_height = ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250 ) . ( ! empty( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' );
 
 			$maskvalue = 'none';
-			if( isset( $attributes['enableFadeOut']) && $attributes['enableFadeOut']) {
-				$maskvalue = 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize']) ? abs( $attributes['fadeOutSize'] - 100) : 50) . '%, transparent 100%)';
+			if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
+				$maskvalue = 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)';
 			}
 
 
 			$content = $content . "
 			<script>
-				var showMoreContainer" . $player_simple_style_id . " = document.querySelector('." . $player_style_id . " .kb-show-more-content');
+				var showMoreContainer" . $show_more_id . " = document.querySelector('." . $show_more_container_id . " .kb-show-more-content');
 
-				var buttons" . $player_simple_style_id . " = document.querySelectorAll('." . $player_style_id . " .kb-show-more-buttons div');
-				var showMoreButton" . $player_simple_style_id . " = buttons" . $player_simple_style_id . "[0];
-				var hideMoreButton" . $player_simple_style_id . " = buttons" . $player_simple_style_id . "[1];
+				var buttons" . $show_more_id . " = document.querySelectorAll('." . $show_more_container_id . " .kb-show-more-buttons div');
+				var showMoreButton" . $show_more_id . " = buttons" . $show_more_id . "[0];
+				var hideMoreButton" . $show_more_id . " = buttons" . $show_more_id . "[1];
 
-				showMoreButton" . $player_simple_style_id . ".addEventListener('click', function(e) {
+				showMoreButton" . $show_more_id . ".addEventListener('click', function(e) {
 					e.preventDefault();
-					showMoreContainer" . $player_simple_style_id . ".style.maxHeight = 'none';
-					showMoreContainer" . $player_simple_style_id . ".style['mask-image'] = 'none';
-					showMoreContainer" . $player_simple_style_id . ".style['-webkit-mask-image'] = 'none';
-					showMoreButton" . $player_simple_style_id . ".style.display = 'none';
-					".  $showHideMore ."
+					showMoreContainer" . $show_more_id . ".style.maxHeight = 'none';
+					showMoreContainer" . $show_more_id . ".style['mask-image'] = 'none';
+					showMoreContainer" . $show_more_id . ".style['-webkit-mask-image'] = 'none';
+					showMoreButton" . $show_more_id . ".style.display = 'none';
+					" . $show_hide_more . "
 			        return false;
 				});
 
-				hideMoreButton" . $player_simple_style_id . ".addEventListener('click', function (e) {
+				hideMoreButton" . $show_more_id . ".addEventListener('click', function (e) {
 			        e.preventDefault();
-					showMoreContainer" . $player_simple_style_id . ".style.maxHeight =  '" . $previewHeight . "';
-					showMoreButton" . $player_simple_style_id . ".style.display = 'block';
-					hideMoreButton" . $player_simple_style_id . ".style.display = 'none';
-					showMoreContainer" . $player_simple_style_id . ".style['mask-image'] = '". $maskvalue ."';
-					showMoreContainer" . $player_simple_style_id . ".style['-webkit-mask-image'] = '". $maskvalue ."';
+					showMoreContainer" . $show_more_id . ".style.maxHeight =  '" . $preview_height . "';
+					showMoreButton" . $show_more_id . ".style.display = 'block';
+					hideMoreButton" . $show_more_id . ".style.display = 'none';
+					showMoreContainer" . $show_more_id . ".style['mask-image'] = '" . $maskvalue . "';
+					showMoreContainer" . $show_more_id . ".style['-webkit-mask-image'] = '" . $maskvalue . "';
           			return false;
 			    });
 
@@ -3313,11 +3313,11 @@ class Kadence_Blocks_Frontend {
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		$key_positions = [ 'top', 'right', 'bottom', 'left'];
 
-		$css->set_selector( '.kb-block-show-more-container' . $unique_id);
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id );
 
 		// Margin desktop
-		foreach( $key_positions as $key => $key_position ){
-			if( $attr['marginDesktop'][$key] && is_numeric( $attr['marginDesktop'][$key] ) ) {
+		foreach ( $key_positions as $key => $key_position ) {
+			if ( isset( $attr['marginDesktop'][$key] ) && is_numeric( $attr['marginDesktop'][$key] ) ) {
 				$css->add_property( 'margin-' . $key_position, $attr['marginDesktop'][$key] . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
 			}
 		}
@@ -3336,14 +3336,14 @@ class Kadence_Blocks_Frontend {
 			$css->stop_media_query();
 		}
 
-		// Padding desktop
-		foreach( $key_positions as $key => $key_position ){
-			if( $attr['paddingDesktop'][$key] && is_numeric( $attr['paddingDesktop'][$key] ) ) {
+		// Padding desktop.
+		foreach ( $key_positions as $key => $key_position ) {
+			if ( isset( $attr['paddingDesktop'][$key] ) && is_numeric( $attr['paddingDesktop'][$key] ) ) {
 				$css->add_property( 'padding-' . $key_position, $attr['paddingDesktop'][$key] . ( ! isset( $attr['paddingUnit'] ) ? 'px' : $attr['paddingUnit'] ) );
 			}
 		}
 
-		// padding tablet & mobile
+		// Padding tablet & mobile.
 		foreach ( [ 'Tablet', 'Mobile' ] as $breakpoint ) {
 			$css->start_media_query( $media_query[ strtolower( $breakpoint ) ] );
 			if ( isset( $attr[ 'padding' . $breakpoint ] ) && is_array( $attr[ 'padding' . $breakpoint ] ) ) {
@@ -3371,7 +3371,7 @@ class Kadence_Blocks_Frontend {
 		}
 
 		// Default expanded Desktop
-		if( isset( $attr['defaultExpandedDesktop']) && $attr['defaultExpandedDesktop'] ) {
+		if ( isset( $attr['defaultExpandedDesktop'] ) && $attr['defaultExpandedDesktop'] ) {
 			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
 			$css->start_media_query( $media_query['desktop'] );
 			$css->add_property( 'max-height', 'none' );
@@ -3383,9 +3383,9 @@ class Kadence_Blocks_Frontend {
 			$css->stop_media_query();
 		}
 
-		// Default expanded Tablet
-		if( isset( $attr['defaultExpandedTablet']) && $attr['defaultExpandedTablet'] ) {
-			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+		// Default expanded Tablet.
+		if ( isset( $attr['defaultExpandedTablet'] ) && $attr['defaultExpandedTablet'] ) {
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content' );
 			$css->start_media_query( $media_query['tablet'] );
 			$css->add_property( 'max-height', 'none' );
 			$css->add_property( '-webkit-mask-image', 'none' );
@@ -3396,16 +3396,15 @@ class Kadence_Blocks_Frontend {
 			$css->stop_media_query();
 
 			// If default expanded on tablet, but not on mobile
-			if( !isset( $attr['defaultExpandedMobile']) || ( isset( $attr['defaultExpandedMobile']) && !$attr['defaultExpandedMobile'] ) ){
+			if ( ! isset( $attr['defaultExpandedMobile'] ) || ( isset( $attr['defaultExpandedMobile'] ) && ! $attr['defaultExpandedMobile'] ) ) {
 				$css->start_media_query( $media_query['mobile'] );
-
-				$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
-				$css->add_property( 'max-height', (  isset( $attr['heightDesktop'] ) ? $attr['heightDesktop'] : 250) .  ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content' );
+				$css->add_property( 'max-height', ( isset( $attr['heightDesktop'] ) ? $attr['heightDesktop'] : 250 ) . ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
 				$css->add_property( 'overflow-y', 'hidden' );
 
-				if( isset( $attr['enableFadeOut']) && $attr['enableFadeOut']) {
-					$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
-					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+				if ( isset( $attr['enableFadeOut']) && $attr['enableFadeOut'] ) {
+					$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize'] ) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
+					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize'] ) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
 				}
 
 				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
@@ -3415,8 +3414,8 @@ class Kadence_Blocks_Frontend {
 		}
 
 		// Default expanded Mobile
-		if( isset( $attr['defaultExpandedMobile']) && $attr['defaultExpandedMobile'] ) {
-			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+		if ( isset( $attr['defaultExpandedMobile'] ) && $attr['defaultExpandedMobile'] ) {
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content' );
 			$css->start_media_query( $media_query['mobile'] );
 			$css->add_property( 'max-height', 'none' );
 			$css->add_property( '-webkit-mask-image', 'none' );
@@ -3426,8 +3425,6 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'display', 'none' );
 			$css->stop_media_query();
 		}
-
-
 		return $css->css_output();
 	}
 
@@ -8823,7 +8820,7 @@ class Kadence_Blocks_Frontend {
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		// Style.
 		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) || isset( $attr['border'] ) || isset( $attr['borderRadius'] ) || isset( $attr['borderWidth'] ) || ( isset( $attr['displayShadow'] ) && true == $attr['displayShadow'] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( isset( $attr['topPadding'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPadding'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
 			}
@@ -8890,7 +8887,7 @@ class Kadence_Blocks_Frontend {
 		}
 		// Hover Styles.
 		if ( isset( $attr['borderHover'] ) || isset( $attr['borderHoverRadius'] ) || isset( $attr['borderHoverWidth'] ) || ( isset( $attr['displayHoverShadow'] ) && true == $attr['displayHoverShadow'] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
 			if ( isset( $attr['borderHover'] ) ) {
 				$css->add_property( 'border-color', $css->render_color( $attr['borderHover'] ) );
 			}
@@ -8971,7 +8968,7 @@ class Kadence_Blocks_Frontend {
 			$gutter = isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][ 0 ] ) && is_numeric( $attr['gutter'][ 0 ] ) ? $attr['gutter'][ 0 ] : 10;
 			$gutter_unit = ! empty( $attr['gutterUnit'] ) ? $attr['gutterUnit'] : 'px';
 			$css->add_property( 'margin-left', '-' . $gutter . $gutter_unit );
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image' );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
 			$css->add_property( 'margin-left', $gutter . $gutter_unit );
 			$css->add_property( 'margin-right', '0px' );
 			$css->add_property( 'margin-top', '0px' );
@@ -9000,13 +8997,13 @@ class Kadence_Blocks_Frontend {
 		}
 		// Background.
 		if ( isset( $attr['background'] ) && ! empty( $attr['background'] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$alpha = ( isset( $attr['backgroundOpacity'] ) && is_numeric( $attr['backgroundOpacity'] ) ? $attr['backgroundOpacity'] : 1 );
 			$css->add_property( 'background-color', $css->render_color( $attr['background'], $alpha ) );
 		}
 		if( isset( $attr['backgroundImg'] ) && is_array( $attr['backgroundImg'] ) && isset( $attr['backgroundImg'][ 0 ] ) && is_array( $attr['backgroundImg'][0] ) && isset( $attr['backgroundImg'][0]['bgImg'] ) && ! empty( $attr['backgroundImg'][0]['bgImg'] ) ) {
 			$bg_img = $attr['backgroundImg'][ 0 ];
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img['bgImg'] ) );
 			$css->add_property( 'background-size', ( ! empty( $bg_img['bgImgSize'] ) ? $bg_img['bgImgSize'] : 'cover' ) );
 			$css->add_property( 'background-position', ( ! empty( $bg_img['bgImgPosition'] ) ? $bg_img['bgImgPosition'] : 'center center' ) );
@@ -9015,12 +9012,12 @@ class Kadence_Blocks_Frontend {
 		}
 		// Background Hover.
 		if ( isset( $attr['backgroundHover'] ) && ! empty( $attr['backgroundHover'] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
 			$css->add_property( 'background-color', $css->render_color( $attr['backgroundHover'] ) );
 		}
 		if( isset( $attr['backgroundImgHover'] ) && is_array( $attr['backgroundImgHover'] ) && isset( $attr['backgroundImgHover'][ 0 ] ) && is_array( $attr['backgroundImgHover'][0] ) && isset( $attr['backgroundImgHover'][0]['bgImg'] ) && ! empty( $attr['backgroundImgHover'][0]['bgImg'] ) ) {
 			$bg_img_hover = $attr['backgroundImgHover'][ 0 ];
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
+			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col' );
 			$css->add_property( 'background-image', sprintf( "url('%s')", $bg_img_hover['bgImg'] ) );
 			$css->add_property( 'background-size', ( ! empty( $bg_img_hover['bgImgSize'] ) ? $bg_img_hover['bgImgSize'] : 'cover' ) );
 			$css->add_property( 'background-position', ( ! empty( $bg_img_hover['bgImgPosition'] ) ? $bg_img_hover['bgImgPosition'] : 'center center' ) );
@@ -9028,7 +9025,7 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'background-repeat', ( ! empty( $bg_img_hover['bgImgRepeat'] ) ? $bg_img_hover['bgImgRepeat'] : 'no-repeat' ) );
 		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 0 ] ) && ! empty( $attr['textAlign'][ 0 ] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );
+			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'text-align',  $attr['textAlign'][ 0 ] );
 		}
 		// Text Colors.
@@ -9058,7 +9055,7 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'color',  $css->render_color( $attr['linkHoverColorHover'] ) );
 		}
 		if ( isset( $attr['zIndex'] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );
+			$css->set_selector( '.kadence-column' . $unique_id );
 			if (  $attr['zIndex'] === 0 ) {
 				$css->add_property( 'z-index', 'auto' );
 			} else {
@@ -9071,7 +9068,7 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'order', $attr['collapseOrder'] );
 		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 1 ] ) && ! empty( $attr['textAlign'][ 1 ] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );
+			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'text-align',  $attr['textAlign'][ 1 ] );
 		}
 		$tablet_direction = ( isset( $attr['direction'] ) && is_array( $attr['direction'] ) && ! empty( $attr['direction'][ 1 ] ) ? $attr['direction'][ 1 ] : '' );
@@ -9139,7 +9136,7 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( isset( $attr['topPaddingT'] ) || isset( $attr['bottomPaddingT'] ) || isset( $attr['leftPaddingT'] ) || isset( $attr['rightPaddingT'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || isset( $attr['rightMarginT'] ) || isset( $attr['leftMarginT'] ) || isset( $attr['tabletBorderWidth'] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( isset( $attr['topPaddingT'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPaddingT'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
 			}
@@ -9186,7 +9183,7 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'order', $attr['collapseOrder'] );
 		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 2 ] ) && ! empty( $attr['textAlign'][ 2 ] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id );
+			$css->set_selector( '.kadence-column' . $unique_id );
 			$css->add_property( 'text-align',  $attr['textAlign'][ 2 ] );
 		}
 		$mobile_direction = ( isset( $attr['direction'] ) && is_array( $attr['direction'] ) && ! empty( $attr['direction'][ 2 ] ) ? $attr['direction'][ 2 ] : '' );
@@ -9257,7 +9254,7 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) || isset( $attr['mobileBorderWidth'] ) ) {
-			$css->set_selector( '.kt-row-layout-inner > .kt-row-column-wrap > .kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( isset( $attr['topPaddingM'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPaddingM'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
 			}
