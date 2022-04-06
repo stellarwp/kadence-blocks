@@ -49,3 +49,59 @@ function kadence_blocks_hex2rgba( $hex, $alpha ) {
 	$rgba = 'rgba(' . $r . ', ' . $g . ', ' . $b . ', ' . $alpha . ')';
 	return $rgba;
 }
+
+
+/**
+ * Return or echo an SVG icon matching the provided key
+ *
+ * @param $key
+ * @param $echo
+ *
+ * @return string|void
+ */
+function kadence_blocks_render_svg( $key, $echo = true) {
+	include KADENCE_BLOCKS_PATH . 'dist/icons-ico-array.php';
+	include KADENCE_BLOCKS_PATH . 'dist/icons-array.php';
+
+	$allIcons = array_merge($ico, $faico);
+	$svg = '';
+
+	if( !empty( $allIcons[$key] ) ) {
+		$icon = $allIcons[$key];
+
+		// height={ props.size } width={ props.size } fill={ fill } stroke={ stroke } xmlns={ props.xmlns } preserveAspectRatio={ ( typeL && 'fas' !== typeL && viewB && undefined !== viewB[ 2 ] && undefined !== viewB[ 3 ] && viewB[ 2 ] !== viewB[ 3 ] ? 'xMinYMin meet' : undefined ) } stroke-width={ strokeWidth } stroke-linecap={ strokeLinecap } stroke-linejoin={ strokeLinejoin }
+		// 				{ props.title ? <title>{ props.title }</title> : null }
+		$svg .= '<svg style="display: inline-block; vertical-align: middle;" viewBox="' . (isset($icon['vB']) ? $icon['vB'] : '0 0 24 24') . '">';
+
+		if( !empty($icon['cD']) ){
+			foreach($icon['cD'] as $cd ){
+				$nE = $cd['nE'];
+				$aBs = $cd['aBs'];
+				$tmpAttr = array();
+
+				foreach($aBs as $key => $attribute ){
+					if( !in_array( $key, array('fill', 'stroke', 'none'))){
+						$tmpAttr[$key] = $key . '="' . $attribute . '"';
+					}
+				}
+
+				if( isset($aBs['fill'], $aBs['stroke'] ) && $aBs['fill'] === 'none' ){
+					$tmpAttr['stroke'] =  'stroke="currentColor"';
+				}
+
+				$svg .= '<' . $nE . ' ' . implode(' ', $tmpAttr) . '/>';
+			}
+		}
+
+		$svg .= '</svg>';
+
+	}
+
+	if ( $echo ) {
+		echo $svg;
+		return;
+	}
+
+	return $svg;
+
+}
