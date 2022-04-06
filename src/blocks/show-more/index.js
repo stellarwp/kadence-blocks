@@ -1,9 +1,7 @@
-import itemicons from '../../icons';
+import { showMoreIcon } from '@kadence/icons';
 
 const el = wp.element.createElement;
 import { registerBlockType } from '@wordpress/blocks';
-const { InnerBlocks } = wp.blockEditor;
-import uniqueId from 'lodash/uniqueId';
 
 /**
  * Internal dependencies
@@ -28,7 +26,7 @@ export const settings = {
 registerBlockType('kadence/show-more', {
 	...metadata,
 	icon: {
-		src: itemicons.showMore,
+		src: showMoreIcon,
 	},
 	...settings
 });

@@ -21,7 +21,7 @@ const {
 	Modal,
 } = wp.components;
 
-import icons from '../../icons';
+import { blockColumnIcon, bottomRightIcon, bottomLeftIcon, topRightIcon, topLeftIcon, radiusIndividualIcon, radiusLinkedIcon } from '@kadence/icons';
 
 class KadenceColumnDefault extends Component {
 	constructor() {
@@ -348,7 +348,7 @@ class KadenceColumnDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.blockColumn }</span>
+					<span className="kt-block-icon">{ blockColumnIcon }</span>
 					{ __( 'Section', 'kadence-blocks' ) }
 				</Button>
 				{ isOpen ?
@@ -408,13 +408,13 @@ class KadenceColumnDefault extends Component {
 								max={ 200 }
 								step={ 1 }
 								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-									{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+									{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+									{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 								] }
-								firstIcon={ icons.topleft }
-								secondIcon={ icons.topright }
-								thirdIcon={ icons.bottomright }
-								fourthIcon={ icons.bottomleft }
+								firstIcon={ topLeftIcon }
+								secondIcon={ topRightIcon }
+								thirdIcon={ bottomLeftIcon }
+								fourthIcon={ bottomRightIcon }
 							/>
 							{ textAlignControls }
 							<PanelBody

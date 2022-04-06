@@ -7,7 +7,7 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { blockColumnIcon } from '@kadence/icons';
 
 import { hexToRGBA } from '@kadence/helpers';
 import classnames from 'classnames';
@@ -38,7 +38,7 @@ const {
 registerBlockType( 'kadence/column', {
 	title: __( 'Section', 'kadence-blocks' ),
 	description: __( 'An inner section of content.', 'kadence-blocks' ),
-	icon: icons.blockColumn,
+	icon: blockColumnIcon,
 	category: 'kadence-blocks',
 	parent: [ 'kadence/rowlayout' ],
 	attributes: {

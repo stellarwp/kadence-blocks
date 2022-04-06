@@ -5,7 +5,8 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { blockRowIcon } from '@kadence/icons'
+
 /**
  * Import attributes
  */
@@ -24,10 +25,7 @@ import edit from './edit';
 import save from './save';
 
 import classnames from 'classnames';
-import times from 'lodash/times';
-const {
-	Fragment,
-} = wp.element;
+
 const {
 	InnerBlocks,
 } = wp.blockEditor;
@@ -56,7 +54,7 @@ const { registerBlockType } = wp.blocks;
 registerBlockType( 'kadence/rowlayout', {
 	title: __( 'Row Layout', 'kadence-blocks' ), // Block title.
 	icon: {
-		src: icons.blockRow,
+		src: blockRowIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

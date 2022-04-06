@@ -10,6 +10,7 @@ import metadata from './block.json';
 import save from './save';
 import transforms from './transforms';
 const { name } = metadata;
+import { lottieIcon } from '@kadence/icons';
 
 export { metadata, name };
 
@@ -27,7 +28,7 @@ export const settings = {
 registerBlockType('kadence/lottie', {
 	...metadata,
 	icon: {
-		src: itemicons.lottie,
+		src: lottieIcon,
 	},
 	...settings
 

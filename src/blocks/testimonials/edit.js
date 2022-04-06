@@ -12,7 +12,16 @@ import './editor.scss';
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import {
+	testimonialBubbleIcon,
+	alignTopIcon,
+	alignMiddleIcon,
+	alignBottomIcon,
+	testimonialBasicIcon,
+	testimonialCardIcon,
+	testimonialInLineIcon
+} from '@kadence/icons';
+
 /**
  * Import External
  */
@@ -43,7 +52,7 @@ const {
 } = wp.blockEditor;
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
-const {
+import {
 	Button,
 	ButtonGroup,
 	Dashicon,
@@ -51,7 +60,7 @@ const {
 	ToggleControl,
 	SelectControl,
 	Tooltip,
-} = wp.components;
+} from '@wordpress/components';
 
 import {
 	closeSmall,
@@ -276,26 +285,26 @@ class KadenceTestimonials extends Component {
 			}
 		};
 		const styleOptions = [
-			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: icons.testimonialBasic },
-			{ key: 'card', name: __( 'Card', 'kadence-blocks' ), icon: icons.testimonialCard },
-			{ key: 'bubble', name: __( 'Bubble', 'kadence-blocks' ), icon: icons.testimonialBubble },
-			{ key: 'inlineimage', name: __( 'Image In Content', 'kadence-blocks' ), icon: icons.testimonialInline },
+			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: testimonialBasicIcon },
+			{ key: 'card', name: __( 'Card', 'kadence-blocks' ), icon: testimonialCardIcon },
+			{ key: 'bubble', name: __( 'Bubble', 'kadence-blocks' ), icon: testimonialBubbleIcon },
+			{ key: 'inlineimage', name: __( 'Image In Content', 'kadence-blocks' ), icon: testimonialInLineIcon },
 		];
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip', 'kadence-blocks' ), icon: __( 'Skip' ) },
-			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: icons.testimonialBasic },
-			{ key: 'card', name: __( 'Card', 'kadence-blocks' ), icon: icons.testimonialCard },
-			{ key: 'bubble', name: __( 'Bubble', 'kadence-blocks' ), icon: icons.testimonialBubble },
-			{ key: 'inlineimage', name: __( 'Image In Content', 'kadence-blocks' ), icon: icons.testimonialInline },
+			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: testimonialBasicIcon },
+			{ key: 'card', name: __( 'Card', 'kadence-blocks' ), icon: testimonialCardIcon },
+			{ key: 'bubble', name: __( 'Bubble', 'kadence-blocks' ), icon: testimonialBubbleIcon },
+			{ key: 'inlineimage', name: __( 'Image In Content', 'kadence-blocks' ), icon: testimonialInLineIcon },
 		];
 		const columnControlTypes = [
 			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: __( 'Linked', 'kadence-blocks' ) },
 			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: __( 'Individual', 'kadence-blocks' ) },
 		];
 		const VAlignOptions = [
-			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: icons.aligntop },
-			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: icons.alignmiddle },
-			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: icons.alignbottom },
+			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: alignTopIcon },
+			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: alignMiddleIcon },
+			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: alignBottomIcon },
 		];
 		const paddingMin = ( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 0 : 0 );
 		const paddingMax = ( wrapperPaddingType === 'em' || wrapperPaddingType === 'rem' ? 12 : 200 );

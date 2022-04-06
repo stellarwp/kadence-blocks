@@ -9,8 +9,18 @@ const ktaccordUniqueIDs = [];
 /**
  * Import Icons
  */
-import icons from '../../icons';
-
+import {
+	accord1Icon,
+	accord2Icon,
+	accord3Icon,
+	accord4Icon,
+	radiusLinkedIcon,
+	radiusIndividualIcon,
+	topRightIcon,
+	topLeftIcon,
+	bottomLeftIcon,
+	bottomRightIcon
+} from '@kadence/icons';
 /**
  * Import External
  */
@@ -229,10 +239,10 @@ class KadenceAccordionComponent extends Component {
 		const { titleBorderRadiusControl, titleBorderControl, titlePaddingControl, contentBorderControl, contentBorderRadiusControl, contentPaddingControl, titleBorderColorControl, titleBorderHoverColorControl, titleBorderActiveColorControl, titleTag } = this.state;
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
-			{ key: 'base', name: __( 'Base' ), icon: icons.accord01 },
-			{ key: 'highlight', name: __( 'Highlight' ), icon: icons.accord02 },
-			{ key: 'subtle', name: __( 'Subtle' ), icon: icons.accord03 },
-			{ key: 'bottom', name: __( 'Bottom Border' ), icon: icons.accord04 },
+			{ key: 'base', name: __( 'Base' ), icon: accord1Icon },
+			{ key: 'highlight', name: __( 'Highlight' ), icon: accord2Icon },
+			{ key: 'subtle', name: __( 'Subtle' ), icon: accord3Icon },
+			{ key: 'bottom', name: __( 'Bottom Border' ), icon: accord4Icon },
 		];
 		const previewPaddingType = ( undefined !== contentPaddingType ? contentPaddingType : 'px' );
 		const paddingMin = ( previewPaddingType === 'em' || previewPaddingType === 'rem' ? 0 : 0 );
@@ -820,13 +830,13 @@ class KadenceAccordionComponent extends Component {
 									max={ 100 }
 									step={ 1 }
 									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-										{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+										{ key: 'linked', name: __( 'Linked' ), icon: radiusLinkedIcon },
+										{ key: 'individual', name: __( 'Individual' ), icon: radiusIndividualIcon },
 									] }
-									firstIcon={ icons.topleft }
-									secondIcon={ icons.topright }
-									thirdIcon={ icons.bottomright }
-									fourthIcon={ icons.bottomleft }
+									firstIcon={ topLeftIcon }
+									secondIcon={ topRightIcon }
+									thirdIcon={ bottomRightIcon }
+									fourthIcon={ bottomLeftIcon }
 								/>
 							</KadencePanelBody>
 						) }
@@ -939,13 +949,13 @@ class KadenceAccordionComponent extends Component {
 									max={ 100 }
 									step={ 1 }
 									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 									] }
-									firstIcon={ icons.topleft }
-									secondIcon={ icons.topright }
-									thirdIcon={ icons.bottomright }
-									fourthIcon={ icons.bottomleft }
+									firstIcon={ topLeftIcon }
+									secondIcon={ topRightIcon }
+									thirdIcon={ bottomRightIcon }
+									fourthIcon={ bottomLeftIcon }
 								/>
 							</KadencePanelBody>
 						) }

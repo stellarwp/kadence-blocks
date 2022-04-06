@@ -20,6 +20,15 @@ const { apiFetch } = wp;
  * Import Icons
  */
 import icons from '../../icons';
+import {
+	topLeftIcon,
+	topRightIcon,
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusLinkedIcon,
+	radiusIndividualIcon,
+} from '@kadence/icons';
+
 /**
  * WordPress dependencies
  */
@@ -1333,13 +1342,13 @@ class GalleryEdit extends Component {
 										max={ 200 }
 										step={ 1 }
 										controlTypes={ [
-											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 										] }
-										firstIcon={ icons.topleft }
-										secondIcon={ icons.topright }
-										thirdIcon={ icons.bottomright }
-										fourthIcon={ icons.bottomleft }
+										firstIcon={ topLeftIcon }
+										secondIcon={ topRightIcon }
+										thirdIcon={ bottomRightIcon }
+										fourthIcon={ bottomLeftIcon }
 									/>
 								) }
 								<SelectControl

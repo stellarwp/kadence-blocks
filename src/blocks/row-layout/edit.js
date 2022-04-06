@@ -5,7 +5,38 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import {
+	rowIcon,
+	collapseRowIcon,
+	collapseRowThreeIcon,
+	collapseRowFourIcon,
+	collapseRowFiveIcon,
+	collapseRowSixIcon,
+	twoColIcon,
+	gridIcon,
+	threeColIcon,
+	threeGridIcon,
+	lastRowIcon,
+	firstRowIcon,
+	twoLeftGoldenIcon,
+	twoRightGoldenIcon,
+	leftHalfIcon,
+	rightHalfIcon,
+	centerHalfIcon,
+	wideCenterIcon,
+	exWideCenterIcon,
+	fourColIcon,
+	lFourFortyIcon,
+	rFourFortyIcon,
+	fiveColIcon,
+	sixColIcon,
+	radiusLinkedIcon,
+	radiusIndividualIcon,
+	topLeftIcon,
+	topRightIcon,
+	bottomLeftIcon,
+	bottomRightIcon
+} from '@kadence/icons';
 
 /**
  * Import External
@@ -84,6 +115,7 @@ const getColumnsTemplate = memoize( ( columns ) => {
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+
 const ALLOWED_BLOCKS = [ 'kadence/column' ];
 const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
@@ -415,21 +447,21 @@ class KadenceRowLayout extends Component {
 		let layoutOptions;
 		let mobileLayoutOptions;
 		const startlayoutOptions = [
-			{ key: 'equal', col: 1, name: __( 'Row', 'kadence-blocks' ), icon: icons.row },
-			{ key: 'equal', col: 2, name: __( 'Two: Equal', 'kadence-blocks' ), icon: icons.twocol },
-			{ key: 'left-golden', col: 2, name: __( 'Two: Left Heavy 66/33', 'kadence-blocks' ), icon: icons.twoleftgolden },
-			{ key: 'right-golden', col: 2, name: __( 'Two: Right Heavy 33/66', 'kadence-blocks' ), icon: icons.tworightgolden },
-			{ key: 'equal', col: 3, name: __( 'Three: Equal', 'kadence-blocks' ), icon: icons.threecol },
-			{ key: 'left-half', col: 3, name: __( 'Three: Left Heavy 50/25/25', 'kadence-blocks' ), icon: icons.lefthalf },
-			{ key: 'right-half', col: 3, name: __( 'Three: Right Heavy 25/25/50', 'kadence-blocks' ), icon: icons.righthalf },
-			{ key: 'center-half', col: 3, name: __( 'Three: Center Heavy 25/50/25', 'kadence-blocks' ), icon: icons.centerhalf },
-			{ key: 'center-wide', col: 3, name: __( 'Three: Wide Center 20/60/20', 'kadence-blocks' ), icon: icons.widecenter },
-			{ key: 'center-exwide', col: 3, name: __( 'Three: Wider Center 15/70/15', 'kadence-blocks' ), icon: icons.exwidecenter },
-			{ key: 'equal', col: 4, name: __( 'Four: Equal', 'kadence-blocks' ), icon: icons.fourcol },
-			{ key: 'left-forty', col: 4, name: __( 'Four: Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: icons.lfourforty },
-			{ key: 'right-forty', col: 4, name: __( 'Four: Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: icons.rfourforty },
-			{ key: 'equal', col: 5, name: __( 'Five: Equal', 'kadence-blocks' ), icon: icons.fivecol },
-			{ key: 'equal', col: 6, name: __( 'Six: Equal', 'kadence-blocks' ), icon: icons.sixcol },
+			{ key: 'equal', col: 1, name: __( 'Row', 'kadence-blocks' ), icon: rowIcon },
+			{ key: 'equal', col: 2, name: __( 'Two: Equal', 'kadence-blocks' ), icon: twoColIcon },
+			{ key: 'left-golden', col: 2, name: __( 'Two: Left Heavy 66/33', 'kadence-blocks' ), icon: twoLeftGoldenIcon },
+			{ key: 'right-golden', col: 2, name: __( 'Two: Right Heavy 33/66', 'kadence-blocks' ), icon: twoRightGoldenIcon },
+			{ key: 'equal', col: 3, name: __( 'Three: Equal', 'kadence-blocks' ), icon: threeColIcon },
+			{ key: 'left-half', col: 3, name: __( 'Three: Left Heavy 50/25/25', 'kadence-blocks' ), icon: leftHalfIcon },
+			{ key: 'right-half', col: 3, name: __( 'Three: Right Heavy 25/25/50', 'kadence-blocks' ), icon: rightHalfIcon },
+			{ key: 'center-half', col: 3, name: __( 'Three: Center Heavy 25/50/25', 'kadence-blocks' ), icon: centerHalfIcon },
+			{ key: 'center-wide', col: 3, name: __( 'Three: Wide Center 20/60/20', 'kadence-blocks' ), icon: wideCenterIcon },
+			{ key: 'center-exwide', col: 3, name: __( 'Three: Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
+			{ key: 'equal', col: 4, name: __( 'Four: Equal', 'kadence-blocks' ), icon: fourColIcon },
+			{ key: 'left-forty', col: 4, name: __( 'Four: Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: lFourFortyIcon },
+			{ key: 'right-forty', col: 4, name: __( 'Four: Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: rFourFortyIcon },
+			{ key: 'equal', col: 5, name: __( 'Five: Equal', 'kadence-blocks' ), icon: fiveColIcon },
+			{ key: 'equal', col: 6, name: __( 'Six: Equal', 'kadence-blocks' ), icon: sixColIcon },
 		];
 		const saveSliderSettings = ( value ) => {
 			let backgroundSlidSettings;
@@ -543,85 +575,85 @@ class KadenceRowLayout extends Component {
 		);
 		if ( 2 === columns ) {
 			layoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.twocol },
-				{ key: 'left-golden', name: __( 'Left Heavy 66/33', 'kadence-blocks' ), icon: icons.twoleftgolden },
-				{ key: 'right-golden', name: __( 'Right Heavy 33/66', 'kadence-blocks' ), icon: icons.tworightgolden },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserow },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: twoColIcon },
+				{ key: 'left-golden', name: __( 'Left Heavy 66/33', 'kadence-blocks' ), icon: twoLeftGoldenIcon },
+				{ key: 'right-golden', name: __( 'Right Heavy 33/66', 'kadence-blocks' ), icon: twoRightGoldenIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowIcon },
 			];
 		} else if ( 3 === columns ) {
 			layoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.threecol },
-				{ key: 'left-half', name: __( 'Left Heavy 50/25/25', 'kadence-blocks' ), icon: icons.lefthalf },
-				{ key: 'right-half', name: __( 'Right Heavy 25/25/50', 'kadence-blocks' ), icon: icons.righthalf },
-				{ key: 'center-half', name: __( 'Center Heavy 25/50/25', 'kadence-blocks' ), icon: icons.centerhalf },
-				{ key: 'center-wide', name: __( 'Wide Center 20/60/20', 'kadence-blocks' ), icon: icons.widecenter },
-				{ key: 'center-exwide', name: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: icons.exwidecenter },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserowthree },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: threeColIcon },
+				{ key: 'left-half', name: __( 'Left Heavy 50/25/25', 'kadence-blocks' ), icon: leftHalfIcon },
+				{ key: 'right-half', name: __( 'Right Heavy 25/25/50', 'kadence-blocks' ), icon: rightHalfIcon },
+				{ key: 'center-half', name: __( 'Center Heavy 25/50/25', 'kadence-blocks' ), icon: centerHalfIcon },
+				{ key: 'center-wide', name: __( 'Wide Center 20/60/20', 'kadence-blocks' ), icon: wideCenterIcon },
+				{ key: 'center-exwide', name: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
 			];
 		} else if ( 4 === columns ) {
 			layoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.fourcol },
-				{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: icons.lfourforty },
-				{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: icons.rfourforty },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserowfour },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: fourColIcon },
+				{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: lFourFortyIcon },
+				{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: rFourFortyIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFourIcon },
 			];
 		} else if ( 5 === columns ) {
 			layoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.fivecol },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserowfive },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: fiveColIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFiveIcon },
 			];
 		} else if ( 6 === columns ) {
 			layoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.sixcol },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserowsix },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: sixColIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowSixIcon },
 			];
 		} else {
 			layoutOptions = [
-				{ key: 'equal', name: __( 'Single Row', 'kadence-blocks' ), icon: icons.row },
+				{ key: 'equal', name: __( 'Single Row', 'kadence-blocks' ), icon: rowIcon },
 			];
 		}
 		if ( 2 === columns ) {
 			mobileLayoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.twocol },
-				{ key: 'left-golden', name: __( 'Left Heavy 66/33', 'kadence-blocks' ), icon: icons.twoleftgolden },
-				{ key: 'right-golden', name: __( 'Right Heavy 33/66', 'kadence-blocks' ), icon: icons.tworightgolden },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserow },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: twoColIcon },
+				{ key: 'left-golden', name: __( 'Left Heavy 66/33', 'kadence-blocks' ), icon: twoLeftGoldenIcon },
+				{ key: 'right-golden', name: __( 'Right Heavy 33/66', 'kadence-blocks' ), icon: twoRightGoldenIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowIcon },
 			];
 		} else if ( 3 === columns ) {
 			mobileLayoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.threecol },
-				{ key: 'left-half', name: __( 'Left Heavy 50/25/25', 'kadence-blocks' ), icon: icons.lefthalf },
-				{ key: 'right-half', name: __( 'Right Heavy 25/25/50', 'kadence-blocks' ), icon: icons.righthalf },
-				{ key: 'center-half', name: __( 'Center Heavy 25/50/25', 'kadence-blocks' ), icon: icons.centerhalf },
-				{ key: 'center-wide', name: __( 'Wide Center 20/60/20', 'kadence-blocks' ), icon: icons.widecenter },
-				{ key: 'center-exwide', name: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: icons.exwidecenter },
-				{ key: 'first-row', name: __( 'First Row, Next Columns 100 - 50/50', 'kadence-blocks' ), icon: icons.firstrow },
-				{ key: 'last-row', name: __( 'Last Row, Previous Columns 50/50 - 100', 'kadence-blocks' ), icon: icons.lastrow },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserowthree },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: threeColIcon },
+				{ key: 'left-half', name: __( 'Left Heavy 50/25/25', 'kadence-blocks' ), icon: leftHalfIcon },
+				{ key: 'right-half', name: __( 'Right Heavy 25/25/50', 'kadence-blocks' ), icon: rightHalfIcon },
+				{ key: 'center-half', name: __( 'Center Heavy 25/50/25', 'kadence-blocks' ), icon: centerHalfIcon },
+				{ key: 'center-wide', name: __( 'Wide Center 20/60/20', 'kadence-blocks' ), icon: wideCenterIcon },
+				{ key: 'center-exwide', name: __( 'Wider Center 15/70/15', 'kadence-blocks' ), icon: exWideCenterIcon },
+				{ key: 'first-row', name: __( 'First Row, Next Columns 100 - 50/50', 'kadence-blocks' ), icon: firstRowIcon },
+				{ key: 'last-row', name: __( 'Last Row, Previous Columns 50/50 - 100', 'kadence-blocks' ), icon: lastRowIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowThreeIcon },
 			];
 		} else if ( 4 === columns ) {
 			mobileLayoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.fourcol },
-				{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: icons.lfourforty },
-				{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: icons.rfourforty },
-				{ key: 'two-grid', name: __( 'Two Column Grid', 'kadence-blocks' ), icon: icons.grid },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserowfour },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: fourColIcon },
+				{ key: 'left-forty', name: __( 'Left Heavy 40/20/20/20', 'kadence-blocks' ), icon: lFourFortyIcon },
+				{ key: 'right-forty', name: __( 'Right Heavy 20/20/20/40', 'kadence-blocks' ), icon: rFourFortyIcon },
+				{ key: 'two-grid', name: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFourIcon },
 			];
 		} else if ( 5 === columns ) {
 			mobileLayoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.fivecol },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserowfive },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: fiveColIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowFiveIcon },
 			];
 		} else if ( 6 === columns ) {
 			mobileLayoutOptions = [
-				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: icons.sixcol },
-				{ key: 'two-grid', name: __( 'Two Column Grid', 'kadence-blocks' ), icon: icons.grid },
-				{ key: 'three-grid', name: __( 'Three Column Grid', 'kadence-blocks' ), icon: icons.threegrid },
-				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: icons.collapserowsix },
+				{ key: 'equal', name: __( 'Equal', 'kadence-blocks' ), icon: sixColIcon },
+				{ key: 'two-grid', name: __( 'Two Column Grid', 'kadence-blocks' ), icon: gridIcon },
+				{ key: 'three-grid', name: __( 'Three Column Grid', 'kadence-blocks' ), icon: threeGridIcon },
+				{ key: 'row', name: __( 'Collapse to Rows', 'kadence-blocks' ), icon: collapseRowSixIcon },
 			];
 		} else {
 			mobileLayoutOptions = [
-				{ key: 'row', name: __( 'Single Row', 'kadence-blocks' ), icon: icons.row },
+				{ key: 'row', name: __( 'Single Row', 'kadence-blocks' ), icon: rowIcon },
 			];
 		}
 		const onTabBackgroundSelect = ( tabName ) => {
@@ -923,13 +955,13 @@ class KadenceRowLayout extends Component {
 							step={ 1 }
 							allowEmpty={ true }
 							controlTypes={ [
-								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 							] }
-							firstIcon={ icons.topleft }
-							secondIcon={ icons.topright }
-							thirdIcon={ icons.bottomright }
-							fourthIcon={ icons.bottomleft }
+							firstIcon={ topLeftIcon }
+							secondIcon={ topRightIcon }
+							thirdIcon={ bottomRightIcon }
+							fourthIcon={ bottomLeftIcon }
 						/>
 					</KadencePanelBody>
 				) }
@@ -1144,13 +1176,13 @@ class KadenceRowLayout extends Component {
 							step={ 1 }
 							allowEmpty={ true }
 							controlTypes={ [
-								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 							] }
-							firstIcon={ icons.topleft }
-							secondIcon={ icons.topright }
-							thirdIcon={ icons.bottomright }
-							fourthIcon={ icons.bottomleft }
+							firstIcon={ topLeftIcon }
+							secondIcon={ topRightIcon }
+							thirdIcon={ bottomRightIcon }
+							fourthIcon={ bottomLeftIcon }
 						/>
 					</KadencePanelBody>
 				) }
@@ -1824,13 +1856,13 @@ class KadenceRowLayout extends Component {
 							step={ 1 }
 							allowEmpty={ true }
 							controlTypes={ [
-								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+								{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+								{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 							] }
-							firstIcon={ icons.topleft }
-							secondIcon={ icons.topright }
-							thirdIcon={ icons.bottomright }
-							fourthIcon={ icons.bottomleft }
+							firstIcon={ topLeftIcon }
+							secondIcon={ topRightIcon }
+							thirdIcon={ bottomRightIcon }
+							fourthIcon={ bottomLeftIcon }
 						/>
 					</KadencePanelBody>
 				) }

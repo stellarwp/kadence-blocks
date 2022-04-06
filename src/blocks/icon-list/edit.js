@@ -5,7 +5,7 @@
  /**
  * Import Icons
  */
-import icons from '../../icons';
+import { alignTopIcon, alignMiddleIcon, alignBottomIcon } from '@kadence/icons';
 
 /**
  * Import Icon stuff
@@ -336,9 +336,9 @@ class KadenceIconLists extends Component {
 			} );
 		};
 		const iconAlignOptions = [
-			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: icons.aligntop },
-			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: icons.alignmiddle },
-			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: icons.alignbottom },
+			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: alignTopIcon },
+			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: alignMiddleIcon },
+			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: alignBottomIcon },
 		];
 		const stopOnReplace = ( value, index ) => {
 			if ( value && undefined !== value[ 0 ] && undefined !== value[ 0 ].attributes && value[ 0 ].attributes.content ) {
