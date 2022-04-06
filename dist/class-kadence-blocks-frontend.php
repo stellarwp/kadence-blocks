@@ -406,7 +406,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function render_row_layout_css_head( $attributes ) {
 		if ( ! wp_style_is( 'kadence-blocks-rowlayout', 'enqueued' ) ) {
-			wp_enqueue_style( 'kadence-blocks-rowlayout' );
+			$this->enqueue_style( 'kadence-blocks-rowlayout' );
 		}
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
@@ -463,6 +463,9 @@ class Kadence_Blocks_Frontend {
 	 * @param array $attributes the blocks attribtues.
 	 */
 	public function render_column_layout_css_head( $attributes ) {
+		if ( ! wp_style_is( 'kadence-blocks-column', 'enqueued' ) ) {
+			$this->enqueue_style( 'kadence-blocks-column' );
+		}
 		if ( isset( $attributes['uniqueID'] ) && ! empty( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kb-column' . esc_attr( $unique_id );
@@ -484,6 +487,9 @@ class Kadence_Blocks_Frontend {
 	 * @param string $content the blocks content.
 	 */
 	public function render_column_layout_css( $attributes, $content ) {
+		if ( ! wp_style_is( 'kadence-blocks-column', 'enqueued' ) ) {
+			wp_enqueue_style( 'kadence-blocks-column' );
+		}
 		$attributes = apply_filters( 'kadence_render_column_layout_css_block_attributes', $attributes );
 		if ( isset( $attributes['uniqueID'] ) && ! empty( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
@@ -1075,7 +1081,7 @@ class Kadence_Blocks_Frontend {
 	 */
 	public function render_google_maps_css( $attributes, $content ) {
 
-		// Replace API key with default or users set key
+		// Replace API key with default or users set key.
 		$user_google_maps_key = get_option( 'kadence_blocks_google_maps_api', '' );
 
 		if ( empty( $user_google_maps_key ) ) {
@@ -1083,7 +1089,6 @@ class Kadence_Blocks_Frontend {
 		} else {
 			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', $user_google_maps_key, $content );
 		}
-
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$style_id = 'kb-google-maps' . esc_attr( $unique_id );
@@ -1111,7 +1116,27 @@ class Kadence_Blocks_Frontend {
 		}
 		return $content;
 	}
+	/**
+	 * Render Show More CSS
+	 *
+	 * @param array  $attributes the blocks attribtues.
+	 * @param string $content the blocks content.
+	 */
+	public function render_showmore_css_head( $attributes ) {
+		if ( isset( $attributes['uniqueID'] ) ) {
+			$unique_id              = $attributes['uniqueID'];
+			$style_id = 'kb-show-more' . esc_attr( $unique_id );
+			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'show-more', $unique_id ) ) {
+				// Filter attributes for easier dynamic css.
+				$attributes = apply_filters( 'kadence_blocks_show_more_render_block_attributes', $attributes );
 
+				$css = $this->blocks_show_more_array( $attributes, $unique_id );
+				if ( ! empty( $css ) ) {
+					$this->render_inline_css( $css, $style_id );
+				}
+			}
+		}
+	}
 
 	/**
 	 * Render Show More CSS
@@ -1141,21 +1166,15 @@ class Kadence_Blocks_Frontend {
 
 			$show_hide_more = isset( $attributes['showHideMore'] ) && $attributes['showHideMore'] === false ? '' : "hideMoreButton" . $show_more_id . ".style.display = 'block';";
 			$preview_height = ( isset( $attributes['heightDesktop'] ) ? $attributes['heightDesktop'] : 250 ) . ( ! empty( $attributes['heightType'] ) ? $attributes['heightType'] : 'px' );
-
 			$maskvalue = 'none';
 			if ( isset( $attributes['enableFadeOut'] ) && $attributes['enableFadeOut'] ) {
 				$maskvalue = 'linear-gradient(to bottom, black ' . ( isset( $attributes['fadeOutSize'] ) ? abs( $attributes['fadeOutSize'] - 100 ) : 50 ) . '%, transparent 100%)';
 			}
-
-
-			$content = $content . "
-			<script>
-				var showMoreContainer" . $show_more_id . " = document.querySelector('." . $show_more_container_id . " .kb-show-more-content');
-
-				var buttons" . $show_more_id . " = document.querySelectorAll('." . $show_more_container_id . " .kb-show-more-buttons div');
+			$content = $content . "<script>
+				var showMoreContainer" . $show_more_id . " = document.querySelector('." . $show_more_container_id . " > .wp-block-kadence-column');
+				var buttons" . $show_more_id . " = document.querySelectorAll('." . $show_more_container_id . " > .wp-block-kadence-advancedbtn div');
 				var showMoreButton" . $show_more_id . " = buttons" . $show_more_id . "[0];
 				var hideMoreButton" . $show_more_id . " = buttons" . $show_more_id . "[1];
-
 				showMoreButton" . $show_more_id . ".addEventListener('click', function(e) {
 					e.preventDefault();
 					showMoreContainer" . $show_more_id . ".style.maxHeight = 'none';
@@ -1163,23 +1182,19 @@ class Kadence_Blocks_Frontend {
 					showMoreContainer" . $show_more_id . ".style['-webkit-mask-image'] = 'none';
 					showMoreButton" . $show_more_id . ".style.display = 'none';
 					" . $show_hide_more . "
-			        return false;
+					return false;
 				});
-
 				hideMoreButton" . $show_more_id . ".addEventListener('click', function (e) {
-			        e.preventDefault();
+					e.preventDefault();
 					showMoreContainer" . $show_more_id . ".style.maxHeight =  '" . $preview_height . "';
 					showMoreButton" . $show_more_id . ".style.display = 'block';
 					hideMoreButton" . $show_more_id . ".style.display = 'none';
 					showMoreContainer" . $show_more_id . ".style['mask-image'] = '" . $maskvalue . "';
 					showMoreContainer" . $show_more_id . ".style['-webkit-mask-image'] = '" . $maskvalue . "';
-          			return false;
-			    });
-
+					return false;
+				});
 			</script>";
-
 		}
-
 		return $content;
 	}
 	/**
@@ -1631,6 +1646,7 @@ class Kadence_Blocks_Frontend {
 		// Lets register all the block styles.
 		wp_register_style( 'kadence-blocks-restaurant-menu', KADENCE_BLOCKS_URL . 'dist/blocks/restaurant.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-rowlayout', KADENCE_BLOCKS_URL . 'dist/blocks/row.style.build.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-column', KADENCE_BLOCKS_URL . 'dist/blocks/column.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-accordion', KADENCE_BLOCKS_URL . 'dist/blocks/accordion.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-btn', KADENCE_BLOCKS_URL . 'dist/blocks/btn.style.build.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-gallery', KADENCE_BLOCKS_URL . 'dist/blocks/gallery.style.build.css', array(), KADENCE_BLOCKS_VERSION );
@@ -2127,6 +2143,12 @@ class Kadence_Blocks_Frontend {
 							$this->render_google_maps_css_head( $blockattr );
 						}
 					}
+					if ( 'kadence/show-more' === $block['blockName'] ) {
+						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+							$blockattr = $block['attrs'];
+							$this->render_showmore_css_head( $blockattr );
+						}
+					}
 					if ( 'kadence/infobox' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -2322,6 +2344,12 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
 						$this->render_google_maps_css_head( $blockattr );
+					}
+				}
+				if ( 'kadence/show-more' === $inner_block['blockName'] ) {
+					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+						$blockattr = $inner_block['attrs'];
+						$this->render_showmore_css_head( $blockattr );
 					}
 				}
 				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
@@ -3321,7 +3349,6 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'margin-' . $key_position, $attr['marginDesktop'][$key] . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
 			}
 		}
-
 		// Margin tablet & mobile
 		foreach ( [ 'Tablet', 'Mobile' ] as $breakpoint ) {
 			$css->start_media_query( $media_query[ strtolower( $breakpoint ) ] );
@@ -3329,7 +3356,6 @@ class Kadence_Blocks_Frontend {
 				foreach ( $attr[ 'margin' . $breakpoint ] as $key => $marginValue ) {
 					if ( is_numeric( $marginValue ) ) {
 						$css->add_property( 'margin-' . $key_positions[ $key ], $marginValue . ( ! isset( $attr['marginUnit'] ) ? 'px' : $attr['marginUnit'] ) );
-
 					}
 				}
 			}
@@ -3356,49 +3382,50 @@ class Kadence_Blocks_Frontend {
 			}
 			$css->stop_media_query();
 		}
-
-		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:last-child' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn' );
+		$css->add_property( 'margin-top', '1em' );
+		$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:last-child' );
 		$css->add_property( 'display', 'none' );
 
 
-		$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+		$css->set_selector('.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
 		$css->add_property( 'max-height', (  isset( $attr['heightDesktop'] ) ? $attr['heightDesktop'] : 250) .  ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
 		$css->add_property( 'overflow-y', 'hidden' );
 
-		if( isset( $attr['enableFadeOut']) && $attr['enableFadeOut']) {
+		if ( isset( $attr['enableFadeOut'] ) && $attr['enableFadeOut'] ) {
 			$css->add_property( '-webkit-mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
 			$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize']) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
 		}
 
 		// Default expanded Desktop
 		if ( isset( $attr['defaultExpandedDesktop'] ) && $attr['defaultExpandedDesktop'] ) {
-			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content');
+			$css->set_selector('.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
 			$css->start_media_query( $media_query['desktop'] );
 			$css->add_property( 'max-height', 'none' );
 			$css->add_property( '-webkit-mask-image', 'none' );
 			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child' );
 			$css->add_property( 'display', 'none' );
 			$css->stop_media_query();
 		}
 
 		// Default expanded Tablet.
 		if ( isset( $attr['defaultExpandedTablet'] ) && $attr['defaultExpandedTablet'] ) {
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
 			$css->start_media_query( $media_query['tablet'] );
 			$css->add_property( 'max-height', 'none' );
 			$css->add_property( '-webkit-mask-image', 'none' );
 			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child' );
 			$css->add_property( 'display', 'none' );
 			$css->stop_media_query();
 
 			// If default expanded on tablet, but not on mobile
 			if ( ! isset( $attr['defaultExpandedMobile'] ) || ( isset( $attr['defaultExpandedMobile'] ) && ! $attr['defaultExpandedMobile'] ) ) {
 				$css->start_media_query( $media_query['mobile'] );
-				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content' );
+				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
 				$css->add_property( 'max-height', ( isset( $attr['heightDesktop'] ) ? $attr['heightDesktop'] : 250 ) . ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
 				$css->add_property( 'overflow-y', 'hidden' );
 
@@ -3407,7 +3434,7 @@ class Kadence_Blocks_Frontend {
 					$css->add_property( 'mask-image', 'linear-gradient(to bottom, black ' . ( isset( $attr['fadeOutSize'] ) ? abs( $attr['fadeOutSize'] - 100) : 50) . '%, transparent 100%)' );
 				}
 
-				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+				$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child' );
 				$css->add_property( 'display', 'inline' );
 				$css->stop_media_query();
 			}
@@ -3415,13 +3442,13 @@ class Kadence_Blocks_Frontend {
 
 		// Default expanded Mobile
 		if ( isset( $attr['defaultExpandedMobile'] ) && $attr['defaultExpandedMobile'] ) {
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-content' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-column' );
 			$css->start_media_query( $media_query['mobile'] );
 			$css->add_property( 'max-height', 'none' );
 			$css->add_property( '-webkit-mask-image', 'none' );
 			$css->add_property( 'mask-image', 'none' );
 
-			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' .kb-show-more-buttons .kt-btn-wrap:first-child' );
+			$css->set_selector( '.kb-block-show-more-container' . $unique_id . ' > .wp-block-kadence-advancedbtn .kt-btn-wrap:first-child' );
 			$css->add_property( 'display', 'none' );
 			$css->stop_media_query();
 		}
@@ -8819,8 +8846,15 @@ class Kadence_Blocks_Frontend {
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
 		// Style.
-		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) || isset( $attr['border'] ) || isset( $attr['borderRadius'] ) || isset( $attr['borderWidth'] ) || ( isset( $attr['displayShadow'] ) && true == $attr['displayShadow'] ) ) {
+		if ( ! empty( $attr['maxWidth'][0] ) ) {
+			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->add_property( 'max-width', $attr['maxWidth'][0] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+		}
+		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) || ! empty( $attr['height'][0] ) || isset( $attr['border'] ) || isset( $attr['borderRadius'] ) || isset( $attr['borderWidth'] ) || ( isset( $attr['displayShadow'] ) && true == $attr['displayShadow'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			if ( ! empty( $attr['height'][0] ) ) {
+				$css->add_property( 'min-height', $attr['height'][0] . ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+			}
 			if ( isset( $attr['topPadding'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPadding'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
 			}
@@ -8973,6 +9007,23 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'margin-right', '0px' );
 			$css->add_property( 'margin-top', '0px' );
 			$css->add_property( 'margin-bottom', '0px' );
+		} else {
+			if ( ! empty( $attr['verticalAlignment'] ) ) {
+				switch ( $attr['verticalAlignment'] ) {
+					case 'top':
+						$align = 'flex-start';
+						break;
+					case 'bottom':
+						$align = 'flex-end';
+						break;
+					default:
+						$align = 'center';
+						break;
+				}
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'align-items', $align );
+				$css->add_property( 'display', 'flex' );
+			}
 		}
 		if ( ! empty( $attr['verticalAlignment'] ) ) {
 			switch ( $attr['verticalAlignment'] ) {
@@ -8986,7 +9037,7 @@ class Kadence_Blocks_Frontend {
 					$align = 'center';
 					break;
 			}
-			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->set_selector( '.kt-row-column-wrap > .kadence-column' . $unique_id );
 			$css->add_property( 'align-self', $align );
 			$css->set_selector( '.kt-inner-column-height-full > .wp-block-kadence-column.kadence-column' . $unique_id );
 			$css->add_property( 'align-self', 'auto' );
@@ -9063,8 +9114,12 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		$css->start_media_query( $media_query['tablet'] );
+		if ( ! empty( $attr['maxWidth'][1] ) ) {
+			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->add_property( 'max-width', $attr['maxWidth'][1] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+		}
 		if ( isset( $attr['collapseOrder'] ) ) {
-			$css->set_selector( '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id );
+			$css->set_selector( '.kt-row-column-wrap.kt-tab-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-tab-layout-row > .kadence-column' . $unique_id . ', .kadence-column' . $unique_id );
 			$css->add_property( 'order', $attr['collapseOrder'] );
 		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 1 ] ) && ! empty( $attr['textAlign'][ 1 ] ) ) {
@@ -9135,8 +9190,11 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'margin-bottom', '0px' );
 			}
 		}
-		if ( isset( $attr['topPaddingT'] ) || isset( $attr['bottomPaddingT'] ) || isset( $attr['leftPaddingT'] ) || isset( $attr['rightPaddingT'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || isset( $attr['rightMarginT'] ) || isset( $attr['leftMarginT'] ) || isset( $attr['tabletBorderWidth'] ) ) {
+		if ( isset( $attr['topPaddingT'] ) || isset( $attr['bottomPaddingT'] ) || isset( $attr['leftPaddingT'] ) || isset( $attr['rightPaddingT'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || isset( $attr['rightMarginT'] ) || ! empty( $attr['height'][1] ) || isset( $attr['leftMarginT'] ) || isset( $attr['tabletBorderWidth'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			if ( ! empty( $attr['height'][1] ) ) {
+				$css->add_property( 'min-height', $attr['height'][1] . ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+			}
 			if ( isset( $attr['topPaddingT'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPaddingT'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
 			}
@@ -9178,8 +9236,12 @@ class Kadence_Blocks_Frontend {
 		}
 		$css->stop_media_query();
 		$css->start_media_query( $media_query['mobile'] );
+		if ( ! empty( $attr['maxWidth'][2] ) ) {
+			$css->set_selector( '.kadence-column' . $unique_id );
+			$css->add_property( 'max-width', $attr['maxWidth'][2] . ( isset( $attr['maxWidthUnit'] ) ? $attr['maxWidthUnit'] : 'px' ) );
+		}
 		if ( isset( $attr['collapseOrder'] ) ) {
-			$css->set_selector( '.kt-row-column-wrap.kt-mobile-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-row > .kadence-column' . $unique_id );
+			$css->set_selector( '.kt-row-column-wrap.kt-mobile-layout-three-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-two-grid > .kadence-column' . $unique_id . ', .kt-row-column-wrap.kt-mobile-layout-row > .kadence-column' . $unique_id . ', .kadence-column' . $unique_id );
 			$css->add_property( 'order', $attr['collapseOrder'] );
 		}
 		if ( isset( $attr['textAlign'] ) && is_array( $attr['textAlign'] ) && isset( $attr['textAlign'][ 2 ] ) && ! empty( $attr['textAlign'][ 2 ] ) ) {
@@ -9253,8 +9315,11 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'margin-bottom', '0px' );
 			}
 		}
-		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) || isset( $attr['mobileBorderWidth'] ) ) {
+		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) || ! empty( $attr['height'][2] ) || isset( $attr['mobileBorderWidth'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+			if ( ! empty( $attr['height'][2] ) ) {
+				$css->add_property( 'min-height', $attr['height'][2] . ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+			}
 			if ( isset( $attr['topPaddingM'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPaddingM'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
 			}

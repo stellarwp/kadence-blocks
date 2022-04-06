@@ -915,3 +915,33 @@ h5.kt-main-subtitle {
 .kt-modal-settings-number-array .kt-modal-settings-field:not(:last-child) {
     padding-right: 5px;
 }
+.side-panel .pro-section.components-panel {
+    border-color: #005ab3;
+    border-radius:3px;
+}
+
+.side-panel .pro-section.components-panel ul {
+    list-style: disc;
+    padding-left: 1em;
+    font-weight:bold
+}
+
+.side-panel .pro-section.components-panel a.sidebar-btn-link {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    display: inline-block;
+    padding: 10px 0;
+    width:100%;
+    text-align:center;
+    background: #005ab3;
+    border-radius: 3px;
+    font-size: 14px;
+    color: white;
+    text-decoration: none;
+    transition: all .2s ease;
+	border: 0;
+    height: auto;
+	&:hover {
+		background: #0073e6;
+	}
+}

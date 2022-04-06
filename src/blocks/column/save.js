@@ -10,10 +10,10 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
-	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, linkTarget, linkTitle } = attributes;
+	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, linkTarget, linkTitle, htmlTag } = attributes;
 	const classes = classnames( {
 		[ `inner-column-${ id }` ]: id,
 		[ `kadence-column${ uniqueID }` ]: uniqueID,
@@ -32,8 +32,9 @@ function Save( { attributes } ) {
 	if ( undefined !== linkSponsored && true === linkSponsored ) {
 		relAttr = ( relAttr ? relAttr.concat( ' sponsored' ) : 'sponsored' );
 	}
+	const HtmlTagOut = ( ! htmlTag ? 'div' : htmlTag );
 	return (
-		<div className={ classes }>
+		<HtmlTagOut { ...useBlockProps.save( { className: classes }) }>
 			<div className={ 'kt-inside-inner-col' }>
 				<InnerBlocks.Content />
 			</div>
@@ -47,7 +48,7 @@ function Save( { attributes } ) {
 				>
 				</a>
 			) }
-		</div>
+		</HtmlTagOut>
 	);
 }
 export default Save;

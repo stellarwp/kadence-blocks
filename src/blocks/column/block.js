@@ -16,6 +16,7 @@ import save from './save';
 import deprecated from './deprecated';
 import attributes from './attributes';
 
+import './editor.scss';
 /**
  * WordPress dependencies
  */

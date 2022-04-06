@@ -248,6 +248,21 @@ class ColumnStyleCopyPaste extends Component {
 			if ( blockAttributes.linkHoverColorHover ) {
 				copyStyles.linkHoverColorHover = blockAttributes.linkHoverColorHover;
 			}
+			if ( blockAttributes.maxWidth ) {
+				copyStyles.maxWidth = blockAttributes.maxWidth;
+			}
+			if ( blockAttributes.maxWidthUnit ) {
+				copyStyles.maxWidthUnit = blockAttributes.maxWidthUnit;
+			}
+			if ( blockAttributes.height ) {
+				copyStyles.height = blockAttributes.height;
+			}
+			if ( blockAttributes.heightUnit ) {
+				copyStyles.heightUnit = blockAttributes.heightUnit;
+			}
+			if ( blockAttributes.htmlTag ) {
+				copyStyles.htmlTag = blockAttributes.htmlTag;
+			}
 			localStorage.setItem( 'kadenceColumnStyle', JSON.stringify( copyStyles ) );
 		};
 		const pasteAction = () => {

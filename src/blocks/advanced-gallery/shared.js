@@ -9,6 +9,7 @@ export const getRelevantMediaFiles = async ( images, lightSize, thumbSize, oldIm
 		images.map( async ( image ) => {
 			let old_link = '';
 			let old_link_target = '';
+			let old_link_sponsored = '';
 			let theImage = await wp.data.select( 'core' ).getMedia( image.id );
 			if ( ! theImage ) {
 				theImage = image;
@@ -26,11 +27,15 @@ export const getRelevantMediaFiles = async ( images, lightSize, thumbSize, oldIm
 						if ( oldImages[ k ].linkTarget ) {
 							old_link_target = oldImages[ k ].linkTarget;
 						}
+						if ( oldImages[ k ].linkTarget ) {
+							old_link_sponsored = oldImages[ k ].linkSponsored;
+						}
 					}
 				}
 			}
 			imageProps.customLink = image.customLink || old_link;
 			imageProps.linkTarget = image.linkTarget || old_link_target;
+			imageProps.linkSponsored = image.linkSponsored || old_link_sponsored;
 			imageProps.thumbUrl = get( theImage, [ 'media_details', 'sizes', thumbSize, 'source_url' ] ) || get( theImage, [ 'sizes', thumbSize, 'url' ] ) || theImage.source_url || image.url;
 			imageProps.lightUrl = get( theImage, [ 'media_details', 'sizes', lightSize, 'source_url' ] ) || get( theImage, [ 'sizes', lightSize, 'url' ] ) || theImage.source_url || image.url;
 			imageProps.width = get( theImage, [ 'media_details', 'sizes', thumbSize, 'width' ] ) || get( theImage, [ 'sizes', thumbSize, 'width' ] ) || get( theImage, [ 'media_details', 'width' ] ) || get( theImage, [ 'sizes', 'full', 'width' ] )  || undefined;

@@ -270,10 +270,8 @@ export function Edit ({
 					renderAppender: false,
 					template: [
 						['kadence/column', {
-							//templateLock: "all",
-							//lock: { remove: true, move: true },
 							className: 'kb-show-more-content',
-						}, { innerBlocks: ['core/paragraph', { dropCap: false, placeholder: __('Add your content here', 'kadence-blocks') }] }],
+						} ],
 						['kadence/advancedbtn', {
 							lock: { remove: true, move: true },
 							lockBtnCount: true,
@@ -349,7 +347,7 @@ export function Edit ({
 										''
 									],
 									'boxShadow': [
-										true,
+										false,
 										'#000000',
 										0.2,
 										1,
@@ -359,7 +357,7 @@ export function Edit ({
 										false
 									],
 									'boxShadowHover': [
-										true,
+										false,
 										'#000000',
 										0.4,
 										2,
@@ -441,7 +439,7 @@ export function Edit ({
 										''
 									],
 									'boxShadow': [
-										true,
+										false,
 										'#000000',
 										0.2,
 										1,
@@ -451,7 +449,7 @@ export function Edit ({
 										false
 									],
 									'boxShadowHover': [
-										true,
+										false,
 										'#000000',
 										0.4,
 										2,

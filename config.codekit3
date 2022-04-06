@@ -520,6 +520,18 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/blocks\/column.style.build.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/blocks\/column.style.build-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
     "\/dist\/blocks\/count-up.style.build.css" : {
       "aP" : 1,
       "bl" : 0,
@@ -2004,6 +2016,14 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/blocks\/column\/block.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/column\/block-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
     "\/src\/blocks\/column\/copy-paste-style.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -2037,6 +2057,21 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/blocks\/column\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/column\/editor.css",
+      "oF" : 1,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
     "\/src\/blocks\/column\/icon.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -2044,6 +2079,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/blocks\/column\/icon-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/column\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/column\/index-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -2058,6 +2104,21 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
+    },
+    "\/src\/blocks\/column\/style.scss" : {
+      "aP" : 1,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/blocks\/column.style.build.css",
+      "oF" : 2,
+      "oS" : 3,
+      "pg" : 0,
+      "sct" : 1
     },
     "\/src\/blocks\/count-up\/attributes.js" : {
       "bF" : 0,

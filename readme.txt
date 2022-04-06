@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.8
 Tested up to: 5.9
-Stable tag: 2.3.1
+Stable tag: 2.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,20 +81,20 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 2.3.1 =
-Release Date: April 4th, 2022
-** Add: Show More Block.
-** Add: 
+= 2.4.0 =
+Release Date: April 7th, 2022
+* Add: Show More Block.
 * Add: Option for Author link in post block.
 * Add: Option to dynamically source a gallery.
 * Add: Option to set a custom gallery image link to sponsored.
 ** Add: Tablet and Mobile Max width settings for image block.
+* Add: Min Height and Max Width to section block.
 * Update: Allow section block to be used outside of a row.
 * Update: Parallax for ipad pro.
 * Fix: Gallery thumbnail size possibly reverting to full when adding new images.
-** Fix: Issue with some lottie files not saving correctly.
-** Fix: Issue with lottie render not setting the correct aria role.
-** Fix: Issue with advanced image block not rendering correclty in flex area.
+* Fix: Issue with some lottie files not saving correctly.
+* Fix: Issue with lottie render not setting the correct aria role.
+* Fix: Issue with advanced image block not rendering correctly in flex area.
 ** Fix: CSS specificity issue with divider block.
 
 = 2.3.0 =
@@ -182,6 +182,7 @@ Release Date: January 14th, 2022
 * Fix: Tab title incorrectly showing in editor when using only icon mode.
 * Fix: Issue with form submit font unit.
 * Fix: RTL tabs styling issue.
+* Fix: Issue with kbInitMaps is not a function wit Javascript API
 * Fix: Issue with Table of Contents and special characters
 
 = 2.1.19 =

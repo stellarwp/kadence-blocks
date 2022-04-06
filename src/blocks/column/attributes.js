@@ -326,9 +326,33 @@ const attributes = {
 		type: 'boolean',
 		default: false,
 	},
+	maxWidth: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
+	maxWidthUnit: {
+		type: 'string',
+		default: 'px',
+	},
+	height: {
+		type: 'array',
+		default: [ '', '', '' ],
+	},
+	heightUnit: {
+		type: 'string',
+		default: 'px',
+	},
+	htmlTag: {
+		type: 'string',
+		default: 'div',
+	},
 	inQueryBlock: {
 		type: 'bool',
 		default: false,
+	},
+	overlayType: {
+		type: 'string',
+		default: 'normal',
 	},
 };
 export default attributes;
