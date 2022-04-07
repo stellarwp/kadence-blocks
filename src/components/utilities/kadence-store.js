@@ -3,7 +3,8 @@ import get from 'lodash/get';
 
 const DEFAULT_STATE = {
 	previewDevice: 'Desktop',
-	uniqueIDs: [],
+	uniqueIDs: {},
+	uniquePanes: {},
 };
 
 const actions = {
@@ -27,10 +28,19 @@ const actions = {
 			defaultValue
 		}
 	},
-	addUniqueID( uniqueID ) {
+	addUniqueID( uniqueID, clientID ) {
 		return {
 			type: 'ADD_UNIQUE_ID',
 			uniqueID,
+			clientID
+		};
+	},
+	addUniquePane( uniqueID, clientID, rootID ) {
+		return {
+			type: 'ADD_UNIQUE_PANE',
+			uniqueID,
+			clientID,
+			rootID
 		};
 	}
 };
@@ -98,10 +108,22 @@ const store = createReduxStore( 'kadenceblocks/data', {
 				};
 			case 'ADD_UNIQUE_ID':
 				const updatedIDs = state.uniqueIDs;
-				updatedIDs.push( action.uniqueID );
+				Object.assign( updatedIDs, { [action.uniqueID]: action.clientID } );
 				return {
 					...state,
 					uniqueIDs: updatedIDs,
+				};
+			case 'ADD_UNIQUE_PANE':
+				const uniquePanes = state.uniquePanes;
+				if ( uniquePanes.hasOwnProperty( action.rootID ) ) {
+					Object.assign( uniquePanes[action.rootID], { [action.uniqueID.toString()]: action.clientID } );
+				} else {
+					uniquePanes[action.rootID] = {};
+					Object.assign( uniquePanes[action.rootID], { [action.uniqueID.toString()]: action.clientID } );
+				}
+				return {
+					...state,
+					uniquePanes: uniquePanes,
 				};
 			default:
 				return state;
@@ -114,6 +136,48 @@ const store = createReduxStore( 'kadenceblocks/data', {
 		getUniqueIDs( state ) {
 			const { uniqueIDs } = state;
 			return uniqueIDs;
+		},
+		isUniqueID( state, uniqueID ) {
+			const { uniqueIDs } = state;
+			let isUniqueID = true;
+			if ( uniqueIDs.hasOwnProperty( uniqueID ) ) {
+				isUniqueID = false;
+			}
+			return isUniqueID;
+		},
+		isUniqueBlock( state, uniqueID, clientID ) {
+			const { uniqueIDs } = state;
+			let isUniqueBlock = false;
+			if ( uniqueIDs.hasOwnProperty( uniqueID ) ) {
+				// Compare clientID if they match then it just means we've switched to iframe view and so we don't need a new ID.
+				if ( uniqueIDs[uniqueID] === clientID ) {
+					isUniqueBlock = true;
+				}
+			}
+			return isUniqueBlock;
+		},
+		isUniquePane( state, uniqueID, rootID ) {
+			const { uniquePanes } = state;
+			let isUniquePane = true;
+			if ( uniquePanes.hasOwnProperty( rootID ) ) {
+				if ( uniquePanes[rootID].hasOwnProperty( uniqueID.toString() ) ) {
+					isUniquePane = false;
+				}
+			}
+			return isUniquePane;
+		},
+		isUniquePaneBlock( state, uniqueID, clientID, rootID ) {
+			const { uniquePanes } = state;
+			let isUniquePaneBlock = false;
+			if ( uniquePanes.hasOwnProperty( rootID ) ) {
+				if ( uniquePanes[rootID].hasOwnProperty( uniqueID.toString() ) ) {
+					// Compare clientID if they match then it just means we've switched to iframe view and so we don't need a new ID.
+					if ( uniquePanes[rootID][uniqueID.toString()] === clientID ) {
+						isUniquePaneBlock = true;
+					}
+				}
+			}
+			return isUniquePaneBlock;
 		},
 		isEditorPanelOpened( state, panelName, defaultValue ) {
 			const panels = get( state, ['editorPanels'], {} );

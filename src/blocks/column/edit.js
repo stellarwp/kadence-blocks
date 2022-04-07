@@ -41,9 +41,8 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 
-import { withSelect, withDispatch, useSelect } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useRef, useState, Fragment } from '@wordpress/element';
-import { compose } from '@wordpress/compose';
 import {
 	InnerBlocks,
 	BlockControls,
@@ -62,25 +61,16 @@ const {
 const {
 	applyFilters,
 } = wp.hooks;
-const ALLOWED_MEDIA_TYPES = [ 'image' ];
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const ktcolumnUniqueIDs = [];
 /**
  * Build the section edit.
  */
-function Edit ({
+function SectionEdit( {
 	attributes,
 	setAttributes,
 	isSelected,
 	clientId,
 	context,
 	className,
-	addUniqueID,
-	getUniqueIDs,
-  	previewDevice,
-	inRowBlock,
 } ) {
 	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag } = attributes;
 	const getDynamic = () => {
@@ -95,6 +85,17 @@ function Edit ({
 			applyFilters( 'kadence.dynamicBackground', '', attributes, setAttributes, 'backgroundImgHover:0:bgImg', contextPost );
 		}
 	}
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {
@@ -106,21 +107,21 @@ function Edit ({
 					} );
 				}
 			}
-			if ( getUniqueIDs.includes( smallID ) ) {
+			if ( ! isUniqueID( uniqueID ) ) {
 				smallID = uniqueId( smallID );
 			}
 			setAttributes( {
 				uniqueID: smallID,
 			} );
-			addUniqueID( smallID );
-		} else if ( getUniqueIDs.includes( uniqueID ) ) {
-			if ( getUniqueIDs.includes( smallID ) ) {
-				smallID = uniqueId( smallID );
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
 			}
-			attributes.uniqueID = smallID;
-			addUniqueID( smallID );
 		} else {
-			addUniqueID( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
 		if ( context && context.queryId && context.postId ) {
 			if ( ! attributes.inQueryBlock ) {
@@ -135,11 +136,18 @@ function Edit ({
 		}
 		debounce( getDynamic, 200 );
 	}, [] );
-	const { hasInnerBlocks } = useSelect(
+	const { hasInnerBlocks, inRowBlock } = useSelect(
 		( select ) => {
-			const { getBlock} = select( blockEditorStore );
+			const { getBlock, getBlockRootClientId, getBlocksByClientId } = select( blockEditorStore );
 			const block = getBlock( clientId );
+			const rootID = getBlockRootClientId( clientId );
+			let inRowBlock = false;
+			if ( rootID ) {
+				const parentBlock = getBlocksByClientId( rootID );
+				inRowBlock = ( undefined !== parentBlock && undefined !== parentBlock[0] && undefined !== parentBlock[0].name && parentBlock[0].name === 'kadence/rowlayout' ? true : false );
+			}
 			return {
+				inRowBlock: inRowBlock,
 				hasInnerBlocks: !! ( block && block.innerBlocks.length ),
 			};
 		},
@@ -331,6 +339,7 @@ function Edit ({
 			{ ...blockProps }
 		>
 			<style>
+				{ ( ( undefined !== previewMaxWidth && '' !== previewMaxWidth ) ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } { flex: 1 ${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
 				{ ( ( undefined !== zIndex && '' !== zIndex ) ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
 				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 				{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
@@ -1176,27 +1185,4 @@ function Edit ({
 		</div>
 	);
 }
-//export default ( KadenceColumn );
-export default compose( [
-	withSelect( ( select, ownProps ) => {
-		const { clientId } = ownProps;
-		const {
-			getBlockRootClientId,
-			getBlocksByClientId,
-		} = select( 'core/block-editor' );
-		const rootID = getBlockRootClientId( clientId );
-		let inRowBlock = false;
-		if ( rootID ) {
-			const parentBlock = getBlocksByClientId( rootID );
-			inRowBlock = ( undefined !== parentBlock && undefined !== parentBlock[0] && undefined !== parentBlock[0].name && parentBlock[0].name === 'kadence/rowlayout' ? true : false );
-		}
-		return {
-			inRowBlock: inRowBlock,
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-			getUniqueIDs: select( 'kadenceblocks/data' ).getUniqueIDs(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value ),
-	} ) ),
-] )( Edit );
+export default SectionEdit;

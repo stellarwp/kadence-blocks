@@ -57,7 +57,7 @@ const {
 	SelectControl,
 	IconButton,
 } = wp.components;
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 /**
  * Internal block libraries
@@ -115,6 +115,7 @@ class KadenceAccordionComponent extends Component {
 		return desktopSize;
 	}
 	componentDidMount() {
+		// This runs when we switch from desktop to tablet.
 		if ( ! this.props.attributes.uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/accordion' ] !== undefined && typeof blockConfigObject[ 'kadence/accordion' ] === 'object' ) {
@@ -154,6 +155,7 @@ class KadenceAccordionComponent extends Component {
 			} );
 			ktaccordUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktaccordUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
+			// This will force a rebuild of the unique ID when preview changes.
 			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			ktaccordUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
@@ -634,6 +636,7 @@ class KadenceAccordionComponent extends Component {
 																aria-pressed={ openPane === attributes.id - 1 }
 																onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
 															>
+																{ console.log( 'is_array' ) }
 																{ __( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id ) }
 															</Button>
 														) ) }

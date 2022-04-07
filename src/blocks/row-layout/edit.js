@@ -3297,7 +3297,7 @@ class KadenceRowLayout extends Component {
 							) }
 						</ResizableBox>
 					) }
-					{ colLayout && this.showSettings( 'allSettings' ) && this.showSettings( 'paddingMargin' ) && ( paddingUnit && 'px' !== paddingUnit ) && (
+					{ colLayout && ( ! this.showSettings( 'allSettings' ) || ! this.showSettings( 'paddingMargin' ) || ( paddingUnit && 'px' !== paddingUnit ) ) && (
 						<Fragment>
 							{ uniqueID && (
 								<div className="kt-row-padding kb-static-row-padding" style={ {
@@ -3459,7 +3459,7 @@ class KadenceRowLayout extends Component {
 							) }
 						</ResizableBox>
 					) }
-					{ colLayout && this.showSettings( 'allSettings' ) && this.showSettings( 'paddingMargin' ) && ( paddingUnit && 'px' !== paddingUnit ) && (
+					{ colLayout && ( ! this.showSettings( 'allSettings' ) || ! this.showSettings( 'paddingMargin' ) || ( paddingUnit && 'px' !== paddingUnit ) ) && (
 						<Fragment>
 							{ uniqueID && (
 								<div className="kt-row-padding kb-static-row-padding" style={ {

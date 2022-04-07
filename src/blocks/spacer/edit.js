@@ -394,6 +394,6 @@ export default compose( [
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value ),
+		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
 	} ) ),
 ] )( KadenceSpacerDivider );

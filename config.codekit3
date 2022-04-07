@@ -1994,28 +1994,6 @@
       "pg" : 0,
       "sct" : 1
     },
-    "\/src\/blocks\/column\/attributes.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/column\/attributes-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/column\/block.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/column\/block-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
     "\/src\/blocks\/column\/block.json" : {
       "ft" : 524288,
       "oA" : 1,

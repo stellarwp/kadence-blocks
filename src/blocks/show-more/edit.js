@@ -526,10 +526,9 @@ export default compose( [
 	withSelect( ( select ) => {
 		return {
 			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-			getUniqueIDs: select( 'kadenceblocks/data' ).getUniqueIDs(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value ),
+		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
 	} ) ),
 ] )( Edit );

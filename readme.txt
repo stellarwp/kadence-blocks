@@ -82,20 +82,28 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 == Changelog ==
 
 = 2.4.0 =
-Release Date: April 7th, 2022
+Release Date: April 8th, 2022
 * Add: Show More Block.
 * Add: Option for Author link in post block.
 * Add: Option to dynamically source a gallery.
 * Add: Option to set a custom gallery image link to sponsored.
-** Add: Tablet and Mobile Max width settings for image block.
+* Add: Option to have sub lists in icon list block.
+* Add: Tablet and Mobile Max width settings for image block.
 * Add: Min Height and Max Width to section block.
 * Update: Allow section block to be used outside of a row.
-* Update: Parallax for ipad pro.
+* Update: Add text transform in info box text and learn more controls.
+* Fix: Issue with Parallax for ipad pro.
 * Fix: Gallery thumbnail size possibly reverting to full when adding new images.
 * Fix: Issue with some lottie files not saving correctly.
 * Fix: Issue with lottie render not setting the correct aria role.
 * Fix: Issue with advanced image block not rendering correctly in flex area.
-** Fix: CSS specificity issue with divider block.
+* Fix: Issue with useSettings and custom colors.
+* Fix: Issue with alpha color in divider block.
+* Fix: Issue with testimonial name alignment.
+* Fix: CSS specificity issue with divider block.
+* Fix: Issue with relative links and tabs.
+* Fix: Issue with accordion start open changing with preview.
+* Fix: Issue with padding missing in row when options are hidden from user. 
 
 = 2.3.0 =
 Release Date: March 7th, 2022

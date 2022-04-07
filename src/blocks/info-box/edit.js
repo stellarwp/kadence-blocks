@@ -737,6 +737,7 @@ class KadenceInfoBox extends Component {
 						variant: '',
 						subset: '',
 						loadGoogle: true,
+						textTransform: '',
 					} ],
 					displayLearnMore: false,
 					displayShadow: false,
@@ -812,6 +813,7 @@ class KadenceInfoBox extends Component {
 						variant: '',
 						subset: '',
 						loadGoogle: true,
+						textTransform: '',
 					} ],
 					displayLearnMore: false,
 					displayShadow: true,
@@ -918,6 +920,7 @@ class KadenceInfoBox extends Component {
 						backgroundHover: '#ffffff',
 						borderHover: '#ffffff',
 						hoverEffect: 'revealBorder',
+						textTransform: '',
 					} ],
 					displayShadow: false,
 				} );
@@ -998,6 +1001,7 @@ class KadenceInfoBox extends Component {
 						variant: '',
 						subset: '',
 						loadGoogle: true,
+						textTransform: '',
 					} ],
 					displayLearnMore: true,
 					learnMoreStyles: [ {
@@ -1027,6 +1031,7 @@ class KadenceInfoBox extends Component {
 						backgroundHover: '#ffffff',
 						borderHover: '#222222',
 						hoverEffect: 'revealBorder',
+						textTransform: '',
 					} ],
 					displayShadow: false,
 				} );
@@ -2592,6 +2597,8 @@ class KadenceInfoBox extends Component {
 											onFontStyle={ ( value ) => saveTextFont( { style: value } ) }
 											fontSubset={ textFont[ 0 ].subset }
 											onFontSubset={ ( value ) => saveTextFont( { subset: value } ) }
+											textTransform={ ( undefined !== textFont[ 0 ].textTransform ? textFont[ 0 ].textTransform : '' ) }
+											onTextTransform={ ( value ) => saveTextFont( { textTransform: value } ) }
 										/>
 										<TypographyControls
 											padding={ ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].padding ? textSpacing[ 0 ].padding : [ '', '', '', '' ] ) }
@@ -2793,6 +2800,8 @@ class KadenceInfoBox extends Component {
 											onGoogleFont={ ( value ) => saveLearnMoreStyles( { google: value } ) }
 											loadGoogleFont={ learnMoreStyles[ 0 ].loadGoogle }
 											onLoadGoogleFont={ ( value ) => saveLearnMoreStyles( { loadGoogle: value } ) }
+											textTransform={ ( undefined !== learnMoreStyles[ 0 ].textTransform ? learnMoreStyles[ 0 ].textTransform : '' ) }
+											onTextTransform={ ( value ) => saveLearnMoreStyles( { textTransform: value } ) }
 											fontVariant={ learnMoreStyles[ 0 ].variant }
 											onFontVariant={ ( value ) => saveLearnMoreStyles( { variant: value } ) }
 											fontWeight={ learnMoreStyles[ 0 ].weight }
@@ -3109,6 +3118,7 @@ class KadenceInfoBox extends Component {
 									fontSize: previewTextFontSize + textFont[ 0 ].sizeType,
 									lineHeight: previewTextLineHeight + textFont[ 0 ].lineType,
 									letterSpacing: textFont[ 0 ].letterSpacing + 'px',
+									textTransform: ( undefined !== textFont[ 0 ].textTransform  && textFont[ 0 ].textTransform ) ? textFont[ 0 ].textTransform : undefined,
 									fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
 									padding: ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].padding ? textSpacing[ 0 ].padding[ 0 ] + 'px ' + textSpacing[ 0 ].padding[ 1 ] + 'px ' + textSpacing[ 0 ].padding[ 2 ] + 'px ' + textSpacing[ 0 ].padding[ 3 ] + 'px' : '' ),
 									margin: ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].margin ? textSpacing[ 0 ].margin[ 0 ] + 'px ' + textSpacing[ 0 ].margin[ 1 ] + 'px ' + textSpacing[ 0 ].margin[ 2 ] + 'px ' + textSpacing[ 0 ].margin[ 3 ] + 'px' : '' ),
@@ -3142,6 +3152,7 @@ class KadenceInfoBox extends Component {
 										fontSize: previewLearnMoreFontSize + learnMoreStyles[ 0 ].sizeType,
 										lineHeight:  previewLearnMoreLineHeight + learnMoreStyles[ 0 ].lineType,
 										letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
+										textTransform: ( undefined !== learnMoreStyles[ 0 ].textTransform  && learnMoreStyles[ 0 ].textTransform ) ? learnMoreStyles[ 0 ].textTransform : undefined,
 										fontFamily: ( learnMoreStyles[ 0 ].family ? learnMoreStyles[ 0 ].family : '' ),
 										borderWidth: ( learnMoreStyles[ 0 ].borderWidth ? learnMoreStyles[ 0 ].borderWidth[ 0 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 1 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 2 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
 										padding: ( learnMoreStyles[ 0 ].padding ? learnMoreStyles[ 0 ].padding[ 0 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 1 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 2 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
