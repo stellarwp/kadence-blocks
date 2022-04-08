@@ -8997,7 +8997,8 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 		// Direction Styles.
-		if ( isset( $attr['direction'] ) && is_array( $attr['direction'] ) && ! empty( $attr['direction'][ 0 ] ) && $attr['direction'][ 0 ] === 'horizontal' ) {
+		$desktop_direction = ( isset( $attr['direction'] ) && is_array( $attr['direction'] ) && ! empty( $attr['direction'][ 0 ] ) ? $attr['direction'][ 0 ] : 'vertical' );
+		if ( $desktop_direction === 'horizontal' ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			$css->add_property( 'display', 'flex' );
 			$css->add_property( 'flex-direction', 'row' );
@@ -9056,10 +9057,12 @@ class Kadence_Blocks_Frontend {
 						break;
 				}
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
-				$css->add_property( 'align-items', $align );
+				$css->add_property( 'justify-content', $align );
+				$css->add_property( 'flex-direction', 'column' );
 				$css->add_property( 'display', 'flex' );
 			}
 		}
+		// inside of Row.
 		if ( ! empty( $attr['verticalAlignment'] ) ) {
 			switch ( $attr['verticalAlignment'] ) {
 				case 'top':
@@ -9177,6 +9180,10 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'margin-left', '0px' );;
 			}
 		} elseif ( 'horizontal' === $tablet_direction ) {
+			if ( $desktop_direction === 'vertical' && ! empty( $attr['verticalAlignment'] ) ) {
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'justify-content', 'inherit' );
+			}
 			// If desktop vertical lets add the horizontal css.
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( isset( $attr['direction'] ) && is_array( $attr['direction'] ) && ! empty( $attr['direction'][ 0 ] ) && $attr['direction'][ 0 ] === 'vertical' ) {
@@ -9304,6 +9311,10 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'margin-left', '0px' );;
 			}
 		} elseif ( 'horizontal' === $mobile_direction ) {
+			if ( $desktop_direction === 'vertical' && ! empty( $attr['verticalAlignment'] ) ) {
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
+				$css->add_property( 'justify-content', 'inherit' );
+			}
 			// If desktop vertical lets add the horizontal css.
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( isset( $attr['direction'] ) && is_array( $attr['direction'] ) && ! empty( $attr['direction'][ 0 ] ) && $attr['direction'][ 0 ] === 'vertical' ) {

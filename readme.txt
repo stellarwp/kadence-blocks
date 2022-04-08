@@ -81,8 +81,13 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
+= 2.4.1 =
+Release Date: April 8th, 2022
+* Fix: Possible issue where vertically aligning section blocks could break layout.
+
 = 2.4.0 =
 Release Date: April 8th, 2022
+* Add: Section blocks can be used outside of a row for complete flex control layouts.
 * Add: Show More Block.
 * Add: Option for Author link in post block.
 * Add: Option to dynamically source a gallery.
@@ -90,7 +95,6 @@ Release Date: April 8th, 2022
 * Add: Option to have sub lists in icon list block.
 * Add: Tablet and Mobile Max width settings for image block.
 * Add: Min Height and Max Width to section block.
-* Update: Allow section block to be used outside of a row.
 * Update: Add text transform in info box text and learn more controls.
 * Fix: Issue with Parallax for ipad pro.
 * Fix: Gallery thumbnail size possibly reverting to full when adding new images.

@@ -12,6 +12,24 @@
 	margin-top: 0px;
     margin-bottom: 0px;
 }
+.wp-block-kadence-column > .kadence-inner-column-direction-vertical.kadence-inner-column-vertical-align-middle {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	> .wp-block {
+		margin-left: unset;
+		margin-right: unset;
+	}
+}
+.wp-block-kadence-column > .kadence-inner-column-direction-vertical.kadence-inner-column-vertical-align-bottom {
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: column;
+	> .wp-block {
+		margin-left: unset;
+		margin-right: unset;
+	}
+}
 .wp-block-kadence-column > .kadence-inner-column-direction-horizontal {
     display: flex;
     align-items: center;
