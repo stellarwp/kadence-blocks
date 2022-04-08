@@ -752,9 +752,9 @@
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/build\/blocks.asset.php",
-      "oF" : 1
+      "oF" : 0
     },
     "\/dist\/build\/blocks.css" : {
       "aP" : 1,
@@ -763,18 +763,10 @@
       "co" : 0,
       "ft" : 16,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/build\/blocks-min.css",
-      "oF" : 1,
+      "oF" : 0,
       "pg" : 0
-    },
-    "\/dist\/build\/blocks.css.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks.css.map",
-      "oF" : 1
     },
     "\/dist\/build\/blocks.js" : {
       "bF" : 0,
@@ -783,17 +775,9 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 1,
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
-    },
-    "\/dist\/build\/blocks.js.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/blocks.js.map",
-      "oF" : 1
     },
     "\/dist\/build\/vendors\/blocks.js" : {
       "bF" : 0,
@@ -802,17 +786,9 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
-      "oF" : 1,
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
-    },
-    "\/dist\/build\/vendors\/blocks.js.map" : {
-      "cB" : 0,
-      "ft" : 8192,
-      "hM" : 0,
-      "oA" : 1,
-      "oAP" : "\/dist\/build\/vendors\/blocks.js.map",
-      "oF" : 1
     },
     "\/dist\/class-fluentcrm-form-rest-api.php" : {
       "cB" : 0,
@@ -1152,9 +1128,9 @@
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/plugin\/plugin.asset.php",
-      "oF" : 1
+      "oF" : 0
     },
     "\/dist\/plugin\/plugin.css" : {
       "aP" : 1,
@@ -1163,9 +1139,9 @@
       "co" : 0,
       "ft" : 16,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/plugin\/plugin-min.css",
-      "oF" : 1,
+      "oF" : 0,
       "pg" : 0
     },
     "\/dist\/plugin\/plugin.js" : {
@@ -1175,7 +1151,7 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/plugin\/plugin-min.js",
-      "oF" : 1,
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },
@@ -2049,17 +2025,6 @@
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
-    },
-    "\/src\/blocks\/column\/icon.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/column\/icon-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
     },
     "\/src\/blocks\/column\/index.js" : {
       "bF" : 0,

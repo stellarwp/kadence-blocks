@@ -103,7 +103,10 @@ Release Date: April 8th, 2022
 * Fix: CSS specificity issue with divider block.
 * Fix: Issue with relative links and tabs.
 * Fix: Issue with accordion start open changing with preview.
-* Fix: Issue with padding missing in row when options are hidden from user. 
+* Fix: Issue with padding missing in row when options are hidden from user.
+* Fix: Issue with icons list grid gap.
+* Fix: Issue with google map filter default level.
+* Fix: Issue with php notice in google map block.
 
 = 2.3.0 =
 Release Date: March 7th, 2022

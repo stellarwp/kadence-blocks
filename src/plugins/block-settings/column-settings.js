@@ -58,7 +58,7 @@ class KadenceColumnSettings extends Component {
 				{ isOpen ?
 					<Modal
 						className="kt-block-settings-modal"
-						title={ __( 'Column Settings', 'kadence-blocks' ) }
+						title={ __( 'Section Settings', 'kadence-blocks' ) }
 						onRequestClose={ () => {
 							this.saveConfig( 'kadence/column', columnSettings );
 						} }>

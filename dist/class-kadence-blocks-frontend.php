@@ -6819,8 +6819,8 @@ class Kadence_Blocks_Frontend {
 					    zoom: '. $zoom . ',
 					    center: center,';
 
-		if( isset($attr['mapStyle']) && $attr['mapType'] !== 'standard' ){ $response .= 'styles: '. $snazzyStyles[$attr['mapStyle']].','; }
-		if( isset($attr['mapType']) && $attr['mapType'] === 'satellite' ){ $response .= 'mapTypeId: "satellite",'; }
+		if ( ! empty( $attr['mapStyle'] ) && $attr['mapStyle'] !== 'standard' ){ $response .= 'styles: '. $snazzyStyles[$attr['mapStyle']].','; }
+		if ( isset( $attr['mapType'] ) && $attr['mapType'] === 'satellite' ){ $response .= 'mapTypeId: "satellite",'; }
 
 		$response .= '});';
 
@@ -6934,10 +6934,10 @@ class Kadence_Blocks_Frontend {
 		}
 
 		// Filters
-		if ( isset($attr['mapFilter']) && $attr['mapFilter'] !== 'standard' ) {
+		if ( isset( $attr['mapFilter'] ) && $attr['mapFilter'] !== 'standard' ) {
 			$css->set_selector( '.kb-google-maps-container' . $unique_id);
-
-			$css->add_property('filter', $attr['mapFilter'] . '(' . $attr['mapFilterAmount'] . '%)');
+			$filter_level = ( isset( $attr['mapFilterAmount'] ) && is_numeric( $attr['mapFilterAmount'] ) ? $attr['mapFilterAmount'] : 50 );
+			$css->add_property('filter', $attr['mapFilter'] . '(' . $filter_level . '%)');
 		}
 
 		return $css->css_output();
