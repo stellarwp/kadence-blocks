@@ -2,7 +2,7 @@
  * Typography Component
  *
  */
-import { GenIcon } from '@kadence/components';
+import GenIcon from '../gen-icon';
 import { applyFilters } from '@wordpress/hooks';
 
 import { Fragment, Component } from '@wordpress/element';

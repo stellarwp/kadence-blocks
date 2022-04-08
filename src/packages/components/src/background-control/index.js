@@ -16,7 +16,10 @@ import './editor.scss';
 /**
  * Import Kadence Components
  */
-import { DynamicBackgroundControl, KadenceMediaPlaceholder, KadenceRadioButtons, KadenceFocalPicker } from '@kadence/components';
+import DynamicBackgroundControl from '../dynamic-background-control';
+import KadenceMediaPlaceholder from '../common/media-placeholder';
+import KadenceRadioButtons from '../common/radio-buttons';
+import KadenceFocalPicker from '../focal-picker';
 /**
  * WordPress dependencies
  */

@@ -4,7 +4,7 @@
  */
 
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import { IconRender } from '@kadence/components';
+import IconRender from '../icon-render';
 import { applyFilters } from '@wordpress/hooks';
 import { Fragment, Component } from '@wordpress/element';
 

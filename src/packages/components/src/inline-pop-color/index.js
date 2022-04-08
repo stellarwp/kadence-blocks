@@ -6,7 +6,7 @@
 /**
  * Import Icons
  */
-import { ColorPicker } from '@kadence/components';
+import ColorPicker from '../color-picker';
 import { hexToRGBA } from '@kadence/helpers';
 import get from 'lodash/get';
 import map from 'lodash/map';

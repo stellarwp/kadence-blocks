@@ -16,7 +16,7 @@ import { LEFT, RIGHT, UP, DOWN, BACKSPACE, ENTER } from '@wordpress/keycodes';
  /**
   * Internal dependencies
   */
-import { InputSearch } from '@kadence/components';
+import InputSearch from '../input-search';
 
  /**
  * Build the typography controls

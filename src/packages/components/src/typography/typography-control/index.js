@@ -16,7 +16,10 @@ import { __, sprintf } from '@wordpress/i18n';
 import { capitalizeFirstLetter } from '@kadence/helpers'
 import Select from 'react-select';
 import range from 'lodash/range';
-import { MeasurementControls, HeadingLevelIcon, ResponsiveRangeControls, KadenceRange } from '@kadence/components';
+import MeasurementControls from '../../measurement/measurement-control';
+import HeadingLevelIcon from '../../heading-level-icon';
+import ResponsiveRangeControls from '../../range/responsive-range-control';
+import KadenceRange from '../../range/range-control';
 
 import { applyFilters } from '@wordpress/hooks';
 

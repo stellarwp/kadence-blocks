@@ -14,7 +14,10 @@ import { applyFilters } from '@wordpress/hooks';
 import { UP, DOWN, ENTER, TAB } from '@wordpress/keycodes';
 import { BaseControl, Button, Spinner, ToggleControl, ExternalLink } from '@wordpress/components';
 import { withInstanceId, withSafeTimeout, compose } from '@wordpress/compose';
-import { DynamicLinkControl, fetchSearchResults, TextHighlight } from '@kadence/components';
+import DynamicLinkControl from '../dynamic-link-control';
+import TextHighlight from '../text-highlight';
+import fetchSearchResults from '../../links/get-post-search-results';
+
  class InputSearch extends Component {
 	 constructor( props ) {
 		 super( props );

@@ -12,7 +12,8 @@ import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
 import { undo } from '@wordpress/icons';
 import { capitalizeFirstLetter } from '@kadence/helpers'
-import { ResponsiveSingleRangeControl } from '@kadence/components';
+import ResponsiveSingleRangeControl from '../single-range-control';
+
 import {
 	Dashicon,
 	Button,

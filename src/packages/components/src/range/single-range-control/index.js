@@ -7,7 +7,7 @@
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { KadenceRange } from '@kadence/components';
+import KadenceRange from '../range-control';
 import {
 	Button,
 	DropdownMenu,

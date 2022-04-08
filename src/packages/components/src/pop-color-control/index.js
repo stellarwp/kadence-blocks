@@ -6,7 +6,7 @@
 /**
  * Import Icons
  */
-import { SinglePopColorControl } from '@kadence/components';
+import SinglePopColorControl from '../single-pop-color-control';
 
 /**
  * Import Css

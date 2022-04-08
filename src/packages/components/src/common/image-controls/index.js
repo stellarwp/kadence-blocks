@@ -5,7 +5,8 @@
 /**
  * Import Kadence Components
  */
-import { DynamicImageControl, KadenceMediaPlaceholder } from '@kadence/components';
+import KadenceMediaPlaceholder from '../media-placeholder';
+import DynamicImageControl from '../../dynamic-image-control';
 /**
  * WordPress dependencies
  */
