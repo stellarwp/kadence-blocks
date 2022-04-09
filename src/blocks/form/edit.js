@@ -726,6 +726,16 @@ class KadenceForm extends Component {
 		const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 12 : 200 );
 		const containerMarginStep = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1 );
 
+		const previewSubmitMarginType = ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].unit ? submitMargin[0].unit : 'px' );
+		const previewSubmitMarginTop = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 0 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 0 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 0 ] : '' ) );
+		const previewSubmitMarginRight = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 1 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 1 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 1 ] : '' ) );
+		const previewSubmitMarginBottom = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 2 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 2 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 2 ] : '' ) );
+		const previewSubmitMarginLeft = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 3 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 3 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 3 ] : '' ) );
+
+		const previewSubmitColumnWidth = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 0 ] : '' ), ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 1 ] : '' ), ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 2 ] : '' ) );
+
+		const previewSubmitLineHeightType = ( undefined !== submitFont && undefined !== submitFont[0] && submitFont[0].lineType ? submitFont[0].lineType : 'px' );
+		const previewSubmitLineHeight = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 0 ] : '' ), ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 1 ] : '' ), ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 2 ] : '' ) );
 
 		const saveMailerlite = ( value ) => {
 			const newItems = mailerlite.map( ( item, thisIndex ) => {
@@ -3553,7 +3563,7 @@ class KadenceForm extends Component {
 						<div
 							className="kadence-blocks-form-field kb-submit-field"
 							style={ {
-								width: submit[ 0 ].width[ 0 ] + '%',
+								width: previewSubmitColumnWidth + '%',
 								paddingRight: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
 								paddingLeft: ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? ( style[ 0 ].gutter / 2 ) + 'px' : undefined ),
 							} }
@@ -3577,7 +3587,7 @@ class KadenceForm extends Component {
 									background: ( undefined !== btnBG ? btnBG : undefined ),
 									color: ( undefined !== submit[ 0 ].color ? KadenceColorOutput( submit[ 0 ].color ) : undefined ),
 									fontSize: previewSubmitFontSize + previewSubmitFontSizeType,
-									lineHeight: ( submitFont[ 0 ].lineHeight && submitFont[ 0 ].lineHeight[ 0 ] ? submitFont[ 0 ].lineHeight[ 0 ] + submitFont[ 0 ].lineType : undefined ),
+									lineHeight: previewSubmitLineHeight + previewSubmitLineHeightType,
 									fontWeight: submitFont[ 0 ].weight,
 									fontStyle: submitFont[ 0 ].style,
 									letterSpacing: submitFont[ 0 ].letterSpacing + 'px',
@@ -3595,10 +3605,10 @@ class KadenceForm extends Component {
 									borderBottomWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 2 ] ? submit[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 									borderLeftWidth: ( submit[ 0 ].borderWidth && '' !== submit[ 0 ].borderWidth[ 3 ] ? submit[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
 									boxShadow: ( undefined !== submit[ 0 ].boxShadow && undefined !== submit[ 0 ].boxShadow[ 0 ] && submit[ 0 ].boxShadow[ 0 ] ? ( undefined !== submit[ 0 ].boxShadow[ 7 ] && submit[ 0 ].boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit[ 0 ].boxShadow[ 3 ] ? submit[ 0 ].boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 4 ] ? submit[ 0 ].boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 5 ] ? submit[ 0 ].boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== submit[ 0 ].boxShadow[ 6 ] ? submit[ 0 ].boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== submit[ 0 ].boxShadow[ 1 ] ? submit[ 0 ].boxShadow[ 1 ] : '#000000' ), ( undefined !== submit[ 0 ].boxShadow[ 2 ] ? submit[ 0 ].boxShadow[ 2 ] : 1 ) ) : undefined ),
-									marginTop: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 0 ] ? submitMargin[ 0 ].desk[ 0 ] + marginUnit : undefined ),
-									marginRight: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 1 ] ? submitMargin[ 0 ].desk[ 1 ] + marginUnit : undefined ),
-									marginBottom: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 2 ] ? submitMargin[ 0 ].desk[ 2 ] + marginUnit : undefined ),
-									marginLeft: ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 3 ] ? submitMargin[ 0 ].desk[ 3 ] + marginUnit : undefined ),
+									marginTop: previewSubmitMarginTop + previewSubmitMarginType,
+									marginRight: previewSubmitMarginRight + previewSubmitMarginType,
+									marginBottom: previewSubmitMarginBottom + previewSubmitMarginType,
+									marginLeft: previewSubmitMarginLeft + previewSubmitMarginType,
 								} }
 							/>
 						</div>
