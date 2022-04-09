@@ -2,9 +2,9 @@
 Contributors: britner, oakesjosh
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.8
+Requires at least: 5.9
 Tested up to: 5.9
-Stable tag: 2.4.0
+Stable tag: 2.4.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,10 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.4.2 =
+Release Date: April 8th, 2022
+* Fix: Possible issue with nesting rows inside of flex areas.
 
 = 2.4.1 =
 Release Date: April 8th, 2022

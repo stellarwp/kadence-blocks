@@ -9060,6 +9060,8 @@ class Kadence_Blocks_Frontend {
 				$css->add_property( 'justify-content', $align );
 				$css->add_property( 'flex-direction', 'column' );
 				$css->add_property( 'display', 'flex' );
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .aligncenter' );
+				$css->add_property( 'width', '100%' );
 			}
 		}
 		// inside of Row.
@@ -9183,6 +9185,8 @@ class Kadence_Blocks_Frontend {
 			if ( $desktop_direction === 'vertical' && ! empty( $attr['verticalAlignment'] ) ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$css->add_property( 'justify-content', 'inherit' );
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .aligncenter' );
+				$css->add_property( 'width', 'auto' );
 			}
 			// If desktop vertical lets add the horizontal css.
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
@@ -9314,6 +9318,8 @@ class Kadence_Blocks_Frontend {
 			if ( $desktop_direction === 'vertical' && ! empty( $attr['verticalAlignment'] ) ) {
 				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 				$css->add_property( 'justify-content', 'inherit' );
+				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > .aligncenter' );
+				$css->add_property( 'width', 'auto' );
 			}
 			// If desktop vertical lets add the horizontal css.
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
