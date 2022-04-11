@@ -5,3 +5,4 @@ export { default as DeprecatedKadenceColorOutput } from './deprecated-kadence-co
 export { default as fetchJson } from './fetch-json';
 export { default as capitalizeFirstLetter } from './capital-first';
 export { default as KadenceTryParseJSON } from './parse-json';
+export { default as getUnitIcon } from './get-unit-icon';
