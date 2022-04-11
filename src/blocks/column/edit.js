@@ -1144,17 +1144,19 @@ function SectionEdit( {
 					min={ -200 }
 					max={ 200 }
 				/>
-				<KadenceRange
-					label={ __( 'Mobile Collapse Order' ) }
-					value={ collapseOrder }
-					onChange={ ( value ) => {
-						setAttributes( {
-							collapseOrder: value,
-						} );
-					} }
-					min={ -10 }
-					max={ 10 }
-				/>
+				{ inRowBlock && (
+					<KadenceRange
+						label={ __( 'Mobile Collapse Order' ) }
+						value={ collapseOrder }
+						onChange={ ( value ) => {
+							setAttributes( {
+								collapseOrder: value,
+							} );
+						} }
+						min={ -10 }
+						max={ 10 }
+					/>
+				) }
 			</InspectorAdvancedControls>
 			<div id={ `animate-id${ uniqueID }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
 				minHeight: ( undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined ),

@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.9
 Tested up to: 5.9
-Stable tag: 2.4.2
+Stable tag: 2.4.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,14 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.4.3 =
+Release Date: April 11th, 2022
+* Update: Section settings when in row layout vs as a standalone block.
+* Update: Responsive controls issue in widgets.
+* Fix: Possible bug when defining tablet direction in section block.
+* Fix: Issue with image block width when in ratio mode.
+* Fix: Issue with inline styles rendering in rss feed.
 
 = 2.4.2 =
 Release Date: April 8th, 2022

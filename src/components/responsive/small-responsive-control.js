@@ -6,7 +6,7 @@
 /**
  * Internal block libraries
  */
-import { useSelect, dispatch, useDispatch } from '@wordpress/data';
+import { useSelect, useDispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import map from 'lodash/map';
@@ -34,19 +34,13 @@ export default function SmallResponsiveControl( {
 	if ( theDevice !== deviceType ) {
 		setDeviceType( theDevice );
 	}
-	let customSetPreviewDeviceType = ( device ) => {
-		dispatch( 'kadenceblocks/data' ).setDevice( capitalizeFirstLetter( device ) );
+	const {
+		setPreviewDeviceType,
+	} = useDispatch( 'kadenceblocks/data' );
+	const customSetPreviewDeviceType = ( device ) => {
+		setPreviewDeviceType( capitalizeFirstLetter( device ) );
 		setDeviceType( capitalizeFirstLetter( device ) );
 	};
-	if ( wp.data.select( 'core/edit-post' ) ) {
-		const {
-			__experimentalSetPreviewDeviceType = null,
-		} = useDispatch( 'core/edit-post' );
-		customSetPreviewDeviceType = ( device ) => {
-			__experimentalSetPreviewDeviceType( capitalizeFirstLetter( device ) );
-			setDeviceType( capitalizeFirstLetter( device ) );
-		};
-	}
 	const devices = [
 		{
 			name: 'Desktop',

@@ -126,6 +126,7 @@ export default function Image( {
 		linkNoFollow,
 		linkSponsored,
 		linkDestination,
+		linkTitle,
 	} = attributes;
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -712,6 +713,10 @@ export default function Image( {
 						linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
 						onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
 						allowClear={ true }
+						linkTitle={ linkTitle }
+						onChangeTitle={ value => {
+							setAttributes( { linkTitle: value } )
+						} }
 						dynamicAttribute={ 'link' }
 						isSelected={ isSelected }
 						attributes={ attributes }
@@ -1160,7 +1165,6 @@ export default function Image( {
 	} else {
 		const currentWidth = previewMaxWidth || width || imageWidthWithinContainer;
 		const currentHeight = height || imageHeightWithinContainer;
-
 		let imgRatio = naturalWidth / naturalHeight;
 		if ( useRatio ){
 			switch ( ratio ) {
@@ -1243,7 +1247,7 @@ export default function Image( {
 		img = (
 			<ResizableBox
 				size={ {
-					width: previewMaxWidth ?? width ?? '100%',
+					width: currentWidth ?? '100%',
 					height: 'auto',
 				} }
 				showHandle={ isSelected }

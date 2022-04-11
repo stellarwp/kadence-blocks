@@ -81,6 +81,9 @@
 	  "linkDestination": {
 		"type": "string"
 	  },
+	  "linkTitle": {
+		"type": "string"
+	  },
 	  "linkClass": {
 		"type": "string",
 		"source": "attribute",

@@ -41,6 +41,9 @@
 		margin-top: 0;
 		margin-bottom: 0;
 	}
+	> .block-editor-block-list__block[data-type="core/embed"] {
+		flex: 1;
+	}
 	>.wp-block-kadence-column {
 		flex: 1;
 		min-width: 0;

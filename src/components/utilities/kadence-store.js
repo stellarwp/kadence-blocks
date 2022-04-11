@@ -13,15 +13,14 @@ const actions = {
 			type: 'SET_PREVIEW_DEVICE_TYPE_FOR_CORE',
 			deviceType,
 		}
-
-		if ( !setForCore ) {
+		if ( ! setForCore ) {
 			return {
 				type: 'SET_PREVIEW_DEVICE_TYPE',
 				deviceType,
 			};
 		}
 	},
-	*toggleEditorPanelOpened ( panelName, defaultValue ) {
+	*toggleEditorPanelOpened( panelName, defaultValue ) {
 		return {
 			type: 'TOGGLE_EDITOR_PANEL_OPENED',
 			panelName,
@@ -46,11 +45,10 @@ const actions = {
 };
 
 const controls = {
-	'SET_PREVIEW_DEVICE_TYPE_FOR_CORE': createRegistryControl( ( registry ) => function *setPreviewDeviceTypeForCore( { deviceType } ) {
+	'SET_PREVIEW_DEVICE_TYPE_FOR_CORE': createRegistryControl( ( registry ) => function( { deviceType } ) {
 		const editPost = registry.dispatch( 'core/edit-post' );
-
 		if ( editPost ) {
-			yield editPost.__experimentalSetPreviewDeviceType( deviceType );
+			editPost.__experimentalSetPreviewDeviceType( deviceType );
 
 			return true;
 		}
@@ -58,7 +56,7 @@ const controls = {
 		const editSite = registry.dispatch( 'core/edit-site' );
 
 		if ( editSite ) {
-			yield editSite.__experimentalSetPreviewDeviceType( deviceType );
+			editSite.__experimentalSetPreviewDeviceType( deviceType );
 
 			return true;
 		}
