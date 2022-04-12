@@ -7,7 +7,7 @@
 /**
  * Import Icons
  */
-import icons from './icon';
+import { tableOfContentsIcon } from '@kadence/icons';
 
 import classnames from 'classnames';
 /**
@@ -47,7 +47,7 @@ const {
 registerBlockType( 'kadence/tableofcontents', {
 	title: __( 'Table of Contents', 'kadence-blocks' ),
 	icon: {
-		src: icons.block,
+		src: tableOfContentsIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

@@ -43,11 +43,6 @@ export { default as infoLeftIcon } from './info-left'
 export { default as infoTopOverlayIcon } from './info-top-overlay'
 export { default as infoLeftOverlayIcon } from './info-left-overlay'
 export { default as unlockedIcon } from './unlocked'
-export { default as noneIcon } from './none'
-export { default as solidIcon } from './solid'
-export { default as dashedIcon } from './dashed'
-export { default as dottedIcon } from './dotted'
-export { default as doubleIcon } from './double'
 export { default as lowercaseIcon } from './lowercase'
 export { default as uppercaseIcon } from './uppercase'
 export { default as capitalizeIcon } from './capitalize'
@@ -71,6 +66,7 @@ export { default as imageIcon } from './block-icons/image'
 export { default as galleryIcon } from './block-icons/advanced-gallery/icon'
 export { default as infoboxIcon } from './block-icons/infobox'
 export { default as lottieIcon } from './block-icons/lottie'
+export { default as tableOfContentsIcon } from './block-icons/table-of-contents/icon'
 
 
 // Accordion Block
@@ -137,3 +133,11 @@ export { default as galMasonryIcon } from './block-icons/advanced-gallery/gal-ma
 export { default as galSliderIcon } from './block-icons/advanced-gallery/gal-slider'
 export { default as galTilesIcon } from './block-icons/advanced-gallery/gal-tiles'
 export { default as thumbSliderIcon } from './thumbs-slider'
+
+// Table of contents
+export { default as noneIcon } from './block-icons/table-of-contents/none'
+export { default as oneColumnIcon } from './block-icons/table-of-contents/one-column'
+export { default as twoColumnIcon } from './block-icons/table-of-contents/two-column'
+export { default as threeColumnIcon } from './block-icons/table-of-contents/three-column'
+export { default as bulletsIcon } from './block-icons/table-of-contents/bullets'
+export { default as numberedIcon } from './block-icons/table-of-contents/numbered'
