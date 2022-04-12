@@ -82,7 +82,7 @@ export { default as testimonialCardIcon } from './block-icons/testimonial/testim
 
 // Tabs Block
 export { default as tabsSimpleIcon } from './block-icons/tabs/tabs-simple'
-export { default as tabsBoldIcon } from './block-icons/tabs//tabs-bold'
+export { default as tabsBoldIcon } from './block-icons/tabs/tabs-bold'
 export { default as tabsCenterIcon } from './block-icons/tabs/tabs-center'
 export { default as tabsVerticalIcon } from './block-icons/tabs/tabs-vertical'
 
