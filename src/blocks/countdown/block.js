@@ -7,7 +7,8 @@
 /**
  * Import Icons
  */
-import icons from '../../icons/block-icons';
+import { countdownIcon } from '@kadence/icons';
+
 /**
  * Internal dependencies
  */
@@ -36,7 +37,7 @@ registerBlockType( 'kadence/countdown', {
 	/* translators: block description */
 	description: __( '', 'kadence-blocks' ),
 	category: 'kadence-blocks',
-	icon: icons.countdown,
+	icon: countdownIcon,
 	keywords: [
 		'kb',
 		/* translators: block keyword */

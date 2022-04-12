@@ -1,3 +1,12 @@
+// Brand Icons
+export { default as kadenceIcon } from './brand-icons/kadence'
+export { default as kadenceCatIcon } from './brand-icons/kadence-cat'
+export { default as KadenceBwIcon } from './brand-icons/kadence-bw'
+export { default as kadenceNewIcon } from './brand-icons/kadence-new'
+export { default as kadenceCatNewIcon } from './brand-icons/kadence-cat-new'
+export { default as kadenceCloudIcon} from './brand-icons/kadence-cloud'
+export { default as kadenceBlocksIcon } from './brand-icons/kadence-blocks'
+
 export { default as blockRowIcon } from './block-row'
 export { default as fontFamilyIcon } from './font-family'
 export { default as lottieIcon } from './lottie'
@@ -115,3 +124,8 @@ export { default as doubleIcon } from './double'
 export { default as lowercaseIcon } from './lowercase'
 export { default as uppercaseIcon } from './uppercase'
 export { default as capitalizeIcon } from './capitalize'
+
+// Countdown Block
+export { default as countdownSectionIcon } from './countdown-block/section'
+export { default as countdownInnerIcon } from './countdown-block/inner-countdown'
+export { default as countdownIcon } from './countdown-block/countdown'

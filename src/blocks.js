@@ -54,5 +54,6 @@ import './blocks/show-more/index.js';
 // import './plugins/editor-width.js';
 import './plugins/prebuilt-library/toolbar-library';
 // Brand Icon.
-import icons from './brand-icon';
-wp.blocks.updateCategory( 'kadence-blocks', { icon: icons.kadenceCatNew } );
+
+import { kadenceCatNewIcon } from '@kadence/icons';
+wp.blocks.updateCategory( 'kadence-blocks', { icon: kadenceCatNewIcon } );
