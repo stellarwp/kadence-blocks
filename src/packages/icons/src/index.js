@@ -3,8 +3,6 @@ export { default as blockRowIcon } from './block-row'
 export { default as fontFamilyIcon } from './font-family'
 export { default as showMoreIcon } from './show-more'
 export { default as rowIcon } from './row'
-
-export { default as twoColIcon } from './two-col'
 export { default as gridIcon } from './grid'
 export { default as radiusLinkedIcon } from './radius-linked'
 export { default as radiusIndividualIcon } from './radius-individual'
@@ -68,7 +66,6 @@ export { default as infoboxIcon } from './block-icons/infobox'
 export { default as lottieIcon } from './block-icons/lottie'
 export { default as tableOfContentsIcon } from './block-icons/table-of-contents/icon'
 
-
 // Accordion Block
 export { default as accord1Icon } from './block-icons/accordion-block/accord-1'
 export { default as accord2Icon } from './block-icons/accordion-block/accord-2'
@@ -124,6 +121,7 @@ export { default as lFourFortyIcon } from './block-icons/row-layout/l-four-forty
 export { default as rFourFortyIcon } from './block-icons/row-layout/r-four-forty'
 export { default as fiveColIcon } from './block-icons/row-layout/five-col'
 export { default as sixColIcon } from './block-icons/row-layout/six-col'
+export { default as twoColIcon } from './block-icons/row-layout/two-col'
 
 // Advanced Gallery
 export { default as galCarouselIcon } from './block-icons/advanced-gallery/gal-carousel'
