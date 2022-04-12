@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import icons from './icon';
+import { countUpIcon } from '@kadence/icons';
 
 /**
  * Import attributes
@@ -50,7 +50,7 @@ const { Icon }              = wp.components;
  */
 registerBlockType( 'kadence/countup', {
 	title: __( 'Count Up', 'kadence-blocks' ),
-	icon: <Icon icon={ icons.block } />,
+	icon: <Icon icon={ countUpIcon } />,
 	category: 'kadence-blocks',
 	keywords: ['count down', 'counter', 'count up', 'number spinner'],
 	description: __( 'An animated count up or down to a specific value.', 'kadence-blocks' ),

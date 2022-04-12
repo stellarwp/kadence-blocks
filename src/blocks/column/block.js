@@ -7,7 +7,7 @@
 /**
  * Import Icons
  */
-import icons from '../../icons/block-icons';
+import { countdownSectionIcon } from '@kadence/icons';
 /**
  * Internal dependencies
  */
@@ -37,7 +37,7 @@ registerBlockType( 'kadence/column', {
 	/* translators: block description */
 	description: __( 'An inner section of content.', 'kadence-blocks' ),
 	category: 'kadence-blocks',
-	icon: icons.section,
+	icon: countdownSectionIcon,
 	parent: [ 'kadence/rowlayout' ],
 	keywords: [
 		'kb',

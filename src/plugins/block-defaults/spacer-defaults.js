@@ -17,7 +17,7 @@ const {
 	Modal,
 } = wp.components;
 
-import { spacerBlockIcon } from '@kadence/icons';
+import { spacerIcon } from '@kadence/icons';
 /**
  * Internal block libraries
  */
@@ -99,7 +99,7 @@ class KadenceSpacerDefault extends Component {
 			<Fragment>
 				<Tooltip text="Block Defaults">
 					<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-						<span className="kt-block-icon">{ spacerBlockIcon }</span>
+						<span className="kt-block-icon">{ spacerIcon }</span>
 						{ __( 'Spacer/Divider' ) }
 					</Button>
 				</Tooltip>

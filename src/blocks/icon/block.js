@@ -5,7 +5,7 @@
 /**
  * Import Icon stuff
  */
-import itemicons from './icon';
+import { iconIcon } from '@kadence/icons';
 import times from 'lodash/times';
 import { IconRender } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
@@ -37,7 +37,7 @@ registerBlockType( 'kadence/icon', {
 	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
 	title: __( 'Icon', 'kadence-blocks' ), // Block title.
 	icon: {
-		src: itemicons.block,
+		src: iconIcon,
 	},
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [
