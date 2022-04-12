@@ -6,11 +6,13 @@ const { clean } = require('./gulp/tasks/clean');
 const { php } = require('./gulp/tasks/php');
 const { zip } = require('./gulp/tasks/zip');
 const { webpack } = require('./gulp/tasks/webpack');
+const { watch } = require('./gulp/tasks/watch');
 
 exports.clean = clean;
 exports.php = php;
 exports.zip = zip;
 exports.webpack = webpack;
+exports.watch = watch;
 
 exports.standaloneJs = jsTasks.standaloneJs;
 exports.settingsJs = jsTasks.settingsJs;
