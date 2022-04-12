@@ -18,6 +18,7 @@ import {
 	tabsVerticalIcon,
 	topLeftIcon,
 	topRightIcon,
+	vTabsIcon
 } from '@kadence/icons';
 
 /**
@@ -402,7 +403,7 @@ class KadenceTabs extends Component {
 		const classes = classnames( className, `kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
 		const mLayoutOptions = [
 			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
-			{ key: 'vtabs', name: __( 'Vertical Tabs' ), vTabsIcon },
+			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
 			{ key: 'accordion', name: __( 'Accordion' ), icon: accordionIcon },
 		];
 		const layoutOptions = [
