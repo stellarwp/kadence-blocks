@@ -12,7 +12,19 @@ import './editor.scss';
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import {
+	infoSimpleIcon,
+	infoLeftIcon,
+	infoBackgroundIcon,
+	infoImageIcon,
+	infoStartIcon,
+	infoBasicIcon,
+	infoLeftAboveIcon,
+	infoLeftIcon,
+	infoTopOverlayIcon,
+	infoLeftOverlayIcon,
+} from '@kadence/icons';
+
 import map from 'lodash/map';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
@@ -235,18 +247,18 @@ class KadenceInfoBox extends Component {
 		const marginStep = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 );
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip', 'kadence-blocks' ), icon: __( 'Skip' ) },
-			{ key: 'simple', name: __( 'Simple', 'kadence-blocks' ), icon: icons.infoSimple },
-			{ key: 'left', name: __( 'Align Left', 'kadence-blocks' ), icon: icons.infoLeft },
-			{ key: 'bold', name: __( 'Bold Background', 'kadence-blocks' ), icon: icons.infoBackground },
-			{ key: 'image', name: __( 'Circle Image', 'kadence-blocks' ), icon: icons.infoImage },
+			{ key: 'simple', name: __( 'Simple', 'kadence-blocks' ), icon: infoSimpleIcon },
+			{ key: 'left', name: __( 'Align Left', 'kadence-blocks' ), icon: infoLeftIcon },
+			{ key: 'bold', name: __( 'Bold Background', 'kadence-blocks' ), icon: infoBackgroundIcon },
+			{ key: 'image', name: __( 'Circle Image', 'kadence-blocks' ), icon: infoImageIcon },
 		];
 		const layoutPresetOptions = [
-			{ key: 'simple', name: __( 'Basic', 'kadence-blocks' ), icon: icons.infoStart },
-			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: icons.infoBasic },
-			{ key: 'leftabove', name: __( 'Left Above', 'kadence-blocks' ), icon: icons.infoLeftAbove },
-			{ key: 'left', name: __( 'Left', 'kadence-blocks' ), icon: icons.infoLeft },
-			{ key: 'overlay', name: __( 'Overlay', 'kadence-blocks' ), icon: icons.infoTopOverlay },
-			{ key: 'overlayleft', name: __( 'Overlay Left', 'kadence-blocks' ), icon: icons.infoLeftOverlay },
+			{ key: 'simple', name: __( 'Basic', 'kadence-blocks' ), icon: infoStartIcon },
+			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: infoBasicIcon },
+			{ key: 'leftabove', name: __( 'Left Above', 'kadence-blocks' ), icon: infoLeftAboveIcon },
+			{ key: 'left', name: __( 'Left', 'kadence-blocks' ), icon: infoLeftIcon },
+			{ key: 'overlay', name: __( 'Overlay', 'kadence-blocks' ), icon: infoTopOverlayIcon },
+			{ key: 'overlayleft', name: __( 'Overlay Left', 'kadence-blocks' ), icon: infoLeftOverlayIcon },
 		];
 		const setPresetLayout = ( key ) => {
 			if ( 'simple' === key ) {
