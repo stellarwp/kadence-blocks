@@ -40,10 +40,6 @@ export { default as infoLeftAboveIcon } from './info-left-above'
 export { default as infoLeftIcon } from './info-left'
 export { default as infoTopOverlayIcon } from './info-top-overlay'
 export { default as infoLeftOverlayIcon } from './info-left-overlay'
-export { default as unlockedIcon } from './unlocked'
-export { default as lowercaseIcon } from './lowercase'
-export { default as uppercaseIcon } from './uppercase'
-export { default as capitalizeIcon } from './capitalize'
 
 // Block Icons
 export { default as restaurantMenuIcon } from './block-icons/restaurant-menu'
