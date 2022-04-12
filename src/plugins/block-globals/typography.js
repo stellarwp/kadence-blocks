@@ -19,8 +19,6 @@ const {
 	ButtonGroup,
 } = wp.components;
 
-import icons from '../../icons';
-
 class KadenceGlobalTypography extends Component {
 	constructor() {
 		super( ...arguments );

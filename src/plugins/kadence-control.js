@@ -3,13 +3,13 @@ import './editor.scss';
 /**
  * Import Icons
  */
-import icons from '../brand-icon';
+import { kadenceNewIcon } from '@kadence/icons';
 /*
  * Components
  */
 import KadenceConfig from './kadence-control-plugin';
 
 registerPlugin( 'kadence-control', {
-	icon: icons.kadenceNew,
+	icon: kadenceNewIcon,
 	render: KadenceConfig,
 } );

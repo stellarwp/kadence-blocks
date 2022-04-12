@@ -23,7 +23,7 @@ const {
 	SelectControl,
 } = wp.components;
 
-import icons from '../../icons';
+import { advancedHeadingIcon } from '@kadence/icons';
 
 class KadenceAdvancedHeadingDefault extends Component {
 	constructor() {
@@ -189,7 +189,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.headingBlock }</span>
+					<span className="kt-block-icon">{ advancedHeadingIcon }</span>
 					{ __( 'Advanced Text', 'kadence-blocks' ) }
 				</Button>
 				{ isOpen ?

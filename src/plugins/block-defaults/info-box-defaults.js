@@ -23,7 +23,7 @@ const {
 	Modal,
 } = wp.components;
 
-import icons from '../../icons';
+import { infoboxIcon } from '@kadence/icons';
 
 class KadenceInfoBoxDefault extends Component {
 	constructor() {
@@ -314,7 +314,7 @@ class KadenceInfoBoxDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.infobox }</span>
+					<span className="kt-block-icon">{ infoboxIcon }</span>
 					{ __( 'Info Box' ) }
 				</Button>
 				{ isOpen ?

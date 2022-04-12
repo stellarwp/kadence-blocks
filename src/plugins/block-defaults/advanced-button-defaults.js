@@ -21,7 +21,7 @@ const {
 	Modal,
 } = wp.components;
 
-import icons from '../../icons';
+import { advancedBtnIcon } from '@kadence/icons';
 
 class KadenceButtonDefault extends Component {
 	constructor() {
@@ -175,7 +175,7 @@ class KadenceButtonDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.advancedbtn }</span>
+					<span className="kt-block-icon">{ advancedBtnIcon }</span>
 					{ __( 'Advanced Button' ) }
 				</Button>
 				{ isOpen ?
