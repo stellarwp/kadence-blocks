@@ -12,7 +12,14 @@ import classnames from 'classnames';
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import {
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon,
+	topLeftIcon,
+	topRightIcon
+} from '@kadence/icons';
 import MeasurementControls from '../../measurement-control';
 import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, URLInputControl, KadenceRadioButtons, ResponsiveAlignControls, WebfontLoader } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
@@ -819,13 +826,13 @@ class KadenceCountdown extends Component {
 										max={ 200 }
 										step={ 1 }
 										controlTypes={ [
-											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 										] }
-										firstIcon={ icons.topleft }
-										secondIcon={ icons.topright }
-										thirdIcon={ icons.bottomright }
-										fourthIcon={ icons.bottomleft }
+										firstIcon={ topLeftIcon }
+										secondIcon={ topRightIcon }
+										thirdIcon={ bottomRightIcon }
+										fourthIcon={ bottomLeftIcon }
 									/>
 									<ResponsiveMeasurementControls
 										label={ __( 'Padding', 'kadence-blocks' ) }
@@ -1101,13 +1108,13 @@ class KadenceCountdown extends Component {
 											max={ 200 }
 											step={ 1 }
 											controlTypes={ [
-												{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-												{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+												{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+												{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 											] }
-											firstIcon={ icons.topleft }
-											secondIcon={ icons.topright }
-											thirdIcon={ icons.bottomright }
-											fourthIcon={ icons.bottomleft }
+											firstIcon={ topLeftIcon }
+											secondIcon={ topRightIcon }
+											thirdIcon={ bottomRightIcon }
+											fourthIcon={ bottomLeftIcon }
 										/>
 										<ResponsiveMeasurementControls
 											label={ __( 'Container Padding', 'kadence-blocks' ) }

@@ -25,7 +25,14 @@ import ResponsiveRangeControl from '../../responsive-range-control';
  * Import Icons
  */
 import blockIcons from './icon';
-import icons from '../../icons';
+import {
+	radiusLinkedIcon,
+	radiusIndividualIcon,
+	topLeftIcon,
+	topRightIcon,
+	bottomLeftIcon,
+	bottomRightIcon
+} from '@kadence/icons';
 
 /**
  * Internal dependencies
@@ -670,13 +677,13 @@ class KadenceTableOfContents extends Component {
 									max={ 200 }
 									step={ 1 }
 									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 									] }
-									firstIcon={ icons.topleft }
-									secondIcon={ icons.topright }
-									thirdIcon={ icons.bottomright }
-									fourthIcon={ icons.bottomleft }
+									firstIcon={ topLeftIcon }
+									secondIcon={ topRightIcon }
+									thirdIcon={ bottomRightIcon }
+									fourthIcon={ bottomLeftIcon }
 								/>
 								<BoxShadowControl
 									label={ __( 'Box Shadow', 'kadence-blocks' ) }

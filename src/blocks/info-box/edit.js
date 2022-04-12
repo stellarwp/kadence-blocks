@@ -20,7 +20,6 @@ import {
 	infoStartIcon,
 	infoBasicIcon,
 	infoLeftAboveIcon,
-	infoLeftIcon,
 	infoTopOverlayIcon,
 	infoLeftOverlayIcon,
 } from '@kadence/icons';

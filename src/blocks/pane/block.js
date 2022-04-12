@@ -1,3 +1,4 @@
+
 /**
  * BLOCK: Kadence Pane
  *
@@ -12,7 +13,7 @@ const {
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { accordionBlockIcon } from '@kadence/icons';
 import { IconRender } from '@kadence/components';
 /**
  * Import edit
@@ -34,7 +35,7 @@ const { registerBlockType } = wp.blocks;
  */
 registerBlockType( 'kadence/pane', {
 	title: __( 'Pane', 'kadence-blocks' ),
-	icon: icons.accordionBlock,
+	icon: accordionBlockIcon,
 	category: 'kadence-blocks',
 	parent: [ 'kadence/accordion' ],
 	attributes: {

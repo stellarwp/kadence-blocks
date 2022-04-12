@@ -19,7 +19,6 @@ const { apiFetch } = wp;
 /**
  * Import Icons
  */
-import icons from '../../icons';
 import {
 	topLeftIcon,
 	topRightIcon,

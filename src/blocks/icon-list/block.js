@@ -5,7 +5,6 @@
 /**
  * Import Icon stuff
  */
-import itemicons from '../../icons';
 import times from 'lodash/times';
 import { KadenceColorOutput } from '@kadence/helpers';
 import { IconRender } from '@kadence/components';
@@ -21,6 +20,7 @@ import edit from './edit';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { iconListBlockIcon } from '@kadence/icons';
 const {
 	registerBlockType,
 	createBlock,
@@ -55,7 +55,7 @@ registerBlockType( 'kadence/iconlist', {
 	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
 	title: __( 'Icon List', 'kadence-blocks' ), // Block title.
 	icon: {
-		src: itemicons.iconlistBlock,
+		src: iconListBlockIcon,
 	},
 	description: __( 'Create engaging lists with icons for bullets.', 'kadence-blocks' ),
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.

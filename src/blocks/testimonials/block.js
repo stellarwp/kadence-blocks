@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { testimonialBlockIcon } from '@kadence/icons';
 import times from 'lodash/times';
 import { IconRender } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
@@ -45,7 +45,7 @@ const {
 registerBlockType( 'kadence/testimonials', {
 	title: __( 'Testimonials', 'kadence-blocks'  ),
 	icon: {
-		src: icons.testimonialBlock,
+		src: testimonialBlockIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

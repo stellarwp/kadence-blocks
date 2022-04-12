@@ -5,7 +5,14 @@
 /**
  * Import Icons
  */
-import editorIcons from '../../icons';
+import {
+	individualIcon,
+	linkedIcon,
+	outlineBottomIcon,
+	outlineLeftIcon,
+	outlineRightIcon,
+	outlineTopIcon
+} from '@kadence/icons';
 
 /**
  * Import Icon stuff
@@ -104,8 +111,8 @@ class KadenceIcons extends Component {
 		const { attributes: { iconCount, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment }, className, setAttributes, clientId } = this.props;
 		const { marginControl } = this.state;
 		const controlTypes = [
-			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), micon: editorIcons.linked },
-			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), micon: editorIcons.individual },
+			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), micon: linkedIcon },
+			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), micon: individualIcon },
 		];
 		const verticalAlignOptions = [
 			[
@@ -426,7 +433,7 @@ class KadenceIcons extends Component {
 							<p>{ __( 'Margin (px)', 'kadence-blocks' ) }</p>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlinetop }
+								label={ outlineTopIcon }
 								value={ ( icons[ index ].marginTop ? icons[ index ].marginTop : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginTop: value }, index );
@@ -437,7 +444,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlineright }
+								label={ outlineRightIcon }
 								value={ ( icons[ index ].marginRight ? icons[ index ].marginRight : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginRight: value }, index );
@@ -448,7 +455,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlinebottom }
+								label={ outlineBottomIcon }
 								value={ ( icons[ index ].marginBottom ? icons[ index ].marginBottom : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginBottom: value }, index );
@@ -459,7 +466,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlineleft }
+								label={ outlineLeftIcon }
 								value={ ( icons[ index ].marginLeft ? icons[ index ].marginLeft : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginLeft: value }, index );

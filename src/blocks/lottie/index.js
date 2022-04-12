@@ -1,5 +1,3 @@
-import itemicons from '../../icons';
-
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
