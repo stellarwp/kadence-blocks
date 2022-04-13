@@ -1160,9 +1160,10 @@ export default function Image( {
 				naturalWidth={ naturalWidth }
 			/>
 		);
-	} else if ( ! isResizable || ! imageWidthWithinContainer ) {
+	} else if ( ! isResizable || ! imageWidthWithinContainer || 'Desktop' !== previewDevice ) {
 		img = <div style={ { maxWidth: previewMaxWidth || width } }>{ img }</div>;
 	} else {
+		const backupWidth = useRatio ? '100%' : 'auto';
 		const currentWidth = previewMaxWidth || width || imageWidthWithinContainer;
 		const currentHeight = height || imageHeightWithinContainer;
 		let imgRatio = naturalWidth / naturalHeight;
@@ -1247,7 +1248,7 @@ export default function Image( {
 		img = (
 			<ResizableBox
 				size={ {
-					width: currentWidth ?? '100%',
+					width: previewMaxWidth ?? backupWidth,
 					height: 'auto',
 				} }
 				showHandle={ isSelected }
