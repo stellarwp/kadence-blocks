@@ -371,5 +371,5 @@
 		"editorsKitBlockNavigator": true
 	},
 	"editorStyle": "kadence-blocks-editor-css",
-	"style": "kadence-blocks-rowlayout"
+	"style": "kadence-blocks-column"
 }

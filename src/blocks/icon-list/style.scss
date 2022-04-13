@@ -83,13 +83,13 @@
     grid-template-columns: 50% auto;
     grid-template-rows: auto;
 	display: grid;
-	grid-gap: 0 1em;
+	grid-gap: 5px 1em;
 }
 .kt-svg-icon-list-columns-3 ul.kt-svg-icon-list {
     grid-template-columns: 33% 33% auto;
     grid-template-rows: auto;
 	display: grid;
-	grid-gap: 0 1em;
+	grid-gap: 5px 1em;
 }
 .wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a.kt-svg-icon-link {
     align-items: flex-start;
