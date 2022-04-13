@@ -400,6 +400,45 @@ button.components-button.kb-category-button {
 		}
 	}
 }
+.kb-prebuilt-header {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    left: 0;
+	top: 0;
+	height: 60px;
+}
+.kb-templates-header-top {
+    display: flex;
+    justify-content: space-between;
+}
+.kb-template-top-credit {
+    text-align: right;
+}
+.kb-prebuilt-header-logo {
+    padding-right: 10px;
+    padding-top: 4px;
+}
+.kb-prebuilt-section {
+    position: relative;
+}
+.kb-prebuilt-header-close {
+	position: absolute;
+    right: 0px;
+    top: 12px;
+}
+.kt-prebuilt-modal .components-modal__header {
+    display: none;
+}
+h2.kb-template-name {
+    color: #4A5568;
+    padding:0;
+    margin:0;
+    line-height:1.6;
+}
+.kb-top-designed-by-credit, .kb-top-designed-by-credit a {
+    color: #A0AEC0;
+}
 .kb-prebuilt-header-close-wrap .kb-prebuilt-header-close {
     position: static;
 }
