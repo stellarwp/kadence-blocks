@@ -3,12 +3,10 @@ const { parallel, series } = require('gulp');
 const jsTasks = require('./gulp/tasks/js');
 const stylesTasks = require('./gulp/tasks/styles');
 const { clean } = require('./gulp/tasks/clean');
-const { php } = require('./gulp/tasks/php');
 const { zip } = require('./gulp/tasks/zip');
 const { webpack } = require('./gulp/tasks/webpack');
 
 exports.clean = clean;
-exports.php = php;
 exports.zip = zip;
 exports.webpack = webpack;
 
@@ -25,4 +23,4 @@ exports.buildStyles = stylesTasks.buildStyles;
 exports.styles = stylesTasks.styles;
 
 exports.vendor = parallel(jsTasks.vendorJs, stylesTasks.vendorStyles);
-exports.build = parallel(jsTasks.js, stylesTasks.styles, php, webpack);
+exports.build = parallel(jsTasks.js, stylesTasks.styles, webpack);

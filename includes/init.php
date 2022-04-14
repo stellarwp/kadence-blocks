@@ -150,11 +150,11 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		}
 	}
 	$subscribed = class_exists( 'Kadence_Blocks_Pro' ) ? true : get_option( 'kadence_blocks_wire_subscribe' );
-	$gfonts_path      = KADENCE_BLOCKS_PATH . 'dist/gfonts-array.php';
-	$gfont_names_path = KADENCE_BLOCKS_PATH . 'dist/gfonts-names-array.php';
-	$icon_names_path  = KADENCE_BLOCKS_PATH . 'dist/icon-names-array.php';
-	$icon_ico_path    = KADENCE_BLOCKS_PATH . 'dist/icons-ico-array.php';
-	$icons_path       = KADENCE_BLOCKS_PATH . 'dist/icons-array.php';
+	$gfonts_path      = KADENCE_BLOCKS_PATH . 'includes/gfonts-array.php';
+	$gfont_names_path = KADENCE_BLOCKS_PATH . 'includes/gfonts-names-array.php';
+	$icon_names_path  = KADENCE_BLOCKS_PATH . 'includes/icon-names-array.php';
+	$icon_ico_path    = KADENCE_BLOCKS_PATH . 'includes/icons-ico-array.php';
+	$icons_path       = KADENCE_BLOCKS_PATH . 'includes/icons-array.php';
 	$current_user     = wp_get_current_user();
 	$user_email       = $current_user->user_email;
 	wp_localize_script(
@@ -163,7 +163,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 		array(
 			'ajax_url'       => admin_url( 'admin-ajax.php' ),
 			'ajax_nonce'     => wp_create_nonce( 'kadence-blocks-ajax-verification' ),
-			'ajax_loader'    => KADENCE_BLOCKS_URL . 'dist/assets/images/ajax-loader.gif',
+			'ajax_loader'    => KADENCE_BLOCKS_URL . 'includes/assets/images/ajax-loader.gif',
 			'sidebar_size'   => $sidebar_size,
 			'nosidebar_size' => $nosidebar_size,
 			'default_size'   => $jssize,
@@ -194,7 +194,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'cloud_settings' => get_option( 'kadence_blocks_cloud' ),
 			'subscribed' => $subscribed,
 			'showWire' => apply_filters( 'kadence_blocks_wireframe_library_enabled', true ),
-			'wireImage' => KADENCE_BLOCKS_URL . 'dist/assets/images/graphy.png',
+			'wireImage' => KADENCE_BLOCKS_URL . 'includes/assets/images/graphy.png',
 			'user_email' => $user_email,
 			'prebuilt_libraries' => apply_filters( 'kadence_blocks_custom_prebuilt_libraries', array() ),
 			'showDesignLibrary' => apply_filters( 'kadence_blocks_design_library_enabled', true ),
@@ -203,7 +203,7 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'rest_url' => get_rest_url(),
 			'rcp_levels' => $level_ids,
 			'rcp_access' => $access_levels,
-			'svgMaskPath' => KADENCE_BLOCKS_URL . 'dist/assets/images/masks/',
+			'svgMaskPath' => KADENCE_BLOCKS_URL . 'includes/assets/images/masks/',
 		)
 	);
 	wp_localize_script(
