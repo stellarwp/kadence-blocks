@@ -8913,7 +8913,7 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['topPadding'] ) || isset( $attr['bottomPadding'] ) || isset( $attr['leftPadding'] ) || isset( $attr['rightPadding'] ) || isset( $attr['topMargin'] ) || isset( $attr['bottomMargin'] ) || isset( $attr['rightMargin'] ) || isset( $attr['leftMargin'] ) || ! empty( $attr['height'][0] ) || isset( $attr['border'] ) || isset( $attr['borderRadius'] ) || isset( $attr['borderWidth'] ) || ( isset( $attr['displayShadow'] ) && true == $attr['displayShadow'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( ! empty( $attr['height'][0] ) ) {
-				$css->add_property( 'min-height', $attr['height'][0] . ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+				$css->add_property( 'min-height', $attr['height'][0] . ( isset( $attr['heightUnit'] ) ? $attr['heightUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['topPadding'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPadding'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
@@ -9266,7 +9266,7 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['topPaddingT'] ) || isset( $attr['bottomPaddingT'] ) || isset( $attr['leftPaddingT'] ) || isset( $attr['rightPaddingT'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || isset( $attr['rightMarginT'] ) || ! empty( $attr['height'][1] ) || isset( $attr['leftMarginT'] ) || isset( $attr['tabletBorderWidth'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( ! empty( $attr['height'][1] ) ) {
-				$css->add_property( 'min-height', $attr['height'][1] . ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+				$css->add_property( 'min-height', $attr['height'][1] . ( isset( $attr['heightUnit'] ) ? $attr['heightUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['topPaddingT'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPaddingT'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );
@@ -9399,7 +9399,7 @@ class Kadence_Blocks_Frontend {
 		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) || ! empty( $attr['height'][2] ) || isset( $attr['mobileBorderWidth'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col' );
 			if ( ! empty( $attr['height'][2] ) ) {
-				$css->add_property( 'min-height', $attr['height'][2] . ( isset( $attr['heightType'] ) ? $attr['heightType'] : 'px' ) );
+				$css->add_property( 'min-height', $attr['height'][2] . ( isset( $attr['heightUnit'] ) ? $attr['heightUnit'] : 'px' ) );
 			}
 			if ( isset( $attr['topPaddingM'] ) ) {
 				$css->add_property( 'padding-top', $attr['topPaddingM'] . ( isset( $attr['paddingType'] ) ? $attr['paddingType'] : 'px' ) );

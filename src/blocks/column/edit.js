@@ -658,7 +658,7 @@ function SectionEdit( {
 											onUnit={ ( value ) => {
 												setAttributes( { heightUnit: value } );
 											} }
-											units={ [ 'px', '%', 'vw' ] }
+											units={ [ 'px', 'vw', 'vh' ] }
 										/>
 									</KadencePanelBody>
 									<KadencePanelBody
