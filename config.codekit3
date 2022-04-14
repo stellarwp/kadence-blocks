@@ -748,6 +748,18 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/build\/blocks-min.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/build\/blocks-min-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
     "\/dist\/build\/blocks.asset.php" : {
       "cB" : 0,
       "ft" : 8192,
@@ -3405,6 +3417,14 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/blocks\/row-layout\/block.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/row-layout\/block-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
     "\/src\/blocks\/row-layout\/content-width-icons.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3438,6 +3458,21 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/blocks\/row-layout\/editor-old.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/blocks\/row-layout\/editor-old.css",
+      "oF" : 0,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
     "\/src\/blocks\/row-layout\/editor.scss" : {
       "aP" : 0,
       "bl" : 0,
@@ -3452,6 +3487,17 @@
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
+    },
+    "\/src\/blocks\/row-layout\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/row-layout\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
     },
     "\/src\/blocks\/row-layout\/row-background.js" : {
       "bF" : 0,
@@ -3485,6 +3531,21 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
+    },
+    "\/src\/blocks\/row-layout\/style-old.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/src\/blocks\/row-layout\/style-old.css",
+      "oF" : 0,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
     },
     "\/src\/blocks\/row-layout\/style-update.scss" : {
       "aP" : 0,
