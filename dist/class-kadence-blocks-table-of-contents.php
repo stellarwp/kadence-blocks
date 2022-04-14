@@ -322,7 +322,6 @@ class Kadence_Blocks_Table_Of_Contents {
 				self::$the_headings = $this->table_of_contents_get_headings_from_content( $page_content, 1, 1, $attributes );
 			}
 			$headings = self::$the_headings;
-		
 			if ( $attributes && isset( $attributes['allowedHeaders'] ) && isset( $attributes['allowedHeaders'][0] ) && is_array( $attributes['allowedHeaders'][0] ) ) {
 				if ( isset( $attributes['allowedHeaders'][0]['h1'] ) && ! $attributes['allowedHeaders'][0]['h1'] ) {
 					foreach ( $headings as $headkey => $headvalue ) {
@@ -367,7 +366,7 @@ class Kadence_Blocks_Table_Of_Contents {
 					}
 				}
 			}
-			return array_values($headings);
+			return array_values( $headings );
 		}
 	}
 	/**
@@ -387,7 +386,7 @@ class Kadence_Blocks_Table_Of_Contents {
 					$this->recursively_parse_blocks( $inner_block );
 				}
 			}
-		} elseif ( 'kadence/tableofcontents' !== $block['blockName'] && 'core/block' !== $block['blockName'] ) {
+		} elseif ( 'kadence/tableofcontents' !== $block['blockName'] ) {
 			self::$output_content .= render_block( $block );
 		}
 	}

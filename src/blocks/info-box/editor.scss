@@ -12,6 +12,10 @@
 .kb-inline-icon-control {
     min-width: 240px;
 }
+.block-editor-block-list__block[data-type="kadence/infobox"] {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
  .kb-upload-inline-btn.kt-cta-upload-btn {
 	 margin-bottom:0;
  }

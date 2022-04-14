@@ -47,11 +47,6 @@ https://www.youtube.com/watch?v=SYb24ncjVsY
 * Setting Visibility Controls – Hide block settings from certain user roles so they can focus on content and you can keep them out of the block designs.
 * Spacing Controls – Control paddings and margins for your blocks in whatever units you like. Customize responsively for precision spacing and design.
 
-= Custom Editor Max Width Settings =
-One of the challenges with creating column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template, this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don’t have a sidebar, it is a poor representation of what you are going to get on the front end of your site. Not to mention, it makes for a cramped space to work in if you are trying to manage a row with three columns.
-
-In an effort to create an easier way to use Gutenberg in a more “page building experience” we created a simple method that allows you to change the default max width for pages and posts, as well as individually through a page by page setting.
-
 
 = Source files =
 
@@ -83,10 +78,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 2.4.4 =
 Release Date: April 14th, 2022
+* Update: TOC when in non static search mode, check reusable blocks for headings.
 * Fix: Issue with icon list gap when using columns.
 * Fix: Issue with image block not correctly resizing when switching preview modes.
 * Fix: Issue with min height unit in section.
 * Fix: Issue with buttons not aligning.
+* Fix: Issue with editor not showing columns in full height.
 
 = 2.4.3 =
 Release Date: April 11th, 2022

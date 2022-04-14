@@ -26,7 +26,7 @@
 		margin-top: 30px;
 	}
 }
-// Full height experiment.
+// Full height.
 .kt-inner-column-height-full.wp-block-kadence-rowlayout>.innerblocks-wrap {
     flex-grow: 1;
 }
@@ -263,21 +263,16 @@ button.components-button.kb-sidebar-image {
     clear:both;
     content:'';
 }
-.kt-inner-column-height-full .kadence-inner-column-inner {
-    height: 100%;
+.wp-block-kadence-rowlayout.kt-inner-column-height-full>.innerblocks-wrap>.block-editor-inner-blocks>.block-editor-block-list__layout>.wp-block-kadence-column {
+    height: auto;
 }
-.kt-inner-column-height-full>.innerblocks-wrap>.block-editor-inner-blocks>.block-editor-block-list__layout> .block-editor-block-list__block[data-type="kadence/column"] > .wp-block-kadence-column,
-.kt-inner-column-height-full>.innerblocks-wrap>.block-editor-inner-blocks>.block-editor-block-list__layout>.wp-block-kadence-column {
-    height: 100%;
-}
-.kt-inner-column-height-full .block-editor-block-list__layout .block-editor-block-list__block[data-type="kadence/column"] > .block-editor-block-list__block-edit > div[data-block]
-.kt-inner-column-height-full>.innerblocks-wrap>.block-editor-inner-blocks>.block-editor-block-list__layout>.wp-block-kadence-column >.kadence-inner-column-inner {
-    height:100%;
-    display: flex;
-    margin: 0;
-    padding-top: 28px;
-    padding-bottom: 28px;
-}
+// .kt-inner-column-height-full>.innerblocks-wrap>.block-editor-inner-blocks>.block-editor-block-list__layout>.wp-block-kadence-column >.kadence-inner-column-inner {
+//     height:100%;
+//     display: flex;
+//     margin: 0;
+//     padding-top: 28px;
+//     padding-bottom: 28px;
+// }
 .wp-block-kadence-rowlayout[class*=" kt-custom-first-width-1"]:not(.kt-gutter-skinny):not(.kt-gutter-narrow):not(.kt-gutter-none) > .innerblocks-wrap > .kt-resizeable-column-container .editor-row-first-column__resizer:not(.second_resizer) {
 	.components-resizable-box__handle.components-resizable-box__handle-right {
 		margin-right: -30px;
@@ -1117,6 +1112,7 @@ button.components-button.kb-sidebar-image {
 				max-width: none;
 				margin-top: 0px;
 				margin-bottom: 0px;
+				height: 100%;
 				.block-editor-block-list__block-edit,
 				.kadence-inner-column-inner {
 					flex-basis: 100%;
