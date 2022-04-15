@@ -1,9 +1,8 @@
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import map from 'lodash/map';
-import OpacityControl from '../../opacity-control';
-import hexToRGBA from '../../hex-to-rgba';
-import IconControl from '../../components/icons/icon-control';
+import { OpacityControl } from '@kadence/components';
+import { hexToRGBA } from '@kadence/helpers';
+import { IconControl, TypographyControls } from '@wordpress/components';
 /**
  * Internal block libraries
  */

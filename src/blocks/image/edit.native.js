@@ -60,7 +60,7 @@ import { store as editPostStore } from '@wordpress/edit-post';
  */
 import styles from './styles.scss';
 import { getUpdatedLinkTargetSettings } from './utils';
-import KadencePanelBody from '../../components/KadencePanelBody';
+import { KadencePanelBody } from '@kadence/components';
 
 import {
 	LINK_DESTINATION_CUSTOM,

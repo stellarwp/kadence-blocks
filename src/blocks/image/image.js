@@ -40,27 +40,15 @@ import { store as coreStore } from '@wordpress/core-data';
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 
 /**
  * Module constants
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import PopColorControl from '../../components/color/pop-color-control';
-import MeasurementControls from '../../components/measurement/measurement-control';
-import KadenceImageSizeControl from '../../components/common/image-size-control';
-import BoxShadowControl from '../../components/common/box-shadow-control';
-import KadenceImageControl from '../../components/common/kadence-image-control';
+import { PopColorControl, TypographyControls, MeasurementControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange, KadencePanelBody, URLInputControl, KadenceImageURLInputUI, BoxShadowControl, KadenceImageControl, DropShadowControl, ImageSizeControl as KadenceImageSizeControl } from '@kadence/components';
 import icons from '../../icons';
-import DropShadowControl from '../../components/background/drop-shadow-control';
-import TypographyControls from '../../components/typography/typography-control';
-import URLInputControl from '../../components/links/link-control';
-import KadenceRange from '../../components/range/range-control';
-import KadenceImageURLInputUI from '../../components/links/image-url-input-link-control';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody'
 
 export default function Image( {
 	temporaryURL,

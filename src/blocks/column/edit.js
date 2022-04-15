@@ -13,23 +13,16 @@ import icons from '../../icons';
  * Import Controls
  */
 import MeasurementControls from '../../measurement-control';
-import BoxShadowControl from '../../components/common/box-shadow-control';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 import uniqueId from 'lodash/uniqueId';
-import PopColorControl from '../../components/color/pop-color-control';
-import KadenceBackgroundControl from '../../components/background/background-control';
-import KadenceColorOutput from '../../kadence-color-output';
-import KadenceRange from '../../components/range/range-control';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import ResponsiveAlignControls from '../../components/align/responsive-align-control';
-import KadenceRadioButtons from '../../components/common/kadence-radio-buttons';
-import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
-import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import URLInputControl from '../../components/links/link-control';
+/**
+ * Kadence Components.
+ */
 import { getPreviewSize, showSettings } from '../../helpers/helpers';
+import { PopColorControl, ResponsiveMeasurementControls, SmallResponsiveControl, KadenceRange, ResponsiveRangeControls, KadencePanelBody, URLInputControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
+import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
+
 /**
  * Blocks Specific.
  */
@@ -42,7 +35,8 @@ import './editor.scss';
 import { __ } from '@wordpress/i18n';
 
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useEffect, useRef, useState, Fragment } from '@wordpress/element';
+import { useEffect, useState, Fragment } from '@wordpress/element';
+import { Fragment } from '@wordpress/element';
 import {
 	InnerBlocks,
 	BlockControls,
@@ -52,15 +46,13 @@ import {
 	useInnerBlocksProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-const {
+import {
 	ToggleControl,
 	SelectControl,
 	ToolbarGroup,
 	TabPanel,
-} = wp.components;
-const {
-	applyFilters,
-} = wp.hooks;
+} from '@wordpress/components';
+import { applyFilters } from '@wordpress/hooks';
 /**
  * Build the section edit.
  */
@@ -541,7 +533,7 @@ function SectionEdit( {
 									initialOpen={ false }
 									panelName={ 'kb-col-padding-margin' }
 								>
-									<ResponsiveMeasuremenuControls
+									<ResponsiveMeasurementControls
 										label={ __( 'Padding', 'kadence-blocks' ) }
 										control={ paddingControl }
 										value={ [ ( undefined !== topPadding ? topPadding : '' ), ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== leftPadding ? leftPadding : '' ) ] }
@@ -565,7 +557,7 @@ function SectionEdit( {
 										units={ [ 'px', 'em', 'rem', '%' ] }
 										onUnit={ ( value ) => setAttributes( { paddingType: value } ) }
 									/>
-									<ResponsiveMeasuremenuControls
+									<ResponsiveMeasurementControls
 										label={ __( 'Margin', 'kadence-blocks' ) }
 										control={ marginControl }
 										value={ [ ( undefined !== topMargin ? topMargin : '' ), ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== leftMargin ? leftMargin : '' ) ] }
@@ -819,7 +811,7 @@ function SectionEdit( {
 																		default={ '' }
 																		onChange={ value => setAttributes( { borderHover: value } ) }
 																	/>
-																	<ResponsiveMeasuremenuControls
+																	<ResponsiveMeasurementControls
 																		label={ __( 'Border Width', 'kadence-blocks' ) }
 																		value={ borderHoverWidth }
 																		control={ borderWidthControl }
@@ -909,7 +901,7 @@ function SectionEdit( {
 																		onChange={ value => setAttributes( { border: value } ) }
 																		onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
 																	/>
-																	<ResponsiveMeasuremenuControls
+																	<ResponsiveMeasurementControls
 																		label={ __( 'Border Width', 'kadence-blocks' ) }
 																		value={ borderWidth }
 																		control={ borderWidthControl }

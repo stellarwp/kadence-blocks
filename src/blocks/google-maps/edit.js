@@ -36,12 +36,9 @@ const {
  * Internal dependencies
  */
 import classnames from 'classnames';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import isEmpty from 'lodash/isEmpty';
-import KadenceRange from '../../components/range/range-control';
 import EditJsMap from './editJsMap';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import ResponsiveAlignControls from '../../components/align/responsive-align-control';
+import { ResponsiveAlignControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange } from '@kadence/components';
 
 const ktmapsUniqueIDs = [];
 
@@ -100,7 +97,7 @@ export function Edit( {
 			const timeOutId = setTimeout(() => locationChange( location ), 600);
 			return () => clearTimeout(timeOutId);
 		}
-		
+
 	}, [ location, apiType ]);
 
 	const locationChange = async (address) => {
@@ -401,7 +398,7 @@ export function Edit( {
 									value={ customSnazzy }
 									onChange={ (value) => setAttributes( { customSnazzy: value } ) }
 								/>
-								
+
 								<a href={'https://snazzymaps.com'} target={'_blank'}> { __('Visit Snazzy Maps', 'kadence-blocks') } </a>
 							</>
 						: null }

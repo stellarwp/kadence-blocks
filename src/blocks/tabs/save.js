@@ -3,7 +3,7 @@
  */
 import classnames from 'classnames';
 import times from 'lodash/times';
-import IconRender from '../../components/icons/icon-render';
+import { IconRender } from '@kadence/components';
 const {
 	Component,
 	Fragment,

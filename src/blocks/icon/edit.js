@@ -12,14 +12,8 @@ import editorIcons from '../../icons';
  */
 import times from 'lodash/times';
 import map from 'lodash/map';
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import PopColorControl from '../../components/color/pop-color-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import StepControl from '../../step-control';
-import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import URLInputControl from '../../components/links/link-control';
+import { PopColorControl, StepControls, IconControl, IconRender, KadencePanelBody, URLInputControl, VerticalAlignmentIcon } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Import Css
@@ -573,7 +567,7 @@ class KadenceIcons extends Component {
 						initialOpen={ true }
 						panelName={ 'kb-icon-count' }
 					>
-						<StepControl
+						<StepControls
 							label={ __( 'Number of Icons', 'kadence-blocks' ) }
 							value={ iconCount }
 							onChange={ newcount => {

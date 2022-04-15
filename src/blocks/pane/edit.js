@@ -4,9 +4,7 @@
  * Registering a basic block with Gutenberg.
  */
 
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import KadencePanelBody from '../../components/KadencePanelBody';
+import { KadencePanelBody, IconControl, IconRender } from '@kadence/components';
 
 import { __ } from '@wordpress/i18n';
 const {

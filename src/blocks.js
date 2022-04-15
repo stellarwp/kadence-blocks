@@ -3,12 +3,10 @@
  *
  */
 // Utils
-import './components/utilities/kadence-store';
-import TypographyControls from './components/typography/typography-control';
+import './stores/kadence-store';
 import AdvancedColorControl from './advanced-color-control.js';
-import BoxShadowControl from './components/common/box-shadow-control';
-import IconControl from './components/icons/icon-control';
-import IconRender from './components/icons/icon-render';
+import { BoxShadowControl, TypographyControls, IconControl, IconRender } from '@kadence/components';
+
 window.kb = {
 	// Sidebar controls.
 	controls: {

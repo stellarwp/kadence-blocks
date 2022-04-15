@@ -9,12 +9,7 @@
 /**
  * Internal dependencies
  */
-import TypographyControls from '../../components/typography/typography-control';
-import PopColorControl from '../../components/color/pop-color-control';
-import KadenceRange from '../../components/range/range-control';
-import ResponsiveAlignControls from '../../components/align/responsive-align-control';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, ResponsiveAlignControls } from '@kadence/components';
 
 /**
  * WordPress dependencies

@@ -11,7 +11,7 @@ import icons from '../../icons';
 import edit from './edit';
 import deprecated from './deprecated';
 import SvgPattern from './svg-pattern';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import classnames from 'classnames';
 /**
  * Import Css

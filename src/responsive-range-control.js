@@ -7,7 +7,7 @@
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import KadenceRange from './components/range/range-control';
+import { KadenceRange } from '@kadence/components';
 const {
 	Fragment,
 } = wp.element;

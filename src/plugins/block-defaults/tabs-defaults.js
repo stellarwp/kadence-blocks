@@ -19,7 +19,7 @@ const {
 } = wp.components;
 import map from 'lodash/map';
 import MeasurementControls from '../../measurement-control';
-import TypographyControls from '../../components/typography/typography-control';
+import { TypographyControls } from '@kadence/components';
 import icons from '../../icons';
 /**
  * Internal block libraries

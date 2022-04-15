@@ -4,7 +4,7 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- @import '../../slick.scss';
+ @import './slick.scss';
  .wp-block-kadence-testimonials {
 	.kt-blocks-carousel {
 		padding-bottom: 35px;

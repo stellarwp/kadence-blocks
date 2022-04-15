@@ -5,19 +5,11 @@
  */
 
 /**
- * Import Icons
- */
-import icons from '../../icons';
-
-/**
  * Import External
  */
-import KadenceSelectTerms from '../../components/terms/select-terms-control';
-import TypographyControls from '../../components/typography/typography-control';
 import debounce from 'lodash/debounce';
 import classnames from 'classnames';
 import Select from 'react-select';
-import KadenceRange from '../../components/range/range-control';
 import getQuery from './get-query';
 
 /**
@@ -30,28 +22,24 @@ import './editor.scss';
  */
 import { __ } from '@wordpress/i18n';
 import { withSelect } from '@wordpress/data';
-import KadencePanelBody from '../../components/KadencePanelBody'
-const { dateI18n, format, __experimentalGetSettings } = wp.date;
-const {
+import { KadencePanelBody, KadenceRange, KadenceSelectTerms, TypographyControls } from '@kadence/components'
+import { dateI18n, format, __experimentalGetSettings } from '@wordpress/date';
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	InspectorControls,
-	BlockControls,
-	AlignmentToolbar,
-	BlockAlignmentToolbar,
-	InspectorAdvancedControls,
-} = wp.blockEditor;
-const {
+} from '@wordpress/blockEditor';
+import {
 	TextControl,
 	Placeholder,
 	ToggleControl,
 	SelectControl,
 	RadioControl,
 	Spinner,
-} = wp.components;
-const { apiFetch } = wp;
+} from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
 const { postTypes, taxonomies, postQueryEndpoint } = kadence_blocks_params;
 const { addQueryArgs } = wp.url;
 const { decodeEntities } = wp.htmlEntities;

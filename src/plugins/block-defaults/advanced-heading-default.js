@@ -1,7 +1,6 @@
-import TypographyControls from '../../components/typography/typography-control';
 import map from 'lodash/map';
-import PopColorControl from '../../components/color/pop-color-control';
-import HeadingLevelIcon from '../../blocks/advanced-heading/heading-icons';
+import { PopColorControl, TypographyControls, HeadingLevelIcon } from '@kadence/components';
+
 /**
  * Internal block libraries
  */

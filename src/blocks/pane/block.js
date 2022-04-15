@@ -13,7 +13,7 @@ const {
  * Import Icons
  */
 import icons from '../../icons';
-import IconRender from '../../components/icons/icon-render';
+import { IconRender } from '@kadence/components';
 /**
  * Import edit
  */

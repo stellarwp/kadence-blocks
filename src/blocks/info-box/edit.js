@@ -16,22 +16,11 @@ import icons from '../../icons';
 import map from 'lodash/map';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import PopColorControl from '../../components/color/pop-color-control';
-import ImageSizeControl from '../../components/common/image-size-control';
-import WebfontLoader from '../../components/typography/fontloader';
-import IconRender from '../../components/icons/icon-render';
-import IconControl from '../../components/icons/icon-control';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, IconControl, IconRender, URLInputControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl } from '@kadence/components';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import KadenceRange from '../../components/range/range-control';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import URLInputControl from '../../components/links/link-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
-import KadenceImageControl from '../../components/common/kadence-image-control';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Internal block libraries
@@ -1656,7 +1645,7 @@ class KadenceInfoBox extends Component {
 										}
 									}
 								</TabPanel>
-								<ResponsiveMeasuremenuControls
+								<ResponsiveMeasurementControls
 									label={ __( 'Container Padding', 'kadence-blocks' ) }
 									control={ containerPaddingControl }
 									tabletControl={ containerPaddingControl }

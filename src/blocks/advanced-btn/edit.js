@@ -5,26 +5,12 @@
  */
 import times from 'lodash/times';
 import map from 'lodash/map';
-import get from 'lodash/get';
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import TypographyControls from '../../components/typography/typography-control';
-import BoxShadowControl from '../../components/common/box-shadow-control';
-import WebfontLoader from '../../components/typography/fontloader';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import PopColorControl from '../../components/color/pop-color-control';
+import { KadenceColorOutput } from '@kadence/helpers';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, SmallResponsiveControl, ResponsiveRangeControls, IconRender, IconControl, KadencePanelBody, URLInputControl, URLInputInline, ResponsiveAlignControls, WebfontLoader, BoxShadowControl, DynamicTextControl } from '@kadence/components';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
 import flow from 'lodash/flow';
 import filter from 'lodash/filter';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
-import URLInputControl from '../../components/links/link-control';
-import URLInputInline from '../../components/links/inline-link-control';
-import DynamicTextControl from '../../components/common/dynamic-text-control';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import ResponsiveAlignControls from '../../components/align/responsive-align-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
@@ -1007,7 +993,7 @@ class KadenceAdvancedButton extends Component {
 								min={ 0 }
 								max={ 50 }
 							/>
-							<ResponsiveMeasuremenuControls
+							<ResponsiveMeasurementControls
 								label={ __( 'Button Margin', 'kadence-blocks' ) }
 								value={ undefined !== btns[ index ].margin ? btns[ index ].margin : [ '', '', '', '' ] }
 								control={ this.state.buttonMarginControl }
@@ -1125,7 +1111,7 @@ class KadenceAdvancedButton extends Component {
 									onChange={ ( value ) => this.saveArrayUpdate( { onlyIcon: [ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ), ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[1] ? btns[ index ].onlyIcon[1] : '' ), value ] }, index ) }
 								/> }
 							/>
-							<ResponsiveMeasuremenuControls
+							<ResponsiveMeasurementControls
 								label={ __( 'Icon Padding', 'kadence-blocks' ) }
 								value={ undefined !== btns[ index ].iconPadding ? btns[ index ].iconPadding : [ '', '', '', '' ] }
 								control={ this.state.iconPaddingControl }
@@ -1854,7 +1840,7 @@ class KadenceAdvancedButton extends Component {
 										initialOpen={ false }
 										panelName={ 'kb-adv-btn-container-margin' }
 									>
-										<ResponsiveMeasuremenuControls
+										<ResponsiveMeasurementControls
 											label={ __( 'Container Margin', 'kadence-blocks' ) }
 											value={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ] }
 											control={ this.state.marginControl }

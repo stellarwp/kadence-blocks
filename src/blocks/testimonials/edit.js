@@ -22,17 +22,9 @@ import times from 'lodash/times';
 /**
  * Import Components
  */
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import WebfontLoader from '../../components/typography/fontloader';
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import KadenceMediaPlaceholder from '../../kadence-media-placeholder';
-import PopColorControl from '../../components/color/pop-color-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadencePanelBody, WebfontLoader, IconControl, IconRender, KadenceMediaPlaceholder } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Internal block libraries
@@ -1266,7 +1258,7 @@ class KadenceTestimonials extends Component {
 										onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 									/>
 									<div className="kt-spacer-sidebar-15"></div>
-									<ResponsiveMeasuremenuControls
+									<ResponsiveMeasurementControls
 										label={ __( 'Container Padding', 'kadence-blocks' ) }
 										control={ containerPaddingControl }
 										tabletControl={ tabletContainerPaddingControl }
@@ -1958,7 +1950,7 @@ class KadenceTestimonials extends Component {
 									initialOpen={ false }
 									panelName={ 'kb-testimonials-wrapper-padding' }
 								>
-									<ResponsiveMeasuremenuControls
+									<ResponsiveMeasurementControls
 										label={ __( 'Wrapper Padding', 'kadence-blocks' ) }
 										value={ wrapperPadding }
 										control={ this.state.wrapperPaddingControls }

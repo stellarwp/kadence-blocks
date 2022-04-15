@@ -4,7 +4,7 @@
 
  import memoize from 'memize';
 
- import KadenceColorOutput from '../../components/color/kadence-color-output';
+ import { KadenceColorOutput } from '@kadence/helpers';
 
 import {
 	Component,

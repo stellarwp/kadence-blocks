@@ -17,10 +17,8 @@ const {
 	Tooltip,
 	Modal,
 } = wp.components;
-import map from 'lodash/map';
 import MeasurementControls from '../../measurement-control';
-import TypographyControls from '../../components/typography/typography-control';
-import BorderColorControls from '../../border-color-control';
+import { TypographyControls, BorderColorControls } from '@kadence/components';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import icons from '../../icons';
 /**

@@ -6,7 +6,7 @@
 	withDispatch,
 } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
-import { 
+import {
 	Component,
 	render,
 	Fragment,
@@ -21,7 +21,7 @@ import {
  * Internal dependencies
  */
  import icons from '../../brand-icon';
-import KadenceTryParseJSON from '../../components/common/parse-json';
+import { KadenceTryParseJSON } from '@kadence/helpers';
 /**
  * Add Prebuilt Library button to Gutenberg toolbar
  */
@@ -77,7 +77,7 @@ class ToolbarLibrary extends Component {
 			while ( document.querySelector(selector) === null) {
 				await new Promise( resolve => requestAnimationFrame( resolve ) )
 			}
-			return document.querySelector(selector); 
+			return document.querySelector(selector);
 		}
 		if ( this.showSettings( 'show' ) && kadence_blocks_params.showDesignLibrary ) {
 			checkElement( '.edit-post-header-toolbar' ).then( ( selector ) => {

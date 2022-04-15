@@ -5,12 +5,12 @@
  */
 import classnames from 'classnames';
 
-import KadenceColorOutput from '../../components/color/deprecated-kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 const {
 	Fragment,
 } = wp.element;
-import { 
+import {
 	RichText,
 	getColorClassName,
 } from '@wordpress/block-editor';

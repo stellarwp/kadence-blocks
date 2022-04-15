@@ -51,7 +51,7 @@ import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
-import KadenceTryParseJSON from '../../components/common/parse-json';
+import { KadenceTryParseJSON } from '@kadence/helpers';
 import { applyFilters } from '@wordpress/hooks';
 
 const normal_actions =[
@@ -201,12 +201,12 @@ class PrebuiltModal extends Component {
 								</div>
 								{ this.state.reloadActions && (
 									<div class="kb-prebuilt-library-actions">
-										<Spinner /> 
+										<Spinner />
 									</div>
 								) }
 								{ ! this.state.reloadActions && (
 									<div class="kb-prebuilt-library-actions">
-										{ actions.map( ( action, index ) => 
+										{ actions.map( ( action, index ) =>
 											<Fragment>
 												{ action.slug !== 'wire' && this.showSettings( action.slug ) &&  (
 													<Button
@@ -247,7 +247,7 @@ class PrebuiltModal extends Component {
 								) }
 								{ 'cloud' !== active_tab && (
 									<div class="kb-prebuilt-library-reload">
-										<Button 
+										<Button
 											className="kt-reload-templates"
 											icon={ update }
 											label={ __( 'Sync with Cloud', 'kadence-blocks' ) }
@@ -256,7 +256,7 @@ class PrebuiltModal extends Component {
 									</div>
 								) }
 								<div class="kb-prebuilt-header-close-wrap">
-									<Button 
+									<Button
 										className="kb-prebuilt-header-close"
 										icon={ close }
 										label={ __( 'Close Dialog', 'kadence-blocks') }

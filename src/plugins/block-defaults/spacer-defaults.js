@@ -1,4 +1,4 @@
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 const {
 	Component,
 	Fragment,
