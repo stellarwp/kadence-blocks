@@ -11,6 +11,7 @@ import ColorPicker from './color-picker';
 import hexToRGBA from './hex-to-rgba';
 import get from 'lodash/get';
 import map from 'lodash/map';
+import { useSetting } from '@wordpress/block-editor';
  
  /**
   * Internal block libraries
@@ -282,12 +283,10 @@ import map from 'lodash/map';
 	}
  }
  export default withSelect( ( select, ownProps ) => {
-	 const settings = select( 'core/block-editor' ).getSettings();
-	 const colors = get( settings, [ 'colors' ], [] );
-	 const disableCustomColors = ownProps.disableCustomColors === undefined ? settings.disableCustomColors : ownProps.disableCustomColors;
-	 return {
-		 colors,
-		 disableCustomColors,
-	 };
+	const disableCustomColors = ownProps.disableCustomColors === undefined ? ! useSetting( 'color.custom' ) : ownProps.disableCustomColors;
+	return {
+		colors: useSetting( 'color.palette' ),
+		disableCustomColors,
+	};
  } )( InlinePopColorControl );
  

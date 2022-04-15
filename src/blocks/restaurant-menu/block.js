@@ -44,15 +44,6 @@ registerBlockType( 'kadence/restaurantmenu', {
 	category: 'kadence-blocks',
 	keywords: ['restaurant menu', 'food', 'drinks'],
 	description: __( 'In the restaurant, a menu is a list of food and beverages offered to customers and the prices.' ),
-	getEditWrapperProps( attributes ) {
-		const { fullWidth } = attributes;
-		return {
-			style: {
-				maxWidth: fullWidth ? 'none' : false,
-				width: fullWidth ? '100%' : false
-			},
-		};
-	},
 	attributes,
 	edit,
 	save

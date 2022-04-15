@@ -1,7 +1,6 @@
 import TypographyControls from '../../components/typography/typography-control';
-import range from 'lodash/range';
 import map from 'lodash/map';
-import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
+import PopColorControl from '../../components/color/pop-color-control';
 import HeadingLevelIcon from '../../blocks/advanced-heading/heading-icons';
 /**
  * Internal block libraries
@@ -219,11 +218,11 @@ class KadenceAdvancedHeadingDefault extends Component {
 								/>
 							</div>
 							<div className="components-base-control">
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Color', 'kadence-blocks' ) }
-									colorValue={ ( undefined !== headingConfig.color ? headingConfig.color : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => this.saveConfigState( 'color', value ) }
+									value={ ( undefined !== headingConfig.color ? headingConfig.color : '' ) }
+									default={ '' }
+									onChange={ value => this.saveConfigState( 'color', value ) }
 								/>
 							</div>
 							<div className="components-base-control">
@@ -295,28 +294,28 @@ class KadenceAdvancedHeadingDefault extends Component {
 							initialOpen={ false }
 						>
 							<div className="components-base-control">
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Highlight Color', 'kadence-blocks' ) }
-									colorValue={ ( undefined !== headingConfig.markColor ? headingConfig.markColor : '#f76a0c' ) }
-									colorDefault={ '#f76a0c' }
-									onColorChange={ value => this.saveConfigState( 'markColor', value ) }
+									value={ ( undefined !== headingConfig.markColor ? headingConfig.markColor : '#f76a0c' ) }
+									default={ '#f76a0c' }
+									onChange={ value => this.saveConfigState( 'markColor', value ) }
 								/>
 							</div>
 							<div className="components-base-control">
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Highlight Background', 'kadence-blocks' ) }
-									colorValue={ ( undefined !== headingConfig.markBG ? headingConfig.markBG : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => this.saveConfigState( 'markBG', value ) }
+									value={ ( undefined !== headingConfig.markBG ? headingConfig.markBG : '' ) }
+									default={ '' }
+									onChange={ value => this.saveConfigState( 'markBG', value ) }
 									opacityValue={ ( undefined !== headingConfig.markBGOpacity ? headingConfig.markBGOpacity : 1 ) }
 									onOpacityChange={ value => this.saveConfigState( 'markBGOpacity', value ) }
 								/>
 							</div>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Highlight Border Color', 'kadence-blocks' ) }
-								colorValue={ ( undefined !== headingConfig.markBorder ? headingConfig.markBorder : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => this.saveConfigState( 'markBorder', value ) }
+								value={ ( undefined !== headingConfig.markBorder ? headingConfig.markBorder : '' ) }
+								default={ '' }
+								onChange={ value => this.saveConfigState( 'markBorder', value ) }
 								opacityValue={ ( undefined !== headingConfig.markBorderOpacity ? headingConfig.markBorderOpacity : 1 ) }
 								onOpacityChange={ value => this.saveConfigState( 'markBorderOpacity', value ) }
 							/>

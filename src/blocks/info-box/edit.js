@@ -18,7 +18,7 @@ import get from 'lodash/get';
 import debounce from 'lodash/debounce';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import ImageSizeControl from '../../components/common/image-size-control';
 import WebfontLoader from '../../components/typography/fontloader';
 import IconRender from '../../components/icons/icon-render';
@@ -737,6 +737,7 @@ class KadenceInfoBox extends Component {
 						variant: '',
 						subset: '',
 						loadGoogle: true,
+						textTransform: '',
 					} ],
 					displayLearnMore: false,
 					displayShadow: false,
@@ -812,6 +813,7 @@ class KadenceInfoBox extends Component {
 						variant: '',
 						subset: '',
 						loadGoogle: true,
+						textTransform: '',
 					} ],
 					displayLearnMore: false,
 					displayShadow: true,
@@ -918,6 +920,7 @@ class KadenceInfoBox extends Component {
 						backgroundHover: '#ffffff',
 						borderHover: '#ffffff',
 						hoverEffect: 'revealBorder',
+						textTransform: '',
 					} ],
 					displayShadow: false,
 				} );
@@ -998,6 +1001,7 @@ class KadenceInfoBox extends Component {
 						variant: '',
 						subset: '',
 						loadGoogle: true,
+						textTransform: '',
 					} ],
 					displayLearnMore: true,
 					learnMoreStyles: [ {
@@ -1027,6 +1031,7 @@ class KadenceInfoBox extends Component {
 						backgroundHover: '#ffffff',
 						borderHover: '#222222',
 						hoverEffect: 'revealBorder',
+						textTransform: '',
 					} ],
 					displayShadow: false,
 				} );
@@ -1606,20 +1611,20 @@ class KadenceInfoBox extends Component {
 												if ( 'hover' === tab.name ) {
 													tabout = (
 														<Fragment>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Hover Background', 'kadence-blocks' ) }
-																colorValue={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
-																colorDefault={ '#f2f2f2' }
+																value={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
+																default={ '#f2f2f2' }
 																opacityValue={ containerHoverBackgroundOpacity }
-																onColorChange={ value => setAttributes( { containerHoverBackground: value } ) }
+																onChange={ value => setAttributes( { containerHoverBackground: value } ) }
 																onOpacityChange={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
 															/>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Hover Border', 'kadence-blocks' ) }
-																colorValue={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
-																colorDefault={ '#eeeeee' }
+																value={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
+																default={ '#eeeeee' }
 																opacityValue={ containerHoverBorderOpacity }
-																onColorChange={ value => setAttributes( { containerHoverBorder: value } ) }
+																onChange={ value => setAttributes( { containerHoverBorder: value } ) }
 																onOpacityChange={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
 															/>
 														</Fragment>
@@ -1627,20 +1632,20 @@ class KadenceInfoBox extends Component {
 												} else {
 													tabout = (
 														<Fragment>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Container Background', 'kadence-blocks' ) }
-																colorValue={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
-																colorDefault={ '#f2f2f2' }
+																value={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
+																default={ '#f2f2f2' }
 																opacityValue={ containerBackgroundOpacity }
-																onColorChange={ value => setAttributes( { containerBackground: value } ) }
+																onChange={ value => setAttributes( { containerBackground: value } ) }
 																onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 															/>
-															<AdvancedPopColorControl
+															<PopColorControl
 																label={ __( 'Container Border', 'kadence-blocks' ) }
-																colorValue={ ( containerBorder ? containerBorder : '#eeeeee' ) }
-																colorDefault={ '#eeeeee' }
+																value={ ( containerBorder ? containerBorder : '#eeeeee' ) }
+																default={ '#eeeeee' }
 																opacityValue={ containerBorderOpacity }
-																onColorChange={ value => setAttributes( { containerBorder: value } ) }
+																onChange={ value => setAttributes( { containerBorder: value } ) }
 																onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 															/>
 														</Fragment>
@@ -1982,26 +1987,26 @@ class KadenceInfoBox extends Component {
 																<Fragment>
 																	{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
 																		<Fragment>
-																			<AdvancedPopColorControl
+																			<PopColorControl
 																				label={ __( 'SVG Hover Color', 'kadence-blocks' ) }
-																				colorValue={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
-																				colorDefault={ '#444444' }
-																				onColorChange={ value => saveMediaIcon( { hoverColor: value } ) }
+																				value={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
+																				default={ '#444444' }
+																				onChange={ value => saveMediaIcon( { hoverColor: value } ) }
 																			/>
 																			<small>{ __( '*you must force inline svg for this to have effect.', 'kadence-blocks' ) }</small>
 																		</Fragment>
 																	) }
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Image Hover Background', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
-																		colorDefault={ 'transparent' }
-																		onColorChange={ value => saveMediaStyle( { hoverBackground: value } ) }
+																		value={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
+																		default={ 'transparent' }
+																		onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Image Hover Border', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaStyle( { hoverBorder: value } ) }
+																		value={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
 																	/>
 																</Fragment>
 															);
@@ -2010,26 +2015,26 @@ class KadenceInfoBox extends Component {
 																<Fragment>
 																	{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
 																		<Fragment>
-																			<AdvancedPopColorControl
+																			<PopColorControl
 																				label={ __( 'SVG Color', 'kadence-blocks' ) }
-																				colorValue={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
-																				colorDefault={ '#444444' }
-																				onColorChange={ value => saveMediaIcon( { color: value } ) }
+																				value={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
+																				default={ '#444444' }
+																				onChange={ value => saveMediaIcon( { color: value } ) }
 																			/>
 																			<small>{ __( '*you must force inline svg for this to have effect.', 'kadence-blocks' ) }</small>
 																		</Fragment>
 																	) }
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Image Background', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
-																		colorDefault={ 'transparent' }
-																		onColorChange={ value => saveMediaStyle( { background: value } ) }
+																		value={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
+																		default={ 'transparent' }
+																		onChange={ value => saveMediaStyle( { background: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Image Border', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaStyle( { border: value } ) }
+																		value={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaStyle( { border: value } ) }
 																	/>
 																</Fragment>
 															);
@@ -2124,46 +2129,46 @@ class KadenceInfoBox extends Component {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<Fragment>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Icon Hover Color', 'kadence-blocks' ) }
-																		colorValue={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaIcon( { hoverColor: value } ) }
+																		value={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaIcon( { hoverColor: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Icon Hover Background', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
-																		colorDefault={ 'transparent' }
-																		onColorChange={ value => saveMediaStyle( { hoverBackground: value } ) }
+																		value={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
+																		default={ 'transparent' }
+																		onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Icon Hover Border', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaStyle( { hoverBorder: value } ) }
+																		value={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
 																	/>
 																</Fragment>
 															);
 														} else {
 															tabout = (
 																<Fragment>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Icon Color', 'kadence-blocks' ) }
-																		colorValue={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaIcon( { color: value } ) }
+																		value={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaIcon( { color: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Icon Background', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
-																		colorDefault={ 'transparent' }
-																		onColorChange={ value => saveMediaStyle( { background: value } ) }
+																		value={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
+																		default={ 'transparent' }
+																		onChange={ value => saveMediaStyle( { background: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Icon Border Color', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaStyle( { border: value } ) }
+																		value={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaStyle( { border: value } ) }
 																	/>
 																</Fragment>
 															);
@@ -2265,46 +2270,46 @@ class KadenceInfoBox extends Component {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<Fragment>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Number Hover Color', 'kadence-blocks' ) }
-																		colorValue={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaIcon( { hoverColor: value } ) }
+																		value={ ( mediaIcon[ 0 ].hoverColor ? mediaIcon[ 0 ].hoverColor : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaIcon( { hoverColor: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Number Hover Background', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
-																		colorDefault={ 'transparent' }
-																		onColorChange={ value => saveMediaStyle( { hoverBackground: value } ) }
+																		value={ ( mediaStyle[ 0 ].hoverBackground ? mediaStyle[ 0 ].hoverBackground : '' ) }
+																		default={ 'transparent' }
+																		onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Number Hover Border', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaStyle( { hoverBorder: value } ) }
+																		value={ ( mediaStyle[ 0 ].hoverBorder ? mediaStyle[ 0 ].hoverBorder : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
 																	/>
 																</Fragment>
 															);
 														} else {
 															tabout = (
 																<Fragment>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Number Color', 'kadence-blocks' ) }
-																		colorValue={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaIcon( { color: value } ) }
+																		value={ ( mediaIcon[ 0 ].color ? mediaIcon[ 0 ].color : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaIcon( { color: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Number Background', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
-																		colorDefault={ 'transparent' }
-																		onColorChange={ value => saveMediaStyle( { background: value } ) }
+																		value={ ( mediaStyle[ 0 ].background ? mediaStyle[ 0 ].background : '' ) }
+																		default={ 'transparent' }
+																		onChange={ value => saveMediaStyle( { background: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Number Border Color', 'kadence-blocks' ) }
-																		colorValue={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveMediaStyle( { border: value } ) }
+																		value={ ( mediaStyle[ 0 ].border ? mediaStyle[ 0 ].border : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveMediaStyle( { border: value } ) }
 																	/>
 																</Fragment>
 															);
@@ -2372,20 +2377,20 @@ class KadenceInfoBox extends Component {
 													if ( tab.name ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Hover Color', 'kadence-blocks' ) }
-																	colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { titleHoverColor: value } ) }
+																	value={ ( titleHoverColor ? titleHoverColor : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { titleHoverColor: value } ) }
 																/>
 															);
 														} else {
 															tabout = (
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Title Color', 'kadence-blocks' ) }
-																	colorValue={ ( titleColor ? titleColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { titleColor: value } ) }
+																	value={ ( titleColor ? titleColor : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { titleColor: value } ) }
 																/>
 															);
 														}
@@ -2538,20 +2543,20 @@ class KadenceInfoBox extends Component {
 													if ( tab.name ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Hover Color', 'kadence-blocks' ) }
-																	colorValue={ ( textHoverColor ? textHoverColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { textHoverColor: value } ) }
+																	value={ ( textHoverColor ? textHoverColor : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { textHoverColor: value } ) }
 																/>
 															);
 														} else {
 															tabout = (
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Text Color', 'kadence-blocks' ) }
-																	colorValue={ ( textColor ? textColor : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => setAttributes( { textColor: value } ) }
+																	value={ ( textColor ? textColor : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { textColor: value } ) }
 																/>
 															);
 														}
@@ -2592,6 +2597,8 @@ class KadenceInfoBox extends Component {
 											onFontStyle={ ( value ) => saveTextFont( { style: value } ) }
 											fontSubset={ textFont[ 0 ].subset }
 											onFontSubset={ ( value ) => saveTextFont( { subset: value } ) }
+											textTransform={ ( undefined !== textFont[ 0 ].textTransform ? textFont[ 0 ].textTransform : '' ) }
+											onTextTransform={ ( value ) => saveTextFont( { textTransform: value } ) }
 										/>
 										<TypographyControls
 											padding={ ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].padding ? textSpacing[ 0 ].padding : [ '', '', '', '' ] ) }
@@ -2702,46 +2709,46 @@ class KadenceInfoBox extends Component {
 														if ( 'hover' === tab.name ) {
 															tabout = (
 																<Fragment>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'HOVER: Text Color', 'kadence-blocks' ) }
-																		colorValue={ ( learnMoreStyles[ 0 ].colorHover ? learnMoreStyles[ 0 ].colorHover : '#ffffff' ) }
-																		colorDefault={ '#ffffff' }
-																		onColorChange={ value => saveLearnMoreStyles( { colorHover: value } ) }
+																		value={ ( learnMoreStyles[ 0 ].colorHover ? learnMoreStyles[ 0 ].colorHover : '#ffffff' ) }
+																		default={ '#ffffff' }
+																		onChange={ value => saveLearnMoreStyles( { colorHover: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'HOVER: Background', 'kadence-blocks' ) }
-																		colorValue={ ( learnMoreStyles[ 0 ].backgroundHover ? learnMoreStyles[ 0 ].backgroundHover : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveLearnMoreStyles( { backgroundHover: value } ) }
+																		value={ ( learnMoreStyles[ 0 ].backgroundHover ? learnMoreStyles[ 0 ].backgroundHover : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveLearnMoreStyles( { backgroundHover: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'HOVER: Border Color', 'kadence-blocks' ) }
-																		colorValue={ ( learnMoreStyles[ 0 ].borderHover ? learnMoreStyles[ 0 ].borderHover : '#444444' ) }
-																		colorDefault={ '#444444' }
-																		onColorChange={ value => saveLearnMoreStyles( { borderHover: value } ) }
+																		value={ ( learnMoreStyles[ 0 ].borderHover ? learnMoreStyles[ 0 ].borderHover : '#444444' ) }
+																		default={ '#444444' }
+																		onChange={ value => saveLearnMoreStyles( { borderHover: value } ) }
 																	/>
 																</Fragment>
 															);
 														} else {
 															tabout = (
 																<Fragment>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Text Color', 'kadence-blocks' ) }
-																		colorValue={ ( learnMoreStyles[ 0 ].color ? learnMoreStyles[ 0 ].color : '' ) }
-																		colorDefault={ '' }
-																		onColorChange={ value => saveLearnMoreStyles( { color: value } ) }
+																		value={ ( learnMoreStyles[ 0 ].color ? learnMoreStyles[ 0 ].color : '' ) }
+																		default={ '' }
+																		onChange={ value => saveLearnMoreStyles( { color: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Background', 'kadence-blocks' ) }
-																		colorValue={ ( learnMoreStyles[ 0 ].background ? learnMoreStyles[ 0 ].background : '' ) }
-																		colorDefault={ 'transparent' }
-																		onColorChange={ value => saveLearnMoreStyles( { background: value } ) }
+																		value={ ( learnMoreStyles[ 0 ].background ? learnMoreStyles[ 0 ].background : '' ) }
+																		default={ 'transparent' }
+																		onChange={ value => saveLearnMoreStyles( { background: value } ) }
 																	/>
-																	<AdvancedPopColorControl
+																	<PopColorControl
 																		label={ __( 'Border Color', 'kadence-blocks' ) }
-																		colorValue={ ( learnMoreStyles[ 0 ].border ? learnMoreStyles[ 0 ].border : '#555555' ) }
-																		colorDefault={ '#555555' }
-																		onColorChange={ value => saveLearnMoreStyles( { border: value } ) }
+																		value={ ( learnMoreStyles[ 0 ].border ? learnMoreStyles[ 0 ].border : '#555555' ) }
+																		default={ '#555555' }
+																		onChange={ value => saveLearnMoreStyles( { border: value } ) }
 																	/>
 																</Fragment>
 															);
@@ -2793,6 +2800,8 @@ class KadenceInfoBox extends Component {
 											onGoogleFont={ ( value ) => saveLearnMoreStyles( { google: value } ) }
 											loadGoogleFont={ learnMoreStyles[ 0 ].loadGoogle }
 											onLoadGoogleFont={ ( value ) => saveLearnMoreStyles( { loadGoogle: value } ) }
+											textTransform={ ( undefined !== learnMoreStyles[ 0 ].textTransform ? learnMoreStyles[ 0 ].textTransform : '' ) }
+											onTextTransform={ ( value ) => saveLearnMoreStyles( { textTransform: value } ) }
 											fontVariant={ learnMoreStyles[ 0 ].variant }
 											onFontVariant={ ( value ) => saveLearnMoreStyles( { variant: value } ) }
 											fontWeight={ learnMoreStyles[ 0 ].weight }
@@ -2847,11 +2856,11 @@ class KadenceInfoBox extends Component {
 													if ( 'hover' === tab.name ) {
 														tabout = (
 															<Fragment>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Shadow Color', 'kadence-blocks' ) }
-																	colorValue={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => saveHoverShadow( { color: value } ) }
+																	value={ ( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' ) }
+																	default={ '' }
+																	onChange={ value => saveHoverShadow( { color: value } ) }
 																	opacityValue={ shadowHover[ 0 ].opacity }
 																	onOpacityChange={ value => saveHoverShadow( { opacity: value } ) }
 																/>
@@ -2892,11 +2901,11 @@ class KadenceInfoBox extends Component {
 													} else {
 														tabout = (
 															<Fragment>
-																<AdvancedPopColorControl
+																<PopColorControl
 																	label={ __( 'Shadow Color', 'kadence-blocks' ) }
-																	colorValue={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
-																	colorDefault={ '' }
-																	onColorChange={ value => saveShadow( { color: value } ) }
+																	value={ ( shadow[ 0 ].color ? shadow[ 0 ].color : '' ) }
+																	default={ '' }
+																	onChange={ value => saveShadow( { color: value } ) }
 																	opacityValue={ shadow[ 0 ].opacity }
 																	onOpacityChange={ value => saveShadow( { opacity: value } ) }
 																/>
@@ -3109,6 +3118,7 @@ class KadenceInfoBox extends Component {
 									fontSize: previewTextFontSize + textFont[ 0 ].sizeType,
 									lineHeight: previewTextLineHeight + textFont[ 0 ].lineType,
 									letterSpacing: textFont[ 0 ].letterSpacing + 'px',
+									textTransform: ( undefined !== textFont[ 0 ].textTransform  && textFont[ 0 ].textTransform ) ? textFont[ 0 ].textTransform : undefined,
 									fontFamily: ( textFont[ 0 ].family ? textFont[ 0 ].family : '' ),
 									padding: ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].padding ? textSpacing[ 0 ].padding[ 0 ] + 'px ' + textSpacing[ 0 ].padding[ 1 ] + 'px ' + textSpacing[ 0 ].padding[ 2 ] + 'px ' + textSpacing[ 0 ].padding[ 3 ] + 'px' : '' ),
 									margin: ( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].margin ? textSpacing[ 0 ].margin[ 0 ] + 'px ' + textSpacing[ 0 ].margin[ 1 ] + 'px ' + textSpacing[ 0 ].margin[ 2 ] + 'px ' + textSpacing[ 0 ].margin[ 3 ] + 'px' : '' ),
@@ -3142,6 +3152,7 @@ class KadenceInfoBox extends Component {
 										fontSize: previewLearnMoreFontSize + learnMoreStyles[ 0 ].sizeType,
 										lineHeight:  previewLearnMoreLineHeight + learnMoreStyles[ 0 ].lineType,
 										letterSpacing: learnMoreStyles[ 0 ].letterSpacing + 'px',
+										textTransform: ( undefined !== learnMoreStyles[ 0 ].textTransform  && learnMoreStyles[ 0 ].textTransform ) ? learnMoreStyles[ 0 ].textTransform : undefined,
 										fontFamily: ( learnMoreStyles[ 0 ].family ? learnMoreStyles[ 0 ].family : '' ),
 										borderWidth: ( learnMoreStyles[ 0 ].borderWidth ? learnMoreStyles[ 0 ].borderWidth[ 0 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 1 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 2 ] + 'px ' + learnMoreStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
 										padding: ( learnMoreStyles[ 0 ].padding ? learnMoreStyles[ 0 ].padding[ 0 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 1 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 2 ] + 'px ' + learnMoreStyles[ 0 ].padding[ 3 ] + 'px' : '' ),

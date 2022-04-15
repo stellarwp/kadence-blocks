@@ -27,6 +27,7 @@ import ResponsiveControl from '../../components/responsive/responsive-control';
 import KadenceColorOutput from '../../components/color/kadence-color-output';
 import MeasurementControls from '../../components/measurement/measurement-control';
 import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import KadenceRadioButtons from '../../kadence-radio-buttons';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadenceBackgroundControl from '../../components/background/background-control';
@@ -798,11 +799,11 @@ class KadenceRowLayout extends Component {
 						/>
 						{ mobileBackground && mobileBackground[ 0 ] && mobileBackground[ 0 ].enable && (
 							<Fragment>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Background Color', 'kadence-blocks' ) }
-									colorValue={ ( mobileBackground[ 0 ].bgColor ? mobileBackground[ 0 ].bgColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => saveMobileBackground( { bgColor: value } ) }
+									value={ ( mobileBackground[ 0 ].bgColor ? mobileBackground[ 0 ].bgColor : '' ) }
+									default={ '' }
+									onChange={ value => saveMobileBackground( { bgColor: value } ) }
 								/>
 								{ '' === mobileBackground[ 0 ].bgImg && '' !== bgImg && (
 									<ToggleControl
@@ -899,11 +900,11 @@ class KadenceRowLayout extends Component {
 						initialOpen={ false }
 						panelName={ 'kb-row-border-settings' }
 					>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Mobile Border Color', 'kadence-blocks' ) }
-							colorValue={ ( mobileBorder ? mobileBorder : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => setAttributes( { mobileBorder: value } ) }
+							value={ ( mobileBorder ? mobileBorder : '' ) }
+							default={ '' }
+							onChange={ value => setAttributes( { mobileBorder: value } ) }
 						/>
 						<MeasurementControls
 							label={ __( 'Mobile Border Width', 'kadence-blocks' ) }
@@ -1019,11 +1020,11 @@ class KadenceRowLayout extends Component {
 						/>
 						{ tabletBackground && tabletBackground[ 0 ] && tabletBackground[ 0 ].enable && (
 							<Fragment>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Background Color', 'kadence-blocks' ) }
-									colorValue={ ( tabletBackground[ 0 ].bgColor ? tabletBackground[ 0 ].bgColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => saveTabletBackground( { bgColor: value } ) }
+									value={ ( tabletBackground[ 0 ].bgColor ? tabletBackground[ 0 ].bgColor : '' ) }
+									default={ '' }
+									onChange={ value => saveTabletBackground( { bgColor: value } ) }
 								/>
 								{ '' === tabletBackground[ 0 ].bgImg && '' !== bgImg && (
 									<ToggleControl
@@ -1120,11 +1121,11 @@ class KadenceRowLayout extends Component {
 						initialOpen={ false }
 						panelName={ 'kb-row-border-settings' }
 					>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Tablet Border Color', 'kadence-blocks' ) }
-							colorValue={ ( tabletBorder ? tabletBorder : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => setAttributes( { tabletBorder: value } ) }
+							value={ ( tabletBorder ? tabletBorder : '' ) }
+							default={ '' }
+							onChange={ value => setAttributes( { tabletBorder: value } ) }
 						/>
 						<MeasurementControls
 							label={ __( 'Tablet Border Width', 'kadence-blocks' ) }
@@ -1179,11 +1180,11 @@ class KadenceRowLayout extends Component {
 				<Fragment>
 					<h2>{ __( 'Slide', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }</h2>
 					<div className="kt-inner-sub-section">
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Slide Background Color', 'kadence-blocks' ) }
-							colorValue={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => this.saveSlideItem( { bgColor: value }, index ) }
+							value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : '' ) }
+							default={ '' }
+							onChange={ value => this.saveSlideItem( { bgColor: value }, index ) }
 						/>
 						{ ( undefined === bgSlider[ index ] || undefined === bgSlider[ index ].bgImg || '' === bgSlider[ index ].bgImg ) && (
 							<MediaUpload
@@ -1668,12 +1669,12 @@ class KadenceRowLayout extends Component {
 														checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
 														onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
 													/>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Background Color', 'kadence-blocks' ) }
-														colorValue={ ( bgColor ? bgColor : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => setAttributes( { bgColor: value } ) }
-														onColorClassChange={ value => setAttributes( { bgColorClass: value } ) }
+														value={ ( bgColor ? bgColor : '' ) }
+														default={ '' }
+														onChange={ value => setAttributes( { bgColor: value } ) }
+														onClassChange={ value => setAttributes( { bgColorClass: value } ) }
 													/>
 													<MediaUpload
 														onSelect={ onSelectImage }
@@ -1704,12 +1705,12 @@ class KadenceRowLayout extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Background Color', 'kadence-blocks' ) }
-														colorValue={ ( bgColor ? bgColor : '' ) }
-														colorDefault={ '' }
-														onColorChange={ value => setAttributes( { bgColor: value } ) }
-														onColorClassChange={ value => setAttributes( { bgColorClass: value } ) }
+														value={ ( bgColor ? bgColor : '' ) }
+														default={ '' }
+														onChange={ value => setAttributes( { bgColor: value } ) }
+														onClassChange={ value => setAttributes( { bgColorClass: value } ) }
 													/>
 													<KadenceBackgroundControl
 														label={ __( 'Background Image', 'kadence-blocks' ) }
@@ -1800,11 +1801,11 @@ class KadenceRowLayout extends Component {
 						initialOpen={ false }
 						panelName={ 'kb-row-border-settings' }
 					>
-						<AdvancedPopColorControl
+						<PopColorControl
 							label={ __( 'Border Color', 'kadence-blocks' ) }
-							colorValue={ ( border ? border : '' ) }
-							colorDefault={ '' }
-							onColorChange={ value => setAttributes( { border: value } ) }
+							value={ ( border ? border : '' ) }
+							default={ '' }
+							onChange={ value => setAttributes( { border: value } ) }
 						/>
 						<MeasurementControls
 							label={ __( 'Border Width', 'kadence-blocks' ) }
@@ -1857,11 +1858,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Overlay Color', 'kadence-blocks' ) }
-					colorValue={ ( overlay ? overlay : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => setAttributes( {overlay: value } ) }
+					value={ ( overlay ? overlay : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( {overlay: value } ) }
 					opacityValue={ ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) }
 					onOpacityChange={ value => setAttributes( { overlayFirstOpacity: value } ) }
 				/>
@@ -1936,11 +1937,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Color', 'kadence-blocks' ) }
-					colorValue={ ( overlay ? overlay : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => setAttributes( { overlay: value } ) }
+					value={ ( overlay ? overlay : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( { overlay: value } ) }
 					opacityValue={ ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) }
 					onOpacityChange={ value => setAttributes( { overlayFirstOpacity: value } ) }
 				/>
@@ -1955,11 +1956,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Second Color', 'kadence-blocks' ) }
-					colorValue={ ( overlaySecond ? overlaySecond : '' ) }
-					colorDefault={ '#00B5E2' }
-					onColorChange={ value => setAttributes( { overlaySecond: value } ) }
+					value={ ( overlaySecond ? overlaySecond : '' ) }
+					default={ '#00B5E2' }
+					onChange={ value => setAttributes( { overlaySecond: value } ) }
 					opacityValue={ ( undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity ? overlaySecondOpacity : 1 ) }
 					onOpacityChange={ value => setAttributes( { overlaySecondOpacity: value } ) }
 				/>
@@ -2052,11 +2053,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Overlay Color', 'kadence-blocks' ) }
-					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => saveTabletOverlay( { overlay: value } ) }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
+					default={ '' }
+					onChange={ value => saveTabletOverlay( { overlay: value } ) }
 				/>
 				<KadenceBackgroundControl
 					label={ __( 'Overlay Image', 'kadence-blocks' ) }
@@ -2129,11 +2130,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Color', 'kadence-blocks' ) }
-					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => saveTabletOverlay( { overlay: value } ) }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlay : '' ) }
+					default={ '' }
+					onChange={ value => saveTabletOverlay( { overlay: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location', 'kadence-blocks' ) }
@@ -2146,11 +2147,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Second Color', 'kadence-blocks' ) }
-					colorValue={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlaySecond : '' ) }
-					colorDefault={ '#00B5E2' }
-					onColorChange={ value => saveTabletOverlay( { overlaySecond: value } ) }
+					value={ ( tabletOverlay && tabletOverlay[ 0 ] ? tabletOverlay[ 0 ].overlaySecond : '' ) }
+					default={ '#00B5E2' }
+					onChange={ value => saveTabletOverlay( { overlaySecond: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location', 'kadence-blocks' ) }
@@ -2241,11 +2242,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Overlay Color', 'kadence-blocks' ) }
-					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => saveMobileOverlay( { overlay: value } ) }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
+					default={ '' }
+					onChange={ value => saveMobileOverlay( { overlay: value } ) }
 				/>
 				<KadenceBackgroundControl
 					label={ __( 'Overlay Image', 'kadence-blocks' ) }
@@ -2318,11 +2319,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Color', 'kadence-blocks' ) }
-					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => saveMobileOverlay( { overlay: value } ) }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlay : '' ) }
+					default={ '' }
+					onChange={ value => saveMobileOverlay( { overlay: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location' ) }
@@ -2335,11 +2336,11 @@ class KadenceRowLayout extends Component {
 					min={ 0 }
 					max={ 100 }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Second Color', 'kadence-blocks' ) }
-					colorValue={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlaySecond : '' ) }
-					colorDefault={ '#00B5E2' }
-					onColorChange={ value => saveMobileOverlay( { overlaySecond: value } ) }
+					value={ ( mobileOverlay && mobileOverlay[ 0 ] ? mobileOverlay[ 0 ].overlaySecond : '' ) }
+					default={ '#00B5E2' }
+					onChange={ value => saveMobileOverlay( { overlaySecond: value } ) }
 				/>
 				<RangeControl
 					label={ __( 'Location', 'kadence-blocks' ) }
@@ -2423,23 +2424,23 @@ class KadenceRowLayout extends Component {
 				initialOpen={ false }
 				panelName={ 'kb-row-text-color' }
 			>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Text Color', 'kadence-blocks' ) }
-					colorValue={ ( textColor ? textColor : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => setAttributes( { textColor: value } ) }
+					value={ ( textColor ? textColor : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( { textColor: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Link Color', 'kadence-blocks' ) }
-					colorValue={ ( linkColor ? linkColor : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => setAttributes( { linkColor: value } ) }
+					value={ ( linkColor ? linkColor : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( { linkColor: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Link Hover Color', 'kadence-blocks' ) }
-					colorValue={ ( linkHoverColor ? linkHoverColor : '' ) }
-					colorDefault={ '' }
-					onColorChange={ value => setAttributes( { linkHoverColor: value } ) }
+					value={ ( linkHoverColor ? linkHoverColor : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( { linkHoverColor: value } ) }
 				/>
 			</KadencePanelBody>
 		);
@@ -2674,11 +2675,11 @@ class KadenceRowLayout extends Component {
 					noSelectedPlaceholder={ __( 'Select Divider', 'kadence-blocks' ) }
 					isMulti={ false }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Divider Color' ) }
-					colorValue={ ( topSepColor ? topSepColor : '' ) }
-					colorDefault={ '#ffffff' }
-					onColorChange={ value => setAttributes( { topSepColor: value } ) }
+					value={ ( topSepColor ? topSepColor : '' ) }
+					default={ '#ffffff' }
+					onChange={ value => setAttributes( { topSepColor: value } ) }
 				/>
 				<SmallResponsiveControl
 					label={ __( 'Size Controls', 'kadence-blocks' ) }
@@ -2724,11 +2725,11 @@ class KadenceRowLayout extends Component {
 					noSelectedPlaceholder={ __( 'Select Divider', 'kadence-blocks' ) }
 					isMulti={ false }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Divider Color', 'kadence-blocks' ) }
-					colorValue={ ( bottomSepColor ? bottomSepColor : '' ) }
-					colorDefault={ '#ffffff' }
-					onColorChange={ value => setAttributes( { bottomSepColor: value } ) }
+					value={ ( bottomSepColor ? bottomSepColor : '' ) }
+					default={ '#ffffff' }
+					onChange={ value => setAttributes( { bottomSepColor: value } ) }
 				/>
 				<SmallResponsiveControl
 					label={ __( 'Size Controls', 'kadence-blocks' ) }
@@ -3296,7 +3297,7 @@ class KadenceRowLayout extends Component {
 							) }
 						</ResizableBox>
 					) }
-					{ colLayout && this.showSettings( 'allSettings' ) && this.showSettings( 'paddingMargin' ) && ( paddingUnit && 'px' !== paddingUnit ) && (
+					{ colLayout && ( ! this.showSettings( 'allSettings' ) || ! this.showSettings( 'paddingMargin' ) || ( paddingUnit && 'px' !== paddingUnit ) ) && (
 						<Fragment>
 							{ uniqueID && (
 								<div className="kt-row-padding kb-static-row-padding" style={ {
@@ -3458,7 +3459,7 @@ class KadenceRowLayout extends Component {
 							) }
 						</ResizableBox>
 					) }
-					{ colLayout && this.showSettings( 'allSettings' ) && this.showSettings( 'paddingMargin' ) && ( paddingUnit && 'px' !== paddingUnit ) && (
+					{ colLayout && ( ! this.showSettings( 'allSettings' ) || ! this.showSettings( 'paddingMargin' ) || ( paddingUnit && 'px' !== paddingUnit ) ) && (
 						<Fragment>
 							{ uniqueID && (
 								<div className="kt-row-padding kb-static-row-padding" style={ {

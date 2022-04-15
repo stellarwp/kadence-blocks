@@ -1,6 +1,6 @@
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
+import PopColorControl from '../../components/color/pop-color-control';
 import map from 'lodash/map';
 import IconControl from '../../components/icons/icon-control';
 
@@ -84,6 +84,7 @@ class KadenceIconListDefault extends Component {
 			padding: 5,
 			borderWidth: 1,
 			style: 'default',
+			level: 0
 		} ];
 		const iconAlignOptions = [
 			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },
@@ -198,11 +199,11 @@ class KadenceIconListDefault extends Component {
 							title={ __( 'List Text Styling' ) }
 							initialOpen={ false }
 						>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Color Settings' ) }
-								colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => saveListStyles( { color: value } ) }
+								value={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
+								default={ '' }
+								onChange={ value => saveListStyles( { color: value } ) }
 							/>
 							<TypographyControls
 								fontSize={ listStyles[ 0 ].size }
@@ -271,11 +272,11 @@ class KadenceIconListDefault extends Component {
 									max={ 4 }
 								/>
 							) }
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Icon Color' ) }
-								colorValue={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
+								default={ '' }
+								onChange={ value => {
 									saveListItem( { color: value } );
 								} }
 							/>
@@ -291,21 +292,21 @@ class KadenceIconListDefault extends Component {
 								} }
 							/>
 							{ items[ 0 ].style !== 'default' && (
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Icon Background' ) }
-									colorValue={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => {
+									value={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
+									default={ '' }
+									onChange={ value => {
 										saveListItem( { background: value } );
 									} }
 								/>
 							) }
 							{ items[ 0 ].style !== 'default' && (
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Border Color' ) }
-									colorValue={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => {
+									value={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
+									default={ '' }
+									onChange={ value => {
 										saveListItem( { border: value } );
 									} }
 								/>

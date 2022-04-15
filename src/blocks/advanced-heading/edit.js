@@ -95,19 +95,16 @@ class KadenceAdvancedHeading extends Component {
 					this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/advancedheading' ][ attribute ];
 				} );
 			}
-			if ( this.props.getUniqueIDs.includes( smallID ) ) {
-				smallID = uniqueId( smallID );
-			}
 			this.props.setAttributes( {
 				uniqueID: smallID,
 			} );
-			this.props.addUniqueID( smallID );
-		} else if ( this.props.getUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			if ( this.props.getUniqueIDs.includes( smallID ) ) {
-				smallID = uniqueId( smallID );
+			this.props.addUniqueID( smallID, this.props.clientId );
+		} else if ( ! this.props.isUniqueID( this.props.attributes.uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! this.props.isUniqueBlock( this.props.attributes.uniqueID, this.props.clientId ) ) {
+				this.props.attributes.uniqueID = smallID;
+				this.props.addUniqueID( smallID, this.props.clientId );
 			}
-			this.props.attributes.uniqueID = smallID;
-			this.props.addUniqueID( smallID );
 		} else {
 			this.props.addUniqueID( this.props.attributes.uniqueID );
 		}
@@ -127,11 +124,6 @@ class KadenceAdvancedHeading extends Component {
 			} );
 		}
 	}
-	// componentDidUpdate( prevProps ) {
-	// 	if ( prevProps.getPreviewDevice !== this.props.getPreviewDevice ) {
-	// 		console.log( 'dosomething' );
-	// 	}
-	// }
 	saveShadow( value ) {
 		const { attributes, setAttributes } = this.props;
 		const { textShadow } = attributes;
@@ -875,10 +867,11 @@ export default compose( [
 	withSelect( ( select ) => {
 		return {
 			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-			getUniqueIDs: select( 'kadenceblocks/data' ).getUniqueIDs(),
+			isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+			isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value ),
+		addUniqueID: ( value, clientId ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientId ),
 	} ) ),
 ] )( KadenceAdvancedHeading );

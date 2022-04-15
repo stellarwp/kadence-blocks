@@ -2,9 +2,9 @@
 Contributors: britner, oakesjosh
 Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, editor width,
 Donate link: https://www.kadencewp.com/about-us/
-Requires at least: 5.8
+Requires at least: 5.9
 Tested up to: 5.9
-Stable tag: 2.3.0
+Stable tag: 2.4.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,11 +47,6 @@ https://www.youtube.com/watch?v=SYb24ncjVsY
 * Setting Visibility Controls – Hide block settings from certain user roles so they can focus on content and you can keep them out of the block designs.
 * Spacing Controls – Control paddings and margins for your blocks in whatever units you like. Customize responsively for precision spacing and design.
 
-= Custom Editor Max Width Settings =
-One of the challenges with creating column and row layouts in Gutenberg is the width of the editor in your admin. By default, Gutenberg uses a 650px max width for the content editor. When adding text to a sidebar template, this works great, as the max width in the editor is comparable to the content width when using a sidebar. However, for content going into pages where you don’t have a sidebar, it is a poor representation of what you are going to get on the front end of your site. Not to mention, it makes for a cramped space to work in if you are trying to manage a row with three columns.
-
-In an effort to create an easier way to use Gutenberg in a more “page building experience” we created a simple method that allows you to change the default max width for pages and posts, as well as individually through a page by page setting.
-
 
 = Source files =
 
@@ -80,6 +75,58 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.4.4 =
+Release Date: April 14th, 2022
+* Update: TOC when in non static search mode, check reusable blocks for headings.
+* Fix: Issue with icon list gap when using columns.
+* Fix: Issue with image block not correctly resizing when switching preview modes.
+* Fix: Issue with min height unit in section.
+* Fix: Issue with buttons not aligning.
+* Fix: Issue with editor not showing columns in full height.
+
+= 2.4.3 =
+Release Date: April 11th, 2022
+* Update: Section settings when in row layout vs as a standalone block.
+* Update: Responsive controls issue in widgets.
+* Fix: Possible bug when defining tablet direction in section block.
+* Fix: Issue with image block width when in ratio mode.
+* Fix: Issue with inline styles rendering in rss feed.
+
+= 2.4.2 =
+Release Date: April 8th, 2022
+* Fix: Possible issue with nesting rows inside of flex areas.
+
+= 2.4.1 =
+Release Date: April 8th, 2022
+* Fix: Possible issue where vertically aligning section blocks could break layout.
+
+= 2.4.0 =
+Release Date: April 8th, 2022
+* Add: Section blocks can be used outside of a row for complete flex control layouts.
+* Add: Show More Block.
+* Add: Option for Author link in post block.
+* Add: Option to dynamically source a gallery.
+* Add: Option to set a custom gallery image link to sponsored.
+* Add: Option to have sub lists in icon list block.
+* Add: Tablet and Mobile Max width settings for image block.
+* Add: Min Height and Max Width to section block.
+* Update: Add text transform in info box text and learn more controls.
+* Fix: Issue with Parallax for ipad pro.
+* Fix: Gallery thumbnail size possibly reverting to full when adding new images.
+* Fix: Issue with some lottie files not saving correctly.
+* Fix: Issue with lottie render not setting the correct aria role.
+* Fix: Issue with advanced image block not rendering correctly in flex area.
+* Fix: Issue with useSettings and custom colors.
+* Fix: Issue with alpha color in divider block.
+* Fix: Issue with testimonial name alignment.
+* Fix: CSS specificity issue with divider block.
+* Fix: Issue with relative links and tabs.
+* Fix: Issue with accordion start open changing with preview.
+* Fix: Issue with padding missing in row when options are hidden from user.
+* Fix: Issue with icons list grid gap.
+* Fix: Issue with google map filter default level.
+* Fix: Issue with php notice in google map block.
 
 = 2.3.0 =
 Release Date: March 7th, 2022
@@ -166,6 +213,7 @@ Release Date: January 14th, 2022
 * Fix: Tab title incorrectly showing in editor when using only icon mode.
 * Fix: Issue with form submit font unit.
 * Fix: RTL tabs styling issue.
+* Fix: Issue with kbInitMaps is not a function wit Javascript API
 * Fix: Issue with Table of Contents and special characters
 
 = 2.1.19 =

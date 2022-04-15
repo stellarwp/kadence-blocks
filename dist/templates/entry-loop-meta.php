@@ -40,11 +40,19 @@ if ( $enabled ) {
 		if ( post_type_supports( $post_type_obj->name, 'author' ) ) {
 			$author_id = get_post_field( 'post_author', get_the_ID() );
 			if ( $author_link ) {
-				$author_string = sprintf(
-					'<span class="author vcard"><a class="url fn n" href="%1$s">%2$s</a></span>',
-					esc_url( get_author_posts_url( $author_id ) ),
-					esc_html( get_the_author_meta( 'display_name', $author_id ) )
-				);
+				if ( get_the_author_meta( 'url', $author_id ) && apply_filters( 'kadence_author_use_profile_link', true ) ) {
+					$author_string = sprintf(
+						'<span class="author vcard"><a class="url fn n" href="%1$s">%2$s</a></span>',
+						esc_url( get_the_author_meta( 'url', $author_id ) ),
+						esc_html( get_the_author_meta( 'display_name', $author_id ) )
+					);
+				} else {
+					$author_string = sprintf(
+						'<span class="author vcard"><a class="url fn n" href="%1$s">%2$s</a></span>',
+						esc_url( get_author_posts_url( $author_id ) ),
+						esc_html( get_the_author_meta( 'display_name', $author_id ) )
+					);
+				}
 			} else {
 				$author_string = sprintf(
 					'<span class="author vcard"><span class="fn n">%1$s</span></span>',

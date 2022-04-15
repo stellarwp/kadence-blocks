@@ -47,6 +47,12 @@
 	  "imgMaxWidth": {
 		"type": "number"
 	  },
+	  "imgMaxWidthTablet": {
+		"type": "number"
+	  },
+	  "imgMaxWidthMobile": {
+		"type": "number"
+	  },
 	  "sizeSlug": {
 		"type": "string"
 	  },
@@ -73,6 +79,9 @@
 		"default": false
 	  },
 	  "linkDestination": {
+		"type": "string"
+	  },
+	  "linkTitle": {
 		"type": "string"
 	  },
 	  "linkClass": {

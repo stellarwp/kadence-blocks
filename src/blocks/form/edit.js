@@ -721,8 +721,6 @@ class KadenceForm extends Component {
 		const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -2 : -200 );
 		const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 12 : 200 );
 		const containerMarginStep = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1 );
-
-
 		const saveMailerlite = ( value ) => {
 			const newItems = mailerlite.map( ( item, thisIndex ) => {
 				if ( 0 === thisIndex ) {

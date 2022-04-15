@@ -59,6 +59,7 @@ import TypographyControls from '../../components/typography/typography-control';
 import URLInputControl from '../../components/links/link-control';
 import KadenceRange from '../../components/range/range-control';
 import KadenceImageURLInputUI from '../../components/links/image-url-input-link-control';
+import ResponsiveRangeControls from '../../components/range/responsive-range-control';
 import KadencePanelBody from '../../components/KadencePanelBody'
 
 export default function Image( {
@@ -89,6 +90,8 @@ export default function Image( {
 		useRatio,
 		ratio,
 		imgMaxWidth,
+		imgMaxWidthTablet,
+		imgMaxWidthMobile,
 		uniqueID,
 		marginDesktop,
 		marginTablet,
@@ -123,6 +126,7 @@ export default function Image( {
 		linkNoFollow,
 		linkSponsored,
 		linkDestination,
+		linkTitle,
 	} = attributes;
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -152,6 +156,8 @@ export default function Image( {
 	const previewBorderRight = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[1] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 1 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 1 ] : '' ) );
 	const previewBorderBottom = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[2] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 2 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 2 ] : '' ) );
 	const previewBorderLeft = getPreviewSize( previewDevice, ( undefined !== borderWidthDesktop ? borderWidthDesktop[3] : '' ), ( undefined !== borderWidthTablet ? borderWidthTablet[ 3 ] : '' ), ( undefined !== borderWidthMobile ? borderWidthMobile[ 3 ] : '' ) );
+
+	const previewMaxWidth = getPreviewSize( previewDevice, ( undefined !== imgMaxWidth ? imgMaxWidth : '' ), ( undefined !== imgMaxWidthTablet ? imgMaxWidthTablet : '' ), ( undefined !== imgMaxWidthMobile ? imgMaxWidthMobile : '' ) );
 
 	const previewCaptionFontSizeUnit = captionStyles[ 0 ].sizeType !== undefined ? captionStyles[ 0 ].sizeType : 'px';
 	const previewCaptionFontSize = getPreviewSize( previewDevice, ( undefined !== captionStyles[ 0 ].size[0] ? captionStyles[ 0 ].size[0] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[1] ? captionStyles[ 0 ].size[ 1 ] + previewCaptionFontSizeUnit : 'inherit' ), ( undefined !== captionStyles[ 0 ].size[2] ? captionStyles[ 0 ].size[ 2 ] + previewCaptionFontSizeUnit : 'inherit' ) );
@@ -356,6 +362,8 @@ export default function Image( {
 			height: undefined,
 			sizeSlug: imgData.slug,
 			imgMaxWidth: undefined,
+			imgMaxWidthTablet: undefined,
+			imgMaxWidthMobile: undefined,
 		} );
 	}
 	function uploadExternal() {
@@ -542,13 +550,20 @@ export default function Image( {
 						/>
 					) }
 					{ isResizable && (
-						<KadenceRange
+						<ResponsiveRangeControls
 							label={ __( 'Max Image Width', 'kadence-blocks' ) }
-							value={ imgMaxWidth }
+							value={ ( imgMaxWidth ? imgMaxWidth : '' ) }
 							onChange={ value => setAttributes( { imgMaxWidth: value } ) }
+							tabletValue={ ( imgMaxWidthTablet ? imgMaxWidthTablet : '' ) }
+							onChangeTablet={ ( value ) => setAttributes( { imgMaxWidthTablet: value } ) }
+							mobileValue={ ( imgMaxWidthMobile ? imgMaxWidthMobile : '' ) }
+							onChangeMobile={ ( value ) => setAttributes( { imgMaxWidthMobile: value } ) }
 							min={ 5 }
 							max={ 3000 }
 							step={ 1 }
+							unit={ 'px' }
+							showUnit={ true }
+							units={ [ 'px' ] }
 						/>
 					) }
 					<TextareaControl
@@ -698,6 +713,10 @@ export default function Image( {
 						linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
 						onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
 						allowClear={ true }
+						linkTitle={ linkTitle }
+						onChangeTitle={ value => {
+							setAttributes( { linkTitle: value } )
+						} }
 						dynamicAttribute={ 'link' }
 						isSelected={ isSelected }
 						attributes={ attributes }
@@ -1141,12 +1160,12 @@ export default function Image( {
 				naturalWidth={ naturalWidth }
 			/>
 		);
-	} else if ( ! isResizable || ! imageWidthWithinContainer ) {
-		img = <div style={ { maxwidth: imgMaxWidth || width } }>{ img }</div>;
+	} else if ( ! isResizable || ! imageWidthWithinContainer || 'Desktop' !== previewDevice ) {
+		img = <div style={ { maxWidth: previewMaxWidth || width } }>{ img }</div>;
 	} else {
-		const currentWidth = imgMaxWidth || width || imageWidthWithinContainer;
+		const backupWidth = useRatio ? '100%' : 'auto';
+		const currentWidth = previewMaxWidth || width || imageWidthWithinContainer;
 		const currentHeight = height || imageHeightWithinContainer;
-
 		let imgRatio = naturalWidth / naturalHeight;
 		if ( useRatio ){
 			switch ( ratio ) {
@@ -1229,7 +1248,7 @@ export default function Image( {
 		img = (
 			<ResizableBox
 				size={ {
-					width: imgMaxWidth ?? width ?? '100%',
+					width: previewMaxWidth ?? backupWidth,
 					height: 'auto',
 				} }
 				showHandle={ isSelected }

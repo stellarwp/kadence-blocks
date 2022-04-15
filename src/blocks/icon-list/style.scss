@@ -34,6 +34,30 @@
 	.kt-svg-icon-list-item-wrap:last-child {
 		margin-bottom: 0;
 	}
+
+	.kt-svg-icon-list-level-0 {
+		padding-left: 0rem;
+	}
+
+	.kt-svg-icon-list-level-1 {
+		padding-left: 2rem;
+	}
+
+	.kt-svg-icon-list-level-2 {
+		padding-left: 4rem;
+	}
+
+	.kt-svg-icon-list-level-3 {
+		padding-left: 6rem;
+	}
+
+	.kt-svg-icon-list-level-4 {
+		padding-left: 8rem;
+	}
+
+	.kt-svg-icon-list-level-5 {
+		padding-left: 10rem;
+	}
 }
 .rtl .wp-block-kadence-iconlist ul.kt-svg-icon-list {
 	.kt-svg-icon-list-item-wrap {
@@ -59,13 +83,13 @@
     grid-template-columns: 50% auto;
     grid-template-rows: auto;
 	display: grid;
-	grid-gap: 1em;
+	grid-gap: 5px 1em;
 }
 .kt-svg-icon-list-columns-3 ul.kt-svg-icon-list {
     grid-template-columns: 33% 33% auto;
     grid-template-rows: auto;
 	display: grid;
-	grid-gap: 1em;
+	grid-gap: 5px 1em;
 }
 .wp-block-kadence-iconlist.kt-list-icon-aligntop ul.kt-svg-icon-list .kt-svg-icon-list-item-wrap a.kt-svg-icon-link {
     align-items: flex-start;

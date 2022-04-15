@@ -520,6 +520,18 @@
       "oF" : 0,
       "pg" : 0
     },
+    "\/dist\/blocks\/column.style.build.css" : {
+      "aP" : 1,
+      "bl" : 0,
+      "ci" : 0,
+      "co" : 0,
+      "ft" : 16,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/blocks\/column.style.build-min.css",
+      "oF" : 0,
+      "pg" : 0
+    },
     "\/dist\/blocks\/count-up.style.build.css" : {
       "aP" : 1,
       "bl" : 0,
@@ -740,9 +752,9 @@
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/build\/blocks.asset.php",
-      "oF" : 1
+      "oF" : 0
     },
     "\/dist\/build\/blocks.css" : {
       "aP" : 1,
@@ -751,9 +763,9 @@
       "co" : 0,
       "ft" : 16,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/build\/blocks-min.css",
-      "oF" : 1,
+      "oF" : 0,
       "pg" : 0
     },
     "\/dist\/build\/blocks.css.map" : {
@@ -771,7 +783,7 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/build\/blocks-min.js",
-      "oF" : 1,
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },
@@ -790,7 +802,7 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/build\/vendors\/blocks-min.js",
-      "oF" : 1,
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },
@@ -1140,9 +1152,9 @@
       "cB" : 0,
       "ft" : 8192,
       "hM" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/plugin\/plugin.asset.php",
-      "oF" : 1
+      "oF" : 0
     },
     "\/dist\/plugin\/plugin.css" : {
       "aP" : 1,
@@ -1151,9 +1163,9 @@
       "co" : 0,
       "ft" : 16,
       "ma" : 0,
-      "oA" : 1,
+      "oA" : 0,
       "oAP" : "\/dist\/plugin\/plugin-min.css",
-      "oF" : 1,
+      "oF" : 0,
       "pg" : 0
     },
     "\/dist\/plugin\/plugin.js" : {
@@ -1163,7 +1175,7 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/dist\/plugin\/plugin-min.js",
-      "oF" : 1,
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },
@@ -1982,27 +1994,13 @@
       "pg" : 0,
       "sct" : 1
     },
-    "\/src\/blocks\/column\/attributes.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
+    "\/src\/blocks\/column\/block.json" : {
+      "ft" : 524288,
       "oA" : 1,
-      "oAP" : "\/src\/blocks\/column\/attributes-min.js",
+      "oAP" : "\/src\/blocks\/column\/block-min.json",
       "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
-    },
-    "\/src\/blocks\/column\/block.js" : {
-      "bF" : 0,
-      "ft" : 64,
-      "ma" : 0,
-      "mi" : 1,
-      "oA" : 1,
-      "oAP" : "\/src\/blocks\/column\/block-min.js",
-      "oF" : 0,
-      "sC" : 0,
-      "tS" : 0
+      "oO" : 0,
+      "oS" : 1
     },
     "\/src\/blocks\/column\/copy-paste-style.js" : {
       "bF" : 0,
@@ -2037,13 +2035,28 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/column\/icon.js" : {
+    "\/src\/blocks\/column\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/column\/editor.css",
+      "oF" : 1,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/src\/blocks\/column\/index.js" : {
       "bF" : 0,
       "ft" : 64,
       "ma" : 0,
       "mi" : 1,
       "oA" : 1,
-      "oAP" : "\/src\/blocks\/column\/icon-min.js",
+      "oAP" : "\/src\/blocks\/column\/index-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -2058,6 +2071,21 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
+    },
+    "\/src\/blocks\/column\/style.scss" : {
+      "aP" : 1,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 0,
+      "oAP" : "\/dist\/blocks\/column.style.build.css",
+      "oF" : 2,
+      "oS" : 3,
+      "pg" : 0,
+      "sct" : 1
     },
     "\/src\/blocks\/count-up\/attributes.js" : {
       "bF" : 0,
@@ -2111,9 +2139,9 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/src\/blocks\/count-up\/editor.css",
-      "oF" : 0,
+      "oF" : 1,
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
@@ -2494,6 +2522,17 @@
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
+    },
+    "\/src\/blocks\/icon-list\/moveItem.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/icon-list\/moveItem-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
     },
     "\/src\/blocks\/icon-list\/style.scss" : {
       "aP" : 1,
@@ -3157,9 +3196,9 @@
       "ec" : 1,
       "ft" : 4,
       "ma" : 0,
-      "oA" : 0,
+      "oA" : 1,
       "oAP" : "\/src\/blocks\/restaurant-menu\/editor.css",
-      "oF" : 0,
+      "oF" : 1,
       "oS" : 0,
       "pg" : 0,
       "sct" : 1
@@ -3241,21 +3280,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/editor.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/editor.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
-    },
     "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/inspector.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3277,21 +3301,6 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
-    },
-    "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/style.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/restaurant-menu\/menu-category\/category-item\/style.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
     },
     "\/src\/blocks\/restaurant-menu\/menu-category\/controls.js" : {
       "bF" : 0,
@@ -3315,21 +3324,6 @@
       "sC" : 0,
       "tS" : 0
     },
-    "\/src\/blocks\/restaurant-menu\/menu-category\/editor.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/restaurant-menu\/menu-category\/editor.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
-    },
     "\/src\/blocks\/restaurant-menu\/menu-category\/inspector.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -3351,21 +3345,6 @@
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
-    },
-    "\/src\/blocks\/restaurant-menu\/menu-category\/style.scss" : {
-      "aP" : 0,
-      "bl" : 0,
-      "co" : 0,
-      "dP" : 10,
-      "ec" : 1,
-      "ft" : 4,
-      "ma" : 0,
-      "oA" : 0,
-      "oAP" : "\/src\/blocks\/restaurant-menu\/menu-category\/style.css",
-      "oF" : 0,
-      "oS" : 0,
-      "pg" : 0,
-      "sct" : 1
     },
     "\/src\/blocks\/restaurant-menu\/save.js" : {
       "bF" : 0,
@@ -3544,6 +3523,73 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/blocks\/row-layout\/threecolumndrag-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/show-more\/block.json" : {
+      "ft" : 524288,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/block-min.json",
+      "oF" : 0,
+      "oO" : 0,
+      "oS" : 1
+    },
+    "\/src\/blocks\/show-more\/edit.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/edit-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/show-more\/editor.scss" : {
+      "aP" : 0,
+      "bl" : 0,
+      "co" : 0,
+      "dP" : 10,
+      "ec" : 1,
+      "ft" : 4,
+      "ma" : 0,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/editor.css",
+      "oF" : 1,
+      "oS" : 0,
+      "pg" : 0,
+      "sct" : 1
+    },
+    "\/src\/blocks\/show-more\/index.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/index-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/show-more\/save.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/save-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/blocks\/show-more\/transforms.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/blocks\/show-more\/transforms-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -4187,6 +4233,17 @@
       "sC" : 0,
       "tS" : 0
     },
+    "\/src\/components\/common\/dynamic-gallery-control.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/common\/dynamic-gallery-control-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
     "\/src\/components\/common\/dynamic-image-control.js" : {
       "bF" : 0,
       "ft" : 64,
@@ -4326,6 +4383,17 @@
       "mi" : 1,
       "oA" : 1,
       "oAP" : "\/src\/components\/icons\/icon-render-min.js",
+      "oF" : 0,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/components\/KadencePanelBody.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/components\/KadencePanelBody-min.js",
       "oF" : 0,
       "sC" : 0,
       "tS" : 0
@@ -4709,6 +4777,17 @@
       "oA" : 1,
       "oAP" : "\/src\/heading-icons-min.js",
       "oF" : 1,
+      "sC" : 0,
+      "tS" : 0
+    },
+    "\/src\/helpers\/helpers.js" : {
+      "bF" : 0,
+      "ft" : 64,
+      "ma" : 0,
+      "mi" : 1,
+      "oA" : 1,
+      "oAP" : "\/src\/helpers\/helpers-min.js",
+      "oF" : 0,
       "sC" : 0,
       "tS" : 0
     },

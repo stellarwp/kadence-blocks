@@ -155,6 +155,10 @@ registerBlockType( 'kadence/posts', {
 			type: 'bool',
 			default: false,
 		},
+		authorLink: {
+			type: 'bool',
+			default: false,
+		},
 		authorImageSize: {
 			type: 'number',
 			default: 25,

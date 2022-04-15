@@ -1,0 +1,91 @@
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+
+// New horizontal column.
+.wp-block-kadence-column {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 0px;
+    margin-bottom: 0px;
+	width: 100%;
+}
+.wp-block-kadence-column > .kadence-inner-column-direction-vertical.kadence-inner-column-vertical-align-middle {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	> .wp-block {
+		margin-left: unset;
+		margin-right: unset;
+	}
+}
+.wp-block-kadence-column > .kadence-inner-column-direction-vertical.kadence-inner-column-vertical-align-bottom {
+	display: flex;
+	justify-content: flex-end;
+	flex-direction: column;
+	> .wp-block {
+		margin-left: unset;
+		margin-right: unset;
+	}
+}
+.wp-block-kadence-column > .kadence-inner-column-direction-horizontal {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+	margin-left: -10px;
+	> .wp-block:not([data-type="kadence/advancedheading"]), > .block-editor-block-list__block:not([data-type="kadence/advancedheading"]), .block-editor-block-list__block[data-type="kadence/advancedheading"] > * {
+		margin-left: 10px;
+		margin-right: unset;
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+	> .block-editor-block-list__block[data-type="core/embed"] {
+		flex: 1;
+	}
+	>.wp-block-kadence-column {
+		flex: 1;
+		min-width: 0;
+		max-width: none;
+	}
+	> .block-editor-block-list__block > .wp-block, .block-editor-block-list__block[data-type="kadence/advancedheading"] {
+		margin-left: unset;
+		margin-right: unset;
+		margin-top: 0;
+		margin-bottom: 0;
+	}
+	 // Makes svg images work in flex area.
+	> .wp-block-kadence-image.image-is-svg {
+		width: auto;
+	}
+	> .block-list-appender {
+		margin: 0;
+		.block-editor-default-block-appender {
+			margin: 0 8px;
+			display: flex;
+			p.block-editor-default-block-appender__content {
+				margin: 0;
+			}
+			.block-editor-inserter {
+				position: static;
+			}
+		}
+	}
+	&.kadence-inner-column-vertical-align-top {
+		align-items: flex-start;
+	}
+	&.kadence-inner-column-vertical-align-bottom {
+		align-items: flex-end;
+	}
+	&.kadence-inner-column-text-align-left {
+		justify-content: flex-start;
+	}
+	&.kadence-inner-column-text-align-center {
+		justify-content: center;
+	}
+	&.kadence-inner-column-text-align-right {
+		justify-content: flex-end;
+	}
+}

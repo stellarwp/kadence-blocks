@@ -4,8 +4,11 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .kadence-radio-container-control {
+
+.kadence-radio-container-control {
     display: flex;
+    position: relative;
+    z-index: 0;
 }
 // Core Should fix this.
 .block-editor-media-placeholder__url-input-form input[type=url].block-editor-media-placeholder__url-input-field {
@@ -23,7 +26,7 @@
 		margin-top: 30px;
 	}
 }
-// Full height experiment.
+// Full height.
 .kt-inner-column-height-full.wp-block-kadence-rowlayout>.innerblocks-wrap {
     flex-grow: 1;
 }
@@ -260,19 +263,16 @@ button.components-button.kb-sidebar-image {
     clear:both;
     content:'';
 }
-.kt-inner-column-height-full .kadence-inner-column-inner {
-    height: 100%;
+.wp-block-kadence-rowlayout.kt-inner-column-height-full>.innerblocks-wrap>.block-editor-inner-blocks>.block-editor-block-list__layout>.wp-block-kadence-column {
+    height: auto;
 }
-.kt-inner-column-height-full>.innerblocks-wrap>.block-editor-inner-blocks>.block-editor-block-list__layout> .block-editor-block-list__block[data-type="kadence/column"] > .wp-block-kadence-column {
-    height: 100%;
-}
-.kt-inner-column-height-full .block-editor-block-list__layout .block-editor-block-list__block[data-type="kadence/column"] > .block-editor-block-list__block-edit > div[data-block] {
-    height:100%;
-    display: flex;
-    margin: 0;
-    padding-top: 28px;
-    padding-bottom: 28px;
-}
+// .kt-inner-column-height-full>.innerblocks-wrap>.block-editor-inner-blocks>.block-editor-block-list__layout>.wp-block-kadence-column >.kadence-inner-column-inner {
+//     height:100%;
+//     display: flex;
+//     margin: 0;
+//     padding-top: 28px;
+//     padding-bottom: 28px;
+// }
 .wp-block-kadence-rowlayout[class*=" kt-custom-first-width-1"]:not(.kt-gutter-skinny):not(.kt-gutter-narrow):not(.kt-gutter-none) > .innerblocks-wrap > .kt-resizeable-column-container .editor-row-first-column__resizer:not(.second_resizer) {
 	.components-resizable-box__handle.components-resizable-box__handle-right {
 		margin-right: -30px;
@@ -1112,7 +1112,9 @@ button.components-button.kb-sidebar-image {
 				max-width: none;
 				margin-top: 0px;
 				margin-bottom: 0px;
-				.block-editor-block-list__block-edit {
+				height: 100%;
+				.block-editor-block-list__block-edit,
+				.kadence-inner-column-inner {
 					flex-basis: 100%;
 				}
 			}
@@ -2515,7 +2517,7 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {transform: 
 #end-resizable-editor-section {
     display: none;
 }
-// horizontal column
+// Old horizontal column
 .kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout {
     display: flex;
     align-items: center;
@@ -2562,37 +2564,46 @@ body.rtl .editor-row-first-column__resizer .right-column-width-size {transform: 
 .kadence-inner-column-text-align-right.kadence-inner-column-direction-horizontal > .block-editor-inner-blocks > .block-editor-block-list__layout {
 	justify-content: flex-end;
 }
-.wp-block[data-type="kadence/column"][data-vertical-align="top"] {
+.wp-block-kadence-rowlayout > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block[data-type="kadence/column"][data-vertical-align="top"] {
 	align-self: flex-start;
 }
 .kt-inner-column-height-full > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block[data-type="kadence/column"][data-vertical-align="top"] {
 	align-self: auto;
-	.kadence-inner-column-inner {
+	> .kadence-inner-column-inner {
 		display: flex;
 		flex-direction: column;
     	justify-content: flex-start;
+		> * {
+			width: 100%;
+		}
 	}
 }
-.wp-block[data-type="kadence/column"][data-vertical-align="middle"] {
+.wp-block-kadence-rowlayout > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block[data-type="kadence/column"][data-vertical-align="middle"] {
 	align-self: center;
 }
 .kt-inner-column-height-full > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block[data-type="kadence/column"][data-vertical-align="middle"] {
 	align-self: auto;
-	.kadence-inner-column-inner {
+	> .kadence-inner-column-inner {
 		display: flex;
 		flex-direction: column;
     	justify-content: center;
+		> * {
+			width: 100%;
+		}
 	}
 }
-.wp-block[data-type="kadence/column"][data-vertical-align="bottom"] {
+.wp-block-kadence-rowlayout > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block[data-type="kadence/column"][data-vertical-align="bottom"] {
 	align-self: flex-end;
 }
 .kt-inner-column-height-full > .innerblocks-wrap > .block-editor-inner-blocks > .block-editor-block-list__layout > .wp-block[data-type="kadence/column"][data-vertical-align="bottom"] {
 	align-self: auto;
-	.kadence-inner-column-inner {
+	> .kadence-inner-column-inner {
 		display: flex;
 		flex-direction: column;
     	justify-content: flex-end;
+		> * {
+			width: 100%;
+		}
 	}
 }
 // Temp Fix for WordPress bug.

@@ -11,20 +11,17 @@ import './editor.scss'
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n'
-import { useRef, useState } from '@wordpress/element';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control'
-import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
 
 import { createElement } from '@wordpress/element'
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 import uniqueId from 'lodash/uniqueId'
 const { InspectorControls } = wp.blockEditor
 const { PanelBody, ToggleControl, RangeControl } = wp.components
-
+import { useEffect, useRef, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
@@ -61,28 +58,30 @@ export function Edit ({
 		fadeOutSize
 	} = attributes
 
-	if (!uniqueID) {
-		const blockConfigObject = (kadence_blocks_params.configuration ? JSON.parse(kadence_blocks_params.configuration) : [])
-		if (blockConfigObject['kadence/show-more'] !== undefined && typeof blockConfigObject['kadence/show-more'] === 'object') {
-			Object.keys(blockConfigObject['kadence/show-more']).map((attribute) => {
-				uniqueID = blockConfigObject['kadence/show-more'][attribute]
+	useEffect( () => {
+		if ( ! uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/show-more' ] !== undefined && typeof blockConfigObject[ 'kadence/show-more' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/show-more' ] ).map( ( attribute ) => {
+					attributes[ attribute ] = blockConfigObject[ 'kadence/show-more' ][ attribute ];
+				} );
+			}
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
+			ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
+		} else if (ktShowMoreUniqueIDs.includes(uniqueID)) {
+			setAttributes({
+				uniqueID: '_' + clientId.substr(2, 9),
 			})
+			ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
+		} else {
+			ktShowMoreUniqueIDs.push(uniqueID)
 		}
-		setAttributes({
-			uniqueID: '_' + clientId.substr(2, 9),
-		})
-		ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
-	} else if (ktShowMoreUniqueIDs.includes(uniqueID)) {
-		setAttributes({
-			uniqueID: '_' + clientId.substr(2, 9),
-		})
-		ktShowMoreUniqueIDs.push('_' + clientId.substr(2, 9))
-	} else {
-		ktShowMoreUniqueIDs.push(uniqueID)
-	}
+	}, [] );
 
-	const [ marginControl, setMarginControl ] = useState( 'individual');
-	const [ paddingControl, setPaddingControl ] = useState( 'individual');
+	const [ marginControl, setMarginControl ] = useState( 'individual' );
+	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -266,12 +265,13 @@ export function Edit ({
 				paddingBottom: ( '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined ),
 				paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
 			} }>
-				{ createElement(InnerBlocks, {
+				{ createElement( InnerBlocks, {
+					templateLock: "all",
+					renderAppender: false,
 					template: [
-						['core/group', {
-							lock: { remove: true, move: true },
+						['kadence/column', {
 							className: 'kb-show-more-content',
-						}, { innerBlocks: ['core/paragraph', { dropCap: false, placeholder: __('Add your content here', 'kadence-blocks') }] }],
+						} ],
 						['kadence/advancedbtn', {
 							lock: { remove: true, move: true },
 							lockBtnCount: true,
@@ -347,7 +347,7 @@ export function Edit ({
 										''
 									],
 									'boxShadow': [
-										true,
+										false,
 										'#000000',
 										0.2,
 										1,
@@ -357,7 +357,7 @@ export function Edit ({
 										false
 									],
 									'boxShadowHover': [
-										true,
+										false,
 										'#000000',
 										0.4,
 										2,
@@ -439,7 +439,7 @@ export function Edit ({
 										''
 									],
 									'boxShadow': [
-										true,
+										false,
 										'#000000',
 										0.2,
 										1,
@@ -449,7 +449,7 @@ export function Edit ({
 										false
 									],
 									'boxShadowHover': [
-										true,
+										false,
 										'#000000',
 										0.4,
 										2,
@@ -526,10 +526,9 @@ export default compose( [
 	withSelect( ( select ) => {
 		return {
 			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-			getUniqueIDs: select( 'kadenceblocks/data' ).getUniqueIDs(),
 		};
 	} ),
 	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value ),
+		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
 	} ) ),
 ] )( Edit );

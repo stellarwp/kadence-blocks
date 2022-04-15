@@ -23,7 +23,7 @@ import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import BorderColorControls from '../../border-color-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import PopColorControl from '../../components/color/pop-color-control';
 import KadenceColorOutput from '../../kadence-color-output';
 import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
 import KadenceRange from '../../components/range/range-control';
@@ -57,7 +57,7 @@ const {
 	SelectControl,
 	IconButton,
 } = wp.components;
-import { withSelect, withDispatch } from '@wordpress/data';
+import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 /**
  * Internal block libraries
@@ -115,6 +115,7 @@ class KadenceAccordionComponent extends Component {
 		return desktopSize;
 	}
 	componentDidMount() {
+		// This runs when we switch from desktop to tablet.
 		if ( ! this.props.attributes.uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/accordion' ] !== undefined && typeof blockConfigObject[ 'kadence/accordion' ] === 'object' ) {
@@ -154,6 +155,7 @@ class KadenceAccordionComponent extends Component {
 			} );
 			ktaccordUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else if ( ktaccordUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
+			// This will force a rebuild of the unique ID when preview changes.
 			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
 			ktaccordUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
 		} else {
@@ -427,17 +429,17 @@ class KadenceAccordionComponent extends Component {
 		const classes = classnames( className, `kt-accordion-wrap kt-accordion-id${ uniqueID } kt-accordion-has-${ paneCount }-panes kt-accordion-block kt-pane-header-alignment-${ titleAlignment }` );
 		const normalSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Title Color', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { color: value } ) }
+					value={ ( titleStyles[ 0 ].color ? titleStyles[ 0 ].color : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { color: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Title Background', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { background: value } ) }
+					value={ ( titleStyles[ 0 ].background ? titleStyles[ 0 ].background : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { background: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Title Border Color' ) }
@@ -450,17 +452,17 @@ class KadenceAccordionComponent extends Component {
 		);
 		const hoverSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Hover Color', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { colorHover: value } ) }
+					value={ ( titleStyles[ 0 ].colorHover ? titleStyles[ 0 ].colorHover : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { colorHover: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Hover Background', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { backgroundHover: value } ) }
+					value={ ( titleStyles[ 0 ].backgroundHover ? titleStyles[ 0 ].backgroundHover : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { backgroundHover: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Hover Border Color' ) }
@@ -473,17 +475,17 @@ class KadenceAccordionComponent extends Component {
 		);
 		const activeSettings = (
 			<Fragment>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Active Color', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { colorActive: value } ) }
+					value={ ( titleStyles[ 0 ].colorActive ? titleStyles[ 0 ].colorActive : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { colorActive: value } ) }
 				/>
-				<AdvancedPopColorControl
+				<PopColorControl
 					label={ __( 'Active Background', 'kadence-blocks' ) }
-					colorValue={ ( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' ) }
-					colorDefault={ '' }
-					onColorChange={ ( value ) => saveTitleStyles( { backgroundActive: value } ) }
+					value={ ( titleStyles[ 0 ].backgroundActive ? titleStyles[ 0 ].backgroundActive : '' ) }
+					default={ '' }
+					onChange={ ( value ) => saveTitleStyles( { backgroundActive: value } ) }
 				/>
 				<BorderColorControls
 					label={ __( 'Active Border Color' ) }
@@ -634,6 +636,7 @@ class KadenceAccordionComponent extends Component {
 																aria-pressed={ openPane === attributes.id - 1 }
 																onClick={ () => setAttributes( { openPane: attributes.id - 1 } ) }
 															>
+																{ console.log( 'is_array' ) }
 																{ __( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id ) }
 															</Button>
 														) ) }
@@ -913,17 +916,17 @@ class KadenceAccordionComponent extends Component {
 									units={ [ 'px', 'em', 'rem', '%' ] }
 									onUnit={ ( value ) => setAttributes( { contentPaddingType: value } ) }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Inner Content Background', 'kadence-blocks' ) }
-									colorValue={ ( contentBgColor ? contentBgColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
+									value={ ( contentBgColor ? contentBgColor : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { contentBgColor: value } ) }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Inner Content Border Color', 'kadence-blocks' ) }
-									colorValue={ ( contentBorderColor ? contentBorderColor : '' ) }
-									colorDefault={ '' }
-									onColorChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
+									value={ ( contentBorderColor ? contentBorderColor : '' ) }
+									default={ '' }
+									onChange={ ( value ) => setAttributes( { contentBorderColor: value } ) }
 								/>
 								<MeasurementControls
 									label={ __( 'Inner Content Border Width (px)', 'kadence-blocks' ) }

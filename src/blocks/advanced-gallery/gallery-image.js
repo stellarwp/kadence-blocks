@@ -95,7 +95,7 @@ class GalleryImage extends Component {
 	}
 
 	render() {
-		const { url, width, height, imageRatio, lightUrl, thumbUrl, customLink, linkTarget, alt, id, linkTo, link, isFirstItem, isLastItem, isSelected, showCaption, caption, captionStyle, captionStyles, onRemove, onMoveForward, onMoveBackward, setAttributes, setLinkAttributes, 'aria-label': ariaLabel, type, thumbnail } = this.props;
+		const { url, width, height, imageRatio, lightUrl, thumbUrl, customLink, linkTarget, linkSponsored, alt, id, linkTo, link, isFirstItem, isLastItem, isSelected, showCaption, caption, captionStyle, captionStyles, onRemove, onMoveForward, onMoveBackward, setAttributes, setLinkAttributes, 'aria-label': ariaLabel, type, thumbnail, dynamicSource } = this.props;
 		let href;
 		switch ( linkTo ) {
 			case 'media':
@@ -186,6 +186,23 @@ class GalleryImage extends Component {
 				} }
 			/>
 		);
+		const figcapDynamic = (
+			<figcaption
+				className={ `kadence-blocks-gallery-item__caption` }
+				style={ {
+					fontWeight: '' !== captionStyles[ 0 ].weight ? captionStyles[ 0 ].weight : undefined,
+					fontStyle: '' !== captionStyles[ 0 ].style ? captionStyles[ 0 ].style : undefined,
+					fontSize: undefined !== captionStyles[ 0 ].size && '' !== captionStyles[ 0 ].size[ 0 ] ? captionStyles[ 0 ].size[ 0 ] + captionStyles[ 0 ].sizeType : undefined,
+					lineHeight: ( captionStyles[ 0 ].lineHeight && captionStyles[ 0 ].lineHeight[ 0 ] ? captionStyles[ 0 ].lineHeight[ 0 ] + captionStyles[ 0 ].lineType : undefined ),
+					textTransform: ( '' !== captionStyles[ 0 ].textTransform ? captionStyles[ 0 ].textTransform : undefined ),
+					letterSpacing: '' !== captionStyles[ 0 ].letterSpacing ? captionStyles[ 0 ].letterSpacing + 'px' : undefined,
+					fontFamily: ( '' !== captionStyles[ 0 ].family ? captionStyles[ 0 ].family : '' ),
+				} }
+			>
+				{ caption }
+			</figcaption>
+		);
+		const capOutput = dynamicSource ? figcapDynamic : figcap;
 		const className = classnames( {
 			'kb-gallery-figure': true,
 			'is-selected': ! thumbnail && isSelected,
@@ -208,45 +225,49 @@ class GalleryImage extends Component {
 							thumbImg
 						}
 						{ ! thumbnail && ( 'below' !== captionStyle || ! showCaption ) && (
-							figcap
+							capOutput
 						) }
 					</div>
 					{ ! thumbnail && (
 						<Fragment>
 							{ 'below' === captionStyle && showCaption && (
-								figcap
+								capOutput
 							) }
-							<div className="kadence-blocks-library-gallery-item__move-menu">
-								<IconButton
-									icon="arrow-left"
-									onClick={ isFirstItem ? undefined : onMoveBackward }
-									className="kadence-blocks-gallery-item__move-backward"
-									label={ __( 'Move Image Backward', 'kadence-blocks' ) }
-									aria-disabled={ isFirstItem }
-									disabled={ ! isSelected }
-								/>
-								<IconButton
-									icon="arrow-right"
-									onClick={ isLastItem ? undefined : onMoveForward }
-									className="kadence-blocks-gallery-item__move-forward"
-									label={ __( 'Move Image Forward', 'kadence-blocks' ) }
-									aria-disabled={ isLastItem }
-									disabled={ ! isSelected }
-								/>
-							</div>
-							<div className="kadence-blocks-library-gallery-item__inline-menu">
-								<IconButton
-									icon="no-alt"
-									onClick={ onRemove }
-									className="kadence-blocks-gallery-item__remove"
-									label={ __( 'Remove Image', 'kadence-blocks' ) }
-									disabled={ ! isSelected }
-								/>
-							</div>
+							{ ! dynamicSource && (
+								<Fragment>
+									<div className="kadence-blocks-library-gallery-item__move-menu">
+										<IconButton
+											icon="arrow-left"
+											onClick={ isFirstItem ? undefined : onMoveBackward }
+											className="kadence-blocks-gallery-item__move-backward"
+											label={ __( 'Move Image Backward', 'kadence-blocks' ) }
+											aria-disabled={ isFirstItem }
+											disabled={ ! isSelected }
+										/>
+										<IconButton
+											icon="arrow-right"
+											onClick={ isLastItem ? undefined : onMoveForward }
+											className="kadence-blocks-gallery-item__move-forward"
+											label={ __( 'Move Image Forward', 'kadence-blocks' ) }
+											aria-disabled={ isLastItem }
+											disabled={ ! isSelected }
+										/>
+									</div>
+									<div className="kadence-blocks-library-gallery-item__inline-menu">
+										<IconButton
+											icon="no-alt"
+											onClick={ onRemove }
+											className="kadence-blocks-gallery-item__remove"
+											label={ __( 'Remove Image', 'kadence-blocks' ) }
+											disabled={ ! isSelected }
+										/>
+									</div>
+								</Fragment>
+							) }
 						</Fragment>
 					) }
 				</figure>
-				{ ! thumbnail && linkTo === 'custom' && isSelected && (
+				{ ! thumbnail && linkTo === 'custom' && isSelected && ! dynamicSource && (
 					<Fragment>
 						<div className="kb-gallery-custom-link block-editor-url-popover__row">
 							<URLInput
@@ -270,6 +291,11 @@ class GalleryImage extends Component {
 									label={ __( 'Open in New Tab', 'kadence-blocks' ) }
 									checked={ linkTarget === '_blank' }
 									onChange={ ( target ) => setLinkAttributes( { linkTarget: ( target ? '_blank' : '' ) } ) }
+								/>
+								<ToggleControl
+									label={ __( 'Sponsored', 'kadence-blocks' ) }
+									checked={ linkSponsored === 'sponsored' }
+									onChange={ ( value ) => setLinkAttributes( { linkSponsored: ( value ? 'sponsored' : '' ) } ) }
 								/>
 							</div>
 						) }

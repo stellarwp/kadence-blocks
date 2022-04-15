@@ -16,10 +16,7 @@ import KadenceSelectTerms from '../../components/terms/select-terms-control';
 import TypographyControls from '../../components/typography/typography-control';
 import debounce from 'lodash/debounce';
 import classnames from 'classnames';
-import map from 'lodash/map';
 import Select from 'react-select';
-import pickBy from 'lodash/pickBy';
-import isUndefined from 'lodash/isUndefined';
 import KadenceRange from '../../components/range/range-control';
 import getQuery from './get-query';
 
@@ -133,7 +130,7 @@ class KadencePosts extends Component {
 			} );
 	}
 	render() {
-		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont, excerptCustomLength, excerptLength }, className, setAttributes, taxList, taxOptions, taxFilterOptions } = this.props;
+		const { attributes: { uniqueID, order, columns, tabletColumns, mobileColumns, orderBy, categories, tags, postsToShow, alignImage, postType, taxType, offsetQuery, postTax, excludeTax, showUnique, allowSticky, image, imageRatio, imageSize, author, authorLink, authorEnabledLabel, authorLabel, authorImage, authorImageSize, comments, metaCategories, metaCategoriesEnabledLabel, metaCategoriesLabel, date, dateUpdated, dateEnabledLabel, dateLabel, dateUpdatedEnabledLabel, dateUpdatedLabel, meta, metaDivider, categoriesDivider, aboveCategories, categoriesStyle, excerpt, readmore, readmoreLabel, loopStyle, titleFont, excerptCustomLength, excerptLength }, className, setAttributes, taxList, taxOptions, taxFilterOptions } = this.props;
 		const { latestPosts, loaded } = this.state;
 		const taxonomyList = [];
 		const taxonomyOptions = [];
@@ -642,6 +639,11 @@ class KadencePosts extends Component {
 											/>
 										) }
 										<ToggleControl
+											label={ __( 'Enable Author Link', 'kadence-blocks' ) }
+											checked={ authorLink }
+											onChange={ ( value ) => setAttributes( { authorLink: value } ) }
+										/>
+										<ToggleControl
 											label={ __( 'Enable Author Label', 'kadence-blocks' ) }
 											checked={ authorEnabledLabel }
 											onChange={ ( value ) => setAttributes( { authorEnabledLabel: value } ) }
@@ -899,9 +901,15 @@ class KadencePosts extends Component {
 												</span>
 											) }
 											<span className="author vcard">
-												<a className="url fn n" href={ post.author_info.author_link }>
-													{ post.author_info.display_name }
-												</a>
+												{ authorLink ? (
+													<a className="url fn n" href={ post.author_info.author_link }>
+														{ post.author_info.display_name }
+													</a>
+												) : (
+													<span className="fn n">
+														{ post.author_info.display_name }
+													</span>
+												) }
 											</span>
 										</span>
 									) }
