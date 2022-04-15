@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { galleryIcon } from '@kadence/icons';
 
 /**
  * Import edit
@@ -19,7 +19,7 @@ import classnames from 'classnames';
 import { __ } from '@wordpress/i18n';
 const { registerBlockType, createBlock } = wp.blocks;
 const { Fragment } = wp.element;
-import { 
+import {
 	RichText,
 } from '@wordpress/block-editor';
 
@@ -37,7 +37,7 @@ registerBlockType( 'kadence/advancedgallery', {
 	title: __( 'Advanced Gallery', 'kadence-blocks' ),
 	description: __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more.', 'kadence-blocks' ),
 	icon: {
-		src: icons.gallery,
+		src: galleryIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

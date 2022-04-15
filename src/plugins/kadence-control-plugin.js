@@ -6,7 +6,7 @@ import { __ } from '@wordpress/i18n';
 import {
 	withSelect,
 } from '@wordpress/data';
-import { 
+import {
 	Component,
 	Fragment,
 } from '@wordpress/element';
@@ -18,7 +18,7 @@ import { applyFilters } from '@wordpress/hooks';
 /**
  * Import Icons
  */
-import icons from '../brand-icon';
+import { kadenceNewIcon } from '@kadence/icons';
 
 /**
  * Import Settings
@@ -85,7 +85,7 @@ class KadenceConfig extends Component {
 			<Fragment>
 				<PluginSidebarMoreMenuItem
 					target="kadence-controls"
-					icon={ icons.kadenceNew }
+					icon={ kadenceNewIcon }
 				>
 					{ __( 'Kadence Blocks Controls', 'kadence-blocks' ) }
 				</PluginSidebarMoreMenuItem>

@@ -1,4 +1,5 @@
 /* global kadence_blocks_params */
+
 const {
 	Component,
 	Fragment,
@@ -12,7 +13,8 @@ const {
 /**
  * Internal dependencies
  */
- import icons from '../../brand-icon';
+import { kadenceCatNewIcon } from '@kadence/icons';
+
 /**
  * Internal block libraries
  */
@@ -54,7 +56,7 @@ class KadenceDesignLibrarySettings extends Component {
 			<Fragment>
 				<Tooltip text="Block Defaults">
 					<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-						<span className="kt-block-icon">{ icons.kadenceCatNew }</span>
+						<span className="kt-block-icon">{ kadenceCatNewIcon }</span>
 						{ __( 'Design Library', 'kadence-blocks' ) }
 					</Button>
 				</Tooltip>

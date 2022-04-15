@@ -654,10 +654,10 @@ class KadenceAdvancedButton extends Component {
 		const buttonStyleOptions = [
 			{ key: '', name: __( 'Default', 'kadence-blocks' ) },
 			{ key: 'inherit', name: __( 'Theme', 'kadence-blocks' ) },
-			// { key: 'leftabove', name: __( 'Left Above' ), icon: icons.infoLeftAbove },
-			// { key: 'left', name: __( 'Left' ), icon: icons.infoLeft },
-			// { key: 'overlay', name: __( 'Overlay' ), icon: icons.infoTopOverlay },
-			// { key: 'overlayleft', name: __( 'Overlay Left' ), icon: icons.infoLeftOverlay },
+			// { key: 'leftabove', name: __( 'Left Above' ), icon: infoLeftAboveIcon },
+			// { key: 'left', name: __( 'Left' ), icon: infoLeftIcon },
+			// { key: 'overlay', name: __( 'Overlay' ), icon: infoTopOverlayIcons },
+			// { key: 'overlayleft', name: __( 'Overlay Left' ), icon: infoLeftOverlayIcons },
 		];
 		const blockToolControls = ( index ) => {
 			const isButtonSelected = ( isSelected && this.state.selectedButton === index && kadence_blocks_params.dynamic_enabled );

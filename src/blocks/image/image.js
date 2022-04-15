@@ -47,8 +47,28 @@ import { isExternalImage } from './edit';
  * Module constants
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
-import { PopColorControl, TypographyControls, MeasurementControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange, KadencePanelBody, URLInputControl, KadenceImageURLInputUI, BoxShadowControl, KadenceImageControl, DropShadowControl, ImageSizeControl as KadenceImageSizeControl } from '@kadence/components';
-import icons from '../../icons';
+import {
+	PopColorControl,
+	TypographyControls,
+	MeasurementControls,
+	ResponsiveMeasurementControls,
+	KadenceRange,
+	KadencePanelBody,
+	URLInputControl,
+	KadenceImageURLInputUI,
+	BoxShadowControl,
+	KadenceImageControl,
+	DropShadowControl,
+	ImageSizeControl as KadenceImageSizeControl
+} from '@kadence/components';
+import {
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon,
+	topLeftIcon,
+	topRightIcon
+} from '@kadence/icons';
 
 export default function Image( {
 	temporaryURL,
@@ -674,14 +694,13 @@ export default function Image( {
 						max={ 200 }
 						step={ 1 }
 						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 						] }
-						firstIcon={ icons.topleft }
-						secondIcon={ icons.topright }
-						thirdIcon={ icons.bottomright }
-						thirdIcon={ icons.bottomright }
-						fourthIcon={ icons.bottomleft }
+						firstIcon={ topLeftIcon }
+						secondIcon={ topRightIcon }
+						thirdIcon={ bottomRightIcon }
+						fourthIcon={ bottomLeftIcon }
 					/>
 				</KadencePanelBody>
 				<KadencePanelBody

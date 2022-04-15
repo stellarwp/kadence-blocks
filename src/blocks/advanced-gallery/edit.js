@@ -25,7 +25,22 @@ const { apiFetch } = wp;
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import {
+	topLeftIcon,
+	topRightIcon,
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusLinkedIcon,
+	radiusIndividualIcon,
+	galMasonryIcon,
+	galGridIcon,
+	galCarouselIcon,
+	galFluidIcon,
+	galSliderIcon,
+	galTilesIcon,
+	thumbSliderIcon
+} from '@kadence/icons';
+
 /**
  * WordPress dependencies
  */
@@ -80,14 +95,14 @@ const linkOptions = [
 	{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
 ];
 const typeOptions = [
-	{ value: 'masonry', label: __( 'Masonry', 'kadence-blocks' ), icon: icons.galMasonry, isDisabled: false },
-	{ value: 'grid', label: __( 'Grid', 'kadence-blocks' ), icon: icons.galGrid, isDisabled: false },
-	{ value: 'carousel', label: __( 'Carousel', 'kadence-blocks' ), icon: icons.galCarousel, isDisabled: false },
-	{ value: 'fluidcarousel', label: __( 'Fluid Carousel', 'kadence-blocks' ), icon: icons.galFluid, isDisabled: false },
-	{ value: 'slider', label: __( 'Slider', 'kadence-blocks' ), icon: icons.galSlider, isDisabled: false },
-	{ value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: icons.thumbslider, isDisabled: true },
-	{ value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: icons.galtiles, isDisabled: true },
-	// { value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: icons.galSlider, isDisabled: true },
+	{ value: 'masonry', label: __( 'Masonry', 'kadence-blocks' ), icon: galMasonryIcon, isDisabled: false },
+	{ value: 'grid', label: __( 'Grid', 'kadence-blocks' ), icon: galGridIcon, isDisabled: false },
+	{ value: 'carousel', label: __( 'Carousel', 'kadence-blocks' ), icon: galCarouselIcon, isDisabled: false },
+	{ value: 'fluidcarousel', label: __( 'Fluid Carousel', 'kadence-blocks' ), icon: galFluidIcon, isDisabled: false },
+	{ value: 'slider', label: __( 'Slider', 'kadence-blocks' ), icon: galSliderIcon, isDisabled: false },
+	{ value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: thumbSliderIcon, isDisabled: true },
+	{ value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: galTilesIcon, isDisabled: true },
+	// { value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: galSliderIcon, isDisabled: true },
 ];
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -1235,13 +1250,13 @@ class GalleryEdit extends Component {
 										max={ 200 }
 										step={ 1 }
 										controlTypes={ [
-											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 										] }
-										firstIcon={ icons.topleft }
-										secondIcon={ icons.topright }
-										thirdIcon={ icons.bottomright }
-										fourthIcon={ icons.bottomleft }
+										firstIcon={ topLeftIcon }
+										secondIcon={ topRightIcon }
+										thirdIcon={ bottomRightIcon }
+										fourthIcon={ bottomLeftIcon }
 									/>
 								) }
 								<SelectControl

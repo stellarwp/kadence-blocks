@@ -1,4 +1,4 @@
-import itemicons from '../../icons';
+import { googleMapsIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
 
@@ -27,7 +27,7 @@ export const settings = {
 registerBlockType('kadence/googlemaps', {
 	...metadata,
 	icon: {
-		src: itemicons.googleMaps,
+		src: googleMapsIcon,
 	},
 	...settings
 

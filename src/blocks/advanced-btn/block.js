@@ -14,7 +14,7 @@ import { IconRender } from '@kadence/components';
 /**
  * Import Icons
  */
-import icons from './icon';
+import { advancedBtnIcon } from '@kadence/icons';
 
 /**
  * Import Css
@@ -44,7 +44,7 @@ registerBlockType( 'kadence/advancedbtn', {
 	title: __( 'Advanced Button', 'kadence-blocks' ), // Block title.
 	description: __( 'Create an advanced button or a row of buttons. Style each one, including hover controls!', 'kadence-blocks' ),
 	icon: {
-		src: icons.block,
+		src: advancedBtnIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

@@ -20,7 +20,18 @@ const {
 import map from 'lodash/map';
 import MeasurementControls from '../../measurement-control';
 import { TypographyControls } from '@kadence/components';
-import icons from '../../icons';
+import {
+	blockTabsIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon,
+	bottomLeftIcon,
+	bottomRightIcon,
+	topLeftIcon,
+	topRightIcon,
+	tabsIcon,
+	vTabsIcon,
+	accordionIcon
+} from '@kadence/icons';
 /**
  * Internal block libraries
  */
@@ -72,13 +83,13 @@ class KadenceTabsDefault extends Component {
 		const { configuration, isOpen } = this.state;
 		const tabsConfig = ( configuration && configuration[ 'kadence/tabs' ] ? configuration[ 'kadence/tabs' ] : {} );
 		const mLayoutOptions = [
-			{ key: 'tabs', name: __( 'Tabs' ), icon: icons.tabs },
-			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: icons.vtabs },
-			{ key: 'accordion', name: __( 'Accordion' ), icon: icons.accordion },
+			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
+			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
+			{ key: 'accordion', name: __( 'Accordion' ), icon: accordionIcon },
 		];
 		const layoutOptions = [
-			{ key: 'tabs', name: __( 'Tabs' ), icon: icons.tabs },
-			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: icons.vtabs },
+			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
+			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
 		];
 		const sizeTypes = [
 			{ key: 'px', name: __( 'px' ) },
@@ -158,7 +169,7 @@ class KadenceTabsDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.blocktabs }</span>
+					<span className="kt-block-icon">{ blockTabsIcon }</span>
 					{ __( 'Tabs' ) }
 				</Button>
 				{ isOpen ?
@@ -391,13 +402,13 @@ class KadenceTabsDefault extends Component {
 								max={ 50 }
 								step={ 1 }
 								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-									{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+									{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+									{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 								] }
-								firstIcon={ icons.topleft }
-								secondIcon={ icons.topright }
-								thirdIcon={ icons.bottomright }
-								fourthIcon={ icons.bottomleft }
+								firstIcon={ topLeftIcon }
+								secondIcon={ topRightIcon }
+								thirdIcon={ bottomRightIcon }
+								fourthIcon={ bottomLeftIcon }
 							/>
 						</PanelBody>
 						<PanelBody

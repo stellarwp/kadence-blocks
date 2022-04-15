@@ -20,8 +20,8 @@ import {
 /**
  * Internal dependencies
  */
- import icons from '../../brand-icon';
 import { KadenceTryParseJSON } from '@kadence/helpers';
+import { kadenceBlocksIcon } from '@kadence/icons';
 /**
  * Add Prebuilt Library button to Gutenberg toolbar
  */
@@ -61,7 +61,7 @@ class ToolbarLibrary extends Component {
 		const LibraryButton = () => (
 			<Button
 				className="kb-toolbar-prebuilt-button"
-				icon={ icons.kadenceBlocks }
+				icon={ kadenceBlocksIcon }
 				isPrimary
 				onClick={ () => {
 					insertBlocks( createBlock( 'kadence/rowlayout', {

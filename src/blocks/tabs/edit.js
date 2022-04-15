@@ -5,7 +5,21 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import {
+	accordionIcon,
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon,
+	tabsBoldIcon,
+	tabsCenterIcon,
+	tabsIcon,
+	tabsSimpleIcon,
+	tabsVerticalIcon,
+	topLeftIcon,
+	topRightIcon,
+	vTabsIcon
+} from '@kadence/icons';
 
 /**
  * Import External
@@ -246,10 +260,10 @@ class KadenceTabs extends Component {
 		};
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip' ), icon: __( 'Skip' ) },
-			{ key: 'simple', name: __( 'Simple' ), icon: icons.tabsSimple },
-			{ key: 'boldbg', name: __( 'Boldbg' ), icon: icons.tabsBold },
-			{ key: 'center', name: __( 'Center' ), icon: icons.tabsCenter },
-			{ key: 'vertical', name: __( 'Vertical' ), icon: icons.tabsVertical },
+			{ key: 'simple', name: __( 'Simple' ), icon: tabsSimpleIcon },
+			{ key: 'boldbg', name: __( 'Boldbg' ), icon: tabsBoldIcon },
+			{ key: 'center', name: __( 'Center' ), icon: tabsCenterIcon },
+			{ key: 'vertical', name: __( 'Vertical' ), icon: tabsVerticalIcon },
 		];
 		const setInitalLayout = ( key ) => {
 			if ( 'skip' === key ) {
@@ -388,13 +402,13 @@ class KadenceTabs extends Component {
 		const mobileLayoutClass = ( ! mobileLayout ? 'inherit' : mobileLayout );
 		const classes = classnames( className, `kt-tabs-wrap kt-tabs-id${ uniqueID } kt-tabs-has-${ tabCount }-tabs kt-active-tab-${ currentTab } kt-tabs-layout-${ layoutClass } kt-tabs-block kt-tabs-tablet-layout-${ tabLayoutClass } kt-tabs-mobile-layout-${ mobileLayoutClass } kt-tab-alignment-${ tabAlignment }` );
 		const mLayoutOptions = [
-			{ key: 'tabs', name: __( 'Tabs' ), icon: icons.tabs },
-			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: icons.vtabs },
-			{ key: 'accordion', name: __( 'Accordion' ), icon: icons.accordion },
+			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
+			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
+			{ key: 'accordion', name: __( 'Accordion' ), icon: accordionIcon },
 		];
 		const layoutOptions = [
-			{ key: 'tabs', name: __( 'Tabs' ), icon: icons.tabs },
-			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: icons.vtabs },
+			{ key: 'tabs', name: __( 'Tabs' ), icon: tabsIcon },
+			{ key: 'vtabs', name: __( 'Vertical Tabs' ), icon: vTabsIcon },
 		];
 		const mobileControls = (
 			<div>
@@ -1351,13 +1365,13 @@ class KadenceTabs extends Component {
 									max={ 50 }
 									step={ 1 }
 									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 									] }
-									firstIcon={ icons.topleft }
-									secondIcon={ icons.topright }
-									thirdIcon={ icons.bottomright }
-									fourthIcon={ icons.bottomleft }
+									firstIcon={ topLeftIcon }
+									secondIcon={ topRightIcon }
+									thirdIcon={ bottomRightIcon }
+									fourthIcon={ bottomLeftIcon }
 								/>
 							</KadencePanelBody>
 						) }

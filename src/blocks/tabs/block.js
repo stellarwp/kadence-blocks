@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { blockTabsIcon } from '@kadence/icons';
 /**
  * Import attributes
  */
@@ -56,7 +56,7 @@ function kt_stripStringRender( string ) {
 registerBlockType( 'kadence/tabs', {
 	title: __( 'Tabs' ),
 	icon: {
-		src: icons.blocktabs,
+		src: blockTabsIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

@@ -19,6 +19,7 @@ module.exports = {
 	},
 	resolve: {
 		alias: {
+			'@kadence/icons': path.resolve( __dirname, './src/packages/icons/src/index.js' ),
 			'@kadence/components': path.resolve( __dirname, './src/packages/components/src/index.js' ),
 			'@kadence/helpers': path.resolve( __dirname, './src/packages/helpers/src/index.js' ),
 		},

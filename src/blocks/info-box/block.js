@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { infoboxIcon } from '@kadence/icons';
 import { IconRender } from '@kadence/components';
 /**
  * Import attributes
@@ -45,7 +45,7 @@ registerBlockType( 'kadence/infobox', {
 	title: __( 'Info Box', 'kadence-blocks' ),
 	description: __( 'Create beautiful information boxes using icons or images.', 'kadence-blocks' ),
 	icon: {
-		src: icons.infobox,
+		src: infoboxIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

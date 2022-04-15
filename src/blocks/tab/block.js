@@ -11,7 +11,7 @@ const {
 /**
  * Import Icons
  */
-import icons from './icon';
+import { tabsBlockIcon } from '@kadence/icons';
 /**
  * Import edit
  */
@@ -32,7 +32,7 @@ const { registerBlockType } = wp.blocks;
  */
 registerBlockType( 'kadence/tab', {
 	title: __( 'Tab', 'kadence-blocks' ),
-	icon: icons.block,
+	icon: tabsBlockIcon,
 	category: 'kadence-blocks',
 	parent: [ 'kadence/tabs' ],
 	attributes: {

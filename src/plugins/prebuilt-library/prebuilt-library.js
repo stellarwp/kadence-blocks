@@ -20,24 +20,19 @@ import {
 import {
 	Button,
 	Modal,
-	Tooltip,
 	Spinner,
 } from '@wordpress/components';
 import {
-	arrowLeft,
-	download,
 	update,
 	close,
-	chevronLeft,
 	plusCircle,
-	chevronDown,
 } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 /**
  * Import Brand Icons
  */
-import icons from '../../brand-icon';
+import { kadenceCatNewIcon } from '@kadence/icons';
 
 /**
  * Import Css
@@ -196,7 +191,7 @@ class PrebuiltModal extends Component {
 						<div className="kb-prebuilt-section">
 							<div className="kb-prebuilt-header kb-prebuilt-library-header">
 								<div className="kb-prebuilt-header kb-prebuilt-library-logo">
-									<span className="kb-prebuilt-header-logo">{ icons.kadenceCatNew }</span>
+									<span className="kb-prebuilt-header-logo">{ kadenceCatNewIcon }</span>
 									<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
 								</div>
 								{ this.state.reloadActions && (

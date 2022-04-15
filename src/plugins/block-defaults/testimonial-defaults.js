@@ -26,7 +26,13 @@ const {
 	Tooltip,
 } = wp.components;
 
-import icons from '../../icons';
+import {
+	testimonialBasicIcon,
+	testimonialBlockIcon,
+	testimonialBubbleIcon,
+	testimonialCardIcon,
+	testimonialInLineIcon
+} from '@kadence/icons';
 
 class KadenceTestimonialDefault extends Component {
 	constructor() {
@@ -208,10 +214,10 @@ class KadenceTestimonialDefault extends Component {
 			this.saveConfigState( 'columns', columnarray );
 		};
 		const styleOptions = [
-			{ key: 'basic', name: __( 'Basic' ), icon: icons.testimonialBasic },
-			{ key: 'card', name: __( 'Card' ), icon: icons.testimonialCard },
-			{ key: 'bubble', name: __( 'Bubble' ), icon: icons.testimonialBubble },
-			{ key: 'inlineimage', name: __( 'Image In Content' ), icon: icons.testimonialInline },
+			{ key: 'basic', name: __( 'Basic' ), icon: testimonialBasicIcon },
+			{ key: 'card', name: __( 'Card' ), icon: testimonialCardIcon },
+			{ key: 'bubble', name: __( 'Bubble' ), icon: testimonialBubbleIcon },
+			{ key: 'inlineimage', name: __( 'Image In Content' ), icon: testimonialInLineIcon },
 		];
 		const columnControlTypes = [
 			{ key: 'linked', name: __( 'Linked' ), icon: __( 'Linked' ) },
@@ -505,7 +511,7 @@ class KadenceTestimonialDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.testimonialBlock }</span>
+					<span className="kt-block-icon">{ testimonialBlockIcon }</span>
 					{ __( 'Testimonials' ) }
 				</Button>
 				{ isOpen ?
