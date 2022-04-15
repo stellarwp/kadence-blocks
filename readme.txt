@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.9
 Tested up to: 5.9
-Stable tag: 2.4.4.5
+Stable tag: 2.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -76,8 +76,12 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 == Changelog ==
 
-= 2.4.4.5 =
+= 2.5.0 Beta Version =
 Release Date: April 20th, 2022
+** Update: File Structure, build process, individual block files.
+** Update: Inline SVGs removed from content html.
+** Update: RowLayout to use grid css.
+** Update: Sections can move freely in and out of rows.
 * Update: Switch to using gap css for section gutter.
 ** Update: Icons flex layout with gap settings.
 
