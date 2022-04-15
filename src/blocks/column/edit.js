@@ -19,7 +19,6 @@ import uniqueId from 'lodash/uniqueId';
 /**
  * Kadence Components.
  */
-import { getPreviewSize, showSettings } from '../../helpers/helpers';
 import { PopColorControl, ResponsiveMeasurementControls, SmallResponsiveControl, KadenceRange, ResponsiveRangeControls, KadencePanelBody, URLInputControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
