@@ -6,8 +6,8 @@
 /**
  * Import Icons
  */
-import icons from './icons';
-import hexToRGBA from './hex-to-rgba';
+import { opacityIcon } from '@kadence/icons';
+import { hexToRGBA } from '@kadence/helpers';
 import get from 'lodash/get';
 import map from 'lodash/map';
 /**
@@ -186,7 +186,7 @@ class AdvancedColorControl extends Component {
 								{ this.props.onOpacityChange && (
 									<RangeControl
 										className="kt-opacity-value"
-										label={ icons.opacity }
+										label={ opacityIcon }
 										value={ this.props.opacityValue }
 										onChange={ this.props.onOpacityChange }
 										min={ 0 }

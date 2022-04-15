@@ -6,8 +6,8 @@
  * Internal dependencies
  */
 import Inspector from './inspector';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import WebfontLoader from '../../components/typography/fontloader';
+import { KadenceColorOutput } from '@kadence/helpers';
+import { WebfontLoader } from '@kadence/components';
 
 /**
  * Import External
@@ -18,7 +18,6 @@ import classnames from 'classnames';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**

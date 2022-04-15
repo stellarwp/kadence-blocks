@@ -6,27 +6,15 @@
 /**
  * Internal dependencies
  */
-import map from 'lodash/map';
+
 import uniqueId from 'lodash/uniqueId';
 import classnames from 'classnames';
-import TypographyControls from '../../components/typography/typography-control';
-import InlineTypographyControls from '../../components/typography/inline-typography-control';
-import PopColorControl from '../../components/color/pop-color-control';
-import InlinePopColorControl from '../../components/color/inline-pop-color';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import WebfontLoader from '../../components/typography/fontloader';
-import TextShadowControl from '../../text-shadow-control';
-import KadenceRange from '../../components/range/range-control';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import ResponsiveAlignControls from '../../components/align/responsive-align-control';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import URLInputControl from '../../components/links/link-control';
+import { PopColorControl, TextShadowControl, TypographyControls, InlineTypographyControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange, KadencePanelBody, URLInputControl, WebfontLoader, HeadingLevelIcon, InlinePopColorControl, ResponsiveAlignControls } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Block dependencies
  */
-import HeadingLevelIcon from './heading-icons';
 import HeadingStyleCopyPaste from './copy-paste-style';
 import './markformat';
 

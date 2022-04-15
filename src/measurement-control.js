@@ -6,7 +6,15 @@
 /**
  * Import Icons
  */
-import icons from './icons';
+import {
+	outlineTopIcon,
+	outlineBottomIcon,
+	outlineLeftIcon,
+	outlineRightIcon,
+	percentIcon,
+	linkedIcon,
+	individualIcon
+} from '@kadence/icons';
 
 /**
  * Import Css
@@ -18,7 +26,8 @@ import './editor-components.scss';
  */
 import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
-import KadenceRange from './components/range/range-control';
+import { KadenceRange } from '@kadence/components';
+import { getUnitIcon } from '@kadence/helpers';
 import { undo } from '@wordpress/icons';
 
 /**
@@ -50,10 +59,10 @@ export default function MeasurementControls( {
 	step = 1,
 	max = 100,
 	min = 0,
-	firstIcon = icons.outlinetop,
-	secondIcon = icons.outlineright,
-	thirdIcon = icons.outlinebottom,
-	fourthIcon = icons.outlineleft,
+	firstIcon = outlineTopIcon,
+	secondIcon = outlineRightIcon,
+	thirdIcon = outlineBottomIcon,
+	fourthIcon = outlineLeftIcon,
 	unit = '',
 	onUnit,
 	showUnit = false,
@@ -72,7 +81,7 @@ export default function MeasurementControls( {
 	 */
 	const createLevelControlToolbar = ( mappedUnit ) => {
 		return [ {
-			icon: ( mappedUnit === '%' ? icons.percent : icons[ mappedUnit ] ),
+			icon: ( mappedUnit === '%' ? percentIcon : getUnitIcon( mappedUnit ) ),
 			isActive: unit === mappedUnit,
 			onClick: () => {
 				onUnit( mappedUnit );
@@ -84,7 +93,7 @@ export default function MeasurementControls( {
 	};
 	return [
 		onChange && onControl && (
-			<div key={ key } className={ `components-base-control kb-measure-control ${ firstIcon !== icons.outlinetop ? 'kb-measure-corners-control' : 'kb-measure-sides-control' }${ '' !== className ? ' ' + className : '' }` }>
+			<div key={ key } className={ `components-base-control kb-measure-control ${ firstIcon !== outlineTopIcon ? 'kb-measure-corners-control' : 'kb-measure-sides-control' }${ '' !== className ? ' ' + className : '' }` }>
 				{ label && (
 					<div className="kadence-title-bar">
 						{ reset && (
@@ -176,10 +185,10 @@ export default function MeasurementControls( {
 									className="is-active is-single"
 									isSmall
 									disabled
-								>{ ( '%' === unit ? icons.percent : icons[ unit ] ) }</Button>
+								>{ ( '%' === unit ? percentIcon : getUnitIcon( unit ) ) }</Button>
 							) : (
 								<DropdownMenu
-									icon={ ( '%' === unit ? icons.percent : icons[ unit ] ) }
+									icon={ ( '%' === unit ? percentIcon : getUnitIcon( unit ) ) }
 									label={ __( 'Select a Unit', 'kadence-blocks' ) }
 									controls={ units.map( ( singleUnit ) => createLevelControlToolbar( singleUnit ) ) }
 									className={ 'kadence-units-group' }
@@ -196,7 +205,7 @@ export default function MeasurementControls( {
 									isSmall
 									onClick={ () => onControl( 'individual' ) }
 								>
-									{ icons.linked }
+									{ linkedIcon }
 								</Button>
 							</Tooltip>
 						) : (
@@ -206,7 +215,7 @@ export default function MeasurementControls( {
 									isSmall
 									onClick={ () => onControl( 'linked' ) }
 								>
-									{ icons.individual }
+									{ individualIcon }
 								</Button>
 							</Tooltip>
 						) }
@@ -215,7 +224,7 @@ export default function MeasurementControls( {
 			</div>
 		),
 		onChange && ! onControl && (
-			<div key={ key } className={ `components-base-control kb-measure-control ${ firstIcon !== icons.outlinetop ? 'kb-measure-corners-control' : 'kb-measure-sides-control' }${ '' !== className ? ' ' + className : '' }` }>
+			<div key={ key } className={ `components-base-control kb-measure-control ${ firstIcon !== outlineTopIcon ? 'kb-measure-corners-control' : 'kb-measure-sides-control' }${ '' !== className ? ' ' + className : '' }` }>
 				{ label && (
 					<div className="kadence-title-bar">
 						{ reset && (
@@ -300,10 +309,10 @@ export default function MeasurementControls( {
 									className="is-active is-single"
 									isSmall
 									disabled
-								>{ ( '%' === unit ? icons.percent : icons[ unit ] ) }</Button>
+								>{ ( '%' === unit ? percentIcon : getUnitIcon( unit ) ) }</Button>
 							) : (
 								<DropdownMenu
-									icon={ ( '%' === unit ? icons.percent : icons[ unit ] ) }
+									icon={ ( '%' === unit ? percentIcon : getUnitIcon( unit ) ) }
 									label={ __( 'Select a Unit', 'kadence-blocks' ) }
 									controls={ units.map( ( singleUnit ) => createLevelControlToolbar( singleUnit ) ) }
 									className={ 'kadence-units-group' }

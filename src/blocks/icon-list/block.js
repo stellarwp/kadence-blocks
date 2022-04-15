@@ -5,22 +5,21 @@
 /**
  * Import Icon stuff
  */
-import itemicons from '../../icons';
 import times from 'lodash/times';
-import IconRender from '../../components/icons/icon-render';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
+import { IconRender } from '@kadence/components';
 
 import edit from './edit';
 /**
  * Import Css
  */
-//import './style.scss';
-//import './editor.scss';
+ import './style.scss';
 
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { iconListBlockIcon } from '@kadence/icons';
 const {
 	registerBlockType,
 	createBlock,
@@ -55,7 +54,7 @@ registerBlockType( 'kadence/iconlist', {
 	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
 	title: __( 'Icon List', 'kadence-blocks' ), // Block title.
 	icon: {
-		src: itemicons.iconlistBlock,
+		src: iconListBlockIcon,
 	},
 	description: __( 'Create engaging lists with icons for bullets.', 'kadence-blocks' ),
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
@@ -420,7 +419,7 @@ registerBlockType( 'kadence/iconlist', {
 				);
 			}
 		},
-		{ 
+		{
 			attributes: {
 				items: {
 					type: 'array',

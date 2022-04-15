@@ -8,7 +8,7 @@ import classnames from 'classnames';
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { formBlockIcon } from '@kadence/icons';
 import times from 'lodash/times';
 /**
  * Import edit
@@ -18,8 +18,7 @@ import edit from './edit';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+ import './style.scss';
 const {
 	Fragment,
 } = wp.element;
@@ -45,7 +44,7 @@ registerBlockType( 'kadence/form', {
 	title: __( 'Form', 'kadence-blocks' ),
 	description: __( 'Create a contact or marketing form for your website.', 'kadence-blocks' ),
 	icon: {
-		src: icons.formBlock,
+		src: formBlockIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

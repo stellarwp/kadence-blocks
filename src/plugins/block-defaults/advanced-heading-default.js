@@ -1,7 +1,6 @@
-import TypographyControls from '../../components/typography/typography-control';
 import map from 'lodash/map';
-import PopColorControl from '../../components/color/pop-color-control';
-import HeadingLevelIcon from '../../blocks/advanced-heading/heading-icons';
+import { PopColorControl, TypographyControls, HeadingLevelIcon } from '@kadence/components';
+
 /**
  * Internal block libraries
  */
@@ -24,7 +23,7 @@ const {
 	SelectControl,
 } = wp.components;
 
-import icons from '../../icons';
+import { advancedHeadingIcon } from '@kadence/icons';
 
 class KadenceAdvancedHeadingDefault extends Component {
 	constructor() {
@@ -190,7 +189,7 @@ class KadenceAdvancedHeadingDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.headingBlock }</span>
+					<span className="kt-block-icon">{ advancedHeadingIcon }</span>
 					{ __( 'Advanced Text', 'kadence-blocks' ) }
 				</Button>
 				{ isOpen ?

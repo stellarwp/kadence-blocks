@@ -15,7 +15,6 @@ import { __ } from '@wordpress/i18n';
 import { useState, useRef, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 const { rest_url } = kadence_blocks_params;
 import get from 'lodash/get';
 import has from 'lodash/has';
@@ -42,8 +41,7 @@ import { __experimentalNumberControl as NumberControl } from '@wordpress/compone
  * Internal dependencies
  */
 import classnames from 'classnames';
-import KadenceSelectPosts from '../../components/posts/select-posts-control'
-import KadencePanelBody from '../../components/KadencePanelBody'
+import { KadenceSelectPosts, ResponsiveMeasurementControls, KadencePanelBody} from '@kadence/components'
 const ktlottieUniqueIDs = [];
 
 export function Edit( {

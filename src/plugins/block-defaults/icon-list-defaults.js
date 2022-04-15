@@ -1,8 +1,6 @@
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl, IconControl, TypographyControls } from '@kadence/components';
 import map from 'lodash/map';
-import IconControl from '../../components/icons/icon-control';
 
 /**
  * Internal block libraries
@@ -22,7 +20,7 @@ const {
 	Tooltip,
 } = wp.components;
 
-import icons from '../../icons';
+import { alignBottomIcon, alignMiddleIcon, alignTopIcon, iconListBlockIcon } from '@kadence/icons';
 
 class KadenceIconListDefault extends Component {
 	constructor() {
@@ -87,9 +85,9 @@ class KadenceIconListDefault extends Component {
 			level: 0
 		} ];
 		const iconAlignOptions = [
-			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },
-			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
-			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
+			{ key: 'top', name: __( 'Top' ), icon: alignTopIcon },
+			{ key: 'middle', name: __( 'Middle' ), icon: alignMiddleIcon },
+			{ key: 'bottom', name: __( 'Bottom' ), icon: alignBottomIcon },
 		];
 		const items = ( undefined !== iconListConfig.items && iconListConfig.items[ 0 ] ? iconListConfig.items : itemDefaults );
 		const saveListItem = ( value ) => {
@@ -130,7 +128,7 @@ class KadenceIconListDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.iconlistBlock }</span>
+					<span className="kt-block-icon">{ iconListBlockIcon }</span>
 					{ __( 'Icon List' ) }
 				</Button>
 				{ isOpen ?

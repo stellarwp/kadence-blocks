@@ -40,27 +40,35 @@ import { store as coreStore } from '@wordpress/core-data';
 import { createUpgradedEmbedBlock } from './helpers';
 import useClientWidth from './use-client-width';
 import ImageEditor, { ImageEditingProvider } from './image-editing';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import { isExternalImage } from './edit';
 
 /**
  * Module constants
  */
 import { MIN_SIZE, ALLOWED_MEDIA_TYPES } from './constants';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-import PopColorControl from '../../components/color/pop-color-control';
-import MeasurementControls from '../../components/measurement/measurement-control';
-import KadenceImageSizeControl from '../../components/common/image-size-control';
-import BoxShadowControl from '../../components/common/box-shadow-control';
-import KadenceImageControl from '../../components/common/kadence-image-control';
-import icons from '../../icons';
-import DropShadowControl from '../../components/background/drop-shadow-control';
-import TypographyControls from '../../components/typography/typography-control';
-import URLInputControl from '../../components/links/link-control';
-import KadenceRange from '../../components/range/range-control';
-import KadenceImageURLInputUI from '../../components/links/image-url-input-link-control';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody'
+import {
+	PopColorControl,
+	TypographyControls,
+	MeasurementControls,
+	ResponsiveMeasurementControls,
+	KadenceRange,
+	KadencePanelBody,
+	URLInputControl,
+	KadenceImageURLInputUI,
+	BoxShadowControl,
+	KadenceImageControl,
+	DropShadowControl,
+	ImageSizeControl as KadenceImageSizeControl
+} from '@kadence/components';
+import {
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon,
+	topLeftIcon,
+	topRightIcon
+} from '@kadence/icons';
 
 export default function Image( {
 	temporaryURL,
@@ -686,14 +694,13 @@ export default function Image( {
 						max={ 200 }
 						step={ 1 }
 						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 						] }
-						firstIcon={ icons.topleft }
-						secondIcon={ icons.topright }
-						thirdIcon={ icons.bottomright }
-						thirdIcon={ icons.bottomright }
-						fourthIcon={ icons.bottomleft }
+						firstIcon={ topLeftIcon }
+						secondIcon={ topRightIcon }
+						thirdIcon={ bottomRightIcon }
+						fourthIcon={ bottomLeftIcon }
 					/>
 				</KadencePanelBody>
 				<KadencePanelBody

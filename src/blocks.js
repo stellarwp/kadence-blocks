@@ -3,12 +3,10 @@
  *
  */
 // Utils
-import './components/utilities/kadence-store';
-import TypographyControls from './components/typography/typography-control';
+import './stores/kadence-store';
 import AdvancedColorControl from './advanced-color-control.js';
-import BoxShadowControl from './components/common/box-shadow-control';
-import IconControl from './components/icons/icon-control';
-import IconRender from './components/icons/icon-render';
+import { BoxShadowControl, TypographyControls, IconControl, IconRender } from '@kadence/components';
+
 window.kb = {
 	// Sidebar controls.
 	controls: {
@@ -43,8 +41,6 @@ import './blocks/form/block.js';
 import './blocks/table-of-contents/block.js';
 import './blocks/posts/block.js';
 import './blocks/countdown/block.js';
-import './blocks/countdown/countdown-timer/block.js';
-import './blocks/countdown/countdown-inner/block.js';
 
 /* block.json styles */
 import './blocks/lottie/index.js';
@@ -56,5 +52,6 @@ import './blocks/show-more/index.js';
 // import './plugins/editor-width.js';
 import './plugins/prebuilt-library/toolbar-library';
 // Brand Icon.
-import icons from './brand-icon';
-wp.blocks.updateCategory( 'kadence-blocks', { icon: icons.kadenceCatNew } );
+
+import { kadenceCatNewIcon } from '@kadence/icons';
+wp.blocks.updateCategory( 'kadence-blocks', { icon: kadenceCatNewIcon } );

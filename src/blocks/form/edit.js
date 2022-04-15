@@ -17,18 +17,10 @@ import times from 'lodash/times';
 import filter from 'lodash/filter';
 import debounce from 'lodash/debounce';
 import MeasurementControls from '../../measurement-control';
-import WebfontLoader from '../../components/typography/fontloader';
-import TypographyControls from '../../components/typography/typography-control';
-import BoxShadowControl from '../../components/common/box-shadow-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import PopColorControl from '../../components/color/pop-color-control';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import URLInputControl from '../../components/links/link-control';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadencePanelBody, ResponsiveRangeControls, URLInputControl, WebfontLoader, BoxShadowControl } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
-import { getPreviewSize } from '../../helpers/helpers';
+import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Import Css
@@ -3504,7 +3496,7 @@ class KadenceForm extends Component {
 						initialOpen={ false }
 						panelName={ 'kb-form-container-settings' }
 					>
-						<ResponsiveMeasuremenuControls
+						<ResponsiveMeasurementControls
 							label={ __( 'Container Margin', 'kadence-blocks' ) }
 							control={ deskMarginControl }
 							tabletControl={ tabletMarginControl }

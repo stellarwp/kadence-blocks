@@ -2,10 +2,13 @@
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import itemicons from '../../icons';
+import { imageIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Internal dependencies
  */
@@ -58,7 +61,7 @@ export const settings = {
 registerBlockType( 'kadence/image', {
 	...metadata,
 	icon: {
-		src: itemicons.image,
+		src: imageIcon,
 	},
 	...settings
 

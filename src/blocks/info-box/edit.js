@@ -12,26 +12,26 @@ import './editor.scss';
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import {
+	infoSimpleIcon,
+	infoLeftIcon,
+	infoBackgroundIcon,
+	infoImageIcon,
+	infoStartIcon,
+	infoBasicIcon,
+	infoLeftAboveIcon,
+	infoTopOverlayIcon,
+	infoLeftOverlayIcon,
+} from '@kadence/icons';
+
 import map from 'lodash/map';
 import get from 'lodash/get';
 import debounce from 'lodash/debounce';
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
-import PopColorControl from '../../components/color/pop-color-control';
-import ImageSizeControl from '../../components/common/image-size-control';
-import WebfontLoader from '../../components/typography/fontloader';
-import IconRender from '../../components/icons/icon-render';
-import IconControl from '../../components/icons/icon-control';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, IconControl, IconRender, URLInputControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl } from '@kadence/components';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
 import ResponsiveRangeControl from '../../responsive-range-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import KadenceRange from '../../components/range/range-control';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import URLInputControl from '../../components/links/link-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
-import KadenceImageControl from '../../components/common/kadence-image-control';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Internal block libraries
@@ -246,18 +246,18 @@ class KadenceInfoBox extends Component {
 		const marginStep = ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 );
 		const startlayoutOptions = [
 			{ key: 'skip', name: __( 'Skip', 'kadence-blocks' ), icon: __( 'Skip' ) },
-			{ key: 'simple', name: __( 'Simple', 'kadence-blocks' ), icon: icons.infoSimple },
-			{ key: 'left', name: __( 'Align Left', 'kadence-blocks' ), icon: icons.infoLeft },
-			{ key: 'bold', name: __( 'Bold Background', 'kadence-blocks' ), icon: icons.infoBackground },
-			{ key: 'image', name: __( 'Circle Image', 'kadence-blocks' ), icon: icons.infoImage },
+			{ key: 'simple', name: __( 'Simple', 'kadence-blocks' ), icon: infoSimpleIcon },
+			{ key: 'left', name: __( 'Align Left', 'kadence-blocks' ), icon: infoLeftIcon },
+			{ key: 'bold', name: __( 'Bold Background', 'kadence-blocks' ), icon: infoBackgroundIcon },
+			{ key: 'image', name: __( 'Circle Image', 'kadence-blocks' ), icon: infoImageIcon },
 		];
 		const layoutPresetOptions = [
-			{ key: 'simple', name: __( 'Basic', 'kadence-blocks' ), icon: icons.infoStart },
-			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: icons.infoBasic },
-			{ key: 'leftabove', name: __( 'Left Above', 'kadence-blocks' ), icon: icons.infoLeftAbove },
-			{ key: 'left', name: __( 'Left', 'kadence-blocks' ), icon: icons.infoLeft },
-			{ key: 'overlay', name: __( 'Overlay', 'kadence-blocks' ), icon: icons.infoTopOverlay },
-			{ key: 'overlayleft', name: __( 'Overlay Left', 'kadence-blocks' ), icon: icons.infoLeftOverlay },
+			{ key: 'simple', name: __( 'Basic', 'kadence-blocks' ), icon: infoStartIcon },
+			{ key: 'basic', name: __( 'Basic', 'kadence-blocks' ), icon: infoBasicIcon },
+			{ key: 'leftabove', name: __( 'Left Above', 'kadence-blocks' ), icon: infoLeftAboveIcon },
+			{ key: 'left', name: __( 'Left', 'kadence-blocks' ), icon: infoLeftIcon },
+			{ key: 'overlay', name: __( 'Overlay', 'kadence-blocks' ), icon: infoTopOverlayIcon },
+			{ key: 'overlayleft', name: __( 'Overlay Left', 'kadence-blocks' ), icon: infoLeftOverlayIcon },
 		];
 		const setPresetLayout = ( key ) => {
 			if ( 'simple' === key ) {
@@ -1656,7 +1656,7 @@ class KadenceInfoBox extends Component {
 										}
 									}
 								</TabPanel>
-								<ResponsiveMeasuremenuControls
+								<ResponsiveMeasurementControls
 									label={ __( 'Container Padding', 'kadence-blocks' ) }
 									control={ containerPaddingControl }
 									tabletControl={ containerPaddingControl }

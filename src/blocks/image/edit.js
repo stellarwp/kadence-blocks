@@ -24,10 +24,8 @@ import {
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
-import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
-import KadenceImageControl from '../../components/common/kadence-image-control';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import itemicons from '../../icons';
+import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl } from '@kadence/components';
+import { imageIcon } from '@kadence/icons';
 
 /* global wp */
 
@@ -440,7 +438,7 @@ export function ImageEdit( {
 			) }
 			<KadenceMediaPlaceholder
 				labels={ { 'title': __( 'Advanced Image', 'kadence-blocks' ) } }
-				icon={ itemicons.image }
+				icon={ imageIcon }
 				selectIcon={ plusCircleFilled }
 				selectLabel={ __( 'Select Image', 'kadence-blocks' ) }
 				onSelect={ onSelectImage }

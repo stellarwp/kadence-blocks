@@ -5,11 +5,9 @@
  */
 
 import SvgPattern from './svg-pattern';
-import ResponsiveAlignControls from '../../components/align/responsive-align-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import KadencePanelBody from '../../components/KadencePanelBody'
-import PopColorControl from '../../components/color/pop-color-control';
+import { KadenceColorOutput } from '@kadence/helpers';
+import { PopColorControl, ResponsiveRangeControls, KadencePanelBody, ResponsiveAlignControls } from '@kadence/components';
+
 /**
  * Import Css
  */

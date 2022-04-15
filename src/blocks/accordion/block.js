@@ -1,11 +1,15 @@
 /**
- * BLOCK: Kadence Tabs
+ * BLOCK: Kadence Accordion.
  */
+/**
+ * Register sub blocks.
+ */
+ import './pane/block.js';
 
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { accordionBlockIcon } from '@kadence/icons';
 /**
  * Import attributes
  */
@@ -21,8 +25,7 @@ import save from './save';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+ import './style.scss';
 
 /**
  * Internal block libraries
@@ -43,7 +46,7 @@ registerBlockType( 'kadence/accordion', {
 	title: __( 'Accordion', 'kadence-blocks' ),
 	description: __( 'Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders.', 'kadence-blocks' ),
 	icon: {
-		src: icons.accordionBlock,
+		src: accordionBlockIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

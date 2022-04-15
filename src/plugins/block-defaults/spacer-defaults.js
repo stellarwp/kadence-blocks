@@ -1,4 +1,4 @@
-import PopColorControl from '../../components/color/pop-color-control';
+import { PopColorControl } from '@kadence/components';
 const {
 	Component,
 	Fragment,
@@ -17,7 +17,7 @@ const {
 	Modal,
 } = wp.components;
 
-import icons from '../../icons';
+import { spacerIcon } from '@kadence/icons';
 /**
  * Internal block libraries
  */
@@ -99,7 +99,7 @@ class KadenceSpacerDefault extends Component {
 			<Fragment>
 				<Tooltip text="Block Defaults">
 					<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-						<span className="kt-block-icon">{ icons.spacerblock }</span>
+						<span className="kt-block-icon">{ spacerIcon }</span>
 						{ __( 'Spacer/Divider' ) }
 					</Button>
 				</Tooltip>

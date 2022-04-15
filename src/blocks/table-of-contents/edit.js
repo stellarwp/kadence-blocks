@@ -10,36 +10,39 @@
 import map from 'lodash/map';
 import isEqual from 'lodash/isEqual';
 import classnames from 'classnames';
-import WebfontLoader from '../../components/typography/fontloader';
-import TypographyControls from '../../components/typography/typography-control';
 import MeasurementControls from '../../measurement-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import KadenceColorOutput from '../../kadence-color-output';
-import PopColorControl from '../../components/color/pop-color-control';
+import { KadenceColorOutput } from '@kadence/helpers';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, WebfontLoader, BoxShadowControl } from '@kadence/components';
 import ResponsiveRangeControl from '../../responsive-range-control';
-import BoxShadowControl from '../../components/common/box-shadow-control';
-import KadenceRange from '../../components/range/range-control';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
-/**
- * Import Css
- */
-// import './style.scss';
-// import './editor.scss';
+
+
 /**
  * Import Icons
  */
-import blockIcons from './icon';
-import icons from '../../icons';
+import {
+	noneIcon,
+	oneColumnIcon,
+	threeColumnIcon,
+	twoColumnIcon,
+	bulletsIcon,
+	numberedIcon,
+	radiusLinkedIcon,
+	radiusIndividualIcon,
+	topLeftIcon,
+	topRightIcon,
+	bottomLeftIcon,
+	bottomRightIcon
+} from '@kadence/icons';
 
 /**
  * Internal dependencies
  */
 import TableOfContentsList from './list';
-import KadencePanelBody from '../../components/KadencePanelBody';
 import { getHeadingsFromContent, linearToNestedHeadingList } from './utils';
 const { ENTER } = wp.keycodes;
 import { withSelect } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
+import { compose, KadencePanelBody } from '@wordpress/compose';
 const {
 	Component,
 	Fragment,
@@ -275,7 +278,7 @@ class KadenceTableOfContents extends Component {
 		const columnOptions = [
 			[
 				{
-					icon: blockIcons.oneColumns,
+					icon: oneColumnIcon,
 					title: __( 'One Column', 'kadence-blocks' ),
 					isActive: ( 1 === columns ? true : false ),
 					onClick: () => setAttributes( { columns: 1 } ),
@@ -283,7 +286,7 @@ class KadenceTableOfContents extends Component {
 			],
 			[
 				{
-					icon: blockIcons.twoColumns,
+					icon: twoColumnIcon,
 					title: __( 'Two columns', 'kadence-blocks' ),
 					isActive: ( 2 === columns ? true : false ),
 					onClick: () => setAttributes( { columns: 2 } ),
@@ -291,7 +294,7 @@ class KadenceTableOfContents extends Component {
 			],
 			[
 				{
-					icon: blockIcons.threeColumns,
+					icon: threeColumnIcon,
 					title: __( 'Three Columns', 'kadence-blocks' ),
 					isActive: ( 3 === columns ? true : false ),
 					onClick: () => setAttributes( { columns: 3 } ),
@@ -301,7 +304,7 @@ class KadenceTableOfContents extends Component {
 		const listOptions = [
 			[
 				{
-					icon: blockIcons.bullets,
+					icon: bulletsIcon,
 					title: __( 'Bullets', 'kadence-blocks' ),
 					isActive: ( 'disc' === listStyle ? true : false ),
 					onClick: () => setAttributes( { listStyle: 'disc' } ),
@@ -309,7 +312,7 @@ class KadenceTableOfContents extends Component {
 			],
 			[
 				{
-					icon: blockIcons.numbered,
+					icon: numberedIcon,
 					title: __( 'Numbered', 'kadence-blocks' ),
 					isActive: ( 'numbered' === listStyle ? true : false ),
 					onClick: () => setAttributes( { listStyle: 'numbered' } ),
@@ -317,7 +320,7 @@ class KadenceTableOfContents extends Component {
 			],
 			[
 				{
-					icon: blockIcons.none,
+					icon: noneIcon,
 					title: __( 'None', 'kadence-blocks' ),
 					isActive: ( 'none' === listStyle ? true : false ),
 					onClick: () => setAttributes( { listStyle: 'none' } ),
@@ -675,13 +678,13 @@ class KadenceTableOfContents extends Component {
 									max={ 200 }
 									step={ 1 }
 									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 									] }
-									firstIcon={ icons.topleft }
-									secondIcon={ icons.topright }
-									thirdIcon={ icons.bottomright }
-									fourthIcon={ icons.bottomleft }
+									firstIcon={ topLeftIcon }
+									secondIcon={ topRightIcon }
+									thirdIcon={ bottomRightIcon }
+									fourthIcon={ bottomLeftIcon }
 								/>
 								<BoxShadowControl
 									label={ __( 'Box Shadow', 'kadence-blocks' ) }

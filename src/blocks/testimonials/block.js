@@ -1,14 +1,17 @@
 /**
  * BLOCK: Kadence Testimonial
  */
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { testimonialBlockIcon } from '@kadence/icons';
 import times from 'lodash/times';
-import IconRender from '../../components/icons/icon-render';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { IconRender } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 /**
  * Import attributes
  */
@@ -45,7 +48,7 @@ const {
 registerBlockType( 'kadence/testimonials', {
 	title: __( 'Testimonials', 'kadence-blocks'  ),
 	icon: {
-		src: icons.testimonialBlock,
+		src: testimonialBlockIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

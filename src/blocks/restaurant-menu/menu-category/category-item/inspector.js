@@ -10,11 +10,8 @@ import map from 'lodash/map';
 /**
  * Internal dependencies
  */
-import PopColorControl from '../../components/color/pop-color-control';
-import TypographyControls from '../../../../components/typography/typography-control';
-import KadenceRange from '../../../../kadence-range-control';
+import { PopColorControl, KadenceRange, TypographyControls, KadencePanelBody } from '@kadence/components';
 import MeasurementControls from '../../../../measurement-control';
-import KadencePanelBody from '../../../../components/KadencePanelBody';
 
 /**
  * WordPress dependencies

@@ -5,21 +5,22 @@
 /**
  * Import Icons
  */
-import editorIcons from '../../icons';
+import {
+	individualIcon,
+	linkedIcon,
+	outlineBottomIcon,
+	outlineLeftIcon,
+	outlineRightIcon,
+	outlineTopIcon
+} from '@kadence/icons';
 
 /**
  * Import Icon stuff
  */
 import times from 'lodash/times';
 import map from 'lodash/map';
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import PopColorControl from '../../components/color/pop-color-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import StepControl from '../../step-control';
-import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
-import KadencePanelBody from '../../components/KadencePanelBody';
-import URLInputControl from '../../components/links/link-control';
+import { PopColorControl, StepControls, IconControl, IconRender, KadencePanelBody, URLInputControl, VerticalAlignmentIcon } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Import Css
@@ -110,8 +111,8 @@ class KadenceIcons extends Component {
 		const { attributes: { iconCount, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment }, className, setAttributes, clientId } = this.props;
 		const { marginControl } = this.state;
 		const controlTypes = [
-			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), micon: editorIcons.linked },
-			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), micon: editorIcons.individual },
+			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), micon: linkedIcon },
+			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), micon: individualIcon },
 		];
 		const verticalAlignOptions = [
 			[
@@ -432,7 +433,7 @@ class KadenceIcons extends Component {
 							<p>{ __( 'Margin (px)', 'kadence-blocks' ) }</p>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlinetop }
+								label={ outlineTopIcon }
 								value={ ( icons[ index ].marginTop ? icons[ index ].marginTop : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginTop: value }, index );
@@ -443,7 +444,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlineright }
+								label={ outlineRightIcon }
 								value={ ( icons[ index ].marginRight ? icons[ index ].marginRight : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginRight: value }, index );
@@ -454,7 +455,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlinebottom }
+								label={ outlineBottomIcon }
 								value={ ( icons[ index ].marginBottom ? icons[ index ].marginBottom : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginBottom: value }, index );
@@ -465,7 +466,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlineleft }
+								label={ outlineLeftIcon }
 								value={ ( icons[ index ].marginLeft ? icons[ index ].marginLeft : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginLeft: value }, index );
@@ -573,7 +574,7 @@ class KadenceIcons extends Component {
 						initialOpen={ true }
 						panelName={ 'kb-icon-count' }
 					>
-						<StepControl
+						<StepControls
 							label={ __( 'Number of Icons', 'kadence-blocks' ) }
 							value={ iconCount }
 							onChange={ newcount => {

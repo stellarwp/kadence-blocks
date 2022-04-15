@@ -1,5 +1,5 @@
 /* global kadence_blocks_params */
-import TypographyControls from '../../components/typography/typography-control';
+import { TypographyControls } from '@kadence/components';
 import MeasurementControls from '../../measurement-control';
 import map from 'lodash/map';
 import AdvancedColorControl from '../../advanced-color-control';
@@ -18,8 +18,6 @@ const {
 	ToggleControl,
 	ButtonGroup,
 } = wp.components;
-
-import icons from '../../icons';
 
 class KadenceGlobalTypography extends Component {
 	constructor() {

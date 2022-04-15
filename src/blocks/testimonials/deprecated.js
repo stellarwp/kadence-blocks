@@ -6,10 +6,9 @@
  * Import Icons
  */
 import times from 'lodash/times';
-import hexToRGBA from '../../components/color/hex-to-rgba';
-import IconRender from '../../components/icons/icon-render';
-import KadenceColorOutput from '../../components/color/deprecated-kadence-color-output';
-import KadenceColorOutputNew from '../../components/color/kadence-color-output';
+import { hexToRGBA, KadenceColorOutput } from '@kadence/helpers';
+import { IconRender } from '@kadence/components';
+
 /**
  * Import attributes
  */
@@ -39,9 +38,9 @@ const {
 		save: ( { attributes } ) => {
 			const { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, displayContent, displayName, displayMedia, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, displayIcon, iconStyles, containerVAlign } = attributes;
 			const containerStyles = {
-				boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutputNew( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
-				borderColor: ( containerBorder ? KadenceColorOutputNew( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutputNew( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
-				background: ( containerBackground ? KadenceColorOutputNew( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
+				boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
+				borderColor: ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
+				background: ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
 				borderRadius: ( undefined !== containerBorderRadius && '' !== containerBorderRadius && ! isNaN( containerBorderRadius ) ? containerBorderRadius + 'px' : undefined ),
 				borderTopWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 0 ] && '' !== containerBorderWidth[ 0 ] ? containerBorderWidth[ 0 ] + 'px' : undefined ),
 				borderRightWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 1 ] && '' !== containerBorderWidth[ 1 ] ? containerBorderWidth[ 1 ] + 'px' : undefined ),
@@ -59,14 +58,14 @@ const {
 						margin: ( iconStyles[ 0 ].margin ? iconStyles[ 0 ].margin[ 0 ] + 'px ' + iconStyles[ 0 ].margin[ 1 ] + 'px ' + iconStyles[ 0 ].margin[ 2 ] + 'px ' + iconStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 					} } >
 						<IconRender className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
-							color: ( iconStyles[ 0 ].color ? KadenceColorOutputNew( iconStyles[ 0 ].color ) : undefined ),
+							color: ( iconStyles[ 0 ].color ? KadenceColorOutput( iconStyles[ 0 ].color ) : undefined ),
 							borderRadius: ( undefined !== iconStyles[ 0 ].borderRadius ? iconStyles[ 0 ].borderRadius + 'px' : undefined ),
 							borderTopWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 0 ] && null !== iconStyles[ 0 ].borderWidth[ 0 ] ? iconStyles[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
 							borderRightWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 1 ] && null !== iconStyles[ 0 ].borderWidth[ 1 ] ? iconStyles[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
 							borderBottomWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 2 ] && null !== iconStyles[ 0 ].borderWidth[ 2 ] ? iconStyles[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 							borderLeftWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 3 ] && null !== iconStyles[ 0 ].borderWidth[ 3 ] ? iconStyles[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
-							background: ( iconStyles[ 0 ].background ? KadenceColorOutputNew( iconStyles[ 0 ].background, ( undefined !== iconStyles[ 0 ].backgroundOpacity ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
-							borderColor: ( iconStyles[ 0 ].border ? KadenceColorOutputNew( iconStyles[ 0 ].border, ( undefined !== iconStyles[ 0 ].borderOpacity ? iconStyles[ 0 ].borderOpacity : 1 ) ) : undefined ),
+							background: ( iconStyles[ 0 ].background ? KadenceColorOutput( iconStyles[ 0 ].background, ( undefined !== iconStyles[ 0 ].backgroundOpacity ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
+							borderColor: ( iconStyles[ 0 ].border ? KadenceColorOutput( iconStyles[ 0 ].border, ( undefined !== iconStyles[ 0 ].borderOpacity ? iconStyles[ 0 ].borderOpacity : 1 ) ) : undefined ),
 							padding: ( iconStyles[ 0 ].padding ? iconStyles[ 0 ].padding[ 0 ] + 'px ' + iconStyles[ 0 ].padding[ 1 ] + 'px ' + iconStyles[ 0 ].padding[ 2 ] + 'px ' + iconStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
 						} } />
 					</div>
@@ -111,8 +110,8 @@ const {
 					<div className="kt-testimonial-media-wrap">
 						<div className="kt-testimonial-media-inner-wrap" style={ {
 							width: 'card' !== style ? mediaStyles[ 0 ].width + 'px' : undefined,
-							borderColor: KadenceColorOutputNew( mediaStyles[ 0 ].border ),
-							backgroundColor: ( mediaStyles[ 0 ].background ? KadenceColorOutputNew( mediaStyles[ 0 ].background, ( undefined !== mediaStyles[ 0 ].backgroundOpacity ? mediaStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
+							borderColor: KadenceColorOutput( mediaStyles[ 0 ].border ),
+							backgroundColor: ( mediaStyles[ 0 ].background ? KadenceColorOutput( mediaStyles[ 0 ].background, ( undefined !== mediaStyles[ 0 ].backgroundOpacity ? mediaStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
 							borderRadius: ( undefined !== mediaStyles[ 0 ].borderRadius && '' !== mediaStyles[ 0 ].borderRadius ? mediaStyles[ 0 ].borderRadius + 'px' : undefined ),
 							borderWidth: ( mediaStyles[ 0 ].borderWidth ? mediaStyles[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
 							padding: ( mediaStyles[ 0 ].padding ? mediaStyles[ 0 ].padding[ 0 ] + 'px ' + mediaStyles[ 0 ].padding[ 1 ] + 'px ' + mediaStyles[ 0 ].padding[ 2 ] + 'px ' + mediaStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
@@ -127,7 +126,7 @@ const {
 								{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
 									<IconRender className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
 										display: 'flex',
-										color: ( testimonials[ index ].color ? KadenceColorOutputNew( testimonials[ index ].color ) : undefined ),
+										color: ( testimonials[ index ].color ? KadenceColorOutput( testimonials[ index ].color ) : undefined ),
 									} } />
 								) }
 								{ 'icon' !== testimonials[ index ].media && testimonials[ index ].url && (
@@ -171,18 +170,18 @@ const {
 								<div className={ `kt-testimonial-rating-wrap kt-testimonial-rating-${ testimonials[ index ].rating }` } style={ {
 									margin: ( ratingStyles[ 0 ].margin ? ratingStyles[ 0 ].margin[ 0 ] + 'px ' + ratingStyles[ 0 ].margin[ 1 ] + 'px ' + ratingStyles[ 0 ].margin[ 2 ] + 'px ' + ratingStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 								} }>
-									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									{ testimonials[ index ].rating > 1 && (
-										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									) }
 									{ testimonials[ index ].rating > 2 && (
-										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									) }
 									{ testimonials[ index ].rating > 3 && (
-										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									) }
 									{ testimonials[ index ].rating > 4 && (
-										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									) }
 								</div>
 							) }

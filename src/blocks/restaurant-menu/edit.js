@@ -7,7 +7,7 @@
  */
 import Controls from './controls';
 import Inspector from './inspector';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import templates from './templates';
 
 /**

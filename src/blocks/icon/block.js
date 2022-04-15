@@ -5,16 +5,15 @@
 /**
  * Import Icon stuff
  */
-import itemicons from './icon';
+import { iconIcon } from '@kadence/icons';
 import times from 'lodash/times';
-import IconRender from '../../components/icons/icon-render';
-import KadenceColorOutput from '../../kadence-color-output';
+import { IconRender } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 import edit from './edit';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+ import './style.scss';
 
 /**
  * Internal block libraries
@@ -37,7 +36,7 @@ registerBlockType( 'kadence/icon', {
 	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
 	title: __( 'Icon', 'kadence-blocks' ), // Block title.
 	icon: {
-		src: itemicons.block,
+		src: iconIcon,
 	},
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [
@@ -261,7 +260,7 @@ registerBlockType( 'kadence/icon', {
 				);
 			}
 		},
-		{ 
+		{
 			attributes: {
 				icons: {
 					type: 'array',

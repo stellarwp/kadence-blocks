@@ -1,3 +1,4 @@
+
 const {
 	Component,
 	Fragment,
@@ -17,12 +18,18 @@ const {
 	Tooltip,
 	Modal,
 } = wp.components;
-import map from 'lodash/map';
 import MeasurementControls from '../../measurement-control';
-import TypographyControls from '../../components/typography/typography-control';
-import BorderColorControls from '../../border-color-control';
+import { TypographyControls, BorderColorControls } from '@kadence/components';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import icons from '../../icons';
+import {
+	accordionBlockIcon,
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon,
+	topLeftIcon,
+	topRightIcon
+} from '@kadence/icons';
 /**
  * Internal block libraries
  */
@@ -245,7 +252,7 @@ class KadenceAccordionDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.accordionBlock }</span>
+					<span className="kt-block-icon">{ accordionBlockIcon }</span>
 					{ __( 'Accordions' ) }
 				</Button>
 				{ isOpen ?
@@ -395,13 +402,13 @@ class KadenceAccordionDefault extends Component {
 								max={ 100 }
 								step={ 1 }
 								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-									{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+									{ key: 'linked', name: __( 'Linked' ), icon: radiusLinkedIcon },
+									{ key: 'individual', name: __( 'Individual' ), icon: radiusIndividualIcon },
 								] }
-								firstIcon={ icons.topleft }
-								secondIcon={ icons.topright }
-								thirdIcon={ icons.bottomright }
-								fourthIcon={ icons.bottomleft }
+								firstIcon={ topLeftIcon }
+								secondIcon={ topRightIcon }
+								thirdIcon={ bottomRightIcon }
+								fourthIcon={ bottomLeftIcon }
 							/>
 						</PanelBody>
 						<PanelBody
@@ -488,13 +495,13 @@ class KadenceAccordionDefault extends Component {
 								max={ 100 }
 								step={ 1 }
 								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-									{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+									{ key: 'linked', name: __( 'Linked' ), icon: radiusLinkedIcon },
+									{ key: 'individual', name: __( 'Individual' ), icon: radiusIndividualIcon },
 								] }
-								firstIcon={ icons.topleft }
-								secondIcon={ icons.topright }
-								thirdIcon={ icons.bottomright }
-								fourthIcon={ icons.bottomleft }
+								firstIcon={ topLeftIcon }
+								secondIcon={ topRightIcon }
+								thirdIcon={ bottomRightIcon }
+								fourthIcon={ bottomLeftIcon }
 							/>
 						</PanelBody>
 						<PanelBody

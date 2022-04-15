@@ -1,5 +1,5 @@
 import map from 'lodash/map';
-import MeasurementControls from '../../components/measurement/measurement-control';
+import { MeasurementControls } from '@kadence/components';
 /**
  * Internal block libraries
  */
@@ -20,7 +20,7 @@ const {
 	SelectControl,
 } = wp.components;
 
-import icons from '../../icons';
+import { blockRowIcon } from '@kadence/icons';
 
 class KadenceRowLayoutDefault extends Component {
 	constructor() {
@@ -229,7 +229,7 @@ class KadenceRowLayoutDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.blockRow }</span>
+					<span className="kt-block-icon">{ blockRowIcon }</span>
 					{ __( 'Row Layout', 'kadence-blocks' ) }
 				</Button>
 				{ isOpen ?

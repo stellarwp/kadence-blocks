@@ -9,7 +9,7 @@
  import classnames from 'classnames';
  import times from 'lodash/times';
  import { __ } from '@wordpress/i18n';
-import KadenceColorOutput from '../../components/color/deprecated-kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 const {
 	Component,
 	Fragment,

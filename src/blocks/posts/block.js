@@ -7,14 +7,17 @@
 /**
  * Import Icons
  */
-import icons from './icon';
+import { postsIcon } from '@kadence/icons';
 
 import classnames from 'classnames';
 /**
  * Import Css
  */
 import './editor.scss';
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 
 
 import edit from './edit';
@@ -47,7 +50,7 @@ const {
 registerBlockType( 'kadence/posts', {
 	title: __( 'Posts', 'kadence-blocks' ),
 	icon: {
-		src: icons.block,
+		src: postsIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

@@ -5,35 +5,32 @@
  /**
  * Import Icons
  */
-import icons from '../../icons';
+import { alignTopIcon, alignMiddleIcon, alignBottomIcon } from '@kadence/icons';
 
 /**
  * Import Icon stuff
  */
 import times from 'lodash/times';
 import MeasurementControls from '../../measurement-control';
-import TypographyControls from '../../components/typography/typography-control';
-import WebfontLoader from '../../components/typography/fontloader';
+import { WebfontLoader } from '@kadence/components';
 import map from 'lodash/map';
 import debounce from 'lodash/debounce';
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import StepControl from '../../step-control';
 import filter from 'lodash/filter';
 import get from 'lodash/get';
-import KadenceColorOutput from '../../kadence-color-output';
-import PopColorControl from '../../components/color/pop-color-control';
-import URLInputControl from '../../components/links/link-control';
-import DynamicTextControl from '../../components/common/dynamic-text-control';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import MoveItem from './moveItem';
-import KadencePanelBody from '../../components/KadencePanelBody';
+/**
+ * Import Kadence Components
+ */
+import { KadenceColorOutput } from '@kadence/helpers';
+import { PopColorControl, StepControls, TypographyControls, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
 
 /**
  * Import Css
  */
 import './editor.scss';
-
+/**
+ * Import Block Specific.
+ */
+import MoveItem from './moveItem';
 /**
  * Internal block libraries
  */
@@ -379,9 +376,9 @@ class KadenceIconLists extends Component {
 			} );
 		};
 		const iconAlignOptions = [
-			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: icons.aligntop },
-			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: icons.alignmiddle },
-			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: icons.alignbottom },
+			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: alignTopIcon },
+			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: alignMiddleIcon },
+			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: alignBottomIcon },
 		];
 		const stopOnReplace = ( value, index ) => {
 			if ( value && undefined !== value[ 0 ] && undefined !== value[ 0 ].attributes && value[ 0 ].attributes.content ) {
@@ -635,7 +632,7 @@ class KadenceIconLists extends Component {
 							initialOpen={ true }
 							panelName={ 'kb-icon-list-controls' }
 						>
-							<StepControl
+							<StepControls
 								label={ __( 'Number of Items' ) }
 								value={ listCount }
 								onChange={ ( newcount ) => {

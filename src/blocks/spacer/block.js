@@ -7,17 +7,20 @@
 /**
  * Import files
  */
-import icons from '../../icons';
+import { spacerIcon } from '@kadence/icons';
 import edit from './edit';
 import deprecated from './deprecated';
 import SvgPattern from './svg-pattern';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import classnames from 'classnames';
 /**
  * Import Css
  */
 // import './style.scss';
-//import './editor.scss';
+/**
+ * Import Css
+ */
+ import './style.scss';
 const {
 	Fragment,
 } = wp.element;
@@ -41,7 +44,7 @@ const {
 registerBlockType( 'kadence/spacer', {
 	title: __( 'Spacer/Divider', 'kadence-blocks' ), // Block title.
 	icon: {
-		src: icons.spacerblock,
+		src: spacerIcon,
 	},
 	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
 	keywords: [

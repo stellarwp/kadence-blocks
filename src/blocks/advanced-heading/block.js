@@ -7,14 +7,13 @@
 /**
  * Import Icons
  */
-import icons from './icon';
+import { advancedHeadingIcon } from '@kadence/icons';
 
 import classnames from 'classnames';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+ import './style.scss';
 import edit from './edit';
 import backwardCompatibility from './deprecated';
 /**
@@ -29,7 +28,7 @@ const {
 const {
 	Fragment,
 } = wp.element;
-import { 
+import {
 	RichText,
 	getColorClassName,
 } from '@wordpress/block-editor';
@@ -46,7 +45,7 @@ registerBlockType( 'kadence/advancedheading', {
 	title: __( 'Advanced Text', 'kadence-blocks' ),
 	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
 	icon: {
-		src: icons.block,
+		src: advancedHeadingIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

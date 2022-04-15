@@ -4,8 +4,7 @@
  * Depreciated.
  */
  import SvgPattern from './svg-pattern';
- import KadenceColorOutputOld from '../../components/color/deprecated-kadence-color-output';
- import KadenceColorOutput from '../../components/color/kadence-color-output';
+ import { KadenceColorOutput, DeprecatedKadenceColorOutput } from '@kadence/helpers';
  import classnames from 'classnames';
 import {
 	Fragment,
@@ -16,7 +15,7 @@ import {
  * Internal block libraries
  */
  import { __ } from '@wordpress/i18n';
- 
+
  export default [
 	{
 		attributes: {
@@ -256,9 +255,9 @@ import {
 			} else {
 				alp = '0.' + dividerOpacity;
 			}
-			const dividerBorderColor = ( ! dividerColor ? KadenceColorOutputOld( '#eeeeee', alp ) : KadenceColorOutputOld( dividerColor, alp ) );
+			const dividerBorderColor = ( ! dividerColor ? DeprecatedKadenceColorOutput( '#eeeeee', alp ) : DeprecatedKadenceColorOutput( dividerColor, alp ) );
 			const getDataUri = () => {
-				let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutputOld( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
+				let svgStringPre = renderToString( <SvgPattern uniqueID={ uniqueID } color={ DeprecatedKadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } /> );
 				svgStringPre = svgStringPre.replace( 'patterntransform', 'patternTransform' );
 				svgStringPre = svgStringPre.replace( 'patternunits', 'patternUnits' );
 				const dataUri = `url("data:image/svg+xml;base64,${btoa(svgStringPre)}")`;
@@ -289,7 +288,7 @@ import {
 										height: ( dividerHeight < 10 ? 10 : dividerHeight ) + 'px',
 										width: dividerWidth + '%',
 									} }>
-										<SvgPattern uniqueID={ uniqueID } color={ KadenceColorOutputOld( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
+										<SvgPattern uniqueID={ uniqueID } color={ DeprecatedKadenceColorOutput( dividerColor ) } opacity={ dividerOpacity } rotate={ rotate } strokeWidth={ strokeWidth } strokeGap={ strokeGap } />
 									</span>
 								) }
 								{ dividerStyle !== 'stripe' && (
@@ -426,7 +425,7 @@ import {
 		},
 		save: ( { attributes } ) => {
 			const { blockAlignment, spacerHeight, dividerEnable, dividerStyle, hAlign, dividerColor, dividerOpacity, dividerHeight, dividerWidth } = attributes;
-			const dividerBorderColor = ( ! dividerColor ? KadenceColorOutputOld( '#eeeeee', dividerOpacity ) : KadenceColorOutputOld( dividerColor, dividerOpacity ) );
+			const dividerBorderColor = ( ! dividerColor ? DeprecatedKadenceColorOutput( '#eeeeee', dividerOpacity ) : DeprecatedKadenceColorOutput( dividerColor, dividerOpacity ) );
 			return (
 				<div className={ `align${ blockAlignment }` }>
 					<div className={ `kt-block-spacer kt-block-spacer-halign-${ hAlign }` } style={ {
@@ -486,7 +485,7 @@ import {
 		},
 		save: ( { attributes } ) => {
 			const { blockAlignment, spacerHeight, dividerEnable, dividerStyle, dividerColor, dividerOpacity, dividerHeight, dividerWidth } = attributes;
-			const dividerBorderColor = ( ! dividerColor ? KadenceColorOutputOld( '#eee', dividerOpacity ) : KadenceColorOutputOld( dividerColor, dividerOpacity ) );
+			const dividerBorderColor = ( ! dividerColor ? DeprecatedKadenceColorOutput( '#eee', dividerOpacity ) : DeprecatedKadenceColorOutput( dividerColor, dividerOpacity ) );
 			return (
 				<div className={ `align${ blockAlignment }` }>
 					<div className="kt-block-spacer" style={ {
@@ -506,4 +505,3 @@ import {
 		},
 	},
 ];
-	
