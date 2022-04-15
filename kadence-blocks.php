@@ -33,21 +33,21 @@ register_activation_hook( __FILE__, 'kadence_blocks_activate' );
  * Load Plugin
  */
 function kadence_blocks_init() {
-	require_once KADENCE_BLOCKS_PATH . 'dist/init.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/form-ajax.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/helper-functions.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-prebuilt-library.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-css.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-frontend.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-table-of-contents.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-posts.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-countdown.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/settings/class-kadence-blocks-settings.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-posts-rest-api.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-mailerlite-form-rest-api.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-fluentcrm-form-rest-api.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-lottieanimation-get-rest-api.php';
-	require_once KADENCE_BLOCKS_PATH . 'dist/class-lottieanimation-post-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/init.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/form-ajax.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/helper-functions.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-prebuilt-library.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-css.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-frontend.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-table-of-contents.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-posts.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-countdown.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/settings/class-kadence-blocks-settings.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-posts-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-mailerlite-form-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-fluentcrm-form-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-get-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );
 
