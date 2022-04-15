@@ -48,6 +48,7 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-fluentcrm-form-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-lottieanimation-get-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'dist/class-lottieanimation-post-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'dist/class-kadence-blocks-svg.php';
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );
 
