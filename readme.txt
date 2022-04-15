@@ -4,7 +4,7 @@ Tags: gutenberg, blocks, page builder, google fonts, dual buttons, svg icons, ed
 Donate link: https://www.kadencewp.com/about-us/
 Requires at least: 5.9
 Tested up to: 5.9
-Stable tag: 2.4.4
+Stable tag: 2.4.4.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -75,6 +75,11 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 6. Editor Width settings inside Gutenberg
 
 == Changelog ==
+
+= 2.4.4.5 =
+Release Date: April 20th, 2022
+* Update: Switch to using gap css for section gutter.
+** Update: Icons flex layout with gap settings.
 
 = 2.4.4 =
 Release Date: April 14th, 2022

@@ -9062,12 +9062,7 @@ class Kadence_Blocks_Frontend {
 			}
 			$gutter = isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][ 0 ] ) && is_numeric( $attr['gutter'][ 0 ] ) ? $attr['gutter'][ 0 ] : 10;
 			$gutter_unit = ! empty( $attr['gutterUnit'] ) ? $attr['gutterUnit'] : 'px';
-			$css->add_property( 'margin-left', '-' . $gutter . $gutter_unit );
-			$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-image, .kadence-column' . $unique_id . ' > .kt-inside-inner-col > figure.wp-block-kadence-image' );
-			$css->add_property( 'margin-left', $gutter . $gutter_unit );
-			$css->add_property( 'margin-right', '0px' );
-			$css->add_property( 'margin-top', '0px' );
-			$css->add_property( 'margin-bottom', '0px' );
+			$css->add_property( 'gap', $gutter . $gutter_unit );
 		} else {
 			if ( ! empty( $attr['verticalAlignment'] ) ) {
 				switch ( $attr['verticalAlignment'] ) {
@@ -9255,12 +9250,7 @@ class Kadence_Blocks_Frontend {
 			$gutter = isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][ 1 ] ) && is_numeric( $attr['gutter'][ 1 ] ) ? $attr['gutter'][ 1 ] : '';
 			$gutter_unit = ! empty( $attr['gutterUnit'] ) ? $attr['gutterUnit'] : 'px';
 			if ( '' !== $gutter ) {
-				$css->add_property( 'margin-left', '-' . $gutter . $gutter_unit );
-				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
-				$css->add_property( 'margin-left', $gutter . $gutter_unit );
-				$css->add_property( 'margin-right', '0px' );
-				$css->add_property( 'margin-top', '0px' );
-				$css->add_property( 'margin-bottom', '0px' );
+				$css->add_property( 'gap', $gutter . $gutter_unit );
 			}
 		}
 		if ( isset( $attr['topPaddingT'] ) || isset( $attr['bottomPaddingT'] ) || isset( $attr['leftPaddingT'] ) || isset( $attr['rightPaddingT'] ) || isset( $attr['topMarginT'] ) || isset( $attr['bottomMarginT'] ) || isset( $attr['rightMarginT'] ) || ! empty( $attr['height'][1] ) || isset( $attr['leftMarginT'] ) || isset( $attr['tabletBorderWidth'] ) ) {
@@ -9388,12 +9378,7 @@ class Kadence_Blocks_Frontend {
 			$gutter = isset( $attr['gutter'] ) && is_array( $attr['gutter'] ) && isset( $attr['gutter'][ 2 ] ) && is_numeric( $attr['gutter'][ 2 ] ) ? $attr['gutter'][ 2 ] : '';
 			$gutter_unit = ! empty( $attr['gutterUnit'] ) ? $attr['gutterUnit'] : 'px';
 			if ( '' !== $gutter ) {
-				$css->add_property( 'margin-left', '-' . $gutter . $gutter_unit );
-				$css->set_selector( '.kadence-column' . $unique_id . ' > .kt-inside-inner-col > *' );
-				$css->add_property( 'margin-left', $gutter . $gutter_unit );
-				$css->add_property( 'margin-right', '0px' );
-				$css->add_property( 'margin-top', '0px' );
-				$css->add_property( 'margin-bottom', '0px' );
+				$css->add_property( 'gap', $gutter . $gutter_unit );
 			}
 		}
 		if ( isset( $attr['topPaddingM'] ) || isset( $attr['bottomPaddingM'] ) || isset( $attr['leftPaddingM'] ) || isset( $attr['rightPaddingM'] ) || isset( $attr['topMarginM'] ) || isset( $attr['bottomMarginM'] ) || isset( $attr['rightMarginM'] ) || isset( $attr['leftMarginM'] ) || ! empty( $attr['height'][2] ) || isset( $attr['mobileBorderWidth'] ) ) {

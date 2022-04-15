@@ -35,9 +35,9 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-	margin-left: -10px;
-	> .wp-block:not([data-type="kadence/advancedheading"]), > .block-editor-block-list__block:not([data-type="kadence/advancedheading"]), .block-editor-block-list__block[data-type="kadence/advancedheading"] > * {
-		margin-left: 10px;
+	gap:10px;
+	> .wp-block {
+		margin-left: unset;
 		margin-right: unset;
 		margin-top: 0;
 		margin-bottom: 0;
@@ -49,12 +49,6 @@
 		flex: 1;
 		min-width: 0;
 		max-width: none;
-	}
-	> .block-editor-block-list__block > .wp-block, .block-editor-block-list__block[data-type="kadence/advancedheading"] {
-		margin-left: unset;
-		margin-right: unset;
-		margin-top: 0;
-		margin-bottom: 0;
 	}
 	 // Makes svg images work in flex area.
 	> .wp-block-kadence-image.image-is-svg {
