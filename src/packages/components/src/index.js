@@ -12,6 +12,7 @@ export { default as BoxShadowControl } from './box-shadow-control';
 export { default as DynamicImageControl } from './dynamic-image-control';
 export { default as DynamicTextControl } from './dynamic-text-control';
 export { default as DynamicBackgroundControl } from './dynamic-background-control';
+export { default as DynamicGalleryControl } from './dynamic-gallery-control';
 export { default as DropShadowControl } from './drop-shadow-control';
 export { default as BackgroundControl } from './background-control';
 export { default as KadenceFocalPicker } from './focal-picker';

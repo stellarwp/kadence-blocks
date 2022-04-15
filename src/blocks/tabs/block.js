@@ -3,6 +3,15 @@
  */
 
 /**
+ * Register sub blocks.
+ */
+ import './tab/block.js';
+
+ /**
+ * Import Css
+ */
+  import './style.scss';
+/**
  * Import Icons
  */
 import { blockTabsIcon } from '@kadence/icons';

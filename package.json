@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@babel/preset-react": "^7.16.7",
+    "@wordpress/dependency-extraction-webpack-plugin": "^3.4.1",
     "@wordpress/i18n": "^4.1.1",
     "@wordpress/scripts": "^16.1.4",
     "babel-core": "^6.26.3",

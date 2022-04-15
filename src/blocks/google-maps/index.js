@@ -1,7 +1,6 @@
 import { googleMapsIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
-
 /**
  * Internal dependencies
  */

@@ -19,14 +19,13 @@ import {
 /**
  * Import Controls
  */
-import MeasurementControls from '../../measurement-control';
 import classnames from 'classnames';
 import debounce from 'lodash/debounce';
 import uniqueId from 'lodash/uniqueId';
 /**
  * Kadence Components.
  */
-import { PopColorControl, ResponsiveMeasurementControls, SmallResponsiveControl, KadenceRange, ResponsiveRangeControls, KadencePanelBody, URLInputControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
+import { PopColorControl, ResponsiveMeasurementControls, MeasurementControls, SmallResponsiveControl, KadenceRange, ResponsiveRangeControls, KadencePanelBody, URLInputControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
 /**
@@ -42,7 +41,6 @@ import { __ } from '@wordpress/i18n';
 
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, Fragment } from '@wordpress/element';
-import { Fragment } from '@wordpress/element';
 import {
 	InnerBlocks,
 	BlockControls,

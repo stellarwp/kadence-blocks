@@ -6,7 +6,10 @@
  * Import Icons
  */
 import { blockRowIcon } from '@kadence/icons'
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Import attributes
  */

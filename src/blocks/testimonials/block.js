@@ -1,7 +1,10 @@
 /**
  * BLOCK: Kadence Testimonial
  */
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Import Icons
  */

@@ -11,12 +11,8 @@ import Masonry from 'react-masonry-component';
 /**
  * Kadence Components.
  */
-import MeasurementControls from '../../measurement-control';
-import DynamicGalleryControl from '../../components/common/dynamic-gallery-control';
-import DynamicLinkControl from '../../components/links/dynamic-link-control';
-import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, TypographyControls, KadencePanelBody, KadenceRange, WebfontLoader, ImageSizeControl } from '@kadence/components';
+import { PopColorControl, TypographyControls, KadencePanelBody, KadenceRange, WebfontLoader, ImageSizeControl, DynamicLinkControl, KadenceMediaPlaceholder, DynamicGalleryControl, MeasurementControls } from '@kadence/components';
 import Slider from 'react-slick';
 const {
 	applyFilters,
@@ -75,7 +71,6 @@ import { withSelect } from '@wordpress/data';
  * Internal dependencies
  */
 import GalleryImage from './gallery-image';
-import icon from './icons';
 import { getRelevantMediaFiles } from './shared';
 import {
 	image,

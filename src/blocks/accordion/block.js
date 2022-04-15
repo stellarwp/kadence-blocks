@@ -1,6 +1,10 @@
 /**
- * BLOCK: Kadence Tabs
+ * BLOCK: Kadence Accordion.
  */
+/**
+ * Register sub blocks.
+ */
+ import './pane/block.js';
 
 /**
  * Import Icons
@@ -21,8 +25,7 @@ import save from './save';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+ import './style.scss';
 
 /**
  * Internal block libraries

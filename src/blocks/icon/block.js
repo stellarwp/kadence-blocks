@@ -13,8 +13,7 @@ import edit from './edit';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+ import './style.scss';
 
 /**
  * Internal block libraries

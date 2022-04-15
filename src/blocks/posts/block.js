@@ -14,7 +14,10 @@ import classnames from 'classnames';
  * Import Css
  */
 import './editor.scss';
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 
 
 import edit from './edit';

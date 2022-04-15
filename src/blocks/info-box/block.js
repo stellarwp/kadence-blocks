@@ -15,7 +15,10 @@ import attributes from './attributes';
  * Import edit
  */
 import edit from './edit';
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Import Css
  */

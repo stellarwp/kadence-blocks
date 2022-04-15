@@ -5,10 +5,19 @@
  */
 
 /**
+ * Register sub blocks.
+ */
+ import './countdown-timer/block.js';
+ import './countdown-inner/block.js';
+
+/**
  * Import Icons
  */
 import { countdownIcon } from '@kadence/icons';
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Internal dependencies
  */

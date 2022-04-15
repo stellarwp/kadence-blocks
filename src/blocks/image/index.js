@@ -5,7 +5,10 @@ import { __ } from '@wordpress/i18n';
 import { imageIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Internal dependencies
  */

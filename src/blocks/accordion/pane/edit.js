@@ -7,14 +7,11 @@
 import { KadencePanelBody, IconControl, IconRender } from '@kadence/components';
 
 import { __ } from '@wordpress/i18n';
-const {
-	Component,
-} = wp.element;
-const {
+import {
 	ToggleControl,
 	SelectControl,
 	TextControl,
-} = wp.components;
+} from '@wordpress/components';
 import {
 	RichText,
 	InnerBlocks,

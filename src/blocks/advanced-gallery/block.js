@@ -6,7 +6,10 @@
  * Import Icons
  */
 import { galleryIcon } from '@kadence/icons';
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Import edit
  */

@@ -30,7 +30,6 @@ import deprecated from './deprecated';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**

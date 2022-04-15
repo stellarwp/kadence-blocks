@@ -18,8 +18,7 @@ import edit from './edit';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+ import './style.scss';
 const {
 	Fragment,
 } = wp.element;
