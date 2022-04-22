@@ -4,12 +4,11 @@
 
  import memoize from 'memize';
 
- import { KadenceColorOutput } from '@kadence/helpers';
+ import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 
 import {
 	Fragment,
 } from '@wordpress/element';
-import { getPreviewSize } from '../../helpers/helpers';
 const overlayOpacityOutput = memoize( ( opacity ) => {
 	if ( opacity < 10 ) {
 		return '0.0' + opacity;

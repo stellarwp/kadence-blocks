@@ -455,7 +455,7 @@ export function Edit( {
 
 					<ResponsiveMeasurementControls
 						label={ __( 'Padding', 'kadence-blocks' ) }
-						value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
+						value={ paddingDesktop }
 						control={ paddingControl }
 						tabletValue={ paddingTablet }
 						mobileValue={ paddingMobile }
@@ -472,13 +472,11 @@ export function Edit( {
 					/>
 					<ResponsiveMeasurementControls
 						label={ __( 'Margin', 'kadence-blocks' ) }
-						value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
+						value={ marginDesktop }
 						control={ marginControl }
 						tabletValue={ marginTablet }
 						mobileValue={ marginMobile }
-						onChange={ ( value ) => {
-							setAttributes( { marginDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
-						} }
+						onChange={ ( value ) => setAttributes( { marginDesktop: value } ) }
 						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
 						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
 						onChangeControl={ ( value ) => setMarginControl( value ) }
