@@ -194,17 +194,6 @@ function RowLayoutEditContainer( {
 				inQueryBlock: false,
 			} );
 		}
-		if ( context && context.queryId && context.postId ) {
-			if ( ! attributes.inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( attributes.inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
 		debounce( getDynamic, 200 );
 	}, [] );
 	const { innerItemCount } = useSelect(
