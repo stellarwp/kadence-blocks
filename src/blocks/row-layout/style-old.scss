@@ -17,13 +17,11 @@
 }
 .kt-row-column-wrap {
     padding: 25px 0 25px 0;
+    display:flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
     position: relative;
     z-index: 10;
-	margin: 0 auto;
-	display: grid;
-	grid-template-columns: minmax(0, 1fr);
-	column-gap: 30px;
-	row-gap: 30px;
 }
 .wp-block-kadence-rowlayout .kt-row-column-wrap.kb-theme-content-width {
 	margin-left: auto;
@@ -79,25 +77,40 @@
     margin-bottom: 0;
 }
 @media (min-width: 768px) {
-	.kt-row-column-wrap.kt-row-layout-row {
-		grid-template-columns: minmax(0, 1fr);
+    .kt-row-layout-equal > .wp-block-kadence-column {
+        flex: 1;
+        width: 0;
+	}
+	.kt-row-layout-row {
+		flex-direction: column;
+		> .wp-block-kadence-column {
+			flex: none;
+			width: 100%;
+			margin-right: 0;
+		}
+		&.kt-v-gutter-default > .wp-block-kadence-column {
+			margin-bottom: 30px;
+		}
 		&.kt-v-gutter-skinny > .wp-block-kadence-column {
-			row-gap: 10px;
+			margin-bottom: 10px;
 		}
 		&.kt-v-gutter-narrow > .wp-block-kadence-column {
-			row-gap: 20px;
+			margin-bottom: 20px;
 		}
 		&.kt-v-gutter-wide > .wp-block-kadence-column {
-			row-gap: 40px;
+			margin-bottom: 40px;
 		}
 		&.kt-v-gutter-wider > .wp-block-kadence-column {
-			row-gap: 60px;
+			margin-bottom: 60px;
 		}
 		&.kt-v-gutter-widest > .wp-block-kadence-column {
-			row-gap: 80px;
+			margin-bottom: 80px;
 		}
-		&.kt-v-gutter-widest > .wp-block-kadence-column {
-			row-gap: 80px;
+		&.kt-m-colapse-right-to-left:not(.kt-v-gutter-none) > .wp-block-kadence-column:first-child {
+			margin-bottom: 0px;
+		}
+		&:not(.kt-v-gutter-none):not(.kt-m-colapse-right-to-left) > .wp-block-kadence-column:last-child {
+			margin-bottom: 0px;
 		}
 	}
     .kt-gutter-default > .wp-block-kadence-column {
@@ -118,6 +131,12 @@
     .kt-gutter-widest > .wp-block-kadence-column {
         margin-right: 80px;
     }
+    body:not(.rtl) .kt-row-column-wrap:not(.kt-gutter-none) > .wp-block-kadence-column:last-child {
+        margin-right: 0px;
+	}
+	body.rtl .kt-row-column-wrap:not(.kt-gutter-none) > .wp-block-kadence-column:first-child {
+        margin-right: 0px;
+	}
 	.kt-gutter-skinny {
 		&.kt-row-layout-left-golden > .wp-block-kadence-column.inner-column-1 {
 			flex-basis: 10px;
@@ -167,52 +186,219 @@
 		}
 	}
     // Two columns
-	.kt-row-column-wrap.kt-has-2-columns {
-		grid-template-columns: repeat(2, minmax(0, 1fr) );
-		&.kt-row-layout-left-golden {
-			grid-template-columns:  minmax(0, 2fr)  minmax(0, 1fr);
+    .kt-row-layout-left-golden {
+        > .wp-block-kadence-column {
+            &.inner-column-1  {
+                flex: 2;
+            }
+            &.inner-column-2  {
+                flex: 1;
+            }
+        }
+    }
+    .kt-row-layout-right-golden {
+        > .wp-block-kadence-column {
+            &.inner-column-1 {
+                flex: 1;
+            }
+            &.inner-column-2 {
+                flex: 2;
+            }
+        }
+	}
+	.kt-has-2-columns.kt-custom-first-width-10 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 10%;
 		}
-		&.kt-row-layout-right-golden {
-			grid-template-columns:  minmax(0, 1fr)  minmax(0, 2fr);
+		&.inner-column-2 {
+			flex: 0 1 90%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-15 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 15%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 85%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-20 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 20%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 80%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-25 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 25%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 75%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-30 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 30%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 70%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-35 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 35%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 65%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-40 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 40%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 60%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-45 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 45%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 55%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-50 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 1;
+		}
+		&.inner-column-2 {
+			flex: 1;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-55 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 55%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 45%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-60 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 60%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 40%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-65 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 65%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 35%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-70 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 70%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 30%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-75 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 75%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 25%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-80 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 80%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 20%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-85 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 85%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 15%;
+		}
+	}
+	.kt-has-2-columns.kt-custom-first-width-90 > .wp-block-kadence-column {
+		&.inner-column-1 {
+			flex: 0 1 90%;
+		}
+		&.inner-column-2 {
+			flex: 0 1 10%;
 		}
 	}
     // Three columns
-	.kt-row-column-wrap.kt-has-3-columns {
-		grid-template-columns: repeat(3, minmax(0, 1fr) );
-		&.kt-row-layout-left-half {
-			grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
-		}
-		&.kt-row-layout-right-half {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
-		}
-		&.kt-row-layout-center-half {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1fr);
-		}
-		&.kt-row-layout-center-wide {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 3fr) minmax(0, 1fr);
-		}
-		&.kt-row-layout-center-exwide {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 6fr) minmax(0, 1fr);
-		}
-	}
-	// Four columns
-	.kt-row-column-wrap.kt-has-4-columns {
-		grid-template-columns: repeat(4, minmax(0, 1fr) );
-		&.kt-row-layout-left-forty {
-			grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
-		}
-		&.kt-row-layout-right-forty {
-			grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
-		}
-	}
-	// Five columns
-	.kt-row-column-wrap.kt-has-4-columns {
-		grid-template-columns: repeat(5, minmax(0, 1fr) );
-	}
-	// Six columns
-	.kt-row-column-wrap.kt-has-4-columns {
-		grid-template-columns: repeat(6, minmax(0, 1fr) );
-	}
+    .kt-row-layout-left-half {
+        > .wp-block-kadence-column {
+            flex: 1;
+            &.inner-column-1  {
+                flex: 2;
+            }
+        }
+    }
+    .kt-row-layout-right-half {
+        > .wp-block-kadence-column {
+            flex: 1;
+            &.inner-column-3  {
+                flex: 2;
+            }
+        }
+    }
+    .kt-row-layout-center-half {
+        > .wp-block-kadence-column {
+            flex: 1;
+            &.inner-column-2  {
+                flex: 2;
+            }
+        }
+    }
+    .kt-row-layout-center-wide {
+        > .wp-block-kadence-column {
+            flex: 1;
+            &.inner-column-2  {
+                flex: 3;
+            }
+        }
+    }
+    .kt-row-layout-center-exwide {
+        > .wp-block-kadence-column {
+            flex: 1;
+            &.inner-column-2  {
+                flex: 6;
+            }
+        }
+    }
+    .kt-row-layout-left-forty {
+        > .wp-block-kadence-column {
+            flex: 1;
+            &.inner-column-1  {
+                flex: 2;
+            }
+        }
+    }
+    .kt-row-layout-right-forty {
+        > .wp-block-kadence-column {
+            flex: 1;
+            &.inner-column-4  {
+                flex: 2;
+            }
+        }
+    }
 }
 // Tablet specific
 @media (min-width: 768px) and (max-width: 1024px) {
