@@ -6,7 +6,7 @@
 /**
  * Import Css
  */
-import './style.scss';
+import './editor.scss';
 
 /**
  * Import External

@@ -11,7 +11,7 @@ import SinglePopColorControl from '../single-pop-color-control';
 /**
  * Import Css
  */
-import './style.scss';
+import './editor.scss';
 
 /**
  * Internal block libraries

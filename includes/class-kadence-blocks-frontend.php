@@ -3337,7 +3337,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		$key_positions = [ 'top', 'right', 'bottom', 'left'];
 
 		$css->set_selector( '.kb-block-show-more-container' . $unique_id );
@@ -3466,7 +3466,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		$key_positions = [ 'top', 'right', 'bottom', 'left'];
 		$css->set_selector( '.kb-lottie-container' . $unique_id );
 
@@ -3560,7 +3560,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 
 		if ( isset( $attr['titleColor'] ) || isset( $attr['titleFont'] ) ) {
 			$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
@@ -4026,7 +4026,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		// Style.
 		if ( isset( $attr['containerBorder'] ) || isset( $attr['containerBackground'] ) || isset( $attr['containerBackgroundOpacity'] ) || isset( $attr['containerPadding'] ) || isset( $attr['containerMargin'] ) || isset( $attr['containerBorderRadius'] ) || isset( $attr['containerBorderWidth'] ) || isset( $attr['maxWidth'] ) ) {
 			$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap' );
@@ -4739,7 +4739,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 
 		if ( isset( $attr['spacerHeight'] ) && ! empty( $attr['spacerHeight'] ) ) {
 			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
@@ -5234,7 +5234,7 @@ class Kadence_Blocks_Frontend {
 		$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
 		$media_query['tablet']        = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '@media (min-width: 768px) and (max-width: 1024px)' );
-		$media_query['desktop']       = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop']       = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		//$css = '';
 		// Wrapper Padding
 		if ( isset( $attr['wrapperPadding'] ) && is_array( $attr['wrapperPadding'] ) ) {
@@ -6873,7 +6873,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		$key_positions = [ 'top', 'right', 'bottom', 'left'];
 
 		$css->set_selector( '.kb-google-maps-container' . $unique_id );
@@ -6980,7 +6980,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		$key_positions = [ 'top', 'right', 'bottom', 'left'];
 		$css->set_selector( '.wp-block-kadence-image.kb-image' . $unique_id );
 		// Margins
@@ -7495,7 +7495,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		// Issue with span tag.
 		if ( isset( $attr['htmlTag'] ) && 'span' === $attr['htmlTag'] ) {
 			$css->set_selector( '.wp-block-kadence-advancedheading.kt-adv-heading' . $unique_id . '[data-kb-block="kb-adv-heading' . $unique_id . '"]' );
@@ -7868,7 +7868,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		if ( isset( $attr['btns'] ) && is_array( $attr['btns'] ) ) {
 			foreach ( $attr['btns'] as $btnkey => $btnvalue ) {
 				if ( is_array( $btnvalue ) ) {
@@ -8248,7 +8248,7 @@ class Kadence_Blocks_Frontend {
 		$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
 		$media_query['tablet']        = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '(min-width: 768px) and (max-width: 1024px)' );
-		$media_query['desktop']       = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop']       = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		if ( isset( $attr['inheritMaxWidth'] ) && $attr['inheritMaxWidth'] ) {
 			global $content_width;
 			if ( isset( $content_width ) ) {
@@ -8901,7 +8901,7 @@ class Kadence_Blocks_Frontend {
 		$media_query            = array();
 		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
 		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 		// Style.
 		if ( ! empty( $attr['maxWidth'][0] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id );

@@ -241,7 +241,7 @@ class Kadence_Blocks_Countdown {
 		$media_query['mobileReverse'] = apply_filters( 'kadence_mobile_reverse_media_query', '(min-width: 768px)' );
 		$media_query['tablet']        = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
 		$media_query['tabletOnly']    = apply_filters( 'kadence_tablet_only_media_query', '@media (min-width: 768px) and (max-width: 1024px)' );
-		$media_query['desktop']       = apply_filters( 'kadence_tablet_media_query', '(min-width: 1025px)' );
+		$media_query['desktop']       = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
 
 		if ( isset( $attr['background'] ) || isset( $attr['border'] ) || ( isset( $attr['borderRadius'] ) && is_array( $attr['borderRadius'] ) ) || ( isset( $attr['borderWidth'] ) && is_array( $attr['borderWidth'] ) ) ) {
 			$css->set_selector( '.kb-countdown-container-' . $unique_id );
