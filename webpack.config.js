@@ -10,7 +10,7 @@ function camelCaseDash(string) {
 	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 }
 defaultConfig.output.path = __dirname + '/dist/';
-//defaultConfig.output.library = [ 'kadence', '[name]', '[entry]' ];
+defaultConfig.output.library = [ 'kadence', '[name]', '[entry]' ];
 defaultConfig.output.libraryTarget = 'this';
 module.exports = {
 	...defaultConfig,
