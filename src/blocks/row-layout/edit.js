@@ -3290,7 +3290,7 @@ const ktrowUniqueIDs = [];
 					)}
 				</style>
 			) }
-			<RowBackground 
+			<RowBackground
 				backgroundClasses={ classes }
 				attributes={ attributes }
 				previewDevice={ previewDevice }
@@ -3631,7 +3631,7 @@ const RowLayoutEditContainerWrapper = withDispatch(
 			let innerBlocks = getBlocks( clientId );
 			const isAddingColumn = newColumns > previousColumns;
 
-			
+
 			if ( isAddingColumn ) {
 				const arrayLength = innerBlocks.length;
 				for ( let i = 0; i < arrayLength; i++ ) {
