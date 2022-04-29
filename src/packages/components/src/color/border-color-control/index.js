@@ -66,21 +66,21 @@ icons.percent = <svg width="24" height="24"
  * @returns {object} Measure settings.
  */
 export default function BorderColorControls( {
-												 label,
-												 values,
-												 control,
-												 onChange,
-												 onControl,
-												 colorDefault = '',
-												 controlTypes = [
-													 { key: 'linked', name: __( 'Linked' ), icon: icons.linked },
-													 { key: 'individual', name: __( 'Individual' ), icon: icons.individual },
-												 ],
-												 firstIcon = icons.outlinetop,
-												 secondIcon = icons.outlineright,
-												 thirdIcon = icons.outlinebottom,
-												 fourthIcon = icons.outlineleft,
-											 } ) {
+		label,
+		values,
+		control,
+		onChange,
+		onControl,
+		colorDefault = '',
+		controlTypes = [
+			{ key: 'linked', name: __( 'Linked' ), icon: icons.linked },
+			{ key: 'individual', name: __( 'Individual' ), icon: icons.individual },
+		],
+		firstIcon = icons.outlinetop,
+		secondIcon = icons.outlineright,
+		thirdIcon = icons.outlinebottom,
+		fourthIcon = icons.outlineleft,
+	} ) {
 	return [
 		onChange && onControl && (
 			<Fragment>

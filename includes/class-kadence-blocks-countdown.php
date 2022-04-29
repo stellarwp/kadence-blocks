@@ -165,8 +165,8 @@ class Kadence_Blocks_Countdown {
 			'kadence/countdown',
 			array(
 				'render_callback' => array( $this, 'render_countdown' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-countdown',
+				'editor_style'    => 'kadence-blocks-countdown',
 			)
 		);
 	}

@@ -172,144 +172,144 @@ class Kadence_Blocks_Frontend {
 			'kadence/rowlayout',
 			array(
 				'render_callback' => array( $this, 'render_row_layout_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-row-layout',
+				'editor_style'    => 'kadence-blocks-row-layout',
 			)
 		);
 		register_block_type(
 			'kadence/column',
 			array(
 				'render_callback' => array( $this, 'render_column_layout_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-column',
+				'editor_style'    => 'kadence-blocks-column',
 			)
 		);
 		register_block_type(
 			'kadence/advancedbtn',
 			array(
 				'render_callback' => array( $this, 'render_advanced_btn_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-advanced-btn',
+				'editor_style'    => 'kadence-blocks-advanced-btn',
 			)
 		);
 		register_block_type(
 			'kadence/advancedheading',
 			array(
 				'render_callback' => array( $this, 'render_advanced_heading_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-advanced-heading',
+				'editor_style'    => 'kadence-blocks-advanced-heading',
 			)
 		);
 		register_block_type(
 			'kadence/tabs',
 			array(
 				'render_callback' => array( $this, 'render_tabs_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-advanced-tabs',
+				'editor_style'    => 'kadence-blocks-advanced-tabs',
 			)
 		);
 		register_block_type(
 			'kadence/spacer',
 			array(
 				'render_callback' => array( $this, 'render_spacer_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-spacer',
+				'editor_style'    => 'kadence-blocks-spacer',
 			)
 		);
 		register_block_type(
 			'kadence/infobox',
 			array(
 				'render_callback' => array( $this, 'render_infobox_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-info-box',
+				'editor_style'    => 'kadence-blocks-info-box',
 			)
 		);
 		register_block_type(
 			'kadence/icon',
 			array(
 				'render_callback' => array( $this, 'render_icon_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-icon',
+				'editor_style'    => 'kadence-blocks-icon',
 			)
 		);
 		register_block_type(
 			'kadence/accordion',
 			array(
 				'render_callback' => array( $this, 'render_accordion_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-accordion',
+				'editor_style'    => 'kadence-blocks-accordion',
 			)
 		);
 		register_block_type(
 			'kadence/image',
 			array(
 				'render_callback' => array( $this, 'render_image_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-image',
+				'editor_style'    => 'kadence-blocks-image',
 			)
 		);
 		register_block_type(
 			'kadence/googlemaps',
 			array(
 				'render_callback' => array( $this, 'render_google_maps_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-google-maps',
+				'editor_style'    => 'kadence-blocks-google-maps',
 			)
 		);
 		register_block_type(
 			'kadence/iconlist',
 			array(
 				'render_callback' => array( $this, 'render_iconlist_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-icon-list',
+				'editor_style'    => 'kadence-blocks-icon-list',
 			)
 		);
 		register_block_type(
 			'kadence/lottie',
 			array(
 				'render_callback' => array( $this, 'render_lottie_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-lottie',
+				'editor_style'    => 'kadence-blocks-lottie',
 			)
 		);
 		register_block_type(
 			'kadence/show-more',
 			array(
 				'render_callback' => array( $this, 'render_showmore_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-show-more',
+				'editor_style'    => 'kadence-blocks-show-more',
 			)
 		);
 		register_block_type(
 			'kadence/testimonials',
 			array(
 				'render_callback' => array( $this, 'render_testimonials_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-testimonials',
+				'editor_style'    => 'kadence-blocks-testimonials',
 			)
 		);
 		register_block_type(
 			'kadence/advancedgallery',
 			array(
 				'render_callback' => array( $this, 'render_advancedgallery_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-advanced-gallery',
+				'editor_style'    => 'kadence-blocks-advanced-gallery',
 			)
 		);
 		register_block_type(
 			'kadence/form',
 			array(
 				'render_callback' => array( $this, 'render_form_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-form',
+				'editor_style'    => 'kadence-blocks-form',
 			)
 		);
 		register_block_type(
 			'kadence/countup',
 			array(
 				'render_callback' => array( $this, 'render_countup_css' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-count-up',
+				'editor_style'    => 'kadence-blocks-count-up',
 			)
 		);
 		add_filter( 'excerpt_allowed_blocks', array( $this, 'add_blocks_to_excerpt' ), 20 );

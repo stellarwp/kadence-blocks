@@ -226,8 +226,8 @@ class Kadence_Blocks_Table_Of_Contents {
 			'kadence/tableofcontents',
 			array(
 				'render_callback' => array( $this, 'render_table_of_content' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-table-of-contents',
+				'editor_style'    => 'kadence-blocks-table-of-contents',
 			)
 		);
 	}

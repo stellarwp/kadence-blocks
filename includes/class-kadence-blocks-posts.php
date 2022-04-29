@@ -243,8 +243,8 @@ class Kadence_Blocks_Posts {
 			'kadence/posts',
 			array(
 				'render_callback' => array( $this, 'render_posts' ),
-				'editor_script'   => 'kadence-blocks-js',
-				'editor_style'    => 'kadence-blocks-editor-css',
+				'editor_script'   => 'kadence-blocks-posts',
+				'editor_style'    => 'kadence-blocks-posts',
 			)
 		);
 	}

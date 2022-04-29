@@ -53,7 +53,6 @@ import ContainerDimensions from 'react-container-dimensions';
 /**
  * Import Kadence Components
  */
-import { KadenceColorOutput } from '@kadence/helpers';
 import { PopColorControl, SmallResponsiveControl, ResponsiveControl, KadenceRange, MeasurementControls, ResponsiveRangeControls, KadencePanelBody, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 
