@@ -4,6 +4,7 @@ const StyleOnlyEntryPlugin = require( './src/config/style-only-entry-plugin' );
 const EXTERNAL_NAME = 'kadence';
 const HANDLE_NAME = 'kadence';
 const PROJECT_NAMESPACE = '@kadence/';
+const path = require( 'path' );
 
 function camelCaseDash(string) {
 	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -52,7 +53,7 @@ module.exports = {
 				if (request.endsWith('.css')) {
 					return false;
 				}
-		
+
 				if (request.startsWith(PROJECT_NAMESPACE)) {
 					return [
 						EXTERNAL_NAME,
@@ -71,11 +72,11 @@ module.exports = {
 			},
 		}),
 	],
-	// resolve: {
-	// 	alias: {
-	// 		'@kadence/icons': path.resolve( __dirname, './src/packages/icons/src/index.js' ),
-	// 		'@kadence/components': path.resolve( __dirname, './src/packages/components/src/index.js' ),
-	// 		'@kadence/helpers': path.resolve( __dirname, './src/packages/helpers/src/index.js' ),
-	// 	},
-	// },
+	resolve: {
+		alias: {
+			'@kadence/icons': path.resolve( __dirname, './src/packages/icons/src/index.js' ),
+			'@kadence/components': path.resolve( __dirname, './src/packages/components/src/index.js' ),
+			'@kadence/helpers': path.resolve( __dirname, './src/packages/helpers/src/index.js' ),
+		},
+	},
 };
