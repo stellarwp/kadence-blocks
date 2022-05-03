@@ -5,7 +5,7 @@
 /**
  * Import Icon stuff
  */
-import times from 'lodash/times';
+import { times } from 'lodash';
 import { KadenceColorOutput } from '@kadence/helpers';
 import { IconRender } from '@kadence/components';
 

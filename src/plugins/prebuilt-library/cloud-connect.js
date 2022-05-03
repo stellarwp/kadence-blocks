@@ -34,8 +34,7 @@ const {
 } = wp.hooks;
 import { compose } from '@wordpress/compose';
 import { __, sprintf } from '@wordpress/i18n';
-import map from 'lodash/map';
-import debounce from 'lodash/debounce';
+import { debounce, map } from 'lodash';
 import LazyLoad from 'react-lazy-load';
 
 /**

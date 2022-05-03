@@ -1,5 +1,5 @@
 import {createReduxStore, register, createRegistrySelector, createRegistryControl} from '@wordpress/data';
-import get from 'lodash/get';
+import { get } from 'lodash';
 
 const DEFAULT_STATE = {
 	previewDevice: 'Desktop',

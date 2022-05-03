@@ -5,7 +5,7 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-css";
 import 'ace-builds/src-noconflict/snippets/css';
 import "ace-builds/src-noconflict/theme-textmate";
-import assign from 'lodash/assign';
+import { assign } from 'lodash';
  /**
  * Import WordPress Internals
  */

@@ -1,5 +1,5 @@
 
-import map from 'lodash/map';
+import { map } from 'lodash';
 
 import { PluginSidebar, PluginSidebarMoreMenuItem } from '@wordpress/edit-post';
 import { __ } from '@wordpress/i18n';

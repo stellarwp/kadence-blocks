@@ -16,8 +16,7 @@ import { useState, useRef, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
 const { rest_url } = kadence_blocks_params;
-import get from 'lodash/get';
-import has from 'lodash/has';
+import { has, get } from 'lodash';
 
 const {
 	InspectorControls,

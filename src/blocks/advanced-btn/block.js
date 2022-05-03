@@ -5,7 +5,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import times from 'lodash/times';
+import { times } from 'lodash';
 
 /**
  * Internal libraries

@@ -1,4 +1,4 @@
-import map from 'lodash/map';
+import { map } from 'lodash';
 import { PopColorControl, MeasurementControls} from '@kadence/components';
 /**
  * Internal block libraries

@@ -9,7 +9,7 @@
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import map from 'lodash/map';
+import { map } from 'lodash';
 import MeasurementControls from '../measurement-control';
 import { capitalizeFirstLetter } from '@kadence/helpers'
 import {
@@ -23,30 +23,30 @@ import {
  * @returns {object} Measure settings.
  */
 export default function ResponsiveMeasurementControls( {
-														   label,
-														   subLabel,
-														   onChange,
-														   onChangeTablet,
-														   onChangeMobile,
-														   mobileValue,
-														   tabletValue,
-														   value,
-														   onChangeMobileControl,
-														   mobileControl,
-														   onChangeTabletControl,
-														   tabletControl,
-														   onChangeControl,
-														   control,
-														   step = 1,
-														   max = 100,
-														   min = 0,
-														   unit = '',
-														   onUnit,
-														   showUnit = false,
-														   units = [ 'px', 'em', 'rem' ],
-														   allowEmpty = true,
-														   preset = '',
-													   } ) {
+		label,
+		subLabel,
+		onChange,
+		onChangeTablet,
+		onChangeMobile,
+		mobileValue,
+		tabletValue,
+		value,
+		onChangeMobileControl,
+		mobileControl,
+		onChangeTabletControl,
+		tabletControl,
+		onChangeControl,
+		control,
+		step = 1,
+		max = 100,
+		min = 0,
+		unit = '',
+		onUnit,
+		showUnit = false,
+		units = [ 'px', 'em', 'rem' ],
+		allowEmpty = true,
+		preset = '',
+	} ) {
 	const realMobileControl = mobileControl ? mobileControl : control;
 	const realTabletControl = tabletControl ? tabletControl : control;
 	const realOnChangeTabletControl = onChangeTabletControl ? onChangeTabletControl : onChangeControl;

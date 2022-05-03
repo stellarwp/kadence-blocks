@@ -6,10 +6,7 @@
 /**
  * Import Icons
  */
-import get from 'lodash/get';
-import map from 'lodash/map';
-import isEmpty from 'lodash/isEmpty';
-import compact from 'lodash/compact';
+import { isEmpty, compact, get, map } from 'lodash';
 import Select from 'react-select';
 /**
  * Internal block libraries

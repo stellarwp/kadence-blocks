@@ -3,11 +3,7 @@
  *
  */
 import classnames from 'classnames';
-import every from 'lodash/every';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
-import noop from 'lodash/noop';
-import startsWith from 'lodash/startsWith';
+import { every, get, isArray, noop, startsWith } from 'lodash';
 
 import { keyboardReturn } from '@wordpress/icons';
 import { Component, Fragment } from '@wordpress/element';

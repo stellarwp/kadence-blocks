@@ -6,8 +6,7 @@
 /**
  * Internal dependencies
  */
-
-import uniqueId from 'lodash/uniqueId';
+import { uniqueId } from 'lodash';
 import classnames from 'classnames';
 import { PopColorControl, TextShadowControl, TypographyControls, InlineTypographyControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange, KadencePanelBody, URLInputControl, WebfontLoader, HeadingLevelIcon, InlinePopColorControl, ResponsiveAlignControls } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';

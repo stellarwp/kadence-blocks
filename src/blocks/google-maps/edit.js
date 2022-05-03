@@ -15,7 +15,6 @@ import { store as noticesStore } from '@wordpress/notices';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
 import { useBlockProps } from '@wordpress/block-editor';
-import has from 'lodash/has';
 
 const {
 	InspectorControls,
@@ -36,7 +35,7 @@ const {
  * Internal dependencies
  */
 import classnames from 'classnames';
-import isEmpty from 'lodash/isEmpty';
+import { isEmpty, has } from 'lodash';
 import EditJsMap from './editJsMap';
 import { ResponsiveAlignControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange } from '@kadence/components';
 

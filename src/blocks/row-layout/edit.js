@@ -42,10 +42,7 @@ import {
  * Import External
  */
 import Select from 'react-select';
-import times from 'lodash/times';
-import dropRight from 'lodash/dropRight';
-import debounce from 'lodash/debounce';
-import map from 'lodash/map';
+import { times, dropRight, debounce, map } from 'lodash';
 import classnames from 'classnames';
 import memoize from 'memize';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';

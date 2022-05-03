@@ -2,7 +2,7 @@
  * Move Icon List Items Component
  *
  */
-import flow from 'lodash/flow';
+import { flow } from 'lodash';
 import { __ } from '@wordpress/i18n';
 const {
 	Component,

@@ -1,9 +1,9 @@
 /* global kadence_blocks_params */
 import { TypographyControls } from '@kadence/components';
 import MeasurementControls from '../../measurement-control';
-import map from 'lodash/map';
+import { map } from 'lodash';
 import AdvancedColorControl from '../../advanced-color-control';
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 /**
  * Internal block libraries
  */

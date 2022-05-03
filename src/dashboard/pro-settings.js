@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 const { Fragment, Component } = wp.element;
-import map from 'lodash/map';
+import { map } from 'lodash';
 const {
 	Spinner,
 	ToggleControl,

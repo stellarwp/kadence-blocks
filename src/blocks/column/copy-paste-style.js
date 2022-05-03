@@ -2,7 +2,7 @@
  * Copy and Paste Block Styles Component
  *
  */
-import flow from 'lodash/flow';
+import { flow } from 'lodash';
 import { __ } from '@wordpress/i18n';
 const {
 	Component,

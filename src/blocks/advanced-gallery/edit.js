@@ -1,12 +1,8 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
-import every from 'lodash/every';
-import filter from 'lodash/filter';
-import forEach from 'lodash/forEach';
-import map from 'lodash/map';
-import debounce from 'lodash/debounce';
+import classnames from 'classnames';;
+import { every, filter, forEach, debounce, map } from 'lodash';
 import Masonry from 'react-masonry-component';
 /**
  * Kadence Components.

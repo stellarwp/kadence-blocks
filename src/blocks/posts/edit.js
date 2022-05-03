@@ -7,7 +7,7 @@
 /**
  * Import External
  */
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 import classnames from 'classnames';
 import Select from 'react-select';
 import getQuery from './get-query';

@@ -1,8 +1,7 @@
 /**
  * External dependencies
  */
-import get from 'lodash/get';
-import pick from 'lodash/pick';
+import { get, pick } from 'lodash';
 
 export const getRelevantMediaFiles = async ( images, lightSize, thumbSize, oldImages = '' ) => {
 	return await Promise.all(

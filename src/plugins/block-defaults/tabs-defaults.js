@@ -17,7 +17,7 @@ const {
 	Tooltip,
 	Modal,
 } = wp.components;
-import map from 'lodash/map';
+import { map } from 'lodash';
 import MeasurementControls from '../../measurement-control';
 import { TypographyControls } from '@kadence/components';
 import {

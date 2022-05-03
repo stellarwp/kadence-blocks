@@ -6,9 +6,8 @@ import { addQueryArgs } from '@wordpress/url';
  /**
   * External dependencies
   */
- import map from 'lodash/map';
- import flatten from 'lodash/flatten';
- import { decodeEntities } from '@wordpress/html-entities'
+ import { flatten, map } from 'lodash';
+ import { decodeEntities } from '@wordpress/html-entities';
  import { __ } from '@wordpress/i18n';
 
  /**

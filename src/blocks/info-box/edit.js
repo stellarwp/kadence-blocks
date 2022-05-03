@@ -24,13 +24,9 @@ import {
 	infoLeftOverlayIcon,
 } from '@kadence/icons';
 
-import map from 'lodash/map';
-import get from 'lodash/get';
-import debounce from 'lodash/debounce';
-import MeasurementControls from '../../measurement-control';
-import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, IconControl, IconRender, URLInputControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl } from '@kadence/components';
+import { debounce, map, get } from 'lodash';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, IconControl, IconRender, URLInputControl, WebfontLoader, KadenceImageControl, KadenceMediaPlaceholder, ImageSizeControl, MeasurementControls, ResponsiveRangeControl } from '@kadence/components';
 import InfoBoxStyleCopyPaste from './copy-paste-style';
-import ResponsiveRangeControl from '../../responsive-range-control';
 import { KadenceColorOutput } from '@kadence/helpers';
 
 /**

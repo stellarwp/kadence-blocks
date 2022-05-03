@@ -26,8 +26,7 @@ import {
  * Import External
  */
 import Slider from 'react-slick';
-import map from 'lodash/map';
-import times from 'lodash/times';
+import { times, map } from 'lodash';
 /**
  * Import Components
  */

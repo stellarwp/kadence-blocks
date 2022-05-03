@@ -13,7 +13,7 @@ const {
  * External dependencies
  */
 import Masonry from 'react-masonry-css'
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 import LazyLoad from 'react-lazy-load';
 /**
  * WordPress dependencies

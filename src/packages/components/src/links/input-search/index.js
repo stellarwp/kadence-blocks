@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
- import debounce from 'lodash/debounce';
+ import { debounce } from 'lodash';
  import classnames from 'classnames';
  import { keyboardReturn, cancelCircleFilled, edit, chevronDown, globe } from '@wordpress/icons';
  /**

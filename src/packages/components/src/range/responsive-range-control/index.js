@@ -8,8 +8,7 @@
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import map from 'lodash/map';
-import isEqual from 'lodash/isEqual';
+import { map, isEqual } from 'lodash';
 import { undo } from '@wordpress/icons';
 import { capitalizeFirstLetter } from '@kadence/helpers'
 import ResponsiveSingleRangeControl from '../single-range-control';

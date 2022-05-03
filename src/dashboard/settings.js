@@ -3,7 +3,7 @@
  */
 import { __ } from '@wordpress/i18n';
 const { Fragment } = wp.element;
-import map from 'lodash/map';
+import { map } from 'lodash';
 const { withFilters, TabPanel, Panel, PanelBody, PanelRow, Button } = wp.components;
 
 export const BlocksList = () => {

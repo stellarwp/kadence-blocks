@@ -1,4 +1,4 @@
-import map from 'lodash/map';
+import { map } from 'lodash';
 import { PopColorControl, TypographyControls, HeadingLevelIcon } from '@kadence/components';
 
 /**

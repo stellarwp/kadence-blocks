@@ -24,8 +24,7 @@ import './editor-components.scss';
 /**
  * Import External
  */
-import map from 'lodash/map';
-import isEqual from 'lodash/isEqual';
+import { isEqual, map } from 'lodash';
 import { KadenceRange } from '@kadence/components';
 import { getUnitIcon } from '@kadence/helpers';
 import { undo } from '@wordpress/icons';

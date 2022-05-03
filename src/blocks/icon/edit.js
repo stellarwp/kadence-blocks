@@ -15,10 +15,9 @@ import {
 } from '@kadence/icons';
 
 /**
- * Import Icon stuff
+ * Import externals
  */
-import times from 'lodash/times';
-import map from 'lodash/map';
+import { times, map } from 'lodash';
 import { PopColorControl, StepControls, IconControl, IconRender, KadencePanelBody, URLInputControl, VerticalAlignmentIcon } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 

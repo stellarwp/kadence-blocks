@@ -5,8 +5,7 @@
 /**
  * Import External
  */
-import get from 'lodash/get';
-import map from 'lodash/map';
+import { get, map } from 'lodash';
 import classnames from 'classnames';
 
 /**

@@ -8,8 +8,7 @@
  */
 import { opacityIcon } from '@kadence/icons';
 import { hexToRGBA } from '@kadence/helpers';
-import get from 'lodash/get';
-import map from 'lodash/map';
+import { get, map } from 'lodash';
 /**
  * Internal block libraries
  */

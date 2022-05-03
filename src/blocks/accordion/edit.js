@@ -24,10 +24,10 @@ import {
 /**
  * Import External
  */
-import times from 'lodash/times';
 import classnames from 'classnames';
 import memoize from 'memize';
-import map from 'lodash/map';
+import { times, map } from 'lodash';
+
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import { PopColorControl, BorderColorControls, TypographyControls, ResponsiveMeasurementControls, MeasurementControls, KadenceRange, KadencePanelBody, WebfontLoader } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';

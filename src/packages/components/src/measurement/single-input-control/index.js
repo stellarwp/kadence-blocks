@@ -6,7 +6,7 @@
 /**
  * Import External
  */
-import map from 'lodash/map';
+import { map } from 'lodash';
 import KadenceRange from '../../range/range-control';
 
 /**

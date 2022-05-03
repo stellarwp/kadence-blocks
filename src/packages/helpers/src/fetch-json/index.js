@@ -1,4 +1,4 @@
-import _zipObject from 'lodash/zipObject';
+import { zipObject } from 'lodash';
 import apiFetch from '@wordpress/api-fetch';
 
 /**
@@ -16,7 +16,7 @@ export default ( args, headerKeys = [ 'x-wp-totalpages' ] ) => {
 			parse: false,
 		} ).then( response => Promise.all( [
 			response.json ? response.json() : [],
-			_zipObject( headerKeys, headerKeys.map( key => response.headers.get( key ) ) ),
+			zipObject( headerKeys, headerKeys.map( key => response.headers.get( key ) ) ),
 		] ) ).then( data => (
 			resolve( data )
 		) ).catch( () => {} );

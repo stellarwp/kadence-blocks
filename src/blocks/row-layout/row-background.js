@@ -2,7 +2,7 @@
  * BLOCK Section: Kadence Row / Layout Background
  */
 
- import times from 'lodash/times';
+ import { times } from 'lodash';
  import Slider from 'react-slick';
  import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 

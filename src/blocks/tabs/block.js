@@ -20,7 +20,7 @@ import { blockTabsIcon } from '@kadence/icons';
  */
 import attributes from './attributes';
 import classnames from 'classnames';
-import times from 'lodash/times';
+import { times } from 'lodash';
 import { IconRender } from '@kadence/components';
 const {
 	Fragment,

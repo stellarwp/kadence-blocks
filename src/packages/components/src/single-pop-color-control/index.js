@@ -10,8 +10,7 @@ import ColorPicker from '../color-picker';
 import ColorIcons from '../color-icons';
 import { hexToRGBA } from '@kadence/helpers';
 
-import get from 'lodash/get';
-import map from 'lodash/map';
+import { get, map } from 'lodash';
 import { useSetting } from '@wordpress/block-editor';
 
 /**

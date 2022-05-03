@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types';
 
-import _uniqBy from 'lodash/uniqBy';
+import { uniqBy } from 'lodash';
 import Select from 'react-select';
 import { fetchJson } from '@kadence/helpers';
 
@@ -47,7 +47,7 @@ class KadenceSelectTerms extends Component {
 			path: addQueryArgs( `${ restBase }/`, query ),
 			signal: this.fetchPostAbortController.signal,
 		} ).then( ( [ terms, headers ] ) => {
-			const newOptions = _uniqBy( [ ...options, ...terms.map( term => ( {
+			const newOptions = uniqBy( [ ...options, ...terms.map( term => ( {
 				value: term.id,
 				label: term.name,
 			} ) ) ], 'value' );

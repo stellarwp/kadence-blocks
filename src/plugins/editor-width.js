@@ -1,5 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import map from 'lodash/map';
+import { map } from 'lodash';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 

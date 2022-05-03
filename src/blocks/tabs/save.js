@@ -2,7 +2,7 @@
  * BLOCK: Kadence Tabs
  */
 import classnames from 'classnames';
-import times from 'lodash/times';
+import { times } from 'lodash';
 import { IconRender } from '@kadence/components';
 const {
 	Component,

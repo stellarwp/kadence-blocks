@@ -17,7 +17,8 @@ import { ResponsiveRangeControls, ResponsiveMeasurementControls } from '@kadence
 
 import { createElement } from '@wordpress/element'
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
-import uniqueId from 'lodash/uniqueId'
+import { uniqueId } from 'lodash';
+
 const { InspectorControls } = wp.blockEditor
 const { PanelBody, ToggleControl, RangeControl } = wp.components
 import { useEffect, useRef, useState } from '@wordpress/element';

@@ -8,20 +8,14 @@
 import { alignTopIcon, alignMiddleIcon, alignBottomIcon } from '@kadence/icons';
 
 /**
- * Import Icon stuff
+ * Import Externals
  */
-import times from 'lodash/times';
-import MeasurementControls from '../../measurement-control';
-import { WebfontLoader } from '@kadence/components';
-import map from 'lodash/map';
-import debounce from 'lodash/debounce';
-import filter from 'lodash/filter';
-import get from 'lodash/get';
+import { times, filter, debounce, map, get } from 'lodash';
 /**
  * Import Kadence Components
  */
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, StepControls, TypographyControls, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl } from '@kadence/components';
+import { WebfontLoader, PopColorControl, StepControls, TypographyControls, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl, MeasurementControls } from '@kadence/components';
 
 /**
  * Import Css

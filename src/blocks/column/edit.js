@@ -20,8 +20,7 @@ import {
  * Import Controls
  */
 import classnames from 'classnames';
-import debounce from 'lodash/debounce';
-import uniqueId from 'lodash/uniqueId';
+import { debounce, uniqueId } from 'lodash';
 /**
  * Kadence Components.
  */

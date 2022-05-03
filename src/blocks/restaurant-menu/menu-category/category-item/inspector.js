@@ -5,7 +5,7 @@
 /**
  * External dependencies
  */
-import map from 'lodash/map';
+ import { map } from 'lodash';
 
 /**
  * Internal dependencies

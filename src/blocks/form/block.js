@@ -9,7 +9,7 @@ import classnames from 'classnames';
  * Import Icons
  */
 import { formBlockIcon } from '@kadence/icons';
-import times from 'lodash/times';
+import { times } from 'lodash';
 /**
  * Import edit
  */

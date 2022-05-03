@@ -9,7 +9,7 @@
  * Import Icons
  */
 import { testimonialBlockIcon } from '@kadence/icons';
-import times from 'lodash/times';
+import { times } from 'lodash';
 import { IconRender } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 /**

@@ -1,7 +1,4 @@
-import get from 'lodash/get';
-import map from 'lodash/map';
-import uniqueId from 'lodash/uniqueId';
-import findIndex from 'lodash/findIndex';
+import { map, get, uniqueId, findIndex } from 'lodash';
 import { AdvancedColorControlPalette } from '@kadence/components';
 const {
 	Component,

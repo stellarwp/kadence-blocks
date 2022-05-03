@@ -8,8 +8,7 @@
  */
 import ColorPicker from '../color-picker';
 import { hexToRGBA } from '@kadence/helpers';
-import get from 'lodash/get';
-import map from 'lodash/map';
+import { map, get } from 'lodash';
 
 /**
  * Internal block libraries

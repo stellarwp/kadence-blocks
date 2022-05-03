@@ -7,14 +7,11 @@
 /**
  * Import External
  */
-import map from 'lodash/map';
-import isEqual from 'lodash/isEqual';
+import { isEqual, map } from 'lodash';
 import classnames from 'classnames';
-import MeasurementControls from '../../measurement-control';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, WebfontLoader, BoxShadowControl } from '@kadence/components';
-import ResponsiveRangeControl from '../../responsive-range-control';
+import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, MeasurementControls, KadenceRange, WebfontLoader, BoxShadowControl, ResponsiveRangeControl } from '@kadence/components';
 
 
 /**

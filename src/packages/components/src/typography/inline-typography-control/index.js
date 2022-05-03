@@ -13,7 +13,7 @@
 //import fonts from './fonts';
 import { capitalizeFirstLetter } from '@kadence/helpers'
 import Select from 'react-select';
-import map from 'lodash/map';
+import { map } from 'lodash';
 
 import { applyFilters } from '@wordpress/hooks';
 

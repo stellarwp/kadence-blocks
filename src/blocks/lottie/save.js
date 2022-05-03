@@ -7,8 +7,7 @@ const { rest_url } = kadence_blocks_params;
  * External dependencies
  */
 import classnames from 'classnames';
-import get from 'lodash/get';
-
+import { get } from 'lodash';
 
 function Save( { attributes } ) {
 	const { uniqueID } = attributes;

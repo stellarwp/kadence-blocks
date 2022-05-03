@@ -24,14 +24,11 @@ import {
 /**
  * Import External
  */
-import times from 'lodash/times';
-import map from 'lodash/map';
 import classnames from 'classnames';
 import memoize from 'memize';
-import MeasurementControls from '../../measurement-control';
-import filter from 'lodash/filter';
+import { times, filter, map } from 'lodash';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, TypographyControls, WebfontLoader, IconControl, IconRender, KadencePanelBody } from '@kadence/components';
+import { PopColorControl, TypographyControls, WebfontLoader, IconControl, IconRender, KadencePanelBody, MeasurementControls } from '@kadence/components';
 /**
  * Import Css
  */

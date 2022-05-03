@@ -3,14 +3,11 @@
  *
  * Editor for Advanced Btn
  */
-import times from 'lodash/times';
-import map from 'lodash/map';
 import { KadenceColorOutput } from '@kadence/helpers';
 import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, SmallResponsiveControl, ResponsiveRangeControls, IconRender, IconControl, KadencePanelBody, URLInputControl, URLInputInline, ResponsiveAlignControls, WebfontLoader, BoxShadowControl, DynamicTextControl } from '@kadence/components';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
-import flow from 'lodash/flow';
-import filter from 'lodash/filter';
+import { times, flow, filter, map } from 'lodash';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',

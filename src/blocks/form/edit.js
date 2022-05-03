@@ -4,18 +4,12 @@
  * Registering a basic block with Gutenberg.
  */
 
- /**
- * Import External
- */
-import map from 'lodash/map';
 
 /**
  * Import External
  */
 import classnames from 'classnames';
-import times from 'lodash/times';
-import filter from 'lodash/filter';
-import debounce from 'lodash/debounce';
+import { times, filter, debounce, map } from 'lodash';
 import MeasurementControls from '../../measurement-control';
 import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadencePanelBody, ResponsiveRangeControls, URLInputControl, WebfontLoader, BoxShadowControl } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';

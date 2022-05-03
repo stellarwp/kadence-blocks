@@ -1,7 +1,7 @@
 /**
  * Video Pop
  */
-jQuery( document ).ready( function( $ ) {
+ jQuery(function( $ ) {
 	$( '.ktblocksvideopop' ).magnificPopup( {
 		type: 'iframe',
 		mainClass: 'mfp-kt-blocks',

@@ -8,7 +8,7 @@ import PopColorControl from '../../pop-color-control';
 /**
  * Import External
  */
-import map from 'lodash/map';
+import { map } from 'lodash';
 
 /**
  * Internal block libraries

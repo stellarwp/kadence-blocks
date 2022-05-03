@@ -11,7 +11,7 @@ import './editor.scss';
 /**
  * Import External
  */
-import isEqual from 'lodash/isEqual';
+import { isEqual } from 'lodash';
 import MeasurementSingleControl from '../single-input-control';
 import KadenceRange from '../measurement-control';
 import { undo } from '@wordpress/icons';

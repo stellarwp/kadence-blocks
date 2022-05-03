@@ -1,5 +1,5 @@
 import MeasurementControls from '../../measurement-control';
-import map from 'lodash/map';
+import { map } from 'lodash';
 import { OpacityControl } from '@kadence/components';
 import { hexToRGBA } from '@kadence/helpers';
 import { IconControl, TypographyControls } from '@wordpress/components';

@@ -5,7 +5,7 @@
 /**
  * External dependencies
  */
-import debounce from 'lodash/debounce';
+ import { debounce } from 'lodash';
 import LazyLoad from 'react-lazy-load';
 
 /**
