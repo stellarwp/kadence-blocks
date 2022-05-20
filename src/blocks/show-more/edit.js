@@ -13,15 +13,18 @@ import './editor.scss'
 import { __ } from '@wordpress/i18n'
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
-import { ResponsiveRangeControls, ResponsiveMeasurementControls } from '@kadence/components';
+import { PanelBody, ToggleControl, RangeControl } from '@wordpress/components';
+import {
+	ResponsiveRangeControls,
+	ResponsiveMeasurementControls,
+	InspectorControlTabs
+} from '@kadence/components';
 
 import { createElement } from '@wordpress/element'
-import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
+import { InnerBlocks, InspectorControls, useBlockProps } from '@wordpress/block-editor';
+import { useEffect, useRef, useState } from '@wordpress/element';
 import { uniqueId } from 'lodash';
 
-const { InspectorControls } = wp.blockEditor
-const { PanelBody, ToggleControl, RangeControl } = wp.components
-import { useEffect, useRef, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
@@ -82,6 +85,7 @@ export function Edit ({
 
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -145,112 +149,131 @@ export function Edit ({
 	return (
 		<Fragment>
 			<InspectorControls>
-				<PanelBody
-					title={ __('Show More Settings', 'kadence-blocks') }
-					initialOpen={ true }
-				>
-					<ToggleControl
-						label={ __( 'Display "hide" button once expanded', 'kadence-blocks' ) }
-						checked={ showHideMore }
-						onChange={ ( value ) => setAttributes( { showHideMore: value } ) }
-					/>
 
-					<ResponsiveRangeControls
-						label={ __( 'Maximum Preview Height', 'kadence-blocks' ) }
-						value={ heightDesktop ? heightDesktop : '' }
-						onChange={ value => {
-							setAttributes( { heightDesktop: value } );
-						} }
-						tabletValue={ ( undefined !== heightTablet && undefined !== heightTablet[ 0 ] ? heightTablet[ 0 ] : '' ) }
-						onChangeTablet={ ( value ) => {
-							setAttributes( { heightTablet: value } );
-						} }
-						mobileValue={ ( undefined !== heightMobile && undefined !== heightMobile[ 1 ] ? heightMobile[ 1 ] : '' ) }
-						onChangeMobile={ ( value ) => {
-							setAttributes( { heightMobile: value } );
-						} }
-						min={ 0 }
-						max={ ( ( heightType ? heightType : 'px' ) !== 'px' ? 10 : 2000 ) }
-						step={ ( ( heightType ? heightType : 'px' ) !== 'px' ? 0.1 : 1 ) }
-						unit={ heightType ? heightType : 'px' }
-						onUnit={ ( value ) => {
-							setAttributes( { heightType: value } );
-						} }
-						units={ [ 'px', 'em', 'rem' ] }
-					/>
+				<InspectorControlTabs
+					panelName={ 'lottie' }
+					setActiveTab={ setActiveTab }
+					activeTab={ activeTab }
+				/>
 
-					<ToggleControl label={ __('Fade out preview', 'kadence-blocks') }
-								   checked={ enableFadeOut }
-								   onChange={ (value) => setAttributes( { enableFadeOut: value } ) } />
+				{( activeTab === 'general' ) &&
+					<>
+						<PanelBody
+							title={__( 'Show More Settings', 'kadence-blocks' )}
+							initialOpen={true}
+						>
+							<ToggleControl
+								label={__( 'Display "hide" button once expanded', 'kadence-blocks' )}
+								checked={showHideMore}
+								onChange={( value ) => setAttributes( { showHideMore: value } )}
+							/>
 
-					{ enableFadeOut && (
-						<RangeControl label={ __( 'Fade Size', 'kadence-blocks') }
-									  value={ fadeOutSize }
-									  onChange={ (value) => setAttributes( { fadeOutSize: value } ) } />
-					)}
+							<ResponsiveRangeControls
+								label={__( 'Maximum Preview Height', 'kadence-blocks' )}
+								value={heightDesktop ? heightDesktop : ''}
+								onChange={value => {
+									setAttributes( { heightDesktop: value } );
+								}}
+								tabletValue={( undefined !== heightTablet && undefined !== heightTablet[ 0 ] ? heightTablet[ 0 ] : '' )}
+								onChangeTablet={( value ) => {
+									setAttributes( { heightTablet: value } );
+								}}
+								mobileValue={( undefined !== heightMobile && undefined !== heightMobile[ 1 ] ? heightMobile[ 1 ] : '' )}
+								onChangeMobile={( value ) => {
+									setAttributes( { heightMobile: value } );
+								}}
+								min={0}
+								max={( ( heightType ? heightType : 'px' ) !== 'px' ? 10 : 2000 )}
+								step={( ( heightType ? heightType : 'px' ) !== 'px' ? 0.1 : 1 )}
+								unit={heightType ? heightType : 'px'}
+								onUnit={( value ) => {
+									setAttributes( { heightType: value } );
+								}}
+								units={[ 'px', 'em', 'rem' ]}
+							/>
 
-				</PanelBody>
-				<PanelBody
-					title={ __('Spacing Settings', 'kadence-blocks') }
-					initialOpen={ false }
-				>
-					<ResponsiveMeasurementControls
-						label={ __( 'Padding', 'kadence-blocks' ) }
-						value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
-						control={ paddingControl }
-						tabletValue={ paddingTablet }
-						mobileValue={ paddingMobile }
-						onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
-						onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
-						onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
-						onChangeControl={ ( value ) => setPaddingControl( value ) }
-						min={ 0 }
-						max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
-						step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-						unit={ paddingUnit }
-						units={ [ 'px', 'em', 'rem', '%' ] }
-						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
-					/>
-					<ResponsiveMeasurementControls
-						label={ __( 'Margin', 'kadence-blocks' ) }
-						value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
-						control={ marginControl }
-						tabletValue={ marginTablet }
-						mobileValue={ marginMobile }
-						onChange={ ( value ) => {
-							setAttributes( { marginDesktop: value } );
-						} }
-						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
-						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
-						onChangeControl={ ( value ) => setMarginControl( value ) }
-						min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-						max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
-						step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
-						unit={ marginUnit }
-						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-					/>
-				</PanelBody>
-				<PanelBody
-					title={ __('Expand Settings', 'kadence-blocks') }
-					initialOpen={ false }
-				>
-					<ToggleControl
-						label={ __( 'Default Expanded on Desktop', 'kadence-blocks' ) }
-						checked={ defaultExpandedDesktop }
-						onChange={ ( value ) => setAttributes( { defaultExpandedDesktop: value } ) }
-					/>
-					<ToggleControl
-						label={ __( 'Default Expanded on Tablet', 'kadence-blocks' ) }
-						checked={ defaultExpandedTablet }
-						onChange={ ( value ) => setAttributes( { defaultExpandedTablet: value } ) }
-					/>
-					<ToggleControl
-						label={ __( 'Default Expanded on Mobile', 'kadence-blocks' ) }
-						checked={ defaultExpandedMobile }
-						onChange={ ( value ) => setAttributes( { defaultExpandedMobile: value } ) }
-					/>
-				</PanelBody>
+							<ToggleControl label={__( 'Fade out preview', 'kadence-blocks' )}
+										   checked={enableFadeOut}
+										   onChange={( value ) => setAttributes( { enableFadeOut: value } )}/>
+
+							{enableFadeOut && (
+								<RangeControl label={__( 'Fade Size', 'kadence-blocks' )}
+											  value={fadeOutSize}
+											  onChange={( value ) => setAttributes( { fadeOutSize: value } )}/>
+							)}
+
+						</PanelBody>
+					</>
+				}
+
+				{( activeTab === 'style' ) &&
+					<>
+						<PanelBody
+							title={__( 'Spacing Settings', 'kadence-blocks' )}
+						>
+							<ResponsiveMeasurementControls
+								label={__( 'Padding', 'kadence-blocks' )}
+								value={[ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ]}
+								control={paddingControl}
+								tabletValue={paddingTablet}
+								mobileValue={paddingMobile}
+								onChange={( value ) => setAttributes( { paddingDesktop: value } )}
+								onChangeTablet={( value ) => setAttributes( { paddingTablet: value } )}
+								onChangeMobile={( value ) => setAttributes( { paddingMobile: value } )}
+								onChangeControl={( value ) => setPaddingControl( value )}
+								min={0}
+								max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 )}
+								step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
+								unit={paddingUnit}
+								units={[ 'px', 'em', 'rem', '%' ]}
+								onUnit={( value ) => setAttributes( { paddingUnit: value } )}
+							/>
+							<ResponsiveMeasurementControls
+								label={__( 'Margin', 'kadence-blocks' )}
+								value={[ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ]}
+								control={marginControl}
+								tabletValue={marginTablet}
+								mobileValue={marginMobile}
+								onChange={( value ) => {
+									setAttributes( { marginDesktop: value } );
+								}}
+								onChangeTablet={( value ) => setAttributes( { marginTablet: value } )}
+								onChangeMobile={( value ) => setAttributes( { marginMobile: value } )}
+								onChangeControl={( value ) => setMarginControl( value )}
+								min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
+								max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
+								step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
+								unit={marginUnit}
+								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+								onUnit={( value ) => setAttributes( { marginUnit: value } )}
+							/>
+						</PanelBody>
+					</>
+				}
+
+				{( activeTab === 'advanced' ) &&
+					<>
+						<PanelBody
+							title={__( 'Expand Settings', 'kadence-blocks' )}
+						>
+							<ToggleControl
+								label={__( 'Default Expanded on Desktop', 'kadence-blocks' )}
+								checked={defaultExpandedDesktop}
+								onChange={( value ) => setAttributes( { defaultExpandedDesktop: value } )}
+							/>
+							<ToggleControl
+								label={__( 'Default Expanded on Tablet', 'kadence-blocks' )}
+								checked={defaultExpandedTablet}
+								onChange={( value ) => setAttributes( { defaultExpandedTablet: value } )}
+							/>
+							<ToggleControl
+								label={__( 'Default Expanded on Mobile', 'kadence-blocks' )}
+								checked={defaultExpandedMobile}
+								onChange={( value ) => setAttributes( { defaultExpandedMobile: value } )}
+							/>
+						</PanelBody>
+					</>
+				}
 			</InspectorControls>
 			<FadeOut/>
 			<div {...blockProps}

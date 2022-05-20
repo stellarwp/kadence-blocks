@@ -29,7 +29,7 @@ import {
 } from '@wordpress/block-editor';
 import { useEffect, useState, useRef } from '@wordpress/element';
 import { __, sprintf, isRTL } from '@wordpress/i18n';
-import { createBlock, switchToBlockType } from '@wordpress/blocks';
+import { createBlock } from '@wordpress/blocks';
 import { crop, upload } from '@wordpress/icons';
 import { store as noticesStore } from '@wordpress/notices';
 import { store as coreStore } from '@wordpress/core-data';
@@ -52,7 +52,7 @@ import {
 	TypographyControls,
 	MeasurementControls,
 	ResponsiveMeasurementControls,
-	KadenceRange,
+	ResponsiveRangeControls,
 	KadencePanelBody,
 	URLInputControl,
 	KadenceImageURLInputUI,
