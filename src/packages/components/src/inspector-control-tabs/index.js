@@ -13,6 +13,8 @@ import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { createRef, useEffect } from '@wordpress/element';
 
+import './editor.scss';
+
 function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, openedTab, toggleOpened } ) {
 
 	const defaultTabs = [
@@ -33,7 +35,7 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 		},
 	];
 
-	const tabKeys = [ 'block', 'style', 'advanced' ];
+	const tabKeys = [ 'general', 'style', 'advanced' ];
 	const allowedTabKeys = allowedTabs ? allowedTabs : tabKeys;
 	const tabsContainer = createRef();
 
