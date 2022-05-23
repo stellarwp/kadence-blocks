@@ -40,7 +40,12 @@ import { __experimentalNumberControl as NumberControl } from '@wordpress/compone
  * Internal dependencies
  */
 import classnames from 'classnames';
-import { KadenceSelectPosts, ResponsiveMeasurementControls, KadencePanelBody, InspectorControlTabs } from '@kadence/components'
+import {
+	KadenceSelectPosts,
+	ResponsiveMeasurementControls,
+	KadencePanelBody,
+	InspectorControlTabs
+} from '@kadence/components'
 
 const ktlottieUniqueIDs = [];
 
@@ -260,13 +265,11 @@ export function Edit( {
 			</BlockControls>
 			<InspectorControls>
 
-				<InspectorControls>
-					<InspectorControlTabs
-						panelName={ 'lottie' }
-						setActiveTab={ setActiveTab }
-						activeTab={ activeTab }
-					/>
-				</InspectorControls>
+				<InspectorControlTabs
+					panelName={ 'lottie' }
+					setActiveTab={ setActiveTab }
+					activeTab={ activeTab }
+				/>
 
 				{ ( activeTab === 'general' ) &&
 					<>
