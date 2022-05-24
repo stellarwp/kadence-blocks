@@ -20,7 +20,8 @@ import {
 	WebfontLoader,
 	BoxShadowControl,
 	ResponsiveRangeControls,
-	KadencePanelBody
+	KadencePanelBody,
+	InspectorControlTabs
 } from '@kadence/components';
 
 
@@ -97,6 +98,7 @@ class KadenceTableOfContents extends Component {
 			containerMarginControl: 'linked',
 			containerTabletMarginControl: 'linked',
 			containerMobileMarginControl: 'linked',
+			activeTab: '',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
 		};
@@ -375,441 +377,456 @@ class KadenceTableOfContents extends Component {
 			<Fragment>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-					{ this.showSettings( 'container' ) && (
-							<KadencePanelBody
-								title={ __( 'Allowed Headers', 'kadence-blocks' ) }
-								initialOpen={ true }
-								panelName={ 'kb-toc-allowed-headers' }
-							>
-								<ToggleControl
-									label={ 'h1' }
-									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h1 ? allowedHeaders[ 0 ].h1 : true }
-									onChange={ value => saveAllowedHeaders( { h1: value } ) }
-								/>
-								<ToggleControl
-									label={ 'h2' }
-									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h2 ? allowedHeaders[ 0 ].h2 : true }
-									onChange={ value => saveAllowedHeaders( { h2: value } ) }
-								/>
-								<ToggleControl
-									label={ 'h3' }
-									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h3 ? allowedHeaders[ 0 ].h3 : true }
-									onChange={ value => saveAllowedHeaders( { h3: value } ) }
-								/>
-								<ToggleControl
-									label={ 'h4' }
-									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h4 ? allowedHeaders[ 0 ].h4 : true }
-									onChange={ value => saveAllowedHeaders( { h4: value } ) }
-								/>
-								<ToggleControl
-									label={ 'h5' }
-									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h5 ? allowedHeaders[ 0 ].h5 : true }
-									onChange={ value => saveAllowedHeaders( { h5: value } ) }
-								/>
-								<ToggleControl
-									label={ 'h6' }
-									checked={ undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h6 ? allowedHeaders[ 0 ].h6 : true }
-									onChange={ value => saveAllowedHeaders( { h6: value } ) }
-								/>
-							</KadencePanelBody>
-					) }
-					 	{ this.showSettings( 'title' ) && (
-							<KadencePanelBody
-								title={ __( 'Title Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-toc-title-settings' }
-							>
-								<ToggleControl
-									label={ __( 'Enable Title', 'kadence-blocks' ) }
-									checked={ enableTitle }
-									onChange={ value => setAttributes( { enableTitle: value } ) }
-								/>
-								{ enableTitle && (
-									<Fragment>
-										<PopColorControl
-											label={ __( 'Title Color', 'kadence-blocks' ) }
-											value={ ( titleColor ? titleColor : '' ) }
-											default={ '' }
-											onChange={ ( value ) => setAttributes( { titleColor: value } ) }
-										/>
-										<TypographyControls
-											fontSize={ titleSize }
-											onFontSize={ ( value ) => setAttributes( { titleSize: value } ) }
-											fontSizeType={ titleSizeType }
-											onFontSizeType={ ( value ) => setAttributes( { titleSizeType: value } ) }
-											lineHeight={ titleLineHeight }
-											onLineHeight={ ( value ) => setAttributes( { titleLineHeight: value } ) }
-											lineHeightType={ titleLineType }
-											onLineHeightType={ ( value ) => setAttributes( { titleLineType: value } ) }
-											letterSpacing={ titleLetterSpacing }
-											onLetterSpacing={ ( value ) => setAttributes( { titleLetterSpacing: value } ) }
-											fontFamily={ titleTypography }
-											onFontFamily={ ( value ) => setAttributes( { titleTypography: value } ) }
-											onFontChange={ ( select ) => {
-												setAttributes( {
-													titleTypography: select.value,
-													titleGoogleFont: select.google,
-												} );
-											} }
-											googleFont={ titleGoogleFont }
-											onGoogleFont={ ( value ) => setAttributes( { titleGoogleFont: value } ) }
-											loadGoogleFont={ titleLoadGoogleFont }
-											onLoadGoogleFont={ ( value ) => setAttributes( { titleLoadGoogleFont: value } ) }
-											fontVariant={ titleFontVariant }
-											onFontVariant={ ( value ) => setAttributes( { titleFontVariant: value } ) }
-											fontWeight={ titleFontWeight }
-											onFontWeight={ ( value ) => setAttributes( { titleFontWeight: value } ) }
-											fontStyle={ titleFontStyle }
-											onFontStyle={ ( value ) => setAttributes( { titleFontStyle: value } ) }
-											fontSubset={ titleFontSubset }
-											onFontSubset={ ( value ) => setAttributes( { titleFontSubset: value } ) }
-											padding={ titlePadding }
-											onPadding={ ( value ) => setAttributes( { titlePadding: value } ) }
-											paddingControl={ titlePaddingControl }
-											onPaddingControl={ ( value ) => this.setState( { titlePaddingControl: value } ) }
-											textTransform={ titleTextTransform }
-											onTextTransform={ ( value ) => setAttributes( { titleTextTransform: value } ) }
-										/>
-										<MeasurementControls
-											label={ __( 'Title Border Width (px)', 'kadence-blocks' ) }
-											measurement={ titleBorder }
-											control={ titleBorderControl }
-											onChange={ ( value ) => setAttributes( { titleBorder: value } ) }
-											onControl={ ( value ) => this.setState( { titleBorderControl: value } ) }
-											min={ 0 }
-											max={ 100 }
-											step={ 1 }
-										/>
-										<PopColorControl
-											label={ __( 'Title Border Color', 'kadence-blocks' ) }
-											swatchLabel={ __( 'Normal Color', 'kadence-blocks' ) }
-											value={ ( titleBorderColor ? titleBorderColor : '' ) }
-											default={ '' }
-											onChange={ ( value ) => setAttributes( { titleBorderColor: value } ) }
-											swatchLabel2={ __( 'Collapsed Color', 'kadence-blocks' ) }
-											value2={ ( titleCollapseBorderColor ? titleCollapseBorderColor : '' ) }
-											default2={ '' }
-											onChange2={ ( value ) => setAttributes( { titleCollapseBorderColor: value } ) }
-										/>
-									</Fragment>
-								) }
-							</KadencePanelBody>
-						) }
-						{ this.showSettings( 'collapse' ) && (
-							<Fragment>
-								{ enableTitle && (
+
+						<InspectorControlTabs
+							panelName={ 'table-of-contents' }
+							setActiveTab={ ( value ) => this.setState( { activeTab: value } ) }
+							activeTab={ this.state.activeTab }
+						/>
+
+						{( this.state.activeTab === 'general' ) &&
+							<>
+
+								{this.showSettings( 'container' ) && (
 									<KadencePanelBody
-										title={ __( 'Collapsible Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-toc-collapsible-settings' }
+										title={__( 'Allowed Headers', 'kadence-blocks' )}
+										initialOpen={true}
+										panelName={'kb-toc-allowed-headers'}
 									>
 										<ToggleControl
-											label={ __( 'Enable Collapsible Content', 'kadence-blocks' ) }
-											checked={ enableToggle }
-											onChange={ value => setAttributes( { enableToggle: value } ) }
+											label={'h1'}
+											checked={undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h1 ? allowedHeaders[ 0 ].h1 : true}
+											onChange={value => saveAllowedHeaders( { h1: value } )}
 										/>
-										{ enableTitle && (
+										<ToggleControl
+											label={'h2'}
+											checked={undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h2 ? allowedHeaders[ 0 ].h2 : true}
+											onChange={value => saveAllowedHeaders( { h2: value } )}
+										/>
+										<ToggleControl
+											label={'h3'}
+											checked={undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h3 ? allowedHeaders[ 0 ].h3 : true}
+											onChange={value => saveAllowedHeaders( { h3: value } )}
+										/>
+										<ToggleControl
+											label={'h4'}
+											checked={undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h4 ? allowedHeaders[ 0 ].h4 : true}
+											onChange={value => saveAllowedHeaders( { h4: value } )}
+										/>
+										<ToggleControl
+											label={'h5'}
+											checked={undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h5 ? allowedHeaders[ 0 ].h5 : true}
+											onChange={value => saveAllowedHeaders( { h5: value } )}
+										/>
+										<ToggleControl
+											label={'h6'}
+											checked={undefined !== allowedHeaders && undefined !== allowedHeaders[ 0 ] && undefined !== allowedHeaders[ 0 ].h6 ? allowedHeaders[ 0 ].h6 : true}
+											onChange={value => saveAllowedHeaders( { h6: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+								{this.showSettings( 'title' ) && (
+									<KadencePanelBody
+										title={__( 'Title Settings', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-toc-title-settings'}
+									>
+										<ToggleControl
+											label={__( 'Enable Title', 'kadence-blocks' )}
+											checked={enableTitle}
+											onChange={value => setAttributes( { enableTitle: value } )}
+										/>
+										{enableTitle && (
 											<Fragment>
-												<ToggleControl
-													label={ __( 'Start Collapsed', 'kadence-blocks' ) }
-													checked={ startClosed }
-													onChange={ value => setAttributes( { startClosed: value } ) }
+												<PopColorControl
+													label={__( 'Title Color', 'kadence-blocks' )}
+													value={( titleColor ? titleColor : '' )}
+													default={''}
+													onChange={( value ) => setAttributes( { titleColor: value } )}
 												/>
-												<h2>{ __( 'Icon Style', 'kadence-blocks' ) }</h2>
-												<FontIconPicker
-													icons={ [
-														'arrow',
-														'arrowcircle',
-														'basic',
-														'basiccircle',
-														'xclose',
-														'xclosecircle',
-													] }
-													value={ toggleIcon }
-													onChange={ value => setAttributes( { toggleIcon: value } ) }
-													appendTo="body"
-													renderFunc={ renderIconSet }
-													theme="accordion"
-													showSearch={ false }
-													noSelectedPlaceholder={ __( 'Select Icon Set', 'kadence-blocks' ) }
-													isMulti={ false }
+												<TypographyControls
+													fontSize={titleSize}
+													onFontSize={( value ) => setAttributes( { titleSize: value } )}
+													fontSizeType={titleSizeType}
+													onFontSizeType={( value ) => setAttributes( { titleSizeType: value } )}
+													lineHeight={titleLineHeight}
+													onLineHeight={( value ) => setAttributes( { titleLineHeight: value } )}
+													lineHeightType={titleLineType}
+													onLineHeightType={( value ) => setAttributes( { titleLineType: value } )}
+													letterSpacing={titleLetterSpacing}
+													onLetterSpacing={( value ) => setAttributes( { titleLetterSpacing: value } )}
+													fontFamily={titleTypography}
+													onFontFamily={( value ) => setAttributes( { titleTypography: value } )}
+													onFontChange={( select ) => {
+														setAttributes( {
+															titleTypography: select.value,
+															titleGoogleFont: select.google,
+														} );
+													}}
+													googleFont={titleGoogleFont}
+													onGoogleFont={( value ) => setAttributes( { titleGoogleFont: value } )}
+													loadGoogleFont={titleLoadGoogleFont}
+													onLoadGoogleFont={( value ) => setAttributes( { titleLoadGoogleFont: value } )}
+													fontVariant={titleFontVariant}
+													onFontVariant={( value ) => setAttributes( { titleFontVariant: value } )}
+													fontWeight={titleFontWeight}
+													onFontWeight={( value ) => setAttributes( { titleFontWeight: value } )}
+													fontStyle={titleFontStyle}
+													onFontStyle={( value ) => setAttributes( { titleFontStyle: value } )}
+													fontSubset={titleFontSubset}
+													onFontSubset={( value ) => setAttributes( { titleFontSubset: value } )}
+													padding={titlePadding}
+													onPadding={( value ) => setAttributes( { titlePadding: value } )}
+													paddingControl={titlePaddingControl}
+													onPaddingControl={( value ) => this.setState( { titlePaddingControl: value } )}
+													textTransform={titleTextTransform}
+													onTextTransform={( value ) => setAttributes( { titleTextTransform: value } )}
 												/>
-												<ToggleControl
-													label={ __( 'Enable title to toggle as well as icon', 'kadence-blocks' ) }
-													checked={ enableTitleToggle }
-													onChange={ value => setAttributes( { enableTitleToggle: value } ) }
+												<MeasurementControls
+													label={__( 'Title Border Width (px)', 'kadence-blocks' )}
+													measurement={titleBorder}
+													control={titleBorderControl}
+													onChange={( value ) => setAttributes( { titleBorder: value } )}
+													onControl={( value ) => this.setState( { titleBorderControl: value } )}
+													min={0}
+													max={100}
+													step={1}
+												/>
+												<PopColorControl
+													label={__( 'Title Border Color', 'kadence-blocks' )}
+													swatchLabel={__( 'Normal Color', 'kadence-blocks' )}
+													value={( titleBorderColor ? titleBorderColor : '' )}
+													default={''}
+													onChange={( value ) => setAttributes( { titleBorderColor: value } )}
+													swatchLabel2={__( 'Collapsed Color', 'kadence-blocks' )}
+													value2={( titleCollapseBorderColor ? titleCollapseBorderColor : '' )}
+													default2={''}
+													onChange2={( value ) => setAttributes( { titleCollapseBorderColor: value } )}
 												/>
 											</Fragment>
-										) }
+										)}
 									</KadencePanelBody>
-								) }
-							</Fragment>
-						) }
-						{ this.showSettings( 'content' ) && (
-							<KadencePanelBody
-								title={ __( 'List Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-toc-list-settings' }
-							>
-								<ResponsiveRangeControls
-									label={ __( 'List Item Gap', 'kadence-blocks' ) }
-									value={ listGap && listGap[0] ? listGap[0] : '' }
-									mobileValue={ listGap && listGap[2] ? listGap[2] : '' }
-									tabletValue={ listGap && listGap[1] ? listGap[1] : '' }
-									onChange={ ( value ) => setAttributes( { listGap: [ value, ( listGap && listGap[ 1 ] ? listGap[ 1 ] : '' ), ( listGap && listGap[ 2 ] ? listGap[ 2 ] : '' ) ] } ) }
-									onChangeTablet={ ( value ) => setAttributes( { listGap: [ ( listGap && listGap[ 0 ] ? listGap[ 0 ] : '' ), value, ( listGap && listGap[ 2 ] ? listGap[ 2 ] : '' ) ] } ) }
-									onChangeMobile={ ( value ) => setAttributes( { listGap: [ ( listGap && listGap[ 0 ] ? listGap[ 0 ] : '' ), ( listGap && listGap[ 1 ] ? listGap[ 1 ] : '' ), value ] } ) }
-									min={ 0 }
-									max={ 60 }
-									step={ 1 }
-								/>
-								<PopColorControl
-									label={ __( 'List Items Color', 'kadence-blocks' ) }
-									swatchLabel={ __( 'Normal Color', 'kadence-blocks' ) }
-									value={ ( contentColor ? contentColor : '' ) }
-									default={ '' }
-									onChange={ ( value ) => setAttributes( { contentColor: value } ) }
-									swatchLabel2={ __( 'Hover Color', 'kadence-blocks' ) }
-									value2={ ( contentHoverColor ? contentHoverColor : '' ) }
-									default2={ '' }
-									onChange2={ ( value ) => setAttributes( { contentHoverColor: value } ) }
-								/>
-								<SelectControl
-									label={ __( 'List Link Style', 'kadence-blocks' ) }
-									value={ linkStyle }
-									options={ [
-										{ value: 'underline', label: __( 'Underline' ) },
-										{ value: 'underline_hover', label: __( 'Underline on Hover' ) },
-										{ value: 'plain', label: __( 'No underline' ) },
-									] }
-									onChange={ value => setAttributes( { linkStyle: value } ) }
-								/>
-								<TypographyControls
-									fontSize={ contentSize }
-									onFontSize={ ( value ) => setAttributes( { contentSize: value } ) }
-									fontSizeType={ contentSizeType }
-									onFontSizeType={ ( value ) => setAttributes( { contentSizeType: value } ) }
-									lineHeight={ contentLineHeight }
-									onLineHeight={ ( value ) => setAttributes( { contentLineHeight: value } ) }
-									lineHeightType={ contentLineType }
-									onLineHeightType={ ( value ) => setAttributes( { contentLineType: value } ) }
-									letterSpacing={ contentLetterSpacing }
-									onLetterSpacing={ ( value ) => setAttributes( { contentLetterSpacing: value } ) }
-									fontFamily={ contentTypography }
-									onFontFamily={ ( value ) => setAttributes( { contentTypography: value } ) }
-									onFontChange={ ( select ) => {
-										setAttributes( {
-											contentTypography: select.value,
-											contentGoogleFont: select.google,
-										} );
-									} }
-									googleFont={ contentGoogleFont }
-									onGoogleFont={ ( value ) => setAttributes( { contentGoogleFont: value } ) }
-									loadGoogleFont={ contentLoadGoogleFont }
-									onLoadGoogleFont={ ( value ) => setAttributes( { contentLoadGoogleFont: value } ) }
-									fontVariant={ contentFontVariant }
-									onFontVariant={ ( value ) => setAttributes( { contentFontVariant: value } ) }
-									fontWeight={ contentFontWeight }
-									onFontWeight={ ( value ) => setAttributes( { contentFontWeight: value } ) }
-									fontStyle={ contentFontStyle }
-									onFontStyle={ ( value ) => setAttributes( { contentFontStyle: value } ) }
-									fontSubset={ contentFontSubset }
-									onFontSubset={ ( value ) => setAttributes( { contentFontSubset: value } ) }
-									textTransform={ contentTextTransform }
-									onTextTransform={ ( value ) => setAttributes( { contentTextTransform: value } ) }
-								/>
-								<MeasurementControls
-									label={ __( 'List Container Margin', 'kadence-blocks' ) }
-									measurement={ contentMargin }
-									control={ contentMarginControl }
-									onChange={ ( value ) => setAttributes( { contentMargin: value } ) }
-									onControl={ ( value ) => this.setState( { contentMarginControl: value } ) }
-									min={ -100 }
-									max={ 100 }
-									step={ 1 }
-								/>
-							</KadencePanelBody>
-						) }
-						{ this.showSettings( 'container' ) && (
-							<KadencePanelBody
-								title={ __( 'Container Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-toc-container-settings' }
-							>
-								<PopColorControl
-									label={ __( 'Container Background', 'kadence-blocks' ) }
-									value={ ( containerBackground ? containerBackground : '' ) }
-									default={ '' }
-									onChange={ ( value ) => setAttributes( { containerBackground: value } ) }
-								/>
-								<MeasurementControls
-									label={ __( 'Container Padding', 'kadence-blocks' ) }
-									measurement={ containerPadding }
-									control={ containerPaddingControl }
-									onChange={ ( value ) => setAttributes( { containerPadding: value } ) }
-									onControl={ ( value ) => this.setState( { containerPaddingControl: value } ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<PopColorControl
-									label={ __( 'Border Color', 'kadence-blocks' ) }
-									value={ ( containerBorderColor ? containerBorderColor : '' ) }
-									default={ '' }
-									onChange={ ( value ) => setAttributes( { containerBorderColor: value } ) }
-								/>
-								<MeasurementControls
-									label={ __( 'Content Border Width (px)', 'kadence-blocks' ) }
-									measurement={ containerBorder }
-									control={ containerBorderControl }
-									onChange={ ( value ) => setAttributes( { containerBorder: value } ) }
-									onControl={ ( value ) => this.setState( { containerBorderControl: value } ) }
-									min={ 0 }
-									max={ 100 }
-									step={ 1 }
-								/>
-								<MeasurementControls
-									label={ __( 'Border Radius', 'kadence-blocks' ) }
-									measurement={ borderRadius }
-									control={ borderRadiusControl }
-									onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-									onControl={ ( value ) => this.setState( { borderRadiusControl: value } ) }
-									min={ 0 }
-									max={ 200 }
-									step={ 1 }
-									controlTypes={ [
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-									] }
-									firstIcon={ topLeftIcon }
-									secondIcon={ topRightIcon }
-									thirdIcon={ bottomRightIcon }
-									fourthIcon={ bottomLeftIcon }
-								/>
-								<BoxShadowControl
-									label={ __( 'Box Shadow', 'kadence-blocks' ) }
-									enable={ ( undefined !== displayShadow ? displayShadow : false ) }
-									color={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ) }
-									colorDefault={ '#000000' }
-									onArrayChange={ ( color, opacity ) => this.saveShadow( { color: color, opacity: opacity } ) }
-									opacity={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) }
-									hOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) }
-									vOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) }
-									blur={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) }
-									spread={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) }
-									inset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false ) }
-									onEnableChange={ value => {
-										setAttributes( {
-											displayShadow: value,
-										} );
-									} }
-									onColorChange={ value => {
-										this.saveShadow( { color: value } );
-									} }
-									onOpacityChange={ value => {
-										this.saveShadow( { opacity: value } );
-									} }
-									onHOffsetChange={ value => {
-										this.saveShadow( { hOffset: value } );
-									} }
-									onVOffsetChange={ value => {
-										this.saveShadow( { vOffset: value } );
-									} }
-									onBlurChange={ value => {
-										this.saveShadow( { blur: value } );
-									} }
-									onSpreadChange={ value => {
-										this.saveShadow( { spread: value } );
-									} }
-									onInsetChange={ value => {
-										this.saveShadow( { inset: value } );
-									} }
-								/>
-								<KadenceRange
-									label={ __( 'Max Width', 'kadence-blocks' ) }
-									value={ maxWidth ? maxWidth : '' }
-									onChange={ ( value ) => setAttributes( { maxWidth: value } ) }
-									min={ 50 }
-									max={ 1400 }
-									step={ 1 }
-								/>
-								<ResponsiveMeasurementControls
-									label={ __( 'Container Margin', 'kadence-blocks' ) }
-									value={ containerMargin }
-									control={ containerMarginControl }
-									onChange={ ( value ) => setAttributes( { containerMargin: value } ) }
-									onChangeControl={ ( value ) => this.setState( { containerMarginControl: value } ) }
-									tabletValue={ containerTabletMargin }
-									tabletControl={ containerTabletMarginControl }
-									onChangeTablet={ ( value ) => setAttributes( { containerTabletMargin: value } ) }
-									onChangeTabletControl={ ( value ) => this.setState( { containerTabletMarginControl: value } ) }
-									mobileValue={ containerMobileMargin }
-									mobileControl={ containerMobileMarginControl }
-									onChangeMobile={ ( value ) => setAttributes( { containerMobileMargin: value } ) }
-									onChangeMobileControl={ ( value ) => this.setState( { containerMobileMarginControl: value } ) }
-									min={ ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -2 : -200 ) }
-									max={ ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 12 : 200 ) }
-									step={ ( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 ) }
-									unit={ containerMarginUnit }
-									units={ [ 'px', 'em', 'rem' ] }
-									onUnit={ ( value ) => setAttributes( { containerMarginUnit: value } ) }
-								/>
-							</KadencePanelBody>
-						) }
-						{ this.showSettings( 'container' ) && (
-							<Fragment>
-								<KadencePanelBody
-									title={ __( 'Scroll Settings', 'kadence-blocks' ) }
-									initialOpen={ false }
-									panelName={ 'kb-toc-scroll-settings' }
-								>
-									<ToggleControl
-										label={ __( 'Enable Smooth Scroll to ID', 'kadence-blocks' ) }
-										checked={ enableSmoothScroll }
-										onChange={ value => setAttributes( { enableSmoothScroll: value } ) }
-									/>
-									{ enableSmoothScroll && (
-										<KadenceRange
-											label={ __( 'Scroll Offset', 'kadence-blocks' ) }
-											value={ smoothScrollOffset ? smoothScrollOffset : '' }
-											onChange={ ( value ) => setAttributes( { smoothScrollOffset: value } ) }
-											min={ 0 }
-											max={ 400 }
-											step={ 1 }
+								)}
+								{this.showSettings( 'collapse' ) && (
+									<Fragment>
+										{enableTitle && (
+											<KadencePanelBody
+												title={__( 'Collapsible Settings', 'kadence-blocks' )}
+												initialOpen={false}
+												panelName={'kb-toc-collapsible-settings'}
+											>
+												<ToggleControl
+													label={__( 'Enable Collapsible Content', 'kadence-blocks' )}
+													checked={enableToggle}
+													onChange={value => setAttributes( { enableToggle: value } )}
+												/>
+												{enableTitle && (
+													<Fragment>
+														<ToggleControl
+															label={__( 'Start Collapsed', 'kadence-blocks' )}
+															checked={startClosed}
+															onChange={value => setAttributes( { startClosed: value } )}
+														/>
+														<h2>{__( 'Icon Style', 'kadence-blocks' )}</h2>
+														<FontIconPicker
+															icons={[
+																'arrow',
+																'arrowcircle',
+																'basic',
+																'basiccircle',
+																'xclose',
+																'xclosecircle',
+															]}
+															value={toggleIcon}
+															onChange={value => setAttributes( { toggleIcon: value } )}
+															appendTo="body"
+															renderFunc={renderIconSet}
+															theme="accordion"
+															showSearch={false}
+															noSelectedPlaceholder={__( 'Select Icon Set', 'kadence-blocks' )}
+															isMulti={false}
+														/>
+														<ToggleControl
+															label={__( 'Enable title to toggle as well as icon', 'kadence-blocks' )}
+															checked={enableTitleToggle}
+															onChange={value => setAttributes( { enableTitleToggle: value } )}
+														/>
+													</Fragment>
+												)}
+											</KadencePanelBody>
+										)}
+									</Fragment>
+								)}
+								{this.showSettings( 'content' ) && (
+									<KadencePanelBody
+										title={__( 'List Settings', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-toc-list-settings'}
+									>
+										<ResponsiveRangeControls
+											label={__( 'List Item Gap', 'kadence-blocks' )}
+											value={listGap && listGap[ 0 ] ? listGap[ 0 ] : ''}
+											mobileValue={listGap && listGap[ 2 ] ? listGap[ 2 ] : ''}
+											tabletValue={listGap && listGap[ 1 ] ? listGap[ 1 ] : ''}
+											onChange={( value ) => setAttributes( { listGap: [ value, ( listGap && listGap[ 1 ] ? listGap[ 1 ] : '' ), ( listGap && listGap[ 2 ] ? listGap[ 2 ] : '' ) ] } )}
+											onChangeTablet={( value ) => setAttributes( { listGap: [ ( listGap && listGap[ 0 ] ? listGap[ 0 ] : '' ), value, ( listGap && listGap[ 2 ] ? listGap[ 2 ] : '' ) ] } )}
+											onChangeMobile={( value ) => setAttributes( { listGap: [ ( listGap && listGap[ 0 ] ? listGap[ 0 ] : '' ), ( listGap && listGap[ 1 ] ? listGap[ 1 ] : '' ), value ] } )}
+											min={0}
+											max={60}
+											step={1}
 										/>
-									) }
-									<ToggleControl
-										label={ __( 'Enable Highlighting Heading when scrolling in active area.', 'kadence-blocks' ) }
-										checked={ enableScrollSpy }
-										onChange={ value => setAttributes( { enableScrollSpy: value } ) }
-									/>
-									{ enableScrollSpy && (
 										<PopColorControl
-											label={ __( 'List Items Active Color', 'kadence-blocks' ) }
-											value={ ( contentActiveColor ? contentActiveColor : '' ) }
-											default={ '' }
-											onChange={ ( value ) => setAttributes( { contentActiveColor: value } ) }
+											label={__( 'List Items Color', 'kadence-blocks' )}
+											swatchLabel={__( 'Normal Color', 'kadence-blocks' )}
+											value={( contentColor ? contentColor : '' )}
+											default={''}
+											onChange={( value ) => setAttributes( { contentColor: value } )}
+											swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
+											value2={( contentHoverColor ? contentHoverColor : '' )}
+											default2={''}
+											onChange2={( value ) => setAttributes( { contentHoverColor: value } )}
 										/>
-									) }
-								</KadencePanelBody>
-							</Fragment>
-						) }
-						{ this.showSettings( 'container' ) && (
-							<>
-								<KadencePanelBody
-									title={ __( 'Non static content', 'kadence-blocks' ) }
-									initialOpen={ false }
-									panelName={ 'kb-toc-non-static-content' }
-								>
-									Hello World
-									{/*<ToggleControl*/}
-									{/*	label={ __( 'Search for Headings in Non static content?', 'kadence-blocks' ) }*/}
-									{/*	checked={ enableDynamicSearch }*/}
-									{/*	onChange={ value => setAttributes( { enableDynamicSearch: value } ) }*/}
-									{/*/>*/}
-								</KadencePanelBody>
+										<SelectControl
+											label={__( 'List Link Style', 'kadence-blocks' )}
+											value={linkStyle}
+											options={[
+												{ value: 'underline', label: __( 'Underline' ) },
+												{ value: 'underline_hover', label: __( 'Underline on Hover' ) },
+												{ value: 'plain', label: __( 'No underline' ) },
+											]}
+											onChange={value => setAttributes( { linkStyle: value } )}
+										/>
+										<TypographyControls
+											fontSize={contentSize}
+											onFontSize={( value ) => setAttributes( { contentSize: value } )}
+											fontSizeType={contentSizeType}
+											onFontSizeType={( value ) => setAttributes( { contentSizeType: value } )}
+											lineHeight={contentLineHeight}
+											onLineHeight={( value ) => setAttributes( { contentLineHeight: value } )}
+											lineHeightType={contentLineType}
+											onLineHeightType={( value ) => setAttributes( { contentLineType: value } )}
+											letterSpacing={contentLetterSpacing}
+											onLetterSpacing={( value ) => setAttributes( { contentLetterSpacing: value } )}
+											fontFamily={contentTypography}
+											onFontFamily={( value ) => setAttributes( { contentTypography: value } )}
+											onFontChange={( select ) => {
+												setAttributes( {
+													contentTypography: select.value,
+													contentGoogleFont: select.google,
+												} );
+											}}
+											googleFont={contentGoogleFont}
+											onGoogleFont={( value ) => setAttributes( { contentGoogleFont: value } )}
+											loadGoogleFont={contentLoadGoogleFont}
+											onLoadGoogleFont={( value ) => setAttributes( { contentLoadGoogleFont: value } )}
+											fontVariant={contentFontVariant}
+											onFontVariant={( value ) => setAttributes( { contentFontVariant: value } )}
+											fontWeight={contentFontWeight}
+											onFontWeight={( value ) => setAttributes( { contentFontWeight: value } )}
+											fontStyle={contentFontStyle}
+											onFontStyle={( value ) => setAttributes( { contentFontStyle: value } )}
+											fontSubset={contentFontSubset}
+											onFontSubset={( value ) => setAttributes( { contentFontSubset: value } )}
+											textTransform={contentTextTransform}
+											onTextTransform={( value ) => setAttributes( { contentTextTransform: value } )}
+										/>
+										<MeasurementControls
+											label={__( 'List Container Margin', 'kadence-blocks' )}
+											measurement={contentMargin}
+											control={contentMarginControl}
+											onChange={( value ) => setAttributes( { contentMargin: value } )}
+											onControl={( value ) => this.setState( { contentMarginControl: value } )}
+											min={-100}
+											max={100}
+											step={1}
+										/>
+									</KadencePanelBody>
+								)}
+								{this.showSettings( 'container' ) && (
+									<KadencePanelBody
+										title={__( 'Scroll Settings', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-toc-scroll-settings'}
+									>
+										<ToggleControl
+											label={__( 'Enable Smooth Scroll to ID', 'kadence-blocks' )}
+											checked={enableSmoothScroll}
+											onChange={value => setAttributes( { enableSmoothScroll: value } )}
+										/>
+										{enableSmoothScroll && (
+											<KadenceRange
+												label={__( 'Scroll Offset', 'kadence-blocks' )}
+												value={smoothScrollOffset ? smoothScrollOffset : ''}
+												onChange={( value ) => setAttributes( { smoothScrollOffset: value } )}
+												min={0}
+												max={400}
+												step={1}
+											/>
+										)}
+										<ToggleControl
+											label={__( 'Enable Highlighting Heading when scrolling in active area.', 'kadence-blocks' )}
+											checked={enableScrollSpy}
+											onChange={value => setAttributes( { enableScrollSpy: value } )}
+										/>
+										{enableScrollSpy && (
+											<PopColorControl
+												label={__( 'List Items Active Color', 'kadence-blocks' )}
+												value={( contentActiveColor ? contentActiveColor : '' )}
+												default={''}
+												onChange={( value ) => setAttributes( { contentActiveColor: value } )}
+											/>
+										)}
+									</KadencePanelBody>
+								)}
 							</>
-						) }
+						}
+
+						{( this.state.activeTab === 'advanced') &&
+							<>
+								{this.showSettings( 'container' ) && (
+									<KadencePanelBody
+										title={__( 'Non static content', 'kadence-blocks' )}
+										panelName={'kb-toc-non-static-content'}
+									>
+										<ToggleControl
+											label={__( 'Search for Headings in Non static content?', 'kadence-blocks' )}
+											checked={enableDynamicSearch}
+											onChange={value => setAttributes( { enableDynamicSearch: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+							</>
+						}
+
+						{( this.state.activeTab === 'style' ) &&
+							<>
+							{this.showSettings( 'container' ) && (
+									<KadencePanelBody
+										title={__( 'Container Settings', 'kadence-blocks' )}
+										panelName={'kb-toc-container-settings'}
+									>
+										<PopColorControl
+											label={__( 'Container Background', 'kadence-blocks' )}
+											value={( containerBackground ? containerBackground : '' )}
+											default={''}
+											onChange={( value ) => setAttributes( { containerBackground: value } )}
+										/>
+										<MeasurementControls
+											label={__( 'Container Padding', 'kadence-blocks' )}
+											measurement={containerPadding}
+											control={containerPaddingControl}
+											onChange={( value ) => setAttributes( { containerPadding: value } )}
+											onControl={( value ) => this.setState( { containerPaddingControl: value } )}
+											min={0}
+											max={100}
+											step={1}
+										/>
+										<PopColorControl
+											label={__( 'Border Color', 'kadence-blocks' )}
+											value={( containerBorderColor ? containerBorderColor : '' )}
+											default={''}
+											onChange={( value ) => setAttributes( { containerBorderColor: value } )}
+										/>
+										<MeasurementControls
+											label={__( 'Content Border Width (px)', 'kadence-blocks' )}
+											measurement={containerBorder}
+											control={containerBorderControl}
+											onChange={( value ) => setAttributes( { containerBorder: value } )}
+											onControl={( value ) => this.setState( { containerBorderControl: value } )}
+											min={0}
+											max={100}
+											step={1}
+										/>
+										<MeasurementControls
+											label={__( 'Border Radius', 'kadence-blocks' )}
+											measurement={borderRadius}
+											control={borderRadiusControl}
+											onChange={( value ) => setAttributes( { borderRadius: value } )}
+											onControl={( value ) => this.setState( { borderRadiusControl: value } )}
+											min={0}
+											max={200}
+											step={1}
+											controlTypes={[
+												{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+												{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+											]}
+											firstIcon={topLeftIcon}
+											secondIcon={topRightIcon}
+											thirdIcon={bottomRightIcon}
+											fourthIcon={bottomLeftIcon}
+										/>
+										<BoxShadowControl
+											label={__( 'Box Shadow', 'kadence-blocks' )}
+											enable={( undefined !== displayShadow ? displayShadow : false )}
+											color={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' )}
+											colorDefault={'#000000'}
+											onArrayChange={( color, opacity ) => this.saveShadow( { color: color, opacity: opacity } )}
+											opacity={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 )}
+											hOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 )}
+											vOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 )}
+											blur={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 )}
+											spread={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 )}
+											inset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false )}
+											onEnableChange={value => {
+												setAttributes( {
+													displayShadow: value,
+												} );
+											}}
+											onColorChange={value => {
+												this.saveShadow( { color: value } );
+											}}
+											onOpacityChange={value => {
+												this.saveShadow( { opacity: value } );
+											}}
+											onHOffsetChange={value => {
+												this.saveShadow( { hOffset: value } );
+											}}
+											onVOffsetChange={value => {
+												this.saveShadow( { vOffset: value } );
+											}}
+											onBlurChange={value => {
+												this.saveShadow( { blur: value } );
+											}}
+											onSpreadChange={value => {
+												this.saveShadow( { spread: value } );
+											}}
+											onInsetChange={value => {
+												this.saveShadow( { inset: value } );
+											}}
+										/>
+										<KadenceRange
+											label={__( 'Max Width', 'kadence-blocks' )}
+											value={maxWidth ? maxWidth : ''}
+											onChange={( value ) => setAttributes( { maxWidth: value } )}
+											min={50}
+											max={1400}
+											step={1}
+										/>
+										<ResponsiveMeasurementControls
+											label={__( 'Container Margin', 'kadence-blocks' )}
+											value={containerMargin}
+											control={containerMarginControl}
+											onChange={( value ) => setAttributes( { containerMargin: value } )}
+											onChangeControl={( value ) => this.setState( { containerMarginControl: value } )}
+											tabletValue={containerTabletMargin}
+											tabletControl={containerTabletMarginControl}
+											onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
+											onChangeTabletControl={( value ) => this.setState( { containerTabletMarginControl: value } )}
+											mobileValue={containerMobileMargin}
+											mobileControl={containerMobileMarginControl}
+											onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
+											onChangeMobileControl={( value ) => this.setState( { containerMobileMarginControl: value } )}
+											min={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? -2 : -200 )}
+											max={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 12 : 200 )}
+											step={( containerMarginUnit === 'em' || containerMarginUnit === 'rem' ? 0.1 : 1 )}
+											unit={containerMarginUnit}
+											units={[ 'px', 'em', 'rem' ]}
+											onUnit={( value ) => setAttributes( { containerMarginUnit: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+							</>
+						}
 					</InspectorControls>
 				) }
 			</Fragment>
