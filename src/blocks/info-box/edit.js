@@ -39,7 +39,7 @@ import {
 	KadenceMediaPlaceholder,
 	ImageSizeControl,
 	MeasurementControls,
-	ResponsiveRangeControl,
+	ResponsiveRangeControls,
 	InspectorControlTabs
 } from '@kadence/components';
 
@@ -2074,7 +2074,7 @@ class KadenceInfoBox extends Component {
 													value={mediaIcon[ 0 ].icon}
 													onChange={value => saveMediaIcon( { icon: value } )}
 												/>
-												<ResponsiveRangeControl
+												<ResponsiveRangeControls
 													label={__( 'Icon Size', 'kadence-blocks' )}
 													value={mediaIcon[ 0 ].size}
 													mobileValue={mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : ''}
@@ -2209,7 +2209,7 @@ class KadenceInfoBox extends Component {
 										)}
 										{'number' === mediaType && (
 											<Fragment>
-												<ResponsiveRangeControl
+												<ResponsiveRangeControls
 													label={__( 'Size', 'kadence-blocks' )}
 													value={mediaIcon[ 0 ].size}
 													mobileValue={mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : ''}
