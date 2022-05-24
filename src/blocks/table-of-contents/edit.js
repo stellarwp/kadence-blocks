@@ -7,11 +7,21 @@
 /**
  * Import External
  */
-import { isEqual, map } from 'lodash';
+import { isEqual } from 'lodash';
 import classnames from 'classnames';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, MeasurementControls, KadenceRange, WebfontLoader, BoxShadowControl, ResponsiveRangeControl } from '@kadence/components';
+import {
+	PopColorControl,
+	TypographyControls,
+	ResponsiveMeasurementControls,
+	MeasurementControls,
+	KadenceRange,
+	WebfontLoader,
+	BoxShadowControl,
+	ResponsiveRangeControls,
+	KadencePanelBody
+} from '@kadence/components';
 
 
 /**
@@ -39,7 +49,7 @@ import TableOfContentsList from './list';
 import { getHeadingsFromContent, linearToNestedHeadingList } from './utils';
 const { ENTER } = wp.keycodes;
 import { withSelect } from '@wordpress/data';
-import { compose, KadencePanelBody } from '@wordpress/compose';
+import { compose } from '@wordpress/compose';
 const {
 	Component,
 	Fragment,
@@ -62,13 +72,6 @@ const {
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-
-/**
- * Regular expression matching invalid anchor characters for replacement.
- *
- * @type {RegExp}
- */
-const ANCHOR_REGEX = /[\s#]/g;
 
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -372,7 +375,7 @@ class KadenceTableOfContents extends Component {
 			<Fragment>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						{ this.showSettings( 'container' ) && (
+					{ this.showSettings( 'container' ) && (
 							<KadencePanelBody
 								title={ __( 'Allowed Headers', 'kadence-blocks' ) }
 								initialOpen={ true }
@@ -409,8 +412,8 @@ class KadenceTableOfContents extends Component {
 									onChange={ value => saveAllowedHeaders( { h6: value } ) }
 								/>
 							</KadencePanelBody>
-						) }
-						{ this.showSettings( 'title' ) && (
+					) }
+					 	{ this.showSettings( 'title' ) && (
 							<KadencePanelBody
 								title={ __( 'Title Settings', 'kadence-blocks' ) }
 								initialOpen={ false }
@@ -548,7 +551,7 @@ class KadenceTableOfContents extends Component {
 								initialOpen={ false }
 								panelName={ 'kb-toc-list-settings' }
 							>
-								<ResponsiveRangeControl
+								<ResponsiveRangeControls
 									label={ __( 'List Item Gap', 'kadence-blocks' ) }
 									value={ listGap && listGap[0] ? listGap[0] : '' }
 									mobileValue={ listGap && listGap[2] ? listGap[2] : '' }
@@ -792,19 +795,20 @@ class KadenceTableOfContents extends Component {
 							</Fragment>
 						) }
 						{ this.showSettings( 'container' ) && (
-							<Fragment>
+							<>
 								<KadencePanelBody
 									title={ __( 'Non static content', 'kadence-blocks' ) }
 									initialOpen={ false }
 									panelName={ 'kb-toc-non-static-content' }
 								>
-									<ToggleControl
-										label={ __( 'Search for Headings in Non static content?', 'kadence-blocks' ) }
-										checked={ enableDynamicSearch }
-										onChange={ value => setAttributes( { enableDynamicSearch: value } ) }
-									/>
+									Hello World
+									{/*<ToggleControl*/}
+									{/*	label={ __( 'Search for Headings in Non static content?', 'kadence-blocks' ) }*/}
+									{/*	checked={ enableDynamicSearch }*/}
+									{/*	onChange={ value => setAttributes( { enableDynamicSearch: value } ) }*/}
+									{/*/>*/}
 								</KadencePanelBody>
-							</Fragment>
+							</>
 						) }
 					</InspectorControls>
 				) }
