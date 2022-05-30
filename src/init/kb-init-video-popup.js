@@ -12,7 +12,8 @@
 		 */
 		initAll: function( element ) {
 			new SimpleLightbox({
-				elements: document.querySelectorAll('.ktblocksvideopop')
+				elements: document.querySelectorAll('.ktblocksvideopop'),
+				videoRegex: new RegExp(/youtube.com|youtu.be|youtube-nocookie.com|vimeo.com/)
 			});
 		},
 		// Initiate the menus when the DOM loads.

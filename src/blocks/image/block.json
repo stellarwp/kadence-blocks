@@ -234,6 +234,9 @@
 		"type": "string",
 		"default": "no-repeat"
 	  },
+	  "zIndex": {
+		"type": "number"
+	  },
 	  "inQueryBlock": {
 	  	"type": "boolean",
 		"default": false

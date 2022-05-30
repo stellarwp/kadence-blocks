@@ -12,6 +12,7 @@ import {
 	ResizableBox,
 	SelectControl,
 	Spinner,
+	RangeControl,
 	TextareaControl,
 	TextControl,
 	ToolbarButton,
@@ -22,6 +23,7 @@ import { useSelect, useDispatch } from '@wordpress/data';
 import {
 	BlockControls,
 	InspectorControls,
+	InspectorAdvancedControls,
 	RichText,
 	MediaReplaceFlow,
 	store as blockEditorStore,
@@ -135,6 +137,7 @@ export default function Image( {
 		linkSponsored,
 		linkDestination,
 		linkTitle,
+		zIndex,
 	} = attributes;
 	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
 		if ( device === 'Mobile' ) {
@@ -446,6 +449,7 @@ export default function Image( {
 						setAttributes={ setAttributes }
 						name={ 'kadence/image' }
 						clientId={ clientId }
+						context={ context }
 					/>
 				) }
 				{ allowCrop && (
@@ -496,6 +500,7 @@ export default function Image( {
 						setAttributes={ setAttributes }
 						name={ 'kadence/image' }
 						clientId={ clientId }
+						context={ context }
 					/>
 					{ id && (
 						<KadenceImageSizeControl
@@ -730,6 +735,7 @@ export default function Image( {
 						setAttributes={ setAttributes }
 						name={ 'kadence/image' }
 						clientId={ clientId }
+						context={ context }
 					/>
 				</KadencePanelBody>
 				<KadencePanelBody
@@ -1040,6 +1046,19 @@ export default function Image( {
 					/>
 				</KadencePanelBody>
 			</InspectorControls>
+			<InspectorAdvancedControls>
+				<RangeControl
+					label={ __( 'Z-Index Control', 'kadence-blocks' ) }
+					value={ zIndex }
+					onChange={ ( value ) => {
+						setAttributes( {
+							zIndex: value,
+						} );
+					} }
+					min={ -200 }
+					max={ 2000 }
+				/>
+			</InspectorAdvancedControls>
 		</>
 	);
 

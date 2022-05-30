@@ -78,13 +78,30 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 2.5.0 Beta Version =
 Release Date: April 20th, 2022
+** Add: Overlay Settings to section block.
 ** Update: RowLayout to use grid css.
 ** Update: File Structure, build process, individual block files.
 ** Update: Inline SVGs removed from content html.
 ** Update: Sections can move freely in and out of rows.
-* Update: Switch to using gap css for section gutter.
 ** Update: Icons flex layout with gap settings.
 ** Update: Add Icon option to advanced text block.
+** Update: Lightbox to use glightbox.
+** Update: Gallery Carousels to use splide.
+** Update: Testimonial Carousels to use Splide.
+** Fix: Parallax background issue with border radius.
+** Update: Support for rem units in Max width. 
+
+= 2.4.5 =
+Release Date: May 25th, 2022
+* Add: Background overlay options in sections.
+* Update: zIndex control for Image block.
+* Update: Sections gap to use gap css.
+* Update: Sections inside of rows have sticky options.
+* Update: Row content max width to have rem option.
+* Fix: Issue with nocookie youtube popup in button.
+* Fix: Issue with FSE and styles outputting before doc type.
+* Fix: Issue with context not being passed with image block.
+* Fix: Issue with sections layout breaking if hidden.
 
 = 2.4.4 =
 Release Date: April 14th, 2022

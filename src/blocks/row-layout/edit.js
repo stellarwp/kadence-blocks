@@ -2921,7 +2921,7 @@ const ktrowUniqueIDs = [];
 											onUnit={ ( value ) => {
 												setAttributes( { maxWidthUnit: value } );
 											} }
-											units={ [ 'px', '%', 'vw' ] }
+											units={ [ 'px', '%', 'vw', 'rem' ] }
 										/>
 									</Fragment>
 								) }

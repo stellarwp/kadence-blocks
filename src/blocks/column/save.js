@@ -13,14 +13,17 @@ import classnames from 'classnames';
 import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
-	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, linkTarget, linkTitle, htmlTag } = attributes;
+	const { id, uniqueID, vsdesk, vstablet, vsmobile, link, linkNoFollow, linkSponsored, sticky, linkTarget, linkTitle, htmlTag, overlay, overlayImg, overlayHover, overlayImgHover } = attributes;
+	const hasOverlay = ( overlay || ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ) || overlayHover || ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ) ? true : false );
 	const classes = classnames( {
 		[ `inner-column-${ id }` ]: id,
 		[ `kadence-column${ uniqueID }` ]: uniqueID,
-		'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
-		'kvs-md-false': vstablet !== 'undefined' && vstablet,
-		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
+		'kvs-lg-false': vsdesk !== undefined && vsdesk,
+		'kvs-md-false': vstablet !== undefined && vstablet,
+		'kvs-sm-false': vsmobile !== undefined && vsmobile,
 		'kb-section-has-link': undefined !== link && '' !== link,
+		'kb-section-is-sticky': undefined !== sticky && sticky,
+		'kb-section-has-overlay': undefined !== hasOverlay && hasOverlay,
 	} );
 	let relAttr;
 	if ( linkTarget ) {

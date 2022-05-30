@@ -120,7 +120,7 @@ jQuery( document ).ready( function( $ ) {
 				pauseOnHover: sliderPause,
 				rtl: slickRtl,
 				adaptiveHeight: true,
-				dots: sliderDots,
+				dots: false,
 				asNavFor: '#' + sliderThumbID,
 			} );
 			$( '#' + sliderThumbID ).slick( {

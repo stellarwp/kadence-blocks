@@ -54,6 +54,7 @@ import {
 	SelectControl,
 	ToolbarGroup,
 	TabPanel,
+	RangeControl,
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 /**
@@ -67,7 +68,7 @@ function SectionEdit( {
 	context,
 	className,
 } ) {
-	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag } = attributes;
+	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && context.queryId && context.postId ) {
@@ -209,6 +210,40 @@ function SectionEdit( {
 			bgImg: '',
 		} );
 	};
+	const saveOverlayImage = ( value ) => {
+		const newUpdate = overlayImg.map( ( item, index ) => {
+			if ( 0 === index ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+		setAttributes( {
+			overlayImg: newUpdate,
+		} );
+	};
+	const saveHoverOverlayImage = ( value ) => {
+		const newUpdate = overlayImgHover.map( ( item, index ) => {
+			if ( 0 === index ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+		setAttributes( {
+			overlayImgHover: newUpdate,
+		} );
+	};
+	const onRemoveOverlayImage = () => {
+		saveOverlayImage( {
+			bgImgID: '',
+			bgImg: '',
+		} );
+	};
+	const onRemoveHoverOverlayImage = () => {
+		saveHoverOverlayImage( {
+			bgImgID: '',
+			bgImg: '',
+		} );
+	};
 	const gutterMax = ( gutterUnit !== 'px' ? 12 : 200 );
 	const gutterStep = ( gutterUnit !== 'px' ? 0.1 : 1 );
 	const marginMin = ( marginType === 'em' || marginType === 'rem' ? -2 : -200 );
@@ -245,19 +280,24 @@ function SectionEdit( {
 
 	const previewMaxWidth = getPreviewSize( previewDevice, ( maxWidth && maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) , ( maxWidth && maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( maxWidth && maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) );
 	const previewMinHeight = getPreviewSize( previewDevice, ( height && height[ 0 ] ? height[ 0 ] : '' ) , ( height && height[ 1 ] ? height[ 1 ] : '' ), ( height && height[ 2 ] ? height[ 2 ] : '' ) );
+	const previewStickyOffset = getPreviewSize( previewDevice, ( stickyOffset && stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) , ( stickyOffset && stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( stickyOffset && stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) );
 	const previewMinHeightUnit = ( heightUnit ? heightUnit : 'px' );
 	const previewMaxWidthUnit = ( maxWidthUnit ? maxWidthUnit : 'px' );
+	const previewStickyOffsetUnit = ( stickyOffsetUnit ? stickyOffsetUnit : 'px' );
 	const classes = classnames( {
 		[ className ]: className,
 		'kadence-column': true,
 		[ `inner-column-${ id }` ]: id,
 		[ `kadence-column-${ uniqueID }` ]: uniqueID,
+		[ `kadence-section-sticky` ]: ( sticky !== undefined ? sticky : false ),
 		'kvs-lg-false': vsdesk !== 'undefined' && vsdesk,
 		'kvs-md-false': vstablet !== 'undefined' && vstablet,
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 	} );
 	const hasBackgroundImage = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? true : false );
 	const hasHoverBackgroundImage = ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? true : false );
+	const hasOverlayImage = ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? true : false );
+	const hasHoverOverlayImage = ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? true : false );
 	const verticalAlignOptions = [
 		[
 			{
@@ -312,7 +352,10 @@ function SectionEdit( {
 	} );
 	const blockProps = useBlockProps( {
 		className: classes,
-		style: { maxWidth: ( undefined !== previewMaxWidth ? previewMaxWidth + previewMaxWidthUnit : undefined ) },
+		style: {
+			maxWidth: ( undefined !== previewMaxWidth ? previewMaxWidth + previewMaxWidthUnit : undefined ),
+			top: ( sticky && undefined !== previewStickyOffset ? previewStickyOffset + previewStickyOffsetUnit : undefined ),
+		},
 		'data-vertical-align': ( 'top' === verticalAlignment || 'middle' === verticalAlignment || 'bottom' === verticalAlignment ? verticalAlignment : undefined ),
 	} );
 	const innerBlocksProps = useInnerBlocksProps(
@@ -334,34 +377,50 @@ function SectionEdit( {
 			{ ...blockProps }
 		>
 			<style>
-				{ ( ( undefined !== previewMaxWidth && '' !== previewMaxWidth ) ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } { flex: 1 ${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
+			{ ( overlayOpacity !== undefined && overlayOpacity !== '' ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { opacity: ${ overlayOpacity } }` : '' ) }
+				{ ( overlay ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlay ) } }` : '' ) }
+				{ ( hasOverlayImage ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-image: url(${ overlayImg[ 0 ].bgImg }); }` : '' ) }
+				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-position:${ overlayImg[ 0 ].bgImgPosition }; }` : '' ) }
+				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgSize ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-size:${ overlayImg[ 0 ].bgImgSize }; }` : '' ) }
+				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgRepeat ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-repeat:${ overlayImg[ 0 ].bgImgRepeat }; }` : '' ) }
+				{ ( hasOverlayImage && overlayImg[ 0 ].bgImgAttachment ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-attachment:${ overlayImg[ 0 ].bgImgAttachment }; }` : '' ) }
+
+				{ ( overlayHoverOpacity !== undefined && overlayHoverOpacity !== '' ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { opacity: ${ overlayHoverOpacity } }` : '' ) }
+				{ ( overlayHover ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlayHover ) } }` : '' ) }
+				{ ( hasHoverOverlayImage ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-image: url(${ overlayImgHover[ 0 ].bgImg }); }` : '' ) }
+				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-position:${ overlayImgHover[ 0 ].bgImgPosition }; }` : '' ) }
+				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgSize ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-size:${ overlayImgHover[ 0 ].bgImgSize }; }` : '' ) }
+				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgRepeat ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-repeat:${ overlayImgHover[ 0 ].bgImgRepeat }; }` : '' ) }
+				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgAttachment ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-attachment:${ overlayImgHover[ 0 ].bgImgAttachment }; }` : '' ) }
+
+				{ ( ( undefined !== previewMaxWidth && '' !== previewMaxWidth ) ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } { flex: 0 1 ${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
 				{ ( ( undefined !== zIndex && '' !== zIndex ) ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
 				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 				{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 				{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
-				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }` : '' ) }
+				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )};` : '' ) }
 				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { justify-content: ${ previewJustify }; }` : '' ) }
 				{ ( previewWrap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { flex-wrap: ${ previewWrap }; }` : '' ) }
 				{ ( previewJustify && ( 'space-around' == previewJustify || 'space-between' == previewJustify || 'space-evenly' == previewJustify ) ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-list-appender { display:none; }` : '' ) }
 				{ ( textColorHover ? `.kadence-column-${ uniqueID }:hover, .kadence-column-${ uniqueID }:hover p, .kadence-column-${ uniqueID }:hover h1, .kadence-column-${ uniqueID }:hover h2, .kadence-column-${ uniqueID }:hover h3, .kadence-column-${ uniqueID }:hover h4, .kadence-column-${ uniqueID }:hover h5, .kadence-column-${ uniqueID }:hover h6 { color: ${ KadenceColorOutput( textColorHover ) }; }` : '' ) }
 				{ ( linkColorHover ? `.kadence-column-${ uniqueID }:hover a { color: ${ KadenceColorOutput( linkColorHover ) }; }` : '' ) }
 				{ ( linkHoverColorHover ? `.kadence-column-${ uniqueID }:hover a:hover { color: ${ KadenceColorOutput( linkHoverColorHover ) }; }` : '' ) }
-				{ ( backgroundHover ? `.kadence-column-${ uniqueID }:hover .kadence-inner-column-inner { background-color: ${ KadenceColorOutput( backgroundHover ) } !important; }` : '' ) }
+				3
 				{ ( hasHoverBackgroundImage ? `.kadence-column-${ uniqueID }:hover .kadence-inner-column-inner { background-image: url(${ backgroundImgHover[ 0 ].bgImg }) !important; }` : '' ) }
-				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { background-position:${ backgroundImgHover[ 0 ].bgImgPosition } !important; }` : '' ) }
-				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgSize ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { background-size:${ backgroundImgHover[ 0 ].bgImgSize } !important; }` : '' ) }
-				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgRepeat ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { background-repeat:${ backgroundImgHover[ 0 ].bgImgRepeat } !important; }` : '' ) }
-				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgAttachment ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { background-attachment:${ backgroundImgHover[ 0 ].bgImgAttachment } !important; }` : '' ) }
-				{ ( previewHoverBorderTop ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-top-width:${ previewHoverBorderTop }px !important; }` : '' ) }
-				{ ( previewHoverBorderRight ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-right-width:${ previewHoverBorderRight }px !important; }` : '' ) }
-				{ ( previewHoverBorderBottom ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-bottom-width:${ previewHoverBorderBottom }px !important; }` : '' ) }
-				{ ( previewHoverBorderLeft ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-left-width:${ previewHoverBorderLeft }px !important; }` : '' ) }
-				{ ( borderHover ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-color:${ KadenceColorOutput( borderHover ) } !important; }` : '' ) }
-				{ ( borderHoverRadius && undefined !== borderHoverRadius[0] && '' !== borderHoverRadius[0] ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-top-left-radius:${ borderHoverRadius[0] }px !important; }` : '' ) }
-				{ ( borderHoverRadius && undefined !== borderHoverRadius[1] && '' !== borderHoverRadius[1] ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-top-right-radius:${ borderHoverRadius[1] }px !important; }` : '' ) }
-				{ ( borderHoverRadius && undefined !== borderHoverRadius[2] && '' !== borderHoverRadius[2] ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-bottom-right-radius:${ borderHoverRadius[2] }px !important; }` : '' ) }
-				{ ( borderHoverRadius && undefined !== borderHoverRadius[3] && '' !== borderHoverRadius[3] ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { border-bottom-left-radius:${ borderHoverRadius[3] }px !important; }` : '' ) }
-				{ ( displayHoverShadow && undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? `.kadence-column-${ uniqueID } .kadence-inner-column-inner:hover { box-shadow:${ ( undefined !== shadowHover[ 0 ].inset && shadowHover[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' ), ( undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 1 ) ) } !important; }` : '' ) }
+				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { background-position:${ backgroundImgHover[ 0 ].bgImgPosition } !important; }` : '' ) }
+				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgSize ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { background-size:${ backgroundImgHover[ 0 ].bgImgSize } !important; }` : '' ) }
+				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgRepeat ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { background-repeat:${ backgroundImgHover[ 0 ].bgImgRepeat } !important; }` : '' ) }
+				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgAttachment ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { background-attachment:${ backgroundImgHover[ 0 ].bgImgAttachment } !important; }` : '' ) }
+				{ ( previewHoverBorderTop ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-top-width:${ previewHoverBorderTop }px !important; }` : '' ) }
+				{ ( previewHoverBorderRight ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-right-width:${ previewHoverBorderRight }px !important; }` : '' ) }
+				{ ( previewHoverBorderBottom ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-bottom-width:${ previewHoverBorderBottom }px !important; }` : '' ) }
+				{ ( previewHoverBorderLeft ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-left-width:${ previewHoverBorderLeft }px !important; }` : '' ) }
+				{ ( borderHover ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-color:${ KadenceColorOutput( borderHover ) } !important; }` : '' ) }
+				{ ( borderHoverRadius && undefined !== borderHoverRadius[0] && '' !== borderHoverRadius[0] ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-top-left-radius:${ borderHoverRadius[0] }px !important; }` : '' ) }
+				{ ( borderHoverRadius && undefined !== borderHoverRadius[1] && '' !== borderHoverRadius[1] ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-top-right-radius:${ borderHoverRadius[1] }px !important; }` : '' ) }
+				{ ( borderHoverRadius && undefined !== borderHoverRadius[2] && '' !== borderHoverRadius[2] ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-bottom-right-radius:${ borderHoverRadius[2] }px !important; }` : '' ) }
+				{ ( borderHoverRadius && undefined !== borderHoverRadius[3] && '' !== borderHoverRadius[3] ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { border-bottom-left-radius:${ borderHoverRadius[3] }px !important; }` : '' ) }
+				{ ( displayHoverShadow && undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { box-shadow:${ ( undefined !== shadowHover[ 0 ].inset && shadowHover[ 0 ].inset ? 'inset ' : '' ) + ( undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 ) + 'px ' + ( undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 ) + 'px ' + ( undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' ), ( undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 1 ) ) } !important; }` : '' ) }
 				{ kadenceBlockCSS && (
 					<Fragment>
 						{ kadenceBlockCSS.replace( /selector/g, `.kadence-column-${ uniqueID }` ) }
@@ -655,6 +714,17 @@ function SectionEdit( {
 											} }
 											units={ [ 'px', 'vw', 'vh' ] }
 										/>
+										<KadenceRange
+											label={ __( 'Z Index Control', 'kadence-blocks' ) }
+											value={ zIndex }
+											onChange={ ( value ) => {
+												setAttributes( {
+													zIndex: value,
+												} );
+											} }
+											min={ -200 }
+											max={ 200 }
+										/>
 									</KadencePanelBody>
 									<KadencePanelBody
 										title={ __( 'Background Settings', 'kadence-blocks' ) }
@@ -767,6 +837,154 @@ function SectionEdit( {
 																		onSaveAttachment={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
 																		disableMediaButtons={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
 																		dynamicAttribute="backgroundImg:0:bgImg"
+																		isSelected={ isSelected }
+																		attributes={ attributes }
+																		setAttributes={ setAttributes }
+																		name={ 'kadence/column' }
+																		clientId={ clientId }
+																	/>
+																</Fragment>
+															);
+														}
+													}
+													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+												}
+											}
+										</TabPanel>
+									</KadencePanelBody>
+									<KadencePanelBody
+										title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
+										initialOpen={ false }
+										panelName={ 'kb-col-bg-overlay-settings' }
+									>
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											activeClass="active-tab"
+											tabs={ [
+												{
+													name: 'normal',
+													title: __( 'Normal', 'kadence-blocks' ),
+													className: 'kt-normal-tab',
+												},
+												{
+													name: 'hover',
+													title: __( 'Hover', 'kadence-blocks' ),
+													className: 'kt-hover-tab',
+												},
+											] }>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															tabout = (
+																<Fragment>
+																	<RangeControl
+																		label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
+																		value={ overlayHoverOpacity }
+																		onChange={ ( value ) => {
+																			setAttributes( {
+																				overlayHoverOpacity: value,
+																			} );
+																		} }
+																		step={ 0.01 }
+																		min={ 0 }
+																		max={ 1 }
+																	/>
+																	<PopColorControl
+																		label={ __( 'Background Color', 'kadence-blocks' ) }
+																		value={ ( overlayHover ? overlayHover : '' ) }
+																		default={ '' }
+																		onChange={ value => setAttributes( { overlayHover: value } ) }
+																	/>
+																	<KadenceBackgroundControl
+																		label={ __( 'Background Image', 'kadence-blocks' ) }
+																		hasImage={ hasHoverOverlayImage }
+																		imageURL={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) }
+																		imageID={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgID ? overlayImgHover[ 0 ].bgImgID : '' ) }
+																		imagePosition={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgPosition ? overlayImgHover[ 0 ].bgImgPosition : 'center center' ) }
+																		imageSize={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgSize ? overlayImgHover[ 0 ].bgImgSize : 'cover' ) }
+																		imageRepeat={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgRepeat ? overlayImgHover[ 0 ].bgImgRepeat : 'no-repeat' ) }
+																		imageAttachment={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgAttachment ? overlayImgHover[ 0 ].bgImgAttachment : 'scroll' ) }
+																		onRemoveImage={ onRemoveHoverOverlayImage }
+																		onSaveImage={ ( img ) => {
+																			saveHoverOverlayImage( {
+																				bgImgID: img.id,
+																				bgImg: img.url,
+																			} );
+																		} }
+																		onSaveURL={ ( newURL ) => {
+																			if ( newURL !== ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) ) {
+																				saveHoverOverlayImage( {
+																					bgImgID: undefined,
+																					bgImg: newURL,
+																				} );
+																			}
+																		} }
+																		onSavePosition={ value => saveHoverOverlayImage( { bgImgPosition: value } ) }
+																		onSaveSize={ value => saveHoverOverlayImage( { bgImgSize: value } ) }
+																		onSaveRepeat={ value => saveHoverOverlayImage( { bgImgRepeat: value } ) }
+																		onSaveAttachment={ value => saveHoverOverlayImage( { bgImgAttachment: value } ) }
+																		disableMediaButtons={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) }
+																		dynamicAttribute="overlayImgHover:0:bgImg"
+																		isSelected={ isSelected }
+																		attributes={ attributes }
+																		setAttributes={ setAttributes }
+																		name={ 'kadence/column' }
+																		clientId={ clientId }
+																	/>
+																</Fragment>
+															);
+														} else {
+															tabout = (
+																<Fragment>
+																	<RangeControl
+																		label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
+																		value={ overlayOpacity }
+																		onChange={ ( value ) => {
+																			setAttributes( {
+																				overlayOpacity: value,
+																			} );
+																		} }
+																		step={ 0.01 }
+																		min={ 0 }
+																		max={ 1 }
+																	/>
+																	<PopColorControl
+																		label={ __( 'Background Color', 'kadence-blocks' ) }
+																		value={ ( overlay ? overlay : '' ) }
+																		default={ '' }
+																		onChange={ value => setAttributes( { overlay: value } ) }
+																	/>
+																	<KadenceBackgroundControl
+																		label={ __( 'Background Image', 'kadence-blocks' ) }
+																		hasImage={ hasOverlayImage }
+																		imageURL={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) }
+																		imageID={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgID ? overlayImg[ 0 ].bgImgID : '' ) }
+																		imagePosition={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgPosition ? overlayImg[ 0 ].bgImgPosition : 'center center' ) }
+																		imageSize={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgSize ? overlayImg[ 0 ].bgImgSize : 'cover' ) }
+																		imageRepeat={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgRepeat ? overlayImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
+																		imageAttachment={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgAttachment ? overlayImg[ 0 ].bgImgAttachment : 'scroll' ) }
+																		onRemoveImage={ onRemoveOverlayImage }
+																		onSaveImage={ ( img ) => {
+																			saveOverlayImage( {
+																				bgImgID: img.id,
+																				bgImg: img.url,
+																			} );
+																		} }
+																		onSaveURL={ ( newURL ) => {
+																			if ( newURL !== ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) ) {
+																				saveOverlayImage( {
+																					bgImgID: undefined,
+																					bgImg: newURL,
+																				} );
+																			}
+																		} }
+																		onSavePosition={ value => saveOverlayImage( { bgImgPosition: value } ) }
+																		onSaveSize={ value => saveOverlayImage( { bgImgSize: value } ) }
+																		onSaveRepeat={ value => saveOverlayImage( { bgImgRepeat: value } ) }
+																		onSaveAttachment={ value => saveOverlayImage( { bgImgAttachment: value } ) }
+																		disableMediaButtons={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) }
+																		dynamicAttribute="overlayImg:0:bgImg"
 																		isSelected={ isSelected }
 																		attributes={ attributes }
 																		setAttributes={ setAttributes }
@@ -1124,21 +1342,49 @@ function SectionEdit( {
 								onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
 							/>
 						</KadencePanelBody>
+						{ inRowBlock && (
+							<KadencePanelBody
+								title={ __( 'Sticky Settings', 'kadence-blocks' ) }
+								initialOpen={ false }
+								panelName={ 'kb-col-sticky-settings' }
+							>
+								<ToggleControl
+									label={ __( 'Make sticky', 'kadence-blocks' ) }
+									help={ __( 'This will stick the section to viewport for the height of outer row block.', 'kadence-blocks' ) }
+									checked={ ( undefined !== sticky ? sticky : false ) }
+									onChange={ ( value ) => setAttributes( { sticky: value } ) }
+								/>
+								{ sticky && (
+									<ResponsiveRangeControls
+										label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
+										value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
+										onChange={ value => {
+											setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
+										} }
+										tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
+										onChangeTablet={ ( value ) => {
+											setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
+										} }
+										mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
+										onChangeMobile={ ( value ) => {
+											setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
+										} }
+										min={ 0 }
+										max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
+										step={ 1 }
+										unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
+										onUnit={ ( value ) => {
+											setAttributes( { stickyOffsetUnit: value } );
+										} }
+										units={ [ 'px', 'rem', 'vh' ] }
+									/>
+								) }
+							</KadencePanelBody>
+						) }
 					</InspectorControls>
 				</Fragment>
 			) }
 			<InspectorAdvancedControls>
-				<KadenceRange
-					label={ __( 'Z Index Control' ) }
-					value={ zIndex }
-					onChange={ ( value ) => {
-						setAttributes( {
-							zIndex: value,
-						} );
-					} }
-					min={ -200 }
-					max={ 200 }
-				/>
 				{ inRowBlock && (
 					<KadenceRange
 						label={ __( 'Mobile Collapse Order' ) }
