@@ -10,8 +10,7 @@ import { map } from 'lodash';
 /**
  * Internal dependencies
  */
-import { PopColorControl, KadenceRange, KadencePanelBody } from '@kadence/components';
-import MeasurementControls from '../../measurement-control';
+import { PopColorControl, KadenceRange, KadencePanelBody, MeasurementControls } from '@kadence/components';
 
 /**
  * WordPress dependencies

@@ -10,8 +10,7 @@
 /**
  * Internal dependencies
  */
-import { PopColorControl, KadenceRange, TypographyControls, KadencePanelBody } from '@kadence/components';
-import MeasurementControls from '../../../../measurement-control';
+import { PopColorControl, KadenceRange, TypographyControls, KadencePanelBody, MeasurementControls } from '@kadence/components';
 
 /**
  * WordPress dependencies

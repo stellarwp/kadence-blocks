@@ -4,11 +4,11 @@ import { MeasurementControls } from '@kadence/components';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	PanelBody,
 	RangeControl,
 	ButtonGroup,
@@ -18,7 +18,7 @@ const {
 	Modal,
 	ToggleControl,
 	SelectControl,
-} = wp.components;
+} from '@wordpress/components';
 
 import { blockRowIcon } from '@kadence/icons';
 

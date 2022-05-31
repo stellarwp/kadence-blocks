@@ -20,8 +20,18 @@ import {
 	topLeftIcon,
 	topRightIcon
 } from '@kadence/icons';
-import MeasurementControls from '../../measurement-control';
-import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadenceRange, KadencePanelBody, URLInputControl, KadenceRadioButtons, ResponsiveAlignControls, WebfontLoader } from '@kadence/components';
+import {
+	PopColorControl,
+	TypographyControls,
+	ResponsiveMeasurementControls,
+	MeasurementControls,
+	KadenceRange,
+	KadencePanelBody,
+	URLInputControl,
+	KadenceRadioButtons,
+	ResponsiveAlignControls,
+	WebfontLoader
+} from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 
 /**

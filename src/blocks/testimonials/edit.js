@@ -30,8 +30,18 @@ import { times, map } from 'lodash';
 /**
  * Import Components
  */
-import MeasurementControls from '../../measurement-control';
-import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadencePanelBody, WebfontLoader, IconControl, IconRender, KadenceMediaPlaceholder } from '@kadence/components';
+import { 
+	PopColorControl,
+	TypographyControls,
+	ResponsiveMeasurementControls,
+	ResponsiveRangeControls,
+	KadencePanelBody,
+	WebfontLoader,
+	IconControl,
+	IconRender,
+	MeasurementControls,
+	KadenceMediaPlaceholder
+} from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 
 /**

@@ -10,8 +10,17 @@
  */
 import classnames from 'classnames';
 import { times, filter, debounce, map } from 'lodash';
-import MeasurementControls from '../../measurement-control';
-import { PopColorControl, TypographyControls, ResponsiveMeasurementControls, KadencePanelBody, ResponsiveRangeControls, URLInputControl, WebfontLoader, BoxShadowControl } from '@kadence/components';
+import {
+	PopColorControl,
+	TypographyControls,
+	ResponsiveMeasurementControls,
+	KadencePanelBody,
+	MeasurementControls,
+	ResponsiveRangeControls,
+	URLInputControl,
+	WebfontLoader,
+	BoxShadowControl
+} from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
 import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';

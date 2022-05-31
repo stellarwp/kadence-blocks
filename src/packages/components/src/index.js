@@ -7,6 +7,7 @@ export { default as InlinePopColorControl } from './inline-pop-color';
 export { default as ResponsiveAlignControls } from './responsive-align-control';
 export { default as KadenceSelectPosts } from './select-posts-controls';
 export { default as WebfontLoader } from './web-font-loader';
+export { default as KadenceWebfontLoader } from './kadence-web-font-loader';
 export { default as HeadingLevelIcon } from './heading-level-icon';
 export { default as BoxShadowControl } from './box-shadow-control';
 export { default as DynamicImageControl } from './dynamic-image-control';
@@ -48,7 +49,7 @@ export { default as InlineTypographyControls } from './typography/inline-typogra
 export { default as TextShadowControl } from './typography/text-shadow-control';
 
 /* Range */
-export { default as KadenceRange } from './range/range-control';
+export { default as RangeControl } from './range/range-control';
 export { default as ResponsiveRangeControls } from './range/responsive-range-control';
 export { default as ResponsiveSingleRangeControl } from './range/single-range-control';
 
