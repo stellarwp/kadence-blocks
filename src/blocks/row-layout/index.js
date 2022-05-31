@@ -10,6 +10,11 @@ import icons from '../../icons/block-icons';
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
+ * Import Css
+ */
+ import './style.scss';
+ 
+/**
  * Internal dependencies
  */
 import edit from './edit';

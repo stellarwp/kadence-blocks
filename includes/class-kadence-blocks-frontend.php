@@ -1611,25 +1611,23 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		// Lets register all the block styles.
-		wp_register_style( 'kadence-blocks-restaurant-menu', KADENCE_BLOCKS_URL . 'dist/blocks/restaurant.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-rowlayout', KADENCE_BLOCKS_URL . 'dist/blocks/row.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-column', KADENCE_BLOCKS_URL . 'dist/blocks/column.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-accordion', KADENCE_BLOCKS_URL . 'dist/blocks/accordion.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-btn', KADENCE_BLOCKS_URL . 'dist/blocks/advanced-btn.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-gallery', KADENCE_BLOCKS_URL . 'dist/blocks/advanced-gallery.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		//wp_register_style( 'kadence-blocks-icon', KADENCE_BLOCKS_URL . 'dist/blocks/icon.style.build.css', array(), KADENCE_BLOCKS_VERSION );
+		//wp_register_style( 'kadence-blocks-restaurant-menu', KADENCE_BLOCKS_URL . 'dist/style-blocks-restaurant.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-row-layout', KADENCE_BLOCKS_URL . 'dist/style-blocks-row-layout.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-column', KADENCE_BLOCKS_URL . 'dist/style-blocks-column.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-accordion', KADENCE_BLOCKS_URL . 'dist/style-blocks-accordion.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-btn', KADENCE_BLOCKS_URL . 'dist/style-blocks-advanced-btn.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-gallery', KADENCE_BLOCKS_URL . 'dist/style-blocks-advanced-gallery.css', array(), KADENCE_BLOCKS_VERSION );
+		//wp_register_style( 'kadence-blocks-icon', KADENCE_BLOCKS_URL . 'dist/style-blocks-icon.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-icon', false );
-		wp_register_style( 'kadence-blocks-iconlist', KADENCE_BLOCKS_URL . 'dist/blocks/icon-list.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-image', KADENCE_BLOCKS_URL . 'dist/blocks/image.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-tabs', KADENCE_BLOCKS_URL . 'dist/blocks/tabs.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-spacer', KADENCE_BLOCKS_URL . 'dist/blocks/spacer.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-infobox', KADENCE_BLOCKS_URL . 'dist/blocks/info-box.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		//wp_register_style( 'kadence-blocks-heading', KADENCE_BLOCKS_URL . 'dist/blocks/heading.style.build.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-iconlist', KADENCE_BLOCKS_URL . 'dist/style-blocks-icon-list.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-image', KADENCE_BLOCKS_URL . 'dist/style-blocks-image.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-tabs', KADENCE_BLOCKS_URL . 'dist/style-blocks-tabs.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-spacer', KADENCE_BLOCKS_URL . 'dist/style-blocks-spacer.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-infobox', KADENCE_BLOCKS_URL . 'dist/style-blocks-info-box.css', array(), KADENCE_BLOCKS_VERSION );
+		//wp_register_style( 'kadence-blocks-heading', KADENCE_BLOCKS_URL . 'dist/style-blocks-heading.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-heading', false );
-		wp_register_style( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/blocks/form.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-testimonials', KADENCE_BLOCKS_URL . 'dist/blocks/testimonials.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-
-		//wp_enqueue_style( 'kadence-blocks-style-css', KADENCE_BLOCKS_URL . 'dist/blocks.style.build.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/style-blocks-form.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-blocks-testimonials', KADENCE_BLOCKS_URL . 'dist/style-blocks-testimonials.css', array(), KADENCE_BLOCKS_VERSION );
 
 		// Next all the extras that are shared.
 		wp_register_script( 'countup', KADENCE_BLOCKS_URL . 'dist/assets/js/countUp.min.js', array(), KADENCE_BLOCKS_VERSION, true );
