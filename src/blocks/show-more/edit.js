@@ -149,7 +149,6 @@ export function Edit ({
 	return (
 		<Fragment>
 			<InspectorControls>
-
 				<InspectorControlTabs
 					panelName={ 'lottie' }
 					setActiveTab={ setActiveTab }
