@@ -6,7 +6,13 @@
 
 import SvgPattern from './svg-pattern';
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, ResponsiveRangeControls, KadencePanelBody, ResponsiveAlignControls } from '@kadence/components';
+import {
+	PopColorControl,
+	ResponsiveRangeControls,
+	KadencePanelBody,
+	ResponsiveAlignControls,
+	InspectorControlTabs
+} from '@kadence/components';
 
 /**
  * Import Css
@@ -46,6 +52,7 @@ class KadenceSpacerDivider extends Component {
 		super( ...arguments );
 		this.state = {
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
+			activeTab: 'general',
 			settings: {},
 		};
 	}
@@ -142,149 +149,165 @@ class KadenceSpacerDivider extends Component {
 							/>
 						</BlockControls>
 						<InspectorControls>
-							<KadencePanelBody
-								title={ __( 'Spacer Settings', 'kadence-blocks' ) }
-								initialOpen={ true }
-								panelName={ 'kb-spacer-settings' }
-							>
-								{ this.showSettings( 'spacerHeight' ) && (
-									<ResponsiveRangeControls
-										label={ __( 'Height', 'kadence-blocks' ) }
-										value={ spacerHeight }
-										onChange={ value => setAttributes( { spacerHeight: value } ) }
-										tabletValue={ ( tabletSpacerHeight ? tabletSpacerHeight : '' ) }
-										onChangeTablet={ ( value ) => setAttributes( { tabletSpacerHeight: value } ) }
-										mobileValue={ ( mobileSpacerHeight ? mobileSpacerHeight : '' ) }
-										onChangeMobile={ ( value ) => setAttributes( { mobileSpacerHeight: value } ) }
-										min={ 6 }
-										max={ 600 }
-										step={ 1 }
-										unit={ spacerHeightUnits }
-										onUnit={ this.showSettings( 'spacerHeightUnits' ) ? ( value ) => setAttributes( { spacerHeightUnits: value } ) : false }
-										units={ [ 'px', 'vh' ] }
-									/>
-								) }
-							</KadencePanelBody>
-							<KadencePanelBody
-								title={ __( 'Divider Settings', 'kadence-blocks' ) }
-								initialOpen={ true }
-								panelName={ 'kb-divider-settings' }
-							>
-								{ this.showSettings( 'dividerToggle' ) && (
-									<ToggleControl
-										label={ __( 'Enable Divider', 'kadence-blocks' ) }
-										checked={ dividerEnable }
-										onChange={ value => setAttributes( { dividerEnable: value } ) }
-									/>
-								) }
-								{ dividerEnable && this.showSettings( 'dividerStyles' ) && (
-									<Fragment>
-										<ResponsiveAlignControls
-											label={ __( 'Alignment', 'kadence-blocks' ) }
-											value={ ( hAlign ? hAlign : '' ) }
-											mobileValue={ ( mobileHAlign ? mobileHAlign : '' ) }
-											tabletValue={ ( tabletHAlign ? tabletHAlign : '' ) }
-											onChange={ ( nextAlign ) => setAttributes( { hAlign: nextAlign } ) }
-											onChangeTablet={ ( nextAlign ) => setAttributes( { tabletHAlign: nextAlign } ) }
-											onChangeMobile={ ( nextAlign ) => setAttributes( { mobileHAlign: nextAlign } ) }
-										/>
-										<SelectControl
-											label={ __( 'Divider Style', 'kadence-blocks' ) }
-											value={ dividerStyle }
-											options={ [
-												{ value: 'solid', label: __( 'Solid', 'kadence-blocks' ) },
-												{ value: 'dashed', label: __( 'Dashed', 'kadence-blocks' ) },
-												{ value: 'dotted', label: __( 'Dotted', 'kadence-blocks' ) },
-												{ value: 'stripe', label: __( 'Stripe', 'kadence-blocks' ) },
-											] }
-											onChange={ value => setAttributes( { dividerStyle: value } ) }
-										/>
-										<PopColorControl
-											label={ __( 'Divider Color', 'kadence-blocks' ) }
-											value={ ( dividerColor ? dividerColor : '' ) }
-											default={ '' }
-											opacityValue={ dividerOpacity }
-											onChange={ value => setAttributes( { dividerColor: value } ) }
-											onOpacityChange={ value => setAttributes( { dividerOpacity: value } ) }
-											opacityUnit={ 100 }
-										/>
-										{ 'stripe' === dividerStyle && (
+
+							<InspectorControlTabs
+								panelName={ 'spacer' }
+								allowedTabs={ [ 'general', 'advanced' ] }
+								setActiveTab={ ( value ) => this.setState( { activeTab: value } ) }
+								activeTab={ this.state.activeTab }
+							/>
+
+							{( this.state.activeTab === 'general' ) &&
+								<>
+									<KadencePanelBody
+										title={__( 'Spacer Settings', 'kadence-blocks' )}
+										initialOpen={true}
+										panelName={'kb-spacer-settings'}
+									>
+										{this.showSettings( 'spacerHeight' ) && (
+											<ResponsiveRangeControls
+												label={__( 'Height', 'kadence-blocks' )}
+												value={spacerHeight}
+												onChange={value => setAttributes( { spacerHeight: value } )}
+												tabletValue={( tabletSpacerHeight ? tabletSpacerHeight : '' )}
+												onChangeTablet={( value ) => setAttributes( { tabletSpacerHeight: value } )}
+												mobileValue={( mobileSpacerHeight ? mobileSpacerHeight : '' )}
+												onChangeMobile={( value ) => setAttributes( { mobileSpacerHeight: value } )}
+												min={6}
+												max={600}
+												step={1}
+												unit={spacerHeightUnits}
+												onUnit={this.showSettings( 'spacerHeightUnits' ) ? ( value ) => setAttributes( { spacerHeightUnits: value } ) : false}
+												units={[ 'px', 'vh' ]}
+											/>
+										)}
+									</KadencePanelBody>
+									<KadencePanelBody
+										title={__( 'Divider Settings', 'kadence-blocks' )}
+										initialOpen={true}
+										panelName={'kb-divider-settings'}
+									>
+										{this.showSettings( 'dividerToggle' ) && (
+											<ToggleControl
+												label={__( 'Enable Divider', 'kadence-blocks' )}
+												checked={dividerEnable}
+												onChange={value => setAttributes( { dividerEnable: value } )}
+											/>
+										)}
+										{dividerEnable && this.showSettings( 'dividerStyles' ) && (
 											<Fragment>
-												<RangeControl
-													label={ __( 'Stripe Angle', 'kadence-blocks' ) }
-													value={ rotate }
-													onChange={ value => setAttributes( { rotate: value } ) }
-													min={ 0 }
-													max={ 135 }
+												<ResponsiveAlignControls
+													label={__( 'Alignment', 'kadence-blocks' )}
+													value={( hAlign ? hAlign : '' )}
+													mobileValue={( mobileHAlign ? mobileHAlign : '' )}
+													tabletValue={( tabletHAlign ? tabletHAlign : '' )}
+													onChange={( nextAlign ) => setAttributes( { hAlign: nextAlign } )}
+													onChangeTablet={( nextAlign ) => setAttributes( { tabletHAlign: nextAlign } )}
+													onChangeMobile={( nextAlign ) => setAttributes( { mobileHAlign: nextAlign } )}
 												/>
-												<RangeControl
-													label={ __( 'Stripe Width', 'kadence-blocks' ) }
-													value={ strokeWidth }
-													onChange={ value => setAttributes( { strokeWidth: value } ) }
-													min={ 1 }
-													max={ 30 }
+												<SelectControl
+													label={__( 'Divider Style', 'kadence-blocks' )}
+													value={dividerStyle}
+													options={[
+														{ value: 'solid', label: __( 'Solid', 'kadence-blocks' ) },
+														{ value: 'dashed', label: __( 'Dashed', 'kadence-blocks' ) },
+														{ value: 'dotted', label: __( 'Dotted', 'kadence-blocks' ) },
+														{ value: 'stripe', label: __( 'Stripe', 'kadence-blocks' ) },
+													]}
+													onChange={value => setAttributes( { dividerStyle: value } )}
 												/>
-												<RangeControl
-													label={ __( 'Stripe Gap', 'kadence-blocks' ) }
-													value={ strokeGap }
-													onChange={ value => setAttributes( { strokeGap: value } ) }
-													min={ 1 }
-													max={ 30 }
+												<PopColorControl
+													label={__( 'Divider Color', 'kadence-blocks' )}
+													value={( dividerColor ? dividerColor : '' )}
+													default={''}
+													opacityValue={dividerOpacity}
+													onChange={value => setAttributes( { dividerColor: value } )}
+													onOpacityChange={value => setAttributes( { dividerOpacity: value } )}
+													opacityUnit={100}
+												/>
+												{'stripe' === dividerStyle && (
+													<Fragment>
+														<RangeControl
+															label={__( 'Stripe Angle', 'kadence-blocks' )}
+															value={rotate}
+															onChange={value => setAttributes( { rotate: value } )}
+															min={0}
+															max={135}
+														/>
+														<RangeControl
+															label={__( 'Stripe Width', 'kadence-blocks' )}
+															value={strokeWidth}
+															onChange={value => setAttributes( { strokeWidth: value } )}
+															min={1}
+															max={30}
+														/>
+														<RangeControl
+															label={__( 'Stripe Gap', 'kadence-blocks' )}
+															value={strokeGap}
+															onChange={value => setAttributes( { strokeGap: value } )}
+															min={1}
+															max={30}
+														/>
+													</Fragment>
+												)}
+												<ResponsiveRangeControls
+													label={__( 'Divider Height', 'kadence-blocks' )}
+													value={dividerHeight}
+													onChange={value => setAttributes( { dividerHeight: value } )}
+													tabletValue={( tabletDividerHeight ? tabletDividerHeight : '' )}
+													onChangeTablet={( value ) => setAttributes( { tabletDividerHeight: value } )}
+													mobileValue={( mobileDividerHeight ? mobileDividerHeight : '' )}
+													onChangeMobile={( value ) => setAttributes( { mobileDividerHeight: value } )}
+													min={minD}
+													max={maxD}
+													step={1}
+													unit={'px'}
+												/>
+												<ResponsiveRangeControls
+													label={__( 'Divider Width', 'kadence-blocks' )}
+													value={dividerWidth}
+													onChange={value => setAttributes( { dividerWidth: value } )}
+													tabletValue={( tabletDividerWidth ? tabletDividerWidth : '' )}
+													onChangeTablet={( value ) => setAttributes( { tabletDividerWidth: value } )}
+													mobileValue={( mobileDividerWidth ? mobileDividerWidth : '' )}
+													onChangeMobile={( value ) => setAttributes( { mobileDividerWidth: value } )}
+													min={0}
+													max={( dividerWidthUnits == 'px' ? 3000 : 100 )}
+													step={1}
+													unit={dividerWidthUnits}
+													onUnit={( value ) => setAttributes( { dividerWidthUnits: value } )}
+													units={[ 'px', '%' ]}
 												/>
 											</Fragment>
-										) }
-										<ResponsiveRangeControls
-											label={ __( 'Divider Height', 'kadence-blocks' ) }
-											value={ dividerHeight }
-											onChange={ value => setAttributes( { dividerHeight: value } ) }
-											tabletValue={ ( tabletDividerHeight ? tabletDividerHeight : '' ) }
-											onChangeTablet={ ( value ) => setAttributes( { tabletDividerHeight: value } ) }
-											mobileValue={ ( mobileDividerHeight ? mobileDividerHeight : '' ) }
-											onChangeMobile={ ( value ) => setAttributes( { mobileDividerHeight: value } ) }
-											min={ minD }
-											max={ maxD }
-											step={ 1 }
-											unit={ 'px' }
-										/>
-										<ResponsiveRangeControls
-											label={ __( 'Divider Width', 'kadence-blocks' ) }
-											value={ dividerWidth }
-											onChange={ value => setAttributes( { dividerWidth: value } ) }
-											tabletValue={ ( tabletDividerWidth ? tabletDividerWidth : '' ) }
-											onChangeTablet={ ( value ) => setAttributes( { tabletDividerWidth: value } ) }
-											mobileValue={ ( mobileDividerWidth ? mobileDividerWidth : '' ) }
-											onChangeMobile={ ( value ) => setAttributes( { mobileDividerWidth: value } ) }
-											min={ 0 }
-											max={ ( dividerWidthUnits == 'px' ? 3000 : 100 ) }
-											step={ 1 }
-											unit={ dividerWidthUnits }
-											onUnit={ ( value ) => setAttributes( { dividerWidthUnits: value } ) }
-											units={ [ 'px', '%' ] }
-										/>
-									</Fragment>
-								) }
-							</KadencePanelBody>
-							<KadencePanelBody
-								title={ __( 'Visibility Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-visibility-settings' }
-							>
-								<ToggleControl
-									label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
-									checked={ ( undefined !== vsdesk ? vsdesk : false ) }
-									onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
-								/>
-								<ToggleControl
-									label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
-									checked={ ( undefined !== vstablet ? vstablet : false ) }
-									onChange={ ( value ) => setAttributes( { vstablet: value } ) }
-								/>
-								<ToggleControl
-									label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
-									checked={ ( undefined !== vsmobile ? vsmobile : false ) }
-									onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
-								/>
-							</KadencePanelBody>
+										)}
+									</KadencePanelBody>
+
+								</>
+							}
+
+							{( this.state.activeTab === 'advanced' ) &&
+								<KadencePanelBody
+									title={__( 'Visibility Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-visibility-settings'}
+								>
+									<ToggleControl
+										label={__( 'Hide on Desktop', 'kadence-blocks' )}
+										checked={( undefined !== vsdesk ? vsdesk : false )}
+										onChange={( value ) => setAttributes( { vsdesk: value } )}
+									/>
+									<ToggleControl
+										label={__( 'Hide on Tablet', 'kadence-blocks' )}
+										checked={( undefined !== vstablet ? vstablet : false )}
+										onChange={( value ) => setAttributes( { vstablet: value } )}
+									/>
+									<ToggleControl
+										label={__( 'Hide on Mobile', 'kadence-blocks' )}
+										checked={( undefined !== vsmobile ? vsmobile : false )}
+										onChange={( value ) => setAttributes( { vsmobile: value } )}
+									/>
+								</KadencePanelBody>
+							}
 						</InspectorControls>
 					</Fragment>
 				) }

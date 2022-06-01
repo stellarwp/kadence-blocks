@@ -15,7 +15,20 @@ import { times, filter, debounce, map, get } from 'lodash';
  * Import Kadence Components
  */
 import { KadenceColorOutput } from '@kadence/helpers';
-import { WebfontLoader, PopColorControl, StepControls, TypographyControls, IconControl, ResponsiveRangeControls, IconRender, KadencePanelBody, URLInputControl, DynamicTextControl, MeasurementControls } from '@kadence/components';
+import {
+	WebfontLoader,
+	PopColorControl,
+	StepControls,
+	TypographyControls,
+	IconControl,
+	ResponsiveRangeControls,
+	IconRender,
+	KadencePanelBody,
+	URLInputControl,
+	DynamicTextControl,
+	MeasurementControls,
+	InspectorControlTabs
+} from '@kadence/components';
 
 /**
  * Import Css
@@ -79,6 +92,7 @@ class KadenceIconLists extends Component {
 		this.state = {
 			focusIndex: null,
 			settings: {},
+			activeTab: '',
 			marginControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
@@ -621,282 +635,305 @@ class KadenceIconLists extends Component {
 				</BlockControls>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<KadencePanelBody
-							title={ __( 'List Controls' ) }
-							initialOpen={ true }
-							panelName={ 'kb-icon-list-controls' }
-						>
-							<StepControls
-								label={ __( 'Number of Items' ) }
-								value={ listCount }
-								onChange={ ( newcount ) => {
-									const newitems = items;
-									if ( newitems.length < newcount ) {
-										const amount = Math.abs( newcount - newitems.length );
-										{ times( amount, n => {
-											newitems.push( {
-												icon: newitems[ 0 ].icon,
-												link: newitems[ 0 ].link,
-												target: newitems[ 0 ].target,
-												size: newitems[ 0 ].size,
-												width: newitems[ 0 ].width,
-												color: newitems[ 0 ].color,
-												background: newitems[ 0 ].background,
-												border: newitems[ 0 ].border,
-												borderRadius: newitems[ 0 ].borderRadius,
-												borderWidth: newitems[ 0 ].borderWidth,
-												padding: newitems[ 0 ].padding,
-												style: newitems[ 0 ].style,
-												level: get(newitems[ 0 ], 'level', 0)
-											} );
-										} ); }
-										setAttributes( { items: newitems } );
-										this.saveListItem( { size: items[ 0 ].size }, 0 );
-									}
-									setAttributes( { listCount: newcount } );
-								} }
-								min={ 1 }
-								max={ 40 }
-								step={ 1 }
-							/>
-							{ this.showSettings( 'column' ) && (
-								<ResponsiveRangeControls
-									label={ __( 'List Columns', 'kadence-blocks' ) }
-									value={ columns }
-									onChange={ value => setAttributes( { columns: value } ) }
-									tabletValue={ ( tabletColumns ? tabletColumns : '' ) }
-									onChangeTablet={ ( value ) => setAttributes( { tabletColumns: value } ) }
-									mobileValue={ ( mobileColumns ? mobileColumns : '' ) }
-									onChangeMobile={ ( value ) => setAttributes( { mobileColumns: value } ) }
-									min={ 1 }
-									max={ 3 }
-									step={ 1 }
-									showUnit={ false }
-								/>
-							) }
-							{ this.showSettings( 'spacing' ) && (
-								<Fragment>
-									<RangeControl
-										label={ __( 'List Vertical Spacing' ) }
-										value={ listGap }
-										onChange={ value => {
-											setAttributes( { listGap: value } );
-										} }
-										min={ 0 }
-										max={ 60 }
+
+						<InspectorControlTabs
+							panelName={ 'icon-list' }
+							setActiveTab={ ( value ) => this.setState( { activeTab: value } ) }
+							activeTab={ this.state.activeTab }
+						/>
+
+						{( this.state.activeTab === 'general' ) &&
+							<>
+								<KadencePanelBody
+									title={__( 'List Controls' )}
+									initialOpen={true}
+									panelName={'kb-icon-list-controls'}
+								>
+									<StepControls
+										label={__( 'Number of Items' )}
+										value={listCount}
+										onChange={( newcount ) => {
+											const newitems = items;
+											if ( newitems.length < newcount ) {
+												const amount = Math.abs( newcount - newitems.length );
+												{
+													times( amount, n => {
+														newitems.push( {
+															icon        : newitems[ 0 ].icon,
+															link        : newitems[ 0 ].link,
+															target      : newitems[ 0 ].target,
+															size        : newitems[ 0 ].size,
+															width       : newitems[ 0 ].width,
+															color       : newitems[ 0 ].color,
+															background  : newitems[ 0 ].background,
+															border      : newitems[ 0 ].border,
+															borderRadius: newitems[ 0 ].borderRadius,
+															borderWidth : newitems[ 0 ].borderWidth,
+															padding     : newitems[ 0 ].padding,
+															style       : newitems[ 0 ].style,
+															level       : get( newitems[ 0 ], 'level', 0 )
+														} );
+													} );
+												}
+												setAttributes( { items: newitems } );
+												this.saveListItem( { size: items[ 0 ].size }, 0 );
+											}
+											setAttributes( { listCount: newcount } );
+										}}
+										min={1}
+										max={40}
+										step={1}
 									/>
-									<RangeControl
-										label={ __( 'List Horizontal Icon and Label Spacing' ) }
-										value={ listLabelGap }
-										onChange={ value => {
-											setAttributes( { listLabelGap: value } );
-										} }
-										min={ 0 }
-										max={ 60 }
-									/>
-									<div className="kt-btn-size-settings-container">
-										<h2 className="kt-beside-btn-group">{ __( 'Icon Align' ) }</h2>
-										<ButtonGroup className="kt-button-size-type-options" aria-label={ __( 'Icon Align' ) }>
-											{ map( iconAlignOptions, ( { name, icon, key } ) => (
-												<Tooltip text={ name }>
-													<Button
-														key={ key }
-														className="kt-btn-size-btn"
-														isSmall
-														isPrimary={ iconAlign === key }
-														aria-pressed={ iconAlign === key }
-														onClick={ () => setAttributes( { iconAlign: key } ) }
-													>
-														{ icon }
-													</Button>
-												</Tooltip>
-											) ) }
-										</ButtonGroup>
-									</div>
-									<MeasurementControls
-										label={ __( 'List Margin' ) }
-										measurement={ undefined !== listMargin ? listMargin : [ 0, 0, 10, 0 ] }
-										control={ marginControl }
-										onChange={ ( value ) => setAttributes( { listMargin: value } ) }
-										onControl={ ( value ) => this.setState( { marginControl: value } ) }
-										min={ -200 }
-										max={ 200 }
-										step={ 1 }
-									/>
-								</Fragment>
-							) }
-						</KadencePanelBody>
-						{ this.showSettings( 'textStyle' ) && (
-							<KadencePanelBody
-								title={ __( 'List Text Styling' ) }
-								initialOpen={ false }
-								panelName={ 'kb-list-text-styling' }
-							>
-								<PopColorControl
-									label={ __( 'Color Settings' ) }
-									value={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
-									default={ '' }
-									onChange={ value => {
-										saveListStyles( { color: value } );
-									} }
-								/>
-								<TypographyControls
-									fontSize={ listStyles[ 0 ].size }
-									onFontSize={ ( value ) => saveListStyles( { size: value } ) }
-									fontSizeType={ listStyles[ 0 ].sizeType }
-									onFontSizeType={ ( value ) => saveListStyles( { sizeType: value } ) }
-									lineHeight={ listStyles[ 0 ].lineHeight }
-									onLineHeight={ ( value ) => saveListStyles( { lineHeight: value } ) }
-									lineHeightType={ listStyles[ 0 ].lineType }
-									onLineHeightType={ ( value ) => saveListStyles( { lineType: value } ) }
-									letterSpacing={ listStyles[ 0 ].letterSpacing }
-									onLetterSpacing={ ( value ) => saveListStyles( { letterSpacing: value } ) }
-									fontFamily={ listStyles[ 0 ].family }
-									onFontFamily={ ( value ) => saveListStyles( { family: value } ) }
-									onFontChange={ ( select ) => {
-										saveListStyles( {
-											family: select.value,
-											google: select.google,
-										} );
-									} }
-									onFontArrayChange={ ( values ) => saveListStyles( values ) }
-									googleFont={ listStyles[ 0 ].google }
-									onGoogleFont={ ( value ) => saveListStyles( { google: value } ) }
-									loadGoogleFont={ listStyles[ 0 ].loadGoogle }
-									onLoadGoogleFont={ ( value ) => saveListStyles( { loadGoogle: value } ) }
-									fontVariant={ listStyles[ 0 ].variant }
-									onFontVariant={ ( value ) => saveListStyles( { variant: value } ) }
-									fontWeight={ listStyles[ 0 ].weight }
-									onFontWeight={ ( value ) => saveListStyles( { weight: value } ) }
-									fontStyle={ listStyles[ 0 ].style }
-									onFontStyle={ ( value ) => saveListStyles( { style: value } ) }
-									fontSubset={ listStyles[ 0 ].subset }
-									onFontSubset={ ( value ) => saveListStyles( { subset: value } ) }
-									textTransform={ listStyles[ 0 ].textTransform }
-									onTextTransform={ ( value ) => saveListStyles( { textTransform: value } ) }
-								/>
-							</KadencePanelBody>
-						) }
-						{ this.showSettings( 'joinedIcons' ) && (
-							<KadencePanelBody
-								title={ __( 'Edit All Icon Styles Together' ) }
-								initialOpen={ false }
-								panelName={ 'kb-icon-all-styles' }
-							>
-								<p>{ __( 'PLEASE NOTE: This will override individual list item settings.' ) }</p>
-								<IconControl
-									value={ items[ 0 ].icon }
-									onChange={ value => {
-										if ( value !== items[ 0 ].icon ) {
-											saveAllListItem( { icon: value } );
-										}
-									} }
-								/>
-								<RangeControl
-									label={ __( 'Icon Size' ) }
-									value={ items[ 0 ].size }
-									onChange={ value => {
-										saveAllListItem( { size: value } );
-									} }
-									min={ 5 }
-									max={ 250 }
-								/>
-								{ items[ 0 ].icon && 'fe' === items[ 0 ].icon.substring( 0, 2 ) && (
-									<RangeControl
-										label={ __( 'Line Width' ) }
-										value={ items[ 0 ].width }
-										onChange={ value => {
-											saveAllListItem( { width: value } );
-										} }
-										step={ 0.5 }
-										min={ 0.5 }
-										max={ 4 }
-									/>
+									{this.showSettings( 'column' ) && (
+										<ResponsiveRangeControls
+											label={__( 'List Columns', 'kadence-blocks' )}
+											value={columns}
+											onChange={value => setAttributes( { columns: value } )}
+											tabletValue={( tabletColumns ? tabletColumns : '' )}
+											onChangeTablet={( value ) => setAttributes( { tabletColumns: value } )}
+											mobileValue={( mobileColumns ? mobileColumns : '' )}
+											onChangeMobile={( value ) => setAttributes( { mobileColumns: value } )}
+											min={1}
+											max={3}
+											step={1}
+											showUnit={false}
+										/>
+									)}
+									{this.showSettings( 'spacing' ) && (
+										<Fragment>
+											<RangeControl
+												label={__( 'List Vertical Spacing' )}
+												value={listGap}
+												onChange={value => {
+													setAttributes( { listGap: value } );
+												}}
+												min={0}
+												max={60}
+											/>
+											<RangeControl
+												label={__( 'List Horizontal Icon and Label Spacing' )}
+												value={listLabelGap}
+												onChange={value => {
+													setAttributes( { listLabelGap: value } );
+												}}
+												min={0}
+												max={60}
+											/>
+											<div className="kt-btn-size-settings-container">
+												<h2 className="kt-beside-btn-group">{__( 'Icon Align' )}</h2>
+												<ButtonGroup className="kt-button-size-type-options" aria-label={__( 'Icon Align' )}>
+													{map( iconAlignOptions, ( { name, icon, key } ) => (
+														<Tooltip text={name}>
+															<Button
+																key={key}
+																className="kt-btn-size-btn"
+																isSmall
+																isPrimary={iconAlign === key}
+																aria-pressed={iconAlign === key}
+																onClick={() => setAttributes( { iconAlign: key } )}
+															>
+																{icon}
+															</Button>
+														</Tooltip>
+													) )}
+												</ButtonGroup>
+											</div>
+											<MeasurementControls
+												label={__( 'List Margin' )}
+												measurement={undefined !== listMargin ? listMargin : [ 0, 0, 10, 0 ]}
+												control={marginControl}
+												onChange={( value ) => setAttributes( { listMargin: value } )}
+												onControl={( value ) => this.setState( { marginControl: value } )}
+												min={-200}
+												max={200}
+												step={1}
+											/>
+										</Fragment>
+									)}
+								</KadencePanelBody>
+
+								<div className="kt-sidebar-settings-spacer"></div>
+								{ this.showSettings( 'individualIcons' ) && (
+									<KadencePanelBody
+										title={ __( 'Individual list Item Settings', 'kadence-blocks' ) }
+										initialOpen={ false }
+										panelName={ 'kb-list-individual-item-settings' }
+									>
+										{ renderSettings }
+									</KadencePanelBody>
 								) }
-								<PopColorControl
-									label={ __( 'Icon Color' ) }
-									value={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
-									default={ '' }
-									onChange={ value => {
-										saveAllListItem( { color: value } );
-									} }
-								/>
-								<SelectControl
-									label={ __( 'Icon Style' ) }
-									value={ items[ 0 ].style }
-									options={ [
-										{ value: 'default', label: __( 'Default' ) },
-										{ value: 'stacked', label: __( 'Stacked' ) },
-									] }
-									onChange={ value => {
-										saveAllListItem( { style: value } );
-									} }
-								/>
-								{ items[ 0 ].style !== 'default' && (
-									<PopColorControl
-										label={ __( 'Icon Background' ) }
-										value={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
-										default={ '' }
-										onChange={ value => {
-											saveAllListItem( { background: value } );
-										} }
-									/>
-								) }
-								{ items[ 0 ].style !== 'default' && (
-									<PopColorControl
-										label={ __( 'Border Color' ) }
-										value={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
-										default={ '' }
-										onChange={ value => {
-											saveAllListItem( { border: value } );
-										} }
-									/>
-								) }
-								{ items[ 0 ].style !== 'default' && (
-									<RangeControl
-										label={ __( 'Border Size (px)' ) }
-										value={ items[ 0 ].borderWidth }
-										onChange={ value => {
-											saveAllListItem( { borderWidth: value } );
-										} }
-										min={ 0 }
-										max={ 20 }
-									/>
-								) }
-								{ items[ 0 ].style !== 'default' && (
-									<RangeControl
-										label={ __( 'Border Radius (%)' ) }
-										value={ items[ 0 ].borderRadius }
-										onChange={ value => {
-											saveAllListItem( { borderRadius: value } );
-										} }
-										min={ 0 }
-										max={ 50 }
-									/>
-								) }
-								{ items[ 0 ].style !== 'default' && (
-									<RangeControl
-										label={ __( 'Padding (px)' ) }
-										value={ items[ 0 ].padding }
-										onChange={ value => {
-											saveAllListItem( { padding: value } );
-										} }
-										min={ 0 }
-										max={ 180 }
-									/>
-								) }
-							</KadencePanelBody>
-						) }
-						<div className="kt-sidebar-settings-spacer"></div>
-						{ this.showSettings( 'individualIcons' ) && (
-							<KadencePanelBody
-								title={ __( 'Individual list Item Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-list-individual-item-settings' }
-							>
-								{ renderSettings }
-							</KadencePanelBody>
-						) }
+							</>
+						}
+
+						{( this.state.activeTab === 'style' ) &&
+							<>
+								{this.showSettings( 'textStyle' ) && (
+									<KadencePanelBody
+										title={__( 'List Text Styling' )}
+										panelName={'kb-list-text-styling'}
+									>
+										<PopColorControl
+											label={__( 'Color Settings' )}
+											value={( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' )}
+											default={''}
+											onChange={value => {
+												saveListStyles( { color: value } );
+											}}
+										/>
+										<TypographyControls
+											fontSize={listStyles[ 0 ].size}
+											onFontSize={( value ) => saveListStyles( { size: value } )}
+											fontSizeType={listStyles[ 0 ].sizeType}
+											onFontSizeType={( value ) => saveListStyles( { sizeType: value } )}
+											lineHeight={listStyles[ 0 ].lineHeight}
+											onLineHeight={( value ) => saveListStyles( { lineHeight: value } )}
+											lineHeightType={listStyles[ 0 ].lineType}
+											onLineHeightType={( value ) => saveListStyles( { lineType: value } )}
+											letterSpacing={listStyles[ 0 ].letterSpacing}
+											onLetterSpacing={( value ) => saveListStyles( { letterSpacing: value } )}
+											fontFamily={listStyles[ 0 ].family}
+											onFontFamily={( value ) => saveListStyles( { family: value } )}
+											onFontChange={( select ) => {
+												saveListStyles( {
+													family: select.value,
+													google: select.google,
+												} );
+											}}
+											onFontArrayChange={( values ) => saveListStyles( values )}
+											googleFont={listStyles[ 0 ].google}
+											onGoogleFont={( value ) => saveListStyles( { google: value } )}
+											loadGoogleFont={listStyles[ 0 ].loadGoogle}
+											onLoadGoogleFont={( value ) => saveListStyles( { loadGoogle: value } )}
+											fontVariant={listStyles[ 0 ].variant}
+											onFontVariant={( value ) => saveListStyles( { variant: value } )}
+											fontWeight={listStyles[ 0 ].weight}
+											onFontWeight={( value ) => saveListStyles( { weight: value } )}
+											fontStyle={listStyles[ 0 ].style}
+											onFontStyle={( value ) => saveListStyles( { style: value } )}
+											fontSubset={listStyles[ 0 ].subset}
+											onFontSubset={( value ) => saveListStyles( { subset: value } )}
+											textTransform={listStyles[ 0 ].textTransform}
+											onTextTransform={( value ) => saveListStyles( { textTransform: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+							</>
+						}
+
+						{( this.state.activeTab === 'advanced' ) &&
+							<>
+								{this.showSettings( 'joinedIcons' ) && (
+									<KadencePanelBody
+										title={__( 'Edit All Icon Styles Together' )}
+										panelName={'kb-icon-all-styles'}
+									>
+										<p>{__( 'PLEASE NOTE: This will override individual list item settings.' )}</p>
+										<IconControl
+											value={items[ 0 ].icon}
+											onChange={value => {
+												if ( value !== items[ 0 ].icon ) {
+													saveAllListItem( { icon: value } );
+												}
+											}}
+										/>
+										<RangeControl
+											label={__( 'Icon Size' )}
+											value={items[ 0 ].size}
+											onChange={value => {
+												saveAllListItem( { size: value } );
+											}}
+											min={5}
+											max={250}
+										/>
+										{items[ 0 ].icon && 'fe' === items[ 0 ].icon.substring( 0, 2 ) && (
+											<RangeControl
+												label={__( 'Line Width' )}
+												value={items[ 0 ].width}
+												onChange={value => {
+													saveAllListItem( { width: value } );
+												}}
+												step={0.5}
+												min={0.5}
+												max={4}
+											/>
+										)}
+										<PopColorControl
+											label={__( 'Icon Color' )}
+											value={( items[ 0 ].color ? items[ 0 ].color : '' )}
+											default={''}
+											onChange={value => {
+												saveAllListItem( { color: value } );
+											}}
+										/>
+										<SelectControl
+											label={__( 'Icon Style' )}
+											value={items[ 0 ].style}
+											options={[
+												{ value: 'default', label: __( 'Default' ) },
+												{ value: 'stacked', label: __( 'Stacked' ) },
+											]}
+											onChange={value => {
+												saveAllListItem( { style: value } );
+											}}
+										/>
+										{items[ 0 ].style !== 'default' && (
+											<PopColorControl
+												label={__( 'Icon Background' )}
+												value={( items[ 0 ].background ? items[ 0 ].background : '' )}
+												default={''}
+												onChange={value => {
+													saveAllListItem( { background: value } );
+												}}
+											/>
+										)}
+										{items[ 0 ].style !== 'default' && (
+											<PopColorControl
+												label={__( 'Border Color' )}
+												value={( items[ 0 ].border ? items[ 0 ].border : '' )}
+												default={''}
+												onChange={value => {
+													saveAllListItem( { border: value } );
+												}}
+											/>
+										)}
+										{items[ 0 ].style !== 'default' && (
+											<RangeControl
+												label={__( 'Border Size (px)' )}
+												value={items[ 0 ].borderWidth}
+												onChange={value => {
+													saveAllListItem( { borderWidth: value } );
+												}}
+												min={0}
+												max={20}
+											/>
+										)}
+										{items[ 0 ].style !== 'default' && (
+											<RangeControl
+												label={__( 'Border Radius (%)' )}
+												value={items[ 0 ].borderRadius}
+												onChange={value => {
+													saveAllListItem( { borderRadius: value } );
+												}}
+												min={0}
+												max={50}
+											/>
+										)}
+										{items[ 0 ].style !== 'default' && (
+											<RangeControl
+												label={__( 'Padding (px)' )}
+												value={items[ 0 ].padding}
+												onChange={value => {
+													saveAllListItem( { padding: value } );
+												}}
+												min={0}
+												max={180}
+											/>
+										)}
+									</KadencePanelBody>
+								)}
+							</>
+						}
+
 					</InspectorControls>
 				) }
 				<style>
