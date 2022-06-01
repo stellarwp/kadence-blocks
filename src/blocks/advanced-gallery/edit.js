@@ -1626,7 +1626,7 @@ class GalleryEdit extends Component {
 				{ ( kadence_blocks_params.dynamic_enabled ? <DynamicGalleryControl dynamicAttribute='images' { ...this.props }/> : undefined ) }
 			</Placeholder>
 		);
-		const mediaPlaceholder = ( 
+		const mediaPlaceholder = (
 			<KadenceMediaPlaceholder
 				labels={ {
 					title: title,
@@ -1642,13 +1642,21 @@ class GalleryEdit extends Component {
 				dynamicControl={ ( kadence_blocks_params.dynamic_enabled ? <DynamicGalleryControl dynamicAttribute='images' { ...this.props }/> : undefined ) }
 			/>
 		);
+
+		const addIcon = <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<path fill="none" d="M0 0h24v24H0V0z"/>
+			<g>
+				<path d="M20 4v12H8V4h12m0-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 9.67l1.69 2.26 2.48-3.1L19 15H9zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/>
+			</g>
+		</svg>;
+
 		const addMediaPlaceholder = (
 			<MediaPlaceholder
 				addToGallery={ hasImages }
 				isAppender={ hasImages }
 				className={ className }
 				dropZoneUIOnly={ hasImages && ! isSelected }
-				icon={ ! hasImages && <BlockIcon icon={ icon } /> }
+				icon={ ! hasImages && <BlockIcon icon={ addIcon } /> }
 				labels={ {
 					title: ! hasImages && __( 'Gallery', 'kadence-blocks' ),
 					instructions: ! hasImages && __( 'Drag images, upload new ones or select files from your library.', 'kadence-blocks' ),
