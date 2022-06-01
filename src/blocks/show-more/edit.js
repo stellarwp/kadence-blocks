@@ -161,11 +161,11 @@ export function Edit ({
 						onChange={ value => {
 							setAttributes( { heightDesktop: value } );
 						} }
-						tabletValue={ ( undefined !== heightTablet && undefined !== heightTablet[ 0 ] ? heightTablet[ 0 ] : '' ) }
+						tabletValue={ ( undefined !== heightTablet ? heightTablet : '' ) }
 						onChangeTablet={ ( value ) => {
 							setAttributes( { heightTablet: value } );
 						} }
-						mobileValue={ ( undefined !== heightMobile && undefined !== heightMobile[ 1 ] ? heightMobile[ 1 ] : '' ) }
+						mobileValue={ ( undefined !== heightMobile ? heightMobile : '' ) }
 						onChangeMobile={ ( value ) => {
 							setAttributes( { heightMobile: value } );
 						} }
