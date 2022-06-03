@@ -28,6 +28,7 @@ export { default as SmallResponsiveControl } from './small-responsive-control';
 export { default as ResponsiveControl } from './responsive-control';
 export { default as StepControls } from './step-control';
 export { default as OpacityControl } from './opacity-control';
+export { default as InspectorControlTabs } from './inspector-control-tabs';
 
 /* Links */
 export { default as DynamicLinkControl } from './links/dynamic-link-control';

@@ -8,7 +8,7 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
@@ -16,7 +16,7 @@ const {
 	ToggleControl,
 	ToolbarDropdownMenu,
 	SelectControl,
-} = wp.components;
+} from '@wordpress/components';
 const {
 	localStorage,
 } = window;

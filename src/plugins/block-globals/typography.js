@@ -9,12 +9,12 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	Button,
 	PanelBody,
 	ToggleControl,
 	ButtonGroup,
-} = wp.components;
+} from '@wordpress/components';
 
 class KadenceGlobalTypography extends Component {
 	constructor() {

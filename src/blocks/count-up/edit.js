@@ -23,9 +23,12 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
-const { Component, Fragment } = wp.element;
-const { RichText } = wp.blockEditor;
-const { __ } = wp.i18n;
+ import {
+	Component,
+	Fragment
+} from '@wordpress/element';
+import { RichText } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';
 const kbCountUpUniqueIDs = [];

@@ -10,19 +10,20 @@
 /**
  * Internal dependencies
  */
-import { PopColorControl, KadenceRange, TypographyControls, KadencePanelBody, MeasurementControls } from '@kadence/components';
+import { PopColorControl, RangeControl, TypographyControls, KadencePanelBody, MeasurementControls } from '@kadence/components';
 
 /**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { RangeControl } from '../../../../packages/components/src';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
-const {
+import {
 	ToggleControl,
 	TabPanel,
 	Dashicon
-} = wp.components;
+} from '@wordpress/components';
 
 
 /**
@@ -141,7 +142,7 @@ class Inspector extends Component {
 								max={ 40 }
 								step={ 1 }
 						/>
-						<KadenceRange
+						<RangeControl
 							label={ __( 'Container Border Radius (px)' ) }
 							value={ containerBorderRadius }
 							onChange={ value => setAttributes( { containerBorderRadius: value } ) }
@@ -353,7 +354,7 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } ) }
 															step={ 1 }
@@ -363,7 +364,7 @@ class Inspector extends Component {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -373,7 +374,7 @@ class Inspector extends Component {
 													);
 												} else {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -518,7 +519,7 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) }
 															onChange={ value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), value ] } ) }
 															step={ 1 }
@@ -528,7 +529,7 @@ class Inspector extends Component {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ) }
 															onChange={ value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -538,7 +539,7 @@ class Inspector extends Component {
 													);
 												} else {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ) }
 															onChange={ value => setAttributes( { textMinHeight: [ value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -683,7 +684,7 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 2 ] ) ? priceMinHeight[ 2 ] : '' ) }
 															onChange={ value => setAttributes( { priceMinHeight: [ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 0 ] ) ? priceMinHeight[ 0 ] : '' ), ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 1 ] ) ? priceMinHeight[ 1 ] : '' ), value ] } ) }
 															step={ 1 }
@@ -693,7 +694,7 @@ class Inspector extends Component {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 1 ] ) ? priceMinHeight[ 1 ] : '' ) }
 															onChange={ value => setAttributes( { priceMinHeight: [ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 0 ] ) ? priceMinHeight[ 0 ] : '' ), value, ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 2 ] ) ? priceMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -703,7 +704,7 @@ class Inspector extends Component {
 													);
 												} else {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 0 ] ) ? priceMinHeight[ 0 ] : '' ) }
 															onChange={ value => setAttributes( { priceMinHeight: [ value, ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 1 ] ) ? priceMinHeight[ 1 ] : '' ), ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 2 ] ) ? priceMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }

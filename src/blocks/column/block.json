@@ -424,6 +424,6 @@
 		"kbcss": true,
 		"editorsKitBlockNavigator": true
 	},
-	"editorStyle": "kadence-blocks-editor-css",
+	"editorStyle": "kadence-blocks-column",
 	"style": "kadence-blocks-column"
 }

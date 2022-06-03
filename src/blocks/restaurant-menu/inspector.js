@@ -10,20 +10,21 @@ import { map } from 'lodash';
 /**
  * Internal dependencies
  */
-import { PopColorControl, KadenceRange, KadencePanelBody, MeasurementControls } from '@kadence/components';
+import { PopColorControl, RangeControl, KadencePanelBody, MeasurementControls } from '@kadence/components';
 
 /**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { RangeControl } from '../../packages/components/src';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
-const {
+import {
 	ButtonGroup,
 	Button,
 	TabPanel,
 	Dashicon
-} = wp.components;
+} from '@wordpress/components';
 
 
 /**
@@ -230,7 +231,7 @@ class Inspector extends Component {
 							max={ 40 }
 							step={ 1 }
 						/>
-						<KadenceRange
+						<RangeControl
 							label={ __( 'Container Border Radius (px)' ) }
 							value={ containerBorderRadius }
 							onChange={ value => setAttributes( { containerBorderRadius: value } ) }
@@ -353,7 +354,7 @@ class Inspector extends Component {
 								</Button>
 							) ) }
 						</ButtonGroup>
-						<KadenceRange
+						<RangeControl
 							label={ __( 'Container Max Width', 'kadence-blocks' ) }
 							value={ maxWidth }
 							onChange={ ( value ) => {

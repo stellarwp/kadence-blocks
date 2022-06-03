@@ -357,7 +357,7 @@ class Kadence_Blocks_Frontend {
 	 * @param string $name the stylesheet name.
 	 */
 	public function should_render_inline_stylesheet( $name ) {
-		if ( ! wp_style_is( $name, 'done' ) ) {
+		if ( ! is_admin() && ! wp_style_is( $name, 'done' ) ) {
 			if ( function_exists( 'wp_is_block_theme' ) ) {
 				if ( ! doing_filter( 'the_content' ) && ! wp_is_block_theme() ) {
 					wp_print_styles( $name );

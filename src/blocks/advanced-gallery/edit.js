@@ -8,7 +8,19 @@ import Masonry from 'react-masonry-component';
  * Kadence Components.
  */
 import { KadenceColorOutput } from '@kadence/helpers';
-import { PopColorControl, TypographyControls, KadencePanelBody, KadenceRange, WebfontLoader, ImageSizeControl, DynamicLinkControl, KadenceMediaPlaceholder, DynamicGalleryControl, MeasurementControls } from '@kadence/components';
+import {
+	PopColorControl,
+	TypographyControls,
+	KadencePanelBody,
+	RangeControl,
+	WebfontLoader,
+	ImageSizeControl,
+	DynamicLinkControl,
+	KadenceMediaPlaceholder,
+	DynamicGalleryControl,
+	MeasurementControls,
+	InspectorControlTabs
+} from '@kadence/components';
 import Slider from 'react-slick';
 const {
 	applyFilters,
@@ -37,12 +49,10 @@ import {
  * WordPress dependencies
  */
 import { compose } from '@wordpress/compose';
-const {
-	IconButton,
+import {
 	Button,
 	ButtonGroup,
 	Tooltip,
-	RangeControl,
 	SelectControl,
 	ToggleControl,
 	Toolbar,
@@ -50,7 +60,7 @@ const {
 	Dashicon,
 	Placeholder,
 	withNotices,
-} = wp.components;
+} from '@wordpress/components';
 import {
 	BlockControls,
 	BlockIcon,
@@ -135,6 +145,7 @@ class GalleryEdit extends Component {
 			marginTabletControl: 'linked',
 			marginMobileControl: 'linked',
 			radiusControl: 'linked',
+			activeTab: 'general',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
 	}
@@ -615,7 +626,7 @@ class GalleryEdit extends Component {
 							gallery
 							value={ images.map( ( img ) => img.id ) }
 							render={ ( { open } ) => (
-								<IconButton
+								<Button
 									className="components-toolbar__control"
 									label={ __( 'Edit gallery', 'kadence-blocks' ) }
 									icon="edit"
@@ -632,762 +643,780 @@ class GalleryEdit extends Component {
 			<Fragment>
 				{ this.showSettings( 'allSettings' ) && (
 					<InspectorControls>
-						<KadencePanelBody
-							title={ __( 'Gallery Settings', 'kadence-blocks' ) }
-							panelName={ 'kb-gallery-settings' }
-						>
-							{ kadence_blocks_params.dynamic_enabled && dynamicSource && (
-								<DynamicGalleryControl dynamicAttribute='images' { ...this.props } />
-							) }
-							<h2>{ __( 'Gallery Type:' ) + ' ' + ( undefined !== typeLabel && undefined !== typeLabel[ 0 ] && typeLabel[ 0 ].label ? typeLabel[ 0 ].label : 'Masonry' ) }</h2>
-							<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={ __( 'Gallery Type', 'kadence-blocks' ) }>
-								{ map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
-									<Tooltip text={ label }>
-										<Button
-											key={ value }
-											className={ `kt-style-btn${ ( isDisabled ? ' kb-disabled-btn' : '' ) }` }
-											isSmall
-											isDisabled={ isDisabled }
-											isPrimary={ type === value }
-											aria-pressed={ type === value }
-											onClick={ () => {
-												if ( ! isDisabled ) {
-													setAttributes( { type: value } );
-												}
-											} }
-										>
-											{ icon }
-										</Button>
-									</Tooltip>
-								) ) }
-							</ButtonGroup>
-							{ ( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && (
-								<SelectControl
-									label={ __( 'Image ratio', 'kadence-blocks' ) }
-									options={ [
-										{
-											label: __( 'Landscape 4:3', 'kadence-blocks' ),
-											value: 'land43',
-										},
-										{
-											label: __( 'Landscape 3:2', 'kadence-blocks' ),
-											value: 'land32',
-										},
-										{
-											label: __( 'Landscape 16:9', 'kadence-blocks' ),
-											value: 'land169',
-										},
-										{
-											label: __( 'Landscape 2:1', 'kadence-blocks' ),
-											value: 'land21',
-										},
-										{
-											label: __( 'Landscape 3:1', 'kadence-blocks' ),
-											value: 'land31',
-										},
-										{
-											label: __( 'Landscape 4:1', 'kadence-blocks' ),
-											value: 'land41',
-										},
-										{
-											label: __( 'Portrait 3:4', 'kadence-blocks' ),
-											value: 'port34',
-										},
-										{
-											label: __( 'Portrait 2:3', 'kadence-blocks' ),
-											value: 'port23',
-										},
-										{
-											label: __( 'Square 1:1', 'kadence-blocks' ),
-											value: 'square',
-										},
-										{
-											label: __( 'Inherit', 'kadence-blocks' ),
-											value: 'inherit',
-										},
-									] }
-									value={ imageRatio }
-									onChange={ ( value ) => setAttributes( { imageRatio: value } ) }
-								/>
-							) }
-							{ ( type === 'thumbslider' ) && (
-								<SelectControl
-									label={ __( 'Thumbnail Image ratio', 'kadence-blocks' ) }
-									options={ [
-										{
-											label: __( 'Landscape 4:3', 'kadence-blocks' ),
-											value: 'land43',
-										},
-										{
-											label: __( 'Landscape 3:2', 'kadence-blocks' ),
-											value: 'land32',
-										},
-										{
-											label: __( 'Landscape 16:9', 'kadence-blocks' ),
-											value: 'land169',
-										},
-										{
-											label: __( 'Landscape 2:1', 'kadence-blocks' ),
-											value: 'land21',
-										},
-										{
-											label: __( 'Landscape 3:1', 'kadence-blocks' ),
-											value: 'land31',
-										},
-										{
-											label: __( 'Landscape 4:1', 'kadence-blocks' ),
-											value: 'land41',
-										},
-										{
-											label: __( 'Portrait 3:4', 'kadence-blocks' ),
-											value: 'port34',
-										},
-										{
-											label: __( 'Portrait 2:3', 'kadence-blocks' ),
-											value: 'port23',
-										},
-										{
-											label: __( 'Square 1:1', 'kadence-blocks' ),
-											value: 'square',
-										},
-										{
-											label: __( 'Inherit', 'kadence-blocks' ),
-											value: 'inherit',
-										},
-									] }
-									value={ thumbnailRatio }
-									onChange={ ( value ) => setAttributes( { thumbnailRatio: value } ) }
-								/>
-							) }
-							{ type && ( type === 'carousel' || type === 'grid' || type === 'masonry' ) && (
-								<Fragment>
-									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type', 'kadence-blocks' ) }>
-										{ map( columnControlTypes, ( { name, key, icon } ) => (
-											<Tooltip text={ name }>
+
+						<InspectorControlTabs
+							panelName={ 'advanced-gallery' }
+							setActiveTab={ ( value ) => this.setState( { activeTab: value } ) }
+							activeTab={ this.state.activeTab }
+						/>
+
+						{( this.state.activeTab === 'general' ) &&
+							<>
+								<KadencePanelBody
+									title={__( 'Gallery Settings', 'kadence-blocks' )}
+									panelName={'kb-gallery-settings'}
+								>
+									{kadence_blocks_params.dynamic_enabled && dynamicSource && (
+										<DynamicGalleryControl dynamicAttribute='images' {...this.props} />
+									)}
+									<h2>{__( 'Gallery Type:' ) + ' ' + ( undefined !== typeLabel && undefined !== typeLabel[ 0 ] && typeLabel[ 0 ].label ? typeLabel[ 0 ].label : 'Masonry' )}</h2>
+									<ButtonGroup className="kt-style-btn-group kb-gallery-type-select" aria-label={__( 'Gallery Type', 'kadence-blocks' )}>
+										{map( galleryTypes, ( { value, label, icon, isDisabled } ) => (
+											<Tooltip text={label}>
 												<Button
-													key={ key }
-													className="kt-size-btn"
+													key={value}
+													className={`kt-style-btn${( isDisabled ? ' kb-disabled-btn' : '' )}`}
 													isSmall
-													isPrimary={ columnControl === key }
-													aria-pressed={ columnControl === key }
-													onClick={ () => setAttributes( { columnControl: key } ) }
+													isDisabled={isDisabled}
+													isPrimary={type === value}
+													aria-pressed={type === value}
+													onClick={() => {
+														if ( !isDisabled ) {
+															setAttributes( { type: value } );
+														}
+													}}
 												>
-													{ icon }
+													{icon}
 												</Button>
 											</Tooltip>
-										) ) }
+										) )}
 									</ButtonGroup>
-									{ columnControl !== 'individual' && (
-										<RangeControl
-											label={ __( 'Columns' ) }
-											value={ columns[ 2 ] }
-											onChange={ onColumnChange }
-											min={ 1 }
-											max={ 8 }
+									{( type === 'grid' || type === 'carousel' || type === 'slider' || type === 'thumbslider' ) && (
+										<SelectControl
+											label={__( 'Image ratio', 'kadence-blocks' )}
+											options={[
+												{
+													label: __( 'Landscape 4:3', 'kadence-blocks' ),
+													value: 'land43',
+												},
+												{
+													label: __( 'Landscape 3:2', 'kadence-blocks' ),
+													value: 'land32',
+												},
+												{
+													label: __( 'Landscape 16:9', 'kadence-blocks' ),
+													value: 'land169',
+												},
+												{
+													label: __( 'Landscape 2:1', 'kadence-blocks' ),
+													value: 'land21',
+												},
+												{
+													label: __( 'Landscape 3:1', 'kadence-blocks' ),
+													value: 'land31',
+												},
+												{
+													label: __( 'Landscape 4:1', 'kadence-blocks' ),
+													value: 'land41',
+												},
+												{
+													label: __( 'Portrait 3:4', 'kadence-blocks' ),
+													value: 'port34',
+												},
+												{
+													label: __( 'Portrait 2:3', 'kadence-blocks' ),
+													value: 'port23',
+												},
+												{
+													label: __( 'Square 1:1', 'kadence-blocks' ),
+													value: 'square',
+												},
+												{
+													label: __( 'Inherit', 'kadence-blocks' ),
+													value: 'inherit',
+												},
+											]}
+											value={imageRatio}
+											onChange={( value ) => setAttributes( { imageRatio: value } )}
 										/>
-									) }
-									{ columnControl && columnControl === 'individual' && (
-										<Fragment>
-											<h4>{ __( 'Columns', 'kadence-blocks' ) }</h4>
-											<RangeControl
-												label={ __( 'Screen Above 1500px', 'kadence-blocks' ) }
-												value={ columns[ 0 ] }
-												onChange={ ( value ) => setAttributes( { columns: [ value, columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen 1200px - 1499px', 'kadence-blocks' ) }
-												value={ columns[ 1 ] }
-												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], value, columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen 992px - 1199px', 'kadence-blocks' ) }
-												value={ columns[ 2 ] }
-												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], value, columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen 768px - 991px', 'kadence-blocks' ) }
-												value={ columns[ 3 ] }
-												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], value, columns[ 4 ], columns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen 544px - 767px', 'kadence-blocks' ) }
-												value={ columns[ 4 ] }
-												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], value, columns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen Below 543px', 'kadence-blocks' ) }
-												value={ columns[ 5 ] }
-												onChange={ ( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], value ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-										</Fragment>
-									) }
-								</Fragment>
-							) }
-							{ type && ( type === 'thumbslider' ) && (
-								<Fragment>
-									<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Thumb Column Control Type', 'kadence-blocks' ) }>
-										{ map( columnControlTypes, ( { name, key, icon } ) => (
-											<Tooltip text={ name }>
-												<Button
-													key={ key }
-													className="kt-size-btn"
-													isSmall
-													isPrimary={ thumbnailControl === key }
-													aria-pressed={ thumbnailControl === key }
-													onClick={ () => setAttributes( { thumbnailControl: key } ) }
-												>
-													{ icon }
-												</Button>
-											</Tooltip>
-										) ) }
-									</ButtonGroup>
-									{ thumbnailControl !== 'individual' && (
-										<RangeControl
-											label={ __( 'Thumbnail Columns', 'kadence-blocks' ) }
-											value={ thumbnailColumns[ 2 ] }
-											onChange={ onThumbColumnChange }
-											min={ 1 }
-											max={ 10 }
+									)}
+									{( type === 'thumbslider' ) && (
+										<SelectControl
+											label={__( 'Thumbnail Image ratio', 'kadence-blocks' )}
+											options={[
+												{
+													label: __( 'Landscape 4:3', 'kadence-blocks' ),
+													value: 'land43',
+												},
+												{
+													label: __( 'Landscape 3:2', 'kadence-blocks' ),
+													value: 'land32',
+												},
+												{
+													label: __( 'Landscape 16:9', 'kadence-blocks' ),
+													value: 'land169',
+												},
+												{
+													label: __( 'Landscape 2:1', 'kadence-blocks' ),
+													value: 'land21',
+												},
+												{
+													label: __( 'Landscape 3:1', 'kadence-blocks' ),
+													value: 'land31',
+												},
+												{
+													label: __( 'Landscape 4:1', 'kadence-blocks' ),
+													value: 'land41',
+												},
+												{
+													label: __( 'Portrait 3:4', 'kadence-blocks' ),
+													value: 'port34',
+												},
+												{
+													label: __( 'Portrait 2:3', 'kadence-blocks' ),
+													value: 'port23',
+												},
+												{
+													label: __( 'Square 1:1', 'kadence-blocks' ),
+													value: 'square',
+												},
+												{
+													label: __( 'Inherit', 'kadence-blocks' ),
+													value: 'inherit',
+												},
+											]}
+											value={thumbnailRatio}
+											onChange={( value ) => setAttributes( { thumbnailRatio: value } )}
 										/>
-									) }
-									{ thumbnailControl && thumbnailControl === 'individual' && (
+									)}
+									{type && ( type === 'carousel' || type === 'grid' || type === 'masonry' ) && (
 										<Fragment>
-											<h4>{ __( 'Columns' ) }</h4>
-											<RangeControl
-												label={ __( 'Screen Above 1500px', 'kadence-blocks' ) }
-												value={ thumbnailColumns[ 0 ] }
-												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ value, thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen 1200px - 1499px', 'kadence-blocks' ) }
-												value={ thumbnailColumns[ 1 ] }
-												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], value, thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen 992px - 1199px', 'kadence-blocks' ) }
-												value={ thumbnailColumns[ 2 ] }
-												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], value, thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen 768px - 991px', 'kadence-blocks' ) }
-												value={ thumbnailColumns[ 3 ] }
-												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], value, thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen 544px - 767px', 'kadence-blocks' ) }
-												value={ thumbnailColumns[ 4 ] }
-												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], value, thumbnailColumns[ 5 ] ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
-											<RangeControl
-												label={ __( 'Screen Below 543px', 'kadence-blocks' ) }
-												value={ thumbnailColumns[ 5 ] }
-												onChange={ ( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], value ] } ) }
-												min={ 1 }
-												max={ 8 }
-											/>
+											<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={__( 'Column Control Type', 'kadence-blocks' )}>
+												{map( columnControlTypes, ( { name, key, icon } ) => (
+													<Tooltip text={name}>
+														<Button
+															key={key}
+															className="kt-size-btn"
+															isSmall
+															isPrimary={columnControl === key}
+															aria-pressed={columnControl === key}
+															onClick={() => setAttributes( { columnControl: key } )}
+														>
+															{icon}
+														</Button>
+													</Tooltip>
+												) )}
+											</ButtonGroup>
+											{columnControl !== 'individual' && (
+												<RangeControl
+													label={__( 'Columns' )}
+													value={columns[ 2 ]}
+													onChange={onColumnChange}
+													min={1}
+													max={8}
+												/>
+											)}
+											{columnControl && columnControl === 'individual' && (
+												<Fragment>
+													<h4>{__( 'Columns', 'kadence-blocks' )}</h4>
+													<RangeControl
+														label={__( 'Screen Above 1500px', 'kadence-blocks' )}
+														value={columns[ 0 ]}
+														onChange={( value ) => setAttributes( { columns: [ value, columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen 1200px - 1499px', 'kadence-blocks' )}
+														value={columns[ 1 ]}
+														onChange={( value ) => setAttributes( { columns: [ columns[ 0 ], value, columns[ 2 ], columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen 992px - 1199px', 'kadence-blocks' )}
+														value={columns[ 2 ]}
+														onChange={( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], value, columns[ 3 ], columns[ 4 ], columns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen 768px - 991px', 'kadence-blocks' )}
+														value={columns[ 3 ]}
+														onChange={( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], value, columns[ 4 ], columns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen 544px - 767px', 'kadence-blocks' )}
+														value={columns[ 4 ]}
+														onChange={( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], value, columns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen Below 543px', 'kadence-blocks' )}
+														value={columns[ 5 ]}
+														onChange={( value ) => setAttributes( { columns: [ columns[ 0 ], columns[ 1 ], columns[ 2 ], columns[ 3 ], columns[ 4 ], value ] } )}
+														min={1}
+														max={8}
+													/>
+												</Fragment>
+											)}
 										</Fragment>
-									) }
-								</Fragment>
-							) }
-							{ type !== 'slider' && this.showSettings( 'gutterSettings' ) && (
-								<Fragment>
-									<h2 className="kt-heading-size-title">{ __( 'Gutter', 'kadence-blocks' ) }</h2>
-									<TabPanel className="kt-size-tabs"
-										activeClass="active-tab"
-										tabs={ [
-											{
-												name: 'desk',
-												title: <Dashicon icon="desktop" />,
-												className: 'kt-desk-tab',
-											},
-											{
-												name: 'tablet',
-												title: <Dashicon icon="tablet" />,
-												className: 'kt-tablet-tab',
-											},
-											{
-												name: 'mobile',
-												title: <Dashicon icon="smartphone" />,
-												className: 'kt-mobile-tab',
-											},
-										] }>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'mobile' === tab.name ) {
-														tabout = (
-															<RangeControl
-																value={ ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) }
-																onChange={ value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), value ] } ) }
-																step={ 2 }
-																min={ 0 }
-																max={ 100 }
-															/>
-														);
-													} else if ( 'tablet' === tab.name ) {
-														tabout = (
-															<RangeControl
-																value={ ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ) }
-																onChange={ value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), value, ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } ) }
-																step={ 2 }
-																min={ 0 }
-																max={ 100 }
-															/>
-														);
-													} else {
-														tabout = (
-															<RangeControl
-																value={ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ) }
-																onChange={ value => setAttributes( { gutter: [ value, ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } ) }
-																step={ 2 }
-																min={ 0 }
-																max={ 100 }
-															/>
-														);
+									)}
+									{type && ( type === 'thumbslider' ) && (
+										<Fragment>
+											<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={__( 'Thumb Column Control Type', 'kadence-blocks' )}>
+												{map( columnControlTypes, ( { name, key, icon } ) => (
+													<Tooltip text={name}>
+														<Button
+															key={key}
+															className="kt-size-btn"
+															isSmall
+															isPrimary={thumbnailControl === key}
+															aria-pressed={thumbnailControl === key}
+															onClick={() => setAttributes( { thumbnailControl: key } )}
+														>
+															{icon}
+														</Button>
+													</Tooltip>
+												) )}
+											</ButtonGroup>
+											{thumbnailControl !== 'individual' && (
+												<RangeControl
+													label={__( 'Thumbnail Columns', 'kadence-blocks' )}
+													value={thumbnailColumns[ 2 ]}
+													onChange={onThumbColumnChange}
+													min={1}
+													max={10}
+												/>
+											)}
+											{thumbnailControl && thumbnailControl === 'individual' && (
+												<Fragment>
+													<h4>{__( 'Columns' )}</h4>
+													<RangeControl
+														label={__( 'Screen Above 1500px', 'kadence-blocks' )}
+														value={thumbnailColumns[ 0 ]}
+														onChange={( value ) => setAttributes( { thumbnailColumns: [ value, thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen 1200px - 1499px', 'kadence-blocks' )}
+														value={thumbnailColumns[ 1 ]}
+														onChange={( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], value, thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen 992px - 1199px', 'kadence-blocks' )}
+														value={thumbnailColumns[ 2 ]}
+														onChange={( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], value, thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen 768px - 991px', 'kadence-blocks' )}
+														value={thumbnailColumns[ 3 ]}
+														onChange={( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], value, thumbnailColumns[ 4 ], thumbnailColumns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen 544px - 767px', 'kadence-blocks' )}
+														value={thumbnailColumns[ 4 ]}
+														onChange={( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], value, thumbnailColumns[ 5 ] ] } )}
+														min={1}
+														max={8}
+													/>
+													<RangeControl
+														label={__( 'Screen Below 543px', 'kadence-blocks' )}
+														value={thumbnailColumns[ 5 ]}
+														onChange={( value ) => setAttributes( { thumbnailColumns: [ thumbnailColumns[ 0 ], thumbnailColumns[ 1 ], thumbnailColumns[ 2 ], thumbnailColumns[ 3 ], thumbnailColumns[ 4 ], value ] } )}
+														min={1}
+														max={8}
+													/>
+												</Fragment>
+											)}
+										</Fragment>
+									)}
+									{type !== 'slider' && this.showSettings( 'gutterSettings' ) && (
+										<Fragment>
+											<h2 className="kt-heading-size-title">{__( 'Gutter', 'kadence-blocks' )}</h2>
+											<TabPanel className="kt-size-tabs"
+													  activeClass="active-tab"
+													  tabs={[
+														  {
+															  name     : 'desk',
+															  title    : <Dashicon icon="desktop"/>,
+															  className: 'kt-desk-tab',
+														  },
+														  {
+															  name     : 'tablet',
+															  title    : <Dashicon icon="tablet"/>,
+															  className: 'kt-tablet-tab',
+														  },
+														  {
+															  name     : 'mobile',
+															  title    : <Dashicon icon="smartphone"/>,
+															  className: 'kt-mobile-tab',
+														  },
+													  ]}>
+												{
+													( tab ) => {
+														let tabout;
+														if ( tab.name ) {
+															if ( 'mobile' === tab.name ) {
+																tabout = (
+																	<RangeControl
+																		value={( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' )}
+																		onChange={value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), value ] } )}
+																		step={2}
+																		min={0}
+																		max={100}
+																	/>
+																);
+															} else if ( 'tablet' === tab.name ) {
+																tabout = (
+																	<RangeControl
+																		value={( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' )}
+																		onChange={value => setAttributes( { gutter: [ ( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' ), value, ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } )}
+																		step={2}
+																		min={0}
+																		max={100}
+																	/>
+																);
+															} else {
+																tabout = (
+																	<RangeControl
+																		value={( ( undefined !== gutter && undefined !== gutter[ 0 ] ) ? gutter[ 0 ] : '' )}
+																		onChange={value => setAttributes( { gutter: [ value, ( ( undefined !== gutter && undefined !== gutter[ 1 ] ) ? gutter[ 1 ] : '' ), ( ( undefined !== gutter && undefined !== gutter[ 2 ] ) ? gutter[ 2 ] : '' ) ] } )}
+																		step={2}
+																		min={0}
+																		max={100}
+																	/>
+																);
+															}
+														}
+														return <div className={tab.className} key={tab.className}>{tabout}</div>;
 													}
 												}
-												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-											}
-										}
-									</TabPanel>
-								</Fragment>
-							) }
-							{ ( type === 'fluidcarousel' || type === 'tiles' ) && (
-								<Fragment>
-									<h2 className="kt-heading-size-title">{ ( type === 'tiles' ? __( 'Row Height', 'kadence-blocks' ) : __( 'Carousel Height', 'kadence-blocks' ) ) }</h2>
-									<TabPanel className="kt-size-tabs"
-										activeClass="active-tab"
-										tabs={ [
-											{
-												name: 'desk',
-												title: <Dashicon icon="desktop" />,
-												className: 'kt-desk-tab',
-											},
-											{
-												name: 'tablet',
-												title: <Dashicon icon="tablet" />,
-												className: 'kt-tablet-tab',
-											},
-											{
-												name: 'mobile',
-												title: <Dashicon icon="smartphone" />,
-												className: 'kt-mobile-tab',
-											},
-										] }>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'mobile' === tab.name ) {
-														tabout = (
-															<KadenceRange
-																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) }
-																onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } ) }
-																step={ 1 }
-																min={ 120 }
-																max={ 800 }
-															/>
-														);
-													} else if ( 'tablet' === tab.name ) {
-														tabout = (
-															<KadenceRange
-																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ) }
-																onChange={ value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
-																step={ 1 }
-																min={ 120 }
-																max={ 800 }
-															/>
-														);
-													} else {
-														tabout = (
-															<KadenceRange
-																value={ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ) }
-																onChange={ value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } ) }
-																step={ 1 }
-																min={ 120 }
-																max={ 800 }
-															/>
-														);
+											</TabPanel>
+										</Fragment>
+									)}
+									{( type === 'fluidcarousel' || type === 'tiles' ) && (
+										<Fragment>
+											<h2 className="kt-heading-size-title">{( type === 'tiles' ? __( 'Row Height', 'kadence-blocks' ) : __( 'Carousel Height', 'kadence-blocks' ) )}</h2>
+											<TabPanel className="kt-size-tabs"
+													  activeClass="active-tab"
+													  tabs={[
+														  {
+															  name     : 'desk',
+															  title    : <Dashicon icon="desktop"/>,
+															  className: 'kt-desk-tab',
+														  },
+														  {
+															  name     : 'tablet',
+															  title    : <Dashicon icon="tablet"/>,
+															  className: 'kt-tablet-tab',
+														  },
+														  {
+															  name     : 'mobile',
+															  title    : <Dashicon icon="smartphone"/>,
+															  className: 'kt-mobile-tab',
+														  },
+													  ]}>
+												{
+													( tab ) => {
+														let tabout;
+														if ( tab.name ) {
+															if ( 'mobile' === tab.name ) {
+																tabout = (
+																	<RangeControl
+																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' )}
+																		onChange={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } )}
+																		step={1}
+																		min={120}
+																		max={800}
+																	/>
+																);
+															} else if ( 'tablet' === tab.name ) {
+																tabout = (
+																	<RangeControl
+																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' )}
+																		onChange={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
+																		step={1}
+																		min={120}
+																		max={800}
+																	/>
+																);
+															} else {
+																tabout = (
+																	<RangeControl
+																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' )}
+																		onChange={value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
+																		step={1}
+																		min={120}
+																		max={800}
+																	/>
+																);
+															}
+														}
+														return <div className={tab.className} key={tab.className}>{tabout}</div>;
 													}
 												}
-												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-											}
-										}
-									</TabPanel>
-									{ type === 'fluidcarousel' && (
-										<ToggleControl
-											label={ __( 'Carousel Center Mode', 'kadence-blocks' ) }
-											checked={ carouselAlign }
-											onChange={ ( value ) => setAttributes( { carouselAlign: value } ) }
+											</TabPanel>
+											{type === 'fluidcarousel' && (
+												<ToggleControl
+													label={__( 'Carousel Center Mode', 'kadence-blocks' )}
+													checked={carouselAlign}
+													onChange={( value ) => setAttributes( { carouselAlign: value } )}
+												/>
+											)}
+										</Fragment>
+									)}
+									{ids && undefined !== ids[ 0 ] && !dynamicSource && (
+										<ImageSizeControl
+											label={__( 'Thumbnail Image Size', 'kadence-blocks' )}
+											slug={thumbSize}
+											id={ids[ 0 ]}
+											fullSelection={true}
+											selectByValue={false}
+											onChange={this.changeImageThumbSize}
 										/>
-									) }
-								</Fragment>
-							) }
-							{ ids && undefined !== ids[ 0 ] && ! dynamicSource && (
-								<ImageSizeControl
-									label={ __( 'Thumbnail Image Size', 'kadence-blocks' ) }
-									slug={ thumbSize }
-									id={ ids[ 0 ] }
-									fullSelection={ true }
-									selectByValue={ false }
-									onChange={ this.changeImageThumbSize }
-								/>
-							) }
-						</KadencePanelBody>
-						{ type && ( type === 'carousel' || type === 'fluidcarousel' || type === 'slider' || type === 'thumbslider' ) && (
-							<Fragment>
-								{ this.showSettings( 'carouselSettings' ) && (
+									)}
+								</KadencePanelBody>
+
+
+								{type && ( type === 'carousel' || type === 'fluidcarousel' || type === 'slider' || type === 'thumbslider' ) && (
+									<Fragment>
+										{this.showSettings( 'carouselSettings' ) && (
+											<KadencePanelBody
+												title={__( 'Carousel Settings', 'kadence-blocks' )}
+												initialOpen={false}
+												panelName={'kb-gallery-carousel-settings'}
+											>
+												<ToggleControl
+													label={__( 'Carousel Auto Play', 'kadence-blocks' )}
+													checked={autoPlay}
+													onChange={( value ) => setAttributes( { autoPlay: value } )}
+												/>
+												{autoPlay && (
+													<RangeControl
+														label={__( 'Autoplay Speed', 'kadence-blocks' )}
+														value={autoSpeed}
+														onChange={( value ) => setAttributes( { autoSpeed: value } )}
+														min={500}
+														max={15000}
+														step={10}
+													/>
+												)}
+												<RangeControl
+													label={__( 'Carousel Slide Transition Speed', 'kadence-blocks' )}
+													value={transSpeed}
+													onChange={( value ) => setAttributes( { transSpeed: value } )}
+													min={100}
+													max={2000}
+													step={10}
+												/>
+												{type === 'carousel' && (
+													<SelectControl
+														label={__( 'Slides to Scroll', 'kadence-blocks' )}
+														options={[
+															{
+																label: __( 'One' ),
+																value: '1',
+															},
+															{
+																label: __( 'All' ),
+																value: 'all',
+															},
+														]}
+														value={slidesScroll}
+														onChange={( value ) => setAttributes( { slidesScroll: value } )}
+													/>
+												)}
+												<SelectControl
+													label={__( 'Arrow Style', 'kadence-blocks' )}
+													options={[
+														{
+															label: __( 'White on Dark', 'kadence-blocks' ),
+															value: 'whiteondark',
+														},
+														{
+															label: __( 'Black on Light', 'kadence-blocks' ),
+															value: 'blackonlight',
+														},
+														{
+															label: __( 'Outline Black', 'kadence-blocks' ),
+															value: 'outlineblack',
+														},
+														{
+															label: __( 'Outline White', 'kadence-blocks' ),
+															value: 'outlinewhite',
+														},
+														{
+															label: __( 'None', 'kadence-blocks' ),
+															value: 'none',
+														},
+													]}
+													value={arrowStyle}
+													onChange={( value ) => setAttributes( { arrowStyle: value } )}
+												/>
+												{type !== 'thumbslider' && (
+													<SelectControl
+														label={__( 'Dot Style', 'kadence-blocks' )}
+														options={[
+															{
+																label: __( 'Dark', 'kadence-blocks' ),
+																value: 'dark',
+															},
+															{
+																label: __( 'Light', 'kadence-blocks' ),
+																value: 'light',
+															},
+															{
+																label: __( 'Outline Dark', 'kadence-blocks' ),
+																value: 'outlinedark',
+															},
+															{
+																label: __( 'Outline Light', 'kadence-blocks' ),
+																value: 'outlinelight',
+															},
+															{
+																label: __( 'None', 'kadence-blocks' ),
+																value: 'none',
+															},
+														]}
+														value={dotStyle}
+														onChange={( value ) => setAttributes( { dotStyle: value } )}
+													/>
+												)}
+											</KadencePanelBody>
+										)}
+									</Fragment>
+								)}
+								<KadencePanelBody
+									title={__( 'Link Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-gallery-link-settings'}
+								>
+									<SelectControl
+										label={__( 'Link To', 'kadence-blocks' )}
+										value={linkTo}
+										onChange={this.setLinkTo}
+										options={linkOptions}
+									/>
+									{linkTo === 'custom' && dynamicSource && (
+										<DynamicLinkControl dynamicAttribute='link' {...this.props}/>
+									)}
+									{linkTo === 'media' && (
+										<Fragment>
+											{ids && undefined !== ids[ 0 ] && !dynamicSource && (
+												<ImageSizeControl
+													label={__( 'Link Image Size', 'kadence-blocks' )}
+													slug={lightSize}
+													id={ids[ 0 ]}
+													fullSelection={true}
+													selectByValue={false}
+													onChange={this.changeImageLightSize}
+												/>
+											)}
+											{this.showSettings( 'lightboxSettings' ) && (
+												<Fragment>
+													<SelectControl
+														label={__( 'Link Triggers?', 'kadence-blocks' )}
+														value={lightbox}
+														onChange={( value ) => setAttributes( { lightbox: value } )}
+														options={[
+															{
+																label: __( 'None', 'kadence-blocks' ),
+																value: 'none',
+															},
+															{
+																label: __( 'Lightbox', 'kadence-blocks' ),
+																value: 'magnific',
+															},
+															{
+																label: __( 'New Tab', 'kadence-blocks' ),
+																value: 'new_tab',
+															},
+														]}
+													/>
+													{lightbox && lightbox === 'magnific' && (
+														<ToggleControl
+															label={__( 'Show Caption in Lightbox', 'kadence-blocks' )}
+															checked={lightboxCaption}
+															onChange={( value ) => setAttributes( { lightboxCaption: value } )}
+														/>
+													)}
+												</Fragment>
+											)}
+										</Fragment>
+									)}
+								</KadencePanelBody>
+
+								{ this.showSettings( 'captionSettings' ) && (
 									<KadencePanelBody
-										title={ __( 'Carousel Settings', 'kadence-blocks' ) }
+										title={ __( 'Caption Settings', 'kadence-blocks' ) }
 										initialOpen={ false }
-										panelName={ 'kb-gallery-carousel-settings' }
+										panelName={ 'kb-gallery-caption-settings' }
 									>
 										<ToggleControl
-											label={ __( 'Carousel Auto Play', 'kadence-blocks' ) }
-											checked={ autoPlay }
-											onChange={ ( value ) => setAttributes( { autoPlay: value } ) }
+											label={ __( 'Show Captions', 'kadence-blocks' ) }
+											checked={ showCaption }
+											onChange={ this.setCaptions }
 										/>
-										{ autoPlay && (
-											<RangeControl
-												label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
-												value={ autoSpeed }
-												onChange={ ( value ) => setAttributes( { autoSpeed: value } ) }
-												min={ 500 }
-												max={ 15000 }
-												step={ 10 }
-											/>
+										{ showCaption && (
+											<Fragment>
+												<SelectControl
+													label={ __( 'Caption Placement', 'kadence-blocks' ) }
+													options={ [
+														{
+															label: __( 'Bottom of Image - Show on Hover', 'kadence-blocks' ),
+															value: 'bottom-hover',
+														},
+														{
+															label: __( 'Bottom of Image - Show always', 'kadence-blocks' ),
+															value: 'bottom',
+														},
+														{
+															label: __( 'Below Image - Show always', 'kadence-blocks' ),
+															value: 'below',
+														},
+														{
+															label: __( 'Cover Image - Show on Hover', 'kadence-blocks' ),
+															value: 'cover-hover',
+														},
+													] }
+													value={ captionStyle }
+													onChange={ ( value ) => setAttributes( { captionStyle: value } ) }
+												/>
+												{ ( 'cover-hover' === captionStyle || 'bottom-hover' === captionStyle ) && (
+													<ToggleControl
+														label={ __( 'Force hover effect always for mobile', 'kadence-blocks' ) }
+														checked={ mobileForceHover }
+														onChange={ value => setAttributes( { mobileForceHover: value } ) }
+													/>
+												) }
+												<PopColorControl
+													label={ __( 'Caption Color', 'kadence-blocks' ) }
+													value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
+													default={ '' }
+													onChange={ value => saveCaptionFont( { color: value } ) }
+												/>
+												<PopColorControl
+													label={ __( 'Caption Background', 'kadence-blocks' ) }
+													value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
+													default={ '#000000' }
+													onChange={ value => saveCaptionFont( { background: value } ) }
+													opacityValue={ ( captionStyles && captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) }
+													onOpacityChange={ value => saveCaptionFont( { backgroundOpacity: value } ) }
+												/>
+												<TypographyControls
+													fontSize={ captionStyles[ 0 ].size }
+													onFontSize={ ( value ) => saveCaptionFont( { size: value } ) }
+													fontSizeType={ captionStyles[ 0 ].sizeType }
+													onFontSizeType={ ( value ) => saveCaptionFont( { sizeType: value } ) }
+													lineHeight={ captionStyles[ 0 ].lineHeight }
+													onLineHeight={ ( value ) => saveCaptionFont( { lineHeight: value } ) }
+													lineHeightType={ captionStyles[ 0 ].lineType }
+													onLineHeightType={ ( value ) => saveCaptionFont( { lineType: value } ) }
+													letterSpacing={ captionStyles[ 0 ].letterSpacing }
+													onLetterSpacing={ ( value ) => saveCaptionFont( { letterSpacing: value } ) }
+													textTransform={ captionStyles[ 0 ].textTransform }
+													onTextTransform={ ( value ) => saveCaptionFont( { textTransform: value } ) }
+													fontFamily={ captionStyles[ 0 ].family }
+													onFontFamily={ ( value ) => saveCaptionFont( { family: value } ) }
+													onFontChange={ ( select ) => {
+														saveCaptionFont( {
+															family: select.value,
+															google: select.google,
+														} );
+													} }
+													onFontArrayChange={ ( values ) => saveCaptionFont( values ) }
+													googleFont={ captionStyles[ 0 ].google }
+													onGoogleFont={ ( value ) => saveCaptionFont( { google: value } ) }
+													loadGoogleFont={ captionStyles[ 0 ].loadGoogle }
+													onLoadGoogleFont={ ( value ) => saveCaptionFont( { loadGoogle: value } ) }
+													fontVariant={ captionStyles[ 0 ].variant }
+													onFontVariant={ ( value ) => saveCaptionFont( { variant: value } ) }
+													fontWeight={ captionStyles[ 0 ].weight }
+													onFontWeight={ ( value ) => saveCaptionFont( { weight: value } ) }
+													fontStyle={ captionStyles[ 0 ].style }
+													onFontStyle={ ( value ) => saveCaptionFont( { style: value } ) }
+													fontSubset={ captionStyles[ 0 ].subset }
+													onFontSubset={ ( value ) => saveCaptionFont( { subset: value } ) }
+												/>
+											</Fragment>
 										) }
-										<RangeControl
-											label={ __( 'Carousel Slide Transition Speed', 'kadence-blocks' ) }
-											value={ transSpeed }
-											onChange={ ( value ) => setAttributes( { transSpeed: value } ) }
-											min={ 100 }
-											max={ 2000 }
-											step={ 10 }
-										/>
-										{ type === 'carousel' && (
-											<SelectControl
-												label={ __( 'Slides to Scroll', 'kadence-blocks' ) }
-												options={ [
-													{
-														label: __( 'One' ),
-														value: '1',
-													},
-													{
-														label: __( 'All' ),
-														value: 'all',
-													},
-												] }
-												value={ slidesScroll }
-												onChange={ ( value ) => setAttributes( { slidesScroll: value } ) }
+									</KadencePanelBody>
+								) }
+							</>
+						}
+
+						{( this.state.activeTab === 'style' ) &&
+							<>
+								{this.showSettings( 'styleSettings' ) && (
+									<KadencePanelBody
+										title={__( 'Image Style', 'kadence-blocks' )}
+										panelName={'kb-gallery-image-style'}
+									>
+										{!( type === 'carousel' && imageRatio === 'inherit' ) && !( type === 'slider' && imageRatio === 'inherit' ) && (
+											<MeasurementControls
+												label={__( 'Border Radius', 'kadence-blocks' )}
+												measurement={imageRadius}
+												control={this.state.radiusControl}
+												onChange={( value ) => setAttributes( { imageRadius: value } )}
+												onControl={( value ) => this.setState( { radiusControl: value } )}
+												min={0}
+												max={200}
+												step={1}
+												controlTypes={[
+													{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+													{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+												]}
+												firstIcon={topLeftIcon}
+												secondIcon={topRightIcon}
+												thirdIcon={bottomRightIcon}
+												fourthIcon={bottomLeftIcon}
 											/>
-										) }
+										)}
 										<SelectControl
-											label={ __( 'Arrow Style', 'kadence-blocks' ) }
-											options={ [
-												{
-													label: __( 'White on Dark', 'kadence-blocks' ),
-													value: 'whiteondark',
-												},
-												{
-													label: __( 'Black on Light', 'kadence-blocks' ),
-													value: 'blackonlight',
-												},
-												{
-													label: __( 'Outline Black', 'kadence-blocks' ),
-													value: 'outlineblack',
-												},
-												{
-													label: __( 'Outline White', 'kadence-blocks' ),
-													value: 'outlinewhite',
-												},
+											label={__( 'Image Filter', 'kadence-blocks' )}
+											help={__( 'Not supported in Internet Explorer', 'kadence-blocks' )}
+											options={[
 												{
 													label: __( 'None', 'kadence-blocks' ),
 													value: 'none',
 												},
-											] }
-											value={ arrowStyle }
-											onChange={ ( value ) => setAttributes( { arrowStyle: value } ) }
+												{
+													label: __( 'Grayscale', 'kadence-blocks' ),
+													value: 'grayscale',
+												},
+												{
+													label: __( 'Sepia', 'kadence-blocks' ),
+													value: 'sepia',
+												},
+												{
+													label: __( 'Saturation', 'kadence-blocks' ),
+													value: 'saturation',
+												},
+												{
+													label: __( 'Vintage', 'kadence-blocks' ),
+													value: 'vintage',
+												},
+												{
+													label: __( 'Earlybird', 'kadence-blocks' ),
+													value: 'earlybird',
+												},
+												{
+													label: __( 'Toaster', 'kadence-blocks' ),
+													value: 'toaster',
+												},
+												{
+													label: __( 'Mayfair', 'kadence-blocks' ),
+													value: 'mayfair',
+												},
+											]}
+											value={imageFilter}
+											onChange={( value ) => setAttributes( { imageFilter: value } )}
 										/>
-										{ type !== 'thumbslider' && (
-											<SelectControl
-												label={ __( 'Dot Style', 'kadence-blocks' ) }
-												options={ [
-													{
-														label: __( 'Dark', 'kadence-blocks' ),
-														value: 'dark',
-													},
-													{
-														label: __( 'Light', 'kadence-blocks' ),
-														value: 'light',
-													},
-													{
-														label: __( 'Outline Dark', 'kadence-blocks' ),
-														value: 'outlinedark',
-													},
-													{
-														label: __( 'Outline Light', 'kadence-blocks' ),
-														value: 'outlinelight',
-													},
-													{
-														label: __( 'None', 'kadence-blocks' ),
-														value: 'none',
-													},
-												] }
-												value={ dotStyle }
-												onChange={ ( value ) => setAttributes( { dotStyle: value } ) }
-											/>
-										) }
 									</KadencePanelBody>
-								) }
-							</Fragment>
-						) }
-						<KadencePanelBody
-							title={ __( 'Link Settings', 'kadence-blocks' ) }
-							initialOpen={ false }
-							panelName={ 'kb-gallery-link-settings' }
-						>
-							<SelectControl
-								label={ __( 'Link To', 'kadence-blocks' ) }
-								value={ linkTo }
-								onChange={ this.setLinkTo }
-								options={ linkOptions }
-							/>
-							{ linkTo === 'custom' && dynamicSource && (
-								<DynamicLinkControl dynamicAttribute='link' { ...this.props }/>
-							) }
-							{ linkTo === 'media' && (
-								<Fragment>
-									{ ids && undefined !== ids[ 0 ] && ! dynamicSource && (
-										<ImageSizeControl
-											label={ __( 'Link Image Size', 'kadence-blocks' ) }
-											slug={ lightSize }
-											id={ ids[ 0 ] }
-											fullSelection={ true }
-											selectByValue={ false }
-											onChange={ this.changeImageLightSize }
-										/>
-									) }
-									{ this.showSettings( 'lightboxSettings' ) && (
-										<Fragment>
-											<SelectControl
-												label={ __( 'Link Triggers?', 'kadence-blocks' ) }
-												value={ lightbox }
-												onChange={ ( value ) => setAttributes( { lightbox: value } ) }
-												options={ [
-													{
-														label: __( 'None', 'kadence-blocks' ),
-														value: 'none',
-													},
-													{
-														label: __( 'Lightbox', 'kadence-blocks' ),
-														value: 'magnific',
-													},
-													{
-														label: __( 'New Tab', 'kadence-blocks' ),
-														value: 'new_tab',
-													},
-												] }
-											/>
-											{ lightbox && lightbox === 'magnific' && (
-												<ToggleControl
-													label={ __( 'Show Caption in Lightbox', 'kadence-blocks' ) }
-													checked={ lightboxCaption }
-													onChange={ ( value ) => setAttributes( { lightboxCaption: value } ) }
-												/>
-											) }
-										</Fragment>
-									) }
-								</Fragment>
-							) }
-						</KadencePanelBody>
-						{ this.showSettings( 'styleSettings' ) && (
-							<KadencePanelBody
-								title={ __( 'Image Style', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-gallery-image-style' }
-							>
-								{ ! ( type === 'carousel' && imageRatio === 'inherit' ) && ! ( type === 'slider' && imageRatio === 'inherit' ) && (
-									<MeasurementControls
-										label={ __( 'Border Radius', 'kadence-blocks' ) }
-										measurement={ imageRadius }
-										control={ this.state.radiusControl }
-										onChange={ ( value ) => setAttributes( { imageRadius: value } ) }
-										onControl={ ( value ) => this.setState( { radiusControl: value } ) }
-										min={ 0 }
-										max={ 200 }
-										step={ 1 }
-										controlTypes={ [
-											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-										] }
-										firstIcon={ topLeftIcon }
-										secondIcon={ topRightIcon }
-										thirdIcon={ bottomRightIcon }
-										fourthIcon={ bottomLeftIcon }
-									/>
-								) }
-								<SelectControl
-									label={ __( 'Image Filter', 'kadence-blocks' ) }
-									help={ __( 'Not supported in Internet Explorer', 'kadence-blocks' ) }
-									options={ [
-										{
-											label: __( 'None', 'kadence-blocks' ),
-											value: 'none',
-										},
-										{
-											label: __( 'Grayscale', 'kadence-blocks' ),
-											value: 'grayscale',
-										},
-										{
-											label: __( 'Sepia', 'kadence-blocks' ),
-											value: 'sepia',
-										},
-										{
-											label: __( 'Saturation', 'kadence-blocks' ),
-											value: 'saturation',
-										},
-										{
-											label: __( 'Vintage', 'kadence-blocks' ),
-											value: 'vintage',
-										},
-										{
-											label: __( 'Earlybird', 'kadence-blocks' ),
-											value: 'earlybird',
-										},
-										{
-											label: __( 'Toaster', 'kadence-blocks' ),
-											value: 'toaster',
-										},
-										{
-											label: __( 'Mayfair', 'kadence-blocks' ),
-											value: 'mayfair',
-										},
-									] }
-									value={ imageFilter }
-									onChange={ ( value ) => setAttributes( { imageFilter: value } ) }
-								/>
-							</KadencePanelBody>
-						) }
-						{ this.showSettings( 'captionSettings' ) && (
-							<KadencePanelBody
-								title={ __( 'Caption Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-gallery-caption-settings' }
-							>
-								<ToggleControl
-									label={ __( 'Show Captions', 'kadence-blocks' ) }
-									checked={ showCaption }
-									onChange={ this.setCaptions }
-								/>
-								{ showCaption && (
-									<Fragment>
-										<SelectControl
-											label={ __( 'Caption Placement', 'kadence-blocks' ) }
-											options={ [
-												{
-													label: __( 'Bottom of Image - Show on Hover', 'kadence-blocks' ),
-													value: 'bottom-hover',
-												},
-												{
-													label: __( 'Bottom of Image - Show always', 'kadence-blocks' ),
-													value: 'bottom',
-												},
-												{
-													label: __( 'Below Image - Show always', 'kadence-blocks' ),
-													value: 'below',
-												},
-												{
-													label: __( 'Cover Image - Show on Hover', 'kadence-blocks' ),
-													value: 'cover-hover',
-												},
-											] }
-											value={ captionStyle }
-											onChange={ ( value ) => setAttributes( { captionStyle: value } ) }
-										/>
-										{ ( 'cover-hover' === captionStyle || 'bottom-hover' === captionStyle ) && (
-											<ToggleControl
-												label={ __( 'Force hover effect always for mobile', 'kadence-blocks' ) }
-												checked={ mobileForceHover }
-												onChange={ value => setAttributes( { mobileForceHover: value } ) }
-											/>
-										) }
-										<PopColorControl
-											label={ __( 'Caption Color', 'kadence-blocks' ) }
-											value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].color ? captionStyles[ 0 ].color : '' ) }
-											default={ '' }
-											onChange={ value => saveCaptionFont( { color: value } ) }
-										/>
-										<PopColorControl
-											label={ __( 'Caption Background', 'kadence-blocks' ) }
-											value={ ( captionStyles && captionStyles[ 0 ] && captionStyles[ 0 ].background ? captionStyles[ 0 ].background : '' ) }
-											default={ '#000000' }
-											onChange={ value => saveCaptionFont( { background: value } ) }
-											opacityValue={ ( captionStyles && captionStyles[ 0 ] && undefined !== captionStyles[ 0 ].backgroundOpacity ? captionStyles[ 0 ].backgroundOpacity : 0.5 ) }
-											onOpacityChange={ value => saveCaptionFont( { backgroundOpacity: value } ) }
-										/>
-										<TypographyControls
-											fontSize={ captionStyles[ 0 ].size }
-											onFontSize={ ( value ) => saveCaptionFont( { size: value } ) }
-											fontSizeType={ captionStyles[ 0 ].sizeType }
-											onFontSizeType={ ( value ) => saveCaptionFont( { sizeType: value } ) }
-											lineHeight={ captionStyles[ 0 ].lineHeight }
-											onLineHeight={ ( value ) => saveCaptionFont( { lineHeight: value } ) }
-											lineHeightType={ captionStyles[ 0 ].lineType }
-											onLineHeightType={ ( value ) => saveCaptionFont( { lineType: value } ) }
-											letterSpacing={ captionStyles[ 0 ].letterSpacing }
-											onLetterSpacing={ ( value ) => saveCaptionFont( { letterSpacing: value } ) }
-											textTransform={ captionStyles[ 0 ].textTransform }
-											onTextTransform={ ( value ) => saveCaptionFont( { textTransform: value } ) }
-											fontFamily={ captionStyles[ 0 ].family }
-											onFontFamily={ ( value ) => saveCaptionFont( { family: value } ) }
-											onFontChange={ ( select ) => {
-												saveCaptionFont( {
-													family: select.value,
-													google: select.google,
-												} );
-											} }
-											onFontArrayChange={ ( values ) => saveCaptionFont( values ) }
-											googleFont={ captionStyles[ 0 ].google }
-											onGoogleFont={ ( value ) => saveCaptionFont( { google: value } ) }
-											loadGoogleFont={ captionStyles[ 0 ].loadGoogle }
-											onLoadGoogleFont={ ( value ) => saveCaptionFont( { loadGoogle: value } ) }
-											fontVariant={ captionStyles[ 0 ].variant }
-											onFontVariant={ ( value ) => saveCaptionFont( { variant: value } ) }
-											fontWeight={ captionStyles[ 0 ].weight }
-											onFontWeight={ ( value ) => saveCaptionFont( { weight: value } ) }
-											fontStyle={ captionStyles[ 0 ].style }
-											onFontStyle={ ( value ) => saveCaptionFont( { style: value } ) }
-											fontSubset={ captionStyles[ 0 ].subset }
-											onFontSubset={ ( value ) => saveCaptionFont( { subset: value } ) }
-										/>
-									</Fragment>
-								) }
-							</KadencePanelBody>
-						) }
+								)}
+
+
 						{ this.showSettings( 'shadowSettings' ) && (
 							<KadencePanelBody
 								title={ __( 'Image Shadow', 'kadence-blocks' ) }
@@ -1608,6 +1637,8 @@ class GalleryEdit extends Component {
 								</TabPanel>
 							</KadencePanelBody>
 						) }
+							</>
+						}
 					</InspectorControls>
 				) }
 			</Fragment>
@@ -1626,7 +1657,7 @@ class GalleryEdit extends Component {
 				{ ( kadence_blocks_params.dynamic_enabled ? <DynamicGalleryControl dynamicAttribute='images' { ...this.props }/> : undefined ) }
 			</Placeholder>
 		);
-		const mediaPlaceholder = ( 
+		const mediaPlaceholder = (
 			<KadenceMediaPlaceholder
 				labels={ {
 					title: title,
@@ -1642,13 +1673,21 @@ class GalleryEdit extends Component {
 				dynamicControl={ ( kadence_blocks_params.dynamic_enabled ? <DynamicGalleryControl dynamicAttribute='images' { ...this.props }/> : undefined ) }
 			/>
 		);
+
+		const addIcon = <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+			<path fill="none" d="M0 0h24v24H0V0z"/>
+			<g>
+				<path d="M20 4v12H8V4h12m0-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 9.67l1.69 2.26 2.48-3.1L19 15H9zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/>
+			</g>
+		</svg>;
+
 		const addMediaPlaceholder = (
 			<MediaPlaceholder
 				addToGallery={ hasImages }
 				isAppender={ hasImages }
 				className={ className }
 				dropZoneUIOnly={ hasImages && ! isSelected }
-				icon={ ! hasImages && <BlockIcon icon={ icon } /> }
+				icon={ ! hasImages && <BlockIcon icon={ addIcon } /> }
 				labels={ {
 					title: ! hasImages && __( 'Gallery', 'kadence-blocks' ),
 					instructions: ! hasImages && __( 'Drag images, upload new ones or select files from your library.', 'kadence-blocks' ),

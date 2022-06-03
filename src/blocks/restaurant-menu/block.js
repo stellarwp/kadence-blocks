@@ -27,7 +27,7 @@ import './editor.scss';
 import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
 const { Fragment }          = wp.element;
-const { Icon }              = wp.components;
+import { Icon } } from '@wordpress/components';
 
 /**
  * Register: a Gutenberg Block.

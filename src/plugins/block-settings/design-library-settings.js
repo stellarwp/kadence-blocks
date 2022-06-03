@@ -4,12 +4,12 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	Button,
 	Tooltip,
 	Modal,
 	SelectControl,
-} = wp.components;
+} from '@wordpress/components';
 /**
  * Internal dependencies
  */

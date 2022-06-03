@@ -24,7 +24,22 @@ import { debounce, uniqueId } from 'lodash';
 /**
  * Kadence Components.
  */
-import { PopColorControl, ResponsiveMeasurementControls, MeasurementControls, SmallResponsiveControl, KadenceRange, ResponsiveRangeControls, KadencePanelBody, URLInputControl, VerticalAlignmentIcon, KadenceRadioButtons, ResponsiveAlignControls, BoxShadowControl, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
+import {
+	PopColorControl,
+	ResponsiveMeasurementControls,
+	MeasurementControls,
+	SmallResponsiveControl,
+	RangeControl,
+	ResponsiveRangeControls,
+	KadencePanelBody,
+	URLInputControl,
+	VerticalAlignmentIcon,
+	KadenceRadioButtons,
+	ResponsiveAlignControls,
+	BoxShadowControl,
+	BackgroundControl as KadenceBackgroundControl,
+	InspectorControlTabs
+} from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
 /**
@@ -55,7 +70,6 @@ import {
 	SelectControl,
 	ToolbarGroup,
 	TabPanel,
-	RangeControl,
 } from '@wordpress/components';
 import { applyFilters } from '@wordpress/hooks';
 /**
@@ -154,6 +168,8 @@ function SectionEdit( {
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+
 	const saveShadow = ( value ) => {
 		const newUpdate = shadow.map( ( item, index ) => {
 			if ( 0 === index ) {
@@ -445,279 +461,389 @@ function SectionEdit( {
 						/>
 					</BlockControls>
 					<InspectorControls>
-						{ showSettings( 'textAlign', 'kadence/column' ) && (
-							<KadencePanelBody
-								title={ __( 'Flex Align Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-col-align-settings' }
-							>
-									<SmallResponsiveControl
-										label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
-										desktopChildren={ <KadenceRadioButtons
-											//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
-											value={ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ) }
-											options={ [
-												{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
-												{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
-											] }
-											onChange={ value => setAttributes( { direction: [ value, ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) ] } ) }
-										/> }
-										tabletChildren={ <KadenceRadioButtons
-											//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
-											value={  ( direction && direction[ 1 ] ? direction[ 1 ] : '' ) }
-											options={ [
-												{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
-												{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
-											] }
-											onChange={ value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), value, ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) ] } ) }
-										/> }
-										mobileChildren={ <KadenceRadioButtons
-											//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
-											value={  ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) }
-											options={ [
-												{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
-												{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
-											] }
-											onChange={ value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), value ] } ) }
-										/> }
-									/>
-									{ ( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' && (
-										<Fragment>
-											<ResponsiveRangeControls
-												label={ __( 'Default Horizontal Block Gap', 'kadence-blocks' ) }
-												value={ ( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 ) }
-												onChange={ value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } ) }
-												tabletValue={ ( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' ) }
-												onChangeTablet={ value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), value, ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } ) }
-												mobileValue={ ( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' ) }
-												onChangeMobile={ value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ), value ] } ) }
-												min={ 0 }
-												max={ gutterMax }
-												step={ gutterStep }
-												unit={ gutterUnit }
-												onUnit={ ( value ) => setAttributes( { gutterUnit: value } ) }
-												units={ [ 'px', 'em', 'rem' ] }
-											/>
-											<SmallResponsiveControl
-												label={ __( 'Justify Content', 'kadence-blocks' ) }
-												desktopChildren={ <SelectControl
-													//label={ __( 'Justify Content', 'kadence-blocks' ) }
-													value={ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ) }
-													options={ [
-														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-														{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
-														{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
-														{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
-														{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
-														{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
-														{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { justifyContent: [ value, ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } ) }
-												/> }
-												tabletChildren={ <SelectControl
-													//label={ __( 'Justify Content', 'kadence-blocks' ) }
-													value={ ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ) }
-													options={ [
-														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-														{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
-														{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
-														{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
-														{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
-														{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
-														{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), value, ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } ) }
-												/> }
-												mobileChildren={ <SelectControl
-													//label={ __( 'Justify Content', 'kadence-blocks' ) }
-													value={ ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) }
-													options={ [
-														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-														{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
-														{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
-														{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
-														{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
-														{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
-														{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), value ] } ) }
-												/> }
-											/>
-											<SmallResponsiveControl
-												label={ __( 'Wrap Content', 'kadence-blocks' ) }
-												desktopChildren={ <SelectControl
-													//label={ __( 'Justify Content', 'kadence-blocks' ) }
-													value={ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ) }
-													options={ [
-														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-														{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
-														{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
-														{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { wrapContent: [ value, ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } ) }
-												/> }
-												tabletChildren={ <SelectControl
-													//label={ __( 'Justify Content', 'kadence-blocks' ) }
-													value={ ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ) }
-													options={ [
-														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-														{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
-														{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
-														{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), value, ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } ) }
-												/> }
-												mobileChildren={ <SelectControl
-													//label={ __( 'Justify Content', 'kadence-blocks' ) }
-													value={ ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) }
-													options={ [
-														{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
-														{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
-														{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
-														{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), value ] } ) }
-												/> }
-											/>
-										</Fragment>
-									) }
-									<ResponsiveAlignControls
-										label={ __( 'Text Alignment', 'kadence-blocks' ) }
-										value={ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ) }
-										mobileValue={ ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) }
-										tabletValue={ ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ) }
-										onChange={ ( nextAlign ) => setAttributes( { textAlign: [ nextAlign, ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) ] } ) }
-										onChangeTablet={ ( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ), nextAlign, ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) ] } ) }
-										onChangeMobile={ ( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ), ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), nextAlign ] } ) }
-									/>
-								</KadencePanelBody>
-							) }
-							{ showSettings( 'paddingMargin', 'kadence/column' ) && (
-								<KadencePanelBody
-									title={ __( 'Padding/Margin', 'kadence-blocks' ) }
-									initialOpen={ false }
-									panelName={ 'kb-col-padding-margin' }
-								>
-									<ResponsiveMeasurementControls
-										label={ __( 'Padding', 'kadence-blocks' ) }
-										control={ paddingControl }
-										value={ [ ( undefined !== topPadding ? topPadding : '' ), ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== leftPadding ? leftPadding : '' ) ] }
-										tabletValue={ [ ( undefined !== topPaddingT ? topPaddingT : '' ), ( undefined !== rightPaddingT ? rightPaddingT : '' ), ( undefined !== bottomPaddingT ? bottomPaddingT : '' ), ( undefined !== leftPaddingT ? leftPaddingT : '' ) ] }
-										mobileValue={ [ ( undefined !== topPaddingM ? topPaddingM : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) ] }
-										onChange={ ( value ) => {
-											setAttributes( { topPadding: value[ 0 ], rightPadding: value[ 1 ], bottomPadding: value[ 2 ], leftPadding: value[ 3 ] } );
-										} }
-										onChangeTablet={ ( value ) => {
-											setAttributes( { topPaddingT: value[ 0 ], rightPaddingT: value[ 1 ], bottomPaddingT: value[ 2 ], leftPaddingT: value[ 3 ] } );
-										} }
-										onChangeMobile={ ( value ) => {
-											setAttributes( { topPaddingM: value[ 0 ], rightPaddingM: value[ 1 ], bottomPaddingM: value[ 2 ], leftPaddingM: value[ 3 ] } );
-										} }
-										onChangeControl={ ( value ) => setPaddingControl( value ) }
-										allowEmpty={ true }
-										min={ paddingMin }
-										max={ paddingMax }
-										step={ paddingStep }
-										unit={ paddingType }
-										units={ [ 'px', 'em', 'rem', '%' ] }
-										onUnit={ ( value ) => setAttributes( { paddingType: value } ) }
-									/>
-									<ResponsiveMeasurementControls
-										label={ __( 'Margin', 'kadence-blocks' ) }
-										control={ marginControl }
-										value={ [ ( undefined !== topMargin ? topMargin : '' ), ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== leftMargin ? leftMargin : '' ) ] }
-										tabletValue={ [ ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== rightMarginT ? rightMarginT : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== leftMarginT ? leftMarginT : '' ) ] }
-										mobileValue={ [ ( undefined !== topMarginM ? topMarginM : '' ), ( undefined !== rightMarginM ? rightMarginM : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ), ( undefined !== leftMarginM ? leftMarginM : '' ) ] }
-										onChange={ ( value ) => {
-											setAttributes( { topMargin: value[ 0 ], rightMargin: value[ 1 ], bottomMargin: value[ 2 ], leftMargin: value[ 3 ] } );
-										} }
-										onChangeTablet={ ( value ) => {
-											setAttributes( { topMarginT: value[ 0 ], rightMarginT: value[ 1 ], bottomMarginT: value[ 2 ], leftMarginT: value[ 3 ] } );
-										} }
-										onChangeMobile={ ( value ) => {
-											setAttributes( { topMarginM: value[ 0 ], rightMarginM: value[ 1 ], bottomMarginM: value[ 2 ], leftMarginM: value[ 3 ] } );
-										} }
-										onChangeControl={ ( value ) => setMarginControl( value ) }
-										allowEmpty={ true }
-										min={ marginMin }
-										max={ marginMax }
-										step={ marginStep }
-										unit={ marginType }
-										units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-										onUnit={ ( value ) => setAttributes( { marginType: value } ) }
-									/>
-								</KadencePanelBody>
-							) }
-							{ showSettings( 'container', 'kadence/column' ) && (
-								<Fragment>
+						<InspectorControlTabs
+							panelName={ 'section' }
+							setActiveTab={ setActiveTab }
+							activeTab={ activeTab }
+						/>
+						{( activeTab === 'general' ) &&
+							<>
+								{showSettings( 'textAlign', 'kadence/column' ) && (
 									<KadencePanelBody
-										title={ __( 'Structure Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-col-container-style-settings' }
+										title={__( 'Flex Align Settings', 'kadence-blocks' )}
+										panelName={'kb-col-align-settings'}
 									>
-										<SelectControl
-											label={ __( 'Container HTML tag', 'kadence-blocks' ) }
-											value={ htmlTag }
-											options={ [
-												{ value: 'div', label: 'div' },
-												{ value: 'header', label: 'header' },
-												{ value: 'section', label: 'section' },
-												{ value: 'article', label: 'article' },
-												{ value: 'main', label: 'main' },
-												{ value: 'aside', label: 'aside' },
-												{ value: 'footer', label: 'footer' },
-											] }
-											onChange={ value => setAttributes( { htmlTag: value } ) }
+										<SmallResponsiveControl
+											label={__( 'Inner Block Direction', 'kadence-blocks' )}
+											desktopChildren={<KadenceRadioButtons
+												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
+												value={( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' )}
+												options={[
+													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
+													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
+												]}
+												onChange={value => setAttributes( { direction: [ value, ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) ] } )}
+											/>}
+											tabletChildren={<KadenceRadioButtons
+												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
+												value={( direction && direction[ 1 ] ? direction[ 1 ] : '' )}
+												options={[
+													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
+													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
+												]}
+												onChange={value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), value, ( direction && direction[ 2 ] ? direction[ 2 ] : '' ) ] } )}
+											/>}
+											mobileChildren={<KadenceRadioButtons
+												//label={ __( 'Inner Block Direction', 'kadence-blocks' ) }
+												value={( direction && direction[ 2 ] ? direction[ 2 ] : '' )}
+												options={[
+													{ value: 'vertical', label: __( 'Vertical', 'kadence-blocks' ) },
+													{ value: 'horizontal', label: __( 'Horizontal', 'kadence-blocks' ) },
+												]}
+												onChange={value => setAttributes( { direction: [ ( direction && direction[ 0 ] ? direction[ 0 ] : 'vertical' ), ( direction && direction[ 1 ] ? direction[ 1 ] : '' ), value ] } )}
+											/>}
 										/>
-										{ ! inRowBlock && (
+										{( previewDirection ? previewDirection : 'vertical' ) === 'horizontal' && (
+											<Fragment>
+												<ResponsiveRangeControls
+													label={__( 'Default Horizontal Block Gap', 'kadence-blocks' )}
+													value={( gutter && '' !== gutter[ 0 ] ? gutter[ 0 ] : 10 )}
+													onChange={value => setAttributes( { gutter: [ value, ( gutter && gutter[ 1 ] ? gutter[ 1 ] : '' ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
+													tabletValue={( gutter && '' !== gutter[ 1 ] ? gutter[ 1 ] : '' )}
+													onChangeTablet={value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), value, ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ) ] } )}
+													mobileValue={( gutter && '' !== gutter[ 2 ] ? gutter[ 2 ] : '' )}
+													onChangeMobile={value => setAttributes( { gutter: [ ( gutter && gutter[ 0 ] ? gutter[ 0 ] : 10 ), ( gutter && gutter[ 2 ] ? gutter[ 2 ] : '' ), value ] } )}
+													min={0}
+													max={gutterMax}
+													step={gutterStep}
+													unit={gutterUnit}
+													onUnit={( value ) => setAttributes( { gutterUnit: value } )}
+													units={[ 'px', 'em', 'rem' ]}
+												/>
+												<SmallResponsiveControl
+													label={__( 'Justify Content', 'kadence-blocks' )}
+													desktopChildren={<SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { justifyContent: [ value, ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } )}
+													/>}
+													tabletChildren={<SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), value, ( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' ) ] } )}
+													/>}
+													mobileChildren={<SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={( justifyContent && justifyContent[ 2 ] ? justifyContent[ 2 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'flex-start', label: __( 'Start', 'kadence-blocks' ) },
+															{ value: 'center', label: __( 'Center', 'kadence-blocks' ) },
+															{ value: 'flex-end', label: __( 'End', 'kadence-blocks' ) },
+															{ value: 'space-between', label: __( 'Space Between', 'kadence-blocks' ) },
+															{ value: 'space-around', label: __( 'Space Around', 'kadence-blocks' ) },
+															{ value: 'space-evenly', label: __( 'Space Evenly', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { justifyContent: [ ( justifyContent && justifyContent[ 0 ] ? justifyContent[ 0 ] : '' ), ( justifyContent && justifyContent[ 1 ] ? justifyContent[ 1 ] : '' ), value ] } )}
+													/>}
+												/>
+												<SmallResponsiveControl
+													label={__( 'Wrap Content', 'kadence-blocks' )}
+													desktopChildren={<SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
+															{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
+															{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { wrapContent: [ value, ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } )}
+													/>}
+													tabletChildren={<SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
+															{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
+															{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), value, ( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' ) ] } )}
+													/>}
+													mobileChildren={<SelectControl
+														//label={ __( 'Justify Content', 'kadence-blocks' ) }
+														value={( wrapContent && wrapContent[ 2 ] ? wrapContent[ 2 ] : '' )}
+														options={[
+															{ value: '', label: __( 'Inherit', 'kadence-blocks' ) },
+															{ value: 'nowrap', label: __( 'No Wrap', 'kadence-blocks' ) },
+															{ value: 'wrap', label: __( 'Wrap', 'kadence-blocks' ) },
+															{ value: 'wrap-reverse', label: __( 'Wrap Reverse', 'kadence-blocks' ) },
+														]}
+														onChange={value => setAttributes( { wrapContent: [ ( wrapContent && wrapContent[ 0 ] ? wrapContent[ 0 ] : '' ), ( wrapContent && wrapContent[ 1 ] ? wrapContent[ 1 ] : '' ), value ] } )}
+													/>}
+												/>
+											</Fragment>
+										)}
+										<ResponsiveAlignControls
+											label={__( 'Text Alignment', 'kadence-blocks' )}
+											value={( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' )}
+											mobileValue={( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' )}
+											tabletValue={( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' )}
+											onChange={( nextAlign ) => setAttributes( { textAlign: [ nextAlign, ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) ] } )}
+											onChangeTablet={( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ), nextAlign, ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) ] } )}
+											onChangeMobile={( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ), ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), nextAlign ] } )}
+										/>
+									</KadencePanelBody>
+								)}
+
+								{showSettings( 'container', 'kadence/column' ) && (
+									<Fragment>
+										<KadencePanelBody
+											title={__( 'Structure Settings', 'kadence-blocks' )}
+											initialOpen={false}
+											panelName={'kb-col-container-style-settings'}
+										>
+											<SelectControl
+												label={__( 'Container HTML tag', 'kadence-blocks' )}
+												value={htmlTag}
+												options={[
+													{ value: 'div', label: 'div' },
+													{ value: 'header', label: 'header' },
+													{ value: 'section', label: 'section' },
+													{ value: 'article', label: 'article' },
+													{ value: 'main', label: 'main' },
+													{ value: 'aside', label: 'aside' },
+													{ value: 'footer', label: 'footer' },
+												]}
+												onChange={value => setAttributes( { htmlTag: value } )}
+											/>
+											{!inRowBlock && (
+												<ResponsiveRangeControls
+													label={__( 'Max Width', 'kadence-blocks' )}
+													value={( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' )}
+													onChange={value => {
+														setAttributes( { maxWidth: [ value, ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+													}}
+													tabletValue={( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' )}
+													onChangeTablet={( value ) => {
+														setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), value, ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+													}}
+													mobileValue={( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' )}
+													onChangeMobile={( value ) => {
+														setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), value ] } );
+													}}
+													min={0}
+													max={( maxWidthUnit === 'px' ? 2000 : 100 )}
+													step={1}
+													unit={maxWidthUnit ? maxWidthUnit : 'px'}
+													onUnit={( value ) => {
+														setAttributes( { maxWidthUnit: value } );
+													}}
+													units={[ 'px', '%', 'vw' ]}
+												/>
+											)}
 											<ResponsiveRangeControls
-												label={ __( 'Max Width', 'kadence-blocks' ) }
-												value={ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ) }
+												label={__( 'Min Height', 'kadence-blocks' )}
+												value={( undefined !== height && undefined !== height[ 0 ] ? height[ 0 ] : '' )}
+												onChange={value => {
+													setAttributes( { height: [ value, ( undefined !== height && undefined !== height[ 1 ] ? height[ 1 ] : '' ), ( undefined !== height && undefined !== height[ 2 ] ? height[ 2 ] : '' ) ] } );
+												}}
+												tabletValue={( undefined !== height && undefined !== height[ 1 ] ? height[ 1 ] : '' )}
+												onChangeTablet={( value ) => {
+													setAttributes( { height: [ ( undefined !== height && undefined !== height[ 0 ] ? height[ 0 ] : '' ), value, ( undefined !== height && undefined !== height[ 2 ] ? height[ 2 ] : '' ) ] } );
+												}}
+												mobileValue={( undefined !== height && undefined !== height[ 2 ] ? height[ 2 ] : '' )}
+												onChangeMobile={( value ) => {
+													setAttributes( { height: [ ( undefined !== height && undefined !== height[ 0 ] ? height[ 0 ] : '' ), ( undefined !== height && undefined !== height[ 1 ] ? height[ 1 ] : '' ), value ] } );
+												}}
+												min={0}
+												max={( heightUnit === 'px' ? 2000 : 200 )}
+												step={1}
+												unit={heightUnit ? heightUnit : 'px'}
+												onUnit={( value ) => {
+													setAttributes( { heightUnit: value } );
+												}}
+												units={[ 'px', 'vw', 'vh' ]}
+											/>
+										</KadencePanelBody>
+
+									</Fragment>
+								)}
+
+								{showSettings( 'overlayLink', 'kadence/column' ) && (
+									<KadencePanelBody
+										title={__( 'Overlay Link', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-col-overlay-link'}
+									>
+										<p className="kadence-sidebar-notice">{__( 'Please note, If a link is added nothing else inside of the section will be selectable.', 'kadence-blocks' )}</p>
+										<URLInputControl
+											label={__( 'Link entire section', 'kadence-blocks' )}
+											url={link}
+											onChangeUrl={value => setAttributes( { link: value } )}
+											additionalControls={true}
+											opensInNewTab={( undefined !== linkTarget ? linkTarget : false )}
+											onChangeTarget={value => setAttributes( { linkTarget: value } )}
+											linkNoFollow={( undefined !== linkNoFollow ? linkNoFollow : false )}
+											onChangeFollow={value => setAttributes( { linkNoFollow: value } )}
+											linkSponsored={( undefined !== linkSponsored ? linkSponsored : false )}
+											onChangeSponsored={value => setAttributes( { linkSponsored: value } )}
+											linkTitle={linkTitle}
+											onChangeTitle={value => {
+												setAttributes( { linkTitle: value } )
+											}}
+											dynamicAttribute={'link'}
+											allowClear={true}
+											isSelected={isSelected}
+											attributes={attributes}
+											setAttributes={setAttributes}
+											name={'kadence/column'}
+											clientId={clientId}
+										/>
+									</KadencePanelBody>
+								)}
+							</>
+						}
+
+						{( activeTab === 'advanced') &&
+							<>
+							{ inRowBlock && (
+									<KadencePanelBody
+										title={ __( 'Sticky Settings', 'kadence-blocks' ) }
+										initialOpen={ false }
+										panelName={ 'kb-col-sticky-settings' }
+									>
+										<ToggleControl
+											label={ __( 'Make sticky', 'kadence-blocks' ) }
+											help={ __( 'This will stick the section to viewport for the height of outer row block.', 'kadence-blocks' ) }
+											checked={ ( undefined !== sticky ? sticky : false ) }
+											onChange={ ( value ) => setAttributes( { sticky: value } ) }
+										/>
+										{ sticky && (
+											<ResponsiveRangeControls
+												label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
+												value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
 												onChange={ value => {
-													setAttributes( { maxWidth: [ value, ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+													setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
 												} }
-												tabletValue={ ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ) }
+												tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
 												onChangeTablet={ ( value ) => {
-													setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), value, ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) ] } );
+													setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
 												} }
-												mobileValue={ ( undefined !== maxWidth && undefined !== maxWidth[ 2 ] ? maxWidth[ 2 ] : '' ) }
+												mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
 												onChangeMobile={ ( value ) => {
-													setAttributes( { maxWidth: [ ( undefined !== maxWidth && undefined !== maxWidth[ 0 ] ? maxWidth[ 0 ] : '' ), ( undefined !== maxWidth && undefined !== maxWidth[ 1 ] ? maxWidth[ 1 ] : '' ), value ] } );
+													setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
 												} }
 												min={ 0 }
-												max={ ( maxWidthUnit === 'px' ? 2000 : 100 ) }
+												max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
 												step={ 1 }
-												unit={ maxWidthUnit ? maxWidthUnit : 'px' }
+												unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
 												onUnit={ ( value ) => {
-													setAttributes( { maxWidthUnit: value } );
+													setAttributes( { stickyOffsetUnit: value } );
 												} }
-												units={ [ 'px', '%', 'vw' ] }
+												units={ [ 'px', 'rem', 'vh' ] }
 											/>
 										) }
-										<ResponsiveRangeControls
-											label={ __( 'Min Height', 'kadence-blocks' ) }
-											value={ ( undefined !== height && undefined !== height[ 0 ] ? height[ 0 ] : '' ) }
-											onChange={ value => {
-												setAttributes( { height: [ value, ( undefined !== height && undefined !== height[ 1 ] ? height[ 1 ] : '' ), ( undefined !== height && undefined !== height[ 2 ] ? height[ 2 ] : '' ) ] } );
-											} }
-											tabletValue={ ( undefined !== height && undefined !== height[ 1 ] ? height[ 1 ] : '' ) }
-											onChangeTablet={ ( value ) => {
-												setAttributes( { height: [ ( undefined !== height && undefined !== height[ 0 ] ? height[ 0 ] : '' ), value, ( undefined !== height && undefined !== height[ 2 ] ? height[ 2 ] : '' ) ] } );
-											} }
-											mobileValue={ ( undefined !== height && undefined !== height[ 2 ] ? height[ 2 ] : '' ) }
-											onChangeMobile={ ( value ) => {
-												setAttributes( { height: [ ( undefined !== height && undefined !== height[ 0 ] ? height[ 0 ] : '' ), ( undefined !== height && undefined !== height[ 1 ] ? height[ 1 ] : '' ), value ] } );
-											} }
-											min={ 0 }
-											max={ ( heightUnit === 'px' ? 2000 : 200 ) }
-											step={ 1 }
-											unit={ heightUnit ? heightUnit : 'px' }
-											onUnit={ ( value ) => {
-												setAttributes( { heightUnit: value } );
-											} }
-											units={ [ 'px', 'vw', 'vh' ] }
+									</KadencePanelBody>
+								) }
+								<KadencePanelBody
+									title={__( 'Visibility Settings', 'kadence-blocks' )}
+									panelName={'kb-col-visibility-settings'}
+								>
+									<ToggleControl
+										label={__( 'Hide on Desktop', 'kadence-blocks' )}
+										checked={( undefined !== vsdesk ? vsdesk : false )}
+										onChange={( value ) => setAttributes( { vsdesk: value } )}
+									/>
+									<ToggleControl
+										label={__( 'Hide on Tablet', 'kadence-blocks' )}
+										checked={( undefined !== vstablet ? vstablet : false )}
+										onChange={( value ) => setAttributes( { vstablet: value } )}
+									/>
+									<ToggleControl
+										label={__( 'Hide on Mobile', 'kadence-blocks' )}
+										checked={( undefined !== vsmobile ? vsmobile : false )}
+										onChange={( value ) => setAttributes( { vsmobile: value } )}
+									/>
+								</KadencePanelBody>
+							</>
+						}
+
+						{ ( activeTab === 'style' ) &&
+							<>
+								{showSettings( 'paddingMargin', 'kadence/column' ) && (
+									<KadencePanelBody
+										title={__( 'Padding/Margin', 'kadence-blocks' )}
+										panelName={'kb-col-padding-margin'}
+									>
+										<ResponsiveMeasurementControls
+											label={__( 'Padding', 'kadence-blocks' )}
+											control={paddingControl}
+											value={[ ( undefined !== topPadding ? topPadding : '' ), ( undefined !== rightPadding ? rightPadding : '' ), ( undefined !== bottomPadding ? bottomPadding : '' ), ( undefined !== leftPadding ? leftPadding : '' ) ]}
+											tabletValue={[ ( undefined !== topPaddingT ? topPaddingT : '' ), ( undefined !== rightPaddingT ? rightPaddingT : '' ), ( undefined !== bottomPaddingT ? bottomPaddingT : '' ), ( undefined !== leftPaddingT ? leftPaddingT : '' ) ]}
+											mobileValue={[ ( undefined !== topPaddingM ? topPaddingM : '' ), ( undefined !== rightPaddingM ? rightPaddingM : '' ), ( undefined !== bottomPaddingM ? bottomPaddingM : '' ), ( undefined !== leftPaddingM ? leftPaddingM : '' ) ]}
+											onChange={( value ) => {
+												setAttributes( { topPadding: value[ 0 ], rightPadding: value[ 1 ], bottomPadding: value[ 2 ], leftPadding: value[ 3 ] } );
+											}}
+											onChangeTablet={( value ) => {
+												setAttributes( { topPaddingT: value[ 0 ], rightPaddingT: value[ 1 ], bottomPaddingT: value[ 2 ], leftPaddingT: value[ 3 ] } );
+											}}
+											onChangeMobile={( value ) => {
+												setAttributes( { topPaddingM: value[ 0 ], rightPaddingM: value[ 1 ], bottomPaddingM: value[ 2 ], leftPaddingM: value[ 3 ] } );
+											}}
+											onChangeControl={( value ) => setPaddingControl( value )}
+											allowEmpty={true}
+											min={paddingMin}
+											max={paddingMax}
+											step={paddingStep}
+											unit={paddingType}
+											units={[ 'px', 'em', 'rem', '%' ]}
+											onUnit={( value ) => setAttributes( { paddingType: value } )}
 										/>
-										<KadenceRange
+										<ResponsiveMeasurementControls
+											label={__( 'Margin', 'kadence-blocks' )}
+											control={marginControl}
+											value={[ ( undefined !== topMargin ? topMargin : '' ), ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== leftMargin ? leftMargin : '' ) ]}
+											tabletValue={[ ( undefined !== topMarginT ? topMarginT : '' ), ( undefined !== rightMarginT ? rightMarginT : '' ), ( undefined !== bottomMarginT ? bottomMarginT : '' ), ( undefined !== leftMarginT ? leftMarginT : '' ) ]}
+											mobileValue={[ ( undefined !== topMarginM ? topMarginM : '' ), ( undefined !== rightMarginM ? rightMarginM : '' ), ( undefined !== bottomMarginM ? bottomMarginM : '' ), ( undefined !== leftMarginM ? leftMarginM : '' ) ]}
+											onChange={( value ) => {
+												setAttributes( { topMargin: value[ 0 ], rightMargin: value[ 1 ], bottomMargin: value[ 2 ], leftMargin: value[ 3 ] } );
+											}}
+											onChangeTablet={( value ) => {
+												setAttributes( { topMarginT: value[ 0 ], rightMarginT: value[ 1 ], bottomMarginT: value[ 2 ], leftMarginT: value[ 3 ] } );
+											}}
+											onChangeMobile={( value ) => {
+												setAttributes( { topMarginM: value[ 0 ], rightMarginM: value[ 1 ], bottomMarginM: value[ 2 ], leftMarginM: value[ 3 ] } );
+											}}
+											onChangeControl={( value ) => setMarginControl( value )}
+											allowEmpty={true}
+											min={marginMin}
+											max={marginMax}
+											step={marginStep}
+											unit={marginType}
+											units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+											onUnit={( value ) => setAttributes( { marginType: value } )}
+										/>
+										<RangeControl
 											label={ __( 'Z Index Control', 'kadence-blocks' ) }
 											value={ zIndex }
 											onChange={ ( value ) => {
@@ -729,667 +855,609 @@ function SectionEdit( {
 											max={ 200 }
 										/>
 									</KadencePanelBody>
-									<KadencePanelBody
-										title={ __( 'Background Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-col-bg-settings' }
-									>
-										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
-											{
-												( tab ) => {
-													let tabout;
-													if ( tab.name ) {
-														if ( 'hover' === tab.name ) {
-															tabout = (
-																<Fragment>
-																	<PopColorControl
-																		label={ __( 'Background Color', 'kadence-blocks' ) }
-																		value={ ( backgroundHover ? backgroundHover : '' ) }
-																		default={ '' }
-																		onChange={ value => setAttributes( { backgroundHover: value } ) }
-																	/>
-																	<KadenceBackgroundControl
-																		label={ __( 'Background Image', 'kadence-blocks' ) }
-																		hasImage={ hasHoverBackgroundImage }
-																		imageURL={ ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? backgroundImgHover[ 0 ].bgImg : '' ) }
-																		imageID={ ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgID ? backgroundImgHover[ 0 ].bgImgID : '' ) }
-																		imagePosition={ ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgPosition ? backgroundImgHover[ 0 ].bgImgPosition : 'center center' ) }
-																		imageSize={ ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgSize ? backgroundImgHover[ 0 ].bgImgSize : 'cover' ) }
-																		imageRepeat={ ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgRepeat ? backgroundImgHover[ 0 ].bgImgRepeat : 'no-repeat' ) }
-																		imageAttachment={ ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgAttachment ? backgroundImgHover[ 0 ].bgImgAttachment : 'scroll' ) }
-																		onRemoveImage={ onRemoveHoverBGImage }
-																		onSaveImage={ ( img ) => {
+								)}
+
+								<KadencePanelBody
+									title={__( 'Background Settings', 'kadence-blocks' )}
+									initialOpen={ !showSettings( 'paddingMargin', 'kadence/column' ) }
+									panelName={'kb-col-bg-settings'}
+								>
+									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											  activeClass="active-tab"
+											  tabs={[
+												  {
+													  name     : 'normal',
+													  title    : __( 'Normal', 'kadence-blocks' ),
+													  className: 'kt-normal-tab',
+												  },
+												  {
+													  name     : 'hover',
+													  title    : __( 'Hover', 'kadence-blocks' ),
+													  className: 'kt-hover-tab',
+												  },
+											  ]}>
+										{
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'hover' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<PopColorControl
+																	label={__( 'Background Color', 'kadence-blocks' )}
+																	value={( backgroundHover ? backgroundHover : '' )}
+																	default={''}
+																	onChange={value => setAttributes( { backgroundHover: value } )}
+																/>
+																<KadenceBackgroundControl
+																	label={__( 'Background Image', 'kadence-blocks' )}
+																	hasImage={hasHoverBackgroundImage}
+																	imageURL={( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? backgroundImgHover[ 0 ].bgImg : '' )}
+																	imageID={( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgID ? backgroundImgHover[ 0 ].bgImgID : '' )}
+																	imagePosition={( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgPosition ? backgroundImgHover[ 0 ].bgImgPosition : 'center center' )}
+																	imageSize={( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgSize ? backgroundImgHover[ 0 ].bgImgSize : 'cover' )}
+																	imageRepeat={( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgRepeat ? backgroundImgHover[ 0 ].bgImgRepeat : 'no-repeat' )}
+																	imageAttachment={( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImgAttachment ? backgroundImgHover[ 0 ].bgImgAttachment : 'scroll' )}
+																	onRemoveImage={onRemoveHoverBGImage}
+																	onSaveImage={( img ) => {
+																		saveHoverBackgroundImage( {
+																			bgImgID: img.id,
+																			bgImg  : img.url,
+																		} );
+																	}}
+																	onSaveURL={( newURL ) => {
+																		if ( newURL !== ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? backgroundImgHover[ 0 ].bgImg : '' ) ) {
 																			saveHoverBackgroundImage( {
-																				bgImgID: img.id,
-																				bgImg: img.url,
+																				bgImgID: undefined,
+																				bgImg  : newURL,
 																			} );
-																		} }
-																		onSaveURL={ ( newURL ) => {
-																			if ( newURL !== ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? backgroundImgHover[ 0 ].bgImg : '' ) ) {
-																				saveHoverBackgroundImage( {
-																					bgImgID: undefined,
-																					bgImg: newURL,
-																				} );
-																			}
-																		} }
-																		onSavePosition={ value => saveHoverBackgroundImage( { bgImgPosition: value } ) }
-																		onSaveSize={ value => saveHoverBackgroundImage( { bgImgSize: value } ) }
-																		onSaveRepeat={ value => saveHoverBackgroundImage( { bgImgRepeat: value } ) }
-																		onSaveAttachment={ value => saveHoverBackgroundImage( { bgImgAttachment: value } ) }
-																		disableMediaButtons={ ( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? backgroundImgHover[ 0 ].bgImg : '' ) }
-																		dynamicAttribute="backgroundImgHover:0:bgImg"
-																		isSelected={ isSelected }
-																		attributes={ attributes }
-																		setAttributes={ setAttributes }
-																		name={ 'kadence/column' }
-																		clientId={ clientId }
-																	/>
-																</Fragment>
-															);
-														} else {
-															tabout = (
-																<Fragment>
-																	<PopColorControl
-																		label={ __( 'Background Color', 'kadence-blocks' ) }
-																		value={ ( background ? background : '' ) }
-																		default={ '' }
-																		opacityValue={ backgroundOpacity }
-																		onChange={ value => setAttributes( { background: value } ) }
-																		onOpacityChange={ value => setAttributes( { backgroundOpacity: value } ) }
-																	/>
-																	<KadenceBackgroundControl
-																		label={ __( 'Background Image', 'kadence-blocks' ) }
-																		hasImage={ hasBackgroundImage }
-																		imageURL={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
-																		imageID={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' ) }
-																		imagePosition={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' ) }
-																		imageSize={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' ) }
-																		imageRepeat={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
-																		imageAttachment={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : 'scroll' ) }
-																		onRemoveImage={ onRemoveBGImage }
-																		onSaveImage={ ( img ) => {
+																		}
+																	}}
+																	onSavePosition={value => saveHoverBackgroundImage( { bgImgPosition: value } )}
+																	onSaveSize={value => saveHoverBackgroundImage( { bgImgSize: value } )}
+																	onSaveRepeat={value => saveHoverBackgroundImage( { bgImgRepeat: value } )}
+																	onSaveAttachment={value => saveHoverBackgroundImage( { bgImgAttachment: value } )}
+																	disableMediaButtons={( backgroundImgHover && backgroundImgHover[ 0 ] && backgroundImgHover[ 0 ].bgImg ? backgroundImgHover[ 0 ].bgImg : '' )}
+																	dynamicAttribute="backgroundImgHover:0:bgImg"
+																	isSelected={isSelected}
+																	attributes={attributes}
+																	setAttributes={setAttributes}
+																	name={'kadence/column'}
+																	clientId={clientId}
+																/>
+															</Fragment>
+														);
+													} else {
+														tabout = (
+															<Fragment>
+																<PopColorControl
+																	label={__( 'Background Color', 'kadence-blocks' )}
+																	value={( background ? background : '' )}
+																	default={''}
+																	opacityValue={backgroundOpacity}
+																	onChange={value => setAttributes( { background: value } )}
+																	onOpacityChange={value => setAttributes( { backgroundOpacity: value } )}
+																/>
+																<KadenceBackgroundControl
+																	label={__( 'Background Image', 'kadence-blocks' )}
+																	hasImage={hasBackgroundImage}
+																	imageURL={( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' )}
+																	imageID={( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgID ? backgroundImg[ 0 ].bgImgID : '' )}
+																	imagePosition={( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgPosition ? backgroundImg[ 0 ].bgImgPosition : 'center center' )}
+																	imageSize={( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgSize ? backgroundImg[ 0 ].bgImgSize : 'cover' )}
+																	imageRepeat={( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgRepeat ? backgroundImg[ 0 ].bgImgRepeat : 'no-repeat' )}
+																	imageAttachment={( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImgAttachment ? backgroundImg[ 0 ].bgImgAttachment : 'scroll' )}
+																	onRemoveImage={onRemoveBGImage}
+																	onSaveImage={( img ) => {
+																		saveBackgroundImage( {
+																			bgImgID: img.id,
+																			bgImg  : img.url,
+																		} );
+																	}}
+																	onSaveURL={( newURL ) => {
+																		if ( newURL !== ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) ) {
 																			saveBackgroundImage( {
-																				bgImgID: img.id,
-																				bgImg: img.url,
+																				bgImgID: undefined,
+																				bgImg  : newURL,
 																			} );
-																		} }
-																		onSaveURL={ ( newURL ) => {
-																			if ( newURL !== ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) ) {
-																				saveBackgroundImage( {
-																					bgImgID: undefined,
-																					bgImg: newURL,
-																				} );
-																			}
-																		} }
-																		onSavePosition={ value => saveBackgroundImage( { bgImgPosition: value } ) }
-																		onSaveSize={ value => saveBackgroundImage( { bgImgSize: value } ) }
-																		onSaveRepeat={ value => saveBackgroundImage( { bgImgRepeat: value } ) }
-																		onSaveAttachment={ value => saveBackgroundImage( { bgImgAttachment: value } ) }
-																		disableMediaButtons={ ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' ) }
-																		dynamicAttribute="backgroundImg:0:bgImg"
-																		isSelected={ isSelected }
-																		attributes={ attributes }
-																		setAttributes={ setAttributes }
-																		name={ 'kadence/column' }
-																		clientId={ clientId }
-																	/>
-																</Fragment>
-															);
-														}
+																		}
+																	}}
+																	onSavePosition={value => saveBackgroundImage( { bgImgPosition: value } )}
+																	onSaveSize={value => saveBackgroundImage( { bgImgSize: value } )}
+																	onSaveRepeat={value => saveBackgroundImage( { bgImgRepeat: value } )}
+																	onSaveAttachment={value => saveBackgroundImage( { bgImgAttachment: value } )}
+																	disableMediaButtons={( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' )}
+																	dynamicAttribute="backgroundImg:0:bgImg"
+																	isSelected={isSelected}
+																	attributes={attributes}
+																	setAttributes={setAttributes}
+																	name={'kadence/column'}
+																	clientId={clientId}
+																/>
+															</Fragment>
+														);
 													}
-													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 												}
+												return <div className={tab.className} key={tab.className}>{tabout}</div>;
 											}
-										</TabPanel>
-									</KadencePanelBody>
-									<KadencePanelBody
-										title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-col-bg-overlay-settings' }
-									>
-										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
-											{
-												( tab ) => {
-													let tabout;
-													if ( tab.name ) {
-														if ( 'hover' === tab.name ) {
-															tabout = (
-																<Fragment>
-																	<RangeControl
-																		label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
-																		value={ overlayHoverOpacity }
-																		onChange={ ( value ) => {
-																			setAttributes( {
-																				overlayHoverOpacity: value,
-																			} );
-																		} }
-																		step={ 0.01 }
-																		min={ 0 }
-																		max={ 1 }
-																	/>
-																	<PopColorControl
-																		label={ __( 'Background Color', 'kadence-blocks' ) }
-																		value={ ( overlayHover ? overlayHover : '' ) }
-																		default={ '' }
-																		onChange={ value => setAttributes( { overlayHover: value } ) }
-																	/>
-																	<KadenceBackgroundControl
-																		label={ __( 'Background Image', 'kadence-blocks' ) }
-																		hasImage={ hasHoverOverlayImage }
-																		imageURL={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) }
-																		imageID={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgID ? overlayImgHover[ 0 ].bgImgID : '' ) }
-																		imagePosition={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgPosition ? overlayImgHover[ 0 ].bgImgPosition : 'center center' ) }
-																		imageSize={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgSize ? overlayImgHover[ 0 ].bgImgSize : 'cover' ) }
-																		imageRepeat={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgRepeat ? overlayImgHover[ 0 ].bgImgRepeat : 'no-repeat' ) }
-																		imageAttachment={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgAttachment ? overlayImgHover[ 0 ].bgImgAttachment : 'scroll' ) }
-																		onRemoveImage={ onRemoveHoverOverlayImage }
-																		onSaveImage={ ( img ) => {
-																			saveHoverOverlayImage( {
-																				bgImgID: img.id,
-																				bgImg: img.url,
-																			} );
-																		} }
-																		onSaveURL={ ( newURL ) => {
-																			if ( newURL !== ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) ) {
-																				saveHoverOverlayImage( {
-																					bgImgID: undefined,
-																					bgImg: newURL,
-																				} );
-																			}
-																		} }
-																		onSavePosition={ value => saveHoverOverlayImage( { bgImgPosition: value } ) }
-																		onSaveSize={ value => saveHoverOverlayImage( { bgImgSize: value } ) }
-																		onSaveRepeat={ value => saveHoverOverlayImage( { bgImgRepeat: value } ) }
-																		onSaveAttachment={ value => saveHoverOverlayImage( { bgImgAttachment: value } ) }
-																		disableMediaButtons={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) }
-																		dynamicAttribute="overlayImgHover:0:bgImg"
-																		isSelected={ isSelected }
-																		attributes={ attributes }
-																		setAttributes={ setAttributes }
-																		name={ 'kadence/column' }
-																		clientId={ clientId }
-																	/>
-																</Fragment>
-															);
-														} else {
-															tabout = (
-																<Fragment>
-																	<RangeControl
-																		label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
-																		value={ overlayOpacity }
-																		onChange={ ( value ) => {
-																			setAttributes( {
-																				overlayOpacity: value,
-																			} );
-																		} }
-																		step={ 0.01 }
-																		min={ 0 }
-																		max={ 1 }
-																	/>
-																	<PopColorControl
-																		label={ __( 'Background Color', 'kadence-blocks' ) }
-																		value={ ( overlay ? overlay : '' ) }
-																		default={ '' }
-																		onChange={ value => setAttributes( { overlay: value } ) }
-																	/>
-																	<KadenceBackgroundControl
-																		label={ __( 'Background Image', 'kadence-blocks' ) }
-																		hasImage={ hasOverlayImage }
-																		imageURL={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) }
-																		imageID={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgID ? overlayImg[ 0 ].bgImgID : '' ) }
-																		imagePosition={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgPosition ? overlayImg[ 0 ].bgImgPosition : 'center center' ) }
-																		imageSize={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgSize ? overlayImg[ 0 ].bgImgSize : 'cover' ) }
-																		imageRepeat={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgRepeat ? overlayImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
-																		imageAttachment={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgAttachment ? overlayImg[ 0 ].bgImgAttachment : 'scroll' ) }
-																		onRemoveImage={ onRemoveOverlayImage }
-																		onSaveImage={ ( img ) => {
-																			saveOverlayImage( {
-																				bgImgID: img.id,
-																				bgImg: img.url,
-																			} );
-																		} }
-																		onSaveURL={ ( newURL ) => {
-																			if ( newURL !== ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) ) {
-																				saveOverlayImage( {
-																					bgImgID: undefined,
-																					bgImg: newURL,
-																				} );
-																			}
-																		} }
-																		onSavePosition={ value => saveOverlayImage( { bgImgPosition: value } ) }
-																		onSaveSize={ value => saveOverlayImage( { bgImgSize: value } ) }
-																		onSaveRepeat={ value => saveOverlayImage( { bgImgRepeat: value } ) }
-																		onSaveAttachment={ value => saveOverlayImage( { bgImgAttachment: value } ) }
-																		disableMediaButtons={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) }
-																		dynamicAttribute="overlayImg:0:bgImg"
-																		isSelected={ isSelected }
-																		attributes={ attributes }
-																		setAttributes={ setAttributes }
-																		name={ 'kadence/column' }
-																		clientId={ clientId }
-																	/>
-																</Fragment>
-															);
-														}
-													}
-													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-												}
-											}
-										</TabPanel>
-									</KadencePanelBody>
-									<KadencePanelBody
-										title={ __( 'Border Styles', 'kadence-blocks' ) }
-										initialOpen={ false }
-										panelName={ 'kb-col-border-settings' }
-									>
-										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-											activeClass="active-tab"
-											tabs={ [
-												{
-													name: 'normal',
-													title: __( 'Normal', 'kadence-blocks' ),
-													className: 'kt-normal-tab',
-												},
-												{
-													name: 'hover',
-													title: __( 'Hover', 'kadence-blocks' ),
-													className: 'kt-hover-tab',
-												},
-											] }>
-											{
-												( tab ) => {
-													let tabout;
-													if ( tab.name ) {
-														if ( 'hover' === tab.name ) {
-															tabout = (
-																<Fragment>
-																	<PopColorControl
-																		label={ __( 'Border Color', 'kadence-blocks' ) }
-																		value={ ( borderHover ? borderHover : '' ) }
-																		default={ '' }
-																		onChange={ value => setAttributes( { borderHover: value } ) }
-																	/>
-																	<ResponsiveMeasurementControls
-																		label={ __( 'Border Width', 'kadence-blocks' ) }
-																		value={ borderHoverWidth }
-																		control={ borderWidthControl }
-																		tabletValue={ tabletBorderHoverWidth }
-																		mobileValue={ mobileBorderHoverWidth }
-																		onChange={ ( value ) => setAttributes( { borderHoverWidth: value } ) }
-																		onChangeTablet={ ( value ) => setAttributes( { tabletBorderHoverWidth: value } ) }
-																		onChangeMobile={ ( value ) => setAttributes( { mobileBorderHoverWidth: value } ) }
-																		onChangeControl={ ( value ) => setBorderWidthControl( value ) }
-																		min={ 0 }
-																		max={ 40 }
-																		step={ 1 }
-																		unit={ 'px' }
-																		units={ [ 'px' ] }
-																		showUnit={ true }
-																		preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-																	/>
-																	<MeasurementControls
-																		label={ __( 'Border Radius', 'kadence-blocks' ) }
-																		measurement={ borderHoverRadius }
-																		control={ borderRadiusControl }
-																		onChange={ ( value ) => setAttributes( { borderHoverRadius: value } ) }
-																		onControl={ ( value ) => setBorderRadiusControl( value ) }
-																		min={ 0 }
-																		max={ 200 }
-																		step={ 1 }
-																		controlTypes={ [
-																			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-																			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-																		] }
-																		firstIcon={ topLeftIcon }
-																		secondIcon={ topRightIcon }
-																		thirdIcon={ bottomRightIcon }
-																		fourthIcon={ bottomLeftIcon }
-																	/>
-																	<BoxShadowControl
-																		label={ __( 'Box Shadow', 'kadence-blocks' ) }
-																		enable={ ( undefined !== displayHoverShadow ? displayHoverShadow : false ) }
-																		color={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' ) }
-																		colorDefault={ '#000000' }
-																		onArrayChange={ ( color, opacity ) => {
-																			saveShadowHover( { color: color, opacity: opacity } );
-																		} }
-																		opacity={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 0.2 ) }
-																		hOffset={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 ) }
-																		vOffset={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 ) }
-																		blur={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 ) }
-																		spread={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 ) }
-																		inset={ ( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].inset ? shadowHover[ 0 ].inset : false ) }
-																		onEnableChange={ value => {
-																			setAttributes( {
-																				displayHoverShadow: value,
-																			} );
-																		} }
-																		onColorChange={ value => {
-																			saveShadowHover( { color: value } );
-																		} }
-																		onOpacityChange={ value => {
-																			saveShadowHover( { opacity: value } );
-																		} }
-																		onHOffsetChange={ value => {
-																			saveShadowHover( { hOffset: value } );
-																		} }
-																		onVOffsetChange={ value => {
-																			saveShadowHover( { vOffset: value } );
-																		} }
-																		onBlurChange={ value => {
-																			saveShadowHover( { blur: value } );
-																		} }
-																		onSpreadChange={ value => {
-																			saveShadowHover( { spread: value } );
-																		} }
-																		onInsetChange={ value => {
-																			saveShadowHover( { inset: value } );
-																		} }
-																	/>
-																</Fragment>
-															);
-														} else {
-															tabout = (
-																<Fragment>
-																	<PopColorControl
-																		label={ __( 'Border Color', 'kadence-blocks' ) }
-																		value={ ( border ? border : '' ) }
-																		default={ '' }
-																		opacityValue={ borderOpacity }
-																		onChange={ value => setAttributes( { border: value } ) }
-																		onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
-																	/>
-																	<ResponsiveMeasurementControls
-																		label={ __( 'Border Width', 'kadence-blocks' ) }
-																		value={ borderWidth }
-																		control={ borderWidthControl }
-																		tabletValue={ tabletBorderWidth }
-																		mobileValue={ mobileBorderWidth }
-																		onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
-																		onChangeTablet={ ( value ) => setAttributes( { tabletBorderWidth: value } ) }
-																		onChangeMobile={ ( value ) => setAttributes( { mobileBorderWidth: value } ) }
-																		onChangeControl={ ( value ) => setBorderWidthControl( value ) }
-																		min={ 0 }
-																		max={ 40 }
-																		step={ 1 }
-																		unit={ 'px' }
-																		units={ [ 'px' ] }
-																		showUnit={ true }
-																		preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
-																	/>
-																	<MeasurementControls
-																		label={ __( 'Border Radius', 'kadence-blocks' ) }
-																		measurement={ borderRadius }
-																		control={ borderRadiusControl }
-																		onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-																		onControl={ ( value ) => setBorderRadiusControl( value ) }
-																		min={ 0 }
-																		max={ 200 }
-																		step={ 1 }
-																		controlTypes={ [
-																			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-																			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-																		] }
-																		firstIcon={ topLeftIcon }
-																		secondIcon={ topRightIcon }
-																		thirdIcon={ bottomRightIcon }
-																		fourthIcon={ bottomLeftIcon }
-																	/>
-																	<BoxShadowControl
-																		label={ __( 'Box Shadow', 'kadence-blocks' ) }
-																		enable={ ( undefined !== displayShadow ? displayShadow : false ) }
-																		color={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ) }
-																		colorDefault={ '#000000' }
-																		onArrayChange={ ( color, opacity ) => {
-																			saveShadow( { color: color, opacity: opacity } );
-																		} }
-																		opacity={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) }
-																		hOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 ) }
-																		vOffset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 ) }
-																		blur={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 ) }
-																		spread={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 ) }
-																		inset={ ( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false ) }
-																		onEnableChange={ value => {
-																			setAttributes( {
-																				displayShadow: value,
-																			} );
-																		} }
-																		onColorChange={ value => {
-																			saveShadow( { color: value } );
-																		} }
-																		onOpacityChange={ value => {
-																			saveShadow( { opacity: value } );
-																		} }
-																		onHOffsetChange={ value => {
-																			saveShadow( { hOffset: value } );
-																		} }
-																		onVOffsetChange={ value => {
-																			saveShadow( { vOffset: value } );
-																		} }
-																		onBlurChange={ value => {
-																			saveShadow( { blur: value } );
-																		} }
-																		onSpreadChange={ value => {
-																			saveShadow( { spread: value } );
-																		} }
-																		onInsetChange={ value => {
-																			saveShadow( { inset: value } );
-																		} }
-																	/>
-																</Fragment>
-															);
-														}
-													}
-													return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-												}
-											}
-										</TabPanel>
-									</KadencePanelBody>
-								</Fragment>
-							) }
-						<div className="kt-sidebar-settings-spacer"></div>
-						{ showSettings( 'textColor', 'kadence/column' ) && (
-							<KadencePanelBody
-								title={ __( 'Text Color Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-col-text-color-settings' }
-							>
-								<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-									activeClass="active-tab"
-									tabs={ [
-										{
-											name: 'normal',
-											title: __( 'Normal', 'kadence-blocks' ),
-											className: 'kt-normal-tab',
-										},
-										{
-											name: 'hover',
-											title: __( 'Hover', 'kadence-blocks' ),
-											className: 'kt-hover-tab',
-										},
-									] }>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'hover' === tab.name ) {
-													tabout = (
-														<Fragment>
-															<PopColorControl
-																label={ __( 'Text Color', 'kadence-blocks' ) }
-																value={ ( textColorHover ? textColorHover : '' ) }
-																default={ '' }
-																onChange={ value => setAttributes( { textColorHover: value } ) }
-															/>
-															<PopColorControl
-																label={ __( 'Text Link Color', 'kadence-blocks' ) }
-																value={ ( linkColorHover ? linkColorHover : '' ) }
-																default={ '' }
-																onChange={ value => setAttributes( { linkColorHover: value } ) }
-															/>
-															<PopColorControl
-																label={ __( 'Text Link Hover Color', 'kadence-blocks' ) }
-																value={ ( linkHoverColorHover ? linkHoverColorHover : '' ) }
-																default={ '' }
-																onChange={ value => setAttributes( { linkHoverColorHover: value } ) }
-															/>
-														</Fragment>
-													);
-												} else {
-													tabout = (
-														<Fragment>
-															<PopColorControl
-																label={ __( 'Text Color', 'kadence-blocks' ) }
-																value={ ( textColor ? textColor : '' ) }
-																default={ '' }
-																onChange={ value => setAttributes( { textColor: value } ) }
-															/>
-															<PopColorControl
-																label={ __( 'Text Link Color', 'kadence-blocks' ) }
-																value={ ( linkColor ? linkColor : '' ) }
-																default={ '' }
-																onChange={ value => setAttributes( { linkColor: value } ) }
-															/>
-															<PopColorControl
-																label={ __( 'Text Link Hover Color', 'kadence-blocks' ) }
-																value={ ( linkHoverColor ? linkHoverColor : '' ) }
-																default={ '' }
-																onChange={ value => setAttributes( { linkHoverColor: value } ) }
-															/>
-														</Fragment>
-													);
-												}
-											}
-											return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
 										}
-									}
-								</TabPanel>
-							</KadencePanelBody>
-						) }
-						{ showSettings( 'overlayLink', 'kadence/column' ) && (
-							<KadencePanelBody
-								title={ __( 'Overlay Link', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-col-overlay-link' }
-							>
-								<p className="kadence-sidebar-notice">{ __( 'Please note, If a link is added nothing else inside of the section will be selectable.', 'kadence-blocks' ) }</p>
-								<URLInputControl
-									label={ __( 'Link entire section', 'kadence-blocks' ) }
-									url={ link }
-									onChangeUrl={ value => setAttributes( { link: value } ) }
-									additionalControls={ true }
-									opensInNewTab={ ( undefined !== linkTarget ? linkTarget : false ) }
-									onChangeTarget={ value => setAttributes( { linkTarget: value } ) }
-									linkNoFollow={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
-									onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
-									linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
-									onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
-									linkTitle={ linkTitle }
-									onChangeTitle={ value => {
-										setAttributes( { linkTitle: value } )
-									} }
-									dynamicAttribute={ 'link' }
-									allowClear={ true }
-									isSelected={ isSelected }
-									attributes={ attributes }
-									setAttributes={ setAttributes }
-									name={ 'kadence/column' }
-									clientId={ clientId }
-								/>
-							</KadencePanelBody>
-						) }
-						<KadencePanelBody
-							title={ __( 'Visibility Settings', 'kadence-blocks' ) }
-							initialOpen={ false }
-							panelName={ 'kb-col-visibility-settings' }
-						>
-							<ToggleControl
-								label={ __( 'Hide on Desktop', 'kadence-blocks' ) }
-								checked={ ( undefined !== vsdesk ? vsdesk : false ) }
-								onChange={ ( value ) => setAttributes( { vsdesk: value } ) }
-							/>
-							<ToggleControl
-								label={ __( 'Hide on Tablet', 'kadence-blocks' ) }
-								checked={ ( undefined !== vstablet ? vstablet : false ) }
-								onChange={ ( value ) => setAttributes( { vstablet: value } ) }
-							/>
-							<ToggleControl
-								label={ __( 'Hide on Mobile', 'kadence-blocks' ) }
-								checked={ ( undefined !== vsmobile ? vsmobile : false ) }
-								onChange={ ( value ) => setAttributes( { vsmobile: value } ) }
-							/>
-						</KadencePanelBody>
-						{ inRowBlock && (
-							<KadencePanelBody
-								title={ __( 'Sticky Settings', 'kadence-blocks' ) }
-								initialOpen={ false }
-								panelName={ 'kb-col-sticky-settings' }
-							>
-								<ToggleControl
-									label={ __( 'Make sticky', 'kadence-blocks' ) }
-									help={ __( 'This will stick the section to viewport for the height of outer row block.', 'kadence-blocks' ) }
-									checked={ ( undefined !== sticky ? sticky : false ) }
-									onChange={ ( value ) => setAttributes( { sticky: value } ) }
-								/>
-								{ sticky && (
-									<ResponsiveRangeControls
-										label={ __( 'Sticky Header Offset', 'kadence-blocks' ) }
-										value={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ) }
-										onChange={ value => {
-											setAttributes( { stickyOffset: [ value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
-										} }
-										tabletValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ) }
-										onChangeTablet={ ( value ) => {
-											setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), value, ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) ] } );
-										} }
-										mobileValue={ ( undefined !== stickyOffset && undefined !== stickyOffset[ 2 ] ? stickyOffset[ 2 ] : '' ) }
-										onChangeMobile={ ( value ) => {
-											setAttributes( { stickyOffset: [ ( undefined !== stickyOffset && undefined !== stickyOffset[ 0 ] ? stickyOffset[ 0 ] : '' ), ( undefined !== stickyOffset && undefined !== stickyOffset[ 1 ] ? stickyOffset[ 1 ] : '' ), value ] } );
-										} }
-										min={ 0 }
-										max={ ( stickyOffsetUnit === 'px' ? 2000 : 100 ) }
-										step={ 1 }
-										unit={ stickyOffsetUnit ? stickyOffsetUnit : 'px' }
-										onUnit={ ( value ) => {
-											setAttributes( { stickyOffsetUnit: value } );
-										} }
-										units={ [ 'px', 'rem', 'vh' ] }
-									/>
+									</TabPanel>
+								</KadencePanelBody>
+								<KadencePanelBody
+									title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
+									initialOpen={ false }
+									panelName={ 'kb-col-bg-overlay-settings' }
+								>
+									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+										activeClass="active-tab"
+										tabs={ [
+											{
+												name: 'normal',
+												title: __( 'Normal', 'kadence-blocks' ),
+												className: 'kt-normal-tab',
+											},
+											{
+												name: 'hover',
+												title: __( 'Hover', 'kadence-blocks' ),
+												className: 'kt-hover-tab',
+											},
+										] }>
+										{
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'hover' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<RangeControl
+																	label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
+																	value={ overlayHoverOpacity }
+																	onChange={ ( value ) => {
+																		setAttributes( {
+																			overlayHoverOpacity: value,
+																		} );
+																	} }
+																	step={ 0.01 }
+																	min={ 0 }
+																	max={ 1 }
+																/>
+																<PopColorControl
+																	label={ __( 'Background Color', 'kadence-blocks' ) }
+																	value={ ( overlayHover ? overlayHover : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { overlayHover: value } ) }
+																/>
+																<KadenceBackgroundControl
+																	label={ __( 'Background Image', 'kadence-blocks' ) }
+																	hasImage={ hasHoverOverlayImage }
+																	imageURL={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) }
+																	imageID={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgID ? overlayImgHover[ 0 ].bgImgID : '' ) }
+																	imagePosition={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgPosition ? overlayImgHover[ 0 ].bgImgPosition : 'center center' ) }
+																	imageSize={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgSize ? overlayImgHover[ 0 ].bgImgSize : 'cover' ) }
+																	imageRepeat={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgRepeat ? overlayImgHover[ 0 ].bgImgRepeat : 'no-repeat' ) }
+																	imageAttachment={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImgAttachment ? overlayImgHover[ 0 ].bgImgAttachment : 'scroll' ) }
+																	onRemoveImage={ onRemoveHoverOverlayImage }
+																	onSaveImage={ ( img ) => {
+																		saveHoverOverlayImage( {
+																			bgImgID: img.id,
+																			bgImg: img.url,
+																		} );
+																	} }
+																	onSaveURL={ ( newURL ) => {
+																		if ( newURL !== ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) ) {
+																			saveHoverOverlayImage( {
+																				bgImgID: undefined,
+																				bgImg: newURL,
+																			} );
+																		}
+																	} }
+																	onSavePosition={ value => saveHoverOverlayImage( { bgImgPosition: value } ) }
+																	onSaveSize={ value => saveHoverOverlayImage( { bgImgSize: value } ) }
+																	onSaveRepeat={ value => saveHoverOverlayImage( { bgImgRepeat: value } ) }
+																	onSaveAttachment={ value => saveHoverOverlayImage( { bgImgAttachment: value } ) }
+																	disableMediaButtons={ ( overlayImgHover && overlayImgHover[ 0 ] && overlayImgHover[ 0 ].bgImg ? overlayImgHover[ 0 ].bgImg : '' ) }
+																	dynamicAttribute="overlayImgHover:0:bgImg"
+																	isSelected={ isSelected }
+																	attributes={ attributes }
+																	setAttributes={ setAttributes }
+																	name={ 'kadence/column' }
+																	clientId={ clientId }
+																/>
+															</Fragment>
+														);
+													} else {
+														tabout = (
+															<Fragment>
+																<RangeControl
+																	label={ __( 'Overlay Opacity', 'kadence-blocks' ) }
+																	value={ overlayOpacity }
+																	onChange={ ( value ) => {
+																		setAttributes( {
+																			overlayOpacity: value,
+																		} );
+																	} }
+																	step={ 0.01 }
+																	min={ 0 }
+																	max={ 1 }
+																/>
+																<PopColorControl
+																	label={ __( 'Background Color', 'kadence-blocks' ) }
+																	value={ ( overlay ? overlay : '' ) }
+																	default={ '' }
+																	onChange={ value => setAttributes( { overlay: value } ) }
+																/>
+																<KadenceBackgroundControl
+																	label={ __( 'Background Image', 'kadence-blocks' ) }
+																	hasImage={ hasOverlayImage }
+																	imageURL={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) }
+																	imageID={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgID ? overlayImg[ 0 ].bgImgID : '' ) }
+																	imagePosition={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgPosition ? overlayImg[ 0 ].bgImgPosition : 'center center' ) }
+																	imageSize={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgSize ? overlayImg[ 0 ].bgImgSize : 'cover' ) }
+																	imageRepeat={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgRepeat ? overlayImg[ 0 ].bgImgRepeat : 'no-repeat' ) }
+																	imageAttachment={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImgAttachment ? overlayImg[ 0 ].bgImgAttachment : 'scroll' ) }
+																	onRemoveImage={ onRemoveOverlayImage }
+																	onSaveImage={ ( img ) => {
+																		saveOverlayImage( {
+																			bgImgID: img.id,
+																			bgImg: img.url,
+																		} );
+																	} }
+																	onSaveURL={ ( newURL ) => {
+																		if ( newURL !== ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) ) {
+																			saveOverlayImage( {
+																				bgImgID: undefined,
+																				bgImg: newURL,
+																			} );
+																		}
+																	} }
+																	onSavePosition={ value => saveOverlayImage( { bgImgPosition: value } ) }
+																	onSaveSize={ value => saveOverlayImage( { bgImgSize: value } ) }
+																	onSaveRepeat={ value => saveOverlayImage( { bgImgRepeat: value } ) }
+																	onSaveAttachment={ value => saveOverlayImage( { bgImgAttachment: value } ) }
+																	disableMediaButtons={ ( overlayImg && overlayImg[ 0 ] && overlayImg[ 0 ].bgImg ? overlayImg[ 0 ].bgImg : '' ) }
+																	dynamicAttribute="overlayImg:0:bgImg"
+																	isSelected={ isSelected }
+																	attributes={ attributes }
+																	setAttributes={ setAttributes }
+																	name={ 'kadence/column' }
+																	clientId={ clientId }
+																/>
+															</Fragment>
+														);
+													}
+												}
+												return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+											}
+										}
+									</TabPanel>
+								</KadencePanelBody>
+								<KadencePanelBody
+									title={__( 'Border Styles', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-col-border-settings'}
+								>
+									<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+											  activeClass="active-tab"
+											  tabs={[
+												  {
+													  name     : 'normal',
+													  title    : __( 'Normal', 'kadence-blocks' ),
+													  className: 'kt-normal-tab',
+												  },
+												  {
+													  name     : 'hover',
+													  title    : __( 'Hover', 'kadence-blocks' ),
+													  className: 'kt-hover-tab',
+												  },
+											  ]}>
+										{
+											( tab ) => {
+												let tabout;
+												if ( tab.name ) {
+													if ( 'hover' === tab.name ) {
+														tabout = (
+															<Fragment>
+																<PopColorControl
+																	label={__( 'Border Color', 'kadence-blocks' )}
+																	value={( borderHover ? borderHover : '' )}
+																	default={''}
+																	onChange={value => setAttributes( { borderHover: value } )}
+																/>
+																<ResponsiveMeasurementControls
+																	label={__( 'Border Width', 'kadence-blocks' )}
+																	value={borderHoverWidth}
+																	control={borderWidthControl}
+																	tabletValue={tabletBorderHoverWidth}
+																	mobileValue={mobileBorderHoverWidth}
+																	onChange={( value ) => setAttributes( { borderHoverWidth: value } )}
+																	onChangeTablet={( value ) => setAttributes( { tabletBorderHoverWidth: value } )}
+																	onChangeMobile={( value ) => setAttributes( { mobileBorderHoverWidth: value } )}
+																	onChangeControl={( value ) => setBorderWidthControl( value )}
+																	min={0}
+																	max={40}
+																	step={1}
+																	unit={'px'}
+																	units={[ 'px' ]}
+																	showUnit={true}
+																	preset={[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
+																/>
+																<MeasurementControls
+																	label={__( 'Border Radius', 'kadence-blocks' )}
+																	measurement={borderHoverRadius}
+																	control={borderRadiusControl}
+																	onChange={( value ) => setAttributes( { borderHoverRadius: value } )}
+																	onControl={( value ) => setBorderRadiusControl( value )}
+																	min={0}
+																	max={200}
+																	step={1}
+																	controlTypes={[
+																		{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+																		{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+																	]}
+																	firstIcon={topLeftIcon}
+																	secondIcon={topRightIcon}
+																	thirdIcon={bottomRightIcon}
+																	fourthIcon={bottomLeftIcon}
+																/>
+																<BoxShadowControl
+																	label={__( 'Box Shadow', 'kadence-blocks' )}
+																	enable={( undefined !== displayHoverShadow ? displayHoverShadow : false )}
+																	color={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '#000000' )}
+																	colorDefault={'#000000'}
+																	onArrayChange={( color, opacity ) => {
+																		saveShadowHover( { color: color, opacity: opacity } );
+																	}}
+																	opacity={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].opacity ? shadowHover[ 0 ].opacity : 0.2 )}
+																	hOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].hOffset ? shadowHover[ 0 ].hOffset : 0 )}
+																	vOffset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].vOffset ? shadowHover[ 0 ].vOffset : 0 )}
+																	blur={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].blur ? shadowHover[ 0 ].blur : 14 )}
+																	spread={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].spread ? shadowHover[ 0 ].spread : 0 )}
+																	inset={( undefined !== shadowHover && undefined !== shadowHover[ 0 ] && undefined !== shadowHover[ 0 ].inset ? shadowHover[ 0 ].inset : false )}
+																	onEnableChange={value => {
+																		setAttributes( {
+																			displayHoverShadow: value,
+																		} );
+																	}}
+																	onColorChange={value => {
+																		saveShadowHover( { color: value } );
+																	}}
+																	onOpacityChange={value => {
+																		saveShadowHover( { opacity: value } );
+																	}}
+																	onHOffsetChange={value => {
+																		saveShadowHover( { hOffset: value } );
+																	}}
+																	onVOffsetChange={value => {
+																		saveShadowHover( { vOffset: value } );
+																	}}
+																	onBlurChange={value => {
+																		saveShadowHover( { blur: value } );
+																	}}
+																	onSpreadChange={value => {
+																		saveShadowHover( { spread: value } );
+																	}}
+																	onInsetChange={value => {
+																		saveShadowHover( { inset: value } );
+																	}}
+																/>
+															</Fragment>
+														);
+													} else {
+														tabout = (
+															<Fragment>
+																<PopColorControl
+																	label={__( 'Border Color', 'kadence-blocks' )}
+																	value={( border ? border : '' )}
+																	default={''}
+																	opacityValue={borderOpacity}
+																	onChange={value => setAttributes( { border: value } )}
+																	onOpacityChange={value => setAttributes( { borderOpacity: value } )}
+																/>
+																<ResponsiveMeasurementControls
+																	label={__( 'Border Width', 'kadence-blocks' )}
+																	value={borderWidth}
+																	control={borderWidthControl}
+																	tabletValue={tabletBorderWidth}
+																	mobileValue={mobileBorderWidth}
+																	onChange={( value ) => setAttributes( { borderWidth: value } )}
+																	onChangeTablet={( value ) => setAttributes( { tabletBorderWidth: value } )}
+																	onChangeMobile={( value ) => setAttributes( { mobileBorderWidth: value } )}
+																	onChangeControl={( value ) => setBorderWidthControl( value )}
+																	min={0}
+																	max={40}
+																	step={1}
+																	unit={'px'}
+																	units={[ 'px' ]}
+																	showUnit={true}
+																	preset={[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
+																/>
+																<MeasurementControls
+																	label={__( 'Border Radius', 'kadence-blocks' )}
+																	measurement={borderRadius}
+																	control={borderRadiusControl}
+																	onChange={( value ) => setAttributes( { borderRadius: value } )}
+																	onControl={( value ) => setBorderRadiusControl( value )}
+																	min={0}
+																	max={200}
+																	step={1}
+																	controlTypes={[
+																		{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+																		{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+																	]}
+																	firstIcon={topLeftIcon}
+																	secondIcon={topRightIcon}
+																	thirdIcon={bottomRightIcon}
+																	fourthIcon={bottomLeftIcon}
+																/>
+																<BoxShadowControl
+																	label={__( 'Box Shadow', 'kadence-blocks' )}
+																	enable={( undefined !== displayShadow ? displayShadow : false )}
+																	color={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' )}
+																	colorDefault={'#000000'}
+																	onArrayChange={( color, opacity ) => {
+																		saveShadow( { color: color, opacity: opacity } );
+																	}}
+																	opacity={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 )}
+																	hOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].hOffset ? shadow[ 0 ].hOffset : 0 )}
+																	vOffset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].vOffset ? shadow[ 0 ].vOffset : 0 )}
+																	blur={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].blur ? shadow[ 0 ].blur : 14 )}
+																	spread={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].spread ? shadow[ 0 ].spread : 0 )}
+																	inset={( undefined !== shadow && undefined !== shadow[ 0 ] && undefined !== shadow[ 0 ].inset ? shadow[ 0 ].inset : false )}
+																	onEnableChange={value => {
+																		setAttributes( {
+																			displayShadow: value,
+																		} );
+																	}}
+																	onColorChange={value => {
+																		saveShadow( { color: value } );
+																	}}
+																	onOpacityChange={value => {
+																		saveShadow( { opacity: value } );
+																	}}
+																	onHOffsetChange={value => {
+																		saveShadow( { hOffset: value } );
+																	}}
+																	onVOffsetChange={value => {
+																		saveShadow( { vOffset: value } );
+																	}}
+																	onBlurChange={value => {
+																		saveShadow( { blur: value } );
+																	}}
+																	onSpreadChange={value => {
+																		saveShadow( { spread: value } );
+																	}}
+																	onInsetChange={value => {
+																		saveShadow( { inset: value } );
+																	}}
+																/>
+															</Fragment>
+														);
+													}
+												}
+												return <div className={tab.className} key={tab.className}>{tabout}</div>;
+											}
+										}
+									</TabPanel>
+								</KadencePanelBody>
+								<div className="kt-sidebar-settings-spacer"></div>
+								{showSettings( 'textColor', 'kadence/column' ) && (
+									<KadencePanelBody
+										title={__( 'Text Color Settings', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-col-text-color-settings'}
+									>
+										<TabPanel className="kt-inspect-tabs kt-hover-tabs"
+												  activeClass="active-tab"
+												  tabs={[
+													  {
+														  name     : 'normal',
+														  title    : __( 'Normal', 'kadence-blocks' ),
+														  className: 'kt-normal-tab',
+													  },
+													  {
+														  name     : 'hover',
+														  title    : __( 'Hover', 'kadence-blocks' ),
+														  className: 'kt-hover-tab',
+													  },
+												  ]}>
+											{
+												( tab ) => {
+													let tabout;
+													if ( tab.name ) {
+														if ( 'hover' === tab.name ) {
+															tabout = (
+																<Fragment>
+																	<PopColorControl
+																		label={__( 'Text Color', 'kadence-blocks' )}
+																		value={( textColorHover ? textColorHover : '' )}
+																		default={''}
+																		onChange={value => setAttributes( { textColorHover: value } )}
+																	/>
+																	<PopColorControl
+																		label={__( 'Text Link Color', 'kadence-blocks' )}
+																		value={( linkColorHover ? linkColorHover : '' )}
+																		default={''}
+																		onChange={value => setAttributes( { linkColorHover: value } )}
+																	/>
+																	<PopColorControl
+																		label={__( 'Text Link Hover Color', 'kadence-blocks' )}
+																		value={( linkHoverColorHover ? linkHoverColorHover : '' )}
+																		default={''}
+																		onChange={value => setAttributes( { linkHoverColorHover: value } )}
+																	/>
+																</Fragment>
+															);
+														} else {
+															tabout = (
+																<Fragment>
+																	<PopColorControl
+																		label={__( 'Text Color', 'kadence-blocks' )}
+																		value={( textColor ? textColor : '' )}
+																		default={''}
+																		onChange={value => setAttributes( { textColor: value } )}
+																	/>
+																	<PopColorControl
+																		label={__( 'Text Link Color', 'kadence-blocks' )}
+																		value={( linkColor ? linkColor : '' )}
+																		default={''}
+																		onChange={value => setAttributes( { linkColor: value } )}
+																	/>
+																	<PopColorControl
+																		label={__( 'Text Link Hover Color', 'kadence-blocks' )}
+																		value={( linkHoverColor ? linkHoverColor : '' )}
+																		default={''}
+																		onChange={value => setAttributes( { linkHoverColor: value } )}
+																	/>
+																</Fragment>
+															);
+														}
+													}
+													return <div className={tab.className} key={tab.className}>{tabout}</div>;
+												}
+											}
+										</TabPanel>
+									</KadencePanelBody>
 								) }
-							</KadencePanelBody>
-						) }
+								{ showSettings( 'overlayLink', 'kadence/column' ) && (
+									<KadencePanelBody
+										title={ __( 'Overlay Link', 'kadence-blocks' ) }
+										initialOpen={ false }
+										panelName={ 'kb-col-overlay-link' }
+									>
+										<p className="kadence-sidebar-notice">{ __( 'Please note, If a link is added nothing else inside of the section will be selectable.', 'kadence-blocks' ) }</p>
+										<URLInputControl
+											label={ __( 'Link entire section', 'kadence-blocks' ) }
+											url={ link }
+											onChangeUrl={ value => setAttributes( { link: value } ) }
+											additionalControls={ true }
+											opensInNewTab={ ( undefined !== linkTarget ? linkTarget : false ) }
+											onChangeTarget={ value => setAttributes( { linkTarget: value } ) }
+											linkNoFollow={ ( undefined !== linkNoFollow ? linkNoFollow : false ) }
+											onChangeFollow={ value => setAttributes( { linkNoFollow: value } ) }
+											linkSponsored={ ( undefined !== linkSponsored ? linkSponsored : false ) }
+											onChangeSponsored={ value => setAttributes( { linkSponsored: value } ) }
+											linkTitle={ linkTitle }
+											onChangeTitle={ value => {
+												setAttributes( { linkTitle: value } )
+											} }
+											dynamicAttribute={ 'link' }
+											allowClear={ true }
+											isSelected={ isSelected }
+											attributes={ attributes }
+											setAttributes={ setAttributes }
+											name={ 'kadence/column' }
+											clientId={ clientId }
+										/>
+									</KadencePanelBody>
+								) }
+							</>
+						}
 					</InspectorControls>
 				</Fragment>
 			) }
 			<InspectorAdvancedControls>
 				{ inRowBlock && (
-					<KadenceRange
+					<RangeControl
 						label={ __( 'Mobile Collapse Order' ) }
 						value={ collapseOrder }
 						onChange={ ( value ) => {

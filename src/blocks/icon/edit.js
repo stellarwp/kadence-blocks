@@ -18,7 +18,16 @@ import {
  * Import externals
  */
 import { times, map } from 'lodash';
-import { PopColorControl, StepControls, IconControl, IconRender, KadencePanelBody, URLInputControl, VerticalAlignmentIcon } from '@kadence/components';
+import {
+	PopColorControl,
+	StepControls,
+	IconControl,
+	IconRender,
+	KadencePanelBody,
+	URLInputControl,
+	VerticalAlignmentIcon,
+	InspectorControlTabs
+} from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
@@ -41,7 +50,7 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	RangeControl,
 	TextControl,
 	SelectControl,
@@ -51,7 +60,7 @@ const {
 	ToolbarGroup,
 	ButtonGroup,
 	Tooltip,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -64,6 +73,7 @@ class KadenceIcons extends Component {
 		this.saveArrayUpdate = this.saveArrayUpdate.bind( this );
 		this.state = {
 			marginControl: 'linked',
+			activeTab: '',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
 	}
@@ -568,56 +578,72 @@ class KadenceIcons extends Component {
 					/>
 				</BlockControls>
 				<InspectorControls>
-					<KadencePanelBody
-						title={ __( 'Icon Count', 'kadence-blocks' ) }
-						initialOpen={ true }
-						panelName={ 'kb-icon-count' }
-					>
-						<StepControls
-							label={ __( 'Number of Icons', 'kadence-blocks' ) }
-							value={ iconCount }
-							onChange={ newcount => {
-								const newicons = icons;
-								if ( newicons.length < newcount ) {
-									const amount = Math.abs( newcount - newicons.length );
-									{ times( amount, n => {
-										newicons.push( {
-											icon: newicons[ 0 ].icon,
-											link: newicons[ 0 ].link,
-											target: newicons[ 0 ].target,
-											size: newicons[ 0 ].size,
-											width: newicons[ 0 ].width,
-											title: newicons[ 0 ].title,
-											color: newicons[ 0 ].color,
-											background: newicons[ 0 ].background,
-											border: newicons[ 0 ].border,
-											borderRadius: newicons[ 0 ].borderRadius,
-											borderWidth: newicons[ 0 ].borderWidth,
-											padding: newicons[ 0 ].padding,
-											style: newicons[ 0 ].style,
-											marginTop: ( newicons[ 0 ].marginTop ? newicons[ 0 ].marginTop : 0 ),
-											marginRight: ( newicons[ 0 ].marginRight ? newicons[ 0 ].marginRight : 0 ),
-											marginBottom: ( newicons[ 0 ].marginBottom ? newicons[ 0 ].marginBottom : 0 ),
-											marginLeft: ( newicons[ 0 ].marginLeft ? newicons[ 0 ].marginLeft : 0 ),
-											hColor: ( newicons[ 0 ].hColor ? newicons[ 0 ].hColor : '' ),
-											hBackground: ( newicons[ 0 ].hBackground ? newicons[ 0 ].hBackground : '' ),
-											hBorder: ( newicons[ 0 ].hBorder ? newicons[ 0 ].hBorder : '' ),
-										} );
-									} ); }
-									setAttributes( { icons: newicons } );
-									this.saveArrayUpdate( { title: icons[ 0 ].title }, 0 );
-								}
-								setAttributes( { iconCount: newcount } );
-							} }
-							min={ 1 }
-							max={ 10 }
-						/>
-						<div className="kb-sidebar-alignment components-base-control">
-							<p className="kb-component-label kb-responsive-label">{ __( 'Text Alignment', 'kadence-blocks' ) }</p>
-							{ tabAlignControls }
-						</div>
-					</KadencePanelBody>
-					{ renderSettings }
+
+					<InspectorControlTabs
+						panelName={ 'icon' }
+						allowedTabs={ [ 'general', 'advanced' ] }
+						setActiveTab={ ( value ) => this.setState( { activeTab: value } ) }
+						activeTab={ this.state.activeTab }
+					/>
+
+					{( this.state.activeTab === 'general' ) &&
+						<>
+							<KadencePanelBody
+								title={__( 'Icon Count', 'kadence-blocks' )}
+								initialOpen={true}
+								panelName={'kb-icon-count'}
+							>
+								<StepControls
+									label={__( 'Number of Icons', 'kadence-blocks' )}
+									value={iconCount}
+									onChange={newcount => {
+										const newicons = icons;
+										if ( newicons.length < newcount ) {
+											const amount = Math.abs( newcount - newicons.length );
+											{
+												times( amount, n => {
+													newicons.push( {
+														icon        : newicons[ 0 ].icon,
+														link        : newicons[ 0 ].link,
+														target      : newicons[ 0 ].target,
+														size        : newicons[ 0 ].size,
+														width       : newicons[ 0 ].width,
+														title       : newicons[ 0 ].title,
+														color       : newicons[ 0 ].color,
+														background  : newicons[ 0 ].background,
+														border      : newicons[ 0 ].border,
+														borderRadius: newicons[ 0 ].borderRadius,
+														borderWidth : newicons[ 0 ].borderWidth,
+														padding     : newicons[ 0 ].padding,
+														style       : newicons[ 0 ].style,
+														marginTop   : ( newicons[ 0 ].marginTop ? newicons[ 0 ].marginTop : 0 ),
+														marginRight : ( newicons[ 0 ].marginRight ? newicons[ 0 ].marginRight : 0 ),
+														marginBottom: ( newicons[ 0 ].marginBottom ? newicons[ 0 ].marginBottom : 0 ),
+														marginLeft  : ( newicons[ 0 ].marginLeft ? newicons[ 0 ].marginLeft : 0 ),
+														hColor      : ( newicons[ 0 ].hColor ? newicons[ 0 ].hColor : '' ),
+														hBackground : ( newicons[ 0 ].hBackground ? newicons[ 0 ].hBackground : '' ),
+														hBorder     : ( newicons[ 0 ].hBorder ? newicons[ 0 ].hBorder : '' ),
+													} );
+												} );
+											}
+											setAttributes( { icons: newicons } );
+											this.saveArrayUpdate( { title: icons[ 0 ].title }, 0 );
+										}
+										setAttributes( { iconCount: newcount } );
+									}}
+									min={1}
+									max={10}
+								/>
+								<div className="kb-sidebar-alignment components-base-control">
+									<p className="kb-component-label kb-responsive-label">{__( 'Text Alignment', 'kadence-blocks' )}</p>
+									{tabAlignControls}
+								</div>
+							</KadencePanelBody>
+							{renderSettings}
+
+						</>
+					}
+
 				</InspectorControls>
 				<div className={ `kt-svg-icons ${ clientId } kt-svg-icons-${ uniqueID }${ verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : '' }` } style={ {
 					textAlign: ( textAlignment ? textAlignment : 'center' ),

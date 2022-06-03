@@ -8,12 +8,12 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
 	Toolbar,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * Build the icon list move controls
