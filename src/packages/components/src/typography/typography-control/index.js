@@ -14,11 +14,10 @@ import { __, sprintf } from '@wordpress/i18n';
  * Import External
  */
 import { capitalizeFirstLetter } from '@kadence/helpers'
-import { 
-	MeasurementControls,
-	ResponsiveRangeControls,
-	RangeControl,
-} from '@kadence/components'
+import RangeControl from '../../range/range-control';
+import ResponsiveRangeControls from '../../range/responsive-range-control';
+import MeasurementControls from '../../measurement/measurement-control';
+
 import Select from 'react-select';
 import { range } from 'lodash';
 import HeadingLevelIcon from '../../heading-level-icon';

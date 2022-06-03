@@ -54,6 +54,7 @@ import {
 	TypographyControls,
 	MeasurementControls,
 	ResponsiveMeasurementControls,
+	ResponsiveRangeControls,
 	KadenceRange,
 	KadencePanelBody,
 	URLInputControl,

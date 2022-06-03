@@ -78,7 +78,6 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 2.5.0 Beta Version =
 Release Date: April 20th, 2022
-** Add: Overlay Settings to section block.
 ** Update: RowLayout to use grid css.
 ** Update: File Structure, build process, individual block files.
 ** Update: Inline SVGs removed from content html.
@@ -89,7 +88,19 @@ Release Date: April 20th, 2022
 ** Update: Gallery Carousels to use splide.
 ** Update: Testimonial Carousels to use Splide.
 ** Fix: Parallax background issue with border radius.
-** Update: Support for rem units in Max width. 
+** Add: Block defaults for button style in advanced button.
+
+= 2.4.8 =
+Release Date: June 3rd, 2022
+* Fix: Issue with section overlay.
+
+= 2.4.7 =
+Release Date: June 1st, 2022
+* Fix: Margins inside of rows.
+
+= 2.4.6 =
+Release Date: June 1st, 2022
+* Fix: Section block alignment when using max width setting.
 
 = 2.4.5 =
 Release Date: May 25th, 2022

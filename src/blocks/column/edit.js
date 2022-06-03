@@ -41,8 +41,9 @@ import { __ } from '@wordpress/i18n';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useEffect, useState, Fragment } from '@wordpress/element';
 import {
-	InnerBlocks,
+	BlockAlignmentToolbar,
 	BlockControls,
+	InnerBlocks,
 	InspectorAdvancedControls,
 	InspectorControls,
 	useBlockProps,
@@ -68,7 +69,7 @@ function SectionEdit( {
 	context,
 	className,
 } ) {
-	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity } = attributes;
+	const { id, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, leftMargin, rightMargin, leftMarginM, rightMarginM, topMarginT, bottomMarginT, leftMarginT, rightMarginT, topPaddingT, bottomPaddingT, leftPaddingT, rightPaddingT, backgroundOpacity, background, zIndex, border, borderWidth, borderOpacity, borderRadius, uniqueID, kadenceAnimation, kadenceAOSOptions, collapseOrder, backgroundImg, textAlign, textColor, linkColor, linkHoverColor, shadow, displayShadow, vsdesk, vstablet, vsmobile, paddingType, marginType, mobileBorderWidth, tabletBorderWidth, templateLock, kadenceBlockCSS, kadenceDynamic, direction, gutter, gutterUnit, verticalAlignment, justifyContent, backgroundImgHover, backgroundHover, borderHover, borderHoverWidth, borderHoverRadius, shadowHover, displayHoverShadow, tabletBorderHoverWidth, mobileBorderHoverWidth, textColorHover, linkColorHover, linkHoverColorHover, linkNoFollow, linkSponsored, link, linkTarget, linkTitle, wrapContent, heightUnit, height, maxWidth, maxWidthUnit, htmlTag, sticky, stickyOffset, stickyOffsetUnit, overlay, overlayHover, overlayImg, overlayImgHover, overlayOpacity, overlayHoverOpacity, align } = attributes;
 	const getDynamic = () => {
 		let contextPost = null;
 		if ( context && context.queryId && context.postId ) {
@@ -353,9 +354,9 @@ function SectionEdit( {
 	const blockProps = useBlockProps( {
 		className: classes,
 		style: {
-			maxWidth: ( undefined !== previewMaxWidth ? previewMaxWidth + previewMaxWidthUnit : undefined ),
 			top: ( sticky && undefined !== previewStickyOffset ? previewStickyOffset + previewStickyOffsetUnit : undefined ),
 		},
+		'data-align': ( ! inRowBlock && ( 'full' === align || 'wide' === align ) ? align : undefined ),
 		'data-vertical-align': ( 'top' === verticalAlignment || 'middle' === verticalAlignment || 'bottom' === verticalAlignment ? verticalAlignment : undefined ),
 	} );
 	const innerBlocksProps = useInnerBlocksProps(
@@ -371,11 +372,7 @@ function SectionEdit( {
 		}
 	);
 	return (
-		<div style={ {
-				maxWidth: ( undefined !== previewMaxWidth ? previewMaxWidth + previewMaxWidthUnit : undefined ),
-			} }
-			{ ...blockProps }
-		>
+		<div { ...blockProps }>
 			<style>
 			{ ( overlayOpacity !== undefined && overlayOpacity !== '' ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { opacity: ${ overlayOpacity } }` : '' ) }
 				{ ( overlay ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:before { background-color: ${ KadenceColorOutput( overlay ) } }` : '' ) }
@@ -398,14 +395,13 @@ function SectionEdit( {
 				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
 				{ ( linkColor ? `.kadence-column-${ uniqueID } a { color: ${ KadenceColorOutput( linkColor ) }; }` : '' ) }
 				{ ( linkHoverColor ? `.kadence-column-${ uniqueID } a:hover { color: ${ KadenceColorOutput( linkHoverColor ) }; }` : '' ) }
-				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )};` : '' ) }
+				{ ( '' !== previewGutter ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { gap: ${ previewGutter + ( gutterUnit ? gutterUnit : 'px' )}; }` : '' ) }
 				{ ( previewJustify ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { justify-content: ${ previewJustify }; }` : '' ) }
 				{ ( previewWrap ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal { flex-wrap: ${ previewWrap }; }` : '' ) }
 				{ ( previewJustify && ( 'space-around' == previewJustify || 'space-between' == previewJustify || 'space-evenly' == previewJustify ) ? `.kadence-column-${ uniqueID } > .kadence-inner-column-direction-horizontal > .block-list-appender { display:none; }` : '' ) }
 				{ ( textColorHover ? `.kadence-column-${ uniqueID }:hover, .kadence-column-${ uniqueID }:hover p, .kadence-column-${ uniqueID }:hover h1, .kadence-column-${ uniqueID }:hover h2, .kadence-column-${ uniqueID }:hover h3, .kadence-column-${ uniqueID }:hover h4, .kadence-column-${ uniqueID }:hover h5, .kadence-column-${ uniqueID }:hover h6 { color: ${ KadenceColorOutput( textColorHover ) }; }` : '' ) }
 				{ ( linkColorHover ? `.kadence-column-${ uniqueID }:hover a { color: ${ KadenceColorOutput( linkColorHover ) }; }` : '' ) }
 				{ ( linkHoverColorHover ? `.kadence-column-${ uniqueID }:hover a:hover { color: ${ KadenceColorOutput( linkHoverColorHover ) }; }` : '' ) }
-				3
 				{ ( hasHoverBackgroundImage ? `.kadence-column-${ uniqueID }:hover .kadence-inner-column-inner { background-image: url(${ backgroundImgHover[ 0 ].bgImg }) !important; }` : '' ) }
 				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgPosition ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { background-position:${ backgroundImgHover[ 0 ].bgImgPosition } !important; }` : '' ) }
 				{ ( hasHoverBackgroundImage && backgroundImgHover[ 0 ].bgImgSize ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner:hover { background-size:${ backgroundImgHover[ 0 ].bgImgSize } !important; }` : '' ) }
@@ -430,6 +426,13 @@ function SectionEdit( {
 			{ showSettings( 'allSettings', 'kadence/column' ) && (
 				<Fragment>
 					<BlockControls>
+						{ ! inRowBlock && (
+							<BlockAlignmentToolbar
+								value={ align }
+								controls={ [ 'wide', 'full' ] }
+								onChange={ value => setAttributes( { align: value } ) }
+							/>
+						) }
 						<ToolbarGroup
 							isCollapsed={ true }
 							icon={ <VerticalAlignmentIcon value={ ( verticalAlignment ? verticalAlignment : ( direction && direction[ 0 ] && direction[ 0 ] === 'horizontal' ? 'middle' : 'top' ) ) } /> }
@@ -1400,6 +1403,7 @@ function SectionEdit( {
 				) }
 			</InspectorAdvancedControls>
 			<div id={ `animate-id${ uniqueID }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
+				maxWidth: ( undefined !== previewMaxWidth ? previewMaxWidth + previewMaxWidthUnit : undefined ),
 				minHeight: ( undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined ),
 				paddingLeft: ( undefined !== previewPaddingLeft ? previewPaddingLeft + previewPaddingType : undefined ),
 				paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + previewPaddingType : undefined ),

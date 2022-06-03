@@ -408,6 +408,10 @@
 		"stickyOffsetUnit": {
 			"type": "string",
 			"default": "px"
+		},
+		"align": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {

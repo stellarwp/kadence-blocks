@@ -45,13 +45,12 @@ import Select from 'react-select';
 import { times, dropRight, debounce, map } from 'lodash';
 import classnames from 'classnames';
 import memoize from 'memize';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 /**
  * Import Kadence Components
  */
-import { PopColorControl, SmallResponsiveControl, ResponsiveControl, KadenceRange, MeasurementControls, ResponsiveRangeControls, KadencePanelBody, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
+import { PopColorControl, SmallResponsiveControl, ResponsiveControl, KadenceRange, MeasurementControls, IconPicker, ResponsiveRangeControls, KadencePanelBody, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
+import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -68,13 +67,15 @@ import './editor.scss';
 /**
  * Import WordPress Internals
  */
-import { Component, Fragment } from '@wordpress/element';
+import { useEffect, useState, Fragment } from '@wordpress/element';
 import {
 	MediaUpload,
-	InnerBlocks,
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
+	useBlockProps,
+	useInnerBlocksProps,
+	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
 	Button,
@@ -91,8 +92,7 @@ import {
 	SelectControl,
 	ResizableBox,
 } from '@wordpress/components';
-import { withDispatch, withSelect } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
+import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import {
 	image,
@@ -700,7 +700,7 @@ const ktrowUniqueIDs = [];
 	};
 	const mobileControls = (
 		<Fragment>
-			{ showSettings( 'basicLayout' ) && (
+			{ showSettings( 'basicLayout', 'kadence/rowlayout' ) && (
 				<KadencePanelBody panelName={ 'kb-row-basic-settings' }>
 					{ columns > 1 && (
 						<Fragment>
@@ -938,13 +938,13 @@ const ktrowUniqueIDs = [];
 						step={ 1 }
 						allowEmpty={ true }
 						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 						] }
-						firstIcon={ icons.topleft }
-						secondIcon={ icons.topright }
-						thirdIcon={ icons.bottomright }
-						fourthIcon={ icons.bottomleft }
+						firstIcon={ topLeftIcon }
+						secondIcon={ topRightIcon }
+						thirdIcon={ bottomRightIcon }
+						fourthIcon={ bottomLeftIcon }
 					/>
 				</KadencePanelBody>
 			) }
@@ -1163,13 +1163,13 @@ const ktrowUniqueIDs = [];
 						step={ 1 }
 						allowEmpty={ true }
 						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 						] }
-						firstIcon={ icons.topleft }
-						secondIcon={ icons.topright }
-						thirdIcon={ icons.bottomright }
-						fourthIcon={ icons.bottomleft }
+						firstIcon={ topLeftIcon }
+						secondIcon={ topRightIcon }
+						thirdIcon={ bottomRightIcon }
+						fourthIcon={ bottomLeftIcon }
 					/>
 				</KadencePanelBody>
 			) }
@@ -2667,7 +2667,7 @@ const ktrowUniqueIDs = [];
 	);
 	const topDividerSettings = (
 		<Fragment>
-			<FontIconPicker
+			<IconPicker
 				icons={ [
 					'ct',
 					'cti',
@@ -2717,7 +2717,7 @@ const ktrowUniqueIDs = [];
 	);
 	const bottomDividerSettings = (
 		<Fragment>
-			<FontIconPicker
+			<IconPicker
 				icons={ [
 					'ct',
 					'cti',

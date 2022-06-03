@@ -28,8 +28,7 @@ import classnames from 'classnames';
 import memoize from 'memize';
 import { times, map } from 'lodash';
 
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import { PopColorControl, BorderColorControls, TypographyControls, ResponsiveMeasurementControls, MeasurementControls, KadenceRange, KadencePanelBody, WebfontLoader } from '@kadence/components';
+import { PopColorControl, BorderColorControls, TypographyControls, ResponsiveMeasurementControls, MeasurementControls, KadenceRange, KadencePanelBody, WebfontLoader, IconPicker } from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
@@ -722,7 +721,7 @@ class KadenceAccordionComponent extends Component {
 									onChange={ ( value ) => setAttributes( { showIcon: value } ) }
 								/>
 								<h2>{ __( 'Icon Style', 'kadence-blocks' ) }</h2>
-								<FontIconPicker
+								<IconPicker
 									icons={ [
 										'basic',
 										'basiccircle',
@@ -1069,17 +1068,19 @@ class KadenceAccordionComponent extends Component {
 								<Button
 									className="kt-accordion-add"
 									isPrimary={ true }
+									icon="plus"
 									onClick={ () => {
 										const newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
 										setAttributes( { paneCount: paneCount + 1 } );
 										this.props.insertPane( newBlock );
 									} }
 								>
-									<Dashicon icon="plus" />
 									{ __( 'Add Accordion Item', 'kadence-blocks' ) }
 								</Button>
 								{ realPaneCount > 1 && (
-									<IconButton
+									<Button
+										iconPosition="left"
+										iconSize={ 16 }
 										className="kt-accordion-remove"
 										label={ __( 'Remove Accordion Item', 'kadence-blocks' ) }
 										icon="minus"
