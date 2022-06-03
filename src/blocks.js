@@ -35,7 +35,6 @@ import './blocks/info-box/block.js';
 import './blocks/accordion/block.js';
 import './blocks/pane/block.js';
 import './blocks/icon-list/block.js';
-import './blocks/testimonials/block.js';
 import './blocks/advanced-gallery/block.js';
 import './blocks/form/block.js';
 import './blocks/table-of-contents/block.js';
@@ -43,9 +42,10 @@ import './blocks/posts/block.js';
 import './blocks/countdown/block.js';
 
 /* block.json styles */
-import './blocks/lottie/index.js';
 import './blocks/image/index.js';
+import './blocks/lottie/index.js';
 import './blocks/show-more/index.js';
+import './blocks/testimonials/index.js';
 
 
 // import './plugins/kadence-control.js';

@@ -35,7 +35,7 @@ module.exports = {
 		'blocks-posts-editor': './src/blocks/posts/block.js',
 		'blocks-show-more-editor': './src/blocks/show-more/index.js',
 		'blocks-countdown-editor': './src/blocks/countdown/block.js',
-		'blocks-testimonials-editor': './src/blocks/testimonials/block.js',
+		'blocks-testimonials-editor': './src/blocks/testimonials/index.js',
 		'plugin-kadence-control': './src/plugin.js',
 		'extension-kadence-base': './src/extension/kadence-base/index.js',
 		'extension-stores': './src/extension/stores/index.js',
