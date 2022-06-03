@@ -31,7 +31,7 @@ module.exports = {
 		'blocks-icon-list-editor': './src/blocks/icon-list/block.js',
 		'blocks-advanced-gallery-editor': './src/blocks/advanced-gallery/block.js',
 		'blocks-form-editor': './src/blocks/form/block.js',
-		'blocks-table-of-contents-editor': './src/blocks/table-of-contents/block.js',
+		'blocks-table-of-contents-editor': './src/blocks/table-of-contents/index.js',
 		'blocks-posts-editor': './src/blocks/posts/block.js',
 		'blocks-show-more-editor': './src/blocks/show-more/index.js',
 		'blocks-countdown-editor': './src/blocks/countdown/block.js',

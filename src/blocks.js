@@ -37,7 +37,6 @@ import './blocks/pane/block.js';
 import './blocks/icon-list/block.js';
 import './blocks/advanced-gallery/block.js';
 import './blocks/form/block.js';
-import './blocks/table-of-contents/block.js';
 import './blocks/posts/block.js';
 import './blocks/countdown/block.js';
 
@@ -45,6 +44,7 @@ import './blocks/countdown/block.js';
 import './blocks/image/index.js';
 import './blocks/lottie/index.js';
 import './blocks/show-more/index.js';
+import './blocks/table-of-contents/index.js';
 import './blocks/testimonials/index.js';
 
 
