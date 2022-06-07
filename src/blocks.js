@@ -36,12 +36,12 @@ import './blocks/pane/block.js';
 import './blocks/icon-list/block.js';
 import './blocks/advanced-gallery/block.js';
 import './blocks/form/block.js';
-import './blocks/posts/block.js';
 import './blocks/countdown/block.js';
 
 /* block.json styles */
 import './blocks/image/index.js';
 import './blocks/lottie/index.js';
+import './blocks/posts/block.js';
 import './blocks/show-more/index.js';
 import './blocks/spacer/index.js';
 import './blocks/table-of-contents/index.js';
