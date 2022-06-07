@@ -18,7 +18,7 @@ module.exports = {
 		'blocks-google-maps-editor': './src/blocks/google-maps/index.js',
 		'blocks-lottie-editor': './src/blocks/lottie/index.js',
 		'blocks-image-editor': './src/blocks/image/index.js',
-		'blocks-spacer-editor': './src/blocks/spacer/block.js',
+		'blocks-spacer-editor': './src/blocks/spacer/index.js',
 		'blocks-advanced-btn-editor': './src/blocks/advanced-btn/block.js',
 		'blocks-count-up-editor': './src/blocks/count-up/block.js',
 		'blocks-row-layout-editor': './src/blocks/row-layout/index.js',

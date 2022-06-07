@@ -22,7 +22,6 @@ import './extension/block-css/block-css';
 import './blocks/lottie/index.js';
 import './blocks/image/index.js';
 import './blocks/google-maps/index.js';
-import './blocks/spacer/block.js';
 import './blocks/advanced-btn/block.js';
 import './blocks/count-up/block.js';
 import './blocks/row-layout/index.js';
@@ -44,6 +43,7 @@ import './blocks/countdown/block.js';
 import './blocks/image/index.js';
 import './blocks/lottie/index.js';
 import './blocks/show-more/index.js';
+import './blocks/spacer/index.js';
 import './blocks/table-of-contents/index.js';
 import './blocks/testimonials/index.js';
 
