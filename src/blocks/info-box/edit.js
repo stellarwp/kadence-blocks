@@ -64,6 +64,7 @@ import {
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
+	useBlockProps
 } from '@wordpress/block-editor';
 import {
 	Button,
@@ -1425,8 +1426,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	if ( showImageToolbar && kadenceDynamic && kadenceDynamic[ 'mediaImage:0:url' ] && kadenceDynamic[ 'mediaImage:0:url' ].enable ) {
 		showImageToolbar = false;
 	}
+	const blockProps = useBlockProps( {
+		className: className
+	} );
+
 	return (
-		<div id={`kt-info-box${uniqueID}`} className={className}>
+		<div id={`kt-info-box${uniqueID}`} {...blockProps}>
 			{renderCSS}
 			<BlockControls key="controls">
 				{showImageToolbar && (

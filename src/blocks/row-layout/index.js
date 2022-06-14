@@ -6,6 +6,7 @@ import { __ } from '@wordpress/i18n';
  * Import Icons
  */
 import icons from '../../icons/block-icons';
+import { blockRowIcon } from '@kadence/icons'
 
 import { registerBlockType } from '@wordpress/blocks';
 
@@ -29,9 +30,8 @@ export const settings = {
 registerBlockType( 'kadence/rowlayout', {
 	...metadata,
 	icon: {
-		src: icons.rowlayout,
+		src: blockRowIcon,
 	},
 	...settings
 
 });
- 
