@@ -205,7 +205,6 @@ export default function Image( {
 			boxShadow: newItems,
 		} );
 	}
-
 	const saveCaptionFont = value => {
 		const newUpdate = captionStyles.map((item, index) => {
 			if (0 === index) {
@@ -492,7 +491,7 @@ export default function Image( {
 					{( activeTab === 'general' ) &&
 						<>
 						<KadencePanelBody
-							title={ __('Image settings', 'kadence-blocks') }
+							title={ __('Image settings Test', 'kadence-blocks') }
 							initialOpen={ true }
 							panelName={ 'kb-image-settings' }
 						>

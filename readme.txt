@@ -89,6 +89,14 @@ Release Date: April 20th, 2022
 ** Update: Testimonial Carousels to use Splide.
 ** Fix: Parallax background issue with border radius.
 ** Add: Block defaults for button style in advanced button.
+** Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
+** Update: Gallery to allow links in captions, separate from image link.
+** Fix: Updating gallery can lose added captions.
+* Fix: Issue with aligning in buttons with icons.
+** Update: Facebook logo svg.
+** Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
+** Tweek - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
+** Tweek - Accordion animation when nesting accordions, with both "closed".
 
 = 2.4.8 =
 Release Date: June 3rd, 2022

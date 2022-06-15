@@ -22,6 +22,9 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
+	icon: {
+		src: imageIcon,
+	},
 	example: {
 		attributes: {
 			sizeSlug: 'large',
@@ -58,11 +61,9 @@ export const settings = {
 	deprecated,
 };
 
-registerBlockType( 'kadence/image', {
-	...metadata,
-	icon: {
-		src: imageIcon,
-	},
-	...settings
-
-});
+registerBlockType( name,
+	{ 
+		...metadata, 
+		...settings
+	}
+);

@@ -406,6 +406,8 @@ function SectionEdit( {
 				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgRepeat ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-repeat:${ overlayImgHover[ 0 ].bgImgRepeat }; }` : '' ) }
 				{ ( hasHoverOverlayImage && overlayImgHover[ 0 ].bgImgAttachment ? `.kadence-column-${ uniqueID }:hover > .kadence-inner-column-inner:before { background-attachment:${ overlayImgHover[ 0 ].bgImgAttachment }; }` : '' ) }
 
+				{ ( ( undefined !== previewMaxWidth && '' !== previewMaxWidth ) ? `.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
+				{ ( ( undefined !== previewMaxWidth && '' !== previewMaxWidth ) ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } > .kadence-inner-column-inner { max-width:100%; }` : '' ) }
 				{ ( ( undefined !== previewMaxWidth && '' !== previewMaxWidth ) ? `.wp-block-kadence-column > .kadence-inner-column-direction-horizontal > .wp-block-kadence-column.kadence-column-${ uniqueID } { flex: 0 1 ${ previewMaxWidth + previewMaxWidthUnit }; }` : '' ) }
 				{ ( ( undefined !== zIndex && '' !== zIndex ) ? `.kadence-column-${ uniqueID } { z-index: ${ zIndex }; }` : '' ) }
 				{ ( textColor ? `.kadence-column-${ uniqueID }, .kadence-column-${ uniqueID } p, .kadence-column-${ uniqueID } h1, .kadence-column-${ uniqueID } h2, .kadence-column-${ uniqueID } h3, .kadence-column-${ uniqueID } h4, .kadence-column-${ uniqueID } h5, .kadence-column-${ uniqueID } h6 { color: ${ KadenceColorOutput( textColor ) }; }` : '' ) }
@@ -1471,7 +1473,6 @@ function SectionEdit( {
 				) }
 			</InspectorAdvancedControls>
 			<div id={ `animate-id${ uniqueID }` } data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } style={ {
-				maxWidth: ( undefined !== previewMaxWidth ? previewMaxWidth + previewMaxWidthUnit : undefined ),
 				minHeight: ( undefined !== previewMinHeight ? previewMinHeight + previewMinHeightUnit : undefined ),
 				paddingLeft: ( undefined !== previewPaddingLeft ? previewPaddingLeft + previewPaddingType : undefined ),
 				paddingRight: ( undefined !== previewPaddingRight ? previewPaddingRight + previewPaddingType : undefined ),

@@ -4,8 +4,8 @@ const config = require('../config');
 
 function clean() {
     return del([
-        config.dirs.dist + '/**',
-        '!' + config.dirs.dist
+        config.dirs.dist + '/js/**',
+        config.dirs.dist + '/css/**'
     ], { force: true });
 }
 

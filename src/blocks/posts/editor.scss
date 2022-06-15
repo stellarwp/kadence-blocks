@@ -259,6 +259,12 @@ a.post-more-link {
 	.post-thumbnail {
 		margin-bottom: 1em;
 	}
+	&.grid-lg-col-1.item-image-style-beside article.loop-entry {
+		grid-gap: 2rem;
+		.post-thumbnail {
+			margin-bottom: 0;
+		}
+	}
 }
 
 #start-resizable-editor-section {

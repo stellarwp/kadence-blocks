@@ -241,7 +241,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/image',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/image/block.json',
 			array(
 				'render_callback' => array( $this, 'render_image_css' ),
 				'editor_script'   => 'kadence-blocks-image',
@@ -1630,28 +1630,28 @@ class Kadence_Blocks_Frontend {
 		wp_register_style( 'kadence-blocks-testimonials', KADENCE_BLOCKS_URL . 'dist/style-blocks-testimonials.css', array(), KADENCE_BLOCKS_VERSION );
 
 		// Next all the extras that are shared.
-		wp_register_script( 'countup', KADENCE_BLOCKS_URL . 'dist/assets/js/countUp.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-count-up', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-countup.min.js', array('countup'), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'countup', KADENCE_BLOCKS_URL . 'includes/assets/js/countUp.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-count-up', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-countup.min.js', array('countup'), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'dist/assets/css/simplelightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'dist/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'dist/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 
 		// Google Maps
 		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api',  'missingkey' );
 		wp_register_script( 'kadence-blocks-google-maps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array( 'kadence-blocks-google-maps-init-js' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-google-maps-init-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-google-maps.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-google-maps-init-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-google-maps.js', array(), KADENCE_BLOCKS_VERSION, true );
 
-		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'dist/assets/css/magnific-popup.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'magnific-popup', KADENCE_BLOCKS_URL . 'dist/assets/js/jquery.magnific-popup.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-magnific-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kt-init-video-popup.min.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-gallery-magnific-init', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-gallery-magnific-init.min.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-simplelightbox-init', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-gallery-simple-init.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-accordion-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kt-accordion.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kt-tabs.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'dist/assets/js/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'magnific-popup', KADENCE_BLOCKS_URL . 'includes/assets/js/jquery.magnific-popup.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-magnific-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-init-video-popup.min.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-gallery-magnific-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-gallery-magnific-init.min.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-simplelightbox-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-gallery-simple-init.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-accordion-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-accordion.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-tabs.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'includes/assets/js/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-form',
 			'kadence_blocks_form_params',
@@ -1673,29 +1673,19 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-google-recaptcha-v3', 'https://www.google.com/recaptcha/api.js?render=' . esc_attr( $recaptcha_site_key ), array(), KADENCE_BLOCKS_VERSION, true );
 		$recaptcha_script = "grecaptcha.ready(function () { var recaptchaResponse = document.getElementById('kb_recaptcha_response'); if ( recaptchaResponse ) { grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { recaptchaResponse.value = token; }); } var kb_recaptcha_inputs = document.getElementsByClassName('kb_recaptcha_response'); if ( ! kb_recaptcha_inputs.length ) { return; } for (var i = 0; i < kb_recaptcha_inputs.length; i++) { const e = i; grecaptcha.execute('" . esc_attr( $recaptcha_site_key ) . "', { action: 'kb_form' }).then(function (token) { kb_recaptcha_inputs[e].setAttribute('value', token); }); } });";
 		wp_add_inline_script( 'kadence-blocks-google-recaptcha-v3', $recaptcha_script, 'after' );
-		//?render=explicit&onload=kbOnloadV2Callback
 		wp_register_script( 'kadence-blocks-google-recaptcha-v2', 'https://www.google.com/recaptcha/api.js?render=explicit&onload=kbOnloadV2Callback', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
-		//wp_register_script( 'kadence-blocks-recaptcha-v2-form', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-form-recaptcha-v2.js', array( 'jquery', 'kadence-blocks-google-recaptcha-v2' ), KADENCE_BLOCKS_VERSION, true );
-		// wp_localize_script(
-		// 	'kadence-blocks-recaptcha-v2-form',
-		// 	'kadence_blocks_recaptcha_v2_form_params',
-		// 	array(
-		// 		'sitekey' => $recaptcha_site_key,
-		// 	)
-		// );
-		//$recaptcha_v2_script = "var kbOnloadV2Callback = function(){ var kb_block_forms = document.getElementsByClassName('.kadence-blocks-g-recaptcha-v2'); if ( ! kb_block_forms ) { return; } for (var i = 0; i < kb_block_forms.length; i++) { const e = kb_block_forms[i].id; grecaptcha.render( kb_block_forms[i].id, {'sitekey' : '" . esc_attr( $recaptcha_site_key ) . "',}); }}";
 		$recaptcha_v2_script = "var kbOnloadV2Callback = function(){jQuery( '.wp-block-kadence-form' ).find( '.kadence-blocks-g-recaptcha-v2' ).each( function() {grecaptcha.render( jQuery( this ).attr( 'id' ), {'sitekey' : '" . esc_attr( $recaptcha_site_key ) . "',});});}";
 		wp_add_inline_script( 'kadence-blocks-google-recaptcha-v2', $recaptcha_v2_script, 'before' );
 
-		wp_register_script( 'kadence-blocks-parallax-js', KADENCE_BLOCKS_URL . 'dist/assets/js/kt-init-parallax.min.js', array( 'jarallax' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-parallax-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-init-parallax.min.js', array( 'jarallax' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-pro-slick', KADENCE_BLOCKS_URL . 'dist/assets/css/kt-blocks-slick.min.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-slick', KADENCE_BLOCKS_URL . 'dist/assets/js/slick.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-slick-init', KADENCE_BLOCKS_URL . 'dist/assets/js/kt-slick-init.min.js', array( 'jquery', 'kadence-slick' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-slick', KADENCE_BLOCKS_URL . 'includes/assets/js/slick.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-slick-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-slick-init.min.js', array( 'jquery', 'kadence-slick' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-tiny-slider', KADENCE_BLOCKS_URL . 'dist/assets/css/tiny-slider.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-blocks-tiny-slider', KADENCE_BLOCKS_URL . 'dist/assets/js/tiny-slider.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-tiny-slider-init', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-tiny-init.min.js', array( 'kadence-blocks-tiny-slider' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-video-bg', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-init-html-bg-video.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-masonry-init', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-masonry-init.min.js', array( 'masonry' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tiny-slider', KADENCE_BLOCKS_URL . 'includes/assets/js/tiny-slider.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-tiny-slider-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-tiny-init.min.js', array( 'kadence-blocks-tiny-slider' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-video-bg', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-html-bg-video.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-masonry-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-masonry-init.min.js', array( 'masonry' ), KADENCE_BLOCKS_VERSION, true );
 	}
 	/**
 	 * Registers and enqueue's script.
@@ -7056,7 +7046,7 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'border-radius', implode( ' ', $borderRadius ) );
 		}
 
-		if ( ! empty( $attr['maskSvg'] ) ) {
+		if ( ! empty( $attr['maskSvg'] ) && 'none' !== $attr['maskSvg'] ) {
 			if ( 'custom' === $attr['maskSvg'] ) {
 				if ( ! empty( $attr['maskUrl'] ) ) {
 					$mask_size = ( ! empty( $attr['maskSize'] ) ? $attr['maskSize'] : 'auto' );
@@ -9147,9 +9137,9 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'background-repeat', ( ! empty( $bg_img['bgImgRepeat'] ) ? $bg_img['bgImgRepeat'] : 'no-repeat' ) );
 		}
 		// Overlay Hover.
-		if ( isset( $attr['overlayOpacityHover'] ) && is_numeric( $attr['overlayOpacityHover'] ) ) {
+		if ( isset( $attr['overlayHoverOpacity'] ) && is_numeric( $attr['overlayHoverOpacity'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
-			$css->add_property( 'opacity', $attr['overlayOpacityHover'] );
+			$css->add_property( 'opacity', $attr['overlayHoverOpacity'] );
 		}
 		if ( isset( $attr['overlayHover'] ) && ! empty( $attr['overlayHover'] ) ) {
 			$css->set_selector( '.kadence-column' . $unique_id . ':hover > .kt-inside-inner-col:before' );
