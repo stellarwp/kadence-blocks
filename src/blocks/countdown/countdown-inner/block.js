@@ -17,9 +17,8 @@ import edit from './edit';
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Register: a Gutenberg Block.
@@ -31,31 +30,18 @@ import { InnerBlocks } from '@wordpress/block-editor';
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/countdown-inner', {
-	/* translators: block name */
-	title: __( 'Countdown Content', 'kadence-blocks' ),
-	/* translators: block description */
-	description: __( 'Inner Container for Countdown Block', 'kadence-blocks' ),
-	category: 'kadence-blocks',
+
 	icon: countdownInnerIcon,
-	parent: [ 'kadence/countdown' ],
-	supports: {
-		inserter: false,
-		reusable: false,
-		html: false,
-	},
-	attributes: {
-		uniqueID: {
-			type: 'string',
-		},
-		location: {
-			type: 'string',
-		},
-	},
 	edit,
 	save( { attributes } ) {
 		const { location, uniqueID } = attributes;
+
+		const blockProps = useBlockProps.save( {
+			className: `kb-countdown-inner kb-countdown-inner-${ location } kb-countdown-inner-${ uniqueID }`
+		} );
+
 		return (
-			<div className={ `kb-countdown-inner kb-countdown-inner-${ location } kb-countdown-inner-${ uniqueID }` }>
+			<div {...blockProps}>
 				<InnerBlocks.Content />
 			</div>
 		);
