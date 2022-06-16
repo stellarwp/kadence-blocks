@@ -10,7 +10,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { InnerBlocks } from '@wordpress/block-editor';
+import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
 
 function Save( { attributes } ) {
 	const { uniqueID, vsdesk, vstablet, vsmobile, timerLayout, countdownDivider, enableTimer, counterAlign, revealOnLoad } = attributes;
@@ -28,8 +28,13 @@ function Save( { attributes } ) {
 		'kvs-md-false': vstablet !== 'undefined' && vstablet,
 		'kvs-sm-false': vsmobile !== 'undefined' && vsmobile,
 	} );
+
+	const blockProps = useBlockProps.save( {
+		className: classes
+	} );
+
 	return (
-		<div className={ classes } data-id={ uniqueID }>
+		<div {...blockProps} data-id={ uniqueID }>
 			<InnerBlocks.Content />
 		</div>
 	);
