@@ -10,10 +10,11 @@
  * Import Icons
  */
 import { accordionBlockIcon } from '@kadence/icons';
+
 /**
- * Import attributes
+ * Import block.json
  */
-import attributes from './attributes';
+import metadata from './block.json';
 /**
  * Import edit
  */
@@ -30,8 +31,7 @@ import save from './save';
 /**
  * Internal block libraries
  */
- import { __ } from '@wordpress/i18n';
-const { registerBlockType } = wp.blocks;
+import { registerBlockType } from '@wordpress/blocks';
 
 /**
  * Register: a Gutenberg Block.
@@ -43,25 +43,14 @@ const { registerBlockType } = wp.blocks;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/accordion', {
-	title: __( 'Accordion', 'kadence-blocks' ),
-	description: __( 'Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders.', 'kadence-blocks' ),
-	icon: {
-		src: accordionBlockIcon,
-	},
-	category: 'kadence-blocks',
-	keywords: [
-		__( 'accordion', 'kadence-blocks' ),
-		__( 'pane', 'kadence-blocks' ),
-		__( 'KB', 'kadence-blocks' ),
-	],
-	supports: {
-		anchor: true,
-	},
-	attributes,
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
 			return { 'data-align': blockAlignment };
 		}
+	},
+	...metadata,
+	icon: {
+		src: accordionBlockIcon,
 	},
 	edit,
 	save,

@@ -1,6 +1,5 @@
 import { showMoreIcon } from '@kadence/icons';
 
-const el = wp.element.createElement;
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
@@ -18,9 +17,6 @@ export const settings = {
 	transforms,
 	edit,
 	save
-	// save: ( props ) => {
-	// 	return el( InnerBlocks.Content );
-	// },
 };
 
 registerBlockType('kadence/show-more', {

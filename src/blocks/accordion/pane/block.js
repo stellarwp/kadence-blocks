@@ -5,25 +5,30 @@
  * Registering a basic block with Gutenberg.
  */
 
-const {
+import {
 	RichText,
 	InnerBlocks,
-} = wp.blockEditor;
+	useBlockProps
+} from '@wordpress/block-editor';
 
 /**
  * Import Icons
  */
 import { accordionBlockIcon } from '@kadence/icons';
 import { IconRender } from '@kadence/components';
+
 /**
  * Import edit
  */
 import edit from './edit';
+import metadata from './block.json';
+
+
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
-const { registerBlockType } = wp.blocks;
+import { registerBlockType } from '@wordpress/blocks';
+
 /**
  * Register: a Gutenberg Block.
  *
@@ -34,66 +39,22 @@ const { registerBlockType } = wp.blocks;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/pane', {
-	title: __( 'Pane', 'kadence-blocks' ),
+	...metadata,
 	icon: accordionBlockIcon,
-	category: 'kadence-blocks',
-	parent: [ 'kadence/accordion' ],
-	attributes: {
-		id: {
-			type: 'number',
-			default: 1,
-		},
-		title: {
-			type: 'array',
-			source: 'children',
-			selector: '.kt-blocks-accordion-title',
-			default: '',
-		},
-		titleTag: {
-			type: 'string',
-			default: 'div',
-		},
-		hideLabel: {
-			type: 'bool',
-			default: false,
-		},
-		ariaLabel: {
-			type: 'string',
-			default: '',
-		},
-		icon: {
-			type: 'string',
-			default: '',
-		},
-		iconSide: {
-			type: 'string',
-			default: 'right',
-		},
-		uniqueID: {
-			type: 'string',
-			default: '',
-		},
-		faqSchema: {
-			type: 'bool',
-			default: false,
-		},
-	},
-	supports: {
-		inserter: false,
-		reusable: false,
-		html: false,
-		anchor: true,
-	},
 	getEditWrapperProps( attributes ) {
 		return { 'data-pane': attributes.id };
 	},
 	edit,
-
 	save( { attributes } ) {
 		const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag, ariaLabel } = attributes;
 		const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
+
+		const blockProps = useBlockProps.save( {
+			className: `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }`
+		} );
+
 		return (
-			<div className={ `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }` }>
+			<div {...blockProps}>
 				<HtmlTagOut className={ 'kt-accordion-header-wrap' } >
 					<button className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` } aria-label={ ariaLabel ? ariaLabel : undefined }>
 						<span className="kt-blocks-accordion-title-wrap">

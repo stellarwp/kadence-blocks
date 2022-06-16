@@ -58,6 +58,7 @@ import {
 	KadenceImageURLInputUI,
 	BoxShadowControl,
 	KadenceImageControl,
+	ResponsiveRangeControls,
 	DropShadowControl,
 	ImageSizeControl as KadenceImageSizeControl
 } from '@kadence/components';

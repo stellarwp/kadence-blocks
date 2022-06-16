@@ -16,6 +16,7 @@ import {
 	RichText,
 	InnerBlocks,
 	InspectorControls,
+	useBlockProps,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import { useSelect, useDispatch } from '@wordpress/data';
@@ -31,6 +32,7 @@ function PaneEdit( {
 	clientId,
 	className,
 } ) {
+
 	const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag, ariaLabel } = attributes;
 	const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
 	const { addUniqueID, addUniquePane } = useDispatch( 'kadenceblocks/data' );
@@ -103,8 +105,13 @@ function PaneEdit( {
 			addUniquePane( id, clientId, rootID );
 		}
 	}, [] );
+
+	const blockProps = useBlockProps( {
+		className: `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }`
+	} );
+
 	return (
-		<div className={ `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }` }>
+		<div {...blockProps}>
 			<InspectorControls>
 				<KadencePanelBody
 					title={ __( 'Title Icon Settings', 'kadence-blocks' ) }
