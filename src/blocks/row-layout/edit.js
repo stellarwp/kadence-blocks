@@ -56,7 +56,6 @@ import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
 /**
  * Import Block Specific Components
  */
-import ThreeColumnDrag from './threeColumndrag';
 import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
 import Overlay from './row-overlay';
 import RowBackground from './row-background';

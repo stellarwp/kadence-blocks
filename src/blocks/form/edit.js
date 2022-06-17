@@ -83,6 +83,7 @@ const actionOptionsList = [
 	{ value: 'mailchimp', label: __( 'MailChimp (Pro addon)', 'kadence-blocks' ), help: __( 'Add user to MailChimp list', 'kadence-blocks' ), isDisabled: true },
 	{ value: 'webhook', label: __( 'WebHook (Pro addon)', 'kadence-blocks' ), help: __( 'Send form information to any third party webhook', 'kadence-blocks' ), isDisabled: true },
 ];
+
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
@@ -91,35 +92,44 @@ const kbFormIDs = [];
 /**
  * Build the form edit
  */
-function KadenceForm( { attributes, className, isSelected, setAttributes, getPreviewDevice } ) {
+function KadenceForm( props ) {
 
+	const { attributes, className, isSelected, setAttributes, getPreviewDevice } = props;
 
 	const { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion, mailerlite, fluentcrm, containerMargin, tabletContainerMargin, mobileContainerMargin, containerMarginType, submitLabel } = attributes;
 
-	const [ actionOptions, setActionOptions ] = useState( null );
-	const [ selectedField, setSelectedField ] = useState( null );
-	const [ deskPaddingControl, setDeskPaddingControl ] = useState( 'linked' );
-	const [ tabletPaddingControl, setTabletPaddingControl ] = useState( 'linked' );
-	const [ mobilePaddingControl, setMobilePaddingControl ] = useState( 'linked' );
-	const [ borderControl, setBorderControl ] = useState( 'linked' );
-	const [ labelPaddingControl, setLabelPaddingControl ] = useState( 'individual' );
-	const [ labelMarginControl, setLabelMarginControl ] = useState( 'individual' );
-	const [ submitBorderControl, setSubmitBorderControl ] = useState( 'linked' );
-	const [ submitDeskPaddingControl, setSubmitDeskPaddingControl ] = useState( 'linked' );
-	const [ submitTabletPaddingControl, setSubmitTabletPaddingControl ] = useState( 'linked' );
-	const [ submitMobilePaddingControl, setSubmitMobilePaddingControl ] = useState( 'linked' );
-	const [ messageFontBorderControl, setMessageFontBorderControl ] = useState( 'linked' );
-	const [ messagePaddingControl, setMessagePaddingControl ] = useState( 'individual' );
-	const [ messageMarginControl, setMessageMarginControl ] = useState( 'individual' );
-	const [ deskMarginControl, setDeskMarginControl ] = useState( 'individual' );
-	const [ tabletMarginControl, setTabletMarginControl ] = useState( 'individual' );
-	const [ mobileMarginControl, setMobileMarginControl ] = useState( 'individual' );
-	const [ siteKey, setSiteKey ] = useState( '' );
-	const [ secretKey, setSecretKey ] = useState( '' );
+	const getID = () => {
+		let postID;
 
-	const [ isSavedKey, setIsSavedKey ] = useState( false );
-	const [ isSaving, setIsSaving ] = useState( false );
-	const [ user, setUser ] = useState( ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ) );
+		if ( getWidgetIdFromBlock( props ) ) {
+			if ( !postID ) {
+				setAttributes( {
+					postID: getWidgetIdFromBlock( props ),
+				} );
+			} else if ( getWidgetIdFromBlock( props ) !== postID ) {
+				setAttributes( {
+					postID: getWidgetIdFromBlock( props ),
+				} );
+			}
+		} else if ( wp.data.select( 'core/editor' ) ) {
+			const { getCurrentPostId } = wp.data.select( 'core/editor' );
+			if ( !postID && getCurrentPostId() ) {
+				setAttributes( {
+					postID: getCurrentPostId().toString(),
+				} );
+			} else if ( getCurrentPostId() && getCurrentPostId().toString() !== postID ) {
+				setAttributes( {
+					postID: getCurrentPostId().toString(),
+				} );
+			}
+		} else {
+			if ( !postID ) {
+				setAttributes( {
+					postID: 'block-unknown',
+				} );
+			}
+		}
+	};
 
 	useEffect( () => {
 		if ( !uniqueID ) {
@@ -189,6 +199,7 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 		}
 
 		getID();
+
 		/**
 		 * Get settings
 		 */
@@ -207,38 +218,33 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 		} );
 	}, [] );
 
-	const getID = () => {
-		if ( getWidgetIdFromBlock( this.props ) ) {
-			if ( !postID ) {
-				setAttributes( {
-					postID: getWidgetIdFromBlock( this.props ),
-				} );
-			} else if ( getWidgetIdFromBlock( this.props ) !== postID ) {
-				setAttributes( {
-					postID: getWidgetIdFromBlock( this.props ),
-				} );
-			}
-		} else if ( wp.data.select( 'core/editor' ) ) {
-			const { getCurrentPostId } = wp.data.select( 'core/editor' );
-			if ( !postID && getCurrentPostId() ) {
-				setAttributes( {
-					postID: getCurrentPostId().toString(),
-				} );
-			} else if ( getCurrentPostId() && getCurrentPostId().toString() !== postID ) {
-				setAttributes( {
-					postID: getCurrentPostId().toString(),
-				} );
-			}
-		} else {
-			if ( !postID ) {
-				setAttributes( {
-					postID: 'block-unknown',
-				} );
-			}
-		}
-	};
+	const [ actionOptions, setActionOptions ] = useState( null );
+	const [ selectedField, setSelectedField ] = useState( null );
+	const [ deskPaddingControl, setDeskPaddingControl ] = useState( 'linked' );
+	const [ tabletPaddingControl, setTabletPaddingControl ] = useState( 'linked' );
+	const [ mobilePaddingControl, setMobilePaddingControl ] = useState( 'linked' );
+	const [ borderControl, setBorderControl ] = useState( 'linked' );
+	const [ labelPaddingControl, setLabelPaddingControl ] = useState( 'individual' );
+	const [ labelMarginControl, setLabelMarginControl ] = useState( 'individual' );
+	const [ submitBorderControl, setSubmitBorderControl ] = useState( 'linked' );
+	const [ submitDeskPaddingControl, setSubmitDeskPaddingControl ] = useState( 'linked' );
+	const [ submitTabletPaddingControl, setSubmitTabletPaddingControl ] = useState( 'linked' );
+	const [ submitMobilePaddingControl, setSubmitMobilePaddingControl ] = useState( 'linked' );
+	const [ messageFontBorderControl, setMessageFontBorderControl ] = useState( 'linked' );
+	const [ messagePaddingControl, setMessagePaddingControl ] = useState( 'individual' );
+	const [ messageMarginControl, setMessageMarginControl ] = useState( 'individual' );
+	const [ deskMarginControl, setDeskMarginControl ] = useState( 'individual' );
+	const [ tabletMarginControl, setTabletMarginControl ] = useState( 'individual' );
+	const [ mobileMarginControl, setMobileMarginControl ] = useState( 'individual' );
+	const [ siteKey, setSiteKey ] = useState( '' );
+	const [ secretKey, setSecretKey ] = useState( '' );
 
-	const componentDidUpdate = ( prevProps ) => {
+	const [ isSavedKey, setIsSavedKey ] = useState( false );
+	const [ isSaving, setIsSaving ] = useState( false );
+
+
+
+	const fudnctionNfame = ( prevProps ) => {
 		// Deselect field when deselecting the block
 		if ( !isSelected && prevProps.isSelected ) {
 			setSelectedField(null );
@@ -960,7 +966,7 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 							url={( undefined !== fields[ index ].default ? fields[ index ].default : '' )}
 							onChangeUrl={( value ) => saveFields( { default: value }, index )}
 							additionalControls={false}
-							{...this.props}
+							{...props}
 						/>
 					</>
 				)}
@@ -1191,16 +1197,9 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 			acceptLabel = fields[ index ].label;
 		}
 
-		const ref = useRef();
-		const blockProps = useBlockProps( {
-			ref,
-			className: fieldClassName
-		} );
-
-
 		return (
 			<div
-				{...blockProps}
+				className={fieldClassName}
 				key={'field-' + index.toString()}
 				style={{
 					width       : ( '33' === fields[ index ].width[ 0 ] ? '33.33' : fields[ index ].width[ 0 ] ) + '%',
@@ -1211,8 +1210,8 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 				tabIndex="0"
 				aria-label={ariaLabel}
 				role="button"
-				onClick={onSelectField( index )}
-				onFocus={onSelectField( index )}
+				onClick={ ( index ) => onSelectField( index ) }
+				onFocus={ (index) => onSelectField( index )}
 				onKeyDown={( event ) => {
 					const { keyCode } = event;
 					if ( keyCode === DELETE ) {
@@ -1450,14 +1449,14 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 						<div className="kadence-blocks-field-item-controls kadence-blocks-field-item__inline-menu">
 							<IconButton
 								icon="admin-page"
-								onClick={onDuplicateField( index )}
+								onClick={ () => onDuplicateField( index )}
 								className="kadence-blocks-field-item__duplicate"
 								label={__( 'Duplicate Field', 'kadence-blocks' )}
 								disabled={!isFieldSelected}
 							/>
 							<IconButton
 								icon="no-alt"
-								onClick={onRemoveField( index )}
+								onClick={ () => onRemoveField( index )}
 								className="kadence-blocks-field-item__remove"
 								label={__( 'Remove Field', 'kadence-blocks' )}
 								disabled={!isFieldSelected || 1 === fields.length}
@@ -1474,7 +1473,7 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 		</>
 	);
 	const actionControls = ( index ) => {
-		const actionOptions = actionOptions;
+
 		return (
 			<CheckboxControl
 				key={'action-controls-' + index.toString()}
@@ -1492,6 +1491,7 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 			/>
 		);
 	};
+
 	const renderCSS = () => {
 		let inputBGA = '';
 		let inputGradA;
@@ -1559,8 +1559,14 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 				}`
 		);
 	};
+
+
+	const blockProps = useBlockProps( {
+		className: className
+	} );
+
 	return (
-		<div className={className}>
+		<div {...blockProps}>
 			<style>
 				{renderCSS()}
 			</style>
@@ -1690,7 +1696,7 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 							url={redirect}
 							onChangeUrl={value => setAttributes( { redirect: value } )}
 							additionalControls={false}
-							{...this.props}
+							{...props}
 						/>
 					</KadencePanelBody>
 				)}
@@ -1755,7 +1761,7 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 							<div className="components-base-control">
 								<Button
 									isPrimary
-									onClick={ saveKeys }
+									onClick={ () => saveKeys }
 									disabled={'' === siteKey || '' === secretKey}
 								>
 									{isSaving ? __( 'Saving', 'kadence-blocks' ) : __( 'Save', 'kadence-blocks' )}
@@ -1765,7 +1771,7 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 										&nbsp;
 										<Button
 											isDefault
-											onClick={ removeKeys }
+											onClick={ () => removeKeys }
 										>
 											{__( 'Remove', 'kadence-blocks' )}
 										</Button>
@@ -3509,14 +3515,14 @@ function KadenceForm( { attributes, className, isSelected, setAttributes, getPre
 						}}
 						tabIndex="0"
 						role="button"
-						onClick={deselectField}
-						onFocus={deselectField}
-						onKeyDown={deselectField}
+						onClick={ () => deselectField }
+						onFocus={ () => deselectField}
+						onKeyDown={ () => deselectField}
 					>
 						<RichText
 							tagName="div"
 							placeholder={__( 'Submit' )}
-							onFocus={deselectField}
+							onFocus={ () => deselectField}
 							value={submit[ 0 ].label}
 							onChange={value => {
 								saveSubmit( { label: value } );

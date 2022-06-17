@@ -1,169 +1,231 @@
 {
-	"apiVersion": 2,
-	"name": "kadence/image",
-	"title": "Advanced Image",
-	"category": "kadence-blocks",
-	"usesContext": [ "postId", "queryId", "allowResize", "imageCrop" ],
-	"description": "Image block with greater controls and advanced features",
-	"keywords": [ "img", "image", "photo", "kb" ],
-	"textdomain": "kadence-blocks",
-	"attributes": {
-	  "align": {
-		"type": "string"
-	  },
-	  "url": {
-		"type": "string",
-		"source": "attribute",
-		"selector": "img",
-		"attribute": "src"
-	  },
-	  "alt": {
-		"type": "string",
-		"source": "attribute",
-		"selector": "img",
-		"attribute": "alt",
-		"default": ""
-	  },
-	  "caption": {
-		"type": "string",
-		"source": "html",
-		"selector": "figcaption"
-	  },
-	  "title": {
-		"type": "string",
-		"source": "attribute",
-		"selector": "img",
-		"attribute": "title"
-	  },
-	  "id": {
-		"type": "number"
-	  },
-	  "width": {
-		"type": "number"
-	  },
-	  "height": {
-		"type": "number"
-	  },
-	  "imgMaxWidth": {
-		"type": "number"
-	  },
-	  "imgMaxWidthTablet": {
-		"type": "number"
-	  },
-	  "imgMaxWidthMobile": {
-		"type": "number"
-	  },
-	  "sizeSlug": {
-		"type": "string"
-	  },
-	  "ratio": {
-		"type": "string"
-	  },
-	  "useRatio": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "link": {
-		"type": "string"
-	  },
-	  "linkTarget": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "linkNoFollow": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "linkSponsored": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "linkDestination": {
-		"type": "string"
-	  },
-	  "linkTitle": {
-		"type": "string"
-	  },
-	  "linkClass": {
-		"type": "string",
-		"source": "attribute",
-		"selector": "figure > a",
-		"attribute": "class"
-	  },
-	  "uniqueID": {
-		"type": "string"
-	  },
-	  "marginDesktop": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "marginTablet": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "marginMobile": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "marginUnit": {
-		"type": "string",
-		"default": "px"
-	  },
-	  "paddingDesktop": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "paddingTablet": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "paddingMobile": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "paddingUnit": {
-		"type": "string",
-		"default": "px"
-	  },
-	  "borderColor": {
-		"type": "string",
-		"default": ""
-	  },
-	  "backgroundColor": {
-		"type": "string",
-		"default": ""
-	  },
-	  "borderRadius": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "borderRadiusUnit": {
-		"type": "string",
-		"default":  "px"
-	  },
-	  "borderWidthUnit": {
-		"type": "string",
-		"default":  "px"
-	  },
-	  "borderWidthDesktop": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "borderWidthTablet": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "borderWidthMobile": {
-		"type": "array",
-		"default":  [ "", "", "", "" ]
-	  },
-	  "displayBoxShadow": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "boxShadow": {
-		"type": "array",
-		"default": [ {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "kadence/image",
+  "title": "Advanced Image",
+  "category": "kadence-blocks",
+  "usesContext": [
+	"postId",
+	"queryId",
+	"allowResize",
+	"imageCrop"
+  ],
+  "description": "Image block with greater controls and advanced features",
+  "keywords": [
+	"img",
+	"image",
+	"photo",
+	"kb"
+  ],
+  "textdomain": "kadence-blocks",
+  "attributes": {
+	"align": {
+	  "type": "string"
+	},
+	"url": {
+	  "type": "string",
+	  "source": "attribute",
+	  "selector": "img",
+	  "attribute": "src"
+	},
+	"alt": {
+	  "type": "string",
+	  "source": "attribute",
+	  "selector": "img",
+	  "attribute": "alt",
+	  "default": ""
+	},
+	"caption": {
+	  "type": "string",
+	  "source": "html",
+	  "selector": "figcaption"
+	},
+	"title": {
+	  "type": "string",
+	  "source": "attribute",
+	  "selector": "img",
+	  "attribute": "title"
+	},
+	"id": {
+	  "type": "number"
+	},
+	"width": {
+	  "type": "number"
+	},
+	"height": {
+	  "type": "number"
+	},
+	"imgMaxWidth": {
+	  "type": "number"
+	},
+	"imgMaxWidthTablet": {
+	  "type": "number"
+	},
+	"imgMaxWidthMobile": {
+	  "type": "number"
+	},
+	"sizeSlug": {
+	  "type": "string"
+	},
+	"ratio": {
+	  "type": "string"
+	},
+	"useRatio": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"link": {
+	  "type": "string"
+	},
+	"linkTarget": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"linkNoFollow": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"linkSponsored": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"linkDestination": {
+	  "type": "string"
+	},
+	"linkTitle": {
+	  "type": "string"
+	},
+	"linkClass": {
+	  "type": "string",
+	  "source": "attribute",
+	  "selector": "figure > a",
+	  "attribute": "class"
+	},
+	"uniqueID": {
+	  "type": "string"
+	},
+	"marginDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"paddingDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"borderColor": {
+	  "type": "string",
+	  "default": ""
+	},
+	"backgroundColor": {
+	  "type": "string",
+	  "default": ""
+	},
+	"borderRadius": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"borderRadiusUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"borderWidthUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"borderWidthDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"borderWidthTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"borderWidthMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"displayBoxShadow": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"boxShadow": {
+	  "type": "array",
+	  "default": [
+		{
 		  "color": "#000000",
 		  "opacity": 0.2,
 		  "spread": 0,
@@ -171,36 +233,48 @@
 		  "hOffset": 0,
 		  "vOffset": 0,
 		  "inset": false
-		} ]
-	  },
-	  "displayDropShadow": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "dropShadow": {
-		"type": "array",
-		"default": [ {
+		}
+	  ]
+	},
+	"displayDropShadow": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"dropShadow": {
+	  "type": "array",
+	  "default": [
+		{
 		  "color": "#000000",
 		  "opacity": 0.2,
 		  "blur": 14,
 		  "hOffset": 0,
 		  "vOffset": 0
-		} ]
-	  },
-	  "imageFilter": {
-		"type": "string",
-		"default": "none"
-	  },
-	  "showCaption": {
-		"type": "boolean",
-		"default": true
-	  },
-	  "captionStyles": {
-		"type": "array",
-		"default": [ {
-		  "size": [ "", "", "" ],
+		}
+	  ]
+	},
+	"imageFilter": {
+	  "type": "string",
+	  "default": "none"
+	},
+	"showCaption": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"captionStyles": {
+	  "type": "array",
+	  "default": [
+		{
+		  "size": [
+			"",
+			"",
+			""
+		  ],
 		  "sizeType": "px",
-		  "lineHeight": [ "", "", "" ],
+		  "lineHeight": [
+			"",
+			"",
+			""
+		  ],
 		  "lineType": "px",
 		  "letterSpacing": "",
 		  "textTransform": "",
@@ -213,39 +287,40 @@
 		  "loadGoogle": true,
 		  "color": "",
 		  "background": ""
-		} ]
-	  },
-	  "maskSvg": {
-		"type": "string",
-		"default": "none"
-	  },
-	  "maskUrl": {
-		"type": "string"
-	  },
-	  "maskSize": {
-		"type": "string",
-		"default": "auto"
-	  },
-	  "maskPosition": {
-		"type": "string",
-		"default": "center center"
-	  },
-	  "maskRepeat": {
-		"type": "string",
-		"default": "no-repeat"
-	  },
-	  "inQueryBlock": {
-	  	"type": "boolean",
-		"default": false
-	  }
+		}
+	  ]
 	},
-	"supports": {
-		"anchor": true,
-		"ktanimate": true,
-		"ktanimateadd": true,
-		"ktanimatepreview": true,
-		"ktdynamic": true
+	"maskSvg": {
+	  "type": "string",
+	  "default": "none"
 	},
-	"editorStyle": "kadence-blocks-editor-css",
-	"style": "kadence-blocks-image"
+	"maskUrl": {
+	  "type": "string"
+	},
+	"maskSize": {
+	  "type": "string",
+	  "default": "auto"
+	},
+	"maskPosition": {
+	  "type": "string",
+	  "default": "center center"
+	},
+	"maskRepeat": {
+	  "type": "string",
+	  "default": "no-repeat"
+	},
+	"inQueryBlock": {
+	  "type": "boolean",
+	  "default": false
+	}
+  },
+  "supports": {
+	"anchor": true,
+	"ktanimate": true,
+	"ktanimateadd": true,
+	"ktanimatepreview": true,
+	"ktdynamic": true
+  },
+  "editorStyle": "kadence-blocks-editor-css",
+  "style": "kadence-blocks-image"
 }
