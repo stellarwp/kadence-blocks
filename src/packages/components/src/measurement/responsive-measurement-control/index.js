@@ -7,25 +7,17 @@
  * Internal block libraries
  */
 import { useSelect, useDispatch } from '@wordpress/data';
-import { useState, useRef } from '@wordpress/element';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { map, isEqual } from 'lodash';
+import { map } from 'lodash';
 import MeasurementControls from '../measurement-control';
-import { capitalizeFirstLetter } from '@kadence/helpers';
-import { undo } from '@wordpress/icons';
+import { capitalizeFirstLetter } from '@kadence/helpers'
 import {
 	Dashicon,
 	Button,
 	ButtonGroup,
 } from '@wordpress/components';
-import {
-	outlineTopIcon,
-	outlineRightIcon,
-	outlineBottomIcon,
-	outlineLeftIcon,
-	individualIcon,
-	linkedIcon,
-} from '@kadence/icons';
+
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -54,24 +46,11 @@ export default function ResponsiveMeasurementControls( {
 		units = [ 'px', 'em', 'rem' ],
 		allowEmpty = true,
 		preset = '',
-		hasToggle = true,
-		isBorderRadius = false,
-		firstIcon = outlineTopIcon,
-		secondIcon = outlineRightIcon,
-		thirdIcon = outlineBottomIcon,
-		fourthIcon = outlineLeftIcon,
-		linkIcon = linkedIcon,
-		unlinkIcon = individualIcon,
-		reset = true,
 	} ) {
-	const ref = useRef();
-	const [ localControl, setLocalControl ] = useState( 'individual' );
-	const realDesktopControl = control ? control : localControl;
-	const realMobileControl = mobileControl ? mobileControl : realDesktopControl;
-	const realTabletControl = tabletControl ? tabletControl : realDesktopControl;
-	const realOnChangeDesktopControl = onChangeControl ? onChangeControl : setLocalControl;
-	const realOnChangeTabletControl = onChangeTabletControl ? onChangeTabletControl : realOnChangeDesktopControl;
-	const realOnChangeMobileControl = onChangeMobileControl ? onChangeMobileControl : realOnChangeDesktopControl;
+	const realMobileControl = mobileControl ? mobileControl : control;
+	const realTabletControl = tabletControl ? tabletControl : control;
+	const realOnChangeTabletControl = onChangeTabletControl ? onChangeTabletControl : onChangeControl;
+	const realOnChangeMobileControl = onChangeMobileControl ? onChangeMobileControl : onChangeControl;
 	const zero = ( allowEmpty ? true : false );
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
@@ -105,21 +84,6 @@ export default function ResponsiveMeasurementControls( {
 			itemClass: 'kb-mobile-tab',
 		},
 	];
-	let liveValue = ( value ? value : [ '', '', '', '' ] );
-	if ( deviceType === 'Tablet' ) {
-		liveValue = ( tabletValue ? tabletValue : [ '', '', '', '' ] );
-	} else if ( deviceType === 'Mobile' ) {
-		liveValue = ( mobileValue ? mobileValue : [ '', '', '', '' ] );
-	}
-	const onReset = () => {
-		if ( deviceType === 'Tablet' ) {
-			onChangeTablet( [ '', '', '', '' ] );
-		} else if ( deviceType === 'Mobile' ) {
-			onChangeMobile( [ '', '', '', '' ] );
-		} else {
-			onChange( [ '', '', '', '' ] );
-		}
-	}
 	const output = {};
 	output.Mobile = (
 		<MeasurementControls
@@ -129,7 +93,7 @@ export default function ResponsiveMeasurementControls( {
 			measurement={ ( mobileValue ? mobileValue : [ '', '', '', '' ] ) }
 			control={ ( realMobileControl ? realMobileControl : 'individual' ) }
 			onChange={ ( size ) => onChangeMobile( size ) }
-			onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeMobileControl( sizeControl ) : undefined ) }
+			onControl={ ( sizeControl ) => realOnChangeMobileControl( sizeControl ) }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -138,13 +102,6 @@ export default function ResponsiveMeasurementControls( {
 			showUnit={ true }
 			units={ [ unit ] }
 			preset={ preset }
-			isBorderRadius={ isBorderRadius }
-			firstIcon={ firstIcon }
-			secondIcon={ secondIcon }
-			thirdIcon={ thirdIcon }
-			fourthIcon={ fourthIcon }
-			linkIcon={ linkIcon }
-			unlinkIcon={ unlinkIcon }
 		/>
 	);
 	output.Tablet = (
@@ -155,7 +112,7 @@ export default function ResponsiveMeasurementControls( {
 			measurement={ ( tabletValue ? tabletValue : [ '', '', '', '' ] ) }
 			control={ ( realTabletControl ? realTabletControl : 'individual' ) }
 			onChange={ ( size ) => onChangeTablet( size ) }
-			onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeTabletControl( sizeControl ) : undefined ) }
+			onControl={ ( sizeControl ) => realOnChangeTabletControl( sizeControl ) }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -164,13 +121,6 @@ export default function ResponsiveMeasurementControls( {
 			showUnit={ true }
 			units={ [ unit ] }
 			preset={ preset }
-			isBorderRadius={ isBorderRadius }
-			firstIcon={ firstIcon }
-			secondIcon={ secondIcon }
-			thirdIcon={ thirdIcon }
-			fourthIcon={ fourthIcon }
-			linkIcon={ linkIcon }
-			unlinkIcon={ unlinkIcon }
 		/>
 	);
 	output.Desktop = (
@@ -179,9 +129,9 @@ export default function ResponsiveMeasurementControls( {
 			className="measure-desktop-size"
 			label={ ( subLabel ? subLabel : undefined ) }
 			measurement={ ( value ? value : [ '', '', '', '' ] ) }
-			control={ ( realDesktopControl ? realDesktopControl : 'individual' ) }
+			control={ ( control ? control : 'individual' ) }
 			onChange={ ( size ) => onChange( size ) }
-			onControl={ ( hasToggle ? ( sizeControl ) => realOnChangeDesktopControl( sizeControl ) : undefined ) }
+			onControl={ ( sizeControl ) => onChangeControl( sizeControl ) }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -191,28 +141,12 @@ export default function ResponsiveMeasurementControls( {
 			showUnit={ showUnit }
 			units={ units }
 			preset={ preset }
-			isBorderRadius={ isBorderRadius }
-			firstIcon={ firstIcon }
-			secondIcon={ secondIcon }
-			thirdIcon={ thirdIcon }
-			fourthIcon={ fourthIcon }
-			linkIcon={ linkIcon }
-			unlinkIcon={ unlinkIcon }
 		/>
 	);
 	return [
 		onChange && onChangeTablet && onChangeMobile && (
-			<div ref={ ref } className={ 'components-base-control kb-responsive-measure-control' }>
+			<div className={ 'components-base-control kb-responsive-measure-control' }>
 				<div className="kadence-title-bar">
-					{ reset && (
-						<Button
-							className="is-reset is-single"
-							isSmall
-							disabled={ ( ( isEqual( [ '', '', '', '' ], liveValue ) || isEqual( [ '', 'auto', '', 'auto' ], liveValue ) ) ? true : false ) }
-							icon={ undo }
-							onClick={ () => onReset() }
-						></Button>
-					) }
 					{ label && (
 						<span className="kadence-control-title">{ label }</span>
 					) }

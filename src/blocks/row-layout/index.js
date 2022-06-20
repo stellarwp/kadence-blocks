@@ -5,13 +5,10 @@ import { __ } from '@wordpress/i18n';
 /**
  * Import Icons
  */
-import { blockRowIcon } from '@kadence/icons';
-import { registerBlockType } from '@wordpress/blocks';
+import icons from '../../icons/block-icons';
+import { blockRowIcon } from '@kadence/icons'
 
-/**
- * Import Css
- */
- import './style.scss';
+import { registerBlockType } from '@wordpress/blocks';
 
 /**
  * Internal dependencies

@@ -1,67 +1,9 @@
 /**
  * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
  */
- .kt-select-starter-style-tabs {
-    padding: 20px;
-    border: 2px dashed #ddd;
-    text-align: center;
-    position: relative;
-    z-index: 10;
-}
-
-.kt-select-starter-style-tabs-title {
-    text-transform: uppercase;
-    padding-bottom: 10px;
-    font-size: 16px;
-}
-
-.kt-select-starter-style-tabs .kt-inital-tabs-style-btn {
-    height: auto;
-    width: 320px;
-    background: white;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    border: 2px solid transparent;
-    padding: 2px;
-    margin-right: 15px;
-    margin-bottom: 5px;
-}
-
-.kt-select-starter-style-tabs .kt-inital-tabs-style-btn svg {
-    width: 100%;
-}
-.kt-select-starter-style-tabs .kt-init-tabs-btn-group .kt-inital-tabs-style-btn:first-child {
-    width: 100%;
-    text-align: center;
-    justify-content: center;
-    border: 0;
-    padding: 2px;
-    margin-right: 0;
-    margin-bottom: 5px;
-}
-.kt-select-starter-style-tabs .kt-init-tabs-btn-group .kt-inital-tabs-style-btn:first-child:hover {
-    text-decoration: underline;
-}
-.components-button-group button.components-button.kt-init-open-tab {
-    width: auto;
-    padding: 4px 10px;
-    border-radius: 3px !important;
-    height: auto;
-    text-shadow: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    margin-bottom: 5px;
-}
-.kt-select-starter-style-tabs .kt-init-tabs-btn-group .kt-inital-tabs-style-btn:first-child:focus {
-    background: transparent;
-    box-shadow: none;
-}
-.kt-select-starter-style-tabs .kt-inital-tabs-style-btn:hover {
-        border: 2px solid #aaa;
-    background: white;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
  .kt-border-color-array-control .components-color-palette {
     padding-left: 50px;
 }
@@ -78,7 +20,154 @@ body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-
     background: #f9f9f9;
     margin-right: 10px;
 }
- 
+ // Controls
+ .rfipbtn.rfipbtn--accordion {
+	background-color: #fff;
+	border: 1px solid #e0e0e0;
+	width: 96%;
+	&:active,
+	&:focus {
+		border: 1px solid #bdbdbd;
+	}
+	// dropdown button
+	.rfipbtn__current {
+		flex: 100%;
+		justify-content: flex-start;
+		padding: 0;
+		svg.top-icon {
+			transform: rotate(180deg) !important;
+		}
+		.rfipbtn__icon {
+			width: 100%;
+			.rfipbtn__elm {
+				width: 100%;
+				svg {
+					width: auto;
+				}
+			}
+		}
+	}
+	.rfipbtn__button {
+		border: 0 none transparent;
+		border-left: 1px solid #e0e0e0;
+		background-color: #f5f5f5;
+		color: #424242;
+
+		&:hover {
+			background-color: #bdbdbd;
+		}
+
+		&:active {
+			box-shadow: inset 0 0 10px 0 #e0e0e0;
+		}
+	}
+
+		// icon
+	.rfipbtn__icon {
+		border: 0;
+		color: #424242;
+
+		// empty
+		&--empty {
+			color: #555d66;
+			text-transform: none;
+			text-align: left;
+		}
+	}
+
+	// del
+	.rfipbtn__del {
+		background-color: #eee;
+
+		&:hover {
+			background-color: #e0e0e0;
+		}
+
+		&:focus,
+		&:active {
+			outline: 1px solid #e0e0e0;
+		}
+	}
+}
+.rfipdropdown.rfipdropdown--accordion {
+    max-height: 240px;
+    overflow: scroll;
+}
+.rfipdropdown.rfipdropdown--accordion {
+	background-color: #fff;
+	border: 1px solid #e0e0e0;
+	.rfipdropdown__selector {
+		overflow: hidden;
+		padding: 8px;
+	}
+	.rfipicons__pager {
+		display: none;
+	}
+	// Icons box
+	.rfipicons {
+		// current page
+		&__cp {
+			border-bottom:1px solid #bdbdbd;
+			&:focus {
+				border-bottom-color: #9e9e9e;
+			}
+		}
+
+		&__left,
+		&__right {
+			background-color: #eee;
+			border: 1px solid #eee;
+			color: #424242;
+			&:hover {
+				background-color: #bdbdbd;
+				border: 1px solid #bdbdbd;
+			}
+			&:focus,
+			&:active {
+				border: 1px solid #bdbdbd;
+			}
+		}
+
+		// Individual icon box
+		&__ibox {
+			background-color: #f5f5f5;
+			border: 1px solid #f5f5f5;
+			color: #424242;
+			&:hover {
+				background-color: #bdbdbd;
+				border: 1px solid #bdbdbd;
+			}
+			&:focus,
+			&:active {
+				border: 1px solid #bdbdbd;
+			}
+			&--error {
+				color: red;
+			}
+		}
+
+		// Invidual icons
+		&__icon {
+			width:100%;
+			height: 50px;
+			margin: 2px 0;
+			svg {
+				fill: #000;
+				width: 100px;
+				transform: scale(1);
+			}
+			svg.top-icon {
+				transform: rotate(180deg) !important;
+			}
+			// selected
+			&--selected {
+				.rfipicons__ibox {
+					background-color: #eee;
+				}
+			}
+		}
+	}
+}
  .kt-accordion-selecter {
 	border: 2px dashed #aaa;
     font-size: 12px;
@@ -118,15 +207,6 @@ button.components-button.kt-accordion-add.is-primary {
     border: 0;
     text-shadow: none;
     box-shadow: none;
-	padding: 6px 10px;
-	border-radius: 3px;
-	.dashicon {
-		margin-right: 6px;
-		font-size: 16px;
-		margin-left: 0;
-		width: 16px;
-		height: 16px;
-	}
 }
 .kt-accordion-add-selecter button.components-button.kt-accordion-remove {
     border: 0;

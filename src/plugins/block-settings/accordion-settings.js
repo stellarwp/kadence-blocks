@@ -2,13 +2,13 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-import{
+const {
 	Dashicon,
 	Tooltip,
 	SelectControl,
 	Button,
 	Modal,
-} from '@wordpress/components';
+} = wp.components;
 /**
  * Internal block libraries
  */

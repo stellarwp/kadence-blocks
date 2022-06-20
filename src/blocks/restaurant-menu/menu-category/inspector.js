@@ -10,7 +10,7 @@
 /**
  * Internal dependencies
  */
-import { PopColorControl, RangeControl, TypographyControls, KadencePanelBody } from '@kadence/components';
+import { PopColorControl, KadenceRange, TypographyControls, KadencePanelBody } from '@kadence/components';
 
 /**
  * WordPress dependencies
@@ -18,7 +18,7 @@ import { PopColorControl, RangeControl, TypographyControls, KadencePanelBody } f
 import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
-import {
+const {
 	RangeControl,
 	ToggleControl,
 	ButtonGroup,
@@ -26,7 +26,7 @@ import {
 	Tooltip,
 	TabPanel,
 	Dashicon
-} from '@wordpress/components';
+} = wp.components;
 
 
 /**
@@ -375,7 +375,7 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<RangeControl
+														<KadenceRange
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } ) }
 															step={ 1 }
@@ -385,7 +385,7 @@ class Inspector extends Component {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<RangeControl
+														<KadenceRange
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -395,7 +395,7 @@ class Inspector extends Component {
 													);
 												} else {
 													tabout = (
-														<RangeControl
+														<KadenceRange
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }

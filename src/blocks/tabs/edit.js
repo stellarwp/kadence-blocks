@@ -50,17 +50,18 @@ const {
 	AlignmentToolbar,
 	BlockAlignmentToolbar,
 } = wp.blockEditor;
-import {
+const {
 	Button,
 	ButtonGroup,
 	Tooltip,
 	TabPanel,
+	IconButton,
 	Dashicon,
 	RangeControl,
 	ToggleControl,
 	SelectControl,
 	TextControl,
-} from '@wordpress/components';
+} = wp.components;
 const {
 	applyFilters,
 } = wp.hooks;
@@ -641,7 +642,7 @@ class KadenceTabs extends Component {
 						</div>
 						<div className="kadence-blocks-tab-item__control-menu">
 							{ index !== 0 && (
-								<Button
+								<IconButton
 									icon={ ( 'vtabs' === layout ? 'arrow-up' : 'arrow-left' ) }
 									onClick={ index === 0 ? undefined : this.onMoveBack( index ) }
 									className="kadence-blocks-tab-item__move-back"
@@ -651,7 +652,7 @@ class KadenceTabs extends Component {
 								/>
 							) }
 							{ ( index + 1 ) !== tabCount && (
-								<Button
+								<IconButton
 									icon={ ( 'vtabs' === layout ? 'arrow-down' : 'arrow-right' ) }
 									onClick={ ( index + 1 ) === tabCount ? undefined : this.onMoveForward( index ) }
 									className="kadence-blocks-tab-item__move-forward"

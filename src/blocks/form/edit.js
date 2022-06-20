@@ -9,6 +9,7 @@
  */
 import classnames from 'classnames';
 import { times, filter, map } from 'lodash';
+import MeasurementControls from '../../measurement-control';
 import {
 	PopColorControl,
 	TypographyControls,
@@ -18,8 +19,6 @@ import {
 	URLInputControl,
 	WebfontLoader,
 	BoxShadowControl,
-	MeasurementControls,
-	InspectorControlTabs
 } from '@kadence/components';
 import MailerLiteControls from './mailerlite.js';
 import FluentCRMControls from './fluentcrm.js';
@@ -38,9 +37,7 @@ import { getWidgetIdFromBlock } from '@wordpress/widgets';
 import {
 	useEffect,
 	useState,
-	useRef,
-	Component,
-	Fragment
+	useRef
 } from '@wordpress/element';
 import {
 	RichText,
@@ -51,6 +48,7 @@ import {
 } from '@wordpress/block-editor';
 import {
 	Button,
+	IconButton,
 	ToggleControl,
 	PanelRow,
 	ButtonGroup,
@@ -244,7 +242,6 @@ function KadenceForm( props ) {
 	const [ isSavedKey, setIsSavedKey ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
 
-	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 
 	const fudnctionNfame = ( prevProps ) => {
@@ -1588,13 +1585,6 @@ function KadenceForm( props ) {
 				/>
 			</BlockControls>
 			<InspectorControls>
-
-				<InspectorControlTabs
-					panelName={'form'}
-					setActiveTab={( value ) => setActiveTab( value )}
-					activeTab={activeTab}
-				/>
-
 				{renderFieldControls}
 				<PanelRow>
 					<Button

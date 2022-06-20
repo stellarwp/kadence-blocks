@@ -26,7 +26,7 @@ import './style.scss';
 import { __ } from '@wordpress/i18n';
 const { createBlock }         = wp.blocks;
 const { Component, Fragment } = wp.element;
-import { Button } from '@wordpress/components';
+const { IconButton }    = wp.components;
 const { InnerBlocks }         = wp.blockEditor
 const { select, dispatch }    = wp.data;
 
@@ -159,7 +159,7 @@ class KadenceRestaurantMenu extends Component {
 						renderAppender={ () =>  null
 
 							// (
-							// 	<Button
+							// 	<IconButton
 						 //        icon="insert"
 						 //        label={ __('Add New Menu') }
 						 //        onClick={ () => {

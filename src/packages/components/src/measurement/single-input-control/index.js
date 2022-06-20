@@ -7,7 +7,7 @@
  * Import External
  */
 import { map } from 'lodash';
-import RangeControl from '../../range/range-control';
+import KadenceRange from '../../range/range-control';
 
 /**
  * Internal block libraries
@@ -35,19 +35,19 @@ function useObservableState( initialState ) {
  * @returns {object} Measure settings.
  */
 export default function MeasurementSingleControl( {
-		label,
-		placement = 'top',
-		measurement,
-		onChange,
-		step = 1,
-		max = 100,
-		min = 0,
-		icon,
-		unit = '',
-		allowEmpty = false,
-		className = '',
-		preset = '',
-	} ) {
+													  label,
+													  placement = 'top',
+													  measurement,
+													  onChange,
+													  step = 1,
+													  max = 100,
+													  min = 0,
+													  icon,
+													  unit = '',
+													  allowEmpty = false,
+													  className = '',
+													  preset = '',
+												  } ) {
 	const zero = ( allowEmpty ? '' : 0 );
 	const [ isOpen, setIsOpen ] = useObservableState( false );
 
@@ -78,7 +78,7 @@ export default function MeasurementSingleControl( {
 						onClose={ close }
 						className={ 'kadence-range-popover-settings' }
 					>
-						<RangeControl
+						<KadenceRange
 							beforeIcon={ icon }
 							value={ ( undefined !== measurement ? measurement : '' ) }
 							onChange={ ( value ) => onChange( ( value ? parseFloat( value ) : value ) ) }

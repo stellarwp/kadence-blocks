@@ -1,9 +1,12 @@
 import { PopColorControl } from '@kadence/components';
-import {
+const {
 	Component,
 	Fragment,
-} from '@wordpress/element';
-import {
+} = wp.element;
+const {
+	ColorPalette,
+} = wp.blockEditor;
+const {
 	ToggleControl,
 	RangeControl,
 	TabPanel,
@@ -12,7 +15,7 @@ import {
 	Button,
 	Tooltip,
 	Modal,
-} from '@wordpress/components';
+} = wp.components;
 
 import { spacerIcon } from '@kadence/icons';
 /**

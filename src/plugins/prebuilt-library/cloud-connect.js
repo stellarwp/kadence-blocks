@@ -10,7 +10,7 @@ const { apiFetch } = wp;
 const {
 	localStorage,
 } = window;
-import {
+const {
 	Button,
 	ButtonGroup,
 	Tooltip,
@@ -18,7 +18,7 @@ import {
 	SelectControl,
 	ExternalLink,
 	Spinner,
-} from '@wordpress/components';
+} = wp.components;
 import {
 	arrowLeft,
 	download,

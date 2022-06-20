@@ -14,15 +14,22 @@ import { __ } from '@wordpress/i18n';
 import { store as noticesStore } from '@wordpress/notices';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { useState, useEffect } from '@wordpress/element';
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
-import {
+import { useBlockProps } from '@wordpress/block-editor';
+
+const {
+	InspectorControls,
+} = wp.blockEditor;
+
+const {
+	PanelBody,
+	RangeControl,
 	TextControl,
 	TextareaControl,
 	SelectControl,
 	ToggleControl,
 	Modal,
 	Button
-} from '@wordpress/components';
+} = wp.components;
 
 /**
  * Internal dependencies
@@ -30,14 +37,7 @@ import {
 import classnames from 'classnames';
 import { isEmpty, has } from 'lodash';
 import EditJsMap from './editJsMap';
-import {
-	ResponsiveAlignControls,
-	ResponsiveMeasurementControls,
-	ResponsiveRangeControls,
-	RangeControl,
-	InspectorControlTabs,
-	KadencePanelBody
-} from '@kadence/components';
+import { ResponsiveAlignControls, ResponsiveMeasurementControls, ResponsiveRangeControls, KadenceRange } from '@kadence/components';
 
 const ktmapsUniqueIDs = [];
 
@@ -149,7 +149,6 @@ export function Edit( {
 
 	const [ marginControl, setMarginControl ] = useState( 'individual');
 	const [ paddingControl, setPaddingControl ] = useState( 'individual');
-	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const [ isOpen, setOpen ] = useState( false );
 
@@ -250,324 +249,307 @@ export function Edit( {
 	return (
 		<figure { ...blockProps }>
 			<InspectorControls>
+				<PanelBody
+					title={ __('Map Location', 'kadence-blocks') }
+					initialOpen={ true }
+				>
 
-				<InspectorControlTabs
-					panelName={ 'google-maps' }
-					setActiveTab={ setActiveTab }
-					activeTab={ activeTab }
-				/>
+					<TextControl
+						label={ __('Location', 'kadence-blocks') }
+						value={ location }
+						onChange={ (value) => { setAttributes( { location: value} ); } }
+					/>
 
-				{( activeTab === 'general' ) &&
-					<>
-						<KadencePanelBody
-							title={__( 'Map Location', 'kadence-blocks' )}
-							panelName={ 'google-maps-location' }
-						>
-
-							<TextControl
-								label={__( 'Location', 'kadence-blocks' )}
-								value={location}
-								onChange={( value ) => { setAttributes( { location: value } ); }}
+					{ apiType === 'javascript' ?
+						<>
+							<ToggleControl
+								label={ __('Show Marker', 'kadence-blocks') }
+								checked={ (showMarker) }
+								onChange={ (value) => { setAttributes({ showMarker: (value) }) } }
 							/>
+							{/*<ToggleControl*/}
+							{/*	label={ __('Show Controls', 'kadence-blocks') }*/}
+							{/*	checked={ (showControls) }*/}
+							{/*	onChange={ (value) => { setAttributes({ showControls: (value) }) } }*/}
+							{/*/>*/}
+						</>
+						: null }
 
-							{apiType === 'javascript' ?
-								<>
-									<ToggleControl
-										label={__( 'Show Marker', 'kadence-blocks' )}
-										checked={( showMarker )}
-										onChange={( value ) => { setAttributes( { showMarker: ( value ) } ) }}
-									/>
-									{/*<ToggleControl*/}
-									{/*	label={ __('Show Controls', 'kadence-blocks') }*/}
-									{/*	checked={ (showControls) }*/}
-									{/*	onChange={ (value) => { setAttributes({ showControls: (value) }) } }*/}
-									{/*/>*/}
-								</>
-								: null}
+					<RangeControl
+						label={ __( 'Zoom', 'kadence-blocks') }
+						value={ parseInt(zoom) }
+						onChange={ (value) => setAttributes( { zoom: value } ) }
+						min={ 1 }
+						max={ 20 }
+					/>
 
-							<RangeControl
-								label={__( 'Zoom', 'kadence-blocks' )}
-								value={parseInt( zoom )}
-								onChange={( value ) => setAttributes( { zoom: value } )}
-								min={1}
-								max={20}
-							/>
+					<SelectControl
+						label={ __('Map Type', 'kadence-blocks') }
+						value={ mapType }
+						onChange={ (value) => setAttributes( { mapType: value } ) }
+						options={ [
+							{
+								label: __('Road Map', 'kadence-blocks'),
+								value: 'roadmap'
+							},
+							{
+								label: __('Satellite', 'kadence-blocks'),
+								value: 'satellite'
+							}
+						] } />
 
-							<SelectControl
-								label={__( 'Map Type', 'kadence-blocks' )}
-								value={mapType}
-								onChange={( value ) => setAttributes( { mapType: value } )}
-								options={[
+						<SelectControl
+								label={ __('Map Filter', 'kadence-blocks') }
+								value={ mapFilter }
+								onChange={ (value) => setAttributes({
+									mapFilter: value,
+									mapFilterAmount: getSaneDefaultForFilter(value)
+								}) }
+								options={ [
 									{
-										label: __( 'Road Map', 'kadence-blocks' ),
-										value: 'roadmap'
-									},
-									{
-										label: __( 'Satellite', 'kadence-blocks' ),
-										value: 'satellite'
-									}
-								]}/>
-
-							<SelectControl
-								label={__( 'Map Filter', 'kadence-blocks' )}
-								value={mapFilter}
-								onChange={( value ) => setAttributes( {
-									mapFilter      : value,
-									mapFilterAmount: getSaneDefaultForFilter( value )
-								} )}
-								options={[
-									{
-										label: __( 'None', 'kadence-blocks' ),
+										label: __('None', 'kadence-blocks'),
 										value: 'standard'
 									},
 									{
-										label: __( 'Grayscale', 'kadence-blocks' ),
+										label: __('Grayscale', 'kadence-blocks'),
 										value: 'grayscale'
 									},
 									{
-										label: __( 'Invert', 'kadence-blocks' ),
+										label: __('Invert', 'kadence-blocks'),
 										value: 'invert'
 									},
 									{
-										label: __( 'Saturate', 'kadence-blocks' ),
+										label: __('Saturate', 'kadence-blocks'),
 										value: 'saturate'
 									},
 									{
-										label: __( 'Sepia', 'kadence-blocks' ),
+										label: __('Sepia', 'kadence-blocks'),
 										value: 'sepia'
 									}
-								]}/>
+								] } />
 
-							{mapFilter !== 'standard' ?
-								<RangeControl
-									label={__( 'Map Filter Strength ', 'kadence-blocks' )}
-									value={mapFilterAmount}
-									onChange={( value ) => setAttributes( { mapFilterAmount: value } )}
-									min={0}
-									max={( mapFilter === 'saturate' ) ? 250 : 100}
-								/> : null}
+							{ mapFilter !== 'standard' ?
+								<KadenceRange
+									label={ __('Map Filter Strength ', 'kadence-blocks') }
+									value={ mapFilterAmount }
+									onChange={ (value) => setAttributes({ mapFilterAmount: value }) }
+									min={ 0 }
+									max={ (mapFilter === 'saturate') ? 250 : 100 }
+								/> : null }
 
-							{apiType === 'javascript' && mapType === 'roadmap' ?
-								<>
-									<SelectControl
-										label={__( 'Map Style', 'kadence-blocks' )}
-										value={mapStyle}
-										onChange={( value ) => setAttributes( {
-											mapStyle: value
-										} )}
-										options={[
-											{
-												label: __( 'None', 'kadence-blocks' ),
-												value: 'standard'
-											},
-											{
-												label: __( 'Apple Maps Esque', 'kadence-blocks' ),
-												value: 'apple_maps_esque'
-											},
-											{
-												label: __( 'Avocado', 'kadence-blocks' ),
-												value: 'avocado'
-											},
-											{
-												label: __( 'Clean Interface', 'kadence-blocks' ),
-												value: 'clean_interface'
-											},
-											{
-												label: __( 'Cobalt', 'kadence-blocks' ),
-												value: 'cobalt'
-											},
-											{
-												label: __( 'Midnight Commander', 'kadence-blocks' ),
-												value: 'midnight_commander'
-											},
-											{
-												label: __( 'Night Mode', 'kadence-blocks' ),
-												value: 'night_mode'
-											},
-											{
-												label: __( 'No labels, Bright Colors', 'kadence-blocks' ),
-												value: 'no_label_bright_colors'
-											},
-											{
-												label: __( 'Shades of Grey', 'kadence-blocks' ),
-												value: 'shades_of_grey'
-											},
-											{
-												label: __( 'Custom Snazzy Map', 'kadence-blocks' ),
-												value: 'custom'
-											}
-										]}/>
-								</> : null}
+					{ apiType === 'javascript' && mapType === 'roadmap' ?
+						<>
+							<SelectControl
+								label={ __('Map Style', 'kadence-blocks') }
+								value={ mapStyle }
+								onChange={ (value) => setAttributes({
+									mapStyle: value
+								}) }
+								options={ [
+									{
+										label: __('None', 'kadence-blocks'),
+										value: 'standard'
+									},
+									{
+										label: __('Apple Maps Esque', 'kadence-blocks'),
+										value: 'apple_maps_esque'
+									},
+									{
+										label: __('Avocado', 'kadence-blocks'),
+										value: 'avocado'
+									},
+									{
+										label: __('Clean Interface', 'kadence-blocks'),
+										value: 'clean_interface'
+									},
+									{
+										label: __('Cobalt', 'kadence-blocks'),
+										value: 'cobalt'
+									},
+									{
+										label: __('Midnight Commander', 'kadence-blocks'),
+										value: 'midnight_commander'
+									},
+									{
+										label: __('Night Mode', 'kadence-blocks'),
+										value: 'night_mode'
+									},
+									{
+										label: __('No labels, Bright Colors', 'kadence-blocks'),
+										value: 'no_label_bright_colors'
+									},
+									{
+										label: __('Shades of Grey', 'kadence-blocks'),
+										value: 'shades_of_grey'
+									},
+									{
+										label: __('Custom Snazzy Map', 'kadence-blocks'),
+										value: 'custom'
+									}
+								] } />
+						</> : null }
 
-							{apiType === 'javascript' && mapType === 'roadmap' && mapStyle === 'custom' ?
-								<>
-									<TextareaControl
-										label={__( 'Custom Map Style', 'kadence-blocks' )}
-										help={__( 'Copy the "Javascript Style Array" from a Snazzy Maps style', 'kadence-blocks' )}
-										value={customSnazzy}
-										onChange={( value ) => setAttributes( { customSnazzy: value } )}
-									/>
+					{ apiType === 'javascript' && mapType === 'roadmap' && mapStyle === 'custom' ?
+							<>
+								<TextareaControl
+									label={ __('Custom Map Style', 'kadence-blocks') }
+									help={ __( 'Copy the "Javascript Style Array" from a Snazzy Maps style', 'kadence-blocks') }
+									value={ customSnazzy }
+									onChange={ (value) => setAttributes( { customSnazzy: value } ) }
+								/>
 
-									<a href={'https://snazzymaps.com'} target={'_blank'}> {__( 'Visit Snazzy Maps', 'kadence-blocks' )} </a>
-								</>
-								: null}
+								<a href={'https://snazzymaps.com'} target={'_blank'}> { __('Visit Snazzy Maps', 'kadence-blocks') } </a>
+							</>
+						: null }
 
-						</KadencePanelBody>
-						<KadencePanelBody
-							title={ __( 'API Settings', 'kadence-blocks' ) }
-							initialOpen={ false }
-							panelName={ 'google-maps-api' }
+				</PanelBody>
+
+				<PanelBody
+					title={ __( 'Container Size', 'kadence-blocks' ) }
+					initialOpen={ false }
+				>
+					<ResponsiveRangeControls
+						label={ __( 'Height', 'kadence-blocks' ) }
+						value={ heightDesktop }
+						onChange={ value => setAttributes( { heightDesktop: value } ) }
+						tabletValue={ ( heightTablet ? heightTablet : '' ) }
+						onChangeTablet={ ( value ) => setAttributes( { heightTablet: value } ) }
+						mobileValue={ ( heightMobile ? heightMobile : '' ) }
+						onChangeMobile={ ( value ) => setAttributes( { heightMobile: value } ) }
+						min={ 100 }
+						max={ 1250 }
+						step={ 1 }
+						unit={ 'px' }
+						units={ [ 'px' ] }
+						showUnit={ true }
+					/>
+
+					<ResponsiveRangeControls
+						label={ __( 'Max Width', 'kadence-blocks' ) }
+						value={ widthDesktop }
+						onChange={ value => setAttributes( { widthDesktop: value } ) }
+						tabletValue={ ( widthTablet ? widthTablet : '' ) }
+						onChangeTablet={ ( value ) => setAttributes( { widthTablet: value } ) }
+						mobileValue={ ( widthMobile ? widthMobile : '' ) }
+						onChangeMobile={ ( value ) => setAttributes( { widthMobile: value } ) }
+						min={ 100 }
+						max={ 1250 }
+						step={ 1 }
+						unit={ 'px' }
+						units={ [ 'px' ] }
+						showUnit={ true }
+						reset={ () => setAttributes( { widthDesktop: '', widthTablet: '', widthMobile: '' } ) }
+					/>
+					{ ( widthDesktop || widthTablet || widthMobile ) && (
+						<ResponsiveAlignControls
+							label={ __( 'Alignment', 'kadence-blocks' ) }
+							value={ ( textAlign && textAlign[0] ? textAlign[0] : '' ) }
+							mobileValue={ ( textAlign && textAlign[1] ? textAlign[1] : '' ) }
+							tabletValue={ ( textAlign && textAlign[2] ? textAlign[2] : '' ) }
+							onChange={ ( nextAlign ) => setAttributes( { textAlign: [ nextAlign, ( textAlign && textAlign[1] ? textAlign[1] : '' ), ( textAlign && textAlign[2] ? textAlign[2] : '' ) ] } ) }
+							onChangeTablet={ ( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[0] ? textAlign[0] : '' ), nextAlign, ( textAlign && textAlign[2] ? textAlign[2] : '' ) ] } ) }
+							onChangeMobile={ ( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[0] ? textAlign[0] : '' ), ( textAlign && textAlign[1] ? textAlign[1] : '' ), nextAlign ] } ) }
+						/>
+					) }
+
+					<ResponsiveMeasurementControls
+						label={ __( 'Padding', 'kadence-blocks' ) }
+						value={ paddingDesktop }
+						control={ paddingControl }
+						tabletValue={ paddingTablet }
+						mobileValue={ paddingMobile }
+						onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
+						onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
+						onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
+						onChangeControl={ ( value ) => setPaddingControl( value ) }
+						min={ 0 }
+						max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
+						step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+						unit={ paddingUnit }
+						units={ [ 'px', 'em', 'rem', '%' ] }
+						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+					/>
+					<ResponsiveMeasurementControls
+						label={ __( 'Margin', 'kadence-blocks' ) }
+						value={ marginDesktop }
+						control={ marginControl }
+						tabletValue={ marginTablet }
+						mobileValue={ marginMobile }
+						onChange={ ( value ) => setAttributes( { marginDesktop: value } ) }
+						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
+						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
+						onChangeControl={ ( value ) => setMarginControl( value ) }
+						min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
+						max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+						step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
+						unit={ marginUnit }
+						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+					/>
+
+				</PanelBody>
+				<PanelBody
+					title={ __( 'API Settings', 'kadence-blocks' ) }
+					initialOpen={ false }
+				>
+
+					{ __('This block includes an API key, but a custom key can be used. A custom key is required to use the Javascript API.', 'kadence-blocks') }
+
+					<br/>
+
+					<a href={'https://developers.google.com/maps/documentation/embed/get-api-key'} target={'_blank'}>{ __('How to create an API Key', 'kadence-blocks') }</a>
+
+
+					<br/>
+
+					<h2 style={ { marginBottom: '0px'} }>Required Permissions</h2>
+					<ul style={ { marginTop: '5px'} }>
+						{ apiType === 'javascript' ?
+							<>
+								<li>- Maps Javascript API</li>
+								<li>- Geocoding API</li>
+							</>
+							:
+							<li>- Maps Embed API</li> }
+					</ul>
+
+					<br/>
+
+					<TextControl
+						label={ __( 'API Key', 'kadence-blocks' ) }
+						value={ customGoogleApiKey }
+						onChange={ value => setCustomGoogleApiKey( value ) }
+					/>
+						<Button
+							isPrimary
+							onClick={ setGoogleApiKey }
+							disabled={ '' === customGoogleApiKey }
 						>
+							Save
+					</Button>
 
-							{ __('This block includes an API key, but a custom key can be used. A custom key is required to use the Javascript API.', 'kadence-blocks') }
-
-							<br/>
-
-							<a href={'https://developers.google.com/maps/documentation/embed/get-api-key'} target={'_blank'}>{ __('How to create an API Key', 'kadence-blocks') }</a>
-
-
-							<br/>
-
-							<h2 style={ { marginBottom: '0px'} }>Required Permissions</h2>
-							<ul style={ { marginTop: '5px'} }>
-								{ apiType === 'javascript' ?
-									<>
-										<li>- Maps Javascript API</li>
-										<li>- Geocoding API</li>
-									</>
-									:
-									<li>- Maps Embed API</li> }
-							</ul>
-
-							<br/>
-
-							<TextControl
-								label={ __( 'API Key', 'kadence-blocks' ) }
-								value={ customGoogleApiKey }
-								onChange={ value => setCustomGoogleApiKey( value ) }
-							/>
+					{ '' !== customGoogleApiKey ?
+						<>
+							&nbsp;
 							<Button
-								isPrimary
-								onClick={ setGoogleApiKey }
+								isDefault
+								onClick={ removeGoogleApiKey }
 								disabled={ '' === customGoogleApiKey }
 							>
-								Save
+								Remove
 							</Button>
 
-							{ '' !== customGoogleApiKey &&
-								<>
-									&nbsp;
-									<Button
-										isDefault
-										onClick={ removeGoogleApiKey }
-										disabled={ '' === customGoogleApiKey }
-									>
-										Remove
-									</Button>
+							<br/><br/>
 
-									<br/><br/>
-
-									<ToggleControl
-										label={ __( 'Use Javascript API', 'kadence-blocks' ) }
-										checked={ (apiType === 'javascript') }
-										onChange={ ( value ) => { setAttributes( { apiType: (value ? 'javascript' : 'embed'), mapFilter: 'standard' } );  if(value) { openModal(); } } }
-									/>
-								</>
-							}
-
-						</KadencePanelBody>
-					</>
-				}
-
-				{( activeTab === 'style' ) &&
-					<>
-						<KadencePanelBody
-							title={__( 'Container Size', 'kadence-blocks' )}
-							panelName={ 'google-maps-container' }
-						>
-							<ResponsiveRangeControls
-								label={__( 'Height', 'kadence-blocks' )}
-								value={heightDesktop}
-								onChange={value => setAttributes( { heightDesktop: value } )}
-								tabletValue={( heightTablet ? heightTablet : '' )}
-								onChangeTablet={( value ) => setAttributes( { heightTablet: value } )}
-								mobileValue={( heightMobile ? heightMobile : '' )}
-								onChangeMobile={( value ) => setAttributes( { heightMobile: value } )}
-								min={100}
-								max={1250}
-								step={1}
-								unit={'px'}
-								units={[ 'px' ]}
-								showUnit={true}
+							<ToggleControl
+								label={ __( 'Use Javascript API', 'kadence-blocks' ) }
+								checked={ (apiType === 'javascript') }
+								onChange={ ( value ) => { setAttributes( { apiType: (value ? 'javascript' : 'embed'), mapFilter: 'standard' } );  if(value) { openModal(); } } }
 							/>
+						</>
+						: null }
 
-							<ResponsiveRangeControls
-								label={__( 'Max Width', 'kadence-blocks' )}
-								value={widthDesktop}
-								onChange={value => setAttributes( { widthDesktop: value } )}
-								tabletValue={( widthTablet ? widthTablet : '' )}
-								onChangeTablet={( value ) => setAttributes( { widthTablet: value } )}
-								mobileValue={( widthMobile ? widthMobile : '' )}
-								onChangeMobile={( value ) => setAttributes( { widthMobile: value } )}
-								min={100}
-								max={1250}
-								step={1}
-								unit={'px'}
-								units={[ 'px' ]}
-								showUnit={true}
-								reset={() => setAttributes( { widthDesktop: '', widthTablet: '', widthMobile: '' } )}
-							/>
-							{( widthDesktop || widthTablet || widthMobile ) && (
-								<ResponsiveAlignControls
-									label={__( 'Alignment', 'kadence-blocks' )}
-									value={( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' )}
-									mobileValue={( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' )}
-									tabletValue={( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' )}
-									onChange={( nextAlign ) => setAttributes( { textAlign: [ nextAlign, ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) ] } )}
-									onChangeTablet={( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ), nextAlign, ( textAlign && textAlign[ 2 ] ? textAlign[ 2 ] : '' ) ] } )}
-									onChangeMobile={( nextAlign ) => setAttributes( { textAlign: [ ( textAlign && textAlign[ 0 ] ? textAlign[ 0 ] : '' ), ( textAlign && textAlign[ 1 ] ? textAlign[ 1 ] : '' ), nextAlign ] } )}
-								/>
-							)}
-
-							<ResponsiveMeasurementControls
-								label={__( 'Padding', 'kadence-blocks' )}
-								value={paddingDesktop}
-								control={paddingControl}
-								tabletValue={paddingTablet}
-								mobileValue={paddingMobile}
-								onChange={( value ) => setAttributes( { paddingDesktop: value } )}
-								onChangeTablet={( value ) => setAttributes( { paddingTablet: value } )}
-								onChangeMobile={( value ) => setAttributes( { paddingMobile: value } )}
-								onChangeControl={( value ) => setPaddingControl( value )}
-								min={0}
-								max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 )}
-								step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
-								unit={paddingUnit}
-								units={[ 'px', 'em', 'rem', '%' ]}
-								onUnit={( value ) => setAttributes( { paddingUnit: value } )}
-							/>
-							<ResponsiveMeasurementControls
-								label={__( 'Margin', 'kadence-blocks' )}
-								value={marginDesktop}
-								control={marginControl}
-								tabletValue={marginTablet}
-								mobileValue={marginMobile}
-								onChange={( value ) => setAttributes( { marginDesktop: value } )}
-								onChangeTablet={( value ) => setAttributes( { marginTablet: value } )}
-								onChangeMobile={( value ) => setAttributes( { marginMobile: value } )}
-								onChangeControl={( value ) => setMarginControl( value )}
-								min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
-								max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
-								step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
-								unit={marginUnit}
-								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-								onUnit={( value ) => setAttributes( { marginUnit: value } )}
-							/>
-
-						</KadencePanelBody>
-					</>
-				}
-
+				</PanelBody>
 			</InspectorControls>
 
 			<div style={ {

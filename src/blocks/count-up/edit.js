@@ -23,12 +23,8 @@ import './editor.scss';
 /**
  * Internal block libraries
  */
+import { useEffect } from '@wordpress/element';
 import { RichText, useBlockProps } from '@wordpress/block-editor';
-import {
- 	useEffect,
-	Component,
-	Fragment
-} from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 import { withSelect } from '@wordpress/data';

@@ -266,12 +266,6 @@
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
 	}
-	.wp-block-kadence-posts.kb-posts-style-unboxed.grid-lg-col-1.item-image-style-beside article.loop-entry {
-		grid-gap: 2rem;
-		.post-thumbnail {
-			margin-bottom: 0;
-		}
-	}
 	.wp-block-kadence-posts.grid-lg-col-1.item-image-style-beside article.loop-entry.has-post-thumbnail.kb-post-no-image {
 		grid-template-columns: minmax(0, 1fr);
 	}

@@ -3,7 +3,6 @@
  */
  import { debounce } from 'lodash';
 
-
 /**
  * WordPress dependencies
  */

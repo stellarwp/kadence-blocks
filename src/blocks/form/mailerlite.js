@@ -18,13 +18,13 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-import {
+const {
 	TextControl,
 	Button,
 	Spinner,
 	SelectControl,
 	ExternalLink,
-} from '@wordpress/components';
+} = wp.components;
 
 const RETRIEVE_API_URL = 'https://app.mailerlite.com/integrations/api/';
 const HELP_URL = 'https://help.mailerlite.com/article/show/35040-where-can-i-find-the-api-key';

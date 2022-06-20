@@ -1,13 +1,14 @@
 import { map } from 'lodash';
+import MeasurementControls from '../../measurement-control';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import {
+const {
 	Component,
 	Fragment,
-} from '@wordpress/element';
-import {
+} = wp.element;
+const {
 	PanelBody,
 	Tooltip,
 	RangeControl,
@@ -18,8 +19,8 @@ import {
 	Modal,
 	ToggleControl,
 	SelectControl,
-} from '@wordpress/components';
-import { MeasurementControls } from '@kadence/components';
+} = wp.components;
+
 import {
 	galleryIcon,
 	galMasonryIcon,

@@ -5,11 +5,11 @@ import { map } from 'lodash';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import {
+const {
 	Component,
 	Fragment,
-} from '@wordpress/element';
-import {
+} = wp.element;
+const {
 	Button,
 	PanelBody,
 	RangeControl,
@@ -17,7 +17,7 @@ import {
 	Modal,
 	ButtonGroup,
 	Tooltip,
-} from '@wordpress/components';
+} = wp.components;
 
 import { alignBottomIcon, alignMiddleIcon, alignTopIcon, iconListBlockIcon } from '@kadence/icons';
 

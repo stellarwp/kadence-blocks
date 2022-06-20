@@ -11,9 +11,6 @@ import {
 	Fragment,
 } from '@wordpress/element';
 import {
-	useBlockProps,
-} from '@wordpress/block-editor';
-import {
 	Dashicon,
 } from '@wordpress/components';
 

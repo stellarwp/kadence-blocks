@@ -8,9 +8,6 @@ figure.wp-block-kadence-image:not(.wp-block) {
 	position: relative;
 	&.image-is-svg {
 		width: 100%;
-		img {
-			width: 100%;
-		}
 	}
 	.is-applying img,
 	&.is-transient img {

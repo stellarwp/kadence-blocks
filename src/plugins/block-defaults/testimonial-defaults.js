@@ -1,15 +1,20 @@
+import MeasurementControls from '../../measurement-control';
 import { map } from 'lodash';
+import { OpacityControl } from '@kadence/components';
 import { hexToRGBA } from '@kadence/helpers';
-import { IconControl, TypographyControls, MeasurementControls, PopColorControl, OpacityControl } from '@wordpress/components';
+import { IconControl, TypographyControls } from '@wordpress/components';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import {
+const {
 	Component,
 	Fragment,
-} from '@wordpress/element';
-import {
+} = wp.element;
+const {
+	ColorPalette,
+} = wp.blockEditor;
+const {
 	Button,
 	PanelBody,
 	RangeControl,
@@ -19,7 +24,7 @@ import {
 	ColorIndicator,
 	ButtonGroup,
 	Tooltip,
-} from '@wordpress/components';
+} = wp.components;
 
 import {
 	testimonialBasicIcon,
@@ -703,7 +708,7 @@ class KadenceTestimonialDefault extends Component {
 										/>
 										<h2>{ __( 'Container Background' ) }</h2>
 										<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === testimonialConfig.containerBackground ? '' : hexToRGBA( testimonialConfig.containerBackground, ( testimonialConfig.containerBackgroundOpacity !== undefined ? testimonialConfig.containerBackgroundOpacity : 1 ) ) ) } />
-										<PopColorControl
+										<ColorPalette
 											value={ ( undefined !== testimonialConfig.containerBackground ? testimonialConfig.containerBackground : '' ) }
 											onChange={ value => this.saveConfigState( 'containerBackground', value ) }
 										/>
@@ -714,7 +719,7 @@ class KadenceTestimonialDefault extends Component {
 										/>
 										<h2>{ __( 'Container Border' ) }</h2>
 										<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === testimonialConfig.containerBorder ? '#eeeeee' : hexToRGBA( testimonialConfig.containerBorder, ( testimonialConfig.containerBorderOpacity !== undefined ? testimonialConfig.containerBorderOpacity : 1 ) ) ) } />
-										<PopColorControl
+										<ColorPalette
 											value={ ( undefined !== testimonialConfig.containerBorder ? testimonialConfig.containerBorder : '#eeeeee' ) }
 											onChange={ value => this.saveConfigState( 'containerBorder', value ) }
 										/>
@@ -781,7 +786,7 @@ class KadenceTestimonialDefault extends Component {
 											/>
 										) }
 										<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ iconStyles[ 0 ].color }
 											onChange={ ( value ) => saveIconStyles( { color: value } ) }
 										/>
@@ -806,7 +811,7 @@ class KadenceTestimonialDefault extends Component {
 										/>
 										<h2>{ __( 'Icon Background' ) }</h2>
 										<ColorIndicator className="kt-color-indicate" colorValue={ ( undefined === iconStyles[ 0 ].background ? '' : hexToRGBA( iconStyles[ 0 ].background, ( iconStyles[ 0 ].backgroundOpacity !== undefined ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) ) } />
-										<PopColorControl
+										<ColorPalette
 											value={ iconStyles[ 0 ].background }
 											onChange={ value => saveIconStyles( { background: value } ) }
 										/>
@@ -816,7 +821,7 @@ class KadenceTestimonialDefault extends Component {
 											label={ __( 'Background Opacity' ) }
 										/>
 										<h2>{ __( 'Icon Border Color' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ iconStyles[ 0 ].border }
 											onChange={ value => saveIconStyles( { border: value } ) }
 										/>
@@ -859,7 +864,7 @@ class KadenceTestimonialDefault extends Component {
 											onChange={ ( value ) => this.saveConfigState( 'displayTitle', value ) }
 										/>
 										<h2 className="kt-tab-wrap-title">{ __( 'Color Settings' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ titleFont[ 0 ].color }
 											onChange={ value => saveTitleFont( { color: value } ) }
 										/>
@@ -922,7 +927,7 @@ class KadenceTestimonialDefault extends Component {
 											onChange={ ( value ) => this.saveConfigState( 'displayRating', value ) }
 										/>
 										<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ ratingStyles[ 0 ].color }
 											onChange={ ( value ) => saveRatingStyles( { color: value } ) }
 										/>
@@ -957,7 +962,7 @@ class KadenceTestimonialDefault extends Component {
 											onChange={ ( value ) => this.saveConfigState( 'displayContent', value ) }
 										/>
 										<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ contentFont[ 0 ].color }
 											onChange={ value => saveContentFont( { color: value } ) }
 										/>
@@ -1037,7 +1042,7 @@ class KadenceTestimonialDefault extends Component {
 											max={ 200 }
 										/>
 										<h2>{ __( 'Media Background' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ mediaStyles[ 0 ].background }
 											onChange={ value => savemediaStyles( { background: value } ) }
 										/>
@@ -1047,7 +1052,7 @@ class KadenceTestimonialDefault extends Component {
 											label={ __( 'Background Opacity' ) }
 										/>
 										<h2>{ __( 'Media Border Color' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ mediaStyles[ 0 ].border }
 											onChange={ value => savemediaStyles( { border: value } ) }
 										/>
@@ -1144,7 +1149,7 @@ class KadenceTestimonialDefault extends Component {
 											onChange={ ( value ) => this.saveConfigState( 'displayName', value ) }
 										/>
 										<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ nameFont[ 0 ].color }
 											onChange={ ( value ) => saveNameFont( { color: value } ) }
 										/>
@@ -1196,7 +1201,7 @@ class KadenceTestimonialDefault extends Component {
 											onChange={ ( value ) => this.saveConfigState( 'displayOccupation', value ) }
 										/>
 										<h2 className="kt-tab-wrap-title">{ __( 'Color' ) }</h2>
-										<PopColorControl
+										<ColorPalette
 											value={ occupationFont[ 0 ].color }
 											onChange={ ( value ) => saveOccupationFont( { color: value } ) }
 										/>
@@ -1248,7 +1253,7 @@ class KadenceTestimonialDefault extends Component {
 											onChange={ value => this.saveConfigState( 'displayShadow', value ) }
 										/>
 										<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
-										<PopColorControl
+										<ColorPalette
 											value={ shadow[ 0 ].color }
 											onChange={ value => saveShadow( { color: value } ) }
 										/>

@@ -13,7 +13,7 @@ import { __, sprintf } from '@wordpress/i18n';
 const { registerCoreBlocks } = wp.blockLibrary;
 const { hasFilter } = wp.hooks;
 const { Fragment, Component, RawHTML, render } = wp.element;
-import { TabPanel, Panel, PanelBody, PanelRow, Button } from '@wordpress/components';
+const { TabPanel, Panel, PanelBody, PanelRow, Button } = wp.components;
 
 class KadenceDashboard extends Component {
 	render() {

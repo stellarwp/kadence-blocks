@@ -1,17 +1,17 @@
 import { map } from 'lodash';
-import { PopColorControl, MeasurementControls } from '@kadence/components';
+import { PopColorControl, MeasurementControls} from '@kadence/components';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import {
+const {
 	Component,
 	Fragment,
-} from '@wordpress/element';
-import {
+} = wp.element;
+const {
 	AlignmentToolbar,
-} from '@wordpress/blockEditor';
-import {
+} = wp.blockEditor;
+const {
 	Panel,
 	PanelBody,
 	RangeControl,
@@ -19,7 +19,7 @@ import {
 	TabPanel,
 	Dashicon,
 	Modal,
-} from '@wordpress/components';
+} = wp.components;
 
 import { blockColumnIcon, bottomRightIcon, bottomLeftIcon, topRightIcon, topLeftIcon, radiusIndividualIcon, radiusLinkedIcon } from '@kadence/icons';
 

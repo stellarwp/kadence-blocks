@@ -1,9 +1,12 @@
 
-import {
+const {
 	Component,
 	Fragment,
-} from '@wordpress/element';
-import {
+} = wp.element;
+const {
+	ColorPalette,
+} = wp.blockEditor;
+const {
 	ToggleControl,
 	RangeControl,
 	PanelBody,
@@ -14,8 +17,9 @@ import {
 	Button,
 	Tooltip,
 	Modal,
-} from '@wordpress/components';
-import { TypographyControls, BorderColorControls, PopColorControl, MeasurementControls } from '@kadence/components';
+} = wp.components;
+import MeasurementControls from '../../measurement-control';
+import { TypographyControls, BorderColorControls } from '@kadence/components';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import {
 	accordionBlockIcon,
@@ -172,12 +176,12 @@ class KadenceAccordionDefault extends Component {
 		const normalSettings = (
 			<Fragment>
 				<p className="kt-setting-label">{ __( 'Title Color' ) }</p>
-				<PopColorControl
+				<ColorPalette
 					value={ titleStyles[ 0 ].color }
 					onChange={ ( value ) => saveTitleStyles( { color: value } ) }
 				/>
 				<p className="kt-setting-label">{ __( 'Title Background' ) }</p>
-				<PopColorControl
+				<ColorPalette
 					value={ titleStyles[ 0 ].background }
 					onChange={ ( value ) => saveTitleStyles( { background: value } ) }
 				/>
@@ -193,12 +197,12 @@ class KadenceAccordionDefault extends Component {
 		const hoverSettings = (
 			<Fragment>
 				<p className="kt-setting-label">{ __( 'Hover Color' ) }</p>
-				<PopColorControl
+				<ColorPalette
 					value={ titleStyles[ 0 ].colorHover }
 					onChange={ ( value ) => saveTitleStyles( { colorHover: value } ) }
 				/>
 				<p className="kt-setting-label">{ __( 'Hover Background' ) }</p>
-				<PopColorControl
+				<ColorPalette
 					value={ titleStyles[ 0 ].backgroundHover }
 					onChange={ ( value ) => saveTitleStyles( { backgroundHover: value } ) }
 				/>
@@ -214,12 +218,12 @@ class KadenceAccordionDefault extends Component {
 		const activeSettings = (
 			<Fragment>
 				<p className="kt-setting-label">{ __( 'Active Color' ) }</p>
-				<PopColorControl
+				<ColorPalette
 					value={ titleStyles[ 0 ].colorActive }
 					onChange={ ( value ) => saveTitleStyles( { colorActive: value } ) }
 				/>
 				<p className="kt-setting-label">{ __( 'Active Background' ) }</p>
-				<PopColorControl
+				<ColorPalette
 					value={ titleStyles[ 0 ].backgroundActive }
 					onChange={ ( value ) => saveTitleStyles( { backgroundActive: value } ) }
 				/>
@@ -462,12 +466,12 @@ class KadenceAccordionDefault extends Component {
 								step={ 1 }
 							/>
 							<p className="kt-setting-label">{ __( 'Inner Content Background' ) }</p>
-							<PopColorControl
+							<ColorPalette
 								value={ ( undefined !== accordionConfig.contentBgColor ? accordionConfig.contentBgColor : '' ) }
 								onChange={ ( value ) => this.saveConfigState( 'contentBgColor', value ) }
 							/>
 							<p className="kt-setting-label">{ __( 'Inner Content Border Color' ) }</p>
-							<PopColorControl
+							<ColorPalette
 								value={ ( undefined !== accordionConfig.contentBorderColor ? accordionConfig.contentBorderColor : '#eeeeee' ) }
 								onChange={ ( value ) => this.saveConfigState( 'contentBorderColor', value ) }
 							/>

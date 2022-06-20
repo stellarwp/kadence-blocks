@@ -8,7 +8,6 @@ import {
 	getPreviewSize,
 	showSettings,
 } from '@kadence/helpers';
-
 import {
 	PopColorControl,
 	TypographyControls,
@@ -24,7 +23,6 @@ import {
 	WebfontLoader,
 	BoxShadowControl,
 	DynamicTextControl,
-	InspectorControlTabs
 } from '@kadence/components';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
@@ -135,7 +133,6 @@ function KadenceAdvancedButton( props ) {
 	const [ buttonMarginControl, setButtonMarginControl ] = useState( 'individual' );
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ iconPaddingControl, setIconPaddingControl ] = useState( 'individual' );
-	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	useEffect( () => {
 		if ( !uniqueID ) {
@@ -1696,179 +1693,163 @@ function KadenceAdvancedButton( props ) {
 				{showSettings( 'allSettings', 'kadence/advancedbtn' ) && (
 					<Fragment>
 						<InspectorControls>
-
-							<InspectorControlTabs
-								panelName={'advanced-heading'}
-								setActiveTab={( value ) => setActiveTab( value )}
-								activeTab={ activeTab}
-							/>
-
-							{( activeTab === 'general' ) &&
-								<>
-									{ showSettings( 'countSettings', 'kadence/advancedbtn' ) && (
-										<KadencePanelBody
-											title={__( 'Button Count', 'kadence-blocks' )}
-											initialOpen={true}
-											panelName={'kb-adv-btn-count'}
-										>
-											{!lockBtnCount && (
-												<PanelRow>
-													<Button
-														className="kb-add-field"
-														isPrimary={true}
-														icon={plus}
-														onClick={() => {
-															const newbtns = btns;
-															const newcount = Math.abs( btnCount + 1 );
-															newbtns.push( {
-																text                  : newbtns[ 0 ].text,
-																link                  : newbtns[ 0 ].link,
-																target                : newbtns[ 0 ].target,
-																size                  : newbtns[ 0 ].size,
-																paddingBT             : newbtns[ 0 ].paddingBT,
-																paddingLR             : newbtns[ 0 ].paddingLR,
-																color                 : newbtns[ 0 ].color,
-																background            : newbtns[ 0 ].background,
-																border                : newbtns[ 0 ].border,
-																backgroundOpacity     : newbtns[ 0 ].backgroundOpacity,
-																borderOpacity         : newbtns[ 0 ].borderOpacity,
-																borderRadius          : newbtns[ 0 ].borderRadius,
-																borderWidth           : newbtns[ 0 ].borderWidth,
-																colorHover            : newbtns[ 0 ].colorHover,
-																backgroundHover       : newbtns[ 0 ].backgroundHover,
-																borderHover           : newbtns[ 0 ].borderHover,
-																backgroundHoverOpacity: newbtns[ 0 ].backgroundHoverOpacity,
-																borderHoverOpacity    : newbtns[ 0 ].borderHoverOpacity,
-																icon                  : newbtns[ 0 ].icon,
-																iconSide              : newbtns[ 0 ].iconSide,
-																iconHover             : newbtns[ 0 ].iconHover,
-																cssClass              : ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
-																noFollow              : ( newbtns[ 0 ].noFollow ? newbtns[ 0 ].noFollow : false ),
-																gap                   : ( newbtns[ 0 ].gap ? newbtns[ 0 ].gap : 5 ),
-																responsiveSize        : ( newbtns[ 0 ].responsiveSize ? newbtns[ 0 ].responsiveSize : [ '', '' ] ),
-																gradient              : ( newbtns[ 0 ].gradient ? newbtns[ 0 ].gradient : [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ] ),
-																gradientHover         : ( newbtns[ 0 ].gradientHover ? newbtns[ 0 ].gradientHover : [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ] ),
-																btnStyle              : ( newbtns[ 0 ].btnStyle ? newbtns[ 0 ].btnStyle : 'basic' ),
-																btnSize               : ( newbtns[ 0 ].btnSize ? newbtns[ 0 ].btnSize : 'standard' ),
-																backgroundType        : ( newbtns[ 0 ].backgroundType ? newbtns[ 0 ].backgroundType : 'solid' ),
-																backgroundHoverType   : ( newbtns[ 0 ].backgroundHoverType ? newbtns[ 0 ].backgroundHoverType : 'solid' ),
-																width                 : ( newbtns[ 0 ].width ? newbtns[ 0 ].width : [ '', '', '' ] ),
-																responsivePaddingBT   : ( newbtns[ 0 ].responsivePaddingBT ? newbtns[ 0 ].responsivePaddingBT : [ '', '' ] ),
-																responsivePaddingLR   : ( newbtns[ 0 ].responsivePaddingLR ? newbtns[ 0 ].responsivePaddingLR : [ '', '' ] ),
-																boxShadow             : ( newbtns[ 0 ].boxShadow ? newbtns[ 0 ].boxShadow : [ false, '#000000', 0.2, 1, 1, 2, 0, false ] ),
-																boxShadowHover        : ( newbtns[ 0 ].boxShadowHover ? newbtns[ 0 ].boxShadowHover : [ false, '#000000', 0.4, 2, 2, 3, 0, false ] ),
-																sponsored             : ( newbtns[ 0 ].sponsored ? newbtns[ 0 ].sponsored : false ),
-																download              : false,
-																tabletGap             : ( newbtns[ 0 ].tabletGap ? newbtns[ 0 ].tabletGap : '' ),
-																mobileGap             : ( newbtns[ 0 ].mobileGap ? newbtns[ 0 ].mobileGap : '' ),
-																inheritStyles         : ( newbtns[ 0 ].inheritStyles ? newbtns[ 0 ].inheritStyles : '' ),
-																iconSize              : ( newbtns[ 0 ].iconSize ? newbtns[ 0 ].iconSize : [ '', '', '' ] ),
-																iconPadding           : ( newbtns[ 0 ].iconPadding ? newbtns[ 0 ].iconPadding : [ '', '', '', '' ] ),
-																iconTabletPadding     : ( newbtns[ 0 ].iconTabletPadding ? newbtns[ 0 ].iconTabletPadding : [ '', '', '', '' ] ),
-																iconMobilePadding     : ( newbtns[ 0 ].iconMobilePadding ? newbtns[ 0 ].iconMobilePadding : [ '', '', '', '' ] ),
-																onlyIcon              : ( newbtns[ 0 ].onlyIcon ? newbtns[ 0 ].onlyIcon : [ false, '', '' ] ),
-																iconColor             : ( newbtns[ 0 ].iconColor ? newbtns[ 0 ].iconColor : '' ),
-																iconColorHover        : ( newbtns[ 0 ].iconColorHover ? newbtns[ 0 ].iconColorHover : '' ),
-																sizeType              : ( newbtns[ 0 ].sizeType ? newbtns[ 0 ].sizeType : 'px' ),
-																iconSizeType          : ( newbtns[ 0 ].iconSizeType ? newbtns[ 0 ].iconSizeType : 'px' ),
-																label                 : ( newbtns[ 0 ].label ? newbtns[ 0 ].label : '' ),
-																marginUnit            : ( newbtns[ 0 ].marginUnit ? newbtns[ 0 ].marginUnit : 'px' ),
-																margin                : ( newbtns[ 0 ].margin ? newbtns[ 0 ].margin : [ '', '', '', '' ] ),
-																tabletMargin          : ( newbtns[ 0 ].tabletMargin ? newbtns[ 0 ].tabletMargin : [ '', '', '', '' ] ),
-																mobileMargin          : ( newbtns[ 0 ].mobileMargin ? newbtns[ 0 ].mobileMargin : [ '', '', '', '' ] ),
-																anchor                : ( newbtns[ 0 ].anchor ? newbtns[ 0 ].anchor : '' ),
-																borderStyle           : ( newbtns[ 0 ].borderStyle ? newbtns[ 0 ].borderStyle : '' )
-															} );
-															setAttributes( { btns: newbtns } );
-															saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
-															setAttributes( { btnCount: newcount } );
-														}}
-													>
-														{__( 'Add Button', 'kadence-blocks' )}
-													</Button>
-												</PanelRow>
-											)}
-
-											<ResponsiveAlignControls
-												label={__( 'Button Alignment', 'kadence-blocks' )}
-												value={( hAlign ? hAlign : '' )}
-												mobileValue={( mhAlign ? mhAlign : '' )}
-												tabletValue={( thAlign ? thAlign : '' )}
-												onChange={( nextAlign ) => setAttributes( { hAlign: nextAlign } )}
-												onChangeTablet={( nextAlign ) => setAttributes( { thAlign: nextAlign } )}
-												onChangeMobile={( nextAlign ) => setAttributes( { mhAlign: nextAlign } )}
-											/>
-										</KadencePanelBody>
-									)}
-									{renderArray}
-
-								</>
-							}
-
-							{( activeTab === 'style' ) &&
-								<>
-									{ showSettings( 'fontSettings', 'kadence/advancedbtn' ) && (
-										<KadencePanelBody
-											title={__( 'Font Family', 'kadence-blocks' )}
-											className="kt-font-family-area"
-											panelName={'kb-adv-btn-font-family'}
-										>
-											<TypographyControls
-												fontGroup={'button'}
-												letterSpacing={letterSpacing}
-												onLetterSpacing={( value ) => setAttributes( { letterSpacing: value } )}
-												textTransform={textTransform}
-												onTextTransform={( value ) => setAttributes( { textTransform: value } )}
-												fontFamily={typography}
-												onFontFamily={( value ) => setAttributes( { typography: value } )}
-												onFontChange={( select ) => {
-													setAttributes( {
-														typography: select.value,
-														googleFont: select.google,
+							{showSettings( 'countSettings', 'kadence/advancedbtn' ) && (
+								<KadencePanelBody
+									title={__( 'Button Count', 'kadence-blocks' )}
+									initialOpen={true}
+									panelName={'kb-adv-btn-count'}
+								>
+									{!lockBtnCount && (
+										<PanelRow>
+											<Button
+												className="kb-add-field"
+												isPrimary={true}
+												icon={plus}
+												onClick={() => {
+													const newbtns = btns;
+													const newcount = Math.abs( btnCount + 1 );
+													newbtns.push( {
+														text                  : newbtns[ 0 ].text,
+														link                  : newbtns[ 0 ].link,
+														target                : newbtns[ 0 ].target,
+														size                  : newbtns[ 0 ].size,
+														paddingBT             : newbtns[ 0 ].paddingBT,
+														paddingLR             : newbtns[ 0 ].paddingLR,
+														color                 : newbtns[ 0 ].color,
+														background            : newbtns[ 0 ].background,
+														border                : newbtns[ 0 ].border,
+														backgroundOpacity     : newbtns[ 0 ].backgroundOpacity,
+														borderOpacity         : newbtns[ 0 ].borderOpacity,
+														borderRadius          : newbtns[ 0 ].borderRadius,
+														borderWidth           : newbtns[ 0 ].borderWidth,
+														colorHover            : newbtns[ 0 ].colorHover,
+														backgroundHover       : newbtns[ 0 ].backgroundHover,
+														borderHover           : newbtns[ 0 ].borderHover,
+														backgroundHoverOpacity: newbtns[ 0 ].backgroundHoverOpacity,
+														borderHoverOpacity    : newbtns[ 0 ].borderHoverOpacity,
+														icon                  : newbtns[ 0 ].icon,
+														iconSide              : newbtns[ 0 ].iconSide,
+														iconHover             : newbtns[ 0 ].iconHover,
+														cssClass              : ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
+														noFollow              : ( newbtns[ 0 ].noFollow ? newbtns[ 0 ].noFollow : false ),
+														gap                   : ( newbtns[ 0 ].gap ? newbtns[ 0 ].gap : 5 ),
+														responsiveSize        : ( newbtns[ 0 ].responsiveSize ? newbtns[ 0 ].responsiveSize : [ '', '' ] ),
+														gradient              : ( newbtns[ 0 ].gradient ? newbtns[ 0 ].gradient : [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ] ),
+														gradientHover         : ( newbtns[ 0 ].gradientHover ? newbtns[ 0 ].gradientHover : [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ] ),
+														btnStyle              : ( newbtns[ 0 ].btnStyle ? newbtns[ 0 ].btnStyle : 'basic' ),
+														btnSize               : ( newbtns[ 0 ].btnSize ? newbtns[ 0 ].btnSize : 'standard' ),
+														backgroundType        : ( newbtns[ 0 ].backgroundType ? newbtns[ 0 ].backgroundType : 'solid' ),
+														backgroundHoverType   : ( newbtns[ 0 ].backgroundHoverType ? newbtns[ 0 ].backgroundHoverType : 'solid' ),
+														width                 : ( newbtns[ 0 ].width ? newbtns[ 0 ].width : [ '', '', '' ] ),
+														responsivePaddingBT   : ( newbtns[ 0 ].responsivePaddingBT ? newbtns[ 0 ].responsivePaddingBT : [ '', '' ] ),
+														responsivePaddingLR   : ( newbtns[ 0 ].responsivePaddingLR ? newbtns[ 0 ].responsivePaddingLR : [ '', '' ] ),
+														boxShadow             : ( newbtns[ 0 ].boxShadow ? newbtns[ 0 ].boxShadow : [ false, '#000000', 0.2, 1, 1, 2, 0, false ] ),
+														boxShadowHover        : ( newbtns[ 0 ].boxShadowHover ? newbtns[ 0 ].boxShadowHover : [ false, '#000000', 0.4, 2, 2, 3, 0, false ] ),
+														sponsored             : ( newbtns[ 0 ].sponsored ? newbtns[ 0 ].sponsored : false ),
+														download              : false,
+														tabletGap             : ( newbtns[ 0 ].tabletGap ? newbtns[ 0 ].tabletGap : '' ),
+														mobileGap             : ( newbtns[ 0 ].mobileGap ? newbtns[ 0 ].mobileGap : '' ),
+														inheritStyles         : ( newbtns[ 0 ].inheritStyles ? newbtns[ 0 ].inheritStyles : '' ),
+														iconSize              : ( newbtns[ 0 ].iconSize ? newbtns[ 0 ].iconSize : [ '', '', '' ] ),
+														iconPadding           : ( newbtns[ 0 ].iconPadding ? newbtns[ 0 ].iconPadding : [ '', '', '', '' ] ),
+														iconTabletPadding     : ( newbtns[ 0 ].iconTabletPadding ? newbtns[ 0 ].iconTabletPadding : [ '', '', '', '' ] ),
+														iconMobilePadding     : ( newbtns[ 0 ].iconMobilePadding ? newbtns[ 0 ].iconMobilePadding : [ '', '', '', '' ] ),
+														onlyIcon              : ( newbtns[ 0 ].onlyIcon ? newbtns[ 0 ].onlyIcon : [ false, '', '' ] ),
+														iconColor             : ( newbtns[ 0 ].iconColor ? newbtns[ 0 ].iconColor : '' ),
+														iconColorHover        : ( newbtns[ 0 ].iconColorHover ? newbtns[ 0 ].iconColorHover : '' ),
+														sizeType              : ( newbtns[ 0 ].sizeType ? newbtns[ 0 ].sizeType : 'px' ),
+														iconSizeType          : ( newbtns[ 0 ].iconSizeType ? newbtns[ 0 ].iconSizeType : 'px' ),
+														label                 : ( newbtns[ 0 ].label ? newbtns[ 0 ].label : '' ),
+														marginUnit            : ( newbtns[ 0 ].marginUnit ? newbtns[ 0 ].marginUnit : 'px' ),
+														margin                : ( newbtns[ 0 ].margin ? newbtns[ 0 ].margin : [ '', '', '', '' ] ),
+														tabletMargin          : ( newbtns[ 0 ].tabletMargin ? newbtns[ 0 ].tabletMargin : [ '', '', '', '' ] ),
+														mobileMargin          : ( newbtns[ 0 ].mobileMargin ? newbtns[ 0 ].mobileMargin : [ '', '', '', '' ] ),
+														anchor                : ( newbtns[ 0 ].anchor ? newbtns[ 0 ].anchor : '' ),
+														borderStyle           : ( newbtns[ 0 ].borderStyle ? newbtns[ 0 ].borderStyle : '' ),
 													} );
+													setAttributes( { btns: newbtns } );
+													saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
+													setAttributes( { btnCount: newcount } );
 												}}
-												googleFont={googleFont}
-												onGoogleFont={( value ) => setAttributes( { googleFont: value } )}
-												loadGoogleFont={loadGoogleFont}
-												onLoadGoogleFont={( value ) => setAttributes( { loadGoogleFont: value } )}
-												fontVariant={fontVariant}
-												onFontVariant={( value ) => setAttributes( { fontVariant: value } )}
-												fontWeight={fontWeight}
-												onFontWeight={( value ) => setAttributes( { fontWeight: value } )}
-												fontStyle={fontStyle}
-												onFontStyle={( value ) => setAttributes( { fontStyle: value } )}
-												fontSubset={fontSubset}
-												onFontSubset={( value ) => setAttributes( { fontSubset: value } )}
-											/>
-										</KadencePanelBody>
+											>
+												{__( 'Add Button', 'kadence-blocks' )}
+											</Button>
+										</PanelRow>
 									)}
-									{ showSettings( 'marginSettings', 'kadence/advancedbtn' ) && (
-										<KadencePanelBody
-											title={__( 'Container Margin', 'kadence-blocks' )}
-											initialOpen={false}
-											panelName={'kb-adv-btn-container-margin'}
-										>
-											<ResponsiveMeasurementControls
-												label={__( 'Container Margin', 'kadence-blocks' )}
-												value={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ]}
-												control={ marginControl }
-												tabletValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet ? margin[ 0 ].tablet : [ '', '', '', '' ]}
-												mobileValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile ? margin[ 0 ].mobile : [ '', '', '', '' ]}
-												onChange={( value ) => saveMargin( { desk: value } )}
-												onChangeTablet={( value ) => saveMargin( { tablet: value } )}
-												onChangeMobile={( value ) => saveMargin( { mobile: value } )}
-												onChangeControl={( value ) => setMarginControl( value )}
-												min={marginMin}
-												max={marginMax}
-												step={marginStep}
-												unit={marginUnit}
-												units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-												onUnit={( value ) => setAttributes( { marginUnit: value } )}
-											/>
-										</KadencePanelBody>
-									)}
-								</>
-							}
+
+									<ResponsiveAlignControls
+										label={__( 'Button Alignment', 'kadence-blocks' )}
+										value={( hAlign ? hAlign : '' )}
+										mobileValue={( mhAlign ? mhAlign : '' )}
+										tabletValue={( thAlign ? thAlign : '' )}
+										onChange={( nextAlign ) => setAttributes( { hAlign: nextAlign } )}
+										onChangeTablet={( nextAlign ) => setAttributes( { thAlign: nextAlign } )}
+										onChangeMobile={( nextAlign ) => setAttributes( { mhAlign: nextAlign } )}
+									/>
+								</KadencePanelBody>
+							)}
+							{renderArray}
+							{showSettings( 'fontSettings', 'kadence/advancedbtn' ) && (
+								<KadencePanelBody
+									title={__( 'Font Family', 'kadence-blocks' )}
+									initialOpen={false}
+									className="kt-font-family-area"
+									panelName={'kb-adv-btn-font-family'}
+								>
+									<TypographyControls
+										fontGroup={'button'}
+										letterSpacing={letterSpacing}
+										onLetterSpacing={( value ) => setAttributes( { letterSpacing: value } )}
+										textTransform={textTransform}
+										onTextTransform={( value ) => setAttributes( { textTransform: value } )}
+										fontFamily={typography}
+										onFontFamily={( value ) => setAttributes( { typography: value } )}
+										onFontChange={( select ) => {
+											setAttributes( {
+												typography: select.value,
+												googleFont: select.google,
+											} );
+										}}
+										googleFont={googleFont}
+										onGoogleFont={( value ) => setAttributes( { googleFont: value } )}
+										loadGoogleFont={loadGoogleFont}
+										onLoadGoogleFont={( value ) => setAttributes( { loadGoogleFont: value } )}
+										fontVariant={fontVariant}
+										onFontVariant={( value ) => setAttributes( { fontVariant: value } )}
+										fontWeight={fontWeight}
+										onFontWeight={( value ) => setAttributes( { fontWeight: value } )}
+										fontStyle={fontStyle}
+										onFontStyle={( value ) => setAttributes( { fontStyle: value } )}
+										fontSubset={fontSubset}
+										onFontSubset={( value ) => setAttributes( { fontSubset: value } )}
+									/>
+								</KadencePanelBody>
+							)}
+							{showSettings( 'marginSettings', 'kadence/advancedbtn' ) && (
+								<KadencePanelBody
+									title={__( 'Container Margin', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-adv-btn-container-margin'}
+								>
+									<ResponsiveMeasurementControls
+										label={__( 'Container Margin', 'kadence-blocks' )}
+										value={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ]}
+										control={marginControl}
+										tabletValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet ? margin[ 0 ].tablet : [ '', '', '', '' ]}
+										mobileValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile ? margin[ 0 ].mobile : [ '', '', '', '' ]}
+										onChange={( value ) => saveMargin( { desk: value } )}
+										onChangeTablet={( value ) => saveMargin( { tablet: value } )}
+										onChangeMobile={( value ) => saveMargin( { mobile: value } )}
+										onChangeControl={( value ) => setMarginControl( value )}
+										min={marginMin}
+										max={marginMax}
+										step={marginStep}
+										unit={marginUnit}
+										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+										onUnit={( value ) => setAttributes( { marginUnit: value } )}
+									/>
+								</KadencePanelBody>
+							)}
 						</InspectorControls>
 						<InspectorAdvancedControls>
 							<ToggleControl

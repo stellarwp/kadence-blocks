@@ -39,9 +39,6 @@ import {
 	KadenceRange,
 	KadencePanelBody,
 	WebfontLoader,
-	RangeControl,
-	IconPicker,
-	InspectorControlTabs,
 } from '@kadence/components';
 import {
 	getPreviewSize,
@@ -61,8 +58,6 @@ import {
 import {
 	useEffect,
 	useState,
-	Component,
-	Fragment,
 } from '@wordpress/element';
 import {
 	InnerBlocks,
@@ -72,17 +67,17 @@ import {
 	BlockAlignmentToolbar,
 	useBlockProps
 } from '@wordpress/block-editor';
-
 import {
 	TabPanel,
 	Button,
 	ButtonGroup,
+	Dashicon,
+	RangeControl,
 	ToggleControl,
 	SelectControl,
 	IconButton,
 } from '@wordpress/components';
-
-import { withSelect, withDispatch, useSelect, useDispatch } from '@wordpress/data';
+import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
 /**
@@ -143,7 +138,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 	const [ titleBorderActiveColorControl, setTitleBorderActiveColorControl ] = useState( 'linked' );
 	const [ titleTag, setTitleTag ] = useState( 'div' );
 	const [ showPreset, setShowPreset ] = useState( false );
-	const [ activeTab, setActiveTab ] = useState( 'general' );
+	const [ settings, setSettings ] = useState( {} );
 
 	useEffect( () => {
 		// This runs when we switch from desktop to tablet.
@@ -244,7 +239,10 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		if ( accordionBlock && accordionBlock.innerBlocks[ 0 ] && accordionBlock.innerBlocks[ 0 ].attributes && accordionBlock.innerBlocks[ 0 ].attributes.titleTag ) {
 			setTitleTag( accordionBlock.innerBlocks[ 0 ].attributes.titleTag );
 		}
-
+		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
+		if ( blockSettings[ 'kadence/accordion' ] !== undefined && typeof blockSettings[ 'kadence/accordion' ] === 'object' ) {
+			setSettings( blockSettings[ 'kadence/accordion' ] );
+		}
 	}, [] );
 
 	const startlayoutOptions = [
@@ -667,430 +665,424 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					}}
 				/>
 			</BlockControls>
-			{ showSettings( 'allSettings', 'kadence/accordion' ) && (
+			{showSettings( 'allSettings', 'kadence/accordion' ) && (
 				<InspectorControls>
-					<InspectorControlTabs
-						panelName={'accordion'}
-						setActiveTab={ ( value ) => setActiveTab( value ) }
-						activeTab={ activeTab }
-					/>
-					{ ( activeTab === 'general' ) &&
-						<>
-							<KadencePanelBody panelName={'kb-accordion-all'}>
-								{ showSettings( 'paneControl', 'kadence/accordion' ) && (
-									<Fragment>
-										<ToggleControl
-											label={__( 'Panes close when another opens', 'kadence-blocks' )}
-											checked={linkPaneCollapse}
-											onChange={( value ) => setAttributes( { linkPaneCollapse: value } )}
-										/>
-										<ToggleControl
-											label={__( 'Start with all panes collapsed', 'kadence-blocks' )}
-											checked={startCollapsed}
-											onChange={( value ) => setAttributes( { startCollapsed: value } )}
-										/>
-										{!startCollapsed && (
-											<Fragment>
-												<h2>{__( 'Initial Open Accordion', 'kadence-blocks' )}</h2>
-												<ButtonGroup aria-label={__( 'Initial Open Accordion', 'kadence-blocks' )}>
-													{accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks && (
-														<Fragment>
-															{map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
-																<Button
-																	key={attributes.id - 1}
-																	className="kt-init-open-pane"
-																	isSmall
-																	isPrimary={openPane === attributes.id - 1}
-																	aria-pressed={openPane === attributes.id - 1}
-																	onClick={() => setAttributes( { openPane: attributes.id - 1 } )}
-																>
-																	{console.log( 'is_array' )}
-																	{__( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id )}
-																</Button>
-															) )}
-														</Fragment>
-													)}
-													{accordionBlock && accordionBlock.innerBlocks && (
-														<Fragment>
-															{map( accordionBlock.innerBlocks, ( { attributes } ) => (
-																<Button
-																	key={attributes.id - 1}
-																	className="kt-init-open-pane"
-																	isSmall
-																	isPrimary={openPane === attributes.id - 1}
-																	aria-pressed={openPane === attributes.id - 1}
-																	onClick={() => setAttributes( { openPane: attributes.id - 1 } )}
-																>
-																	{__( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id )}
-																</Button>
-															) )}
-														</Fragment>
-													)}
-												</ButtonGroup>
-											</Fragment>
-										)}
-									</Fragment>
+					<KadencePanelBody panelName={'kb-accordion-all'}>
+						{showSettings( 'paneControl', 'kadence/accordion' ) && (
+							<>
+								<ToggleControl
+									label={__( 'Panes close when another opens', 'kadence-blocks' )}
+									checked={linkPaneCollapse}
+									onChange={( value ) => setAttributes( { linkPaneCollapse: value } )}
+								/>
+								<ToggleControl
+									label={__( 'Start with all panes collapsed', 'kadence-blocks' )}
+									checked={startCollapsed}
+									onChange={( value ) => setAttributes( { startCollapsed: value } )}
+								/>
+								{!startCollapsed && (
+									<>
+										<h2>{__( 'Initial Open Accordion', 'kadence-blocks' )}</h2>
+										<ButtonGroup aria-label={__( 'Initial Open Accordion', 'kadence-blocks' )}>
+											{accordionBlock && accordionBlock[ 0 ] && accordionBlock[ 0 ].innerBlocks && (
+												<>
+													{map( accordionBlock[ 0 ].innerBlocks, ( { attributes } ) => (
+														<Button
+															key={attributes.id - 1}
+															className="kt-init-open-pane"
+															isSmall
+															isPrimary={openPane === attributes.id - 1}
+															aria-pressed={openPane === attributes.id - 1}
+															onClick={() => setAttributes( { openPane: attributes.id - 1 } )}
+														>
+															{console.log( 'is_array' )}
+															{__( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id )}
+														</Button>
+													) )}
+												</>
+											)}
+											{accordionBlock && accordionBlock.innerBlocks && (
+												<>
+													{map( accordionBlock.innerBlocks, ( { attributes } ) => (
+														<Button
+															key={attributes.id - 1}
+															className="kt-init-open-pane"
+															isSmall
+															isPrimary={openPane === attributes.id - 1}
+															aria-pressed={openPane === attributes.id - 1}
+															onClick={() => setAttributes( { openPane: attributes.id - 1 } )}
+														>
+															{__( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id )}
+														</Button>
+													) )}
+												</>
+											)}
+										</ButtonGroup>
+									</>
 								)}
-							</KadencePanelBody>
-							{ showSettings( 'titleColors', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Pane Title Color Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-accordion-pane-title-color-settings'}
-								>
-									<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
-											  activeClass="active-tab"
-											  tabs={[
-												  {
-													  name     : 'normal',
-													  title    : __( 'Normal' ),
-													  className: 'kt-normal-tab',
-												  },
-												  {
-													  name     : 'hover',
-													  title    : __( 'Hover' ),
-													  className: 'kt-hover-tab',
-												  },
-												  {
-													  name     : 'active',
-													  title    : __( 'Active' ),
-													  className: 'kt-active-tab',
-												  },
-											  ]}>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'hover' === tab.name ) {
-														tabout = hoverSettings;
-													} else if ( 'active' === tab.name ) {
-														tabout = activeSettings;
-													} else {
-														tabout = normalSettings;
-													}
-												}
-												return <div className={tab.className} key={tab.className}>{tabout}</div>;
+							</>
+						)}
+					</KadencePanelBody>
+					{showSettings( 'titleColors', 'kadence/accordion' ) && (
+						<KadencePanelBody
+							title={__( 'Pane Title Color Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-accordion-pane-title-color-settings'}
+						>
+							<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+									  activeClass="active-tab"
+									  tabs={[
+										  {
+											  name     : 'normal',
+											  title    : __( 'Normal' ),
+											  className: 'kt-normal-tab',
+										  },
+										  {
+											  name     : 'hover',
+											  title    : __( 'Hover' ),
+											  className: 'kt-hover-tab',
+										  },
+										  {
+											  name     : 'active',
+											  title    : __( 'Active' ),
+											  className: 'kt-active-tab',
+										  },
+									  ]}>
+								{
+									( tab ) => {
+										let tabout;
+										if ( tab.name ) {
+											if ( 'hover' === tab.name ) {
+												tabout = hoverSettings;
+											} else if ( 'active' === tab.name ) {
+												tabout = activeSettings;
+											} else {
+												tabout = normalSettings;
 											}
 										}
-										}
-									</TabPanel>
-								</KadencePanelBody>
-							) }
-							{ showSettings( 'titleIcon', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={ __( 'Pane Title Trigger Icon', 'kadence-blocks' ) }
-									initialOpen={ false }
-									panelName={ 'kb-acordion-panel-title-trigger-icon' }
-								>
-									<ToggleControl
-										label={ __( 'Show Icon', 'kadence-blocks' ) }
-										checked={ showIcon }
-										onChange={ ( value ) => setAttributes( { showIcon: value } ) }
-									/>
-									<h2>{ __( 'Icon Style', 'kadence-blocks' ) }</h2>
-									<IconPicker
-										icons={ [
-											'basic',
-											'basiccircle',
-											'xclose',
-											'xclosecircle',
-											'arrow',
-											'arrowcircle',
-										] }
-										value={ iconStyle }
-										onChange={ value => setAttributes( { iconStyle: value } ) }
-										appendTo="body"
-										renderFunc={ renderIconSet }
-										theme="accordion"
-										showSearch={ false }
-										noSelectedPlaceholder={ __( 'Select Icon Set', 'kadence-blocks' ) }
-										isMulti={ false }
-									/>
-									<SelectControl
-										label={ __( 'Icon Side', 'kadence-blocks' ) }
-										value={ iconSide }
-										options={ [
-											{ value: 'right', label: __( 'Right' ) },
-											{ value: 'left', label: __( 'Left' ) },
-										] }
-										onChange={ value => setAttributes( { iconSide: value } ) }
-									/>
-								</KadencePanelBody>
-							) }
-						</>
-					}
-					{ ( activeTab === 'style' ) &&
-						<>
-							{ showSettings( 'titleSpacing', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Pane Title Spacing', 'kadence-blocks' )}
-									panelName={'kb-accordion-pane-title-spacing'}
-								>
-									<ResponsiveMeasurementControls
-										label={__( 'Pane Title Padding', 'kadence-blocks' )}
-										control={titlePaddingControl}
-										tabletControl={titlePaddingControl}
-										mobileControl={titlePaddingControl}
-										value={titleStyles[ 0 ].padding}
-										tabletValue={undefined !== titleStyles[ 0 ].paddingTablet ? titleStyles[ 0 ].paddingTablet : [ '', '', '', '' ]}
-										mobileValue={undefined !== titleStyles[ 0 ].paddingMobile ? titleStyles[ 0 ].paddingMobile : [ '', '', '', '' ]}
-										onChange={( value ) => {
-											saveTitleStyles( { padding: value } );
-										}}
-										onChangeTablet={( value ) => {
-											saveTitleStyles( { paddingTablet: value } );
-										}}
-										onChangeMobile={( value ) => {
-											saveTitleStyles( { paddingMobile: value } );
-										}}
-										onChangeControl={( value ) => setTitlePaddingControl( value )}
-										onChangeTabletControl={( value ) => setTitlePaddingControl( value )}
-										onChangeMobileControl={( value ) => setTitlePaddingControl( value )}
-										allowEmpty={true}
-										min={titlePaddingMin}
-										max={titlePaddingMax}
-										step={titlePaddingStep}
-										unit={undefined !== titleStyles[ 0 ].paddingType ? titleStyles[ 0 ].paddingType : 'px'}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => {
-											saveTitleStyles( { paddingType: value } );
-										}}
-									/>
-									<RangeControl
-										label={__( 'Pane Spacer Between', 'kadence-blocks' )}
-										value={titleStyles[ 0 ].marginTop}
-										onChange={( value ) => saveTitleStyles( { marginTop: value } )}
-										min={1}
-										max={120}
-									/>
-								</KadencePanelBody>
-							)}
-							{ showSettings( 'titleBorder', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Pane Title Border', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-accordion-pane-title-border'}
-								>
-									<MeasurementControls
-										label={__( 'Pane Title Border Width (px)', 'kadence-blocks' )}
-										measurement={titleStyles[ 0 ].borderWidth}
-										control={titleBorderControl}
-										onChange={( value ) => saveTitleStyles( { borderWidth: value } )}
-										onControl={( value ) => setTitleBorderControl( value )}
-										min={0}
-										max={100}
-										step={1}
-									/>
-									<MeasurementControls
-										label={__( 'Pane Title Border Radius (px)', 'kadence-blocks' )}
-										measurement={titleStyles[ 0 ].borderRadius}
-										control={titleBorderRadiusControl}
-										onChange={( value ) => saveTitleStyles( { borderRadius: value } )}
-										onControl={( value ) => setTitleBorderRadiusControl( value )}
-										min={0}
-										max={100}
-										step={1}
-										controlTypes={[
-											{ key: 'linked', name: __( 'Linked' ), icon: radiusLinkedIcon },
-											{ key: 'individual', name: __( 'Individual' ), icon: radiusIndividualIcon },
-										]}
-										firstIcon={topLeftIcon}
-										secondIcon={topRightIcon}
-										thirdIcon={bottomRightIcon}
-										fourthIcon={bottomLeftIcon}
-									/>
-								</KadencePanelBody>
-							)}
-							{ showSettings( 'titleFont', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Pane Title Font Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-accordion-pane-title-font-settings'}
-								>
-									<TypographyControls
-										fontSize={titleStyles[ 0 ].size}
-										onFontSize={( value ) => saveTitleStyles( { size: value } )}
-										fontSizeType={titleStyles[ 0 ].sizeType}
-										onFontSizeType={( value ) => saveTitleStyles( { sizeType: value } )}
-										lineHeight={titleStyles[ 0 ].lineHeight}
-										onLineHeight={( value ) => saveTitleStyles( { lineHeight: value } )}
-										lineHeightType={titleStyles[ 0 ].lineType}
-										onLineHeightType={( value ) => saveTitleStyles( { lineType: value } )}
-										letterSpacing={titleStyles[ 0 ].letterSpacing}
-										onLetterSpacing={( value ) => saveTitleStyles( { letterSpacing: value } )}
-										textTransform={titleStyles[ 0 ].textTransform}
-										onTextTransform={( value ) => saveTitleStyles( { textTransform: value } )}
-										fontFamily={titleStyles[ 0 ].family}
-										onFontFamily={( value ) => saveTitleStyles( { family: value } )}
-										onFontChange={( select ) => {
-											saveTitleStyles( {
-												family: select.value,
-												google: select.google,
-											} );
-										}}
-										onFontArrayChange={( values ) => saveTitleStyles( values )}
-										googleFont={titleStyles[ 0 ].google}
-										onGoogleFont={( value ) => saveTitleStyles( { google: value } )}
-										loadGoogleFont={titleStyles[ 0 ].loadGoogle}
-										onLoadGoogleFont={( value ) => saveTitleStyles( { loadGoogle: value } )}
-										fontVariant={titleStyles[ 0 ].variant}
-										onFontVariant={( value ) => saveTitleStyles( { variant: value } )}
-										fontWeight={titleStyles[ 0 ].weight}
-										onFontWeight={( value ) => saveTitleStyles( { weight: value } )}
-										fontStyle={titleStyles[ 0 ].style}
-										onFontStyle={( value ) => saveTitleStyles( { style: value } )}
-										fontSubset={titleStyles[ 0 ].subset}
-										onFontSubset={( value ) => saveTitleStyles( { subset: value } )}
-									/>
-								</KadencePanelBody>
-							)}
-							{ showSettings( 'paneContent', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Inner Content Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-accordion-inner-content-settings'}
-								>
-									<ResponsiveMeasurementControls
-										label={__( 'Inner Content Padding', 'kadence-blocks' )}
-										control={contentPaddingControl}
-										tabletControl={contentPaddingControl}
-										mobileControl={contentPaddingControl}
-										value={contentPadding}
-										tabletValue={contentTabletPadding}
-										mobileValue={contentMobilePadding}
-										onChange={( value ) => {
-											setAttributes( { contentPadding: value } );
-										}}
-										onChangeTablet={( value ) => {
-											setAttributes( { contentTabletPadding: value } );
-										}}
-										onChangeMobile={( value ) => {
-											setAttributes( { contentMobilePadding: value } );
-										}}
-										onChangeControl={( value ) => setContentPaddingControl( value )}
-										onChangeTabletControl={( value ) => setContentPaddingControl( value )}
-										onChangeMobileControl={( value ) => setContentPaddingControl( value )}
-										allowEmpty={true}
-										min={paddingMin}
-										max={paddingMax}
-										step={paddingStep}
-										unit={contentPaddingType}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => setAttributes( { contentPaddingType: value } )}
-									/>
-									<PopColorControl
-										label={__( 'Inner Content Background', 'kadence-blocks' )}
-										value={( contentBgColor ? contentBgColor : '' )}
-										default={''}
-										onChange={( value ) => setAttributes( { contentBgColor: value } )}
-									/>
-									<PopColorControl
-										label={__( 'Inner Content Border Color', 'kadence-blocks' )}
-										value={( contentBorderColor ? contentBorderColor : '' )}
-										default={''}
-										onChange={( value ) => setAttributes( { contentBorderColor: value } )}
-									/>
-									<MeasurementControls
-										label={__( 'Inner Content Border Width (px)', 'kadence-blocks' )}
-										measurement={contentBorder}
-										control={contentBorderControl}
-										onChange={( value ) => setAttributes( { contentBorder: value } )}
-										onControl={( value ) => setContentBorderControl( value )}
-										min={0}
-										max={40}
-										step={1}
-									/>
-									<MeasurementControls
-										label={__( 'Inner Content Border Radius (px)', 'kadence-blocks' )}
-										measurement={contentBorderRadius}
-										control={contentBorderRadiusControl}
-										onChange={( value ) => setAttributes( { contentBorderRadius: value } )}
-										onControl={( value ) => setContentBorderRadiusControl( value )}
-										min={0}
-										max={100}
-										step={1}
-										controlTypes={[
-											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-										]}
-										firstIcon={topLeftIcon}
-										secondIcon={topRightIcon}
-										thirdIcon={bottomRightIcon}
-										fourthIcon={bottomLeftIcon}
-									/>
-								</KadencePanelBody>
-							)}
-						</>
-					}
-					{( activeTab === 'advanced' ) &&
-						<>
-							{ showSettings( 'titleTag', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Title Tag Settings', 'kadence-blocks' )}
-									panelName={'kb-accordion-title-tag-settings'}
-								>
-									<SelectControl
-										label={__( 'Title Tag', 'kadence-blocks' )}
-										value={ titleTag }
-										options={[
-											{ value: 'div', label: __( 'div' ) },
-											{ value: 'h2', label: __( 'h2' ) },
-											{ value: 'h3', label: __( 'h3' ) },
-											{ value: 'h4', label: __( 'h4' ) },
-											{ value: 'h5', label: __( 'h5' ) },
-											{ value: 'h6', label: __( 'h6' ) },
-										]}
-										onChange={value => {
-											updatePaneTag( value );
-											setTitleTag( value );
-										}}
-									/>
-								</KadencePanelBody>
-							)}
-							{ showSettings( 'structure', 'kadence/accordion' ) && (
-								<KadencePanelBody
-									title={__( 'Structure Settings', 'kadence-blocks' )}
-									initialOpen={false}
-									panelName={'kb-accordion-structure-settings'}
-								>
-									<RangeControl
-										label={__( 'Content Minimum Height', 'kadence-blocks' )}
-										value={minHeight}
-										onChange={( value ) => {
-											setAttributes( {
-												minHeight: value,
-											} );
-										}}
-										min={0}
-										max={1000}
-									/>
-									<RangeControl
-										label={__( 'Max Width', 'kadence-blocks' )}
-										value={maxWidth}
-										onChange={( value ) => {
-											setAttributes( {
-												maxWidth: value,
-											} );
-										}}
-										min={0}
-										max={2000}
-									/>
-									<ToggleControl
-										label={__( 'Enable FAQ Schema', 'kadence-blocks' )}
-										checked={faqSchema}
-										onChange={( value ) => {
-											updateFaqSchema( value );
-											setAttributes( { faqSchema: value } );
-										}}
-									/>
-								</KadencePanelBody>
-							)}
-						</>
-					}
+										return <div className={tab.className} key={tab.className}>{tabout}</div>;
+									}
+								}
+							</TabPanel>
+						</KadencePanelBody>
+					)}
+					{showSettings( 'titleIcon', 'kadence/accordion' ) && (
+						<KadencePanelBody
+							title={__( 'Pane Title Trigger Icon', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-acordion-panel-title-trigger-icon'}
+						>
+							<ToggleControl
+								label={__( 'Show Icon', 'kadence-blocks' )}
+								checked={showIcon}
+								onChange={( value ) => setAttributes( { showIcon: value } )}
+							/>
+							<h2>{__( 'Icon Style', 'kadence-blocks' )}</h2>
+							<FontIconPicker
+								icons={[
+									'basic',
+									'basiccircle',
+									'xclose',
+									'xclosecircle',
+									'arrow',
+									'arrowcircle',
+								]}
+								value={iconStyle}
+								onChange={value => setAttributes( { iconStyle: value } )}
+								appendTo="body"
+								renderFunc={renderIconSet}
+								theme="accordion"
+								showSearch={false}
+								noSelectedPlaceholder={__( 'Select Icon Set', 'kadence-blocks' )}
+								isMulti={false}
+							/>
+							<SelectControl
+								label={__( 'Icon Side', 'kadence-blocks' )}
+								value={iconSide}
+								options={[
+									{ value: 'right', label: __( 'Right' ) },
+									{ value: 'left', label: __( 'Left' ) },
+								]}
+								onChange={value => setAttributes( { iconSide: value } )}
+							/>
+						</KadencePanelBody>
+					)}
+					{showSettings( 'titleSpacing', 'kadence/accordion' ) && (
+						<KadencePanelBody
+							title={__( 'Pane Title Spacing', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-accordion-pane-title-spacing'}
+						>
+							{/* <MeasurementControls
+									label={ __( 'Pane Title Padding (px)', 'kadence-blocks' ) }
+									measurement={ titleStyles[ 0 ].padding }
+									control={ titlePaddingControl }
+									onChange={ ( value ) => saveTitleStyles( { padding: value } ) }
+									onControl={ ( value ) => setState( { titlePaddingControl: value } ) }
+									min={ 0 }
+									max={ 40 }
+									step={ 1 }
+								/> */}
+							<ResponsiveMeasurementControls
+								label={__( 'Pane Title Padding', 'kadence-blocks' )}
+								control={titlePaddingControl}
+								tabletControl={titlePaddingControl}
+								mobileControl={titlePaddingControl}
+								value={titleStyles[ 0 ].padding}
+								tabletValue={undefined !== titleStyles[ 0 ].paddingTablet ? titleStyles[ 0 ].paddingTablet : [ '', '', '', '' ]}
+								mobileValue={undefined !== titleStyles[ 0 ].paddingMobile ? titleStyles[ 0 ].paddingMobile : [ '', '', '', '' ]}
+								onChange={( value ) => {
+									saveTitleStyles( { padding: value } );
+								}}
+								onChangeTablet={( value ) => {
+									saveTitleStyles( { paddingTablet: value } );
+								}}
+								onChangeMobile={( value ) => {
+									saveTitleStyles( { paddingMobile: value } );
+								}}
+								onChangeControl={( value ) => setTitlePaddingControl( value )}
+								onChangeTabletControl={( value ) => setTitlePaddingControl( value )}
+								onChangeMobileControl={( value ) => setTitlePaddingControl( value )}
+								allowEmpty={true}
+								min={titlePaddingMin}
+								max={titlePaddingMax}
+								step={titlePaddingStep}
+								unit={undefined !== titleStyles[ 0 ].paddingType ? titleStyles[ 0 ].paddingType : 'px'}
+								units={[ 'px', 'em', 'rem', '%' ]}
+								onUnit={( value ) => {
+									saveTitleStyles( { paddingType: value } );
+								}}
+							/>
+							<RangeControl
+								label={__( 'Pane Spacer Between', 'kadence-blocks' )}
+								value={titleStyles[ 0 ].marginTop}
+								onChange={( value ) => saveTitleStyles( { marginTop: value } )}
+								min={1}
+								max={120}
+							/>
+						</KadencePanelBody>
+					)}
+					{showSettings( 'titleBorder', 'kadence/accordion' ) && (
+						<KadencePanelBody
+							title={__( 'Pane Title Border', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-accordion-pane-title-border'}
+						>
+							<MeasurementControls
+								label={__( 'Pane Title Border Width (px)', 'kadence-blocks' )}
+								measurement={titleStyles[ 0 ].borderWidth}
+								control={titleBorderControl}
+								onChange={( value ) => saveTitleStyles( { borderWidth: value } )}
+								onControl={( value ) => setTitleBorderControl( value )}
+								min={0}
+								max={100}
+								step={1}
+							/>
+							<MeasurementControls
+								label={__( 'Pane Title Border Radius (px)', 'kadence-blocks' )}
+								measurement={titleStyles[ 0 ].borderRadius}
+								control={titleBorderRadiusControl}
+								onChange={( value ) => saveTitleStyles( { borderRadius: value } )}
+								onControl={( value ) => setTitleBorderRadiusControl( value )}
+								min={0}
+								max={100}
+								step={1}
+								controlTypes={[
+									{ key: 'linked', name: __( 'Linked' ), icon: radiusLinkedIcon },
+									{ key: 'individual', name: __( 'Individual' ), icon: radiusIndividualIcon },
+								]}
+								firstIcon={topLeftIcon}
+								secondIcon={topRightIcon}
+								thirdIcon={bottomRightIcon}
+								fourthIcon={bottomLeftIcon}
+							/>
+						</KadencePanelBody>
+					)}
+					{showSettings( 'titleFont', 'kadence/accordion' ) && (
+						<KadencePanelBody
+							title={__( 'Pane Title Font Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-accordion-pane-title-font-settings'}
+						>
+							<TypographyControls
+								fontSize={titleStyles[ 0 ].size}
+								onFontSize={( value ) => saveTitleStyles( { size: value } )}
+								fontSizeType={titleStyles[ 0 ].sizeType}
+								onFontSizeType={( value ) => saveTitleStyles( { sizeType: value } )}
+								lineHeight={titleStyles[ 0 ].lineHeight}
+								onLineHeight={( value ) => saveTitleStyles( { lineHeight: value } )}
+								lineHeightType={titleStyles[ 0 ].lineType}
+								onLineHeightType={( value ) => saveTitleStyles( { lineType: value } )}
+								letterSpacing={titleStyles[ 0 ].letterSpacing}
+								onLetterSpacing={( value ) => saveTitleStyles( { letterSpacing: value } )}
+								textTransform={titleStyles[ 0 ].textTransform}
+								onTextTransform={( value ) => saveTitleStyles( { textTransform: value } )}
+								fontFamily={titleStyles[ 0 ].family}
+								onFontFamily={( value ) => saveTitleStyles( { family: value } )}
+								onFontChange={( select ) => {
+									saveTitleStyles( {
+										family: select.value,
+										google: select.google,
+									} );
+								}}
+								onFontArrayChange={( values ) => saveTitleStyles( values )}
+								googleFont={titleStyles[ 0 ].google}
+								onGoogleFont={( value ) => saveTitleStyles( { google: value } )}
+								loadGoogleFont={titleStyles[ 0 ].loadGoogle}
+								onLoadGoogleFont={( value ) => saveTitleStyles( { loadGoogle: value } )}
+								fontVariant={titleStyles[ 0 ].variant}
+								onFontVariant={( value ) => saveTitleStyles( { variant: value } )}
+								fontWeight={titleStyles[ 0 ].weight}
+								onFontWeight={( value ) => saveTitleStyles( { weight: value } )}
+								fontStyle={titleStyles[ 0 ].style}
+								onFontStyle={( value ) => saveTitleStyles( { style: value } )}
+								fontSubset={titleStyles[ 0 ].subset}
+								onFontSubset={( value ) => saveTitleStyles( { subset: value } )}
+							/>
+						</KadencePanelBody>
+					)}
+					{showSettings( 'paneContent', 'kadence/accordion' ) && (
+						<KadencePanelBody
+							title={__( 'Inner Content Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-accordion-inner-content-settings'}
+						>
+							<ResponsiveMeasurementControls
+								label={__( 'Inner Content Padding', 'kadence-blocks' )}
+								control={contentPaddingControl}
+								tabletControl={contentPaddingControl}
+								mobileControl={contentPaddingControl}
+								value={contentPadding}
+								tabletValue={contentTabletPadding}
+								mobileValue={contentMobilePadding}
+								onChange={( value ) => {
+									setAttributes( { contentPadding: value } );
+								}}
+								onChangeTablet={( value ) => {
+									setAttributes( { contentTabletPadding: value } );
+								}}
+								onChangeMobile={( value ) => {
+									setAttributes( { contentMobilePadding: value } );
+								}}
+								onChangeControl={( value ) => setContentPaddingControl( value )}
+								onChangeTabletControl={( value ) => setContentPaddingControl( value )}
+								onChangeMobileControl={( value ) => setContentPaddingControl( value )}
+								allowEmpty={true}
+								min={paddingMin}
+								max={paddingMax}
+								step={paddingStep}
+								unit={contentPaddingType}
+								units={[ 'px', 'em', 'rem', '%' ]}
+								onUnit={( value ) => setAttributes( { contentPaddingType: value } )}
+							/>
+							<PopColorControl
+								label={__( 'Inner Content Background', 'kadence-blocks' )}
+								value={( contentBgColor ? contentBgColor : '' )}
+								default={''}
+								onChange={( value ) => setAttributes( { contentBgColor: value } )}
+							/>
+							<PopColorControl
+								label={__( 'Inner Content Border Color', 'kadence-blocks' )}
+								value={( contentBorderColor ? contentBorderColor : '' )}
+								default={''}
+								onChange={( value ) => setAttributes( { contentBorderColor: value } )}
+							/>
+							<MeasurementControls
+								label={__( 'Inner Content Border Width (px)', 'kadence-blocks' )}
+								measurement={contentBorder}
+								control={contentBorderControl}
+								onChange={( value ) => setAttributes( { contentBorder: value } )}
+								onControl={( value ) => setContentBorderControl( value )}
+								min={0}
+								max={40}
+								step={1}
+							/>
+							<MeasurementControls
+								label={__( 'Inner Content Border Radius (px)', 'kadence-blocks' )}
+								measurement={contentBorderRadius}
+								control={contentBorderRadiusControl}
+								onChange={( value ) => setAttributes( { contentBorderRadius: value } )}
+								onControl={( value ) => setContentBorderRadiusControl( value )}
+								min={0}
+								max={100}
+								step={1}
+								controlTypes={[
+									{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+									{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+								]}
+								firstIcon={topLeftIcon}
+								secondIcon={topRightIcon}
+								thirdIcon={bottomRightIcon}
+								fourthIcon={bottomLeftIcon}
+							/>
+						</KadencePanelBody>
+					)}
+					{showSettings( 'titleTag', 'kadence/accordion' ) && (
+						<KadencePanelBody
+							title={__( 'Title Tag Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-accordion-title-tag-settings'}
+						>
+							<SelectControl
+								label={__( 'Title Tag', 'kadence-blocks' )}
+								value={titleTag}
+								options={[
+									{ value: 'div', label: __( 'div' ) },
+									{ value: 'h2', label: __( 'h2' ) },
+									{ value: 'h3', label: __( 'h3' ) },
+									{ value: 'h4', label: __( 'h4' ) },
+									{ value: 'h5', label: __( 'h5' ) },
+									{ value: 'h6', label: __( 'h6' ) },
+								]}
+								onChange={value => {
+									updatePaneTag( value );
+									setTitleTag( value );
+								}}
+							/>
+						</KadencePanelBody>
+					)}
+					{showSettings( 'structure', 'kadence/accordion' ) && (
+						<KadencePanelBody
+							title={__( 'Structure Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-accordion-structure-settings'}
+						>
+							<KadenceRange
+								label={__( 'Content Minimum Height', 'kadence-blocks' )}
+								value={minHeight}
+								onChange={( value ) => {
+									setAttributes( {
+										minHeight: value,
+									} );
+								}}
+								min={0}
+								max={1000}
+							/>
+							<KadenceRange
+								label={__( 'Max Width', 'kadence-blocks' )}
+								value={maxWidth}
+								onChange={( value ) => {
+									setAttributes( {
+										maxWidth: value,
+									} );
+								}}
+								min={0}
+								max={2000}
+							/>
+							<ToggleControl
+								label={__( 'Enable FAQ Schema', 'kadence-blocks' )}
+								checked={faqSchema}
+								onChange={( value ) => {
+									updateFaqSchema( value );
+									setAttributes( { faqSchema: value } );
+								}}
+							/>
+						</KadencePanelBody>
+					)}
 				</InspectorControls>
-			) }
+			)}
 			<div className={classes}>
-				{ showPreset && (
+				{showPreset && (
 					<div className="kt-select-starter-style-tabs">
 						<div className="kt-select-starter-style-tabs-title">
 							{__( 'Select Initial Style' )}
@@ -1113,7 +1105,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					</div>
 				)}
 				{!showPreset && (
-					<Fragment>
+					<>
 						<div className="kt-accordion-selecter">{__( 'Accordion', 'kadence-blocks' )}</div>
 						<div className="kt-accordion-wrap" style={{
 							maxWidth: maxWidth + 'px',
@@ -1133,20 +1125,18 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 						<div className="kt-accordion-add-selecter">
 							<Button
 								className="kt-accordion-add"
-								isPrimary={ true }
-								icon="plus"
-								iconPosition="left"
-								iconSize={ 16 }
-								onClick={ () => {
+								isPrimary={true}
+								onClick={() => {
 									const newBlock = createBlock( 'kadence/pane', { id: paneCount + 1, titleTag: titleTag } );
 									setAttributes( { paneCount: paneCount + 1 } );
 									insertPane( newBlock );
 								}}
 							>
-								{ __( 'Add Accordion Item', 'kadence-blocks' ) }
+								<Dashicon icon="plus"/>
+								{__( 'Add Accordion Item', 'kadence-blocks' )}
 							</Button>
-							{ realPaneCount > 1 && (
-								<Button
+							{realPaneCount > 1 && (
+								<IconButton
 									className="kt-accordion-remove"
 									label={__( 'Remove Accordion Item', 'kadence-blocks' )}
 									icon="minus"
@@ -1157,7 +1147,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 								/>
 							)}
 						</div>
-					</Fragment>
+					</>
 				)}
 			</div>
 		</div>

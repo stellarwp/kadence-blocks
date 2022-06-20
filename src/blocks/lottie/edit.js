@@ -24,7 +24,7 @@ const {
 } = wp.blockEditor;
 
 const { apiFetch } = wp;
-import {
+const {
 	RangeControl,
 	ToggleControl,
 	TextControl,
@@ -33,20 +33,14 @@ import {
 	FormFileUpload,
 	Button,
 	Notice,
-} from '@wordpress/components';
+} = wp.components;
 
 import { __experimentalNumberControl as NumberControl } from '@wordpress/components';
 /**
  * Internal dependencies
  */
 import classnames from 'classnames';
-import {
-	KadenceSelectPosts,
-	ResponsiveMeasurementControls,
-	KadencePanelBody,
-	InspectorControlTabs
-} from '@kadence/components'
-
+import { KadenceSelectPosts, ResponsiveMeasurementControls, KadencePanelBody} from '@kadence/components'
 const ktlottieUniqueIDs = [];
 
 export function Edit( {
@@ -118,7 +112,6 @@ export function Edit( {
 
 	const [ marginControl, setMarginControl ] = useState( 'individual');
 	const [ paddingControl, setPaddingControl ] = useState( 'individual');
-	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	const classes = classnames( className );
 	const blockProps = useBlockProps( {
@@ -264,262 +257,241 @@ export function Edit( {
 				/>
 			</BlockControls>
 			<InspectorControls>
+				<KadencePanelBody
+					title={ __('Source File', 'kadence-blocks') }
+					initialOpen={ true }
+					panelName={ 'kb-lottie-source-file' }
+				>
 
-				<InspectorControlTabs
-					panelName={ 'lottie' }
-					setActiveTab={ setActiveTab }
-					activeTab={ activeTab }
-				/>
+					<SelectControl
+						label={ __( 'File Source', 'kadence-blocks' ) }
+						value={ fileSrc }
+						options={ [
+							{ value: 'url', label: __( 'Remote URL', 'kadence-blocks' ) },
+							{ value: 'file', label: __( 'Local File', 'kadence-blocks' ) },
+						] }
+						onChange={ value => {
+							setAttributes( { fileSrc: value } );
+							setRerenderKey( Math.random() );
+						} }
+					/>
 
-				{ ( activeTab === 'general' ) &&
-					<>
-						<KadencePanelBody
-							title={ __('Source File', 'kadence-blocks') }
-							initialOpen={ true }
-							panelName={ 'kb-lottie-source-file' }
-						>
-
-							<SelectControl
-								label={ __( 'File Source', 'kadence-blocks' ) }
-								value={ fileSrc }
-								options={ [
-									{ value: 'url', label: __( 'Remote URL', 'kadence-blocks' ) },
-									{ value: 'file', label: __( 'Local File', 'kadence-blocks' ) },
-								] }
-								onChange={ value => {
-									setAttributes( { fileSrc: value } );
+					{ fileSrc === 'url' ?
+						<TextControl
+							label={ __( 'Lottie Animation URL', 'kadence-blocks') }
+							value={ fileUrl }
+							onChange={ (value) => {
+								setAttributes({ fileUrl: value });
+								setRerenderKey( Math.random() );
+							} }
+						/>
+						:
+						<>
+							<KadenceSelectPosts
+								placeholder={ __( 'Select Lottie File', 'kadence-blocks' ) }
+								restBase={ 'wp/v2/kadence_lottie' }
+								key={ lottieAnimationsCacheKey }
+								fieldId={ 'lottie-select-src' }
+								value={ localFile }
+								onChange={ (value) => {
+									setAttributes({ localFile: (value ? [value] : []) });
 									setRerenderKey( Math.random() );
 								} }
 							/>
 
-							{ fileSrc === 'url' ?
-								<TextControl
-									label={ __( 'Lottie Animation URL', 'kadence-blocks') }
-									value={ fileUrl }
-									onChange={ (value) => {
-										setAttributes({ fileUrl: value });
-										setRerenderKey( Math.random() );
-									} }
+							<UploadModal />
+						</>
+					}
+					<TextControl
+						label={ __( 'Aria Label', 'kadence-blocks' ) }
+						value={ label || '' }
+						onChange={ ( value ) => {
+							setAttributes( { label: value });
+						} }
+						help={ __( 'Describe the purpose of this animation on the page.', 'kadence-blocks' ) }
+					/>
+
+
+
+				</KadencePanelBody>
+
+				<KadencePanelBody
+					title={ __( 'Playback Settings', 'kadence-blocks' ) }
+					initialOpen={ true }
+					panelName={ 'kb-lottie-playback-settings' }
+				>
+					<ToggleControl
+						label={ __( 'Show Controls', 'kadence-blocks' ) }
+						checked={ showControls }
+						onChange={ ( value ) => {
+							setAttributes( { showControls: value } );
+							setRerenderKey( Math.random() );
+						}}
+					/>
+					<ToggleControl
+						label={ __( 'Autoplay', 'kadence-blocks' ) }
+						checked={ autoplay }
+						onChange={ ( value ) => {
+							setAttributes( { autoplay: value, waitUntilInView: ( value ? waitUntilInView : false ), onlyPlayOnHover: (value ? false : onlyPlayOnHover), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
+							setRerenderKey( Math.random() );
+						}}
+					/>
+					<ToggleControl
+						label={ __( 'Only play on hover', 'kadence-blocks' ) }
+						checked={ onlyPlayOnHover }
+						onChange={ ( value ) => {
+							setAttributes( { onlyPlayOnHover: value, autoplay: (value ? false : autoplay), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
+							setRerenderKey( Math.random() );
+						} }
+					/>
+					<ToggleControl
+						label={ __( 'Only play on page scroll', 'kadence-blocks' ) }
+						help={ __( 'This will override most settings such as autoplay, playback speed, bounce, loop, and play on hover. This will not work when previewing in the block editor', 'kadence-blocks' ) }
+						checked={ onlyPlayOnScroll }
+						onChange={ ( value ) => {
+							setAttributes( { onlyPlayOnScroll: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover), autoplay: (value ? false : autoplay), loop: (value ? false : loop), bouncePlayback: (value ? false : bouncePlayback) } );
+							setRerenderKey( Math.random() );
+						} }
+					/>
+
+					{ onlyPlayOnScroll ?
+						<>
+							<div style={ { marginBottom: '15px'} }>
+								<NumberControl
+									label={ __( 'Starting Frame' ) }
+									value={ startFrame }
+									onChange={ (value) => setAttributes({ startFrame: parseInt(value) }) }
+									min={ 0 }
+									isShiftStepEnabled={ true }
+									shiftStep={ 10 }
+									help={ __( 'Does not show in preview', 'kadence-blocks' ) }
 								/>
-								:
-								<>
-									<KadenceSelectPosts
-										placeholder={ __( 'Select Lottie File', 'kadence-blocks' ) }
-										restBase={ 'wp/v2/kadence_lottie' }
-										key={ lottieAnimationsCacheKey }
-										fieldId={ 'lottie-select-src' }
-										value={ localFile }
-										onChange={ (value) => {
-											setAttributes({ localFile: (value ? [value] : []) });
-											setRerenderKey( Math.random() );
-										} }
-									/>
+							</div>
 
-									<UploadModal />
-								</>
-							}
-							<TextControl
-								label={ __( 'Aria Label', 'kadence-blocks' ) }
-								value={ label || '' }
-								onChange={ ( value ) => {
-									setAttributes( { label: value });
-								} }
-								help={ __( 'Describe the purpose of this animation on the page.', 'kadence-blocks' ) }
-							/>
-
-
-
-						</KadencePanelBody>
-						<KadencePanelBody
-							title={ __( 'Playback Settings', 'kadence-blocks' ) }
-							initialOpen={ true }
-							panelName={ 'kb-lottie-playback-settings' }
-						>
+							<div style={ { marginBottom: '15px'} }>
+								<NumberControl
+									label={ __( 'Ending Frame' ) }
+									value={ endFrame }
+									onChange={ (value) => setAttributes({ endFrame: parseInt(value) }) }
+									min={ 0 }
+									isShiftStepEnabled={ true }
+									shiftStep={ 10 }
+									help={ __( 'Does not show in preview', 'kadence-blocks' ) }
+								/>
+							</div>
+						</>
+					 :
+						<div style={ { marginBottom: '15px'} }>
 							<ToggleControl
-								label={ __( 'Show Controls', 'kadence-blocks' ) }
-								checked={ showControls }
-								onChange={ ( value ) => {
-									setAttributes( { showControls: value } );
-									setRerenderKey( Math.random() );
-								}}
+							label={ __( 'Don\'t play until in view', 'kadence-blocks' ) }
+							help={ __('Prevent playback from starting until animation is in view', 'kadence-blocks') }
+							checked={ waitUntilInView }
+							onChange={ (value) => { setAttributes( { waitUntilInView: value, autoplay: ( value ? true : autoplay ) } ) } }
 							/>
-							<ToggleControl
-								label={ __( 'Autoplay', 'kadence-blocks' ) }
-								checked={ autoplay }
-								onChange={ ( value ) => {
-									setAttributes( { autoplay: value, waitUntilInView: ( value ? waitUntilInView : false ), onlyPlayOnHover: (value ? false : onlyPlayOnHover), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
-									setRerenderKey( Math.random() );
-								}}
-							/>
-							<ToggleControl
-								label={ __( 'Only play on hover', 'kadence-blocks' ) }
-								checked={ onlyPlayOnHover }
-								onChange={ ( value ) => {
-									setAttributes( { onlyPlayOnHover: value, autoplay: (value ? false : autoplay), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
-									setRerenderKey( Math.random() );
-								} }
-							/>
-							<ToggleControl
-								label={ __( 'Only play on page scroll', 'kadence-blocks' ) }
-								help={ __( 'This will override most settings such as autoplay, playback speed, bounce, loop, and play on hover. This will not work when previewing in the block editor', 'kadence-blocks' ) }
-								checked={ onlyPlayOnScroll }
-								onChange={ ( value ) => {
-									setAttributes( { onlyPlayOnScroll: value, onlyPlayOnHover: (value ? false : onlyPlayOnHover), autoplay: (value ? false : autoplay), loop: (value ? false : loop), bouncePlayback: (value ? false : bouncePlayback) } );
-									setRerenderKey( Math.random() );
-								} }
-							/>
+						</div>
+					}
 
-							{ onlyPlayOnScroll ?
-								<>
-									<div style={ { marginBottom: '15px'} }>
-										<NumberControl
-											label={ __( 'Starting Frame' ) }
-											value={ startFrame }
-											onChange={ (value) => setAttributes({ startFrame: parseInt(value) }) }
-											min={ 0 }
-											isShiftStepEnabled={ true }
-											shiftStep={ 10 }
-											help={ __( 'Does not show in preview', 'kadence-blocks' ) }
-										/>
-									</div>
+					<RangeControl
+						label={ __( 'Playback Speed', 'kadence-blocks' ) }
+						value={ playbackSpeed }
+						onChange={ ( value ) => { setAttributes( { playbackSpeed: value } ); setRerenderKey( Math.random() ) } }
+						step={ 0.1 }
+						min={ 0 }
+						max={ 10 }
+					/>
 
-									<div style={ { marginBottom: '15px'} }>
-										<NumberControl
-											label={ __( 'Ending Frame' ) }
-											value={ endFrame }
-											onChange={ (value) => setAttributes({ endFrame: parseInt(value) }) }
-											min={ 0 }
-											isShiftStepEnabled={ true }
-											shiftStep={ 10 }
-											help={ __( 'Does not show in preview', 'kadence-blocks' ) }
-										/>
-									</div>
-								</>
-								:
-								<div style={ { marginBottom: '15px'} }>
-									<ToggleControl
-										label={ __( 'Don\'t play until in view', 'kadence-blocks' ) }
-										help={ __('Prevent playback from starting until animation is in view', 'kadence-blocks') }
-										checked={ waitUntilInView }
-										onChange={ (value) => { setAttributes( { waitUntilInView: value, autoplay: ( value ? true : autoplay ) } ) } }
-									/>
-								</div>
-							}
+					<h3>{ __( 'Loop Settings', 'kadence-blocks' ) }</h3>
+					<ToggleControl
+						label={ __( 'Loop playback', 'kadence-blocks' ) }
+						checked={ loop }
+						onChange={ ( value ) => {
+							setAttributes( { loop: value, onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
+							setRerenderKey( Math.random() );
+						} }
+					/>
+					<ToggleControl
+						label={ __( 'Bounce playback', 'kadence-blocks' ) }
+						checked={ bouncePlayback }
+						onChange={ ( value ) => {
+							setAttributes( { bouncePlayback: value, loop: (value ? true : loop), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
+						} }
+						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
+					/>
+					<RangeControl
+						label={ __( 'Delay between loops (seconds)', 'kadence-blocks' ) }
+						value={ delay }
+						onChange={ ( value ) => {
+							setAttributes( { delay: value } );
+						} }
+						step={ 0.1 }
+						min={ 0 }
+						max={ 60 }
+						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
+					/>
+					<RangeControl
+						label={ __( 'Limit Loops', 'kadence-blocks' ) }
+						value={ loopLimit }
+						onChange={ ( value ) => {
+							setAttributes( { loopLimit: value } );
+						} }
+						step={ 1 }
+						min={ 0 }
+						max={ 100 }
+						help={ __( 'Does not show in preview', 'kadence-blocks' ) }
+					/>
+				</KadencePanelBody>
+				<KadencePanelBody
+					title={ __( 'Size Controls', 'kadence-blocks' ) }
+					initialOpen={ false }
+					panelName={ 'kb-lottie-size' }
+				>
+					<ResponsiveMeasurementControls
+						label={ __( 'Padding', 'kadence-blocks' ) }
+						value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
+						control={ paddingControl }
+						tabletValue={ paddingTablet }
+						mobileValue={ paddingMobile }
+						onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
+						onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
+						onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
+						onChangeControl={ ( value ) => setPaddingControl( value ) }
+						min={ 0 }
+						max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
+						step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
+						unit={ paddingUnit }
+						units={ [ 'px', 'em', 'rem', '%' ] }
+						onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
+					/>
+					<ResponsiveMeasurementControls
+						label={ __( 'Margin', 'kadence-blocks' ) }
+						value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
+						control={ marginControl }
+						tabletValue={ marginTablet }
+						mobileValue={ marginMobile }
+						onChange={ ( value ) => {
+							setAttributes( { marginDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
+						} }
+						onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
+						onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
+						onChangeControl={ ( value ) => setMarginControl( value ) }
+						min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
+						max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
+						step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
+						unit={ marginUnit }
+						units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
+						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
+					/>
 
-							<RangeControl
-								label={ __( 'Playback Speed', 'kadence-blocks' ) }
-								value={ playbackSpeed }
-								onChange={ ( value ) => { setAttributes( { playbackSpeed: value } ); setRerenderKey( Math.random() ) } }
-								step={ 0.1 }
-								min={ 0 }
-								max={ 10 }
-							/>
-
-							<h3>{ __( 'Loop Settings', 'kadence-blocks' ) }</h3>
-							<ToggleControl
-								label={ __( 'Loop playback', 'kadence-blocks' ) }
-								checked={ loop }
-								onChange={ ( value ) => {
-									setAttributes( { loop: value, onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
-									setRerenderKey( Math.random() );
-								} }
-							/>
-							<ToggleControl
-								label={ __( 'Bounce playback', 'kadence-blocks' ) }
-								checked={ bouncePlayback }
-								onChange={ ( value ) => {
-									setAttributes( { bouncePlayback: value, loop: (value ? true : loop), onlyPlayOnScroll: (value ? false : onlyPlayOnScroll) } );
-								} }
-								help={ __( 'Does not show in preview', 'kadence-blocks' ) }
-							/>
-							<RangeControl
-								label={ __( 'Delay between loops (seconds)', 'kadence-blocks' ) }
-								value={ delay }
-								onChange={ ( value ) => {
-									setAttributes( { delay: value } );
-								} }
-								step={ 0.1 }
-								min={ 0 }
-								max={ 60 }
-								help={ __( 'Does not show in preview', 'kadence-blocks' ) }
-							/>
-							<RangeControl
-								label={ __( 'Limit Loops', 'kadence-blocks' ) }
-								value={ loopLimit }
-								onChange={ ( value ) => {
-									setAttributes( { loopLimit: value } );
-								} }
-								step={ 1 }
-								min={ 0 }
-								max={ 100 }
-								help={ __( 'Does not show in preview', 'kadence-blocks' ) }
-							/>
-						</KadencePanelBody>
-					</>
-				}
-
-
-				{ ( activeTab === 'style' ) &&
-					<>
-						<KadencePanelBody
-							title={ __( 'Size Controls', 'kadence-blocks' ) }
-							panelName={ 'kb-lottie-size' }
-						>
-							<ResponsiveMeasurementControls
-								label={ __( 'Padding', 'kadence-blocks' ) }
-								value={ [ previewPaddingTop, previewPaddingRight, previewPaddingBottom, previewPaddingLeft ] }
-								control={ paddingControl }
-								tabletValue={ paddingTablet }
-								mobileValue={ paddingMobile }
-								onChange={ ( value ) => setAttributes( { paddingDesktop: value } ) }
-								onChangeTablet={ ( value ) => setAttributes( { paddingTablet: value } ) }
-								onChangeMobile={ ( value ) => setAttributes( { paddingMobile: value } ) }
-								onChangeControl={ ( value ) => setPaddingControl( value ) }
-								min={ 0 }
-								max={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 ) }
-								step={ ( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 ) }
-								unit={ paddingUnit }
-								units={ [ 'px', 'em', 'rem', '%' ] }
-								onUnit={ ( value ) => setAttributes( { paddingUnit: value } ) }
-							/>
-							<ResponsiveMeasurementControls
-								label={ __( 'Margin', 'kadence-blocks' ) }
-								value={ [ previewMarginTop, previewMarginRight, previewMarginBottom, previewMarginLeft ] }
-								control={ marginControl }
-								tabletValue={ marginTablet }
-								mobileValue={ marginMobile }
-								onChange={ ( value ) => {
-									setAttributes( { marginDesktop: [ value[ 0 ], value[ 1 ], value[ 2 ], value[ 3 ] ] } );
-								} }
-								onChangeTablet={ ( value ) => setAttributes( { marginTablet: value } ) }
-								onChangeMobile={ ( value ) => setAttributes( { marginMobile: value } ) }
-								onChangeControl={ ( value ) => setMarginControl( value ) }
-								min={ ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 ) }
-								max={ ( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 ) }
-								step={ ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 ) }
-								unit={ marginUnit }
-								units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-								onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-							/>
-
-							<RangeControl
-								label={ __( 'Max Width', 'kadence-blocks' ) }
-								value={ width }
-								onChange={ ( value ) => setAttributes( { width: value } ) }
-								allowReset={ true }
-								step={ 1 }
-								min={ 25 }
-								max={ 1000 }
-							/>
-						</KadencePanelBody>
-					</>
-				}
-
-				{ ( activeTab === 'advanced' ) &&
-					<>
-					</>
-				}
-
+					<RangeControl
+						label={ __( 'Max Width', 'kadence-blocks' ) }
+						value={ width }
+						onChange={ ( value ) => setAttributes( { width: value } ) }
+						allowReset={ true }
+						step={ 1 }
+						min={ 25 }
+						max={ 1000 }
+					/>
+				</KadencePanelBody>
 			</InspectorControls>
 			<div className={ containerClasses } style={
 				{

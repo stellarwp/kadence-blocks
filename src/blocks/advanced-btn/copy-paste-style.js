@@ -8,14 +8,14 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-import {
+const {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
 	Toolbar,
 	ToggleControl,
 	SelectControl,
-} from '@wordpress/components';
+} = wp.components;
 const {
 	localStorage,
 } = window;
