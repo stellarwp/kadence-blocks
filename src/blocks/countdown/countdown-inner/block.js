@@ -13,6 +13,7 @@ import { countdownInnerIcon } from '@kadence/icons';
  * Internal dependencies
  */
 import edit from './edit';
+import metadata from './block.json';
 
 /**
  * WordPress dependencies
@@ -30,6 +31,7 @@ import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/countdown-inner', {
+	...metadata,
 	icon: countdownInnerIcon,
 	edit,
 	save( { attributes } ) {

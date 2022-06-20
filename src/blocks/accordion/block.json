@@ -2,6 +2,7 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
   "title": "Accordion",
+  "name": "kadence/accordion",
   "category": "kadence-blocks",
   "keywords": [
 	"accordion",

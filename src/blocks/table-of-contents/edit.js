@@ -22,7 +22,7 @@ import {
 	KadenceRange,
 	WebfontLoader,
 	BoxShadowControl,
-	ResponsiveRangeControl,
+	ResponsiveRangeControls,
 	KadencePanelBody,
 	InspectorControlTabs
 } from '@kadence/components';
@@ -52,7 +52,7 @@ import {
 import TableOfContentsList from './list';
 import { getHeadingsFromContent, linearToNestedHeadingList } from './utils';
 
-const { ENTER } = wp.keycodes;
+import { ENTER } from '@wordpress/keycodes';
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 

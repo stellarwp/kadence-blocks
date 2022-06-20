@@ -48,7 +48,9 @@ import { Icon } from '@wordpress/components';
  */
 registerBlockType( 'kadence/countup', {
 	...metadata,
-	icon: <Icon icon={ countUpIcon } />,
+	icon: {
+		src: countUpIcon,
+	},
 	edit,
 	save,
 	deprecated,

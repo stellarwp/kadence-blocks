@@ -2,6 +2,7 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
   "title": "Countdown Content",
+  "name": "kadence/countdown-inner",
   "category": "kadence-blocks",
   "description": "Inner Container for Countdown Block",
   "parent": [
@@ -15,10 +16,10 @@
   "description": "",
   "attributes": {
 	"uniqueID": {
-	  "type": "string",
+	  "type": "string"
 	},
 	"location": {
-	  "type": "string",
+	  "type": "string"
 	}
   },
   "supports": {

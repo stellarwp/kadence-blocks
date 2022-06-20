@@ -9,7 +9,7 @@ import save from './save';
 import transforms from './transforms';
 import deprecated from './deprecated';
 const { name } = metadata;
-import { lottieIcon } from '@kadence/icons';
+import { spacerIcon } from '@kadence/icons';
 
 export { metadata, name };
 
@@ -28,7 +28,7 @@ registerBlockType('kadence/spacer', {
 	},
 	...metadata,
 	icon: {
-		src: lottieIcon,
+		src: spacerIcon,
 	},
 	...settings,
 

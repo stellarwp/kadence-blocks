@@ -2,6 +2,7 @@
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
   "title": "Countdown Timer",
+  "name": "kadence/countdown-timer",
   "category": "kadence-blocks",
   "description": "The countdown timer",
   "parent": [

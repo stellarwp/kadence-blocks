@@ -43,12 +43,12 @@ import { registerBlockType } from '@wordpress/blocks';
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/accordion', {
+	...metadata,
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
 			return { 'data-align': blockAlignment };
 		}
 	},
-	...metadata,
 	icon: {
 		src: accordionBlockIcon,
 	},
