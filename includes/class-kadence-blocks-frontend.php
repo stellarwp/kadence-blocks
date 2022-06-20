@@ -169,7 +169,7 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		register_block_type(
-			'kadence/rowlayout',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/row-layout/block.json',
 			array(
 				'render_callback' => array( $this, 'render_row_layout_css' ),
 				'editor_script'   => 'kadence-blocks-row-layout',
@@ -177,7 +177,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/column',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/column/block.json',
 			array(
 				'render_callback' => array( $this, 'render_column_layout_css' ),
 				'editor_script'   => 'kadence-blocks-column',
@@ -185,7 +185,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/advancedbtn',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-btn/block.json',
 			array(
 				'render_callback' => array( $this, 'render_advanced_btn_css' ),
 				'editor_script'   => 'kadence-blocks-advanced-btn',
@@ -193,7 +193,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/advancedheading',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-heading/block.json',
 			array(
 				'render_callback' => array( $this, 'render_advanced_heading_css' ),
 				'editor_script'   => 'kadence-blocks-advanced-heading',
@@ -209,7 +209,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/spacer',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/spacer/block.json',
 			array(
 				'render_callback' => array( $this, 'render_spacer_css' ),
 				'editor_script'   => 'kadence-blocks-spacer',
@@ -217,7 +217,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/infobox',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/info-box/block.json',
 			array(
 				'render_callback' => array( $this, 'render_infobox_css' ),
 				'editor_script'   => 'kadence-blocks-info-box',
@@ -225,7 +225,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/icon',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/icon/block.json',
 			array(
 				'render_callback' => array( $this, 'render_icon_css' ),
 				'editor_script'   => 'kadence-blocks-icon',
@@ -233,7 +233,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/accordion',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/accordion/block.json',
 			array(
 				'render_callback' => array( $this, 'render_accordion_css' ),
 				'editor_script'   => 'kadence-blocks-accordion',
@@ -249,7 +249,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/googlemaps',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/google-maps/block.json',
 			array(
 				'render_callback' => array( $this, 'render_google_maps_css' ),
 				'editor_script'   => 'kadence-blocks-google-maps',
@@ -257,7 +257,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/iconlist',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/icon-list/block.json',
 			array(
 				'render_callback' => array( $this, 'render_iconlist_css' ),
 				'editor_script'   => 'kadence-blocks-icon-list',
@@ -265,7 +265,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/lottie',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/lottie/block.json',
 			array(
 				'render_callback' => array( $this, 'render_lottie_css' ),
 				'editor_script'   => 'kadence-blocks-lottie',
@@ -273,7 +273,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/show-more',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/show-more/block.json',
 			array(
 				'render_callback' => array( $this, 'render_showmore_css' ),
 				'editor_script'   => 'kadence-blocks-show-more',
@@ -281,7 +281,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/testimonials',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/testimonials/block.json',
 			array(
 				'render_callback' => array( $this, 'render_testimonials_css' ),
 				'editor_script'   => 'kadence-blocks-testimonials',
@@ -289,7 +289,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/advancedgallery',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-gallery/block.json',
 			array(
 				'render_callback' => array( $this, 'render_advancedgallery_css' ),
 				'editor_script'   => 'kadence-blocks-advanced-gallery',
@@ -297,7 +297,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/form',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/form/block.json',
 			array(
 				'render_callback' => array( $this, 'render_form_css' ),
 				'editor_script'   => 'kadence-blocks-form',
@@ -305,7 +305,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/countup',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/count-up/block.json',
 			array(
 				'render_callback' => array( $this, 'render_countup_css' ),
 				'editor_script'   => 'kadence-blocks-count-up',
