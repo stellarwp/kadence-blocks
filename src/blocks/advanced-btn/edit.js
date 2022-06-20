@@ -100,7 +100,7 @@ const ktadvancedbuttonUniqueIDs = [];
 
 function KadenceAdvancedButton( props ) {
 
-	const { attributes, setAttributes, getPreviewDevice, className, isSelected, context } = props;
+	const { attributes, setAttributes, getPreviewDevice, className, isSelected, context, clientId } = props;
 	const {
 		uniqueID,
 		btnCount,

@@ -193,14 +193,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 	useEffect( () => {
 		if ( !uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			// Before applying defaults lets check to see if the user wants it.
-			if ( undefined === noCustomDefaults || !noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/countdown' ] !== undefined && typeof blockConfigObject[ 'kadence/countdown' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/countdown' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/countdown' ][ attribute ];
-					} );
-				}
-			}
+
 			setAttributes( {
 				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );

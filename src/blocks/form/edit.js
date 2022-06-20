@@ -96,7 +96,7 @@ const kbFormIDs = [];
  */
 function KadenceForm( props ) {
 
-	const { attributes, className, isSelected, setAttributes, getPreviewDevice } = props;
+	const { attributes, className, isSelected, setAttributes, getPreviewDevice, clientId } = props;
 
 	const { uniqueID, style, fields, submit, actions, align, labelFont, recaptcha, redirect, messages, messageFont, email, hAlign, honeyPot, submitFont, kadenceAnimation, kadenceAOSOptions, submitMargin, recaptchaVersion, mailerlite, fluentcrm, containerMargin, tabletContainerMargin, mobileContainerMargin, containerMarginType, submitLabel } = attributes;
 

@@ -25,7 +25,7 @@ const kbTimerUniqueIDs = [];
  */
 function KadenceCoundownTimer( props ) {
 
-	const { attributes: { uniqueID }, clientId, parentBlock } = props;
+	const { attributes: { uniqueID }, setAttributes, clientId, parentBlock } = props;
 	const parentID = ( undefined !== parentBlock[ 0 ].attributes.uniqueID ? parentBlock[ 0 ].attributes.uniqueID : rootID );
 
 	useEffect( () => {

@@ -81,13 +81,14 @@ import {
  */
 const kticonlistUniqueIDs = [];
 
-function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, getPreviewDevice } ) {
+function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, getPreviewDevice, clientId } ) {
 
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns } = attributes;
 
 	const [ focusIndex, setFocusIndex ] = useState( null );
 	const [ settings, setSettings ] = useState( {} );
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	useEffect( () => {
 		if ( !uniqueID ) {

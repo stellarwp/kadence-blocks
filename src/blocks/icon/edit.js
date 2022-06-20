@@ -585,8 +585,8 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 				<InspectorControlTabs
 					panelName={ 'icon' }
 					allowedTabs={ [ 'general', 'advanced' ] }
-					setActiveTab={ ( value ) => this.setState( { activeTab: value } ) }
-					activeTab={ this.state.activeTab }
+					setActiveTab={ ( value ) => setActiveTab( value ) }
+					activeTab={ activeTab }
 				/>
 
 				{( activeTab === 'general' ) &&

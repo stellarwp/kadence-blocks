@@ -30,7 +30,6 @@ import { InnerBlocks, useBlockProps } from '@wordpress/block-editor';
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/countdown-inner', {
-
 	icon: countdownInnerIcon,
 	edit,
 	save( { attributes } ) {

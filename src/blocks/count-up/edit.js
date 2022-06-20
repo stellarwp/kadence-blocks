@@ -88,14 +88,7 @@ function KadenceCounterUp( {
 	useEffect( () => {
 		if ( !uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			// Before applying defaults lets check to see if the user wants it.
-			if ( undefined === noCustomDefaults || !noCustomDefaults ) {
-				if ( blockConfigObject[ 'kadence/countup' ] !== undefined && typeof blockConfigObject[ 'kadence/countup' ] === 'object' ) {
-					Object.keys( blockConfigObject[ 'kadence/countup' ] ).map( ( attribute ) => {
-						attributes[ attribute ] = blockConfigObject[ 'kadence/countup' ][ attribute ];
-					} );
-				}
-			}
+
 			setAttributes( {
 				uniqueID  : '_' + clientId.substr( 2, 9 ),
 				numberFont: [ ...numberFont ],
