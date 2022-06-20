@@ -20,7 +20,7 @@ import classnames from 'classnames';
  */
 import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
-const { Icon }              = wp.components;
+import { Icon } from '@wordpress/components';
 
 /**
  * Register: a Gutenberg Block.

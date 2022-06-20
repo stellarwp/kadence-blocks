@@ -24,3 +24,4 @@ viewBox="0 0 48 48"
   transform="translate(0 3.418) translate(0 -11.6)"
 ></path>
 </svg>;
+

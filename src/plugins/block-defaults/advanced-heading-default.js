@@ -5,14 +5,14 @@ import { PopColorControl, TypographyControls, HeadingLevelIcon } from '@kadence/
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	AlignmentToolbar,
-} = wp.blockEditor;
-const {
+} from '@wordpress/blockEditor';
+import {
 	PanelBody,
 	Toolbar,
 	RangeControl,
@@ -21,7 +21,7 @@ const {
 	Dashicon,
 	Modal,
 	SelectControl,
-} = wp.components;
+} from '@wordpress/components';
 
 import { advancedHeadingIcon } from '@kadence/icons';
 

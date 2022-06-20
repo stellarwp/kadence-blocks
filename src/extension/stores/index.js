@@ -27,6 +27,13 @@ const actions = {
 			defaultValue
 		}
 	},
+	*switchEditorTabOpened( tabName, key ) {
+		return {
+			type: 'SWITCH_EDITOR_TAB_OPENED',
+			tabName,
+			key
+		}
+	},
 	addUniqueID( uniqueID, clientID ) {
 		return {
 			type: 'ADD_UNIQUE_ID',
@@ -97,6 +104,16 @@ const store = createReduxStore( 'kadenceblocks/data', {
 							...state[panelName],
 							opened: !isOpen,
 						}
+					}
+				};
+			case 'SWITCH_EDITOR_TAB_OPENED':
+				const { tabName, key } = action;
+
+				return {
+					...state,
+					'editorTabs': {
+						...state.editorPanels,
+						[tabName]: key
 					}
 				};
 			case 'SET_PREVIEW_DEVICE_TYPE':
@@ -181,6 +198,12 @@ const store = createReduxStore( 'kadenceblocks/data', {
 			const panels = get( state, ['editorPanels'], {} );
 			return (
 				get( panels, [ panelName ] ) === true || get( panels, [ panelName, 'opened' ], defaultValue ) === true
+			);
+		},
+		getOpenSidebarTabKey( state, panelName, defaultValue ) {
+			const panels = get( state, ['editorTabs'], {} );
+			return (
+				get( panels, [ panelName ], defaultValue )
 			);
 		},
 	},

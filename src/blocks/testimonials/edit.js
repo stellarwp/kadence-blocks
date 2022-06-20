@@ -30,7 +30,7 @@ import { times, map } from 'lodash';
 /**
  * Import Components
  */
-import MeasurementControls from '../../measurement-control';
+
 import {
 	PopColorControl,
 	TypographyControls,
@@ -41,7 +41,10 @@ import {
 	IconControl,
 	IconRender,
 	KadenceMediaPlaceholder,
+	MeasurementControls,
+	InspectorControlTabs
 } from '@kadence/components';
+
 import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
 
 /**

@@ -8,7 +8,7 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
@@ -16,7 +16,7 @@ const {
 	ToggleControl,
 	ToolbarDropdownMenu,
 	SelectControl,
-} = wp.components;
+} from '@wordpress/components';
 const {
 	localStorage,
 } = window;
@@ -262,6 +262,33 @@ class ColumnStyleCopyPaste extends Component {
 			}
 			if ( blockAttributes.htmlTag ) {
 				copyStyles.htmlTag = blockAttributes.htmlTag;
+			}
+			if ( blockAttributes.sticky ) {
+				copyStyles.sticky = blockAttributes.sticky;
+			}
+			if ( blockAttributes.stickyOffset ) {
+				copyStyles.stickyOffset = blockAttributes.stickyOffset;
+			}
+			if ( blockAttributes.stickyUnit ) {
+				copyStyles.stickyUnit = blockAttributes.stickyUnit;
+			}
+			if ( blockAttributes.overlay ) {
+				copyStyles.overlay = blockAttributes.overlay;
+			}
+			if ( blockAttributes.overlayHover ) {
+				copyStyles.overlayHover = blockAttributes.overlayHover;
+			}
+			if ( blockAttributes.overlayImg ) {
+				copyStyles.overlayImg = blockAttributes.overlayImg;
+			}
+			if ( blockAttributes.overlayImgHover ) {
+				copyStyles.overlayImgHover = blockAttributes.overlayImgHover;
+			}
+			if ( undefined !== blockAttributes.overlayOpacity ) {
+				copyStyles.overlayOpacity = blockAttributes.overlayOpacity;
+			}
+			if ( undefined !== blockAttributes.overlayHoverOpacity ) {
+				copyStyles.overlayHoverOpacity = blockAttributes.overlayHoverOpacity;
 			}
 			localStorage.setItem( 'kadenceColumnStyle', JSON.stringify( copyStyles ) );
 		};

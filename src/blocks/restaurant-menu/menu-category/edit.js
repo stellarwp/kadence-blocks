@@ -22,7 +22,7 @@ import { __ } from '@wordpress/i18n';
 const { createBlock }         = wp.blocks;
 const { RichText }            = wp.blockEditor;
 const { Component, Fragment } = wp.element;
-const { Button, IconButton }  = wp.components;
+import { Button } from '@wordpress/components';
 const { InnerBlocks }         = wp.blockEditor;
 const { select, dispatch }    = wp.data;
 
@@ -170,7 +170,7 @@ class KadenceRestaurantMenuCategory extends Component {
 							renderAppender={ () =>  null
 
 								// (
-								// 	<IconButton
+								// 	<Button
 								//         icon="insert"
 								//         label={ __('Add New Food Item') }
 								//         onClick={ () => {

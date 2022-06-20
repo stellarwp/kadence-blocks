@@ -1,9 +1,6 @@
 /* global kadence_blocks_params */
-import { TypographyControls } from '@kadence/components';
-import MeasurementControls from '../../measurement-control';
-import { map } from 'lodash';
-import AdvancedColorControl from '../../advanced-color-control';
-import { debounce } from 'lodash';
+import { TypographyControls, MeasurementControls, PopColorControl } from '@kadence/components';
+import { map, debounce } from 'lodash';
 /**
  * Internal block libraries
  */
@@ -12,12 +9,12 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	Button,
 	PanelBody,
 	ToggleControl,
 	ButtonGroup,
-} = wp.components;
+} from '@wordpress/components';
 
 class KadenceGlobalTypography extends Component {
 	constructor() {
@@ -152,11 +149,11 @@ class KadenceGlobalTypography extends Component {
 					</div>
 					{ pStyles[ 0 ].enable && (
 						<div className="kt-inner-sub-section">
-							<AdvancedColorControl
+							<PopColorControl
 								label={ __( 'Color' ) }
-								colorValue={ ( pStyles[ 0 ].color ? pStyles[ 0 ].color : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => saveParagraph( { color: value } ) }
+								value={ ( pStyles[ 0 ].color ? pStyles[ 0 ].color : '' ) }
+								default={ '' }
+								onChange={ value => saveParagraph( { color: value } ) }
 							/>
 							<TypographyControls
 								fontSize={ pStyles[ 0 ].size }

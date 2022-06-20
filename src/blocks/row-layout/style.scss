@@ -30,12 +30,12 @@
 	margin-right: auto;
 }
 .kt-row-has-bg > .kt-row-column-wrap {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: var(--global-content-edge-padding, 15px);
+    padding-right: var(--global-content-edge-padding, 15px);
 }
-.alignfull .kt-row-column-wrap {
-    padding-left: 15px;
-    padding-right: 15px;
+.alignfull > .kt-row-layout-inner > .kt-row-column-wrap {
+    padding-left: var(--global-content-edge-padding, 15px);
+    padding-right: var(--global-content-edge-padding, 15px);
 }
 .kt-inner-column-height-full > .wp-block-kadence-column > .kt-inside-inner-col {
     height: 100%;
