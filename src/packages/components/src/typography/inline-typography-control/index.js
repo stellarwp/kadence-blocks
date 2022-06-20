@@ -25,7 +25,6 @@ import { Component, Fragment } from '@wordpress/element';
 import {
 	Button,
 	ButtonGroup,
-	IconButton,
 	Dashicon,
 	Tooltip,
 	Dropdown,
@@ -432,7 +431,7 @@ class InlineTypographyControls extends Component {
 					position="top center"
 					renderToggle={ ( { isOpen, onToggle } ) => (
 						<Fragment>
-							<IconButton
+							<Button
 								className="components-dropdown-menu__toggle kt-font-family-icon"
 								label={ __( 'Typography Settings' ) }
 								tooltip={ __( 'Typography Settings' ) }
@@ -440,7 +439,7 @@ class InlineTypographyControls extends Component {
 								onClick={ onToggle }
 								aria-expanded={ isOpen }>
 								<span className="components-dropdown-menu__indicator" />
-							</IconButton>
+							</Button>
 						</Fragment>
 					) }
 					renderContent={ () => (

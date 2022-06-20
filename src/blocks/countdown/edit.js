@@ -20,7 +20,7 @@ import {
 	topLeftIcon,
 	topRightIcon,
 } from '@kadence/icons';
-import MeasurementControls from '../../measurement-control';
+
 import {
 	PopColorControl,
 	TypographyControls,
@@ -31,6 +31,8 @@ import {
 	KadenceRadioButtons,
 	ResponsiveAlignControls,
 	WebfontLoader,
+	InspectorControlTabs,
+	MeasurementControls
 } from '@kadence/components';
 import {
 	KadenceColorOutput,
@@ -51,9 +53,11 @@ import { __experimentalGetSettings as getDateSettings } from '@wordpress/date';
 import { applyFilters } from '@wordpress/hooks';
 
 import {
+	Component,
 	useEffect,
-	useState
+	useState,
 } from '@wordpress/element';
+
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import {
@@ -110,7 +114,69 @@ const ANCHOR_REGEX = /[\s#]/g;
  */
 function KadenceCountdown( { attributes, setAttributes, className, clientId, isNested, parentBlock, getPreviewDevice } ) {
 
-	const { uniqueID, expireAction, units, enableTimer, evergreenHours, evergreenMinutes, redirectURL, timerLayout, date, timestamp, evergreenReset, timezone, timeOffset, preLabel, postLabel, daysLabel, hoursLabel, minutesLabel, secondsLabel, counterAlign, campaignID, numberColor, numberFont, labelColor, labelFont, preLabelColor, preLabelFont, postLabelColor, postLabelFont, border, borderRadius, borderWidth, mobileBorderWidth, tabletBorderWidth, background, vsdesk, vstablet, vsmobile, countdownType, paddingType, marginType, containerMobilePadding, containerTabletPadding, containerPadding, containerMobileMargin, containerTabletMargin, containerMargin, itemBorder, itemBorderWidth, itemBackground, itemTabletBorderWidth, itemMobileBorderWidth, itemPadding, itemTabletPadding, itemMobilePadding, itemBorderRadius, itemPaddingType, timeNumbers, countdownDivider, revealOnLoad, evergreenStrict } = attributes;
+	const {
+		uniqueID,
+		expireAction,
+		units,
+		enableTimer,
+		evergreenHours,
+		evergreenMinutes,
+		redirectURL,
+		timerLayout,
+		date,
+		timestamp,
+		evergreenReset,
+		timezone,
+		timeOffset,
+		preLabel,
+		postLabel,
+		daysLabel,
+		hoursLabel,
+		minutesLabel,
+		secondsLabel,
+		counterAlign,
+		campaignID,
+		numberColor,
+		numberFont,
+		labelColor,
+		labelFont,
+		preLabelColor,
+		preLabelFont,
+		postLabelColor,
+		postLabelFont,
+		border,
+		borderRadius,
+		borderWidth,
+		mobileBorderWidth,
+		tabletBorderWidth,
+		background,
+		vsdesk,
+		vstablet,
+		vsmobile,
+		countdownType,
+		paddingType,
+		marginType,
+		containerMobilePadding,
+		containerTabletPadding,
+		containerPadding,
+		containerMobileMargin,
+		containerTabletMargin,
+		containerMargin,
+		itemBorder,
+		itemBorderWidth,
+		itemBackground,
+		itemTabletBorderWidth,
+		itemMobileBorderWidth,
+		itemPadding,
+		itemTabletPadding,
+		itemMobilePadding,
+		itemBorderRadius,
+		itemPaddingType,
+		timeNumbers,
+		countdownDivider,
+		revealOnLoad,
+		evergreenStrict,
+	} = attributes;
 
 	const [ borderWidthControl, setBorderWidthControl ] = useState( 'individual' );
 	const [ borderRadiusControl, setBorderRadiusControl ] = useState( 'linked' );
@@ -120,7 +186,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 	const [ itemBorderRadiusControl, setItemBorderRadiusControl ] = useState( 'linked' );
 	const [ itemPaddingControl, setItemPaddingControl ] = useState( 'linked' );
 	const [ previewExpired, setPreviewExpired ] = useState( false );
-	const [ user, setUser ] = useState( ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ) );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	let dateSettings = {};
 
@@ -150,6 +216,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		} else {
 			setBorderRadiusControl( 'individual' );
 		}
+
 		if ( !date ) {
 			dateSettings = getDateSettings();
 
@@ -424,7 +491,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 	}
 
 	const blockProps = useBlockProps( {
-		className: classes
+		className: classes,
 	} );
 
 	return (
@@ -554,616 +621,639 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 						)}
 					</BlockControls>
 					<InspectorControls>
-						<Panel
-							className={'components-panel__body is-opened'}
-						>
-							{isNested && (
-								<>
-									<h2>{__( 'Countdown Time Settings Synced to Parent Block', 'kadence-blocks' )}</h2>
-									<Button
-										className="kb-select-parent-button"
-										isSecondary
-										onClick={() => selectBlock( parentBlock.clientId )}
-									>
-										<span>{__( 'Edit Settings', 'kadence-blocks' )}</span>
-									</Button>
-								</>
-							)}
-							{!isNested && (
-								<>
-									<SelectControl
-										label={__( 'Countdown Type', 'kadence-blocks' )}
-										options={countdownTypes}
-										value={countdownType}
-										onChange={( value ) => setAttributes( { countdownType: value } )}
-									/>
-									{'date' === countdownType && (
-										<div className="components-base-control">
-											<DateTimePicker
-												currentDate={( !date ? undefined : date )}
-												onChange={value => {
-													saveDate( value );
-												}}
-												is12Hour={is12HourTime}
-												help={__( 'Date set according to your sites timezone', 'kadence-blocks' )}
-											/>
-										</div>
-									)}
-									{'evergreen' === countdownType && (
+
+						<InspectorControlTabs
+							panelName={'countdown'}
+							setActiveTab={( value ) => setActiveTab( value )}
+							activeTab={activeTab}
+						/>
+
+						{( activeTab === 'general' ) &&
+							<>
+								<Panel
+									className={'components-panel__body is-opened'}
+								>
+									{isNested && (
 										<>
-											<KadenceRange
-												label={__( 'Evergreen Hours', 'kadence-blocks' )}
-												value={evergreenHours}
-												onChange={value => {
-													saveEvergreenHours( value );
-												}}
-												min={0}
-												max={100}
-												step={1}
-											/>
-											<KadenceRange
-												label={__( 'Evergreen Minutes', 'kadence-blocks' )}
-												value={evergreenMinutes}
-												onChange={value => {
-													saveEvergreenMinutes( value );
-												}}
-												min={0}
-												max={59}
-												step={1}
-											/>
-											<TextControl
-												label={__( 'Campaign ID' )}
-												help={__( 'Create a unique ID. To reset the timer for everyone change this id. To link with other timers give them all the same ID.', 'kadence-blocks' )}
-												value={campaignID || ''}
-												onChange={( nextValue ) => {
-													nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
-													setAttributes( {
-														campaignID: nextValue,
-													} );
-												}}
-											/>
-											<KadenceRange
-												label={__( 'Amount of days to wait until the evergreen is reset for visitors', 'kadence-blocks' )}
-												value={evergreenReset}
-												onChange={value => {
-													setAttributes( {
-														evergreenReset: value,
-													} );
-												}}
-												min={0}
-												max={100}
-												step={1}
-											/>
-											<ToggleControl
-												label={__( 'Verify by IP Address', 'kadence-blocks' )}
-												checked={evergreenStrict}
-												onChange={value => setAttributes( { evergreenStrict: value } )}
-												help={__( 'This will add a delay to the rendering of the countdown if no cookie found as it will query the server database to see if the user can be found by their IP address', 'kadence-blocks' )}
-											/>
+											<h2>{__( 'Countdown Time Settings Synced to Parent Block', 'kadence-blocks' )}</h2>
+											<Button
+												className="kb-select-parent-button"
+												isSecondary
+												onClick={() => selectBlock( parentBlock.clientId )}
+											>
+												<span>{__( 'Edit Settings', 'kadence-blocks' )}</span>
+											</Button>
 										</>
 									)}
-									<SelectControl
-										label={__( 'Action on Expire', 'kadence-blocks' )}
-										options={countdownActions}
-										value={expireAction}
-										onChange={( value ) => setAttributes( { expireAction: value } )}
-									/>
-									{'redirect' === expireAction && (
+									{!isNested && (
 										<>
-											<URLInputControl
-												label={__( 'Redirect URL', 'kadence-blocks' )}
-												url={redirectURL}
-												onChangeUrl={value => setAttributes( { redirectURL: value } )}
-												additionalControls={false}
-												{...this.props}
+											<SelectControl
+												label={__( 'Countdown Type', 'kadence-blocks' )}
+												options={countdownTypes}
+												value={countdownType}
+												onChange={( value ) => setAttributes( { countdownType: value } )}
 											/>
-										</>
-									)}
-									{expireAction && 'none' !== expireAction && (
-										<ToggleControl
-											label={__( 'Reveal onLoad', 'kadence-blocks' )}
-											checked={revealOnLoad}
-											onChange={value => setAttributes( { revealOnLoad: value } )}
-										/>
-									)}
-								</>
-							)}
-						</Panel>
-						<KadencePanelBody
-							title={__( 'Countdown Layout', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-countdown-layout'}
-						>
-							{expireAction && 'none' !== expireAction && (
-								<ToggleControl
-									label={__( 'Display Countdown', 'kadence-blocks' )}
-									checked={enableTimer}
-									onChange={value => setAttributes( { enableTimer: value } )}
-								/>
-							)}
-							{enableTimer && (
-								<>
-									<ResponsiveAlignControls
-										label={__( 'Countdown Alignment', 'kadence-blocks' )}
-										value={( undefined !== counterAlign && undefined !== counterAlign[ 0 ] ? counterAlign[ 0 ] : '' )}
-										tabletValue={( undefined !== counterAlign && undefined !== counterAlign[ 1 ] ? counterAlign[ 1 ] : '' )}
-										mobileValue={( undefined !== counterAlign && undefined !== counterAlign[ 2 ] ? counterAlign[ 2 ] : '' )}
-										onChange={( nextAlign ) => setAttributes( { counterAlign: [ nextAlign, ( undefined !== counterAlign && undefined !== counterAlign[ 1 ] ? counterAlign[ 1 ] : '' ), ( undefined !== counterAlign && undefined !== counterAlign[ 2 ] ? counterAlign[ 2 ] : '' ) ] } )}
-										onChangeTablet={( nextAlign ) => setAttributes( { counterAlign: [ ( undefined !== counterAlign && undefined !== counterAlign[ 0 ] ? counterAlign[ 0 ] : '' ), nextAlign, ( undefined !== counterAlign && undefined !== counterAlign[ 2 ] ? counterAlign[ 2 ] : '' ) ] } )}
-										onChangeMobile={( nextAlign ) => setAttributes( { counterAlign: [ ( undefined !== counterAlign && undefined !== counterAlign[ 0 ] ? counterAlign[ 0 ] : '' ), ( undefined !== counterAlign && undefined !== counterAlign[ 1 ] ? counterAlign[ 1 ] : '' ), nextAlign ] } )}
-									/>
-									<KadenceRadioButtons
-										label={__( 'Countdown Layout', 'kadence-blocks' )}
-										value={timerLayout}
-										options={[
-											{ value: 'block', label: __( 'Block', 'kadence-blocks' ) },
-											{ value: 'inline', label: __( 'Inline', 'kadence-blocks' ) },
-										]}
-										onChange={value => setAttributes( { timerLayout: value } )}
-									/>
-									{'inline' !== timerLayout && (
-										<ToggleControl
-											label={__( 'Enable Divider', 'kadence-blocks' )}
-											checked={countdownDivider}
-											onChange={value => setAttributes( { countdownDivider: value } )}
-										/>
-									)}
-									<ToggleControl
-										label={__( 'Enable 00 Number format', 'kadence-blocks' )}
-										checked={timeNumbers}
-										onChange={value => setAttributes( { timeNumbers: value } )}
-									/>
-									<TextControl
-										label={__( 'Countdown Pre Text' )}
-										value={preLabel}
-										onChange={value => setAttributes( { preLabel: value } )}
-									/>
-									<TextControl
-										label={__( 'Countdown Post Text' )}
-										value={postLabel}
-										onChange={value => setAttributes( { postLabel: value } )}
-									/>
-									<ToggleControl
-										label={__( 'Display Days Unit', 'kadence-blocks' )}
-										checked={undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].days ? units[ 0 ].days : true}
-										onChange={value => saveUnits( { days: value } )}
-									/>
-									{undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].days && !units[ 0 ].days && (
-										<>
-											<ToggleControl
-												label={__( 'Hours', 'kadence-blocks' )}
-												checked={undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].hours ? units[ 0 ].hours : true}
-												onChange={value => saveUnits( { hours: value } )}
-											/>
-											{undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].hours && !units[ 0 ].hours && (
+											{'date' === countdownType && (
+												<div className="components-base-control">
+													<DateTimePicker
+														currentDate={( !date ? undefined : date )}
+														onChange={value => {
+															saveDate( value );
+														}}
+														is12Hour={is12HourTime}
+														help={__( 'Date set according to your sites timezone', 'kadence-blocks' )}
+													/>
+												</div>
+											)}
+											{'evergreen' === countdownType && (
 												<>
+													<KadenceRange
+														label={__( 'Evergreen Hours', 'kadence-blocks' )}
+														value={evergreenHours}
+														onChange={value => {
+															saveEvergreenHours( value );
+														}}
+														min={0}
+														max={100}
+														step={1}
+													/>
+													<KadenceRange
+														label={__( 'Evergreen Minutes', 'kadence-blocks' )}
+														value={evergreenMinutes}
+														onChange={value => {
+															saveEvergreenMinutes( value );
+														}}
+														min={0}
+														max={59}
+														step={1}
+													/>
+													<TextControl
+														label={__( 'Campaign ID' )}
+														help={__( 'Create a unique ID. To reset the timer for everyone change this id. To link with other timers give them all the same ID.', 'kadence-blocks' )}
+														value={campaignID || ''}
+														onChange={( nextValue ) => {
+															nextValue = nextValue.replace( ANCHOR_REGEX, '-' );
+															setAttributes( {
+																campaignID: nextValue,
+															} );
+														}}
+													/>
+													<KadenceRange
+														label={__( 'Amount of days to wait until the evergreen is reset for visitors', 'kadence-blocks' )}
+														value={evergreenReset}
+														onChange={value => {
+															setAttributes( {
+																evergreenReset: value,
+															} );
+														}}
+														min={0}
+														max={100}
+														step={1}
+													/>
 													<ToggleControl
-														label={__( 'Minutes', 'kadence-blocks' )}
-														checked={undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].minutes ? units[ 0 ].minutes : true}
-														onChange={value => saveUnits( { minutes: value } )}
+														label={__( 'Verify by IP Address', 'kadence-blocks' )}
+														checked={evergreenStrict}
+														onChange={value => setAttributes( { evergreenStrict: value } )}
+														help={__( 'This will add a delay to the rendering of the countdown if no cookie found as it will query the server database to see if the user can be found by their IP address', 'kadence-blocks' )}
 													/>
 												</>
 											)}
+											<SelectControl
+												label={__( 'Action on Expire', 'kadence-blocks' )}
+												options={countdownActions}
+												value={expireAction}
+												onChange={( value ) => setAttributes( { expireAction: value } )}
+											/>
+											{'redirect' === expireAction && (
+												<>
+													<URLInputControl
+														label={__( 'Redirect URL', 'kadence-blocks' )}
+														url={redirectURL}
+														onChangeUrl={value => setAttributes( { redirectURL: value } )}
+														additionalControls={false}
+														{...this.props}
+													/>
+												</>
+											)}
+											{expireAction && 'none' !== expireAction && (
+												<ToggleControl
+													label={__( 'Reveal onLoad', 'kadence-blocks' )}
+													checked={revealOnLoad}
+													onChange={value => setAttributes( { revealOnLoad: value } )}
+												/>
+											)}
 										</>
 									)}
-									<h2>{__( 'Labels', 'kadence-blocks' )}</h2>
-									<TextControl
-										label={__( 'Days Label' )}
-										value={daysLabel}
-										onChange={value => setAttributes( { daysLabel: value } )}
+								</Panel>
+								<KadencePanelBody
+									title={__( 'Countdown Layout', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-countdown-layout'}
+								>
+									{expireAction && 'none' !== expireAction && (
+										<ToggleControl
+											label={__( 'Display Countdown', 'kadence-blocks' )}
+											checked={enableTimer}
+											onChange={value => setAttributes( { enableTimer: value } )}
+										/>
+									)}
+									{enableTimer && (
+										<>
+											<ResponsiveAlignControls
+												label={__( 'Countdown Alignment', 'kadence-blocks' )}
+												value={( undefined !== counterAlign && undefined !== counterAlign[ 0 ] ? counterAlign[ 0 ] : '' )}
+												tabletValue={( undefined !== counterAlign && undefined !== counterAlign[ 1 ] ? counterAlign[ 1 ] : '' )}
+												mobileValue={( undefined !== counterAlign && undefined !== counterAlign[ 2 ] ? counterAlign[ 2 ] : '' )}
+												onChange={( nextAlign ) => setAttributes( { counterAlign: [ nextAlign, ( undefined !== counterAlign && undefined !== counterAlign[ 1 ] ? counterAlign[ 1 ] : '' ), ( undefined !== counterAlign && undefined !== counterAlign[ 2 ] ? counterAlign[ 2 ] : '' ) ] } )}
+												onChangeTablet={( nextAlign ) => setAttributes( { counterAlign: [ ( undefined !== counterAlign && undefined !== counterAlign[ 0 ] ? counterAlign[ 0 ] : '' ), nextAlign, ( undefined !== counterAlign && undefined !== counterAlign[ 2 ] ? counterAlign[ 2 ] : '' ) ] } )}
+												onChangeMobile={( nextAlign ) => setAttributes( { counterAlign: [ ( undefined !== counterAlign && undefined !== counterAlign[ 0 ] ? counterAlign[ 0 ] : '' ), ( undefined !== counterAlign && undefined !== counterAlign[ 1 ] ? counterAlign[ 1 ] : '' ), nextAlign ] } )}
+											/>
+											<KadenceRadioButtons
+												label={__( 'Countdown Layout', 'kadence-blocks' )}
+												value={timerLayout}
+												options={[
+													{ value: 'block', label: __( 'Block', 'kadence-blocks' ) },
+													{ value: 'inline', label: __( 'Inline', 'kadence-blocks' ) },
+												]}
+												onChange={value => setAttributes( { timerLayout: value } )}
+											/>
+											{'inline' !== timerLayout && (
+												<ToggleControl
+													label={__( 'Enable Divider', 'kadence-blocks' )}
+													checked={countdownDivider}
+													onChange={value => setAttributes( { countdownDivider: value } )}
+												/>
+											)}
+											<ToggleControl
+												label={__( 'Enable 00 Number format', 'kadence-blocks' )}
+												checked={timeNumbers}
+												onChange={value => setAttributes( { timeNumbers: value } )}
+											/>
+											<TextControl
+												label={__( 'Countdown Pre Text' )}
+												value={preLabel}
+												onChange={value => setAttributes( { preLabel: value } )}
+											/>
+											<TextControl
+												label={__( 'Countdown Post Text' )}
+												value={postLabel}
+												onChange={value => setAttributes( { postLabel: value } )}
+											/>
+											<ToggleControl
+												label={__( 'Display Days Unit', 'kadence-blocks' )}
+												checked={undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].days ? units[ 0 ].days : true}
+												onChange={value => saveUnits( { days: value } )}
+											/>
+											{undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].days && !units[ 0 ].days && (
+												<>
+													<ToggleControl
+														label={__( 'Hours', 'kadence-blocks' )}
+														checked={undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].hours ? units[ 0 ].hours : true}
+														onChange={value => saveUnits( { hours: value } )}
+													/>
+													{undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].hours && !units[ 0 ].hours && (
+														<>
+															<ToggleControl
+																label={__( 'Minutes', 'kadence-blocks' )}
+																checked={undefined !== units && undefined !== units[ 0 ] && undefined !== units[ 0 ].minutes ? units[ 0 ].minutes : true}
+																onChange={value => saveUnits( { minutes: value } )}
+															/>
+														</>
+													)}
+												</>
+											)}
+											<h2>{__( 'Labels', 'kadence-blocks' )}</h2>
+											<TextControl
+												label={__( 'Days Label' )}
+												value={daysLabel}
+												onChange={value => setAttributes( { daysLabel: value } )}
+											/>
+											<TextControl
+												label={__( 'Hours Label' )}
+												value={hoursLabel}
+												onChange={value => setAttributes( { hoursLabel: value } )}
+											/>
+											<TextControl
+												label={__( 'Minutes Label' )}
+												value={minutesLabel}
+												onChange={value => setAttributes( { minutesLabel: value } )}
+											/>
+											<TextControl
+												label={__( 'Seconds Label' )}
+												value={secondsLabel}
+												onChange={value => setAttributes( { secondsLabel: value } )}
+											/>
+										</>
+									)}
+								</KadencePanelBody>
+							</>
+						}
+
+						{( activeTab === 'style' ) &&
+							<>
+								{enableTimer && (
+									<KadencePanelBody
+										title={__( 'Count Item Settings', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-countdown-item-settings'}
+									>
+										<PopColorControl
+											label={__( 'Background Color', 'kadence-blocks' )}
+											value={( itemBackground ? itemBackground : '' )}
+											default={''}
+											onChange={value => setAttributes( { itemBackground: value } )}
+										/>
+										<PopColorControl
+											label={__( 'Border Color', 'kadence-blocks' )}
+											value={( itemBorder ? itemBorder : '' )}
+											default={''}
+											onChange={value => setAttributes( { itemBorder: value } )}
+										/>
+										<ResponsiveMeasurementControls
+											label={__( 'Border Width', 'kadence-blocks' )}
+											value={itemBorderWidth}
+											control={itemBorderWidthControl}
+											tabletValue={itemTabletBorderWidth}
+											mobileValue={itemMobileBorderWidth}
+											onChange={( value ) => setAttributes( { itemBorderWidth: value } )}
+											onChangeTablet={( value ) => setAttributes( { itemTabletBorderWidth: value } )}
+											onChangeMobile={( value ) => setAttributes( { itemMobileBorderWidth: value } )}
+											onChangeControl={( value ) => setItemBorderWidthControl( value )}
+											min={0}
+											max={40}
+											step={1}
+											unit={'px'}
+											units={[ 'px' ]}
+											showUnit={true}
+											preset={[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
+										/>
+										<MeasurementControls
+											label={__( 'Border Radius', 'kadence-blocks' )}
+											measurement={itemBorderRadius}
+											control={itemBorderRadiusControl}
+											onChange={( value ) => setAttributes( { itemBorderRadius: value } )}
+											onControl={( value ) => setItemBorderRadiusControl( value )}
+											min={0}
+											max={200}
+											step={1}
+											controlTypes={[
+												{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+												{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+											]}
+											firstIcon={topLeftIcon}
+											secondIcon={topRightIcon}
+											thirdIcon={bottomRightIcon}
+											fourthIcon={bottomLeftIcon}
+										/>
+										<ResponsiveMeasurementControls
+											label={__( 'Padding', 'kadence-blocks' )}
+											value={itemPadding}
+											control={itemPaddingControl}
+											tabletValue={itemTabletPadding}
+											mobileValue={itemMobilePadding}
+											onChange={( value ) => setAttributes( { itemPadding: value } )}
+											onChangeTablet={( value ) => setAttributes( { itemTabletPadding: value } )}
+											onChangeMobile={( value ) => setAttributes( { itemMobilePadding: value } )}
+											onChangeControl={( value ) => setItemPaddingControl( value )}
+											min={itemPaddingMin}
+											max={itemPaddingMax}
+											step={itemPaddingStep}
+											unit={itemPaddingType}
+											units={[ 'px', 'em', 'rem', '%' ]}
+											onUnit={( value ) => setAttributes( { itemPaddingType: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+								{enableTimer && (
+									<KadencePanelBody
+										title={__( 'Number Settings', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-countdown-number-settings'}
+									>
+										<PopColorControl
+											label={__( 'Color', 'kadence-blocks' )}
+											value={( numberColor ? numberColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { numberColor: value } )}
+										/>
+										<TypographyControls
+											fontGroup={'number-item'}
+											fontSize={numberFont[ 0 ].size}
+											onFontSize={( value ) => saveNumberFont( { size: value } )}
+											fontSizeType={numberFont[ 0 ].sizeType}
+											onFontSizeType={( value ) => saveNumberFont( { sizeType: value } )}
+											lineHeight={numberFont[ 0 ].lineHeight}
+											onLineHeight={( value ) => saveNumberFont( { lineHeight: value } )}
+											lineHeightType={numberFont[ 0 ].lineType}
+											onLineHeightType={( value ) => saveNumberFont( { lineType: value } )}
+											reLetterSpacing={numberFont[ 0 ].letterSpacing}
+											onLetterSpacing={( value ) => saveNumberFont( { letterSpacing: value } )}
+											letterSpacingType={numberFont[ 0 ].letterType}
+											onLetterSpacingType={( value ) => saveNumberFont( { letterType: value } )}
+											textTransform={numberFont[ 0 ].textTransform}
+											onTextTransform={( value ) => saveNumberFont( { textTransform: value } )}
+											fontFamily={numberFont[ 0 ].family}
+											onFontFamily={( value ) => saveNumberFont( { family: value } )}
+											onFontChange={( select ) => {
+												saveNumberFont( {
+													family: select.value,
+													google: select.google,
+												} );
+											}}
+											onFontArrayChange={( values ) => saveNumberFont( values )}
+											googleFont={numberFont[ 0 ].google}
+											onGoogleFont={( value ) => saveNumberFont( { google: value } )}
+											loadGoogleFont={numberFont[ 0 ].loadGoogle}
+											onLoadGoogleFont={( value ) => saveNumberFont( { loadGoogle: value } )}
+											fontVariant={numberFont[ 0 ].variant}
+											onFontVariant={( value ) => saveNumberFont( { variant: value } )}
+											fontWeight={numberFont[ 0 ].weight}
+											onFontWeight={( value ) => saveNumberFont( { weight: value } )}
+											fontStyle={numberFont[ 0 ].style}
+											onFontStyle={( value ) => saveNumberFont( { style: value } )}
+											fontSubset={numberFont[ 0 ].subset}
+											onFontSubset={( value ) => saveNumberFont( { subset: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+								{enableTimer && (
+									<KadencePanelBody
+										title={__( 'Label Settings', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-countdown-label-settings'}
+									>
+										<PopColorControl
+											label={__( 'Color', 'kadence-blocks' )}
+											value={( labelColor ? labelColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { labelColor: value } )}
+										/>
+										<TypographyControls
+											fontGroup={'label-item'}
+											fontSize={labelFont[ 0 ].size}
+											onFontSize={( value ) => saveLabelFont( { size: value } )}
+											fontSizeType={labelFont[ 0 ].sizeType}
+											onFontSizeType={( value ) => saveLabelFont( { sizeType: value } )}
+											lineHeight={labelFont[ 0 ].lineHeight}
+											onLineHeight={( value ) => saveLabelFont( { lineHeight: value } )}
+											lineHeightType={labelFont[ 0 ].lineType}
+											onLineHeightType={( value ) => saveLabelFont( { lineType: value } )}
+											reLetterSpacing={labelFont[ 0 ].letterSpacing}
+											onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
+											letterSpacingType={labelFont[ 0 ].letterType}
+											onLetterSpacingType={( value ) => saveLabelFont( { letterType: value } )}
+											textTransform={labelFont[ 0 ].textTransform}
+											onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
+											fontFamily={labelFont[ 0 ].family}
+											onFontFamily={( value ) => saveLabelFont( { family: value } )}
+											onFontChange={( select ) => {
+												saveLabelFont( {
+													family: select.value,
+													google: select.google,
+												} );
+											}}
+											onFontArrayChange={( values ) => saveLabelFont( values )}
+											googleFont={labelFont[ 0 ].google}
+											onGoogleFont={( value ) => saveLabelFont( { google: value } )}
+											loadGoogleFont={labelFont[ 0 ].loadGoogle}
+											onLoadGoogleFont={( value ) => saveLabelFont( { loadGoogle: value } )}
+											fontVariant={labelFont[ 0 ].variant}
+											onFontVariant={( value ) => saveLabelFont( { variant: value } )}
+											fontWeight={labelFont[ 0 ].weight}
+											onFontWeight={( value ) => saveLabelFont( { weight: value } )}
+											fontStyle={labelFont[ 0 ].style}
+											onFontStyle={( value ) => saveLabelFont( { style: value } )}
+											fontSubset={labelFont[ 0 ].subset}
+											onFontSubset={( value ) => saveLabelFont( { subset: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+								{enableTimer && '' !== preLabel && (
+									<KadencePanelBody
+										title={__( 'Pre Text', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-countdown-pre-text'}
+									>
+										<PopColorControl
+											label={__( 'Color', 'kadence-blocks' )}
+											value={( preLabelColor ? preLabelColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { preLabelColor: value } )}
+										/>
+										<TypographyControls
+											fontGroup={'prelabel-item'}
+											fontSize={preLabelFont[ 0 ].size}
+											onFontSize={( value ) => savePreFont( { size: value } )}
+											fontSizeType={preLabelFont[ 0 ].sizeType}
+											onFontSizeType={( value ) => savePreFont( { sizeType: value } )}
+											lineHeight={preLabelFont[ 0 ].lineHeight}
+											onLineHeight={( value ) => savePreFont( { lineHeight: value } )}
+											lineHeightType={preLabelFont[ 0 ].lineType}
+											onLineHeightType={( value ) => savePreFont( { lineType: value } )}
+											reLetterSpacing={preLabelFont[ 0 ].letterSpacing}
+											onLetterSpacing={( value ) => savePreFont( { letterSpacing: value } )}
+											letterSpacingType={preLabelFont[ 0 ].letterType}
+											onLetterSpacingType={( value ) => savePreFont( { letterType: value } )}
+											textTransform={preLabelFont[ 0 ].textTransform}
+											onTextTransform={( value ) => savePreFont( { textTransform: value } )}
+											fontFamily={preLabelFont[ 0 ].family}
+											onFontFamily={( value ) => savePreFont( { family: value } )}
+											onFontChange={( select ) => {
+												savePreFont( {
+													family: select.value,
+													google: select.google,
+												} );
+											}}
+											onFontArrayChange={( values ) => savePreFont( values )}
+											googleFont={preLabelFont[ 0 ].google}
+											onGoogleFont={( value ) => savePreFont( { google: value } )}
+											loadGoogleFont={preLabelFont[ 0 ].loadGoogle}
+											onLoadGoogleFont={( value ) => savePreFont( { loadGoogle: value } )}
+											fontVariant={preLabelFont[ 0 ].variant}
+											onFontVariant={( value ) => savePreFont( { variant: value } )}
+											fontWeight={preLabelFont[ 0 ].weight}
+											onFontWeight={( value ) => savePreFont( { weight: value } )}
+											fontStyle={preLabelFont[ 0 ].style}
+											onFontStyle={( value ) => savePreFont( { style: value } )}
+											fontSubset={preLabelFont[ 0 ].subset}
+											onFontSubset={( value ) => savePreFont( { subset: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+								{enableTimer && '' !== postLabel && (
+									<KadencePanelBody
+										title={__( 'Post Text', 'kadence-blocks' )}
+										initialOpen={false}
+										panelName={'kb-countdown-post-text'}
+									>
+										<PopColorControl
+											label={__( 'Color', 'kadence-blocks' )}
+											value={( postLabelColor ? postLabelColor : '' )}
+											default={''}
+											onChange={value => setAttributes( { postLabelColor: value } )}
+										/>
+										<TypographyControls
+											fontGroup={'postlabel-item'}
+											fontSize={postLabelFont[ 0 ].size}
+											onFontSize={( value ) => savePostFont( { size: value } )}
+											fontSizeType={postLabelFont[ 0 ].sizeType}
+											onFontSizeType={( value ) => savePostFont( { sizeType: value } )}
+											lineHeight={postLabelFont[ 0 ].lineHeight}
+											onLineHeight={( value ) => savePostFont( { lineHeight: value } )}
+											lineHeightType={postLabelFont[ 0 ].lineType}
+											onLineHeightType={( value ) => savePostFont( { lineType: value } )}
+											reLetterSpacing={postLabelFont[ 0 ].letterSpacing}
+											onLetterSpacing={( value ) => savePostFont( { letterSpacing: value } )}
+											letterSpacingType={postLabelFont[ 0 ].letterType}
+											onLetterSpacingType={( value ) => savePostFont( { letterType: value } )}
+											textTransform={postLabelFont[ 0 ].textTransform}
+											onTextTransform={( value ) => savePostFont( { textTransform: value } )}
+											fontFamily={postLabelFont[ 0 ].family}
+											onFontFamily={( value ) => savePostFont( { family: value } )}
+											onFontChange={( select ) => {
+												savePostFont( {
+													family: select.value,
+													google: select.google,
+												} );
+											}}
+											onFontArrayChange={( values ) => savePostFont( values )}
+											googleFont={postLabelFont[ 0 ].google}
+											onGoogleFont={( value ) => savePostFont( { google: value } )}
+											loadGoogleFont={postLabelFont[ 0 ].loadGoogle}
+											onLoadGoogleFont={( value ) => savePostFont( { loadGoogle: value } )}
+											fontVariant={postLabelFont[ 0 ].variant}
+											onFontVariant={( value ) => savePostFont( { variant: value } )}
+											fontWeight={postLabelFont[ 0 ].weight}
+											onFontWeight={( value ) => savePostFont( { weight: value } )}
+											fontStyle={postLabelFont[ 0 ].style}
+											onFontStyle={( value ) => savePostFont( { style: value } )}
+											fontSubset={postLabelFont[ 0 ].subset}
+											onFontSubset={( value ) => savePostFont( { subset: value } )}
+										/>
+									</KadencePanelBody>
+								)}
+							</>
+						}
+
+						{( activeTab === 'advanced' ) &&
+							<>
+								<KadencePanelBody
+									title={__( 'Container Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-coutdown-container-settings'}
+								>
+									{showSettings( 'container', 'kadence/countdown' ) && (
+										<>
+											<PopColorControl
+												label={__( 'Background Color', 'kadence-blocks' )}
+												value={( background ? background : '' )}
+												default={''}
+												onChange={value => setAttributes( { background: value } )}
+											/>
+											<PopColorControl
+												label={__( 'Border Color', 'kadence-blocks' )}
+												value={( border ? border : '' )}
+												default={''}
+												onChange={value => setAttributes( { border: value } )}
+											/>
+											<ResponsiveMeasurementControls
+												label={__( 'Border Width', 'kadence-blocks' )}
+												value={borderWidth}
+												control={borderWidthControl}
+												tabletValue={tabletBorderWidth}
+												mobileValue={mobileBorderWidth}
+												onChange={( value ) => setAttributes( { borderWidth: value } )}
+												onChangeTablet={( value ) => setAttributes( { tabletBorderWidth: value } )}
+												onChangeMobile={( value ) => setAttributes( { mobileBorderWidth: value } )}
+												onChangeControl={( value ) => setBorderWidthControl( value )}
+												min={0}
+												max={40}
+												step={1}
+												unit={'px'}
+												units={[ 'px' ]}
+												showUnit={true}
+												preset={[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
+											/>
+											<MeasurementControls
+												label={__( 'Border Radius', 'kadence-blocks' )}
+												measurement={borderRadius}
+												control={borderRadiusControl}
+												onChange={( value ) => setAttributes( { borderRadius: value } )}
+												onControl={( value ) => setBorderRadiusControl( value )}
+												min={0}
+												max={200}
+												step={1}
+												controlTypes={[
+													{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+													{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+												]}
+												firstIcon={topLeftIcon}
+												secondIcon={topRightIcon}
+												thirdIcon={bottomRightIcon}
+												fourthIcon={bottomLeftIcon}
+											/>
+											<ResponsiveMeasurementControls
+												label={__( 'Container Padding', 'kadence-blocks' )}
+												value={containerPadding}
+												control={paddingControl}
+												tabletValue={containerTabletPadding}
+												mobileValue={containerMobilePadding}
+												onChange={( value ) => setAttributes( { containerPadding: value } )}
+												onChangeTablet={( value ) => setAttributes( { containerTabletPadding: value } )}
+												onChangeMobile={( value ) => setAttributes( { containerMobilePadding: value } )}
+												onChangeControl={( value ) => setPaddingControl( value )}
+												min={paddingMin}
+												max={paddingMax}
+												step={paddingStep}
+												unit={paddingType}
+												units={[ 'px', 'em', 'rem', '%' ]}
+												onUnit={( value ) => setAttributes( { paddingType: value } )}
+											/>
+											<ResponsiveMeasurementControls
+												label={__( 'Container Margin', 'kadence-blocks' )}
+												value={containerMargin}
+												control={marginControl}
+												tabletValue={containerTabletMargin}
+												mobileValue={containerMobileMargin}
+												onChange={( value ) => setAttributes( { containerMargin: value } )}
+												onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
+												onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
+												onChangeControl={( value ) => setMarginControl( value )}
+												min={marginMin}
+												max={marginMax}
+												step={marginStep}
+												unit={marginType}
+												units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+												onUnit={( value ) => setAttributes( { marginType: value } )}
+											/>
+										</>
+									)}
+								</KadencePanelBody>
+								<KadencePanelBody
+									title={__( 'Visibility Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-countdown-visibility-settings'}
+								>
+									<ToggleControl
+										label={__( 'Hide on Desktop', 'kadence-blocks' )}
+										checked={( undefined !== vsdesk ? vsdesk : false )}
+										onChange={( value ) => setAttributes( { vsdesk: value } )}
 									/>
-									<TextControl
-										label={__( 'Hours Label' )}
-										value={hoursLabel}
-										onChange={value => setAttributes( { hoursLabel: value } )}
+									<ToggleControl
+										label={__( 'Hide on Tablet', 'kadence-blocks' )}
+										checked={( undefined !== vstablet ? vstablet : false )}
+										onChange={( value ) => setAttributes( { vstablet: value } )}
 									/>
-									<TextControl
-										label={__( 'Minutes Label' )}
-										value={minutesLabel}
-										onChange={value => setAttributes( { minutesLabel: value } )}
+									<ToggleControl
+										label={__( 'Hide on Mobile', 'kadence-blocks' )}
+										checked={( undefined !== vsmobile ? vsmobile : false )}
+										onChange={( value ) => setAttributes( { vsmobile: value } )}
 									/>
-									<TextControl
-										label={__( 'Seconds Label' )}
-										value={secondsLabel}
-										onChange={value => setAttributes( { secondsLabel: value } )}
-									/>
-								</>
-							)}
-						</KadencePanelBody>
-						{enableTimer && (
-							<KadencePanelBody
-								title={__( 'Count Item Settings', 'kadence-blocks' )}
-								initialOpen={false}
-								panelName={'kb-countdown-item-settings'}
-							>
-								<PopColorControl
-									label={__( 'Background Color', 'kadence-blocks' )}
-									value={( itemBackground ? itemBackground : '' )}
-									default={''}
-									onChange={value => setAttributes( { itemBackground: value } )}
-								/>
-								<PopColorControl
-									label={__( 'Border Color', 'kadence-blocks' )}
-									value={( itemBorder ? itemBorder : '' )}
-									default={''}
-									onChange={value => setAttributes( { itemBorder: value } )}
-								/>
-								<ResponsiveMeasurementControls
-									label={__( 'Border Width', 'kadence-blocks' )}
-									value={itemBorderWidth}
-									control={itemBorderWidthControl}
-									tabletValue={itemTabletBorderWidth}
-									mobileValue={itemMobileBorderWidth}
-									onChange={( value ) => setAttributes( { itemBorderWidth: value } )}
-									onChangeTablet={( value ) => setAttributes( { itemTabletBorderWidth: value } )}
-									onChangeMobile={( value ) => setAttributes( { itemMobileBorderWidth: value } )}
-									onChangeControl={( value ) => setItemBorderWidthControl( value )}
-									min={0}
-									max={40}
-									step={1}
-									unit={'px'}
-									units={[ 'px' ]}
-									showUnit={true}
-									preset={[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
-								/>
-								<MeasurementControls
-									label={__( 'Border Radius', 'kadence-blocks' )}
-									measurement={itemBorderRadius}
-									control={itemBorderRadiusControl}
-									onChange={( value ) => setAttributes( { itemBorderRadius: value } )}
-									onControl={( value ) => setItemBorderRadiusControl( value )}
-									min={0}
-									max={200}
-									step={1}
-									controlTypes={[
-										{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-										{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-									]}
-									firstIcon={topLeftIcon}
-									secondIcon={topRightIcon}
-									thirdIcon={bottomRightIcon}
-									fourthIcon={bottomLeftIcon}
-								/>
-								<ResponsiveMeasurementControls
-									label={__( 'Padding', 'kadence-blocks' )}
-									value={itemPadding}
-									control={itemPaddingControl}
-									tabletValue={itemTabletPadding}
-									mobileValue={itemMobilePadding}
-									onChange={( value ) => setAttributes( { itemPadding: value } )}
-									onChangeTablet={( value ) => setAttributes( { itemTabletPadding: value } )}
-									onChangeMobile={( value ) => setAttributes( { itemMobilePadding: value } )}
-									onChangeControl={( value ) => setItemPaddingControl( value )}
-									min={itemPaddingMin}
-									max={itemPaddingMax}
-									step={itemPaddingStep}
-									unit={itemPaddingType}
-									units={[ 'px', 'em', 'rem', '%' ]}
-									onUnit={( value ) => setAttributes( { itemPaddingType: value } )}
-								/>
-							</KadencePanelBody>
-						)}
-						{enableTimer && (
-							<KadencePanelBody
-								title={__( 'Number Settings', 'kadence-blocks' )}
-								initialOpen={false}
-								panelName={'kb-countdown-number-settings'}
-							>
-								<PopColorControl
-									label={__( 'Color', 'kadence-blocks' )}
-									value={( numberColor ? numberColor : '' )}
-									default={''}
-									onChange={value => setAttributes( { numberColor: value } )}
-								/>
-								<TypographyControls
-									fontGroup={'number-item'}
-									fontSize={numberFont[ 0 ].size}
-									onFontSize={( value ) => saveNumberFont( { size: value } )}
-									fontSizeType={numberFont[ 0 ].sizeType}
-									onFontSizeType={( value ) => saveNumberFont( { sizeType: value } )}
-									lineHeight={numberFont[ 0 ].lineHeight}
-									onLineHeight={( value ) => saveNumberFont( { lineHeight: value } )}
-									lineHeightType={numberFont[ 0 ].lineType}
-									onLineHeightType={( value ) => saveNumberFont( { lineType: value } )}
-									reLetterSpacing={numberFont[ 0 ].letterSpacing}
-									onLetterSpacing={( value ) => saveNumberFont( { letterSpacing: value } )}
-									letterSpacingType={numberFont[ 0 ].letterType}
-									onLetterSpacingType={( value ) => saveNumberFont( { letterType: value } )}
-									textTransform={numberFont[ 0 ].textTransform}
-									onTextTransform={( value ) => saveNumberFont( { textTransform: value } )}
-									fontFamily={numberFont[ 0 ].family}
-									onFontFamily={( value ) => saveNumberFont( { family: value } )}
-									onFontChange={( select ) => {
-										saveNumberFont( {
-											family: select.value,
-											google: select.google,
-										} );
-									}}
-									onFontArrayChange={( values ) => saveNumberFont( values )}
-									googleFont={numberFont[ 0 ].google}
-									onGoogleFont={( value ) => saveNumberFont( { google: value } )}
-									loadGoogleFont={numberFont[ 0 ].loadGoogle}
-									onLoadGoogleFont={( value ) => saveNumberFont( { loadGoogle: value } )}
-									fontVariant={numberFont[ 0 ].variant}
-									onFontVariant={( value ) => saveNumberFont( { variant: value } )}
-									fontWeight={numberFont[ 0 ].weight}
-									onFontWeight={( value ) => saveNumberFont( { weight: value } )}
-									fontStyle={numberFont[ 0 ].style}
-									onFontStyle={( value ) => saveNumberFont( { style: value } )}
-									fontSubset={numberFont[ 0 ].subset}
-									onFontSubset={( value ) => saveNumberFont( { subset: value } )}
-								/>
-							</KadencePanelBody>
-						)}
-						{enableTimer && (
-							<KadencePanelBody
-								title={__( 'Label Settings', 'kadence-blocks' )}
-								initialOpen={false}
-								panelName={'kb-countdown-label-settings'}
-							>
-								<PopColorControl
-									label={__( 'Color', 'kadence-blocks' )}
-									value={( labelColor ? labelColor : '' )}
-									default={''}
-									onChange={value => setAttributes( { labelColor: value } )}
-								/>
-								<TypographyControls
-									fontGroup={'label-item'}
-									fontSize={labelFont[ 0 ].size}
-									onFontSize={( value ) => saveLabelFont( { size: value } )}
-									fontSizeType={labelFont[ 0 ].sizeType}
-									onFontSizeType={( value ) => saveLabelFont( { sizeType: value } )}
-									lineHeight={labelFont[ 0 ].lineHeight}
-									onLineHeight={( value ) => saveLabelFont( { lineHeight: value } )}
-									lineHeightType={labelFont[ 0 ].lineType}
-									onLineHeightType={( value ) => saveLabelFont( { lineType: value } )}
-									reLetterSpacing={labelFont[ 0 ].letterSpacing}
-									onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
-									letterSpacingType={labelFont[ 0 ].letterType}
-									onLetterSpacingType={( value ) => saveLabelFont( { letterType: value } )}
-									textTransform={labelFont[ 0 ].textTransform}
-									onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
-									fontFamily={labelFont[ 0 ].family}
-									onFontFamily={( value ) => saveLabelFont( { family: value } )}
-									onFontChange={( select ) => {
-										saveLabelFont( {
-											family: select.value,
-											google: select.google,
-										} );
-									}}
-									onFontArrayChange={( values ) => saveLabelFont( values )}
-									googleFont={labelFont[ 0 ].google}
-									onGoogleFont={( value ) => saveLabelFont( { google: value } )}
-									loadGoogleFont={labelFont[ 0 ].loadGoogle}
-									onLoadGoogleFont={( value ) => saveLabelFont( { loadGoogle: value } )}
-									fontVariant={labelFont[ 0 ].variant}
-									onFontVariant={( value ) => saveLabelFont( { variant: value } )}
-									fontWeight={labelFont[ 0 ].weight}
-									onFontWeight={( value ) => saveLabelFont( { weight: value } )}
-									fontStyle={labelFont[ 0 ].style}
-									onFontStyle={( value ) => saveLabelFont( { style: value } )}
-									fontSubset={labelFont[ 0 ].subset}
-									onFontSubset={( value ) => saveLabelFont( { subset: value } )}
-								/>
-							</KadencePanelBody>
-						)}
-						{enableTimer && '' !== preLabel && (
-							<KadencePanelBody
-								title={__( 'Pre Text', 'kadence-blocks' )}
-								initialOpen={false}
-								panelName={'kb-countdown-pre-text'}
-							>
-								<PopColorControl
-									label={__( 'Color', 'kadence-blocks' )}
-									value={( preLabelColor ? preLabelColor : '' )}
-									default={''}
-									onChange={value => setAttributes( { preLabelColor: value } )}
-								/>
-								<TypographyControls
-									fontGroup={'prelabel-item'}
-									fontSize={preLabelFont[ 0 ].size}
-									onFontSize={( value ) => savePreFont( { size: value } )}
-									fontSizeType={preLabelFont[ 0 ].sizeType}
-									onFontSizeType={( value ) => savePreFont( { sizeType: value } )}
-									lineHeight={preLabelFont[ 0 ].lineHeight}
-									onLineHeight={( value ) => savePreFont( { lineHeight: value } )}
-									lineHeightType={preLabelFont[ 0 ].lineType}
-									onLineHeightType={( value ) => savePreFont( { lineType: value } )}
-									reLetterSpacing={preLabelFont[ 0 ].letterSpacing}
-									onLetterSpacing={( value ) => savePreFont( { letterSpacing: value } )}
-									letterSpacingType={preLabelFont[ 0 ].letterType}
-									onLetterSpacingType={( value ) => savePreFont( { letterType: value } )}
-									textTransform={preLabelFont[ 0 ].textTransform}
-									onTextTransform={( value ) => savePreFont( { textTransform: value } )}
-									fontFamily={preLabelFont[ 0 ].family}
-									onFontFamily={( value ) => savePreFont( { family: value } )}
-									onFontChange={( select ) => {
-										savePreFont( {
-											family: select.value,
-											google: select.google,
-										} );
-									}}
-									onFontArrayChange={( values ) => savePreFont( values )}
-									googleFont={preLabelFont[ 0 ].google}
-									onGoogleFont={( value ) => savePreFont( { google: value } )}
-									loadGoogleFont={preLabelFont[ 0 ].loadGoogle}
-									onLoadGoogleFont={( value ) => savePreFont( { loadGoogle: value } )}
-									fontVariant={preLabelFont[ 0 ].variant}
-									onFontVariant={( value ) => savePreFont( { variant: value } )}
-									fontWeight={preLabelFont[ 0 ].weight}
-									onFontWeight={( value ) => savePreFont( { weight: value } )}
-									fontStyle={preLabelFont[ 0 ].style}
-									onFontStyle={( value ) => savePreFont( { style: value } )}
-									fontSubset={preLabelFont[ 0 ].subset}
-									onFontSubset={( value ) => savePreFont( { subset: value } )}
-								/>
-							</KadencePanelBody>
-						)}
-						{enableTimer && '' !== postLabel && (
-							<KadencePanelBody
-								title={__( 'Post Text', 'kadence-blocks' )}
-								initialOpen={false}
-								panelName={'kb-countdown-post-text'}
-							>
-								<PopColorControl
-									label={__( 'Color', 'kadence-blocks' )}
-									value={( postLabelColor ? postLabelColor : '' )}
-									default={''}
-									onChange={value => setAttributes( { postLabelColor: value } )}
-								/>
-								<TypographyControls
-									fontGroup={'postlabel-item'}
-									fontSize={postLabelFont[ 0 ].size}
-									onFontSize={( value ) => savePostFont( { size: value } )}
-									fontSizeType={postLabelFont[ 0 ].sizeType}
-									onFontSizeType={( value ) => savePostFont( { sizeType: value } )}
-									lineHeight={postLabelFont[ 0 ].lineHeight}
-									onLineHeight={( value ) => savePostFont( { lineHeight: value } )}
-									lineHeightType={postLabelFont[ 0 ].lineType}
-									onLineHeightType={( value ) => savePostFont( { lineType: value } )}
-									reLetterSpacing={postLabelFont[ 0 ].letterSpacing}
-									onLetterSpacing={( value ) => savePostFont( { letterSpacing: value } )}
-									letterSpacingType={postLabelFont[ 0 ].letterType}
-									onLetterSpacingType={( value ) => savePostFont( { letterType: value } )}
-									textTransform={postLabelFont[ 0 ].textTransform}
-									onTextTransform={( value ) => savePostFont( { textTransform: value } )}
-									fontFamily={postLabelFont[ 0 ].family}
-									onFontFamily={( value ) => savePostFont( { family: value } )}
-									onFontChange={( select ) => {
-										savePostFont( {
-											family: select.value,
-											google: select.google,
-										} );
-									}}
-									onFontArrayChange={( values ) => savePostFont( values )}
-									googleFont={postLabelFont[ 0 ].google}
-									onGoogleFont={( value ) => savePostFont( { google: value } )}
-									loadGoogleFont={postLabelFont[ 0 ].loadGoogle}
-									onLoadGoogleFont={( value ) => savePostFont( { loadGoogle: value } )}
-									fontVariant={postLabelFont[ 0 ].variant}
-									onFontVariant={( value ) => savePostFont( { variant: value } )}
-									fontWeight={postLabelFont[ 0 ].weight}
-									onFontWeight={( value ) => savePostFont( { weight: value } )}
-									fontStyle={postLabelFont[ 0 ].style}
-									onFontStyle={( value ) => savePostFont( { style: value } )}
-									fontSubset={postLabelFont[ 0 ].subset}
-									onFontSubset={( value ) => savePostFont( { subset: value } )}
-								/>
-							</KadencePanelBody>
-						)}
-						<KadencePanelBody
-							title={__( 'Container Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-coutdown-container-settings'}
-						>
-							{showSettings( 'container', 'kadence/countdown' ) && (
-								<>
-									<PopColorControl
-										label={__( 'Background Color', 'kadence-blocks' )}
-										value={( background ? background : '' )}
-										default={''}
-										onChange={value => setAttributes( { background: value } )}
-									/>
-									<PopColorControl
-										label={__( 'Border Color', 'kadence-blocks' )}
-										value={( border ? border : '' )}
-										default={''}
-										onChange={value => setAttributes( { border: value } )}
-									/>
-									<ResponsiveMeasurementControls
-										label={__( 'Border Width', 'kadence-blocks' )}
-										value={borderWidth}
-										control={borderWidthControl}
-										tabletValue={tabletBorderWidth}
-										mobileValue={mobileBorderWidth}
-										onChange={( value ) => setAttributes( { borderWidth: value } )}
-										onChangeTablet={( value ) => setAttributes( { tabletBorderWidth: value } )}
-										onChangeMobile={( value ) => setAttributes( { mobileBorderWidth: value } )}
-										onChangeControl={( value ) => setBorderWidthControl( value )}
-										min={0}
-										max={40}
-										step={1}
-										unit={'px'}
-										units={[ 'px' ]}
-										showUnit={true}
-										preset={[ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ]}
-									/>
-									<MeasurementControls
-										label={__( 'Border Radius', 'kadence-blocks' )}
-										measurement={borderRadius}
-										control={borderRadiusControl}
-										onChange={( value ) => setAttributes( { borderRadius: value } )}
-										onControl={( value ) => setBorderRadiusControl( value )}
-										min={0}
-										max={200}
-										step={1}
-										controlTypes={[
-											{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-											{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
-										]}
-										firstIcon={topLeftIcon}
-										secondIcon={topRightIcon}
-										thirdIcon={bottomRightIcon}
-										fourthIcon={bottomLeftIcon}
-									/>
-									<ResponsiveMeasurementControls
-										label={__( 'Container Padding', 'kadence-blocks' )}
-										value={containerPadding}
-										control={paddingControl}
-										tabletValue={containerTabletPadding}
-										mobileValue={containerMobilePadding}
-										onChange={( value ) => setAttributes( { containerPadding: value } )}
-										onChangeTablet={( value ) => setAttributes( { containerTabletPadding: value } )}
-										onChangeMobile={( value ) => setAttributes( { containerMobilePadding: value } )}
-										onChangeControl={( value ) => setPaddingControl( value )}
-										min={paddingMin}
-										max={paddingMax}
-										step={paddingStep}
-										unit={paddingType}
-										units={[ 'px', 'em', 'rem', '%' ]}
-										onUnit={( value ) => setAttributes( { paddingType: value } )}
-									/>
-									<ResponsiveMeasurementControls
-										label={__( 'Container Margin', 'kadence-blocks' )}
-										value={containerMargin}
-										control={marginControl}
-										tabletValue={containerTabletMargin}
-										mobileValue={containerMobileMargin}
-										onChange={( value ) => setAttributes( { containerMargin: value } )}
-										onChangeTablet={( value ) => setAttributes( { containerTabletMargin: value } )}
-										onChangeMobile={( value ) => setAttributes( { containerMobileMargin: value } )}
-										onChangeControl={( value ) => setMarginControl( value )}
-										min={marginMin}
-										max={marginMax}
-										step={marginStep}
-										unit={marginType}
-										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-										onUnit={( value ) => setAttributes( { marginType: value } )}
-									/>
-								</>
-							)}
-						</KadencePanelBody>
-						<KadencePanelBody
-							title={__( 'Visibility Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-countdown-visibility-settings'}
-						>
-							<ToggleControl
-								label={__( 'Hide on Desktop', 'kadence-blocks' )}
-								checked={( undefined !== vsdesk ? vsdesk : false )}
-								onChange={( value ) => setAttributes( { vsdesk: value } )}
-							/>
-							<ToggleControl
-								label={__( 'Hide on Tablet', 'kadence-blocks' )}
-								checked={( undefined !== vstablet ? vstablet : false )}
-								onChange={( value ) => setAttributes( { vstablet: value } )}
-							/>
-							<ToggleControl
-								label={__( 'Hide on Mobile', 'kadence-blocks' )}
-								checked={( undefined !== vsmobile ? vsmobile : false )}
-								onChange={( value ) => setAttributes( { vsmobile: value } )}
-							/>
-						</KadencePanelBody>
+								</KadencePanelBody>
+
+							</>
+						}
+
 					</InspectorControls>
 				</>
 			)}

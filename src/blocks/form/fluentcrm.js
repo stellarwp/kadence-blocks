@@ -20,11 +20,11 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
+import {
 	ToggleControl,
 	Spinner,
 	SelectControl,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * Build the Measure controls

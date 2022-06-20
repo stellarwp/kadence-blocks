@@ -14,18 +14,20 @@ import {
 	InlineTypographyControls,
 	ResponsiveMeasurementControls,
 	ResponsiveRangeControls,
-	KadenceRange,
+	RangeControl,
 	KadencePanelBody,
 	URLInputControl,
 	WebfontLoader,
 	HeadingLevelIcon,
 	InlinePopColorControl,
 	ResponsiveAlignControls,
+	InspectorControlTabs,
 } from '@kadence/components';
+
 import {
 	KadenceColorOutput,
 	showSettings,
-	getPreviewSize
+	getPreviewSize,
 } from '@kadence/helpers';
 
 /**
@@ -54,19 +56,21 @@ import {
 	InspectorAdvancedControls,
 	RichText,
 	getColorClassName,
-	useBlockProps
+	useBlockProps,
 } from '@wordpress/block-editor';
 import {
 	Fragment,
 	useEffect,
-	useState
+	useState,
 } from '@wordpress/element';
+
 import {
 	ToolbarGroup,
 	Spinner,
 	SelectControl,
 	TextControl,
 } from '@wordpress/components';
+
 import {
 	applyFilters,
 } from '@wordpress/hooks';
@@ -81,11 +85,90 @@ const ANCHOR_REGEX = /[\s#]/g;
 function KadenceAdvancedHeading( props ) {
 
 	const { attributes, className, setAttributes, mergeBlocks, onReplace, clientId, getPreviewDevice, addUniqueID, isUniqueID, isUniqueBlock, context } = props;
-	const { inQueryBlock, uniqueID, align, level, content, color, colorClass, textShadow, mobileAlign, tabletAlign, size, sizeType, lineType, lineHeight, tabLineHeight, tabSize, mobileSize, mobileLineHeight, letterSpacing, typography, fontVariant, fontWeight, fontStyle, fontSubset, googleFont, loadGoogleFont, marginType, topMargin, bottomMargin, markSize, markSizeType, markLineHeight, markLineType, markLetterSpacing, markTypography, markGoogleFont, markLoadGoogleFont, markFontSubset, markFontVariant, markFontWeight, markFontStyle, markPadding, markPaddingControl, markColor, markBG, markBGOpacity, markBorder, markBorderWidth, markBorderOpacity, markBorderStyle, anchor, textTransform, markTextTransform, kadenceAnimation, kadenceAOSOptions, htmlTag, leftMargin, rightMargin, tabletMargin, mobileMargin, padding, tabletPadding, mobilePadding, paddingType, markMobilePadding, markTabPadding, loadItalic, kadenceDynamic, link, linkTarget, linkNoFollow, linkSponsored, background, backgroundColorClass, linkStyle, linkColor, linkHoverColor } = attributes;
+	const {
+		inQueryBlock,
+		uniqueID,
+		align,
+		level,
+		content,
+		color,
+		colorClass,
+		textShadow,
+		mobileAlign,
+		tabletAlign,
+		size,
+		sizeType,
+		lineType,
+		lineHeight,
+		tabLineHeight,
+		tabSize,
+		mobileSize,
+		mobileLineHeight,
+		letterSpacing,
+		typography,
+		fontVariant,
+		fontWeight,
+		fontStyle,
+		fontSubset,
+		googleFont,
+		loadGoogleFont,
+		marginType,
+		topMargin,
+		bottomMargin,
+		markSize,
+		markSizeType,
+		markLineHeight,
+		markLineType,
+		markLetterSpacing,
+		markTypography,
+		markGoogleFont,
+		markLoadGoogleFont,
+		markFontSubset,
+		markFontVariant,
+		markFontWeight,
+		markFontStyle,
+		markPadding,
+		markPaddingControl,
+		markColor,
+		markBG,
+		markBGOpacity,
+		markBorder,
+		markBorderWidth,
+		markBorderOpacity,
+		markBorderStyle,
+		anchor,
+		textTransform,
+		markTextTransform,
+		kadenceAnimation,
+		kadenceAOSOptions,
+		htmlTag,
+		leftMargin,
+		rightMargin,
+		tabletMargin,
+		mobileMargin,
+		padding,
+		tabletPadding,
+		mobilePadding,
+		paddingType,
+		markMobilePadding,
+		markTabPadding,
+		loadItalic,
+		kadenceDynamic,
+		link,
+		linkTarget,
+		linkNoFollow,
+		linkSponsored,
+		background,
+		backgroundColorClass,
+		linkStyle,
+		linkColor,
+		linkHoverColor,
+	} = attributes;
 
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ markPaddingControls, setMarkPaddingControls ] = useState( 'individual' );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
 
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
@@ -466,338 +549,354 @@ function KadenceAdvancedHeading( props ) {
 			</BlockControls>
 			{showSettings( 'allSettings', 'kadence/advancedheading' ) && (
 				<InspectorControls>
-					<KadencePanelBody
-						title={__( 'Settings', 'kadence-blocks' )}
-						panelName={'kb-adv-heading-settings'}
-					>
-						<div className="kb-tag-level-control components-base-control">
-							<p className="kb-component-label">{__( 'HTML Tag', 'kadence-blocks' )}</p>
-							<ToolbarGroup
-								isCollapsed={false}
-								label={__( 'Change HTML Tag', 'kadence-blocks' )}
-								controls={headingOptions}
-							/>
-						</div>
-						<ResponsiveAlignControls
-							label={__( 'Text Alignment', 'kadence-blocks' )}
-							value={( align ? align : '' )}
-							mobileValue={( mobileAlign ? mobileAlign : '' )}
-							tabletValue={( tabletAlign ? tabletAlign : '' )}
-							onChange={( nextAlign ) => setAttributes( { align: nextAlign } )}
-							onChangeTablet={( nextAlign ) => setAttributes( { tabletAlign: nextAlign } )}
-							onChangeMobile={( nextAlign ) => setAttributes( { mobileAlign: nextAlign } )}
-						/>
-						{showSettings( 'colorSettings', 'kadence/advancedheading' ) && (
-							<Fragment>
-								<PopColorControl
-									label={__( 'Color', 'kadence-blocks' )}
-									value={( color ? color : '' )}
-									default={''}
-									onChange={value => setAttributes( { color: value } )}
-									onClassChange={value => setAttributes( { colorClass: value } )}
+
+					<InspectorControlTabs
+						panelName={'advanced-heading'}
+						setActiveTab={( value ) => setActiveTab( value )}
+						activeTab={activeTab}
+					/>
+
+					{( activeTab === 'general' ) &&
+						<>
+							<KadencePanelBody
+								title={__( 'Settings', 'kadence-blocks' )}
+								panelName={'kb-adv-heading-settings'}
+							>
+								<div className="kb-tag-level-control components-base-control">
+									<p className="kb-component-label">{__( 'HTML Tag', 'kadence-blocks' )}</p>
+									<ToolbarGroup
+										isCollapsed={false}
+										label={__( 'Change HTML Tag', 'kadence-blocks' )}
+										controls={headingOptions}
+									/>
+								</div>
+								<ResponsiveAlignControls
+									label={__( 'Text Alignment', 'kadence-blocks' )}
+									value={( align ? align : '' )}
+									mobileValue={( mobileAlign ? mobileAlign : '' )}
+									tabletValue={( tabletAlign ? tabletAlign : '' )}
+									onChange={( nextAlign ) => setAttributes( { align: nextAlign } )}
+									onChangeTablet={( nextAlign ) => setAttributes( { tabletAlign: nextAlign } )}
+									onChangeMobile={( nextAlign ) => setAttributes( { mobileAlign: nextAlign } )}
 								/>
-								<PopColorControl
-									label={__( 'Background Color', 'kadence-blocks' )}
-									value={( background ? background : '' )}
-									default={''}
-									onChange={value => setAttributes( { background: value } )}
-									onClassChange={value => setAttributes( { backgroundColorClass: value } )}
+								{showSettings( 'colorSettings', 'kadence/advancedheading' ) && (
+									<Fragment>
+										<PopColorControl
+											label={__( 'Color', 'kadence-blocks' )}
+											value={( color ? color : '' )}
+											default={''}
+											onChange={value => setAttributes( { color: value } )}
+											onClassChange={value => setAttributes( { colorClass: value } )}
+										/>
+										<PopColorControl
+											label={__( 'Background Color', 'kadence-blocks' )}
+											value={( background ? background : '' )}
+											default={''}
+											onChange={value => setAttributes( { background: value } )}
+											onClassChange={value => setAttributes( { backgroundColorClass: value } )}
+										/>
+									</Fragment>
+								)}
+								{showSettings( 'sizeSettings', 'kadence/advancedheading' ) && (
+									<Fragment>
+										<ResponsiveRangeControls
+											label={__( 'Font Size', 'kadence-blocks' )}
+											value={( size ? size : '' )}
+											onChange={value => setAttributes( { size: value } )}
+											tabletValue={( tabSize ? tabSize : '' )}
+											onChangeTablet={( value ) => setAttributes( { tabSize: value } )}
+											mobileValue={( mobileSize ? mobileSize : '' )}
+											onChangeMobile={( value ) => setAttributes( { mobileSize: value } )}
+											min={fontMin}
+											max={fontMax}
+											step={fontStep}
+											unit={sizeType}
+											onUnit={( value ) => setAttributes( { sizeType: value } )}
+											units={[ 'px', 'em', 'rem', 'vw' ]}
+										/>
+										<ResponsiveRangeControls
+											label={__( 'Line Height', 'kadence-blocks' )}
+											value={( lineHeight ? lineHeight : '' )}
+											onChange={value => setAttributes( { lineHeight: value } )}
+											tabletValue={( tabLineHeight ? tabLineHeight : '' )}
+											onChangeTablet={( value ) => setAttributes( { tabLineHeight: value } )}
+											mobileValue={( mobileLineHeight ? mobileLineHeight : '' )}
+											onChangeMobile={( value ) => setAttributes( { mobileLineHeight: value } )}
+											min={lineMin}
+											max={lineMax}
+											step={lineStep}
+											unit={lineType}
+											onUnit={( value ) => setAttributes( { lineType: value } )}
+											units={[ 'px', 'em', 'rem' ]}
+										/>
+									</Fragment>
+								)}
+							</KadencePanelBody>
+							{showSettings( 'advancedSettings', 'kadence/advancedheading' ) && (
+								<KadencePanelBody
+									title={__( 'Advanced Typography Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-adv-heading-typography-settings'}
+								>
+									<TypographyControls
+										fontGroup={'heading'}
+										letterSpacing={letterSpacing}
+										onLetterSpacing={( value ) => setAttributes( { letterSpacing: value } )}
+										fontFamily={typography}
+										onFontFamily={( value ) => setAttributes( { typography: value } )}
+										onFontChange={( select ) => {
+											setAttributes( {
+												typography: select.value,
+												googleFont: select.google,
+											} );
+										}}
+										googleFont={googleFont}
+										onGoogleFont={( value ) => setAttributes( { googleFont: value } )}
+										loadGoogleFont={loadGoogleFont}
+										onLoadGoogleFont={( value ) => setAttributes( { loadGoogleFont: value } )}
+										fontVariant={fontVariant}
+										onFontVariant={( value ) => setAttributes( { fontVariant: value } )}
+										fontWeight={fontWeight}
+										onFontWeight={( value ) => setAttributes( { fontWeight: value } )}
+										fontStyle={fontStyle}
+										onFontStyle={( value ) => setAttributes( { fontStyle: value } )}
+										fontSubset={fontSubset}
+										onFontSubset={( value ) => setAttributes( { fontSubset: value } )}
+										textTransform={textTransform}
+										onTextTransform={( value ) => setAttributes( { textTransform: value } )}
+										loadItalic={loadItalic}
+										onLoadItalic={( value ) => setAttributes( { loadItalic: value } )}
+									/>
+								</KadencePanelBody>
+							)}
+							{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
+								<KadencePanelBody
+									title={__( 'Highlight Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-adv-heading-highlight-settings'}
+								>
+									<PopColorControl
+										label={__( 'Highlight Color', 'kadence-blocks' )}
+										value={( markColor ? markColor : '' )}
+										default={''}
+										onChange={value => setAttributes( { markColor: value } )}
+									/>
+									<PopColorControl
+										label={__( 'Highlight Background', 'kadence-blocks' )}
+										value={( markBG ? markBG : '' )}
+										default={''}
+										onChange={value => setAttributes( { markBG: value } )}
+										opacityValue={markBGOpacity}
+										onOpacityChange={value => setAttributes( { markBGOpacity: value } )}
+										onArrayChange={( color, opacity ) => setAttributes( { markBG: color, markBGOpacity: opacity } )}
+									/>
+									<PopColorControl
+										label={__( 'Highlight Border Color', 'kadence-blocks' )}
+										value={( markBorder ? markBorder : '' )}
+										default={''}
+										onChange={value => setAttributes( { markBorder: value } )}
+										opacityValue={markBorderOpacity}
+										onOpacityChange={value => setAttributes( { markBorderOpacity: value } )}
+										onArrayChange={( color, opacity ) => setAttributes( { markBorder: color, markBorderOpacity: opacity } )}
+									/>
+									<SelectControl
+										label={__( 'Highlight Border Style', 'kadence-blocks' )}
+										value={markBorderStyle}
+										options={[
+											{ value: 'solid', label: __( 'Solid', 'kadence-blocks' ) },
+											{ value: 'dashed', label: __( 'Dashed', 'kadence-blocks' ) },
+											{ value: 'dotted', label: __( 'Dotted', 'kadence-blocks' ) },
+										]}
+										onChange={value => setAttributes( { markBorderStyle: value } )}
+									/>
+									<RangeControl
+										label={__( 'Highlight Border Width', 'kadence-blocks' )}
+										value={markBorderWidth}
+										onChange={value => setAttributes( { markBorderWidth: value } )}
+										min={0}
+										max={20}
+										step={1}
+									/>
+									<TypographyControls
+										fontGroup={'heading'}
+										fontSize={markSize}
+										onFontSize={( value ) => setAttributes( { markSize: value } )}
+										fontSizeType={markSizeType}
+										onFontSizeType={( value ) => setAttributes( { markSizeType: value } )}
+										lineHeight={markLineHeight}
+										onLineHeight={( value ) => setAttributes( { markLineHeight: value } )}
+										lineHeightType={markLineType}
+										onLineHeightType={( value ) => setAttributes( { markLineType: value } )}
+										letterSpacing={markLetterSpacing}
+										onLetterSpacing={( value ) => setAttributes( { markLetterSpacing: value } )}
+										fontFamily={markTypography}
+										onFontFamily={( value ) => setAttributes( { markTypography: value } )}
+										onFontChange={( select ) => {
+											setAttributes( {
+												markTypography: select.value,
+												markGoogleFont: select.google,
+											} );
+										}}
+										googleFont={markGoogleFont}
+										onGoogleFont={( value ) => setAttributes( { markGoogleFont: value } )}
+										loadGoogleFont={markLoadGoogleFont}
+										onLoadGoogleFont={( value ) => setAttributes( { markLoadGoogleFont: value } )}
+										fontVariant={markFontVariant}
+										onFontVariant={( value ) => setAttributes( { markFontVariant: value } )}
+										fontWeight={markFontWeight}
+										onFontWeight={( value ) => setAttributes( { markFontWeight: value } )}
+										fontStyle={markFontStyle}
+										onFontStyle={( value ) => setAttributes( { markFontStyle: value } )}
+										fontSubset={markFontSubset}
+										onFontSubset={( value ) => setAttributes( { markFontSubset: value } )}
+										textTransform={markTextTransform}
+										onTextTransform={( value ) => setAttributes( { markTextTransform: value } )}
+									/>
+									<ResponsiveMeasurementControls
+										label={__( 'Padding', 'kadence-blocks' )}
+										value={markPadding}
+										control={markPaddingControls}
+										tabletValue={markTabPadding}
+										mobileValue={markMobilePadding}
+										onChange={( value ) => setAttributes( { markPadding: value } )}
+										onChangeTablet={( value ) => setAttributes( { markTabPadding: value } )}
+										onChangeMobile={( value ) => setAttributes( { markMobilePadding: value } )}
+										onChangeControl={( value ) => setMarkPaddingControls( value )}
+										min={0}
+										max={100}
+										step={1}
+										unit={'px'}
+										units={[ 'px' ]}
+										showUnit={true}
+									/>
+								</KadencePanelBody>
+							)}
+							{showSettings( 'linkSettings', 'kadence/advancedheading' ) && (
+								<KadencePanelBody
+									title={__( 'Link Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-adv-heading-link-settings'}
+								>
+									<PopColorControl
+										label={__( 'Link Color', 'kadence-blocks' )}
+										swatchLabel={__( 'Link Color', 'kadence-blocks' )}
+										value={( linkColor ? linkColor : '' )}
+										default={''}
+										onChange={value => setAttributes( { linkColor: value } )}
+										swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
+										value2={( linkHoverColor ? linkHoverColor : '' )}
+										default2={''}
+										onChange2={value => setAttributes( { linkHoverColor: value } )}
+									/>
+									<SelectControl
+										label={__( 'Link Style', 'kadence-blocks' )}
+										value={linkStyle}
+										options={[
+											{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
+											{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
+											{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
+											{ value: 'hover_underline', label: __( 'Underline on Hover', 'kadence-blocks' ) },
+										]}
+										onChange={value => setAttributes( { linkStyle: value } )}
+									/>
+									<URLInputControl
+										label={__( 'Heading Wrap Link', 'kadence-blocks' )}
+										url={link}
+										onChangeUrl={value => setAttributes( { link: value } )}
+										additionalControls={true}
+										opensInNewTab={( undefined !== linkTarget ? linkTarget : false )}
+										onChangeTarget={value => setAttributes( { linkTarget: value } )}
+										linkNoFollow={( undefined !== linkNoFollow ? linkNoFollow : false )}
+										onChangeFollow={value => setAttributes( { linkNoFollow: value } )}
+										linkSponsored={( undefined !== linkSponsored ? linkSponsored : false )}
+										onChangeSponsored={value => setAttributes( { linkSponsored: value } )}
+										dynamicAttribute={'link'}
+										allowClear={true}
+										{...props}
+									/>
+								</KadencePanelBody>
+							)}
+						</>
+					}
+
+					{( activeTab === 'style' ) &&
+						<>
+							{showSettings( 'marginSettings', 'kadence/advancedheading' ) && (
+								<KadencePanelBody
+									title={__( 'Spacing Settings', 'kadence-blocks' )}
+									initialOpen={false}
+									panelName={'kb-adv-heading-spacing-settings'}
+								>
+									<ResponsiveMeasurementControls
+										label={__( 'Padding', 'kadence-blocks' )}
+										value={padding}
+										control={paddingControl}
+										tabletValue={tabletPadding}
+										mobileValue={mobilePadding}
+										onChange={( value ) => setAttributes( { padding: value } )}
+										onChangeTablet={( value ) => setAttributes( { tabletPadding: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobilePadding: value } )}
+										onChangeControl={( value ) => setPaddingControl( value )}
+										min={paddingMin}
+										max={paddingMax}
+										step={paddingStep}
+										unit={paddingType}
+										units={[ 'px', 'em', 'rem', '%' ]}
+										onUnit={( value ) => setAttributes( { paddingType: value } )}
+									/>
+									<ResponsiveMeasurementControls
+										label={__( 'Margin', 'kadence-blocks' )}
+										value={[ ( undefined !== topMargin ? topMargin : '' ), ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== leftMargin ? leftMargin : '' ) ]}
+										control={marginControl}
+										tabletValue={tabletMargin}
+										mobileValue={mobileMargin}
+										onChange={( value ) => {
+											setAttributes( { topMargin: value[ 0 ], rightMargin: value[ 1 ], bottomMargin: value[ 2 ], leftMargin: value[ 3 ] } );
+										}}
+										onChangeTablet={( value ) => setAttributes( { tabletMargin: value } )}
+										onChangeMobile={( value ) => setAttributes( { mobileMargin: value } )}
+										onChangeControl={( value ) => setMarginControl( value )}
+										min={marginMin}
+										max={marginMax}
+										step={marginStep}
+										unit={marginType}
+										units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+										onUnit={( value ) => setAttributes( { marginType: value } )}
+									/>
+								</KadencePanelBody>
+							)}
+							<KadencePanelBody
+								title={__( 'Text Shadow Settings', 'kadence-blocks' )}
+								initialOpen={false}
+								panelName={'kb-adv-heading-text-shadow'}
+							>
+								<TextShadowControl
+									label={__( 'Text Shadow', 'kadence-blocks' )}
+									enable={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable ? textShadow[ 0 ].enable : false )}
+									color={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].color ? textShadow[ 0 ].color : 'rgba(0, 0, 0, 0.2)' )}
+									colorDefault={'rgba(0, 0, 0, 0.2)'}
+									hOffset={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 )}
+									vOffset={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 )}
+									blur={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 )}
+									onEnableChange={value => {
+										saveShadow( { enable: value } );
+									}}
+									onColorChange={value => {
+										saveShadow( { color: value } );
+									}}
+									onHOffsetChange={value => {
+										saveShadow( { hOffset: value } );
+									}}
+									onVOffsetChange={value => {
+										saveShadow( { vOffset: value } );
+									}}
+									onBlurChange={value => {
+										saveShadow( { blur: value } );
+									}}
 								/>
-							</Fragment>
-						)}
-						{showSettings( 'sizeSettings', 'kadence/advancedheading' ) && (
-							<Fragment>
-								<ResponsiveRangeControls
-									label={__( 'Font Size', 'kadence-blocks' )}
-									value={( size ? size : '' )}
-									onChange={value => setAttributes( { size: value } )}
-									tabletValue={( tabSize ? tabSize : '' )}
-									onChangeTablet={( value ) => setAttributes( { tabSize: value } )}
-									mobileValue={( mobileSize ? mobileSize : '' )}
-									onChangeMobile={( value ) => setAttributes( { mobileSize: value } )}
-									min={fontMin}
-									max={fontMax}
-									step={fontStep}
-									unit={sizeType}
-									onUnit={( value ) => setAttributes( { sizeType: value } )}
-									units={[ 'px', 'em', 'rem', 'vw' ]}
-								/>
-								<ResponsiveRangeControls
-									label={__( 'Line Height', 'kadence-blocks' )}
-									value={( lineHeight ? lineHeight : '' )}
-									onChange={value => setAttributes( { lineHeight: value } )}
-									tabletValue={( tabLineHeight ? tabLineHeight : '' )}
-									onChangeTablet={( value ) => setAttributes( { tabLineHeight: value } )}
-									mobileValue={( mobileLineHeight ? mobileLineHeight : '' )}
-									onChangeMobile={( value ) => setAttributes( { mobileLineHeight: value } )}
-									min={lineMin}
-									max={lineMax}
-									step={lineStep}
-									unit={lineType}
-									onUnit={( value ) => setAttributes( { lineType: value } )}
-									units={[ 'px', 'em', 'rem' ]}
-								/>
-							</Fragment>
-						)}
-					</KadencePanelBody>
-					{showSettings( 'advancedSettings', 'kadence/advancedheading' ) && (
-						<KadencePanelBody
-							title={__( 'Advanced Typography Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-adv-heading-typography-settings'}
-						>
-							<TypographyControls
-								fontGroup={'heading'}
-								letterSpacing={letterSpacing}
-								onLetterSpacing={( value ) => setAttributes( { letterSpacing: value } )}
-								fontFamily={typography}
-								onFontFamily={( value ) => setAttributes( { typography: value } )}
-								onFontChange={( select ) => {
-									setAttributes( {
-										typography: select.value,
-										googleFont: select.google,
-									} );
-								}}
-								googleFont={googleFont}
-								onGoogleFont={( value ) => setAttributes( { googleFont: value } )}
-								loadGoogleFont={loadGoogleFont}
-								onLoadGoogleFont={( value ) => setAttributes( { loadGoogleFont: value } )}
-								fontVariant={fontVariant}
-								onFontVariant={( value ) => setAttributes( { fontVariant: value } )}
-								fontWeight={fontWeight}
-								onFontWeight={( value ) => setAttributes( { fontWeight: value } )}
-								fontStyle={fontStyle}
-								onFontStyle={( value ) => setAttributes( { fontStyle: value } )}
-								fontSubset={fontSubset}
-								onFontSubset={( value ) => setAttributes( { fontSubset: value } )}
-								textTransform={textTransform}
-								onTextTransform={( value ) => setAttributes( { textTransform: value } )}
-								loadItalic={loadItalic}
-								onLoadItalic={( value ) => setAttributes( { loadItalic: value } )}
-							/>
-						</KadencePanelBody>
-					)}
-					{showSettings( 'highlightSettings', 'kadence/advancedheading' ) && (
-						<KadencePanelBody
-							title={__( 'Highlight Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-adv-heading-highlight-settings'}
-						>
-							<PopColorControl
-								label={__( 'Highlight Color', 'kadence-blocks' )}
-								value={( markColor ? markColor : '' )}
-								default={''}
-								onChange={value => setAttributes( { markColor: value } )}
-							/>
-							<PopColorControl
-								label={__( 'Highlight Background', 'kadence-blocks' )}
-								value={( markBG ? markBG : '' )}
-								default={''}
-								onChange={value => setAttributes( { markBG: value } )}
-								opacityValue={markBGOpacity}
-								onOpacityChange={value => setAttributes( { markBGOpacity: value } )}
-								onArrayChange={( color, opacity ) => setAttributes( { markBG: color, markBGOpacity: opacity } )}
-							/>
-							<PopColorControl
-								label={__( 'Highlight Border Color', 'kadence-blocks' )}
-								value={( markBorder ? markBorder : '' )}
-								default={''}
-								onChange={value => setAttributes( { markBorder: value } )}
-								opacityValue={markBorderOpacity}
-								onOpacityChange={value => setAttributes( { markBorderOpacity: value } )}
-								onArrayChange={( color, opacity ) => setAttributes( { markBorder: color, markBorderOpacity: opacity } )}
-							/>
-							<SelectControl
-								label={__( 'Highlight Border Style', 'kadence-blocks' )}
-								value={markBorderStyle}
-								options={[
-									{ value: 'solid', label: __( 'Solid', 'kadence-blocks' ) },
-									{ value: 'dashed', label: __( 'Dashed', 'kadence-blocks' ) },
-									{ value: 'dotted', label: __( 'Dotted', 'kadence-blocks' ) },
-								]}
-								onChange={value => setAttributes( { markBorderStyle: value } )}
-							/>
-							<KadenceRange
-								label={__( 'Highlight Border Width', 'kadence-blocks' )}
-								value={markBorderWidth}
-								onChange={value => setAttributes( { markBorderWidth: value } )}
-								min={0}
-								max={20}
-								step={1}
-							/>
-							<TypographyControls
-								fontGroup={'heading'}
-								fontSize={markSize}
-								onFontSize={( value ) => setAttributes( { markSize: value } )}
-								fontSizeType={markSizeType}
-								onFontSizeType={( value ) => setAttributes( { markSizeType: value } )}
-								lineHeight={markLineHeight}
-								onLineHeight={( value ) => setAttributes( { markLineHeight: value } )}
-								lineHeightType={markLineType}
-								onLineHeightType={( value ) => setAttributes( { markLineType: value } )}
-								letterSpacing={markLetterSpacing}
-								onLetterSpacing={( value ) => setAttributes( { markLetterSpacing: value } )}
-								fontFamily={markTypography}
-								onFontFamily={( value ) => setAttributes( { markTypography: value } )}
-								onFontChange={( select ) => {
-									setAttributes( {
-										markTypography: select.value,
-										markGoogleFont: select.google,
-									} );
-								}}
-								googleFont={markGoogleFont}
-								onGoogleFont={( value ) => setAttributes( { markGoogleFont: value } )}
-								loadGoogleFont={markLoadGoogleFont}
-								onLoadGoogleFont={( value ) => setAttributes( { markLoadGoogleFont: value } )}
-								fontVariant={markFontVariant}
-								onFontVariant={( value ) => setAttributes( { markFontVariant: value } )}
-								fontWeight={markFontWeight}
-								onFontWeight={( value ) => setAttributes( { markFontWeight: value } )}
-								fontStyle={markFontStyle}
-								onFontStyle={( value ) => setAttributes( { markFontStyle: value } )}
-								fontSubset={markFontSubset}
-								onFontSubset={( value ) => setAttributes( { markFontSubset: value } )}
-								textTransform={markTextTransform}
-								onTextTransform={( value ) => setAttributes( { markTextTransform: value } )}
-							/>
-							<ResponsiveMeasurementControls
-								label={__( 'Padding', 'kadence-blocks' )}
-								value={markPadding}
-								control={markPaddingControls}
-								tabletValue={markTabPadding}
-								mobileValue={markMobilePadding}
-								onChange={( value ) => setAttributes( { markPadding: value } )}
-								onChangeTablet={( value ) => setAttributes( { markTabPadding: value } )}
-								onChangeMobile={( value ) => setAttributes( { markMobilePadding: value } )}
-								onChangeControl={( value ) => setMarkPaddingControls( value )}
-								min={0}
-								max={100}
-								step={1}
-								unit={'px'}
-								units={[ 'px' ]}
-								showUnit={true}
-							/>
-						</KadencePanelBody>
-					)}
-					{showSettings( 'linkSettings', 'kadence/advancedheading' ) && (
-						<KadencePanelBody
-							title={__( 'Link Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-adv-heading-link-settings'}
-						>
-							<PopColorControl
-								label={__( 'Link Color', 'kadence-blocks' )}
-								swatchLabel={__( 'Link Color', 'kadence-blocks' )}
-								value={( linkColor ? linkColor : '' )}
-								default={''}
-								onChange={value => setAttributes( { linkColor: value } )}
-								swatchLabel2={__( 'Hover Color', 'kadence-blocks' )}
-								value2={( linkHoverColor ? linkHoverColor : '' )}
-								default2={''}
-								onChange2={value => setAttributes( { linkHoverColor: value } )}
-							/>
-							<SelectControl
-								label={__( 'Link Style', 'kadence-blocks' )}
-								value={linkStyle}
-								options={[
-									{ value: '', label: __( 'Unset', 'kadence-blocks' ) },
-									{ value: 'none', label: __( 'None', 'kadence-blocks' ) },
-									{ value: 'underline', label: __( 'Underline', 'kadence-blocks' ) },
-									{ value: 'hover_underline', label: __( 'Underline on Hover', 'kadence-blocks' ) },
-								]}
-								onChange={value => setAttributes( { linkStyle: value } )}
-							/>
-							<URLInputControl
-								label={__( 'Heading Wrap Link', 'kadence-blocks' )}
-								url={link}
-								onChangeUrl={value => setAttributes( { link: value } )}
-								additionalControls={true}
-								opensInNewTab={( undefined !== linkTarget ? linkTarget : false )}
-								onChangeTarget={value => setAttributes( { linkTarget: value } )}
-								linkNoFollow={( undefined !== linkNoFollow ? linkNoFollow : false )}
-								onChangeFollow={value => setAttributes( { linkNoFollow: value } )}
-								linkSponsored={( undefined !== linkSponsored ? linkSponsored : false )}
-								onChangeSponsored={value => setAttributes( { linkSponsored: value } )}
-								dynamicAttribute={'link'}
-								allowClear={true}
-								{...props}
-							/>
-						</KadencePanelBody>
-					)}
-					{showSettings( 'marginSettings', 'kadence/advancedheading' ) && (
-						<KadencePanelBody
-							title={__( 'Spacing Settings', 'kadence-blocks' )}
-							initialOpen={false}
-							panelName={'kb-adv-heading-spacing-settings'}
-						>
-							<ResponsiveMeasurementControls
-								label={__( 'Padding', 'kadence-blocks' )}
-								value={padding}
-								control={paddingControl}
-								tabletValue={tabletPadding}
-								mobileValue={mobilePadding}
-								onChange={( value ) => setAttributes( { padding: value } )}
-								onChangeTablet={( value ) => setAttributes( { tabletPadding: value } )}
-								onChangeMobile={( value ) => setAttributes( { mobilePadding: value } )}
-								onChangeControl={( value ) => setPaddingControl( value )}
-								min={paddingMin}
-								max={paddingMax}
-								step={paddingStep}
-								unit={paddingType}
-								units={[ 'px', 'em', 'rem', '%' ]}
-								onUnit={( value ) => setAttributes( { paddingType: value } )}
-							/>
-							<ResponsiveMeasurementControls
-								label={__( 'Margin', 'kadence-blocks' )}
-								value={[ ( undefined !== topMargin ? topMargin : '' ), ( undefined !== rightMargin ? rightMargin : '' ), ( undefined !== bottomMargin ? bottomMargin : '' ), ( undefined !== leftMargin ? leftMargin : '' ) ]}
-								control={marginControl}
-								tabletValue={tabletMargin}
-								mobileValue={mobileMargin}
-								onChange={( value ) => {
-									setAttributes( { topMargin: value[ 0 ], rightMargin: value[ 1 ], bottomMargin: value[ 2 ], leftMargin: value[ 3 ] } );
-								}}
-								onChangeTablet={( value ) => setAttributes( { tabletMargin: value } )}
-								onChangeMobile={( value ) => setAttributes( { mobileMargin: value } )}
-								onChangeControl={( value ) => setMarginControl( value )}
-								min={marginMin}
-								max={marginMax}
-								step={marginStep}
-								unit={marginType}
-								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-								onUnit={( value ) => setAttributes( { marginType: value } )}
-							/>
-						</KadencePanelBody>
-					)}
-					<KadencePanelBody
-						title={__( 'Text Shadow Settings', 'kadence-blocks' )}
-						initialOpen={false}
-						panelName={'kb-adv-heading-text-shadow'}
-					>
-						<TextShadowControl
-							label={__( 'Text Shadow', 'kadence-blocks' )}
-							enable={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].enable ? textShadow[ 0 ].enable : false )}
-							color={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].color ? textShadow[ 0 ].color : 'rgba(0, 0, 0, 0.2)' )}
-							colorDefault={'rgba(0, 0, 0, 0.2)'}
-							hOffset={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].hOffset ? textShadow[ 0 ].hOffset : 1 )}
-							vOffset={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].vOffset ? textShadow[ 0 ].vOffset : 1 )}
-							blur={( undefined !== textShadow && undefined !== textShadow[ 0 ] && undefined !== textShadow[ 0 ].blur ? textShadow[ 0 ].blur : 1 )}
-							onEnableChange={value => {
-								saveShadow( { enable: value } );
-							}}
-							onColorChange={value => {
-								saveShadow( { color: value } );
-							}}
-							onHOffsetChange={value => {
-								saveShadow( { hOffset: value } );
-							}}
-							onVOffsetChange={value => {
-								saveShadow( { vOffset: value } );
-							}}
-							onBlurChange={value => {
-								saveShadow( { blur: value } );
-							}}
-						/>
-					</KadencePanelBody>
+							</KadencePanelBody>
+						</>
+					}
 				</InspectorControls>
 			)}
 			<InspectorAdvancedControls>

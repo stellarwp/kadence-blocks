@@ -7,6 +7,7 @@ export { default as InlinePopColorControl } from './inline-pop-color';
 export { default as ResponsiveAlignControls } from './responsive-align-control';
 export { default as KadenceSelectPosts } from './select-posts-controls';
 export { default as WebfontLoader } from './web-font-loader';
+export { default as KadenceWebfontLoader } from './kadence-web-font-loader';
 export { default as HeadingLevelIcon } from './heading-level-icon';
 export { default as BoxShadowControl } from './box-shadow-control';
 export { default as DynamicImageControl } from './dynamic-image-control';
@@ -27,6 +28,7 @@ export { default as SmallResponsiveControl } from './small-responsive-control';
 export { default as ResponsiveControl } from './responsive-control';
 export { default as StepControls } from './step-control';
 export { default as OpacityControl } from './opacity-control';
+export { default as InspectorControlTabs } from './inspector-control-tabs';
 
 /* Links */
 export { default as DynamicLinkControl } from './links/dynamic-link-control';
@@ -41,6 +43,7 @@ export { default as TextHighlight } from './links/text-highlight';
 export { default as GenIcon } from './icons/gen-icon';
 export { default as IconControl } from './icons/icon-control';
 export { default as IconRender } from './icons/icon-render';
+export { default as IconPicker } from './icons/icon-picker';
 
 /* Typography */
 export { default as TypographyControls } from './typography/typography-control';
@@ -48,7 +51,7 @@ export { default as InlineTypographyControls } from './typography/inline-typogra
 export { default as TextShadowControl } from './typography/text-shadow-control';
 
 /* Range */
-export { default as KadenceRange } from './range/range-control';
+export { default as RangeControl } from './range/range-control';
 export { default as ResponsiveRangeControls } from './range/responsive-range-control';
 export { default as ResponsiveSingleRangeControl } from './range/single-range-control';
 

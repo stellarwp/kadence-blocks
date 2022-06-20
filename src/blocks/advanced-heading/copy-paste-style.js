@@ -8,11 +8,14 @@ import {
 	Component,
 	Fragment,
 } from '@wordpress/element';
+
 import {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
-	Toolbar
+	Toolbar,
+	ToggleControl,
+	SelectControl
 } from '@wordpress/components';
 const {
 	localStorage,

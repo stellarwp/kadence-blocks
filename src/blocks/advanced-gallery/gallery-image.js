@@ -7,7 +7,8 @@ import classnames from 'classnames';
  * WordPress dependencies
  */
 import { Component, Fragment, useRef, useState } from '@wordpress/element';
-import { IconButton, Spinner, ToggleControl } from '@wordpress/components';
+import { Spinner, ToggleControl } from '@wordpress/components';
+
 import { __ } from '@wordpress/i18n';
 import { BACKSPACE, DELETE } from '@wordpress/keycodes';
 import { withSelect } from '@wordpress/data';
@@ -249,7 +250,7 @@ function GalleryImage( props ) {
 						{!dynamicSource && (
 							<Fragment>
 								<div className="kadence-blocks-library-gallery-item__move-menu">
-									<IconButton
+									<Button
 										icon="arrow-left"
 										onClick={isFirstItem ? undefined : onMoveBackward}
 										className="kadence-blocks-gallery-item__move-backward"
@@ -257,7 +258,7 @@ function GalleryImage( props ) {
 										aria-disabled={isFirstItem}
 										disabled={!isSelected}
 									/>
-									<IconButton
+									<Button
 										icon="arrow-right"
 										onClick={isLastItem ? undefined : onMoveForward}
 										className="kadence-blocks-gallery-item__move-forward"
@@ -267,7 +268,7 @@ function GalleryImage( props ) {
 									/>
 								</div>
 								<div className="kadence-blocks-library-gallery-item__inline-menu">
-									<IconButton
+									<Button
 										icon="no-alt"
 										onClick={onRemove}
 										className="kadence-blocks-gallery-item__remove"
@@ -290,7 +291,7 @@ function GalleryImage( props ) {
 							value={customLink}
 							onChange={value => setLinkAttributes( { customLink: value } )}
 						/>
-						<IconButton
+						<Button
 							className="editor-url-popover__settings-toggle block-editor-url-popover__settings-toggle"
 							icon="arrow-down-alt2"
 							label={__( 'Link Settings', 'kadence-blocks' )}
