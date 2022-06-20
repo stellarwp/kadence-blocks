@@ -234,7 +234,7 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			'kadence/tabs',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/tabs/block.json',
 			array(
 				'render_callback' => array( $this, 'render_tabs_css' ),
 				'editor_script'   => 'kadence-blocks-advanced-tabs',
