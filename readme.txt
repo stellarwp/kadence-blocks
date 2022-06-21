@@ -82,9 +82,45 @@ Release Date: April 20th, 2022
 ** Update: File Structure, build process, individual block files.
 ** Update: Inline SVGs removed from content html.
 ** Update: Sections can move freely in and out of rows.
-* Update: Switch to using gap css for section gutter.
 ** Update: Icons flex layout with gap settings.
 ** Update: Add Icon option to advanced text block.
+** Update: Lightbox to use glightbox.
+** Update: Gallery Carousels to use splide.
+** Update: Testimonial Carousels to use Splide.
+** Fix: Parallax background issue with border radius.
+** Add: Block defaults for button style in advanced button.
+** Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
+** Update: Gallery to allow links in captions, separate from image link.
+** Fix: Updating gallery can lose added captions.
+* Fix: Issue with aligning in buttons with icons.
+** Update: Facebook logo svg.
+** Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
+** Tweek - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
+** Tweek - Accordion animation when nesting accordions, with both "closed".
+
+= 2.4.8 =
+Release Date: June 3rd, 2022
+* Fix: Issue with section overlay.
+
+= 2.4.7 =
+Release Date: June 1st, 2022
+* Fix: Margins inside of rows.
+
+= 2.4.6 =
+Release Date: June 1st, 2022
+* Fix: Section block alignment when using max width setting.
+
+= 2.4.5 =
+Release Date: May 25th, 2022
+* Add: Background overlay options in sections.
+* Update: zIndex control for Image block.
+* Update: Sections gap to use gap css.
+* Update: Sections inside of rows have sticky options.
+* Update: Row content max width to have rem option.
+* Fix: Issue with nocookie youtube popup in button.
+* Fix: Issue with FSE and styles outputting before doc type.
+* Fix: Issue with context not being passed with image block.
+* Fix: Issue with sections layout breaking if hidden.
 
 = 2.4.4 =
 Release Date: April 14th, 2022

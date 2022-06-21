@@ -1,15 +1,15 @@
 import { map, get, uniqueId, findIndex } from 'lodash';
 import { AdvancedColorControlPalette } from '@kadence/components';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	ToggleControl,
 	Dashicon,
 	Button,
 	Tooltip,
-} = wp.components;
+} from '@wordpress/components';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 const kbColorUniqueIDs = [];

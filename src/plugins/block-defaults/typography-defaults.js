@@ -1,15 +1,15 @@
 /* global kadence_blocks_params */
 
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	ToggleControl,
 	Button,
 	Tooltip,
 	Modal,
-} = wp.components;
+} from '@wordpress/components';
 const {
 	applyFilters,
 } = wp.hooks;

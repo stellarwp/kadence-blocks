@@ -4,11 +4,11 @@ import { PopColorControl, TypographyControls, IconControl, BoxShadowControl } fr
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	Button,
 	TabPanel,
 	PanelBody,
@@ -19,7 +19,7 @@ const {
 	ButtonGroup,
 	Dashicon,
 	Modal,
-} = wp.components;
+} from '@wordpress/components';
 
 import { advancedBtnIcon } from '@kadence/icons';
 

@@ -4,7 +4,7 @@ module.exports = {
     dirs: {
         modules: path.resolve('./node_modules'),
         base: path.resolve('./'),
-        dist: path.resolve('./dist')
+        dist: path.resolve('./includes/assets')
     },
     sass: {},
     cleancss: {},

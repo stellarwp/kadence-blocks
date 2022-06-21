@@ -1,11 +1,8 @@
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
-	ColorPalette,
-} = wp.blockEditor;
-const {
+} from '@wordpress/element';
+import {
 	ToggleControl,
 	RangeControl,
 	PanelBody,
@@ -16,10 +13,9 @@ const {
 	Button,
 	Tooltip,
 	Modal,
-} = wp.components;
+} from '@wordpress/components';
 import { map } from 'lodash';
-import MeasurementControls from '../../measurement-control';
-import { TypographyControls } from '@kadence/components';
+import { TypographyControls, MeasurementControls, PopColorControl } from '@kadence/components';
 import {
 	blockTabsIcon,
 	radiusIndividualIcon,
@@ -234,7 +230,7 @@ class KadenceTabsDefault extends Component {
 							initialOpen={ false }
 						>
 							<p className="kt-setting-label">{ __( 'Content Background', 'kadence-blocks' ) }</p>
-							<ColorPalette
+							<PopColorControl
 								value={ ( tabsConfig.contentBgColor ? tabsConfig.contentBgColor : '' ) }
 								onChange={ ( value ) =>this.saveConfigState( 'contentBgColor', value ) }
 							/>
@@ -249,7 +245,7 @@ class KadenceTabsDefault extends Component {
 								step={ 1 }
 							/>
 							<p className="kt-setting-label">{ __( 'Border Color', 'kadence-blocks' ) }</p>
-							<ColorPalette
+							<PopColorControl
 								value={ ( tabsConfig.contentBorderColor ? tabsConfig.contentBorderColor : '' ) }
 								onChange={ ( value ) =>this.saveConfigState( 'contentBorderColor', value ) }
 							/>
@@ -295,17 +291,17 @@ class KadenceTabsDefault extends Component {
 												tabout = (
 													<Fragment>
 														<p className="kt-setting-label">{ __( 'Hover Color', 'kadence-blocks' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleColorHover ? tabsConfig.titleColorHover : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleColorHover', value ) }
 														/>
 														<p className="kt-setting-label">{ __( 'Hover Background' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleBgHover ? tabsConfig.titleBgHover : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleBgHover', value ) }
 														/>
 														<p className="kt-setting-label">{ __( 'Hover Border Color' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleBorderHover ? tabsConfig.titleBorderHover : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleBorderHover', value ) }
 														/>
@@ -315,17 +311,17 @@ class KadenceTabsDefault extends Component {
 												tabout = (
 													<Fragment>
 														<p className="kt-setting-label">{ __( 'Active Color', 'kadence-blocks' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleColorActive ? tabsConfig.titleColorActive : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleColorActive', value ) }
 														/>
 														<p className="kt-setting-label">{ __( 'Active Background', 'kadence-blocks' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleBgActive ? tabsConfig.titleBgActive : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleBgActive', value ) }
 														/>
 														<p className="kt-setting-label">{ __( 'Active Border Color', 'kadence-blocks' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleBorderActive ? tabsConfig.titleBorderActive : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleBorderActive', value ) }
 														/>
@@ -335,17 +331,17 @@ class KadenceTabsDefault extends Component {
 												tabout = (
 													<Fragment>
 														<p className="kt-setting-label">{ __( 'Title Color', 'kadence-blocks' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleColor ? tabsConfig.titleColor : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleColor', value ) }
 														/>
 														<p className="kt-setting-label">{ __( 'Title Background', 'kadence-blocks' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleBg ? tabsConfig.titleBg : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleBg', value ) }
 														/>
 														<p className="kt-setting-label">{ __( 'Title Border Color', 'kadence-blocks' ) }</p>
-														<ColorPalette
+														<PopColorControl
 															value={ ( tabsConfig.titleBorder ? tabsConfig.titleBorder : '' ) }
 															onChange={ ( value ) => this.saveConfigState( 'titleBorder', value ) }
 														/>

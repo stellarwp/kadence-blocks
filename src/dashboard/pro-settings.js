@@ -4,10 +4,10 @@
 import { __ } from '@wordpress/i18n';
 const { Fragment, Component } = wp.element;
 import { map } from 'lodash';
-const {
+import {
 	Spinner,
 	ToggleControl,
-} = wp.components;
+} from '@wordpress/components';
 
 class ProBlocksList extends Component {
 	constructor() {

@@ -2,7 +2,7 @@
  * WordPress dependencies
  */
 import { withSelect, withDispatch } from '@wordpress/data';
-const { SnackbarList } = wp.components;
+import { SnackbarList } from '@wordpress/components';
 
 export default function Notices() {
 	const notices = useSelect(

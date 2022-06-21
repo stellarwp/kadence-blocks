@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 const { Fragment } = wp.element;
 import { map } from 'lodash';
-const { withFilters, TabPanel, Panel, PanelBody, PanelRow, Button } = wp.components;
+import { withFilters, TabPanel, Panel, PanelBody, PanelRow, Button } from '@wordpress/components';
 
 export const BlocksList = () => {
 	const KadenceBlocks = [

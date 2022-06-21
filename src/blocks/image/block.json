@@ -1,4 +1,5 @@
 {
+	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "kadence/image",
 	"title": "Advanced Image",
@@ -233,6 +234,9 @@
 	  "maskRepeat": {
 		"type": "string",
 		"default": "no-repeat"
+	  },
+	  "zIndex": {
+		"type": "number"
 	  },
 	  "inQueryBlock": {
 	  	"type": "boolean",

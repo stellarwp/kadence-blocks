@@ -263,6 +263,44 @@
 			"type": "string",
 			"default": ""
 		},
+		"overlayOpacity": {
+			"type": "number",
+			"default": 0.3
+		},
+		"overlay": {
+			"type": "string",
+			"default": ""
+		},
+		"overlayImg": {
+			"type": "array",
+			"default": [ {
+				"bgImg": "",
+				"bgImgID": "",
+				"bgImgSize": "cover",
+				"bgImgPosition": "center center",
+				"bgImgAttachment": "scroll",
+				"bgImgRepeat": "no-repeat"
+			} ]
+		},
+		"overlayHoverOpacity": {
+			"type": "number",
+			"default": ""
+		},
+		"overlayHover": {
+			"type": "string",
+			"default": ""
+		},
+		"overlayImgHover": {
+			"type": "array",
+			"default": [ {
+				"bgImg": "",
+				"bgImgID": "",
+				"bgImgSize": "cover",
+				"bgImgPosition": "center center",
+				"bgImgAttachment": "scroll",
+				"bgImgRepeat": "no-repeat"
+			} ]
+		},
 		"borderHover": {
 			"type": "string",
 			"default": ""
@@ -358,6 +396,22 @@
 		"overlayType": {
 			"type": "string",
 			"default": "normal"
+		},
+		"sticky": {
+			"type": "boolean",
+			"default": false
+		},
+		"stickyOffset": {
+			"type": "array",
+			"default": [ "", "", "" ]
+		},
+		"stickyOffsetUnit": {
+			"type": "string",
+			"default": "px"
+		},
+		"align": {
+			"type": "string",
+			"default": ""
 		}
 	},
 	"supports": {
@@ -370,6 +424,6 @@
 		"kbcss": true,
 		"editorsKitBlockNavigator": true
 	},
-	"editorStyle": "kadence-blocks-editor-css",
+	"editorStyle": "kadence-blocks-column",
 	"style": "kadence-blocks-column"
 }

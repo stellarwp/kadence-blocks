@@ -45,13 +45,24 @@ import Select from 'react-select';
 import { times, dropRight, debounce, map } from 'lodash';
 import classnames from 'classnames';
 import memoize from 'memize';
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import ContainerDimensions from 'react-container-dimensions';
 /**
  * Import Kadence Components
  */
-import { PopColorControl, SmallResponsiveControl, ResponsiveControl, KadenceRange, MeasurementControls, ResponsiveRangeControls, KadencePanelBody, KadenceRadioButtons, VerticalAlignmentIcon, BackgroundControl as KadenceBackgroundControl } from '@kadence/components';
-import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
+import {
+	PopColorControl,
+	SmallResponsiveControl,
+	ResponsiveControl,
+	RangeControl,
+	MeasurementControls,
+	IconPicker,
+	ResponsiveRangeControls,
+	KadencePanelBody,
+	KadenceRadioButtons,
+	VerticalAlignmentIcon,
+	BackgroundControl as KadenceBackgroundControl
+} from '@kadence/components';
+import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
 /**
  * Import Block Specific Components
@@ -68,13 +79,15 @@ import './editor.scss';
 /**
  * Import WordPress Internals
  */
-import { Component, Fragment } from '@wordpress/element';
+import { useEffect, useState, Fragment } from '@wordpress/element';
 import {
 	MediaUpload,
-	InnerBlocks,
 	InspectorControls,
 	BlockControls,
 	BlockAlignmentToolbar,
+	useBlockProps,
+	useInnerBlocksProps,
+	store as blockEditorStore,
 } from '@wordpress/block-editor';
 import {
 	Button,
@@ -85,14 +98,12 @@ import {
 	ToolbarGroup,
 	TextControl,
 	Dashicon,
-	RangeControl,
 	Toolbar,
 	ToggleControl,
 	SelectControl,
 	ResizableBox,
 } from '@wordpress/components';
-import { withDispatch, withSelect } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
+import { withDispatch, useSelect, useDispatch } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import {
 	image,
@@ -700,7 +711,7 @@ const ktrowUniqueIDs = [];
 	};
 	const mobileControls = (
 		<Fragment>
-			{ showSettings( 'basicLayout' ) && (
+			{ showSettings( 'basicLayout', 'kadence/rowlayout' ) && (
 				<KadencePanelBody panelName={ 'kb-row-basic-settings' }>
 					{ columns > 1 && (
 						<Fragment>
@@ -938,13 +949,13 @@ const ktrowUniqueIDs = [];
 						step={ 1 }
 						allowEmpty={ true }
 						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 						] }
-						firstIcon={ icons.topleft }
-						secondIcon={ icons.topright }
-						thirdIcon={ icons.bottomright }
-						fourthIcon={ icons.bottomleft }
+						firstIcon={ topLeftIcon }
+						secondIcon={ topRightIcon }
+						thirdIcon={ bottomRightIcon }
+						fourthIcon={ bottomLeftIcon }
 					/>
 				</KadencePanelBody>
 			) }
@@ -1163,13 +1174,13 @@ const ktrowUniqueIDs = [];
 						step={ 1 }
 						allowEmpty={ true }
 						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: icons.radiuslinked },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: icons.radiusindividual },
+							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
 						] }
-						firstIcon={ icons.topleft }
-						secondIcon={ icons.topright }
-						thirdIcon={ icons.bottomright }
-						fourthIcon={ icons.bottomleft }
+						firstIcon={ topLeftIcon }
+						secondIcon={ topRightIcon }
+						thirdIcon={ bottomRightIcon }
+						fourthIcon={ bottomLeftIcon }
 					/>
 				</KadencePanelBody>
 			) }
@@ -1476,7 +1487,7 @@ const ktrowUniqueIDs = [];
 													onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
 												/>
 												{ backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay && backgroundSliderSettings[ 0 ].autoPlay && (
-													<KadenceRange
+													<RangeControl
 														label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
 														value={ backgroundSliderSettings[ 0 ].speed }
 														onChange={ ( value ) => saveSliderSettings( { speed: value } ) }
@@ -1506,7 +1517,7 @@ const ktrowUniqueIDs = [];
 														}
 													} }
 												/>
-												<KadenceRange
+												<RangeControl
 													label={ __( 'Slider Transition Speed', 'kadence-blocks' ) }
 													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ) }
 													onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
@@ -2511,7 +2522,7 @@ const ktrowUniqueIDs = [];
 	);
 	const bottomSepSizesMobile = (
 		<Fragment>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Mobile Height (px)', 'kadence-blocks' ) }
 				value={ ( bottomSepHeightMobile ? bottomSepHeightMobile : '' ) }
 				onChange={ ( value ) => {
@@ -2522,7 +2533,7 @@ const ktrowUniqueIDs = [];
 				min={ 0 }
 				max={ 500 }
 			/>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Mobile Width (%)', 'kadence-blocks' ) }
 				value={ ( bottomSepWidthMobile ? bottomSepWidthMobile : '' ) }
 				onChange={ ( value ) => {
@@ -2537,7 +2548,7 @@ const ktrowUniqueIDs = [];
 	);
 	const bottomSepSizesTablet = (
 		<Fragment>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Tablet Height (px)', 'kadence-blocks' ) }
 				value={ ( bottomSepHeightTab ? bottomSepHeightTab : '' ) }
 				onChange={ ( value ) => {
@@ -2548,7 +2559,7 @@ const ktrowUniqueIDs = [];
 				min={ 0 }
 				max={ 500 }
 			/>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Tablet Width (%)', 'kadence-blocks' ) }
 				value={ ( bottomSepWidthTab ? bottomSepWidthTab : '' ) }
 				onChange={ ( value ) => {
@@ -2563,7 +2574,7 @@ const ktrowUniqueIDs = [];
 	);
 	const bottomSepSizes = (
 		<Fragment>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Divider Height (px)', 'kadence-blocks' ) }
 				value={ bottomSepHeight }
 				onChange={ ( value ) => {
@@ -2574,7 +2585,7 @@ const ktrowUniqueIDs = [];
 				min={ 0 }
 				max={ 500 }
 			/>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Divider Width (%)', 'kadence-blocks' ) }
 				value={ ( bottomSepWidth ? bottomSepWidth : '' ) }
 				onChange={ ( value ) => {
@@ -2589,7 +2600,7 @@ const ktrowUniqueIDs = [];
 	);
 	const topSepSizesMobile = (
 		<Fragment>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Mobile Height (px)', 'kadence-blocks' ) }
 				value={ ( topSepHeightMobile ? topSepHeightMobile : '' ) }
 				onChange={ ( value ) => {
@@ -2600,7 +2611,7 @@ const ktrowUniqueIDs = [];
 				min={ 0 }
 				max={ 500 }
 			/>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Mobile Width (%)', 'kadence-blocks' ) }
 				value={ ( topSepWidthMobile ? topSepWidthMobile : '' ) }
 				onChange={ ( value ) => {
@@ -2615,7 +2626,7 @@ const ktrowUniqueIDs = [];
 	);
 	const topSepSizesTablet = (
 		<Fragment>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Tablet Height (px)', 'kadence-blocks' ) }
 				value={ ( topSepHeightTab ? topSepHeightTab : '' ) }
 				onChange={ ( value ) => {
@@ -2626,7 +2637,7 @@ const ktrowUniqueIDs = [];
 				min={ 0 }
 				max={ 500 }
 			/>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Tablet Width (%)', 'kadence-blocks' ) }
 				value={ ( topSepWidthTab ? topSepWidthTab : '' ) }
 				onChange={ ( value ) => {
@@ -2641,7 +2652,7 @@ const ktrowUniqueIDs = [];
 	);
 	const topSepSizes = (
 		<Fragment>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Divider Height (px)', 'kadence-blocks' ) }
 				value={ topSepHeight }
 				onChange={ ( value ) => {
@@ -2652,7 +2663,7 @@ const ktrowUniqueIDs = [];
 				min={ 0 }
 				max={ 500 }
 			/>
-			<KadenceRange
+			<RangeControl
 				label={ __( 'Divider Width (%)', 'kadence-blocks' ) }
 				value={ ( topSepWidth ? topSepWidth : '' ) }
 				onChange={ ( value ) => {
@@ -2667,7 +2678,7 @@ const ktrowUniqueIDs = [];
 	);
 	const topDividerSettings = (
 		<Fragment>
-			<FontIconPicker
+			<IconPicker
 				icons={ [
 					'ct',
 					'cti',
@@ -2717,7 +2728,7 @@ const ktrowUniqueIDs = [];
 	);
 	const bottomDividerSettings = (
 		<Fragment>
-			<FontIconPicker
+			<IconPicker
 				icons={ [
 					'ct',
 					'cti',
@@ -2921,7 +2932,7 @@ const ktrowUniqueIDs = [];
 											onUnit={ ( value ) => {
 												setAttributes( { maxWidthUnit: value } );
 											} }
-											units={ [ 'px', '%', 'vw' ] }
+											units={ [ 'px', '%', 'vw', 'rem' ] }
 										/>
 									</Fragment>
 								) }
@@ -3051,7 +3062,7 @@ const ktrowUniqueIDs = [];
 												if ( tab.name ) {
 													if ( 'mobile' === tab.name ) {
 														tabout = (
-															<KadenceRange
+															<RangeControl
 																label={ __( 'Mobile Min Height', 'kadence-blocks' ) }
 																value={ minHeightMobile }
 																onChange={ ( value ) => {
@@ -3065,7 +3076,7 @@ const ktrowUniqueIDs = [];
 														);
 													} else if ( 'tablet' === tab.name ) {
 														tabout = (
-															<KadenceRange
+															<RangeControl
 																label={ __( 'Tablet Min Height', 'kadence-blocks' ) }
 																value={ minHeightTablet }
 																onChange={ ( value ) => {
@@ -3079,7 +3090,7 @@ const ktrowUniqueIDs = [];
 														);
 													} else {
 														tabout = (
-															<KadenceRange
+															<RangeControl
 																label={ __( 'Min Height', 'kadence-blocks' ) }
 																value={ minHeight }
 																onChange={ ( value ) => {

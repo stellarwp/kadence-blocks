@@ -11,7 +11,7 @@ import { __ } from '@wordpress/i18n';
 import { map, isEqual } from 'lodash';
 import { undo } from '@wordpress/icons';
 import { capitalizeFirstLetter } from '@kadence/helpers'
-import ResponsiveSingleRangeControl from '../single-range-control';
+import RangeControl from '../range-control';
 
 import {
 	Dashicon,
@@ -24,24 +24,24 @@ import {
  * @returns {object} Measure settings.
  */
 export default function ResponsiveRangeControls( {
-													 label,
-													 onChange,
-													 onChangeTablet,
-													 onChangeMobile,
-													 mobileValue,
-													 tabletValue,
-													 value,
-													 step = 1,
-													 max = 100,
-													 min = 0,
-													 unit = '',
-													 onUnit,
-													 showUnit = false,
-													 units = [ 'px', 'em', 'rem' ],
-													 allowEmpty = true,
-													 className = '',
-													 reset,
-												 } ) {
+	label,
+	onChange,
+	onChangeTablet,
+	onChangeMobile,
+	mobileValue,
+	tabletValue,
+	value,
+	step = 1,
+	max = 100,
+	min = 0,
+	unit = '',
+	onUnit,
+	showUnit = false,
+	units = [ 'px', 'em', 'rem' ],
+	allowEmpty = true,
+	className = '',
+	reset,
+} ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
@@ -78,8 +78,7 @@ export default function ResponsiveRangeControls( {
 	];
 	const output = {};
 	output.Mobile = (
-		<ResponsiveSingleRangeControl
-			device={ 'mobile' }
+		<RangeControl
 			value={ ( undefined !== mobileValue ? mobileValue : '' ) }
 			onChange={ ( size ) => onChangeMobile( size ) }
 			min={ min }
@@ -92,8 +91,7 @@ export default function ResponsiveRangeControls( {
 		/>
 	);
 	output.Tablet = (
-		<ResponsiveSingleRangeControl
-			device={ 'tablet' }
+		<RangeControl
 			value={ ( undefined !== tabletValue ? tabletValue : '' ) }
 			onChange={ ( size ) => onChangeTablet( size ) }
 			min={ min }
@@ -106,8 +104,7 @@ export default function ResponsiveRangeControls( {
 		/>
 	);
 	output.Desktop = (
-		<ResponsiveSingleRangeControl
-			device={ 'desktop' }
+		<RangeControl
 			value={ ( undefined !== value ? value : '' ) }
 			onChange={ ( size ) => onChange( size ) }
 			min={ min }

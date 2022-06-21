@@ -90,6 +90,7 @@ registerBlockType( 'kadence/pane', {
 		reusable: false,
 		html: false,
 		anchor: true,
+		lock: false,
 	},
 	getEditWrapperProps( attributes ) {
 		return { 'data-pane': attributes.id };

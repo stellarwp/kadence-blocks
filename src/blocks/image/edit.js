@@ -127,6 +127,7 @@ export function ImageEdit( {
 		imageFilter,
 		useRatio,
 		imgMaxWidth,
+		zIndex,
 		kadenceAnimation,
 		kadenceAOSOptions,
 	} = attributes;
@@ -378,6 +379,7 @@ export function ImageEdit( {
 	return (
 		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{
 			maxWidth: ( imgMaxWidth && ( align === 'left' || align === 'right' ) ) ? imgMaxWidth + 'px' : undefined,
+			zIndex: ( zIndex ? zIndex : undefined ),
 		}}>
 			{ ( temporaryURL || url ) && (
 				<Image
@@ -431,13 +433,14 @@ export function ImageEdit( {
 								setAttributes={ setAttributes }
 								name={ 'kadence/image' }
 								clientId={ clientId }
+								context={ context }
 							/>
 						</KadencePanelBody>
 					</InspectorControls>
 				</>
 			) }
 			<KadenceMediaPlaceholder
-				labels={ { 'title': __( 'Advanced Image', 'kadence-blocks' ) } }
+				labels={ { 'title': __( 'Advanced Image Test', 'kadence-blocks' ) } }
 				icon={ imageIcon }
 				selectIcon={ plusCircleFilled }
 				selectLabel={ __( 'Select Image', 'kadence-blocks' ) }
