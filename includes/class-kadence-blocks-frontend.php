@@ -3547,6 +3547,9 @@ class Kadence_Blocks_Frontend {
 				if ( isset( $title_font['weight'] ) && ! empty( $title_font['weight'] ) ) {
 					$css->add_property('font-weight', $title_font['weight']);
 				}
+				if ( isset( $title_font['textTransform'] ) && ! empty( $title_font['textTransform'] ) ) {
+					$css->add_property('text-transform', $title_font['textTransform']);
+				}
 			} else {
 				$css->set_selector('.kb-count-up-' . $unique_id . ' .kb-count-up-title');
 				$css->add_property('font-size', '50px' );

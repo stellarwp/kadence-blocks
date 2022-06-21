@@ -218,6 +218,7 @@ function KadenceCounterUp( {
 							marginRight  : ( previewTitleMarginRight ? previewTitleMarginRight + titleMarginType : undefined ),
 							marginBottom : ( previewTitleMarginBottom ? previewTitleMarginBottom + titleMarginType : undefined ),
 							marginLeft   : ( previewTitleMarginLeft ? previewTitleMarginLeft + titleMarginType : undefined ),
+							textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
 						}}
 					/>
 				}
