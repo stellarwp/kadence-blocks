@@ -1,11 +1,7 @@
 /**
- * WordPress dependencies
- */
-import { __ } from '@wordpress/i18n';
-/**
  * Import Icons
  */
- import { BlockColumnIcon } from '@kadence/icons';
+ import { blockColumnIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
 /**
@@ -33,9 +29,8 @@ export const settings = {
 registerBlockType( 'kadence/column', {
 	...metadata,
 	icon: {
-		src: BlockColumnIcon,
+		src: blockColumnIcon,
 	},
 	...settings
 
 });
- 

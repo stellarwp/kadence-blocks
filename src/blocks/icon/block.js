@@ -2,6 +2,8 @@
  * BLOCK: Kadence Icon
  */
 
+import metadata from './block.json';
+
 /**
  * Import Icon stuff
  */
@@ -10,6 +12,9 @@ import { times } from 'lodash';
 import { IconRender, IconSpanTag} from '@kadence/components';
 import { KadenceColorOutput } from '@kadence/helpers';
 import edit from './edit';
+import save from './save';
+import deprecated from './deprecated';
+
 /**
  * Import Css
  */
@@ -18,10 +23,9 @@ import edit from './edit';
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
-const {
+import {
 	registerBlockType,
-} = wp.blocks;
+} from '@wordpress/blocks';
 
 /**
  * Register: a Gutenberg Block.
@@ -33,77 +37,9 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/icon', {
-	// Block name. Block names must be string that contains a namespace prefix. Example: my-plugin/my-custom-block.
-	title: __( 'Icon', 'kadence-blocks' ), // Block title.
+	...metadata,
 	icon: {
 		src: iconIcon,
-	},
-	category: 'kadence-blocks', // Block category — Group blocks together based on common traits E.g. common, formatting, layout widgets, embed.
-	keywords: [
-		__( 'icon', 'kadence-blocks' ),
-		__( 'svg', 'kadence-blocks' ),
-		'KB',
-	],
-	supports: {
-		ktdynamic: true,
-	},
-	usesContext: [ 'postId', 'queryId' ],
-	attributes: {
-		icons: {
-			type: 'array',
-			default: [ {
-				icon: 'fe_aperture',
-				link: '',
-				target: '_self',
-				size: 50,
-				width: 2,
-				title: '',
-				color: '#444444',
-				background: 'transparent',
-				border: '#444444',
-				borderRadius: 0,
-				borderWidth: 2,
-				padding: 20,
-				style: 'default',
-				marginTop: 0,
-				marginRight: 0,
-				marginBottom: 0,
-				marginLeft: 0,
-				hColor: '',
-				hBackground: '',
-				hBorder: '',
-				linkTitle: '',
-			} ],
-		},
-		iconCount: {
-			type: 'number',
-			default: 1,
-		},
-		uniqueID: {
-			type: 'string',
-			default: '',
-		},
-		blockAlignment: {
-			type: 'string',
-			default: '',
-		},
-		textAlignment: {
-			type: 'string',
-			default: 'center',
-		},
-		tabletTextAlignment: {
-			type: 'string',
-		},
-		mobileTextAlignment: {
-			type: 'string',
-		},
-		verticalAlignment: {
-			type: 'string',
-		},
-		inQueryBlock: {
-			type: 'bool',
-			default: false,
-		},
 	},
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {

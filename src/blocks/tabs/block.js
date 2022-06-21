@@ -18,17 +18,16 @@ import { blockTabsIcon } from '@kadence/icons';
 /**
  * Import attributes
  */
-import attributes from './attributes';
+import metadata from './block.json';
 import classnames from 'classnames';
 import { times } from 'lodash';
 import { IconRender } from '@kadence/components';
-const {
-	Fragment,
-} = wp.element;
-const {
+import { Fragment } from '@wordpress/element';
+import {
 	InnerBlocks,
 	RichText,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
+
 /**
  * Import edit
  */
@@ -47,7 +46,7 @@ import save from './save';
  * Internal block libraries
  */
 import { __, sprintf } from '@wordpress/i18n';
-const { registerBlockType } = wp.blocks;
+import { registerBlockType } from '@wordpress/blocks';
 
 function kt_stripStringRender( string ) {
 	return string.toLowerCase().replace( /[^0-9a-z-]/g, '' );
@@ -63,20 +62,10 @@ function kt_stripStringRender( string ) {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/tabs', {
-	title: __( 'Tabs' ),
+	...metadata,
 	icon: {
 		src: blockTabsIcon,
 	},
-	category: 'kadence-blocks',
-	keywords: [
-		__( 'tabs' ),
-		__( 'tab' ),
-		__( 'KT' ),
-	],
-	supports: {
-		anchor: true,
-	},
-	attributes,
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
 			return { 'data-align': blockAlignment };

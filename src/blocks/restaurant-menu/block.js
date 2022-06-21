@@ -40,7 +40,9 @@ import { Icon } } from '@wordpress/components';
  */
 registerBlockType( 'kadence/restaurantmenu', {
 	title: __( 'Restaurant Menu' ),
-	icon: <Icon icon={ restaurantMenuIcon } />,
+	icon: {
+		src: restaurantMenuIcon
+	},
 	category: 'kadence-blocks',
 	keywords: ['restaurant menu', 'food', 'drinks'],
 	description: __( 'In the restaurant, a menu is a list of food and beverages offered to customers and the prices.' ),

@@ -1,7 +1,7 @@
 {
 	"apiVersion": 2,
-	"name": "kadence/column",
 	"title": "Section",
+	"name": "kadence/column",
 	"category": "kadence-blocks",
 	"usesContext": [ "postId", "queryId" ],
 	"description": "A container to style a section of content.",

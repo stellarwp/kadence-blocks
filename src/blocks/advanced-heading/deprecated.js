@@ -7,16 +7,16 @@ import classnames from 'classnames';
 
 import { KadenceColorOutput } from '@kadence/helpers';
 
-const {
+import {
 	Fragment,
-} = wp.element;
+} from '@wordpress/element';
 import {
 	RichText,
 	getColorClassName,
 } from '@wordpress/block-editor';
-const {
+import {
 	getBlockDefaultClassName,
-} = wp.blocks;
+} from '@wordpress/blocks';
 
 export default [
 	{

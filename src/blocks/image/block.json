@@ -172,36 +172,48 @@
 		  "hOffset": 0,
 		  "vOffset": 0,
 		  "inset": false
-		} ]
-	  },
-	  "displayDropShadow": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "dropShadow": {
-		"type": "array",
-		"default": [ {
+		}
+	  ]
+	},
+	"displayDropShadow": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"dropShadow": {
+	  "type": "array",
+	  "default": [
+		{
 		  "color": "#000000",
 		  "opacity": 0.2,
 		  "blur": 14,
 		  "hOffset": 0,
 		  "vOffset": 0
-		} ]
-	  },
-	  "imageFilter": {
-		"type": "string",
-		"default": "none"
-	  },
-	  "showCaption": {
-		"type": "boolean",
-		"default": true
-	  },
-	  "captionStyles": {
-		"type": "array",
-		"default": [ {
-		  "size": [ "", "", "" ],
+		}
+	  ]
+	},
+	"imageFilter": {
+	  "type": "string",
+	  "default": "none"
+	},
+	"showCaption": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"captionStyles": {
+	  "type": "array",
+	  "default": [
+		{
+		  "size": [
+			"",
+			"",
+			""
+		  ],
 		  "sizeType": "px",
-		  "lineHeight": [ "", "", "" ],
+		  "lineHeight": [
+			"",
+			"",
+			""
+		  ],
 		  "lineType": "px",
 		  "letterSpacing": "",
 		  "textTransform": "",

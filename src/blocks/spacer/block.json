@@ -1,0 +1,118 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "title": "Spacer/Divider",
+  "name": "kadence/spacer",
+  "category": "kadence-blocks",
+  "keywords": [
+	"spacer",
+	"divider",
+	"separator"
+  ],
+  "attributes": {
+	"blockAlignment": {
+	  "type": "string",
+	  "default": "center"
+	},
+	"hAlign": {
+	  "type": "string",
+	  "default": "center"
+	},
+	"spacerHeight": {
+	  "type": "number",
+	  "default": 60
+	},
+	"spacerHeightUnits": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"tabletSpacerHeight": {
+	  "type": "number",
+	  "default": ""
+	},
+	"mobileSpacerHeight": {
+	  "type": "number",
+	  "default": ""
+	},
+	"dividerEnable": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"dividerStyle": {
+	  "type": "string",
+	  "default": "solid"
+	},
+	"dividerOpacity": {
+	  "type": "number",
+	  "default": 100
+	},
+	"dividerColor": {
+	  "type": "string",
+	  "default": "#eee"
+	},
+	"dividerWidth": {
+	  "type": "number",
+	  "default": 80
+	},
+	"dividerWidthUnits": {
+	  "type": "string",
+	  "default": "%"
+	},
+	"tabletDividerWidth": {
+	  "type": "number"
+	},
+	"mobileDividerWidth": {
+	  "type": "number"
+	},
+	"dividerHeight": {
+	  "type": "number",
+	  "default": 1
+	},
+	"tabletDividerHeight": {
+	  "type": "number"
+	},
+	"mobileDividerHeight": {
+	  "type": "number"
+	},
+	"uniqueID": {
+	  "type": "string",
+	  "default": ""
+	},
+	"rotate": {
+	  "type": "number",
+	  "default": 40
+	},
+	"strokeWidth": {
+	  "type": "number",
+	  "default": 4
+	},
+	"strokeGap": {
+	  "type": "number",
+	  "default": 5
+	},
+	"tabletHAlign": {
+	  "type": "string",
+	  "default": ""
+	},
+	"mobileHAlign": {
+	  "type": "string",
+	  "default": ""
+	},
+	"vsdesk": {
+	  "type": "bool",
+	  "default": false
+	},
+	"vstablet": {
+	  "type": "bool",
+	  "default": false
+	},
+	"vsmobile": {
+	  "type": "bool",
+	  "default": false
+	}
+  },
+  "supports": {
+	"anchor": true
+  },
+  "editorScript": "file:editor.js"
+}

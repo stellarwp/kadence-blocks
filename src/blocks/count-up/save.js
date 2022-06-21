@@ -10,62 +10,66 @@ import classnames from 'classnames';
 /**
  * Internal block libraries
  */
-const { __ } = wp.i18n;
-const { Component } = wp.element;
-const { RichText } = wp.blockEditor;
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 
 /**
  * Build the count up save
  */
-class KadenceCounterUpSave extends Component {
+function KadenceCounterUpSave( props ) {
 
-	render() {
+	const {
+		attributes,
+	} = props;
 
-		const {
-			attributes,
-		} = this.props;
+	const {
+		uniqueID,
+		title,
+		start,
+		end,
+		prefix,
+		suffix,
+		duration,
+		separator,
+		titleFont,
+		displayTitle,
+		decimal,
+		decimalSpaces,
+	} = attributes;
 
-		const {
-			uniqueID,
-			title,
-			start,
-			end,
-			prefix,
-			suffix,
-			duration,
-			separator,
-			titleFont,
-			displayTitle,
-			decimal,
-			decimalSpaces,
-		} = attributes
-		const classes = classnames( {
-			[ `kb-count-up-${ uniqueID }` ]: uniqueID,
-			'kb-count-up': true
-		} );
-		const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
-		return (
-			<div
-				className={ classes }
-				data-start={ start }
-				data-end={ end }
-				data-prefix={ prefix }
-				data-suffix={ suffix }
-				data-duration={ duration }
-				data-separator={ separator }
-				data-decimal={ decimal ? decimal : undefined }
-				data-decimal-spaces={ decimal ? decimalSpaces : undefined }
-			>
-				<div className={ 'kb-count-up-process kb-count-up-number' } />
-				{ title && displayTitle && (
-					<RichText.Content
-						tagName={ tagName }
-						className={ 'kb-count-up-title' }
-						value={ title }
-					/>
-				) }
-			</div>
-		)
-	}
+	const classes = classnames( {
+		[ `kb-count-up-${uniqueID}` ]: uniqueID,
+		'kb-count-up'                : true,
+	} );
+
+	const tagName = titleFont[ 0 ].htmlTag && titleFont[ 0 ].htmlTag !== 'heading' ? titleFont[ 0 ].htmlTag : 'h' + titleFont[ 0 ].level;
+
+	const blockProps = useBlockProps.save( {
+		className: classes
+	} );
+
+	return (
+		<div
+			{...blockProps}
+			data-start={start}
+			data-end={end}
+			data-prefix={prefix}
+			data-suffix={suffix}
+			data-duration={duration}
+			data-separator={separator}
+			data-decimal={decimal ? decimal : undefined}
+			data-decimal-spaces={decimal ? decimalSpaces : undefined}
+		>
+			<div className={'kb-count-up-process kb-count-up-number'}/>
+			{title && displayTitle && (
+				<RichText.Content
+					tagName={tagName}
+					className={'kb-count-up-title'}
+					value={title}
+				/>
+			)}
+		</div>
+	);
+
 }
+
 export default KadenceCounterUpSave;
