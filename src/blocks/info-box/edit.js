@@ -26,7 +26,7 @@ import {
 	PopColorControl,
 	TypographyControls,
 	ResponsiveMeasurementControls,
-	KadenceRange,
+	RangeControl,
 	KadencePanelBody,
 	IconControl,
 	IconRender,
@@ -36,8 +36,8 @@ import {
 	KadenceMediaPlaceholder,
 	ImageSizeControl,
 	MeasurementControls,
-	ResponsiveRangeControl,
-	InspectorControlTabs,
+	ResponsiveRangeControls,
+	InspectorControlTabs
 } from '@kadence/components';
 
 import InfoBoxStyleCopyPaste from './copy-paste-style';
@@ -1472,7 +1472,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										value={mediaIcon[ 0 ].icon}
 										onChange={value => saveMediaIcon( { icon: value } )}
 									/>
-									<KadenceRange
+									<RangeControl
 										label={__( 'Icon Size', 'kadence-blocks' )}
 										value={mediaIcon[ 0 ].size}
 										onChange={value => saveMediaIcon( { size: value } )}
@@ -1634,7 +1634,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										max={40}
 										step={1}
 									/>
-									<KadenceRange
+									<RangeControl
 										label={__( 'Container Border Radius (px)', 'kadence-blocks' )}
 										value={containerBorderRadius}
 										onChange={value => setAttributes( { containerBorderRadius: value } )}
@@ -1775,7 +1775,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 											</Button>
 										) )}
 									</ButtonGroup>
-									<KadenceRange
+									<RangeControl
 										label={__( 'Container Max Width', 'kadence-blocks' )}
 										value={maxWidth}
 										onChange={( value ) => {
@@ -1909,7 +1909,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 													onChange={changeImageSize}
 												/>
 											)}
-											<KadenceRange
+											<RangeControl
 												label={__( 'Max Image Width', 'kadence-blocks' )}
 												value={mediaImage[ 0 ].maxWidth}
 												onChange={value => saveMediaImage( { maxWidth: value } )}
@@ -2010,7 +2010,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												max={40}
 												step={1}
 											/>
-											<KadenceRange
+											<RangeControl
 												label={__( 'Image Border Radius (px)', 'kadence-blocks' )}
 												value={mediaStyle[ 0 ].borderRadius}
 												onChange={value => saveMediaStyle( { borderRadius: value } )}
@@ -2101,12 +2101,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 										</Fragment>
 									)}
 									{'icon' === mediaType && (
-										<Fragment>
+										<>
 											<IconControl
 												value={mediaIcon[ 0 ].icon}
 												onChange={value => saveMediaIcon( { icon: value } )}
 											/>
-											<ResponsiveRangeControl
+											<ResponsiveRangeControls
 												label={__( 'Icon Size', 'kadence-blocks' )}
 												value={mediaIcon[ 0 ].size}
 												mobileValue={mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : ''}
@@ -2119,7 +2119,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												step={1}
 											/>
 											{mediaIcon[ 0 ].icon && 'fe' === mediaIcon[ 0 ].icon.substring( 0, 2 ) && (
-												<KadenceRange
+												<RangeControl
 													label={__( 'Icon Line Width', 'kadence-blocks' )}
 													value={mediaIcon[ 0 ].width}
 													onChange={value => saveMediaIcon( { width: value } )}
@@ -2138,7 +2138,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												max={40}
 												step={1}
 											/>
-											<KadenceRange
+											<RangeControl
 												label={__( 'Icon Border Radius (px)', 'kadence-blocks' )}
 												value={mediaStyle[ 0 ].borderRadius}
 												onChange={value => saveMediaStyle( { borderRadius: value } )}
@@ -2237,11 +2237,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												value={mediaIcon[ 0 ].title}
 												onChange={value => saveMediaIcon( { title: value } )}
 											/>
-										</Fragment>
+										</>
 									)}
 									{'number' === mediaType && (
-										<Fragment>
-											<ResponsiveRangeControl
+										<>
+											<ResponsiveRangeControls
 												label={__( 'Size', 'kadence-blocks' )}
 												value={mediaIcon[ 0 ].size}
 												mobileValue={mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : ''}
@@ -2286,7 +2286,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												max={40}
 												step={1}
 											/>
-											<KadenceRange
+											<RangeControl
 												label={__( 'Number Border Radius (px)', 'kadence-blocks' )}
 												value={mediaStyle[ 0 ].borderRadius}
 												onChange={value => saveMediaStyle( { borderRadius: value } )}
@@ -2373,7 +2373,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 													}
 												}
 											</TabPanel>
-										</Fragment>
+										</>
 									)}
 									<MeasurementControls
 										label={__( 'Media Padding', 'kadence-blocks' )}
@@ -2525,7 +2525,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 														if ( tab.name ) {
 															if ( 'mobile' === tab.name ) {
 																tabout = (
-																	<KadenceRange
+																	<RangeControl
 																		value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' )}
 																		onChange={value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } )}
 																		step={1}
@@ -2535,7 +2535,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																);
 															} else if ( 'tablet' === tab.name ) {
 																tabout = (
-																	<KadenceRange
+																	<RangeControl
 																		value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' )}
 																		onChange={value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } )}
 																		step={1}
@@ -2545,7 +2545,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																);
 															} else {
 																tabout = (
-																	<KadenceRange
+																	<RangeControl
 																		value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' )}
 																		onChange={value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } )}
 																		step={1}
@@ -2690,7 +2690,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 														if ( tab.name ) {
 															if ( 'mobile' === tab.name ) {
 																tabout = (
-																	<KadenceRange
+																	<RangeControl
 																		value={( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' )}
 																		onChange={value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), value ] } )}
 																		step={1}
@@ -2700,7 +2700,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																);
 															} else if ( 'tablet' === tab.name ) {
 																tabout = (
-																	<KadenceRange
+																	<RangeControl
 																		value={( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' )}
 																		onChange={value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } )}
 																		step={1}
@@ -2710,7 +2710,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																);
 															} else {
 																tabout = (
-																	<KadenceRange
+																	<RangeControl
 																		value={( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' )}
 																		onChange={value => setAttributes( { textMinHeight: [ value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } )}
 																		step={1}
@@ -2822,7 +2822,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												max={40}
 												step={1}
 											/>
-											<KadenceRange
+											<RangeControl
 												label={__( 'Learn More Border Radius (px)', 'kadence-blocks' )}
 												value={learnMoreStyles[ 0 ].borderRadius}
 												onChange={value => saveLearnMoreStyles( { borderRadius: value } )}
@@ -2909,11 +2909,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												  ]}>
 											{
 												( tab ) => {
-													let tabout;
 													if ( tab.name ) {
 														if ( 'hover' === tab.name ) {
-															tabout = (
-																<Fragment>
+															return (
+																<div className={tab.className} key={tab.className}>
 																	<PopColorControl
 																		label={__( 'Shadow Color', 'kadence-blocks' )}
 																		value={( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' )}
@@ -2922,7 +2921,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		opacityValue={shadowHover[ 0 ].opacity}
 																		onOpacityChange={value => saveHoverShadow( { opacity: value } )}
 																	/>
-																	<KadenceRange
+																	<RangeControl
 																		label={__( 'Shadow Blur', 'kadence-blocks' )}
 																		value={shadowHover[ 0 ].blur}
 																		onChange={value => saveHoverShadow( { blur: value } )}
@@ -2930,7 +2929,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		max={100}
 																		step={1}
 																	/>
-																	<KadenceRange
+																	<RangeControl
 																		label={__( 'Shadow Spread', 'kadence-blocks' )}
 																		value={shadowHover[ 0 ].spread}
 																		onChange={value => saveHoverShadow( { spread: value } )}
@@ -2938,7 +2937,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		max={100}
 																		step={1}
 																	/>
-																	<KadenceRange
+																	<RangeControl
 																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
 																		value={shadowHover[ 0 ].vOffset}
 																		onChange={value => saveHoverShadow( { vOffset: value } )}
@@ -2946,7 +2945,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		max={100}
 																		step={1}
 																	/>
-																	<KadenceRange
+																	<RangeControl
 																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
 																		value={shadowHover[ 0 ].hOffset}
 																		onChange={value => saveHoverShadow( { hOffset: value } )}
@@ -2954,11 +2953,11 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		max={100}
 																		step={1}
 																	/>
-																</Fragment>
+																</div>
 															);
 														} else {
-															tabout = (
-																<Fragment>
+															return (
+																<div className={tab.className} key={tab.className}>
 																	<PopColorControl
 																		label={__( 'Shadow Color', 'kadence-blocks' )}
 																		value={( shadow[ 0 ].color ? shadow[ 0 ].color : '' )}
@@ -2967,7 +2966,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		opacityValue={shadow[ 0 ].opacity}
 																		onOpacityChange={value => saveShadow( { opacity: value } )}
 																	/>
-																	<KadenceRange
+																	<RangeControl
 																		label={__( 'Shadow Blur', 'kadence-blocks' )}
 																		value={shadow[ 0 ].blur}
 																		onChange={value => saveShadow( { blur: value } )}
@@ -2975,7 +2974,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		max={100}
 																		step={1}
 																	/>
-																	<KadenceRange
+																	<RangeControl
 																		label={__( 'Shadow Spread', 'kadence-blocks' )}
 																		value={shadow[ 0 ].spread}
 																		onChange={value => saveShadow( { spread: value } )}
@@ -2983,7 +2982,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		max={100}
 																		step={1}
 																	/>
-																	<KadenceRange
+																	<RangeControl
 																		label={__( 'Shadow Vertical Offset', 'kadence-blocks' )}
 																		value={shadow[ 0 ].vOffset}
 																		onChange={value => saveShadow( { vOffset: value } )}
@@ -2991,7 +2990,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		max={100}
 																		step={1}
 																	/>
-																	<KadenceRange
+																	<RangeControl
 																		label={__( 'Shadow Horizontal Offset', 'kadence-blocks' )}
 																		value={shadow[ 0 ].hOffset}
 																		onChange={value => saveShadow( { hOffset: value } )}
@@ -2999,11 +2998,10 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 																		max={100}
 																		step={1}
 																	/>
-																</Fragment>
+																</div>
 															);
 														}
 													}
-													return <div className={tab.className} key={tab.className}>{tabout}</div>;
 												}
 											}
 										</TabPanel>
