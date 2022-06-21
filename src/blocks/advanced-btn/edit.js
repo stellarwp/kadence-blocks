@@ -3,26 +3,27 @@
  *
  * Editor for Advanced Btn
  */
-import times from 'lodash/times';
-import map from 'lodash/map';
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import TypographyControls from '../../components/typography/typography-control';
-import BoxShadowControl from '../../components/common/box-shadow-control';
-import WebfontLoader from '../../components/typography/fontloader';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
+import { KadenceColorOutput } from '@kadence/helpers';
+import {
+	PopColorControl,
+	TypographyControls,
+	ResponsiveMeasurementControls,
+	SmallResponsiveControl,
+	ResponsiveRangeControls,
+	IconRender,
+	IconControl,
+	KadencePanelBody,
+	URLInputControl,
+	URLInputInline,
+	ResponsiveAlignControls,
+	WebfontLoader,
+	BoxShadowControl,
+	DynamicTextControl,
+	InspectorControlTabs
+} from '@kadence/components';
 import classnames from 'classnames';
 import ButtonStyleCopyPaste from './copy-paste-style';
-import flow from 'lodash/flow';
-import filter from 'lodash/filter';
-import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
-import SmallResponsiveControl from '../../components/responsive/small-responsive-control';
-import URLInputControl from '../../components/links/link-control';
-import URLInputInline from '../../components/links/inline-link-control';
-import DynamicTextControl from '../../components/common/dynamic-text-control';
-import ResponsiveRangeControls from '../../components/range/responsive-range-control';
-import ResponsiveAlignControls from '../../components/align/responsive-align-control';
+import { times, flow, filter, map } from 'lodash';
 
 const POPOVER_PROPS = {
 	className: 'block-editor-block-settings-menu__popover',
@@ -67,7 +68,6 @@ import {
 	TabPanel,
 	Button,
 	PanelRow,
-	PanelBody,
 	RangeControl,
 	TextControl,
 	ButtonGroup,
@@ -79,7 +79,6 @@ import {
 	Icon,
 } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
-import { hasBlockSupport } from '@wordpress/blocks';
 import {
 	applyFilters,
 } from '@wordpress/hooks';
@@ -112,6 +111,7 @@ class KadenceAdvancedButton extends Component {
 			iconPaddingControl: 'individual',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 			settings: {},
+			activeTab: 'general'
 		};
 	}
 	componentDidMount() {
@@ -312,7 +312,7 @@ class KadenceAdvancedButton extends Component {
 		return desktopSize;
 	}
 	render() {
-		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, margin, marginUnit, kadenceAOSOptions, kadenceAnimation, collapseFullwidth }, attributes, className, setAttributes, isSelected } = this.props;
+		const { attributes: { uniqueID, btnCount, btns, hAlign, letterSpacing, fontStyle, fontWeight, typography, googleFont, loadGoogleFont, fontSubset, fontVariant, forceFullwidth, thAlign, mhAlign, widthType, widthUnit, textTransform, margin, marginUnit, kadenceAOSOptions, kadenceAnimation, collapseFullwidth, lockBtnCount, hideLink }, attributes, className, setAttributes, isSelected } = this.props;
 		const gconfig = {
 			google: {
 				families: [ typography + ( fontVariant ? ':' + fontVariant : '' ) ],
@@ -604,7 +604,7 @@ class KadenceAdvancedButton extends Component {
 									onClick={ this.onRemoveButton( index ) }
 									className="kadence-blocks-button-item__remove"
 									label={ __( 'Remove Button', 'kadence-blocks' ) }
-									disabled={ ! isButtonSelected || 1 === btns.length }
+									disabled={ ! isButtonSelected || 1 === btns.length || lockBtnCount }
 								/>
 							</div>
 						</Fragment>
@@ -668,10 +668,10 @@ class KadenceAdvancedButton extends Component {
 		const buttonStyleOptions = [
 			{ key: '', name: __( 'Default', 'kadence-blocks' ) },
 			{ key: 'inherit', name: __( 'Theme', 'kadence-blocks' ) },
-			// { key: 'leftabove', name: __( 'Left Above' ), icon: icons.infoLeftAbove },
-			// { key: 'left', name: __( 'Left' ), icon: icons.infoLeft },
-			// { key: 'overlay', name: __( 'Overlay' ), icon: icons.infoTopOverlay },
-			// { key: 'overlayleft', name: __( 'Overlay Left' ), icon: icons.infoLeftOverlay },
+			// { key: 'leftabove', name: __( 'Left Above' ), icon: infoLeftAboveIcon },
+			// { key: 'left', name: __( 'Left' ), icon: infoLeftIcon },
+			// { key: 'overlay', name: __( 'Overlay' ), icon: infoTopOverlayIcons },
+			// { key: 'overlayleft', name: __( 'Overlay Left' ), icon: infoLeftOverlayIcons },
 		];
 		const blockToolControls = ( index ) => {
 			const isButtonSelected = ( isSelected && this.state.selectedButton === index && kadence_blocks_params.dynamic_enabled );
@@ -683,10 +683,11 @@ class KadenceAdvancedButton extends Component {
 		const tabControls = ( index ) => {
 			const isButtonSelected = ( isSelected && this.state.selectedButton === index );
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Button', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 					opened={ ( true === isButtonSelected ? true : undefined ) }
+					panelName={ 'kb-adv-btn-' + index }
 				>
 					<Fragment>
 						<h2 className="side-h2-label">{ __( 'Button Inherit Styles', 'kadence-blocks' ) }</h2>
@@ -712,34 +713,36 @@ class KadenceAdvancedButton extends Component {
 							) ) }
 						</ButtonGroup>
 					</Fragment>
-					<URLInputControl
-						label={ __( 'Button Link', 'kadence-blocks' ) }
-						url={ btns[ index ].link }
-						onChangeUrl={ value => {
-							this.saveArrayUpdate( { link: value }, index );
-						} }
-						additionalControls={ true }
-						changeTargetType={ true }
-						opensInNewTab={ ( undefined !== btns[ index ].target ? btns[ index ].target : '' ) }
-						onChangeTarget={ value => {
-							this.saveArrayUpdate( { target: value }, index );
-						} }
-						linkNoFollow={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
-						onChangeFollow={ value => {
-							this.saveArrayUpdate( { noFollow: value }, index );
-						} }
-						linkSponsored={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
-						onChangeSponsored={ value => {
-							this.saveArrayUpdate( { sponsored: value }, index );
-						} }
-						linkDownload={ ( undefined !== btns[ index ].download ? btns[ index ].download : false ) }
-						onChangeDownload={ value => {
-							this.saveArrayUpdate( { download: value }, index );
-						} }
-						dynamicAttribute={ 'btns:' + index + ':link' }
-						allowClear={ true }
-						{ ...this.props }
-					/>
+					{ ! lockBtnCount && (
+						<URLInputControl
+							label={ __( 'Button Link', 'kadence-blocks' ) }
+							url={ btns[ index ].link }
+							onChangeUrl={ value => {
+								this.saveArrayUpdate( { link: value }, index );
+							} }
+							additionalControls={ true }
+							changeTargetType={ true }
+							opensInNewTab={ ( undefined !== btns[ index ].target ? btns[ index ].target : '' ) }
+							onChangeTarget={ value => {
+								this.saveArrayUpdate( { target: value }, index );
+							} }
+							linkNoFollow={ ( undefined !== btns[ index ].noFollow ? btns[ index ].noFollow : false ) }
+							onChangeFollow={ value => {
+								this.saveArrayUpdate( { noFollow: value }, index );
+							} }
+							linkSponsored={ ( undefined !== btns[ index ].sponsored ? btns[ index ].sponsored : false ) }
+							onChangeSponsored={ value => {
+								this.saveArrayUpdate( { sponsored: value }, index );
+							} }
+							linkDownload={ ( undefined !== btns[ index ].download ? btns[ index ].download : false ) }
+							onChangeDownload={ value => {
+								this.saveArrayUpdate( { download: value }, index );
+							} }
+							dynamicAttribute={ 'btns:' + index + ':link' }
+							allowClear={ true }
+							{ ...this.props }
+						/>
+					)}
 					{ this.showSettings( 'sizeSettings' ) && (
 						<Fragment>
 							<ResponsiveRangeControls
@@ -1004,7 +1007,7 @@ class KadenceAdvancedButton extends Component {
 								min={ 0 }
 								max={ 50 }
 							/>
-							<ResponsiveMeasuremenuControls
+							<ResponsiveMeasurementControls
 								label={ __( 'Button Margin', 'kadence-blocks' ) }
 								value={ undefined !== btns[ index ].margin ? btns[ index ].margin : [ '', '', '', '' ] }
 								control={ this.state.buttonMarginControl }
@@ -1079,20 +1082,20 @@ class KadenceAdvancedButton extends Component {
 										let tabout;
 										if ( tab.name ) {
 											if ( 'hover' + index === tab.name ) {
-												tabout = <AdvancedPopColorControl
+												tabout = <PopColorControl
 													label={ __( 'Hover Icon Color', 'kadence-blocks' ) }
-													colorValue={ ( btns[ index ].iconColorHover ? btns[ index ].iconColorHover : '' ) }
-													colorDefault={ '' }
-													onColorChange={ value => {
+													value={ ( btns[ index ].iconColorHover ? btns[ index ].iconColorHover : '' ) }
+													default={ '' }
+													onChange={ value => {
 														this.saveArrayUpdate( { iconColorHover: value }, index );
 													} }
 												/>;
 											} else {
-												tabout = <AdvancedPopColorControl
+												tabout = <PopColorControl
 													label={ __( 'Icon Color', 'kadence-blocks' ) }
-													colorValue={ ( btns[ index ].iconColor ? btns[ index ].iconColor : '' ) }
-													colorDefault={ '' }
-													onColorChange={ value => {
+													value={ ( btns[ index ].iconColor ? btns[ index ].iconColor : '' ) }
+													default={ '' }
+													onChange={ value => {
 														this.saveArrayUpdate( { iconColor: value }, index );
 													} }
 												/>;
@@ -1122,7 +1125,7 @@ class KadenceAdvancedButton extends Component {
 									onChange={ ( value ) => this.saveArrayUpdate( { onlyIcon: [ ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[0] ? btns[ index ].onlyIcon[0] : false ), ( undefined !== btns[ index ].onlyIcon && undefined !== btns[ index ].onlyIcon[1] ? btns[ index ].onlyIcon[1] : '' ), value ] }, index ) }
 								/> }
 							/>
-							<ResponsiveMeasuremenuControls
+							<ResponsiveMeasurementControls
 								label={ __( 'Icon Padding', 'kadence-blocks' ) }
 								value={ undefined !== btns[ index ].iconPadding ? btns[ index ].iconPadding : [ '', '', '', '' ] }
 								control={ this.state.iconPaddingControl }
@@ -1238,17 +1241,17 @@ class KadenceAdvancedButton extends Component {
 						value={ ( btns[ index ].label ? btns[ index ].label : '' ) }
 						onChange={ ( value ) => this.saveArrayUpdate( { label: value }, index ) }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const hoverSettings = ( index ) => {
 			return (
 				<div>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Hover Text Color', 'kadence-blocks' ) }
-						colorValue={ ( btns[ index ].colorHover ? btns[ index ].colorHover : '#ffffff' ) }
-						colorDefault={ '#ffffff' }
-						onColorChange={ value => {
+						value={ ( btns[ index ].colorHover ? btns[ index ].colorHover : '#ffffff' ) }
+						default={ '#ffffff' }
+						onChange={ value => {
 							this.saveArrayUpdate( { colorHover: value }, index );
 						} }
 					/>
@@ -1271,12 +1274,12 @@ class KadenceAdvancedButton extends Component {
 					</div>
 					{ 'gradient' !== btns[ index ].backgroundHoverType && (
 						<div className="kt-inner-sub-section">
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Background Color', 'kadence-blocks' ) }
-								colorValue={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '' ) }
-								colorDefault={ '' }
+								value={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '' ) }
+								default={ '' }
 								opacityValue={ btns[ index ].backgroundHoverOpacity }
-								onColorChange={ value => {
+								onChange={ value => {
 									this.saveArrayUpdate( { backgroundHover: value }, index );
 								} }
 								onOpacityChange={ value => {
@@ -1288,12 +1291,12 @@ class KadenceAdvancedButton extends Component {
 					) }
 					{ 'gradient' === btns[ index ].backgroundHoverType && (
 						<div className="kt-inner-sub-section">
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
-								colorValue={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '' ) }
-								colorDefault={ '' }
+								value={ ( btns[ index ].backgroundHover ? btns[ index ].backgroundHover : '' ) }
+								default={ '' }
 								opacityValue={ btns[ index ].backgroundHoverOpacity }
-								onColorChange={ value => {
+								onChange={ value => {
 									this.saveArrayUpdate( { backgroundHover: value }, index );
 								} }
 								onOpacityChange={ value => {
@@ -1310,12 +1313,12 @@ class KadenceAdvancedButton extends Component {
 								min={ 0 }
 								max={ 100 }
 							/>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
-								colorValue={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 0 ] ? btns[ index ].gradientHover[ 0 ] : '#777777' ) }
-								colorDefault={ '#777777' }
+								value={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 0 ] ? btns[ index ].gradientHover[ 0 ] : '#777777' ) }
+								default={ '#777777' }
 								opacityValue={ ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 1 ] ? btns[ index ].gradientHover[ 1 ] : 1 ) }
-								onColorChange={ value => {
+								onChange={ value => {
 									this.saveArrayUpdate( { gradientHover: [ value, ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 1 ] ? btns[ index ].gradientHover[ 1 ] : 1 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 2 ] ? btns[ index ].gradientHover[ 2 ] : 0 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 3 ] ? btns[ index ].gradientHover[ 3 ] : 100 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 4 ] ? btns[ index ].gradientHover[ 4 ] : 'linear' ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 5 ] ? btns[ index ].gradientHover[ 5 ] : 180 ), ( btns[ index ].gradientHover && undefined !== btns[ index ].gradientHover[ 6 ] ? btns[ index ].gradientHover[ 6 ] : 'center center' ) ] }, index );
 								} }
 								onOpacityChange={ value => {
@@ -1383,12 +1386,12 @@ class KadenceAdvancedButton extends Component {
 							) }
 						</div>
 					) }
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Hover Border Color', 'kadence-blocks' ) }
-						colorValue={ ( btns[ index ].borderHover ? btns[ index ].borderHover : '' ) }
-						colorDefault={ '' }
+						value={ ( btns[ index ].borderHover ? btns[ index ].borderHover : '' ) }
+						default={ '' }
 						opacityValue={ btns[ index ].borderHoverOpacity }
-						onColorChange={ value => {
+						onChange={ value => {
 							this.saveArrayUpdate( { borderHover: value }, index );
 						} }
 						onOpacityChange={ value => {
@@ -1400,7 +1403,7 @@ class KadenceAdvancedButton extends Component {
 						label={ __( 'Hover Box Shadow', 'kadence-blocks' ) }
 						enable={ ( undefined !== btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 0 ] ? btns[ index ].boxShadowHover[ 0 ] : false ) }
 						color={ ( undefined !== btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 1 ] ? btns[ index ].boxShadowHover[ 1 ] : '#000000' ) }
-						colorDefault={ '#000000' }
+						default={ '#000000' }
 						onArrayChange={ ( color, opacity ) => {
 							this.saveArrayUpdate( { boxShadowHover: [ ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 0 ] ? btns[ index ].boxShadowHover[ 0 ] : false ), color, opacity, ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 3 ] ? btns[ index ].boxShadowHover[ 3 ] : 2 ), ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 4 ] ? btns[ index ].boxShadowHover[ 4 ] : 2 ), ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 5 ] ? btns[ index ].boxShadowHover[ 5 ] : 3 ), ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 6 ] ? btns[ index ].boxShadowHover[ 6 ] : 0 ), ( btns[ index ].boxShadowHover && undefined !== btns[ index ].boxShadowHover[ 7 ] ? btns[ index ].boxShadowHover[ 7 ] : false ) ] }, index );
 						} }
@@ -1441,11 +1444,11 @@ class KadenceAdvancedButton extends Component {
 		const buttonSettings = ( index ) => {
 			return (
 				<div>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Text Color', 'kadence-blocks' ) }
-						colorValue={ btns[ index ].color }
-						colorDefault={ '' }
-						onColorChange={ value => {
+						value={ btns[ index ].color }
+						default={ '' }
+						onChange={ value => {
 							this.saveArrayUpdate( { color: value }, index );
 						} }
 					/>
@@ -1468,12 +1471,12 @@ class KadenceAdvancedButton extends Component {
 					</div>
 					{ 'gradient' !== btns[ index ].backgroundType && (
 						<div className="kt-inner-sub-section">
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Background Color', 'kadence-blocks' ) }
-								colorValue={ btns[ index ].background }
-								colorDefault={ '' }
+								value={ btns[ index ].background }
+								default={ '' }
 								opacityValue={ btns[ index ].backgroundOpacity }
-								onColorChange={ value => {
+								onChange={ value => {
 									this.saveArrayUpdate( { background: value }, index );
 								} }
 								onOpacityChange={ value => {
@@ -1485,12 +1488,12 @@ class KadenceAdvancedButton extends Component {
 					) }
 					{ 'gradient' === btns[ index ].backgroundType && (
 						<div className="kt-inner-sub-section">
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Gradient Color 1', 'kadence-blocks' ) }
-								colorValue={ btns[ index ].background }
-								colorDefault={ '' }
+								value={ btns[ index ].background }
+								default={ '' }
 								opacityValue={ btns[ index ].backgroundOpacity }
-								onColorChange={ value => {
+								onChange={ value => {
 									this.saveArrayUpdate( { background: value }, index );
 								} }
 								onOpacityChange={ value => {
@@ -1507,12 +1510,12 @@ class KadenceAdvancedButton extends Component {
 								min={ 0 }
 								max={ 100 }
 							/>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Gradient Color 2', 'kadence-blocks' ) }
-								colorValue={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] ? btns[ index ].gradient[ 0 ] : '#999999' ) }
-								colorDefault={ '#999999' }
+								value={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 0 ] ? btns[ index ].gradient[ 0 ] : '#999999' ) }
+								default={ '#999999' }
 								opacityValue={ ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 1 ] ? btns[ index ].gradient[ 1 ] : 1 ) }
-								onColorChange={ value => {
+								onChange={ value => {
 									this.saveArrayUpdate( { gradient: [ value, ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 1 ] ? btns[ index ].gradient[ 1 ] : 1 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 2 ] ? btns[ index ].gradient[ 2 ] : 0 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 3 ] ? btns[ index ].gradient[ 3 ] : 100 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 4 ] ? btns[ index ].gradient[ 4 ] : 'linear' ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 5 ] ? btns[ index ].gradient[ 5 ] : 180 ), ( btns[ index ].gradient && undefined !== btns[ index ].gradient[ 6 ] ? btns[ index ].gradient[ 6 ] : 'center center' ) ] }, index );
 								} }
 								onOpacityChange={ value => {
@@ -1580,12 +1583,12 @@ class KadenceAdvancedButton extends Component {
 							) }
 						</div>
 					) }
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Border Color', 'kadence-blocks' ) }
-						colorValue={ ( btns[ index ].border ? btns[ index ].border : '#555555' ) }
-						colorDefault={ '' }
+						value={ ( btns[ index ].border ? btns[ index ].border : '#555555' ) }
+						default={ '' }
 						opacityValue={ btns[ index ].borderOpacity }
-						onColorChange={ value => {
+						onChange={ value => {
 							this.saveArrayUpdate( { border: value }, index );
 						} }
 						onOpacityChange={ value => {
@@ -1597,7 +1600,7 @@ class KadenceAdvancedButton extends Component {
 						label={ __( 'Box Shadow', 'kadence-blocks' ) }
 						enable={ ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] ? btns[ index ].boxShadow[ 0 ] : false ) }
 						color={ ( undefined !== btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 1 ] ? btns[ index ].boxShadow[ 1 ] : '#000000' ) }
-						colorDefault={ '#000000' }
+						default={ '#000000' }
 						onArrayChange={ ( color, opacity ) => {
 							this.saveArrayUpdate( { boxShadow: [ ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 0 ] ? btns[ index ].boxShadow[ 0 ] : false ), color, opacity, ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 3 ] ? btns[ index ].boxShadow[ 3 ] : 1 ), ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 4 ] ? btns[ index ].boxShadow[ 4 ] : 1 ), ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 5 ] ? btns[ index ].boxShadow[ 5 ] : 2 ), ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 6 ] ? btns[ index ].boxShadow[ 6 ] : 0 ), ( btns[ index ].boxShadow && undefined !== btns[ index ].boxShadow[ 7 ] ? btns[ index ].boxShadow[ 7 ] : false ) ] }, index );
 						} }
@@ -1713,157 +1716,179 @@ class KadenceAdvancedButton extends Component {
 					{ this.showSettings( 'allSettings' ) && (
 						<Fragment>
 							<InspectorControls>
-								{ this.showSettings( 'countSettings' ) && (
-									<PanelBody
-										title={ __( 'Button Count', 'kadence-blocks' ) }
-										initialOpen={ true }
-									>
-										<PanelRow>
-											<Button
-												className="kb-add-field"
-												isPrimary={ true }
-												icon={ plus }
-												onClick={ () => {
-													const newbtns = btns;
-													const newcount = Math.abs( btnCount + 1 );
-													newbtns.push( {
-														text: newbtns[ 0 ].text,
-														link: newbtns[ 0 ].link,
-														target: newbtns[ 0 ].target,
-														size: newbtns[ 0 ].size,
-														paddingBT: newbtns[ 0 ].paddingBT,
-														paddingLR: newbtns[ 0 ].paddingLR,
-														color: newbtns[ 0 ].color,
-														background: newbtns[ 0 ].background,
-														border: newbtns[ 0 ].border,
-														backgroundOpacity: newbtns[ 0 ].backgroundOpacity,
-														borderOpacity: newbtns[ 0 ].borderOpacity,
-														borderRadius: newbtns[ 0 ].borderRadius,
-														borderWidth: newbtns[ 0 ].borderWidth,
-														colorHover: newbtns[ 0 ].colorHover,
-														backgroundHover: newbtns[ 0 ].backgroundHover,
-														borderHover: newbtns[ 0 ].borderHover,
-														backgroundHoverOpacity: newbtns[ 0 ].backgroundHoverOpacity,
-														borderHoverOpacity: newbtns[ 0 ].borderHoverOpacity,
-														icon: newbtns[ 0 ].icon,
-														iconSide: newbtns[ 0 ].iconSide,
-														iconHover: newbtns[ 0 ].iconHover,
-														cssClass: ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
-														noFollow: ( newbtns[ 0 ].noFollow ? newbtns[ 0 ].noFollow : false ),
-														gap: ( newbtns[ 0 ].gap ? newbtns[ 0 ].gap : 5 ),
-														responsiveSize: ( newbtns[ 0 ].responsiveSize ? newbtns[ 0 ].responsiveSize : [ '', '' ] ),
-														gradient: ( newbtns[ 0 ].gradient ? newbtns[ 0 ].gradient : [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ] ),
-														gradientHover: ( newbtns[ 0 ].gradientHover ? newbtns[ 0 ].gradientHover : [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ] ),
-														btnStyle: ( newbtns[ 0 ].btnStyle ? newbtns[ 0 ].btnStyle : 'basic' ),
-														btnSize: ( newbtns[ 0 ].btnSize ? newbtns[ 0 ].btnSize : 'standard' ),
-														backgroundType: ( newbtns[ 0 ].backgroundType ? newbtns[ 0 ].backgroundType : 'solid' ),
-														backgroundHoverType: ( newbtns[ 0 ].backgroundHoverType ? newbtns[ 0 ].backgroundHoverType : 'solid' ),
-														width: ( newbtns[ 0 ].width ? newbtns[ 0 ].width : [ '', '', '' ] ),
-														responsivePaddingBT: ( newbtns[ 0 ].responsivePaddingBT ? newbtns[ 0 ].responsivePaddingBT : [ '', '' ] ),
-														responsivePaddingLR: ( newbtns[ 0 ].responsivePaddingLR ? newbtns[ 0 ].responsivePaddingLR : [ '', '' ] ),
-														boxShadow: ( newbtns[ 0 ].boxShadow ? newbtns[ 0 ].boxShadow : [ false, '#000000', 0.2, 1, 1, 2, 0, false ] ),
-														boxShadowHover: ( newbtns[ 0 ].boxShadowHover ? newbtns[ 0 ].boxShadowHover : [ false, '#000000', 0.4, 2, 2, 3, 0, false ] ),
-														sponsored: ( newbtns[ 0 ].sponsored ? newbtns[ 0 ].sponsored : false ),
-														download: false,
-														tabletGap: ( newbtns[ 0 ].tabletGap ? newbtns[ 0 ].tabletGap : '' ),
-														mobileGap: ( newbtns[ 0 ].mobileGap ? newbtns[ 0 ].mobileGap : '' ),
-														inheritStyles: ( newbtns[ 0 ].inheritStyles ? newbtns[ 0 ].inheritStyles : '' ),
-														iconSize: ( newbtns[ 0 ].iconSize ? newbtns[ 0 ].iconSize : [ '', '', '' ] ),
-														iconPadding: ( newbtns[ 0 ].iconPadding ? newbtns[ 0 ].iconPadding : [ '', '', '', '' ] ),
-														iconTabletPadding: ( newbtns[ 0 ].iconTabletPadding ? newbtns[ 0 ].iconTabletPadding : [ '', '', '', '' ] ),
-														iconMobilePadding: ( newbtns[ 0 ].iconMobilePadding ? newbtns[ 0 ].iconMobilePadding : [ '', '', '', '' ] ),
-														onlyIcon: ( newbtns[ 0 ].onlyIcon ? newbtns[ 0 ].onlyIcon : [ false, '', '' ] ),
-														iconColor: ( newbtns[ 0 ].iconColor ? newbtns[ 0 ].iconColor : '' ),
-														iconColorHover: ( newbtns[ 0 ].iconColorHover ? newbtns[ 0 ].iconColorHover : '' ),
-														sizeType: ( newbtns[ 0 ].sizeType ? newbtns[ 0 ].sizeType : 'px' ),
-														iconSizeType: ( newbtns[ 0 ].iconSizeType ? newbtns[ 0 ].iconSizeType : 'px' ),
-														label: ( newbtns[ 0 ].label ? newbtns[ 0 ].label : '' ),
-														marginUnit: ( newbtns[ 0 ].marginUnit ? newbtns[ 0 ].marginUnit : 'px' ),
-														margin: ( newbtns[ 0 ].margin ? newbtns[ 0 ].margin : [ '', '', '', '' ] ),
-														tabletMargin: ( newbtns[ 0 ].tabletMargin ? newbtns[ 0 ].tabletMargin : [ '', '', '', '' ] ),
-														mobileMargin: ( newbtns[ 0 ].mobileMargin ? newbtns[ 0 ].mobileMargin : [ '', '', '', '' ] ),
-														anchor: ( newbtns[ 0 ].anchor ? newbtns[ 0 ].anchor : '' ),
-														borderStyle: ( newbtns[ 0 ].borderStyle ? newbtns[ 0 ].borderStyle : '' )
-													} );
-													setAttributes( { btns: newbtns } );
-													this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
-													setAttributes( { btnCount: newcount } );
-												} }
+
+								<InspectorControlTabs
+									panelName={'advanced-heading'}
+									setActiveTab={( value ) => this.setState( { activeTab: value } )}
+									activeTab={this.state.activeTab}
+								/>
+
+								{( this.state.activeTab === 'general' ) &&
+									<>
+										{this.showSettings( 'countSettings' ) && (
+											<KadencePanelBody
+												title={__( 'Button Count', 'kadence-blocks' )}
+												initialOpen={true}
+												panelName={'kb-adv-btn-count'}
 											>
-												{ __( 'Add Button', 'kadence-blocks' ) }
-											</Button>
-										</PanelRow>
-										<ResponsiveAlignControls
-											label={ __( 'Button Alignment', 'kadence-blocks' ) }
-											value={ ( hAlign ? hAlign : '' ) }
-											mobileValue={ ( mhAlign ? mhAlign : '' ) }
-											tabletValue={ ( thAlign ? thAlign : '' ) }
-											onChange={ ( nextAlign ) => setAttributes( { hAlign: nextAlign } ) }
-											onChangeTablet={ ( nextAlign ) => setAttributes( { thAlign: nextAlign } ) }
-											onChangeMobile={ ( nextAlign ) => setAttributes( { mhAlign: nextAlign } ) }
-										/>
-									</PanelBody>
-								) }
-								{ renderArray }
-								{ this.showSettings( 'fontSettings' ) && (
-									<PanelBody
-										title={ __( 'Font Family', 'kadence-blocks' ) }
-										initialOpen={ false }
-										className="kt-font-family-area"
-									>
-										<TypographyControls
-											fontGroup={ 'button' }
-											letterSpacing={ letterSpacing }
-											onLetterSpacing={ ( value ) => setAttributes( { letterSpacing: value } ) }
-											textTransform={ textTransform }
-											onTextTransform={ ( value ) => setAttributes( { textTransform: value } ) }
-											fontFamily={ typography }
-											onFontFamily={ ( value ) => setAttributes( { typography: value } ) }
-											onFontChange={ ( select ) => {
-												setAttributes( {
-													typography: select.value,
-													googleFont: select.google,
-												} );
-											} }
-											googleFont={ googleFont }
-											onGoogleFont={ ( value ) => setAttributes( { googleFont: value } ) }
-											loadGoogleFont={ loadGoogleFont }
-											onLoadGoogleFont={ ( value ) => setAttributes( { loadGoogleFont: value } ) }
-											fontVariant={ fontVariant }
-											onFontVariant={ ( value ) => setAttributes( { fontVariant: value } ) }
-											fontWeight={ fontWeight }
-											onFontWeight={ ( value ) => setAttributes( { fontWeight: value } ) }
-											fontStyle={ fontStyle }
-											onFontStyle={ ( value ) => setAttributes( { fontStyle: value } ) }
-											fontSubset={ fontSubset }
-											onFontSubset={ ( value ) => setAttributes( { fontSubset: value } ) }
-										/>
-									</PanelBody>
-								) }
-								{ this.showSettings( 'marginSettings' ) && (
-									<PanelBody
-										title={ __( 'Container Margin', 'kadence-blocks' ) }
-										initialOpen={ false }
-									>
-										<ResponsiveMeasuremenuControls
-											label={ __( 'Container Margin', 'kadence-blocks' ) }
-											value={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ] }
-											control={ this.state.marginControl }
-											tabletValue={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet ? margin[ 0 ].tablet : [ '', '', '', '' ] }
-											mobileValue={ undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile ? margin[ 0 ].mobile : [ '', '', '', '' ] }
-											onChange={ ( value ) => saveMargin( { desk: value } ) }
-											onChangeTablet={ ( value ) => saveMargin( { tablet: value } ) }
-											onChangeMobile={ ( value ) => saveMargin( { mobile: value } ) }
-											onChangeControl={ ( value ) => this.setState( { marginControl: value } ) }
-											min={ marginMin }
-											max={ marginMax }
-											step={ marginStep }
-											unit={ marginUnit }
-											units={ [ 'px', 'em', 'rem', '%', 'vh' ] }
-											onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
-										/>
-									</PanelBody>
-								) }
+												{!lockBtnCount && (
+													<PanelRow>
+														<Button
+															className="kb-add-field"
+															isPrimary={true}
+															icon={plus}
+															onClick={() => {
+																const newbtns = btns;
+																const newcount = Math.abs( btnCount + 1 );
+																newbtns.push( {
+																	text                  : newbtns[ 0 ].text,
+																	link                  : newbtns[ 0 ].link,
+																	target                : newbtns[ 0 ].target,
+																	size                  : newbtns[ 0 ].size,
+																	paddingBT             : newbtns[ 0 ].paddingBT,
+																	paddingLR             : newbtns[ 0 ].paddingLR,
+																	color                 : newbtns[ 0 ].color,
+																	background            : newbtns[ 0 ].background,
+																	border                : newbtns[ 0 ].border,
+																	backgroundOpacity     : newbtns[ 0 ].backgroundOpacity,
+																	borderOpacity         : newbtns[ 0 ].borderOpacity,
+																	borderRadius          : newbtns[ 0 ].borderRadius,
+																	borderWidth           : newbtns[ 0 ].borderWidth,
+																	colorHover            : newbtns[ 0 ].colorHover,
+																	backgroundHover       : newbtns[ 0 ].backgroundHover,
+																	borderHover           : newbtns[ 0 ].borderHover,
+																	backgroundHoverOpacity: newbtns[ 0 ].backgroundHoverOpacity,
+																	borderHoverOpacity    : newbtns[ 0 ].borderHoverOpacity,
+																	icon                  : newbtns[ 0 ].icon,
+																	iconSide              : newbtns[ 0 ].iconSide,
+																	iconHover             : newbtns[ 0 ].iconHover,
+																	cssClass              : ( newbtns[ 0 ].cssClass ? newbtns[ 0 ].cssClass : '' ),
+																	noFollow              : ( newbtns[ 0 ].noFollow ? newbtns[ 0 ].noFollow : false ),
+																	gap                   : ( newbtns[ 0 ].gap ? newbtns[ 0 ].gap : 5 ),
+																	responsiveSize        : ( newbtns[ 0 ].responsiveSize ? newbtns[ 0 ].responsiveSize : [ '', '' ] ),
+																	gradient              : ( newbtns[ 0 ].gradient ? newbtns[ 0 ].gradient : [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ] ),
+																	gradientHover         : ( newbtns[ 0 ].gradientHover ? newbtns[ 0 ].gradientHover : [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ] ),
+																	btnStyle              : ( newbtns[ 0 ].btnStyle ? newbtns[ 0 ].btnStyle : 'basic' ),
+																	btnSize               : ( newbtns[ 0 ].btnSize ? newbtns[ 0 ].btnSize : 'standard' ),
+																	backgroundType        : ( newbtns[ 0 ].backgroundType ? newbtns[ 0 ].backgroundType : 'solid' ),
+																	backgroundHoverType   : ( newbtns[ 0 ].backgroundHoverType ? newbtns[ 0 ].backgroundHoverType : 'solid' ),
+																	width                 : ( newbtns[ 0 ].width ? newbtns[ 0 ].width : [ '', '', '' ] ),
+																	responsivePaddingBT   : ( newbtns[ 0 ].responsivePaddingBT ? newbtns[ 0 ].responsivePaddingBT : [ '', '' ] ),
+																	responsivePaddingLR   : ( newbtns[ 0 ].responsivePaddingLR ? newbtns[ 0 ].responsivePaddingLR : [ '', '' ] ),
+																	boxShadow             : ( newbtns[ 0 ].boxShadow ? newbtns[ 0 ].boxShadow : [ false, '#000000', 0.2, 1, 1, 2, 0, false ] ),
+																	boxShadowHover        : ( newbtns[ 0 ].boxShadowHover ? newbtns[ 0 ].boxShadowHover : [ false, '#000000', 0.4, 2, 2, 3, 0, false ] ),
+																	sponsored             : ( newbtns[ 0 ].sponsored ? newbtns[ 0 ].sponsored : false ),
+																	download              : false,
+																	tabletGap             : ( newbtns[ 0 ].tabletGap ? newbtns[ 0 ].tabletGap : '' ),
+																	mobileGap             : ( newbtns[ 0 ].mobileGap ? newbtns[ 0 ].mobileGap : '' ),
+																	inheritStyles         : ( newbtns[ 0 ].inheritStyles ? newbtns[ 0 ].inheritStyles : '' ),
+																	iconSize              : ( newbtns[ 0 ].iconSize ? newbtns[ 0 ].iconSize : [ '', '', '' ] ),
+																	iconPadding           : ( newbtns[ 0 ].iconPadding ? newbtns[ 0 ].iconPadding : [ '', '', '', '' ] ),
+																	iconTabletPadding     : ( newbtns[ 0 ].iconTabletPadding ? newbtns[ 0 ].iconTabletPadding : [ '', '', '', '' ] ),
+																	iconMobilePadding     : ( newbtns[ 0 ].iconMobilePadding ? newbtns[ 0 ].iconMobilePadding : [ '', '', '', '' ] ),
+																	onlyIcon              : ( newbtns[ 0 ].onlyIcon ? newbtns[ 0 ].onlyIcon : [ false, '', '' ] ),
+																	iconColor             : ( newbtns[ 0 ].iconColor ? newbtns[ 0 ].iconColor : '' ),
+																	iconColorHover        : ( newbtns[ 0 ].iconColorHover ? newbtns[ 0 ].iconColorHover : '' ),
+																	sizeType              : ( newbtns[ 0 ].sizeType ? newbtns[ 0 ].sizeType : 'px' ),
+																	iconSizeType          : ( newbtns[ 0 ].iconSizeType ? newbtns[ 0 ].iconSizeType : 'px' ),
+																	label                 : ( newbtns[ 0 ].label ? newbtns[ 0 ].label : '' ),
+																	marginUnit            : ( newbtns[ 0 ].marginUnit ? newbtns[ 0 ].marginUnit : 'px' ),
+																	margin                : ( newbtns[ 0 ].margin ? newbtns[ 0 ].margin : [ '', '', '', '' ] ),
+																	tabletMargin          : ( newbtns[ 0 ].tabletMargin ? newbtns[ 0 ].tabletMargin : [ '', '', '', '' ] ),
+																	mobileMargin          : ( newbtns[ 0 ].mobileMargin ? newbtns[ 0 ].mobileMargin : [ '', '', '', '' ] ),
+																	anchor                : ( newbtns[ 0 ].anchor ? newbtns[ 0 ].anchor : '' ),
+																	borderStyle           : ( newbtns[ 0 ].borderStyle ? newbtns[ 0 ].borderStyle : '' )
+																} );
+																setAttributes( { btns: newbtns } );
+																this.saveArrayUpdate( { iconSide: btns[ 0 ].iconSide }, 0 );
+																setAttributes( { btnCount: newcount } );
+															}}
+														>
+															{__( 'Add Button', 'kadence-blocks' )}
+														</Button>
+													</PanelRow>
+												)}
+
+												<ResponsiveAlignControls
+													label={__( 'Button Alignment', 'kadence-blocks' )}
+													value={( hAlign ? hAlign : '' )}
+													mobileValue={( mhAlign ? mhAlign : '' )}
+													tabletValue={( thAlign ? thAlign : '' )}
+													onChange={( nextAlign ) => setAttributes( { hAlign: nextAlign } )}
+													onChangeTablet={( nextAlign ) => setAttributes( { thAlign: nextAlign } )}
+													onChangeMobile={( nextAlign ) => setAttributes( { mhAlign: nextAlign } )}
+												/>
+											</KadencePanelBody>
+										)}
+										{renderArray}
+
+									</>
+								}
+
+								{( this.state.activeTab === 'style' ) &&
+									<>
+										{this.showSettings( 'fontSettings' ) && (
+											<KadencePanelBody
+												title={__( 'Font Family', 'kadence-blocks' )}
+												className="kt-font-family-area"
+												panelName={'kb-adv-btn-font-family'}
+											>
+												<TypographyControls
+													fontGroup={'button'}
+													letterSpacing={letterSpacing}
+													onLetterSpacing={( value ) => setAttributes( { letterSpacing: value } )}
+													textTransform={textTransform}
+													onTextTransform={( value ) => setAttributes( { textTransform: value } )}
+													fontFamily={typography}
+													onFontFamily={( value ) => setAttributes( { typography: value } )}
+													onFontChange={( select ) => {
+														setAttributes( {
+															typography: select.value,
+															googleFont: select.google,
+														} );
+													}}
+													googleFont={googleFont}
+													onGoogleFont={( value ) => setAttributes( { googleFont: value } )}
+													loadGoogleFont={loadGoogleFont}
+													onLoadGoogleFont={( value ) => setAttributes( { loadGoogleFont: value } )}
+													fontVariant={fontVariant}
+													onFontVariant={( value ) => setAttributes( { fontVariant: value } )}
+													fontWeight={fontWeight}
+													onFontWeight={( value ) => setAttributes( { fontWeight: value } )}
+													fontStyle={fontStyle}
+													onFontStyle={( value ) => setAttributes( { fontStyle: value } )}
+													fontSubset={fontSubset}
+													onFontSubset={( value ) => setAttributes( { fontSubset: value } )}
+												/>
+											</KadencePanelBody>
+										)}
+										{this.showSettings( 'marginSettings' ) && (
+											<KadencePanelBody
+												title={__( 'Container Margin', 'kadence-blocks' )}
+												initialOpen={false}
+												panelName={'kb-adv-btn-container-margin'}
+											>
+												<ResponsiveMeasurementControls
+													label={__( 'Container Margin', 'kadence-blocks' )}
+													value={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk ? margin[ 0 ].desk : [ '', '', '', '' ]}
+													control={this.state.marginControl}
+													tabletValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].tablet ? margin[ 0 ].tablet : [ '', '', '', '' ]}
+													mobileValue={undefined !== margin && undefined !== margin[ 0 ] && undefined !== margin[ 0 ].mobile ? margin[ 0 ].mobile : [ '', '', '', '' ]}
+													onChange={( value ) => saveMargin( { desk: value } )}
+													onChangeTablet={( value ) => saveMargin( { tablet: value } )}
+													onChangeMobile={( value ) => saveMargin( { mobile: value } )}
+													onChangeControl={( value ) => this.setState( { marginControl: value } )}
+													min={marginMin}
+													max={marginMax}
+													step={marginStep}
+													unit={marginUnit}
+													units={[ 'px', 'em', 'rem', '%', 'vh' ]}
+													onUnit={( value ) => setAttributes( { marginUnit: value } )}
+												/>
+											</KadencePanelBody>
+										)}
+									</>
+								}
 							</InspectorControls>
 							<InspectorAdvancedControls>
 								<ToggleControl

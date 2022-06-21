@@ -1,12 +1,9 @@
-import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
-const {
+import { PopColorControl } from '@kadence/components';
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
-	ColorPalette,
-} = wp.blockEditor;
-const {
+} from '@wordpress/element';
+import {
 	ToggleControl,
 	RangeControl,
 	TabPanel,
@@ -15,9 +12,9 @@ const {
 	Button,
 	Tooltip,
 	Modal,
-} = wp.components;
+} from '@wordpress/components';
 
-import icons from '../../icons';
+import { spacerIcon } from '@kadence/icons';
 /**
  * Internal block libraries
  */
@@ -99,7 +96,7 @@ class KadenceSpacerDefault extends Component {
 			<Fragment>
 				<Tooltip text="Block Defaults">
 					<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-						<span className="kt-block-icon">{ icons.spacerblock }</span>
+						<span className="kt-block-icon">{ spacerIcon }</span>
 						{ __( 'Spacer/Divider' ) }
 					</Button>
 				</Tooltip>
@@ -171,12 +168,12 @@ class KadenceSpacerDefault extends Component {
 										{ value: 'dotted', label: __( 'Dotted' ) },
 									] }
 								/>
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Divider Color' ) }
-									colorValue={ ( spacerConfig.dividerColor ? spacerConfig.dividerColor : '#eeeeee' ) }
-									colorDefault={ '#eeeeee' }
+									value={ ( spacerConfig.dividerColor ? spacerConfig.dividerColor : '#eeeeee' ) }
+									default={ '#eeeeee' }
 									opacityValue={ ( spacerConfig.dividerOpacity ? spacerConfig.dividerOpacity : 100 ) }
-									onColorChange={ value => this.saveConfigState( 'dividerColor', value ) }
+									onChange={ value => this.saveConfigState( 'dividerColor', value ) }
 									onOpacityChange={ value => this.saveConfigState( 'dividerOpacity', value ) }
 									opacityUnit={ 100 }
 								/>

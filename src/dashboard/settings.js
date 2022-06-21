@@ -3,8 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 const { Fragment } = wp.element;
-import map from 'lodash/map';
-const { withFilters, TabPanel, Panel, PanelBody, PanelRow, Button } = wp.components;
+import { map } from 'lodash';
+import { withFilters, TabPanel, Panel, PanelBody, PanelRow, Button } from '@wordpress/components';
 
 export const BlocksList = () => {
 	const KadenceBlocks = [

@@ -2,8 +2,8 @@
  * BLOCK: Kadence Tabs
  */
 import classnames from 'classnames';
-import times from 'lodash/times';
-import IconRender from '../../components/icons/icon-render';
+import { times } from 'lodash';
+import { IconSpanTag } from '@kadence/components';
 const {
 	Component,
 	Fragment,
@@ -12,6 +12,7 @@ const {
 	InnerBlocks,
 	RichText,
 } = wp.blockEditor;
+
 /**
  * Internal block libraries
  */
@@ -39,7 +40,7 @@ class KadenceTabsSave extends Component {
 					<li id={ ( titles[ index ] && titles[ index ].anchor ? titles[ index ].anchor : backupAnchor ) } className={ `kt-title-item kt-title-item-${ 1 + index } kt-tabs-svg-show-${ ( titles[ index ] && titles[ index ].onlyIcon ? 'only' : 'always' ) } kt-tabs-icon-side-${ ( titles[ index ] && titles[ index ].iconSide ? titles[ index ].iconSide : 'right' ) } kt-tab-title-${ ( 1 + index === activeTab ? 'active' : 'inactive' ) }${ ( enableSubtitle ? ' kb-tabs-have-subtitle' : '' ) }` }>
 						<a href={ `#${ ( titles[ index ] && titles[ index ].anchor ? titles[ index ].anchor : backupAnchor ) }` } data-tab={ 1 + index } className={ `kt-tab-title kt-tab-title-${ 1 + index } ` } >
 							{ titles[ index ] && titles[ index ].icon && 'right' !== titles[ index ].iconSide && (
-								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } htmltag="span" />
+								<IconSpanTag className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } />
 							) }
 							{ ( ! enableSubtitle || ( undefined !== titles[ index ] && undefined === titles[ index ].subText ) || ( undefined !== titles[ index ] && undefined !== titles[ index ].subText && '' === titles[ index ].subText ) ) && (
 								<RichText.Content
@@ -63,7 +64,7 @@ class KadenceTabsSave extends Component {
 								</div>
 							) }
 							{ titles[ index ] && titles[ index ].icon && 'right' === titles[ index ].iconSide && (
-								<IconRender className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } htmltag="span" />
+								<IconSpanTag className={ `kt-tab-svg-icon kt-tab-svg-icon-${ titles[ index ].icon } kt-title-svg-side-${ titles[ index ].iconSide }` } name={ titles[ index ].icon } size={ ( ! iSize ? '14' : iSize ) } />
 							) }
 						</a>
 					</li>

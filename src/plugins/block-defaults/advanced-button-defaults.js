@@ -1,17 +1,14 @@
-import TypographyControls from '../../components/typography/typography-control';
-import map from 'lodash/map';
-import BoxShadowControl from '../../components/common/box-shadow-control';
-import IconControl from '../../components/icons/icon-control';
-import PopColorControl from '../../components/color/pop-color-control';
+import { map } from 'lodash';
+import { PopColorControl, TypographyControls, IconControl, BoxShadowControl } from '@kadence/components';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	Button,
 	TabPanel,
 	PanelBody,
@@ -22,9 +19,9 @@ const {
 	ButtonGroup,
 	Dashicon,
 	Modal,
-} = wp.components;
+} from '@wordpress/components';
 
-import icons from '../../icons';
+import { advancedBtnIcon } from '@kadence/icons';
 
 class KadenceButtonDefault extends Component {
 	constructor() {
@@ -178,7 +175,7 @@ class KadenceButtonDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.advancedbtn }</span>
+					<span className="kt-block-icon">{ advancedBtnIcon }</span>
 					{ __( 'Advanced Button' ) }
 				</Button>
 				{ isOpen ?

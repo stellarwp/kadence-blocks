@@ -13,7 +13,7 @@ const {
  * External dependencies
  */
 import Masonry from 'react-masonry-css'
-import debounce from 'lodash/debounce';
+import { debounce } from 'lodash';
 import LazyLoad from 'react-lazy-load';
 /**
  * WordPress dependencies
@@ -27,7 +27,7 @@ import {
 	withDispatch,
 } from '@wordpress/data';
 import { rawHandler } from '@wordpress/blocks';
-import { 
+import {
 	Component,
 	Fragment,
 } from '@wordpress/element';
@@ -55,7 +55,7 @@ import { __, sprintf } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
- import KadenceTryParseJSON from '../../components/common/parse-json'
+import { KadenceTryParseJSON } from '@kadence/helpers'
 
 /**
  * Wire Sections.
@@ -468,7 +468,7 @@ class WireSections extends Component {
 										{ __( 'Error, Unable to access library database, please try re-syncing', 'kadence-blocks' ) }
 									</h2>
 									<div style={ { textAlign:'center' } }>
-										<Button 
+										<Button
 											className="kt-reload-templates"
 											icon={ update }
 											onClick={ () => this.reloadTemplateData() }
@@ -498,7 +498,7 @@ class WireSections extends Component {
 								const categories = libraryItems[key].categories;
 								const keywords = libraryItems[key].keywords;
 								const description = control.state.items[key].description;
-								const subscribed = control.state.isSubscribed;	
+								const subscribed = control.state.isSubscribed;
 								const descriptionId = `${ slug }_kb_cloud__item-description`;
 								if ( ( 'all' === control.state.category || Object.keys( categories ).includes( control.state.category ) ) && ( ! control.state.search || ( keywords && keywords.some( x => x.toLowerCase().includes( control.state.search.toLowerCase() ) ) ) ) ) {
 									return (

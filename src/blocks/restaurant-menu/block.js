@@ -5,7 +5,7 @@
 /**
  * Internal dependencies
  */
-import icons from './icons';
+import { restaurantMenuIcon } from '@kadence/icons';
 import attributes from './attributes';
 import edit from './edit';
 import save from './save';
@@ -27,7 +27,7 @@ import './editor.scss';
 import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
 const { Fragment }          = wp.element;
-const { Icon }              = wp.components;
+import { Icon } } from '@wordpress/components';
 
 /**
  * Register: a Gutenberg Block.
@@ -40,19 +40,10 @@ const { Icon }              = wp.components;
  */
 registerBlockType( 'kadence/restaurantmenu', {
 	title: __( 'Restaurant Menu' ),
-	icon: <Icon icon={ icons.block } />,
+	icon: <Icon icon={ restaurantMenuIcon } />,
 	category: 'kadence-blocks',
 	keywords: ['restaurant menu', 'food', 'drinks'],
 	description: __( 'In the restaurant, a menu is a list of food and beverages offered to customers and the prices.' ),
-	getEditWrapperProps( attributes ) {
-		const { fullWidth } = attributes;
-		return {
-			style: {
-				maxWidth: fullWidth ? 'none' : false,
-				width: fullWidth ? '100%' : false
-			},
-		};
-	},
 	attributes,
 	edit,
 	save

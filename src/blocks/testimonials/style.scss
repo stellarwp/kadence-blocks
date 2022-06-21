@@ -438,6 +438,9 @@
     flex-direction: column;
     justify-content: flex-end;
 }
+.kt-testimonial-halign-center.kt-testimonials-media-off .kt-testimonial-meta-wrap .kt-testimonial-meta-name-wrap {
+    text-align: center;
+}
 .rtl {
 	.kt-testimonial-media-inner-wrap {
 		margin: 0 0 0 15px;

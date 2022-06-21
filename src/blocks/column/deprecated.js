@@ -7,12 +7,11 @@
  * External dependencies
  */
  import classnames from 'classnames';
-import hexToRGBA from '../../components/color/hex-to-rgba';
-import KadenceColorOutput from '../../components/color/deprecated-kadence-color-output';
+import { hexToRGBA, KadenceColorOutput } from '@kadence/helpers';
+
 /**
  * Internal dependencies
  */
- import KadenceColorOutputNEW from '../../components/color/kadence-color-output';
 import {
 	InnerBlocks,
 } from '@wordpress/block-editor';
@@ -350,7 +349,7 @@ export default [
 		save: ( { attributes } ) => {
 			const { id, background, backgroundOpacity, backgroundImg, uniqueID, vsdesk, vstablet, vsmobile, bgColorClass } = attributes;
 			const bgImg = ( backgroundImg && backgroundImg[ 0 ] && backgroundImg[ 0 ].bgImg ? backgroundImg[ 0 ].bgImg : '' );
-			const backgroundString = ( background && '' === bgImg ? KadenceColorOutputNEW( background, backgroundOpacity ) : undefined );
+			const backgroundString = ( background && '' === bgImg ? KadenceColorOutput( background, backgroundOpacity ) : undefined );
 			const classes = classnames( {
 				[ `inner-column-${ id }` ]: id,
 				[ `kadence-column${ uniqueID }` ]: uniqueID,
@@ -369,7 +368,7 @@ export default [
 			);
 		}
 	},
-	{ 
+	{
 		attributes: {
 			id: {
 				type: 'number',

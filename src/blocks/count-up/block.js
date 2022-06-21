@@ -5,7 +5,7 @@
 /**
  * Import Icons
  */
-import icons from './icon';
+import { countUpIcon } from '@kadence/icons';
 
 /**
  * Import attributes
@@ -30,7 +30,6 @@ import deprecated from './deprecated';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**
@@ -38,7 +37,7 @@ import './editor.scss';
  */
 const { __ }                = wp.i18n;
 const { registerBlockType } = wp.blocks;
-const { Icon }              = wp.components;
+import { Icon } from '@wordpress/components';
 /**
  * Register: a Gutenberg Block.
  *
@@ -50,7 +49,7 @@ const { Icon }              = wp.components;
  */
 registerBlockType( 'kadence/countup', {
 	title: __( 'Count Up', 'kadence-blocks' ),
-	icon: <Icon icon={ icons.block } />,
+	icon: <Icon icon={ countUpIcon } />,
 	category: 'kadence-blocks',
 	keywords: ['count down', 'counter', 'count up', 'number spinner'],
 	description: __( 'An animated count up or down to a specific value.', 'kadence-blocks' ),

@@ -5,38 +5,25 @@
 /**
  * External dependencies
  */
-import map from 'lodash/map';
+ import { map } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import AdvancedPopColorControl from '../../../../advanced-pop-color-control';
-import TypographyControls from '../../../../components/typography/typography-control';
-import KadenceRange from '../../../../kadence-range-control';
-import MeasurementControls from '../../../../measurement-control';
+import { PopColorControl, RangeControl, TypographyControls, KadencePanelBody, MeasurementControls } from '@kadence/components';
 
 /**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { RangeControl } from '../../../../packages/components/src';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
-const {
-	TextControl,
-	SelectControl,
-	PanelBody,
-	RangeControl,
+import {
 	ToggleControl,
-	BaseControl,
-	ButtonGroup,
-	Button,
-	ColorPicker,
-	TextareaControl,
-	CheckboxControl,
-	Tooltip,
 	TabPanel,
 	Dashicon
-} = wp.components;
+} from '@wordpress/components';
 
 
 /**
@@ -140,9 +127,11 @@ class Inspector extends Component {
 			<Fragment>
 				<InspectorControls>
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Container Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-cat-item-settings' }
+					>
 						<MeasurementControls
 								label={ __( 'Container Border Width (px)' ) }
 								measurement={ containerBorderWidth }
@@ -153,7 +142,7 @@ class Inspector extends Component {
 								max={ 40 }
 								step={ 1 }
 						/>
-						<KadenceRange
+						<RangeControl
 							label={ __( 'Container Border Radius (px)' ) }
 							value={ containerBorderRadius }
 							onChange={ value => setAttributes( { containerBorderRadius: value } ) }
@@ -182,20 +171,20 @@ class Inspector extends Component {
 										if ( 'hover' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Hover Background' ) }
-														colorValue={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
-														colorDefault={ '#f2f2f2' }
+														value={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
+														default={ '#f2f2f2' }
 														opacityValue={ containerHoverBackgroundOpacity }
-														onColorChange={ value => setAttributes( { containerHoverBackground: value } ) }
+														onChange={ value => setAttributes( { containerHoverBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
 													/>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Hover Border' ) }
-														colorValue={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
-														colorDefault={ '#eeeeee' }
+														value={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
+														default={ '#eeeeee' }
 														opacityValue={ containerHoverBorderOpacity }
-														onColorChange={ value => setAttributes( { containerHoverBorder: value } ) }
+														onChange={ value => setAttributes( { containerHoverBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -203,20 +192,20 @@ class Inspector extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Container Background' ) }
-														colorValue={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
-														colorDefault={ '#f2f2f2' }
+														value={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
+														default={ '#f2f2f2' }
 														opacityValue={ containerBackgroundOpacity }
-														onColorChange={ value => setAttributes( { containerBackground: value } ) }
+														onChange={ value => setAttributes( { containerBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 													/>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Container Border' ) }
-														colorValue={ ( containerBorder ? containerBorder : '#eeeeee' ) }
-														colorDefault={ '#eeeeee' }
+														value={ ( containerBorder ? containerBorder : '#eeeeee' ) }
+														default={ '#eeeeee' }
 														opacityValue={ containerBorderOpacity }
-														onColorChange={ value => setAttributes( { containerBorder: value } ) }
+														onChange={ value => setAttributes( { containerBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -237,11 +226,13 @@ class Inspector extends Component {
 							max={ 100 }
 							step={ 1 }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Title Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-cat-item-title-settings' }
+					>
 						<ToggleControl
 							label={ __( 'Show Title' ) }
 							checked={ displayTitle }
@@ -271,20 +262,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Color' ) }
-															colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { titleHoverColor: value } ) }
+															value={ ( titleHoverColor ? titleHoverColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { titleHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Title Color' ) }
-															colorValue={ ( titleColor ? titleColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { titleColor: value } ) }
+															value={ ( titleColor ? titleColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { titleColor: value } ) }
 														/>
 													);
 												}
@@ -363,7 +354,7 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } ) }
 															step={ 1 }
@@ -373,7 +364,7 @@ class Inspector extends Component {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -383,7 +374,7 @@ class Inspector extends Component {
 													);
 												} else {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -399,12 +390,14 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Text Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-cat-item-text' }
+					>
 						<ToggleControl
 							label={ __( 'Show Text' ) }
 							checked={ displayText }
@@ -434,20 +427,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Color' ) }
-															colorValue={ ( textHoverColor ? textHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { textHoverColor: value } ) }
+															value={ ( textHoverColor ? textHoverColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { textHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Title Color' ) }
-															colorValue={ ( textColor ? textColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { textColor: value } ) }
+															value={ ( textColor ? textColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { textColor: value } ) }
 														/>
 													);
 												}
@@ -526,7 +519,7 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) }
 															onChange={ value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), value ] } ) }
 															step={ 1 }
@@ -536,7 +529,7 @@ class Inspector extends Component {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ) }
 															onChange={ value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -546,7 +539,7 @@ class Inspector extends Component {
 													);
 												} else {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ) }
 															onChange={ value => setAttributes( { textMinHeight: [ value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -562,12 +555,14 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Price Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-cat-item-price' }
+					>
 						<ToggleControl
 							label={ __( 'Show Price' ) }
 							checked={ displayAmount }
@@ -597,20 +592,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Color' ) }
-															colorValue={ ( priceHoverColor ? priceHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { priceHoverColor: value } ) }
+															value={ ( priceHoverColor ? priceHoverColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { priceHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Title Color' ) }
-															colorValue={ ( priceColor ? priceColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { priceColor: value } ) }
+															value={ ( priceColor ? priceColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { priceColor: value } ) }
 														/>
 													);
 												}
@@ -689,7 +684,7 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 2 ] ) ? priceMinHeight[ 2 ] : '' ) }
 															onChange={ value => setAttributes( { priceMinHeight: [ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 0 ] ) ? priceMinHeight[ 0 ] : '' ), ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 1 ] ) ? priceMinHeight[ 1 ] : '' ), value ] } ) }
 															step={ 1 }
@@ -699,7 +694,7 @@ class Inspector extends Component {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 1 ] ) ? priceMinHeight[ 1 ] : '' ) }
 															onChange={ value => setAttributes( { priceMinHeight: [ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 0 ] ) ? priceMinHeight[ 0 ] : '' ), value, ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 2 ] ) ? priceMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -709,7 +704,7 @@ class Inspector extends Component {
 													);
 												} else {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 0 ] ) ? priceMinHeight[ 0 ] : '' ) }
 															onChange={ value => setAttributes( { priceMinHeight: [ value, ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 1 ] ) ? priceMinHeight[ 1 ] : '' ), ( ( undefined !== priceMinHeight && undefined !== priceMinHeight[ 2 ] ) ? priceMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -725,7 +720,7 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 
 	            </InspectorControls>
 	        </Fragment>

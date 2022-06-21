@@ -2,7 +2,6 @@
   "name": "kadence-blocks",
   "version": "1.0.0",
   "private": true,
-  "main": "src/blocks.js",
   "scripts": {
     "packages-update": "wp-scripts packages-update",
     "start": "wp-scripts start",
@@ -12,10 +11,10 @@
   "dependencies": {
     "@dr-kobros/react-webfont-loader": "^8.0.0",
     "@fonticonpicker/react-fonticonpicker": "^1.2.0",
-    "@lottiefiles/react-lottie-player": "^3.4.2",
-    "@react-google-maps/api": "^2.7.0",
-    "@wordpress/icons": "^4.0.1",
-    "@wordpress/url": "^3.2.3",
+    "@lottiefiles/react-lottie-player": "^3.4.7",
+    "@react-google-maps/api": "^2.12.0",
+    "@wordpress/icons": "^9.2.0",
+    "@wordpress/url": "^3.12.0",
     "classnames": "^2.2.6",
     "memize": "^1.0.5",
     "prop-types": "^15.6.2",
@@ -34,8 +33,19 @@
     "react-transition-group": "^2.4.0"
   },
   "devDependencies": {
-    "@wordpress/i18n": "^4.1.1",
-    "@wordpress/scripts": "^16.1.4",
+    "@babel/preset-react": "^7.16.7",
+    "@wordpress/dependency-extraction-webpack-plugin": "^3.6.0",
+    "@wordpress/i18n": "^4.11.0",
+    "@wordpress/scripts": "^23.3.0",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "del": "^6.0.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-minify": "^3.1.0",
+    "gulp-rename": "^2.0.0",
+    "gulp-sass": "^5.1.0",
     "install": "^0.13.0"
   }
 }

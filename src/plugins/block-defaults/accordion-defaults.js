@@ -1,11 +1,9 @@
-const {
+
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
-	ColorPalette,
-} = wp.blockEditor;
-const {
+} from '@wordpress/element';
+import {
 	ToggleControl,
 	RangeControl,
 	PanelBody,
@@ -16,13 +14,18 @@ const {
 	Button,
 	Tooltip,
 	Modal,
-} = wp.components;
-import map from 'lodash/map';
-import MeasurementControls from '../../measurement-control';
-import TypographyControls from '../../components/typography/typography-control';
-import BorderColorControls from '../../border-color-control';
+} from '@wordpress/components';
+import { TypographyControls, BorderColorControls, PopColorControl, MeasurementControls } from '@kadence/components';
 import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
-import icons from '../../icons';
+import {
+	accordionBlockIcon,
+	bottomLeftIcon,
+	bottomRightIcon,
+	radiusIndividualIcon,
+	radiusLinkedIcon,
+	topLeftIcon,
+	topRightIcon
+} from '@kadence/icons';
 /**
  * Internal block libraries
  */
@@ -169,12 +172,12 @@ class KadenceAccordionDefault extends Component {
 		const normalSettings = (
 			<Fragment>
 				<p className="kt-setting-label">{ __( 'Title Color' ) }</p>
-				<ColorPalette
+				<PopColorControl
 					value={ titleStyles[ 0 ].color }
 					onChange={ ( value ) => saveTitleStyles( { color: value } ) }
 				/>
 				<p className="kt-setting-label">{ __( 'Title Background' ) }</p>
-				<ColorPalette
+				<PopColorControl
 					value={ titleStyles[ 0 ].background }
 					onChange={ ( value ) => saveTitleStyles( { background: value } ) }
 				/>
@@ -190,12 +193,12 @@ class KadenceAccordionDefault extends Component {
 		const hoverSettings = (
 			<Fragment>
 				<p className="kt-setting-label">{ __( 'Hover Color' ) }</p>
-				<ColorPalette
+				<PopColorControl
 					value={ titleStyles[ 0 ].colorHover }
 					onChange={ ( value ) => saveTitleStyles( { colorHover: value } ) }
 				/>
 				<p className="kt-setting-label">{ __( 'Hover Background' ) }</p>
-				<ColorPalette
+				<PopColorControl
 					value={ titleStyles[ 0 ].backgroundHover }
 					onChange={ ( value ) => saveTitleStyles( { backgroundHover: value } ) }
 				/>
@@ -211,12 +214,12 @@ class KadenceAccordionDefault extends Component {
 		const activeSettings = (
 			<Fragment>
 				<p className="kt-setting-label">{ __( 'Active Color' ) }</p>
-				<ColorPalette
+				<PopColorControl
 					value={ titleStyles[ 0 ].colorActive }
 					onChange={ ( value ) => saveTitleStyles( { colorActive: value } ) }
 				/>
 				<p className="kt-setting-label">{ __( 'Active Background' ) }</p>
-				<ColorPalette
+				<PopColorControl
 					value={ titleStyles[ 0 ].backgroundActive }
 					onChange={ ( value ) => saveTitleStyles( { backgroundActive: value } ) }
 				/>
@@ -245,7 +248,7 @@ class KadenceAccordionDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.accordionBlock }</span>
+					<span className="kt-block-icon">{ accordionBlockIcon }</span>
 					{ __( 'Accordions' ) }
 				</Button>
 				{ isOpen ?
@@ -395,13 +398,13 @@ class KadenceAccordionDefault extends Component {
 								max={ 100 }
 								step={ 1 }
 								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-									{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+									{ key: 'linked', name: __( 'Linked' ), icon: radiusLinkedIcon },
+									{ key: 'individual', name: __( 'Individual' ), icon: radiusIndividualIcon },
 								] }
-								firstIcon={ icons.topleft }
-								secondIcon={ icons.topright }
-								thirdIcon={ icons.bottomright }
-								fourthIcon={ icons.bottomleft }
+								firstIcon={ topLeftIcon }
+								secondIcon={ topRightIcon }
+								thirdIcon={ bottomRightIcon }
+								fourthIcon={ bottomLeftIcon }
 							/>
 						</PanelBody>
 						<PanelBody
@@ -459,12 +462,12 @@ class KadenceAccordionDefault extends Component {
 								step={ 1 }
 							/>
 							<p className="kt-setting-label">{ __( 'Inner Content Background' ) }</p>
-							<ColorPalette
+							<PopColorControl
 								value={ ( undefined !== accordionConfig.contentBgColor ? accordionConfig.contentBgColor : '' ) }
 								onChange={ ( value ) => this.saveConfigState( 'contentBgColor', value ) }
 							/>
 							<p className="kt-setting-label">{ __( 'Inner Content Border Color' ) }</p>
-							<ColorPalette
+							<PopColorControl
 								value={ ( undefined !== accordionConfig.contentBorderColor ? accordionConfig.contentBorderColor : '#eeeeee' ) }
 								onChange={ ( value ) => this.saveConfigState( 'contentBorderColor', value ) }
 							/>
@@ -488,13 +491,13 @@ class KadenceAccordionDefault extends Component {
 								max={ 100 }
 								step={ 1 }
 								controlTypes={ [
-									{ key: 'linked', name: __( 'Linked' ), icon: icons.radiuslinked },
-									{ key: 'individual', name: __( 'Individual' ), icon: icons.radiusindividual },
+									{ key: 'linked', name: __( 'Linked' ), icon: radiusLinkedIcon },
+									{ key: 'individual', name: __( 'Individual' ), icon: radiusIndividualIcon },
 								] }
-								firstIcon={ icons.topleft }
-								secondIcon={ icons.topright }
-								thirdIcon={ icons.bottomright }
-								fourthIcon={ icons.bottomleft }
+								firstIcon={ topLeftIcon }
+								secondIcon={ topRightIcon }
+								thirdIcon={ bottomRightIcon }
+								fourthIcon={ bottomLeftIcon }
 							/>
 						</PanelBody>
 						<PanelBody

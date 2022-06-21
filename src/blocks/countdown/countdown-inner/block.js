@@ -7,7 +7,8 @@
 /**
  * Import Icons
  */
-import icons from '../../../icons/block-icons';
+import { countdownInnerIcon } from '@kadence/icons';
+
 /**
  * Internal dependencies
  */
@@ -35,7 +36,7 @@ registerBlockType( 'kadence/countdown-inner', {
 	/* translators: block description */
 	description: __( 'Inner Container for Countdown Block', 'kadence-blocks' ),
 	category: 'kadence-blocks',
-	icon: icons.innerCountdown,
+	icon: countdownInnerIcon,
 	parent: [ 'kadence/countdown' ],
 	supports: {
 		inserter: false,

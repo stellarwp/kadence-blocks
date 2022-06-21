@@ -10,7 +10,7 @@ const { apiFetch } = wp;
 const {
 	localStorage,
 } = window;
-const {
+import {
 	Button,
 	ButtonGroup,
 	Tooltip,
@@ -18,7 +18,7 @@ const {
 	SelectControl,
 	ExternalLink,
 	Spinner,
-} = wp.components;
+} from '@wordpress/components';
 import {
 	arrowLeft,
 	download,
@@ -34,14 +34,13 @@ const {
 } = wp.hooks;
 import { compose } from '@wordpress/compose';
 import { __, sprintf } from '@wordpress/i18n';
-import map from 'lodash/map';
-import debounce from 'lodash/debounce';
+import { debounce, map } from 'lodash';
 import LazyLoad from 'react-lazy-load';
 
 /**
  * Internal dependencies
  */
- import KadenceTryParseJSON from '../../components/common/parse-json'
+ import { KadenceTryParseJSON } from '@kadence/helpers'
 /**
  * Internal block libraries
  */
@@ -183,7 +182,7 @@ class CloudConnect extends Component {
 						</Button>
 					</div>
 					<div className="kb-connection-info">
-						{ __( 'Learn about connecting libraries at:', 'kadence-blocks' ) + ' ' } 
+						{ __( 'Learn about connecting libraries at:', 'kadence-blocks' ) + ' ' }
 						<ExternalLink href={ 'https://www.kadencewp.com/kadence-cloud/?utm_source=in-app&utm_medium=kadence-blocks&utm_campaign=design-library' }>{ __( 'Kadence Cloud', 'kadence-blocks' ) }</ExternalLink>
 					</div>
 					</Fragment>

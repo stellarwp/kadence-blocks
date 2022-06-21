@@ -5,20 +5,30 @@
 /**
  * Import Icons
  */
-import editorIcons from '../../icons';
+import {
+	individualIcon,
+	linkedIcon,
+	outlineBottomIcon,
+	outlineLeftIcon,
+	outlineRightIcon,
+	outlineTopIcon
+} from '@kadence/icons';
 
 /**
- * Import Icon stuff
+ * Import externals
  */
-import times from 'lodash/times';
-import map from 'lodash/map';
-import IconControl from '../../components/icons/icon-control';
-import IconRender from '../../components/icons/icon-render';
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
-import StepControl from '../../step-control';
-import VerticalAlignmentIcon from '../../components/common/vertical-align-icons';
-import URLInputControl from '../../components/links/link-control';
+import { times, map } from 'lodash';
+import {
+	PopColorControl,
+	StepControls,
+	IconControl,
+	IconRender,
+	KadencePanelBody,
+	URLInputControl,
+	VerticalAlignmentIcon,
+	InspectorControlTabs
+} from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 
 /**
  * Import Css
@@ -40,8 +50,7 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
-	PanelBody,
+import {
 	RangeControl,
 	TextControl,
 	SelectControl,
@@ -51,7 +60,7 @@ const {
 	ToolbarGroup,
 	ButtonGroup,
 	Tooltip,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * This allows for checking to see if the block needs to generate a new ID.
@@ -64,6 +73,7 @@ class KadenceIcons extends Component {
 		this.saveArrayUpdate = this.saveArrayUpdate.bind( this );
 		this.state = {
 			marginControl: 'linked',
+			activeTab: '',
 			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
 		};
 	}
@@ -110,8 +120,8 @@ class KadenceIcons extends Component {
 		const { attributes: { iconCount, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment }, className, setAttributes, clientId } = this.props;
 		const { marginControl } = this.state;
 		const controlTypes = [
-			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), micon: editorIcons.linked },
-			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), micon: editorIcons.individual },
+			{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), micon: linkedIcon },
+			{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), micon: individualIcon },
 		];
 		const verticalAlignOptions = [
 			[
@@ -203,11 +213,11 @@ class KadenceIcons extends Component {
 		const hoverSettings = ( index ) => {
 			return (
 				<Fragment>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Icon Hover Color', 'kadence-blocks' ) }
-						colorValue={ ( icons[ index ].hColor ? icons[ index ].hColor : '' ) }
-						colorDefault={ '' }
-						onColorChange={ value => {
+						value={ ( icons[ index ].hColor ? icons[ index ].hColor : '' ) }
+						default={ '' }
+						onChange={ value => {
 							this.saveArrayUpdate( { hColor: value }, index );
 						} }
 					/>
@@ -224,11 +234,11 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Hover Background Color', 'kadence-blocks' ) }
-								colorValue={ ( icons[ index ].hBackground ? icons[ index ].hBackground : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( icons[ index ].hBackground ? icons[ index ].hBackground : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveArrayUpdate( { hBackground: value }, index );
 								} }
 							/>
@@ -236,11 +246,11 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Hover Border Color', 'kadence-blocks' ) }
-								colorValue={ ( icons[ index ].hBorder ? icons[ index ].hBorder : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( icons[ index ].hBorder ? icons[ index ].hBorder : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveArrayUpdate( { hBorder: value }, index );
 								} }
 							/>
@@ -252,11 +262,11 @@ class KadenceIcons extends Component {
 		const normalSettings = ( index ) => {
 			return (
 				<Fragment>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Icon Color', 'kadence-blocks' ) }
-						colorValue={ ( icons[ index ].color ? icons[ index ].color : '' ) }
-						colorDefault={ '' }
-						onColorChange={ value => {
+						value={ ( icons[ index ].color ? icons[ index ].color : '' ) }
+						default={ '' }
+						onChange={ value => {
 							this.saveArrayUpdate( { color: value }, index );
 						} }
 					/>
@@ -273,11 +283,11 @@ class KadenceIcons extends Component {
 					/>
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'background Color', 'kadence-blocks' ) }
-								colorValue={ ( icons[ index ].background ? icons[ index ].background : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( icons[ index ].background ? icons[ index ].background : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveArrayUpdate( { background: value }, index );
 								} }
 							/>
@@ -285,11 +295,11 @@ class KadenceIcons extends Component {
 					) }
 					{ icons[ index ].style !== 'default' && (
 						<Fragment>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Border Color', 'kadence-blocks' ) }
-								colorValue={ ( icons[ index ].border ? icons[ index ].border : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( icons[ index ].border ? icons[ index ].border : '' ) }
+								default={ '' }
+								onChange={ value => {
 									this.saveArrayUpdate( { border: value }, index );
 								} }
 							/>
@@ -300,9 +310,10 @@ class KadenceIcons extends Component {
 		};
 		const renderIconSettings = ( index ) => {
 			return (
-				<PanelBody
+				<KadencePanelBody
 					title={ __( 'Icon', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
 					initialOpen={ ( 1 === iconCount ? true : false ) }
+					panelName={ 'kb-icon-settings-' + index }
 				>
 					<IconControl
 						value={ icons[ index ].icon }
@@ -431,7 +442,7 @@ class KadenceIcons extends Component {
 							<p>{ __( 'Margin (px)', 'kadence-blocks' ) }</p>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlinetop }
+								label={ outlineTopIcon }
 								value={ ( icons[ index ].marginTop ? icons[ index ].marginTop : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginTop: value }, index );
@@ -442,7 +453,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlineright }
+								label={ outlineRightIcon }
 								value={ ( icons[ index ].marginRight ? icons[ index ].marginRight : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginRight: value }, index );
@@ -453,7 +464,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlinebottom }
+								label={ outlineBottomIcon }
 								value={ ( icons[ index ].marginBottom ? icons[ index ].marginBottom : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginBottom: value }, index );
@@ -464,7 +475,7 @@ class KadenceIcons extends Component {
 							/>
 							<RangeControl
 								className="kt-icon-rangecontrol"
-								label={ editorIcons.outlineleft }
+								label={ outlineLeftIcon }
 								value={ ( icons[ index ].marginLeft ? icons[ index ].marginLeft : 0 ) }
 								onChange={ value => {
 									this.saveArrayUpdate( { marginLeft: value }, index );
@@ -504,7 +515,7 @@ class KadenceIcons extends Component {
 							this.saveArrayUpdate( { title: value }, index );
 						} }
 					/>
-				</PanelBody>
+				</KadencePanelBody>
 			);
 		};
 		const renderSettings = (
@@ -567,55 +578,72 @@ class KadenceIcons extends Component {
 					/>
 				</BlockControls>
 				<InspectorControls>
-					<PanelBody
-						title={ __( 'Icon Count', 'kadence-blocks' ) }
-						initialOpen={ true }
-					>
-						<StepControl
-							label={ __( 'Number of Icons', 'kadence-blocks' ) }
-							value={ iconCount }
-							onChange={ newcount => {
-								const newicons = icons;
-								if ( newicons.length < newcount ) {
-									const amount = Math.abs( newcount - newicons.length );
-									{ times( amount, n => {
-										newicons.push( {
-											icon: newicons[ 0 ].icon,
-											link: newicons[ 0 ].link,
-											target: newicons[ 0 ].target,
-											size: newicons[ 0 ].size,
-											width: newicons[ 0 ].width,
-											title: newicons[ 0 ].title,
-											color: newicons[ 0 ].color,
-											background: newicons[ 0 ].background,
-											border: newicons[ 0 ].border,
-											borderRadius: newicons[ 0 ].borderRadius,
-											borderWidth: newicons[ 0 ].borderWidth,
-											padding: newicons[ 0 ].padding,
-											style: newicons[ 0 ].style,
-											marginTop: ( newicons[ 0 ].marginTop ? newicons[ 0 ].marginTop : 0 ),
-											marginRight: ( newicons[ 0 ].marginRight ? newicons[ 0 ].marginRight : 0 ),
-											marginBottom: ( newicons[ 0 ].marginBottom ? newicons[ 0 ].marginBottom : 0 ),
-											marginLeft: ( newicons[ 0 ].marginLeft ? newicons[ 0 ].marginLeft : 0 ),
-											hColor: ( newicons[ 0 ].hColor ? newicons[ 0 ].hColor : '' ),
-											hBackground: ( newicons[ 0 ].hBackground ? newicons[ 0 ].hBackground : '' ),
-											hBorder: ( newicons[ 0 ].hBorder ? newicons[ 0 ].hBorder : '' ),
-										} );
-									} ); }
-									setAttributes( { icons: newicons } );
-									this.saveArrayUpdate( { title: icons[ 0 ].title }, 0 );
-								}
-								setAttributes( { iconCount: newcount } );
-							} }
-							min={ 1 }
-							max={ 10 }
-						/>
-						<div className="kb-sidebar-alignment components-base-control">
-							<p className="kb-component-label kb-responsive-label">{ __( 'Text Alignment', 'kadence-blocks' ) }</p>
-							{ tabAlignControls }
-						</div>
-					</PanelBody>
-					{ renderSettings }
+
+					<InspectorControlTabs
+						panelName={ 'icon' }
+						allowedTabs={ [ 'general', 'advanced' ] }
+						setActiveTab={ ( value ) => this.setState( { activeTab: value } ) }
+						activeTab={ this.state.activeTab }
+					/>
+
+					{( this.state.activeTab === 'general' ) &&
+						<>
+							<KadencePanelBody
+								title={__( 'Icon Count', 'kadence-blocks' )}
+								initialOpen={true}
+								panelName={'kb-icon-count'}
+							>
+								<StepControls
+									label={__( 'Number of Icons', 'kadence-blocks' )}
+									value={iconCount}
+									onChange={newcount => {
+										const newicons = icons;
+										if ( newicons.length < newcount ) {
+											const amount = Math.abs( newcount - newicons.length );
+											{
+												times( amount, n => {
+													newicons.push( {
+														icon        : newicons[ 0 ].icon,
+														link        : newicons[ 0 ].link,
+														target      : newicons[ 0 ].target,
+														size        : newicons[ 0 ].size,
+														width       : newicons[ 0 ].width,
+														title       : newicons[ 0 ].title,
+														color       : newicons[ 0 ].color,
+														background  : newicons[ 0 ].background,
+														border      : newicons[ 0 ].border,
+														borderRadius: newicons[ 0 ].borderRadius,
+														borderWidth : newicons[ 0 ].borderWidth,
+														padding     : newicons[ 0 ].padding,
+														style       : newicons[ 0 ].style,
+														marginTop   : ( newicons[ 0 ].marginTop ? newicons[ 0 ].marginTop : 0 ),
+														marginRight : ( newicons[ 0 ].marginRight ? newicons[ 0 ].marginRight : 0 ),
+														marginBottom: ( newicons[ 0 ].marginBottom ? newicons[ 0 ].marginBottom : 0 ),
+														marginLeft  : ( newicons[ 0 ].marginLeft ? newicons[ 0 ].marginLeft : 0 ),
+														hColor      : ( newicons[ 0 ].hColor ? newicons[ 0 ].hColor : '' ),
+														hBackground : ( newicons[ 0 ].hBackground ? newicons[ 0 ].hBackground : '' ),
+														hBorder     : ( newicons[ 0 ].hBorder ? newicons[ 0 ].hBorder : '' ),
+													} );
+												} );
+											}
+											setAttributes( { icons: newicons } );
+											this.saveArrayUpdate( { title: icons[ 0 ].title }, 0 );
+										}
+										setAttributes( { iconCount: newcount } );
+									}}
+									min={1}
+									max={10}
+								/>
+								<div className="kb-sidebar-alignment components-base-control">
+									<p className="kb-component-label kb-responsive-label">{__( 'Text Alignment', 'kadence-blocks' )}</p>
+									{tabAlignControls}
+								</div>
+							</KadencePanelBody>
+							{renderSettings}
+
+						</>
+					}
+
 				</InspectorControls>
 				<div className={ `kt-svg-icons ${ clientId } kt-svg-icons-${ uniqueID }${ verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : '' }` } style={ {
 					textAlign: ( textAlignment ? textAlignment : 'center' ),

@@ -4,7 +4,7 @@
 import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { BlockControls }       = wp.blockEditor;
-const { Toolbar }             = wp.components;
+import { Toolbar } } from '@wordpress/components';
 import { select, dispatch } from '@wordpress/data';
 const { createBlock }         = wp.blocks;
 
@@ -24,14 +24,6 @@ class Controls extends Component {
 		} = attributes
 
 		const toolbarControls = [
-			{
-				icon: 'align-full-width',
-				title: __( 'Full Width' ),
-				isActive: fullWidth,
-				onClick: () => {
-					setAttributes({ fullWidth: fullWidth ? false : true })
-				}
-			},
 			{
 				icon: 'plus',
 				title: __( 'Add New Menu' ),

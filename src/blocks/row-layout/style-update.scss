@@ -17,9 +17,7 @@
 }
 .kt-row-column-wrap {
     padding: 25px 0 25px 0;
-    display:flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
+    display:grid;
     position: relative;
     z-index: 10;
 }

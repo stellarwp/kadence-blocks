@@ -1,18 +1,15 @@
-import TypographyControls from '../../components/typography/typography-control';
-import MeasurementControls from '../../measurement-control';
-import AdvancedPopColorControl from '../../advanced-pop-color-control-default';
-import map from 'lodash/map';
-import IconControl from '../../components/icons/icon-control';
+import { PopColorControl, IconControl, TypographyControls, MeasurementControls } from '@kadence/components';
+import { map } from 'lodash';
 
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	Button,
 	PanelBody,
 	RangeControl,
@@ -20,9 +17,9 @@ const {
 	Modal,
 	ButtonGroup,
 	Tooltip,
-} = wp.components;
+} from '@wordpress/components';
 
-import icons from '../../icons';
+import { alignBottomIcon, alignMiddleIcon, alignTopIcon, iconListBlockIcon } from '@kadence/icons';
 
 class KadenceIconListDefault extends Component {
 	constructor() {
@@ -84,11 +81,12 @@ class KadenceIconListDefault extends Component {
 			padding: 5,
 			borderWidth: 1,
 			style: 'default',
+			level: 0
 		} ];
 		const iconAlignOptions = [
-			{ key: 'top', name: __( 'Top' ), icon: icons.aligntop },
-			{ key: 'middle', name: __( 'Middle' ), icon: icons.alignmiddle },
-			{ key: 'bottom', name: __( 'Bottom' ), icon: icons.alignbottom },
+			{ key: 'top', name: __( 'Top' ), icon: alignTopIcon },
+			{ key: 'middle', name: __( 'Middle' ), icon: alignMiddleIcon },
+			{ key: 'bottom', name: __( 'Bottom' ), icon: alignBottomIcon },
 		];
 		const items = ( undefined !== iconListConfig.items && iconListConfig.items[ 0 ] ? iconListConfig.items : itemDefaults );
 		const saveListItem = ( value ) => {
@@ -129,7 +127,7 @@ class KadenceIconListDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.iconlistBlock }</span>
+					<span className="kt-block-icon">{ iconListBlockIcon }</span>
 					{ __( 'Icon List' ) }
 				</Button>
 				{ isOpen ?
@@ -198,11 +196,11 @@ class KadenceIconListDefault extends Component {
 							title={ __( 'List Text Styling' ) }
 							initialOpen={ false }
 						>
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Color Settings' ) }
-								colorValue={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => saveListStyles( { color: value } ) }
+								value={ ( listStyles[ 0 ].color ? listStyles[ 0 ].color : '' ) }
+								default={ '' }
+								onChange={ value => saveListStyles( { color: value } ) }
 							/>
 							<TypographyControls
 								fontSize={ listStyles[ 0 ].size }
@@ -271,11 +269,11 @@ class KadenceIconListDefault extends Component {
 									max={ 4 }
 								/>
 							) }
-							<AdvancedPopColorControl
+							<PopColorControl
 								label={ __( 'Icon Color' ) }
-								colorValue={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
-								colorDefault={ '' }
-								onColorChange={ value => {
+								value={ ( items[ 0 ].color ? items[ 0 ].color : '' ) }
+								default={ '' }
+								onChange={ value => {
 									saveListItem( { color: value } );
 								} }
 							/>
@@ -291,21 +289,21 @@ class KadenceIconListDefault extends Component {
 								} }
 							/>
 							{ items[ 0 ].style !== 'default' && (
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Icon Background' ) }
-									colorValue={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => {
+									value={ ( items[ 0 ].background ? items[ 0 ].background : '' ) }
+									default={ '' }
+									onChange={ value => {
 										saveListItem( { background: value } );
 									} }
 								/>
 							) }
 							{ items[ 0 ].style !== 'default' && (
-								<AdvancedPopColorControl
+								<PopColorControl
 									label={ __( 'Border Color' ) }
-									colorValue={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
-									colorDefault={ '' }
-									onColorChange={ value => {
+									value={ ( items[ 0 ].border ? items[ 0 ].border : '' ) }
+									default={ '' }
+									onChange={ value => {
 										saveListItem( { border: value } );
 									} }
 								/>

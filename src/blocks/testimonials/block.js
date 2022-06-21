@@ -1,14 +1,17 @@
 /**
  * BLOCK: Kadence Testimonial
  */
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Import Icons
  */
-import icons from '../../icons';
-import times from 'lodash/times';
-import IconRender from '../../components/icons/icon-render';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { testimonialBlockIcon } from '@kadence/icons';
+import { times } from 'lodash';
+import { IconSpanTag } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 /**
  * Import attributes
  */
@@ -45,7 +48,7 @@ const {
 registerBlockType( 'kadence/testimonials', {
 	title: __( 'Testimonials', 'kadence-blocks'  ),
 	icon: {
-		src: icons.testimonialBlock,
+		src: testimonialBlockIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [
@@ -83,7 +86,12 @@ registerBlockType( 'kadence/testimonials', {
 				<div className="kt-svg-testimonial-global-icon-wrap" style={ {
 					margin: ( iconStyles[ 0 ].margin ? iconStyles[ 0 ].margin[ 0 ] + 'px ' + iconStyles[ 0 ].margin[ 1 ] + 'px ' + iconStyles[ 0 ].margin[ 2 ] + 'px ' + iconStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 				} } >
-					<IconRender className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
+					<IconSpanTag
+						className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` }
+						name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size }
+						title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) }
+						strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) }
+						style={ {
 						color: ( iconStyles[ 0 ].color ? KadenceColorOutput( iconStyles[ 0 ].color ) : undefined ),
 						borderRadius: ( undefined !== iconStyles[ 0 ].borderRadius ? iconStyles[ 0 ].borderRadius + 'px' : undefined ),
 						borderTopWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 0 ] && null !== iconStyles[ 0 ].borderWidth[ 0 ] ? iconStyles[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
@@ -150,10 +158,16 @@ registerBlockType( 'kadence/testimonials', {
 							paddingBottom: ( 'card' === style && ( undefined !== mediaStyles[ 0 ].ratio || '' !== mediaStyles[ 0 ].ratio ) ? mediaStyles[ 0 ].ratio + '%' : undefined ),
 						} }>
 							{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
-								<IconRender className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
-									display: 'flex',
-									color: ( testimonials[ index ].color ? KadenceColorOutput( testimonials[ index ].color ) : undefined ),
-								} } />
+								<IconSpanTag
+									className={`kt-svg-testimonial-icon kt-svg-testimonial-icon-${testimonials[ index ].icon}`}
+									name={testimonials[ index ].icon} size={testimonials[ index ].isize}
+									title={( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' )}
+									strokeWidth={( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined )}
+									style={{
+										display: 'flex',
+										color  : ( testimonials[ index ].color ? KadenceColorOutput( testimonials[ index ].color ) : undefined ),
+									}}
+								/>
 							) }
 							{ 'icon' !== testimonials[ index ].media && testimonials[ index ].url && (
 								<div className={ 'kt-testimonial-image' } style={ {
@@ -196,18 +210,18 @@ registerBlockType( 'kadence/testimonials', {
 							<div className={ `kt-testimonial-rating-wrap kt-testimonial-rating-${ testimonials[ index ].rating }` } style={ {
 								margin: ( ratingStyles[ 0 ].margin ? ratingStyles[ 0 ].margin[ 0 ] + 'px ' + ratingStyles[ 0 ].margin[ 1 ] + 'px ' + ratingStyles[ 0 ].margin[ 2 ] + 'px ' + ratingStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 							} }>
-								<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+								<IconSpanTag className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								{ testimonials[ index ].rating > 1 && (
-									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									<IconSpanTag className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 2 && (
-									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									<IconSpanTag className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 3 && (
-									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									<IconSpanTag className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 								{ testimonials[ index ].rating > 4 && (
-									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									<IconSpanTag className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 								) }
 							</div>
 						) }

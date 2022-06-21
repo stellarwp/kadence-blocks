@@ -1,19 +1,86 @@
 const defaultConfig = require("@wordpress/scripts/config/webpack.config");
-const SplitChunkName = require( './src/config/split-chunk-name' );
-const splitChunkName = new SplitChunkName();
-defaultConfig.optimization.splitChunks.chunks = 'all';
-defaultConfig.optimization.splitChunks.maxInitialRequests = 30;
-defaultConfig.optimization.splitChunks.hidePathInfo = true;
-defaultConfig.optimization.splitChunks.name = splitChunkName.name.bind( splitChunkName );
+const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
+const StyleOnlyEntryPlugin = require( './src/config/style-only-entry-plugin' );
+// const CopyPlugin = require("copy-webpack-plugin");
+// new CopyPlugin({
+// 	patterns: [
+// 	  { from: "./src/blocks/image/block.json", to: "./image/block.json" },
+// 	],
+// }),
+const EXTERNAL_NAME = 'kadence';
+const HANDLE_NAME = 'kadence';
+const PROJECT_NAMESPACE = '@kadence/';
 
-//defaultConfig.optimization.runtimeChunk = 'single';
-//defaultConfig.output.filename = '[name].js';
-defaultConfig.output.path = __dirname + '/dist/build';
-//defaultConfig.output.path = __dirname + '/dist/plugin';
+function camelCaseDash(string) {
+	return string.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
+}
+
 module.exports = {
 	...defaultConfig,
 	entry: {
-		'blocks': './src/blocks.js', // 'name' : 'path/file.ext'.
-		//'plugin': './src/plugin.js', // 'name' : 'path/file.ext'.
+		'icons': './src/packages/icons/src/index.js',
+		'components': './src/packages/components/src/index.js',
+		'helpers': './src/packages/helpers/src/index.js',
+		'blocks-google-maps': './src/blocks/google-maps/index.js',
+		'blocks-lottie': './src/blocks/lottie/index.js',
+		'blocks-image': './src/blocks/image/index.js',
+		'blocks-spacer': './src/blocks/spacer/block.js',
+		'blocks-advanced-btn': './src/blocks/advanced-btn/block.js',
+		'blocks-count-up': './src/blocks/count-up/block.js',
+		'blocks-row-layout': './src/blocks/row-layout/index.js',
+		'blocks-column': './src/blocks/column/index.js',
+		'blocks-advanced-heading': './src/blocks/advanced-heading/block.js',
+		'blocks-icon': './src/blocks/icon/block.js',
+		'blocks-tabs': './src/blocks/tabs/block.js',
+		'blocks-info-box': './src/blocks/info-box/block.js',
+		'blocks-accordion': './src/blocks/accordion/block.js',
+		'blocks-icon-list': './src/blocks/icon-list/block.js',
+		'blocks-advanced-gallery': './src/blocks/advanced-gallery/block.js',
+		'blocks-form': './src/blocks/form/block.js',
+		'blocks-table-of-contents': './src/blocks/table-of-contents/block.js',
+		'blocks-posts': './src/blocks/posts/block.js',
+		'blocks-show-more': './src/blocks/show-more/index.js',
+		'blocks-countdown': './src/blocks/countdown/block.js',
+		'blocks-testimonials': './src/blocks/testimonials/block.js',
+		'plugin-kadence-control': './src/plugin.js',
+		'extension-kadence-base': './src/extension/kadence-base/index.js',
+		'extension-stores': './src/extension/stores/index.js',
+		'extension-block-css': './src/extension/block-css/index.js',
 	},
+	output: {
+		...defaultConfig.output,
+		path: __dirname + '/dist/',
+		library: ['kadence', '[name]'],
+		libraryTarget: 'this',
+	},
+	plugins: [
+		new StyleOnlyEntryPlugin(),
+		...defaultConfig.plugins.filter(
+			( plugin ) =>
+				plugin.constructor.name !== 'DependencyExtractionWebpackPlugin'
+		),
+		new DependencyExtractionWebpackPlugin({
+			requestToExternal(request) {
+				if (request.endsWith('.css')) {
+					return false;
+				}
+
+				if (request.startsWith(PROJECT_NAMESPACE)) {
+					return [
+						EXTERNAL_NAME,
+						camelCaseDash(
+							request.substring(PROJECT_NAMESPACE.length)
+						),
+					];
+				}
+			},
+			requestToHandle(request) {
+				if (request.startsWith(PROJECT_NAMESPACE)) {
+					return `${HANDLE_NAME}-${request.substring(
+						PROJECT_NAMESPACE.length
+					)}`;
+				}
+			},
+		}),
+	],
 };

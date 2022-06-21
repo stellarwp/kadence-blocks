@@ -8,6 +8,9 @@ figure.wp-block-kadence-image:not(.wp-block) {
 	position: relative;
 	&.image-is-svg {
 		width: 100%;
+		img {
+			width: 100%;
+		}
 	}
 	.is-applying img,
 	&.is-transient img {
@@ -236,12 +239,17 @@ figure.wp-block-kadence-image:not(.wp-block) {
     display: table-caption;
     caption-side: bottom;
 }
+:not([data-align])>.wp-block-kadence-image .components-placeholder {
+    grid-column: placeholder;
+}
 .wp-block-kadence-image__crop-area {
 	position: relative;
 	max-width: 100%;
 	width: 100%;
 }
-
+.wp-block-kadence-image.kb-image-is-ratio-size .components-resizable-box__container {
+    width: 100%;
+}
 .wp-block-kadence-image__crop-icon {
 	padding: 0 8px;
 	min-width: 48px;

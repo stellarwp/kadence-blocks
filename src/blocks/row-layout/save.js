@@ -3,8 +3,8 @@
  */
 
 import classnames from 'classnames';
-import times from 'lodash/times';
-import KadenceColorOutput from '../../components/color/kadence-color-output';
+import { times } from 'lodash';
+import { KadenceColorOutput } from '@kadence/helpers';
 import { __ } from '@wordpress/i18n';
 const {
 	Component,

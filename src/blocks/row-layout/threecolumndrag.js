@@ -11,7 +11,8 @@ import { __ } from '@wordpress/i18n';
 import ContainerDimensions from 'react-container-dimensions';
 export default function ThreeColumnDrag( {
 	uniqueID,
-	onSetState,
+	onSetFirstCol,
+	onSetSecondCol,
 	onSetAttributes,
 	firstColumnWidth,
 	secondColumnWidth,
@@ -87,10 +88,8 @@ export default function ThreeColumnDrag( {
 			tempChange = tempfirstW - ( ! firstColumnWidth ? widthNumberThirds : firstColumnWidth );
 			tempsecondW = Math.round( Math.abs( ( ! secondColumnWidth ? secondWidthNumber : secondColumnWidth ) - tempChange ) / 5 ) * 5;
 		}
-		onSetState( {
-			firstWidth: tempfirstW,
-			secondWidth: tempsecondW,
-		} );
+		onSetFirstCol( tempfirstW );
+		onSetSecondCol( tempsecondW );
 		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempfirstW + '%';
 		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = tempsecondW + '%';
 		editorDocument.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = tempsecondW + '%';
@@ -111,10 +110,8 @@ export default function ThreeColumnDrag( {
 		}
 		onSetAttributes( { firstColumnWidth: tempfirstW } );
 		onSetAttributes( { secondColumnWidth: tempsecondW } );
-		onSetState( {
-			firstWidth: null,
-			secondWidth: null,
-		} );
+		onSetFirstCol( null );
+		onSetSecondCol( null );
 	};
 	const onResizeSecond = ( event, direction, elt ) => {
 		let tempfirstW;
@@ -129,10 +126,8 @@ export default function ThreeColumnDrag( {
 			tempsecondW = Math.round( parseInt( elt.style.width ) / 5 ) * 5;
 			tempsecondWidth = Math.round( ( tempsecondW - tempfirstW ) / 5 ) * 5;
 		}
-		onSetState( {
-			firstWidth: tempfirstW,
-			secondWidth: tempsecondWidth,
-		} );
+		onSetFirstCol( tempfirstW );
+		onSetSecondCol( tempsecondWidth );
 		editorDocument.getElementById( 'left-column-width-' + uniqueID ).innerHTML = tempfirstW + '%';
 		editorDocument.getElementById( 'right-column-width-' + uniqueID ).innerHTML = ( tempsecondWidth ) + '%';
 		editorDocument.getElementById( 'third-right-column-width-' + uniqueID ).innerHTML = ( tempsecondWidth ) + '%';
@@ -153,10 +148,8 @@ export default function ThreeColumnDrag( {
 		}
 		onSetAttributes( { firstColumnWidth: tempfirstW } );
 		onSetAttributes( { secondColumnWidth: tempsecondWidth } );
-		onSetState( {
-			firstWidth: null,
-			secondWidth: null,
-		} );
+		onSetFirstCol( null );
+		onSetSecondCol( null );
 	};
 	return (
 		<div className="kt-resizeable-column-container" style={ {

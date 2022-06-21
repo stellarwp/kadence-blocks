@@ -5,38 +5,26 @@
 /**
  * External dependencies
  */
-import map from 'lodash/map';
+import { map } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import AdvancedPopColorControl from '../../advanced-pop-color-control';
-import TypographyControls from '../../components/typography/typography-control';
-import KadenceRange from '../../kadence-range-control';
-import MeasurementControls from '../../measurement-control';
+import { PopColorControl, RangeControl, KadencePanelBody, MeasurementControls } from '@kadence/components';
 
 /**
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
+import { RangeControl } from '../../packages/components/src';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
-const {
-	TextControl,
-	SelectControl,
-	PanelBody,
-	RangeControl,
-	ToggleControl,
-	BaseControl,
+import {
 	ButtonGroup,
 	Button,
-	ColorPicker,
-	TextareaControl,
-	CheckboxControl,
-	Tooltip,
 	TabPanel,
 	Dashicon
-} = wp.components;
+} from '@wordpress/components';
 
 
 /**
@@ -117,9 +105,11 @@ class Inspector extends Component {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Container Settings' ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-restaurant-container' }
+					>
 
 						<h2 className="kt-heading-size-title">{ __( 'Menu Title Align' ) }</h2>
 						<TabPanel className="kt-size-tabs kb-sidebar-alignment"
@@ -241,7 +231,7 @@ class Inspector extends Component {
 							max={ 40 }
 							step={ 1 }
 						/>
-						<KadenceRange
+						<RangeControl
 							label={ __( 'Container Border Radius (px)' ) }
 							value={ containerBorderRadius }
 							onChange={ value => setAttributes( { containerBorderRadius: value } ) }
@@ -270,20 +260,20 @@ class Inspector extends Component {
 										if ( 'hover' === tab.name ) {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Hover Background' ) }
-														colorValue={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
-														colorDefault={ '#f2f2f2' }
+														value={ ( containerHoverBackground ? containerHoverBackground : '#f2f2f2' ) }
+														default={ '#f2f2f2' }
 														opacityValue={ containerHoverBackgroundOpacity }
-														onColorChange={ value => setAttributes( { containerHoverBackground: value } ) }
+														onChange={ value => setAttributes( { containerHoverBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBackgroundOpacity: value } ) }
 													/>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Hover Border' ) }
-														colorValue={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
-														colorDefault={ '#eeeeee' }
+														value={ ( containerHoverBorder ? containerHoverBorder : '#eeeeee' ) }
+														default={ '#eeeeee' }
 														opacityValue={ containerHoverBorderOpacity }
-														onColorChange={ value => setAttributes( { containerHoverBorder: value } ) }
+														onChange={ value => setAttributes( { containerHoverBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerHoverBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -291,20 +281,20 @@ class Inspector extends Component {
 										} else {
 											tabout = (
 												<Fragment>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Container Background' ) }
-														colorValue={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
-														colorDefault={ '#f2f2f2' }
+														value={ ( containerBackground ? containerBackground : '#f2f2f2' ) }
+														default={ '#f2f2f2' }
 														opacityValue={ containerBackgroundOpacity }
-														onColorChange={ value => setAttributes( { containerBackground: value } ) }
+														onChange={ value => setAttributes( { containerBackground: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBackgroundOpacity: value } ) }
 													/>
-													<AdvancedPopColorControl
+													<PopColorControl
 														label={ __( 'Container Border' ) }
-														colorValue={ ( containerBorder ? containerBorder : '#eeeeee' ) }
-														colorDefault={ '#eeeeee' }
+														value={ ( containerBorder ? containerBorder : '#eeeeee' ) }
+														default={ '#eeeeee' }
 														opacityValue={ containerBorderOpacity }
-														onColorChange={ value => setAttributes( { containerBorder: value } ) }
+														onChange={ value => setAttributes( { containerBorder: value } ) }
 														onOpacityChange={ value => setAttributes( { containerBorderOpacity: value } ) }
 													/>
 												</Fragment>
@@ -364,7 +354,7 @@ class Inspector extends Component {
 								</Button>
 							) ) }
 						</ButtonGroup>
-						<KadenceRange
+						<RangeControl
 							label={ __( 'Container Max Width', 'kadence-blocks' ) }
 							value={ maxWidth }
 							onChange={ ( value ) => {
@@ -375,7 +365,7 @@ class Inspector extends Component {
 							min={ 0 }
 							max={ widthMax }
 						/>
-					</PanelBody>
+					</KadencePanelBody>
 	            </InspectorControls>
 	        </Fragment>
 		);
