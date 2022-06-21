@@ -214,17 +214,17 @@ export function Edit( {
 	const getSaneDefaultForFilter = ( filter ) => {
 		switch (filter) {
 			case "standard":
-				return "0";
+				return 0;
 			case "grayscale":
-				return "100";
+				return 100;
 			case "invert":
-				return "100";
+				return 100;
 			case "saturate":
-				return "150";
+				return 150;
 			case "sepia":
-					return "30";
+				return 30;
 			default:
-					return "50";
+				return 50;
 		}
 	}
 
