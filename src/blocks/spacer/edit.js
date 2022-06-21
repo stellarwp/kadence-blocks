@@ -14,7 +14,8 @@ import {
 	PopColorControl,
 	ResponsiveRangeControls,
 	KadencePanelBody,
-	InspectorControlTabs
+	InspectorControlTabs,
+	ResponsiveAlignControls
 } from '@kadence/components';
 
 /**
@@ -44,7 +45,8 @@ import { withSelect, withDispatch } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 import {
 	useEffect,
-	Fragment,
+	useState,
+	Fragment
 } from '@wordpress/element';
 
 const ktspacerUniqueIDs = [];
@@ -154,7 +156,7 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 						<InspectorControlTabs
 							panelName={ 'spacer' }
 							allowedTabs={ [ 'general', 'advanced' ] }
-							setActiveTab={ ( value ) => activeTab( value ) }
+							setActiveTab={ ( value ) => setActiveTab( value ) }
 							activeTab={ activeTab }
 						/>
 
@@ -289,7 +291,6 @@ function KadenceSpacerDivider( { attributes, className, clientId, setAttributes,
 						{( activeTab === 'advanced' ) &&
 							<KadencePanelBody
 								title={__( 'Visibility Settings', 'kadence-blocks' )}
-								initialOpen={false}
 								panelName={'kb-visibility-settings'}
 							>
 								<ToggleControl

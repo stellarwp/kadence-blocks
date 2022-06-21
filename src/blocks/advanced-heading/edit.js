@@ -186,7 +186,7 @@ function KadenceAdvancedHeading( props ) {
 		} else if ( !isUniqueID( uniqueID ) ) {
 			// This checks if we are just switching views, client ID the same means we don't need to update.
 			if ( !isUniqueBlock( uniqueID, clientId ) ) {
-				uniqueID = smallID;
+				attributes.uniqueID = smallID;
 				addUniqueID( smallID, clientId );
 			}
 		} else {
@@ -824,7 +824,6 @@ function KadenceAdvancedHeading( props ) {
 							{showSettings( 'marginSettings', 'kadence/advancedheading' ) && (
 								<KadencePanelBody
 									title={__( 'Spacing Settings', 'kadence-blocks' )}
-									initialOpen={false}
 									panelName={'kb-adv-heading-spacing-settings'}
 								>
 									<ResponsiveMeasurementControls

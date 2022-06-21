@@ -624,7 +624,6 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 					<>
 						<KadencePanelBody
 							title={__( 'Title Size', 'kadence-blocks' )}
-							initialOpen={false}
 							panelName={'kb-posts-title-settings'}
 						>
 							<TypographyControls
@@ -654,7 +653,6 @@ function KadencePosts( { attributes, className, setAttributes, taxList, taxOptio
 					<>
 						<KadencePanelBody
 							title={__( 'Meta Settings', 'kadence-blocks' )}
-							initialOpen={false}
 							panelName={'kb-posts-meta-settings'}
 						>
 							<ToggleControl

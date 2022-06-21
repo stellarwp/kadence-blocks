@@ -13,10 +13,7 @@ import './editor.scss';
  * Import Icons
  */
 import {
-	infoSimpleIcon,
 	infoLeftIcon,
-	infoBackgroundIcon,
-	infoImageIcon,
 	infoStartIcon,
 	infoBasicIcon,
 	infoLeftAboveIcon,
@@ -30,7 +27,6 @@ import {
 	TypographyControls,
 	ResponsiveMeasurementControls,
 	KadenceRange,
-	RangeControl,
 	KadencePanelBody,
 	IconControl,
 	IconRender,
@@ -41,7 +37,6 @@ import {
 	ImageSizeControl,
 	MeasurementControls,
 	ResponsiveRangeControl,
-	ResponsiveRangeControls,
 	InspectorControlTabs,
 } from '@kadence/components';
 
@@ -2890,7 +2885,6 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 							{showSettings( 'shadowSettings', 'kadence/infobox' ) && (
 								<KadencePanelBody
 									title={__( 'Container Shadow', 'kadence-blocks' )}
-									initialOpen={false}
 									panelName={'kb-info-container-shadow'}
 								>
 									<ToggleControl

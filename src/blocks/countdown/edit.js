@@ -847,7 +847,6 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 								{enableTimer && (
 									<KadencePanelBody
 										title={__( 'Count Item Settings', 'kadence-blocks' )}
-										initialOpen={false}
 										panelName={'kb-countdown-item-settings'}
 									>
 										<PopColorControl
@@ -1132,7 +1131,6 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 							<>
 								<KadencePanelBody
 									title={__( 'Container Settings', 'kadence-blocks' )}
-									initialOpen={false}
 									panelName={'kb-coutdown-container-settings'}
 								>
 									{showSettings( 'container', 'kadence/countdown' ) && (

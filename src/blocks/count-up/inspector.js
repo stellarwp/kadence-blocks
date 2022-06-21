@@ -214,7 +214,6 @@ function Inspector( props ) {
 				<>
 					<KadencePanelBody
 						title={__( 'Title Settings', 'kadence-blocks' )}
-						initialOpen={false}
 						panelName={'kb-inspector-title-settings'}
 					>
 						<ToggleControl
