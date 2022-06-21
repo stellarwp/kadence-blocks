@@ -1,8 +1,7 @@
 import { showMoreIcon } from '@kadence/icons';
 
-const el = wp.element.createElement;
 import { registerBlockType } from '@wordpress/blocks';
-
+import { __, _x } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
@@ -15,12 +14,11 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
+	title: _x( 'Show More', 'block title', 'kadence-blocks' ),
+	description: _x( 'Hide content and enable a show more button to reveal', 'block description', 'kadence-blocks' ),
 	transforms,
 	edit,
 	save
-	// save: ( props ) => {
-	// 	return el( InnerBlocks.Content );
-	// },
 };
 
 registerBlockType('kadence/show-more', {

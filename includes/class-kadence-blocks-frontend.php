@@ -3427,7 +3427,9 @@ class Kadence_Blocks_Frontend {
 
 		// Margins
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
 			if ( isset( $attr['margin' . $breakpoint] ) && is_array( $attr['margin' . $breakpoint] ) ) {
 				foreach ( $attr['margin' . $breakpoint] as $key => $marginValue ) {
 					if ( is_numeric( $marginValue ) ) {
@@ -3436,12 +3438,16 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
-			$css->stop_media_query();
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
 		}
 
 		// Padding
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
 			if ( isset( $attr['padding' . $breakpoint] ) && is_array( $attr['padding' . $breakpoint] ) ) {
 				foreach ( $attr['padding' . $breakpoint] as $key => $paddingValue ) {
 					if ( is_numeric( $paddingValue ) ) {
@@ -3450,7 +3456,9 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
-			$css->stop_media_query();
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
 		}
 
 		return $css->css_output();
@@ -6944,7 +6952,9 @@ class Kadence_Blocks_Frontend {
 		}
 		// Margins
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
 			if ( isset( $attr['margin' . $breakpoint] ) && is_array( $attr['margin' . $breakpoint] ) ) {
 				foreach ( $attr['margin' . $breakpoint] as $key => $marginValue ) {
 					if ( is_numeric( $marginValue ) ) {
@@ -6953,7 +6963,9 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
-			$css->stop_media_query();
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
 		}
 		$align = ( ! empty( $attr['align'] ) ? $attr['align'] : '' );
 		if ( $align !== 'wide' && $align !== 'full' ) {
@@ -6998,7 +7010,9 @@ class Kadence_Blocks_Frontend {
 		$css->set_selector( '.kb-image' . $unique_id . ' img.kb-img, .kb-image' . $unique_id . ' .kb-img img' );
 		// Padding
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[ strtolower($breakpoint) ] );
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
 			if ( isset( $attr['padding' . $breakpoint] ) && is_array( $attr['padding' . $breakpoint] ) ) {
 				foreach ( $attr['padding' . $breakpoint] as $key => $paddingValue ) {
 					if ( is_numeric( $paddingValue ) ) {
@@ -7007,7 +7021,9 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
-			$css->stop_media_query();
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
 		}
 
 		// Border Color
@@ -7018,7 +7034,9 @@ class Kadence_Blocks_Frontend {
 
 		// Border widths
 		foreach(['Desktop', 'Tablet', 'Mobile'] as $breakpoint) {
-			$css->start_media_query( $media_query[strtolower($breakpoint)] );
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->start_media_query( $media_query[ strtolower($breakpoint)] );
+			}
 			if ( isset( $attr['borderWidth' . $breakpoint] ) && is_array( $attr['borderWidth' . $breakpoint] ) ) {
 				foreach ( $attr['borderWidth' . $breakpoint] as $key => $bDesktop ) {
 					if ( is_numeric( $bDesktop ) ) {
@@ -7026,7 +7044,9 @@ class Kadence_Blocks_Frontend {
 					}
 				}
 			}
-			$css->stop_media_query();
+			if ( $breakpoint !== 'Desktop' ) {
+				$css->stop_media_query();
+			}
 		}
 
 		// Background Color

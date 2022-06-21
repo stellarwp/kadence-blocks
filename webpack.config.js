@@ -1,12 +1,6 @@
 const defaultConfig = require("@wordpress/scripts/config/webpack.config");
 const DependencyExtractionWebpackPlugin = require( '@wordpress/dependency-extraction-webpack-plugin' );
 const StyleOnlyEntryPlugin = require( './src/config/style-only-entry-plugin' );
-// const CopyPlugin = require("copy-webpack-plugin");
-// new CopyPlugin({
-// 	patterns: [
-// 	  { from: "./src/blocks/image/block.json", to: "./image/block.json" },
-// 	],
-// }),
 const EXTERNAL_NAME = 'kadence';
 const HANDLE_NAME = 'kadence';
 const PROJECT_NAMESPACE = '@kadence/';

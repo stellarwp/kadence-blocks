@@ -1,13 +1,13 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+ import { registerBlockType } from '@wordpress/blocks';
+ import { __, _x } from '@wordpress/i18n';
 /**
  * Import Icons
  */
  import { BlockColumnIcon } from '@kadence/icons';
 
-import { registerBlockType } from '@wordpress/blocks';
 /**
  * Import Css
  */
@@ -25,6 +25,8 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
+	title: _x( 'Section', 'block title', 'kadence-blocks' ),
+	description: _x( 'A container to style a section of content', 'block description', 'kadence-blocks' ),
 	edit,
 	save,
 	deprecated,

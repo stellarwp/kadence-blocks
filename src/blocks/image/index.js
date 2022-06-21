@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
+import { __, _x } from '@wordpress/i18n';
 import { imageIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
@@ -22,6 +22,8 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
+	title: _x( 'Advanced Image', 'block title', 'kadence-blocks' ),
+	description: _x( 'Image block with greater controls and advanced features', 'block description', 'kadence-blocks' ),
 	icon: {
 		src: imageIcon,
 	},
@@ -61,9 +63,9 @@ export const settings = {
 	deprecated,
 };
 
-registerBlockType( name,
+registerBlockType( metadata,
 	{ 
-		...metadata, 
+		...metadata,
 		...settings
 	}
 );

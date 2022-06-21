@@ -440,7 +440,7 @@ export function ImageEdit( {
 				</>
 			) }
 			<KadenceMediaPlaceholder
-				labels={ { 'title': __( 'Advanced Image Test', 'kadence-blocks' ) } }
+				labels={ { 'title': __( 'Advanced Image', 'kadence-blocks' ) } }
 				icon={ imageIcon }
 				selectIcon={ plusCircleFilled }
 				selectLabel={ __( 'Select Image', 'kadence-blocks' ) }
