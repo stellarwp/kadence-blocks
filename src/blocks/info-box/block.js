@@ -10,6 +10,11 @@ import metadata from './block.json';
 import deprecated from './deprecated.js'
 import save from './save';
 
+import { IconRender, IconSpanTag } from '@kadence/components';
+/**
+ * Import attributes
+ */
+import attributes from './attributes';
 /**
  * Import edit
  */
@@ -44,5 +49,10 @@ registerBlockType( 'kadence/infobox', {
 	icon: {
 		src: infoboxIcon,
 	},
+  keywords: [
+		__( 'Info', 'kadence-blocks' ),
+		__( 'Icon', 'kadence-blocks' ),
+		'KB',
+	],
 	...settings,
 } );

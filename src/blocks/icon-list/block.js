@@ -12,6 +12,10 @@ import metadata from './block.json';
  * Import Icon stuff
  */
 import { iconListBlockIcon } from '@kadence/icons';
+import { times } from 'lodash';
+import { KadenceColorOutput } from '@kadence/helpers';
+import { IconRender, IconSpanTag } from '@kadence/components';
+
 
 /**
  * Import Css
@@ -45,5 +49,7 @@ registerBlockType( 'kadence/iconlist', {
 			return { 'data-align': blockAlignment };
 		}
 	},
-	deprecated
+	deprecated,
+	edit,
+	save,
 } );

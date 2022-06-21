@@ -15,13 +15,18 @@ import {
  * Import Icons
  */
 import { accordionBlockIcon } from '@kadence/icons';
-import { IconRender } from '@kadence/components';
+import { IconSpanTag } from '@kadence/components';
 
 /**
  * Import edit
  */
 import edit from './edit';
 import metadata from './block.json';
+
+/**
+ * Import deprecated.
+ */
+import deprecated from './deprecated';
 
 
 /**
@@ -59,7 +64,10 @@ registerBlockType( 'kadence/pane', {
 					<button className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` } aria-label={ ariaLabel ? ariaLabel : undefined }>
 						<span className="kt-blocks-accordion-title-wrap">
 							{ icon && 'left' === iconSide && (
-								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
+								<IconSpanTag
+									className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` }
+									name={ icon }
+								/>
 							) }
 							<RichText.Content
 								className={ 'kt-blocks-accordion-title' }
@@ -67,7 +75,10 @@ registerBlockType( 'kadence/pane', {
 								value={ title }
 							/>
 							{ icon && 'right' === iconSide && (
-								<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
+								<IconSpanTag
+									className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` }
+									name={ icon }
+								/>
 							) }
 						</span>
 						<span className="kt-blocks-accordion-icon-trigger"></span>
@@ -81,71 +92,5 @@ registerBlockType( 'kadence/pane', {
 			</div>
 		);
 	},
-	deprecated: [
-		{
-			attributes: {
-				id: {
-					type: 'number',
-					default: 1,
-				},
-				title: {
-					type: 'array',
-					source: 'children',
-					selector: '.kt-blocks-accordion-title',
-					default: '',
-				},
-				titleTag: {
-					type: 'string',
-					default: 'div',
-				},
-				hideLabel: {
-					type: 'bool',
-					default: false,
-				},
-				icon: {
-					type: 'string',
-					default: '',
-				},
-				iconSide: {
-					type: 'string',
-					default: 'right',
-				},
-				uniqueID: {
-					type: 'string',
-					default: '',
-				},
-			},
-			save: ( { attributes } ) => {
-				const { id, uniqueID, title, icon, iconSide, hideLabel, titleTag } = attributes;
-				const HtmlTagOut = ( ! titleTag ? 'div' : titleTag );
-				return (
-					<div className={ `kt-accordion-pane kt-accordion-pane-${ id } kt-pane${ uniqueID }` }>
-						<HtmlTagOut className={ 'kt-accordion-header-wrap' } >
-							<button className={ `kt-blocks-accordion-header kt-acccordion-button-label-${ ( hideLabel ? 'hide' : 'show' ) }` }>
-								<div className="kt-blocks-accordion-title-wrap">
-									{ icon && 'left' === iconSide && (
-										<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
-									) }
-									<RichText.Content
-										className={ 'kt-blocks-accordion-title' }
-										tagName={ 'span' }
-										value={ title }
-									/>
-									{ icon && 'right' === iconSide && (
-										<IconRender className={ `kt-btn-svg-icon kt-btn-svg-icon-${ icon } kt-btn-side-${ iconSide }` } name={ icon } />
-									) }
-								</div>
-								<div className="kt-blocks-accordion-icon-trigger"></div>
-							</button>
-						</HtmlTagOut>
-						<div className={ 'kt-accordion-panel' } >
-							<div className={ 'kt-accordion-panel-inner' } >
-								<InnerBlocks.Content />
-							</div>
-						</div>
-					</div>
-				);
-			},
-		},
-	],
+	deprecated
 } );
