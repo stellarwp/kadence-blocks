@@ -237,8 +237,8 @@ class Kadence_Blocks_Frontend {
 			KADENCE_BLOCKS_PATH . 'dist/blocks/tabs/block.json',
 			array(
 				'render_callback' => array( $this, 'render_tabs_css' ),
-				'editor_script'   => 'kadence-blocks-advanced-tabs',
-				'editor_style'    => 'kadence-blocks-advanced-tabs',
+				'editor_script'   => 'kadence-blocks-tabs',
+				'editor_style'    => 'kadence-blocks-tabs',
 			)
 		);
 		register_block_type(
