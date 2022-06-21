@@ -772,7 +772,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 												return <div className={tab.className} key={tab.className}>{tabout}</div>;
 											}
 										}
-										}
 									</TabPanel>
 								</KadencePanelBody>
 							) }
