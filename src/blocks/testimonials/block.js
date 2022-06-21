@@ -16,6 +16,7 @@ import { KadenceColorOutput } from '@kadence/helpers';
  * Import attributes
  */
 import attributes from './attributes';
+import metadata from './block.json';
 /**
  * Import edit
  */
@@ -29,12 +30,9 @@ import edit from './edit';
 /**
  * Internal block libraries
  */
-import { __ } from '@wordpress/i18n';
-const { registerBlockType } = wp.blocks;
+import { registerBlockType } from '@wordpress/blocks';
 
-const {
-	RichText,
-} = wp.blockEditor;
+import { RichText } from '@wordpress/block-editor';
 
 /**
  * Register: a Gutenberg Block.
@@ -46,23 +44,12 @@ const {
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/testimonials', {
-	title: __( 'Testimonials', 'kadence-blocks'  ),
+	...metadata,
 	icon: {
 		src: testimonialBlockIcon,
 	},
-	category: 'kadence-blocks',
-	keywords: [
-		__( 'testimonials', 'kadence-blocks'  ),
-		__( 'rating', 'kadence-blocks' ),
-		'KB',
-	],
 	attributes,
 	edit,
-	supports: {
-		anchor: true,
-	},
-	usesContext: [ 'postId', 'queryId' ],
-
 	save: props => {
 		const { attributes: { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, displayContent, displayName, displayMedia, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, displayIcon, iconStyles, containerVAlign, containerPaddingType } } = props;
 		const containerPaddingUnit = ( containerPaddingType ? containerPaddingType : 'px' );

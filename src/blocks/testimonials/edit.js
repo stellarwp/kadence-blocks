@@ -45,7 +45,7 @@ import {
 	InspectorControlTabs
 } from '@kadence/components';
 
-import { getPreviewSize, KadenceColorOutput } from '@kadence/helpers';
+import { getPreviewSize, KadenceColorOutput, showSettings } from '@kadence/helpers';
 
 /**
  * Internal block libraries
@@ -160,8 +160,6 @@ function KadenceTestimonials( {
 	const [ iconMarginControl, setIconMarginControl ] = useState( 'linked' );
 	const [ iconPaddingControl, setIconPaddingControl ] = useState( 'linked' );
 	const [ showPreset, setShowPreset ] = useState( false );
-	const [ user, setUser ] = useState( ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ) );
-	const [ settings, setSettings ] = useState( {} );
 	const [ wrapperPaddingControls, setWrapperPaddingControls ] = useState( 'linked' );
 
 	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
@@ -263,10 +261,6 @@ function KadenceTestimonials( {
 		} else {
 			setIconMarginControl( 'individual' );
 		}
-		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
-		if ( blockSettings[ 'kadence/testimonials' ] !== undefined && typeof blockSettings[ 'kadence/testimonials' ] === 'object' ) {
-			setSettings( blockSettings[ 'kadence/testimonials' ] );
-		}
 
 		if ( context && context.queryId && context.postId ) {
 			if ( context.queryId !== inQueryBlock ) {
@@ -282,9 +276,9 @@ function KadenceTestimonials( {
 	}, [] );
 
 	const onMove = ( oldIndex, newIndex ) => {
-		const newTestimonials = testimonials;
-		newTestimonials.splice( newIndex, 1, newTestimonials[ oldIndex ] );
-		newTestimonials.splice( oldIndex, 1, newTestimonials[ newIndex ] );
+		let newTestimonials = [ ...testimonials ];
+		newTestimonials.splice( newIndex, 1, testimonials[ oldIndex ] );
+		newTestimonials.splice( oldIndex, 1, testimonials[ newIndex ] );
 		setAttributes( { testimonials: newTestimonials } );
 	};
 
@@ -300,21 +294,6 @@ function KadenceTestimonials( {
 			return;
 		}
 		onMove( oldIndex, oldIndex - 1 );
-	};
-
-	const showSettings = ( key ) => {
-		if ( undefined === settings[ key ] || 'all' === settings[ key ] ) {
-			return true;
-		} else if ( 'contributor' === settings[ key ] && ( 'contributor' === user || 'author' === user || 'editor' === user || 'admin' === user ) ) {
-			return true;
-		} else if ( 'author' === settings[ key ] && ( 'author' === user || 'editor' === user || 'admin' === user ) ) {
-			return true;
-		} else if ( 'editor' === settings[ key ] && ( 'editor' === user || 'admin' === user ) ) {
-			return true;
-		} else if ( 'admin' === settings[ key ] && 'admin' === user ) {
-			return true;
-		}
-		return false;
 	};
 
 	const onColumnChange = ( value ) => {
@@ -509,6 +488,7 @@ function KadenceTestimonials( {
 			testimonials: newUpdate,
 		} );
 	};
+
 	const ALLOWED_MEDIA_TYPES = [ 'image' ];
 
 	function CustomNextArrow( props ) {
@@ -794,9 +774,9 @@ function KadenceTestimonials( {
 							}}/>
 						)}
 						{'icon' !== testimonials[ index ].media && testimonials[ index ].url && (
-							<Fragment>
+							<>
 								<MediaUpload
-									onSelect={media => {
+									onSelect={ ( media ) => {
 										saveTestimonials( {
 											id     : media.id,
 											url    : media.url,
@@ -817,7 +797,7 @@ function KadenceTestimonials( {
 													borderRadius   : mediaStyles[ 0 ].borderRadius + 'px',
 												}}
 												className={'kt-testimonial-image'}
-												onClick={open}
+												onClick={ open }
 											/>
 										</Tooltip>
 									)}
@@ -837,7 +817,7 @@ function KadenceTestimonials( {
 									icon={closeSmall}
 									showTooltip={true}
 								/>
-							</Fragment>
+							</>
 						)}
 						{'icon' !== testimonials[ index ].media && !testimonials[ index ].url && (
 							<Fragment>
@@ -871,7 +851,7 @@ function KadenceTestimonials( {
 								)}
 								{'card' !== style && (
 									<MediaUpload
-										onSelect={media => {
+										onSelect={ ( media ) => {
 											saveTestimonials( {
 												id     : media.id,
 												url    : media.url,
@@ -939,14 +919,14 @@ function KadenceTestimonials( {
 					<div className="kt-testimonial-item__move-menu">
 						<Button
 							icon="arrow-left"
-							onClick={0 === index ? undefined : onMoveBackward( index )}
+							onClick={ () => { 0 === index ? undefined : onMoveBackward( index ) } }
 							className="kt-testimonial-item__move-backward"
 							aria-label={__( 'Move Testimonial Backward', 'kadence-blocks' )}
 							aria-disabled={0 === index}
 						/>
 						<Button
 							icon="arrow-right"
-							onClick={itemsCount === ( index + 1 ) ? undefined : onMoveForward( index )}
+							onClick={ () => { itemsCount === ( index + 1 ) ? undefined : onMoveForward( index ) } }
 							className="kt-testimonial-item__move-forward"
 							aria-label={__( 'Move Testimonial Forward', 'kadence-blocks' )}
 							aria-disabled={itemsCount === ( index + 1 )}
@@ -1123,7 +1103,7 @@ function KadenceTestimonials( {
 						<KadencePanelBody
 							panelName={'kb-testimonials-settings'}
 						>
-							{showSettings( 'layoutSettings' ) && (
+							{showSettings( 'layoutSettings', 'kadence/testimonials') && (
 								<SelectControl
 									label={__( 'Layout', 'kadence-blocks' )}
 									value={layout}
@@ -1134,7 +1114,7 @@ function KadenceTestimonials( {
 									onChange={value => setAttributes( { layout: value } )}
 								/>
 							)}
-							{showSettings( 'styleSettings' ) && (
+							{showSettings( 'styleSettings', 'kadence/testimonials' ) && (
 								<Fragment>
 									<p className="components-base-control__label">{__( 'Testimonial Style', 'kadence-blocks' )}</p>
 									<ButtonGroup className="kt-style-btn-group" aria-label={__( 'Testimonial Style', 'kadence-blocks' )}>
@@ -1158,8 +1138,8 @@ function KadenceTestimonials( {
 							<RangeControl
 								label={__( 'Testimonial Items', 'kadence-blocks' )}
 								value={itemsCount}
-								onChange={newcount => {
-									const newitems = testimonials;
+								onChange={ ( newcount ) => {
+									let  newitems = testimonials;
 									if ( newitems.length < newcount ) {
 										const amount = Math.abs( newcount - newitems.length );
 										{
@@ -1194,7 +1174,7 @@ function KadenceTestimonials( {
 								min={1}
 								max={40}
 							/>
-							{showSettings( 'columnSettings' ) && (
+							{showSettings( 'columnSettings', 'kadence/testimonials' ) && (
 								<Fragment>
 									{columnControls}
 									<RangeControl
@@ -1209,7 +1189,7 @@ function KadenceTestimonials( {
 						</KadencePanelBody>
 						{layout && layout === 'carousel' && (
 							<Fragment>
-								{showSettings( 'carouselSettings' ) && (
+								{showSettings( 'carouselSettings', 'kadence/testimonials' ) && (
 									<KadencePanelBody
 										title={__( 'Carousel Settings', 'kadence-blocks' )}
 										initialOpen={false}
@@ -1311,7 +1291,7 @@ function KadenceTestimonials( {
 								)}
 							</Fragment>
 						)}
-						{showSettings( 'containerSettings' ) && (
+						{showSettings( 'containerSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Container Settings', 'kadence-blocks' )}
 								initialOpen={false}
@@ -1421,7 +1401,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'iconSettings' ) && (
+						{showSettings( 'iconSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Icon Settings', 'kadence-blocks' )}
 								initialOpen={false}
@@ -1528,7 +1508,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'titleSettings' ) && (
+						{showSettings( 'titleSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Title Settings', 'kadence-blocks' )}
 								initialOpen={false}
@@ -1613,7 +1593,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'ratingSettings' ) && (
+						{showSettings( 'ratingSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Rating Settings', 'kadence-blocks' )}
 								initialOpen={false}
@@ -1654,7 +1634,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'contentSettings' ) && (
+						{showSettings( 'contentSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Content Settings', 'kadence-blocks' )}
 								initialOpen={false}
@@ -1727,7 +1707,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'mediaSettings' ) && (
+						{showSettings( 'mediaSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Media Settings', 'kadence-blocks' )}
 								initialOpen={false}
@@ -1865,7 +1845,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'nameSettings' ) && (
+						{showSettings( 'nameSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Name Settings', 'kadence-blocks' )}
 								initialOpen={false}
@@ -1923,7 +1903,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'occupationSettings' ) && (
+						{showSettings( 'occupationSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Occupation Settings', 'kadence-blocks' )}
 								initialOpen={false}
@@ -1981,7 +1961,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'shadowSettings' ) && (
+						{showSettings( 'shadowSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Container Shadow', 'kadence-blocks' )}
 								initialOpen={false}
@@ -2039,7 +2019,7 @@ function KadenceTestimonials( {
 								)}
 							</KadencePanelBody>
 						)}
-						{showSettings( 'wrapperSettings' ) && (
+						{showSettings( 'wrapperSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Wrapper Padding', 'kadence-blocks' )}
 								initialOpen={false}
@@ -2065,7 +2045,7 @@ function KadenceTestimonials( {
 							</KadencePanelBody>
 						)}
 						<div className="kt-sidebar-settings-spacer"></div>
-						{showSettings( 'individualSettings' ) && (
+						{showSettings( 'individualSettings', 'kadence/testimonials' ) && (
 							<KadencePanelBody
 								title={__( 'Individual Settings', 'kadence-blocks' )}
 								initialOpen={false}

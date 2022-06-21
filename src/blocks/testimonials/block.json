@@ -1,8 +1,15 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
+  "title": "Testimonials",
   "name": "kadence/testimonials",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
+  "keywords": [
+	"testimonials",
+	"rating",
+	"KB"
+  ],
   "attributes": {
 	"uniqueID": {
 	  "type": "string",
@@ -487,12 +494,12 @@
 	  "default": true
 	}
   },
-  "editorScript": "file:editor.js",
   "usesContext": [
 	"postId",
 	"queryId"
   ],
   "supports": {
 	"anchor": true
-  }
+  },
+  "editorScript": "file:editor.js"
 }
