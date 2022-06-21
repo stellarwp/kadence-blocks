@@ -21,7 +21,7 @@ import edit from './edit';
  */
  import './style.scss';
 import { Fragment } from '@wordpress/element';
-import { RichText } from '@wordpress/block-editor';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 /**
  * Internal block libraries
  */
@@ -44,7 +44,6 @@ registerBlockType( 'kadence/form', {
 		src: formBlockIcon,
 	},
 	edit,
-
 	save: props => {
 		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha, recaptchaVersion, honeyPot, messages, submitLabel } } = props;
 		const fieldOutput = ( index ) => {
@@ -164,8 +163,13 @@ registerBlockType( 'kadence/form', {
 			[ `kb-field-tablet-width-${ submit[ 0 ].width[ 1 ] }` ]: submit[ 0 ].width && submit[ 0 ].width[ 1 ],
 			[ `kb-field-mobile-width-${ submit[ 0 ].width[ 2 ] }` ]: submit[ 0 ].width && submit[ 0 ].width[ 2 ],
 		} );
+
+		const blockProps = useBlockProps.save( {
+			className: `kadence-form-${ uniqueID } kb-form-wrap${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }`
+		} );
+
 		return (
-			<div className={ `kadence-form-${ uniqueID } kb-form-wrap${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }` }>
+			<div {...blockProps}>
 				<form className="kb-form" action="" method="post" data-error-message={ messages && messages[0] && messages[0].preError ? messages[0].preError : undefined }>
 					{ renderFieldOutput }
 					<input type="hidden" name="_kb_form_id" value={ uniqueID } />
