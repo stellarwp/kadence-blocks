@@ -29,14 +29,12 @@ import classnames from 'classnames';
 import memoize from 'memize';
 import { times, map } from 'lodash';
 
-import FontIconPicker from '@fonticonpicker/react-fonticonpicker';
 import {
 	PopColorControl,
 	BorderColorControls,
 	TypographyControls,
 	ResponsiveMeasurementControls,
 	MeasurementControls,
-	KadenceRange,
 	KadencePanelBody,
 	WebfontLoader,
 	RangeControl,
@@ -130,7 +128,8 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		showIcon,
 		iconStyle,
 		iconSide,
-		iconColor
+		iconColor,
+		showPresets
 	} = attributes;
 
 	const [ contentPaddingControl, setContentPaddingControl ] = useState( 'linked' );
@@ -179,7 +178,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					setTitleTag( blockConfigObject[ 'kadence/pane' ].titleTag );
 				}
 			}
-			if ( showPreset ) {
+			if ( showPresets ) {
 				setShowPreset( true );
 			}
 			setAttributes( {
