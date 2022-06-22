@@ -170,9 +170,9 @@ class Kadence_Blocks_Table_Of_Contents {
 			return;
 		}
 		// Lets register all the block styles.
-		wp_register_style( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'dist/blocks/tableofcontents.style.build.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-blocks-gumshoe', KADENCE_BLOCKS_URL . 'dist/assets/js/gumshoe.min.js', array(), KADENCE_BLOCKS_VERSION, true );	
-		wp_register_script( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'dist/assets/js/kb-table-of-contents.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_style( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'dist/blocks-table-of-contents.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_script( 'kadence-blocks-gumshoe', KADENCE_BLOCKS_URL . 'includes/assets/js/gumshoe.min.js', array(), KADENCE_BLOCKS_VERSION, true );	
+		wp_register_script( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-table-of-contents.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 	/**
 	 * Registers scripts and styles.
