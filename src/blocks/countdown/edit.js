@@ -199,7 +199,9 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 			} );
 			ktcountdownUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( ktcountdownUniqueIDs.includes( uniqueID ) ) {
-			uniqueID = '_' + clientId.substr( 2, 9 );
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
 			ktcountdownUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
 			ktcountdownUniqueIDs.push( uniqueID );

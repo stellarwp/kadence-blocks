@@ -185,8 +185,9 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 
 			ktinfoboxUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( ktinfoboxUniqueIDs.includes( uniqueID ) ) {
-			uniqueID = '_' + clientId.substr( 2, 9 );
-			ktinfoboxUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );			ktinfoboxUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
 			ktinfoboxUniqueIDs.push( uniqueID );
 		}

@@ -167,7 +167,9 @@ function KadenceForm( props ) {
 			} );
 			kbFormIDs.push( clientId.substr( 2, 9 ) );
 		} else if ( kbFormIDs.includes( uniqueID ) ) {
-			uniqueID = '_' + clientId.substr( 2, 9 );
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
 			kbFormIDs.push( clientId.substr( 2, 9 ) );
 		} else {
 			kbFormIDs.push( uniqueID );
@@ -656,7 +658,7 @@ function KadenceForm( props ) {
 
 		onOptionMove( oldIndex, oldIndex - 1, fieldIndex );
 	};
-	
+
 
 
 		const previewSubmitMarginType = ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].unit ? submitMargin[0].unit : 'px' );
