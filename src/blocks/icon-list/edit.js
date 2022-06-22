@@ -2,7 +2,7 @@
  * BLOCK: Kadence Icon
  */
 
- /**
+/**
  * Import Icons
  */
 import { alignTopIcon, alignMiddleIcon, alignBottomIcon } from '@kadence/icons';
@@ -14,7 +14,12 @@ import { times, filter, debounce, map, get } from 'lodash';
 /**
  * Import Kadence Components
  */
-import { KadenceColorOutput } from '@kadence/helpers';
+import {
+	KadenceColorOutput,
+	showSettings,
+	getPreviewSize
+} from '@kadence/helpers';
+
 import {
 	WebfontLoader,
 	PopColorControl,
@@ -42,17 +47,21 @@ import MoveItem from './moveItem';
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
+import { useBlockProps } from '@wordpress/block-editor';
 
-const {
+import {
 	InspectorControls,
 	RichText,
 	BlockControls,
 	BlockAlignmentToolbar,
-} = wp.blockEditor;
-const {
-	Component,
+} from '@wordpress/block-editor';
+
+import {
+	useEffect,
+	useState,
 	Fragment,
-} = wp.element;
+} from '@wordpress/element';
+
 import {
 	RangeControl,
 	ButtonGroup,
@@ -64,47 +73,30 @@ import {
 import { compose } from '@wordpress/compose';
 import { withDispatch, withSelect } from '@wordpress/data';
 import {
-	plus
+	plus,
 } from '@wordpress/icons';
-import {
-	applyFilters,
-} from '@wordpress/hooks';
+
 /**
  * This allows for checking to see if the block needs to generate a new ID.
  */
 const kticonlistUniqueIDs = [];
 
-class KadenceIconLists extends Component {
-	constructor() {
-		super( ...arguments );
-		this.showSettings = this.showSettings.bind( this );
-		this.saveListItem = this.saveListItem.bind( this );
-		this.onSelectItem = this.onSelectItem.bind( this );
-		this.onMoveVertical = this.onMoveVertical.bind( this );
-		this.onMoveHorizontal = this.onMoveHorizontal.bind( this );
-		this.onMoveDown = this.onMoveDown.bind( this );
-		this.onMoveUp = this.onMoveUp.bind( this );
-		this.onMoveLeft = this.onMoveLeft.bind( this );
-		this.onMoveRight = this.onMoveRight.bind( this );
-		this.createNewListItem = this.createNewListItem.bind( this );
-		this.setFocusOnNewItem = this.setFocusOnNewItem.bind( this );
-		this.getPreviewSize = this.getPreviewSize.bind( this );
-		this.state = {
-			focusIndex: null,
-			settings: {},
-			activeTab: '',
-			marginControl: 'individual',
-			user: ( kadence_blocks_params.userrole ? kadence_blocks_params.userrole : 'admin' ),
-		};
-		this.debouncedCreateListItem = debounce( this.createNewListItem.bind( this ), 100 );
-	}
-	componentDidMount() {
-		if ( ! this.props.attributes.uniqueID ) {
+function KadenceIconLists( { attributes, className, setAttributes, isSelected, container, getPreviewDevice, clientId } ) {
+
+	const { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns } = attributes;
+
+	const [ focusIndex, setFocusIndex ] = useState( null );
+	const [ settings, setSettings ] = useState( {} );
+	const [ marginControl, setMarginControl ] = useState( 'individual' );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+
+	useEffect( () => {
+		if ( !uniqueID ) {
 			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
 			if ( blockConfigObject[ 'kadence/iconlist' ] !== undefined && typeof blockConfigObject[ 'kadence/iconlist' ] === 'object' ) {
 				Object.keys( blockConfigObject[ 'kadence/iconlist' ] ).map( ( attribute ) => {
 					if ( attribute === 'items' ) {
-						this.props.attributes[ attribute ] = this.props.attributes[ attribute ].map( ( item, index ) => {
+						attributes[ attribute ] = attributes[ attribute ].map( ( item, index ) => {
 							item.icon = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].icon;
 							item.size = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].size;
 							item.color = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].color;
@@ -114,464 +106,441 @@ class KadenceIconLists extends Component {
 							item.padding = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].padding;
 							item.borderWidth = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].borderWidth;
 							item.style = blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ].style;
-							item.level = get( blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ], 'level', 0)
+							item.level = get( blockConfigObject[ 'kadence/iconlist' ][ attribute ][ 0 ], 'level', 0 );
 							return item;
 						} );
 					} else {
-						this.props.attributes[ attribute ] = blockConfigObject[ 'kadence/iconlist' ][ attribute ];
+						attributes[ attribute ] = blockConfigObject[ 'kadence/iconlist' ][ attribute ];
 					}
 				} );
 			}
-			this.props.setAttributes( {
-				uniqueID: '_' + this.props.clientId.substr( 2, 9 ),
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
 			} );
-			kticonlistUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
-		} else if ( kticonlistUniqueIDs.includes( this.props.attributes.uniqueID ) ) {
-			this.props.attributes.uniqueID = '_' + this.props.clientId.substr( 2, 9 );
-			kticonlistUniqueIDs.push( '_' + this.props.clientId.substr( 2, 9 ) );
+			kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else if ( kticonlistUniqueIDs.includes( uniqueID ) ) {
+			uniqueID = '_' + clientId.substr( 2, 9 );
+			kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
-			kticonlistUniqueIDs.push( this.props.attributes.uniqueID );
+			kticonlistUniqueIDs.push( uniqueID );
 		}
-		if ( undefined !== this.props.attributes.listMargin && undefined !== this.props.attributes.listMargin[ 0 ] && this.props.attributes.listMargin[ 0 ] === this.props.attributes.listMargin[ 1 ] && this.props.attributes.listMargin[ 0 ] === this.props.attributes.listMargin[ 2 ] && this.props.attributes.listMargin[ 0 ] === this.props.attributes.listMargin[ 3 ] ) {
-			this.setState( { marginControl: 'linked' } );
+		if ( undefined !== listMargin && undefined !== listMargin[ 0 ] && listMargin[ 0 ] === listMargin[ 1 ] && listMargin[ 0 ] === listMargin[ 2 ] && listMargin[ 0 ] === listMargin[ 3 ] ) {
+			setMarginControl( 'linked' );
 		} else {
-			this.setState( { marginControl: 'individual' } );
+			setMarginControl( 'individual' );
 		}
 		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
 		if ( blockSettings[ 'kadence/iconlist' ] !== undefined && typeof blockSettings[ 'kadence/iconlist' ] === 'object' ) {
-			this.setState( { settings: blockSettings[ 'kadence/iconlist' ] } );
+			setSettings( blockSettings[ 'kadence/iconlist' ] );
 		}
-	}
-	componentDidUpdate( prevProps ) {
+
+	}, [] );
+
+	const componentDidUpdate = ( prevProps ) => {
 		// Deselect images when deselecting the block
-		if ( ! this.props.isSelected && prevProps.isSelected ) {
-			this.setState( {
-				focusIndex: null,
-			} );
-		}
-	}
-	createNewListItem( value, entireOld, previousIndex ) {
-		const previousValue = entireOld.replace( value, '' );
-		const amount = Math.abs( 1 + this.props.attributes.listCount );
-		const currentItems = this.props.attributes.items;
-		const newItems = [ {
-			icon: currentItems[ 0 ].icon,
-			link: currentItems[ 0 ].link,
-			target: currentItems[ 0 ].target,
-			size: currentItems[ 0 ].size,
-			text: currentItems[ 0 ].text,
-			width: currentItems[ 0 ].width,
-			color: currentItems[ 0 ].color,
-			background: currentItems[ 0 ].background,
-			border: currentItems[ 0 ].border,
-			borderRadius: currentItems[ 0 ].borderRadius,
-			borderWidth: currentItems[ 0 ].borderWidth,
-			padding: currentItems[ 0 ].padding,
-			style: currentItems[ 0 ].style,
-			level: get(currentItems[ 0 ], 'level', 0)
-		} ];
-		const addin = Math.abs( previousIndex + 1 );
-		{
-			times( amount, n => {
-				let ind = n;
-				if ( n === 0 ) {
-					if ( 0 === previousIndex ) {
-						newItems[ 0 ].text = previousValue;
-					}
-				} else if ( n === addin ) {
-					newItems.push( {
-						icon: currentItems[ previousIndex ].icon,
-						link: currentItems[ previousIndex ].link,
-						target: currentItems[ previousIndex ].target,
-						size: currentItems[ previousIndex ].size,
-						text: value,
-						width: currentItems[ previousIndex ].width,
-						color: currentItems[ previousIndex ].color,
-						background: currentItems[ previousIndex ].background,
-						border: currentItems[ previousIndex ].border,
-						borderRadius: currentItems[ previousIndex ].borderRadius,
-						borderWidth: currentItems[ previousIndex ].borderWidth,
-						padding: currentItems[ previousIndex ].padding,
-						style: currentItems[ previousIndex ].style,
-						level: get(currentItems[ previousIndex ], 'level', 0)
-					} );
-				} else if ( n === previousIndex ) {
-					newItems.push( {
-						icon: currentItems[ previousIndex ].icon,
-						link: currentItems[ previousIndex ].link,
-						target: currentItems[ previousIndex ].target,
-						size: currentItems[ previousIndex ].size,
-						text: previousValue,
-						width: currentItems[ previousIndex ].width,
-						color: currentItems[ previousIndex ].color,
-						background: currentItems[ previousIndex ].background,
-						border: currentItems[ previousIndex ].border,
-						borderRadius: currentItems[ previousIndex ].borderRadius,
-						borderWidth: currentItems[ previousIndex ].borderWidth,
-						padding: currentItems[ previousIndex ].padding,
-						style: currentItems[ previousIndex ].style,
-						level: get(currentItems[ previousIndex ], 'level', 0)
-					} );
-				} else {
-					if ( n > addin ) {
-						ind = Math.abs( n - 1 );
-					}
-					newItems.push( {
-						icon: currentItems[ ind ].icon,
-						link: currentItems[ ind ].link,
-						target: currentItems[ ind ].target,
-						size: currentItems[ ind ].size,
-						text: currentItems[ ind ].text,
-						width: currentItems[ ind ].width,
-						color: currentItems[ ind ].color,
-						background: currentItems[ ind ].background,
-						border: currentItems[ ind ].border,
-						borderRadius: currentItems[ ind ].borderRadius,
-						borderWidth: currentItems[ ind ].borderWidth,
-						padding: currentItems[ ind ].padding,
-						style: currentItems[ ind ].style,
-						level: get(currentItems[ ind ], 'level', 0)
-					} );
-				}
-			} );
-			this.props.setAttributes( { items: newItems } );
-			this.props.setAttributes( { listCount: amount } );
-			this.setState( { focusIndex: addin } );
-			this.setFocusOnNewItem( addin, this.props.attributes.uniqueID );
+		if ( !isSelected && prevProps.isSelected ) {
+			setFocusIndex( null );
 		}
 	};
+
+	// const createNewListItem = ( value, entireOld, previousIndex ) => {
+	// 	const previousValue = entireOld.replace( value, '' );
+	// 	const amount = Math.abs( 1 + listCount );
+	// 	const currentItems = items;
+	// 	const newItems = [ {
+	// 		icon        : currentItems[ 0 ].icon,
+	// 		link        : currentItems[ 0 ].link,
+	// 		target      : currentItems[ 0 ].target,
+	// 		size        : currentItems[ 0 ].size,
+	// 		text        : currentItems[ 0 ].text,
+	// 		width       : currentItems[ 0 ].width,
+	// 		color       : currentItems[ 0 ].color,
+	// 		background  : currentItems[ 0 ].background,
+	// 		border      : currentItems[ 0 ].border,
+	// 		borderRadius: currentItems[ 0 ].borderRadius,
+	// 		borderWidth : currentItems[ 0 ].borderWidth,
+	// 		padding     : currentItems[ 0 ].padding,
+	// 		style       : currentItems[ 0 ].style,
+	// 		level       : get( currentItems[ 0 ], 'level', 0 ),
+	// 	} ];
+	// 	const addin = Math.abs( previousIndex + 1 );
+	// 	{
+	// 		times( amount, n => {
+	// 			let ind = n;
+	// 			if ( n === 0 ) {
+	// 				if ( 0 === previousIndex ) {
+	// 					newItems[ 0 ].text = previousValue;
+	// 				}
+	// 			} else if ( n === addin ) {
+	// 				newItems.push( {
+	// 					icon        : currentItems[ previousIndex ].icon,
+	// 					link        : currentItems[ previousIndex ].link,
+	// 					target      : currentItems[ previousIndex ].target,
+	// 					size        : currentItems[ previousIndex ].size,
+	// 					text        : value,
+	// 					width       : currentItems[ previousIndex ].width,
+	// 					color       : currentItems[ previousIndex ].color,
+	// 					background  : currentItems[ previousIndex ].background,
+	// 					border      : currentItems[ previousIndex ].border,
+	// 					borderRadius: currentItems[ previousIndex ].borderRadius,
+	// 					borderWidth : currentItems[ previousIndex ].borderWidth,
+	// 					padding     : currentItems[ previousIndex ].padding,
+	// 					style       : currentItems[ previousIndex ].style,
+	// 					level       : get( currentItems[ previousIndex ], 'level', 0 ),
+	// 				} );
+	// 			} else if ( n === previousIndex ) {
+	// 				newItems.push( {
+	// 					icon        : currentItems[ previousIndex ].icon,
+	// 					link        : currentItems[ previousIndex ].link,
+	// 					target      : currentItems[ previousIndex ].target,
+	// 					size        : currentItems[ previousIndex ].size,
+	// 					text        : previousValue,
+	// 					width       : currentItems[ previousIndex ].width,
+	// 					color       : currentItems[ previousIndex ].color,
+	// 					background  : currentItems[ previousIndex ].background,
+	// 					border      : currentItems[ previousIndex ].border,
+	// 					borderRadius: currentItems[ previousIndex ].borderRadius,
+	// 					borderWidth : currentItems[ previousIndex ].borderWidth,
+	// 					padding     : currentItems[ previousIndex ].padding,
+	// 					style       : currentItems[ previousIndex ].style,
+	// 					level       : get( currentItems[ previousIndex ], 'level', 0 ),
+	// 				} );
+	// 			} else {
+	// 				if ( n > addin ) {
+	// 					ind = Math.abs( n - 1 );
+	// 				}
+	// 				newItems.push( {
+	// 					icon        : currentItems[ ind ].icon,
+	// 					link        : currentItems[ ind ].link,
+	// 					target      : currentItems[ ind ].target,
+	// 					size        : currentItems[ ind ].size,
+	// 					text        : currentItems[ ind ].text,
+	// 					width       : currentItems[ ind ].width,
+	// 					color       : currentItems[ ind ].color,
+	// 					background  : currentItems[ ind ].background,
+	// 					border      : currentItems[ ind ].border,
+	// 					borderRadius: currentItems[ ind ].borderRadius,
+	// 					borderWidth : currentItems[ ind ].borderWidth,
+	// 					padding     : currentItems[ ind ].padding,
+	// 					style       : currentItems[ ind ].style,
+	// 					level       : get( currentItems[ ind ], 'level', 0 ),
+	// 				} );
+	// 			}
+	// 		} );
+	// 		setAttributes( { items: newItems } );
+	// 		setAttributes( { listCount: amount } );
+	// 		setFocusIndex( addin );
+	// 		setFocusOnNewItem( addin, uniqueID );
+	// 	}
+	// };
+
 	// Silly Hack to handle focus.
-	setFocusOnNewItem( index, uniqueID ) {
-		setTimeout( function(){
-			if ( document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` ) ) {
-				const parent = document.querySelector( `.kt-svg-icon-list-items${ uniqueID } .kt-svg-icon-list-item-${ index }` );
+	const setFocusOnNewItem = ( index, uniqueID ) => {
+		setTimeout( function() {
+			if ( document.querySelector( `.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-${index}` ) ) {
+				const parent = document.querySelector( `.kt-svg-icon-list-items${uniqueID} .kt-svg-icon-list-item-${index}` );
 				const rich = parent.querySelector( '.rich-text' );
 				rich.focus();
 			}
-		}, 100);
-	}
-	onSelectItem( index ) {
+		}, 100 );
+	};
+
+	const onSelectItem = ( index ) => {
 		return () => {
-			if ( this.state.focusIndex !== index ) {
-				this.setState( {
-					focusIndex: index,
-				} );
+			if ( focusIndex !== index ) {
+				setFocusIndex( { index } );
 			}
 		};
-	}
-	onMoveVertical( oldIndex, newIndex ) {
-		const items = [ ...this.props.attributes.items ];
-		items.splice( newIndex, 1, this.props.attributes.items[ oldIndex ] );
-		items.splice( oldIndex, 1, this.props.attributes.items[ newIndex ] );
-		this.setState( { focusIndex: newIndex } );
-		this.props.setAttributes( { items } );
-	}
-	onMoveHorizontal( index, newLevel ) {
-		const items = [ ...this.props.attributes.items ];
-		items[index].level = newLevel;
+	};
+	const onMoveVertical = ( oldIndex, newIndex ) => {
+		const items = [ ...items ];
+		items.splice( newIndex, 1, items[ oldIndex ] );
+		items.splice( oldIndex, 1, items[ newIndex ] );
+		setFocusIndex( newIndex );
+		setAttributes( { items } );
+	};
 
-		this.props.setAttributes( { items } );
-	}
+	const onMoveHorizontal = ( index, newLevel ) => {
+		const items = [ ...items ];
+		items[ index ].level = newLevel;
 
-	onMoveDown( oldIndex ) {
+		setAttributes( { items } );
+	};
+
+	const onMoveDown = ( oldIndex ) => {
 		return () => {
-			if ( oldIndex === this.props.attributes.items.length - 1 ) {
+			if ( oldIndex === items.length - 1 ) {
 				return;
 			}
-			this.onMoveVertical( oldIndex, oldIndex + 1 );
+			onMoveVertical( oldIndex, oldIndex + 1 );
 		};
-	}
+	};
 
-	onMoveUp( oldIndex ) {
+	const onMoveUp = ( oldIndex ) => {
 		return () => {
 			if ( oldIndex === 0 ) {
 				return;
 			}
-			this.onMoveVertical( oldIndex, oldIndex - 1 );
+			onMoveVertical( oldIndex, oldIndex - 1 );
 		};
-	}
+	};
 
-	onMoveLeft(index) {
+	const onMoveLeft = ( index ) => {
 		return () => {
-			if(this.props.attributes.items[index].level === 0) {
+			if ( items[ index ].level === 0 ) {
 				return;
 			}
-			this.onMoveHorizontal(index, this.props.attributes.items[index].level - 1);
-		}
-	}
+			onMoveHorizontal( index, items[ index ].level - 1 );
+		};
+	};
 
-	onMoveRight(index) {
+	const onMoveRight = ( index ) => {
 		return () => {
-			let currentLevel = get( this.props.attributes.items[index], 'level', 0);
+			let currentLevel = get( items[ index ], 'level', 0 );
 
-			if(currentLevel === 5) {
+			if ( currentLevel === 5 ) {
 				return;
 			}
 
-			this.onMoveHorizontal(index, currentLevel + 1);
-		}
-	}
+			onMoveHorizontal( index, currentLevel + 1 );
+		};
+	};
 
-	showSettings( key ) {
-		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
-			return true;
-		} else if ( 'contributor' === this.state.settings[ key ] && ( 'contributor' === this.state.user || 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'author' === this.state.settings[ key ] && ( 'author' === this.state.user || 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'editor' === this.state.settings[ key ] && ( 'editor' === this.state.user || 'admin' === this.state.user ) ) {
-			return true;
-		} else if ( 'admin' === this.state.settings[ key ] && 'admin' === this.state.user ) {
-			return true;
-		}
-		return false;
-	}
-	saveListItem( value, thisIndex ) {
-		const currentItems = this.props.attributes.items;
+	const saveListItem = ( value, thisIndex ) => {
+		const currentItems = items;
 		const newUpdate = currentItems.map( ( item, index ) => {
 			if ( index === thisIndex ) {
 				item = { ...item, ...value };
 			}
 			return item;
 		} );
-		this.props.setAttributes( {
+		setAttributes( {
 			items: newUpdate,
 		} );
-	}
-	getPreviewSize( device, desktopSize, tabletSize, mobileSize ) {
-		if ( device === 'Mobile' ) {
-			if ( undefined !== mobileSize && '' !== mobileSize ) {
-				return mobileSize;
-			} else if ( undefined !== tabletSize && '' !== tabletSize ) {
-				return tabletSize;
-			}
-		} else if ( device === 'Tablet' ) {
-			if ( undefined !== tabletSize && '' !== tabletSize ) {
-				return tabletSize;
-			}
-		}
-		return desktopSize;
-	}
-	render() {
-		const { attributes: { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns }, attributes, className, setAttributes, isSelected } = this.props;
-		const { marginControl } = this.state;
-		const gconfig = {
-			google: {
-				families: [ listStyles[ 0 ].family + ( listStyles[ 0 ].variant ? ':' + listStyles[ 0 ].variant : '' ) ],
-			},
-		};
-		const config = ( listStyles[ 0 ].google ? gconfig : '' );
-		const previewFontSize = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 0 ] ? listStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 1 ] ? listStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 2 ] ? listStyles[ 0 ].size[ 2 ] : '' ) );
-		const previewLineHeight = this.getPreviewSize( this.props.getPreviewDevice, ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 0 ] ? listStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 1 ] ? listStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 2 ] ? listStyles[ 0 ].lineHeight[ 2 ] : '' ) );
-		const saveListStyles = ( value ) => {
-			const newUpdate = listStyles.map( ( item, index ) => {
-				if ( index === 0 ) {
-					item = { ...item, ...value };
-				}
-				return item;
-			} );
-			setAttributes( {
-				listStyles: newUpdate,
-			} );
-		};
-		const saveAllListItem = ( value ) => {
-			const newUpdate = items.map( ( item, index ) => {
+	};
+
+	const gconfig = {
+		google: {
+			families: [ listStyles[ 0 ].family + ( listStyles[ 0 ].variant ? ':' + listStyles[ 0 ].variant : '' ) ],
+		},
+	};
+
+	const config = ( listStyles[ 0 ].google ? gconfig : '' );
+	const previewFontSize = getPreviewSize( getPreviewDevice, ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 0 ] ? listStyles[ 0 ].size[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 1 ] ? listStyles[ 0 ].size[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].size && undefined !== listStyles[ 0 ].size[ 2 ] ? listStyles[ 0 ].size[ 2 ] : '' ) );
+	const previewLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 0 ] ? listStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 1 ] ? listStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== listStyles[ 0 ].lineHeight && undefined !== listStyles[ 0 ].lineHeight[ 2 ] ? listStyles[ 0 ].lineHeight[ 2 ] : '' ) );
+
+	const saveListStyles = ( value ) => {
+		const newUpdate = listStyles.map( ( item, index ) => {
+			if ( index === 0 ) {
 				item = { ...item, ...value };
-				return item;
-			} );
-			setAttributes( {
-				items: newUpdate,
-			} );
-		};
-		const iconAlignOptions = [
-			{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: alignTopIcon },
-			{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: alignMiddleIcon },
-			{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: alignBottomIcon },
-		];
-		const stopOnReplace = ( value, index ) => {
-			if ( value && undefined !== value[ 0 ] && undefined !== value[ 0 ].attributes && value[ 0 ].attributes.content ) {
-				this.saveListItem( { text: value[ 0 ].attributes.content }, index );
 			}
-		};
-		const removeListItem = ( value, previousIndex ) => {
-			const amount = Math.abs( this.props.attributes.listCount );
-			if ( amount === 1 ) {
-				// Remove Block.
-				this.props.onDelete();
-			} else {
-				const newAmount = Math.abs( amount - 1 );
-				const currentItems = filter( this.props.attributes.items, ( item, i ) => previousIndex !== i );
-				const addin = Math.abs( previousIndex - 1 );
-				this.setState( { focusIndex: addin } );
-				setAttributes( {
-					items: currentItems,
-					listCount: newAmount,
-				} );
-			}
-		};
-		const blockToolControls = ( index ) => {
-			const isLineSelected = ( isSelected && this.state.focusIndex === index && kadence_blocks_params.dynamic_enabled );
-			if ( ! isLineSelected ) {
-				return;
-			}
-			return <DynamicTextControl dynamicAttribute={ 'items:' + index + ':text' } {...this.props} />;
+			return item;
+		} );
+		setAttributes( {
+			listStyles: newUpdate,
+		} );
+	};
+	const saveAllListItem = ( value ) => {
+		const newUpdate = items.map( ( item, index ) => {
+			item = { ...item, ...value };
+			return item;
+		} );
+		setAttributes( {
+			items: newUpdate,
+		} );
+	};
+
+	const iconAlignOptions = [
+		{ key: 'top', name: __( 'Top', 'kadence-blocks' ), icon: alignTopIcon },
+		{ key: 'middle', name: __( 'Middle', 'kadence-blocks' ), icon: alignMiddleIcon },
+		{ key: 'bottom', name: __( 'Bottom', 'kadence-blocks' ), icon: alignBottomIcon },
+	];
+
+	const stopOnReplace = ( value, index ) => {
+		if ( value && undefined !== value[ 0 ] && undefined !== value[ 0 ].attributes && value[ 0 ].attributes.content ) {
+			saveListItem( { text: value[ 0 ].attributes.content }, index );
 		}
-		const renderIconSettings = ( index ) => {
-			return (
-				<KadencePanelBody
-					title={ __( 'Item', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
-					initialOpen={ ( 1 === listCount ? true : false ) }
-					panelName={ 'kb-icon-item-' + index }
-				>
-					<URLInputControl
-						label={ __( 'Link', 'kadence-blocks' ) }
-						url={ items[ index ].link }
-						onChangeUrl={ value => {
-							this.saveListItem( { link: value }, index );
-						} }
-						additionalControls={ true }
-						opensInNewTab={ ( items[ index ].target && '_blank' == items[ index ].target ? true : false ) }
-						onChangeTarget={ value => {
-							if ( value ) {
-									this.saveListItem( { target: '_blank' }, index );
-							} else {
-									this.saveListItem( { target: '_self' }, index );
-							}
-						} }
-						dynamicAttribute={ 'items:' + index + ':link' }
-						allowClear={ true }
-						{ ...this.props }
-					/>
-					<IconControl
-						value={ items[ index ].icon }
-						onChange={ value => {
-							this.saveListItem( { icon: value }, index );
-						} }
-					/>
+	};
+	const removeListItem = ( value, previousIndex ) => {
+		const amount = Math.abs( listCount );
+		if ( amount === 1 ) {
+			// Remove Block.
+			onDelete();
+		} else {
+			const newAmount = Math.abs( amount - 1 );
+			const currentItems = filter( items, ( item, i ) => previousIndex !== i );
+			const addin = Math.abs( previousIndex - 1 );
+			setFocusIndex( addin );
+			setAttributes( {
+				items    : currentItems,
+				listCount: newAmount,
+			} );
+		}
+	};
+	const blockToolControls = ( index ) => {
+		const isLineSelected = ( isSelected && focusIndex === index && kadence_blocks_params.dynamic_enabled );
+		if ( !isLineSelected ) {
+			return;
+		}
+		return <DynamicTextControl dynamicAttribute={'items:' + index + ':text'} {...attributes} />;
+	};
+	const renderIconSettings = ( index ) => {
+		return (
+			<KadencePanelBody
+				title={__( 'Item', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' )}
+				initialOpen={( 1 === listCount ? true : false )}
+				panelName={'kb-icon-item-' + index}
+			>
+				<URLInputControl
+					label={__( 'Link', 'kadence-blocks' )}
+					url={items[ index ].link}
+					onChangeUrl={value => {
+						saveListItem( { link: value }, index );
+					}}
+					additionalControls={true}
+					opensInNewTab={( items[ index ].target && '_blank' == items[ index ].target ? true : false )}
+					onChangeTarget={value => {
+						if ( value ) {
+							saveListItem( { target: '_blank' }, index );
+						} else {
+							saveListItem( { target: '_self' }, index );
+						}
+					}}
+					dynamicAttribute={'items:' + index + ':link'}
+					allowClear={true}
+					{...attributes}
+				/>
+				<IconControl
+					value={items[ index ].icon}
+					onChange={value => {
+						saveListItem( { icon: value }, index );
+					}}
+				/>
+				<RangeControl
+					label={__( 'Icon Size' )}
+					value={items[ index ].size}
+					onChange={value => {
+						saveListItem( { size: value }, index );
+					}}
+					min={5}
+					max={250}
+				/>
+				{items[ index ].icon && 'fe' === items[ index ].icon.substring( 0, 2 ) && (
 					<RangeControl
-						label={ __( 'Icon Size' ) }
-						value={ items[ index ].size }
-						onChange={ value => {
-							this.saveListItem( { size: value }, index );
-						} }
-						min={ 5 }
-						max={ 250 }
+						label={__( 'Line Width' )}
+						value={items[ index ].width}
+						onChange={value => {
+							saveListItem( { width: value }, index );
+						}}
+						step={0.5}
+						min={0.5}
+						max={4}
 					/>
-					{ items[ index ].icon && 'fe' === items[ index ].icon.substring( 0, 2 ) && (
-						<RangeControl
-							label={ __( 'Line Width' ) }
-							value={ items[ index ].width }
-							onChange={ value => {
-								this.saveListItem( { width: value }, index );
-							} }
-							step={ 0.5 }
-							min={ 0.5 }
-							max={ 4 }
-						/>
-					) }
+				)}
+				<PopColorControl
+					label={__( 'Icon Color' )}
+					value={( items[ index ].color ? items[ index ].color : '' )}
+					default={''}
+					onChange={value => {
+						saveListItem( { color: value }, index );
+					}}
+				/>
+				<SelectControl
+					label={__( 'Icon Style' )}
+					value={items[ index ].style}
+					options={[
+						{ value: 'default', label: __( 'Default' ) },
+						{ value: 'stacked', label: __( 'Stacked' ) },
+					]}
+					onChange={value => {
+						saveListItem( { style: value }, index );
+					}}
+				/>
+				{items[ index ].style !== 'default' && (
 					<PopColorControl
-						label={ __( 'Icon Color' ) }
-						value={ ( items[ index ].color ? items[ index ].color : '' ) }
-						default={ '' }
-						onChange={ value => {
-							this.saveListItem( { color: value }, index );
-						} }
+						label={__( 'Icon Background' )}
+						value={( items[ index ].background ? items[ index ].background : '' )}
+						default={''}
+						onChange={value => {
+							saveListItem( { background: value }, index );
+						}}
 					/>
-					<SelectControl
-						label={ __( 'Icon Style' ) }
-						value={ items[ index ].style }
-						options={ [
-							{ value: 'default', label: __( 'Default' ) },
-							{ value: 'stacked', label: __( 'Stacked' ) },
-						] }
-						onChange={ value => {
-							this.saveListItem( { style: value }, index );
-						} }
+				)}
+				{items[ index ].style !== 'default' && (
+					<PopColorControl
+						label={__( 'Border Color' )}
+						value={( items[ index ].border ? items[ index ].border : '' )}
+						default={''}
+						onChange={value => {
+							saveListItem( { border: value }, index );
+						}}
 					/>
-					{ items[ index ].style !== 'default' && (
-						<PopColorControl
-							label={ __( 'Icon Background' ) }
-							value={ ( items[ index ].background ? items[ index ].background : '' ) }
-							default={ '' }
-							onChange={ value => {
-								this.saveListItem( { background: value }, index );
-							} }
-						/>
-					) }
-					{ items[ index ].style !== 'default' && (
-						<PopColorControl
-							label={ __( 'Border Color' ) }
-							value={ ( items[ index ].border ? items[ index ].border : '' ) }
-							default={ '' }
-							onChange={ value => {
-								this.saveListItem( { border: value }, index );
-							} }
-						/>
-					) }
-					{ items[ index ].style !== 'default' && (
-						<RangeControl
-							label={ __( 'Border Size (px)' ) }
-							value={ items[ index ].borderWidth }
-							onChange={ value => {
-								this.saveListItem( { borderWidth: value }, index );
-							} }
-							min={ 0 }
-							max={ 20 }
-						/>
-					) }
-					{ items[ index ].style !== 'default' && (
-						<RangeControl
-							label={ __( 'Border Radius (%)' ) }
-							value={ items[ index ].borderRadius }
-							onChange={ value => {
-								this.saveListItem( { borderRadius: value }, index );
-							} }
-							min={ 0 }
-							max={ 50 }
-						/>
-					) }
-					{ items[ index ].style !== 'default' && (
-						<RangeControl
-							label={ __( 'Padding (px)' ) }
-							value={ items[ index ].padding }
-							onChange={ value => {
-								this.saveListItem( { padding: value }, index );
-							} }
-							min={ 0 }
-							max={ 180 }
-						/>
-					) }
-				</KadencePanelBody>
-			);
-		};
-		const renderSettings = (
-			<div>
-				{ times( listCount, n => renderIconSettings( n ) ) }
-			</div>
+				)}
+				{items[ index ].style !== 'default' && (
+					<RangeControl
+						label={__( 'Border Size (px)' )}
+						value={items[ index ].borderWidth}
+						onChange={value => {
+							saveListItem( { borderWidth: value }, index );
+						}}
+						min={0}
+						max={20}
+					/>
+				)}
+				{items[ index ].style !== 'default' && (
+					<RangeControl
+						label={__( 'Border Radius (%)' )}
+						value={items[ index ].borderRadius}
+						onChange={value => {
+							saveListItem( { borderRadius: value }, index );
+						}}
+						min={0}
+						max={50}
+					/>
+				)}
+				{items[ index ].style !== 'default' && (
+					<RangeControl
+						label={__( 'Padding (px)' )}
+						value={items[ index ].padding}
+						onChange={value => {
+							saveListItem( { padding: value }, index );
+						}}
+						min={0}
+						max={180}
+					/>
+				)}
+			</KadencePanelBody>
 		);
-		const renderToolControls = (
-			<div>
-				{ times( listCount, n => blockToolControls( n ) ) }
-			</div>
-		);
-		const renderIconsPreview = ( index ) => {
-			return (
-				<div className={ `kt-svg-icon-list-style-${ items[ index ].style } kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${ index } kt-svg-icon-list-level-${ get( items[index], 'level', 0 ) }` } >
-					{ items[ index ].icon && (
-						<IconRender className={ `kt-svg-icon-list-single kt-svg-icon-list-single-${ items[ index ].icon }` } name={ items[ index ].icon } size={ items[ index ].size } strokeWidth={ ( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined ) } style={ {
-							color: ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
-							backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].background ) : undefined ),
-							padding: ( items[ index ].padding && items[ index ].style !== 'default' ? items[ index ].padding + 'px' : undefined ),
-							borderColor: ( items[ index ].border && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].border ) : undefined ),
-							borderWidth: ( items[ index ].borderWidth && items[ index ].style !== 'default' ? items[ index ].borderWidth + 'px' : undefined ),
-							borderRadius: ( items[ index ].borderRadius && items[ index ].style !== 'default' ? items[ index ].borderRadius + '%' : undefined ),
-						} } />
-					) }
-					{/* { applyFilters( 'kadence.dynamicContent', <RichText
+	};
+	const renderSettings = (
+		<div>
+			{times( listCount, n => renderIconSettings( n ) )}
+		</div>
+	);
+	const renderToolControls = (
+		<div>
+			{times( listCount, n => blockToolControls( n ) )}
+		</div>
+	);
+	const renderIconsPreview = ( index ) => {
+		return (
+			<div className={`kt-svg-icon-list-style-${items[ index ].style} kt-svg-icon-list-item-wrap kt-svg-icon-list-item-${index} kt-svg-icon-list-level-${get( items[ index ], 'level', 0 )}`}>
+				{items[ index ].icon && (
+					<IconRender className={`kt-svg-icon-list-single kt-svg-icon-list-single-${items[ index ].icon}`} name={items[ index ].icon} size={items[ index ].size}
+								strokeWidth={( 'fe' === items[ index ].icon.substring( 0, 2 ) ? items[ index ].width : undefined )} style={{
+						color          : ( items[ index ].color ? KadenceColorOutput( items[ index ].color ) : undefined ),
+						backgroundColor: ( items[ index ].background && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].background ) : undefined ),
+						padding        : ( items[ index ].padding && items[ index ].style !== 'default' ? items[ index ].padding + 'px' : undefined ),
+						borderColor    : ( items[ index ].border && items[ index ].style !== 'default' ? KadenceColorOutput( items[ index ].border ) : undefined ),
+						borderWidth    : ( items[ index ].borderWidth && items[ index ].style !== 'default' ? items[ index ].borderWidth + 'px' : undefined ),
+						borderRadius   : ( items[ index ].borderRadius && items[ index ].style !== 'default' ? items[ index ].borderRadius + '%' : undefined ),
+					}}/>
+				)}
+				{/* { applyFilters( 'kadence.dynamicContent', <RichText
 						tagName="div"
 						value={ items[ index ].text }
 						onChange={ value => {
-							this.saveListItem( { text: value }, index );
+							saveListItem( { text: value }, index );
 						} }
 						onSplit={ ( value ) => {
 							if ( ! value ) {
@@ -582,8 +551,8 @@ class KadenceIconLists extends Component {
 						onRemove={ ( value ) => {
 							removeListItem( value, index );
 						} }
-						//isSelected={ this.state.focusIndex === index }
-						unstableOnFocus={ this.onSelectItem( index ) }
+						//isSelected={ focusIndex === index }
+						unstableOnFocus={ onSelectItem( index ) }
 						onReplace={ ( value ) => {
 							stopOnReplace( value, index );
 						} }
@@ -594,19 +563,19 @@ class KadenceIconLists extends Component {
 						tagName="div"
 						value={ items[ index ].text }
 						onChange={ value => {
-							this.saveListItem( { text: value }, index );
+							saveListItem( { text: value }, index );
 						} }
 						onSplit={ ( value ) => {
 							if ( ! value ) {
-								return this.debouncedCreateListItem( '', items[ index ].text, index );
+								return debouncedCreateListItem( '', items[ index ].text, index );
 							}
-							return this.debouncedCreateListItem( value, items[ index ].text, index );
+							return debouncedCreateListItem( value, items[ index ].text, index );
 						} }
 						onRemove={ ( value ) => {
 							removeListItem( value, index );
 						} }
 						//isSelected={ this.state.focusIndex === index }
-						unstableOnFocus={ this.onSelectItem( index ) }
+						unstableOnFocus={ () => onSelectItem( index ) }
 						onReplace={ ( value ) => {
 							stopOnReplace( value, index );
 						} }
@@ -624,25 +593,25 @@ class KadenceIconLists extends Component {
 						onChange={ value => setAttributes( { blockAlignment: value } ) }
 					/>
 					<MoveItem
-						onMoveUp={ value => this.onMoveUp( value ) }
-						onMoveDown={ value => this.onMoveDown( value ) }
-						onMoveRight={ value => this.onMoveRight( value ) }
-						onMoveLeft={ value => this.onMoveLeft( value ) }
-						focusIndex={ this.state.focusIndex }
-						itemCount={ this.props.attributes.items.length }
-						level={  get( this.props.attributes.items[ ( this.state.focusIndex ? this.state.focusIndex : 0 ) ], 'level', 0) }
+						onMoveUp={ value => onMoveUp( value ) }
+						onMoveDown={ value => onMoveDown( value ) }
+						onMoveRight={ value => onMoveRight( value ) }
+						onMoveLeft={ value => onMoveLeft( value ) }
+						focusIndex={ focusIndex }
+						itemCount={ items.length }
+						level={  get( items[ ( focusIndex ? focusIndex : 0 ) ], 'level', 0) }
 					/>
 				</BlockControls>
-				{ this.showSettings( 'allSettings' ) && (
+				{ showSettings( 'allSettings', 'kadence/iconlist' ) && (
 					<InspectorControls>
 
 						<InspectorControlTabs
 							panelName={ 'icon-list' }
-							setActiveTab={ ( value ) => this.setState( { activeTab: value } ) }
-							activeTab={ this.state.activeTab }
+							setActiveTab={ ( value ) => setActiveTab( value ) }
+							activeTab={ activeTab }
 						/>
 
-						{( this.state.activeTab === 'general' ) &&
+						{( activeTab === 'general' ) &&
 							<>
 								<KadencePanelBody
 									title={__( 'List Controls' )}
@@ -676,7 +645,7 @@ class KadenceIconLists extends Component {
 													} );
 												}
 												setAttributes( { items: newitems } );
-												this.saveListItem( { size: items[ 0 ].size }, 0 );
+												saveListItem( { size: items[ 0 ].size }, 0 );
 											}
 											setAttributes( { listCount: newcount } );
 										}}
@@ -684,7 +653,7 @@ class KadenceIconLists extends Component {
 										max={40}
 										step={1}
 									/>
-									{this.showSettings( 'column' ) && (
+									{ showSettings( 'column', 'kadence/iconlist' ) && (
 										<ResponsiveRangeControls
 											label={__( 'List Columns', 'kadence-blocks' )}
 											value={columns}
@@ -699,7 +668,7 @@ class KadenceIconLists extends Component {
 											showUnit={false}
 										/>
 									)}
-									{this.showSettings( 'spacing' ) && (
+									{ showSettings( 'spacing', 'kadence/iconlist' ) && (
 										<Fragment>
 											<RangeControl
 												label={__( 'List Vertical Spacing' )}
@@ -743,7 +712,7 @@ class KadenceIconLists extends Component {
 												measurement={undefined !== listMargin ? listMargin : [ 0, 0, 10, 0 ]}
 												control={marginControl}
 												onChange={( value ) => setAttributes( { listMargin: value } )}
-												onControl={( value ) => this.setState( { marginControl: value } )}
+												onControl={( value ) => setState( { marginControl: value } )}
 												min={-200}
 												max={200}
 												step={1}
@@ -753,7 +722,7 @@ class KadenceIconLists extends Component {
 								</KadencePanelBody>
 
 								<div className="kt-sidebar-settings-spacer"></div>
-								{ this.showSettings( 'individualIcons' ) && (
+								{ showSettings( 'individualIcons', 'kadence/iconlist' ) && (
 									<KadencePanelBody
 										title={ __( 'Individual list Item Settings', 'kadence-blocks' ) }
 										initialOpen={ false }
@@ -765,9 +734,9 @@ class KadenceIconLists extends Component {
 							</>
 						}
 
-						{( this.state.activeTab === 'style' ) &&
+						{( activeTab === 'style' ) &&
 							<>
-								{this.showSettings( 'textStyle' ) && (
+								{ showSettings( 'textStyle', 'kadence/iconlist' ) && (
 									<KadencePanelBody
 										title={__( 'List Text Styling' )}
 										panelName={'kb-list-text-styling'}
@@ -820,9 +789,9 @@ class KadenceIconLists extends Component {
 							</>
 						}
 
-						{( this.state.activeTab === 'advanced' ) &&
+						{( activeTab === 'advanced' ) &&
 							<>
-								{this.showSettings( 'joinedIcons' ) && (
+								{ showSettings( 'joinedIcons', 'kadence/iconlist' ) && (
 									<KadencePanelBody
 										title={__( 'Edit All Icon Styles Together' )}
 										panelName={'kb-icon-all-styles'}
@@ -950,58 +919,60 @@ class KadenceIconLists extends Component {
 							font-family: ${ ( listStyles[ 0 ].family ? listStyles[ 0 ].family : '' ) };
 							text-transform: ${ ( listStyles[ 0 ].textTransform ? listStyles[ 0 ].textTransform : '' ) };
 						}`
-					}
-				</style>
-				{ listStyles[ 0 ].google && (
-					<WebfontLoader config={ config }>
-					</WebfontLoader>
-				) }
-				<div ref={ this.container } className={ `kt-svg-icon-list-container kt-svg-icon-list-items${ uniqueID } kt-svg-icon-list-columns-${ columns }${ ( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' ) }${ ( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' ) }${ ( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' ) }` } style={ {
-					margin: ( listMargin && undefined !== listMargin[ 0 ] && null !== listMargin[ 0 ] ? listMargin[ 0 ] + 'px ' + listMargin[ 1 ] + 'px ' + listMargin[ 2 ] + 'px ' + listMargin[ 3 ] + 'px' : '' ),
-				} } >
-					{ times( listCount, n => renderIconsPreview( n ) ) }
-					{ isSelected && (
-						<Fragment>
-							<Button
-								isDefault={ true }
-								icon={ plus }
-								onClick={ () => {
-									const newitems = items;
-									const newcount = listCount + 1;
-									if ( newitems.length < newcount ) {
-										const amount = Math.abs( newcount - newitems.length );
-										{ times( amount, n => {
+				}
+			</style>
+			{listStyles[ 0 ].google && (
+				<WebfontLoader config={config}>
+				</WebfontLoader>
+			)}
+			<div ref={container}
+				 className={`kt-svg-icon-list-container kt-svg-icon-list-items${uniqueID} kt-svg-icon-list-columns-${columns}${( undefined !== iconAlign && 'middle' !== iconAlign ? ' kt-list-icon-align' + iconAlign : '' )}${( undefined !== tabletColumns && '' !== tabletColumns ? ' kt-tablet-svg-icon-list-columns-' + tabletColumns : '' )}${( undefined !== mobileColumns && '' !== mobileColumns ? ' kt-mobile-svg-icon-list-columns-' + mobileColumns : '' )}`}
+				 style={{
+					 margin: ( listMargin && undefined !== listMargin[ 0 ] && null !== listMargin[ 0 ] ? listMargin[ 0 ] + 'px ' + listMargin[ 1 ] + 'px ' + listMargin[ 2 ] + 'px ' + listMargin[ 3 ] + 'px' : '' ),
+				 }}>
+				{times( listCount, n => renderIconsPreview( n ) )}
+				{isSelected && (
+					<Fragment>
+						<Button
+							isDefault={true}
+							icon={plus}
+							onClick={() => {
+								const newitems = items;
+								const newcount = listCount + 1;
+								if ( newitems.length < newcount ) {
+									const amount = Math.abs( newcount - newitems.length );
+									{
+										times( amount, n => {
 											newitems.push( {
-												icon: newitems[ 0 ].icon,
-												link: newitems[ 0 ].link,
-												target: newitems[ 0 ].target,
-												size: newitems[ 0 ].size,
-												width: newitems[ 0 ].width,
-												color: newitems[ 0 ].color,
-												background: newitems[ 0 ].background,
-												border: newitems[ 0 ].border,
+												icon        : newitems[ 0 ].icon,
+												link        : newitems[ 0 ].link,
+												target      : newitems[ 0 ].target,
+												size        : newitems[ 0 ].size,
+												width       : newitems[ 0 ].width,
+												color       : newitems[ 0 ].color,
+												background  : newitems[ 0 ].background,
+												border      : newitems[ 0 ].border,
 												borderRadius: newitems[ 0 ].borderRadius,
-												borderWidth: newitems[ 0 ].borderWidth,
-												padding: newitems[ 0 ].padding,
-												style: newitems[ 0 ].style,
-												level: get(newitems[ 0 ], 'level', 0)
+												borderWidth : newitems[ 0 ].borderWidth,
+												padding     : newitems[ 0 ].padding,
+												style       : newitems[ 0 ].style,
+												level       : get( newitems[ 0 ], 'level', 0 ),
 											} );
-										} ); }
-										setAttributes( { items: newitems } );
-										this.saveListItem( { size: items[ 0 ].size }, 0 );
+										} );
 									}
-									setAttributes( { listCount: newcount } );
-								} }
-								label={ __( 'Add List Item', 'kadence-blocks' ) }
-							/>
-						</Fragment>
-					) }
-				</div>
+									setAttributes( { items: newitems } );
+									saveListItem( { size: items[ 0 ].size }, 0 );
+								}
+								setAttributes( { listCount: newcount } );
+							}}
+							label={__( 'Add List Item', 'kadence-blocks' )}
+						/>
+					</Fragment>
+				)}
 			</div>
-		);
-	}
+		</div>
+	);
 }
-//export default ( KadenceIconLists );
 
 export default compose( [
 	withSelect( ( select, ownProps ) => {

@@ -4,17 +4,18 @@
  */
 import { flow } from 'lodash';
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
+} from '@wordpress/element';
+
 import {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
 	Toolbar,
 	ToggleControl,
-	SelectControl,
+	SelectControl
 } from '@wordpress/components';
 const {
 	localStorage,

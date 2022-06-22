@@ -23,12 +23,11 @@ import { countdownIcon } from '@kadence/icons';
  */
 import edit from './edit';
 import save from './save';
-import attributes from './attributes';
+import metadata from './block.json';
 
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
 
 /**
@@ -41,26 +40,8 @@ import { registerBlockType } from '@wordpress/blocks';
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/countdown', {
-	/* translators: block name */
-	title: __( 'Countdown', 'kadence-blocks' ),
-	/* translators: block description */
-	description: __( '', 'kadence-blocks' ),
-	category: 'kadence-blocks',
+	...metadata,
 	icon: countdownIcon,
-	keywords: [
-		'kb',
-		/* translators: block keyword */
-		__( 'countdown', 'kadence-blocks' ),
-		/* translators: block keyword */
-		__( 'timer', 'kadence-blocks' ),
-	],
-	supports: {
-		anchor: true,
-		align: [ 'wide', 'full' ],
-		reusable: false,
-		html: false,
-	},
-	attributes,
 	edit,
 	save,
 } );

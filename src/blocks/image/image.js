@@ -54,12 +54,12 @@ import {
 	TypographyControls,
 	MeasurementControls,
 	ResponsiveMeasurementControls,
-	ResponsiveRangeControls,
 	KadencePanelBody,
 	URLInputControl,
 	KadenceImageURLInputUI,
 	BoxShadowControl,
 	KadenceImageControl,
+	ResponsiveRangeControls,
 	DropShadowControl,
 	ImageSizeControl as KadenceImageSizeControl,
 	InspectorControlTabs

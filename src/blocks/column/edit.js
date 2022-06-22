@@ -107,6 +107,7 @@ function SectionEdit( {
 		},
 		[ clientId ]
 	);
+
 	useEffect( () => {
 		let smallID = '_' + clientId.substr( 2, 9 );
 		if ( ! uniqueID ) {

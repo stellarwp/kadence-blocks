@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "title": "Countdown Content",
+  "name": "kadence/countdown-inner",
+  "category": "kadence-blocks",
+  "description": "Inner Container for Countdown Block",
+  "parent": [
+	"kadence/countdown"
+  ],
+  "keywords": [
+	"countdown",
+	"timer",
+	"KB"
+  ],
+  "description": "",
+  "attributes": {
+	"uniqueID": {
+	  "type": "string"
+	},
+	"location": {
+	  "type": "string"
+	}
+  },
+  "supports": {
+	"inserter": false,
+	"reusable": false,
+	"html": false
+  },
+  "editorScript": "file:editor.js"
+}
