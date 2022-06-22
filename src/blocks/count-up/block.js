@@ -35,7 +35,6 @@ import './editor.scss';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
-import { Icon } from '@wordpress/components';
 
 /**
  * Register: a Gutenberg Block.

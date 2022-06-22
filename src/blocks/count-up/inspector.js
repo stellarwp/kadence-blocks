@@ -265,7 +265,7 @@ function Inspector( props ) {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' )}
 															onChange={value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } )}
 															step={1}
@@ -275,7 +275,7 @@ function Inspector( props ) {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' )}
 															onChange={value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } )}
 															step={1}
@@ -285,7 +285,7 @@ function Inspector( props ) {
 													);
 												} else {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' )}
 															onChange={value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } )}
 															step={1}
@@ -321,6 +321,8 @@ function Inspector( props ) {
 									letterSpacing={titleFont[ 0 ].letterSpacing}
 									onLetterSpacing={( value ) => saveTitleFont( { letterSpacing: value } )}
 									fontFamily={titleFont[ 0 ].family}
+									textTransform={ titleFont[ 0 ].textTransform }
+									onTextTransform={ ( value ) => saveTitleFont( { textTransform: value } ) }
 									onFontFamily={( value ) => saveTitleFont( { family: value } )}
 									onFontChange={( select ) => {
 										saveTitleFont( {
@@ -426,7 +428,7 @@ function Inspector( props ) {
 									if ( tab.name ) {
 										if ( 'mobile' === tab.name ) {
 											tabout = (
-												<KadenceRange
+												<RangeControl
 													value={( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 2 ] ) ? numberMinHeight[ 2 ] : '' )}
 													onChange={value => setAttributes( { numberMinHeight: [ ( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 0 ] ) ? numberMinHeight[ 0 ] : '' ), ( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 1 ] ) ? numberMinHeight[ 1 ] : '' ), value ] } )}
 													step={1}
@@ -436,7 +438,7 @@ function Inspector( props ) {
 											);
 										} else if ( 'tablet' === tab.name ) {
 											tabout = (
-												<KadenceRange
+												<RangeControl
 													value={( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 1 ] ) ? numberMinHeight[ 1 ] : '' )}
 													onChange={value => setAttributes( { numberMinHeight: [ ( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 0 ] ) ? numberMinHeight[ 0 ] : '' ), value, ( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 2 ] ) ? numberMinHeight[ 2 ] : '' ) ] } )}
 													step={1}
@@ -446,7 +448,7 @@ function Inspector( props ) {
 											);
 										} else {
 											tabout = (
-												<KadenceRange
+												<RangeControl
 													value={( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 0 ] ) ? numberMinHeight[ 0 ] : '' )}
 													onChange={value => setAttributes( { numberMinHeight: [ value, ( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 1 ] ) ? numberMinHeight[ 1 ] : '' ), ( ( undefined !== numberMinHeight && undefined !== numberMinHeight[ 2 ] ) ? numberMinHeight[ 2 ] : '' ) ] } )}
 													step={1}

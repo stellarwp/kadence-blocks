@@ -125,6 +125,14 @@
 	  "type": "string",
 	  "default": "basic"
 	},
+	"iconColor": {
+	  "type": "object",
+	  "default": {
+		"standard": "",
+		"active": "",
+		"hover": ""
+	  }
+	},
 	"iconSide": {
 	  "type": "string",
 	  "default": "right"
@@ -136,6 +144,9 @@
   },
   "supports": {
 	"anchor": true
+  },
+  "providesContext": {
+	"kadence/accordion-icon-color": "iconColor"
   },
   "editorScript": "file:editor.js"
 }

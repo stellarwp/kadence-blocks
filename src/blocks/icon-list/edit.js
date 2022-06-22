@@ -119,7 +119,9 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 			} );
 			kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kticonlistUniqueIDs.includes( uniqueID ) ) {
-			uniqueID = '_' + clientId.substr( 2, 9 );
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
 			kticonlistUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
 			kticonlistUniqueIDs.push( uniqueID );
