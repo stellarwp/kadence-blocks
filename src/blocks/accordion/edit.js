@@ -130,6 +130,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 		showIcon,
 		iconStyle,
 		iconSide,
+		iconColor
 	} = attributes;
 
 	const [ contentPaddingControl, setContentPaddingControl ] = useState( 'linked' );
@@ -611,13 +612,13 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					min-height:${( minHeight ? minHeight + 'px' : '0' )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].color )};
+					background-color: ${ '' !== iconColor.standard ? KadenceColorOutput( iconColor.standard ) : KadenceColorOutput( titleStyles[ 0 ].color )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].background )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header .kt-blocks-accordion-icon-trigger {
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].color )};
+					background-color: ${ '' !== iconColor.standard ? KadenceColorOutput(iconColor.standard) : KadenceColorOutput( titleStyles[ 0 ].color )};
 				}
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header:hover {
 					color: ${KadenceColorOutput( titleStyles[ 0 ].colorHover )};
@@ -625,13 +626,13 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundHover )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].colorHover )};
+					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].colorHover )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundHover )};
+					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].backgroundHover )};
 				}
 				.kt-accordion-${uniqueID}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-blocks-accordion-header:hover .kt-blocks-accordion-icon-trigger {
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].colorHover )};
+					background-color: ${ '' !== iconColor.hover ? KadenceColorOutput(iconColor.hover) : KadenceColorOutput( titleStyles[ 0 ].colorHover )};
 				}
 				.kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1} .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-header {
 					color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};
@@ -639,7 +640,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundActive )};
 				}
 				.kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1}:not( .kt-accodion-icon-style-basiccircle ):not( .kt-accodion-icon-style-xclosecircle ):not( .kt-accodion-icon-style-arrowcircle ) .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-icon-trigger:after {
-					background-color: ${KadenceColorOutput( titleStyles[ 0 ].colorActive )};
+					background-color: ${ '' !== iconColor.active ? KadenceColorOutput(iconColor.active) : KadenceColorOutput( titleStyles[ 0 ].colorActive )};
 				}
 				.kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-icon-trigger:before, .kt-accordion-${uniqueID}.kt-start-active-pane-${openPane + 1}:not( .kt-accodion-icon-style-basic ):not( .kt-accodion-icon-style-xclose ):not( .kt-accodion-icon-style-arrow ) .kt-accordion-pane-${openPane + 1} .kt-blocks-accordion-icon-trigger:after {
 					background-color: ${KadenceColorOutput( titleStyles[ 0 ].backgroundActive )};
@@ -706,7 +707,6 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 																	aria-pressed={openPane === attributes.id - 1}
 																	onClick={() => setAttributes( { openPane: attributes.id - 1 } )}
 																>
-																	{console.log( 'is_array' )}
 																	{__( 'Accordion Pane', 'kadence-blocks' ) + ' ' + ( attributes.id )}
 																</Button>
 															) )}
@@ -759,9 +759,9 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 													  className: 'kt-active-tab',
 												  },
 											  ]}>
-										{
-											( tab ) => {
+										{ ( tab ) => {
 												let tabout;
+
 												if ( tab.name ) {
 													if ( 'hover' === tab.name ) {
 														tabout = hoverSettings;
@@ -771,7 +771,11 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 														tabout = normalSettings;
 													}
 												}
-												return <div className={tab.className} key={tab.className}>{tabout}</div>;
+												return (
+													<div className={tab.className} key={tab.className}>
+														{tabout}
+													</div>
+												);
 											}
 										}
 									</TabPanel>
@@ -816,6 +820,66 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 										] }
 										onChange={ value => setAttributes( { iconSide: value } ) }
 									/>
+
+									<TabPanel className="kt-inspect-tabs kt-no-ho-ac-tabs kt-hover-tabs"
+											  activeClass="active-tab"
+											  tabs={[
+												  {
+													  name     : 'normal',
+													  title    : __( 'Normal' ),
+													  className: 'kt-normal-tab',
+												  },
+												  {
+													  name     : 'hover',
+													  title    : __( 'Hover' ),
+													  className: 'kt-hover-tab',
+												  },
+												  {
+													  name     : 'active',
+													  title    : __( 'Active' ),
+													  className: 'kt-active-tab',
+												  },
+											  ]}>
+										{ ( tab ) => {
+
+											if ( tab.name ) {
+												if ( 'hover' === tab.name ) {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<PopColorControl
+																label={__( 'Hover Icon Color', 'kadence-blocks' )}
+																value={( iconColor.hover ? iconColor.hover : '' )}
+																default={''}
+																onChange={( value ) => setAttributes( { iconColor:  { ...iconColor, hover: value } } )}
+															/>
+														</div>
+													);
+												} else if ( 'active' === tab.name ) {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<PopColorControl
+																label={__( 'Active Icon Color', 'kadence-blocks' )}
+																value={( iconColor.active ? iconColor.active : '' )}
+																default={''}
+																onChange={( value ) => setAttributes( { iconColor:  { ...iconColor, active: value } } )}
+															/>
+														</div>
+													);
+												} else {
+													return(
+														<div className={tab.className} key={tab.className}>
+															<PopColorControl
+																label={__( 'Icon Color', 'kadence-blocks' )}
+																value={( iconColor.standard ? iconColor.standard : '' )}
+																default={''}
+																onChange={( value ) => setAttributes( { iconColor:  { ...iconColor, standard: value } } )}
+															/>
+														</div>
+													);
+												}
+											}
+										} }
+									</TabPanel>
 								</KadencePanelBody>
 							) }
 						</>
