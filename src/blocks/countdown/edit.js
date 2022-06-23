@@ -223,10 +223,6 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 			const theSiteTimezoneTimestamp = getTimestamp( newDate, theTimeOffset );
 			setAttributes( { date: newDate, timestamp: theSiteTimezoneTimestamp, timezone: ( timezone && timezone.string ? timezone.string : '' ), timeOffset: theTimeOffset } );
 		}
-		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
-		if ( blockSettings[ 'kadence/countdown' ] !== undefined && typeof blockSettings[ 'kadence/countdown' ] === 'object' ) {
-			setSettings( blockSettings[ 'kadence/countdown' ] );
-		}
 	}, [] );
 
 	const getTimestamp = ( value, theTimeOffset ) => {

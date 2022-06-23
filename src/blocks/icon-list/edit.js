@@ -86,7 +86,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 	const { listCount, items, listStyles, columns, listLabelGap, listGap, blockAlignment, uniqueID, listMargin, iconAlign, tabletColumns, mobileColumns } = attributes;
 
 	const [ focusIndex, setFocusIndex ] = useState( null );
-	const [ settings, setSettings ] = useState( {} );
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
@@ -130,10 +129,6 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 			setMarginControl( 'linked' );
 		} else {
 			setMarginControl( 'individual' );
-		}
-		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
-		if ( blockSettings[ 'kadence/iconlist' ] !== undefined && typeof blockSettings[ 'kadence/iconlist' ] === 'object' ) {
-			setSettings( blockSettings[ 'kadence/iconlist' ] );
 		}
 
 	}, [] );

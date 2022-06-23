@@ -192,12 +192,8 @@ function KadenceAdvancedHeading( props ) {
 		} else {
 			addUniqueID( uniqueID );
 		}
-		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
-		if ( blockSettings[ 'kadence/advancedheading' ] !== undefined && typeof blockSettings[ 'kadence/advancedheading' ] === 'object' ) {
-			setState( { settings: blockSettings[ 'kadence/advancedheading' ] } );
-		}
 		if ( context && context.queryId && context.postId ) {
-			if ( !inQueryBlock ) {
+			if ( ! inQueryBlock ) {
 				setAttributes( {
 					inQueryBlock: true,
 				} );

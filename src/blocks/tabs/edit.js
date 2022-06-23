@@ -134,10 +134,6 @@ class KadenceTabs extends Component {
 		} else {
 			kttabsUniqueIDs.push( this.props.attributes.uniqueID );
 		}
-		const blockSettings = ( kadence_blocks_params.settings ? JSON.parse( kadence_blocks_params.settings ) : {} );
-		if ( blockSettings[ 'kadence/tabs' ] !== undefined && typeof blockSettings[ 'kadence/tabs' ] === 'object' ) {
-			this.setState( { settings: blockSettings[ 'kadence/tabs' ] } );
-		}
 	}
 	showSettings( key ) {
 		if ( undefined === this.state.settings[ key ] || 'all' === this.state.settings[ key ] ) {
