@@ -53,8 +53,8 @@ function kadence_gutenberg_editor_assets() {
 
 	// Plugin Scripts & Styles.
 	$kadence_control_meta = kadence_blocks_get_asset_file( 'dist/plugin-kadence-control' );
-	wp_register_script( 'kadence-blocks-plugin', KADENCE_BLOCKS_URL . 'dist/plugin-kadence-control.js', array_merge( $kadence_control_meta['dependencies'], array( 'wp-api', 'kadence-blocks-js' ) ), $kadence_control_meta['version'], true );
-	wp_register_style( 'kadence-blocks-plugin', KADENCE_BLOCKS_URL . 'dist/plugin-kadence-control.css', array( 'wp-edit-blocks', 'kadence-components' ), $kadence_control_meta['version'] );
+	wp_register_script( 'kadence-blocks-plugin-js', KADENCE_BLOCKS_URL . 'dist/plugin-kadence-control.js', array_merge( $kadence_control_meta['dependencies'], array( 'wp-api', 'kadence-blocks-js' ) ), $kadence_control_meta['version'], true );
+	wp_register_style( 'kadence-blocks-plugin-css', KADENCE_BLOCKS_URL . 'dist/plugin-kadence-control.css', array( 'wp-edit-blocks', 'kadence-components' ), $kadence_control_meta['version'] );
 	wp_set_script_translations( 'kadence-blocks-plugin', 'kadence-blocks' );
 
 	$blocks = array(
