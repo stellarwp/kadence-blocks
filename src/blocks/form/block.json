@@ -602,6 +602,5 @@
   },
   "usesContext": [
 	"postId"
-  ],
-  "editorScript": "file:editor.js"
+  ]
 }

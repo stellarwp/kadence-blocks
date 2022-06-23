@@ -75,6 +75,5 @@
   "usesContext": [
 	"postId",
 	"queryId"
-  ],
-  "editorScript": "file:editor.js"
+  ]
 }

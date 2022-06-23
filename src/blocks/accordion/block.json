@@ -147,6 +147,5 @@
   },
   "providesContext": {
 	"kadence/accordion-icon-color": "iconColor"
-  },
-  "editorScript": "file:editor.js"
+  }
 }

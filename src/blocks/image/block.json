@@ -261,7 +261,5 @@
 		"ktanimateadd": true,
 		"ktanimatepreview": true,
 		"ktdynamic": true
-	},
-	"editorStyle": "kadence-blocks-editor-css",
-	"style": "kadence-blocks-image"
+	}
 }

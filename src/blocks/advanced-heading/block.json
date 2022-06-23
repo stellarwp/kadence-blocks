@@ -360,6 +360,5 @@
 	"ktanimatereveal": true,
 	"ktanimatepreview": true,
 	"ktdynamic": true
-  },
-  "editorScript": "file:editor.js"
+  }
 }

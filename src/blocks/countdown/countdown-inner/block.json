@@ -26,6 +26,5 @@
 	"inserter": false,
 	"reusable": false,
 	"html": false
-  },
-  "editorScript": "file:editor.js"
+  }
 }

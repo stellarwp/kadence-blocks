@@ -49,6 +49,5 @@
 	"reusable": false,
 	"html": false,
 	"anchor": true
-  },
-  "editorScript": "file:editor.js"
+  }
 }

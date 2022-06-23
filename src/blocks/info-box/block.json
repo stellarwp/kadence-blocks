@@ -536,6 +536,5 @@
 	  "type": "bool",
 	  "default": false
 	}
-  },
-  "editorScript": "file:editor.js"
+  }
 }

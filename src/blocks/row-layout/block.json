@@ -635,7 +635,5 @@
 	"ktdynamic": true,
 	"kbcss": true,
 	"editorsKitBlockNavigator": true
-  },
-  "editorStyle": "kadence-blocks-editor-css",
-  "style": "kadence-blocks-rowlayout"
+  }
 }

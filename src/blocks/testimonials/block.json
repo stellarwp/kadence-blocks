@@ -500,6 +500,5 @@
   ],
   "supports": {
 	"anchor": true
-  },
-  "editorScript": "file:editor.js"
+  }
 }

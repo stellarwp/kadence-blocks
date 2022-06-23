@@ -92,6 +92,5 @@
   },
   "supports": {
 	"ktdynamic": true
-  },
-  "editorScript": "file:editor.js"
+  }
 }

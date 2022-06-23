@@ -191,6 +191,5 @@
 	  "type": "number",
 	  "default": 2
 	}
-  },
-  "editorScript": "file:editor.js"
+  }
 }

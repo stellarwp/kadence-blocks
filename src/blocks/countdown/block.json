@@ -319,6 +319,5 @@
 	"align": [ "wide", "full" ],
 	"reusable": false,
 	"html": false
-  },
-  "editorScript": "file:editor.js"
+  }
 }

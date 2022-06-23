@@ -225,6 +225,5 @@
   },
   "supports": {
 	"html": false
-  },
-  "editorScript": "file:editor.js"
+  }
 }

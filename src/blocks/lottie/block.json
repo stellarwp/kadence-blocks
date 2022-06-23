@@ -151,6 +151,5 @@
 	  "type": "string",
 	  "default": "px"
 	}
-  },
-  "editorScript": "file:editor.js"
+  }
 }

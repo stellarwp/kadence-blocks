@@ -1633,7 +1633,7 @@ class Kadence_Blocks_Frontend {
 		// Next all the extras that are shared.
 		wp_register_script( 'countup', KADENCE_BLOCKS_URL . 'includes/assets/js/countUp.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-count-up', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-countup.min.js', array('countup'), KADENCE_BLOCKS_VERSION, true );
-		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'dist/assets/css/simplelightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
+		wp_register_style( 'kadence-simplelightbox-css', KADENCE_BLOCKS_URL . 'includes/assets/css/simplelightbox.min.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_script( 'kadence-simplelightbox', KADENCE_BLOCKS_URL . 'includes/assets/js/simplelightbox.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-lottieinteractivity-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-interactivity.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-lottieplayer-js', KADENCE_BLOCKS_URL . 'includes/assets/js/lottie-player.min.js', array(), KADENCE_BLOCKS_VERSION, true );
