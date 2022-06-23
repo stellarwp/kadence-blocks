@@ -95,8 +95,9 @@ function KadenceCounterUp( {
 			} );
 			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kbCountUpUniqueIDs.includes( uniqueID ) ) {
-			uniqueID = '_' + clientId.substr( 2, 9 );
-			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );			kbCountUpUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
 			kbCountUpUniqueIDs.push( uniqueID );
 		}
@@ -218,6 +219,7 @@ function KadenceCounterUp( {
 							marginRight  : ( previewTitleMarginRight ? previewTitleMarginRight + titleMarginType : undefined ),
 							marginBottom : ( previewTitleMarginBottom ? previewTitleMarginBottom + titleMarginType : undefined ),
 							marginLeft   : ( previewTitleMarginLeft ? previewTitleMarginLeft + titleMarginType : undefined ),
+							textTransform: ( titleFont[ 0 ].textTransform ? titleFont[ 0 ].textTransform : undefined ),
 						}}
 					/>
 				}

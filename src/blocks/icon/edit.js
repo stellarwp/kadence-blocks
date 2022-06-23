@@ -84,7 +84,9 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 			} );
 			kticonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kticonUniqueIDs.includes( uniqueID ) ) {
-			uniqueID = '_' + clientId.substr( 2, 9 );
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
 			kticonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
 			kticonUniqueIDs.push( uniqueID );

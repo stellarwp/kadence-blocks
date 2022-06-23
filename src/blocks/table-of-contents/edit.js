@@ -177,7 +177,9 @@ function KadenceTableOfContents( { attributes, setAttributes, clientId, classNam
 			} );
 			kbtableUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kbtableUniqueIDs.includes( uniqueID ) ) {
-			uniqueID = '_' + clientId.substr( 2, 9 );
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
 			kbtableUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
 			kbtableUniqueIDs.push( uniqueID );

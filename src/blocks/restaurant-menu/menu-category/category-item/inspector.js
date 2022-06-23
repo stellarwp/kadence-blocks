@@ -16,7 +16,6 @@ import { PopColorControl, RangeControl, TypographyControls, KadencePanelBody, Me
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { RangeControl } from '../../../../packages/components/src';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
 import {

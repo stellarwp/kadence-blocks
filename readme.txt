@@ -78,25 +78,28 @@ Install the plugin into the `/wp-content/plugins/` folder, and activate it.
 
 = 2.5.0 Beta Version =
 Release Date: April 20th, 2022
-** Update: RowLayout to use grid css.
-** Update: File Structure, build process, individual block files.
-** Update: Inline SVGs removed from content html.
-** Update: Sections can move freely in and out of rows.
-** Update: Icons flex layout with gap settings.
-** Update: Add Icon option to advanced text block.
-** Update: Lightbox to use glightbox.
-** Update: Gallery Carousels to use splide.
-** Update: Testimonial Carousels to use Splide.
-** Fix: Parallax background issue with border radius.
-** Add: Block defaults for button style in advanced button.
-** Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
-** Update: Gallery to allow links in captions, separate from image link.
-** Fix: Updating gallery can lose added captions.
+* Update: RowLayout to use grid css.
+* Update: File Structure, build process, individual block files.
+* Update: Inline SVGs removed from content html.
+* Update: Sections can move freely in and out of rows.
+* Update: Icons flex layout with gap settings.
+* Update: Add Icon option to advanced text block.
+* Update: Lightbox to use glightbox.
+* Update: Gallery Carousels to use splide.
+* Update: Testimonial Carousels to use Splide.
+* Fix: Parallax background issue with border radius.
+* Add: Block defaults for button style in advanced button.
+* Fix: Gallery - "Show on Hover" caption placement setting now allowing editing.
+* Update: Gallery to allow links in captions, separate from image link.
+* Fix: Updating gallery can lose added captions.
 * Fix: Issue with aligning in buttons with icons.
-** Update: Facebook logo svg.
-** Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
-** Tweek - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
-** Tweek - Accordion animation when nesting accordions, with both "closed".
+* Update: Facebook logo svg.
+* Allow inner sections to have vertical flex alignment. https://secure.helpscout.net/conversation/1869629675/26777?folderId=2070875
+* Tweek - Accordion js to handle issues with offset in accordion hash. https://secure.helpscout.net/conversation/1907903787/28197/
+* Tweek - Accordion animation when nesting accordions, with both "closed".
+* Fix: Google Maps filer initial value issue.
+* Add: Text Transform option on title in Count Up block
+
 
 = 2.4.8 =
 Release Date: June 3rd, 2022
@@ -632,8 +635,8 @@ Release Date: April 16th, 2021
  * Update: Heading Letter Spacing allow 0.
  * Fix: button not using theme border styles.
  * Fix: Cloned items in carousel not opening lightbox.
- * Fix: Issue with tab css specificity. 
- * Fix: Issue with testimonial css specificity. 
+ * Fix: Issue with tab css specificity.
+ * Fix: Issue with testimonial css specificity.
  * Fix: Issue with columns in editor not outputting custom css classes.
  * Fix: Issue with row layout mobile grid css.
 
@@ -718,7 +721,7 @@ Release Date: April 16th, 2021
 * Fix TOC title font size not showing live.
 * Fix: Issue with TOC if all allowed headers turned off.
 * Fix: Testimonial Rating not working with global palette.
-* Fix: Issue with latest desktop safari and parallax. 
+* Fix: Issue with latest desktop safari and parallax.
 * Fix: Issue with 2 column icon list block.
 * Fix: Issue with change columns not assigning ids correctly.
 * FixL Issue with three column tablet and mobile layout.
@@ -754,7 +757,7 @@ Release Date: April 16th, 2021
 * Fix: Margin unit in button.
 * Fix: Loading styles outside of content area issues.
 * Update: Add support for themes using css variables for color. Thanks @andreiglingeanu
- 
+
 = 1.8.13 =
 * Add: User visibility setting for showing to a specific user.
 * Fix: Device visibility setting for columns.
@@ -906,7 +909,7 @@ Release Date: April 16th, 2021
 * Fix: More admin CSS for Gutenberg 7.2.
 * Add: InfoBox text Padding and Margin.
 * Add: Background Video URL input for when you want to use from another source.
-* Add: Margin Controls for desk, tablet and mobile for form submit. 
+* Add: Margin Controls for desk, tablet and mobile for form submit.
 
 = 1.7.15 =
 * Fix: Update issue.

@@ -340,7 +340,9 @@ function GalleryEdit( props ) {
 			} );
 			kbGalleryUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else if ( kbGalleryUniqueIDs.includes( uniqueID ) ) {
-			uniqueID = '_' + clientId.substr( 2, 9 );
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
 			kbGalleryUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
 		} else {
 			kbGalleryUniqueIDs.push( uniqueID );
