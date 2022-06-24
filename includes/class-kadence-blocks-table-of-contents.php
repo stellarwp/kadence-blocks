@@ -223,7 +223,7 @@ class Kadence_Blocks_Table_Of_Contents {
 			return;
 		}
 		register_block_type(
-			'kadence/tableofcontents',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/table-of-contents/block.json',
 			array(
 				'render_callback' => array( $this, 'render_table_of_content' ),
 				'editor_script'   => 'kadence-blocks-table-of-contents',

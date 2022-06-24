@@ -240,7 +240,7 @@ class Kadence_Blocks_Posts {
 			return;
 		}
 		register_block_type(
-			'kadence/posts',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/posts/block.json',
 			array(
 				'render_callback' => array( $this, 'render_posts' ),
 				'editor_script'   => 'kadence-blocks-posts',

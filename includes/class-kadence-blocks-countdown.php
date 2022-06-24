@@ -162,7 +162,7 @@ class Kadence_Blocks_Countdown {
 			return;
 		}
 		register_block_type(
-			'kadence/countdown',
+			KADENCE_BLOCKS_PATH . 'dist/blocks/countdown/block.json',
 			array(
 				'render_callback' => array( $this, 'render_countdown' ),
 				'editor_script'   => 'kadence-blocks-countdown',
