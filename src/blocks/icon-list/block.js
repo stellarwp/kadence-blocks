@@ -26,6 +26,7 @@ import { IconRender, IconSpanTag } from '@kadence/components';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -38,12 +39,17 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 registerBlockType( 'kadence/iconlist', {
 	...metadata,
+	title: __( 'Icon List', 'kadence-blocks' ),
+	description: __( 'Create engaging lists with icons for bullets.', 'kadence-blocks' ),
+	keywords: [
+		__( 'icon', 'kadence-blocks' ),
+		__( 'svg', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: iconListBlockIcon,
 	},
 	transforms,
-	edit,
-	save,
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'left' === blockAlignment || 'right' === blockAlignment || 'center' === blockAlignment ) {
 			return { 'data-align': blockAlignment };

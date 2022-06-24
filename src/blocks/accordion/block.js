@@ -32,7 +32,7 @@ import save from './save';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
-
+import { __ } from '@wordpress/i18n';
 /**
  * Register: a Gutenberg Block.
  *
@@ -44,6 +44,13 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 registerBlockType( 'kadence/accordion', {
 	...metadata,
+	title: __( 'Accordion', 'kadence-blocks' ),
+	description: __( 'Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders.', 'kadence-blocks' ),
+	keywords: [
+		__( 'accordion', 'kadence-blocks' ),
+		__( 'pane', 'kadence-blocks' ),
+		'KB',
+	],
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
 			return { 'data-align': blockAlignment };

@@ -4,12 +4,6 @@
   "title": "Icon",
   "name": "kadence/icon",
   "category": "kadence-blocks",
-  "keywords": [
-	"icon",
-	"svg",
-	"KB"
-  ],
-  "description": "Create engaging lists with icons for bullets.",
   "attributes": {
 	"icons": {
 	  "type": "array",

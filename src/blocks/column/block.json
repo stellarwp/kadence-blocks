@@ -4,8 +4,6 @@
 	"name": "kadence/column",
 	"category": "kadence-blocks",
 	"usesContext": [ "postId", "queryId" ],
-	"description": "A container to style a section of content.",
-	"keywords": [ "column", "section", "kb" ],
 	"textdomain": "kadence-blocks",
 	"attributes": {
 		"id": {

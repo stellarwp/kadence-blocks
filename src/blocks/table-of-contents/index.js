@@ -12,16 +12,19 @@ import { tableOfContentsIcon } from '@kadence/icons';
  */
 import './editor.scss';
 import './style.scss';
-
-export const settings = {
-	edit,
-	save() { return null; },
-};
+import { __ } from '@wordpress/i18n';
 
 registerBlockType( 'kadence/tableofcontents', {
 	...metadata,
+	title: __( 'Table of Contents', 'kadence-blocks' ),
+	keywords: [
+		__( 'table of contents', 'kadence-blocks' ),
+		__( 'summary', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: tableOfContentsIcon,
 	},
-	...settings,
+	edit,
+	save() { return null; },
 } );

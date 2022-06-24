@@ -25,6 +25,7 @@ import edit from './edit';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -37,6 +38,13 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 registerBlockType( 'kadence/infobox', {
 	...metadata,
+	title: __( 'Info Box', 'kadence-blocks' ),
+	description: __( 'Create beautiful information boxes using icons or images.', 'kadence-blocks' ),
+	keywords: [
+		__( 'icon', 'kadence-blocks' ),
+		__( 'info', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: infoboxIcon,
 	},

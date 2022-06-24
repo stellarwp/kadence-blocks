@@ -3,7 +3,6 @@
   "apiVersion": 2,
   "title": "Form",
   "name": "kadence/form",
-  "description": "Create a contact or marketing form for your website.",
   "category": "kadence-blocks",
   "keywords": [
 	"contact",

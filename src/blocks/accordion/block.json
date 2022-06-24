@@ -4,12 +4,6 @@
   "title": "Accordion",
   "name": "kadence/accordion",
   "category": "kadence-blocks",
-  "keywords": [
-	"accordion",
-	"pane",
-	"KB"
-  ],
-  "description": "Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders.",
   "attributes": {
 	"uniqueID": {
 	  "type": "string",

@@ -4,14 +4,8 @@
   "title": "Countdown Timer",
   "name": "kadence/countdown-timer",
   "category": "kadence-blocks",
-  "description": "The countdown timer",
   "parent": [
 	"kadence/countdown"
-  ],
-  "keywords": [
-	"countdown",
-	"timer",
-	"KB"
   ],
   "description": "",
   "attributes": {

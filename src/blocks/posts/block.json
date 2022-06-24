@@ -4,11 +4,6 @@
   "title": "Posts",
   "name": "kadence/posts",
   "category": "kadence-blocks",
-  "keywords": [
-	"latest posts",
-	"blog",
-	"KB"
-  ],
   "attributes": {
 	"uniqueID": {
 	  "type": "string"

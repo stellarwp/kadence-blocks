@@ -26,6 +26,7 @@ import {
 	RichText,
 	useBlockProps
 } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 import { pickRelevantMediaFiles, pickRelevantMediaFilesCore, columnConvert } from './shared';
 /**
@@ -39,6 +40,13 @@ import { pickRelevantMediaFiles, pickRelevantMediaFilesCore, columnConvert } fro
  */
 registerBlockType( 'kadence/advancedgallery', {
 	...metadata,
+	title: __( 'Advanced Gallery', 'kadence-blocks' ),
+	description: __( 'Photo galleries, carousels, and sliders! Enable custom links, captions, and more.', 'kadence-blocks' ),
+	keywords: [
+		__( 'gallery', 'kadence-blocks' ),
+		__( 'image', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: galleryIcon,
 	},

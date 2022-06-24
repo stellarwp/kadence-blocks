@@ -34,6 +34,7 @@ import {
 	getColorClassName,
 	useBlockProps
 } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 /**
  * Register: a Gutenberg Block.
  *
@@ -45,6 +46,14 @@ import {
  */
 registerBlockType( 'kadence/advancedheading', {
 	...metadata,
+	title: __( 'Advanced Text', 'kadence-blocks' ),
+	description: __( 'Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.', 'kadence-blocks' ),
+	keywords: [
+		__( 'title', 'kadence-blocks' ),
+		__( 'heading', 'kadence-blocks' ),
+		__( 'text', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: advancedHeadingIcon,
 	},

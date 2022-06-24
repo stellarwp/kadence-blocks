@@ -5,11 +5,6 @@
   "name": "kadence/testimonials",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
-  "keywords": [
-	"testimonials",
-	"rating",
-	"KB"
-  ],
   "attributes": {
 	"uniqueID": {
 	  "type": "string",

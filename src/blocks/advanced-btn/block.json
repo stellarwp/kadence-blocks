@@ -4,12 +4,6 @@
   "title": "Advanced Button",
   "name": "kadence/advancedbtn",
   "category": "kadence-blocks",
-  "keywords": [
-	"button",
-	"icon",
-	"KB"
-  ],
-  "description": "Create an advanced button or a row of buttons. Style each one, including hover controls!",
   "attributes": {
 	"hAlign": {
 	  "type": "string",

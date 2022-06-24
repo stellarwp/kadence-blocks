@@ -11,11 +11,18 @@ import save from './save';
 import transforms from './transforms';
 const { name } = metadata;
 
-export { metadata, name };
-
-export const settings = {
-	title: _x( 'Google Maps', 'block title', 'kadence-blocks' ),
-	description: _x( 'Display google maps on your site', 'block description', 'kadence-blocks' ),
+registerBlockType('kadence/googlemaps', {
+	...metadata,
+	title: __( 'Google Maps', 'kadence-blocks' ),
+	description: __( 'Display google maps on your site.', 'kadence-blocks' ),
+	keywords: [
+		__( 'google', 'kadence-blocks' ),
+		__( 'maps', 'kadence-blocks' ),
+		'KB',
+	],
+	icon: {
+		src: googleMapsIcon,
+	},
 	getEditWrapperProps( attributes ) {
 		return {
 			'data-align': attributes.align,
@@ -24,13 +31,5 @@ export const settings = {
 	transforms,
 	edit,
 	save,
-};
-
-registerBlockType('kadence/googlemaps', {
-	...metadata,
-	icon: {
-		src: googleMapsIcon,
-	},
-	...settings
 
 });

@@ -63,6 +63,12 @@ function kt_stripStringRender( string ) {
  */
 registerBlockType( 'kadence/tabs', {
 	...metadata,
+	title: __( 'Tabs', 'kadence-blocks' ),
+	keywords: [
+		__( 'tabs', 'kadence-blocks' ),
+		__( 'tab', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: blockTabsIcon,
 	},

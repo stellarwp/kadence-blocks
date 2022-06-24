@@ -4,11 +4,6 @@
   "title": "Spacer/Divider",
   "name": "kadence/spacer",
   "category": "kadence-blocks",
-  "keywords": [
-	"spacer",
-	"divider",
-	"separator"
-  ],
   "attributes": {
 	"blockAlignment": {
 	  "type": "string",

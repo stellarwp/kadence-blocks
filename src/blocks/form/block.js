@@ -28,6 +28,7 @@ import { RichText, useBlockProps } from '@wordpress/block-editor';
 import { registerBlockType } from '@wordpress/blocks';
 
 import metadata from './block.json';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -40,6 +41,13 @@ import metadata from './block.json';
  */
 registerBlockType( 'kadence/form', {
 	...metadata,
+	title: __( 'Form', 'kadence-blocks' ),
+	description: __( 'Create a contact or marketing form for your website.', 'kadence-blocks' ),
+	keywords: [
+		__( 'contact', 'kadence-blocks' ),
+		__( 'marketing', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: formBlockIcon,
 	},

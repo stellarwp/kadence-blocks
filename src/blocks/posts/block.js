@@ -23,6 +23,7 @@ import metadata from './block.json';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -35,6 +36,12 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 registerBlockType( 'kadence/posts', {
 	...metadata,
+	title: __( 'Posts', 'kadence-blocks' ),
+	keywords: [
+		__( 'latest posts', 'kadence-blocks' ),
+		__( 'blog', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: postsIcon,
 	},
