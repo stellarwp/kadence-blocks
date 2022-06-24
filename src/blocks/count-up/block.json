@@ -4,14 +4,7 @@
   "title": "Count Up",
   "name": "kadence/countup",
   "category": "kadence-blocks",
-  "keywords": [
-	"count down",
-	"counter",
-	"count up",
-	"number",
-	"KB"
-  ],
-  "description": "An animated count up or down to a specific value.",
+  "description": "",
   "attributes": {
 	"uniqueID": {
 	  "type": "string",

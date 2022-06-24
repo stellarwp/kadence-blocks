@@ -33,6 +33,7 @@ import edit from './edit';
 import { registerBlockType } from '@wordpress/blocks';
 
 import { RichText } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -45,6 +46,12 @@ import { RichText } from '@wordpress/block-editor';
  */
 registerBlockType( 'kadence/testimonials', {
 	...metadata,
+	title: __( 'Testimonials', 'kadence-blocks' ),
+	keywords: [
+		__( 'testimonials', 'kadence-blocks' ),
+		__( 'rating', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: testimonialBlockIcon,
 	},

@@ -4,14 +4,8 @@
   "title": "Countdown Content",
   "name": "kadence/countdown-inner",
   "category": "kadence-blocks",
-  "description": "Inner Container for Countdown Block",
   "parent": [
 	"kadence/countdown"
-  ],
-  "keywords": [
-	"countdown",
-	"timer",
-	"KB"
   ],
   "description": "",
   "attributes": {

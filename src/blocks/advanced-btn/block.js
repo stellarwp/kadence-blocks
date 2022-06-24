@@ -31,6 +31,7 @@ import {
 	RichText,
 	useBlockProps
 } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -43,6 +44,13 @@ import {
  */
 registerBlockType( 'kadence/advancedbtn', {
 	...metadata,
+	title: __( 'Advanced Button', 'kadence-blocks' ),
+	description: __( 'Create an advanced button or a row of buttons. Style each one, including hover controls!', 'kadence-blocks' ),
+	keywords: [
+		__( 'button', 'kadence-blocks' ),
+		__( 'icon', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: advancedBtnIcon,
 	},

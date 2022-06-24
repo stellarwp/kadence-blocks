@@ -33,6 +33,7 @@ import deprecated from './deprecated';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -45,6 +46,7 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 registerBlockType( 'kadence/pane', {
 	...metadata,
+	title: __( 'Pane', 'kadence-blocks' ),
 	icon: accordionBlockIcon,
 	getEditWrapperProps( attributes ) {
 		return { 'data-pane': attributes.id };

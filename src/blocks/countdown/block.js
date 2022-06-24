@@ -29,6 +29,7 @@ import metadata from './block.json';
  * WordPress dependencies
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -41,6 +42,13 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 registerBlockType( 'kadence/countdown', {
 	...metadata,
+	title: __( 'Countdown', 'kadence-blocks' ),
+	description: __( 'The countdown timer', 'kadence-blocks' ),
+	keywords: [
+		__( 'countdown', 'kadence-blocks' ),
+		__( 'timer', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: countdownIcon,
 	edit,
 	save,

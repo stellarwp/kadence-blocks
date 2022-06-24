@@ -4,11 +4,6 @@
   "title": "Tabs",
   "name": "kadence/tabs",
   "category": "kadence-blocks",
-  "keywords": [
-	"tabs",
-	"tab",
-	"KB"
-  ],
   "attributes": {
 	"uniqueID": {
 	  "type": "string",

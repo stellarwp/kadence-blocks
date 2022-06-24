@@ -9,22 +9,20 @@ import edit from './edit';
 import metadata from './block.json';
 import save from './save';
 import transforms from './transforms';
-const { name } = metadata;
-
-export { metadata, name };
-
-export const settings = {
-	title: _x( 'Show More', 'block title', 'kadence-blocks' ),
-	description: _x( 'Hide content and enable a show more button to reveal', 'block description', 'kadence-blocks' ),
-	transforms,
-	edit,
-	save
-};
 
 registerBlockType('kadence/show-more', {
 	...metadata,
+	title: _x( 'Show More', 'block title', 'kadence-blocks' ),
+	description: _x( 'Hide content and enable a show more button to reveal', 'block description', 'kadence-blocks' ),
+	keywords: [
+		__( 'show', 'kadence-blocks' ),
+		__( 'hide', 'kadence-blocks' ),
+		"kb",
+	],
 	icon: {
 		src: showMoreIcon,
 	},
-	...settings
+	transforms,
+	edit,
+	save
 });

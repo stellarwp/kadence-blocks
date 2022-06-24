@@ -20,21 +20,20 @@ import edit from './edit';
 import metadata from './block.json';
 import save from './save';
 import deprecated from './deprecated';
-const { name } = metadata;
-
-export { metadata, name };
-
-export const settings = {
-	edit,
-	save,
-	deprecated,
-};
 
 registerBlockType( 'kadence/rowlayout', {
 	...metadata,
+	title: __( 'Row Layout', 'kadence-blocks' ),
+	description: __( 'A container to hold a grid layout.', 'kadence-blocks' ),
+	keywords: [
+		__( 'column', 'kadence-blocks' ),
+		__( 'row/layout', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: blockRowIcon,
 	},
-	...settings
-
+	edit,
+	save,
+	deprecated,
 });

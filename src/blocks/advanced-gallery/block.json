@@ -4,12 +4,6 @@
   "title": "Advanced Gallery",
   "name": "kadence/advancedgallery",
   "category": "kadence-blocks",
-  "keywords": [
-	"gallery",
-	"image",
-	"KB"
-  ],
-  "description": "Photo galleries, carousels, and sliders! Enable custom links, captions, and more.",
   "attributes": {
 	"uniqueID": {
 	  "type": "string"

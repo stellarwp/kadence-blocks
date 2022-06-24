@@ -4,11 +4,6 @@
   "title": "Countdown",
   "name": "kadence/countdown",
   "category": "kadence-blocks",
-  "keywords": [
-	"countdown",
-	"timer",
-	"KB"
-  ],
   "description": "",
   "attributes": {
 	"uniqueID": {

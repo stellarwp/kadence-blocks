@@ -4,13 +4,7 @@
   "name": "kadence/lottie",
   "title": "Lottie Animations",
   "category": "kadence-blocks",
-  "description": "Kadence lottie animation",
   "textdomain": "kadence-blocks",
-  "keywords": [
-	"kb",
-	"lottie",
-	"animation"
-  ],
   "attributes": {
 	"align": {
 	  "type": "string"

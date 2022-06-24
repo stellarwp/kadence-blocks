@@ -5,11 +5,6 @@
   "title": "Table of Contents",
   "category": "kadence-blocks",
   "textdomain": "kadence-blocks",
-  "keywords": [
-	"table of contents",
-	"summary",
-	"KB"
-  ],
   "icon": "smile",
   "supports": {
 	"html": false

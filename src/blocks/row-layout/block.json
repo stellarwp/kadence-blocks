@@ -8,12 +8,6 @@
 	"postId",
 	"queryId"
   ],
-  "description": "A container to hold a grid layout.",
-  "keywords": [
-	"column",
-	"row/layout",
-	"kb"
-  ],
   "textdomain": "kadence-blocks",
   "attributes": {
 	"uniqueID": {

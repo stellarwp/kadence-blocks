@@ -7,11 +7,6 @@
   "parent": [
 	"kadence/tabs"
   ],
-  "keywords": [
-	"tabs",
-	"tab",
-	"KB"
-  ],
   "attributes": {
 	"id": {
 	  "type": "number",

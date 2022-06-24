@@ -16,21 +16,21 @@ import edit from './edit';
 import metadata from './block.json';
 import save from './save';
 import deprecated from './deprecated';
-const { name } = metadata;
-
-export { metadata, name };
-
-export const settings = {
-	edit,
-	save,
-	deprecated,
-};
+import { __ } from '@wordpress/i18n';
 
 registerBlockType( 'kadence/column', {
 	...metadata,
+	title: __( 'Section', 'kadence-blocks' ),
+	description: __( 'A container to style a section of content.', 'kadence-blocks' ),
+	keywords: [
+		__( 'column', 'kadence-blocks' ),
+		__( 'section', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: blockColumnIcon,
 	},
-	...settings
-
+	edit,
+	save,
+	deprecated,
 });

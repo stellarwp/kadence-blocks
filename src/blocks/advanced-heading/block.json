@@ -4,13 +4,6 @@
   "title": "Advanced Text",
   "name": "kadence/advancedheading",
   "category": "kadence-blocks",
-  "description": "Create a heading or paragraph and define sizes for desktop, tablet and mobile along with font family, colors, etc.",
-  "keywords": [
-	"title",
-	"heading",
-	"text",
-	"KB"
-  ],
   "attributes": {
 	"content": {
 	  "type": "string",

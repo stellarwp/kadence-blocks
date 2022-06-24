@@ -4,13 +4,7 @@
   "name": "kadence/googlemaps",
   "title": "Google Maps",
   "category": "kadence-blocks",
-  "description": "Kadence google maps",
   "textdomain": "kadence-google-maps",
-  "keywords": [
-	"kb",
-	"google",
-	"maps"
-  ],
   "attributes": {
 	"uniqueID": {
 	  "type": "string"

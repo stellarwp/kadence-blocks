@@ -21,6 +21,7 @@ import edit from './edit';
  * Internal block libraries
  */
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -33,6 +34,12 @@ import { registerBlockType } from '@wordpress/blocks';
  */
 registerBlockType( 'kadence/tab', {
 	...metadata,
+	title: __( 'Tab', 'kadence-blocks' ),
+	keywords: [
+		__( 'tabs', 'kadence-blocks' ),
+		__( 'tab', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: tabsBlockIcon
 	},

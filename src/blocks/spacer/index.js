@@ -10,14 +10,12 @@ import transforms from './transforms';
 import deprecated from './deprecated';
 const { name } = metadata;
 import { spacerIcon } from '@kadence/icons';
+import { __ } from '@wordpress/i18n';
 
 export { metadata, name };
 
 export const settings = {
-	transforms,
-	deprecated,
-	edit,
-	save,
+
 };
 
 registerBlockType('kadence/spacer', {
@@ -27,9 +25,18 @@ registerBlockType('kadence/spacer', {
 		}
 	},
 	...metadata,
+	title: __( 'Spacer/Divider', 'kadence-blocks' ),
+	keywords: [
+		__( 'spacer', 'kadence-blocks' ),
+		__( 'divider', 'kadence-blocks' ),
+		__( 'separator', 'kadence-blocks' ),
+		'KB',
+	],
 	icon: {
 		src: spacerIcon,
 	},
-	...settings,
-
+	transforms,
+	deprecated,
+	edit,
+	save
 });
