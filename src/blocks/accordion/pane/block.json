@@ -48,6 +48,7 @@
 	"inserter": false,
 	"reusable": false,
 	"html": false,
-	"anchor": true
+	"anchor": true,
+	"lock":false
   }
 }

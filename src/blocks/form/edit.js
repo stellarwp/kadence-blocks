@@ -35,13 +35,8 @@ import './editor.scss';
  */
 import { __, sprintf } from '@wordpress/i18n';
 import { getWidgetIdFromBlock } from '@wordpress/widgets';
-import {
-	useEffect,
-	useState,
-	useRef,
-	Component,
-	Fragment,
-} from '@wordpress/element';
+import { useSelect, useDispatch } from '@wordpress/data';
+import { useEffect, useState, Fragment } from '@wordpress/element';
 import {
 	RichText,
 	AlignmentToolbar,
@@ -62,9 +57,6 @@ import {
 	TabPanel,
 	ExternalLink,
 } from '@wordpress/components';
-
-import { withSelect } from '@wordpress/data';
-import { compose } from '@wordpress/compose';
 
 import {
 	applyFilters,
@@ -87,16 +79,11 @@ const actionOptionsList = [
 ];
 
 /**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const kbFormIDs = [];
-
-/**
  * Build the form edit
  */
 function KadenceForm( props ) {
 
-	const { attributes, className, isSelected, setAttributes, getPreviewDevice, clientId } = props;
+	const { attributes, className, isSelected, setAttributes, clientId } = props;
 
 	const {
 		uniqueID,
@@ -159,21 +146,47 @@ function KadenceForm( props ) {
 			}
 		}
 	};
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 
 	useEffect( () => {
-		if ( !uniqueID ) {
+		let smallID = '_' + clientId.substr( 2, 9 );
+		if ( ! uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( undefined === attributes.noCustomDefaults || ! attributes.noCustomDefaults ) {
+				if ( blockConfigObject[ 'kadence/column' ] !== undefined && typeof blockConfigObject[ 'kadence/column' ] === 'object' ) {
+					Object.keys( blockConfigObject[ 'kadence/column' ] ).map( ( attribute ) => {
+						attributes[ attribute ] = blockConfigObject[ 'kadence/column' ][ attribute ];
+					} );
+				}
+			}
+			if ( ! isUniqueID( uniqueID ) ) {
+				smallID = uniqueId( smallID );
+			}
 			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
+				uniqueID: smallID,
 			} );
-			kbFormIDs.push( clientId.substr( 2, 9 ) );
-		} else if ( kbFormIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbFormIDs.push( clientId.substr( 2, 9 ) );
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
+			}
 		} else {
-			kbFormIDs.push( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
+	}, [] );
+	useEffect( () => {
 		setActionOptions( applyFilters( 'kadence.actionOptions', actionOptionsList ) );
 
 		if ( style && style[ 0 ] ) {
@@ -662,38 +675,38 @@ function KadenceForm( props ) {
 
 
 		const previewSubmitMarginType = ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].unit ? submitMargin[0].unit : 'px' );
-		const previewSubmitMarginTop = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 0 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 0 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 0 ] : '' ) );
-		const previewSubmitMarginRight = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 1 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 1 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 1 ] : '' ) );
-		const previewSubmitMarginBottom = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 2 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 2 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 2 ] : '' ) );
-		const previewSubmitMarginLeft = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 3 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 3 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 3 ] : '' ) );
+		const previewSubmitMarginTop = getPreviewSize( previewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 0 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 0 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 0 ] : '' ) );
+		const previewSubmitMarginRight = getPreviewSize( previewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 1 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 1 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 1 ] : '' ) );
+		const previewSubmitMarginBottom = getPreviewSize( previewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 2 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 2 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 2 ] : '' ) );
+		const previewSubmitMarginLeft = getPreviewSize( previewDevice, ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].desk ? submitMargin[0].desk[ 3 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[0] && submitMargin[0].tablet ? submitMargin[0].tablet[ 3 ] : '' ), ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[0].mobile ? submitMargin[0].mobile[ 3 ] : '' ) );
 
-		const previewSubmitColumnWidth = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 0 ] : '' ), ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 1 ] : '' ), ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 2 ] : '' ) );
+		const previewSubmitColumnWidth = getPreviewSize( previewDevice, ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 0 ] : '' ), ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 1 ] : '' ), ( undefined !== submit && undefined !== submit[ 0 ] && submit[0].width ? submit[0].width[ 2 ] : '' ) );
 
 		const previewSubmitLineHeightType = ( undefined !== submitFont && undefined !== submitFont[0] && submitFont[0].lineType ? submitFont[0].lineType : 'px' );
-		const previewSubmitLineHeight = getPreviewSize( this.props.getPreviewDevice, ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 0 ] : '' ), ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 1 ] : '' ), ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 2 ] : '' ) );
+		const previewSubmitLineHeight = getPreviewSize( previewDevice, ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 0 ] : '' ), ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 1 ] : '' ), ( undefined !== submitFont && undefined !== submitFont[ 0 ] && submitFont[0].lineHeight ? submitFont[0].lineHeight[ 2 ] : '' ) );
 
 
 	const previewContainerMarginType = ( undefined !== containerMarginType ? containerMarginType : 'px' );
-	const previewContainerMarginTop = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
-	const previewContainerMarginRight = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
-	const previewContainerMarginBottom = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
-	const previewContainerMarginLeft = getPreviewSize( getPreviewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
+	const previewContainerMarginTop = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 0 ] ? containerMargin[ 0 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 0 ] ? tabletContainerMargin[ 0 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 0 ] ? mobileContainerMargin[ 0 ] : '' ) );
+	const previewContainerMarginRight = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 1 ] ? containerMargin[ 1 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 1 ] ? tabletContainerMargin[ 1 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 1 ] ? mobileContainerMargin[ 1 ] : '' ) );
+	const previewContainerMarginBottom = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 2 ] ? containerMargin[ 2 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 2 ] ? tabletContainerMargin[ 2 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 2 ] ? mobileContainerMargin[ 2 ] : '' ) );
+	const previewContainerMarginLeft = getPreviewSize( previewDevice, ( undefined !== containerMargin && undefined !== containerMargin[ 3 ] ? containerMargin[ 3 ] : '' ), ( undefined !== tabletContainerMargin && undefined !== tabletContainerMargin[ 3 ] ? tabletContainerMargin[ 3 ] : '' ), ( undefined !== mobileContainerMargin && undefined !== mobileContainerMargin[ 3 ] ? mobileContainerMargin[ 3 ] : '' ) );
 
-	const previewStyleFontSize = getPreviewSize( getPreviewDevice, style[ 0 ].fontSize[ 0 ], style[ 0 ].fontSize[ 1 ], style[ 0 ].fontSize[ 2 ] );
+	const previewStyleFontSize = getPreviewSize( previewDevice, style[ 0 ].fontSize[ 0 ], style[ 0 ].fontSize[ 1 ], style[ 0 ].fontSize[ 2 ] );
 	const previewStyleFontSizeType = style[ 0 ].fontSizeType;
-	const previewStyleLineHeight = getPreviewSize( getPreviewDevice, style[ 0 ].lineHeight[ 0 ], style[ 0 ].lineHeight[ 1 ], style[ 0 ].lineHeight[ 2 ] );
+	const previewStyleLineHeight = getPreviewSize( previewDevice, style[ 0 ].lineHeight[ 0 ], style[ 0 ].lineHeight[ 1 ], style[ 0 ].lineHeight[ 2 ] );
 	const previewStyleLineHeightType = style[ 0 ].lineType;
 
-	const previewLabelFontSize = getPreviewSize( getPreviewDevice, labelFont[ 0 ].size[ 0 ], labelFont[ 0 ].size[ 1 ], labelFont[ 0 ].size[ 2 ] );
+	const previewLabelFontSize = getPreviewSize( previewDevice, labelFont[ 0 ].size[ 0 ], labelFont[ 0 ].size[ 1 ], labelFont[ 0 ].size[ 2 ] );
 	const previewLabelFontSizeType = labelFont[ 0 ].sizeType;
-	const previewLabelLineHeight = getPreviewSize( getPreviewDevice, labelFont[ 0 ].lineHeight[ 0 ], labelFont[ 0 ].lineHeight[ 1 ], labelFont[ 0 ].lineHeight[ 2 ] );
+	const previewLabelLineHeight = getPreviewSize( previewDevice, labelFont[ 0 ].lineHeight[ 0 ], labelFont[ 0 ].lineHeight[ 1 ], labelFont[ 0 ].lineHeight[ 2 ] );
 	const previewLabelLineHeightType = labelFont[ 0 ].lineType;
 
-	const previewSubmitFontSize = getPreviewSize( getPreviewDevice, submitFont[ 0 ].size[ 0 ], submitFont[ 0 ].size[ 1 ], submitFont[ 0 ].size[ 2 ] );
+	const previewSubmitFontSize = getPreviewSize( previewDevice, submitFont[ 0 ].size[ 0 ], submitFont[ 0 ].size[ 1 ], submitFont[ 0 ].size[ 2 ] );
 	const previewSubmitFontSizeType = submitFont[ 0 ].sizeType;
 
-	const previewRowGap = getPreviewSize( getPreviewDevice, ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : '' ), ( undefined !== style[ 0 ].tabletRowGap && '' !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap + 'px' : '' ), ( undefined !== style[ 0 ].mobileRowGap && '' !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap + 'px' : '' ) );
-	const previewGutter = getPreviewSize( getPreviewDevice, ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ), ( undefined !== style[ 0 ].tabletGutter && '' !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ), ( undefined !== style[ 0 ].mobileGutter && '' !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) );
+	const previewRowGap = getPreviewSize( previewDevice, ( undefined !== style[ 0 ].rowGap && '' !== style[ 0 ].rowGap ? style[ 0 ].rowGap + 'px' : '' ), ( undefined !== style[ 0 ].tabletRowGap && '' !== style[ 0 ].tabletRowGap ? style[ 0 ].tabletRowGap + 'px' : '' ), ( undefined !== style[ 0 ].mobileRowGap && '' !== style[ 0 ].mobileRowGap ? style[ 0 ].mobileRowGap + 'px' : '' ) );
+	const previewGutter = getPreviewSize( previewDevice, ( undefined !== style[ 0 ].gutter && '' !== style[ 0 ].gutter ? style[ 0 ].gutter : '' ), ( undefined !== style[ 0 ].tabletGutter && '' !== style[ 0 ].tabletGutter ? style[ 0 ].tabletGutter : '' ), ( undefined !== style[ 0 ].mobileGutter && '' !== style[ 0 ].mobileGutter ? style[ 0 ].mobileGutter : '' ) );
 	const containerMarginMin = ( containerMarginType === 'em' || containerMarginType === 'rem' ? -2 : -200 );
 	const containerMarginMax = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 12 : 200 );
 	const containerMarginStep = ( containerMarginType === 'em' || containerMarginType === 'rem' ? 0.1 : 1 );
@@ -3622,12 +3635,4 @@ function KadenceForm( props ) {
 		</div>
 	);
 }
-
-//export default ( KadenceForm );
-export default compose( [
-	withSelect( ( select, ownProps ) => {
-		return {
-			getPreviewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-] )( KadenceForm );
+export default KadenceForm;
