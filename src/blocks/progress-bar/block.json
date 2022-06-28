@@ -1,0 +1,118 @@
+{
+  "apiVersion": 2,
+  "name": "kadence/progress-bar",
+  "title": "Progress Bar",
+  "category": "kadence-blocks",
+  "description": "Kadence progress bar",
+  "textdomain": "kadence-blocks",
+  "keywords": [
+	"kb",
+	"progress bar"
+  ],
+  "attributes": {
+	"align": {
+	  "type": "string"
+	},
+	"id": {
+	  "type": "number"
+	},
+	"width": {
+	  "type": "number",
+	  "default": "0"
+	},
+	"uniqueID": {
+	  "type": "string"
+	},
+	"marginDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"paddingDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"barBackground": {
+		"type": "string",
+		"default": "#4A5568"
+	},
+	"barBackgroundOpacity": {
+		"type": "number",
+		"default": 1
+	},
+	"containerBorder": {
+		"type": "array",
+		"default": [ 0, 0, 0, 0 ]
+	},
+	"containerTabletBorder": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"containerMobileBorder": {
+		"type": "array",
+		"default": [ "", "", "", "" ]
+	},
+	"containerBorderType": {
+		"type": "string",
+		"default": "px"
+	},
+	"borderColor": {
+		"type": "string",
+		"default": "#4A5568"
+	}
+  },
+  "editorScript": "file:editor.js"
+}
