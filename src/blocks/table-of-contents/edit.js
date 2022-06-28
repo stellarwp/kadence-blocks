@@ -19,7 +19,6 @@ import {
 	ResponsiveMeasurementControls,
 	MeasurementControls,
 	RangeControl,
-	KadenceRange,
 	WebfontLoader,
 	BoxShadowControl,
 	ResponsiveRangeControls,
@@ -56,7 +55,7 @@ import { ENTER } from '@wordpress/keycodes';
 import { withSelect } from '@wordpress/data';
 import { compose } from '@wordpress/compose';
 
-import { Component, Fragment, useState, useEffect, useLayoutEffect } from '@wordpress/element';
+import { Fragment, useState, useEffect, useLayoutEffect } from '@wordpress/element';
 
 import {
 	InspectorControls,

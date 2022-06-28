@@ -37,7 +37,9 @@ import {
 	ImageSizeControl,
 	MeasurementControls,
 	ResponsiveRangeControls,
-	InspectorControlTabs
+	InspectorControlTabs,
+	ResponsiveAlignControls,
+	ResponsiveControl
 } from '@kadence/components';
 
 import InfoBoxStyleCopyPaste from './copy-paste-style';
@@ -54,7 +56,6 @@ import { __ } from '@wordpress/i18n';
 import {
 	useEffect,
 	useState,
-	Component,
 	Fragment,
 } from '@wordpress/element';
 
@@ -270,6 +271,9 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	const previewLearnMoreLineHeight = getPreviewSize( getPreviewDevice, ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 0 ] ? learnMoreStyles[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 1 ] ? learnMoreStyles[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== learnMoreStyles[ 0 ].lineHeight && undefined !== learnMoreStyles[ 0 ].lineHeight[ 2 ] ? learnMoreStyles[ 0 ].lineHeight[ 2 ] : '' ) );
 
 	const previewMediaIconSize = getPreviewSize( getPreviewDevice, ( undefined !== mediaIcon[ 0 ] && undefined !== mediaIcon[ 0 ].size ? mediaIcon[ 0 ].size : '14' ), ( undefined !== mediaIcon[ 0 ].tabletSize && undefined !== mediaIcon[ 0 ].tabletSize ? mediaIcon[ 0 ].tabletSize : '' ), ( undefined !== mediaIcon[ 0 ].mobileSize && undefined !== mediaIcon[ 0 ].mobileSize ? mediaIcon[ 0 ].mobileSize : '' ) );
+
+	const previewhAlign = getPreviewSize( getPreviewDevice, ( '' !== hAlign ? hAlign : 'center' ), ( '' !== hAlignTablet ? hAlignTablet : '' ), ( '' !== hAlignMobile ? hAlignMobile : '' ) );
+	const previewMediaAlign = getPreviewSize( getPreviewDevice, ( '' !== mediaAlign ? mediaAlign : 'top' ), ( '' !== mediaAlignTablet ? mediaAlignTablet : '' ), ( '' !== mediaAlignMobile ? mediaAlignMobile : '' ) );
 
 	const widthTypes = [
 		{ key: 'px', name: 'px' },
@@ -1431,6 +1435,47 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 	if ( showImageToolbar && kadenceDynamic && kadenceDynamic[ 'mediaImage:0:url' ] && kadenceDynamic[ 'mediaImage:0:url' ].enable ) {
 		showImageToolbar = false;
 	}
+
+	const mediaSettingsMobile = <div style={ { marginTop: '15px'} }>
+		<SelectControl
+			label={__( 'Mobile Media Align', 'kadence-blocks' )}
+			value={( mediaAlignMobile ? mediaAlignMobile : mediaAlign )}
+			options={[
+				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
+				{ value: 'left', label: __( 'Left', 'kadence-blocks' ) },
+				{ value: 'right', label: __( 'Right', 'kadence-blocks' ) },
+			]}
+			onChange={value => setAttributes( { mediaAlignMobile: value } )}
+		/>
+	</div>;
+
+	const mediaSettingsTablet = <div style={ { marginTop: '15px'} }>
+		<SelectControl
+			label={__( 'Tablet Media Align', 'kadence-blocks' )}
+			value={( mediaAlignTablet ? mediaAlignTablet : mediaAlign )}
+			options={[
+				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
+				{ value: 'left', label: __( 'Left', 'kadence-blocks' ) },
+				{ value: 'right', label: __( 'Right', 'kadence-blocks' ) },
+			]}
+			onChange={value => setAttributes( { mediaAlignTablet: value } )}
+		/>
+	</div>;
+
+	const mediaSettingsDesktop = <div style={ { marginTop: '15px'} }>
+		<SelectControl
+			label={__( 'Media Align', 'kadence-blocks' )}
+			value={mediaAlign}
+			options={[
+				{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
+				{ value: 'left', label: __( 'Left', 'kadence-blocks' ) },
+				{ value: 'right', label: __( 'Right', 'kadence-blocks' ) },
+			]}
+			onChange={value => setAttributes( { mediaAlign: value } )}
+		/>
+	</div>;
+
+
 	const blockProps = useBlockProps( {
 		className: className,
 	} );
@@ -1565,59 +1610,15 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									onChange={value => setAttributes( { linkProperty: value } )}
 								/>
 								<h2 className="kt-heading-size-title">{__( 'Content Align', 'kadence-blocks' )}</h2>
-								<TabPanel className="kt-size-tabs kb-sidebar-alignment"
-										  activeClass="active-tab"
-										  tabs={[
-											  {
-												  name     : 'desk',
-												  title    : <Dashicon icon="desktop"/>,
-												  className: 'kt-desk-tab',
-											  },
-											  {
-												  name     : 'tablet',
-												  title    : <Dashicon icon="tablet"/>,
-												  className: 'kt-tablet-tab',
-											  },
-											  {
-												  name     : 'mobile',
-												  title    : <Dashicon icon="smartphone"/>,
-												  className: 'kt-mobile-tab',
-											  },
-										  ]}>
-									{
-										( tab ) => {
-											let tabout;
-											if ( tab.name ) {
-												if ( 'mobile' === tab.name ) {
-													tabout = (
-														<AlignmentToolbar
-															isCollapsed={false}
-															value={hAlignMobile}
-															onChange={( value ) => setAttributes( { hAlignMobile: value } )}
-														/>
-													);
-												} else if ( 'tablet' === tab.name ) {
-													tabout = (
-														<AlignmentToolbar
-															isCollapsed={false}
-															value={hAlignTablet}
-															onChange={( value ) => setAttributes( { hAlignTablet: value } )}
-														/>
-													);
-												} else {
-													tabout = (
-														<AlignmentToolbar
-															isCollapsed={false}
-															value={hAlign}
-															onChange={( value ) => setAttributes( { hAlign: value } )}
-														/>
-													);
-												}
-											}
-											return <div className={tab.className} key={tab.className}>{tabout}</div>;
-										}
-									}
-								</TabPanel>
+								<ResponsiveAlignControls
+									label={__( 'Text Alignment', 'kadence-blocks' )}
+									value={( hAlign )}
+									mobileValue={( hAlignMobile )}
+									tabletValue={( hAlignTablet )}
+									onChange={( nextAlign ) => setAttributes( { hAlign: nextAlign } )}
+									onChangeTablet={( nextAlign ) => setAttributes( { hAlignTablet: nextAlign } )}
+									onChangeMobile={( nextAlign ) => setAttributes( { hAlignMobile: nextAlign } )}
+								/>
 							</KadencePanelBody>
 							{showSettings( 'containerSettings', 'kadence/infobox' ) && (
 								<KadencePanelBody
@@ -1795,74 +1796,12 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 									initialOpen={false}
 									panelName={'kb-info-media-settings'}
 								>
-									<TabPanel className="kt-inspect-tabs kt-spacer-tabs"
-											  activeClass="active-tab"
-											  tabs={[
-												  {
-													  name     : 'desk',
-													  title    : <Dashicon icon="desktop"/>,
-													  className: 'kt-desk-tab',
-												  },
-												  {
-													  name     : 'tablet',
-													  title    : <Dashicon icon="tablet"/>,
-													  className: 'kt-tablet-tab',
-												  },
-												  {
-													  name     : 'mobile',
-													  title    : <Dashicon icon="smartphone"/>,
-													  className: 'kt-mobile-tab',
-												  },
-											  ]}>
-										{
-											( tab ) => {
-												let tabout;
-												if ( tab.name ) {
-													if ( 'mobile' === tab.name ) {
-														tabout = (
-															<SelectControl
-																label={__( 'Mobile Media Align', 'kadence-blocks' )}
-																value={( mediaAlignMobile ? mediaAlignMobile : mediaAlign )}
-																options={[
-																	{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
-																	{ value: 'left', label: __( 'Left', 'kadence-blocks' ) },
-																	{ value: 'right', label: __( 'Right', 'kadence-blocks' ) },
-																]}
-																onChange={value => setAttributes( { mediaAlignMobile: value } )}
-															/>
-														);
-													} else if ( 'tablet' === tab.name ) {
-														tabout = (
-															<SelectControl
-																label={__( 'Tablet Media Align', 'kadence-blocks' )}
-																value={( mediaAlignTablet ? mediaAlignTablet : mediaAlign )}
-																options={[
-																	{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
-																	{ value: 'left', label: __( 'Left', 'kadence-blocks' ) },
-																	{ value: 'right', label: __( 'Right', 'kadence-blocks' ) },
-																]}
-																onChange={value => setAttributes( { mediaAlignTablet: value } )}
-															/>
-														);
-													} else {
-														tabout = (
-															<SelectControl
-																label={__( 'Media Align', 'kadence-blocks' )}
-																value={mediaAlign}
-																options={[
-																	{ value: 'top', label: __( 'Top', 'kadence-blocks' ) },
-																	{ value: 'left', label: __( 'Left', 'kadence-blocks' ) },
-																	{ value: 'right', label: __( 'Right', 'kadence-blocks' ) },
-																]}
-																onChange={value => setAttributes( { mediaAlign: value } )}
-															/>
-														);
-													}
-												}
-												return <div className={tab.className} key={tab.className}>{tabout}</div>;
-											}
-										}
-									</TabPanel>
+									<ResponsiveControl
+										desktopChildren={ mediaSettingsDesktop }
+										tabletChildren={ mediaSettingsTablet }
+										mobileChildren={ mediaSettingsMobile }
+									/>
+
 									{mediaAlign !== 'top' && (
 										<Fragment>
 											<SelectControl
@@ -2500,66 +2439,22 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												marginControl={titleFont[ 0 ].marginControl}
 												onMarginControl={( value ) => saveTitleFont( { marginControl: value } )}
 											/>
-											<h2 className="kt-heading-size-title">{__( 'Min Height', 'kadence-blocks' )}</h2>
-											<TabPanel className="kt-size-tabs"
-													  activeClass="active-tab"
-													  tabs={[
-														  {
-															  name     : 'desk',
-															  title    : <Dashicon icon="desktop"/>,
-															  className: 'kt-desk-tab',
-														  },
-														  {
-															  name     : 'tablet',
-															  title    : <Dashicon icon="tablet"/>,
-															  className: 'kt-tablet-tab',
-														  },
-														  {
-															  name     : 'mobile',
-															  title    : <Dashicon icon="smartphone"/>,
-															  className: 'kt-mobile-tab',
-														  },
-													  ]}>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'mobile' === tab.name ) {
-																tabout = (
-																	<RangeControl
-																		value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' )}
-																		onChange={value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } )}
-																		step={1}
-																		min={0}
-																		max={600}
-																	/>
-																);
-															} else if ( 'tablet' === tab.name ) {
-																tabout = (
-																	<RangeControl
-																		value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' )}
-																		onChange={value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } )}
-																		step={1}
-																		min={0}
-																		max={600}
-																	/>
-																);
-															} else {
-																tabout = (
-																	<RangeControl
-																		value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' )}
-																		onChange={value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } )}
-																		step={1}
-																		min={0}
-																		max={600}
-																	/>
-																);
-															}
-														}
-														return <div className={tab.className} key={tab.className}>{tabout}</div>;
-													}
-												}
-											</TabPanel>
+											<ResponsiveRangeControls
+												label={__( 'Min Height', 'kadence-blocks' )}
+												value={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ) }
+												onChange={ ( value ) => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } )}
+												tabletValue={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' )}
+												onChangeTablet={( value ) => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } )}
+												mobileValue={( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' )}
+												onChangeMobile={( value ) => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } )}
+												step={1}
+												min={0}
+												max={600}
+												unit={'px'}
+												units={[ 'px' ]}
+												showUnit={true}
+											/>
+
 										</Fragment>
 									)}
 								</KadencePanelBody>
@@ -2665,66 +2560,22 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 												marginControl={( undefined !== textSpacing && undefined !== textSpacing[ 0 ] && textSpacing[ 0 ].marginControl ? textSpacing[ 0 ].marginControl : 'linked' )}
 												onMarginControl={( value ) => saveTextSpacing( { marginControl: value } )}
 											/>
-											<h2 className="kt-heading-size-title">{__( 'Min Height', 'kadence-blocks' )}</h2>
-											<TabPanel className="kt-size-tabs"
-													  activeClass="active-tab"
-													  tabs={[
-														  {
-															  name     : 'desk',
-															  title    : <Dashicon icon="desktop"/>,
-															  className: 'kt-desk-tab',
-														  },
-														  {
-															  name     : 'tablet',
-															  title    : <Dashicon icon="tablet"/>,
-															  className: 'kt-tablet-tab',
-														  },
-														  {
-															  name     : 'mobile',
-															  title    : <Dashicon icon="smartphone"/>,
-															  className: 'kt-mobile-tab',
-														  },
-													  ]}>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'mobile' === tab.name ) {
-																tabout = (
-																	<RangeControl
-																		value={( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' )}
-																		onChange={value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), value ] } )}
-																		step={1}
-																		min={0}
-																		max={600}
-																	/>
-																);
-															} else if ( 'tablet' === tab.name ) {
-																tabout = (
-																	<RangeControl
-																		value={( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' )}
-																		onChange={value => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } )}
-																		step={1}
-																		min={0}
-																		max={600}
-																	/>
-																);
-															} else {
-																tabout = (
-																	<RangeControl
-																		value={( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' )}
-																		onChange={value => setAttributes( { textMinHeight: [ value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } )}
-																		step={1}
-																		min={0}
-																		max={600}
-																	/>
-																);
-															}
-														}
-														return <div className={tab.className} key={tab.className}>{tabout}</div>;
-													}
-												}
-											</TabPanel>
+
+											<ResponsiveRangeControls
+												label={__( 'Min Height', 'kadence-blocks' )}
+												value={ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ) }
+												onChange={ ( value ) => setAttributes( { textMinHeight: [ value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } )}
+												tabletValue={( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' )}
+												onChangeTablet={( value ) => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), value, ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' ) ] } )}
+												mobileValue={( ( undefined !== textMinHeight && undefined !== textMinHeight[ 2 ] ) ? textMinHeight[ 2 ] : '' )}
+												onChangeMobile={( value ) => setAttributes( { textMinHeight: [ ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 0 ] ) ? textMinHeight[ 0 ] : '' ), ( ( undefined !== textMinHeight && undefined !== textMinHeight[ 1 ] ) ? textMinHeight[ 1 ] : '' ), value ] } )}
+												step={1}
+												min={0}
+												max={600}
+												unit={'px'}
+												units={[ 'px' ]}
+												showUnit={true}
+											/>
 										</Fragment>
 									)}
 								</KadencePanelBody>
@@ -3013,7 +2864,7 @@ function KadenceInfoBox( { attributes, className, setAttributes, isSelected, get
 					}
 				</InspectorControls>
 			)}
-			<div className={`kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${mediaAlign} ${isSelectedClass} kt-info-halign-${hAlign} kb-info-box-vertical-media-align-${mediaVAlign}`}
+			<div className={`kt-blocks-info-box-link-wrap kt-blocks-info-box-media-align-${previewMediaAlign} ${isSelectedClass} kt-info-halign-${previewhAlign} kb-info-box-vertical-media-align-${mediaVAlign}`}
 				 style={{
 					 boxShadow    : ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( shadow[ 0 ].color, shadow[ 0 ].opacity ) : undefined ),
 					 borderColor  : ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),

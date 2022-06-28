@@ -6,13 +6,13 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { Component, Fragment, useRef, useState } from '@wordpress/element';
+import { Fragment, useEffect, useRef, useState } from '@wordpress/element';
 import { Spinner, ToggleControl, Button } from '@wordpress/components';
 
 import { __ } from '@wordpress/i18n';
 import { BACKSPACE, DELETE } from '@wordpress/keycodes';
 import { withSelect } from '@wordpress/data';
-import { RichText, URLPopover, URLInput } from '@wordpress/block-editor';
+import { RichText, URLInput } from '@wordpress/block-editor';
 import { isBlobURL } from '@wordpress/blob';
 import { applyFilters } from '@wordpress/hooks';
 
@@ -32,6 +32,7 @@ function GalleryImage( props ) {
 		linkSponsored,
 		alt,
 		id,
+		index,
 		linkTo,
 		link,
 		isFirstItem,
@@ -50,6 +51,7 @@ function GalleryImage( props ) {
 		type,
 		thumbnail,
 		dynamicSource,
+		image
 	} = props;
 
 	const [ captionSelected, setCaptionSelected ] = useState( false );
@@ -69,8 +71,9 @@ function GalleryImage( props ) {
 	};
 
 	const onSelectImage = () => {
+
 		if ( !isSelected ) {
-			onSelect();
+			onSelect( index );
 		}
 
 		if ( captionSelected ) {
@@ -89,20 +92,35 @@ function GalleryImage( props ) {
 		}
 	};
 
-	const componentDidUpdate = ( prevProps ) => {
-		if ( image && !url ) {
-			setAttributes( {
-				url: image.source_url,
-				alt: image.alt_text,
-			} );
-		}
+	// const componentDidUpdate = ( prevProps ) => {
+	// 	if ( image && !url ) {
+	// 		setAttributes( {
+	// 			url: image.source_url,
+	// 			alt: image.alt_text,
+	// 		} );
+	// 	}
+	//
+	// 	// unselect the caption so when the user selects other image and comeback
+	// 	// the caption is not immediately selected
+	// 	if ( captionSelected && !isSelected && prevProps.isSelected ) {
+	// 		setCaptionSelected( false );
+	// 	}
+	// }
 
-		// unselect the caption so when the user selects other image and comeback
-		// the caption is not immediately selected
-		if ( captionSelected && !isSelected && prevProps.isSelected ) {
-			setCaptionSelected( false );
-		}
-	}
+	// useEffect( () => {
+	// 	if ( image && !url ) {
+	// 		setAttributes( {
+	// 			url: image.source_url,
+	// 			alt: image.alt_text,
+	// 		} );
+	// 	}
+	//
+	// 	// unselect the caption so when the user selects other image and comeback
+	// 	// the caption is not immediately selected
+	// 	if ( captionSelected && !isSelected && prevProps.isSelected ) {
+	// 		setCaptionSelected( false );
+	// 	}
+	// }, [] );
 
 	let href;
 
@@ -128,9 +146,9 @@ function GalleryImage( props ) {
 	const img = (
 		<button
 			className={imgContainClassName}
-			onClick={ () => onSelectImage}
-			unstableOnFocus={ () => onSelectImage}
-			onKeyDown={ () => onRemoveImage}
+			onClick={ () => { onSelectImage(); }}
+			unstableOnFocus={ () => { onSelectImage(); }}
+			onKeyDown={ () => { onRemoveImage() } }
 			tabIndex="0"
 			aria-label={ariaLabel}
 			ref={ btnRef }
