@@ -106,8 +106,8 @@ const typeOptions = [
 	{ value: 'carousel', label: __( 'Carousel', 'kadence-blocks' ), icon: galCarouselIcon, isDisabled: false },
 	{ value: 'fluidcarousel', label: __( 'Fluid Carousel', 'kadence-blocks' ), icon: galFluidIcon, isDisabled: false },
 	{ value: 'slider', label: __( 'Slider', 'kadence-blocks' ), icon: galSliderIcon, isDisabled: false },
-	{ value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: thumbSliderIcon, isDisabled: false },
-	{ value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: galTilesIcon, isDisabled: false },
+	{ value: 'thumbslider', label: __( 'Thumbnail Slider (Pro addon)', 'kadence-blocks' ), icon: thumbSliderIcon, isDisabled: true },
+	{ value: 'tiles', label: __( 'Tiles (Pro addon)', 'kadence-blocks' ), icon: galTilesIcon, isDisabled: true },
 	// { value: 'mosaic', label: __( 'Mosaic (Pro only)', 'kadence-blocks' ), icon: galSliderIcon, isDisabled: true },
 ];
 
@@ -1819,6 +1819,9 @@ function GalleryEdit( props ) {
 		);
 	};
 
+	const [ sliderSlides, setSliderSlides ] = useState( null );
+	const [ sliderThumbs, setSliderThumbs ] = useState( null );
+
 	return (
 		<div {...blockProps} >
 			{buildCSS}
@@ -1870,14 +1873,16 @@ function GalleryEdit( props ) {
 					<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
 						{theImages.length !== 1 && (
 							<>
-								<Slider asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
+								<Slider ref={ (slider) => setSliderSlides(slider)} asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
 									{theImages.map( ( img, index ) => {
 										return renderGalleryImages( img, index );
 									} )}
 								</Slider>
 								<Slider
 									className={`kt-carousel-arrowstyle-${arrowStyle} kt-blocks-carousel-thumbnails kb-cloned-${( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' )} kt-carousel-dotstyle-none`}
-									asNavFor={sliderSlides} {...thumbsliderthumbsSettings}>
+									ref={ (slider) => setSliderThumbs(slider)}
+									asNavFor={sliderSlides}
+									{...thumbsliderthumbsSettings}>
 									{theImages.map( ( img, index ) => {
 										return renderGalleryImages( img, index, true );
 									} )}
