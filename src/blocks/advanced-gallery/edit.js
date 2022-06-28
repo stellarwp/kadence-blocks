@@ -224,6 +224,9 @@ function GalleryEdit( props ) {
 	const [ radiusControl, setRadiusControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
+	const [ sliderSlides, setSliderSlides ] = useState( null );
+	const [ sliderThumbs, setSliderThumbs ] = useState( null );
+
 	const setAttribs = ( attribs ) => {
 		let newAttribs = attribs;
 
@@ -1818,9 +1821,6 @@ function GalleryEdit( props ) {
 			</li>
 		);
 	};
-
-	const [ sliderSlides, setSliderSlides ] = useState( null );
-	const [ sliderThumbs, setSliderThumbs ] = useState( null );
 
 	return (
 		<div {...blockProps} >
