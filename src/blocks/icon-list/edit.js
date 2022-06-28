@@ -10,7 +10,7 @@ import { alignTopIcon, alignMiddleIcon, alignBottomIcon } from '@kadence/icons';
 /**
  * Import Externals
  */
-import { times, filter, debounce, map, get } from 'lodash';
+import { times, filter, map, get } from 'lodash';
 /**
  * Import Kadence Components
  */
@@ -140,96 +140,96 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 		}
 	};
 
-	// const createNewListItem = ( value, entireOld, previousIndex ) => {
-	// 	const previousValue = entireOld.replace( value, '' );
-	// 	const amount = Math.abs( 1 + listCount );
-	// 	const currentItems = items;
-	// 	const newItems = [ {
-	// 		icon        : currentItems[ 0 ].icon,
-	// 		link        : currentItems[ 0 ].link,
-	// 		target      : currentItems[ 0 ].target,
-	// 		size        : currentItems[ 0 ].size,
-	// 		text        : currentItems[ 0 ].text,
-	// 		width       : currentItems[ 0 ].width,
-	// 		color       : currentItems[ 0 ].color,
-	// 		background  : currentItems[ 0 ].background,
-	// 		border      : currentItems[ 0 ].border,
-	// 		borderRadius: currentItems[ 0 ].borderRadius,
-	// 		borderWidth : currentItems[ 0 ].borderWidth,
-	// 		padding     : currentItems[ 0 ].padding,
-	// 		style       : currentItems[ 0 ].style,
-	// 		level       : get( currentItems[ 0 ], 'level', 0 ),
-	// 	} ];
-	// 	const addin = Math.abs( previousIndex + 1 );
-	// 	{
-	// 		times( amount, n => {
-	// 			let ind = n;
-	// 			if ( n === 0 ) {
-	// 				if ( 0 === previousIndex ) {
-	// 					newItems[ 0 ].text = previousValue;
-	// 				}
-	// 			} else if ( n === addin ) {
-	// 				newItems.push( {
-	// 					icon        : currentItems[ previousIndex ].icon,
-	// 					link        : currentItems[ previousIndex ].link,
-	// 					target      : currentItems[ previousIndex ].target,
-	// 					size        : currentItems[ previousIndex ].size,
-	// 					text        : value,
-	// 					width       : currentItems[ previousIndex ].width,
-	// 					color       : currentItems[ previousIndex ].color,
-	// 					background  : currentItems[ previousIndex ].background,
-	// 					border      : currentItems[ previousIndex ].border,
-	// 					borderRadius: currentItems[ previousIndex ].borderRadius,
-	// 					borderWidth : currentItems[ previousIndex ].borderWidth,
-	// 					padding     : currentItems[ previousIndex ].padding,
-	// 					style       : currentItems[ previousIndex ].style,
-	// 					level       : get( currentItems[ previousIndex ], 'level', 0 ),
-	// 				} );
-	// 			} else if ( n === previousIndex ) {
-	// 				newItems.push( {
-	// 					icon        : currentItems[ previousIndex ].icon,
-	// 					link        : currentItems[ previousIndex ].link,
-	// 					target      : currentItems[ previousIndex ].target,
-	// 					size        : currentItems[ previousIndex ].size,
-	// 					text        : previousValue,
-	// 					width       : currentItems[ previousIndex ].width,
-	// 					color       : currentItems[ previousIndex ].color,
-	// 					background  : currentItems[ previousIndex ].background,
-	// 					border      : currentItems[ previousIndex ].border,
-	// 					borderRadius: currentItems[ previousIndex ].borderRadius,
-	// 					borderWidth : currentItems[ previousIndex ].borderWidth,
-	// 					padding     : currentItems[ previousIndex ].padding,
-	// 					style       : currentItems[ previousIndex ].style,
-	// 					level       : get( currentItems[ previousIndex ], 'level', 0 ),
-	// 				} );
-	// 			} else {
-	// 				if ( n > addin ) {
-	// 					ind = Math.abs( n - 1 );
-	// 				}
-	// 				newItems.push( {
-	// 					icon        : currentItems[ ind ].icon,
-	// 					link        : currentItems[ ind ].link,
-	// 					target      : currentItems[ ind ].target,
-	// 					size        : currentItems[ ind ].size,
-	// 					text        : currentItems[ ind ].text,
-	// 					width       : currentItems[ ind ].width,
-	// 					color       : currentItems[ ind ].color,
-	// 					background  : currentItems[ ind ].background,
-	// 					border      : currentItems[ ind ].border,
-	// 					borderRadius: currentItems[ ind ].borderRadius,
-	// 					borderWidth : currentItems[ ind ].borderWidth,
-	// 					padding     : currentItems[ ind ].padding,
-	// 					style       : currentItems[ ind ].style,
-	// 					level       : get( currentItems[ ind ], 'level', 0 ),
-	// 				} );
-	// 			}
-	// 		} );
-	// 		setAttributes( { items: newItems } );
-	// 		setAttributes( { listCount: amount } );
-	// 		setFocusIndex( addin );
-	// 		setFocusOnNewItem( addin, uniqueID );
-	// 	}
-	// };
+	const createNewListItem = ( value, entireOld, previousIndex ) => {
+		const previousValue = entireOld.replace( value, '' );
+		const amount = Math.abs( 1 + listCount );
+		const currentItems = items;
+		const newItems = [ {
+			icon        : currentItems[ 0 ].icon,
+			link        : currentItems[ 0 ].link,
+			target      : currentItems[ 0 ].target,
+			size        : currentItems[ 0 ].size,
+			text        : currentItems[ 0 ].text,
+			width       : currentItems[ 0 ].width,
+			color       : currentItems[ 0 ].color,
+			background  : currentItems[ 0 ].background,
+			border      : currentItems[ 0 ].border,
+			borderRadius: currentItems[ 0 ].borderRadius,
+			borderWidth : currentItems[ 0 ].borderWidth,
+			padding     : currentItems[ 0 ].padding,
+			style       : currentItems[ 0 ].style,
+			level       : get( currentItems[ 0 ], 'level', 0 ),
+		} ];
+		const addin = Math.abs( previousIndex + 1 );
+		{
+			times( amount, n => {
+				let ind = n;
+				if ( n === 0 ) {
+					if ( 0 === previousIndex ) {
+						newItems[ 0 ].text = previousValue;
+					}
+				} else if ( n === addin ) {
+					newItems.push( {
+						icon        : currentItems[ previousIndex ].icon,
+						link        : currentItems[ previousIndex ].link,
+						target      : currentItems[ previousIndex ].target,
+						size        : currentItems[ previousIndex ].size,
+						text        : value,
+						width       : currentItems[ previousIndex ].width,
+						color       : currentItems[ previousIndex ].color,
+						background  : currentItems[ previousIndex ].background,
+						border      : currentItems[ previousIndex ].border,
+						borderRadius: currentItems[ previousIndex ].borderRadius,
+						borderWidth : currentItems[ previousIndex ].borderWidth,
+						padding     : currentItems[ previousIndex ].padding,
+						style       : currentItems[ previousIndex ].style,
+						level       : get( currentItems[ previousIndex ], 'level', 0 ),
+					} );
+				} else if ( n === previousIndex ) {
+					newItems.push( {
+						icon        : currentItems[ previousIndex ].icon,
+						link        : currentItems[ previousIndex ].link,
+						target      : currentItems[ previousIndex ].target,
+						size        : currentItems[ previousIndex ].size,
+						text        : previousValue,
+						width       : currentItems[ previousIndex ].width,
+						color       : currentItems[ previousIndex ].color,
+						background  : currentItems[ previousIndex ].background,
+						border      : currentItems[ previousIndex ].border,
+						borderRadius: currentItems[ previousIndex ].borderRadius,
+						borderWidth : currentItems[ previousIndex ].borderWidth,
+						padding     : currentItems[ previousIndex ].padding,
+						style       : currentItems[ previousIndex ].style,
+						level       : get( currentItems[ previousIndex ], 'level', 0 ),
+					} );
+				} else {
+					if ( n > addin ) {
+						ind = Math.abs( n - 1 );
+					}
+					newItems.push( {
+						icon        : currentItems[ ind ].icon,
+						link        : currentItems[ ind ].link,
+						target      : currentItems[ ind ].target,
+						size        : currentItems[ ind ].size,
+						text        : currentItems[ ind ].text,
+						width       : currentItems[ ind ].width,
+						color       : currentItems[ ind ].color,
+						background  : currentItems[ ind ].background,
+						border      : currentItems[ ind ].border,
+						borderRadius: currentItems[ ind ].borderRadius,
+						borderWidth : currentItems[ ind ].borderWidth,
+						padding     : currentItems[ ind ].padding,
+						style       : currentItems[ ind ].style,
+						level       : get( currentItems[ ind ], 'level', 0 ),
+					} );
+				}
+			} );
+			setAttributes( { items: newItems } );
+			setAttributes( { listCount: amount } );
+			setFocusIndex( addin );
+			setFocusOnNewItem( addin, uniqueID );
+		}
+	};
 
 	// Silly Hack to handle focus.
 	const setFocusOnNewItem = ( index, uniqueID ) => {
@@ -564,9 +564,9 @@ function KadenceIconLists( { attributes, className, setAttributes, isSelected, c
 						} }
 						onSplit={ ( value ) => {
 							if ( ! value ) {
-								return debouncedCreateListItem( '', items[ index ].text, index );
+								return createNewListItem( '', items[ index ].text, index );
 							}
-							return debouncedCreateListItem( value, items[ index ].text, index );
+							return createNewListItem( value, items[ index ].text, index );
 						} }
 						onRemove={ ( value ) => {
 							removeListItem( value, index );
