@@ -1641,7 +1641,7 @@ class Kadence_Blocks_Frontend {
 		// Google Maps
 		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api',  'missingkey' );
 		wp_register_script( 'kadence-blocks-google-maps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array( 'kadence-blocks-google-maps-init-js' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-google-maps-init-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-google-maps.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-google-maps-init-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-google-maps.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 
 		wp_register_script( 'kadence-blocks-videolight-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-video-popup.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_style( 'kadence-blocks-magnific-css', KADENCE_BLOCKS_URL . 'dist/assets/css/magnific-popup.min.css', array(), KADENCE_BLOCKS_VERSION );
@@ -6801,10 +6801,12 @@ class Kadence_Blocks_Frontend {
 		];
 
 		$zoom = empty( $attr['zoom'] ) ? 11 : $attr['zoom'];
+		$gMapLat = empty( $attr['lat'] ) ? '37.8201' : $attr['lat'];
+		$gMapLng = empty( $attr['lng'] ) ? '-122.4781' : $attr['lng'];
 
 		$response = '<script>';
 		$response .= 'function kb_google_map' . str_replace('-', '_', $unique_id) . '() {';
-		$response .= ' let center = { lat: ' . $attr['lat'] . ', lng: ' . $attr['lng'] . '};';
+		$response .= ' let center = { lat: ' . $gMapLat . ', lng: ' . $gMapLng . '};';
 
 		$response .= ' let map = new google.maps.Map(document.getElementById("kb-google-map'.$unique_id.'"), {
 					    zoom: '. $zoom . ',
@@ -6817,7 +6819,7 @@ class Kadence_Blocks_Frontend {
 
 		if ( ! isset( $attr['showMarker'] ) || ( isset( $attr['showMarker'] ) && $attr['showMarker'] ) ) {
 			$response .= 'let marker = new google.maps.Marker({';
-			$response .= '   position: { lat: ' . $attr['lat'] . ', lng: ' . $attr['lng'] . '},';
+			$response .= '   position: { lat: ' . $gMapLat . ', lng: ' . $gMapLng . '},';
 			$response .= '    map: map,';
 			$response .= '  });';
 		}
