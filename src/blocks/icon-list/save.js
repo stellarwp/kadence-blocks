@@ -7,7 +7,8 @@ import { useBlockProps } from '@wordpress/block-editor';
 /**
  * External dependencies
  */
-import { KadenceColorOutput, IconRender } from '@kadence/components';
+import { IconRender } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 import { Fragment } from '@wordpress/element';
 import { times } from 'lodash';
 import { RichText } from '@wordpress/block-editor';
