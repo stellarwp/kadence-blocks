@@ -1,0 +1,264 @@
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/blocks/progress-bar/editor.scss ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  width: 100%;
+}
+
+.progress-bar__container {
+  position: relative;
+  height: 30px;
+  width: 50%;
+  background-color: #1A2C34;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s;
+  will-change: transform;
+  box-shadow: 0 0 5px #416f82;
+  margin: 20px auto;
+}
+
+[class^=progressbar-] {
+  position: absolute;
+  width: 0px;
+  height: 20px;
+  border-radius: 15px;
+}
+
+.progressbar-1 {
+  background-color: aqua;
+  -webkit-animation: bar-1 4s forwards linear;
+          animation: bar-1 4s forwards linear;
+}
+
+.progressbar-2 {
+  background-color: lime;
+  -webkit-animation: bar-2 4s forwards linear;
+          animation: bar-2 4s forwards linear;
+}
+
+.progressbar-3 {
+  background-color: magenta;
+  -webkit-animation: bar-3 4s forwards linear;
+          animation: bar-3 4s forwards linear;
+}
+
+@-webkit-keyframes bar-1 {
+  0% {
+    width: 0%;
+  }
+  25% {
+    width: 50%;
+  }
+  50% {
+    width: 75%;
+  }
+  75% {
+    width: 85%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes bar-1 {
+  0% {
+    width: 0%;
+  }
+  25% {
+    width: 50%;
+  }
+  50% {
+    width: 75%;
+  }
+  75% {
+    width: 85%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+@-webkit-keyframes bar-2 {
+  0% {
+    width: 0%;
+  }
+  25% {
+    width: 20%;
+  }
+  50% {
+    width: 45%;
+  }
+  75% {
+    width: 65%;
+  }
+  100% {
+    width: 85%;
+  }
+}
+@keyframes bar-2 {
+  0% {
+    width: 0%;
+  }
+  25% {
+    width: 20%;
+  }
+  50% {
+    width: 45%;
+  }
+  75% {
+    width: 65%;
+  }
+  100% {
+    width: 85%;
+  }
+}
+@-webkit-keyframes bar-3 {
+  0% {
+    width: 0%;
+  }
+  25% {
+    width: 10%;
+  }
+  50% {
+    width: 25%;
+  }
+  75% {
+    width: 35%;
+  }
+  100% {
+    width: 50%;
+  }
+}
+@keyframes bar-3 {
+  0% {
+    width: 0%;
+  }
+  25% {
+    width: 10%;
+  }
+  50% {
+    width: 25%;
+  }
+  75% {
+    width: 35%;
+  }
+  100% {
+    width: 50%;
+  }
+}
+.progress-bar__text {
+  font-size: 18px;
+  display: none;
+}
+
+.circle-bars {
+  display: flex;
+}
+
+.circle-bars svg {
+  width: 114px;
+  height: 114px;
+  margin: 1em;
+}
+
+.bg {
+  fill: none;
+  stroke-width: 10px;
+  stroke: #1A2C34;
+}
+
+[class^=circlebar-] {
+  fill: none;
+  stroke-width: 10px;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.circlebar-1 {
+  stroke-dasharray: 360;
+  stroke-dashoffset: 100;
+  stroke: aqua;
+  -webkit-animation: progress-1 3s ease-out;
+          animation: progress-1 3s ease-out;
+}
+
+.circlebar-2 {
+  stroke: lime;
+  stroke-dasharray: 360;
+  stroke-dashoffset: 160;
+  -webkit-animation: progress-2 2s ease-out;
+          animation: progress-2 2s ease-out;
+}
+
+.circlebar-3 {
+  stroke: magenta;
+  stroke-dasharray: 360;
+  stroke-dashoffset: 250;
+  -webkit-animation: progress-3 1s ease-out;
+          animation: progress-3 1s ease-out;
+}
+
+@-webkit-keyframes progress-1 {
+  from {
+    stroke-dashoffset: 360;
+  }
+  to {
+    stroke-dashoffset: 100;
+  }
+}
+
+@keyframes progress-1 {
+  from {
+    stroke-dashoffset: 360;
+  }
+  to {
+    stroke-dashoffset: 100;
+  }
+}
+@-webkit-keyframes progress-2 {
+  from {
+    stroke-dashoffset: 360;
+  }
+  to {
+    stroke-dashoffset: 160;
+  }
+}
+@keyframes progress-2 {
+  from {
+    stroke-dashoffset: 360;
+  }
+  to {
+    stroke-dashoffset: 160;
+  }
+}
+@-webkit-keyframes progress-3 {
+  from {
+    stroke-dashoffset: 360;
+  }
+  to {
+    stroke-dashoffset: 250;
+  }
+}
+@keyframes progress-3 {
+  from {
+    stroke-dashoffset: 360;
+  }
+  to {
+    stroke-dashoffset: 250;
+  }
+}
+
+/*# sourceMappingURL=blocks-progress-bar.css.map*/

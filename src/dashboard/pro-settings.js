@@ -3,11 +3,11 @@
  */
 import { __ } from '@wordpress/i18n';
 const { Fragment, Component } = wp.element;
-import map from 'lodash/map';
-const {
+import { map } from 'lodash';
+import {
 	Spinner,
 	ToggleControl,
-} = wp.components;
+} from '@wordpress/components';
 
 class ProBlocksList extends Component {
 	constructor() {

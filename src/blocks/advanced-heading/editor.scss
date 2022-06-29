@@ -5,13 +5,17 @@
  * which makes it higher in priority.
  */
  // Controls
- @import '../../kadence-colors.scss';
+ @import './kadence-colors.scss';
 
 .kb-colors-selector.components-dropdown-menu.components-toolbar {
     padding: 0;
 }
 .wp-block-kadence-advancedheading {
 	display: block;
+}
+.kb-responsive-align-control-inner {
+    position: relative;
+    z-index: 0;
 }
 .kb-colors-selector {
     .kb-colors-selector__toggle {

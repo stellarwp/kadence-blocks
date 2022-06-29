@@ -1,14 +1,13 @@
-import map from 'lodash/map';
-import MeasurementControls from '../../measurement-control';
+import { map } from 'lodash';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	PanelBody,
 	Tooltip,
 	RangeControl,
@@ -19,9 +18,16 @@ const {
 	Modal,
 	ToggleControl,
 	SelectControl,
-} = wp.components;
-
-import icons from '../../icons';
+} from '@wordpress/components';
+import { MeasurementControls } from '@kadence/components';
+import {
+	galleryIcon,
+	galMasonryIcon,
+	galGridIcon,
+	galCarouselIcon,
+	galFluidIcon,
+	galSliderIcon,
+} from '@kadence/icons';
 
 class KadenceAdvancedGalleryDefault extends Component {
 	constructor() {
@@ -117,17 +123,17 @@ class KadenceAdvancedGalleryDefault extends Component {
 			{ key: 'rem', name: __( 'rem' ) },
 		];
 		const galleryTypes = [
-			{ value: 'masonry', label: __( 'Masonry' ), icon: icons.galMasonry, isDisabled: false },
-			{ value: 'grid', label: __( 'Grid' ), icon: icons.galGrid, isDisabled: false },
-			{ value: 'carousel', label: __( 'Carousel' ), icon: icons.galCarousel, isDisabled: false },
-			{ value: 'fluidcarousel', label: __( 'Fluid Carousel' ), icon: icons.galFluid, isDisabled: false },
-			{ value: 'slider', label: __( 'Slider' ), icon: icons.galSlider, isDisabled: false },
+			{ value: 'masonry', label: __( 'Masonry' ), icon: galMasonryIcon, isDisabled: false },
+			{ value: 'grid', label: __( 'Grid' ), icon: galGridIcon, isDisabled: false },
+			{ value: 'carousel', label: __( 'Carousel' ), icon: galCarouselIcon, isDisabled: false },
+			{ value: 'fluidcarousel', label: __( 'Fluid Carousel' ), icon: galFluidIcon, isDisabled: false },
+			{ value: 'slider', label: __( 'Slider' ), icon: galSliderIcon, isDisabled: false },
 		];
 		const typeLabel = galleryTypes.filter( ( item ) => ( item.value === ( galleryConfig.type ? galleryConfig.type : 'masonry' ) ) );
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.gallery }</span>
+					<span className="kt-block-icon">{ galleryIcon }</span>
 					{ __( 'Advanced Gallery' ) }
 				</Button>
 				{ isOpen ?

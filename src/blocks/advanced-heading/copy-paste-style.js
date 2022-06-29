@@ -2,20 +2,21 @@
  * Copy and Paste Block Styles Component
  *
  */
-import flow from 'lodash/flow';
+import { flow } from 'lodash';
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+
+import {
 	DropdownMenu,
 	MenuGroup,
 	MenuItem,
 	Toolbar,
 	ToggleControl,
-	SelectControl,
-} = wp.components;
+	SelectControl
+} from '@wordpress/components';
 const {
 	localStorage,
 } = window;

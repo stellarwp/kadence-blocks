@@ -19,15 +19,13 @@ import {
 } from '@wordpress/block-editor';
 import { applyFilters } from '@wordpress/hooks';
 import {
-	PanelBody,
 	withNotices
 } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { plusCircleFilled } from '@wordpress/icons';
-import KadenceMediaPlaceholder from '../../components/common/kadence-media-placeholder';
-import KadenceImageControl from '../../components/common/kadence-image-control';
-import itemicons from '../../icons';
+import { KadenceMediaPlaceholder, KadencePanelBody, KadenceImageControl } from '@kadence/components';
+import { imageIcon } from '@kadence/icons';
 
 /* global wp */
 
@@ -129,6 +127,7 @@ export function ImageEdit( {
 		imageFilter,
 		useRatio,
 		imgMaxWidth,
+		zIndex,
 		kadenceAnimation,
 		kadenceAOSOptions,
 	} = attributes;
@@ -380,6 +379,7 @@ export function ImageEdit( {
 	return (
 		<figure data-aos={ ( kadenceAnimation ? kadenceAnimation : undefined ) } data-aos-duration={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].duration ? kadenceAOSOptions[ 0 ].duration : undefined ) } data-aos-easing={ ( kadenceAOSOptions && kadenceAOSOptions[ 0 ] && kadenceAOSOptions[ 0 ].easing ? kadenceAOSOptions[ 0 ].easing : undefined ) } { ...blockProps } style={{
 			maxWidth: ( imgMaxWidth && ( align === 'left' || align === 'right' ) ) ? imgMaxWidth + 'px' : undefined,
+			zIndex: ( zIndex ? zIndex : undefined ),
 		}}>
 			{ ( temporaryURL || url ) && (
 				<Image
@@ -407,7 +407,11 @@ export function ImageEdit( {
 						/>
 					</BlockControls>
 					<InspectorControls>
-						<PanelBody title={ __( 'Image settings', 'kadence-blocks' ) } initialOpen={ true } >
+						<KadencePanelBody
+							title={ __( 'Image settings', 'kadence-blocks' ) }
+							initialOpen={ true }
+							panelName={ 'kb-image-settings-edit' }
+						>
 							<KadenceImageControl
 								label={ __( 'Image', 'kadence-blocks' ) }
 								hasImage={ ( url ? true : false ) }
@@ -429,14 +433,15 @@ export function ImageEdit( {
 								setAttributes={ setAttributes }
 								name={ 'kadence/image' }
 								clientId={ clientId }
+								context={ context }
 							/>
-						</PanelBody>
+						</KadencePanelBody>
 					</InspectorControls>
 				</>
 			) }
 			<KadenceMediaPlaceholder
 				labels={ { 'title': __( 'Advanced Image', 'kadence-blocks' ) } }
-				icon={ itemicons.image }
+				icon={ imageIcon }
 				selectIcon={ plusCircleFilled }
 				selectLabel={ __( 'Select Image', 'kadence-blocks' ) }
 				onSelect={ onSelectImage }

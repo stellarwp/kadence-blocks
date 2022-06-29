@@ -5,14 +5,12 @@
 /**
  * External dependencies
  */
-import map from 'lodash/map';
+ import { map } from 'lodash';
 
 /**
  * Internal dependencies
  */
-import AdvancedPopColorControl from '../../../advanced-pop-color-control';
-import TypographyControls from '../../components/typography/typography-control';
-import KadenceRange from '../../../kadence-range-control';
+import { PopColorControl, RangeControl, TypographyControls, KadencePanelBody } from '@kadence/components';
 
 /**
  * WordPress dependencies
@@ -20,22 +18,15 @@ import KadenceRange from '../../../kadence-range-control';
 import { __ } from '@wordpress/i18n';
 const { Component, Fragment } = wp.element;
 const { InspectorControls, ContrastChecker, PanelColorSettings, AlignmentToolbar } = wp.blockEditor;
-const {
-	TextControl,
-	SelectControl,
-	PanelBody,
+import {
 	RangeControl,
 	ToggleControl,
-	BaseControl,
 	ButtonGroup,
 	Button,
-	ColorPicker,
-	TextareaControl,
-	CheckboxControl,
 	Tooltip,
 	TabPanel,
 	Dashicon
-} = wp.components;
+} from '@wordpress/components';
 
 
 /**
@@ -113,9 +104,11 @@ class Inspector extends Component {
 		return (
 			<Fragment>
 				<InspectorControls>
-					<PanelBody
+					<KadencePanelBody
 						title={ __( "Settings" ) }
-						initialOpen={ false }>
+						initialOpen={ false }
+						panelName={ 'kb-menu-settings' }
+					>
 
 						<div className="kt-columns-control">
 							<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={ __( 'Column Control Type', 'kadence-blocks' ) }>
@@ -254,11 +247,12 @@ class Inspector extends Component {
 								}
 							</TabPanel>
 						</div>
-					</PanelBody>
+					</KadencePanelBody>
 
-					<PanelBody
+					<KadencePanelBody
 						title={ __( 'Title Settings' ) }
 						initialOpen={ false }
+						panelName={ 'kb-menu-title' }
 					>
 						<ToggleControl
 							label={ __( 'Show Title' ) }
@@ -289,20 +283,20 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'hover' === tab.name ) {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Hover Color' ) }
-															colorValue={ ( titleHoverColor ? titleHoverColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { titleHoverColor: value } ) }
+															value={ ( titleHoverColor ? titleHoverColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { titleHoverColor: value } ) }
 														/>
 													);
 												} else {
 													tabout = (
-														<AdvancedPopColorControl
+														<PopColorControl
 															label={ __( 'Title Color' ) }
-															colorValue={ ( titleColor ? titleColor : '' ) }
-															colorDefault={ '' }
-															onColorChange={ value => setAttributes( { titleColor: value } ) }
+															value={ ( titleColor ? titleColor : '' ) }
+															default={ '' }
+															onChange={ value => setAttributes( { titleColor: value } ) }
 														/>
 													);
 												}
@@ -381,7 +375,7 @@ class Inspector extends Component {
 											if ( tab.name ) {
 												if ( 'mobile' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), value ] } ) }
 															step={ 1 }
@@ -391,7 +385,7 @@ class Inspector extends Component {
 													);
 												} else if ( 'tablet' === tab.name ) {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ), value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -401,7 +395,7 @@ class Inspector extends Component {
 													);
 												} else {
 													tabout = (
-														<KadenceRange
+														<RangeControl
 															value={ ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 0 ] ) ? titleMinHeight[ 0 ] : '' ) }
 															onChange={ value => setAttributes( { titleMinHeight: [ value, ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 1 ] ) ? titleMinHeight[ 1 ] : '' ), ( ( undefined !== titleMinHeight && undefined !== titleMinHeight[ 2 ] ) ? titleMinHeight[ 2 ] : '' ) ] } ) }
 															step={ 1 }
@@ -417,7 +411,7 @@ class Inspector extends Component {
 								</TabPanel>
 							</Fragment>
 						) }
-					</PanelBody>
+					</KadencePanelBody>
 	            </InspectorControls>
 	        </Fragment>
 		);

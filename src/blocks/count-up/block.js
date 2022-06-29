@@ -5,40 +5,38 @@
 /**
  * Import Icons
  */
-import icons from './icon';
-
-/**
- * Import attributes
- */
-import attributes from './attributes';
-
-/**
- * Import External
- */
-import classnames from 'classnames';
+import { countUpIcon } from '@kadence/icons';
 
 /**
  * Import edit
  */
 import edit from './edit';
+
 /**
  * Import save
  */
 import save from './save';
 
+/**
+ * Import metadata
+ */
+import metadata from './block.json';
+
+/**
+ * Import deprecated
+ */
 import deprecated from './deprecated';
 /**
  * Import Css
  */
-import './style.scss';
 import './editor.scss';
 
 /**
  * Internal block libraries
  */
-const { __ }                = wp.i18n;
-const { registerBlockType } = wp.blocks;
-const { Icon }              = wp.components;
+import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
+
 /**
  * Register: a Gutenberg Block.
  *
@@ -49,12 +47,19 @@ const { Icon }              = wp.components;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/countup', {
+	...metadata,
 	title: __( 'Count Up', 'kadence-blocks' ),
-	icon: <Icon icon={ icons.block } />,
-	category: 'kadence-blocks',
-	keywords: ['count down', 'counter', 'count up', 'number spinner'],
 	description: __( 'An animated count up or down to a specific value.', 'kadence-blocks' ),
-	attributes,
+	keywords: [
+		__( 'count down', 'kadence-blocks' ),
+		__( 'count up', 'kadence-blocks' ),
+		__( 'counter', 'kadence-blocks' ),
+		__( 'number', 'kadence-blocks' ),
+		'KB',
+	],
+	icon: {
+		src: countUpIcon,
+	},
 	edit,
 	save,
 	deprecated,

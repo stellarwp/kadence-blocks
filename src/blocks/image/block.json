@@ -1,4 +1,5 @@
 {
+	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 2,
 	"name": "kadence/image",
 	"title": "Advanced Image",
@@ -47,6 +48,12 @@
 	  "imgMaxWidth": {
 		"type": "number"
 	  },
+	  "imgMaxWidthTablet": {
+		"type": "number"
+	  },
+	  "imgMaxWidthMobile": {
+		"type": "number"
+	  },
 	  "sizeSlug": {
 		"type": "string"
 	  },
@@ -73,6 +80,9 @@
 		"default": false
 	  },
 	  "linkDestination": {
+		"type": "string"
+	  },
+	  "linkTitle": {
 		"type": "string"
 	  },
 	  "linkClass": {
@@ -162,36 +172,48 @@
 		  "hOffset": 0,
 		  "vOffset": 0,
 		  "inset": false
-		} ]
-	  },
-	  "displayDropShadow": {
-		"type": "boolean",
-		"default": false
-	  },
-	  "dropShadow": {
-		"type": "array",
-		"default": [ {
+		}
+	  ]
+	},
+	"displayDropShadow": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"dropShadow": {
+	  "type": "array",
+	  "default": [
+		{
 		  "color": "#000000",
 		  "opacity": 0.2,
 		  "blur": 14,
 		  "hOffset": 0,
 		  "vOffset": 0
-		} ]
-	  },
-	  "imageFilter": {
-		"type": "string",
-		"default": "none"
-	  },
-	  "showCaption": {
-		"type": "boolean",
-		"default": true
-	  },
-	  "captionStyles": {
-		"type": "array",
-		"default": [ {
-		  "size": [ "", "", "" ],
+		}
+	  ]
+	},
+	"imageFilter": {
+	  "type": "string",
+	  "default": "none"
+	},
+	"showCaption": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"captionStyles": {
+	  "type": "array",
+	  "default": [
+		{
+		  "size": [
+			"",
+			"",
+			""
+		  ],
 		  "sizeType": "px",
-		  "lineHeight": [ "", "", "" ],
+		  "lineHeight": [
+			"",
+			"",
+			""
+		  ],
 		  "lineType": "px",
 		  "letterSpacing": "",
 		  "textTransform": "",
@@ -225,6 +247,9 @@
 		"type": "string",
 		"default": "no-repeat"
 	  },
+	  "zIndex": {
+		"type": "number"
+	  },
 	  "inQueryBlock": {
 	  	"type": "boolean",
 		"default": false
@@ -236,7 +261,5 @@
 		"ktanimateadd": true,
 		"ktanimatepreview": true,
 		"ktdynamic": true
-	},
-	"editorStyle": "kadence-blocks-editor-css",
-	"style": "kadence-blocks-image"
+	}
 }

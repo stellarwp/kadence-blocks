@@ -5,11 +5,10 @@
 /**
  * Import Icons
  */
-import times from 'lodash/times';
-import hexToRGBA from '../../components/color/hex-to-rgba';
-import IconRender from '../../components/icons/icon-render';
-import KadenceColorOutput from '../../components/color/deprecated-kadence-color-output';
-import KadenceColorOutputNew from '../../components/color/kadence-color-output';
+ import { times } from 'lodash';
+import { hexToRGBA, KadenceColorOutput } from '@kadence/helpers';
+import { IconRender } from '@kadence/components';
+
 /**
  * Import attributes
  */
@@ -20,9 +19,9 @@ import attributes from './attributes';
  */
 import { __ } from '@wordpress/i18n';
 
-const {
+import {
 	RichText,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 
 /**
  * Register: a Gutenberg Block.
@@ -36,21 +35,22 @@ const {
  export default [
 	{
 		attributes,
-		save: ( { attributes } ) => {
-			const { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, displayContent, displayName, displayMedia, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, displayIcon, iconStyles, containerVAlign } = attributes;
+		save: ( props ) => {
+			const { attributes: { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, displayContent, displayName, displayMedia, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, displayIcon, iconStyles, containerVAlign, containerPaddingType } } = props;
+			const containerPaddingUnit = ( containerPaddingType ? containerPaddingType : 'px' );
 			const containerStyles = {
-				boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutputNew( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
-				borderColor: ( containerBorder ? KadenceColorOutputNew( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutputNew( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
-				background: ( containerBackground ? KadenceColorOutputNew( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
+				boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
+				borderColor: ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
+				background: ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
 				borderRadius: ( undefined !== containerBorderRadius && '' !== containerBorderRadius && ! isNaN( containerBorderRadius ) ? containerBorderRadius + 'px' : undefined ),
 				borderTopWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 0 ] && '' !== containerBorderWidth[ 0 ] ? containerBorderWidth[ 0 ] + 'px' : undefined ),
 				borderRightWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 1 ] && '' !== containerBorderWidth[ 1 ] ? containerBorderWidth[ 1 ] + 'px' : undefined ),
 				borderBottomWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 2 ] && '' !== containerBorderWidth[ 2 ] ? containerBorderWidth[ 2 ] + 'px' : undefined ),
 				borderLeftWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 3 ] && '' !== containerBorderWidth[ 3 ] ? containerBorderWidth[ 3 ] + 'px' : undefined ),
-				paddingTop: containerPadding && undefined !== containerPadding[ 0 ] && '' !== containerPadding[ 0 ] && null !== containerPadding[ 0 ] ? containerPadding[ 0 ] + 'px' : undefined,
-				paddingRight: containerPadding && undefined !== containerPadding[ 1 ] && '' !== containerPadding[ 1 ] && null !== containerPadding[ 1 ] ? containerPadding[ 1 ] + 'px' : undefined,
-				paddingBottom: containerPadding && undefined !== containerPadding[ 2 ] && '' !== containerPadding[ 2 ] && null !== containerPadding[ 2 ] ? containerPadding[ 2 ] + 'px' : undefined,
-				paddingLeft: containerPadding && undefined !== containerPadding[ 3 ] && '' !== containerPadding[ 3 ] && null !== containerPadding[ 3 ] ? containerPadding[ 3 ] + 'px' : undefined,
+				paddingTop: containerPadding && undefined !== containerPadding[ 0 ] && '' !== containerPadding[ 0 ] && null !== containerPadding[ 0 ] ? containerPadding[ 0 ] + containerPaddingUnit : undefined,
+				paddingRight: containerPadding && undefined !== containerPadding[ 1 ] && '' !== containerPadding[ 1 ] && null !== containerPadding[ 1 ] ? containerPadding[ 1 ] + containerPaddingUnit : undefined,
+				paddingBottom: containerPadding && undefined !== containerPadding[ 2 ] && '' !== containerPadding[ 2 ] && null !== containerPadding[ 2 ] ? containerPadding[ 2 ] + containerPaddingUnit : undefined,
+				paddingLeft: containerPadding && undefined !== containerPadding[ 3 ] && '' !== containerPadding[ 3 ] && null !== containerPadding[ 3 ] ? containerPadding[ 3 ] + containerPaddingUnit : undefined,
 				maxWidth: ( ( 'bubble' === style || 'inlineimage' === style || undefined === containerMaxWidth || '' === containerMaxWidth ) ? undefined : containerMaxWidth + 'px' ),
 			};
 			const renderTestimonialIcon = ( index ) => {
@@ -59,14 +59,14 @@ const {
 						margin: ( iconStyles[ 0 ].margin ? iconStyles[ 0 ].margin[ 0 ] + 'px ' + iconStyles[ 0 ].margin[ 1 ] + 'px ' + iconStyles[ 0 ].margin[ 2 ] + 'px ' + iconStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 					} } >
 						<IconRender className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
-							color: ( iconStyles[ 0 ].color ? KadenceColorOutputNew( iconStyles[ 0 ].color ) : undefined ),
+							color: ( iconStyles[ 0 ].color ? KadenceColorOutput( iconStyles[ 0 ].color ) : undefined ),
 							borderRadius: ( undefined !== iconStyles[ 0 ].borderRadius ? iconStyles[ 0 ].borderRadius + 'px' : undefined ),
 							borderTopWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 0 ] && null !== iconStyles[ 0 ].borderWidth[ 0 ] ? iconStyles[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
 							borderRightWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 1 ] && null !== iconStyles[ 0 ].borderWidth[ 1 ] ? iconStyles[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
 							borderBottomWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 2 ] && null !== iconStyles[ 0 ].borderWidth[ 2 ] ? iconStyles[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
 							borderLeftWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 3 ] && null !== iconStyles[ 0 ].borderWidth[ 3 ] ? iconStyles[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
-							background: ( iconStyles[ 0 ].background ? KadenceColorOutputNew( iconStyles[ 0 ].background, ( undefined !== iconStyles[ 0 ].backgroundOpacity ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
-							borderColor: ( iconStyles[ 0 ].border ? KadenceColorOutputNew( iconStyles[ 0 ].border, ( undefined !== iconStyles[ 0 ].borderOpacity ? iconStyles[ 0 ].borderOpacity : 1 ) ) : undefined ),
+							background: ( iconStyles[ 0 ].background ? KadenceColorOutput( iconStyles[ 0 ].background, ( undefined !== iconStyles[ 0 ].backgroundOpacity ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
+							borderColor: ( iconStyles[ 0 ].border ? KadenceColorOutput( iconStyles[ 0 ].border, ( undefined !== iconStyles[ 0 ].borderOpacity ? iconStyles[ 0 ].borderOpacity : 1 ) ) : undefined ),
 							padding: ( iconStyles[ 0 ].padding ? iconStyles[ 0 ].padding[ 0 ] + 'px ' + iconStyles[ 0 ].padding[ 1 ] + 'px ' + iconStyles[ 0 ].padding[ 2 ] + 'px ' + iconStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
 						} } />
 					</div>
@@ -111,8 +111,8 @@ const {
 					<div className="kt-testimonial-media-wrap">
 						<div className="kt-testimonial-media-inner-wrap" style={ {
 							width: 'card' !== style ? mediaStyles[ 0 ].width + 'px' : undefined,
-							borderColor: KadenceColorOutputNew( mediaStyles[ 0 ].border ),
-							backgroundColor: ( mediaStyles[ 0 ].background ? KadenceColorOutputNew( mediaStyles[ 0 ].background, ( undefined !== mediaStyles[ 0 ].backgroundOpacity ? mediaStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
+							borderColor: KadenceColorOutput( mediaStyles[ 0 ].border ),
+							backgroundColor: ( mediaStyles[ 0 ].background ? KadenceColorOutput( mediaStyles[ 0 ].background, ( undefined !== mediaStyles[ 0 ].backgroundOpacity ? mediaStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
 							borderRadius: ( undefined !== mediaStyles[ 0 ].borderRadius && '' !== mediaStyles[ 0 ].borderRadius ? mediaStyles[ 0 ].borderRadius + 'px' : undefined ),
 							borderWidth: ( mediaStyles[ 0 ].borderWidth ? mediaStyles[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
 							padding: ( mediaStyles[ 0 ].padding ? mediaStyles[ 0 ].padding[ 0 ] + 'px ' + mediaStyles[ 0 ].padding[ 1 ] + 'px ' + mediaStyles[ 0 ].padding[ 2 ] + 'px ' + mediaStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
@@ -127,7 +127,7 @@ const {
 								{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
 									<IconRender className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
 										display: 'flex',
-										color: ( testimonials[ index ].color ? KadenceColorOutputNew( testimonials[ index ].color ) : undefined ),
+										color: ( testimonials[ index ].color ? KadenceColorOutput( testimonials[ index ].color ) : undefined ),
 									} } />
 								) }
 								{ 'icon' !== testimonials[ index ].media && testimonials[ index ].url && (
@@ -171,18 +171,235 @@ const {
 								<div className={ `kt-testimonial-rating-wrap kt-testimonial-rating-${ testimonials[ index ].rating }` } style={ {
 									margin: ( ratingStyles[ 0 ].margin ? ratingStyles[ 0 ].margin[ 0 ] + 'px ' + ratingStyles[ 0 ].margin[ 1 ] + 'px ' + ratingStyles[ 0 ].margin[ 2 ] + 'px ' + ratingStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
 								} }>
-									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									{ testimonials[ index ].rating > 1 && (
-										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									) }
 									{ testimonials[ index ].rating > 2 && (
-										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									) }
 									{ testimonials[ index ].rating > 3 && (
-										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									) }
 									{ testimonials[ index ].rating > 4 && (
-										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutputNew( ratingStyles[ 0 ].color ) } } />
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									) }
+								</div>
+							) }
+							{ displayContent && (
+								<div className="kt-testimonial-content-wrap">
+									<RichText.Content
+										className="kt-testimonial-content"
+										tagName={ 'div' }
+										value={ testimonials[ index ].content }
+									/>
+								</div>
+							) }
+						</div>
+						{ ( ( displayMedia && ( 'card' !== style && 'inlineimage' !== style ) ) || displayOccupation || displayName ) && (
+							<div className="kt-testimonial-meta-wrap">
+								{ displayMedia && ( 'card' !== style && 'inlineimage' !== style ) && ( ( 'icon' !== testimonials[ index ].media && testimonials[ index ].url ) || ( 'icon' === testimonials[ index ].media && testimonials[ index ].icon ) ) && (
+									renderTestimonialMedia( index )
+								) }
+								<div className="kt-testimonial-meta-name-wrap">
+									{ displayName && (
+										<div className="kt-testimonial-name-wrap">
+											<RichText.Content
+												className="kt-testimonial-name"
+												tagName={ 'div' }
+												value={ testimonials[ index ].name }
+											/>
+										</div>
+									) }
+									{ displayOccupation && (
+										<div className="kt-testimonial-occupation-wrap">
+											<RichText.Content
+												className="kt-testimonial-occupation"
+												tagName={ 'div' }
+												value={ testimonials[ index ].occupation }
+											/>
+										</div>
+									) }
+								</div>
+							</div>
+						) }
+					</div>
+				);
+			};
+			return (
+				<div className={ `kt-testimonial-halign-${ hAlign } kt-testimonial-style-${ style } kt-testimonials-media-${ ( displayMedia ? 'on' : 'off' ) } kt-testimonials-icon-${ ( displayIcon ? 'on' : 'off' ) } kt-testimonial-columns-${ columns[ 0 ] } kt-t-xxl-col-${ columns[ 0 ] } kt-t-xl-col-${ columns[ 1 ] } kt-t-lg-col-${ columns[ 2 ] } kt-t-md-col-${ columns[ 3 ] } kt-t-sm-col-${ columns[ 4 ] } kt-t-xs-col-${ columns[ 5 ] } kt-blocks-testimonials-wrap${ uniqueID }${ layout && layout === 'carousel' ? ' tns-carousel-wrap' : '' }` }>
+					{ layout && layout === 'carousel' && (
+						<div className={ `kt-blocks-carousel kt-carousel-container-dotstyle-${ dotStyle } kt-carousel-container-arrowstyle-${ arrowStyle }` }>
+							<div className={ `kt-blocks-carousel-init kt-carousel-arrowstyle-${ arrowStyle } kt-carousel-dotstyle-${ dotStyle }` } data-columns-xxl={ columns[ 0 ] } data-columns-xl={ columns[ 1 ] } data-columns-md={ columns[ 2 ] } data-columns-sm={ columns[ 3 ] } data-columns-xs={ columns[ 4 ] } data-columns-ss={ columns[ 5 ] } data-slider-anim-speed={ transSpeed } data-slider-scroll={ slidesScroll } data-slider-arrows={ ( 'none' === arrowStyle ? false : true ) } data-slider-dots={ ( 'none' === dotStyle ? false : true ) } data-slider-hover-pause="false" data-slider-auto={ autoPlay } data-slider-speed={ autoSpeed }>
+								{ times( itemsCount, n =>
+									<div className="kt-blocks-testimonial-carousel-item kb-slide-item" key={ n }>
+										{ renderTestimonialPreview( n ) }
+									</div>
+								) }
+							</div>
+						</div>
+					) }
+					{ layout && layout !== 'carousel' && (
+						<div className={ 'kt-testimonial-grid-wrap' } style={ {
+							'grid-row-gap': columnGap + 'px',
+							'grid-column-gap': columnGap + 'px',
+						} }>
+							{ times( itemsCount, n => renderTestimonialPreview( n ) ) }
+						</div>
+					) }
+				</div>
+			);
+		},
+	},
+	{
+		attributes,
+		save: ( { attributes } ) => {
+			const { uniqueID, testimonials, style, hAlign, layout, itemsCount, containerBackground, containerBorder, containerBorderWidth, containerBorderRadius, containerPadding, mediaStyles, displayTitle, titleFont, displayContent, displayName, displayMedia, displayShadow, shadow, displayRating, ratingStyles, displayOccupation, containerBackgroundOpacity, containerBorderOpacity, containerMaxWidth, columnGap, autoPlay, autoSpeed, transSpeed, slidesScroll, arrowStyle, dotStyle, columns, displayIcon, iconStyles, containerVAlign } = attributes;
+			const containerStyles = {
+				boxShadow: ( displayShadow ? shadow[ 0 ].hOffset + 'px ' + shadow[ 0 ].vOffset + 'px ' + shadow[ 0 ].blur + 'px ' + shadow[ 0 ].spread + 'px ' + KadenceColorOutput( ( undefined !== shadow[ 0 ].color && '' !== shadow[ 0 ].color ? shadow[ 0 ].color : '#000000' ), ( shadow[ 0 ].opacity ? shadow[ 0 ].opacity : 0.2 ) ) : undefined ),
+				borderColor: ( containerBorder ? KadenceColorOutput( containerBorder, ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) : KadenceColorOutput( '#eeeeee', ( undefined !== containerBorderOpacity ? containerBorderOpacity : 1 ) ) ),
+				background: ( containerBackground ? KadenceColorOutput( containerBackground, ( undefined !== containerBackgroundOpacity ? containerBackgroundOpacity : 1 ) ) : undefined ),
+				borderRadius: ( undefined !== containerBorderRadius && '' !== containerBorderRadius && ! isNaN( containerBorderRadius ) ? containerBorderRadius + 'px' : undefined ),
+				borderTopWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 0 ] && '' !== containerBorderWidth[ 0 ] ? containerBorderWidth[ 0 ] + 'px' : undefined ),
+				borderRightWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 1 ] && '' !== containerBorderWidth[ 1 ] ? containerBorderWidth[ 1 ] + 'px' : undefined ),
+				borderBottomWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 2 ] && '' !== containerBorderWidth[ 2 ] ? containerBorderWidth[ 2 ] + 'px' : undefined ),
+				borderLeftWidth: ( containerBorderWidth && undefined !== containerBorderWidth[ 3 ] && '' !== containerBorderWidth[ 3 ] ? containerBorderWidth[ 3 ] + 'px' : undefined ),
+				paddingTop: containerPadding && undefined !== containerPadding[ 0 ] && '' !== containerPadding[ 0 ] && null !== containerPadding[ 0 ] ? containerPadding[ 0 ] + 'px' : undefined,
+				paddingRight: containerPadding && undefined !== containerPadding[ 1 ] && '' !== containerPadding[ 1 ] && null !== containerPadding[ 1 ] ? containerPadding[ 1 ] + 'px' : undefined,
+				paddingBottom: containerPadding && undefined !== containerPadding[ 2 ] && '' !== containerPadding[ 2 ] && null !== containerPadding[ 2 ] ? containerPadding[ 2 ] + 'px' : undefined,
+				paddingLeft: containerPadding && undefined !== containerPadding[ 3 ] && '' !== containerPadding[ 3 ] && null !== containerPadding[ 3 ] ? containerPadding[ 3 ] + 'px' : undefined,
+				maxWidth: ( ( 'bubble' === style || 'inlineimage' === style || undefined === containerMaxWidth || '' === containerMaxWidth ) ? undefined : containerMaxWidth + 'px' ),
+			};
+			const renderTestimonialIcon = ( index ) => {
+				return (
+					<div className="kt-svg-testimonial-global-icon-wrap" style={ {
+						margin: ( iconStyles[ 0 ].margin ? iconStyles[ 0 ].margin[ 0 ] + 'px ' + iconStyles[ 0 ].margin[ 1 ] + 'px ' + iconStyles[ 0 ].margin[ 2 ] + 'px ' + iconStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
+					} } >
+						<IconRender className={ `kt-svg-testimonial-global-icon kt-svg-testimonial-global-icon-${ iconStyles[ 0 ].icon }` } name={ iconStyles[ 0 ].icon } size={ iconStyles[ 0 ].size } title={ ( iconStyles[ 0 ].title ? iconStyles[ 0 ].title : '' ) } strokeWidth={ ( 'fe' === iconStyles[ 0 ].icon.substring( 0, 2 ) ? iconStyles[ 0 ].stroke : undefined ) } style={ {
+							color: ( iconStyles[ 0 ].color ? KadenceColorOutput( iconStyles[ 0 ].color ) : undefined ),
+							borderRadius: ( undefined !== iconStyles[ 0 ].borderRadius ? iconStyles[ 0 ].borderRadius + 'px' : undefined ),
+							borderTopWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 0 ] && null !== iconStyles[ 0 ].borderWidth[ 0 ] ? iconStyles[ 0 ].borderWidth[ 0 ] + 'px' : undefined ),
+							borderRightWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 1 ] && null !== iconStyles[ 0 ].borderWidth[ 1 ] ? iconStyles[ 0 ].borderWidth[ 1 ] + 'px' : undefined ),
+							borderBottomWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 2 ] && null !== iconStyles[ 0 ].borderWidth[ 2 ] ? iconStyles[ 0 ].borderWidth[ 2 ] + 'px' : undefined ),
+							borderLeftWidth: ( iconStyles[ 0 ].borderWidth && undefined !== iconStyles[ 0 ].borderWidth[ 3 ] && null !== iconStyles[ 0 ].borderWidth[ 3 ] ? iconStyles[ 0 ].borderWidth[ 3 ] + 'px' : undefined ),
+							background: ( iconStyles[ 0 ].background ? KadenceColorOutput( iconStyles[ 0 ].background, ( undefined !== iconStyles[ 0 ].backgroundOpacity ? iconStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
+							borderColor: ( iconStyles[ 0 ].border ? KadenceColorOutput( iconStyles[ 0 ].border, ( undefined !== iconStyles[ 0 ].borderOpacity ? iconStyles[ 0 ].borderOpacity : 1 ) ) : undefined ),
+							padding: ( iconStyles[ 0 ].padding ? iconStyles[ 0 ].padding[ 0 ] + 'px ' + iconStyles[ 0 ].padding[ 1 ] + 'px ' + iconStyles[ 0 ].padding[ 2 ] + 'px ' + iconStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
+						} } />
+					</div>
+				);
+			};
+			const renderTestimonialMedia = ( index ) => {
+				let urlOutput = testimonials[ index ].url;
+				if ( testimonials[ index ].sizes && undefined !== testimonials[ index ].sizes.thumbnail ) {
+					if ( ( 'card' === style && containerMaxWidth > 500 ) || mediaStyles[ 0 ].width > 600 ) {
+						urlOutput = testimonials[ index ].url;
+					} else if ( 'card' === style && containerMaxWidth <= 500 && containerMaxWidth > 100 ) {
+						if ( testimonials[ index ].sizes.large && testimonials[ index ].sizes.large.width > 1000 ) {
+							urlOutput = testimonials[ index ].sizes.large.url;
+						}
+					} else if ( 'card' === style && containerMaxWidth <= 100 ) {
+						if ( testimonials[ index ].sizes.medium && testimonials[ index ].sizes.medium.width > 200 ) {
+							urlOutput = testimonials[ index ].sizes.medium.url;
+						} else if ( testimonials[ index ].sizes.large && testimonials[ index ].sizes.large.width > 200 ) {
+							urlOutput = testimonials[ index ].sizes.large.url;
+						}
+					} else if ( mediaStyles[ 0 ].width <= 600 && mediaStyles[ 0 ].width > 100 ) {
+						if ( testimonials[ index ].sizes.large && testimonials[ index ].sizes.large.width > 1000 ) {
+							urlOutput = testimonials[ index ].sizes.large.url;
+						}
+					} else if ( mediaStyles[ 0 ].width <= 100 && mediaStyles[ 0 ].width > 75 ) {
+						if ( testimonials[ index ].sizes.medium && testimonials[ index ].sizes.medium.width > 200 ) {
+							urlOutput = testimonials[ index ].sizes.medium.url;
+						} else if ( testimonials[ index ].sizes.large && testimonials[ index ].sizes.large.width > 200 ) {
+							urlOutput = testimonials[ index ].sizes.large.url;
+						}
+					} else if ( mediaStyles[ 0 ].width <= 75 ) {
+						if ( testimonials[ index ].sizes.thumbnail && testimonials[ index ].sizes.thumbnail.width > 140 ) {
+							urlOutput = testimonials[ index ].sizes.thumbnail.url;
+						} else if ( testimonials[ index ].sizes.medium && testimonials[ index ].sizes.medium.width > 140 ) {
+							urlOutput = testimonials[ index ].sizes.medium.url;
+						} else if ( testimonials[ index ].sizes.large && testimonials[ index ].sizes.large.width > 200 ) {
+							urlOutput = testimonials[ index ].sizes.large.url;
+						}
+					}
+				}
+				return (
+					<div className="kt-testimonial-media-wrap">
+						<div className="kt-testimonial-media-inner-wrap" style={ {
+							width: 'card' !== style ? mediaStyles[ 0 ].width + 'px' : undefined,
+							borderColor: KadenceColorOutput( mediaStyles[ 0 ].border ),
+							backgroundColor: ( mediaStyles[ 0 ].background ? KadenceColorOutput( mediaStyles[ 0 ].background, ( undefined !== mediaStyles[ 0 ].backgroundOpacity ? mediaStyles[ 0 ].backgroundOpacity : 1 ) ) : undefined ),
+							borderRadius: ( undefined !== mediaStyles[ 0 ].borderRadius && '' !== mediaStyles[ 0 ].borderRadius ? mediaStyles[ 0 ].borderRadius + 'px' : undefined ),
+							borderWidth: ( mediaStyles[ 0 ].borderWidth ? mediaStyles[ 0 ].borderWidth[ 0 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 1 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 2 ] + 'px ' + mediaStyles[ 0 ].borderWidth[ 3 ] + 'px' : '' ),
+							padding: ( mediaStyles[ 0 ].padding ? mediaStyles[ 0 ].padding[ 0 ] + 'px ' + mediaStyles[ 0 ].padding[ 1 ] + 'px ' + mediaStyles[ 0 ].padding[ 2 ] + 'px ' + mediaStyles[ 0 ].padding[ 3 ] + 'px' : '' ),
+							marginTop: ( mediaStyles[ 0 ].margin && '' !== mediaStyles[ 0 ].margin[ 0 ] ? mediaStyles[ 0 ].margin[ 0 ] + 'px' : undefined ),
+							marginRight: ( mediaStyles[ 0 ].margin && '' !== mediaStyles[ 0 ].margin[ 1 ] ? mediaStyles[ 0 ].margin[ 1 ] + 'px' : undefined ),
+							marginBottom: ( mediaStyles[ 0 ].margin && '' !== mediaStyles[ 0 ].margin[ 2 ] ? mediaStyles[ 0 ].margin[ 2 ] + 'px' : undefined ),
+							marginLeft: ( mediaStyles[ 0 ].margin && '' !== mediaStyles[ 0 ].margin[ 3 ] ? mediaStyles[ 0 ].margin[ 3 ] + 'px' : undefined ),
+						} } >
+							<div className={ 'kadence-testimonial-image-intrisic' } style={ {
+								paddingBottom: ( 'card' === style && ( undefined !== mediaStyles[ 0 ].ratio || '' !== mediaStyles[ 0 ].ratio ) ? mediaStyles[ 0 ].ratio + '%' : undefined ),
+							} }>
+								{ 'icon' === testimonials[ index ].media && testimonials[ index ].icon && (
+									<IconRender className={ `kt-svg-testimonial-icon kt-svg-testimonial-icon-${ testimonials[ index ].icon }` } name={ testimonials[ index ].icon } size={ testimonials[ index ].isize } title={ ( testimonials[ index ].ititle ? testimonials[ index ].ititle : '' ) } strokeWidth={ ( 'fe' === testimonials[ index ].icon.substring( 0, 2 ) ? testimonials[ index ].istroke : undefined ) } style={ {
+										display: 'flex',
+										color: ( testimonials[ index ].color ? KadenceColorOutput( testimonials[ index ].color ) : undefined ),
+									} } />
+								) }
+								{ 'icon' !== testimonials[ index ].media && testimonials[ index ].url && (
+									<div className={ 'kt-testimonial-image' } style={ {
+										backgroundImage: "url('" + urlOutput + "')",
+										backgroundSize: ( 'card' === style ? mediaStyles[ 0 ].backgroundSize : undefined ),
+										borderRadius: ( undefined !== mediaStyles[ 0 ].borderRadius && '' !== mediaStyles[ 0 ].borderRadius ? mediaStyles[ 0 ].borderRadius + 'px' : undefined ),
+									} }></div>
+								) }
+							</div>
+						</div>
+					</div>
+				);
+			};
+			const renderTestimonialPreview = ( index ) => {
+				return (
+					<div className={ `kt-testimonial-item-wrap kt-testimonial-item-${ index }${ ( containerVAlign ? ' testimonial-valign-' + containerVAlign : '' ) }` } style={ ( 'bubble' !== style && 'inlineimage' !== style ? containerStyles : {
+						maxWidth: containerMaxWidth + 'px',
+						paddingTop: ( displayIcon && iconStyles[ 0 ].icon && iconStyles[ 0 ].margin && iconStyles[ 0 ].margin[ 0 ] && ( iconStyles[ 0 ].margin[ 0 ] < 0 ) ? Math.abs( iconStyles[ 0 ].margin[ 0 ] ) + 'px' : undefined ),
+					} ) }>
+						<div className="kt-testimonial-text-wrap" style={ ( 'bubble' === style || 'inlineimage' === style ? containerStyles : undefined ) }>
+							{ displayIcon && iconStyles[ 0 ].icon && 'card' !== style && (
+								renderTestimonialIcon( index )
+							) }
+							{ displayMedia && ( 'card' === style || 'inlineimage' === style ) && ( ( 'icon' !== testimonials[ index ].media && testimonials[ index ].url ) || ( 'icon' === testimonials[ index ].media && testimonials[ index ].icon ) ) && (
+								renderTestimonialMedia( index )
+							) }
+							{ displayIcon && iconStyles[ 0 ].icon && 'card' === style && (
+								renderTestimonialIcon( index )
+							) }
+							{ displayTitle && (
+								<div className="kt-testimonial-title-wrap">
+									<RichText.Content
+										className="kt-testimonial-title"
+										tagName={ 'h' + titleFont[ 0 ].level }
+										value={ testimonials[ index ].title }
+									/>
+								</div>
+							) }
+							{ displayRating && (
+								<div className={ `kt-testimonial-rating-wrap kt-testimonial-rating-${ testimonials[ index ].rating }` } style={ {
+									margin: ( ratingStyles[ 0 ].margin ? ratingStyles[ 0 ].margin[ 0 ] + 'px ' + ratingStyles[ 0 ].margin[ 1 ] + 'px ' + ratingStyles[ 0 ].margin[ 2 ] + 'px ' + ratingStyles[ 0 ].margin[ 3 ] + 'px' : '' ),
+								} }>
+									<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-1' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									{ testimonials[ index ].rating > 1 && (
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-2' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									) }
+									{ testimonials[ index ].rating > 2 && (
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-3' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									) }
+									{ testimonials[ index ].rating > 3 && (
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-4' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
+									) }
+									{ testimonials[ index ].rating > 4 && (
+										<IconRender className={ 'kt-svg-testimonial-rating-icon kt-svg-testimonial-rating-icon-5' } name={ 'fas_star' } size={ ratingStyles[ 0 ].size } style={ { color: KadenceColorOutput( ratingStyles[ 0 ].color ) } } />
 									) }
 								</div>
 							) }

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "title": "Countdown Timer",
+  "name": "kadence/countdown-timer",
+  "category": "kadence-blocks",
+  "parent": [
+    "kadence/countdown"
+  ],
+  "description": "",
+  "attributes": {
+    "uniqueID": {
+      "type": "string"
+    }
+  },
+  "supports": {
+    "inserter": false,
+    "reusable": false,
+    "html": false
+  }
+}

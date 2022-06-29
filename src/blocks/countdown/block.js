@@ -5,21 +5,31 @@
  */
 
 /**
+ * Register sub blocks.
+ */
+ import './countdown-timer/block.js';
+ import './countdown-inner/block.js';
+
+/**
  * Import Icons
  */
-import icons from '../../icons/block-icons';
+import { countdownIcon } from '@kadence/icons';
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Internal dependencies
  */
 import edit from './edit';
 import save from './save';
-import attributes from './attributes';
+import metadata from './block.json';
 
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -31,26 +41,15 @@ import { registerBlockType } from '@wordpress/blocks';
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/countdown', {
-	/* translators: block name */
+	...metadata,
 	title: __( 'Countdown', 'kadence-blocks' ),
-	/* translators: block description */
-	description: __( '', 'kadence-blocks' ),
-	category: 'kadence-blocks',
-	icon: icons.countdown,
+	description: __( 'The countdown timer', 'kadence-blocks' ),
 	keywords: [
-		'kb',
-		/* translators: block keyword */
 		__( 'countdown', 'kadence-blocks' ),
-		/* translators: block keyword */
 		__( 'timer', 'kadence-blocks' ),
+		'KB',
 	],
-	supports: {
-		anchor: true,
-		align: [ 'wide', 'full' ],
-		reusable: false,
-		html: false,
-	},
-	attributes,
+	icon: countdownIcon,
 	edit,
 	save,
 } );

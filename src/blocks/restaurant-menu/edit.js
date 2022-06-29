@@ -7,7 +7,7 @@
  */
 import Controls from './controls';
 import Inspector from './inspector';
-import KadenceColorOutput from '../../kadence-color-output';
+import { KadenceColorOutput } from '@kadence/helpers';
 import templates from './templates';
 
 /**
@@ -26,7 +26,7 @@ import './style.scss';
 import { __ } from '@wordpress/i18n';
 const { createBlock }         = wp.blocks;
 const { Component, Fragment } = wp.element;
-const { IconButton }    = wp.components;
+import { Button } from '@wordpress/components';
 const { InnerBlocks }         = wp.blockEditor
 const { select, dispatch }    = wp.data;
 
@@ -159,7 +159,7 @@ class KadenceRestaurantMenu extends Component {
 						renderAppender={ () =>  null
 
 							// (
-							// 	<IconButton
+							// 	<Button
 						 //        icon="insert"
 						 //        label={ __('Add New Menu') }
 						 //        onClick={ () => {

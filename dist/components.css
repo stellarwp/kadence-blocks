@@ -1,0 +1,1072 @@
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/pop-color-control/editor.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+.kadence-pop-color-control .kadence-pop-color-container {
+  display: flex;
+  align-items: center;
+}
+.kadence-pop-color-control .kadence-beside-label {
+  flex-grow: 1;
+  font-weight: 400;
+}
+.kadence-pop-color-control .kadence-pop-color-clear {
+  background: transparent;
+  padding: 4px;
+  height: auto;
+  box-shadow: none;
+  border: 1px solid transparent;
+  margin-right: 4px;
+  line-height: 1;
+}
+.kadence-pop-color-control .kadence-pop-color-clear span.dashicon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+.kadence-pop-color-control .kadence-pop-color-popovers {
+  display: flex;
+  align-items: center;
+}
+.kadence-pop-color-control .single-pop-color {
+  margin-left: 8px;
+}
+.kadence-pop-color-control .single-pop-color:first-child {
+  margin-left: 0;
+}
+.kadence-pop-color-control .kadence-pop-color-icon-indicate {
+  height: auto;
+  position: relative;
+  transform: scale(1);
+  transition: transform 0.1s ease;
+  border-radius: 50%;
+  padding: 0;
+}
+.kadence-pop-color-control .kadence-pop-color-icon-indicate.kadence-has-alpha {
+  background-image: linear-gradient(45deg, #ddd 25%, transparent 0), linear-gradient(-45deg, #ddd 25%, transparent 0), linear-gradient(45deg, transparent 75%, #ddd 0), linear-gradient(-45deg, transparent 75%, #ddd 0);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+}
+.kadence-pop-color-control .kadence-pop-color-icon-indicate .kadence-pop-color-indicate {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  margin: 0;
+}
+
+.components-popover.kadence-pop-color-popover .components-popover__content {
+  padding: 10px 10px 0;
+}
+.components-popover.kadence-pop-color-popover .kadence-pop-color-palette-swatches {
+  padding: 2px 0 10px;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  min-width: 290px;
+}
+.components-popover.kadence-pop-color-popover .kadence-pop-color-palette-swatches .kadence-color-palette__item-wrapper {
+  margin-right: 2px;
+  margin-left: 2px;
+  margin-bottom: 4px;
+  transform: scale(1);
+  display: inline-block;
+  height: 28px;
+  width: 28px;
+  transition: transform 0.1s ease;
+  background-image: linear-gradient(45deg, #ddd 25%, transparent 0), linear-gradient(-45deg, #ddd 25%, transparent 0), linear-gradient(45deg, transparent 75%, #ddd 0), linear-gradient(-45deg, transparent 75%, #ddd 0);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+  border-radius: 50%;
+}
+.components-popover.kadence-pop-color-popover .kadence-pop-color-palette-swatches .kadence-color-palette__item-wrapper:hover {
+  transform: scale(1.1);
+}
+.components-popover.kadence-pop-color-popover .kadence-pop-color-palette-swatches .kadence-color-palette__item-wrapper .kadence-color-palette__item {
+  display: inline-block;
+  vertical-align: top;
+  height: 100%;
+  width: 100%;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: inset 0 0 0 14px;
+  transition: box-shadow 0.1s ease;
+  cursor: pointer;
+}
+.components-popover.kadence-pop-color-popover .kadence-pop-color-palette-swatches .kadence-color-palette__item-wrapper .kadence-color-palette__item.is-active {
+  box-shadow: inset 0 0 0 4px;
+  position: relative;
+  z-index: 1;
+}
+.components-popover.kadence-pop-color-popover .kadence-pop-color-palette-swatches .kadence-color-palette__item-wrapper .kadence-color-palette__item.is-active + .dashicons-admin-site {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 18px;
+  font-size: 18px;
+  height: 18px;
+  z-index: 1;
+}
+.components-popover.kadence-pop-color-popover .kadence-pop-color-palette-swatches .kadence-color-palette__item-wrapper .kadence-color-palette__item:after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  bottom: -1px;
+  right: -1px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent;
+}
+
+span.color-indicator-icon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+span.color-indicator-icon .dashicons-admin-site {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  color: #444;
+  background: #fff;
+  width: 16px;
+  font-size: 14px;
+  height: 16px;
+  border: 1px solid #fff;
+  border-radius: 100%;
+  box-sizing: border-box;
+  padding-left: 1px;
+  padding-top: 1px;
+}
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/background-control/editor.scss ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.kadence-image-background-control {
+  margin-bottom: 24px;
+}
+.kadence-image-background-control .kadence-image-upload {
+  margin: 0;
+  min-height: 0;
+}
+.kadence-image-background-control .kadence-image-upload .components-placeholder__fieldset {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.kadence-image-background-control .kadence-image-upload .components-button.is-primary {
+  height: 100px;
+  width: 100%;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--wp-admin-theme-color);
+}
+.kadence-image-background-control .kadence-image-upload .components-button.is-primary:hover:not(:disabled) {
+  background: var(--wp-admin-theme-color-darker-10);
+  color: #fff;
+}
+.kadence-image-background-control .kb-dynamic-background-sidebar-wrap {
+  display: inline-block;
+}
+.kadence-image-background-control > .kb-dynamic-background-sidebar-wrap .kb-dynamic-background-sidebar.has-icon, .kadence-image-background-control > .kb-dynamic-background-sidebar-top .kb-dynamic-background-sidebar.has-icon {
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  color: #1e1e1e;
+  border-radius: 4px;
+}
+.kadence-image-background-control > .kb-dynamic-background-sidebar-wrap .kb-dynamic-background-sidebar.has-icon.is-pressed, .kadence-image-background-control > .kb-dynamic-background-sidebar-top .kb-dynamic-background-sidebar.has-icon.is-pressed {
+  color: white;
+}
+.kadence-image-background-control > .kb-dynamic-background-sidebar-wrap .kb-dynamic-background-sidebar.has-icon svg, .kadence-image-background-control > .kb-dynamic-background-sidebar-top .kb-dynamic-background-sidebar.has-icon svg {
+  max-width: 14px;
+}
+.kadence-image-background-control > .kb-dynamic-background-sidebar-top .kb-dynamic-background-sidebar.has-icon {
+  margin-left: 0;
+}
+.kadence-image-background-control .components-kadence-image-background__label {
+  margin-bottom: 6px;
+}
+.kadence-image-background-control .block-editor-media-placeholder__dynamic-input-container {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.kadence-image-background-control .block-editor-media-placeholder__dynamic-input-container .kb-dynamic-background-sidebar {
+  margin-bottom: 0;
+}
+
+.kadence-image-background-control .block-editor-media-placeholder__dynamic-input-container .kb-dynamic-background-sidebar svg {
+  max-width: 16px;
+}
+
+.kadence-image-background-control .kadence-image-upload .components-placeholder__label:empty {
+  padding: 0;
+  margin: 0;
+}
+
+.block-editor-media-placeholder__dynamic-input-container {
+  margin-left: 12px;
+}
+
+.block-editor-media-placeholder__dynamic-input-container svg {
+  max-width: 14px;
+}
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/common/radio-buttons/editor.scss ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.kadence-radio-container-control.components-button-group .components-button.has-icon {
+  flex-direction: column;
+}
+
+.kadence-radio-container-control.components-button-group .components-button.has-icon svg {
+  margin: 0 0 8px 0;
+}
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/inspector-control-tabs/editor.scss ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.kadence-blocks-inspector-tabs {
+  display: flex;
+}
+.kadence-blocks-inspector-tabs div {
+  background: #efefef;
+  border: 1px solid #333;
+}
+.kadence-blocks-inspector-tabs button {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFF;
+  height: 75px;
+  border: 0;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+}
+.kadence-blocks-inspector-tabs .is-active {
+  box-shadow: inset 0 0 0 1px #007cba;
+  background-color: #f0f0f0;
+}
+
+[data-kadence-hide-advanced=true] .block-editor-block-inspector__advanced {
+  display: none;
+}
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/links/inline-link-control/editor.scss ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.kb-dynamic-popover-inner-wrap {
+  min-width: 280px;
+  padding: 20px;
+}
+.kb-dynamic-popover-inner-wrap h2 {
+  font-size: 13px;
+  margin-top: 1em;
+  margin-bottom: 0.3em;
+}
+
+.kb-dynamic-menu.has-icon svg {
+  width: 20px;
+}
+
+.kb-side-link-control .kb-search-selection-name .kb-search-url-clear.has-icon {
+  position: absolute;
+  top: 0;
+  right: 28px;
+  z-index: 1;
+  display: block;
+}
+
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu.has-icon svg {
+  width: 20px;
+  min-width: 20px;
+}
+
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:first-child, .block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:last-child {
+  min-width: 48px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:first-child:before, .block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:last-child:before {
+  left: 8px;
+  right: 8px;
+}
+
+.kb-pro-notice {
+  padding: 12px;
+}
+
+.kb-pro-notice h2 {
+  margin-top: 0;
+}
+
+.kb-side-link-control .components-base-control {
+  margin: 0;
+}
+.kb-side-link-control .kb-search-selection-name {
+  display: flex;
+  flex-grow: 1;
+  max-width: calc(100% - 30px);
+}
+.kb-side-link-control .kb-search-selection-name .components-base-control__field {
+  margin: 0;
+  display: flex;
+  flex-grow: 1;
+  border: 1px solid #ddd;
+  max-width: 100%;
+  position: relative;
+}
+.kb-side-link-control .kb-search-selection-name .components-base-control__field .components-spinner {
+  position: absolute;
+  right: 30px;
+  top: 9px;
+  margin: 0;
+}
+.kb-side-link-control .kb-search-url-input {
+  display: flex;
+  width: 100%;
+}
+.kb-side-link-control .kb-search-url-input input {
+  border: 0;
+  border-radius: 0;
+  padding-right: 30px;
+  width: 100%;
+}
+.kb-side-link-control .kb-search-selection-name .kb-search-url-submit.has-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: block;
+}
+.kb-side-link-control .kb-side-link-control-inner-row .kb-search-selection-name .components-button.has-icon {
+  border: 0;
+  height: 36px;
+}
+.kb-side-link-control.has-dynamic-support .kb-search-selection-name {
+  max-width: calc(100% - 60px);
+}
+.kb-side-link-control .kb-link-control-additional-controls {
+  margin-top: 15px;
+}
+.kb-side-link-control .kb-side-link-control-inner-row {
+  display: flex;
+  max-width: 100%;
+}
+.kb-side-link-control .kb-side-link-control-inner-row .components-button.has-icon {
+  border: 1px solid #ddd;
+  height: 38px;
+  border-radius: 0;
+}
+.kb-side-link-control .kb-side-link-control-inner-row .components-button.has-icon {
+  min-width: 28px;
+  padding: 6px;
+}
+.kb-side-link-control .kb-side-link-control-inner-row .components-button svg {
+  height: 16px;
+  width: 16px;
+}
+.kb-side-link-control .components-external-link {
+  margin: 7px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 50px;
+  max-width: 500px;
+}
+.kb-side-link-control .block-editor-format-toolbar__link-container-content {
+  display: flex;
+  flex-grow: 1;
+  border: 1px solid #ddd;
+  max-width: 100%;
+}
+.kb-side-link-control .kb-search-selection-suggestions {
+  margin: 0;
+  padding: 0px 0px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-suggestion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  cursor: pointer;
+  background: #fff;
+  width: 100%;
+  border: none;
+  text-align: left;
+  padding: 8px 6px;
+  border-radius: 0px;
+  height: auto;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-suggestion:focus, .kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-suggestion:hover {
+  background-color: #ddd;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-header {
+  display: block;
+  margin-right: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 24px;
+  display: block;
+  margin-bottom: 0.2em;
+  font-weight: 500;
+  position: relative;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-title mark {
+  font-weight: 700;
+  color: #000;
+  background-color: transparent;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-info {
+  display: block;
+  color: #757575;
+  font-size: 0.9em;
+  line-height: 1.3;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-type {
+  display: block;
+  padding: 3px 8px;
+  margin-left: auto;
+  font-size: 0.9em;
+  background-color: #f0f0f0;
+  border-radius: 2px;
+}
+
+.kb-popover-link-control {
+  width: 280px;
+}
+.kb-popover-link-control .kb-link-control-additional-controls {
+  padding: 0 8px;
+}
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/links/link-control/editor.scss ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.kb-dynamic-popover-inner-wrap {
+  min-width: 280px;
+  padding: 20px;
+}
+.kb-dynamic-popover-inner-wrap h2 {
+  font-size: 13px;
+  margin-top: 1em;
+  margin-bottom: 0.3em;
+}
+
+.kb-dynamic-menu.has-icon svg {
+  width: 20px;
+}
+
+.kb-side-link-control .kb-search-selection-name .kb-search-url-clear.has-icon {
+  position: absolute;
+  top: 0;
+  right: 28px;
+  z-index: 1;
+  display: block;
+}
+
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu.has-icon svg {
+  width: 20px;
+  min-width: 20px;
+}
+
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:first-child, .block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:last-child {
+  min-width: 48px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:first-child:before, .block-editor-block-toolbar .components-toolbar .components-button.kb-dynamic-menu:last-child:before {
+  left: 8px;
+  right: 8px;
+}
+
+.kb-pro-notice {
+  padding: 12px;
+}
+
+.kb-pro-notice h2 {
+  margin-top: 0;
+}
+
+.kb-side-link-control .components-base-control {
+  margin: 0;
+}
+.kb-side-link-control .kb-search-selection-name {
+  display: flex;
+  flex-grow: 1;
+  max-width: calc(100% - 30px);
+}
+.kb-side-link-control .kb-search-selection-name .components-base-control__field {
+  margin: 0;
+  display: flex;
+  flex-grow: 1;
+  border: 1px solid #ddd;
+  max-width: 100%;
+  position: relative;
+}
+.kb-side-link-control .kb-search-selection-name .components-base-control__field .components-spinner {
+  position: absolute;
+  right: 30px;
+  top: 9px;
+  margin: 0;
+}
+.kb-side-link-control .kb-search-url-input {
+  display: flex;
+  width: 100%;
+}
+.kb-side-link-control .kb-search-url-input input {
+  border: 0;
+  border-radius: 0;
+  padding-right: 30px;
+  width: 100%;
+}
+.kb-side-link-control .kb-search-selection-name .kb-search-url-submit.has-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  display: block;
+}
+.kb-side-link-control .kb-side-link-control-inner-row .kb-search-selection-name .components-button.has-icon {
+  border: 0;
+  height: 36px;
+}
+.kb-side-link-control.has-dynamic-support .kb-search-selection-name {
+  max-width: calc(100% - 60px);
+}
+.kb-side-link-control .kb-link-control-additional-controls {
+  margin-top: 15px;
+}
+.kb-side-link-control .kb-side-link-control-inner-row {
+  display: flex;
+  max-width: 100%;
+}
+.kb-side-link-control .kb-side-link-control-inner-row .components-button.has-icon {
+  border: 1px solid #ddd;
+  height: 38px;
+  border-radius: 0;
+}
+.kb-side-link-control .kb-side-link-control-inner-row .components-button.has-icon {
+  min-width: 28px;
+  padding: 6px;
+}
+.kb-side-link-control .kb-side-link-control-inner-row .components-button svg {
+  height: 16px;
+  width: 16px;
+}
+.kb-side-link-control .components-external-link {
+  margin: 7px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 50px;
+  max-width: 500px;
+}
+.kb-side-link-control .block-editor-format-toolbar__link-container-content {
+  display: flex;
+  flex-grow: 1;
+  border: 1px solid #ddd;
+  max-width: 100%;
+}
+.kb-side-link-control .kb-search-selection-suggestions {
+  margin: 0;
+  padding: 0px 0px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-suggestion {
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  cursor: pointer;
+  background: #fff;
+  width: 100%;
+  border: none;
+  text-align: left;
+  padding: 8px 6px;
+  border-radius: 0px;
+  height: auto;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-suggestion:focus, .kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-suggestion:hover {
+  background-color: #ddd;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-header {
+  display: block;
+  margin-right: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 24px;
+  display: block;
+  margin-bottom: 0.2em;
+  font-weight: 500;
+  position: relative;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-title mark {
+  font-weight: 700;
+  color: #000;
+  background-color: transparent;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-info {
+  display: block;
+  color: #757575;
+  font-size: 0.9em;
+  line-height: 1.3;
+}
+.kb-side-link-control .kb-search-selection-suggestions .kb-search-selection-search-item-type {
+  display: block;
+  padding: 3px 8px;
+  margin-left: auto;
+  font-size: 0.9em;
+  background-color: #f0f0f0;
+  border-radius: 2px;
+}
+
+.kb-popover-link-control {
+  width: 280px;
+}
+.kb-popover-link-control .kb-link-control-additional-controls {
+  padding: 0 8px;
+}
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/icons/icon-picker/editor.scss ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.rfipbtn.rfipbtn--accordion {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  width: 96%;
+}
+.rfipbtn.rfipbtn--accordion:active, .rfipbtn.rfipbtn--accordion:focus {
+  border: 1px solid #bdbdbd;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__current {
+  flex: 100%;
+  justify-content: flex-start;
+  padding: 0;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__current svg.top-icon {
+  transform: rotate(180deg) !important;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__current .rfipbtn__icon {
+  width: 100%;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__current .rfipbtn__icon .rfipbtn__elm {
+  width: 100%;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__current .rfipbtn__icon .rfipbtn__elm svg {
+  width: auto;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__button {
+  border: 0 none transparent;
+  border-left: 1px solid #e0e0e0;
+  background-color: #f5f5f5;
+  color: #424242;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__button:hover {
+  background-color: #bdbdbd;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__button:active {
+  box-shadow: inset 0 0 10px 0 #e0e0e0;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__icon {
+  border: 0;
+  color: #424242;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__icon--empty {
+  color: #555d66;
+  text-transform: none;
+  text-align: left;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__del {
+  background-color: #eee;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__del:hover {
+  background-color: #e0e0e0;
+}
+.rfipbtn.rfipbtn--accordion .rfipbtn__del:focus, .rfipbtn.rfipbtn--accordion .rfipbtn__del:active {
+  outline: 1px solid #e0e0e0;
+}
+
+.rfipdropdown.rfipdropdown--accordion {
+  max-height: 240px;
+  overflow: scroll;
+}
+
+.rfipdropdown.rfipdropdown--accordion {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipdropdown__selector {
+  overflow: hidden;
+  padding: 8px;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__pager {
+  display: none;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__cp {
+  border-bottom: 1px solid #bdbdbd;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__cp:focus {
+  border-bottom-color: #9e9e9e;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__left, .rfipdropdown.rfipdropdown--accordion .rfipicons__right {
+  background-color: #eee;
+  border: 1px solid #eee;
+  color: #424242;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__left:hover, .rfipdropdown.rfipdropdown--accordion .rfipicons__right:hover {
+  background-color: #bdbdbd;
+  border: 1px solid #bdbdbd;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__left:focus, .rfipdropdown.rfipdropdown--accordion .rfipicons__left:active, .rfipdropdown.rfipdropdown--accordion .rfipicons__right:focus, .rfipdropdown.rfipdropdown--accordion .rfipicons__right:active {
+  border: 1px solid #bdbdbd;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__ibox {
+  background-color: #f5f5f5;
+  border: 1px solid #f5f5f5;
+  color: #424242;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__ibox:hover {
+  background-color: #bdbdbd;
+  border: 1px solid #bdbdbd;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__ibox:focus, .rfipdropdown.rfipdropdown--accordion .rfipicons__ibox:active {
+  border: 1px solid #bdbdbd;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__ibox--error {
+  color: red;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__icon {
+  width: 100%;
+  height: 50px;
+  margin: 2px 0;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__icon svg {
+  fill: #000;
+  width: 100px;
+  transform: scale(1);
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__icon svg.top-icon {
+  transform: rotate(180deg) !important;
+}
+.rfipdropdown.rfipdropdown--accordion .rfipicons__icon--selected .rfipicons__ibox {
+  background-color: #eee;
+}
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/measurement/measurement-control/editor.scss ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/* Measurements */
+.kadence-title-bar {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+.kadence-title-bar .kadence-control-title {
+  flex-grow: 1;
+}
+.kadence-title-bar button.components-button.has-icon.is-reset {
+  width: 20px;
+  min-width: 20px;
+  padding: 0 3px;
+  margin: 0 5px 0 0;
+}
+
+.kadence-range-control-range .components-range-control__root svg {
+  margin-top: 2px;
+}
+
+.kadence-controls-content .measure-input-wrap .input-setting-toggle {
+  height: 14px;
+}
+.kadence-controls-content .measure-input-wrap .input-setting-toggle .components-button.input-setting-toggle-btn {
+  width: 100%;
+  height: 14px;
+  padding: 0;
+  line-height: 12px;
+  font-size: 7px !important;
+  margin: 0;
+  display: block;
+  border: 1px solid #e2e4e7;
+  border-radius: 0;
+  text-transform: uppercase;
+  background-color: #fff;
+}
+
+.kb-measure-control .kadence-controls-content {
+  align-items: flex-end;
+}
+
+.components-popover.kadence-range-popover-settings .components-popover__content > div {
+  padding: 30px 20px;
+  min-width: 280px;
+}
+
+.components-button-group.kb-preset-size-options {
+  display: flex;
+  flex-flow: wrap;
+  margin: -1%;
+}
+
+.components-button-group.kb-preset-size-options button.components-button.kb-preset-sizes {
+  flex-basis: 18%;
+  width: auto;
+  min-width: auto;
+  margin: 1%;
+  border-radius: 0;
+  text-align: center;
+  padding: 0 2px;
+  justify-content: center;
+}
+
+.components-button-group.kb-measure-responsive-options .components-button.kb-responsive-btn {
+  background: transparent;
+  height: auto;
+  border: 0;
+  box-shadow: none;
+  padding: 2px 4px;
+  margin-bottom: 0;
+  outline: 0;
+  color: #A0AEC0;
+  width: auto;
+  font-size: 10px;
+}
+.components-button-group.kb-measure-responsive-options .components-button.kb-responsive-btn:hover {
+  color: #718096;
+}
+.components-button-group.kb-measure-responsive-options .components-button.kb-responsive-btn.is-active {
+  color: #007cba;
+  background: transparent;
+}
+.components-button-group.kb-measure-responsive-options .components-button.kb-responsive-btn .dashicon {
+  width: 15px;
+  height: 15px;
+  font-size: 15px;
+}
+
+.kadence-controls-content {
+  display: flex;
+}
+.kadence-controls-content .kadence-range-control {
+  flex-grow: 1;
+  margin-right: 2px;
+  margin-bottom: 0;
+}
+.kadence-controls-content .kadence-range-control .components-base-control__field {
+  margin-bottom: 0;
+  display: flex;
+}
+.kadence-controls-content .measure-input-wrap {
+  margin-right: 2px;
+  flex-grow: 1;
+}
+.kadence-controls-content .measure-input-wrap .components-base-control.measure-inputs {
+  margin: 0;
+  position: relative;
+}
+.kadence-controls-content .measure-input-wrap .components-base-control.measure-inputs .components-base-control__field {
+  margin-bottom: 0;
+}
+.kadence-controls-content .measure-input-wrap .components-base-control.measure-inputs input[type=number] {
+  padding: 0 5px;
+  margin: 0;
+  -moz-appearance: textfield;
+}
+.kadence-controls-content .measure-input-wrap .components-base-control.measure-inputs input[type=number]::-webkit-outer-spin-button, .kadence-controls-content .measure-input-wrap .components-base-control.measure-inputs input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.kadence-controls-content .measure-input-wrap .components-base-control.measure-inputs input[type=number][disabled] {
+  background: #e4e7ea;
+}
+.kadence-controls-content .measure-label {
+  display: none;
+  font-size: 11px;
+  line-height: 16px;
+  padding: 3px 0;
+  text-align: center;
+}
+.kadence-controls-content .measure-label svg {
+  height: 16px;
+  width: 16px;
+}
+
+.kb-measure-control .measure-input-top .measure-inputs .components-base-control__field:before {
+  content: "";
+  display: block;
+  border-top: 3px solid #757575;
+  width: 100%;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.kb-measure-control.kb-measure-corners-control .measure-input-top .measure-inputs .components-base-control__field:before {
+  width: 15px;
+  height: 15px;
+  border-left: 3px solid #757575;
+  border-top: 3px solid #757575;
+  border-top-right-radius: 0px;
+}
+.kb-measure-control .measure-input-right .measure-inputs .components-base-control__field:before {
+  content: "";
+  display: block;
+  border-right: 3px solid #757575;
+  width: 0;
+  height: 100%;
+  border-bottom-right-radius: 2px;
+  border-top-right-radius: 2px;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.kb-measure-control.kb-measure-corners-control .measure-input-right .measure-inputs .components-base-control__field:before {
+  width: 15px;
+  height: 15px;
+  border-right: 3px solid #757575;
+  border-top: 3px solid #757575;
+  border-bottom-right-radius: 0px;
+}
+.kb-measure-control .measure-input-bottom .measure-inputs .components-base-control__field:before {
+  content: "";
+  display: block;
+  border-bottom: 3px solid #757575;
+  width: 100%;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.kb-measure-control.kb-measure-corners-control .measure-input-bottom .measure-inputs .components-base-control__field:before {
+  width: 15px;
+  height: 15px;
+  border-right: 3px solid #757575;
+  border-bottom: 3px solid #757575;
+  border-bottom-left-radius: 0px;
+}
+.kb-measure-control .measure-input-left .measure-inputs .components-base-control__field:before {
+  content: "";
+  display: block;
+  border-left: 3px solid #757575;
+  height: 100%;
+  width: 0;
+  border-bottom-left-radius: 2px;
+  border-top-left-radius: 2px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.kb-measure-control.kb-measure-corners-control .measure-input-left .measure-inputs .components-base-control__field:before {
+  width: 15px;
+  height: 15px;
+  border-left: 3px solid #757575;
+  border-bottom: 3px solid #757575;
+  border-top-left-radius: 0px;
+}
+
+.kadence-units {
+  max-width: 60px;
+  display: flex;
+}
+.kadence-units .components-button {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+.kadence-units .components-button svg {
+  width: 16px;
+}
+
+.kadence-units button.components-button.is-active.is-single.is-small {
+  min-width: 20px;
+  height: 30px;
+  border: 1px solid #e2e4e7;
+  background-color: #fff;
+  display: flex;
+  margin-right: 2px;
+}
+
+.kadence-units .kadence-units-group .components-button {
+  min-width: 20px;
+  height: 30px;
+  border: 1px solid #e2e4e7;
+  background-color: #fff;
+  display: flex;
+  margin-right: 2px;
+}
+
+.kadence-units .components-dropdown.components-dropdown-menu.components-toolbar {
+  background-color: transparent;
+  display: flex;
+  height: 30px;
+  min-height: 30px;
+  border: 1px solid #e2e4e7;
+}
+.kadence-units .components-dropdown.components-dropdown-menu.components-toolbar .components-button {
+  height: 30px;
+  min-width: 10px;
+  padding-top: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-bottom: 2px;
+  margin-left: 2px;
+}
+.kadence-units .components-dropdown.components-dropdown-menu.components-toolbar .components-button:before {
+  display: none;
+}
+
+.kadence-locked .components-button.is-single {
+  border: 1px solid #e2e4e7;
+  background-color: #fff;
+  display: flex;
+  height: 30px;
+}
+
+.components-dropdown__content.kadence-units-popover .components-popover__content {
+  min-width: 48px;
+  width: 48px;
+}
+.components-dropdown__content.kadence-units-popover .components-popover__content .components-button.components-dropdown-menu__menu-item {
+  min-width: 30px;
+}
+.components-dropdown__content.kadence-units-popover .components-popover__content > div {
+  padding: 5px;
+}
+
+.kadence-range-control-inner .components-range-control__reset {
+  display: none;
+}
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/packages/components/src/color/border-color-control/editor.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+.kadence-controls-content-border .components-base-control.kadence-pop-color-control {
+  margin-bottom: 0;
+}
+
+.kadence-controls-content-border .kadence-pop-color-control .kadence-beside-label {
+  margin: 0.7em 0;
+  align-items: center;
+  display: flex;
+}
+
+/*# sourceMappingURL=components.css.map*/

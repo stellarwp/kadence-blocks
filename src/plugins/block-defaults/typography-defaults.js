@@ -1,21 +1,22 @@
 /* global kadence_blocks_params */
-const {
+
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
+} from '@wordpress/element';
+import {
 	ToggleControl,
 	Button,
 	Tooltip,
 	Modal,
-} = wp.components;
+} from '@wordpress/components';
 const {
 	applyFilters,
 } = wp.hooks;
 import Select from 'react-select';
 //import fonts from '../../fonts';
+import { fontFamilyIcon } from '@kadence/icons';
 
-import icons from '../../icons';
 /**
  * Internal block libraries
  */
@@ -103,7 +104,7 @@ class KadenceTypographyDefault extends Component {
 			<Fragment>
 				<Tooltip text="Block Defaults">
 					<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-						<span className="kt-block-icon">{ icons.fontfamily }</span>
+						<span className="kt-block-icon">{ fontFamilyIcon }</span>
 						{ __( 'Font Family Options' ) }
 					</Button>
 				</Tooltip>

@@ -1,0 +1,157 @@
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/@wordpress/scripts/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[3].use[1]!./node_modules/@wordpress/scripts/node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[3].use[2]!./node_modules/@wordpress/scripts/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[3].use[3]!./src/blocks/icon-list/editor.scss ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/**
+ * #.# Editor Styles
+ *
+ * CSS for just Backend enqueued after style.scss
+ * which makes it higher in priority.
+ */
+.kt-btn-size-settings-container .components-button-group .components-button.is-primary svg {
+  fill: white;
+}
+
+.kb-flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.kt-svg-icon-list-item-wrap {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  position: relative;
+}
+
+.rtl .kt-svg-icon-list-item-wrap {
+  text-align: right;
+}
+
+.kt-svg-icon-list-single {
+  margin-right: 10px;
+  padding: 4px 0;
+}
+
+.rtl .kt-svg-icon-list-single {
+  margin-left: 10px;
+  margin-right: 0;
+}
+
+.kt-svg-icon-list-item-wrap .editor-rich-text, .kt-svg-icon-list-item-wrap .kt-svg-icon-list-text {
+  flex-grow: 2;
+}
+
+.block-editor-block-list__block[data-align=center] .kt-svg-icon-list-item-wrap {
+  justify-content: center;
+}
+.block-editor-block-list__block[data-align=center] .kt-svg-icon-list-item-wrap .editor-rich-text {
+  min-width: 20px;
+  flex-grow: 0;
+}
+
+.kt-svg-icon-list-style-stacked .kt-svg-icon-list-single {
+  border: 0px solid transparent;
+}
+
+.kt-svg-icon-list-columns-2 {
+  -ms-grid-columns: 50% auto;
+  grid-template-columns: 50% auto;
+  -ms-grid-rows: auto;
+  grid-template-rows: auto;
+  display: -ms-grid;
+  display: grid;
+}
+
+.kt-svg-icon-list-columns-3 {
+  -ms-grid-columns: 33% 33% auto;
+  grid-template-columns: 33% 33% auto;
+  -ms-grid-rows: auto;
+  grid-template-rows: auto;
+  display: -ms-grid;
+  display: grid;
+}
+
+.kt-list-icon-aligntop .kt-svg-icon-list-item-wrap {
+  align-items: flex-start;
+}
+
+.kt-list-icon-alignbottom .kt-svg-icon-list-item-wrap {
+  align-items: flex-end;
+}
+
+#start-resizable-editor-section {
+  display: none;
+}
+
+/* add all responsive styles here */
+@media (max-width: 1024px) {
+  .kt-tablet-svg-icon-list-columns-1 {
+    display: block;
+  }
+  .kt-tablet-svg-icon-list-columns-2 {
+    -ms-grid-columns: 50% auto;
+    grid-template-columns: 50% auto;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    display: -ms-grid;
+    display: grid;
+  }
+  .kt-tablet-svg-icon-list-columns-3 {
+    -ms-grid-columns: 33% 33% auto;
+    grid-template-columns: 33% 33% auto;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    display: -ms-grid;
+    display: grid;
+  }
+}
+@media (max-width: 767px) {
+  .kt-mobile-svg-icon-list-columns-1 {
+    display: block;
+  }
+  .kt-mobile-svg-icon-list-columns-2 {
+    -ms-grid-columns: 50% auto;
+    grid-template-columns: 50% auto;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    display: -ms-grid;
+    display: grid;
+  }
+  .kt-mobile-svg-icon-list-columns-3 {
+    -ms-grid-columns: 33% 33% auto;
+    grid-template-columns: 33% 33% auto;
+    -ms-grid-rows: auto;
+    grid-template-rows: auto;
+    display: -ms-grid;
+    display: grid;
+  }
+}
+#end-resizable-editor-section {
+  display: none;
+}
+
+.kt-svg-icon-list-level-0 {
+  padding-left: 0rem;
+}
+
+.kt-svg-icon-list-level-1 {
+  padding-left: 2rem;
+}
+
+.kt-svg-icon-list-level-2 {
+  padding-left: 4rem;
+}
+
+.kt-svg-icon-list-level-3 {
+  padding-left: 6rem;
+}
+
+.kt-svg-icon-list-level-4 {
+  padding-left: 8rem;
+}
+
+.kt-svg-icon-list-level-5 {
+  padding-left: 10rem;
+}
+
+/*# sourceMappingURL=blocks-icon-list.css.map*/

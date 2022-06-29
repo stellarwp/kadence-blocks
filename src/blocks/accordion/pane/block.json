@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "title": "Pane",
+  "category": "kadence-blocks",
+  "parent": [ "kadence/accordion" ],
+  "attributes": {
+	"id": {
+	  "type": "number",
+	  "default": 1
+	},
+	"title": {
+	  "type": "array",
+	  "source": "children",
+	  "selector": ".kt-blocks-accordion-title",
+	  "default": ""
+	},
+	"titleTag": {
+	  "type": "string",
+	  "default": "div"
+	},
+	"hideLabel": {
+	  "type": "bool",
+	  "default": false
+	},
+	"ariaLabel": {
+	  "type": "string",
+	  "default": ""
+	},
+	"icon": {
+	  "type": "string",
+	  "default": ""
+	},
+	"iconSide": {
+	  "type": "string",
+	  "default": "right"
+	},
+	"uniqueID": {
+	  "type": "string",
+	  "default": ""
+	},
+	"faqSchema": {
+	  "type": "bool",
+	  "default": false
+	}
+  },
+  "supports": {
+	"inserter": false,
+	"reusable": false,
+	"html": false,
+	"anchor": true,
+	"lock":false
+  }
+}

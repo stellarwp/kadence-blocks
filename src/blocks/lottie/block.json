@@ -1,15 +1,10 @@
 {
+  "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 2,
   "name": "kadence/lottie",
   "title": "Lottie Animations",
   "category": "kadence-blocks",
-  "description": "Kadence lottie animation",
   "textdomain": "kadence-blocks",
-  "keywords": [
-	"kb",
-	"lottie",
-	"animation"
-  ],
   "attributes": {
 	"align": {
 	  "type": "string"
@@ -43,6 +38,10 @@
 	  "default": false
 	},
 	"onlyPlayOnScroll": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"waitUntilInView": {
 	  "type": "boolean",
 	  "default": false
 	},
@@ -146,6 +145,5 @@
 	  "type": "string",
 	  "default": "px"
 	}
-  },
-  "editorScript": "file:editor.js"
+  }
 }

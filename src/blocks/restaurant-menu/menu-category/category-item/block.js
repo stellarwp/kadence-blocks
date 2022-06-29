@@ -14,17 +14,13 @@ import save from './save';
  */
 import classnames from 'classnames';
 
-/**
- * Import Css
- */
-import './editor.scss';
 
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 const { registerBlockType } = wp.blocks;
-const { Icon }              = wp.components;
+import { Icon } from '@wordpress/components';
 
 /**
  * Register: a Gutenberg Block.

@@ -20,24 +20,19 @@ import {
 import {
 	Button,
 	Modal,
-	Tooltip,
 	Spinner,
 } from '@wordpress/components';
 import {
-	arrowLeft,
-	download,
 	update,
 	close,
-	chevronLeft,
 	plusCircle,
-	chevronDown,
 } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
 /**
  * Import Brand Icons
  */
-import icons from '../../brand-icon';
+import { kadenceCatNewIcon } from '@kadence/icons';
 
 /**
  * Import Css
@@ -51,7 +46,7 @@ import CloudSections from './cloud-library';
 import TemplateLibrary from './template-library';
 import CloudConnect from './cloud-connect';
 import WireframeLibrary from './wire-library';
-import KadenceTryParseJSON from '../../components/common/parse-json';
+import { KadenceTryParseJSON } from '@kadence/helpers';
 import { applyFilters } from '@wordpress/hooks';
 
 const normal_actions =[
@@ -196,17 +191,17 @@ class PrebuiltModal extends Component {
 						<div className="kb-prebuilt-section">
 							<div className="kb-prebuilt-header kb-prebuilt-library-header">
 								<div className="kb-prebuilt-header kb-prebuilt-library-logo">
-									<span className="kb-prebuilt-header-logo">{ icons.kadenceCatNew }</span>
+									<span className="kb-prebuilt-header-logo">{ kadenceCatNewIcon }</span>
 									<h2>{ __( 'Library', 'Kadence Blocks' ) }</h2>
 								</div>
 								{ this.state.reloadActions && (
 									<div class="kb-prebuilt-library-actions">
-										<Spinner /> 
+										<Spinner />
 									</div>
 								) }
 								{ ! this.state.reloadActions && (
 									<div class="kb-prebuilt-library-actions">
-										{ actions.map( ( action, index ) => 
+										{ actions.map( ( action, index ) =>
 											<Fragment>
 												{ action.slug !== 'wire' && this.showSettings( action.slug ) &&  (
 													<Button
@@ -247,7 +242,7 @@ class PrebuiltModal extends Component {
 								) }
 								{ 'cloud' !== active_tab && (
 									<div class="kb-prebuilt-library-reload">
-										<Button 
+										<Button
 											className="kt-reload-templates"
 											icon={ update }
 											label={ __( 'Sync with Cloud', 'kadence-blocks' ) }
@@ -256,7 +251,7 @@ class PrebuiltModal extends Component {
 									</div>
 								) }
 								<div class="kb-prebuilt-header-close-wrap">
-									<Button 
+									<Button
 										className="kb-prebuilt-header-close"
 										icon={ close }
 										label={ __( 'Close Dialog', 'kadence-blocks') }

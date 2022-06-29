@@ -1,18 +1,14 @@
-import TypographyControls from '../../components/typography/typography-control';
-import MeasurementControls from '../../measurement-control';
-import IconControl from '../../components/icons/icon-control';
+import { TypographyControls, MeasurementControls, PopColorControl } from '@kadence/components';
+import { IconControl } from '@wordpress/components';
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-const {
+import {
 	Component,
 	Fragment,
-} = wp.element;
-const {
-	ColorPalette,
-} = wp.blockEditor;
-const {
+} from '@wordpress/element';
+import {
 	Button,
 	TabPanel,
 	PanelBody,
@@ -21,9 +17,9 @@ const {
 	ToggleControl,
 	SelectControl,
 	Modal,
-} = wp.components;
+} from '@wordpress/components';
 
-import icons from '../../icons';
+import { infoboxIcon } from '@kadence/icons';
 
 class KadenceInfoBoxDefault extends Component {
 	constructor() {
@@ -314,7 +310,7 @@ class KadenceInfoBoxDefault extends Component {
 		return (
 			<Fragment>
 				<Button className="kt-block-defaults" onClick={ () => this.setState( { isOpen: true } ) }>
-					<span className="kt-block-icon">{ icons.infobox }</span>
+					<span className="kt-block-icon">{ infoboxIcon }</span>
 					{ __( 'Info Box' ) }
 				</Button>
 				{ isOpen ?
@@ -403,12 +399,12 @@ class KadenceInfoBoxDefault extends Component {
 												tabout = (
 													<Fragment>
 														<h2>{ __( 'Container Hover Background' ) }</h2>
-														<ColorPalette
+														<PopColorControl
 															value={ ( undefined !== infoConfig.containerHoverBackground ? infoConfig.containerHoverBackground : '#f2f2f2' ) }
 															onChange={ value => this.saveConfigState( 'containerHoverBackground', value ) }
 														/>
 														<h2>{ __( 'Container Hover Border' ) }</h2>
-														<ColorPalette
+														<PopColorControl
 															value={ ( undefined !== infoConfig.containerHoverBorder ? infoConfig.containerHoverBorder : '#eeeeee' ) }
 															onChange={ value => this.saveConfigState( 'containerHoverBorder', value ) }
 														/>
@@ -418,12 +414,12 @@ class KadenceInfoBoxDefault extends Component {
 												tabout = (
 													<Fragment>
 														<h2>{ __( 'Container Background' ) }</h2>
-														<ColorPalette
+														<PopColorControl
 															value={ ( undefined !== infoConfig.containerBackground ? infoConfig.containerBackground : '#f2f2f2' ) }
 															onChange={ value => this.saveConfigState( 'containerBackground', value ) }
 														/>
 														<h2>{ __( 'Container Border' ) }</h2>
-														<ColorPalette
+														<PopColorControl
 															value={ ( undefined !== infoConfig.containerBorder ? infoConfig.containerBorder : '#eeeeee' ) }
 															onChange={ value => this.saveConfigState( 'containerBorder', value ) }
 														/>
@@ -545,7 +541,7 @@ class KadenceInfoBoxDefault extends Component {
 																{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
 																	<Fragment>
 																		<h2>{ __( 'SVG Hover Color' ) }</h2>
-																		<ColorPalette
+																		<PopColorControl
 																			value={ mediaIcon[ 0 ].hoverColor }
 																			onChange={ value => saveMediaIcon( { hoverColor: value } ) }
 																		/>
@@ -553,12 +549,12 @@ class KadenceInfoBoxDefault extends Component {
 																	</Fragment>
 																) }
 																<h2>{ __( 'Image Hover Background' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaStyle[ 0 ].hoverBackground }
 																	onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																/>
 																<h2>{ __( 'Image Hover Border' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaStyle[ 0 ].hoverBorder }
 																	onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
 																/>
@@ -570,7 +566,7 @@ class KadenceInfoBoxDefault extends Component {
 																{ mediaImage[ 0 ].subtype && 'svg+xml' === mediaImage[ 0 ].subtype && (
 																	<Fragment>
 																		<h2>{ __( 'SVG Color' ) }</h2>
-																		<ColorPalette
+																		<PopColorControl
 																			value={ mediaIcon[ 0 ].color }
 																			onChange={ value => saveMediaIcon( { color: value } ) }
 																		/>
@@ -578,12 +574,12 @@ class KadenceInfoBoxDefault extends Component {
 																	</Fragment>
 																) }
 																<h2>{ __( 'Image Background' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaStyle[ 0 ].background }
 																	onChange={ value => saveMediaStyle( { background: value } ) }
 																/>
 																<h2>{ __( 'Image Border' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaStyle[ 0 ].border }
 																	onChange={ value => saveMediaStyle( { border: value } ) }
 																/>
@@ -677,17 +673,17 @@ class KadenceInfoBoxDefault extends Component {
 														tabout = (
 															<Fragment>
 																<h2>{ __( 'Icon Hover Color' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaIcon[ 0 ].hoverColor }
 																	onChange={ value => saveMediaIcon( { hoverColor: value } ) }
 																/>
 																<h2>{ __( 'Icon Hover Background' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaStyle[ 0 ].hoverBackground }
 																	onChange={ value => saveMediaStyle( { hoverBackground: value } ) }
 																/>
 																<h2>{ __( 'Icon Hover Border Color' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaStyle[ 0 ].hoverBorder }
 																	onChange={ value => saveMediaStyle( { hoverBorder: value } ) }
 																/>
@@ -697,17 +693,17 @@ class KadenceInfoBoxDefault extends Component {
 														tabout = (
 															<Fragment>
 																<h2>{ __( 'Icon Color' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaIcon[ 0 ].color }
 																	onChange={ value => saveMediaIcon( { color: value } ) }
 																/>
 																<h2>{ __( 'Icon Background' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaStyle[ 0 ].background }
 																	onChange={ value => saveMediaStyle( { background: value } ) }
 																/>
 																<h2>{ __( 'Icon Border Color' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ mediaStyle[ 0 ].border }
 																	onChange={ value => saveMediaStyle( { border: value } ) }
 																/>
@@ -779,14 +775,14 @@ class KadenceInfoBoxDefault extends Component {
 												if ( tab.name ) {
 													if ( 'hover' === tab.name ) {
 														tabout = (
-															<ColorPalette
+															<PopColorControl
 																value={ ( undefined !== infoConfig.titleHoverColor ? infoConfig.titleHoverColor : '' ) }
 																onChange={ value => this.saveConfigState( 'titleHoverColor', value ) }
 															/>
 														);
 													} else {
 														tabout = (
-															<ColorPalette
+															<PopColorControl
 																value={ ( undefined !== infoConfig.titleColor ? infoConfig.titleColor : '' ) }
 																onChange={ value => this.saveConfigState( 'titleColor', value ) }
 															/>
@@ -875,14 +871,14 @@ class KadenceInfoBoxDefault extends Component {
 												if ( tab.name ) {
 													if ( 'hover' === tab.name ) {
 														tabout = (
-															<ColorPalette
+															<PopColorControl
 																value={ ( undefined !== infoConfig.textHoverColor ? infoConfig.textHoverColor : '' ) }
 																onChange={ value => this.saveConfigState( 'textHoverColor', value ) }
 															/>
 														);
 													} else {
 														tabout = (
-															<ColorPalette
+															<PopColorControl
 																value={ ( undefined !== infoConfig.textColor ? infoConfig.textColor : '#555555' ) }
 																onChange={ value => this.saveConfigState( 'textColor', value ) }
 															/>
@@ -963,17 +959,17 @@ class KadenceInfoBoxDefault extends Component {
 														tabout = (
 															<Fragment>
 																<h2>{ __( 'HOVER: Learn More Color' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ learnMoreStyles[ 0 ].colorHover }
 																	onChange={ value => saveLearnMoreStyles( { colorHover: value } ) }
 																/>
 																<h2>{ __( 'HOVER: Learn More Background' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ learnMoreStyles[ 0 ].backgroundHover }
 																	onChange={ value => saveLearnMoreStyles( { backgroundHover: value } ) }
 																/>
 																<h2>{ __( 'HOVER: Learn More Border Color' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ learnMoreStyles[ 0 ].borderHover }
 																	onChange={ value => saveLearnMoreStyles( { borderHover: value } ) }
 																/>
@@ -983,17 +979,17 @@ class KadenceInfoBoxDefault extends Component {
 														tabout = (
 															<Fragment>
 																<h2>{ __( 'Learn More Color' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ learnMoreStyles[ 0 ].color }
 																	onChange={ value => saveLearnMoreStyles( { color: value } ) }
 																/>
 																<h2>{ __( 'Learn More Background' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ learnMoreStyles[ 0 ].background }
 																	onChange={ value => saveLearnMoreStyles( { background: value } ) }
 																/>
 																<h2>{ __( 'Learn More Border Color' ) }</h2>
-																<ColorPalette
+																<PopColorControl
 																	value={ learnMoreStyles[ 0 ].border }
 																	onChange={ value => saveLearnMoreStyles( { border: value } ) }
 																/>
@@ -1099,7 +1095,7 @@ class KadenceInfoBoxDefault extends Component {
 													tabout = (
 														<Fragment>
 															<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
-															<ColorPalette
+															<PopColorControl
 																value={ shadowHover[ 0 ].color }
 																onChange={ value => saveHoverShadow( { color: value } ) }
 															/>
@@ -1149,7 +1145,7 @@ class KadenceInfoBoxDefault extends Component {
 													tabout = (
 														<Fragment>
 															<p className="kt-setting-label">{ __( 'Shadow Color' ) }</p>
-															<ColorPalette
+															<PopColorControl
 																value={ shadow[ 0 ].color }
 																onChange={ value => saveShadow( { color: value } ) }
 															/>

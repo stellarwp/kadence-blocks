@@ -5,7 +5,8 @@
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { blockTabsIcon } from '@kadence/icons';
+
 /**
  * Import Css
  */
@@ -31,7 +32,7 @@ import { useBlockProps } from '@wordpress/block-editor';
 registerBlockType( 'kadence/theme-header', {
 	title: __( 'Theme Header', 'kadence-blocks' ),
 	icon: {
-		src: icons.blocktabs,
+		src: blockTabsIcon,
 	},
 	category: 'kadence-blocks',
 	keywords: [

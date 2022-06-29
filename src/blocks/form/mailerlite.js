@@ -9,6 +9,7 @@
 import Select from 'react-select';
 const { addQueryArgs } = wp.url;
 const { apiFetch } = wp;
+import { KadencePanelBody } from '@kadence/components';
 /**
  * Internal block libraries
  */
@@ -17,14 +18,13 @@ const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
-	PanelBody,
+import {
 	TextControl,
 	Button,
 	Spinner,
 	SelectControl,
 	ExternalLink,
-} = wp.components;
+} from '@wordpress/components';
 
 const RETRIEVE_API_URL = 'https://app.mailerlite.com/integrations/api/';
 const HELP_URL = 'https://help.mailerlite.com/article/show/35040-where-can-i-find-the-api-key';
@@ -152,9 +152,10 @@ class MailerLiteControls extends Component {
 		const hasGroup = Array.isArray( group ) && group.length;
 		const hasFields = Array.isArray( this.state.groupFields ) && this.state.groupFields.length;
 		return (
-			<PanelBody
+			<KadencePanelBody
 				title={ __( 'MailerLite Settings', 'kadence-blocks-pro' ) }
 				initialOpen={ false }
+				panelName={ 'kb-mailerlite-settings' }
 			>
 				<p>
 					<Fragment>
@@ -266,7 +267,7 @@ class MailerLiteControls extends Component {
 						) }
 					</Fragment>
 				) }
-			</PanelBody>
+			</KadencePanelBody>
 		);
 	}
 }

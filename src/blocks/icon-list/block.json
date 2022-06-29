@@ -1,0 +1,90 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "title": "Icon List",
+  "name": "kadence/iconlist",
+  "category": "kadence-blocks",
+  "attributes": {
+	"items": {
+	  "type": "array",
+	  "default": [ {
+		"icon": "fe_checkCircle",
+		"link": "",
+		"target": "_self",
+		"size": 20,
+		"width": 2,
+		"text": "",
+		"color": "",
+		"background": "",
+		"border": "",
+		"borderRadius": 0,
+		"padding": 5,
+		"borderWidth": 1,
+		"style": "default",
+		"level": 0
+	  } ]
+	},
+	"listStyles": {
+	  "type": "array",
+	  "default": [ {
+		"size": [ "", "", "" ],
+		"sizeType": "px",
+		"lineHeight": [ "", "", "" ],
+		"lineType": "px",
+		"letterSpacing": "",
+		"family": "",
+		"google": false,
+		"style": "",
+		"weight": "",
+		"variant": "",
+		"subset": "",
+		"loadGoogle": true,
+		"color": "",
+		"textTransform": ""
+	  } ]
+	},
+	"listCount": {
+	  "type": "number",
+	  "default": 1
+	},
+	"columns": {
+	  "type": "number",
+	  "default": 1
+	},
+	"tabletColumns": {
+	  "type": "number",
+	  "default": ""
+	},
+	"mobileColumns": {
+	  "type": "number",
+	  "default": ""
+	},
+	"listGap": {
+	  "type": "number",
+	  "default": 5
+	},
+	"listLabelGap": {
+	  "type": "number",
+	  "default": 10
+	},
+	"uniqueID": {
+	  "type": "string",
+	  "default": ""
+	},
+	"blockAlignment": {
+	  "type": "string",
+	  "default": "none"
+	},
+	"listMargin": {
+	  "type": "array",
+	  "default": [ 0, 0, 10, 0 ]
+	},
+	"iconAlign": {
+	  "type": "string",
+	  "default": "middle"
+	}
+  },
+  "supports": {
+	"ktdynamic": true
+  }
+}

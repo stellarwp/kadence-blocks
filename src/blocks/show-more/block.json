@@ -1,0 +1,121 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "kadence/show-more",
+  "title": "Show More",
+  "category": "kadence-blocks",
+  "textdomain": "kadence-blocks",
+  "attributes": {
+	"align": {
+	  "type": "string"
+	},
+	"id": {
+	  "type": "number"
+	},
+	"uniqueID": {
+	  "type": "string"
+	},
+	"showHideMore": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"defaultExpandedMobile": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"defaultExpandedTablet": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"defaultExpandedDesktop": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"heightDesktop": {
+	  "type": "number",
+	  "default": 250
+	},
+	"heightTablet": {
+	  "type": "number",
+	  "default": ""
+	},
+	"heightMobile": {
+	  "type": "number",
+	  "default": ""
+	},
+	"heightType": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"enableFadeOut": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"fadeOutSize": {
+	  "type": "number",
+	  "default": 50
+	},
+	"marginDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"marginUnit": {
+	  "type": "string",
+	  "default": "px"
+	},
+	"paddingDesktop": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingTablet": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingMobile": {
+	  "type": "array",
+	  "default": [
+		"",
+		"",
+		"",
+		""
+	  ]
+	},
+	"paddingUnit": {
+	  "type": "string",
+	  "default": "px"
+	}
+  }
+}

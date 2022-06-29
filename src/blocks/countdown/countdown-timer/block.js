@@ -7,17 +7,20 @@
 /**
  * Import Icons
  */
-import icons from '../../../icons/block-icons';
+import { countdownInnerIcon } from '@kadence/icons';
+
 /**
  * Internal dependencies
  */
 import edit from './edit';
+import metadata from './block.json';
 
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { registerBlockType } from '@wordpress/blocks';
+import { useBlockProps } from '@wordpress/block-editor';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Register: a Gutenberg Block.
@@ -29,28 +32,25 @@ import { registerBlockType } from '@wordpress/blocks';
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/countdown-timer', {
-	/* translators: block name */
+	...metadata,
 	title: __( 'Countdown Timer', 'kadence-blocks' ),
-	/* translators: block description */
 	description: __( 'The countdown timer', 'kadence-blocks' ),
-	category: 'kadence-blocks',
-	icon: icons.innerCountdown,
-	parent: [ 'kadence/countdown' ],
-	supports: {
-		inserter: false,
-		reusable: false,
-		html: false,
-	},
-	attributes: {
-		uniqueID: {
-			type: 'string',
-		},
-	},
+	keywords: [
+		__( 'countdown', 'kadence-blocks' ),
+		__( 'timer', 'kadence-blocks' ),
+		'KB',
+	],
+	icon: countdownInnerIcon,
 	edit,
 	save: props => {
 		const { attributes: { uniqueID, className } } = props;
+
+		const blockProps = useBlockProps.save( {
+			className: `kb-countdown-timer-${ uniqueID } kb-countdown-timer${ ( className ? ' ' + className : '' ) }`
+		} );
+
 		return (
-			<div className={ `kb-countdown-timer-${ uniqueID } kb-countdown-timer${ ( className ? ' ' + className : '' ) }` }>
+			<div {...blockProps}>
 				<div className="kb-countdown-item kb-countdown-date-item"><span className="kb-countdown-number">&nbsp;</span><span className="kb-countdown-label">&nbsp;</span></div>
 			</div>
 		);

@@ -1,15 +1,20 @@
 /**
- * BLOCK: Kadence Tabs
+ * BLOCK: Kadence Accordion.
  */
+/**
+ * Register sub blocks.
+ */
+ import './pane/block.js';
 
 /**
  * Import Icons
  */
-import icons from '../../icons';
+import { accordionBlockIcon } from '@kadence/icons';
+
 /**
- * Import attributes
+ * Import block.json
  */
-import attributes from './attributes';
+import metadata from './block.json';
 /**
  * Import edit
  */
@@ -21,15 +26,13 @@ import save from './save';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
+ import './style.scss';
 
 /**
  * Internal block libraries
  */
- import { __ } from '@wordpress/i18n';
-const { registerBlockType } = wp.blocks;
-
+import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 /**
  * Register: a Gutenberg Block.
  *
@@ -40,25 +43,21 @@ const { registerBlockType } = wp.blocks;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/accordion', {
+	...metadata,
 	title: __( 'Accordion', 'kadence-blocks' ),
 	description: __( 'Create beautiful accordions! Each pane can contain any other block, customize title styles, content background, and borders.', 'kadence-blocks' ),
-	icon: {
-		src: icons.accordionBlock,
-	},
-	category: 'kadence-blocks',
 	keywords: [
 		__( 'accordion', 'kadence-blocks' ),
 		__( 'pane', 'kadence-blocks' ),
-		__( 'KB', 'kadence-blocks' ),
+		'KB',
 	],
-	supports: {
-		anchor: true,
-	},
-	attributes,
 	getEditWrapperProps( { blockAlignment } ) {
 		if ( 'full' === blockAlignment || 'wide' === blockAlignment || 'center' === blockAlignment ) {
 			return { 'data-align': blockAlignment };
 		}
+	},
+	icon: {
+		src: accordionBlockIcon,
 	},
 	edit,
 	save,

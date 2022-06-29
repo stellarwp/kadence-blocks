@@ -1,11 +1,14 @@
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
-import itemicons from '../../icons';
+import { __, _x } from '@wordpress/i18n';
+import { imageIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
-
+/**
+ * Import Css
+ */
+ import './style.scss';
 /**
  * Internal dependencies
  */
@@ -19,6 +22,11 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
+	title: _x( 'Advanced Image', 'block title', 'kadence-blocks' ),
+	description: _x( 'Image block with greater controls and advanced features', 'block description', 'kadence-blocks' ),
+	icon: {
+		src: imageIcon,
+	},
 	example: {
 		attributes: {
 			sizeSlug: 'large',
@@ -55,11 +63,9 @@ export const settings = {
 	deprecated,
 };
 
-registerBlockType( 'kadence/image', {
-	...metadata,
-	icon: {
-		src: itemicons.image,
-	},
-	...settings
-
-});
+registerBlockType( metadata,
+	{ 
+		...metadata,
+		...settings
+	}
+);

@@ -1,0 +1,1 @@
+{"version":3,"file":"blocks-show-more.css","mappings":";;;AAAA;EACC;AACD,C","sources":["webpack://kadence/./src/blocks/show-more/editor.scss"],"sourcesContent":[".wp-block-kadence-show-more .kt-show-more-preview {\n\toverflow: hidden;\n}\n"],"names":[],"sourceRoot":""}

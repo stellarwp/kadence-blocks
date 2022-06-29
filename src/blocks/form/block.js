@@ -5,11 +5,12 @@
  */
 
 import classnames from 'classnames';
+
 /**
  * Import Icons
  */
-import icons from '../../icons';
-import times from 'lodash/times';
+import { formBlockIcon } from '@kadence/icons';
+import { times } from 'lodash';
 /**
  * Import edit
  */
@@ -18,19 +19,16 @@ import edit from './edit';
 /**
  * Import Css
  */
-// import './style.scss';
-// import './editor.scss';
-const {
-	Fragment,
-} = wp.element;
-const {
-	RichText,
-} = wp.blockEditor;
+ import './style.scss';
+import { Fragment } from '@wordpress/element';
+import { RichText, useBlockProps } from '@wordpress/block-editor';
 /**
  * Internal block libraries
  */
+import { registerBlockType } from '@wordpress/blocks';
+
+import metadata from './block.json';
 import { __ } from '@wordpress/i18n';
-const { registerBlockType } = wp.blocks;
 
 /**
  * Register: a Gutenberg Block.
@@ -42,358 +40,18 @@ const { registerBlockType } = wp.blocks;
  *                             registered; otherwise `undefined`.
  */
 registerBlockType( 'kadence/form', {
+	...metadata,
 	title: __( 'Form', 'kadence-blocks' ),
 	description: __( 'Create a contact or marketing form for your website.', 'kadence-blocks' ),
-	icon: {
-		src: icons.formBlock,
-	},
-	category: 'kadence-blocks',
 	keywords: [
-		__( 'Contact', 'kadence-blocks' ),
-		__( 'Marketing', 'kadence-blocks' ),
-		__( 'KB', 'kadence-blocks' ),
+		__( 'contact', 'kadence-blocks' ),
+		__( 'marketing', 'kadence-blocks' ),
+		'KB',
 	],
-	supports: {
-		anchor: true,
-		align: [ 'wide', 'full' ],
-		ktanimate: true,
-		ktanimateadd: true,
-		ktanimatepreview: true,
-		ktanimateswipe: true,
-	},
-	usesContext: [ 'postId' ],
-	attributes: {
-		uniqueID: {
-			type: 'string',
-			default: '',
-		},
-		postID: {
-			type: 'string',
-			default: '',
-		},
-		hAlign: {
-			type: 'string',
-			default: '',
-		},
-		fields: {
-			type: 'array',
-			default: [ {
-				label: 'Name',
-				showLabel: true,
-				placeholder: '',
-				default: '',
-				description: '',
-				rows: 4,
-				options: [ {
-					value: '',
-					label: '',
-				} ],
-				multiSelect: false,
-				inline: false,
-				showLink: false,
-				min: '',
-				max: '',
-				type: 'text', // text, email, textarea, url, tel, radio, select, check, accept
-				required: false,
-				width: [ '100', '', '' ],
-				auto: '',
-				errorMessage: '',
-				requiredMessage: '',
-				slug: '',
-				ariaLabel: '',
-			},
-			{
-				label: 'Email',
-				showLabel: true,
-				placeholder: '',
-				default: '',
-				description: '',
-				rows: 4,
-				options: [ {
-					value: '',
-					label: '',
-				} ],
-				multiSelect: false,
-				inline: false,
-				showLink: false,
-				min: '',
-				max: '',
-				type: 'email', // text, email, textarea, url, tel, radio, select, check, accept
-				required: true,
-				width: [ '100', '', '' ],
-				auto: '',
-				errorMessage: '',
-				requiredMessage: '',
-				slug: '',
-				ariaLabel: '',
-			},
-			{
-				label: 'Message',
-				showLabel: true,
-				placeholder: '',
-				default: '',
-				description: '',
-				rows: 4,
-				options: [ {
-					value: '',
-					label: '',
-				} ],
-				multiSelect: false,
-				inline: false,
-				showLink: false,
-				min: '',
-				max: '',
-				type: 'textarea', // text, email, textarea, url, tel, radio, select, check, accept
-				required: true,
-				width: [ '100', '', '' ],
-				auto: '',
-				errorMessage: '',
-				requiredMessage: '',
-				slug: '',
-				ariaLabel: '',
-			} ],
-		},
-		messages: {
-			type: 'array',
-			default: [ {
-				success: '',
-				error: '',
-				required: '',
-				invalid: '',
-				recaptchaerror: '',
-				preError: '',
-			} ],
-		},
-		messageFont: {
-			type: 'array',
-			default: [ {
-				colorSuccess: '',
-				colorError: '',
-				borderSuccess: '',
-				borderError: '',
-				backgroundSuccess: '',
-				backgroundSuccessOpacity: 1,
-				backgroundError: '',
-				backgroundErrorOpacity: 1,
-				borderWidth: [ '', '', '', '' ],
-				borderRadius: '',
-				size: [ '', '', '' ],
-				sizeType: 'px',
-				lineHeight: [ '', '', '' ],
-				lineType: 'px',
-				letterSpacing: '',
-				textTransform: '',
-				family: '',
-				google: '',
-				style: '',
-				weight: '',
-				variant: '',
-				subset: '',
-				loadGoogle: true,
-				padding: [ '', '', '', '' ],
-				margin: [ '', '', '', '' ],
-			} ],
-		},
-		style: {
-			type: 'array',
-			default: [ {
-				showRequired: true,
-				size: 'standard',
-				deskPadding: [ '', '', '', '' ],
-				tabletPadding: [ '', '', '', '' ],
-				mobilePadding: [ '', '', '', '' ],
-				color: '',
-				requiredColor: '',
-				background: '',
-				border: '',
-				backgroundOpacity: 1,
-				borderOpacity: 1,
-				borderRadius: '',
-				borderWidth: [ '', '', '', '' ],
-				colorActive: '',
-				backgroundActive: '',
-				borderActive: '',
-				backgroundActiveOpacity: 1,
-				borderActiveOpacity: 1,
-				gradient: [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ],
-				gradientActive: [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ],
-				backgroundType: 'solid',
-				backgroundActiveType: 'solid',
-				boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
-				boxShadowActive: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
-				fontSize: [ '', '', '' ],
-				fontSizeType: 'px',
-				lineHeight: [ '', '', '' ],
-				lineType: 'px',
-				rowGap: '',
-				rowGapType: 'px',
-				gutter: '',
-				gutterType: 'px',
-				tabletRowGap: '',
-				mobileRowGap: '',
-				tabletGutter: '',
-				mobileGutter: '',
-			} ],
-		},
-		labelFont: {
-			type: 'array',
-			default: [ {
-				color: '',
-				size: [ '', '', '' ],
-				sizeType: 'px',
-				lineHeight: [ '', '', '' ],
-				lineType: 'px',
-				letterSpacing: '',
-				textTransform: '',
-				family: '',
-				google: '',
-				style: '',
-				weight: '',
-				variant: '',
-				subset: '',
-				loadGoogle: true,
-				padding: [ '', '', '', '' ],
-				margin: [ '', '', '', '' ],
-			} ],
-		},
-		submit: {
-			type: 'array',
-			default: [ {
-				label: '',
-				width: [ '100', '', '' ],
-				size: 'standard',
-				widthType: 'auto',
-				fixedWidth: [ '', '', '' ],
-				align: [ '', '', '' ],
-				deskPadding: [ '', '', '', '' ],
-				tabletPadding: [ '', '', '', '' ],
-				mobilePadding: [ '', '', '', '' ],
-				color: '',
-				background: '',
-				border: '',
-				backgroundOpacity: 1,
-				borderOpacity: 1,
-				borderRadius: '',
-				borderWidth: [ '', '', '', '' ],
-				colorHover: '',
-				backgroundHover: '',
-				borderHover: '',
-				backgroundHoverOpacity: 1,
-				borderHoverOpacity: 1,
-				icon: '',
-				iconSide: 'right',
-				iconHover: false,
-				cssClass: '',
-				gradient: [ '#999999', 1, 0, 100, 'linear', 180, 'center center' ],
-				gradientHover: [ '#777777', 1, 0, 100, 'linear', 180, 'center center' ],
-				btnStyle: 'basic',
-				btnSize: 'standard',
-				backgroundType: 'solid',
-				backgroundHoverType: 'solid',
-				boxShadow: [ false, '#000000', 0.2, 1, 1, 2, 0, false ],
-				boxShadowHover: [ false, '#000000', 0.4, 2, 2, 3, 0, false ],
-			} ],
-		},
-		submitMargin: {
-			type: 'array',
-			default: [ {
-				desk: [ '', '', '', '' ],
-				tablet: [ '', '', '', '' ],
-				mobile: [ '', '', '', '' ],
-				unit: 'px',
-				control: 'linked',
-			} ],
-		},
-		submitFont: {
-			type: 'array',
-			default: [ {
-				size: [ '', '', '' ],
-				sizeType: 'px',
-				lineHeight: [ '', '', '' ],
-				lineType: 'px',
-				letterSpacing: '',
-				textTransform: '',
-				family: '',
-				google: '',
-				style: '',
-				weight: '',
-				variant: '',
-				subset: '',
-				loadGoogle: true,
-			} ],
-		},
-		actions: {
-			type: 'array',
-			default: [ 'email' ],
-		},
-		email: {
-			type: 'array',
-			default: [ {
-				emailTo: '',
-				subject: '',
-				fromEmail: '',
-				fromName: '',
-				replyTo: 'email_field',
-				cc: '',
-				bcc: '',
-				html: true,
-			} ],
-		},
-		redirect: {
-			type: 'string',
-			default: '',
-		},
-		recaptcha: {
-			type: 'bool',
-			default: false,
-		},
-		recaptchaVersion: {
-			type: 'string',
-			default: 'v3',
-		},
-		honeyPot: {
-			type: 'bool',
-			default: true,
-		},
-		mailerlite: {
-			type: 'array',
-			default: [ {
-				group: [],
-				map: [],
-			} ],
-		},
-		fluentcrm: {
-			type: 'array',
-			default: [ {
-				lists: [],
-				tags: [],
-				map: [],
-				doubleOptin: false,
-			} ],
-		},
-		containerMarginType: {
-			type: 'string',
-			default: 'px',
-		},
-		containerMargin: {
-			type: 'array',
-			default: [ '', '', '', '' ],
-		},
-		tabletContainerMargin: {
-			type: 'array',
-			default: [ '', '', '', '' ],
-		},
-		mobileContainerMargin: {
-			type: 'array',
-			default: [ '', '', '', '' ],
-		},
-		submitLabel: {
-			type: 'string',
-			default: '',
-		},
+	icon: {
+		src: formBlockIcon,
 	},
 	edit,
-
 	save: props => {
 		const { attributes: { uniqueID, fields, submit, style, postID, hAlign, recaptcha, recaptchaVersion, honeyPot, messages, submitLabel } } = props;
 		const fieldOutput = ( index ) => {
@@ -513,8 +171,13 @@ registerBlockType( 'kadence/form', {
 			[ `kb-field-tablet-width-${ submit[ 0 ].width[ 1 ] }` ]: submit[ 0 ].width && submit[ 0 ].width[ 1 ],
 			[ `kb-field-mobile-width-${ submit[ 0 ].width[ 2 ] }` ]: submit[ 0 ].width && submit[ 0 ].width[ 2 ],
 		} );
+
+		const blockProps = useBlockProps.save( {
+			className: `kadence-form-${ uniqueID } kb-form-wrap${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }`
+		} );
+
 		return (
-			<div className={ `kadence-form-${ uniqueID } kb-form-wrap${ ( hAlign ? ' kb-form-align-' + hAlign : '' ) }` }>
+			<div {...blockProps}>
 				<form className="kb-form" action="" method="post" data-error-message={ messages && messages[0] && messages[0].preError ? messages[0].preError : undefined }>
 					{ renderFieldOutput }
 					<input type="hidden" name="_kb_form_id" value={ uniqueID } />

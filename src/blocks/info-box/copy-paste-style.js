@@ -2,20 +2,17 @@
  * Copy and Paste Block Styles Component
  *
  */
-import flow from 'lodash/flow';
+import { flow } from 'lodash';
 import { __ } from '@wordpress/i18n';
 const {
 	Component,
 	Fragment,
 } = wp.element;
-const {
-	DropdownMenu,
-	MenuGroup,
+import {
 	MenuItem,
-	Toolbar,
-	ToggleControl,
-	SelectControl,
-} = wp.components;
+	MenuGroup,
+	ToolbarDropdownMenu,
+} from '@wordpress/components';
 const {
 	localStorage,
 } = window;
@@ -263,36 +260,34 @@ class InfoBoxStyleCopyPaste extends Component {
 			}
 		};
 		return (
-			<Toolbar>
-				<DropdownMenu
-					className="block-editor-block-settings-menu"
-					icon={ copyIcon }
-					label={ __( 'Copy/Paste Styles', 'kadence-blocks' ) }
-					popoverProps={ POPOVER_PROPS }
+			<ToolbarDropdownMenu
+				className="components-toolbar kb-copy-paste"
+				icon={ copyIcon }
+				label={ __( 'Copy/Paste Styles', 'kadence-blocks' ) }
+				popoverProps={ POPOVER_PROPS }
 				>
-					{ ( { onClose } ) => (
-						<Fragment>
-							<MenuGroup>
-								<MenuItem
-									icon={ 'clipboard' }
-									onClick={ flow( onClose, copyAction ) }
-									label={ __( 'Copy Styles', 'kadence-blocks' ) }
-								>
-									{ __( 'Copy Styles', 'kadence-blocks' ) }
-								</MenuItem>
-								<MenuItem
-									icon={ 'editor-paste-text' }
-									onClick={ flow( onClose, pasteAction ) }
-									disabled={ ! infoboxCopiedStyles }
-									label={ __( 'Paste Styles', 'kadence-blocks' ) }
-								>
-									{ __( 'Paste Styles', 'kadence-blocks' ) }
-								</MenuItem>
-							</MenuGroup>
-						</Fragment>
-					) }
-				</DropdownMenu>
-			</Toolbar>
+				{ ( { onClose } ) => (
+					<Fragment>
+						<MenuGroup>
+							<MenuItem
+								icon={ 'clipboard' }
+								onClick={ flow( onClose, copyAction ) }
+								label={ __( 'Copy Styles', 'kadence-blocks' ) }
+							>
+								{ __( 'Copy Styles', 'kadence-blocks' ) }
+							</MenuItem>
+							<MenuItem
+								icon={ 'editor-paste-text' }
+								onClick={ flow( onClose, pasteAction ) }
+								disabled={ ! infoboxCopiedStyles }
+								label={ __( 'Paste Styles', 'kadence-blocks' ) }
+							>
+								{ __( 'Paste Styles', 'kadence-blocks' ) }
+							</MenuItem>
+						</MenuGroup>
+					</Fragment>
+				) }
+			</ToolbarDropdownMenu>
 		);
 	}
 }
