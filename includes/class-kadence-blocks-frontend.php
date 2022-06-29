@@ -170,6 +170,14 @@ class Kadence_Blocks_Frontend {
 		}
 
 		register_block_type(
+			KADENCE_BLOCKS_PATH . 'dist/blocks/progress-bar/block.json',
+			array(
+				'render_callback' => array( $this, 'render_accordion_css' ),
+				'editor_script'   => 'kadence-blocks-progress-bar',
+				'editor_style'    => 'kadence-blocks-progress-bar',
+			)
+		);
+		register_block_type(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/accordion/block.json',
 			array(
 				'render_callback' => array( $this, 'render_accordion_css' ),

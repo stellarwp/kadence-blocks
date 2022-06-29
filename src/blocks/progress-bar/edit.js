@@ -7,41 +7,44 @@
  */
 import './editor.scss';
 
-/**
- * Import Icons
- */
- import TypographyControls from '../../components/typography/typography-control';
- import AdvancedPopColorControl from '../../advanced-pop-color-control';
- import WebfontLoader from '../../components/typography/fontloader';
- import ResponsiveRangeControl from '../../responsive-range-control';
- import KadenceColorOutput from '../../components/color/kadence-color-output';
- import ResponsiveMeasuremenuControls from '../../components/measurement/responsive-measurement-control';
+import {
+	TypographyControls,
+	PopColorControl,
+	WebfontLoader,
+	ResponsiveRangeControl,
+	ResponsiveMeasurementControls
+} from '@kadence/components';
 
+import {
+	KadenceColorOutput,
+	getPreviewSize
+} from '@kadence/helpers';
 
  /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
-import { useState  } from '@wordpress/element';
+import {
+	useState,
+	useEffect
+} from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
-import ResponsiveMeasurementControls from '../../components/measurement/responsive-measurement-control';
 
-const {
+import {
 	RichText,
 	AlignmentToolbar,
 	InspectorControls,
 	BlockControls,
-} = wp.blockEditor;
+} from '@wordpress/block-editor';
 
-const {
+import {
 	PanelBody,
-} = wp.components;
+} from '@wordpress/components';
 
 /**
  * Internal dependencies
  */
 import classnames from 'classnames';
-import { red } from 'react-color/lib/helpers/color';
 const ktUniqueIDs = [];
 
 export function Edit( {
@@ -71,23 +74,30 @@ export function Edit( {
 		containerBorderType,
 		borderColor,
 		borderOpacity
-		
+
 	} = attributes;
 
-	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
-		if ( device === 'Mobile' ) {
-			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
-				return mobileSize;
-			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
-				return tabletSize;
+	useEffect( () => {
+		if ( !uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/block-template' ] !== undefined && typeof blockConfigObject[ 'kadence/block-template' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/block-template' ] ).map( ( attribute ) => {
+					uniqueID = blockConfigObject[ 'kadence/block-template' ][ attribute ];
+				} );
 			}
-		} else if ( device === 'Tablet' ) {
-			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
-				return tabletSize;
-			}
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
+			ktUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else if ( ktUniqueIDs.includes( uniqueID ) ) {
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
+			ktUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else {
+			ktUniqueIDs.push( uniqueID );
 		}
-		return desktopSize;
-	};
+	}, [] );
 
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[0] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[1] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
@@ -106,38 +116,20 @@ export function Edit( {
 
 	const [ marginControl, setMarginControl ] = useState( 'individual');
 	const [ paddingControl, setPaddingControl ] = useState( 'individual');
-	const [ borderControl, setBorderControl ] = useState( 'individual'); 
+	const [ borderControl, setBorderControl ] = useState( 'individual');
 
 
 	const classes = classnames( className, {
 		[ `kt-block-template${ uniqueID }` ]: uniqueID,
 	} );
 
-	const blockProps = useBlockProps( {
-		className: classes,
-	} );
-
-	if ( ! uniqueID ) {
-		const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-		if ( blockConfigObject[ 'kadence/block-template' ] !== undefined && typeof blockConfigObject[ 'kadence/block-template' ] === 'object' ) {
-			Object.keys( blockConfigObject[ 'kadence/block-template' ] ).map( ( attribute ) => {
-				uniqueID = blockConfigObject[ 'kadence/block-template' ][ attribute ];
-			} );
-		}
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );
-		ktUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else if ( ktUniqueIDs.includes( uniqueID ) ) {
-		setAttributes( {
-			uniqueID: '_' + clientId.substr( 2, 9 ),
-		} );		ktUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-	} else {
-		ktUniqueIDs.push( uniqueID );
-	}
 	const containerClasses = classnames( {
 		'kb-block-template-container': true,
 		[ `kb-block-template-container${ uniqueID }` ] : true,
+	} );
+
+	const blockProps = useBlockProps( {
+		className: classes,
 	} );
 
 	return (
@@ -196,7 +188,7 @@ export function Edit( {
 					title={ __( 'Progress Bar Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 				>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Bar Background', 'kadence-blocks' ) }
 						colorValue={ ( barBackground ? barBackground : '#4A5568' ) }
 						colorDefault={ '#4A5568' }
@@ -204,7 +196,7 @@ export function Edit( {
 						onColorChange={ value => setAttributes( { barBackground: value } ) }
 						onOpacityChange={ value => setAttributes( { barBackgroundOpacity: value } ) }
 					/>
-					<AdvancedPopColorControl
+					<PopColorControl
 						label={ __( 'Border Color', 'kadence-blocks' ) }
 						colorValue={ ( borderColor ? borderColor : '#4A5568' ) }
 						colorDefault={ '#4A5568' }
@@ -212,7 +204,7 @@ export function Edit( {
 						onColorChange={ value => setAttributes( { borderColor: value } ) }
 						onOpacityChange={ value => setAttributes( { borderOpacity: value } ) }
 					/>
-					<ResponsiveMeasuremenuControls
+					<ResponsiveMeasurementControls
 						label={ __( 'Bar Border', 'kadence-blocks' ) }
 						control={ borderControl }
 						tabletControl={ borderControl }

@@ -1,4 +1,4 @@
-import itemicons from '../../icons';
+import { rowIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
 
@@ -9,21 +9,14 @@ import edit from './edit';
 import metadata from './block.json';
 import save from './save';
 import transforms from './transforms';
-const { name } = metadata;
 
-export { metadata, name };
-
-export const settings = {
-	transforms,
-	edit,
-	save,
-};
 
 registerBlockType('kadence/progress-bar', {
 	...metadata,
 	icon: {
-		src: itemicons.row,
+		src: rowIcon,
 	},
-	...settings
-
+	transforms,
+	edit,
+	save,
 });

@@ -18,6 +18,7 @@ module.exports = {
 		'blocks-google-maps': './src/blocks/google-maps/index.js',
 		'blocks-lottie': './src/blocks/lottie/index.js',
 		'blocks-image': './src/blocks/image/index.js',
+		'blocks-progress-bar': './src/blocks/progress-bar/index.js',
 		'blocks-spacer': './src/blocks/spacer/index.js',
 		'blocks-advanced-btn': './src/blocks/advanced-btn/block.js',
 		'blocks-count-up': './src/blocks/count-up/block.js',
