@@ -250,10 +250,10 @@ export function Edit( {
 				<div class="container">
 					<div class="progress-bar__container" style={{
 						backgroundColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-						borderTop: previewBarBorderTop + containerBorderType,
-						borderBottom: previewBarBorderBottom + containerBorderType,
-						borderRight: previewBarBorderRight + containerBorderType,
-						borderLeft: previewBarBorderLeft + containerBorderType,
+						borderTopWidth: previewBarBorderTop + containerBorderType,
+						borderBottomWidth: previewBarBorderBottom + containerBorderType,
+						borderRightWidth: previewBarBorderRight + containerBorderType,
+						borderLeftWidth: previewBarBorderLeft + containerBorderType,
 						borderColor:  KadenceColorOutput( borderColor , borderOpacity ),
 						borderStyle: "solid"
 						}}>

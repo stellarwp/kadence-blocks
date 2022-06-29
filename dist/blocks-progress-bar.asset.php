@@ -1,1 +1,1 @@
-<?php return array('dependencies' => array('kadence-components', 'kadence-helpers', 'kadence-icons', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n'), 'version' => 'a214210bddc63f0e57fc');
+<?php return array('dependencies' => array('kadence-components', 'kadence-helpers', 'kadence-icons', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-element', 'wp-i18n'), 'version' => '25745aac23b1d27b71c1');

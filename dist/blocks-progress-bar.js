@@ -282,10 +282,10 @@ function Edit(_ref) {
     class: "progress-bar__container",
     style: {
       backgroundColor: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity),
-      borderTop: previewBarBorderTop + containerBorderType,
-      borderBottom: previewBarBorderBottom + containerBorderType,
-      borderRight: previewBarBorderRight + containerBorderType,
-      borderLeft: previewBarBorderLeft + containerBorderType,
+      borderTopWidth: previewBarBorderTop + containerBorderType,
+      borderBottomWidth: previewBarBorderBottom + containerBorderType,
+      borderRightWidth: previewBarBorderRight + containerBorderType,
+      borderLeftWidth: previewBarBorderLeft + containerBorderType,
       borderColor: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(borderColor, borderOpacity),
       borderStyle: "solid"
     }
