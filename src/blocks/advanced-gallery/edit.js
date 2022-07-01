@@ -16,7 +16,6 @@ import {
 	PopColorControl,
 	TypographyControls,
 	KadencePanelBody,
-	KadenceRange,
 	RangeControl,
 	WebfontLoader,
 	ImageSizeControl,
@@ -73,7 +72,7 @@ import {
 	InspectorControls,
 	useBlockProps,
 } from '@wordpress/block-editor';
-import { Fragment, useEffect, useState } from '@wordpress/element';
+import { useEffect, useState } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 import { getBlobByURL, isBlobURL, revokeBlobURL } from '@wordpress/blob';
 import { withSelect } from '@wordpress/data';
@@ -83,6 +82,7 @@ import { withSelect } from '@wordpress/data';
  */
 import GalleryImage from './gallery-image';
 import { getRelevantMediaFiles } from './shared';
+
 import {
 	image,
 	closeSmall,
@@ -165,6 +165,57 @@ function GalleryEdit( props ) {
 		imagesDynamic,
 	} = attributes;
 
+	useEffect( () => {
+
+		if ( !uniqueID ) {
+			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
+			if ( blockConfigObject[ 'kadence/advancedgallery' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedgallery' ] === 'object' ) {
+				Object.keys( blockConfigObject[ 'kadence/advancedgallery' ] ).map( ( attribute ) => {
+					attributes[ attribute ] = blockConfigObject[ 'kadence/advancedgallery' ][ attribute ];
+				} );
+			}
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
+			kbGalleryUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else if ( kbGalleryUniqueIDs.includes( uniqueID ) ) {
+			setAttributes( {
+				uniqueID: '_' + clientId.substr( 2, 9 ),
+			} );
+			kbGalleryUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+		} else {
+			kbGalleryUniqueIDs.push( uniqueID );
+		}
+		if ( every( images, ( { url } ) => isBlobURL( url ) ) ) {
+			const filesList = map( images, ( { url } ) => getBlobByURL( url ) );
+			forEach( images, ( { url } ) => revokeBlobURL( url ) );
+			mediaUpload( {
+				filesList,
+				onFileChange: ( imgs ) => onSelectImages( imgs, 2 ),
+				allowedTypes: [ 'image' ],
+			} );
+		}
+
+		if ( context && context.queryId && context.postId ) {
+			if ( !inQueryBlock ) {
+				setAttributes( {
+					inQueryBlock: true,
+				} );
+			}
+		} else if ( inQueryBlock ) {
+			setAttributes( {
+				inQueryBlock: false,
+			} );
+		}
+	}, [] );
+
+	const blockProps = useBlockProps( {
+		className: `wp-block-kadence-advancedgallery ${className} kb-gallery-container`,
+		style: {
+			margin: ( undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 0 ] ? margin[ 0 ].desk[ 0 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 1 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 2 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 3 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' : undefined ),
+		},
+	} );
+
 	const [ selectedImage, setSelectedImage ] = useState( null );
 
 	const [ marginDeskControl, setMarginDeskControl ] = useState( 'linked' );
@@ -173,20 +224,25 @@ function GalleryEdit( props ) {
 	const [ radiusControl, setRadiusControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
-	// const setAttributes = ( attributes ) => {
-	// 	if ( attributes.ids ) {
-	// 		throw new Error( 'The "ids" attribute should not be changed directly. It is managed automatically when "images" attribute changes' );
-	// 	}
-	//
-	// 	if ( attributes.images ) {
-	// 		attributes = {
-	// 			...attributes,
-	// 			ids: map( attributes.images, 'id' ),
-	// 		};
-	// 	}
-	//
-	// 	setAttributes( attributes );
-	// }
+	const [ sliderSlides, setSliderSlides ] = useState( null );
+	const [ sliderThumbs, setSliderThumbs ] = useState( null );
+
+	const setAttribs = ( attribs ) => {
+		let newAttribs = attribs;
+
+		if ( newAttribs.ids ) {
+			throw new Error( 'The "ids" attribute should not be changed directly. It is managed automatically when "images" attribute changes' );
+		}
+
+		if ( newAttribs.images ) {
+			newAttribs = {
+				...newAttribs,
+				ids: map( newAttribs.images, 'id' ),
+			};
+		}
+
+		setAttributes( newAttribs );
+	}
 
 	const onSelectImage = ( index ) => {
 		if ( selectedImage !== index ) {
@@ -195,11 +251,11 @@ function GalleryEdit( props ) {
 	};
 
 	const onMove = ( oldIndex, newIndex ) => {
-		const images = [ ...images ];
-		images.splice( newIndex, 1, images[ oldIndex ] );
-		images.splice( oldIndex, 1, images[ newIndex ] );
+		let newImages = [ ...images ];
+		newImages.splice( newIndex, 1, images[ oldIndex ] );
+		newImages.splice( oldIndex, 1, images[ newIndex ] );
 		setSelectedImage( newIndex );
-		setAttributes( { images } );
+		setAttribs( { images: newImages } );
 	};
 
 	const onMoveForward = ( oldIndex ) => {
@@ -217,17 +273,17 @@ function GalleryEdit( props ) {
 	};
 
 	const onRemoveImage = ( index ) => {
-		const images = filter( images, ( img, i ) => index !== i );
+		let newImages = filter( images, ( img, i ) => index !== i );
 		setSelectedImage( null );
-		setAttributes( {
-			images,
+		setAttribs( {
+			images: newImages
 		} );
 	};
 
 	//async
-	const onSelectImages = async ( imgs ) => {
-		const updatingImages = getRelevantMediaFiles( imgs, lightSize, thumbSize, images );
-		setAttributes( {
+	async function onSelectImages( imgs, src = 9 ) {
+		const updatingImages = await getRelevantMediaFiles( imgs, lightSize, thumbSize, images );
+		setAttribs( {
 			images: updatingImages,
 		} );
 	};
@@ -239,13 +295,15 @@ function GalleryEdit( props ) {
 	};
 
 	// async
-	const setCaptions = async ( value ) => {
-		setAttributes( { showCaption: value } );
-		if ( value ) {
+	async function setCaptions() {
+		let previousShowCaption = showCaption;
+		setAttribs( { showCaption: !previousShowCaption } );
 
+		if ( previousShowCaption ) {
 			if ( images ) {
-				const updatingImages = getRelevantMediaFiles( images, lightSize, thumbSize );
-				setAttributes( {
+				const updatingImages = await getRelevantMediaFiles( images, lightSize, thumbSize );
+
+				setAttribs( {
 					images: updatingImages,
 				} );
 			}
@@ -253,30 +311,31 @@ function GalleryEdit( props ) {
 	};
 
 	// async
-	const changeImageThumbSize = async ( img ) => {
+	async function changeImageThumbSize( img ) {
 
 		setAttributes( { thumbSize: img.slug } );
-		const updatingImages = getRelevantMediaFiles( images, lightSize, img.slug );
-		setAttributes( {
+		const updatingImages = await getRelevantMediaFiles( images, lightSize, img.slug );
+		setAttribs( {
 			images: updatingImages,
 		} );
 	};
-	// async
-	const changeImageLightSize = async ( img ) => {
 
+	// async
+	async function changeImageLightSize( img ) {
 		setAttributes( { lightSize: img.slug } );
-		const updatingImages = getRelevantMediaFiles( images, img.slug, thumbSize );
-		setAttributes( {
+
+		const updatingImages = await getRelevantMediaFiles( images, img.slug, thumbSize );
+		setAttribs( {
 			images: updatingImages,
 		} );
 	};
 
 	const setColumnsNumber = ( value ) => {
-		setAttributes( { columns: value } );
+		setAttribs( { columns: value } );
 	};
 
 	const toggleImageCrop = () => {
-		setAttributes( { imageCrop: !imageCrop } );
+		setAttribs( { imageCrop: !imageCrop } );
 	};
 
 	const getImageCropHelp = ( checked ) => {
@@ -326,57 +385,13 @@ function GalleryEdit( props ) {
 		} );
 	};
 
-	useEffect( () => {
-
-		if ( !uniqueID ) {
-			const blockConfigObject = ( kadence_blocks_params.configuration ? JSON.parse( kadence_blocks_params.configuration ) : [] );
-			if ( blockConfigObject[ 'kadence/advancedgallery' ] !== undefined && typeof blockConfigObject[ 'kadence/advancedgallery' ] === 'object' ) {
-				Object.keys( blockConfigObject[ 'kadence/advancedgallery' ] ).map( ( attribute ) => {
-					attributes[ attribute ] = blockConfigObject[ 'kadence/advancedgallery' ][ attribute ];
-				} );
-			}
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbGalleryUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( kbGalleryUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kbGalleryUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else {
-			kbGalleryUniqueIDs.push( uniqueID );
-		}
-		if ( every( images, ( { url } ) => isBlobURL( url ) ) ) {
-			const filesList = map( images, ( { url } ) => getBlobByURL( url ) );
-			forEach( images, ( { url } ) => revokeBlobURL( url ) );
-			mediaUpload( {
-				filesList,
-				onFileChange: onSelectImages,
-				allowedTypes: [ 'image' ],
-			} );
-		}
-
-		if ( context && context.queryId && context.postId ) {
-			if ( !inQueryBlock ) {
-				setAttributes( {
-					inQueryBlock: true,
-				} );
-			}
-		} else if ( inQueryBlock ) {
-			setAttributes( {
-				inQueryBlock: false,
-			} );
-		}
-	}, [] );
-
-	const componentDidUpdate = ( prevProps ) => {
-		// Deselect images when deselecting the block
-		if ( !isSelected && prevProps.isSelected ) {
-			setSelectedImage( null );
-			setCaptionSelected( false );
-		}
-	};
+	// const componentDidUpdate = ( prevProps ) => {
+	// 	// Deselect images when deselecting the block
+	// 	if ( !isSelected && prevProps.isSelected ) {
+	// 		setSelectedImage( null );
+	// 		setCaptionSelected( false );
+	// 	}
+	// };
 
 	const carouselSizeTrigger = () => {
 		const carousel = document.getElementById( 'kb-gallery-id-' + uniqueID );
@@ -386,6 +401,8 @@ function GalleryEdit( props ) {
 				item.style.maxWidth = width + 'px';
 			} );
 		}
+
+		return;
 	};
 
 	const dynamicSource = ( kadenceDynamic && kadenceDynamic[ 'images' ] && kadenceDynamic[ 'images' ].enable ? true : false );
@@ -556,8 +573,8 @@ function GalleryEdit( props ) {
 		slidesToScroll: 1,
 		nextArrow     : <CustomNextArrow/>,
 		prevArrow     : <CustomPrevArrow/>,
-		onInit        : carouselSizeTrigger,
-		onReInit      : carouselSizeTrigger,
+		onInit        : () => carouselSizeTrigger(),
+		onReInit      : () => carouselSizeTrigger(),
 	};
 	const sliderSettings = {
 		dots          : ( dotStyle === 'none' ? false : true ),
@@ -584,7 +601,7 @@ function GalleryEdit( props ) {
 		autoplay      : autoPlay,
 		slidesToShow  : 1,
 		slidesToScroll: 1,
-		onInit        : onSelectImage( 0 ),
+		onInit        : () => onSelectImage( 0 ),
 		nextArrow     : <CustomNextArrow/>,
 		prevArrow     : <CustomPrevArrow/>,
 	};
@@ -609,7 +626,7 @@ function GalleryEdit( props ) {
 			{hasImages && !dynamicSource && (
 				<Toolbar>
 					<MediaUpload
-						onSelect={() => onSelectImages}
+						onSelect={( imgs ) => onSelectImages( imgs, 3 ) }
 						allowedTypes={ALLOWED_MEDIA_TYPES}
 						multiple
 						gallery
@@ -629,7 +646,7 @@ function GalleryEdit( props ) {
 	);
 	const typeLabel = galleryTypes.filter( ( item ) => ( item.value === type ) );
 	const sidebarControls = (
-		<Fragment>
+		<>
 			{showSettings( 'allSettings', 'kadence/advancedgallery' ) && (
 				<InspectorControls>
 
@@ -770,7 +787,7 @@ function GalleryEdit( props ) {
 									/>
 								)}
 								{type && ( type === 'carousel' || type === 'grid' || type === 'masonry' ) && (
-									<Fragment>
+									<>
 										<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={__( 'Column Control Type', 'kadence-blocks' )}>
 											{map( columnControlTypes, ( { name, key, icon } ) => (
 												<Tooltip text={name}>
@@ -797,7 +814,7 @@ function GalleryEdit( props ) {
 											/>
 										)}
 										{columnControl && columnControl === 'individual' && (
-											<Fragment>
+											<>
 												<h4>{__( 'Columns', 'kadence-blocks' )}</h4>
 												<RangeControl
 													label={__( 'Screen Above 1500px', 'kadence-blocks' )}
@@ -841,12 +858,12 @@ function GalleryEdit( props ) {
 													min={1}
 													max={8}
 												/>
-											</Fragment>
+											</>
 										)}
-									</Fragment>
+									</>
 								)}
 								{type && ( type === 'thumbslider' ) && (
-									<Fragment>
+									<>
 										<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={__( 'Thumb Column Control Type', 'kadence-blocks' )}>
 											{map( columnControlTypes, ( { name, key, icon } ) => (
 												<Tooltip text={name}>
@@ -873,7 +890,7 @@ function GalleryEdit( props ) {
 											/>
 										)}
 										{thumbnailControl && thumbnailControl === 'individual' && (
-											<Fragment>
+											<>
 												<h4>{__( 'Columns' )}</h4>
 												<RangeControl
 													label={__( 'Screen Above 1500px', 'kadence-blocks' )}
@@ -917,12 +934,12 @@ function GalleryEdit( props ) {
 													min={1}
 													max={8}
 												/>
-											</Fragment>
+											</>
 										)}
-									</Fragment>
+									</>
 								)}
 								{type !== 'slider' && showSettings( 'gutterSettings', 'kadence/advancedgallery' ) && (
-									<Fragment>
+									<>
 										<h2 className="kt-heading-size-title">{__( 'Gutter', 'kadence-blocks' )}</h2>
 										<TabPanel className="kt-size-tabs"
 												  activeClass="active-tab"
@@ -983,10 +1000,10 @@ function GalleryEdit( props ) {
 												}
 											}
 										</TabPanel>
-									</Fragment>
+									</>
 								)}
 								{( type === 'fluidcarousel' || type === 'tiles' ) && (
-									<Fragment>
+									<>
 										<h2 className="kt-heading-size-title">{( type === 'tiles' ? __( 'Row Height', 'kadence-blocks' ) : __( 'Carousel Height', 'kadence-blocks' ) )}</h2>
 										<TabPanel className="kt-size-tabs"
 												  activeClass="active-tab"
@@ -1009,41 +1026,45 @@ function GalleryEdit( props ) {
 												  ]}>
 											{
 												( tab ) => {
-													let tabout;
 													if ( tab.name ) {
 														if ( 'mobile' === tab.name ) {
-															tabout = (
-																<KadenceRange
-																	value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' )}
-																	onChange={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } )}
-																	step={1}
-																	min={120}
-																	max={800}
-																/>
+															return (
+																<div className={tab.className} key={tab.className}>
+																	<RangeControl
+																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' )}
+																		onChange={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), value ] } )}
+																		step={1}
+																		min={120}
+																		max={800}
+																	/>
+																</div>
 															);
 														} else if ( 'tablet' === tab.name ) {
-															tabout = (
-																<KadenceRange
-																	value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' )}
-																	onChange={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
-																	step={1}
-																	min={120}
-																	max={800}
-																/>
+															return (
+																<div className={tab.className} key={tab.className}>
+																	<RangeControl
+																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' )}
+																		onChange={value => setAttributes( { carouselHeight: [ ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' ), value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
+																		step={1}
+																		min={120}
+																		max={800}
+																	/>
+																</div>
 															);
 														} else {
-															tabout = (
-																<KadenceRange
-																	value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' )}
-																	onChange={value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
-																	step={1}
-																	min={120}
-																	max={800}
-																/>
+															return (
+																<div className={tab.className} key={tab.className}>
+																	<RangeControl
+																		value={( ( undefined !== carouselHeight && undefined !== carouselHeight[ 0 ] ) ? carouselHeight[ 0 ] : '' )}
+																		onChange={value => setAttributes( { carouselHeight: [ value, ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 1 ] ) ? carouselHeight[ 1 ] : '' ), ( ( undefined !== carouselHeight && undefined !== carouselHeight[ 2 ] ) ? carouselHeight[ 2 ] : '' ) ] } )}
+																		step={1}
+																		min={120}
+																		max={800}
+																	/>
+																</div>
 															);
 														}
 													}
-													return <div className={tab.className} key={tab.className}>{tabout}</div>;
 												}
 											}
 										</TabPanel>
@@ -1054,7 +1075,7 @@ function GalleryEdit( props ) {
 												onChange={( value ) => setAttributes( { carouselAlign: value } )}
 											/>
 										)}
-									</Fragment>
+									</>
 								)}
 								{ids && undefined !== ids[ 0 ] && !dynamicSource && (
 									<ImageSizeControl
@@ -1068,7 +1089,7 @@ function GalleryEdit( props ) {
 								)}
 							</KadencePanelBody>
 							{type && ( type === 'carousel' || type === 'fluidcarousel' || type === 'slider' || type === 'thumbslider' ) && (
-								<Fragment>
+								<>
 									{showSettings( 'carouselSettings', 'kadence/advancedgallery' ) && (
 										<KadencePanelBody
 											title={__( 'Carousel Settings', 'kadence-blocks' )}
@@ -1173,7 +1194,7 @@ function GalleryEdit( props ) {
 											)}
 										</KadencePanelBody>
 									)}
-								</Fragment>
+								</>
 							)}
 							<KadencePanelBody
 								title={__( 'Link Settings', 'kadence-blocks' )}
@@ -1190,7 +1211,7 @@ function GalleryEdit( props ) {
 									<DynamicLinkControl dynamicAttribute="link" {...props}/>
 								)}
 								{linkTo === 'media' && (
-									<Fragment>
+									<>
 										{ids && undefined !== ids[ 0 ] && !dynamicSource && (
 											<ImageSizeControl
 												label={__( 'Link Image Size', 'kadence-blocks' )}
@@ -1198,7 +1219,7 @@ function GalleryEdit( props ) {
 												id={ids[ 0 ]}
 												fullSelection={true}
 												selectByValue={false}
-												onChange={() => changeImageLightSize}
+												onChange={() => changeImageLightSize() }
 											/>
 										)}
 										{showSettings( 'lightboxSettings', 'kadence/advancedgallery' ) && (
@@ -1231,7 +1252,7 @@ function GalleryEdit( props ) {
 												)}
 											</>
 										)}
-									</Fragment>
+									</>
 								)}
 							</KadencePanelBody>
 							{showSettings( 'captionSettings', 'kadence/advancedgallery' ) && (
@@ -1246,7 +1267,7 @@ function GalleryEdit( props ) {
 										onChange={() => setCaptions()}
 									/>
 									{showCaption && (
-										<Fragment>
+										<>
 											<SelectControl
 												label={__( 'Caption Placement', 'kadence-blocks' )}
 												options={[
@@ -1326,7 +1347,7 @@ function GalleryEdit( props ) {
 												fontSubset={captionStyles[ 0 ].subset}
 												onFontSubset={( value ) => saveCaptionFont( { subset: value } )}
 											/>
-										</Fragment>
+										</>
 									)}
 								</KadencePanelBody>
 							)}
@@ -1340,7 +1361,6 @@ function GalleryEdit( props ) {
 							{showSettings( 'styleSettings', 'kadence/advancedgallery' ) && (
 								<KadencePanelBody
 									title={__( 'Image Style', 'kadence-blocks' )}
-									initialOpen={false}
 									panelName={'kb-gallery-image-style'}
 								>
 									{!( type === 'carousel' && imageRatio === 'inherit' ) && !( type === 'slider' && imageRatio === 'inherit' ) && (
@@ -1437,7 +1457,7 @@ function GalleryEdit( props ) {
 													if ( tab.name ) {
 														if ( 'hover' === tab.name ) {
 															tabout = (
-																<Fragment>
+																<>
 																	<PopColorControl
 																		label={__( 'Shadow Color', 'kadence-blocks' )}
 																		value={( shadowHover[ 0 ].color ? shadowHover[ 0 ].color : '' )}
@@ -1478,11 +1498,11 @@ function GalleryEdit( props ) {
 																		max={100}
 																		step={1}
 																	/>
-																</Fragment>
+																</>
 															);
 														} else {
 															tabout = (
-																<Fragment>
+																<>
 																	<PopColorControl
 																		label={__( 'Shadow Color', 'kadence-blocks' )}
 																		value={( shadow[ 0 ].color ? shadow[ 0 ].color : '' )}
@@ -1523,7 +1543,7 @@ function GalleryEdit( props ) {
 																		max={100}
 																		step={1}
 																	/>
-																</Fragment>
+																</>
 															);
 														}
 													}
@@ -1629,7 +1649,7 @@ function GalleryEdit( props ) {
 					}
 				</InspectorControls>
 			)}
-		</Fragment>
+		</>
 	);
 	let instructions = '';
 	let title = '';
@@ -1653,7 +1673,7 @@ function GalleryEdit( props ) {
 			}}
 			selectIcon={plusCircleFilled}
 			selectLabel={__( 'Select Images', 'kadence-blocks' )}
-			onSelect={() => onSelectImages}
+			onSelect={ ( imgs ) => onSelectImages( imgs, 4 ) }
 			accept="image/*"
 			multiple
 			className={'kadence-image-upload'}
@@ -1680,7 +1700,7 @@ function GalleryEdit( props ) {
 				title       : !hasImages && __( 'Gallery', 'kadence-blocks' ),
 				instructions: !hasImages && __( 'Drag images, upload new ones or select files from your library.', 'kadence-blocks' ),
 			}}
-			onSelect={() => onSelectImages}
+			onSelect={( imgs ) => onSelectImages( imgs, 5 ) }
 			accept="image/*"
 			allowedTypes={ALLOWED_MEDIA_TYPES}
 			multiple
@@ -1737,11 +1757,11 @@ function GalleryEdit( props ) {
 	);
 	if ( !hasImages || theImages.constructor !== Array ) {
 		return (
-			<Fragment>
+			<>
 				{controls}
 				{sidebarControls}
 				{theImages.constructor !== Array && dynamicSource ? dynamicMediaPlaceholder : mediaPlaceholder}
-			</Fragment>
+			</>
 		);
 	}
 	const galleryClassNames = classnames(
@@ -1772,21 +1792,22 @@ function GalleryEdit( props ) {
 						lightUrl={img.lightUrl}
 						alt={img.alt}
 						id={img.id}
+						index={index}
 						link={img.link}
 						linkTo={linkTo}
 						isFirstItem={index === 0}
 						isLastItem={( index + 1 ) === theImages.length}
 						isSelected={isSelected && selectedImage === index}
-						onMoveBackward={() => onMoveBackward( index )}
-						onMoveForward={() => onMoveForward( index )}
-						onRemove={() => onRemoveImage( index )}
-						onSelect={() => onSelectImage( index )}
-						setAttributes={( attrs ) => setImageAttributes( index, attrs )}
+						onMoveBackward={() => { onMoveBackward( index ) } }
+						onMoveForward={() => { onMoveForward( index ) } }
+						onRemove={() => { onRemoveImage( index ) } }
+						onSelect={( index ) => { onSelectImage( index ) }}
+						setAttributes={( attrs ) => { setImageAttributes( index, attrs ) } }
 						caption={img.caption}
 						customLink={img.customLink}
 						linkTarget={img.linkTarget}
 						linkSponsored={img.linkSponsored}
-						setLinkAttributes={( attrs ) => setLinkAttributes( index, attrs )}
+						setLinkAttributes={( attrs ) => { setLinkAttributes( index, attrs ) } }
 						showCaption={showCaption}
 						captionStyles={captionStyles}
 						captionStyle={captionStyle}
@@ -1800,13 +1821,6 @@ function GalleryEdit( props ) {
 			</li>
 		);
 	};
-
-	const blockProps = useBlockProps( {
-		className: `wp-block-kadence-advancedgallery ${className} kb-gallery-container`,
-		style: {
-			margin: ( undefined !== margin[ 0 ] && undefined !== margin[ 0 ].desk && '' !== margin[ 0 ].desk[ 0 ] ? margin[ 0 ].desk[ 0 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 1 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 2 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' + margin[ 0 ].desk[ 3 ] + ( undefined !== marginUnit ? marginUnit : 'px' ) + ' ' : undefined ),
-		},
-	} );
 
 	return (
 		<div {...blockProps} >
@@ -1859,14 +1873,16 @@ function GalleryEdit( props ) {
 					<div className={`kt-blocks-carousel kt-blocks-slider kt-carousel-container-dotstyle-${dotStyle}`}>
 						{theImages.length !== 1 && (
 							<>
-								<Slider asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
+								<Slider ref={ (slider) => setSliderSlides(slider)} asNavFor={sliderThumbs} className={`kt-carousel-arrowstyle-${arrowStyle} kt-carousel-dotstyle-${dotStyle}`} {...thumbsliderSettings}>
 									{theImages.map( ( img, index ) => {
 										return renderGalleryImages( img, index );
 									} )}
 								</Slider>
 								<Slider
 									className={`kt-carousel-arrowstyle-${arrowStyle} kt-blocks-carousel-thumbnails kb-cloned-${( theImages.length < thumbnailColumns[ 0 ] ? 'hide' : 'show' )} kt-carousel-dotstyle-none`}
-									asNavFor={sliderSlides} {...thumbsliderthumbsSettings}>
+									ref={ (slider) => setSliderThumbs(slider)}
+									asNavFor={sliderSlides}
+									{...thumbsliderthumbsSettings}>
 									{theImages.map( ( img, index ) => {
 										return renderGalleryImages( img, index, true );
 									} )}

@@ -25,7 +25,7 @@ import {
 	PopColorControl,
 	TypographyControls,
 	ResponsiveMeasurementControls,
-	KadenceRange,
+	RangeControl,
 	KadencePanelBody,
 	URLInputControl,
 	KadenceRadioButtons,
@@ -658,7 +658,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 											)}
 											{'evergreen' === countdownType && (
 												<>
-													<KadenceRange
+													<RangeControl
 														label={__( 'Evergreen Hours', 'kadence-blocks' )}
 														value={evergreenHours}
 														onChange={value => {
@@ -668,7 +668,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 														max={100}
 														step={1}
 													/>
-													<KadenceRange
+													<RangeControl
 														label={__( 'Evergreen Minutes', 'kadence-blocks' )}
 														value={evergreenMinutes}
 														onChange={value => {
@@ -689,7 +689,7 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 															} );
 														}}
 													/>
-													<KadenceRange
+													<RangeControl
 														label={__( 'Amount of days to wait until the evergreen is reset for visitors', 'kadence-blocks' )}
 														value={evergreenReset}
 														onChange={value => {

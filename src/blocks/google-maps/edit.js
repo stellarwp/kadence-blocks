@@ -38,6 +38,7 @@ import {
 	InspectorControlTabs,
 	KadencePanelBody
 } from '@kadence/components';
+import { getPreviewSize } from '@kadence/helpers';
 
 const ktmapsUniqueIDs = [];
 
@@ -78,10 +79,12 @@ export function Edit( {
 		sizeSlug,
 		textAlign,
 	} = attributes;
+
 	const previewDevice = useSelect( ( select ) => {
 		return select( 'kadenceblocks/data' ).getPreviewDeviceType();
 	}, [] );
 	let includedGoogleApiKey = 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk';
+
 	const [ customGoogleApiKey, setCustomGoogleApiKey ] = useState('');
 
 	let googleApiKey = isEmpty(customGoogleApiKey) ? includedGoogleApiKey : customGoogleApiKey;
@@ -106,8 +109,8 @@ export function Edit( {
 			const response = await geocoder.geocode({ address: address })
 			if ( has( response.results, [0] ) ) {
 				setAttributes( {
-					lat: response.results[0].geometry.location.lat(),
-					lng: response.results[0].geometry.location.lng()
+					lat: response.results[0].geometry.location.lat().toString(),
+					lng: response.results[0].geometry.location.lng().toString()
 				} );
 			} else {
 				createErrorNotice( __('Could not find location', 'kadence-blocks') + ': ' + address, { type: 'snackbar' } );
@@ -116,21 +119,6 @@ export function Edit( {
 			createErrorNotice( __('Could not find location', 'kadence-blocks') + ': ' + address, { type: 'snackbar' } );
 		}
 	}
-
-	const getPreviewSize = ( device, desktopSize, tabletSize, mobileSize ) => {
-		if ( device === 'Mobile' ) {
-			if ( undefined !== mobileSize && '' !== mobileSize && null !== mobileSize ) {
-				return mobileSize;
-			} else if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
-				return tabletSize;
-			}
-		} else if ( device === 'Tablet' ) {
-			if ( undefined !== tabletSize && '' !== tabletSize && null !== tabletSize ) {
-				return tabletSize;
-			}
-		}
-		return desktopSize;
-	};
 
 	const previewHeight = getPreviewSize( previewDevice, ( undefined !== heightDesktop ? heightDesktop : '450' ), ( undefined !== heightTablet ? heightTablet : '' ), ( undefined !== heightMobile ? heightMobile : '' ) );
 	const previewWidth = getPreviewSize( previewDevice, ( undefined !== widthDesktop ? widthDesktop : '' ), ( undefined !== widthTablet ? widthTablet : '' ), ( undefined !== widthMobile ? widthMobile : '' ) );
@@ -228,12 +216,10 @@ export function Edit( {
 		}
 	}
 
-	const classes = classnames( className, {
-		[ `size-${ sizeSlug }` ]: sizeSlug,
-	} );
-
 	const blockProps = useBlockProps( {
-		className: classes,
+		className: classnames( className, {
+			[ `size-${ sizeSlug }` ]: sizeSlug,
+		} ),
 	} );
 
 	let mapQueryParams = {

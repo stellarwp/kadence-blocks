@@ -8,7 +8,7 @@ import { useBlockProps } from '@wordpress/block-editor';
  * External dependencies
  */
 import classnames from 'classnames';
-import { KadenceColorOutput } from '@kadence/components';
+import { KadenceColorOutput } from '@kadence/helpers';
 import SvgPattern from './svg-pattern';
 
 function Save( { attributes } ) {

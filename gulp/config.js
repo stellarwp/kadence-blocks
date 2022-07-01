@@ -15,9 +15,9 @@ module.exports = {
         ]
     },
     minify: {
-        ext: {
-            min: '.min.js'
-        },
-        noSource: true
-    }
+		builtIns: false,
+		mangle: {
+			keepClassName: true,
+		}
+	}
 };

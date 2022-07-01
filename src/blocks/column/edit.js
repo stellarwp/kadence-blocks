@@ -687,6 +687,17 @@ function SectionEdit( {
 												}}
 												units={[ 'px', 'vw', 'vh' ]}
 											/>
+											<RangeControl
+												label={ __( 'Z Index Control', 'kadence-blocks' ) }
+												value={ zIndex }
+												onChange={ ( value ) => {
+													setAttributes( {
+														zIndex: value,
+													} );
+												} }
+												min={ -200 }
+												max={ 200 }
+											/>
 										</KadencePanelBody>
 
 									</Fragment>
@@ -845,17 +856,6 @@ function SectionEdit( {
 											unit={marginType}
 											units={[ 'px', 'em', 'rem', '%', 'vh' ]}
 											onUnit={( value ) => setAttributes( { marginType: value } )}
-										/>
-										<RangeControl
-											label={ __( 'Z Index Control', 'kadence-blocks' ) }
-											value={ zIndex }
-											onChange={ ( value ) => {
-												setAttributes( {
-													zIndex: value,
-												} );
-											} }
-											min={ -200 }
-											max={ 200 }
 										/>
 									</KadencePanelBody>
 								)}
