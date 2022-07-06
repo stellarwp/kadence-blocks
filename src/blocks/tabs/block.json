@@ -236,7 +236,7 @@
 	  "default": ""
 	},
 	"showPresets": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"subtitleFont": {
@@ -282,7 +282,7 @@
 	  ]
 	},
 	"enableSubtitle": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"widthType": {

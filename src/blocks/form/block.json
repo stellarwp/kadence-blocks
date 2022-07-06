@@ -521,7 +521,7 @@
 	  "default": ""
 	},
 	"recaptcha": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"recaptchaVersion": {
@@ -529,7 +529,7 @@
 	  "default": "v3"
 	},
 	"honeyPot": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"mailerlite": {

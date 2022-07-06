@@ -309,7 +309,7 @@ const attributes = {
 		default: 'px',
 	},
 	columnsUnlocked: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	tabletBackground: {
@@ -383,7 +383,7 @@ const attributes = {
 		} ],
 	},
 	columnsInnerHeight: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	topSepWidth: {
@@ -399,7 +399,7 @@ const attributes = {
 		default: '',
 	},
 	backgroundInline: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	backgroundSettingTab: {
@@ -455,15 +455,15 @@ const attributes = {
 		default: 'px',
 	},
 	inheritMaxWidth: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	noCustomDefaults: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	isPrebuiltModal: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	minHeightTablet: {
@@ -479,19 +479,19 @@ const attributes = {
 		default: '',
 	},
 	vsdesk: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	vstablet: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	vsmobile: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	loggedIn: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	loggedInUser: {
@@ -505,14 +505,14 @@ const attributes = {
 		default: '',
 	},
 	rcpMembership: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	rcpMembershipLevel: {
 		type: 'array',
 	},
 	loggedOut: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 	borderWidth: {
@@ -556,7 +556,7 @@ const attributes = {
 		default: [ '', '' ],
 	},
 	inQueryBlock: {
-		type: 'bool',
+		type: 'boolean',
 		default: false,
 	},
 };

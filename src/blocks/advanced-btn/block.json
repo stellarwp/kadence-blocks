@@ -131,11 +131,11 @@
 	  "default": "px"
 	},
 	"forceFullwidth": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"collapseFullwidth": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"margin": {
@@ -151,15 +151,15 @@
 	  "default": "px"
 	},
 	"inQueryBlock": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"lockBtnCount": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"hideLink": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   },

@@ -205,7 +205,7 @@
 	  ]
 	},
 	"displayTitle": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"title": {
@@ -274,7 +274,7 @@
 	  ]
 	},
 	"displayText": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"contentText": {
@@ -349,7 +349,7 @@
 	  ]
 	},
 	"displayLearnMore": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"learnMore": {
@@ -429,7 +429,7 @@
 	  ]
 	},
 	"displayShadow": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"shadow": {
@@ -459,7 +459,7 @@
 	  ]
 	},
 	"showPresets": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"mediaVAlign": {
@@ -496,11 +496,11 @@
 	  "default": "px"
 	},
 	"linkNoFollow": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"linkSponsored": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"number": {
@@ -533,7 +533,7 @@
 	  "default": ""
 	},
 	"inQueryBlock": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   }
