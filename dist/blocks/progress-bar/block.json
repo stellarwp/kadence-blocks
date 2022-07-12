@@ -127,6 +127,17 @@
     "borderColor": {
       "type": "string",
       "default": "#4A5568"
+    },
+    "borderOpacity": {
+      "type": "number",
+      "default": 1
+    },
+    "barType": {
+      "enum": [
+        "line",
+        "circle"
+      ],
+      "default": "line"
     }
   },
   "editorScript": "file:editor.js"

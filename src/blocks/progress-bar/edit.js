@@ -27,10 +27,11 @@ import { __ } from '@wordpress/i18n';
 import { useSelect } from '@wordpress/data';
 import {
 	useState,
-	useEffect
+	useEffect,
+	Fragment
 } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
-
+import { map } from 'lodash';
 import {
 	RichText,
 	AlignmentToolbar,
@@ -40,6 +41,9 @@ import {
 
 import {
 	PanelBody,
+	SelectControl,
+	ButtonGroup,
+	Button
 } from '@wordpress/components';
 
 /**
@@ -73,7 +77,8 @@ export function Edit( {
 		containerMobileBorder,
 		containerBorderType,
 		borderColor,
-		borderOpacity
+		borderOpacity,
+		barType
 
 	} = attributes;
 
@@ -143,6 +148,11 @@ export function Edit( {
 		className: classes,
 	} );
 
+	const layoutPresetOptions = [
+		{ key: 'line', name: __( 'Line', 'kadence-blocks' ), icon: "infoStartIcon" },
+		{ key: 'circle', name: __( 'Circle', 'kadence-blocks' ), icon: "infoBasicIcon" }
+	];
+
 	return (
 		<div { ...blockProps }>
 			<BlockControls group="block">
@@ -152,6 +162,27 @@ export function Edit( {
 				/>
 			</BlockControls>
 			<InspectorControls>
+
+				<Fragment>
+					<h2>{__( 'Progress Bar Layout', 'kadence-blocks' )}</h2>
+					<ButtonGroup className="kt-style-btn-group kb-info-layouts" aria-label={__( 'Progress Bar Layout', 'kadence-blocks' )}>
+						{map( layoutPresetOptions, ( { name, key, icon } ) => (
+							<Button
+								key={key}
+								className="kt-style-btn"
+								isSmall
+								isPrimary={false}
+								aria-pressed={false}
+								onClick={
+									( value ) => setAttributes( { barType: value } )
+								}
+							>
+								{name}
+							</Button>
+						) )}
+					</ButtonGroup>
+				</Fragment>
+
 
 				<PanelBody
 					title={ __( 'Size Controls', 'kadence-blocks' ) }
@@ -194,11 +225,12 @@ export function Edit( {
 						onUnit={ ( value ) => setAttributes( { marginUnit: value } ) }
 					/>
 				</PanelBody>
-
+				
 				<PanelBody
 					title={ __( 'Progress Bar Settings', 'kadence-blocks' ) }
 					initialOpen={ false }
 				>
+					
 					<PopColorControl
 						label={ __( 'Bar Background', 'kadence-blocks' ) }
 						colorValue={ ( barBackground ? barBackground : '#4A5568' ) }
@@ -258,46 +290,35 @@ export function Edit( {
 					paddingLeft: ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
 				}
 			}>
-				<div class="container">
-					<div class="progress-bar__container" style={{
-						backgroundColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
-						borderTopWidth: previewBarBorderTop + containerBorderType,
-						borderBottomWidth: previewBarBorderBottom + containerBorderType,
-						borderRightWidth: previewBarBorderRight + containerBorderType,
-						borderLeftWidth: previewBarBorderLeft + containerBorderType,
-						borderColor:  KadenceColorOutput( borderColor , borderOpacity ),
-						borderStyle: "solid"
-						}}>
-						<div class="progressbar-1">
-							<span class="progress-bar__text">Courage</span>
-						</div>
-					</div>
-					<div class="progress-bar__container">
-						<div class="progressbar-2">
-							<span class="progress-bar__text">Intelligence</span>
-						</div>
-					</div>
-					<div class="progress-bar__container">
-						<div class="progressbar-3">
-							<span class="progress-bar__text">Empathy</span>
-						</div>
-					</div>
 
-					<div class="circle-bars">
-						<svg>
-							<circle class="bg" cx="57" cy="57" r="52" />
-							<circle class="circlebar-1" cx="57" cy="57" r="52" />
-						</svg>
-						<svg>
-							<circle class="bg" cx="57" cy="57" r="52" />
-							<circle class="circlebar-2" cx="57" cy="57" r="52" />
-						</svg>
-						<svg>
-							<circle class="bg" cx="57" cy="57" r="52" />
-							<circle class="circlebar-3" cx="57" cy="57" r="52" />
-						</svg>
-					</div>
+				<div class="container">
+					{(barType === "line") &&
+						<div class="progress-bar__container" style={{
+							backgroundColor: KadenceColorOutput( barBackground , barBackgroundOpacity ),
+							borderTopWidth: previewBarBorderTop + containerBorderType,
+							borderBottomWidth: previewBarBorderBottom + containerBorderType,
+							borderRightWidth: previewBarBorderRight + containerBorderType,
+							borderLeftWidth: previewBarBorderLeft + containerBorderType,
+							borderColor:  KadenceColorOutput( borderColor , borderOpacity ),
+							borderStyle: "solid"
+							}}>
+							<div class="progressbar-1">
+								<span class="progress-bar__text"></span>
+							</div>
+						</div>
+					}
+
+					{(barType === "circle") &&
+						<div class="circle-bars">
+							<svg>
+								<circle class="bg" cx="57" cy="57" r="52" />
+								<circle class="circlebar-1" cx="57" cy="57" r="52" />
+							</svg>
+						</div>
+					}
+					
 				</div>
+				
 			</div>
 		</div>
 	);
