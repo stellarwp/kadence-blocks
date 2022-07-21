@@ -49,6 +49,8 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-get-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
+
+	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form-ajax.php';
 }
 add_action( 'plugins_loaded', 'kadence_blocks_init' );
 

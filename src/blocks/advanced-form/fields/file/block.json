@@ -1,0 +1,35 @@
+{
+  "name": "kadence/advanced-form-file",
+  "category": "kadence-blocks",
+  "textdomain": "kadence-blocks",
+  "attributes": {
+	"label": {
+	  "type": "string",
+	  "default": ""
+	},
+	"showLabel": {
+	  "type": "boolean",
+	  "default": true
+	},
+	"required": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"value": {
+	  "type": "boolean",
+	  "default": false
+	},
+	"ariaDescription": {
+	  "type": "string",
+	  "default": ""
+	},
+	"helpText": {
+	  "type": "string",
+	  "default": ""
+	}
+  },
+  "editorScript": "file:editor.js",
+  "parent": [
+	"kadence/advanced-form"
+  ]
+}

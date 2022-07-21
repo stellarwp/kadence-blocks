@@ -1,0 +1,19 @@
+{
+  "name": "kadence/advanced-form-hidden",
+  "category": "kadence-blocks",
+  "textdomain": "kadence-blocks",
+  "attributes": {
+	"label": {
+	  "type": "string",
+	  "default": ""
+	},
+	"value": {
+	  "type": "string",
+	  "default": ""
+	}
+  },
+  "editorScript": "file:editor.js",
+  "parent": [
+	"kadence/advanced-form"
+  ]
+}
