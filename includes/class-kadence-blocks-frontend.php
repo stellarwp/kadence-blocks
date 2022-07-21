@@ -4842,10 +4842,13 @@ class Kadence_Blocks_Frontend {
 				$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 					$css .= 'margin-right:' . $attr['gutter'][0] . 'px;';
 				$css .= '}';
-				$css .= '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+
+				if( is_rtl() ) {
+					$css .= '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 					$css .= 'margin-right:0px;';
 					$css .= 'margin-left:' . $attr['gutter'][0] . 'px;';
-				$css .= '}';
+					$css .= '}';
+				}
 			}
 			if ( isset( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'] ) && is_array( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'][1] ) && '' !== $attr['tabWidth'][1] ) {
 				$css .= '@media (min-width: 767px) and (max-width: 1024px) {';
@@ -4859,10 +4862,14 @@ class Kadence_Blocks_Frontend {
 				$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 				$css .= 'margin-right:' . $attr['gutter'][1] . 'px;';
 				$css .= '}';
-				$css .= '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
-				$css .= 'margin-right:0px;';
-				$css .= 'margin-left:' . $attr['gutter'][1] . 'px;';
-				$css .= '}';
+
+				if( is_rtl() ) {
+					$css .= '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
+					$css .= 'margin-right:0px;';
+					$css .= 'margin-left:' . $attr['gutter'][1] . 'px;';
+					$css .= '}';
+				}
+
 				$css .= '}';
 			}
 			if ( isset( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'] ) && is_array( $attr['tabWidth'] ) && ! empty( $attr['tabWidth'][2] ) && '' !== $attr['tabWidth'][2] ) {
@@ -4877,10 +4884,13 @@ class Kadence_Blocks_Frontend {
 					$css .= '.wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 						$css .= 'margin-right:' . $attr['gutter'][2] . 'px;';
 					$css .= '}';
+
+				if( is_rtl() ) {
 					$css .= '.rtl .wp-block-kadence-tabs .kt-tabs-id' . $unique_id . ' > .kt-tabs-title-list li .kt-tab-title {';
 					$css .= 'margin-right:0px;';
 					$css .= 'margin-left:' . $attr['gutter'][2] . 'px;';
 					$css .= '}';
+				}
 				$css .= '}';
 			}
 		}
@@ -7944,9 +7954,12 @@ class Kadence_Blocks_Frontend {
 					if ( isset( $btnvalue['gap'] ) && is_numeric( $btnvalue['gap'] ) ) {
 						$css->set_selector( '.kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
 						$css->add_property( 'margin-right',  $btnvalue['gap'] . 'px' );
-						$css->set_selector( '.rtl .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
-						$css->add_property( 'margin-left',  $btnvalue['gap'] . 'px' );
-						$css->add_property( 'margin-right',  '0px' );
+
+						if( is_rtl() ) {
+							$css->set_selector( '.rtl .kt-btns' . $unique_id . ' .kt-btn-wrap-' . $btnkey );
+							$css->add_property( 'margin-left', $btnvalue['gap'] . 'px' );
+							$css->add_property( 'margin-right', '0px' );
+						}
 					}
 					if ( isset( $btnvalue['backgroundType'] ) && 'gradient' === $btnvalue['backgroundType'] || isset( $btnvalue['backgroundHoverType'] ) && 'gradient' === $btnvalue['backgroundHoverType'] ) {
 						$bgtype = 'gradient';
