@@ -1,4 +1,4 @@
-import { rowIcon } from '@kadence/icons';
+import { progressIcon } from '@kadence/icons';
 
 import { registerBlockType } from '@wordpress/blocks';
 
@@ -14,7 +14,7 @@ import transforms from './transforms';
 registerBlockType('kadence/progress-bar', {
 	...metadata,
 	icon: {
-		src: rowIcon,
+		src: progressIcon,
 	},
 	transforms,
 	edit,

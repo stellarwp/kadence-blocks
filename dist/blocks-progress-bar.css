@@ -43,36 +43,4 @@
           animation: bar-1 4s forwards linear;
 }
 
-.circle-bars {
-  display: flex;
-}
-
-.circle-bars svg {
-  width: 114px;
-  height: 114px;
-  margin: 1em;
-}
-
-.bg {
-  fill: none;
-  stroke-width: 10px;
-  stroke: #1A2C34;
-}
-
-[class^=circlebar-] {
-  fill: none;
-  stroke-width: 10px;
-  stroke-linecap: round;
-  transform: rotate(-90deg);
-  transform-origin: 50% 50%;
-}
-
-.circlebar-1 {
-  stroke-dasharray: 360;
-  stroke-dashoffset: 100;
-  stroke: aqua;
-  -webkit-animation: progress-1 3s ease-out;
-          animation: progress-1 3s ease-out;
-}
-
 /*# sourceMappingURL=blocks-progress-bar.css.map*/

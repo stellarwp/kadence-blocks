@@ -54,87 +54,33 @@
 //         width: 100%;
 //     }
 // }
-// @keyframes bar-2 {
-//     0%{
-//       width: 0%;
-//     }
-//     25%{
-//         width: 20%;
-//     }
-//     50%{
-//         width: 45%;
-//     }
-//     75%{
-//         width: 65%;
-//     }
-//     100%{
-//         width: 85%;
-//     }
-// }
-// @keyframes bar-3 {
-//     0%{
-//       width: 0%;
-//     }
-//     25%{
-//         width: 10%;
-//     }
-//     50%{
-//         width: 25%;
-//     }
-//     75%{
-//         width: 35%;
-//     }
-//     100%{
-//         width: 50%;
-//     }
-// }
+
 // .progress-bar__text {
 //     font-size: 18px;
 //     display: none;
 // }
 .circle-bars {
-    display: flex;
+    // display: flex;
+    // overflow: visible;
   }
   
   .circle-bars svg {
-    width: 114px;
-    height: 114px;
-    margin: 1em;
+    // width: 114px;
+    // height: 114px;
+    // margin: 1em;
+    // overflow: visible;
   }
   
-  .bg {
-    fill: none;
-    stroke-width: 10px;
-    stroke: #1A2C34;
-  }
   
-  [class^="circlebar-"] {
-    fill: none;
-    stroke-width: 10px;
-    stroke-linecap: round;
-    transform: rotate(-90deg);
-    transform-origin: 50% 50%;
-    
-  }
+  // [class^="circlebar-"] {
+  //   fill: none;
+  //   stroke-width: 10px;
+  //   stroke-linecap: round;
+  //   transform: rotate(-90deg);
+  //   transform-origin: 50% 50%;
+  // }
   
-  .circlebar-1 {
-    stroke-dasharray: 360;
-    stroke-dashoffset: 100;
-    stroke: aqua;
-    animation: progress-1 3s ease-out;
-  }
-//   .circlebar-2 {
-//     stroke: lime;
-//     stroke-dasharray: 360;
-//     stroke-dashoffset: 160;
-//     animation: progress-2 2s ease-out;
-//   }
-//   .circlebar-3 {
-//     stroke: magenta;
-//     stroke-dasharray: 360;
-//     stroke-dashoffset: 250;
-//     animation: progress-3 1s ease-out;
-//   }
+
   
 //   @keyframes progress-1 {
 //       from {
@@ -144,21 +90,5 @@
 //           stroke-dashoffset: 100;
 //       }
 //   }
+// }
   
-//   @keyframes progress-2 {
-//     from {
-//       stroke-dashoffset: 360;
-//     }
-//     to {
-//       stroke-dashoffset: 160;
-//     }
-//   }
-  
-//   @keyframes progress-3 {
-//     from {
-//       stroke-dashoffset: 360;
-//     }
-//     to {
-//       stroke-dashoffset: 250;
-//     }
-//   }

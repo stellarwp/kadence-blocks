@@ -20,6 +20,11 @@ import {
 	getPreviewSize
 } from '@kadence/helpers';
 
+import {
+	progressIcon,
+	lineBar,
+	circleBar
+} from '@kadence/icons'
  /**
  * Internal block libraries
  */
@@ -28,6 +33,8 @@ import { useSelect } from '@wordpress/data';
 import {
 	useState,
 	useEffect,
+	useCallback,
+	useMemo,
 	Fragment
 } from '@wordpress/element';
 import { useBlockProps, BlockAlignmentControl } from '@wordpress/block-editor';
@@ -45,7 +52,11 @@ import {
 	ButtonGroup,
 	Button
 } from '@wordpress/components';
-
+import {
+	Circle,
+	SemiCircle,
+	Line
+} from 'progressbar.js'
 /**
  * Internal dependencies
  */
@@ -149,9 +160,42 @@ export function Edit( {
 	} );
 
 	const layoutPresetOptions = [
-		{ key: 'line', name: __( 'Line', 'kadence-blocks' ), icon: "infoStartIcon" },
-		{ key: 'circle', name: __( 'Circle', 'kadence-blocks' ), icon: "infoBasicIcon" }
+		{ key: 'line', name: __( 'Line', 'kadence-blocks' ), icon: lineBar },
+		{ key: 'circle', name: __( 'Circle', 'kadence-blocks' ), icon: circleBar }
 	];
+	const container = document.createElement('div');
+	const ProgressCircle = ({animate}) => { 
+		const circle = useMemo(()=>
+		new Circle(container,{
+			color: KadenceColorOutput( borderColor , borderOpacity ),
+			strokeWidth: previewBarBorderTop,
+			fill: KadenceColorOutput( barBackground , barBackgroundOpacity ),
+			duration: 1200,
+		}),[]);
+		const node = useCallback( node => {
+			if ( node ) {
+				node.appendChild( container );
+			}
+		}, [] );
+
+		useEffect( () => {
+			circle.animate( animate );
+		}, [ animate, circle ] );
+
+		return <div ref={node} />;
+	};
+	const [animate,setAnimate] = useState(0.0)
+	const circleBarStyles = (
+		<style>
+			{`
+			 .bg {
+				fill: ${KadenceColorOutput( barBackground , barBackgroundOpacity )};
+				stroke-width: ${previewBarBorderTop + containerBorderType };
+				stroke: ${KadenceColorOutput( borderColor , borderOpacity )};
+			  }	
+			`}
+		</style>
+	)	
 
 	return (
 		<div { ...blockProps }>
@@ -174,10 +218,10 @@ export function Edit( {
 								isPrimary={false}
 								aria-pressed={false}
 								onClick={
-									( value ) => setAttributes( { barType: value } )
+									() => setAttributes( { barType: key } )
 								}
 							>
-								{name}
+								{icon}
 							</Button>
 						) )}
 					</ButtonGroup>
@@ -249,7 +293,7 @@ export function Edit( {
 					/>
 					<ResponsiveMeasurementControls
 						label={ __( 'Bar Border', 'kadence-blocks' ) }
-						control={ borderControl }
+						control={(barType==="circle" ? 'slider': borderControl) }
 						tabletControl={ borderControl }
 						mobileControl={ borderControl }
 						value={ containerBorder }
@@ -269,10 +313,10 @@ export function Edit( {
 						onChangeMobileControl={ ( value ) => setBorderControl( value ) }
 						allowEmpty={ true }
 						min={ 0 }
-						max={ 100 }
+						max={ 50 }
 						step={ 1 }
 						unit={ containerBorderType }
-						units={ [ 'px' ] }
+						units={ [ '%' ] }
 						onUnit={ ( value ) => setAttributes( { containerBorderType: value } ) }
 					/>
 				</PanelBody>
@@ -310,10 +354,9 @@ export function Edit( {
 
 					{(barType === "circle") &&
 						<div class="circle-bars">
-							<svg>
-								<circle class="bg" cx="57" cy="57" r="52" />
-								<circle class="circlebar-1" cx="57" cy="57" r="52" />
-							</svg>
+							{circleBarStyles}
+							<ProgressCircle animate={animate} />
+							<button onClick={()=> setAnimate(Math.random())}>Click Me</button>
 						</div>
 					}
 					

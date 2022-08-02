@@ -135,3 +135,8 @@ export { default as twoColumnIcon } from './block-icons/table-of-contents/two-co
 export { default as threeColumnIcon } from './block-icons/table-of-contents/three-column'
 export { default as bulletsIcon } from './block-icons/table-of-contents/bullets'
 export { default as numberedIcon } from './block-icons/table-of-contents/numbered'
+
+// Progress Bar Icons
+export { default as progressIcon } from './block-icons/progress-bar/primary-icon'
+export { default as circleBar } from './block-icons/progress-bar/circle-bar-layout'
+export { default as lineBar } from './block-icons/progress-bar/line-bar-layout'
