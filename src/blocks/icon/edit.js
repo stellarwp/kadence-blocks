@@ -1,19 +1,6 @@
 /**
  * BLOCK: Kadence Icon
  */
-
-/**
- * Import Icons
- */
-import {
-	individualIcon,
-	linkedIcon,
-	outlineBottomIcon,
-	outlineLeftIcon,
-	outlineRightIcon,
-	outlineTopIcon,
-} from '@kadence/icons';
-
 /**
  * Import externals
  */
@@ -26,9 +13,15 @@ import {
 	KadencePanelBody,
 	URLInputControl,
 	VerticalAlignmentIcon,
-	InspectorControlTabs
+	ResponsiveMeasurementControls,
+	ResponsiveRangeControls,
+	InspectorControlTabs,
+	RangeControl,
+	KadenceRadioButtons,
+	ResponsiveAlignControls
 } from '@kadence/components';
-import { KadenceColorOutput } from '@kadence/helpers';
+import { KadenceColorOutput, getPreviewSize } from '@kadence/helpers';
+import { useSelect, useDispatch } from '@wordpress/data';
 
 /**
  * Import Css
@@ -53,57 +46,62 @@ import {
 	useState
 } from '@wordpress/element';
 import {
-	RangeControl,
 	TextControl,
 	SelectControl,
 	Button,
 	Dashicon,
 	TabPanel,
 	ToolbarGroup,
-	ButtonGroup,
-	Tooltip,
 } from '@wordpress/components';
 
-
-/**
- * This allows for checking to see if the block needs to generate a new ID.
- */
-const kticonUniqueIDs = [];
-
 function KadenceIcons( { attributes, className, setAttributes, clientId, context } ) {
-
 	const { iconCount, inQueryBlock, icons, blockAlignment, textAlignment, tabletTextAlignment, mobileTextAlignment, uniqueID, verticalAlignment } = attributes;
 
-	const [ marginControl, setMarginControl ] = useState( 'linked' );
+	const [ marginControl, setMarginControl ] = useState( 'individual' );
+	const [ paddingControl, setPaddingControl ] = useState( 'linked' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
-
+	const { addUniqueID } = useDispatch( 'kadenceblocks/data' );
+	const { isUniqueID, isUniqueBlock, previewDevice } = useSelect(
+		( select ) => {
+			return {
+				isUniqueID: ( value ) => select( 'kadenceblocks/data' ).isUniqueID( value ),
+				isUniqueBlock: ( value, clientId ) => select( 'kadenceblocks/data' ).isUniqueBlock( value, clientId ),
+				previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
+			};
+		},
+		[ clientId ]
+	);
 	useEffect( () => {
-		if ( !uniqueID ) {
+		let smallID = '_' + clientId.substr( 2, 9 );
+		if ( ! uniqueID ) {
+			if ( ! isUniqueID( uniqueID ) ) {
+				smallID = uniqueId( smallID );
+			}
 			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
+				uniqueID: smallID,
 			} );
-			kticonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
-		} else if ( kticonUniqueIDs.includes( uniqueID ) ) {
-			setAttributes( {
-				uniqueID: '_' + clientId.substr( 2, 9 ),
-			} );
-			kticonUniqueIDs.push( '_' + clientId.substr( 2, 9 ) );
+			addUniqueID( smallID, clientId );
+		} else if ( ! isUniqueID( uniqueID ) ) {
+			// This checks if we are just switching views, client ID the same means we don't need to update.
+			if ( ! isUniqueBlock( uniqueID, clientId ) ) {
+				attributes.uniqueID = smallID;
+				addUniqueID( smallID, clientId );
+			}
 		} else {
-			kticonUniqueIDs.push( uniqueID );
+			addUniqueID( uniqueID, clientId );
 		}
 		if ( context && context.queryId && context.postId ) {
-			if ( !inQueryBlock ) {
+			if ( ! attributes.inQueryBlock ) {
 				setAttributes( {
 					inQueryBlock: true,
 				} );
 			}
-		} else if ( inQueryBlock ) {
+		} else if ( attributes.inQueryBlock ) {
 			setAttributes( {
 				inQueryBlock: false,
 			} );
 		}
 	}, [] );
-
 	const saveArrayUpdate = ( value, index ) => {
 		const newItems = icons.map( ( item, thisIndex ) => {
 			if ( index === thisIndex ) {
@@ -120,12 +118,6 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 	const blockProps = useBlockProps( {
 		className: className,
 	} );
-
-	const controlTypes = [
-		{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), micon: linkedIcon },
-		{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), micon: individualIcon },
-	];
-
 	const verticalAlignOptions = [
 		[
 			{
@@ -152,163 +144,50 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 			},
 		],
 	];
-	const tabAlignControls = (
-		<TabPanel className="kt-size-tabs"
-				  activeClass="active-tab"
-				  tabs={[
-					  {
-						  name     : 'desk',
-						  title    : <Dashicon icon="desktop"/>,
-						  className: 'kt-desk-tab',
-					  },
-					  {
-						  name     : 'tablet',
-						  title    : <Dashicon icon="tablet"/>,
-						  className: 'kt-tablet-tab',
-					  },
-					  {
-						  name     : 'mobile',
-						  title    : <Dashicon icon="smartphone"/>,
-						  className: 'kt-mobile-tab',
-					  },
-				  ]}>
-			{
-				( tab ) => {
-					let tabout;
-					if ( tab.name ) {
-						if ( 'mobile' === tab.name ) {
-							tabout = (
-								<AlignmentToolbar
-									value={mobileTextAlignment}
-									isCollapsed={false}
-									onChange={( nextAlign ) => {
-										setAttributes( { mobileTextAlignment: nextAlign } );
-									}}
-								/>
-							);
-						} else if ( 'tablet' === tab.name ) {
-							tabout = (
-								<AlignmentToolbar
-									value={tabletTextAlignment}
-									isCollapsed={false}
-									onChange={( nextAlign ) => {
-										setAttributes( { tabletTextAlignment: nextAlign } );
-									}}
-								/>
-							);
-						} else {
-							tabout = (
-								<AlignmentToolbar
-									value={textAlignment}
-									isCollapsed={false}
-									onChange={( nextAlign ) => {
-										setAttributes( { textAlignment: nextAlign } );
-									}}
-								/>
-							);
-						}
-					}
-					return <div className={tab.className} key={tab.className}>{tabout}</div>;
-				}
-			}
-		</TabPanel>
-	);
-	const hoverSettings = ( index ) => {
+	const renderAdvancedIconSettings = ( index ) => {
 		return (
-			<Fragment>
-				<PopColorControl
-					label={__( 'Icon Hover Color', 'kadence-blocks' )}
-					value={( icons[ index ].hColor ? icons[ index ].hColor : '' )}
-					default={''}
-					onChange={value => {
-						saveArrayUpdate( { hColor: value }, index );
-					}}
+			<KadencePanelBody
+				title={ __( 'Icon', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Spacing Settings', 'kadence-blocks' )}
+				initialOpen={ ( 1 === iconCount ? true : false ) }
+				panelName={'kb-icon-settings-' + index}
+			>
+				{ icons[ index ].style !== 'default' && (
+					<ResponsiveMeasurementControls
+						label={__( 'Icon Padding', 'kadence-blocks' )}
+						value={ ( icons[ index ].padding ? icons[ index ].padding : ['', '', '', ''] ) }
+						control={ paddingControl }
+						onChange={ ( value ) => saveArrayUpdate( { padding: value }, index ) }
+						onChangeControl={ ( value ) => setPaddingControl( value ) }
+						tabletValue={ ( icons[ index ].tabletPadding ? icons[ index ].tabletPadding : ['', '', '', ''] ) }
+						onChangeTablet={( value ) => saveArrayUpdate( { tabletPadding: value }, index ) }
+						mobileValue={ ( icons[ index ].mobilePadding ? icons[ index ].mobilePadding : ['', '', '', ''] ) }
+						onChangeMobile={( value ) => saveArrayUpdate( { mobilePadding: value }, index ) }
+						min={ 0 }
+						max={ ( ( icons[ index ].paddingUnit ? icons[ index ].paddingUnit : 'px' ) === 'em' || ( icons[ index ].paddingUnit ? icons[ index ].paddingUnit : 'px' ) === 'rem' ? 12 : 200 ) }
+						step={ ( ( icons[ index ].paddingUnit ? icons[ index ].paddingUnit : 'px' ) === 'em' || ( icons[ index ].paddingUnit ? icons[ index ].paddingUnit : 'px' ) === 'rem' ? 0.1 : 1 ) }
+						unit={ ( icons[ index ].paddingUnit ? icons[ index ].paddingUnit : 'px' ) }
+						units={ [ 'px', 'em', 'rem' ] }
+						onUnit={ ( value ) => saveArrayUpdate( { paddingUnit: value }, index ) }
+					/>
+				) }
+				<ResponsiveMeasurementControls
+					label={__( 'Icon Margin', 'kadence-blocks' )}
+					value={ ( icons[ index ].margin ? icons[ index ].margin : ['', '', '', ''] ) }
+					control={ marginControl }
+					onChange={ ( value ) => saveArrayUpdate( { margin: value }, index ) }
+					onChangeControl={ ( value ) => setMarginControl( value ) }
+					tabletValue={ ( icons[ index ].tabletMargin ? icons[ index ].tabletMargin : ['', '', '', ''] ) }
+					onChangeTablet={( value ) => saveArrayUpdate( { tabletMargin: value }, index ) }
+					mobileValue={ ( icons[ index ].mobileMargin ? icons[ index ].mobileMargin : ['', '', '', ''] ) }
+					onChangeMobile={( value ) => saveArrayUpdate( { mobileMargin: value }, index ) }
+					min={ ( ( icons[ index ].marginUnit ? icons[ index ].marginUnit : 'px' ) === 'em' || ( icons[ index ].marginUnit ? icons[ index ].marginUnit : 'px' ) === 'rem' ? -2 : -200 ) }
+					max={ ( ( icons[ index ].marginUnit ? icons[ index ].marginUnit : 'px' ) === 'em' || ( icons[ index ].marginUnit ? icons[ index ].marginUnit : 'px' ) === 'rem' ? 12 : 200 ) }
+					step={ ( ( icons[ index ].marginUnit ? icons[ index ].marginUnit : 'px' ) === 'em' || ( icons[ index ].marginUnit ? icons[ index ].marginUnit : 'px' ) === 'rem' ? 0.1 : 1 ) }
+					unit={ ( icons[ index ].marginUnit ? icons[ index ].marginUnit : 'px' ) }
+					units={ [ 'px', 'em', 'rem' ] }
+					onUnit={ ( value ) => saveArrayUpdate( { marginUnit: value }, index ) }
 				/>
-				<SelectControl
-					label={__( 'Icon Style', 'kadence-blocks' )}
-					value={icons[ index ].style}
-					options={[
-						{ value: 'default', label: __( 'Default', 'kadence-blocks' ) },
-						{ value: 'stacked', label: __( 'Stacked', 'kadence-blocks' ) },
-					]}
-					onChange={value => {
-						saveArrayUpdate( { style: value }, index );
-					}}
-				/>
-				{icons[ index ].style !== 'default' && (
-					<Fragment>
-						<PopColorControl
-							label={__( 'Hover Background Color', 'kadence-blocks' )}
-							value={( icons[ index ].hBackground ? icons[ index ].hBackground : '' )}
-							default={''}
-							onChange={value => {
-								saveArrayUpdate( { hBackground: value }, index );
-							}}
-						/>
-					</Fragment>
-				)}
-				{icons[ index ].style !== 'default' && (
-					<Fragment>
-						<PopColorControl
-							label={__( 'Hover Border Color', 'kadence-blocks' )}
-							value={( icons[ index ].hBorder ? icons[ index ].hBorder : '' )}
-							default={''}
-							onChange={value => {
-								saveArrayUpdate( { hBorder: value }, index );
-							}}
-						/>
-					</Fragment>
-				)}
-			</Fragment>
-		);
-	};
-	const normalSettings = ( index ) => {
-		return (
-			<Fragment>
-				<PopColorControl
-					label={__( 'Icon Color', 'kadence-blocks' )}
-					value={( icons[ index ].color ? icons[ index ].color : '' )}
-					default={''}
-					onChange={value => {
-						saveArrayUpdate( { color: value }, index );
-					}}
-				/>
-				<SelectControl
-					label={__( 'Icon Style', 'kadence-blocks' )}
-					value={icons[ index ].style}
-					options={[
-						{ value: 'default', label: __( 'Default', 'kadence-blocks' ) },
-						{ value: 'stacked', label: __( 'Stacked', 'kadence-blocks' ) },
-					]}
-					onChange={value => {
-						saveArrayUpdate( { style: value }, index );
-					}}
-				/>
-				{icons[ index ].style !== 'default' && (
-					<Fragment>
-						<PopColorControl
-							label={__( 'background Color', 'kadence-blocks' )}
-							value={( icons[ index ].background ? icons[ index ].background : '' )}
-							default={''}
-							onChange={value => {
-								saveArrayUpdate( { background: value }, index );
-							}}
-						/>
-					</Fragment>
-				)}
-				{icons[ index ].style !== 'default' && (
-					<Fragment>
-						<PopColorControl
-							label={__( 'Border Color', 'kadence-blocks' )}
-							value={( icons[ index ].border ? icons[ index ].border : '' )}
-							default={''}
-							onChange={value => {
-								saveArrayUpdate( { border: value }, index );
-							}}
-						/>
-					</Fragment>
-				)}
-			</Fragment>
+			</KadencePanelBody>
 		);
 	};
 	const renderIconSettings = ( index ) => {
@@ -324,16 +203,27 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 						saveArrayUpdate( { icon: value }, index );
 					}}
 				/>
-				<RangeControl
+				<ResponsiveRangeControls
 					label={__( 'Icon Size', 'kadence-blocks' )}
-					value={icons[ index ].size}
+					value={icons[ index ].size ? icons[ index ].size : ''}
 					onChange={value => {
 						saveArrayUpdate( { size: value }, index );
 					}}
-					min={5}
-					max={250}
+					tabletValue={ ( undefined !== icons[ index ].tabletSize ? icons[ index ].tabletSize : '' ) }
+					onChangeTablet={( value ) => {
+						saveArrayUpdate( { tabletSize: value }, index );
+					}}
+					mobileValue={( undefined !== icons[ index ].mobileSize ? icons[ index ].mobileSize : '' )}
+					onChangeMobile={( value ) => {
+						saveArrayUpdate( { mobileSize: value }, index );
+					}}
+					min={ 0 }
+					max={ 300 }
+					step={1}
+					unit={'px'}
+					showUnit={true}
 				/>
-				{icons[ index ].icon && 'fe' === icons[ index ].icon.substring( 0, 2 ) && (
+				{ icons[ index ].icon && 'fe' === icons[ index ].icon.substring( 0, 2 ) && (
 					<RangeControl
 						label={__( 'Line Width' )}
 						value={icons[ index ].width}
@@ -344,151 +234,80 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 						min={0.5}
 						max={4}
 					/>
-				)}
-				<h2 className="kt-tab-wrap-title kt-color-settings-title">{__( 'Color Settings', 'kadence-blocks' )}</h2>
-				<TabPanel className="kt-inspect-tabs kt-hover-tabs"
-						  activeClass="active-tab"
-						  tabs={[
-							  {
-								  name     : 'normal' + index,
-								  title    : __( 'Normal', 'kadence-blocks' ),
-								  className: 'kt-normal-tab',
-							  },
-							  {
-								  name     : 'hover' + index,
-								  title    : __( 'Hover', 'kadence-blocks' ),
-								  className: 'kt-hover-tab',
-							  },
-						  ]}>
-					{
-						( tab ) => {
-							let tabout;
-							if ( tab.name ) {
-								if ( 'hover' + index === tab.name ) {
-									tabout = hoverSettings( index );
-								} else {
-									tabout = normalSettings( index );
-								}
-							}
-							return <div className={tab.className} key={tab.className}>{tabout}</div>;
-						}
-					}
-				</TabPanel>
+				) }
+				<KadenceRadioButtons
+					label={__( 'Icon Style', 'kadence-blocks' )}
+					value={icons[ index ].style}
+					options={[
+						{ value: 'default', label: __( 'Default', 'kadence-blocks' ) },
+						{ value: 'stacked', label: __( 'Stacked', 'kadence-blocks' ) },
+					]}
+					onChange={value => saveArrayUpdate( { style: value }, index )}
+				/>
+				<PopColorControl
+					label={ __( 'Icon Color', 'kadence-blocks' ) }
+					value={ ( icons[ index ].color ? icons[ index ].color : '' ) }
+					default={''}
+					onChange={ value => {
+						saveArrayUpdate( { color: value }, index );
+					} }
+					swatchLabel2={ __( 'Hover Color', 'kadence-blocks' ) }
+					value2={( icons[ index ].hColor ? icons[ index ].hColor : '' )}
+					default2={''}
+					onChange2={value => {
+						saveArrayUpdate( { hColor: value }, index );
+					}}
+				/>
 				{icons[ index ].style !== 'default' && (
-					<RangeControl
-						label={__( 'Border Size (px)', 'kadence-blocks' )}
-						value={icons[ index ].borderWidth}
-						onChange={value => {
-							saveArrayUpdate( { borderWidth: value }, index );
-						}}
-						min={0}
-						max={20}
-					/>
-				)}
-				{icons[ index ].style !== 'default' && (
-					<RangeControl
-						label={__( 'Border Radius (%)', 'kadence-blocks' )}
-						value={icons[ index ].borderRadius}
-						onChange={value => {
-							saveArrayUpdate( { borderRadius: value }, index );
-						}}
-						min={0}
-						max={50}
-					/>
-				)}
-				{icons[ index ].style !== 'default' && (
-					<RangeControl
-						label={__( 'Padding (px)', 'kadence-blocks' )}
-						value={icons[ index ].padding}
-						onChange={value => {
-							saveArrayUpdate( { padding: value }, index );
-						}}
-						min={0}
-						max={180}
-					/>
-				)}
-				<ButtonGroup className="kt-size-type-options kt-outline-control" aria-label={__( 'Margin Control Type', 'kadence-blocks' )}>
-					{map( controlTypes, ( { name, key, micon } ) => (
-						<Tooltip text={name}>
-							<Button
-								key={key}
-								className="kt-size-btn"
-								isSmall
-								isPrimary={marginControl === key}
-								aria-pressed={marginControl === key}
-								onClick={() => setMarginControl( key )}
-							>
-								{micon}
-							</Button>
-						</Tooltip>
-					) )}
-				</ButtonGroup>
-				{marginControl && marginControl !== 'individual' && (
-					<RangeControl
-						label={__( 'Margin (px)', 'kadence-blocks' )}
-						value={( icons[ index ].marginTop ? icons[ index ].marginTop : 0 )}
-						onChange={( value ) => {
-							saveArrayUpdate( {
-								marginTop   : value,
-								marginRight : value,
-								marginBottom: value,
-								marginLeft  : value,
-							}, index );
-						}}
-						min={0}
-						max={180}
-						step={1}
-					/>
-				)}
-				{marginControl && marginControl === 'individual' && (
-					<Fragment>
-						<p>{__( 'Margin (px)', 'kadence-blocks' )}</p>
-						<RangeControl
-							className="kt-icon-rangecontrol"
-							label={outlineTopIcon}
-							value={( icons[ index ].marginTop ? icons[ index ].marginTop : 0 )}
-							onChange={value => {
-								saveArrayUpdate( { marginTop: value }, index );
+					<>
+						<PopColorControl
+							label={ __( 'Background Color', 'kadence-blocks' ) }
+							value={ ( icons[ index ].background ? icons[ index ].background : '' ) }
+							default={''}
+							onChange={ value => {
+								saveArrayUpdate( { background: value }, index );
+							} }
+							swatchLabel2={ __( 'Hover Background', 'kadence-blocks' ) }
+							value2={( icons[ index ].hBackground ? icons[ index ].hBackground : '' )}
+							default2={''}
+							onChange2={value => {
+								saveArrayUpdate( { hBackground: value }, index );
 							}}
-							min={0}
-							max={180}
-							step={1}
+						/>
+						<PopColorControl
+							label={ __( 'Border Color', 'kadence-blocks' ) }
+							value={ ( icons[ index ].border ? icons[ index ].border : '' ) }
+							default={''}
+							onChange={ value => {
+								saveArrayUpdate( { border: value }, index );
+							} }
+							swatchLabel2={ __( 'Hover Border', 'kadence-blocks' ) }
+							value2={( icons[ index ].hBorder ? icons[ index ].hBorder : '' )}
+							default2={''}
+							onChange2={value => {
+								saveArrayUpdate( { hBorder: value }, index );
+							}}
 						/>
 						<RangeControl
-							className="kt-icon-rangecontrol"
-							label={outlineRightIcon}
-							value={( icons[ index ].marginRight ? icons[ index ].marginRight : 0 )}
+							label={__( 'Border Size (px)', 'kadence-blocks' )}
+							value={icons[ index ].borderWidth}
 							onChange={value => {
-								saveArrayUpdate( { marginRight: value }, index );
+								saveArrayUpdate( { borderWidth: value }, index );
 							}}
 							min={0}
-							max={180}
-							step={1}
+							max={20}
 						/>
 						<RangeControl
-							className="kt-icon-rangecontrol"
-							label={outlineBottomIcon}
-							value={( icons[ index ].marginBottom ? icons[ index ].marginBottom : 0 )}
+							label={__( 'Border Radius (%)', 'kadence-blocks' )}
+							value={icons[ index ].borderRadius}
 							onChange={value => {
-								saveArrayUpdate( { marginBottom: value }, index );
+								saveArrayUpdate( { borderRadius: value }, index );
 							}}
 							min={0}
-							max={180}
-							step={1}
+							max={50}
 						/>
-						<RangeControl
-							className="kt-icon-rangecontrol"
-							label={outlineLeftIcon}
-							value={( icons[ index ].marginLeft ? icons[ index ].marginLeft : 0 )}
-							onChange={value => {
-								saveArrayUpdate( { marginLeft: value }, index );
-							}}
-							min={0}
-							max={180}
-							step={1}
-						/>
-					</Fragment>
-				)}
+					</>
+				) }				
 				<URLInputControl
 					label={__( 'Link', 'kadence-blocks' )}
 					url={icons[ index ].link}
@@ -526,25 +345,49 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 			{times( iconCount, n => renderIconSettings( n ) )}
 		</div>
 	);
+	const renderAdvancedSettings = (
+		<div>
+			{times( iconCount, n => renderAdvancedIconSettings( n ) )}
+		</div>
+	);
 	const renderIconsPreview = ( index ) => {
+		const previewSize = getPreviewSize( previewDevice, ( icons[ index ].size ? icons[ index ].size : undefined ), ( undefined !== icons[ index ].tabletSize && icons[ index ].tabletSize ? icons[ index ].tabletSize : undefined ), ( undefined !== icons[ index ].mobileSize && icons[ index ].mobileSize ? icons[ index ].mobileSize : undefined ) );
+
+		const previewMarginTop = getPreviewSize( previewDevice, ( icons[ index ].margin && undefined !== icons[ index ].margin[ 0 ] ? icons[ index ].margin[ 0 ] : undefined ), ( icons[ index ].tabletMargin && undefined !== icons[ index ].tabletMargin[ 0 ] ? icons[ index ].tabletMargin[ 0 ] : undefined ), ( icons[ index ].mobileMargin && undefined !== icons[ index ].mobileMargin[ 0 ] ? icons[ index ].mobileMargin[ 0 ] : undefined ) );
+		const previewMarginRight = getPreviewSize( previewDevice, ( icons[ index ].margin && undefined !== icons[ index ].margin[ 1 ] ? icons[ index ].margin[ 1 ] : undefined ), ( icons[ index ].tabletMargin && undefined !== icons[ index ].tabletMargin[ 1 ] ? icons[ index ].tabletMargin[ 1 ] : undefined ), ( icons[ index ].mobileMargin && undefined !== icons[ index ].mobileMargin[ 1 ] ? icons[ index ].mobileMargin[ 1 ] : undefined ) );
+		const previewMarginBottom = getPreviewSize( previewDevice, ( icons[ index ].margin && undefined !== icons[ index ].margin[ 2 ] ? icons[ index ].margin[ 2 ] : undefined ), ( icons[ index ].tabletMargin && undefined !== icons[ index ].tabletMargin[ 2 ] ? icons[ index ].tabletMargin[ 2 ] : undefined ), ( icons[ index ].mobileMargin && undefined !== icons[ index ].mobileMargin[ 2 ] ? icons[ index ].mobileMargin[ 2 ] : undefined ) );
+		const previewMarginLeft	 = getPreviewSize( previewDevice, ( icons[ index ].margin && undefined !== icons[ index ].margin[ 3 ] ? icons[ index ].margin[ 3 ] : undefined ), ( icons[ index ].tabletMargin && undefined !== icons[ index ].tabletMargin[ 3 ] ? icons[ index ].tabletMargin[ 3 ] : undefined ), ( icons[ index ].mobileMargin && undefined !== icons[ index ].mobileMargin[ 3 ] ? icons[ index ].mobileMargin[ 3 ] : undefined ) );
+
+		const previewPaddingTop = getPreviewSize( previewDevice, ( icons[ index ].padding && undefined !== icons[ index ].padding[ 0 ] ? icons[ index ].padding[ 0 ] : undefined ), ( icons[ index ].tabletPadding && undefined !== icons[ index ].tabletPadding[ 0 ] ? icons[ index ].tabletPadding[ 0 ] : undefined ), ( icons[ index ].mobilePadding && undefined !== icons[ index ].mobilePadding[ 0 ] ? icons[ index ].mobilePadding[ 0 ] : undefined ) );
+		const previewPaddingRight = getPreviewSize( previewDevice, ( icons[ index ].padding && undefined !== icons[ index ].padding[ 1 ] ? icons[ index ].padding[ 1 ] : undefined ), ( icons[ index ].tabletPadding && undefined !== icons[ index ].tabletPadding[ 1 ] ? icons[ index ].tabletPadding[ 1 ] : undefined ), ( icons[ index ].mobilePadding && undefined !== icons[ index ].mobilePadding[ 1 ] ? icons[ index ].mobilePadding[ 1 ] : undefined ) );
+		const previewPaddingBottom = getPreviewSize( previewDevice, ( icons[ index ].padding && undefined !== icons[ index ].padding[ 2 ] ? icons[ index ].padding[ 2 ] : undefined ), ( icons[ index ].tabletPadding && undefined !== icons[ index ].tabletPadding[ 2 ] ? icons[ index ].tabletPadding[ 2 ] : undefined ), ( icons[ index ].mobilePadding && undefined !== icons[ index ].mobilePadding[ 2 ] ? icons[ index ].mobilePadding[ 2 ] : undefined ) );
+		const previewPaddingLeft	 = getPreviewSize( previewDevice, ( icons[ index ].padding && undefined !== icons[ index ].padding[ 3 ] ? icons[ index ].padding[ 3 ] : undefined ), ( icons[ index ].tabletPadding && undefined !== icons[ index ].tabletPadding[ 3 ] ? icons[ index ].tabletPadding[ 3 ] : undefined ), ( icons[ index ].mobilePadding && undefined !== icons[ index ].mobilePadding[ 3 ] ? icons[ index ].mobilePadding[ 3 ] : undefined ) );
+
+		const previewPaddingUnit = undefined !== icons[ index ].paddingUnit && icons[ index ].paddingUnit ? icons[ index ].paddingUnit : 'px';
+		const previewMarginUnit = undefined !== icons[ index ].marginUnit && icons[ index ].marginUnit ? icons[ index ].marginUnit : 'px';
 		return (
 			<div className={`kt-svg-style-${icons[ index ].style} kt-svg-icon-wrap kt-svg-item-${index}`}>
 				{icons[ index ].icon && (
-					<IconRender className={`kt-svg-icon kt-svg-icon-${icons[ index ].icon}`} name={icons[ index ].icon} size={icons[ index ].size}
-								strokeWidth={( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined )} title={( icons[ index ].title ? icons[ index ].title : '' )}
-								style={{
-									color          : ( icons[ index ].color ? KadenceColorOutput( icons[ index ].color ) : undefined ),
-									backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].background ) : undefined ),
-									padding        : ( icons[ index ].padding && icons[ index ].style !== 'default' ? icons[ index ].padding + 'px' : undefined ),
-									borderColor    : ( icons[ index ].border && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].border ) : undefined ),
-									borderWidth    : ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
-									borderRadius   : ( icons[ index ].borderRadius && icons[ index ].style !== 'default' ? icons[ index ].borderRadius + '%' : undefined ),
-									marginTop      : ( icons[ index ].marginTop ? icons[ index ].marginTop + 'px' : undefined ),
-									marginRight    : ( icons[ index ].marginRight ? icons[ index ].marginRight + 'px' : undefined ),
-									marginBottom   : ( icons[ index ].marginBottom ? icons[ index ].marginBottom + 'px' : undefined ),
-									marginLeft     : ( icons[ index ].marginLeft ? icons[ index ].marginLeft + 'px' : undefined ),
-								}}/>
-				)}
+					<IconRender
+						className={`kt-svg-icon kt-svg-icon-${icons[ index ].icon}`} name={icons[ index ].icon} size={ previewSize }
+						strokeWidth={( 'fe' === icons[ index ].icon.substring( 0, 2 ) ? icons[ index ].width : undefined )} title={( icons[ index ].title ? icons[ index ].title : '' )}
+						style={ {
+							color          : ( icons[ index ].color ? KadenceColorOutput( icons[ index ].color ) : undefined ),
+							backgroundColor: ( icons[ index ].background && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].background ) : undefined ),
+							paddingTop        : ( previewPaddingTop && icons[ index ].style !== 'default' ? previewPaddingTop + previewPaddingUnit : undefined ),
+							paddingRight        : ( previewPaddingRight && icons[ index ].style !== 'default' ? previewPaddingRight + previewPaddingUnit : undefined ),
+							paddingBottom        : ( previewPaddingBottom && icons[ index ].style !== 'default' ? previewPaddingBottom + previewPaddingUnit : undefined ),
+							paddingLeft        : ( previewPaddingLeft && icons[ index ].style !== 'default' ? previewPaddingLeft + previewPaddingUnit : undefined ),
+							borderColor    : ( icons[ index ].border && icons[ index ].style !== 'default' ? KadenceColorOutput( icons[ index ].border ) : undefined ),
+							borderWidth    : ( icons[ index ].borderWidth && icons[ index ].style !== 'default' ? icons[ index ].borderWidth + 'px' : undefined ),
+							borderRadius   : ( icons[ index ].borderRadius && icons[ index ].style !== 'default' ? icons[ index ].borderRadius + '%' : undefined ),
+							marginTop      : ( previewMarginTop ? previewMarginTop + previewMarginUnit : undefined ),
+							marginRight    : ( previewMarginRight ? previewMarginRight + previewMarginUnit : undefined ),
+							marginBottom   : ( previewMarginBottom ? previewMarginBottom + previewMarginUnit : undefined ),
+							marginLeft     : ( previewMarginLeft ? previewMarginLeft + previewMarginUnit : undefined ),
+						} }
+					/>
+				) }
 			</div>
 		);
 	};
@@ -562,6 +405,7 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 			{times( iconCount, n => renderIconCSS( n ) )}
 		</style>
 	);
+	const previewTextAlign = getPreviewSize( previewDevice, ( textAlignment ? textAlignment : undefined ), ( undefined !== tabletTextAlignment && tabletTextAlignment ? tabletTextAlignment : undefined ), ( undefined !== mobileTextAlignment && mobileTextAlignment ? mobileTextAlignment : undefined ) );
 	return (
 		<div {...blockProps}>
 			{renderCSS}
@@ -601,7 +445,7 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 							<StepControls
 								label={__( 'Number of Icons', 'kadence-blocks' )}
 								value={iconCount}
-								onChange={newcount => {
+								onChange={ newcount => {
 									const newicons = icons;
 									if ( newicons.length < newcount ) {
 										const amount = Math.abs( newcount - newicons.length );
@@ -612,6 +456,8 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 													link        : newicons[ 0 ].link,
 													target      : newicons[ 0 ].target,
 													size        : newicons[ 0 ].size,
+													tabletSize  : ( newicons[ 0 ].tabletSize ? newicons[ 0 ].tabletSize : '' ),
+													mobileSize  : ( newicons[ 0 ].mobileSize ? newicons[ 0 ].mobileSize : '' ),
 													width       : newicons[ 0 ].width,
 													title       : newicons[ 0 ].title,
 													color       : newicons[ 0 ].color,
@@ -621,10 +467,14 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 													borderWidth : newicons[ 0 ].borderWidth,
 													padding     : newicons[ 0 ].padding,
 													style       : newicons[ 0 ].style,
-													marginTop   : ( newicons[ 0 ].marginTop ? newicons[ 0 ].marginTop : 0 ),
-													marginRight : ( newicons[ 0 ].marginRight ? newicons[ 0 ].marginRight : 0 ),
-													marginBottom: ( newicons[ 0 ].marginBottom ? newicons[ 0 ].marginBottom : 0 ),
-													marginLeft  : ( newicons[ 0 ].marginLeft ? newicons[ 0 ].marginLeft : 0 ),
+													paddingUnit  : ( newicons[ 0 ].paddingUnit ? newicons[ 0 ].paddingUnit : 'px' ),
+													marginUnit  : ( newicons[ 0 ].marginUnit ? newicons[ 0 ].marginUnit : 'px' ),
+													margin      : ( newicons[ 0 ].margin ? newicons[ 0 ].margin : [ '', '', '', '' ] ),
+													padding      : ( newicons[ 0 ].padding ? newicons[ 0 ].padding : [ 20, 20, 20, 20 ] ),
+													tabletMargin      : ( newicons[ 0 ].tabletMargin ? newicons[ 0 ].tabletMargin : [ '', '', '', '' ] ),
+													mobileMargin      : ( newicons[ 0 ].mobileMargin ? newicons[ 0 ].mobileMargin : [ '', '', '', '' ] ),
+													tabletPadding      : ( newicons[ 0 ].tabletPadding ? newicons[ 0 ].tabletPadding : [ '', '', '', '' ] ),
+													mobilePadding      : ( newicons[ 0 ].mobilePadding ? newicons[ 0 ].mobilePadding : [ '', '', '', '' ] ),
 													hColor      : ( newicons[ 0 ].hColor ? newicons[ 0 ].hColor : '' ),
 													hBackground : ( newicons[ 0 ].hBackground ? newicons[ 0 ].hBackground : '' ),
 													hBorder     : ( newicons[ 0 ].hBorder ? newicons[ 0 ].hBorder : '' ),
@@ -639,19 +489,27 @@ function KadenceIcons( { attributes, className, setAttributes, clientId, context
 								min={1}
 								max={10}
 							/>
-							<div className="kb-sidebar-alignment components-base-control">
-								<p className="kb-component-label kb-responsive-label">{__( 'Text Alignment', 'kadence-blocks' )}</p>
-								{tabAlignControls}
-							</div>
+							<ResponsiveAlignControls
+								label={__( 'Icons Alignment', 'kadence-blocks' )}
+								value={( textAlignment ? textAlignment : '' )}
+								mobileValue={( mobileTextAlignment ? mobileTextAlignment : '' )}
+								tabletValue={( tabletTextAlignment ? tabletTextAlignment : '' )}
+								onChange={( nextAlign ) => setAttributes( { textAlignment: nextAlign } )}
+								onChangeTablet={( nextAlign ) => setAttributes( { tabletTextAlignment: nextAlign } )}
+								onChangeMobile={( nextAlign ) => setAttributes( { mobileTextAlignment: nextAlign } )}
+							/>
 						</KadencePanelBody>
 						{renderSettings}
 
 					</>
 				}
+				{ ( activeTab === 'advanced' ) &&
+					<>
+						{ renderAdvancedSettings }
+					</>
+				}
 			</InspectorControls>
-			<div className={`kt-svg-icons ${clientId} kt-svg-icons-${uniqueID}${verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : ''}`} style={{
-				textAlign: ( textAlignment ? textAlignment : 'center' ),
-			}}>
+			<div className={`kt-svg-icons ${clientId} kt-svg-icons-${uniqueID}${previewTextAlign ? ' kb-icon-halign-' + previewTextAlign : ''}${verticalAlignment ? ' kb-icon-valign-' + verticalAlignment : ''}`}>
 				{times( iconCount, n => renderIconsPreview( n ) )}
 			</div>
 		</div>

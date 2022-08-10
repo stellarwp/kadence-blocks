@@ -22,6 +22,25 @@ function kadence_blocks_is_not_amp() {
 	return $not_amp;
 }
 
+/**
+ * Check if we are in a rest api call.
+ */
+function kadence_blocks_is_rest() {
+	$prefix = rest_get_url_prefix();
+	if ( ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( isset( $_GET['rest_route'] ) && strpos( $_GET['rest_route'], '/', 0 ) === 0 ) ) {
+		return true;
+	}
+	// (#3).
+	global $wp_rewrite;
+	if ( $wp_rewrite === null ) {
+		$wp_rewrite = new WP_Rewrite();
+	}
+	// (#4).
+	$rest_url = wp_parse_url( trailingslashit( rest_url( ) ) );
+	$current_url = wp_parse_url( add_query_arg( array( ) ) );
+	return strpos( $current_url['path'], $rest_url['path'], 0 ) === 0;
+}
+
 
 /**
  * Hex to RGBA

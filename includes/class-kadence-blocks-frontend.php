@@ -169,14 +169,14 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 
-		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/accordion/block.json',
-			array(
-				'render_callback' => array( $this, 'render_accordion_css' ),
-				'editor_script'   => 'kadence-blocks-accordion',
-				'editor_style'    => 'kadence-blocks-accordion',
-			)
-		);
+		// register_block_type(
+		// 	KADENCE_BLOCKS_PATH . 'dist/blocks/accordion/block.json',
+		// 	array(
+		// 		'render_callback' => array( $this, 'render_accordion_css' ),
+		// 		'editor_script'   => 'kadence-blocks-accordion',
+		// 		'editor_style'    => 'kadence-blocks-accordion',
+		// 	)
+		// );
 		register_block_type(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-btn/block.json',
 			array(
@@ -241,14 +241,14 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-tabs',
 			)
 		);
-		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/icon/block.json',
-			array(
-				'render_callback' => array( $this, 'render_icon_css' ),
-				'editor_script'   => 'kadence-blocks-icon',
-				'editor_style'    => 'kadence-blocks-icon',
-			)
-		);
+		// register_block_type(
+		// 	KADENCE_BLOCKS_PATH . 'dist/blocks/icon/block.json',
+		// 	array(
+		// 		'render_callback' => array( $this, 'render_icon_css' ),
+		// 		'editor_script'   => 'kadence-blocks-icon',
+		// 		'editor_style'    => 'kadence-blocks-icon',
+		// 	)
+		// );
 		register_block_type(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/icon-list/block.json',
 			array(
@@ -935,34 +935,34 @@ class Kadence_Blocks_Frontend {
 		}
 		return $content;
 	}
-	/**
-	 * Render Accordion CSS in Head
-	 *
-	 * @param array $attributes the blocks attribtues.
-	 */
-	public function render_accordion_css_head( $attributes ) {
-		if ( ! wp_style_is( 'kadence-blocks-accordion', 'enqueued' ) ) {
-			$this->enqueue_style( 'kadence-blocks-accordion' );
-		}
-		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-			if ( isset( $attributes['faqSchema'] ) && $attributes['faqSchema'] ) {
-				$faq_script_id = 'kb-faq' . esc_attr( $unique_id );
-				if ( is_null( self::$faq_schema ) ) {
-					self::$faq_schema = '<script type="application/ld+json" class="kadence-faq-schema-graph kadence-faq-schema-graph--' . $faq_script_id . '">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[]}</script>';
-				}
-			}
-			$style_id = 'kb-accordion' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'accordion', $attributes ) ) {
-				// Filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
-				$css = $this->blocks_accordion_array( $attributes, $unique_id );
-				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id );
-				}
-			}
-		}
-	}
+	// /**
+	//  * Render Accordion CSS in Head
+	//  *
+	//  * @param array $attributes the blocks attribtues.
+	//  */
+	// public function render_accordion_css_head( $attributes ) {
+	// 	if ( ! wp_style_is( 'kadence-blocks-accordion', 'enqueued' ) ) {
+	// 		$this->enqueue_style( 'kadence-blocks-accordion' );
+	// 	}
+	// 	if ( isset( $attributes['uniqueID'] ) ) {
+	// 		$unique_id = $attributes['uniqueID'];
+	// 		if ( isset( $attributes['faqSchema'] ) && $attributes['faqSchema'] ) {
+	// 			$faq_script_id = 'kb-faq' . esc_attr( $unique_id );
+	// 			if ( is_null( self::$faq_schema ) ) {
+	// 				self::$faq_schema = '<script type="application/ld+json" class="kadence-faq-schema-graph kadence-faq-schema-graph--' . $faq_script_id . '">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[]}</script>';
+	// 			}
+	// 		}
+	// 		$style_id = 'kb-accordion' . esc_attr( $unique_id );
+	// 		if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'accordion', $attributes ) ) {
+	// 			// Filter attributes for easier dynamic css.
+	// 			$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
+	// 			$css = $this->blocks_accordion_array( $attributes, $unique_id );
+	// 			if ( ! empty( $css ) ) {
+	// 				$this->render_inline_css( $css, $style_id );
+	// 			}
+	// 		}
+	// 	}
+	// }
 	/**
 	 * Render Pane Schema in Head
 	 *
@@ -1013,38 +1013,38 @@ class Kadence_Blocks_Frontend {
 			}
 		}
 	}
-	/**
-	 * Render Accordion CSS
-	 *
-	 * @param array  $attributes the blocks attribtues.
-	 * @param string $content the blocks content.
-	 */
-	public function render_accordion_css( $attributes, $content ) {
-		if ( ! wp_style_is( 'kadence-blocks-accordion', 'enqueued' ) ) {
-			wp_enqueue_style( 'kadence-blocks-accordion' );
-		}
-		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kb-accordion' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
-				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
-				if ( $this->it_is_not_amp() ) {
-					wp_enqueue_script( 'kadence-blocks-accordion-js' );
-				}
-				$this->should_render_inline_stylesheet( 'kadence-blocks-accordion' );
-				$css = $this->blocks_accordion_array( $attributes, $unique_id );
-				if ( ! empty( $css ) ) {
-					if ( $this->should_render_inline( 'accordion', $unique_id ) ) {
-						$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
-					} else {
-						$this->render_inline_css( $css, $style_id, true );
-					}
-				}
-			}
-		}
-		return $content;
-	}
+	// /**
+	//  * Render Accordion CSS
+	//  *
+	//  * @param array  $attributes the blocks attribtues.
+	//  * @param string $content the blocks content.
+	//  */
+	// public function render_accordion_css( $attributes, $content ) {
+	// 	if ( ! wp_style_is( 'kadence-blocks-accordion', 'enqueued' ) ) {
+	// 		wp_enqueue_style( 'kadence-blocks-accordion' );
+	// 	}
+	// 	if ( isset( $attributes['uniqueID'] ) ) {
+	// 		$unique_id = $attributes['uniqueID'];
+	// 		$style_id = 'kb-accordion' . esc_attr( $unique_id );
+	// 		if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'accordion', $unique_id ) ) {
+	// 			// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
+	// 			$attributes = apply_filters( 'kadence_blocks_accordion_render_block_attributes', $attributes );
+	// 			if ( $this->it_is_not_amp() ) {
+	// 				wp_enqueue_script( 'kadence-blocks-accordion-js' );
+	// 			}
+	// 			$this->should_render_inline_stylesheet( 'kadence-blocks-accordion' );
+	// 			$css = $this->blocks_accordion_array( $attributes, $unique_id );
+	// 			if ( ! empty( $css ) ) {
+	// 				if ( $this->should_render_inline( 'accordion', $unique_id ) ) {
+	// 					$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
+	// 				} else {
+	// 					$this->render_inline_css( $css, $style_id, true );
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// 	return $content;
+	// }
 	/**
 	 * Render Google Maps block CSS
 	 *
@@ -1619,7 +1619,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_style( 'kadence-blocks-btn', KADENCE_BLOCKS_URL . 'dist/style-blocks-advanced-btn.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-gallery', KADENCE_BLOCKS_URL . 'dist/style-blocks-advanced-gallery.css', array(), KADENCE_BLOCKS_VERSION );
 		//wp_register_style( 'kadence-blocks-icon', KADENCE_BLOCKS_URL . 'dist/style-blocks-icon.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-icon', false );
+		//wp_register_style( 'kadence-blocks-icon', false );
 		wp_register_style( 'kadence-blocks-iconlist', KADENCE_BLOCKS_URL . 'dist/style-blocks-icon-list.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-image', KADENCE_BLOCKS_URL . 'dist/style-blocks-image.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-tabs', KADENCE_BLOCKS_URL . 'dist/style-blocks-tabs.css', array(), KADENCE_BLOCKS_VERSION );
@@ -1649,7 +1649,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-magnific-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-init-video-popup.min.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-gallery-magnific-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-gallery-magnific-init.min.js', array( 'jquery', 'magnific-popup' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-simplelightbox-init', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-gallery-simple-init.min.js', array( 'kadence-simplelightbox' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-accordion-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-accordion.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		//wp_register_script( 'kadence-blocks-accordion-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-accordion.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-tabs.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'includes/assets/js/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
@@ -1818,22 +1818,6 @@ class Kadence_Blocks_Frontend {
 			$link .= '&amp;display=swap';
 		}
 		echo '<link href="//fonts.googleapis.com/css?family=' . esc_attr( str_replace( '|', '%7C', $link ) ) . '" rel="stylesheet">';
-	}
-	/**
-	 * Gets the parsed blocks, need to use this becuase wordpress 5 doesn't seem to include gutenberg_parse_blocks
-	 *
-	 * @param string $content string of page/post content.
-	 */
-	public function kadence_parse_blocks( $content ) {
-		$parser_class = apply_filters( 'block_parser_class', 'WP_Block_Parser' );
-		if ( class_exists( $parser_class ) ) {
-			$parser = new $parser_class();
-			return $parser->parse( $content );
-		} elseif ( function_exists( 'gutenberg_parse_blocks' ) ) {
-			return gutenberg_parse_blocks( $content );
-		} else {
-			return false;
-		}
 	}
 	/**
 	 * Outputs extra css for blocks.
@@ -2011,14 +1995,18 @@ class Kadence_Blocks_Frontend {
 			return;
 		}
 		if ( ! method_exists( $post_object, 'post_content' ) ) {
-			$blocks = $this->kadence_parse_blocks( $post_object->post_content );
-			//print_r( $blocks );
+			$blocks = parse_blocks( $post_object->post_content );
 			if ( ! is_array( $blocks ) || empty( $blocks ) ) {
 				return;
 			}
+			$kadence_blocks = apply_filters( 'kadence_blocks_blocks_to_generate_post_css', array() );
 			foreach ( $blocks as $indexkey => $block ) {
 				$block = apply_filters( 'kadence_blocks_frontend_build_css', $block );
 				if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
+					if ( isset( $kadence_blocks[ $block['blockName'] ] ) ) {
+						$block_class_instance = $kadence_blocks[ $block['blockName'] ]::get_instance();
+						$block_class_instance->output_head_data( $block );
+					}
 					if ( 'kadence/restaurantmenu' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -2059,13 +2047,14 @@ class Kadence_Blocks_Frontend {
 							$this->render_advanced_btn_css_head( $blockattr );
 						}
 					}
-					if ( 'kadence/accordion' === $block['blockName'] ) {
-						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
-							$blockattr = $block['attrs'];
-							$this->render_accordion_css_head( $blockattr );
-							$this->blocks_accordion_scripts_gfonts( $blockattr );
-						}
-					}
+					// if ( 'kadence/accordion' === $block['blockName'] ) {
+					// 	if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+					// 		$blockattr = $block['attrs'];
+					// 		$this->render_accordion_css_head( $blockattr );
+					// 		$this->blocks_accordion_scripts_gfonts( $blockattr );
+					// 	}
+					// }
+					/** !!!! Needs to stay to build schema !!! **/
 					if ( 'kadence/pane' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							if ( isset( $block['attrs']['faqSchema'] ) && $block['attrs']['faqSchema'] ) {
@@ -2117,12 +2106,12 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_iconlist_scripts_gfonts( $blockattr );
 						}
 					}
-					if ( 'kadence/icon' === $block['blockName'] ) {
-						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
-							$blockattr = $block['attrs'];
-							$this->render_icon_css_head( $blockattr );
-						}
-					}
+					// if ( 'kadence/icon' === $block['blockName'] ) {
+					// 	if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
+					// 		$blockattr = $block['attrs'];
+					// 		$this->render_icon_css_head( $blockattr );
+					// 	}
+					// }
 					if ( 'kadence/testimonials' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
@@ -2174,7 +2163,7 @@ class Kadence_Blocks_Frontend {
 							if ( isset( $blockattr['ref'] ) ) {
 								$reusable_block = get_post( $blockattr['ref'] );
 								if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
-									$reuse_data_block = $this->kadence_parse_blocks( $reusable_block->post_content );
+									$reuse_data_block = parse_blocks( $reusable_block->post_content );
 									$this->blocks_cycle_through( $reuse_data_block );
 								}
 							}
@@ -2223,13 +2212,13 @@ class Kadence_Blocks_Frontend {
 						$this->render_advanced_heading_css_head( $blockattr );
 					}
 				}
-				if ( 'kadence/accordion' === $inner_block['blockName'] ) {
-					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
-						$blockattr = $inner_block['attrs'];
-						$this->render_accordion_css_head( $blockattr );
-						$this->blocks_accordion_scripts_gfonts( $blockattr );
-					}
-				}
+				// if ( 'kadence/accordion' === $inner_block['blockName'] ) {
+				// 	if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+				// 		$blockattr = $inner_block['attrs'];
+				// 		$this->render_accordion_css_head( $blockattr );
+				// 		$this->blocks_accordion_scripts_gfonts( $blockattr );
+				// 	}
+				// }
 				if ( 'kadence/pane' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						if ( isset( $inner_block['attrs']['faqSchema'] ) && $inner_block['attrs']['faqSchema'] ) {
@@ -2263,12 +2252,12 @@ class Kadence_Blocks_Frontend {
 						$this->blocks_iconlist_scripts_gfonts( $blockattr );
 					}
 				}
-				if ( 'kadence/icon' === $inner_block['blockName'] ) {
-					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
-						$blockattr = $inner_block['attrs'];
-						$this->render_icon_css_head( $blockattr );
-					}
-				}
+				// if ( 'kadence/icon' === $inner_block['blockName'] ) {
+				// 	if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
+				// 		$blockattr = $inner_block['attrs'];
+				// 		$this->render_icon_css_head( $blockattr );
+				// 	}
+				// }
 				if ( 'kadence/testimonials' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
@@ -2344,7 +2333,7 @@ class Kadence_Blocks_Frontend {
 						if ( isset( $blockattr['ref'] ) ) {
 							$reusable_block = get_post( $blockattr['ref'] );
 							if ( $reusable_block && 'wp_block' == $reusable_block->post_type ) {
-								$reuse_data_block = $this->kadence_parse_blocks( $reusable_block->post_content );
+								$reuse_data_block = parse_blocks( $reusable_block->post_content );
 								// This is a block inside itself.
 								if ( isset( $reuse_data_block[0] ) && isset( $reuse_data_block[0]['blockName'] ) && 'core/block' === $reuse_data_block[0]['blockName'] && isset( $reuse_data_block[0]['attrs'] ) && isset( $reuse_data_block[0]['attrs']['ref'] ) && $reuse_data_block[0]['attrs']['ref'] === $blockattr['ref'] ) {
 									return;
@@ -7190,7 +7179,7 @@ class Kadence_Blocks_Frontend {
 
 		return $css->css_output();
 	}
-		/**
+	/**
 	 * Builds CSS for Accordion block.
 	 *
 	 * @param array  $attr the blocks attr.
