@@ -17,8 +17,6 @@ import { registerBlockType } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { Icon } from '@wordpress/components';
 
-
-// export { name, category, metadata, settings };
 registerBlockType('kadence/advanced-form-email', {
 	...metadata,
 	icon: {

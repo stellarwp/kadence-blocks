@@ -38,6 +38,10 @@
 	"helpText": {
 	  "type": "string",
 	  "default": ""
+	},
+	"name": {
+	  "type": "string",
+	  "default": ""
 	}
   },
   "editorScript": "file:editor.js",

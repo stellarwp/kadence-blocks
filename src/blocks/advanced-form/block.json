@@ -1,7 +1,7 @@
 {
   "apiVersion": 2,
   "name": "kadence/advanced-form",
-  "title": "KForm",
+  "title": "Advanced Form",
   "category": "kadence-blocks",
   "description": "Kadence advanced form",
   "supports": {
@@ -95,7 +95,7 @@
 	},
 	"actions": {
 	  "type": "array",
-	  "default": [ "email" ]
+	  "default": []
 	},
 	"email": {
 	  "type": "object",
@@ -125,6 +125,36 @@
 		  "map": [],
 		  "doubleOptin": false
 		}
+	},
+	"sendinblue": {
+	  "type": "object",
+	  "default": {
+		  "list": [],
+		  "map": []
+		}
+	},
+	"mailchimp": {
+	  "type": "object",
+	  "default": {
+		"list": [],
+		"map": []
+	  }
+	},
+	"convertkit": {
+	  "type": "object",
+	  "default": {
+		"form": [],
+		"sequence": [],
+		"tags": [],
+		"map": []
+	  }
+	},
+	"activecampaign": {
+	  "type": "object",
+	  "default": {
+		"list": [],
+		"map": []
+	  }
 	},
 	"redirect": {
 	  "type": "string",
@@ -293,6 +323,46 @@
 		"loadGoogle": true,
 		"padding": [ "", "", "", "" ],
 		"margin": [ "", "", "", "" ]
+	  }
+	},
+	"messages": {
+	  "type": "object",
+	  "default": {
+		  "success": "",
+		  "error": "",
+		  "required": "",
+		  "invalid": "",
+		  "recaptchaerror": "",
+		  "preError": ""
+		}
+	},
+	"webhook": {
+	  "type": "object",
+	  "default": {
+		"url": "",
+		"map": []
+	  }
+	},
+	"autoEmail": {
+	  "type": "object",
+	  "default": {
+		"emailTo": "",
+		"subject": "",
+		"message": "",
+		"fromEmail": "",
+		"fromName": "",
+		"replyTo": "",
+		"cc": "",
+		"bcc": "",
+		"html": true
+	  }
+	},
+	"entry": {
+	  "type": "object",
+	  "default": {
+		"formName": "",
+		"userIP": true,
+		"userDevice": true
 	  }
 	}
   },

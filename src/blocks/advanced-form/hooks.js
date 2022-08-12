@@ -22,7 +22,10 @@ export function useEntityAutoDraft( restBase, postType = 'post' ) {
 		try {
 			const response = await apiFetch( {
 				method: 'POST',
-				path: `/${ restBase }/auto-draft?post_type=${ postType }`
+				path: `/wp/v2/${ restBase }/auto-draft`,
+				data: {
+					post_type: postType,
+				}
 			} );
 
 			receiveEntityRecords( 'postType', response.type, [ response ] );

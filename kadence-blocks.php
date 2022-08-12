@@ -48,6 +48,8 @@ function kadence_blocks_init() {
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-fluentcrm-form-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-get-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-lottieanimation-post-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/convertkit-rest-api.php';
+	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form/activecampaign-rest-api.php';
 	require_once KADENCE_BLOCKS_PATH . 'includes/class-kadence-blocks-svg.php';
 
 	require_once KADENCE_BLOCKS_PATH . 'includes/advanced-form-ajax.php';

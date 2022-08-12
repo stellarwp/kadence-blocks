@@ -6,17 +6,18 @@ import FormFieldLabel from '../../label';
 /**
  * WordPress dependencies
  */
-import { TextControl, ToggleControl, PanelBody } from '@wordpress/components';
+import { TextControl, ToggleControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { compose } from '@wordpress/compose';
-import { InspectorControls } from '@wordpress/block-editor';
+import { InspectorControls, InspectorAdvancedControls } from '@wordpress/block-editor';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { getPreviewSize } from '@kadence/helpers';
+import { KadencePanelBody } from '@kadence/components';
 
 import { ColumnWidth, GetInputStyles, GetLabelStyles, GetHelpStyles } from '../../components';
 
-function FieldText( { attributes, setAttributes, isSelected, name, previewDevice, context } ) {
-	const { required, label, showLabel, value, helpText, ariaDescription, width, placeholder } = attributes;
+function FieldText( { attributes, setAttributes, isSelected, previewDevice, context } ) {
+	const { required, label, showLabel, value, helpText, ariaDescription, width, placeholder, name } = attributes;
 
 	let fieldStyle = context[ 'kadence/advanced-form/field-style' ];
 
@@ -24,15 +25,16 @@ function FieldText( { attributes, setAttributes, isSelected, name, previewDevice
 	const labelStyles = GetLabelStyles( previewDevice, context[ 'kadence/advanced-form/label-style' ] );
 	const helpStyles = GetHelpStyles( previewDevice, context[ 'kadence/advanced-form/help-style' ] );
 
-	const previewWidth = getPreviewSize( previewDevice, width[ 0 ], width[ 1 ], width[ 2 ] ) ;
+	const previewWidth = getPreviewSize( previewDevice, width[ 0 ], width[ 1 ], width[ 2 ] );
 
 	return (
 		<div className={'kadence-blocks-form-field kb-input-size-standard'}>
 			<InspectorControls>
 
-				<PanelBody
+				<KadencePanelBody
 					title={__( 'Field Controls', 'kadence-blocks' )}
 					initialOpen={true}
+					panelName={ 'kb-adv-form-text-controls' }
 				>
 					<ToggleControl
 						label={__( 'Required', 'kadence-blocks' )}
@@ -70,10 +72,19 @@ function FieldText( { attributes, setAttributes, isSelected, name, previewDevice
 						onChange={( value ) => setAttributes( { ariaDescription: value } )}
 					/>
 
-					<ColumnWidth saveSubmit={ setAttributes } width={ width } />
+					<ColumnWidth saveSubmit={setAttributes} width={width}/>
 
-				</PanelBody>
+				</KadencePanelBody>
+
 			</InspectorControls>
+			<InspectorAdvancedControls>
+				<TextControl
+					label={__( 'Field Name', 'kadence-blocks' )}
+					help={ __( 'This is the name attribute that is applied to the html input tag.', 'kadence-blocks' ) }
+					value={name}
+					onChange={( value ) => setAttributes( { name: value.replace(/[^a-z0-9-_]/gi, '') } ) }
+				/>
+			</InspectorAdvancedControls>
 			<div className={'kb-form-field-container'}>
 				<div className={'kb-form-field'}>
 					<FormFieldLabel
@@ -83,36 +94,36 @@ function FieldText( { attributes, setAttributes, isSelected, name, previewDevice
 						setAttributes={setAttributes}
 						isSelected={isSelected}
 						name={name}
-						labelStyles={ labelStyles }
-						fieldStyle={ fieldStyle }
+						labelStyles={labelStyles}
+						fieldStyle={fieldStyle}
 					/>
 					<input
-						type={ 'text' }
+						type={'text'}
 						className={'kb-field'}
 						value={value}
 						placeholder={placeholder}
 						onChange={( value ) => false}
-						style={ {
-							lineHeight: previewStyles.lineHeight,
-							fontSize: previewStyles.fontSize,
-							paddingTop: previewStyles.paddingTop,
-							paddingRight: previewStyles.paddingRight,
-							paddingBottom: previewStyles.paddingBottom,
-							paddingLeft: previewStyles.paddingLeft,
-							background: previewStyles.background,
-							color: previewStyles.color,
-							borderRadius: previewStyles.borderRadius,
-							borderTopWidth: previewStyles.borderTopWidth,
-							borderRightWidth: previewStyles.borderRightWidth,
+						style={{
+							lineHeight       : previewStyles.lineHeight,
+							fontSize         : previewStyles.fontSize,
+							paddingTop       : previewStyles.paddingTop,
+							paddingRight     : previewStyles.paddingRight,
+							paddingBottom    : previewStyles.paddingBottom,
+							paddingLeft      : previewStyles.paddingLeft,
+							background       : previewStyles.background,
+							color            : previewStyles.color,
+							borderRadius     : previewStyles.borderRadius,
+							borderTopWidth   : previewStyles.borderTopWidth,
+							borderRightWidth : previewStyles.borderRightWidth,
 							borderBottomWidth: previewStyles.borderBottomWidth,
-							borderLeftWidth: previewStyles.borderLeftWidth,
-							borderColor: previewStyles.borderColor,
-							boxShadow: previewStyles.boxShadow,
-							width: previewWidth + '%',
-						} }
+							borderLeftWidth  : previewStyles.borderLeftWidth,
+							borderColor      : previewStyles.borderColor,
+							boxShadow        : previewStyles.boxShadow,
+							width            : previewWidth + '%',
+						}}
 					/>
 
-					{helpText && <span style={ helpStyles } className="kb-form-field-help">{helpText}</span>}
+					{helpText && <span style={helpStyles} className="kb-form-field-help">{helpText}</span>}
 				</div>
 			</div>
 		</div>

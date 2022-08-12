@@ -10,8 +10,10 @@
  */
 import Select from 'react-select';
 import { addQueryArgs } from '@wordpress/url';
-import { apiFetch } from '@wordpress/api-fetch';
-import { KadencePanelBody } from '@wordpress/components';
+import apiFetch from '@wordpress/api-fetch';
+import { KadencePanelBody } from '@kadence/components';
+import { getFormFields } from '../../';
+
 /**
  * Internal block libraries
  */
@@ -23,15 +25,15 @@ import {
 	SelectControl,
 } from '@wordpress/components';
 import {
-	useEffect,
-	useState
+	useEffect, useMemo,
+	useState,
 } from '@wordpress/element';
 
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
-export default function FluentCrmOptions( { settings, save } ) {
+export default function FluentCrmOptions( { settings, save, parentClientId } ) {
 
 	const [ isActive, setIsActive ] = useState( false );
 	const [ isSaving, setIsSaving ] = useState( false );
@@ -53,6 +55,8 @@ export default function FluentCrmOptions( { settings, save } ) {
 			setIsActive( true );
 		}
 	}, [] );
+
+	const fields = useMemo(() => getFormFields( parentClientId ), [ parentClientId ]);
 
 	const saveFluentCRMMap = ( value, index ) => {
 		const newItems = fields.map( ( item, thisIndex ) => {
@@ -166,10 +170,9 @@ export default function FluentCrmOptions( { settings, save } ) {
 			initialOpen={false}
 			panelName={'kb-fluent-crm-settings'}
 		>
-			{!isActive && (
+			{ !isActive ?
 				<>{__( 'FluentCRM is not setup/active.', 'kadence-blocks-pro' )}</>
-			)}
-			{isActive && (
+			:
 				<>
 					{isFetching && (
 						<Spinner/>
@@ -282,7 +285,7 @@ export default function FluentCrmOptions( { settings, save } ) {
 						</>
 					)}
 				</>
-			)}
+			}
 		</KadencePanelBody>
 	);
 

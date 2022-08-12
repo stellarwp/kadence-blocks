@@ -1403,10 +1403,40 @@ class Kadence_Blocks_Frontend {
 	/**
 	 * Render advanced form
 	 */
-	function render_advanced_form( $attr, $content, $parsed_block ) {
+	function render_advanced_form( $block_attrs, $content, $parsed_block ) {
 
-		// No fields. Don't render anything
-		if( empty( $parsed_block->parsed_block['innerBlocks'] ) ){
+		$post_id = $block_attrs['id'];
+		$post_meta = get_post_meta( $block_attrs['id'], 'kadence_form_attrs', true );
+		$attr = json_decode( $post_meta, true );
+
+		$post_content = get_post( $block_attrs['id'] );
+
+		if ( $post_content instanceof WP_Post ) {
+			$parsed_block = parse_blocks( $post_content->post_content );
+		} else {
+			$parsed_block = array();
+		}
+
+
+		// Parse blocks in reusable block
+//		if ( ! empty( $parsed_block->parsed_block['blockName'] ) && $parsed_block->parsed_block['blockName'] === 'kadence/reusable-form' ) {
+//			if ( ! empty( $parsed_block->parsed_block['attrs']['id'] ) ) {
+//
+//				$post_id = $parsed_block->parsed_block['attrs']['id'];
+//				$post    = get_post( $post_id );
+//
+//				if ( $post instanceof WP_Post ) {
+//
+//					$blocks = parse_blocks( $post->post_content );
+//
+//					$parsed_block->parsed_block['innerBlocks'] = $blocks[0]['innerBlocks'];
+//					$attr                                      = $blocks[0]['attrs'];
+//				}
+//			}
+//		}
+
+		// No fields. Skip render
+		if( empty( $parsed_block[0]['innerBlocks'] ) ){
 			return '';
 		}
 
@@ -1414,7 +1444,12 @@ class Kadence_Blocks_Frontend {
 			$this->enqueue_style( 'kadence-blocks-advanced-form' );
 		}
 
+		if ( ! wp_script_is( 'kadence-blocks-advanced-form', 'enqueued' ) ) {
+			$this->enqueue_script( 'kadence-blocks-advanced-form' );
+		}
+
 		$unique_id = rand(0, 9999);
+		$style_id = $unique_id;
 		$css                    = new Kadence_Blocks_CSS();
 
 		$media_query            = array();
@@ -1467,10 +1502,10 @@ class Kadence_Blocks_Frontend {
 		/*
 		 * Showing required asterisk
 		 */
-		if( $attr['style']['showRequired'] ) {
+		if ( isset( $attr['style']['showRequired'] ) && $attr['style']['showRequired'] ) {
 			$css->set_selector( '.wp-block-kadence-advanced-form.kadence-advanced-form' . $unique_id . ' .required' );
 
-			if( !empty( $attr['style']['requiredColor'] ) ) {
+			if ( ! empty( $attr['style']['requiredColor'] ) ) {
 				$css->add_property( 'color', $this->kadence_color_output( $attr['style']['requiredColor'] ) );
 			}
 		}
@@ -1585,11 +1620,11 @@ class Kadence_Blocks_Frontend {
 			$css->add_property( 'color', $this->kadence_color_output( $attr['style']['color'] ) );
 		}
 
-		if( $attr['style']['boxShadowActive'][0] === true ) {
+		if( !empty($attr['style']['boxShadowActive'][0]) &&  $attr['style']['boxShadowActive'][0] === true ) {
 			$css->add_property( 'box-shadow', ( isset( $attr['style']['boxShadowActive'][7] ) && true === $attr['style']['boxShadowActive'][7] ? 'inset ' : '' ) . ( isset( $attr['style']['boxShadowActive'][3] ) && is_numeric( $attr['style']['boxShadowActive'][3] ) ? $attr['style']['boxShadowActive'][3] : '2' ) . 'px ' . ( isset( $attr['style']['boxShadowActive'][4] ) && is_numeric( $attr['style']['boxShadowActive'][4] ) ? $attr['style']['boxShadowActive'][4] : '2' ) . 'px ' . ( isset( $attr['style']['boxShadowActive'][5] ) && is_numeric( $attr['style']['boxShadowActive'][5] ) ? $attr['style']['boxShadowActive'][5] : '3' ) . 'px ' . ( isset( $attr['style']['boxShadowActive'][6] ) && is_numeric( $attr['style']['boxShadowActive'][6] ) ? $attr['style']['boxShadowActive'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $attr['style']['boxShadowActive'][1] ) && ! empty( $attr['style']['boxShadowActive'][1] ) ? $attr['style']['boxShadowActive'][1] : '#000000' ), ( isset( $attr['style']['boxShadowActive'][2] ) && is_numeric( $attr['style']['boxShadowActive'][2] ) ? $attr['style']['boxShadowActive'][2] : 0.4 ) ) );
 		}
 
-		if( $attr['style']['boxShadow'][0] === true ) {
+		if( !empty($attr['style']['boxShadow'][0]) && $attr['style']['boxShadow'][0] === true ) {
 			$css->add_property( 'box-shadow', ( isset( $attr['style']['boxShadow'][7] ) && true === $attr['style']['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $attr['style']['boxShadow'][3] ) && is_numeric( $attr['style']['boxShadow'][3] ) ? $attr['style']['boxShadow'][3] : '2' ) . 'px ' . ( isset( $attr['style']['boxShadow'][4] ) && is_numeric( $attr['style']['boxShadow'][4] ) ? $attr['style']['boxShadow'][4] : '2' ) . 'px ' . ( isset( $attr['style']['boxShadow'][5] ) && is_numeric( $attr['style']['boxShadow'][5] ) ? $attr['style']['boxShadow'][5] : '3' ) . 'px ' . ( isset( $attr['style']['boxShadow'][6] ) && is_numeric( $attr['style']['boxShadow'][6] ) ? $attr['style']['boxShadow'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $attr['style']['boxShadow'][1] ) && ! empty( $attr['style']['boxShadow'][1] ) ? $attr['style']['boxShadow'][1] : '#000000' ), ( isset( $attr['style']['boxShadow'][2] ) && is_numeric( $attr['style']['boxShadow'][2] ) ? $attr['style']['boxShadow'][2] : 0.4 ) ) );
 		}
 
@@ -1633,10 +1668,8 @@ class Kadence_Blocks_Frontend {
 
 		$css_output = $css->css_output();
 
-		$formFrontend = new AdvancedFormFrontend( $parsed_block->parsed_block['innerBlocks'], $attr, $unique_id );
+		$formFrontend = new AdvancedFormFrontend( $parsed_block[0]['innerBlocks'], $attr, $unique_id, $post_id );
 		$html_output = $formFrontend->render();
-
-//		$included_field_types = $formFrontend->getfieldTypes();
 
 		$content = '<style id="' . $style_id . '">' . $css_output . '</style>' . $html_output;
 
@@ -1911,6 +1944,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-tabs.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'includes/assets/js/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-advanced-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-form',
 			'kadence_blocks_form_params',

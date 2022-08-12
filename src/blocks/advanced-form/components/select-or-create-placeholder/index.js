@@ -5,11 +5,7 @@ import { useState } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 import { Placeholder, Button, SelectControl } from '@wordpress/components';
-
-/**
- * Internal dependencies
- */
-// import './editor.scss';
+import { advancedFormIcon } from '@kadence/icons';
 
 export default function SelectOrCreatePlaceholder( {
 													   onSelect,
@@ -20,10 +16,9 @@ export default function SelectOrCreatePlaceholder( {
 													   label = __( 'Post' ),
 													   instructions = __(
 														   'Select an existing post or create a new one.',
-														   'attesti'
+														   'kadence-blocks'
 													   ),
-													   placeholder = __( 'Select Post', 'attesti' ),
-													   icon = 'admin-post',
+													   placeholder = __( 'Select Post', 'kadence-blocks' ),
 												   } ) {
 	const [ selected, setSelected ] = useState( 0 );
 	const { posts } = useSelect(
@@ -50,12 +45,12 @@ export default function SelectOrCreatePlaceholder( {
 
 	return (
 		<Placeholder
-			className="attesti-select-or-create-placeholder"
-			icon={ icon }
+			className="kb-select-or-create-placeholder"
+			icon={ advancedFormIcon }
 			label={ label }
 			instructions={ instructions }
 		>
-			<form className="attesti-select-or-create-placeholder__actions">
+			<form className="kb-select-or-create-placeholder__actions">
 				<SelectControl
 					label={ label }
 					hideLabelFromVision

@@ -8,15 +8,17 @@
  */
 import Select from 'react-select';
 import { addQueryArgs } from '@wordpress/url';
-import { apiFetch } from '@wordpress/api-fetch';
+import apiFetch from '@wordpress/api-fetch';
 import { KadencePanelBody } from '@kadence/components';
+import { getFormFields } from '../../';
+
 /**
  * Internal block libraries
  */
 import { __ } from '@wordpress/i18n';
 import {
 	useState,
-	useEffect,
+	useEffect, useMemo,
 } from '@wordpress/element';
 import {
 	TextControl,
@@ -33,7 +35,7 @@ const HELP_URL = 'https://help.mailerlite.com/article/show/35040-where-can-i-fin
  * @returns {object} Measure settings.
  */
 
-export default function MailerLiteOptions( { settings, save } ) {
+export default function MailerLiteOptions( { settings, save, parentClientId } ) {
 
 	const [ api, setAPI ] = useState( '' );
 	const [ isSavedAPI, setIsSavedAPI ] = useState( false );
@@ -52,14 +54,18 @@ export default function MailerLiteOptions( { settings, save } ) {
 			settings.fetch().then( response => {
 				setAPI( response.kadence_blocks_mailerlite_api );
 
-				if ( '' !== api ) {
+				if ( '' !== response.kadence_blocks_mailerlite_api ) {
 					setIsSavedAPI( true );
 				}
+
 			} );
 		} );
 	}, [] );
 
+	const fields = useMemo(() => getFormFields( parentClientId ), [ parentClientId ]);
+
 	const saveMailerliteMap = ( value, index ) => {
+
 		const newItems = fields.map( ( item, thisIndex ) => {
 			let newString = '';
 			if ( index === thisIndex ) {
@@ -72,6 +78,13 @@ export default function MailerLiteOptions( { settings, save } ) {
 
 			return newString;
 		} );
+
+		console.log( 'FIRST MAP');
+		console.log( settings.map );
+
+		console.log( 'new MAP');
+		console.log( newItems );
+
 		save( { map: newItems } );
 	};
 
@@ -202,7 +215,7 @@ export default function MailerLiteOptions( { settings, save } ) {
 			<div className="components-base-control">
 				<Button
 					isPrimary
-					onClick={() => saveAPI}
+					onClick={() => saveAPI() }
 					disabled={'' === api}
 				>
 					{isSaving ? __( 'Saving', 'kadence-blocks-pro' ) : __( 'Save', 'kadence-blocks-pro' )}
@@ -226,7 +239,7 @@ export default function MailerLiteOptions( { settings, save } ) {
 					)}
 					{!isFetching && !hasGroup && (
 						<>
-							<h2 className="kt-heading-size-title">{__( 'Select Group', 'kadence-blocks' )}</h2>
+							<h2 className="kt-heading-size-title">{__( 'Select a Group', 'kadence-blocks' )}</h2>
 							{( !groupsLoaded ? getMailerLiteGroup() : '' )}
 							{!Array.isArray( group ) ?
 								<Spinner/> :

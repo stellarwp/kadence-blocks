@@ -15,9 +15,13 @@
 	  "type": "boolean",
 	  "default": false
 	},
-	"value": {
-	  "type": "boolean",
-	  "default": false
+	"allowedTypes": {
+	  "type": "array",
+	  "default": [ "image" ]
+	},
+	"maxSizeMb": {
+	  "type": "number",
+	  "default": 10
 	},
 	"ariaDescription": {
 	  "type": "string",

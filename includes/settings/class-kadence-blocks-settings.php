@@ -579,6 +579,39 @@ class Kadence_Blocks_Settings {
 				'default'           => false,
 			)
 		);
+		register_setting(
+				'kadence_blocks_convertkit_api',
+				'kadence_blocks_convertkit_api',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => true,
+						'default'           => '',
+				)
+		);
+		register_setting(
+				'kadence_blocks_activecampaign_api_key',
+				'kadence_blocks_activecampaign_api_key',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => true,
+						'default'           => '',
+				)
+		);
+		register_setting(
+				'kadence_blocks_activecampaign_api_base',
+				'kadence_blocks_activecampaign_api_base',
+				array(
+						'type'              => 'string',
+						'description'       => __( 'ConvertKit API Key', 'kadence-blocks-pro' ),
+						'sanitize_callback' => 'sanitize_text_field',
+						'show_in_rest'      => true,
+						'default'           => '',
+				)
+		);
 	}
 	/**
 	 * Register settings

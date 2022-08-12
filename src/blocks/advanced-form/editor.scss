@@ -91,21 +91,13 @@
 	.kb-button-width-full {
 		width: 100%;
 	}
-	//&:hover {
-	//	border-color:var( --global-palette-btn-bg-hover, #1768ea );
-	//	color: var(--global-palette-btn-hover, #ffffff );
-	//	background: var(--global-palette-btn-bg-hover, #1768ea );
-	//}
 }
 
-/* Labels */
-//.kadence-label {
-//	display: flex;
-//	flex-direction: row;
-//	justify-content: space-between;
-//}
-
-.attesti-select-or-create-placeholder {
+.kb-select-or-create-placeholder {
+	.components-placeholder__label {
+		font-size: 20px;
+		line-height: 20px;
+	}
 	.components-placeholder__instructions {
 		margin-bottom: 1em;
 	}
@@ -113,10 +105,17 @@
 	.components-select-control__input {
 		height: 36px !important; // Match height of buttons.
 	}
-}
 
-.attesti-select-or-create-placeholder__actions {
-	.components-base-control__field {
-		margin-right: 12px;
+	.kb-select-or-create-placeholder__actions {
+		display: block;
+
+		.components-base-control__field {
+			margin-right: 12px;
+		}
+
+		.components-button {
+
+		}
 	}
 }
+
