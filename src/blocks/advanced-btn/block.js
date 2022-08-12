@@ -265,11 +265,11 @@ registerBlockType( 'kadence/advancedbtn', {
 					default: 'px',
 				},
 				forceFullwidth: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				collapseFullwidth: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				margin: {
@@ -285,15 +285,15 @@ registerBlockType( 'kadence/advancedbtn', {
 					default: 'px',
 				},
 				inQueryBlock: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				lockBtnCount: {
-					type: 'bool',
+					type: 'boolean',
 					default: false
 				},
 				hideLink: {
-					type: 'bool',
+					type: 'boolean',
 					default: false
 				}
 			},
@@ -494,11 +494,11 @@ registerBlockType( 'kadence/advancedbtn', {
 					default: 'px',
 				},
 				forceFullwidth: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				collapseFullwidth: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				margin: {
@@ -694,7 +694,7 @@ registerBlockType( 'kadence/advancedbtn', {
 					default: 'px',
 				},
 				forceFullwidth: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 			},
@@ -821,7 +821,7 @@ registerBlockType( 'kadence/advancedbtn', {
 					default: 'normal',
 				},
 				forceFullwidth: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 			},

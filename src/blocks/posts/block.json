@@ -21,7 +21,7 @@
 	  "default": 0
 	},
 	"allowSticky": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"postType": {
@@ -29,7 +29,7 @@
 	  "default": "post"
 	},
 	"postTax": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"taxType": {
@@ -61,7 +61,7 @@
 	  "default": "beside"
 	},
 	"image": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"imageSize": {
@@ -73,7 +73,7 @@
 	  "default": "2-3"
 	},
 	"aboveCategories": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"categoriesDivider": {
@@ -85,7 +85,7 @@
 	  "default": "normal"
 	},
 	"meta": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"metaDivider": {
@@ -93,15 +93,15 @@
 	  "default": "dot"
 	},
 	"author": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"authorImage": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"authorLink": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"authorImageSize": {
@@ -109,7 +109,7 @@
 	  "default": 25
 	},
 	"authorEnabledLabel": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"authorLabel": {
@@ -117,11 +117,11 @@
 	  "default": ""
 	},
 	"date": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"dateEnabledLabel": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"dateLabel": {
@@ -129,11 +129,11 @@
 	  "default": ""
 	},
 	"dateUpdated": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"dateUpdatedEnabledLabel": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"dateUpdatedLabel": {
@@ -141,11 +141,11 @@
 	  "default": ""
 	},
 	"metaCategories": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"metaCategoriesEnabledLabel": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"metaCategoriesLabel": {
@@ -153,15 +153,15 @@
 	  "default": ""
 	},
 	"comments": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"excerpt": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"excerptCustomLength": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"excerptLength": {
@@ -169,7 +169,7 @@
 	  "default": 40
 	},
 	"readmore": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"readmoreLabel": {
@@ -214,7 +214,7 @@
 	  "type": "number"
 	},
 	"showUnique": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   },

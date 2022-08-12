@@ -414,7 +414,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				showCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				hoverStyle: {
@@ -463,7 +463,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: [ 0, 0, 0, 0 ],
 				},
 				autoPlay: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				autoSpeed: {
@@ -487,7 +487,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'dark',
 				},
 				displayShadow: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				shadow: {
@@ -521,7 +521,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				lightboxCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				margin: {
@@ -537,7 +537,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'px',
 				},
 				carouselAlign: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				thumbnailRatio: {
@@ -553,7 +553,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'linked',
 				},
 				mobileForceHover: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 			},
@@ -876,7 +876,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				showCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				hoverStyle: {
@@ -925,7 +925,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: [ 0, 0, 0, 0 ],
 				},
 				autoPlay: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				autoSpeed: {
@@ -949,7 +949,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'dark',
 				},
 				displayShadow: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				shadow: {
@@ -983,7 +983,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				lightboxCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				margin: {
@@ -999,7 +999,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'px',
 				},
 				carouselAlign: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				thumbnailRatio: {
@@ -1015,7 +1015,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'linked',
 				},
 				mobileForceHover: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 			},
@@ -1332,7 +1332,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				showCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				hoverStyle: {
@@ -1381,7 +1381,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: [ 0, 0, 0, 0 ],
 				},
 				autoPlay: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				autoSpeed: {
@@ -1405,7 +1405,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'dark',
 				},
 				displayShadow: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				shadow: {
@@ -1439,7 +1439,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				lightboxCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				margin: {
@@ -1455,7 +1455,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'px',
 				},
 				carouselAlign: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				thumbnailRatio: {
@@ -1783,7 +1783,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				showCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				hoverStyle: {
@@ -1832,7 +1832,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: [ 0, 0, 0, 0 ],
 				},
 				autoPlay: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				autoSpeed: {
@@ -1856,7 +1856,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'dark',
 				},
 				displayShadow: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				shadow: {
@@ -1890,7 +1890,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				lightboxCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				margin: {
@@ -1906,7 +1906,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'px',
 				},
 				carouselAlign: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				thumbnailRatio: {
@@ -2234,7 +2234,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				showCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				hoverStyle: {
@@ -2283,7 +2283,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: [ 0, 0, 0, 0 ],
 				},
 				autoPlay: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				autoSpeed: {
@@ -2307,7 +2307,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'dark',
 				},
 				displayShadow: {
-					type: 'bool',
+					type: 'boolean',
 					default: false,
 				},
 				shadow: {
@@ -2341,7 +2341,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'none',
 				},
 				lightboxCaption: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 				margin: {
@@ -2357,7 +2357,7 @@ registerBlockType( 'kadence/advancedgallery', {
 					default: 'px',
 				},
 				carouselAlign: {
-					type: 'bool',
+					type: 'boolean',
 					default: true,
 				},
 			},

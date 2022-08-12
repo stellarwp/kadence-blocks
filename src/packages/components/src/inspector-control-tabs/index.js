@@ -15,7 +15,7 @@ import { createRef, useEffect } from '@wordpress/element';
 
 import './editor.scss';
 
-function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, openedTab, toggleOpened } ) {
+function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, openedTab, toggleOpened, tabs = null } ) {
 
 	const defaultTabs = [
 		{
@@ -37,6 +37,7 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 
 	const tabKeys = [ 'general', 'style', 'advanced' ];
 	const allowedTabKeys = allowedTabs ? allowedTabs : tabKeys;
+	const tabsMap = tabs ? tabs : defaultTabs;
 	const tabsContainer = createRef();
 
 	if ( activeTab !== openedTab ) {
@@ -62,7 +63,7 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 
 	return (
 		<div className="kadence-blocks-inspector-tabs" ref={ tabsContainer }>
-			{defaultTabs.map( ( {
+			{tabsMap.map( ( {
 									key, title, icon,
 								}, i ) => {
 				if ( allowedTabKeys.includes( key ) ) {

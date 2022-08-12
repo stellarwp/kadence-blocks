@@ -277,7 +277,7 @@
 	  "default": "px"
 	},
 	"displayShadow": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"shadow": {

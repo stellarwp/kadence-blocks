@@ -116,7 +116,7 @@
 	  "default": "none"
 	},
 	"showCaption": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"hoverStyle": {
@@ -188,7 +188,7 @@
 	  ]
 	},
 	"autoPlay": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"autoSpeed": {
@@ -212,7 +212,7 @@
 	  "default": "dark"
 	},
 	"displayShadow": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"shadow": {
@@ -250,7 +250,7 @@
 	  "default": "none"
 	},
 	"lightboxCaption": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"margin": {
@@ -283,7 +283,7 @@
 	  "default": "px"
 	},
 	"carouselAlign": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": true
 	},
 	"thumbnailRatio": {
@@ -306,7 +306,7 @@
 	  "default": "linked"
 	},
 	"mobileForceHover": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"imagesDynamic": {
@@ -314,7 +314,7 @@
 	  "default": []
 	},
 	"inQueryBlock": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   },

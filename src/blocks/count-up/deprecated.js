@@ -21,7 +21,7 @@ export default [
 				default: '',
 			},
 			displayTitle: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			titleFont: {
@@ -179,7 +179,7 @@ export default [
 				default: 2.5,
 			},
 			separator: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			}
 		},

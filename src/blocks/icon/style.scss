@@ -3,10 +3,22 @@
  *
  * CSS for both Frontend+Backend.
  */
-// Item
+// Old keep for backward compatablity.
 .kt-svg-style-stacked .kt-svg-icon {
-	border: 0px solid #444444;
+	border: 0px solid var(--global-palette5, #444444 );
 	transition: all .3s ease-in-out;
+}
+
+.wp-block-kadence-icon {
+	display: flex;
+	gap: 0.2em;
+	align-items:flex-end;
+	justify-content: center;
+}
+.kt-svg-style-stacked .kb-svg-icon-wrap  {
+	border: 0px solid var(--global-palette5, #444444 );
+	transition: all .3s ease-in-out;
+	padding: 20px;
 }
 .kt-svg-icon-wrap {
 	display: inline-flex;
@@ -22,13 +34,19 @@
 }
 .kb-icon-valign-top {
     align-items: flex-start;
-    display: flex;
 }
 .kb-icon-valign-middle {
     align-items: center;
-    display: flex;
 }
 .kb-icon-valign-bottom {
     align-items: flex-end;
-    display: flex;
+}
+.kb-svg-icon-wrap {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+	svg {
+		width: 1em;
+		height: 1em;
+	}
 }

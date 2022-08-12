@@ -20,7 +20,7 @@
 	  "default": "div"
 	},
 	"hideLabel": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	},
 	"ariaLabel": {
@@ -40,7 +40,7 @@
 	  "default": ""
 	},
 	"faqSchema": {
-	  "type": "bool",
+	  "type": "boolean",
 	  "default": false
 	}
   },

@@ -196,7 +196,7 @@ const deprecated = [
 				]
 			},
 			"displayTitle": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"title": {
@@ -265,7 +265,7 @@ const deprecated = [
 				]
 			},
 			"displayText": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"contentText": {
@@ -340,7 +340,7 @@ const deprecated = [
 				]
 			},
 			"displayLearnMore": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"learnMore": {
@@ -420,7 +420,7 @@ const deprecated = [
 				]
 			},
 			"displayShadow": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"shadow": {
@@ -450,7 +450,7 @@ const deprecated = [
 				]
 			},
 			"showPresets": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"mediaVAlign": {
@@ -487,11 +487,11 @@ const deprecated = [
 				"default": "px"
 			},
 			"linkNoFollow": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"linkSponsored": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"number": {
@@ -524,7 +524,7 @@ const deprecated = [
 				"default": ""
 			},
 			"inQueryBlock": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			}
 		},
@@ -870,7 +870,7 @@ const deprecated = [
 				]
 			},
 			"displayTitle": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"title": {
@@ -939,7 +939,7 @@ const deprecated = [
 				]
 			},
 			"displayText": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"contentText": {
@@ -1014,7 +1014,7 @@ const deprecated = [
 				]
 			},
 			"displayLearnMore": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"learnMore": {
@@ -1094,7 +1094,7 @@ const deprecated = [
 				]
 			},
 			"displayShadow": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"shadow": {
@@ -1124,7 +1124,7 @@ const deprecated = [
 				]
 			},
 			"showPresets": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"mediaVAlign": {
@@ -1161,11 +1161,11 @@ const deprecated = [
 				"default": "px"
 			},
 			"linkNoFollow": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"linkSponsored": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"number": {
@@ -1198,7 +1198,7 @@ const deprecated = [
 				"default": ""
 			},
 			"inQueryBlock": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			}
 		},
@@ -1550,7 +1550,7 @@ const deprecated = [
 				]
 			},
 			"displayTitle": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"title": {
@@ -1619,7 +1619,7 @@ const deprecated = [
 				]
 			},
 			"displayText": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"contentText": {
@@ -1694,7 +1694,7 @@ const deprecated = [
 				]
 			},
 			"displayLearnMore": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"learnMore": {
@@ -1774,7 +1774,7 @@ const deprecated = [
 				]
 			},
 			"displayShadow": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"shadow": {
@@ -1804,7 +1804,7 @@ const deprecated = [
 				]
 			},
 			"showPresets": {
-				"type": "bool",
+				"type": "boolean",
 				"default": true
 			},
 			"mediaVAlign": {
@@ -1841,11 +1841,11 @@ const deprecated = [
 				"default": "px"
 			},
 			"linkNoFollow": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"linkSponsored": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			},
 			"number": {
@@ -1878,7 +1878,7 @@ const deprecated = [
 				"default": ""
 			},
 			"inQueryBlock": {
-				"type": "bool",
+				"type": "boolean",
 				"default": false
 			}
 		},
@@ -2177,7 +2177,7 @@ const deprecated = [
 				} ],
 			},
 			displayTitle: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			title: {
@@ -2222,7 +2222,7 @@ const deprecated = [
 				} ],
 			},
 			displayText: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			contentText: {
@@ -2270,7 +2270,7 @@ const deprecated = [
 				} ],
 			},
 			displayLearnMore: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			learnMore: {
@@ -2311,7 +2311,7 @@ const deprecated = [
 				} ],
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -2337,7 +2337,7 @@ const deprecated = [
 				} ],
 			},
 			showPresets: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			mediaVAlign: {
@@ -2369,11 +2369,11 @@ const deprecated = [
 				default: 'px',
 			},
 			linkNoFollow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			linkSponsored: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			number: {
@@ -2662,7 +2662,7 @@ const deprecated = [
 				} ],
 			},
 			displayTitle: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			title: {
@@ -2707,7 +2707,7 @@ const deprecated = [
 				} ],
 			},
 			displayText: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			contentText: {
@@ -2755,7 +2755,7 @@ const deprecated = [
 				} ],
 			},
 			displayLearnMore: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			learnMore: {
@@ -2796,7 +2796,7 @@ const deprecated = [
 				} ],
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -2822,7 +2822,7 @@ const deprecated = [
 				} ],
 			},
 			showPresets: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			mediaVAlign: {
@@ -2854,11 +2854,11 @@ const deprecated = [
 				default: 'px',
 			},
 			linkNoFollow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			linkSponsored: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			number: {
@@ -3180,7 +3180,7 @@ const deprecated = [
 				} ],
 			},
 			displayTitle: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			title: {
@@ -3225,7 +3225,7 @@ const deprecated = [
 				} ],
 			},
 			displayText: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			contentText: {
@@ -3273,7 +3273,7 @@ const deprecated = [
 				} ],
 			},
 			displayLearnMore: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			learnMore: {
@@ -3314,7 +3314,7 @@ const deprecated = [
 				} ],
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -3340,7 +3340,7 @@ const deprecated = [
 				} ],
 			},
 			showPresets: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			mediaVAlign: {
@@ -3372,11 +3372,11 @@ const deprecated = [
 				default: 'px',
 			},
 			linkNoFollow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			linkSponsored: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			number: {
@@ -3694,7 +3694,7 @@ const deprecated = [
 				} ],
 			},
 			displayTitle: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			title: {
@@ -3739,7 +3739,7 @@ const deprecated = [
 				} ],
 			},
 			displayText: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			contentText: {
@@ -3787,7 +3787,7 @@ const deprecated = [
 				} ],
 			},
 			displayLearnMore: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			learnMore: {
@@ -3828,7 +3828,7 @@ const deprecated = [
 				} ],
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -3854,7 +3854,7 @@ const deprecated = [
 				} ],
 			},
 			showPresets: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			mediaVAlign: {
@@ -3886,11 +3886,11 @@ const deprecated = [
 				default: 'px',
 			},
 			linkNoFollow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			linkSponsored: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			number: {
@@ -4178,7 +4178,7 @@ const deprecated = [
 				} ],
 			},
 			displayTitle: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			title: {
@@ -4219,7 +4219,7 @@ const deprecated = [
 				} ],
 			},
 			displayText: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			contentText: {
@@ -4254,7 +4254,7 @@ const deprecated = [
 				} ],
 			},
 			displayLearnMore: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			learnMore: {
@@ -4295,7 +4295,7 @@ const deprecated = [
 				} ],
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -4586,7 +4586,7 @@ const deprecated = [
 				} ],
 			},
 			displayTitle: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			title: {
@@ -4627,7 +4627,7 @@ const deprecated = [
 				} ],
 			},
 			displayText: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			contentText: {
@@ -4662,7 +4662,7 @@ const deprecated = [
 				} ],
 			},
 			displayLearnMore: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			learnMore: {
@@ -4703,7 +4703,7 @@ const deprecated = [
 				} ],
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -4994,7 +4994,7 @@ const deprecated = [
 				} ],
 			},
 			displayTitle: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			title: {
@@ -5035,7 +5035,7 @@ const deprecated = [
 				} ],
 			},
 			displayText: {
-				type: 'bool',
+				type: 'boolean',
 				default: true,
 			},
 			contentText: {
@@ -5070,7 +5070,7 @@ const deprecated = [
 				} ],
 			},
 			displayLearnMore: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			learnMore: {
@@ -5111,7 +5111,7 @@ const deprecated = [
 				} ],
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {

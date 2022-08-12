@@ -306,7 +306,7 @@ export default [
 				type: 'string',
 			},
 			inQueryBlock: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 		},

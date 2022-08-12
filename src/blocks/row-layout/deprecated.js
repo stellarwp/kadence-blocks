@@ -328,7 +328,7 @@ export default [
 				default: 'px',
 			},
 			columnsUnlocked: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			tabletBackground: {
@@ -402,7 +402,7 @@ export default [
 				} ],
 			},
 			columnsInnerHeight: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			topSepWidth: {
@@ -418,7 +418,7 @@ export default [
 				default: '',
 			},
 			backgroundInline: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			backgroundSettingTab: {
@@ -474,15 +474,15 @@ export default [
 				default: 'px',
 			},
 			inheritMaxWidth: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			noCustomDefaults: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			isPrebuiltModal: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			minHeightTablet: {
@@ -498,19 +498,19 @@ export default [
 				default: '',
 			},
 			vsdesk: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vstablet: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsmobile: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			loggedIn: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			loggedInUser: {
@@ -520,7 +520,7 @@ export default [
 				type: 'array',
 			},
 			loggedOut: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			borderWidth: {
@@ -1131,7 +1131,7 @@ export default [
 				default: 'px',
 			},
 			columnsUnlocked: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			tabletBackground: {
@@ -1205,7 +1205,7 @@ export default [
 				} ],
 			},
 			columnsInnerHeight: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			topSepWidth: {
@@ -1221,7 +1221,7 @@ export default [
 				default: '',
 			},
 			backgroundInline: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			backgroundSettingTab: {
@@ -1277,7 +1277,7 @@ export default [
 				default: 'px',
 			},
 			noCustomDefaults: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 		},

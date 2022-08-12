@@ -189,7 +189,7 @@ export default [
 				default: '',
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -205,19 +205,19 @@ export default [
 				} ],
 			},
 			noCustomDefaults: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsdesk: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vstablet: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsmobile: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			paddingType: {
@@ -290,7 +290,7 @@ export default [
 				default: [ '', '', '', '' ],
 			},
 			displayHoverShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadowHover: {
@@ -318,7 +318,7 @@ export default [
 				default: '',
 			},
 			inQueryBlock: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			kadenceBlockCSS: {
@@ -541,7 +541,7 @@ export default [
 				default: '',
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -557,19 +557,19 @@ export default [
 				} ],
 			},
 			noCustomDefaults: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsdesk: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vstablet: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsmobile: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			paddingType: {
@@ -775,7 +775,7 @@ export default [
 				default: '',
 			},
 			displayShadow: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			shadow: {
@@ -791,19 +791,19 @@ export default [
 				} ],
 			},
 			noCustomDefaults: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsdesk: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vstablet: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			},
 			vsmobile: {
-				type: 'bool',
+				type: 'boolean',
 				default: false,
 			}
 		},
