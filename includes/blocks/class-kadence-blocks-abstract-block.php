@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class to Build the Icon Block.
+ * Abstract class to register blocks, build CSS, and enqueue scripts.
  *
  * @category class
  */
@@ -142,6 +142,7 @@ class Kadence_Blocks_Abstract_Block {
 		if ( isset( $attributes['uniqueID'] ) ) {
 			$unique_id = $attributes['uniqueID'];
 			$css_class = Kadence_Blocks_CSS::get_instance();
+			$content = $this->build_html( $attributes, $unique_id, $content );
 			if ( ! $css_class->has_styles( 'kb-' . $this->block_name . $unique_id ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'icon', $unique_id ) ) {
 				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
 				$attributes = apply_filters( 'kadence_blocks_icon_render_block_attributes', $attributes );
@@ -162,6 +163,18 @@ class Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 		return '';
+	}
+	/**
+	 * Build HTML for dynamic blocks
+	 *
+	 * @param $attributes
+	 * @param $unique_id
+	 * @param $content
+	 *
+	 * @return mixed
+	 */
+	public function build_html( $attributes, $unique_id, $content ) {
+		return $content;
 	}
 	/**
 	 * Registers scripts and styles.
