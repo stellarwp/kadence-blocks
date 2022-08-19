@@ -87,10 +87,21 @@ body.rtl .kt-size-tabs .components-tab-panel__tabs, body.rtl .components-button-
 	text-transform: uppercase;
 	font-weight: bold;
     color: #999;
+	margin-bottom: 0.5em;
 }
 .kt-accordion-wrap .kt-accordion-header-wrap {
 	margin:0;
 	padding:0;
+}
+.kt-accordion-add-selecter {
+    margin-top: 0.5em;
+}
+.wp-block-kadence-accordion, .wp-block-kadence-pane {
+	margin-top: 0px;
+    margin-bottom: 0px;
+}
+.wp-block-kadence-accordion .kt-accordion-inner-wrap > .wp-block-kadence-pane:first-child {
+	margin-top: 0;
 }
 .kt-blocks-accordion-header {
     align-content: space-between;

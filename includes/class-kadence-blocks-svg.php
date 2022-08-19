@@ -85,7 +85,7 @@ class Kadence_Blocks_Svg_Render {
 				}
 				$hidden = ( ! empty( $args['title'] ) ? true : false );
 				$svg    = self::render( $args['name'], $fill, $stroke_width, $args['title'], $hidden );
-				return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . '">' . $svg . '</span>';
+				return '<span class="kb-svg-icon-wrap kb-svg-icon-' . esc_attr( $args['name'] ) . ( ! empty( $args['class'] ) ? ' ' . esc_attr( $args['class'] ) : '' ) . '">' . $svg . '</span>';
 			},
 			$block_content
 		);

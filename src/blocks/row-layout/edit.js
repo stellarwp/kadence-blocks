@@ -60,7 +60,8 @@ import {
 	KadencePanelBody,
 	KadenceRadioButtons,
 	VerticalAlignmentIcon,
-	BackgroundControl as KadenceBackgroundControl
+	BackgroundControl as KadenceBackgroundControl,
+	InspectorControlTabs
 } from '@kadence/components';
 import { KadenceColorOutput, getPreviewSize, showSettings } from '@kadence/helpers';
 
@@ -71,6 +72,7 @@ import PrebuiltModal from '../../plugins/prebuilt-library/prebuilt-library';
 import Overlay from './row-overlay';
 import RowBackground from './row-background';
 import ContentWidthIcon from './content-width-icons';
+import LayoutControls from './layout-controls';
 /**
  * Import Css
  */
@@ -240,6 +242,8 @@ const ktrowUniqueIDs = [];
 	const [ marginControl, setMarginControl ] = useState( 'individual' );
 	const [ showPreset, setShowPreset ] = useState( false );
 	const [ contentWidthPop, setContentWidthPop ] = useState( false );
+	const [ activeTab, setActiveTab ] = useState( 'general' );
+	
 	const saveSlideItem = ( value, thisIndex ) => {
 		let currentItems = backgroundSlider;
 		if ( undefined === currentItems || ( undefined !== currentItems && undefined === currentItems[ 0 ] ) ) {
@@ -1275,72 +1279,6 @@ const ktrowUniqueIDs = [];
 	};
 	const deskControls = (
 		<Fragment>
-			{ showSettings( 'basicLayout', 'kadence/rowlayout' ) && (
-				<KadencePanelBody panelName={ 'kb-row-basic-layout' }>
-					<RangeControl
-						label={ __( 'Columns', 'kadence-blocks' ) }
-						value={ columns }
-						onChange={ ( nextColumns ) => {
-							updateColumns( innerItemCount, nextColumns );
-							setAttributes( {
-								columns: nextColumns,
-								colLayout: 'equal',
-								firstColumnWidth: undefined,
-								secondColumnWidth: undefined,
-								tabletLayout: 'inherit',
-								mobileLayout: 'row',
-							} );
-						} }
-						min={ 1 }
-						max={ 6 }
-					/>
-					{ columns > 1 && (
-						<Fragment>
-							<p className="components-base-control__label">{ __( 'Layout', 'kadence-blocks' ) }</p>
-							<ButtonGroup className="kb-column-layout" aria-label={ __( 'Column Layout', 'kadence-blocks' ) }>
-								{ map( layoutOptions, ( { name, key, icon } ) => (
-									<Tooltip text={ name }>
-										<Button
-											key={ key }
-											className="kt-layout-btn"
-											isSmall
-											isPrimary={ selectColLayout === key }
-											aria-pressed={ selectColLayout === key }
-											onClick={ () => {
-												setAttributes( {
-													colLayout: key,
-												} );
-												setAttributes( {
-													firstColumnWidth: undefined,
-													secondColumnWidth: undefined,
-												} );
-											} }
-										>
-											{ icon }
-										</Button>
-									</Tooltip>
-								) ) }
-							</ButtonGroup>
-						</Fragment>
-					) }
-					{ columns > 1 && (
-						<SelectControl
-							label={ __( 'Column Gutter', 'kadence-blocks' ) }
-							value={ columnGutter }
-							options={ [
-								{ value: 'default', label: __( 'Standard: 30px', 'kadence-blocks' ) },
-								{ value: 'none', label: __( 'No Gutter', 'kadence-blocks' ) },
-								{ value: 'skinny', label: __( 'Skinny: 10px', 'kadence-blocks' ) },
-								{ value: 'narrow', label: __( 'Narrow: 20px', 'kadence-blocks' ) },
-								{ value: 'wide', label: __( 'Wide: 40px', 'kadence-blocks' ) },
-								{ value: 'wider', label: __( 'Wider: 60px', 'kadence-blocks' ) },
-								{ value: 'widest', label: __( 'Widest: 80px', 'kadence-blocks' ) },
-							] }
-							onChange={ ( value ) => setAttributes( { columnGutter: value } ) }
-						/>
-					) }
-				</KadencePanelBody>
-			) }
 			{ showSettings( 'paddingMargin', 'kadence/rowlayout' ) && (
 				<KadencePanelBody
 					title={ __( 'Padding/Margin', 'kadence-blocks' ) }
@@ -2954,6 +2892,40 @@ const ktrowUniqueIDs = [];
 			</BlockControls>
 			{ showSettings( 'allSettings', 'kadence/rowlayout' ) && (
 				<InspectorControls>
+					<InspectorControlTabs
+						panelName={ 'rowlayout' }
+						setActiveTab={ setActiveTab }
+						activeTab={ activeTab }
+						tabs= {
+							[
+								{
+									key  : 'general',
+									title: __( 'Layout', 'kadence-blocks' ),
+									icon : 'block-default',
+								},
+								{
+									key  : 'style',
+									title: __( 'Style', 'kadence-blocks' ),
+									icon : 'admin-appearance',
+								},
+								{
+									key  : 'advanced',
+									title: __( 'Advanced', 'kadence-blocks' ),
+									icon : 'admin-tools',
+								},
+							]
+						}
+					/>
+					{ ( activeTab === 'general' ) && (
+						<>
+							<LayoutControls
+								attributes={ attributes }
+								setAttributes={setAttributes}
+								updateColumns={updateColumns}
+								widthString={widthString}
+							/>
+						</>
+					) }
 					<ResponsiveControl
 						desktopChildren={ deskControls }
 						tabletChildren={ tabletControls }
