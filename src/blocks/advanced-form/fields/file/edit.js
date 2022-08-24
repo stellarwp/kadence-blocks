@@ -6,26 +6,16 @@ import FormFieldLabel from '../../label';
 /**
  * WordPress dependencies
  */
-import { TextControl, RangeControl, SelectControl, CheckboxControl, ToggleControl, PanelBody } from '@wordpress/components';
+import { TextControl, SelectControl, CheckboxControl, ToggleControl, PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
 import { without } from 'lodash';
 
 import { InspectorControls } from '@wordpress/block-editor';
-import { GetHelpStyles, GetInputStyles, GetLabelStyles } from '../../components';
 
-function FieldAccept( props ) {
-	const { attributes, setAttributes, isSelected, name, context, previewDevice } = props;
-	const { required, label, showLabel, helpText, ariaDescription, textColor, maxSizeMb, allowedTypes } = attributes;
+function FieldFile( props ) {
+	const { attributes, setAttributes, isSelected, name  } = props;
+	const { required, label, showLabel, helpText, ariaDescription, maxSizeMb, allowedTypes } = attributes;
 
-	const parentFieldStyle = context[ 'kadence/advanced-form/field-style' ];
-	const parentLabelStyle = context[ 'kadence/advanced-form/label-style' ];
-	const parentHelpStyle = context[ 'kadence/advanced-form/help-style' ];
-
-	const previewStyles = GetInputStyles( previewDevice, parentFieldStyle );
-	const labelStyles = GetLabelStyles( previewDevice, parentLabelStyle );
-	const helpStyles = GetHelpStyles( previewDevice, parentHelpStyle );
 
 	const wpMaxUploadSizeBytes = kadence_blocks_params.wp_max_upload_size;
 	const wpMaxUploadSizeMb = formatBytesToMb( wpMaxUploadSizeBytes );
@@ -161,29 +151,17 @@ function FieldAccept( props ) {
 						setAttributes={setAttributes}
 						isSelected={isSelected}
 						name={name}
-						textColor={textColor}
-						labelStyles={labelStyles}
-						fieldStyle={parentFieldStyle}
 					/>
-					<input type={'file'} style={{ display: 'block' }} disabled={ true } />
+					<input type={'file'} disabled={ true } />
 
-					{helpText && <span style={helpStyles} className="kb-form-field-help">{helpText}</span>}
+					{/*{helpText && <span style={helpStyles} className="kb-form-field-help">{helpText}</span>}*/}
 				</div>
 			</div>
 		</div>
 	);
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( FieldAccept );
+export default FieldFile;
 
 function formatBytes(bytes) {
 	if (bytes === 0) return '0 Bytes';

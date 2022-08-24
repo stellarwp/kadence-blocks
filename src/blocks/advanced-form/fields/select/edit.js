@@ -15,36 +15,24 @@ import {
 	IconButton,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { times, filter, random } from 'lodash';
-
-import { compose } from '@wordpress/compose';
+import { times, filter, has } from 'lodash';
 import { InspectorControls } from '@wordpress/block-editor';
-import { withSelect, withDispatch } from '@wordpress/data';
-import { getPreviewSize } from '@kadence/helpers';
 
-import { ColumnWidth, GetHelpStyles, GetInputStyles, GetLabelStyles } from '../../components';
+
+import { ColumnWidth } from '../../components';
+import classNames from 'classnames';
+import { useState } from '@wordpress/element';
 
 function FieldSelect( {
 						  attributes,
 						  setAttributes,
 						  isSelected,
-						  name,
-						  previewDevice,
-						  context,
+						  name
 					  } ) {
 
-	const { required, label, showLabel, value, helpText, options, width, multiSelect, ariaDescription, placeholder, textColor } = attributes;
+	const { required, label, showLabel, value, helpText, options, width, multiSelect, ariaDescription, placeholder } = attributes;
 
-	function saveFieldsOptions( value, subIndex ) {
-		const newOptions = options.map( ( item, thisIndex ) => {
-			if ( subIndex === thisIndex ) {
-				item = { ...item, ...value };
-			}
-
-			return item;
-		} );
-		setAttributes( { options: newOptions } );
-	}
+	const [ rerender, setRerender ] = useState( 0 );
 
 	function onOptionMoveUp( oldIndex ) {
 		return () => {
@@ -74,7 +62,7 @@ function FieldSelect( {
 		options.splice( newIndex, 1, options[ oldIndex ] );
 		options.splice( oldIndex, 1, tmpValue );
 
-		setAttributes( { options: options, rerender: random( 1.1, 99.9 ) } );
+		setAttributes( { options: options } );
 	}
 
 	const removeOptionItem = ( previousIndex ) => {
@@ -86,23 +74,33 @@ function FieldSelect( {
 		setAttributes( { options: currentItems } );
 	};
 
+	const updateOption = ( index, value ) => {
+		const newOptions = options.map( ( item, iteration ) => {
+			if ( index === iteration ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
+
+		setAttributes( {
+			options: newOptions,
+		} );
+	};
+
 	let optionsWithPlaceholder = options;
 	if ( placeholder !== '' ) {
 		optionsWithPlaceholder = [ { label: placeholder, value: placeholder, disabled: true, selected: ( '' === value ? true : false ) } ].concat( options );
 	}
 
-	const parentFieldStyle = context['kadence/advanced-form/field-style'];
-	const parentLabelStyle = context['kadence/advanced-form/label-style'];
-	const parentHelpStyle = context['kadence/advanced-form/help-style'];
-
-	const previewStyles = GetInputStyles( previewDevice, parentFieldStyle );
-	const labelStyles = GetLabelStyles( previewDevice, parentLabelStyle );
-	const helpStyles = GetHelpStyles( previewDevice, parentHelpStyle );
-
-	const previewWidth = getPreviewSize( previewDevice, width[ 0 ], width[ 1 ], width[ 2 ] ) ;
+	const classes = classNames( {
+		'kb-advanced-form-field': true,
+		[ `kb-field-desk-width-${width[0]}` ]: true,
+		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
+		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',
+	});
 
 	return (
-		<div className={'kadence-blocks-form-field kb-input-size-standard'}>
+		<div className={ classes }>
 			<InspectorControls>
 
 				<PanelBody
@@ -131,7 +129,13 @@ function FieldSelect( {
 								label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 )}
 								placeholder={__( 'Option', 'kadence-blocks' )}
 								value={( undefined !== options[ n ].label ? options[ n ].label : '' )}
-								onChange={( text ) => saveFieldsOptions( { label: text, value: text }, n )}
+								onChange={( text ) => updateOption( n, { label: text } )}
+							/>
+							<TextControl
+								label={__( 'Value', 'kadence-blocks' )}
+								placeholder={options[ n ].label}
+								value={( undefined !== options[ n ].value ? options[ n ].value : '' )}
+								onChange={( text ) => updateOption( n, { value: text } )}
 							/>
 							<div className="kadence-blocks-list-item__control-menu">
 								<IconButton
@@ -170,7 +174,8 @@ function FieldSelect( {
 								value: '',
 								label: '',
 							} );
-							setAttributes( { options: newOptions, rerender: random( 1.1, 99.9 ) } );
+							setAttributes( { options: newOptions } );
+							setRerender( Math.random() );
 						}}
 					>
 						<Dashicon icon="plus"/>
@@ -212,7 +217,7 @@ function FieldSelect( {
 
 				</PanelBody>
 			</InspectorControls>
-			<div className={'kb-form-field-container'}>
+			<>
 				<FormFieldLabel
 					required={required}
 					label={label}
@@ -220,18 +225,18 @@ function FieldSelect( {
 					setAttributes={setAttributes}
 					isSelected={isSelected}
 					name={name}
-					textColor={textColor}
-					labelStyles={ labelStyles }
-					fieldStyle={ parentFieldStyle }
 				/>
 
 				{isSelected ?
-					<div className={'kb-form-field kb-form-multi'}>
+					<div className={'kb-form-multi'}>
 						{times( options.length, n => (
-							<div className={'kb-checkbox-item'} key={n}>
-								<TextControl value={options[ n ].label} onChange={( value ) => setLabel( n, value )}/>
+							<div key={n}>
+								<TextControl
+									value={options[ n ].label}
+									onChange={( text ) => updateOption( n, { label: text } )}
+								/>
 								<Button onClick={() => removeOptionItem( n )}>
-									<span className="dashicon dashicons dashicons-trash"></span>
+									<span className="dashicons dashicons-trash"></span>
 								</Button>
 							</div>
 						) )}
@@ -245,7 +250,8 @@ function FieldSelect( {
 									value: '',
 									label: '',
 								} );
-								setAttributes( { options: newOptions, rerender: random( 1.1, 99.9 ) } );
+								setAttributes( { options: newOptions } );
+								setRerender( Math.random() );
 							}}
 						>
 							<Dashicon icon="plus"/>
@@ -255,38 +261,20 @@ function FieldSelect( {
 					:
 					<select
 						multiple={multiSelect}
-						className={`kb-field`}
-						data-required={'yes'}
-						style={{
-							background       : previewStyles.background,
-							color            : previewStyles.color,
-							fontSize         : previewStyles.fontSize,
-							lineHeight       : previewStyles.lineHeight,
-							borderRadius     : previewStyles.borderRadius,
-							borderTopWidth   : previewStyles.borderTopWidth,
-							borderRightWidth : previewStyles.borderRightWidth,
-							borderBottomWidth: previewStyles.borderBottomWidth,
-							borderLeftWidth  : previewStyles.borderLeftWidth,
-							borderColor      : previewStyles.borderColor,
-							boxShadow        : previewStyles.boxShadow,
-							width: previewWidth + '%',
-						}}>
+					>
+						{ times( optionsWithPlaceholder.length, n => (
+								<option key={n} value={n} disabled={ has(optionsWithPlaceholder[n], 'disabled') ? optionsWithPlaceholder[ n ].disabled : false }>
+									{optionsWithPlaceholder[ n ].label}
+								</option>
+							) )
+						}
 					</select>
 				}
 
-				{helpText && <span style={ helpStyles } className="kb-form-field-help">{helpText}</span>}
-			</div>
+				{helpText && <span className="kb-form-field-help">{helpText}</span>}
+			</>
 		</div>
 	);
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( FieldSelect );
+export default FieldSelect;

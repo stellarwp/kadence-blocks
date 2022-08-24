@@ -6,6 +6,7 @@ import {
 	Button,
 	Dashicon,
 	TabPanel,
+	SelectControl
 } from '@wordpress/components';
 
 import {
@@ -59,6 +60,30 @@ export default function FieldStyles( { saveStyle, style } ) {
 		} );
 
 		saveStyle( { boxShadowActive: newItems } );
+	};
+
+	const saveStyleGradient = ( value, index ) => {
+		const newItems = style.gradient.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+
+		saveStyle( { gradient: newItems } );
+	};
+	const saveStyleGradientActive = ( value, index ) => {
+
+		const newItems = style.gradientActive.map( ( item, thisIndex ) => {
+			if ( index === thisIndex ) {
+				item = value;
+			}
+
+			return item;
+		} );
+
+		saveStyle( { gradientActive: newItems } );
 	};
 
 	const [ borderControl, setBorderControl ] = useState( 'linked' );
@@ -611,27 +636,27 @@ export default function FieldStyles( { saveStyle, style } ) {
 				unit={'px'}
 				units={[ 'px' ]}
 			/>
-			<ResponsiveRangeControls
-				label={__( 'Field Column Gutter', 'kadence-blocks' )}
-				value={( undefined !== style.gutter ? style.gutter : '' )}
-				onChange={value => {
-					saveStyle( { gutter: value } );
-				}}
-				tabletValue={( undefined !== style.tabletGutter ? style.tabletGutter : '' )}
-				onChangeTablet={value => {
-					saveStyle( { tabletGutter: value } );
-				}}
-				mobileValue={( undefined !== style.mobileGutter ? style.mobileGutter : '' )}
-				onChangeMobile={value => {
-					saveStyle( { mobileGutter: value } );
-				}}
-				min={0}
-				max={50}
-				step={2}
-				showUnit={true}
-				unit={'px'}
-				units={[ 'px' ]}
-			/>
+			{/*<ResponsiveRangeControls*/}
+			{/*	label={__( 'Field Column Gutter', 'kadence-blocks' )}*/}
+			{/*	value={( undefined !== style.gutter ? style.gutter : '' )}*/}
+			{/*	onChange={value => {*/}
+			{/*		saveStyle( { gutter: value } );*/}
+			{/*	}}*/}
+			{/*	tabletValue={( undefined !== style.tabletGutter ? style.tabletGutter : '' )}*/}
+			{/*	onChangeTablet={value => {*/}
+			{/*		saveStyle( { tabletGutter: value } );*/}
+			{/*	}}*/}
+			{/*	mobileValue={( undefined !== style.mobileGutter ? style.mobileGutter : '' )}*/}
+			{/*	onChangeMobile={value => {*/}
+			{/*		saveStyle( { mobileGutter: value } );*/}
+			{/*	}}*/}
+			{/*	min={0}*/}
+			{/*	max={50}*/}
+			{/*	step={2}*/}
+			{/*	showUnit={true}*/}
+			{/*	unit={'px'}*/}
+			{/*	units={[ 'px' ]}*/}
+			{/*/>*/}
 		</>
 	);
 

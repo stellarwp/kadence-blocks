@@ -5,7 +5,7 @@ class AdvancedFormSubmitActions {
 	public function __construct( $form_args, $responses, $post_id ) {
 		$this->form_args = $form_args;
 		$this->responses = $responses;
-		$this->post_id = $post_id;
+		$this->post_id   = $post_id;
 	}
 
 	public function email() {
@@ -485,10 +485,6 @@ class AdvancedFormSubmitActions {
 
 			} else {
 
-				echo '<pre>';
-				print_r( $response['response'] );
-				die();
-
 				if ( ! isset( $response['response'] ) || ! isset( $response['response']['code'] ) ) {
 					//error_log( __('Failed to Connect to MailChimp', 'kadence-blocks-pro' ) );
 					return;
@@ -738,7 +734,7 @@ class AdvancedFormSubmitActions {
 		$webhookSettings = $this->form_args['attributes']['webhook'];
 
 
-		$webhook_args     = ( isset( $webhookSettings ) && is_array( $webhookSettings ) ) ? $webhookSettings : $webhook_defaults;
+		$webhook_args = ( isset( $webhookSettings ) && is_array( $webhookSettings ) ) ? $webhookSettings : $webhook_defaults;
 
 		if ( empty( $webhook_args['url'] ) ) {
 			return;
@@ -748,8 +744,8 @@ class AdvancedFormSubmitActions {
 		$user_ip = $this->get_client_ip();
 		$browser = $this->get_browser();
 
-		$name    = esc_attr( strip_tags( get_the_title( $this->post_id ) ) );
-		$body    = array(
+		$name = esc_attr( strip_tags( get_the_title( $this->post_id ) ) );
+		$body = array(
 			'post_name'    => $name,
 			'post_url'     => wp_get_referer(),
 			'post_id'      => $this->post_id,
@@ -783,21 +779,21 @@ class AdvancedFormSubmitActions {
 		}
 	}
 
-	public function entry() {
+	public function entry( $post_id ) {
 		$entry_defaults = array(
 			'name'       => '',
 			'userIP'     => true,
 			'userDevice' => true,
 		);
 
-		$entry_args     = ( isset( $this->form_args['attributes']['entry'] ) && is_array( $this->form_args['attributes']['entry'] ) ) ? $this->form_args['attributes']['entry'] : $entry_defaults;
-		$user_ip        = ( ! isset( $entry_args['userIP'] ) || ( isset( $entry_args['userIP'] ) && $entry_args['userIP'] ) ? $this->get_client_ip() : ip2long( '0.0.0.0' ) );
-		$browser        = ( ! isset( $entry_args['userDevice'] ) || ( isset( $entry_args['userDevice'] ) && $entry_args['userDevice'] ) ? $this->get_browser() : false );
-		$name           = ( isset( $entry_args['name'] ) && ! empty( trim( $entry_args['name'] ) ) ? trim( $entry_args['name'] ) : esc_attr( strip_tags( get_the_title( $this->post_id ) ) ) . ' ' . esc_attr__( 'submission', 'kadence-blocks-pro' ) );
+		$entry_args = ( isset( $this->form_args['attributes']['entry'] ) && is_array( $this->form_args['attributes']['entry'] ) ) ? $this->form_args['attributes']['entry'] : $entry_defaults;
+		$user_ip    = ( ! isset( $entry_args['userIP'] ) || ( isset( $entry_args['userIP'] ) && $entry_args['userIP'] ) ? $this->get_client_ip() : ip2long( '0.0.0.0' ) );
+		$browser    = ( ! isset( $entry_args['userDevice'] ) || ( isset( $entry_args['userDevice'] ) && $entry_args['userDevice'] ) ? $this->get_browser() : false );
+		$name       = ( isset( $entry_args['name'] ) && ! empty( trim( $entry_args['name'] ) ) ? trim( $entry_args['name'] ) : esc_attr( strip_tags( get_the_title( $this->post_id ) ) ) . ' ' . esc_attr__( 'submission', 'kadence-blocks-pro' ) );
 
-		$data           = array(
+		$data = array(
 			'name'         => $name,
-			'form_id'      => '$form_id',
+			'form_id'      => $post_id,
 			'post_id'      => $this->post_id,
 			'user_id'      => get_current_user_id(),
 			'date_created' => current_time( 'mysql' ),
@@ -817,7 +813,7 @@ class AdvancedFormSubmitActions {
 	}
 
 	public function autoEmail() {
-		$auto_defaults   = array(
+		$auto_defaults = array(
 			'subject'   => __( 'Thanks for contacting us!', 'kadence-blocks-pro' ),
 			'message'   => __( 'Thanks for getting in touch, we will respond within the next 24 hours.', 'kadence-blocks-pro' ),
 			'fromEmail' => '',
@@ -908,5 +904,138 @@ class AdvancedFormSubmitActions {
 				wp_mail( sanitize_email( trim( $bcc_email ) ), $subject, $body, $headers );
 			}
 		}
+	}
+
+
+	/**
+	 * Add meta data field to a entry
+	 *
+	 * @since 3.0
+	 *
+	 * @param string $meta_key   Meta data name.
+	 * @param mixed  $meta_value Meta data value. Must be serializable if non-scalar.
+	 * @param bool   $unique     Optional. Whether the same key should not be added. Default false.
+	 *
+	 * @param int    $entry_id   entry ID.
+	 *
+	 * @return false|int
+	 */
+	public function add_field( $entry_id, $meta_key, $meta_value, $unique = false ) {
+
+		if ( isset( $meta_value['type'] ) && $meta_value['type'] === 'file' ) {
+			$meta_value['value'] = '<a href="' . $meta_value['value'] . '">' . $meta_value['value'] . '</a>';
+		}
+
+		return add_metadata( 'kbp_form_entry', $entry_id, $meta_key, $meta_value, $unique );
+	}
+
+	/**
+	 * Get the client IP address
+	 *
+	 * @return string
+	 */
+	public function get_client_ip() {
+		$ipaddress = '';
+
+		if ( isset( $_SERVER['HTTP_CLIENT_IP'] ) ) {
+			$ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+		} elseif ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+			$ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		} elseif ( isset( $_SERVER['HTTP_X_FORWARDED'] ) ) {
+			$ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+		} elseif ( isset( $_SERVER['HTTP_FORWARDED_FOR'] ) ) {
+			$ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+		} elseif ( isset( $_SERVER['HTTP_FORWARDED'] ) ) {
+			$ipaddress = $_SERVER['HTTP_FORWARDED'];
+		} elseif ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+			$ipaddress = $_SERVER['REMOTE_ADDR'];
+		} else {
+			$ipaddress = 'UNKNOWN';
+		}
+
+		return $ipaddress;
+	}
+
+	/**
+	 * Get User Agent browser and OS type
+	 *
+	 * @return array
+	 */
+	public function get_browser() {
+		$u_agent  = $_SERVER['HTTP_USER_AGENT'];
+		$bname    = 'Unknown';
+		$platform = 'Unknown';
+		$version  = '';
+		$ub       = '';
+
+		// first get the platform
+		if ( preg_match( '/linux/i', $u_agent ) ) {
+			$platform = 'Linux';
+		} elseif ( preg_match( '/macintosh|mac os x/i', $u_agent ) ) {
+			$platform = 'MAC OS';
+		} elseif ( preg_match( '/windows|win32/i', $u_agent ) ) {
+			$platform = 'Windows';
+		}
+
+		// next get the name of the useragent yes seperately and for good reason
+		if ( preg_match( '/MSIE/i', $u_agent ) && ! preg_match( '/Opera/i', $u_agent ) ) {
+			$bname = 'Internet Explorer';
+			$ub    = 'MSIE';
+		} elseif ( preg_match( '/Trident/i', $u_agent ) ) {
+			// this condition is for IE11.
+			$bname = 'Internet Explorer';
+			$ub    = 'rv';
+		} elseif ( preg_match( '/Firefox/i', $u_agent ) ) {
+			$bname = 'Mozilla Firefox';
+			$ub    = 'Firefox';
+		} elseif ( preg_match( '/Chrome/i', $u_agent ) ) {
+			$bname = 'Google Chrome';
+			$ub    = 'Chrome';
+		} elseif ( preg_match( '/Safari/i', $u_agent ) ) {
+			$bname = 'Apple Safari';
+			$ub    = 'Safari';
+		} elseif ( preg_match( '/Opera/i', $u_agent ) ) {
+			$bname = 'Opera';
+			$ub    = 'Opera';
+		} elseif ( preg_match( '/Netscape/i', $u_agent ) ) {
+			$bname = 'Netscape';
+			$ub    = 'Netscape';
+		}
+
+		// finally get the correct version number.
+		$known   = array( 'Version', $ub, 'other' );
+		$pattern = '#(?<browser>' . join( '|', $known ) .
+		           ')[/|: ]+(?<version>[0-9.|a-zA-Z.]*)#';
+		if ( ! preg_match_all( $pattern, $u_agent, $matches ) ) {
+			// we have no matching number just continue.
+		}
+
+		// see how many we have.
+		$i = count( $matches['browser'] );
+
+		if ( $i != 1 ) {
+			// we will have two since we are not using 'other' argument yet
+			// see if version is before or after the name
+			if ( strripos( $u_agent, 'Version' ) < strripos( $u_agent, $ub ) ) {
+				$version = $matches['version'][0];
+			} else {
+				$version = $matches['version'][1];
+			}
+		} else {
+			$version = $matches['version'][0];
+		}
+
+		// check if we have a number.
+		if ( null === $version || '' === $version ) {
+			$version = '';
+		}
+
+		return array(
+			'userAgent' => $u_agent,
+			'name'      => $bname,
+			'version'   => $version,
+			'platform'  => $platform,
+			'pattern'   => $pattern,
+		);
 	}
 }

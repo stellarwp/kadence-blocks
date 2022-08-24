@@ -14,43 +14,36 @@ import {
 	Button,
 	IconButton
 } from '@wordpress/components';
-import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
 
+import { useState } from '@wordpress/element';
 import { InspectorControls } from '@wordpress/block-editor';
-import times from 'lodash/times';
-import filter from 'lodash/filter';
-import random from 'lodash/random';
-import { GetInputStyles, GetLabelStyles } from '../../components';
+import { times, filter } from 'lodash';
+import classNames from 'classnames';
+import { __ } from '@wordpress/i18n';
 
 function FieldCheckbox( {
 						  attributes,
 						  setAttributes,
 						  isSelected,
-						  name,
-						  previewDevice,
-						  context
+						  name
 					  }  ) {
 
-	const { required, label, showLabel, helpText, options, rerender, multiSelect, ariaDescription, textColor } = attributes;
+	const { required, label, showLabel, helpText, options, width, ariaDescription } = attributes;
 
-	const parentFieldStyle = context['kadence/advanced-form/field-style'];
-	const parentLabelStyle = context['kadence/advanced-form/label-style'];
-	const parentHelpStyle = context['kadence/advanced-form/help-style'];
+	const [ rerender, setRerender ] = useState( 0 );
 
-	const previewStyles = GetInputStyles( previewDevice, parentFieldStyle );
-	const labelStyles = GetLabelStyles( previewDevice, parentLabelStyle );
-
-	function saveFieldsOptions( value, subIndex ) {
-		const newOptions = options.map( ( item, thisIndex ) => {
-			if ( subIndex === thisIndex ) {
+	const updateOption = ( index, value ) => {
+		const newOptions = options.map( ( item, iteration ) => {
+			if ( index === iteration ) {
 				item = { ...item, ...value };
 			}
-
 			return item;
 		} );
-		setAttributes( { options: newOptions } );
-	}
+
+		setAttributes( {
+			options: newOptions,
+		} );
+	};
 
 	function onOptionMoveUp( oldIndex ) {
 		return () => {
@@ -80,7 +73,7 @@ function FieldCheckbox( {
 		options.splice( newIndex, 1, options[ oldIndex ] );
 		options.splice( oldIndex, 1, tmpValue );
 
-		setAttributes( { options: options, rerender: random(1.1, 99.9) } );
+		setAttributes( { options: options } );
 	}
 
 	const removeOptionItem = ( previousIndex ) => {
@@ -94,11 +87,18 @@ function FieldCheckbox( {
 
 	const setLabel = ( index, value ) => {
 		options[ index ].label = value;
-		setAttributes( { options: options, rerender: random(1.1, 99.9) } );
+		setAttributes( { options: options } );
 	}
 
+	const classes = classNames( {
+		'kb-advanced-form-field': true,
+		[ `kb-field-desk-width-${width[0]}` ]: true,
+		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
+		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',
+	});
+
 	return (
-		<div className={ 'kadence-blocks-form-field kb-input-size-standard' }>
+		<div className={ classes }>
 			<InspectorControls>
 
 				<PanelBody
@@ -129,7 +129,13 @@ function FieldCheckbox( {
 								label={__( 'Option', 'kadence-blocks' ) + ' ' + ( n + 1 )}
 								placeholder={__( 'Option', 'kadence-blocks' )}
 								value={( undefined !== options[ n ].label ? options[ n ].label : '' )}
-								onChange={( text ) => saveFieldsOptions( { label: text, value: text }, n )}
+								onChange={( text ) => updateOption( n, { label: text } )}
+							/>
+							<TextControl
+								label={__( 'Value', 'kadence-blocks' )}
+								placeholder={options[ n ].label}
+								value={( undefined !== options[ n ].value ? options[ n ].value : '' )}
+								onChange={( text ) => updateOption( n, { value: text } )}
 							/>
 							<div className="kadence-blocks-list-item__control-menu">
 								<IconButton
@@ -168,18 +174,13 @@ function FieldCheckbox( {
 								value: '',
 								label: '',
 							} );
-							setAttributes( { options: newOptions, rerender: random(1.1, 99.9)  } );
+							setAttributes( { options: newOptions } );
+							setRerender( Math.random() );
 						}}
 					>
 						<Dashicon icon="plus"/>
 						{__( 'Add Option', 'kadence-blocks' )}
 					</Button>
-
-					<ToggleControl
-						label={ __( 'Multi Select', 'kadence-blocks' ) }
-						checked={ multiSelect }
-						onChange={ ( value ) => setAttributes( { multiSelect: value } ) }
-					/>
 
 					<TextControl
 						label={ __( 'Help Text', 'kadence-blocks' ) }
@@ -195,7 +196,7 @@ function FieldCheckbox( {
 
 				</PanelBody>
 			</InspectorControls>
-			<div className={'kb-form-field-container'}>
+			<>
 				<FormFieldLabel
 					required={ required }
 					label={ label }
@@ -203,9 +204,6 @@ function FieldCheckbox( {
 					setAttributes={ setAttributes }
 					isSelected={ isSelected }
 					name={ name }
-					textColor={ textColor }
-					labelStyles={ labelStyles }
-					fieldStyle={ parentFieldStyle }
 				/>
 
 				{ isSelected ?
@@ -215,7 +213,7 @@ function FieldCheckbox( {
 									<input type="checkbox" name={'kb_field'} className={'kb-sub-field kb-checkbox-style'} value={options} checked={ false }/>
 									<TextControl value={options[ n ].label} onChange={( value ) => setLabel( n, value )}/>
 									<Button onClick={() => removeOptionItem( n )}>
-										<span className="dashicon dashicons dashicons-trash"></span>
+										<span className="dashicons dashicons-trash"></span>
 									</Button>
 								</div>
 							) )}
@@ -229,7 +227,8 @@ function FieldCheckbox( {
 									value: '',
 									label: '',
 								} );
-								setAttributes( { options: newOptions, rerender: random( 1.1, 99.9 ) } );
+								setAttributes( { options: newOptions } );
+								setRerender( Math.random() );
 							}}
 						>
 							<Dashicon icon="plus"/>
@@ -237,30 +236,21 @@ function FieldCheckbox( {
 						</Button>
 					</div>
 					:
-					<div className={'kb-form-field-inline'}>
+					<>
 						{times( options.length , n => (
 							<div className={ 'kb-checkbox-item' } key={ n }>
 								<input type="checkbox" name={ 'kb_field' } className={ 'kb-sub-field kb-checkbox-style' } value={ options } checked={ false } />
 								<label htmlFor={ 'kb_field' }>{ options[ n ].label }</label>
 							</div>
 						) )}
-					</div>
+					</>
 				}
 
 				{ helpText && <span className="kb-form-field-help">{ helpText }</span> }
 
-			</div>
+			</>
 		</div>
 	);
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( FieldCheckbox );
+export default FieldCheckbox;

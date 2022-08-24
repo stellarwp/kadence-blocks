@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { TextControl, ToggleControl, PanelBody, SelectControl } from '@wordpress/components';
+import { TextControl, PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 import { InspectorControls } from '@wordpress/block-editor';

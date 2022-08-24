@@ -7,6 +7,8 @@ export default ( previewDevice, parentHelpStyle ) => {
 
 	if ( !isEmpty( parentHelpStyle, 'color' ) ) {
 		styles.color = KadenceColorOutput( parentHelpStyle.color );
+	} else {
+		styles.color = 'undefined';
 	}
 
 	styles.fontSize = getPreviewSize( previewDevice, parentHelpStyle.size[ 0 ], parentHelpStyle.size[ 1 ], parentHelpStyle.size[ 2 ] ) + get( parentHelpStyle, 'sizeType', 'px');

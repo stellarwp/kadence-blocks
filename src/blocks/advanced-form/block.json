@@ -211,8 +211,8 @@
 	  }
 	},
 	"submitFont": {
-	  "type": "array",
-	  "default": [ {
+	  "type": "object",
+	  "default": {
 		"size": [ "", "", "" ],
 		"sizeType": "px",
 		"lineHeight": [ "", "", "" ],
@@ -226,7 +226,7 @@
 		"variant": "",
 		"subset": "",
 		"loadGoogle": true
-	  } ]
+	  }
 	},
 	"submitMargin": {
 	  "type": "array",
@@ -366,14 +366,5 @@
 	  }
 	}
   },
-  "providesContext": {
-	"kadence/advanced-form/field-style": "style",
-	"kadence/advanced-form/label-style": "labelFont",
-	"kadence/advanced-form/help-style": "helpFont"
-  },
-  "usesContext": [
-	"postId",
-	"postType"
-  ],
   "editorScript": "file:editor.js"
 }

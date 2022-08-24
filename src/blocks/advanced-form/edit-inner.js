@@ -59,14 +59,14 @@ import {
 	WebhookOptions,
 	AutoEmailOptions,
 	DbEntryOptions,
+	BackendStyles,
+	MessageOptions,
 } from './components';
 
 /**
  * Internal dependencies
  */
 import classnames from 'classnames';
-
-const ktUniqueIDs = [];
 
 export function EditInner( props ) {
 
@@ -92,18 +92,16 @@ export function EditInner( props ) {
 
 	const [ metaAttributes, setMetaAttributes ] = useFormMeta( 'kadence_form_attrs' );
 
-	const parsedAttrs = JSON.parse( metaAttributes );
-
 	const setMetaAttribute = ( value ) => {
-		setMetaAttributes( JSON.stringify( { ...parsedAttrs, ...value } ) );
+		setMetaAttributes( { ...metaAttributes, ...value } );
 	};
 
 	const saveSubmit = ( value ) => {
-		setMetaAttributes( JSON.stringify( { ...parsedAttrs, submit: { ...parsedAttrs.submit, ...value } } ) );
+		setMetaAttributes( { ...metaAttributes, submit: { ...metaAttributes.submit, ...value } } );
 	};
 
 	const saveStyle = ( value ) => {
-		setMetaAttributes( JSON.stringify( { ...parsedAttrs, style: { ...parsedAttrs.style, ...value } } ) );
+		setMetaAttributes( { ...metaAttributes, style: { ...metaAttributes.style, ...value } } );
 	};
 
 	const {
@@ -138,7 +136,9 @@ export function EditInner( props ) {
 		webhook,
 		autoEmail,
 		entry,
-	} = parsedAttrs;
+		messages,
+		messageFont,
+	} = metaAttributes;
 
 	let btnBG;
 	let btnGrad;
@@ -155,12 +155,6 @@ export function EditInner( props ) {
 		btnBG = ( undefined === submit.background ? undefined : KadenceColorOutput( submit.background, ( submit.backgroundOpacity !== undefined ? submit.backgroundOpacity : 1 ) ) );
 	}
 
-	const blockProps = useBlockProps( {
-		className: classnames( className, {
-			'test': true,
-		} ),
-	} );
-
 	const previewMarginTop = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 0 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 0 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 0 ] : '' ) );
 	const previewMarginRight = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 1 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 1 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 1 ] : '' ) );
 	const previewMarginBottom = getPreviewSize( previewDevice, ( undefined !== marginDesktop ? marginDesktop[ 2 ] : '' ), ( undefined !== marginTablet ? marginTablet[ 2 ] : '' ), ( undefined !== marginMobile ? marginMobile[ 2 ] : '' ) );
@@ -171,11 +165,19 @@ export function EditInner( props ) {
 	const previewPaddingBottom = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 2 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 2 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 2 ] : '' ) );
 	const previewPaddingLeft = getPreviewSize( previewDevice, ( undefined !== paddingDesktop ? paddingDesktop[ 3 ] : '' ), ( undefined !== paddingTablet ? paddingTablet[ 3 ] : '' ), ( undefined !== paddingMobile ? paddingMobile[ 3 ] : '' ) );
 
-	const previewSubmitFontSize = getPreviewSize( previewDevice, submitFont[ 0 ].size[ 0 ], submitFont[ 0 ].size[ 1 ], submitFont[ 0 ].size[ 2 ] );
-	const previewSubmitFontSizeType = submitFont[ 0 ].sizeType;
+	const previewSubmitFontSize = getPreviewSize( previewDevice, submitFont.size[ 0 ], submitFont.size[ 1 ], submitFont.size[ 2 ] );
+	const previewSubmitFontSizeType = submitFont.sizeType;
 
 	const containerClasses = classnames( {
-		'wp-block-kadence-form': true,
+		'wp-block-kadence-advanced-form'          : true,
+		[ `wp-block-kadence-advanced-form_${id}` ]: true,
+	} );
+
+	const submitClasses = classnames( {
+		'kb-advanced-form-submit-container'             : true,
+		[ `kb-field-desk-width-${submit.width[ 0 ]}` ]  : true,
+		[ `kb-field-tablet-width-${submit.width[ 1 ]}` ]: submit.width[ 1 ] !== '',
+		[ `kb-field-mobile-width-${submit.width[ 2 ]}` ]: submit.width[ 2 ] !== '',
 	} );
 
 	const { hasChildBlocks } = useSelect(
@@ -187,31 +189,14 @@ export function EditInner( props ) {
 
 	const [ title, setTitle ] = useFormProp( 'title' );
 
-	const ShowFields = ( id ) => {
+	const [ blocks, onInput, onChange ] = useEntityBlockEditor(
+		'postType',
+		'kadence_form',
+		id,
+	);
 
-		const [ blocks, onInput, onChange ] = useEntityBlockEditor(
-			'postType',
-			'kadence_form',
-			id,
-		);
-
-		let formFields = get( blocks, [ 0, 'innerBlocks' ], [] );
-		let newBlock = get( blocks, [ 0 ], {} );
-
-		return (
-			<InnerBlocks
-				value={formFields}
-				onInput={( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b )}
-				onChange={( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b )}
-				allowedBlocks={ALLOWED_BLOCKS}
-				renderAppender={(
-					size( formFields ) ?
-						undefined :
-						() => <InnerBlocks.ButtonBlockAppender/>
-				)}
-			/>
-		);
-	}
+	let formFields = get( blocks, [ 0, 'innerBlocks' ], [] );
+	let newBlock = get( blocks, [ 0 ], {} );
 
 	if ( title === '' ) {
 		return (
@@ -222,7 +207,7 @@ export function EditInner( props ) {
 	}
 
 	return (
-		<div {...blockProps}>
+		<div>
 			<BlockControls group="block">
 				<BlockAlignmentControl
 					value={align}
@@ -442,6 +427,14 @@ export function EditInner( props ) {
 						>
 							<SubmitButtonStyles saveSubmit={saveSubmit} setAttributes={setMetaAttribute} submit={submit} submitFont={submitFont} submitMargin={submitMargin} submitLabel={submitLabel}/>
 						</KadencePanelBody>
+
+						<KadencePanelBody
+							title={__( 'Message Settings', 'kadence-blocks' )}
+							initialOpen={false}
+							panelName={'kb-form-message'}
+						>
+							<MessageOptions setAttributes={setMetaAttribute} messages={messages} messageFont={messageFont} recaptcha={recaptcha}/>
+						</KadencePanelBody>
 					</>
 				}
 
@@ -493,6 +486,8 @@ export function EditInner( props ) {
 				}
 
 			</InspectorControls>
+			<BackendStyles id={id} previewDevice={previewDevice} fieldStyle={style} labelStyle={labelFont} helpStyle={helpFont}/>
+
 			<div className={containerClasses} style={
 				{
 					marginTop   : ( '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined ),
@@ -506,60 +501,67 @@ export function EditInner( props ) {
 					paddingLeft  : ( '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined ),
 				}}
 			>
-				<div className={'kb-form-wrap'}>
+				{( direct ) ?
+					<InnerBlocks
+						allowedBlocks={ALLOWED_BLOCKS}
+						renderAppender={(
+							hasChildBlocks ?
+								undefined :
+								() => <InnerBlocks.ButtonBlockAppender/>
+						)}
+					/>
+					:
+					<InnerBlocks
+						value={formFields}
+						onInput={( a, b ) => onInput( [ { ...newBlock, innerBlocks: a } ], b )}
+						onChange={( a, b ) => onChange( [ { ...newBlock, innerBlocks: a } ], b )}
+						allowedBlocks={ALLOWED_BLOCKS}
+						renderAppender={(
+							size( formFields ) ?
+								undefined :
+								() => <InnerBlocks.ButtonBlockAppender/>
+						)}
+					/>
+				}
 
-					{( direct ) ?
-						<InnerBlocks
-							allowedBlocks={ALLOWED_BLOCKS}
-							renderAppender={(
-								hasChildBlocks ?
-									undefined :
-									() => <InnerBlocks.ButtonBlockAppender/>
-							)}
-						/>
-						:
-						<ShowFields id={id}/>
-					}
-
-					<div className="kb-forms-submit-container">
-						<RichText
-							tagName="div"
-							placeholder={__( 'Submit' )}
-							value={parsedAttrs.submit.label}
-							onChange={value => {
-								saveSubmit( { label: value } );
-							}}
-							allowedFormats={applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] )}
-							className={`kb-forms-submit kb-button-size-${submit.size} kb-button-width-${submit.widthType}`}
-							style={{
-								background       : ( undefined !== btnBG ? btnBG : undefined ),
-								color            : ( undefined !== submit.color ? KadenceColorOutput( submit.color ) : undefined ),
-								fontSize         : previewSubmitFontSize + previewSubmitFontSizeType,
-								lineHeight       : ( submitFont[ 0 ].lineHeight && submitFont[ 0 ].lineHeight[ 0 ] ? submitFont[ 0 ].lineHeight[ 0 ] + submitFont[ 0 ].lineType : undefined ),
-								fontWeight       : submitFont[ 0 ].weight,
-								fontStyle        : submitFont[ 0 ].style,
-								letterSpacing    : submitFont[ 0 ].letterSpacing + 'px',
-								textTransform    : ( submitFont[ 0 ].textTransform ? submitFont[ 0 ].textTransform : undefined ),
-								fontFamily       : ( submitFont[ 0 ].family ? submitFont[ 0 ].family : '' ),
-								borderRadius     : ( undefined !== submit.borderRadius ? submit.borderRadius + 'px' : undefined ),
-								borderColor      : ( undefined === submit.border ? undefined : KadenceColorOutput( submit.border, ( submit.borderOpacity !== undefined ? submit.borderOpacity : 1 ) ) ),
-								width            : ( undefined !== submit.widthType && 'fixed' === submit.widthType && undefined !== submit.fixedWidth && undefined !== submit.fixedWidth[ 0 ] ? submit.fixedWidth[ 0 ] + 'px' : undefined ),
-								paddingTop       : ( 'custom' === submit.size && '' !== submit.deskPadding[ 0 ] ? submit.deskPadding[ 0 ] + 'px' : undefined ),
-								paddingRight     : ( 'custom' === submit.size && '' !== submit.deskPadding[ 1 ] ? submit.deskPadding[ 1 ] + 'px' : undefined ),
-								paddingBottom    : ( 'custom' === submit.size && '' !== submit.deskPadding[ 2 ] ? submit.deskPadding[ 2 ] + 'px' : undefined ),
-								paddingLeft      : ( 'custom' === submit.size && '' !== submit.deskPadding[ 3 ] ? submit.deskPadding[ 3 ] + 'px' : undefined ),
-								borderTopWidth   : ( submit.borderWidth && '' !== submit.borderWidth[ 0 ] ? submit.borderWidth[ 0 ] + 'px' : undefined ),
-								borderRightWidth : ( submit.borderWidth && '' !== submit.borderWidth[ 1 ] ? submit.borderWidth[ 1 ] + 'px' : undefined ),
-								borderBottomWidth: ( submit.borderWidth && '' !== submit.borderWidth[ 2 ] ? submit.borderWidth[ 2 ] + 'px' : undefined ),
-								borderLeftWidth  : ( submit.borderWidth && '' !== submit.borderWidth[ 3 ] ? submit.borderWidth[ 3 ] + 'px' : undefined ),
-								boxShadow        : ( undefined !== submit.boxShadow && undefined !== submit.boxShadow[ 0 ] && submit.boxShadow[ 0 ] ? ( undefined !== submit.boxShadow[ 7 ] && submit.boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit.boxShadow[ 3 ] ? submit.boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== submit.boxShadow[ 4 ] ? submit.boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== submit.boxShadow[ 5 ] ? submit.boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== submit.boxShadow[ 6 ] ? submit.boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== submit.boxShadow[ 1 ] ? submit.boxShadow[ 1 ] : '#000000' ), ( undefined !== submit.boxShadow[ 2 ] ? submit.boxShadow[ 2 ] : 1 ) ) : undefined ),
-								marginTop        : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 0 ] ? submitMargin[ 0 ].desk[ 0 ] + marginUnit : undefined ),
-								marginRight      : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 1 ] ? submitMargin[ 0 ].desk[ 1 ] + marginUnit : undefined ),
-								marginBottom     : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 2 ] ? submitMargin[ 0 ].desk[ 2 ] + marginUnit : undefined ),
-								marginLeft       : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 3 ] ? submitMargin[ 0 ].desk[ 3 ] + marginUnit : undefined ),
-							}}
-						/>
-					</div>
+				<div className={submitClasses}>
+					<RichText
+						tagName="div"
+						placeholder={__( 'Submit' )}
+						value={metaAttributes.submit.label}
+						onChange={value => {
+							saveSubmit( { label: value } );
+						}}
+						allowedFormats={applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] )}
+						className={`kb-advanced-form-submit kb-button-size-${submit.size} kb-button-width-${submit.widthType}`}
+						style={{
+							background       : ( undefined !== btnBG ? btnBG : undefined ),
+							color            : ( undefined !== submit.color ? KadenceColorOutput( submit.color ) : undefined ),
+							fontSize         : previewSubmitFontSize + previewSubmitFontSizeType,
+							lineHeight       : ( submitFont.lineHeight && submitFont.lineHeight[ 0 ] ? submitFont.lineHeight[ 0 ] + submitFont.lineType : undefined ),
+							fontWeight       : submitFont.weight,
+							fontStyle        : submitFont.style,
+							letterSpacing    : submitFont.letterSpacing + 'px',
+							textTransform    : ( submitFont.textTransform ? submitFont.textTransform : undefined ),
+							fontFamily       : ( submitFont.family ? submitFont.family : '' ),
+							borderRadius     : ( undefined !== submit.borderRadius ? submit.borderRadius + 'px' : undefined ),
+							borderColor      : ( undefined === submit.border ? undefined : KadenceColorOutput( submit.border, ( submit.borderOpacity !== undefined ? submit.borderOpacity : 1 ) ) ),
+							width            : ( undefined !== submit.widthType && 'fixed' === submit.widthType && undefined !== submit.fixedWidth && undefined !== submit.fixedWidth[ 0 ] ? submit.fixedWidth[ 0 ] + 'px' : undefined ),
+							paddingTop       : ( 'custom' === submit.size && '' !== submit.deskPadding[ 0 ] ? submit.deskPadding[ 0 ] + 'px' : undefined ),
+							paddingRight     : ( 'custom' === submit.size && '' !== submit.deskPadding[ 1 ] ? submit.deskPadding[ 1 ] + 'px' : undefined ),
+							paddingBottom    : ( 'custom' === submit.size && '' !== submit.deskPadding[ 2 ] ? submit.deskPadding[ 2 ] + 'px' : undefined ),
+							paddingLeft      : ( 'custom' === submit.size && '' !== submit.deskPadding[ 3 ] ? submit.deskPadding[ 3 ] + 'px' : undefined ),
+							borderTopWidth   : ( submit.borderWidth && '' !== submit.borderWidth[ 0 ] ? submit.borderWidth[ 0 ] + 'px' : undefined ),
+							borderRightWidth : ( submit.borderWidth && '' !== submit.borderWidth[ 1 ] ? submit.borderWidth[ 1 ] + 'px' : undefined ),
+							borderBottomWidth: ( submit.borderWidth && '' !== submit.borderWidth[ 2 ] ? submit.borderWidth[ 2 ] + 'px' : undefined ),
+							borderLeftWidth  : ( submit.borderWidth && '' !== submit.borderWidth[ 3 ] ? submit.borderWidth[ 3 ] + 'px' : undefined ),
+							boxShadow        : ( undefined !== submit.boxShadow && undefined !== submit.boxShadow[ 0 ] && submit.boxShadow[ 0 ] ? ( undefined !== submit.boxShadow[ 7 ] && submit.boxShadow[ 7 ] ? 'inset ' : '' ) + ( undefined !== submit.boxShadow[ 3 ] ? submit.boxShadow[ 3 ] : 1 ) + 'px ' + ( undefined !== submit.boxShadow[ 4 ] ? submit.boxShadow[ 4 ] : 1 ) + 'px ' + ( undefined !== submit.boxShadow[ 5 ] ? submit.boxShadow[ 5 ] : 2 ) + 'px ' + ( undefined !== submit.boxShadow[ 6 ] ? submit.boxShadow[ 6 ] : 0 ) + 'px ' + KadenceColorOutput( ( undefined !== submit.boxShadow[ 1 ] ? submit.boxShadow[ 1 ] : '#000000' ), ( undefined !== submit.boxShadow[ 2 ] ? submit.boxShadow[ 2 ] : 1 ) ) : undefined ),
+							marginTop        : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 0 ] ? submitMargin[ 0 ].desk[ 0 ] + marginUnit : undefined ),
+							marginRight      : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 1 ] ? submitMargin[ 0 ].desk[ 1 ] + marginUnit : undefined ),
+							marginBottom     : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 2 ] ? submitMargin[ 0 ].desk[ 2 ] + marginUnit : undefined ),
+							marginLeft       : ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && undefined !== submitMargin[ 0 ].desk && '' !== submitMargin[ 0 ].desk[ 3 ] ? submitMargin[ 0 ].desk[ 3 ] + marginUnit : undefined ),
+						}}
+					/>
 				</div>
 			</div>
 		</div>

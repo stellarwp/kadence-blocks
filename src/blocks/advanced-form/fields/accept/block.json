@@ -26,6 +26,18 @@
 	"helpText": {
 	  "type": "string",
 	  "default": ""
+	},
+	"terms": {
+	  "type": "string",
+	  "default": ""
+	},
+	"width": {
+	  "type": "array",
+	  "default": [
+		"100",
+		"",
+		""
+	  ]
 	}
   },
   "editorScript": "file:editor.js",

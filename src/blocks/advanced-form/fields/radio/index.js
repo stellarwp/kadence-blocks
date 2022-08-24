@@ -29,11 +29,6 @@ registerBlockType('kadence/advanced-form-radio', {
 	icon: {
 		src: radioInputIcon,
 	},
-	usesContext: [
-		'kadence/advanced-form/field-style',
-		'kadence/advanced-form/label-style',
-		'kadence/advanced-form/help-style'
-	],
 	edit,
 	transforms,
 	save: () => null,

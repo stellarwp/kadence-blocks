@@ -29,11 +29,6 @@ registerBlockType('kadence/advanced-form-select', {
 	icon: {
 		src: selectInputIcon,
 	},
-	usesContext: [
-		'kadence/advanced-form/field-style',
-		'kadence/advanced-form/label-style',
-		'kadence/advanced-form/help-style'
-	],
 	edit,
 	save: () => null,
 

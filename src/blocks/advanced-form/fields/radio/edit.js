@@ -15,34 +15,25 @@ import {
 	IconButton,
 } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { compose } from '@wordpress/compose';
 import { InspectorControls } from '@wordpress/block-editor';
-import { withSelect, withDispatch } from '@wordpress/data';
+import {
+	useState
+} from '@wordpress/element';
 
-import { times, filter, random } from 'lodash';
-import { GetHelpStyles, GetInputStyles, GetLabelStyles } from '../../components';
+import { times, filter } from 'lodash';
+import { ColumnWidth } from '../../components';
+import classNames from 'classnames';
 
 function FieldRadio( {
 						 attributes,
 						 setAttributes,
 						 isSelected,
 						 name,
-						 previewDevice,
-						 context
 					 } ) {
 
-	const { required, label, showLabel, helpText, options, rerender, ariaDescription, textColor } = attributes;
+	const { required, label, showLabel, helpText, options, width, ariaDescription } = attributes;
 
-	const saveFieldsOptions = ( value, subIndex ) => {
-		let newOptions = options.map( ( item, thisIndex ) => {
-			if ( subIndex === thisIndex ) {
-				item = { ...item, ...value };
-			}
-
-			return item;
-		} );
-		setAttributes( { options: newOptions } );
-	}
+	const [ rerender, setRerender ] = useState( 0 );
 
 	const onOptionMoveUp = ( oldIndex ) => {
 		if ( oldIndex === 0 ) {
@@ -68,7 +59,7 @@ function FieldRadio( {
 		options.splice( newIndex, 1, options[ oldIndex ] );
 		options.splice( oldIndex, 1, tmpValue );
 
-		setAttributes( { options: options, rerender: random( 1.1, 99.9 ) } );
+		setAttributes( { options: options} );
 	}
 
 	const removeOptionItem = ( previousIndex ) => {
@@ -80,25 +71,29 @@ function FieldRadio( {
 		setAttributes( { options: newOptions } );
 	};
 
-	const setLabel = ( index, value ) => {
-		let newOptions = options;
-		newOptions[ index ].label = value;
+	const updateOption = ( index, value ) => {
+		const newOptions = options.map( ( item, iteration ) => {
+			if ( index === iteration ) {
+				item = { ...item, ...value };
+			}
+			return item;
+		} );
 
-		setAttributes( { options: newOptions, rerender: random( 1.1, 99.9 ) } );
+		setAttributes( {
+			options: newOptions,
+		} );
 	};
 
-	const parentFieldStyle = context['kadence/advanced-form/field-style'];
-	const parentLabelStyle = context['kadence/advanced-form/label-style'];
-	const parentHelpStyle = context['kadence/advanced-form/help-style'];
-
-	const previewStyles = GetInputStyles( previewDevice, parentFieldStyle );
-	const labelStyles = GetLabelStyles( previewDevice, parentLabelStyle );
-	const helpStyles = GetHelpStyles( previewDevice, parentHelpStyle );
+	const classes = classNames( {
+		'kb-advanced-form-field': true,
+		[ `kb-field-desk-width-${width[0]}` ]: true,
+		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
+		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',
+	});
 
 	return (
-		<div className={'kadence-blocks-form-field kb-input-size-standard'}>
+		<div className={ classes }>
 			<InspectorControls>
-
 				<PanelBody
 					title={__( 'Field Controls', 'kadence-blocks' )}
 					initialOpen={true}
@@ -125,13 +120,13 @@ function FieldRadio( {
 								label={__( 'Label', 'kadence-blocks' )}
 								placeholder={__( 'Option', 'kadence-blocks' )}
 								value={( undefined !== options[ n ].label ? options[ n ].label : '' )}
-								onChange={( text ) => saveFieldsOptions( { label: text }, n )}
+								onChange={( text ) => updateOption( n, { label: text } )}
 							/>
 							<TextControl
 								label={__( 'Value', 'kadence-blocks' )}
 								placeholder={options[ n ].label}
 								value={( undefined !== options[ n ].value ? options[ n ].value : '' )}
-								onChange={( text ) => saveFieldsOptions( { value: text }, n )}
+								onChange={( text ) => updateOption( n, { value: text } )}
 							/>
 							<div className="kadence-blocks-list-item__control-menu">
 								<IconButton
@@ -170,7 +165,8 @@ function FieldRadio( {
 								value: '',
 								label: '',
 							} );
-							setAttributes( { options: newOptions, rerender: random( 1.1, 99.9 ) } );
+							setAttributes( { options: newOptions } );
+							setRerender( Math.random() );
 						}}
 					>
 						<Dashicon icon="plus"/>
@@ -189,9 +185,11 @@ function FieldRadio( {
 						onChange={( value ) => setAttributes( { ariaDescription: value } )}
 					/>
 
+					<ColumnWidth saveSubmit={setAttributes} width={width}/>
+
 				</PanelBody>
 			</InspectorControls>
-			<div className={'kb-form-field-container'}>
+			<>
 				<FormFieldLabel
 					required={required}
 					label={label}
@@ -199,13 +197,10 @@ function FieldRadio( {
 					setAttributes={setAttributes}
 					isSelected={isSelected}
 					name={name}
-					textColor={textColor}
-					labelStyles={ labelStyles }
-					fieldStyle={ parentFieldStyle }
 				/>
 
 				{isSelected ?
-					<div className={'kb-form-field kb-form-multi'}>
+					<div className={'kb-form-multi'}>
 						{times( options.length, n => (
 							<div className={'kb-checkbox-item'} key={n}>
 								<input
@@ -213,12 +208,9 @@ function FieldRadio( {
 									className={'kb-sub-field kb-checkbox-style'}
 									value={options}
 									onChange={( value ) => false }
-									style={ {
-										borderColor: previewStyles.borderColor,
-									} }
 								/>
 
-								<TextControl value={options[ n ].label} onChange={( value ) => setLabel( n, value )}/>
+								<TextControl value={options[ n ].label} onChange={( value ) => updateOption( n, { label: value } )}/>
 								<Button onClick={() => removeOptionItem( n )}>
 									<span className="dashicon dashicons dashicons-trash"></span>
 								</Button>
@@ -234,7 +226,8 @@ function FieldRadio( {
 									value: '',
 									label: '',
 								} );
-								setAttributes( { options: newOptions, rerender: random( 1.1, 99.9 ) } );
+								setAttributes( { options: newOptions } );
+								setRerender( Math.random() );
 							}}
 						>
 							<Dashicon icon="plus"/>
@@ -242,38 +235,26 @@ function FieldRadio( {
 						</Button>
 					</div>
 					:
-					<div className={'kb-form-field-inline'}>
+					<>
 						{times( options.length, n => (
-							<div className={'kb-checkbox-item'} key={n}>
+							<div key={n}>
 								<input
 									type={'radio'}
 									className={'kb-sub-field kb-checkbox-style'}
 									value={options}
 									onChange={( value ) => false }
-									style={ {
-										borderColor: previewStyles.borderColor,
-									} }
 								/>
 
 								<label htmlFor={'kb_field'}>{options[ n ].label}</label>
 							</div>
 						) )}
-					</div>
+					</>
 				}
-				{helpText && <span style={ helpStyles } className="kb-form-field-help">{helpText}</span>}
+				{helpText && <span className="kb-form-field-help">{helpText}</span>}
 
-			</div>
+			</>
 		</div>
 	);
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( FieldRadio );
+export default FieldRadio;

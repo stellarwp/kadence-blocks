@@ -59,38 +59,13 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 	const [ submitTabletPaddingControl, setSubmitTabletPaddingControl ] = useState( 'linked' );
 	const [ submitDeskPaddingControl, setSubmitDeskPaddingControl ] = useState( 'linked' );
 
-	const marginUnit = ( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].unit ? submitMargin[ 0 ].unit : 'px' );
+	const marginUnit = ( undefined !== submitMargin && undefined !== submitMargin && submitMargin.unit ? submitMargin.unit : 'px' );
 	const marginMin = ( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -100 );
 	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 12 : 100 );
 	const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 
-	// const saveSubmit = ( value, other = false ) => {
-	//
-	// 	if( other){
-	// 		console.log('SETTTTTING');
-	//
-	// 		console.log( 'submit.color' );
-	// 		console.log( submit.color );
-	//
-	// 		console.log( '{ ...submit, ...value }' );
-	// 		console.log( value );
-	// 	}
-	//
-	// 	const newItems = submit.map( ( item, thisIndex ) => {
-	// 		if ( 0 === thisIndex ) {
-	// 			item = { ...item, ...value };
-	// 		}
-	//
-	// 		return item;
-	// 	} );
-	//
-	// 	setAttributes( {
-	// 		submit: newItems,
-	// 	} );
-	// }
-
 	const saveSubmitMargin = ( value ) => {
-		console.log( value );
+		setAttributes( { submitMargin: { ...submitMargin, ...value } } );
 	};
 
 	const saveSubmitGradient = ( value, index ) => {
@@ -120,16 +95,8 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 	};
 
 	const saveSubmitFont = ( value ) => {
-
-		const newItems = submitFont.map( ( item, thisIndex ) => {
-			if ( 0 === thisIndex ) {
-				item = { ...item, ...value };
-			}
-
-			return item;
-		} );
 		setAttributes( {
-			submitFont: newItems,
+			submitFont: { ...submitFont, ...value },
 		} );
 	};
 
@@ -769,13 +736,13 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 				max={50}
 			/>
 			<TypographyControls
-				fontSize={submitFont[ 0 ].size}
+				fontSize={submitFont.size}
 				onFontSize={( value ) => saveSubmitFont( { size: value } )}
-				fontSizeType={submitFont[ 0 ].sizeType}
+				fontSizeType={submitFont.sizeType}
 				onFontSizeType={( value ) => saveSubmitFont( { sizeType: value } )}
-				lineHeight={submitFont[ 0 ].lineHeight}
+				lineHeight={submitFont.lineHeight}
 				onLineHeight={( value ) => saveSubmitFont( { lineHeight: value } )}
-				lineHeightType={submitFont[ 0 ].lineType}
+				lineHeightType={submitFont.lineType}
 				onLineHeightType={( value ) => saveSubmitFont( { lineType: value } )}
 			/>
 			<KadencePanelBody
@@ -784,11 +751,11 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 				panelName={'kb-form-advanced-button-settings'}
 			>
 				<TypographyControls
-					letterSpacing={submitFont[ 0 ].letterSpacing}
+					letterSpacing={submitFont.letterSpacing}
 					onLetterSpacing={( value ) => saveSubmitFont( { letterSpacing: value } )}
-					textTransform={submitFont[ 0 ].textTransform}
+					textTransform={submitFont.textTransform}
 					onTextTransform={( value ) => saveSubmitFont( { textTransform: value } )}
-					fontFamily={submitFont[ 0 ].family}
+					fontFamily={submitFont.family}
 					onFontFamily={( value ) => saveSubmitFont( { family: value } )}
 					onFontChange={( select ) => {
 						saveSubmitFont( {
@@ -797,17 +764,17 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 						} );
 					}}
 					onFontArrayChange={( values ) => saveSubmitFont( values )}
-					googleFont={submitFont[ 0 ].google}
+					googleFont={submitFont.google}
 					onGoogleFont={( value ) => saveSubmitFont( { google: value } )}
-					loadGoogleFont={submitFont[ 0 ].loadGoogle}
+					loadGoogleFont={submitFont.loadGoogle}
 					onLoadGoogleFont={( value ) => saveSubmitFont( { loadGoogle: value } )}
-					fontVariant={submitFont[ 0 ].variant}
+					fontVariant={submitFont.variant}
 					onFontVariant={( value ) => saveSubmitFont( { variant: value } )}
-					fontWeight={submitFont[ 0 ].weight}
+					fontWeight={submitFont.weight}
 					onFontWeight={( value ) => saveSubmitFont( { weight: value } )}
-					fontStyle={submitFont[ 0 ].style}
+					fontStyle={submitFont.style}
 					onFontStyle={( value ) => saveSubmitFont( { style: value } )}
-					fontSubset={submitFont[ 0 ].subset}
+					fontSubset={submitFont.subset}
 					onFontSubset={( value ) => saveSubmitFont( { subset: value } )}
 				/>
 				<ButtonGroup className="kt-size-type-options kt-row-size-type-options" aria-label={__( 'Margin Type', 'kadence-blocks' )}>
@@ -854,8 +821,8 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 										<Fragment>
 											<MeasurementControls
 												label={__( 'Mobile Margin', 'kadence-blocks' )}
-												measurement={( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].mobile ? submitMargin[ 0 ].mobile : [ '', '', '', '' ] )}
-												control={( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].control ? submitMargin[ 0 ].control : 'linked' )}
+												measurement={( undefined !== submitMargin && undefined !== submitMargin && submitMargin.mobile ? submitMargin.mobile : [ '', '', '', '' ] )}
+												control={( undefined !== submitMargin && undefined !== submitMargin && submitMargin.control ? submitMargin.control : 'linked' )}
 												onChange={( value ) => saveSubmitMargin( { mobile: value } )}
 												onControl={( value ) => saveSubmitMargin( { control: value } )}
 												min={marginMin}
@@ -870,8 +837,8 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 										<Fragment>
 											<MeasurementControls
 												label={__( 'Tablet Margin', 'kadence-blocks' )}
-												measurement={( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].tablet ? submitMargin[ 0 ].tablet : [ '', '', '', '' ] )}
-												control={( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].control ? submitMargin[ 0 ].control : 'linked' )}
+												measurement={( undefined !== submitMargin && undefined !== submitMargin && submitMargin.tablet ? submitMargin.tablet : [ '', '', '', '' ] )}
+												control={( undefined !== submitMargin && undefined !== submitMargin && submitMargin.control ? submitMargin.control : 'linked' )}
 												onChange={( value ) => saveSubmitMargin( { tablet: value } )}
 												onControl={( value ) => saveSubmitMargin( { control: value } )}
 												min={marginMin}
@@ -886,8 +853,8 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 										<Fragment>
 											<MeasurementControls
 												label={__( 'Desktop Margin', 'kadence-blocks' )}
-												measurement={( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].desk ? submitMargin[ 0 ].desk : [ '', '', '', '' ] )}
-												control={( undefined !== submitMargin && undefined !== submitMargin[ 0 ] && submitMargin[ 0 ].control ? submitMargin[ 0 ].control : 'linked' )}
+												measurement={( undefined !== submitMargin && undefined !== submitMargin && submitMargin.desk ? submitMargin.desk : [ '', '', '', '' ] )}
+												control={( undefined !== submitMargin && undefined !== submitMargin && submitMargin.control ? submitMargin.control : 'linked' )}
 												onChange={( value ) => saveSubmitMargin( { desk: value } )}
 												onControl={( value ) => saveSubmitMargin( { control: value } )}
 												min={marginMin}

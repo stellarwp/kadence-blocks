@@ -29,11 +29,6 @@ registerBlockType('kadence/advanced-form-text', {
 	icon: {
 		src: textInputIcon,
 	},
-	usesContext: [
-		'kadence/advanced-form/field-style',
-		'kadence/advanced-form/label-style',
-		'kadence/advanced-form/help-style'
-	],
 	edit,
 	transforms,
 	save: () => null,

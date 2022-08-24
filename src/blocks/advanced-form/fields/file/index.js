@@ -28,11 +28,6 @@ registerBlockType('kadence/advanced-form-file', {
 	icon: {
 		src: fileInputIcon,
 	},
-	usesContext: [
-		'kadence/advanced-form/field-style',
-		'kadence/advanced-form/label-style',
-		'kadence/advanced-form/help-style'
-	],
 	edit,
 	save: () => null,
 

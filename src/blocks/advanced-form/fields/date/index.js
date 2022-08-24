@@ -29,10 +29,6 @@ registerBlockType('kadence/advanced-form-date', {
 	icon: {
 		src: dateInputIcon,
 	},
-	usesContext: [
-		'kadence/advanced-form/field-style',
-		'kadence/advanced-form/label-style'
-	],
 	edit,
 	save: () => null,
 });

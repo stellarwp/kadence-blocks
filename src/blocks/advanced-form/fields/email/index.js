@@ -32,11 +32,6 @@ registerBlockType('kadence/advanced-form-email', {
 		html: false,
 	},
 	parent: [ 'kadence/advanced-form' ],
-	usesContext: [
-		'kadence/advanced-form/field-style',
-		'kadence/advanced-form/label-style',
-		'kadence/advanced-form/help-style'
-	],
 	edit,
 	save: () => null,
 

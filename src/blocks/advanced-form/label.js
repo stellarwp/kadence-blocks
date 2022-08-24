@@ -3,9 +3,8 @@
  */
 import { __ } from '@wordpress/i18n';
 import { RichText } from '@wordpress/block-editor';
-import { isEmpty, has, unset } from 'lodash';
 
-const FormFieldLabel = ( { setAttributes, label, resetFocus, fieldStyle, showLabel, labelStyles, required } ) => {
+const FormFieldLabel = ( { setAttributes, label, showLabel, required } ) => {
 
 	let showRequired = true;
 
@@ -15,30 +14,19 @@ const FormFieldLabel = ( { setAttributes, label, resetFocus, fieldStyle, showLab
 		);
 	}
 
-	let requiredColorCss = {};
-
-	if( !isEmpty(fieldStyle, 'requiredColor') ){
-		requiredColorCss = {
-			color: fieldStyle.requiredColor
-		}
-	}
-
 	return (
-		<div className={'kadence-label'} style={ labelStyles }>
+		<div className={'kb-advanced-form-label'}>
 				<RichText
-					className={'kadence-field-label__input'}
 					onChange={( value ) => {
-						if ( resetFocus ) {
-							resetFocus();
-						}
 						setAttributes( { label: value } );
 					}}
 					placeholder={__( 'Field label', 'kadence-blocks' )}
+					allowedFormats={ [ 'core/bold', 'core/italic', 'core/link', 'core/underline' ] }
 					tagName="label"
 					value={label}
 					multiline={ false }
 				/>
-				{ showRequired && required && <span style={ requiredColorCss }>*</span>}
+				{ showRequired && required && <span className={ 'required' }>*</span>}
 		</div>
 	);
 };

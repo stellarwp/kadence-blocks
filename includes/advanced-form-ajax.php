@@ -204,7 +204,7 @@ class KB_Ajax_Advanced_Form {
 				case 'webhook':
 					$submitActions->webhook();
 				case 'entry':
-					$submitActions->entry();
+					$submitActions->entry($post_id);
 					break;
 				case 'autoEmail':
 					$submitActions->autoEmail();
@@ -283,8 +283,10 @@ class KB_Ajax_Advanced_Form {
 
 				$subfolder     = '/kadence_form/' . date( 'Y' ) . '/' . date( 'm' ) . '/';
 				$destination   = wp_upload_dir()['basedir'] . $subfolder;
-				$abs_file_path = $destination . $_FILES[ $expected_field ]['name'];
-				$rel_file_path = '/uploads' . $subfolder . $_FILES[ $expected_field ]['name'];
+
+				$upload_filename = wp_unique_filename( $destination, time() . '_' . $_FILES[ $expected_field ]['name'] );
+				$abs_file_path = $destination . $upload_filename;
+				$rel_file_path = '/uploads' . $subfolder . $upload_filename;
 
 				// Create folder if not exist
 				if ( ! is_dir( $destination ) ) {
@@ -499,7 +501,7 @@ class KB_Ajax_Advanced_Form {
 		$allowed_mime_types = array();
 
 		$mimtypes = array(
-			'image'     => array(
+			'images'     => array(
 				'image/gif',
 				'image/jpeg',
 				'image/png',
@@ -575,7 +577,7 @@ class KB_Ajax_Advanced_Form {
 
 		$meta_args = get_post_meta( $post_id, 'kadence_form_attrs', true );
 
-		$form_args['attributes'] = json_decode($meta_args, true);
+		$form_args['attributes'] = json_decode(json_encode($meta_args), true);
 
 		foreach ( $blocks[0]['innerBlocks'] as $indexkey => $block ) {
 			if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
@@ -611,13 +613,6 @@ class KB_Ajax_Advanced_Form {
 		}
 
 		return $messages;
-	}
-
-	private function dd( $var ) {
-		echo '<pre>';
-		print_r( $var );
-		echo '</pre>';
-		die();
 	}
 
 }

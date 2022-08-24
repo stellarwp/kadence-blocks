@@ -171,7 +171,7 @@ class Kadence_Blocks_Table_Of_Contents {
 		}
 		// Lets register all the block styles.
 		wp_register_style( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'dist/blocks-table-of-contents.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_script( 'kadence-blocks-gumshoe', KADENCE_BLOCKS_URL . 'includes/assets/js/gumshoe.min.js', array(), KADENCE_BLOCKS_VERSION, true );	
+		wp_register_script( 'kadence-blocks-gumshoe', KADENCE_BLOCKS_URL . 'includes/assets/js/gumshoe.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-table-of-contents', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-table-of-contents.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 	/**
@@ -400,6 +400,7 @@ class Kadence_Blocks_Table_Of_Contents {
 	 * @return string The sanitized heading content for anchor link.
 	 */
 	private function convert_text_to_anchor( $content ) {
+		$content = remove_accents( $content );
 		$content = strtolower( $content );
 		$content = preg_replace( "/[^A-Za-z0-9 ]/", '', $content );
 		$content = str_replace( ' ', '-', $content );
@@ -625,24 +626,24 @@ class Kadence_Blocks_Table_Of_Contents {
 	 * @param string $string The string to convert.
 	 * @return string The string converted.
 	 */
-	public function convert_smart_quotes( $string ) { 
+	public function convert_smart_quotes( $string ) {
 		$search = array("’",
 						"‘",
-						"”", 
-						"“", 
+						"”",
+						"“",
 						"–",
 						"—",
-						"…"); 
+						"…");
 		$replace = array("'",
-						 "'",  
-						 '"', 
-						 '"', 
+						 "'",
+						 '"',
+						 '"',
 						 '-',
 						 '-',
-						 '...'); 
-	
-		return str_replace( $search, $replace, $string ); 
-	} 
+						 '...');
+
+		return str_replace( $search, $replace, $string );
+	}
 	/**
 	 * Sets the current post for usage in template blocks.
 	 *

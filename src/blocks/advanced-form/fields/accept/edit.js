@@ -8,25 +8,22 @@ import FormFieldLabel from '../../label';
  */
 import { TextControl, ToggleControl, PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { compose } from '@wordpress/compose';
-import { InspectorControls } from '@wordpress/block-editor';
-import { withSelect, withDispatch } from '@wordpress/data';
-
-import { GetInputStyles, GetLabelStyles } from '../../components';
+import { InspectorControls, RichText } from '@wordpress/block-editor';
+import classNames from 'classnames';
 
 function FieldAccept( props ) {
-	const { attributes, setAttributes, isSelected, name, previewDevice, context } = props;
-	const { required, label, showLabel, value, helpText, ariaDescription, textColor } = attributes;
+	const { attributes, setAttributes, isSelected, name } = props;
+	const { required, label, showLabel, value, width, terms, helpText, ariaDescription } = attributes;
 
-	const parentFieldStyle = context['kadence/advanced-form/field-style'];
-	const parentLabelStyle = context['kadence/advanced-form/label-style'];
-	const parentHelpStyle = context['kadence/advanced-form/help-style'];
-
-	const previewStyles = GetInputStyles( previewDevice, parentFieldStyle );
-	const labelStyles = GetLabelStyles( previewDevice, parentLabelStyle );
+	const classes = classNames( {
+		'kb-advanced-form-field': true,
+		[ `kb-field-desk-width-${width[0]}` ]: true,
+		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
+		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',
+	});
 
 	return (
-		<div className={'kadence-blocks-form-field kb-input-size-standard'}>
+		<div className={ classes }>
 			<InspectorControls>
 
 				<PanelBody
@@ -65,42 +62,40 @@ function FieldAccept( props ) {
 
 				</PanelBody>
 			</InspectorControls>
-			<div className={'kb-form-field-container'}>
-				<div className={'kb-form-field-inline'}>
-					<input
-						type={'checkbox'}
-						checked={value}
-						onChange={( value ) => false }
-						style={ {
-							borderColor: previewStyles.borderColor,
-						} }
-					/>
+			<div className={'kb-form-multi'}>
 
-					<FormFieldLabel
-						required={required}
-						label={label}
-						showLabel={showLabel}
-						setAttributes={setAttributes}
-						isSelected={isSelected}
-						name={name}
-						textColor={textColor}
-						labelStyles={ labelStyles }
-						fieldStyle={ parentFieldStyle }
-					/>
-				</div>
-				{helpText && <div style={ labelStyles } className="kb-form-field-help">{helpText}</div>}
+				<FormFieldLabel
+					required={required}
+					label={label}
+					showLabel={showLabel}
+					setAttributes={setAttributes}
+					isSelected={isSelected}
+					name={name}
+				/>
+
+				<input
+					type={'checkbox'}
+					checked={value}
+					name={ 'kb_accept' }
+					className={ 'kb-sub-field kb-checkbox-style' }
+					onChange={( value ) => false }
+				/>
+				<RichText
+					className={'kadence-field-label__input'}
+					onChange={( value ) => {
+						setAttributes( { terms: value } );
+					}}
+					placeholder={__( 'Opt me in!', 'kadence-blocks' )}
+					allowedFormats={ [ 'core/bold', 'core/italic', 'core/link', 'core/underline' ] }
+					tagName="label"
+					value={terms}
+					multiline={ false }
+				/>
+
+				{helpText && <div className="kb-form-field-help">{helpText}</div>}
 			</div>
 		</div>
 	);
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( FieldAccept );
+export default FieldAccept;

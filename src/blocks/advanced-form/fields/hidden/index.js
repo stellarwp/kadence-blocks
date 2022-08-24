@@ -28,10 +28,6 @@ registerBlockType('kadence/advanced-form-hidden', {
 	icon: {
 		src: hiddenInputIcon,
 	},
-	usesContext: [
-		'kadence/advanced-form/field-style',
-		'kadence/advanced-form/label-style'
-	],
 	edit,
 	save: () => null,
 

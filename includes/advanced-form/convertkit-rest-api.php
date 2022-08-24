@@ -6,6 +6,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
 /**
  * REST API controller class.
  *
@@ -44,11 +45,13 @@ class Kadence_ConvertKit_REST_Controller extends WP_REST_Controller {
 			)
 		);
 	}
+
 	/**
 	 * Checks if a given request has access to search content.
 	 *
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return true|WP_Error True if the request has search access, WP_Error object otherwise.
 	 */
 	public function get_items_permission_check( $request ) {
@@ -59,12 +62,13 @@ class Kadence_ConvertKit_REST_Controller extends WP_REST_Controller {
 	 * Retrieves a collection of objects.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_items( $request ) {
-		$api_key = get_option('kadence_blocks_convertkit_api');
-		$end_point  = $request->get_param( self::PROP_END_POINT );
-		$base_url = 'https://api.convertkit.com/v3/' . $end_point;
+		$api_key   = get_option( 'kadence_blocks_convertkit_api' );
+		$end_point = $request->get_param( self::PROP_END_POINT );
+		$base_url  = 'https://api.convertkit.com/v3/' . $end_point;
 
 		if ( empty( $api_key ) ) {
 			return array();
@@ -91,13 +95,14 @@ class Kadence_ConvertKit_REST_Controller extends WP_REST_Controller {
 		return $body;
 
 	}
+
 	/**
 	 * Retrieves the query params for the search results collection.
 	 *
 	 * @return array Collection parameters.
 	 */
 	public function get_collection_params() {
-		$query_params  = parent::get_collection_params();
+		$query_params = parent::get_collection_params();
 
 		$query_params[ self::PROP_END_POINT ] = array(
 			'description' => __( 'Actionable endpoint for api call.', 'kadence-blocks-pro' ),

@@ -28,11 +28,6 @@ registerBlockType('kadence/advanced-form-telephone', {
 	icon: {
 		src: phoneInputIcon,
 	},
-	usesContext: [
-		'kadence/advanced-form/field-style',
-		'kadence/advanced-form/label-style',
-		'kadence/advanced-form/help-style'
-	],
 	edit,
 	save: () => null,
 

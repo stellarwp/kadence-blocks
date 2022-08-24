@@ -8,29 +8,24 @@ import FormFieldLabel from '../../label';
  */
 import { TextControl, ToggleControl, PanelBody } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
-import { compose } from '@wordpress/compose';
-import { withSelect, withDispatch } from '@wordpress/data';
 import { InspectorControls } from '@wordpress/block-editor';
-import { getPreviewSize } from '@kadence/helpers';
 
-import { ColumnWidth, GetHelpStyles, GetInputStyles, GetLabelStyles } from '../../components';
+import { ColumnWidth } from '../../components';
+import classNames from 'classnames';
 
 function FieldTime( props ) {
-	const { attributes, setAttributes, isSelected, name, context, previewDevice } = props;
-	const { required, label, showLabel, value, helpText, placeholder, width, ariaDescription, textColor } = attributes;
+	const { attributes, setAttributes, isSelected, name } = props;
+	const { required, label, showLabel, value, helpText, placeholder, width, ariaDescription } = attributes;
 
-	const parentFieldStyle = context['kadence/advanced-form/field-style'];
-	const parentLabelStyle = context['kadence/advanced-form/label-style'];
-	const parentHelpStyle = context['kadence/advanced-form/help-style'];
-
-	const previewStyles = GetInputStyles( previewDevice, parentFieldStyle );
-	const labelStyles = GetLabelStyles( previewDevice, parentLabelStyle );
-	const helpStyles = GetHelpStyles( previewDevice, parentHelpStyle );
-
-	const previewWidth = getPreviewSize( previewDevice, width[ 0 ], width[ 1 ], width[ 2 ] ) ;
+	const classes = classNames( {
+		'kb-advanced-form-field': true,
+		[ `kb-field-desk-width-${width[0]}` ]: true,
+		[ `kb-field-tablet-width-${width[1]}` ]: width[1] !== '',
+		[ `kb-field-mobile-width-${width[2]}` ]: width[2] !== '',
+	});
 
 	return (
-		<div className={'kadence-blocks-form-field kb-input-size-standard'}>
+		<div className={ classes }>
 			<InspectorControls>
 
 				<PanelBody
@@ -72,59 +67,26 @@ function FieldTime( props ) {
 
 				</PanelBody>
 			</InspectorControls>
-			<div className={'kb-form-field-container'}>
-				<div className={'kb-form-field'}>
-					<FormFieldLabel
-						required={required}
-						label={label}
-						showLabel={showLabel}
-						setAttributes={setAttributes}
-						isSelected={isSelected}
-						name={name}
-						textColor={textColor}
-						labelStyles={ labelStyles }
-						fieldStyle={ parentFieldStyle }
-					/>
-					<input
-						type={ 'time' }
-						className={'kb-field'}
-						value={value}
-						placeholder={placeholder}
-						onChange={( value ) => false}
-						style={ {
-							lineHeight: previewStyles.lineHeight,
-							fontSize: previewStyles.fontSize,
-							paddingTop: previewStyles.paddingTop,
-							paddingRight: previewStyles.paddingRight,
-							paddingBottom: previewStyles.paddingBottom,
-							paddingLeft: previewStyles.paddingLeft,
-							background: previewStyles.background,
-							color: previewStyles.color,
-							borderRadius: previewStyles.borderRadius,
-							borderTopWidth: previewStyles.borderTopWidth,
-							borderRightWidth: previewStyles.borderRightWidth,
-							borderBottomWidth: previewStyles.borderBottomWidth,
-							borderLeftWidth: previewStyles.borderLeftWidth,
-							borderColor: previewStyles.borderColor,
-							boxShadow: previewStyles.boxShadow,
-							width: previewWidth + '%',
-						} }
-					/>
-
-					{helpText && <span style={ helpStyles } className="kb-form-field-help">{helpText}</span>}
-				</div>
-			</div>
+			<>
+				<FormFieldLabel
+					required={required}
+					label={label}
+					showLabel={showLabel}
+					setAttributes={setAttributes}
+					isSelected={isSelected}
+					name={name}
+				/>
+				<input
+					type={ 'time' }
+					className={'kb-field'}
+					value={value}
+					placeholder={placeholder}
+					onChange={( value ) => false}
+				/>
+				{helpText && <span className="kb-advanced-form-help">{helpText}</span>}
+			</>
 		</div>
 	);
 }
 
-export default compose( [
-	withSelect( ( select ) => {
-		return {
-			previewDevice: select( 'kadenceblocks/data' ).getPreviewDeviceType(),
-		};
-	} ),
-	withDispatch( ( dispatch ) => ( {
-		addUniqueID: ( value, clientID ) => dispatch( 'kadenceblocks/data' ).addUniqueID( value, clientID ),
-	} ) ),
-] )( FieldTime );
+export default FieldTime;

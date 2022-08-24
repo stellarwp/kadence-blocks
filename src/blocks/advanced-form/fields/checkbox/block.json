@@ -29,13 +29,13 @@
 		{"value": "", "label": ""}
 	  ]
 	},
-	"multiSelect": {
-	  "type": "boolean",
-	  "default": false
-	},
-	"rerender": {
-	  "type": "string",
-	  "default": "abc123"
+	"width": {
+	  "type": "array",
+	  "default": [
+		"100",
+		"",
+		""
+	  ]
 	}
   },
   "editorScript": "file:editor.js",

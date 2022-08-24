@@ -79,12 +79,6 @@ export default function MailerLiteOptions( { settings, save, parentClientId } ) 
 			return newString;
 		} );
 
-		console.log( 'FIRST MAP');
-		console.log( settings.map );
-
-		console.log( 'new MAP');
-		console.log( newItems );
-
 		save( { map: newItems } );
 	};
 

@@ -187,14 +187,14 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-advanced-btn',
 			)
 		);
-		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-form/block.json',
-			array(
-				'render_callback' => array( $this, 'render_advanced_form' ),
-				'editor_script'   => 'kadence-blocks-advanced-form',
-				'editor_style'    => 'kadence-blocks-advanced-form',
-			)
-		);
+//		register_block_type(
+//			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-form/block.json',
+//			array(
+//				'render_callback' => array( $this, 'render_advanced_form' ),
+//				'editor_script'   => 'kadence-blocks-advanced-form',
+//				'editor_style'    => 'kadence-blocks-advanced-form',
+//			)
+//		);
 		register_block_type(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-gallery/block.json',
 			array(
@@ -1401,285 +1401,6 @@ class Kadence_Blocks_Frontend {
 	}
 
 	/**
-	 * Render advanced form
-	 */
-	function render_advanced_form( $block_attrs, $content, $parsed_block ) {
-
-		$post_id = $block_attrs['id'];
-		$post_meta = get_post_meta( $block_attrs['id'], 'kadence_form_attrs', true );
-		$attr = json_decode( $post_meta, true );
-
-		$post_content = get_post( $block_attrs['id'] );
-
-		if ( $post_content instanceof WP_Post ) {
-			$parsed_block = parse_blocks( $post_content->post_content );
-		} else {
-			$parsed_block = array();
-		}
-
-
-		// Parse blocks in reusable block
-//		if ( ! empty( $parsed_block->parsed_block['blockName'] ) && $parsed_block->parsed_block['blockName'] === 'kadence/reusable-form' ) {
-//			if ( ! empty( $parsed_block->parsed_block['attrs']['id'] ) ) {
-//
-//				$post_id = $parsed_block->parsed_block['attrs']['id'];
-//				$post    = get_post( $post_id );
-//
-//				if ( $post instanceof WP_Post ) {
-//
-//					$blocks = parse_blocks( $post->post_content );
-//
-//					$parsed_block->parsed_block['innerBlocks'] = $blocks[0]['innerBlocks'];
-//					$attr                                      = $blocks[0]['attrs'];
-//				}
-//			}
-//		}
-
-		// No fields. Skip render
-		if( empty( $parsed_block[0]['innerBlocks'] ) ){
-			return '';
-		}
-
-		if ( ! wp_style_is( 'kadence-blocks-advanced-form', 'enqueued' ) ) {
-			$this->enqueue_style( 'kadence-blocks-advanced-form' );
-		}
-
-		if ( ! wp_script_is( 'kadence-blocks-advanced-form', 'enqueued' ) ) {
-			$this->enqueue_script( 'kadence-blocks-advanced-form' );
-		}
-
-		$unique_id = rand(0, 9999);
-		$style_id = $unique_id;
-		$css                    = new Kadence_Blocks_CSS();
-
-		$media_query            = array();
-		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
-		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
-
-
-		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont']['google'] ) && $attr['labelFont']['google'] && ( ! isset( $attr['labelFont']['loadGoogle'] ) || true === $attr['labelFont']['loadGoogle'] ) && isset( $attr['labelFont']['family'] ) ) {
-			$label_font = $attr['labelFont'];
-			$this->add_gfont(
-				array(
-					'googleFont' => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
-					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
-					'typography' => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
-					'fontVariant' => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
-					'fontSubset' =>  ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
-					'loadItalic' =>  false,
-				)
-			);
-		}
-		// Add submit font.
-		if ( isset( $attr['submitFont'] ) && is_array( $attr['submitFont'] ) && isset( $attr['submitFont']['google'] ) && $attr['submitFont']['google'] && ( ! isset( $attr['submitFont']['loadGoogle'] ) || true === $attr['submitFont']['loadGoogle'] ) && isset( $attr['submitFont']['family'] ) ) {
-			$submit_font = $attr['submitFont'];
-			$this->add_gfont(
-				array(
-					'googleFont' => ( isset( $submit_font['google'] ) ? $submit_font['google'] : false ),
-					'loadGoogleFont' => ( isset( $submit_font['loadGoogle'] ) ? $submit_font['loadGoogle'] : true ),
-					'typography' => ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' ),
-					'fontVariant' => ( isset( $submit_font['variant'] ) ? $submit_font['variant'] : '' ),
-					'fontSubset' =>  ( isset( $submit_font['subset'] ) ? $submit_font['subset'] : '' ),
-					'loadItalic' =>  false,
-				)
-			);
-		}
-
-		// Container
-		$css->set_selector( '.wp-block-kadence-advanced-form.kadence-advanced-form' . $unique_id );
-
-		$css->add_property( 'padding-top', ( !empty( $attr['labelFont']['padding'][0] ) ? $attr['labelFont']['padding'][0] . 'px' : 'undefined' ) );
-		$css->add_property( 'padding-right', ( !empty( $attr['labelFont']['padding'][1] ) ? $attr['labelFont']['padding'][1] . 'px' : 'undefined' ) );
-		$css->add_property( 'padding-bottom', ( !empty( $attr['labelFont']['padding'][2] ) ? $attr['labelFont']['padding'][2] . 'px' : 'undefined' ) );
-		$css->add_property( 'padding-left', ( !empty( $attr['labelFont']['padding'][3] ) ? $attr['labelFont']['padding'][3] . 'px' : 'undefined' ) );
-
-		$css->add_property( 'margin-top', ( !empty( $attr['labelFont']['margin'][0] ) ? $attr['labelFont']['margin'][0] . 'px' : 'undefined' ) );
-		$css->add_property( 'margin-right', ( !empty( $attr['labelFont']['margin'][1] ) ? $attr['labelFont']['margin'][1] . 'px' : 'undefined' ) );
-		$css->add_property( 'margin-bottom', ( !empty( $attr['labelFont']['margin'][2] ) ? $attr['labelFont']['margin'][2] . 'px' : 'undefined' ) );
-		$css->add_property( 'margin-left', ( !empty( $attr['labelFont']['margin'][3] ) ? $attr['labelFont']['margin'][3] . 'px' : 'undefined' ) );
-
-		/*
-		 * Showing required asterisk
-		 */
-		if ( isset( $attr['style']['showRequired'] ) && $attr['style']['showRequired'] ) {
-			$css->set_selector( '.wp-block-kadence-advanced-form.kadence-advanced-form' . $unique_id . ' .required' );
-
-			if ( ! empty( $attr['style']['requiredColor'] ) ) {
-				$css->add_property( 'color', $this->kadence_color_output( $attr['style']['requiredColor'] ) );
-			}
-		}
-
-		/*
-		 * Label
-		 */
-		$css->set_selector( '.wp-block-kadence-advanced-form.kadence-advanced-form' . $unique_id . ' label');
-
-		$css->add_property( 'padding-top', ( !empty( $attr['labelFont']['padding'][0] ) ? $attr['labelFont']['padding'][0] . 'px' : 'undefined' ) );
-		$css->add_property( 'padding-right', ( !empty( $attr['labelFont']['padding'][1] ) ? $attr['labelFont']['padding'][1] . 'px' : 'undefined' ) );
-		$css->add_property( 'padding-bottom', ( !empty( $attr['labelFont']['padding'][2] ) ? $attr['labelFont']['padding'][2] . 'px' : 'undefined' ) );
-		$css->add_property( 'padding-left', ( !empty( $attr['labelFont']['padding'][3] ) ? $attr['labelFont']['padding'][3] . 'px' : 'undefined' ) );
-
-		$css->add_property( 'margin-top', ( !empty( $attr['labelFont']['margin'][0] ) ? $attr['labelFont']['margin'][0] . 'px' : 'undefined' ) );
-		$css->add_property( 'margin-right', ( !empty( $attr['labelFont']['margin'][1] ) ? $attr['labelFont']['margin'][1] . 'px' : 'undefined' ) );
-		$css->add_property( 'margin-bottom', ( !empty( $attr['labelFont']['margin'][2] ) ? $attr['labelFont']['margin'][2] . 'px' : 'undefined' ) );
-		$css->add_property( 'margin-left', ( !empty( $attr['labelFont']['margin'][3] ) ? $attr['labelFont']['margin'][3] . 'px' : 'undefined' ) );
-
-		if( !empty( $attr['labelFont']['color'] ) ){
-			$css->add_property( 'color', $this->kadence_color_output( $attr['labelFont']['color'] ) );
-		}
-
-		if ( !empty( $attr['labelFont']['letterSpacing'] ) && is_numeric( $attr['labelFont']['letterSpacing'] ) ) {
-			$css->add_property( 'letter-spacing', $attr['labelFont']['letterSpacing'] . 'px' );
-		}
-
-		if ( !empty( $attr['labelFont']['textTransform'] ) ) {
-			$css->add_property( 'text-transform', $attr['labelFont']['textTransform'] );
-		}
-
-		$css->add_property( 'font-size', !empty( $attr['labelFont']['size'][0] ) ? $attr['labelFont']['size'][0] . $attr['labelFont']['sizeType'] : 'undefined' );
-		$css->add_property( 'line-height', !empty( $attr['labelFont']['lineHeight'][0] ) ? $attr['labelFont']['lineHeight'][0] . $attr['labelFont']['lineType'] : 'undefined' );
-
-		// Label Tablet
-		$css->start_media_query( $media_query['tablet'] );
-		$css->add_property( 'font-size', !empty( $attr['labelFont']['size'][1] ) ? $attr['labelFont']['size'][1] . $attr['labelFont']['sizeType'] : 'undefined' );
-
-		$css->add_property( 'line-height', !empty( $attr['labelFont']['lineHeight'][1] ) ? $attr['labelFont']['lineHeight'][1] . $attr['labelFont']['lineType'] : 'undefined' );
-
-		$css->stop_media_query();
-
-		// Label Mobile
-		$css->start_media_query( $media_query['mobile'] );
-		$css->add_property( 'font-size', !empty( $attr['labelFont']['size'][2] ) ? $attr['labelFont']['size'][2] . $attr['labelFont']['sizeType'] : 'undefined' );
-		$css->add_property( 'line-height', !empty( $attr['labelFont']['lineHeight'][2] ) ? $attr['labelFont']['lineHeight'][2] . $attr['labelFont']['lineType'] : 'undefined' );
-
-		$css->stop_media_query();
-
-
-		// Help Text Font
-		$css->set_selector( '.wp-block-kadence-advanced-form.kadence-advanced-form' . $unique_id . ' .kb-form-field-help');
-//		$css->add_property( 'display', 'block' );
-
-		foreach( ['top', 'right', 'bottom', 'left'] as $key => $value ){
-			if( !empty( $attr['helpFont']['padding'][$key] )){
-				$css->add_property( 'padding-' . $value , $attr['helpFont']['padding'][$key] . 'px');
-			}
-		}
-
-		foreach( ['top', 'right', 'bottom', 'left'] as $key => $value ){
-			if( !empty( $attr['helpFont']['margin'][$key] )){
-				$css->add_property( 'margin-' . $value , $attr['helpFont']['margin'][$key] . 'px');
-			}
-		}
-
-		if ( empty( $attr['helpFont']['margin'][1] ) ) {
-			$css->add_property( 'margin-bottom', '15px' );
-		}
-
-
-		if( !empty( $attr['helpFont']['color'] ) ){
-			$css->add_property( 'color', $this->kadence_color_output( $attr['helpFont']['color'] ) );
-		}
-
-		if ( !empty( $attr['helpFont']['letterSpacing'] ) && is_numeric( $attr['helpFont']['letterSpacing'] ) ) {
-			$css->add_property( 'letter-spacing', $attr['helpFont']['letterSpacing'] . 'px' );
-		}
-
-		if ( !empty( $attr['helpFont']['textTransform'] ) ) {
-			$css->add_property( 'text-transform', $attr['helpFont']['textTransform'] );
-		}
-
-		// Help Desktop
-		$css->add_property( 'font-size', !empty( $attr['helpFont']['size'][0] ) ? $attr['helpFont']['size'][0] . $attr['helpFont']['sizeType'] : 'undefined' );
-		$css->add_property( 'line-height', !empty( $attr['helpFont']['lineHeight'][0] ) ? $attr['helpFont']['lineHeight'][0] . $attr['helpFont']['lineType'] : 'undefined' );
-
-		// Help Tablet
-		$css->start_media_query( $media_query['tablet'] );
-		$css->add_property( 'font-size', !empty( $attr['helpFont']['size'][1] ) ? $attr['helpFont']['size'][1] . $attr['helpFont']['sizeType'] : 'undefined' );
-
-		$css->add_property( 'line-height', !empty( $attr['helpFont']['lineHeight'][1] ) ? $attr['helpFont']['lineHeight'][1] . $attr['helpFont']['lineType'] : 'undefined' );
-
-		$css->stop_media_query();
-
-		// Help Mobile
-		$css->start_media_query( $media_query['mobile'] );
-		$css->add_property( 'font-size', !empty( $attr['helpFont']['size'][2] ) ? $attr['helpFont']['size'][2] . $attr['helpFont']['sizeType'] : 'undefined' );
-		$css->add_property( 'line-height', !empty( $attr['helpFont']['lineHeight'][2] ) ? $attr['helpFont']['lineHeight'][2] . $attr['helpFont']['lineType'] : 'undefined' );
-
-		$css->stop_media_query();
-
-		// Input
-		$input_css_prefix = '.kadence-advanced-form' . $unique_id;
-		$css->set_selector( $input_css_prefix. ' input:not(input[type=submit])' . ', ' . $input_css_prefix. ' textarea, ' . $input_css_prefix. ' select' );
-
-		if( !empty( $attr['style']['background'] ) ){
-			$css->add_property( 'background', $this->kadence_color_output( $attr['style']['background'], $attr['style']['backgroundOpacity'] ) );
-		}
-
-		if( !empty( $attr['style']['color'] ) ){
-			$css->add_property( 'color', $this->kadence_color_output( $attr['style']['color'] ) );
-		}
-
-		if( !empty($attr['style']['boxShadowActive'][0]) &&  $attr['style']['boxShadowActive'][0] === true ) {
-			$css->add_property( 'box-shadow', ( isset( $attr['style']['boxShadowActive'][7] ) && true === $attr['style']['boxShadowActive'][7] ? 'inset ' : '' ) . ( isset( $attr['style']['boxShadowActive'][3] ) && is_numeric( $attr['style']['boxShadowActive'][3] ) ? $attr['style']['boxShadowActive'][3] : '2' ) . 'px ' . ( isset( $attr['style']['boxShadowActive'][4] ) && is_numeric( $attr['style']['boxShadowActive'][4] ) ? $attr['style']['boxShadowActive'][4] : '2' ) . 'px ' . ( isset( $attr['style']['boxShadowActive'][5] ) && is_numeric( $attr['style']['boxShadowActive'][5] ) ? $attr['style']['boxShadowActive'][5] : '3' ) . 'px ' . ( isset( $attr['style']['boxShadowActive'][6] ) && is_numeric( $attr['style']['boxShadowActive'][6] ) ? $attr['style']['boxShadowActive'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $attr['style']['boxShadowActive'][1] ) && ! empty( $attr['style']['boxShadowActive'][1] ) ? $attr['style']['boxShadowActive'][1] : '#000000' ), ( isset( $attr['style']['boxShadowActive'][2] ) && is_numeric( $attr['style']['boxShadowActive'][2] ) ? $attr['style']['boxShadowActive'][2] : 0.4 ) ) );
-		}
-
-		if( !empty($attr['style']['boxShadow'][0]) && $attr['style']['boxShadow'][0] === true ) {
-			$css->add_property( 'box-shadow', ( isset( $attr['style']['boxShadow'][7] ) && true === $attr['style']['boxShadow'][7] ? 'inset ' : '' ) . ( isset( $attr['style']['boxShadow'][3] ) && is_numeric( $attr['style']['boxShadow'][3] ) ? $attr['style']['boxShadow'][3] : '2' ) . 'px ' . ( isset( $attr['style']['boxShadow'][4] ) && is_numeric( $attr['style']['boxShadow'][4] ) ? $attr['style']['boxShadow'][4] : '2' ) . 'px ' . ( isset( $attr['style']['boxShadow'][5] ) && is_numeric( $attr['style']['boxShadow'][5] ) ? $attr['style']['boxShadow'][5] : '3' ) . 'px ' . ( isset( $attr['style']['boxShadow'][6] ) && is_numeric( $attr['style']['boxShadow'][6] ) ? $attr['style']['boxShadow'][6] : '0' ) . 'px ' . $this->kadence_color_output( ( isset( $attr['style']['boxShadow'][1] ) && ! empty( $attr['style']['boxShadow'][1] ) ? $attr['style']['boxShadow'][1] : '#000000' ), ( isset( $attr['style']['boxShadow'][2] ) && is_numeric( $attr['style']['boxShadow'][2] ) ? $attr['style']['boxShadow'][2] : 0.4 ) ) );
-		}
-
-		foreach( ['top', 'right', 'bottom', 'left'] as $key => $value ){
-			if( !empty( $attr['style']['deskPadding'][$key] )){
-				$css->add_property( 'padding-' . $value , $attr['style']['deskPadding'][$key] . 'px');
-			}
-		}
-
-		$css->add_property( 'font-size', !empty( $attr['style']['fontSize'][0] ) ? $attr['style']['fontSize'][0] . $attr['style']['fontSizeType'] : 'undefined' );
-		$css->add_property( 'line-height', !empty( $attr['style']['lineHeight'][0] ) ? $attr['style']['lineHeight'][0] . $attr['style']['lineType'] : 'undefined' );
-
-		// Input Tablet
-		$css->start_media_query( $media_query['tablet'] );
-		$css->add_property( 'font-size', !empty( $attr['style']['fontSize'][1] ) ? $attr['style']['fontSize'][1] . $attr['style']['fontSizeType'] : 'undefined' );
-		$css->add_property( 'line-height', !empty( $attr['style']['lineHeight'][1] ) ? $attr['style']['lineHeight'][1] . $attr['style']['lineType'] : 'undefined' );
-
-		foreach( ['top', 'right', 'bottom', 'left'] as $key => $value ){
-			if( !empty( $attr['style']['tabletPadding'][$key] )){
-				$css->add_property( 'padding-' . $value , $attr['style']['tabletPadding'][$key] . 'px');
-			}
-		}
-		$css->stop_media_query();
-
-		// Input Mobile
-		$css->start_media_query( $media_query['mobile'] );
-		$css->add_property( 'font-size', !empty( $attr['style']['fontSize'][2] ) ? $attr['style']['fontSize'][2] . $attr['style']['fontSizeType'] : 'undefined' );
-		$css->add_property( 'line-height', !empty( $attr['style']['lineHeight'][2] ) ? $attr['style']['lineHeight'][2] . $attr['style']['lineType'] : 'undefined' );
-
-		foreach( ['top', 'right', 'bottom', 'left'] as $key => $value ){
-			if( !empty( $attr['style']['mobilePadding'][$key] )){
-				$css->add_property( 'padding-' . $value , $attr['style']['mobilePadding'][$key] . 'px');
-			}
-		}
-		$css->stop_media_query();
-
-		// Radio specific
-
-
-		// Submit
-
-		$css_output = $css->css_output();
-
-		$formFrontend = new AdvancedFormFrontend( $parsed_block[0]['innerBlocks'], $attr, $unique_id, $post_id );
-		$html_output = $formFrontend->render();
-
-		$content = '<style id="' . $style_id . '">' . $css_output . '</style>' . $html_output;
-
-
-		return $content;
-
-	}
-
-
-	/**
 	 * Render form CSS In Head
 	 *
 	 * @param array $attributes the blocks attributes.
@@ -1918,7 +1639,7 @@ class Kadence_Blocks_Frontend {
 		//wp_register_style( 'kadence-blocks-heading', KADENCE_BLOCKS_URL . 'dist/style-blocks-heading.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-heading', false );
 		wp_register_style( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/style-blocks-form.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-advanced-form', KADENCE_BLOCKS_URL . 'dist/style-blocks-advanced-form.css', array(), KADENCE_BLOCKS_VERSION );
+//		wp_register_style( 'kadence-blocks-advanced-form', KADENCE_BLOCKS_URL . 'dist/style-blocks-advanced-form.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-testimonials', KADENCE_BLOCKS_URL . 'dist/style-blocks-testimonials.css', array(), KADENCE_BLOCKS_VERSION );
 
 		// Next all the extras that are shared.
@@ -1944,7 +1665,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-tabs.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'includes/assets/js/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-advanced-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+//		wp_register_script( 'kadence-blocks-advanced-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-form',
 			'kadence_blocks_form_params',

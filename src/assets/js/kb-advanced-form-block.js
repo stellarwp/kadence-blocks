@@ -1,7 +1,7 @@
 /* global kadence_blocks_advanced_form_params */
 ( function() {
 	'use strict';
-	window.kadenceForm = {
+	window.kadenceAdvancedForm = {
 		error_item: 1,
 		clearForm( form ) {
 			form.reset();
@@ -64,13 +64,13 @@
 				if ( item.classList.contains( 'kb-checkbox-style' ) ) {
 					item.parentNode.append( el );
 				} else {
-					window.kadenceForm.insertAfter( el, item );
+					window.kadenceAdvancedForm.insertAfter( el, item );
 				}
 			}
-			if ( 1 === window.kadenceForm.error_item ) {
+			if ( 1 === window.kadenceAdvancedForm.error_item ) {
 				item.focus();
 			}
-			window.kadenceForm.error_item ++;
+			window.kadenceAdvancedForm.error_item ++;
 		},
 		addErrorNotice( form ) {
 			var error_message = form.getAttribute('data-error-message');
@@ -81,7 +81,7 @@
 			el.classList.add( 'kadence-blocks-form-message' );
 			el.classList.add( 'kadence-blocks-form-warning' );
 			el.innerHTML = error_message;
-			window.kadenceForm.insertAfter( el, form );
+			window.kadenceAdvancedForm.insertAfter( el, form );
 		},
 		isValidEmail( email ) {
 			var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
@@ -142,7 +142,7 @@
 			var error       = false,
 				error_type  = '';
 			// remove all initial errors if any.
-			window.kadenceForm.removeErrors( self );
+			window.kadenceAdvancedForm.removeErrors( self );
 			// ===== Validate: Text and Textarea ========
 			var required = self.querySelectorAll( '[data-required="yes"]' );
 			if ( required.length ) {
@@ -160,7 +160,7 @@
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceForm.markError( required[n], error_type, self );
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
 						case 'tel':
@@ -171,7 +171,7 @@
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceForm.markError( required[n], error_type, self );
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
 						case 'accept':
@@ -180,7 +180,7 @@
 								error_type = 'required';
 								console.log( 'here' );
 								// mark the error in the field.
-								window.kadenceForm.markError( required[n], error_type, self );
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
 
@@ -193,7 +193,7 @@
 									error_type = 'required';
 
 									// mark the error in the field.
-									window.kadenceForm.markError( required[n], error_type, self );
+									window.kadenceAdvancedForm.markError( required[n], error_type, self );
 								}
 							} else {
 
@@ -203,7 +203,7 @@
 									error_type = 'required';
 
 									// mark the error in the field.
-									window.kadenceForm.markError( required[n], error_type, self );
+									window.kadenceAdvancedForm.markError( required[n], error_type, self );
 								}
 							}
 							break;
@@ -216,7 +216,7 @@
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceForm.markError( required[n], error_type, self );
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
 
@@ -228,7 +228,7 @@
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceForm.markError( required[n], error_type, self );
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
 
@@ -237,19 +237,19 @@
 
 							if ( val !== '' ) {
 								//run the validation
-								if( ! window.kadenceForm.isValidEmail( val ) ) {
+								if( ! window.kadenceAdvancedForm.isValidEmail( val ) ) {
 									error = true;
 									error_type = 'validation';
 
 									// mark the error in the field.
-									window.kadenceForm.markError( required[n], error_type, self );
+									window.kadenceAdvancedForm.markError( required[n], error_type, self );
 								}
 							} else if( val === '' ) {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceForm.markError( required[n], error_type, self );
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
 						case 'url':
@@ -257,19 +257,19 @@
 
 							if ( val !== '' ) {
 								//run the validation
-								if( ! window.kadenceForm.isValidURL( val ) ) {
+								if( ! window.kadenceAdvancedForm.isValidURL( val ) ) {
 									error = true;
 									error_type = 'validation';
 
 									// mark the error in the field.
-									window.kadenceForm.markError( required[n], error_type, self );
+									window.kadenceAdvancedForm.markError( required[n], error_type, self );
 								}
 							} else if( val === '' ) {
 								error = true;
 								error_type = 'required';
 
 								// mark the error in the field.
-								window.kadenceForm.markError( required[n], error_type, self );
+								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}
 							break;
 
@@ -281,14 +281,14 @@
 			// if already some error found, bail out
 			if ( error ) {
 				// add error notice
-				window.kadenceForm.addErrorNotice( self );
+				window.kadenceAdvancedForm.addErrorNotice( self );
 
 				return false;
 			}
 			//var form_data = self.serialize();
 			var form_data = new FormData(self);
 			form_data.set( '_kb_form_verify', kadence_blocks_form_params.nonce );
-			//form_data = window.kadenceForm.serialize( form_data );
+			//form_data = window.kadenceAdvancedForm.serialize( form_data );
 			form_data = new URLSearchParams(form_data);
 			//form_data = form_data + '&_kb_form_verify=' + kadence_blocks_form_params.nonce;
 			return form_data;
@@ -305,8 +305,8 @@
 			var event = new Event( 'kb-form-start-submit' );
 			// Dispatch the event.
 			window.document.body.dispatchEvent(event);
-			var submitButton = form.querySelector('.kb-advanced-forms-submit');
-			var form_data = window.kadenceForm.validateForm( form );
+			var submitButton = form.querySelector('.kb-advanced-form-submit-button');
+			var form_data = window.kadenceAdvancedForm.validateForm( form );
 			if ( form_data ) {
 				var el = document.createElement('div');
 				el.classList.add( 'kb-form-loading' );
@@ -323,7 +323,7 @@
 						//console.log( JSON.parse( this.response ) );
 						var response = JSON.parse( this.response );
 						if ( response.success ) {
-							var event = new CustomEvent( 'kb-form-success', {
+							var event = new CustomEvent( 'kb-advanced-form-success', {
 								'detail': ( form.querySelector( 'input[name="_kb_form_id"]' ) ? form.querySelector( 'input[name="_kb_form_id"]' ).value : '' ),
 							} );
 							// Dispatch the event.
@@ -331,18 +331,18 @@
 							if ( response.redirect ) {
 								window.location = response.redirect;
 							} else {
-								window.kadenceForm.insertAfter( window.kadenceForm.createElementFromHTML( response.html ), form );
+								window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.html ), form );
 								if ( form.querySelector('.g-recaptcha') ) {
 									grecaptcha.reset();
 								}
-								window.kadenceForm.clearForm( form );
+								window.kadenceAdvancedForm.clearForm( form );
 							}
 						} else {
 							if ( response.data ) {
-								window.kadenceForm.insertAfter( window.kadenceForm.createElementFromHTML( response.data.html ), form );
+								window.kadenceAdvancedForm.insertAfter( window.kadenceAdvancedForm.createElementFromHTML( response.data.html ), form );
 								if ( response.data.required ) {
 									if ( form.querySelector( '[name="' + response.data.required + '"]' ) ) {
-										window.kadenceForm.markError( form.querySelector( '[name="' + response.data.required + '"]' ), 'required', form );
+										window.kadenceAdvancedForm.markError( form.querySelector( '[name="' + response.data.required + '"]' ), 'required', form );
 									}
 								}
 							}
@@ -365,7 +365,7 @@
 		},
 		checkParentClass( element, classname ) {
 			if ( element.className.split(' ').indexOf( classname ) >=0 ) return element.id;
-			return element.parentNode && window.kadenceForm.checkParentClass( element.parentNode, classname );
+			return element.parentNode && window.kadenceAdvancedForm.checkParentClass( element.parentNode, classname );
 		},
 		verifySource( form ) {
 			var input = form.querySelector( 'input[name="_kb_form_post_id"]' );
@@ -373,7 +373,7 @@
 				return;
 			}
 			if ( ! input.value || 'block-unknown' === input.value ) {
-				var theID = window.kadenceForm.checkParentClass( form.parentNode, 'widget_block' );
+				var theID = window.kadenceAdvancedForm.checkParentClass( form.parentNode, 'widget_block' );
 				if ( theID ) {
 					input.value = theID;
 				}
@@ -386,11 +386,11 @@
 			}
 			var click_function = function( form ) {
 				return function curried_func(e) {
-					window.kadenceForm.submit( e, form );
+					window.kadenceAdvancedForm.submit( e, form );
 				}
 			}
 			for ( var n = 0; n < forms.length; n++ ) {
-				window.kadenceForm.verifySource( forms[n] );
+				window.kadenceAdvancedForm.verifySource( forms[n] );
 				forms[n].addEventListener('submit', click_function( forms[n] ) );
 			}
 		},
@@ -398,14 +398,14 @@
 			if ( typeof kadence_blocks_form_params === 'undefined' ) {
 				return false;
 			}
-			window.kadenceForm.initForms();
+			window.kadenceAdvancedForm.initForms();
 		}
 	}
 	if ( 'loading' === document.readyState ) {
 		// The DOM has not yet been loaded.
-		document.addEventListener( 'DOMContentLoaded', window.kadenceForm.init );
+		document.addEventListener( 'DOMContentLoaded', window.kadenceAdvancedForm.init );
 	} else {
 		// The DOM has already been loaded.
-		window.kadenceForm.init();
+		window.kadenceAdvancedForm.init();
 	}
 }() );

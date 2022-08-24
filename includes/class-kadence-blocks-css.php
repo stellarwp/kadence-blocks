@@ -953,16 +953,22 @@ class Kadence_Blocks_CSS {
 	 * Generates the color output.
 	 *
 	 * @param array $attributes an array of attributes
+	 * @param string $name Name of the color attribute
+	 * @param string $field Name of CSS property to use
+	 * @param string $opacityKey Key of opacity value in passed $attributes
+	 *
 	 * @return string
 	 */
-	public function render_color_output( $attributes, $name = 'color', $field = 'color' ) {
+	public function render_color_output( $attributes, $name = 'color', $field = 'color', $opacityKey = '' ) {
 		if ( empty( $attributes ) || empty( $name ) ) {
 			return false;
 		}
 		if ( ! is_array( $attributes ) ) {
 			return false;
 		}
-		if ( ! empty( $attributes[ $name ] ) ) {
+		if ( ! empty( $attributes[ $name ] ) && isset( $attributes[ $opacityKey ] ) ) {
+			$this->add_property( $field, $this->sanitize_color( $attributes[ $name ], $attributes[ $opacityKey ] ) );
+		} else if ( ! empty( $attributes[ $name ] ) ) {
 			$this->add_property( $field, $this->sanitize_color( $attributes[ $name ] ) );
 		}
 	}
