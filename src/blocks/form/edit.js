@@ -56,6 +56,7 @@ import {
 	SelectControl,
 	TabPanel,
 	ExternalLink,
+	IconButton
 } from '@wordpress/components';
 
 import {

@@ -6,6 +6,8 @@
  * @package Kadence Blocks
  */
 
+include 'advanced-form/advanced-form-frontend.php';
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -185,6 +187,14 @@ class Kadence_Blocks_Frontend {
 				'editor_style'    => 'kadence-blocks-advanced-btn',
 			)
 		);
+//		register_block_type(
+//			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-form/block.json',
+//			array(
+//				'render_callback' => array( $this, 'render_advanced_form' ),
+//				'editor_script'   => 'kadence-blocks-advanced-form',
+//				'editor_style'    => 'kadence-blocks-advanced-form',
+//			)
+//		);
 		register_block_type(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/advanced-gallery/block.json',
 			array(
@@ -1389,6 +1399,7 @@ class Kadence_Blocks_Frontend {
 		}
 		return $content;
 	}
+
 	/**
 	 * Render form CSS In Head
 	 *
@@ -1628,6 +1639,7 @@ class Kadence_Blocks_Frontend {
 		//wp_register_style( 'kadence-blocks-heading', KADENCE_BLOCKS_URL . 'dist/style-blocks-heading.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-heading', false );
 		wp_register_style( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'dist/style-blocks-form.css', array(), KADENCE_BLOCKS_VERSION );
+//		wp_register_style( 'kadence-blocks-advanced-form', KADENCE_BLOCKS_URL . 'dist/style-blocks-advanced-form.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-testimonials', KADENCE_BLOCKS_URL . 'dist/style-blocks-testimonials.css', array(), KADENCE_BLOCKS_VERSION );
 
 		// Next all the extras that are shared.
@@ -1653,6 +1665,7 @@ class Kadence_Blocks_Frontend {
 		wp_register_script( 'kadence-blocks-tabs-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kt-tabs.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'jarallax', KADENCE_BLOCKS_URL . 'includes/assets/js/jarallax.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'kadence-blocks-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+//		wp_register_script( 'kadence-blocks-advanced-form', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-advanced-form-block.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 		wp_localize_script(
 			'kadence-blocks-form',
 			'kadence_blocks_form_params',

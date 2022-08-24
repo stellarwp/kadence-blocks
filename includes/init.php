@@ -62,6 +62,7 @@ function kadence_gutenberg_editor_assets() {
 		'advanced-btn',
 		'advanced-gallery',
 		'advanced-heading',
+		'advanced-form',
 		'column',
 		'count-up',
 		'countdown',
@@ -241,6 +242,8 @@ function kadence_blocks_gutenberg_editor_assets_variables() {
 			'rcp_levels' => $level_ids,
 			'rcp_access' => $access_levels,
 			'svgMaskPath' => KADENCE_BLOCKS_URL . 'includes/assets/images/masks/',
+			'wp_max_upload_size' => wp_max_upload_size(),
+			'get_allowed_mime_types' => get_allowed_mime_types()
 		)
 	);
 	wp_localize_script(
@@ -865,6 +868,12 @@ function kadence_blocks_register_api_endpoints() {
 	$lottieanimation_conteoller_get->register_routes();
 	$lottieanimation_conteoller_upload = new Kadence_LottieAnimation_post_REST_Controller();
 	$lottieanimation_conteoller_upload->register_routes();
+
+	$convertkit_controller = new Kadence_ConvertKit_REST_Controller();
+	$convertkit_controller->register_routes();
+
+	$activecampaign_controller = new Kadence_ActiveCampaign_REST_Controller();
+	$activecampaign_controller->register_routes();
 }
 add_action( 'rest_api_init', 'kadence_blocks_register_api_endpoints' );
 
