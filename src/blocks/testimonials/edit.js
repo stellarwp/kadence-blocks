@@ -79,6 +79,7 @@ import {
 	closeSmall,
 	image,
 } from '@wordpress/icons';
+import classnames from 'classnames';
 
 /**
  * Build the overlay edit
@@ -372,7 +373,25 @@ function KadenceTestimonials( {
 	const previewOccupationLineHeight = getPreviewSize( previewDevice, ( undefined !== occupationFont[ 0 ].lineHeight && undefined !== occupationFont[ 0 ].lineHeight[ 0 ] && '' !== occupationFont[ 0 ].lineHeight[ 0 ] ? occupationFont[ 0 ].lineHeight[ 0 ] : '' ), ( undefined !== occupationFont[ 0 ].lineHeight && undefined !== occupationFont[ 0 ].lineHeight[ 1 ] && '' !== occupationFont[ 0 ].lineHeight[ 1 ] ? occupationFont[ 0 ].lineHeight[ 1 ] : '' ), ( undefined !== occupationFont[ 0 ].lineHeight && undefined !== occupationFont[ 0 ].lineHeight[ 2 ] && '' !== occupationFont[ 0 ].lineHeight[ 2 ] ? occupationFont[ 0 ].lineHeight[ 2 ] : '' ) );
 
 	const ref = useRef();
-	const blockProps = useBlockProps( { ref } );
+
+	const blockProps = useBlockProps( {
+		ref,
+		className: classnames( {
+			'wp-block-kadence-testimonials'                                                                           : true,
+			[ `kt-testimonial-halign-${hAlign}` ]                                                                     : true,
+			[ `kt-testimonial-style-${style}` ]                                                                       : true,
+			[ `kt-testimonials-media-${( displayMedia ? 'on' : 'off' )}` ]                                            : true,
+			[ `kt-testimonials-icon-${( displayIcon ? 'on' : 'off' )}` ]                                              : true,
+			[ `kt-testimonial-columns-${columns[ 0 ]}` ]                                                              : true,
+			[ `kt-t-xxl-col-${columns[ 0 ]}` ]                                                                        : true,
+			[ `kt-t-xl-col-${columns[ 1 ]}` ]                                                                         : true,
+			[ `kt-t-lg-col-${columns[ 2 ]}` ]                                                                         : true,
+			[ `kt-t-md-col-${columns[ 3 ]}` ]                                                                         : true,
+			[ `kt-t-sm-col-${columns[ 4 ]}` ]                                                                         : true,
+			[ `kt-t-xs-col-${columns[ 5 ]}` ]                                                                         : true,
+			[ `kt-blocks-testimonials-wrap${uniqueID}${layout && layout === 'carousel' ? ' tns-carousel-wrap' : ''}` ]: true
+		} )
+	});
 
 	const columnControls = (
 		<Fragment>
@@ -1080,9 +1099,7 @@ function KadenceTestimonials( {
 	};
 
 	return (
-		<div id={`kt-blocks-testimonials-wrap${uniqueID}`}
-			 {...blockProps}
-			 className={`wp-block-kadence-testimonials kt-testimonial-halign-${hAlign} kt-testimonial-style-${style} kt-testimonials-media-${( displayMedia ? 'on' : 'off' )} kt-testimonials-icon-${( displayIcon ? 'on' : 'off' )} kt-testimonial-columns-${columns[ 0 ]}`}>
+		<div id={`kt-blocks-testimonials-wrap${uniqueID}`} {...blockProps}>
 			<style>
 				{( layout === 'carousel' ? `#kt-blocks-testimonials-wrap${uniqueID} .slick-slide { padding: 0 ${columnGap / 2}px; }` : '' )}
 				{( layout === 'carousel' ? `#kt-blocks-testimonials-wrap${uniqueID} .kt-blocks-carousel .slick-slider { margin: 0 -${columnGap / 2}px; }` : '' )}
