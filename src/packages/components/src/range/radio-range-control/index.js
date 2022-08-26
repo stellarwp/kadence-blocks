@@ -64,18 +64,13 @@ export default function RadioRangeControl( {
 	min = 0,
 	beforeIcon = '',
 	help = '',
+	defaultValue = '',
 	unit = '',
 	onUnit,
 	showUnit = false,
 	units = [ 'px', 'em', 'rem' ],
 	disableCustomSizes = false,
-	showCustom = false,
 } ) {
-	const selectedOption = getSelectOption( options, value );
-	const isCustomValue = selectedOption.value === 'custom';
-	const [ showCustomValueControl, setShowCustomValueControl ] = useState(
-		! disableCustomSizes && ( showCustom || isCustomValue )
-	);
 	/**
 	 * Build Toolbar Items.
 	 *
@@ -94,6 +89,8 @@ export default function RadioRangeControl( {
 	const POPOVER_PROPS = {
 		className: 'kadence-units-popover',
 	};
+	const stringValue = ( value.value ? value.value : '' );
+	const sizeValue = ( value.size ? value.size : '' );
 	return [
 		onChange && (
 			<div className={ `components-base-control kadence-radio-range-control kadence-range-control${ className ? ' ' + className : '' }` }>
@@ -105,54 +102,51 @@ export default function RadioRangeControl( {
 						<FlexItem>
 							<label className="components-base-control__label">{ label }</label>
 						</FlexItem>
-						{ ! disableCustomSizes && (
-							<FlexItem>
-								<Button
-									label={
-										showCustomValueControl
-											? __( 'Use size preset' )
-											: __( 'Set custom size' )
-									}
-									icon={ settings }
-									onClick={ () => {
-										setShowCustomValueControl(
-											! showCustomValueControl
-										);
-									} }
-									isPressed={ showCustomValueControl }
-									isSmall
-								/>
-							</FlexItem>
-						) }
 					</Flex>
 				) }
-				{ ! showCustomValueControl && (
+				{ stringValue !== 'custom' && (
 					<div className={ 'kadence-controls-content' }>
 						<ButtonGroup className="kadence-radio-container-control">
 							{ options.map( ( option, index ) =>
 								<Button
 									key={`${option.label}-${option.value}-${index}`}
-									isTertiary={value !== option.value}
+									isTertiary={stringValue !== option.value}
 									className={'kadence-radio-item radio-' + option.value}
-									isPrimary={value === option.value}
+									isPrimary={stringValue === option.value}
 									icon={ undefined !== option.icon ? option.icon : undefined }
-									aria-pressed={value === option.value}
-									onClick={() => onChange( option.value )}
+									aria-pressed={stringValue === option.value}
+									onClick={ () => {
+										if ( stringValue == option.value && defaultValue == '' ) {
+											onChange( '', '' );
+										} else {
+											onChange( option.value, option.size )}
+										}
+									}
 								>
 									{option.label}
 								</Button>
 							)}
+							{ ! disableCustomSizes && (
+								<Button
+									className={'kadence-radio-item radio-custom only-icon'}
+									label={ __( 'Set custom size', 'kadence-blocks' ) }
+									icon={ settings }
+									onClick={ () => onChange( 'custom', sizeValue ) }
+									isPressed={ false }
+									isTertiary={ true }
+								/>
+							) }
 						</ButtonGroup>
 					</div>
 				) }
-				{ showCustomValueControl && (
+				{ stringValue === 'custom' && (
 					<div className={ 'kadence-controls-content' }>
 						<div className={ 'kadence-range-control-inner' }>
 							<CoreRangeControl
 								className={ 'kadence-range-control-range' }
 								beforeIcon={ beforeIcon }
 								value={ value }
-								onChange={ ( newVal ) => onChange( newVal ) }
+								onChange={ ( newVal ) => onChange( 'custom', newVal ) }
 								min={ min }
 								max={ max }
 								step={ step }
@@ -178,6 +172,18 @@ export default function RadioRangeControl( {
 									/>
 								) }
 							</div>
+						) }
+						{ ! disableCustomSizes && (
+							<ButtonGroup className="kadence-radio-container-control">
+								<Button
+									className={'kadence-radio-item radio-custom only-icon'}
+									label={ __( 'Use size preset', 'kadence-blocks' ) }
+									icon={ settings }
+									isPrimary={true}
+									onClick={ () => onChange( defaultValue, sizeValue ) }
+									isPressed={ true }
+								/>
+							</ButtonGroup>
 						) }
 					</div>
 				) }

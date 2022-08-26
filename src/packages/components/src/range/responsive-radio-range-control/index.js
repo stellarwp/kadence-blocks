@@ -13,24 +13,12 @@ import { undo } from '@wordpress/icons';
 import { capitalizeFirstLetter } from '@kadence/helpers'
 import RadioRangeControl from '../radio-range-control';
 import { settings } from '@wordpress/icons';
-
+import './editor.scss';
 import {
 	Dashicon,
 	Button,
 	ButtonGroup,
 } from '@wordpress/components';
-function getSelectOption( optionsArray, value ) {
-	if ( ! value ) {
-		return '';
-	}
-	if ( ! optionsArray ) {
-		return 'custom';
-	}
-	return (
-		optionsArray.find( ( option ) => option.value === value ) ||
-		'custom'
-	);
-}
 /**
  * Build the Measure controls
  * @returns {object} Measure settings.
@@ -49,6 +37,9 @@ export default function ResponsiveRadioRangeControls( {
 	min = 0,
 	unit = '',
 	onUnit,
+	defaultValue = 'default',
+	defaultTablet = '',
+	defaultMobile = '',
 	showUnit = false,
 	units = [ 'px', 'em', 'rem' ],
 	allowEmpty = true,
@@ -90,17 +81,13 @@ export default function ResponsiveRadioRangeControls( {
 			itemClass: 'kb-mobile-tab',
 		},
 	];
-	const selectedOption = getSelectOption( options, value );
-	const isCustomValue = selectedOption.value === 'custom';
-	const [ showCustomValueControl, setShowCustomValueControl ] = useState(
-		! disableCustomSizes && isCustomValue
-	);
 	const output = {};
 	output.Mobile = (
 		<RadioRangeControl
 			value={ ( undefined !== mobileValue ? mobileValue : '' ) }
-			onChange={ ( size ) => onChangeMobile( size ) }
+			onChange={ ( value, size ) => onChangeMobile( value, size ) }
 			options={ options }
+			defaultValue={ defaultMobile }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -108,13 +95,15 @@ export default function ResponsiveRadioRangeControls( {
 			onUnit={ onUnit }
 			showUnit={ showUnit }
 			units={ units }
+			disableCustomSizes={ disableCustomSizes }
 		/>
 	);
 	output.Tablet = (
 		<RadioRangeControl
 			value={ ( undefined !== tabletValue ? tabletValue : '' ) }
-			onChange={ ( size ) => onChangeTablet( size ) }
+			onChange={ ( value, size ) => onChangeTablet( value, size ) }
 			options={ options }
+			defaultValue ={ defaultTablet }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -122,13 +111,15 @@ export default function ResponsiveRadioRangeControls( {
 			onUnit={ onUnit }
 			showUnit={ showUnit }
 			units={ units }
+			disableCustomSizes={ disableCustomSizes }
 		/>
 	);
 	output.Desktop = (
 		<RadioRangeControl
 			value={ ( undefined !== value ? value : '' ) }
-			onChange={ ( size ) => onChange( size ) }
+			onChange={ ( value, size ) => onChange( value, size ) }
 			options={ options }
+			defaultValue={ defaultValue }
 			min={ min }
 			max={ max }
 			step={ step }
@@ -136,6 +127,7 @@ export default function ResponsiveRadioRangeControls( {
 			onUnit={ onUnit }
 			showUnit={ showUnit }
 			units={ units }
+			disableCustomSizes={ disableCustomSizes }
 		/>
 	);
 	return [
@@ -167,23 +159,6 @@ export default function ResponsiveRadioRangeControls( {
 							</Button>
 						) ) }
 					</ButtonGroup>
-					{ ! disableCustomSizes && (
-						<Button
-							label={
-								showCustomValueControl
-									? __( 'Use size preset' )
-									: __( 'Set custom size' )
-							}
-							icon={ settings }
-							onClick={ () => {
-								setShowCustomValueControl(
-									! showCustomValueControl
-								);
-							} }
-							isPressed={ showCustomValueControl }
-							isSmall
-						/>
-					) }
 				</div>
 				{ ( output[ deviceType ] ? output[ deviceType ] : output.Desktop ) }
 			</div>
