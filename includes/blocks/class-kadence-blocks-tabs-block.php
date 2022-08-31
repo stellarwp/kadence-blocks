@@ -87,7 +87,6 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 		 */
 		$css->set_selector('.kt-tabs-id' . $unique_id . ' > .kt-tabs-content-wrap > .wp-block-kadence-tab');
 
-		// TODO: Check the border color and width here
 		$border_args = array( 'tablet_key' => false, 'mobile_key' => false );
 		$css->render_measure_output( $attributes, 'contentBorder', 'border-width', $border_args );
 		$css->add_property('border-color', $css->sanitize_color($attributes['contentBorderColor']));
