@@ -54,8 +54,7 @@ registerBlockType( 'kadence/tab', {
 		const { id, uniqueID } = attributes;
 
 		const blockProps = useBlockProps.save( {
-			className: `kt-tab-inner-content kt-inner-tab-${ id } kt-inner-tab${ uniqueID }`,
-			style: { color: 'blue' },
+			className: `kt-tab-inner-content kt-inner-tab-${ id } kt-inner-tab${ uniqueID }`
 		} );
 
 		return (

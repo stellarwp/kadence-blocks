@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class to Build the Advanced Button Block.
+ * Class to Build the Testimonials Block.
  *
  * @category class
  */
