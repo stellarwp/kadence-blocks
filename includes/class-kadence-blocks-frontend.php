@@ -293,14 +293,6 @@ class Kadence_Blocks_Frontend {
 			)
 		);
 		register_block_type(
-			KADENCE_BLOCKS_PATH . 'dist/blocks/spacer/block.json',
-			array(
-				'render_callback' => array( $this, 'render_spacer_css' ),
-				'editor_script'   => 'kadence-blocks-spacer',
-				'editor_style'    => 'kadence-blocks-spacer',
-			)
-		);
-		register_block_type(
 			KADENCE_BLOCKS_PATH . 'dist/blocks/show-more/block.json',
 			array(
 				'render_callback' => array( $this, 'render_showmore_css' ),
@@ -725,54 +717,6 @@ class Kadence_Blocks_Frontend {
 			$not_amp = false;
 		}
 		return $not_amp;
-	}
-	/**
-	 * Render Spacing Block CSS
-	 *
-	 * @param array $attributes the blocks attributes.
-	 */
-	public function render_spacer_css_head( $attributes ) {
-		if ( ! wp_style_is( 'kadence-blocks-spacer', 'enqueued' ) ) {
-			$this->enqueue_style( 'kadence-blocks-spacer' );
-		}
-		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kb-spacer' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_head_css', true, 'spacer', $attributes ) ) {
-				// Filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
-				$css = $this->blocks_spacer_array( $attributes, $unique_id );
-				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id );
-				}
-			}
-		}
-	}
-	/**
-	 * Render Spacing Block CSS
-	 *
-	 * @param array  $attributes the blocks attributes.
-	 * @param string $content the blocks content.
-	 */
-	public function render_spacer_css( $attributes, $content ) {
-		if ( ! wp_style_is( 'kadence-blocks-spacer', 'enqueued' ) ) {
-			wp_enqueue_style( 'kadence-blocks-spacer' );
-		}
-		if ( isset( $attributes['uniqueID'] ) ) {
-			$unique_id = $attributes['uniqueID'];
-			$style_id = 'kb-spacer' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'spacer', $unique_id ) ) {
-				// If filter didn't run in header (which would have enqueued the specific css id ) then filter attributes for easier dynamic css.
-				$attributes = apply_filters( 'kadence_blocks_spacer_render_block_attributes', $attributes );
-				$css = $this->blocks_spacer_array( $attributes, $unique_id );
-				if ( $this->should_render_inline( 'spacer', $unique_id ) ) {
-					$content = '<style id="' . $style_id . '">' . $css . '</style>' . $content;
-				} else {
-					$this->render_inline_css( $css, $style_id, true );
-				}
-			}
-		}
-		return $content;
 	}
 	/**
 	 * Render Info Block CSS in Head
@@ -1505,7 +1449,6 @@ class Kadence_Blocks_Frontend {
 		wp_register_style( 'kadence-blocks-iconlist', KADENCE_BLOCKS_URL . 'dist/style-blocks-icon-list.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-image', KADENCE_BLOCKS_URL . 'dist/style-blocks-image.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-tabs', KADENCE_BLOCKS_URL . 'dist/style-blocks-tabs.css', array(), KADENCE_BLOCKS_VERSION );
-		wp_register_style( 'kadence-blocks-spacer', KADENCE_BLOCKS_URL . 'dist/style-blocks-spacer.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-infobox', KADENCE_BLOCKS_URL . 'dist/style-blocks-info-box.css', array(), KADENCE_BLOCKS_VERSION );
 		//wp_register_style( 'kadence-blocks-heading', KADENCE_BLOCKS_URL . 'dist/style-blocks-heading.css', array(), KADENCE_BLOCKS_VERSION );
 		wp_register_style( 'kadence-blocks-heading', false );
@@ -1991,23 +1934,11 @@ class Kadence_Blocks_Frontend {
 							$this->blocks_advancedgallery_scripts_gfonts( $blockattr );
 						}
 					}
-					if ( 'kadence/spacer' === $block['blockName'] ) {
-						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
-							$blockattr = $block['attrs'];
-							$this->render_spacer_css_head( $blockattr );
-						}
-					}
 					if ( 'kadence/form' === $block['blockName'] ) {
 						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
 							$blockattr = $block['attrs'];
 							$this->blocks_form_scripts_check( $blockattr );
 							$this->render_form_css_head( $blockattr );
-						}
-					}
-					if ( 'kadence/tableofcontents' === $block['blockName'] ) {
-						if ( isset( $block['attrs'] ) && is_array( $block['attrs'] ) ) {
-							$blockattr = $block['attrs'];
-							$this->blocks_tableofcontents_scripts_check( $blockattr );
 						}
 					}
 					if ( 'kadence/countdown' === $block['blockName'] ) {
@@ -2147,23 +2078,11 @@ class Kadence_Blocks_Frontend {
 						$this->render_showmore_css_head( $blockattr );
 					}
 				}
-				if ( 'kadence/spacer' === $inner_block['blockName'] ) {
-					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
-						$blockattr = $inner_block['attrs'];
-						$this->render_spacer_css_head( $blockattr );
-					}
-				}
 				if ( 'kadence/form' === $inner_block['blockName'] ) {
 					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
 						$blockattr = $inner_block['attrs'];
 						$this->render_form_css_head( $blockattr );
 						$this->blocks_form_scripts_check( $blockattr );
-					}
-				}
-				if ( 'kadence/tableofcontents' === $inner_block['blockName'] ) {
-					if ( isset( $inner_block['attrs'] ) && is_array( $inner_block['attrs'] ) ) {
-						$blockattr = $inner_block['attrs'];
-						$this->blocks_tableofcontents_scripts_check( $blockattr );
 					}
 				}
 				if ( 'kadence/countdown' === $inner_block['blockName'] ) {
@@ -2288,55 +2207,6 @@ class Kadence_Blocks_Frontend {
 					'typography' => ( isset( $post_label_font['family'] ) ? $post_label_font['family'] : '' ),
 					'fontVariant' => ( isset( $post_label_font['variant'] ) ? $post_label_font['variant'] : '' ),
 					'fontSubset' =>  ( isset( $post_label_font['subset'] ) ? $post_label_font['subset'] : '' ),
-					'loadItalic' =>  false,
-				)
-			);
-		}
-	}
-	/**
-	 * Grabs the scripts that are needed so we can load in the head.
-	 *
-	 * @param array $attr the blocks attr.
-	 */
-	public function blocks_tableofcontents_scripts_check( $attr ) {
-		$toc = Kadence_Blocks_Table_Of_Contents::get_instance();
-		if ( isset( $attr['enableScrollSpy'] ) && $attr['enableScrollSpy'] ) {
-			$toc->enqueue_script( 'kadence-blocks-gumshoe' );
-		}
-		$toc->enqueue_script( 'kadence-blocks-table-of-contents' );
-		$toc->enqueue_style( 'kadence-blocks-table-of-contents' );
-		if ( isset( $attr['uniqueID'] ) ) {
-			$unique_id = $attr['uniqueID'];
-			$style_id = 'kb-tableofcontents' . esc_attr( $unique_id );
-			if ( ! wp_style_is( $style_id, 'enqueued' ) ) {
-				$css = $toc->output_css( $attr, $unique_id );
-				if ( ! empty( $css ) ) {
-					$this->render_inline_css( $css, $style_id );
-				}
-			}
-		}
-		if ( isset( $attr['labelFont'] ) && is_array( $attr['labelFont'] ) && isset( $attr['labelFont'][0] ) && is_array( $attr['labelFont'][0] ) && isset( $attr['labelFont'][0]['google'] ) && $attr['labelFont'][0]['google'] && ( ! isset( $attr['labelFont'][0]['loadGoogle'] ) || true === $attr['labelFont'][0]['loadGoogle'] ) && isset( $attr['labelFont'][0]['family'] ) ) {
-			$label_font = $attr['labelFont'][0];
-			$this->add_gfont(
-				array(
-					'googleFont' => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
-					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
-					'typography' => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
-					'fontVariant' => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
-					'fontSubset' =>  ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
-					'loadItalic' =>  false,
-				)
-			);
-		}
-		if ( isset( $attr['submitFont'] ) && is_array( $attr['submitFont'] ) && isset( $attr['submitFont'][0] ) && is_array( $attr['submitFont'][0] ) && isset( $attr['submitFont'][0]['google'] ) && $attr['submitFont'][0]['google'] && ( ! isset( $attr['submitFont'][0]['loadGoogle'] ) || true === $attr['submitFont'][0]['loadGoogle'] ) && isset( $attr['submitFont'][0]['family'] ) ) {
-			$submit_font = $attr['submitFont'][0];
-			$this->add_gfont(
-				array(
-					'googleFont' => ( isset( $submit_font['google'] ) ? $submit_font['google'] : false ),
-					'loadGoogleFont' => ( isset( $submit_font['loadGoogle'] ) ? $submit_font['loadGoogle'] : true ),
-					'typography' => ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' ),
-					'fontVariant' => ( isset( $submit_font['variant'] ) ? $submit_font['variant'] : '' ),
-					'fontSubset' =>  ( isset( $submit_font['subset'] ) ? $submit_font['subset'] : '' ),
 					'loadItalic' =>  false,
 				)
 			);
@@ -4530,112 +4400,6 @@ class Kadence_Blocks_Frontend {
 			} else {
 				$css->set_selector( '#kt-info-box' . $unique_id . ' .kt-blocks-info-box-link-wrap:hover' );
 				$css->add_property( 'box-shadow', '0px 0px 14px 0px rgba(0,0,0,0.2)' );
-			}
-		}
-		return $css->css_output();
-	}
-	/**
-	 * Builds CSS for Spacer block.
-	 *
-	 * @param array  $attr the blocks attr.
-	 * @param string $unique_id the blocks attr ID.
-	 */
-	public function blocks_spacer_array( $attr, $unique_id ) {
-		$css                    = new Kadence_Blocks_CSS();
-
-		$media_query            = array();
-		$media_query['mobile']  = apply_filters( 'kadence_mobile_media_query', '(max-width: 767px)' );
-		$media_query['tablet']  = apply_filters( 'kadence_tablet_media_query', '(max-width: 1024px)' );
-		$media_query['desktop'] = apply_filters( 'kadence_desktop_media_query', '(min-width: 1025px)' );
-
-		if ( isset( $attr['spacerHeight'] ) && ! empty( $attr['spacerHeight'] ) ) {
-			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
-			$css->add_property( 'height', $attr['spacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) );
-		}
-		if ( isset( $attr['tabletSpacerHeight'] ) && ! empty( $attr['tabletSpacerHeight'] ) ) {
-			$css->start_media_query( $media_query['tablet'] );
-			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
-			$css->add_property( 'height', $attr['tabletSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . '!important' );
-			$css->stop_media_query();
-		}
-		if ( isset( $attr['mobileSpacerHeight'] ) && ! empty( $attr['mobileSpacerHeight'] ) ) {
-			$css->start_media_query( $media_query['mobile'] );
-			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-block-spacer' );
-			$css->add_property( 'height', $attr['mobileSpacerHeight'] . ( isset( $attr['spacerHeightUnits'] ) ? $attr['spacerHeightUnits'] : 'px' ) . '!important' );
-			$css->stop_media_query();
-		}
-		if ( isset( $attr['dividerStyle'] ) && ! empty( $attr['dividerStyle'] ) && 'stripe' === $attr['dividerStyle'] ) {
-			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
-			$divider_height = ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ? $attr['dividerHeight'] : '10' );
-			$css->add_property( 'height', $divider_height . 'px' );
-			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
-			$divider_width_units = ( isset( $attr['dividerWidthUnits'] ) && ! empty( $attr['dividerWidthUnits'] ) ? $attr['dividerWidthUnits'] : '%' );
-			$css->add_property( 'width', $divider_width . $divider_width_units );
-			if ( ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) || ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) ) {
-				$css->start_media_query( $media_query['tablet'] );
-				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
-				if ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) {
-					$css->add_property( 'height', $attr['tabletSpacerHeight'] . 'px !important' );
-				}
-				if ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) {
-					$css->add_property( 'width', $attr['tabletDividerWidth'] . $divider_width_units . '!important' );
-				}
-				$css->stop_media_query();
-			}
-			if ( ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) || ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) ) {
-				$css->start_media_query( $media_query['mobile'] );
-				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider-stripe' );
-				if ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) {
-					$css->add_property( 'height', $attr['mobileSpacerHeight'] . 'px !important' );
-				}
-				if ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) {
-					$css->add_property( 'width', $attr['mobileDividerWidth'] . $divider_width_units . '!important' );
-				}
-				$css->stop_media_query();
-			}
-		} else {
-			$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider' );
-			if ( isset( $attr['dividerHeight'] ) && ! empty( $attr['dividerHeight'] ) ) {
-				$css->add_property( 'border-top-width', $attr['dividerHeight'] . 'px' );
-			}
-			if ( isset( $attr['dividerColor'] ) && ! empty( $attr['dividerColor'] ) ) {
-				$alp_opacity = ( isset( $attr['dividerOpacity'] ) && is_numeric( $attr['dividerOpacity'] ) ? $attr['dividerOpacity'] : 100 );
-				if ( $alp_opacity < 10 ) {
-					$alp = '0.0' . $alp_opacity;
-				} else if ( $alp_opacity >= 100 ) {
-					$alp = '1';
-				} else {
-					$alp = '0.' . $alp_opacity;
-				}
-				$css->add_property( 'border-top-color', $css->render_color( $attr['dividerColor'], $alp ) );
-			}
-			$divider_width = ( isset( $attr['dividerWidth'] ) && ! empty( $attr['dividerWidth'] ) ? $attr['dividerWidth'] : '80' );
-			$divider_width_units = ( isset( $attr['dividerWidthUnits'] ) && ! empty( $attr['dividerWidthUnits'] ) ? $attr['dividerWidthUnits'] : '%' );
-			$css->add_property( 'width', $divider_width . $divider_width_units );
-			if ( isset( $attr['dividerStyle'] ) && ! empty( $attr['dividerStyle'] ) ) {
-				$css->add_property( 'border-top-style', $attr['dividerStyle'] );
-			}
-			if ( ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) || ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) ) {
-				$css->start_media_query( $media_query['tablet'] );
-				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider' );
-				if ( isset( $attr['tabletDividerHeight'] ) && ! empty( $attr['tabletDividerHeight'] ) ) {
-					$css->add_property( 'border-top-width', $attr['tabletSpacerHeight'] . 'px !important' );
-				}
-				if ( isset( $attr['tabletDividerWidth'] ) && ! empty( $attr['tabletDividerWidth'] ) ) {
-					$css->add_property( 'width', $attr['tabletDividerWidth'] . $divider_width_units . '!important' );
-				}
-				$css->stop_media_query();
-			}
-			if ( ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) || ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) ) {
-				$css->start_media_query( $media_query['mobile'] );
-				$css->set_selector( '.wp-block-kadence-spacer.kt-block-spacer-' . $unique_id . ' .kt-divider' );
-				if ( isset( $attr['mobileDividerHeight'] ) && ! empty( $attr['mobileDividerHeight'] ) ) {
-					$css->add_property( 'border-top-width', $attr['mobileSpacerHeight'] . 'px !important' );
-				}
-				if ( isset( $attr['mobileDividerWidth'] ) && ! empty( $attr['mobileDividerWidth'] ) ) {
-					$css->add_property( 'width', $attr['mobileDividerWidth'] . $divider_width_units . '!important' );
-				}
-				$css->stop_media_query();
 			}
 		}
 		return $css->css_output();

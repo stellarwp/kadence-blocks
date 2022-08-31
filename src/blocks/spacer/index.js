@@ -12,11 +12,12 @@ const { name } = metadata;
 import { spacerIcon } from '@kadence/icons';
 import { __ } from '@wordpress/i18n';
 
+/**
+ * Import Css
+ */
+import './style.scss';
+
 export { metadata, name };
-
-export const settings = {
-
-};
 
 registerBlockType('kadence/spacer', {
 	getEditWrapperProps( { blockAlignment } ) {
