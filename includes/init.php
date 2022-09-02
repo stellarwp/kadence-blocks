@@ -67,7 +67,7 @@ function kadence_gutenberg_editor_assets() {
 		'count-up',
 		'countdown',
 		'form',
-		'google-maps',
+		'googlemaps',
 		'icon',
 		'icon-list',
 		'image',
