@@ -53,7 +53,9 @@ export { default as TextShadowControl } from './typography/text-shadow-control';
 
 /* Range */
 export { default as RangeControl } from './range/range-control';
+export { default as RadioRangeControl } from './range/radio-range-control';
 export { default as ResponsiveRangeControls } from './range/responsive-range-control';
+export { default as ResponsiveRadioRangeControls } from './range/responsive-radio-range-control';
 export { default as ResponsiveSingleRangeControl } from './range/single-range-control';
 
 /* Measurement */

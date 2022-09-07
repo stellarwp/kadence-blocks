@@ -21,6 +21,8 @@ export default function KadenceRadioButtons( {
 		onChange,
 		options = [],
 		className,
+		hideLabel=false,
+		wrap=false,
 		...props
 	} ) {
 	return (
@@ -28,18 +30,21 @@ export default function KadenceRadioButtons( {
 			{ label && (
 				<h2>{ label }</h2>
 			) }
-			<ButtonGroup className="kadence-radio-container-control">
+			<ButtonGroup className={ `kadence-radio-container-control${ wrap ? ' kadence-radio-control-flexwrap' : '' }` }>
 				{ options.map( ( option, index ) =>
 					<Button
 						key={`${option.label}-${option.value}-${index}`}
 						isTertiary={value !== option.value}
-						className={'kadence-radio-item radio-' + option.value}
+						className={`kadence-radio-item radio-${ option.value}${ ( hideLabel ? ' radio-no-label' : '' ) }` }
 						isPrimary={value === option.value}
 						icon={ undefined !== option.icon ? option.icon : undefined }
 						aria-pressed={value === option.value}
 						onClick={() => onChange( option.value )}
+						label={ ( hideLabel ? option.label : undefined )}
 					>
-						{option.label}
+					{ ! hideLabel &&  (
+						option.label
+					) }
 					</Button>
 				)}
 			</ButtonGroup>

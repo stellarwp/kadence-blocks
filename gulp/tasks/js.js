@@ -16,7 +16,7 @@ function processFiles() {
 				extname: ".min.js"
 			};
 		}))
-		.pipe(babel(config.babel))
+		//.pipe(babel(config.babel))
 		.pipe(minify(config.minify))
 		.pipe(dest(config.dirs.dist + '/js'));
 }

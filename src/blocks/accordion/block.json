@@ -77,6 +77,10 @@
 	  "type": "string",
 	  "default": "none"
 	},
+	"align": {
+		"type": "string",
+	  	"default": "none"
+	},
 	"titleStyles": {
 	  "type": "array",
 	  "default": [ {

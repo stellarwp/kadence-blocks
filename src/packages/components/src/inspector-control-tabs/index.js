@@ -12,7 +12,11 @@ import { Icon } from '@wordpress/components';
 import { compose } from '@wordpress/compose';
 import { withSelect, withDispatch } from '@wordpress/data';
 import { createRef, useEffect } from '@wordpress/element';
-
+import {
+	blockDefault,
+	brush,
+	settings,
+} from '@wordpress/icons';
 import './editor.scss';
 
 function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, openedTab, toggleOpened, tabs = null } ) {
@@ -21,17 +25,17 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 		{
 			key  : 'general',
 			title: __( 'General', 'kadence-blocks' ),
-			icon : 'block-default',
+			icon : blockDefault,
 		},
 		{
 			key  : 'style',
 			title: __( 'Style', 'kadence-blocks' ),
-			icon : 'admin-appearance',
+			icon : brush,
 		},
 		{
 			key  : 'advanced',
 			title: __( 'Advanced', 'kadence-blocks' ),
-			icon : 'admin-tools',
+			icon : settings,
 		},
 	];
 
@@ -64,8 +68,8 @@ function InspectorControlTabs( { allowedTabs = null, activeTab, setActiveTab, op
 	return (
 		<div className="kadence-blocks-inspector-tabs" ref={ tabsContainer }>
 			{tabsMap.map( ( {
-									key, title, icon,
-								}, i ) => {
+				key, title, icon,
+			}, i ) => {
 				if ( allowedTabKeys.includes( key ) ) {
 					return (
 						<button

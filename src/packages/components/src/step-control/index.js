@@ -11,19 +11,23 @@ import {
 	Button,
 	Dashicon,
 } from '@wordpress/components';
-
+import './editor.scss';
+import {
+	chevronLeftSmall,
+	chevronRightSmall,
+} from '@wordpress/icons';
 /**
  * Build the Step controls
  * @returns {object} Step settings.
  */
 export default function StepControls( {
-										  label,
-										  value,
-										  onChange,
-										  min,
-										  max,
-										  step = 1,
-									  } ) {
+		label,
+		value,
+		onChange,
+		min,
+		max,
+		step = 1,
+	} ) {
 	const onMinus = () => {
 		if ( value > min ) {
 			onChange( value - step );
@@ -41,11 +45,10 @@ export default function StepControls( {
 				<div className="components-base-control__field kb-flex-center kb-step-control">
 					<Button
 						className="kb-step-btn"
+						icon={ chevronLeftSmall }
 						isDefault
 						onClick={ onMinus }
-					>
-						<Dashicon icon="arrow-left" />
-					</Button>
+					/>
 					<input
 						className="components-step-control__number"
 						type="number"
@@ -59,10 +62,9 @@ export default function StepControls( {
 					<Button
 						className="kb-step-btn"
 						isDefault
+						icon={ chevronRightSmall }
 						onClick={ onPlus }
-					>
-						<Dashicon icon="arrow-right" />
-					</Button>
+					/>
 				</div>
 			</div>
 		),

@@ -99,8 +99,7 @@ Release Date: April 20th, 2022
 * Tweek - Accordion animation when nesting accordions, with both "closed".
 * Fix: Google Maps filer initial value issue.
 * Add: Text Transform option on title in Count Up block
-* Fix: Only generate dynamic CSS for rtl sites when needed
-
+* Fix: Only generate dynamic CSS for rtl sites when needed.
 
 = 2.4.8 =
 Release Date: June 3rd, 2022

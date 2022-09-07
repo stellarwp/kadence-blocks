@@ -38,9 +38,41 @@
 	  "type": "string",
 	  "default": "default"
 	},
+	"tabletRowGutter": {
+		"type": "string",
+		"default": ""
+	},
+	"mobileRowGutter": {
+		"type": "string",
+		"default": ""
+	},
+	"rowGutterType": {
+		"type": "string",
+		"default": "px"
+	},
+	"customRowGutter": {
+		"type": "array",
+		"default": [ "", "", "" ]
+	},
 	"columnGutter": {
 	  "type": "string",
 	  "default": "default"
+	},
+	"tabletGutter": {
+		"type": "string",
+		"default": ""
+	},
+	"mobileGutter": {
+		"type": "string",
+		"default": ""
+	},
+	"gutterType": {
+		"type": "string",
+		"default": "px"
+	},
+	"customGutter": {
+		"type": "array",
+		"default": [ "", "", "" ]
 	},
 	"colLayout": {
 	  "type": "string",

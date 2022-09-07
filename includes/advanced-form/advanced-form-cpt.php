@@ -1,16 +1,24 @@
 <?php
 
-class CPT_Controller extends WP_REST_Posts_Controller {
+class Kadence_Blocks_Form_CPT_Controller extends WP_REST_Posts_Controller {
+	/**
+	 * Registers the routes for the objects of the controller.
+	 *
+	 * @see register_rest_route()
+	 */
 	public function register_routes() {
 		parent::register_routes();
 
-		register_rest_route( $this->namespace, '/' . $this->rest_base . '/auto-draft', [
-			[
-				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => [ $this, 'create_auto_draft' ],
-				'permission_callback' => [ $this, 'create_item_permissions_check' ],
-			]
-		] );
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/auto-draft',
+			array(
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'create_auto_draft' ),
+					'permission_callback' => [ $this, 'create_item_permissions_check' ],
+				)
+		) );
 	}
 
 	/**
@@ -25,7 +33,6 @@ class CPT_Controller extends WP_REST_Posts_Controller {
 
 		unset( $_REQUEST['content'], $_REQUEST['excerpt'] );
 		$post = get_default_post_to_edit( $this->post_type, true );
-
 
 		$request->set_param( 'context', 'edit' );
 
@@ -55,7 +62,7 @@ add_action( 'init', function () {
 		'public'                => true,
 		'show_ui'               => true,
 		'show_in_rest'          => true,
-		'rest_controller_class' => CPT_Controller::class,
+		'rest_controller_class' => Kadence_Blocks_Form_CPT_Controller::class,
 		'menu_icon'             => 'dashicons-forms',
 		'supports'              => [ 'title', 'editor', 'custom-fields', 'revisions' ],
 		'taxonomies'            => [ 'post_tag' ],
@@ -91,11 +98,13 @@ add_action( 'init', function () {
 			'filter_items_list'  => __( 'Filter items list', 'kadence_blocks' ),
 		]
 	] );
-
-	register_post_meta( 'kadence_form', 'kadence_form_attrs', array(
+	register_post_meta(
+		'kadence_form',
+		'kadence_form_attrs',
+		array(
 			'single'       => true,
 			'type'         => 'object',
-			'default'      => [
+			'default'      => (object)array(
 				'marginDesktop'    => [ '', '', '', '' ],
 				'marginTablet'     => [ '', '', '', '' ],
 				'marginMobile'     => [ '', '', '', '' ],
@@ -141,13 +150,13 @@ add_action( 'init', function () {
 			    }' ),
 				'activecampaign'   => json_decode( '{
 					"list": [],
-			      "map": []
-			    }' ),
+					"map": []
+				}' ),
 				'redirect'         => '',
 				'honeyPot'         => false,
 				'recaptcha'        => false,
 				'recaptchaVersion' => 'v3',
-				"submit"           => json_decode( '{
+				'submit'           => json_decode( '{
 					"label": "Submit",
 			        "width": [
 						"100",
@@ -495,7 +504,7 @@ add_action( 'init', function () {
 					  "preError": ""
 					}' ),
 				'messageFont' => json_decode( '' )
-			],
+			),
 			'show_in_rest' => [
 				'schema' => [
 					'type'       => 'object',
@@ -509,29 +518,29 @@ add_action( 'init', function () {
 						'paddingMobile'    => [ 'type' => 'array' ],
 						'paddingUnit'      => [ 'type' => 'string' ],
 						'actions'          => [ 'type' => 'array' ],
-						'email'            => [ 'type' => ' object' ],
-						'mailerlite'       => [ 'type' => ' object' ],
-						'fluentcrm'        => [ 'type' => ' object' ],
-						'sendinblue'       => [ 'type' => ' object' ],
-						'mailchimp'        => [ 'type' => ' object' ],
-						'convertkit'       => [ 'type' => ' object' ],
-						'activecampaign'   => [ 'type' => ' object' ],
+						'email'            => [ 'type' => 'object' ],
+						'mailerlite'       => [ 'type' => 'object' ],
+						'fluentcrm'        => [ 'type' => 'object' ],
+						'sendinblue'       => [ 'type' => 'object' ],
+						'mailchimp'        => [ 'type' => 'object' ],
+						'convertkit'       => [ 'type' => 'object' ],
+						'activecampaign'   => [ 'type' => 'object' ],
 						'redirect'         => [ 'type' => 'string' ],
 						'honeyPot'         => [ 'type' => 'boolean' ],
 						'recaptcha'        => [ 'type' => 'boolean' ],
 						'recaptchaVersion' => [ 'type' => 'string' ],
-						'submit'           => [ 'type' => ' object' ],
-						'submitFont'       => [ 'type' => ' object' ],
-						'submitMargin'     => [ 'type' => ' object' ],
-						'submitLabel'      => [ 'type' => 'string ' ],
-						'style'            => [ 'type' => ' object' ],
-						'labelFont'        => [ 'type' => ' object' ],
-						'helpFont'         => [ 'type' => ' object' ],
-						'webhook'          => [ 'type' => ' object' ],
-						'autoEmail'        => [ 'type' => ' object ' ],
-						'entry'            => [ 'type' => ' object' ],
-						'messages'         => [ 'type' => ' object' ],
-						'messageFont'      => [ 'type' => ' object' ]
+						'submit'           => [ 'type' => 'object' ],
+						'submitFont'       => [ 'type' => 'object' ],
+						'submitMargin'     => [ 'type' => 'object' ],
+						'submitLabel'      => [ 'type' => 'string' ],
+						'style'            => [ 'type' => 'object' ],
+						'labelFont'        => [ 'type' => 'object' ],
+						'helpFont'         => [ 'type' => 'object' ],
+						'webhook'          => [ 'type' => 'object' ],
+						'autoEmail'        => [ 'type' => 'object' ],
+						'entry'            => [ 'type' => 'object' ],
+						'messages'         => [ 'type' => 'object' ],
+						'messageFont'      => [ 'type' => 'object' ]
 					]
 				],
 			]
