@@ -6,7 +6,6 @@
   "description": "Kadence advanced form",
   "supports": {
 	"html": false,
-	"fontSize": true,
 	"align": [
 	  "wide"
 	]
@@ -14,7 +13,8 @@
   "textdomain": "kadence-blocks",
   "keywords": [
 	"kb",
-	"advanced form"
+	"form",
+	"contact"
   ],
   "attributes": {
 	"align": {
@@ -365,6 +365,5 @@
 		"userDevice": true
 	  }
 	}
-  },
-  "editorScript": "file:editor.js"
+  }
 }
