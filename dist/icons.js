@@ -1723,6 +1723,46 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/packages/icons/src/block-icons/progress-bar/semi-circle-bar-layout/index.js":
+/*!*****************************************************************************************!*\
+  !*** ./src/packages/icons/src/block-icons/progress-bar/semi-circle-bar-layout/index.js ***!
+  \*****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("svg", {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 86.5 32.5"
+}, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("g", null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("rect", {
+  width: "85.5",
+  height: "31.5",
+  x: "0.5",
+  y: "0.5",
+  fill: "#fff",
+  rx: "2.91",
+  ry: "2.91"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  fill: "#eee",
+  d: "M83.09 32.5H3.41C1.53 32.5 0 30.97 0 29.09V3.41C0 1.53 1.53 0 3.41 0h79.68c1.88 0 3.41 1.53 3.41 3.41v25.68c0 1.88-1.53 3.41-3.41 3.41zM3.41 1C2.08 1 1 2.08 1 3.41v25.68c0 1.33 1.08 2.41 2.41 2.41h79.68c1.33 0 2.41-1.08 2.41-2.41V3.41C85.5 2.08 84.42 1 83.09 1H3.41z"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  fill: "#565656",
+  d: "M7.14 4.07H53.37V5.8100000000000005H7.14z"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  fill: "#eee",
+  d: "M41.84 26.76h-4c0-8-6.5-14.5-14.5-14.5s-14.5 6.5-14.5 14.5h-4c0-10.2 8.3-18.5 18.5-18.5s18.5 8.3 18.5 18.5zM81.44 26.76h-4c0-8-6.5-14.5-14.5-14.5s-14.5 6.5-14.5 14.5h-4c0-10.2 8.3-18.5 18.5-18.5s18.5 8.3 18.5 18.5z"
+}), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("path", {
+  fill: "#888",
+  d: "M74.9 18.58l2.96-2.72c-3.37-4.6-8.79-7.6-14.92-7.6-10.2 0-18.5 8.3-18.5 18.5h4c0-8 6.5-14.5 14.5-14.5 4.96 0 9.35 2.51 11.96 6.32zM10.8 13.19c-3.66 3.38-5.96 8.2-5.96 13.57h4c0-4.26 1.86-8.08 4.79-10.74l-2.83-2.83z"
+}))));
+
+/***/ }),
+
 /***/ "./src/packages/icons/src/block-icons/restaurant-menu/index.js":
 /*!*********************************************************************!*\
   !*** ./src/packages/icons/src/block-icons/restaurant-menu/index.js ***!
@@ -5717,6 +5757,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "restaurantMenuIcon": () => (/* reexport safe */ _block_icons_restaurant_menu__WEBPACK_IMPORTED_MODULE_41__["default"]),
 /* harmony export */   "rightHalfIcon": () => (/* reexport safe */ _block_icons_row_layout_right_half__WEBPACK_IMPORTED_MODULE_89__["default"]),
 /* harmony export */   "rowIcon": () => (/* reexport safe */ _row__WEBPACK_IMPORTED_MODULE_3__["default"]),
+/* harmony export */   "semiCircleBar": () => (/* reexport safe */ _block_icons_progress_bar_semi_circle_bar_layout__WEBPACK_IMPORTED_MODULE_121__["default"]),
 /* harmony export */   "showMoreIcon": () => (/* reexport safe */ _show_more__WEBPACK_IMPORTED_MODULE_2__["default"]),
 /* harmony export */   "sixColIcon": () => (/* reexport safe */ _block_icons_row_layout_six_col__WEBPACK_IMPORTED_MODULE_103__["default"]),
 /* harmony export */   "spacerIcon": () => (/* reexport safe */ _block_icons_spacer__WEBPACK_IMPORTED_MODULE_46__["default"]),
@@ -5869,6 +5910,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _block_icons_progress_bar_primary_icon__WEBPACK_IMPORTED_MODULE_118__ = __webpack_require__(/*! ./block-icons/progress-bar/primary-icon */ "./src/packages/icons/src/block-icons/progress-bar/primary-icon/index.js");
 /* harmony import */ var _block_icons_progress_bar_circle_bar_layout__WEBPACK_IMPORTED_MODULE_119__ = __webpack_require__(/*! ./block-icons/progress-bar/circle-bar-layout */ "./src/packages/icons/src/block-icons/progress-bar/circle-bar-layout/index.js");
 /* harmony import */ var _block_icons_progress_bar_line_bar_layout__WEBPACK_IMPORTED_MODULE_120__ = __webpack_require__(/*! ./block-icons/progress-bar/line-bar-layout */ "./src/packages/icons/src/block-icons/progress-bar/line-bar-layout/index.js");
+/* harmony import */ var _block_icons_progress_bar_semi_circle_bar_layout__WEBPACK_IMPORTED_MODULE_121__ = __webpack_require__(/*! ./block-icons/progress-bar/semi-circle-bar-layout */ "./src/packages/icons/src/block-icons/progress-bar/semi-circle-bar-layout/index.js");
 // General Icons
 
 
@@ -5997,6 +6039,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
  // Progress Bar Icons
+
 
 
 

@@ -106,7 +106,17 @@ function Edit(_ref) {
     containerBorderType,
     borderColor,
     borderOpacity,
-    barType
+    barType,
+    containerMaxWidth,
+    tabletContainerMaxWidth,
+    mobileContainerMaxWidth,
+    containerMaxWidthUnits,
+    displayLabel,
+    labelFont,
+    labelMinHeight,
+    label,
+    labelAlign,
+    labelPosition
   } = attributes;
   (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (!uniqueID) {
@@ -142,6 +152,8 @@ function Edit(_ref) {
       previewDevice: select('kadenceblocks/data').getPreviewDeviceType()
     };
   }, [clientId]);
+  /*These const are for the responsive settings, so that we give the correct rpview based on the display type*/
+
   const previewMarginTop = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== marginDesktop ? marginDesktop[0] : '', undefined !== marginTablet ? marginTablet[0] : '', undefined !== marginMobile ? marginMobile[0] : '');
   const previewMarginRight = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== marginDesktop ? marginDesktop[1] : '', undefined !== marginTablet ? marginTablet[1] : '', undefined !== marginMobile ? marginMobile[1] : '');
   const previewMarginBottom = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== marginDesktop ? marginDesktop[2] : '', undefined !== marginTablet ? marginTablet[2] : '', undefined !== marginMobile ? marginMobile[2] : '');
@@ -154,6 +166,11 @@ function Edit(_ref) {
   const previewBarBorderRight = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerBorder && undefined !== containerBorder[1] ? containerBorder[1] : '', undefined !== containerTabletBorder && undefined !== containerTabletBorder[1] ? containerTabletBorder[1] : '', undefined !== containerMobileBorder && undefined !== containerMobileBorder[1] ? containerMobileBorder[1] : '');
   const previewBarBorderBottom = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerBorder && undefined !== containerBorder[2] ? containerBorder[2] : '', undefined !== containerTabletBorder && undefined !== containerTabletBorder[2] ? containerTabletBorder[2] : '', undefined !== containerMobileBorder && undefined !== containerMobileBorder[2] ? containerMobileBorder[2] : '');
   const previewBarBorderLeft = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerBorder && undefined !== containerBorder[3] ? containerBorder[3] : '', undefined !== containerTabletBorder && undefined !== containerTabletBorder[3] ? containerTabletBorder[3] : '', undefined !== containerMobileBorder && undefined !== containerMobileBorder[3] ? containerMobileBorder[3] : '');
+  const previewContainerMaxWidth = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== containerMaxWidth ? containerMaxWidth : '', undefined !== tabletContainerMaxWidth ? tabletContainerMaxWidth : '', undefined !== mobileContainerMaxWidth ? mobileContainerMaxWidth : '');
+  const previewLabelFont = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== labelFont.size && undefined !== labelFont.size[0] && '' !== labelFont.size[0] ? labelFont.size[0] : '', undefined !== labelFont.size && undefined !== labelFont.size[1] && '' !== labelFont.size[1] ? labelFont.size[1] : '', undefined !== labelFont.size && undefined !== labelFont.size[2] && '' !== labelFont.size[2] ? labelFont.size[2] : '');
+  const previewLabelLineHeight = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[0] && '' !== labelFont.lineHeight[0] ? labelFont.lineHeight[0] : '', undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[1] && '' !== labelFont.lineHeight[1] ? labelFont.lineHeight[1] : '', undefined !== labelFont.lineHeight && undefined !== labelFont.lineHeight[2] && '' !== labelFont.lineHeight[2] ? labelFont.lineHeight[2] : '');
+  const previewLabelMinHeight = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== labelMinHeight && undefined !== labelMinHeight[0] ? labelMinHeight[0] : '', undefined !== labelMinHeight && undefined !== labelMinHeight[1] ? labelMinHeight[1] : '', undefined !== labelMinHeight && undefined !== labelMinHeight[2] ? labelMinHeight[2] : '');
+  const previewLabelAlign = (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.getPreviewSize)(previewDevice, undefined !== labelAlign[0] ? labelAlign[0] : '', undefined !== labelAlign[1] ? labelAlign[1] : '', undefined !== labelAlign[2] ? labelAlign[2] : '');
   const [marginControl, setMarginControl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('individual');
   const [paddingControl, setPaddingControl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('individual');
   const [borderControl, setBorderControl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('individual');
@@ -161,8 +178,8 @@ function Edit(_ref) {
     [`kt-block-template${uniqueID}`]: uniqueID
   });
   const containerClasses = classnames__WEBPACK_IMPORTED_MODULE_11___default()({
-    'kb-block-template-container': true,
-    [`kb-block-template-container${uniqueID}`]: true
+    'kb-block-progress-container': true,
+    [`kb-block-progress-container${uniqueID}`]: true
   });
   const blockProps = (0,_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.useBlockProps)({
     className: classes
@@ -175,7 +192,12 @@ function Edit(_ref) {
     key: 'circle',
     name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Circle', 'kadence-blocks'),
     icon: _kadence_icons__WEBPACK_IMPORTED_MODULE_4__.circleBar
+  }, {
+    key: 'semicircle',
+    name: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Semicircle', 'kadence-blocks'),
+    icon: _kadence_icons__WEBPACK_IMPORTED_MODULE_4__.semiCircleBar
   }];
+  const [animate, setAnimate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0.0);
   const container = document.createElement('div');
 
   const ProgressCircle = _ref2 => {
@@ -201,14 +223,72 @@ function Edit(_ref) {
     });
   };
 
-  const [animate, setAnimate] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)(0.0);
-  const circleBarStyles = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("style", null, `
-			 .bg {
-				fill: ${(0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity)};
-				stroke-width: ${previewBarBorderTop + containerBorderType};
-				stroke: ${(0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(borderColor, borderOpacity)};
-			  }	
-			`);
+  const ProgressSemicircle = _ref3 => {
+    let {
+      animate
+    } = _ref3;
+    const semicircle = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => new progressbar_js__WEBPACK_IMPORTED_MODULE_10__.SemiCircle(container, {
+      color: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(borderColor, borderOpacity),
+      strokeWidth: previewBarBorderTop,
+      fill: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity),
+      duration: 1200
+    }), []);
+    const node = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useCallback)(node => {
+      if (node) {
+        node.appendChild(container);
+      }
+    }, []);
+    (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+      semicircle.animate(animate);
+    }, [animate, semicircle]);
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      ref: node
+    });
+  };
+
+  const saveLabelFont = value => {
+    setAttributes({
+      labelFont: { ...labelFont,
+        ...value
+      }
+    });
+  };
+
+  const [labelPaddingControl, setLabelPaddingControl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('linked');
+  const [labelMarginControl, setLabelMarginControl] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)('individual');
+
+  const ProgressBarLabel = () => {
+    return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+      className: "kt-progress-label-wrap",
+      style: {
+        minHeight: previewLabelMinHeight ? previewLabelMinHeight + 'px' : undefined
+      }
+    }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.RichText, {
+      tagName: 'h' + labelFont.level,
+      value: label,
+      onChange: value => {
+        setAttributes({
+          label: value
+        });
+      },
+      placeholder: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress', 'kadence-blocks'),
+      style: {
+        textAlign: previewLabelAlign,
+        fontWeight: labelFont.weight,
+        fontStyle: labelFont.style,
+        color: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(labelFont.color),
+        fontSize: previewLabelFont ? previewLabelFont + labelFont.sizeType : undefined,
+        lineHeight: previewLabelLineHeight ? previewLabelLineHeight + labelFont.lineType : undefined,
+        letterSpacing: labelFont.letterSpacing + 'px',
+        textTransform: labelFont.textTransform ? labelFont.textTransform : undefined,
+        fontFamily: labelFont.family ? labelFont.family : '',
+        padding: labelFont.padding ? labelFont.padding[0] + 'px ' + labelFont.padding[1] + 'px ' + labelFont.padding[2] + 'px ' + labelFont.padding[3] + 'px' : '',
+        margin: labelFont.margin ? labelFont.margin[0] + 'px ' + labelFont.margin[1] + 'px ' + labelFont.margin[2] + 'px ' + labelFont.margin[3] + 'px' : ''
+      },
+      className: 'kt-progress-label'
+    }));
+  };
+
   return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", blockProps, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockControls, {
     group: "block"
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.BlockAlignmentControl, {
@@ -219,12 +299,12 @@ function Edit(_ref) {
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_block_editor__WEBPACK_IMPORTED_MODULE_7__.InspectorControls, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("h2", null, (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Bar Layout', 'kadence-blocks')), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.ButtonGroup, {
     className: "kt-style-btn-group kb-info-layouts",
     "aria-label": (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Bar Layout', 'kadence-blocks')
-  }, (0,lodash__WEBPACK_IMPORTED_MODULE_8__.map)(layoutPresetOptions, _ref3 => {
+  }, (0,lodash__WEBPACK_IMPORTED_MODULE_8__.map)(layoutPresetOptions, _ref4 => {
     let {
       name,
       key,
       icon
-    } = _ref3;
+    } = _ref4;
     return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.Button, {
       key: key,
       className: "kt-style-btn",
@@ -288,9 +368,37 @@ function Edit(_ref) {
     onUnit: value => setAttributes({
       marginUnit: value
     })
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.ResponsiveRangeControls, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Max-width', 'kadence-blocks'),
+    value: containerMaxWidth,
+    onChange: value => setAttributes({
+      containerMaxWidth: value
+    }),
+    tabletValue: tabletContainerMaxWidth ? tabletContainerMaxWidth : '',
+    onChangeTablet: value => setAttributes({
+      tabletContainerMaxWidth: value
+    }),
+    mobileValue: mobileContainerMaxWidth ? mobileContainerMaxWidth : '',
+    onChangeMobile: value => setAttributes({
+      mobileContainerMaxWidth: value
+    }),
+    min: 0,
+    max: containerMaxWidthUnits == 'px' ? 3000 : 100,
+    step: 1,
+    unit: containerMaxWidthUnits,
+    onUnit: value => setAttributes({
+      containerMaxWidthUnits: value
+    }),
+    reset: () => setAttributes({
+      containerMaxWidth: 200,
+      tabletContainerMaxWidth: '',
+      mobileContainerMaxWidth: ''
+    }),
+    units: ['px', 'vh', '%']
   })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
     title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Progress Bar Settings', 'kadence-blocks'),
-    initialOpen: false
+    initialOpen: false,
+    panelName: 'kb-testimonials-bar-settings'
   }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.PopColorControl, {
     label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Bar Background', 'kadence-blocks'),
     colorValue: barBackground ? barBackground : '#4A5568',
@@ -348,7 +456,149 @@ function Edit(_ref) {
     onUnit: value => setAttributes({
       containerBorderType: value
     })
-  }))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  })), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.PanelBody, {
+    title: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Label Settings', 'kadence-blocks'),
+    initialOpen: false,
+    panelName: 'kb-testimonials-title-settings'
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.ToggleControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Show Label', 'kadence-blocks'),
+    checked: displayLabel,
+    onChange: value => setAttributes({
+      displayLabel: value
+    })
+  }), displayLabel && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_wordpress_components__WEBPACK_IMPORTED_MODULE_9__.SelectControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Label Position', 'kadence-blocks'),
+    options: [{
+      value: 'above',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Above', 'kadence-blocks')
+    }, {
+      value: 'below',
+      label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Below', 'kadence-blocks')
+    }],
+    value: labelPosition,
+    onChange: value => setAttributes({
+      labelPosition: value
+    })
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.PopColorControl, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Color Settings', 'kadence-blocks'),
+    value: labelFont.color ? labelFont.color : '',
+    default: '',
+    onChange: value => saveLabelFont({
+      color: value
+    })
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.ResponsiveAlignControls, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Text Alignment', 'kadence-blocks'),
+    value: labelAlign && labelAlign[0] ? labelAlign[0] : '',
+    mobileValue: labelAlign && labelAlign[2] ? labelAlign[2] : '',
+    tabletValue: labelAlign && labelAlign[1] ? labelAlign[1] : '',
+    onChange: nextAlign => setAttributes({
+      labelAlign: [nextAlign, labelAlign && labelAlign[1] ? labelAlign[1] : '', labelAlign && labelAlign[2] ? labelAlign[2] : '']
+    }),
+    onChangeTablet: nextAlign => setAttributes({
+      labelAlign: [labelAlign && labelAlign[0] ? labelAlign[0] : '', nextAlign, labelAlign && labelAlign[2] ? labelAlign[2] : '']
+    }),
+    onChangeMobile: nextAlign => setAttributes({
+      labelAlign: [labelAlign && labelAlign[0] ? labelAlign[0] : '', labelAlign && labelAlign[1] ? labelAlign[1] : '', nextAlign]
+    })
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.TypographyControls, {
+    fontGroup: 'heading',
+    tagLevel: labelFont.level,
+    tagLowLevel: 2,
+    onTagLevel: value => saveLabelFont({
+      level: value
+    }),
+    fontSize: labelFont.size,
+    onFontSize: value => saveLabelFont({
+      size: value
+    }),
+    fontSizeType: labelFont.sizeType,
+    onFontSizeType: value => saveLabelFont({
+      sizeType: value
+    }),
+    lineHeight: labelFont.lineHeight,
+    onLineHeight: value => saveLabelFont({
+      lineHeight: value
+    }),
+    lineHeightType: labelFont.lineType,
+    onLineHeightType: value => saveLabelFont({
+      lineType: value
+    }),
+    letterSpacing: labelFont.letterSpacing,
+    onLetterSpacing: value => saveLabelFont({
+      letterSpacing: value
+    }),
+    textTransform: labelFont.textTransform,
+    onTextTransform: value => saveLabelFont({
+      textTransform: value
+    }),
+    fontFamily: labelFont.family,
+    onFontFamily: value => saveLabelFont({
+      family: value
+    }),
+    onFontChange: select => {
+      saveLabelFont({
+        family: select.value,
+        google: select.google
+      });
+    },
+    onFontArrayChange: values => saveLabelFont(values),
+    googleFont: labelFont.google,
+    onGoogleFont: value => saveLabelFont({
+      google: value
+    }),
+    loadGoogleFont: labelFont.loadGoogle,
+    onLoadGoogleFont: value => saveLabelFont({
+      loadGoogle: value
+    }),
+    fontVariant: labelFont.variant,
+    onFontVariant: value => saveLabelFont({
+      variant: value
+    }),
+    fontWeight: labelFont.weight,
+    onFontWeight: value => saveLabelFont({
+      weight: value
+    }),
+    fontStyle: labelFont.style,
+    onFontStyle: value => saveLabelFont({
+      style: value
+    }),
+    fontSubset: labelFont.subset,
+    onFontSubset: value => saveLabelFont({
+      subset: value
+    }),
+    padding: labelFont.padding,
+    onPadding: value => saveLabelFont({
+      padding: value
+    }),
+    paddingControl: labelPaddingControl,
+    onPaddingControl: value => setLabelPaddingControl(value),
+    margin: labelFont.margin,
+    onMargin: value => saveLabelFont({
+      margin: value
+    }),
+    marginControl: labelMarginControl,
+    onMarginControl: value => setLabelMarginControl(value)
+  }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(_kadence_components__WEBPACK_IMPORTED_MODULE_2__.ResponsiveRangeControls, {
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_5__.__)('Label Min Height', 'kadence-blocks'),
+    value: labelMinHeight && undefined !== labelMinHeight[0] ? labelMinHeight[0] : '',
+    onChange: value => setAttributes({
+      labelMinHeight: [value, labelMinHeight && undefined !== labelMinHeight[1] ? labelMinHeight[1] : '', labelMinHeight && undefined !== labelMinHeight[2] ? labelMinHeight[2] : '']
+    }),
+    tabletValue: labelMinHeight && undefined !== labelMinHeight[1] ? labelMinHeight[1] : '',
+    onChangeTablet: value => setAttributes({
+      labelMinHeight: [labelMinHeight && undefined !== labelMinHeight[0] ? labelMinHeight[0] : '', value, labelMinHeight && undefined !== labelMinHeight[2] ? labelMinHeight[2] : '']
+    }),
+    mobileValue: labelMinHeight && undefined !== labelMinHeight[2] ? labelMinHeight[2] : '',
+    onChangeMobile: value => setAttributes({
+      labelMinHeight: [labelMinHeight && undefined !== labelMinHeight[0] ? labelMinHeight[0] : '', labelMinHeight && undefined !== labelMinHeight[1] ? labelMinHeight[1] : '', value]
+    }),
+    min: 0,
+    max: 200,
+    step: 1,
+    unit: 'px',
+    showUnit: true,
+    units: ['px']
+  })))), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     className: containerClasses,
     style: {
       marginTop: '' !== previewMarginTop ? previewMarginTop + marginUnit : undefined,
@@ -358,11 +608,10 @@ function Edit(_ref) {
       paddingTop: '' !== previewPaddingTop ? previewPaddingTop + paddingUnit : undefined,
       paddingRight: '' !== previewPaddingRight ? previewPaddingRight + paddingUnit : undefined,
       paddingBottom: '' !== previewPaddingBottom ? previewPaddingBottom + paddingUnit : undefined,
-      paddingLeft: '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined
+      paddingLeft: '' !== previewPaddingLeft ? previewPaddingLeft + paddingUnit : undefined,
+      maxWidth: '' !== previewContainerMaxWidth ? previewContainerMaxWidth + containerMaxWidthUnits : undefined
     }
-  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
-    class: "container"
-  }, barType === "line" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+  }, displayLabel && labelPosition === 'above' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressBarLabel, null), barType === "line" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     class: "progress-bar__container",
     style: {
       backgroundColor: (0,_kadence_helpers__WEBPACK_IMPORTED_MODULE_3__.KadenceColorOutput)(barBackground, barBackgroundOpacity),
@@ -379,11 +628,15 @@ function Edit(_ref) {
     class: "progress-bar__text"
   }))), barType === "circle" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
     class: "circle-bars"
-  }, circleBarStyles, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressCircle, {
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressCircle, {
     animate: animate
   }), (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("button", {
     onClick: () => setAnimate(Math.random())
-  }, "Click Me")))));
+  }, "Click Me")), barType === "semicircle" && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("div", {
+    class: "semicircle-bars"
+  }, (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressSemicircle, {
+    animate: animate
+  })), displayLabel && labelPosition === 'below' && (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)(ProgressBarLabel, null)));
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Edit);
 
@@ -1589,7 +1842,7 @@ module.exports = window["wp"]["i18n"];
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"apiVersion":2,"name":"kadence/progress-bar","title":"Progress Bar","category":"kadence-blocks","description":"Kadence progress bar","textdomain":"kadence-blocks","keywords":["kb","progress bar"],"attributes":{"align":{"type":"string"},"id":{"type":"number"},"width":{"type":"number","default":"0"},"uniqueID":{"type":"string"},"marginDesktop":{"type":"array","default":["","","",""]},"marginTablet":{"type":"array","default":["","","",""]},"marginMobile":{"type":"array","default":["","","",""]},"marginUnit":{"type":"string","default":"px"},"paddingDesktop":{"type":"array","default":["","","",""]},"paddingTablet":{"type":"array","default":["","","",""]},"paddingMobile":{"type":"array","default":["","","",""]},"paddingUnit":{"type":"string","default":"px"},"barBackground":{"type":"string","default":"#4A5568"},"barBackgroundOpacity":{"type":"number","default":1},"containerBorder":{"type":"array","default":[0,0,0,0]},"containerTabletBorder":{"type":"array","default":["","","",""]},"containerMobileBorder":{"type":"array","default":["","","",""]},"containerBorderType":{"type":"string","default":"px"},"borderColor":{"type":"string","default":"#4A5568"},"borderOpacity":{"type":"number","default":1},"barType":{"enum":["line","circle"],"default":"line"}},"editorScript":"file:editor.js"}');
+module.exports = JSON.parse('{"apiVersion":2,"name":"kadence/progress-bar","title":"Progress Bar","category":"kadence-blocks","description":"Kadence progress bar","textdomain":"kadence-blocks","keywords":["kb","progress bar"],"attributes":{"align":{"type":"string"},"id":{"type":"number"},"width":{"type":"number","default":"0"},"uniqueID":{"type":"string"},"marginDesktop":{"type":"array","default":["","","",""]},"marginTablet":{"type":"array","default":["","","",""]},"marginMobile":{"type":"array","default":["","","",""]},"marginUnit":{"type":"string","default":"px"},"paddingDesktop":{"type":"array","default":["","","",""]},"paddingTablet":{"type":"array","default":["","","",""]},"paddingMobile":{"type":"array","default":["","","",""]},"paddingUnit":{"type":"string","default":"px"},"barBackground":{"type":"string","default":"#4A5568"},"barBackgroundOpacity":{"type":"number","default":1},"containerBorder":{"type":"array","default":[0,0,0,0]},"containerTabletBorder":{"type":"array","default":["","","",""]},"containerMobileBorder":{"type":"array","default":["","","",""]},"containerBorderType":{"type":"string","default":"px"},"borderColor":{"type":"string","default":"#4A5568"},"borderOpacity":{"type":"number","default":1},"barType":{"enum":["line","circle"],"default":"line"},"containerMaxWidth":{"type":"number","default":200},"tabletContainerMaxWidth":{"type":"number"},"mobileContainerMaxWidth":{"type":"number"},"containerMaxWidthUnits":{"type":"string","default":"px"},"displayLabel":{"type":"boolean","default":true},"labelFont":{"type":"object","default":{"color":"","level":6,"size":["","",""],"sizeType":"px","lineHeight":["","",""],"linetype":"px","letterSpacing":"","textTransform":"","family":"","google":false,"style":"","weight":"","variant":"","subset":"","loadGoogle":true,"padding":[0,0,0,0],"margin":[0,0,15,0]}},"labelAlign":{"type":"array","default":["","",""]},"labelMinHeight":{"type":"array","default":["","",""]},"label":{"type":"string","default":""},"labelPosition":{"enum":["above","below"],"default":"below"}},"editorScript":"file:editor.js"}');
 
 /***/ })
 

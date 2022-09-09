@@ -4,15 +4,9 @@
  * CSS for just Backend enqueued after style.scss
  * which makes it higher in priority.
  */
- .container {
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    height: 50vh;
-    width: 100%;
-  }
+//  .kb-block-progress-container {
+    
+//   }
  .progress-bar__container {
     position: relative;
     height: 30px;
@@ -59,19 +53,6 @@
 //     font-size: 18px;
 //     display: none;
 // }
-.circle-bars {
-    // display: flex;
-    // overflow: visible;
-  }
-  
-  .circle-bars svg {
-    // width: 114px;
-    // height: 114px;
-    // margin: 1em;
-    // overflow: visible;
-  }
-  
-  
   // [class^="circlebar-"] {
   //   fill: none;
   //   stroke-width: 10px;

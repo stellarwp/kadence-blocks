@@ -801,7 +801,7 @@ function KadenceAccordionComponent(_ref) {
     style: {
       fill: '#000000'
     }
-  }, accordionIconSet[svg]);
+  }, "  ");
 
   const renderCSS = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.createElement)("style", null, `
 				.kt-accordion-${uniqueID} .kt-blocks-accordion-header {

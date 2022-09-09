@@ -566,9 +566,7 @@ function KadenceAccordionComponent( { attributes, className, setAttributes, clie
 
 	const renderIconSet = svg => (
 		<svg className="accord-icon" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" fillRule="evenodd" clipRule="evenodd" strokeLinejoin="round"
-			 strokeMiterlimit="1.414" style={{ fill: '#000000' }}>
-			{accordionIconSet[ svg ]}
-		</svg>
+			 strokeMiterlimit="1.414" style={{ fill: '#000000' }}>		</svg>
 	);
 	const renderCSS = (
 		<style>
