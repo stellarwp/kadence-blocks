@@ -18,7 +18,7 @@ class Kadence_Blocks_Form_CPT_Controller extends WP_REST_Posts_Controller {
 					'callback'            => array( $this, 'create_auto_draft' ),
 					'permission_callback' => [ $this, 'create_item_permissions_check' ],
 				)
-		) );
+			) );
 	}
 
 	/**
@@ -58,24 +58,22 @@ class Kadence_Blocks_Form_CPT_Controller extends WP_REST_Posts_Controller {
 
 
 add_action( 'init', function () {
-	register_post_type( 'kadence_form', [
-		'public'                => true,
+	register_post_type( 'kadence_form', array(
+		'public'                => false,
+		'publicly_queryable'    => true,
 		'show_ui'               => true,
 		'show_in_rest'          => true,
 		'rest_controller_class' => Kadence_Blocks_Form_CPT_Controller::class,
 		'menu_icon'             => 'dashicons-forms',
-		'supports'              => [ 'title', 'editor', 'custom-fields', 'revisions' ],
-		'taxonomies'            => [ 'post_tag' ],
-		'template'              => [
-			[ 'kadence/advanced-form' ]
-		],
+		'supports'              => array( 'title', 'editor', 'custom-fields', 'revisions' ),
+		'taxonomies'            => array( 'post_tag' ),
+		'template'              => array(
+			array( 'kadence/advanced-form' )
+		),
 //		'template_lock'         => 'insert',
 		'has_archive'           => true,
-		'rewrite'               => [
-			'slug' => 'kadence_form'
-		],
 		'label'                 => __( 'Kadence Forms', 'kadence_blocks' ),
-		'labels'                => [
+		'labels'                => array(
 			'name'               => _x( 'Kadence Forms', 'Post Type General Name', 'kadence_blocks' ),
 			'singular_name'      => _x( 'Kadence Form', 'Post Type Singular Name', 'kadence_blocks' ),
 			'menu_name'          => __( 'Kadence Forms', 'kadence_blocks' ),
@@ -85,7 +83,6 @@ add_action( 'init', function () {
 			'parent_item_colon'  => __( 'Parent Kadence Form:', 'kadence_blocks' ),
 			'all_items'          => __( 'All Kadence Forms', 'kadence_blocks' ),
 			'add_new_item'       => __( 'Add New Kadence Form', 'kadence_blocks' ),
-			'add_new'            => __( 'Add New', 'kadence_blocks' ),
 			'new_item'           => __( 'New Kadence Form', 'kadence_blocks' ),
 			'edit_item'          => __( 'Edit Kadence Form', 'kadence_blocks' ),
 			'update_item'        => __( 'Update Kadence Form', 'kadence_blocks' ),
@@ -94,456 +91,987 @@ add_action( 'init', function () {
 			'search_items'       => __( 'Search Kadence Forms', 'kadence_blocks' ),
 			'not_found'          => __( 'Not found', 'kadence_blocks' ),
 			'not_found_in_trash' => __( 'Not found in Trash', 'kadence_blocks' ),
-			'insert_into_item'   => __( 'Insert into Kadence Form', 'kadence_blocks' ),
 			'filter_items_list'  => __( 'Filter items list', 'kadence_blocks' ),
-		]
-	] );
+		)
+	) );
+
+	/* Register Meta Attributes */
+
+	$margin_padding_keys = array(
+		'_kad_form_marginDesktop',
+		'_kad_form_marginTablet',
+		'_kad_form_marginMobile',
+		'_kad_form_paddingDesktop',
+		'_kad_form_paddingTablet',
+		'_kad_form_paddingMobile',
+	);
+
+	foreach ( $margin_padding_keys as $key ) {
+		register_post_meta(
+			'kadence_form',
+			$key,
+			array(
+				'type'          => 'array',
+				'default'       => array( '', '', '', '' ),
+				'auth_callback' => '__return_true',
+				'single'        => true,
+				'show_in_rest'  => array(
+					'schema' => array(
+						'type'  => 'array',
+						'items' => array(
+							'type' => 'string',
+						),
+					),
+				),
+			)
+		);
+	}
+
 	register_post_meta(
 		'kadence_form',
-		'kadence_form_attrs',
+		'_kad_form_marginUnit',
 		array(
-			'single'       => true,
-			'type'         => 'object',
-			'default'      => (object)array(
-				'marginDesktop'    => [ '', '', '', '' ],
-				'marginTablet'     => [ '', '', '', '' ],
-				'marginMobile'     => [ '', '', '', '' ],
-				'marginUnit'       => 'px',
-				'paddingDesktop'   => [ '', '', '', '' ],
-				'paddingTablet'    => [ '', '', '', '' ],
-				'paddingMobile'    => [ '', '', '', '' ],
-				'paddingUnit'      => 'px',
-				'actions'          => [],
-				'email'            => json_decode( '{
-				      "emailTo": "",
-				      "subject": "",
-				      "fromEmail": "",
-				      "fromName": "",
-				      "replyTo": "email_field",
-				      "cc": "",
-				      "bcc": "",
-				      "html": true
-			    }' ),
-				'mailerlite'       => json_decode( '{
-			      "group": [],
-			      "map": []
-			    }' ),
-				'fluentcrm'        => json_decode( '{
-			      "lists": [],
-			      "tags": [],
-			      "map": [],
-			      "doubleOptin": false
-			    }' ),
-				'sendinblue'       => json_decode( '{
-					"list": [],
-			        "map": []
-			    }' ),
-				'mailchimp'        => json_decode( '{
-					"list": [],
-			        "map": []
-			    }' ),
-				'convertkit'       => json_decode( '{
-					"form": [],
-			        "sequence": [],
-			        "tags": [],
-			        "map": []
-			    }' ),
-				'activecampaign'   => json_decode( '{
-					"list": [],
-					"map": []
-				}' ),
-				'redirect'         => '',
-				'honeyPot'         => false,
-				'recaptcha'        => false,
-				'recaptchaVersion' => 'v3',
-				'submit'           => json_decode( '{
-					"label": "Submit",
-			        "width": [
-						"100",
-						"",
-						""
-					],
-				      "size": "standard",
-				      "widthType": "auto",
-				      "fixedWidth": [
-							"",
-							"",
-							""
-						],
-				      "align": [
-							"",
-							"",
-							""
-						],
-				      "deskPadding": [
-							"",
-							"",
-							"",
-							""
-						],
-				      "tabletPadding": [
-							"",
-							"",
-							"",
-							""
-						],
-				      "mobilePadding": [
-							"",
-							"",
-							"",
-							""
-						],
-				      "color": "",
-				      "background": "",
-				      "border": "",
-				      "backgroundOpacity": 1,
-				      "borderOpacity": 1,
-				      "borderRadius": "",
-				      "borderWidth": [
-							"",
-							"",
-							"",
-							""
-						],
-				      "colorHover": "",
-				      "backgroundHover": "",
-				      "borderHover": "",
-				      "backgroundHoverOpacity": 1,
-				      "borderHoverOpacity": 1,
-				      "icon": "",
-				      "iconSide": "right",
-				      "iconHover": false,
-				      "cssClass": "",
-				      "gradient": [
-							"#999999",
-							1,
-							0,
-							100,
-							"linear",
-							180,
-							"center center"
-						],
-				      "gradientHover": [
-							"#777777",
-							1,
-							0,
-							100,
-							"linear",
-							180,
-							"center center"
-						],
-				      "btnStyle": "basic",
-				      "btnSize": "standard",
-				      "backgroundType": "solid",
-				      "backgroundHoverType": "solid",
-				      "boxShadow": [
-							false,
-							"#000000",
-							0.2,
-							1,
-							1,
-							2,
-							0,
-							false
-						],
-				      "boxShadowHover": [
-							false,
-							"#000000",
-							0.4,
-							2,
-							2,
-							3,
-							0,
-							false
-						]
-			        }' ),
-				'submitFont'       => json_decode( '{
-					    "size": [
-					      "",
-					      "",
-					      ""
-					    ],
-					    "sizeType": "px",
-					    "lineHeight": [
-					      "",
-					      "",
-					      ""
-					    ],
-					    "lineType": "px",
-					    "letterSpacing": "",
-					    "textTransform": "",
-					    "family": "",
-					    "google": "",
-					    "style": "",
-					    "weight": "",
-					    "variant": "",
-					    "subset": "",
-					    "loadGoogle": true
-				      }' ),
-				'submitMargin'     => json_decode( '{
-				        "desk": [
-				          "",
-				          "",
-				          "",
-				          ""
-				        ],
-				        "tablet": [
-				          "",
-				          "",
-				          "",
-				          ""
-				        ],
-				        "mobile": [
-				          "",
-				          "",
-				          "",
-				          ""
-				        ],
-				        "unit": "px",
-				        "control": "linked"
-			      }' ),
-				'submitLabel'      => '',
-				'style'            => json_decode( '{
-				      "showRequired": true,
-				      "size": "standard",
-				      "deskPadding": [
-				        "",
-				        "",
-				        "",
-				        ""
-				      ],
-				      "tabletPadding": [
-				        "",
-				        "",
-				        "",
-				        ""
-				      ],
-				      "mobilePadding": [
-				        "",
-				        "",
-				        "",
-				        ""
-				      ],
-				      "color": "",
-				      "requiredColor": "",
-				      "background": "",
-				      "border": "",
-				      "backgroundOpacity": 1,
-				      "borderOpacity": 1,
-				      "borderRadius": "",
-				      "borderWidth": [
-				        "",
-				        "",
-				        "",
-				        ""
-				      ],
-				      "colorActive": "",
-				      "backgroundActive": "",
-				      "borderActive": "",
-				      "backgroundActiveOpacity": 1,
-				      "borderActiveOpacity": 1,
-				      "gradient": [
-				        "#999999",
-				        1,
-				        0,
-				        100,
-				        "linear",
-				        180,
-				        "center center"
-				      ],
-				      "gradientActive": [
-				        "#777777",
-				        1,
-				        0,
-				        100,
-				        "linear",
-				        180,
-				        "center center"
-				      ],
-				      "backgroundType": "solid",
-				      "backgroundActiveType": "solid",
-				      "boxShadow": [
-				        false,
-				        "#000000",
-				        0.2,
-				        1,
-				        1,
-				        2,
-				        0,
-				        false
-				      ],
-				      "boxShadowActive": [
-				        false,
-				        "#000000",
-				        0.4,
-				        2,
-				        2,
-				        3,
-				        0,
-				        false
-				      ],
-				      "fontSize": [
-				        "",
-				        "",
-				        ""
-				      ],
-				      "fontSizeType": "px",
-				      "lineHeight": [
-				        "",
-				        "",
-				        ""
-				      ],
-				      "lineType": "px",
-				      "rowGap": "",
-				      "rowGapType": "px",
-				      "gutter": "",
-				      "gutterType": "px",
-				      "tabletRowGap": "",
-				      "mobileRowGap": "",
-				      "tabletGutter": "",
-				      "mobileGutter": ""
-			    }' ),
-				'labelFont'        => json_decode( '{
-				      "color": "",
-				      "size": [
-				        "",
-				        "",
-				        ""
-				      ],
-				      "sizeType": "px",
-				      "lineHeight": [
-				        "",
-				        "",
-				        ""
-				      ],
-				      "lineType": "px",
-				      "letterSpacing": "",
-				      "textTransform": "",
-				      "family": "",
-				      "google": "",
-				      "style": "",
-				      "weight": "",
-				      "variant": "",
-				      "subset": "",
-				      "loadGoogle": true,
-				      "padding": [
-				        "",
-				        "",
-				        "",
-				        ""
-				      ],
-				      "margin": [
-				        "",
-				        "",
-				        "",
-				        ""
-				      ]
-			    }' ),
-				'helpFont'         => json_decode( '{
-					"color": "",
-				      "size": [
-							"",
-							"",
-							""
-						],
-				      "sizeType": "px",
-				      "lineHeight": [
-							"",
-							"",
-							""
-						],
-				      "lineType": "px",
-				      "letterSpacing": "",
-				      "textTransform": "",
-				      "family": "",
-				      "google": "",
-				      "style": "",
-				      "weight": "",
-				      "variant": "",
-				      "subset": "",
-				      "loadGoogle": true,
-				      "padding": [
-							"",
-							"",
-							"",
-							""
-						],
-				      "margin": [
-							"",
-							"",
-							"",
-							""
-						]
-				    }' ),
-				'webhook'          => json_decode( '{
-						"url": "",
-						"map": []
-				  }' ),
-				'autoEmail'        => json_decode( '{
-					"emailTo": "",
-					"subject": "",
-					"message": "",
-					"fromEmail": "",
-					"fromName": "",
-					"replyTo": "",
-					"cc": "",
-					"bcc": "",
-					"html": true
-			    }' ),
-				'entry'            => json_decode( '{
-					"formName": "",
-					"userIP": true,
-					"userDevice": true
-				  }' ),
-				'messages'         => json_decode( '{
-					  "success": "",
-					  "error": "",
-					  "required": "",
-					  "invalid": "",
-					  "recaptchaerror": "",
-					  "preError": ""
-					}' ),
-				'messageFont' => json_decode( '' )
+			'single'        => true,
+			'show_in_rest'  => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'string',
+			'default'       => 'px'
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_paddingUnit',
+		array(
+			'show_in_rest'  => true,
+			'auth_callback' => '__return_true',
+			'single'        => true,
+			'type'          => 'string',
+			'default'       => 'px'
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_email',
+		array(
+			'type'          => 'object',
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'default'       => array(
+				'emailTo'   => '',
+				'subject'   => '',
+				'fromEmail' => '',
+				'fromName'  => '',
+				'replyTo'   => 'email_field',
+				'cc'        => '',
+				'bcc'       => '',
+				'html'      => true
 			),
-			'show_in_rest' => [
-				'schema' => [
+			'show_in_rest'  => array(
+				'schema' => array(
 					'type'       => 'object',
-					'properties' => [
-						'marginDesktop'    => [ 'type' => 'array' ],
-						'marginTablet'     => [ 'type' => 'array' ],
-						'marginMobile'     => [ 'type' => 'array' ],
-						'marginUnit'       => [ 'type' => 'string' ],
-						'paddingDesktop'   => [ 'type' => 'array' ],
-						'paddingTablet'    => [ 'type' => 'array' ],
-						'paddingMobile'    => [ 'type' => 'array' ],
-						'paddingUnit'      => [ 'type' => 'string' ],
-						'actions'          => [ 'type' => 'array' ],
-						'email'            => [ 'type' => 'object' ],
-						'mailerlite'       => [ 'type' => 'object' ],
-						'fluentcrm'        => [ 'type' => 'object' ],
-						'sendinblue'       => [ 'type' => 'object' ],
-						'mailchimp'        => [ 'type' => 'object' ],
-						'convertkit'       => [ 'type' => 'object' ],
-						'activecampaign'   => [ 'type' => 'object' ],
-						'redirect'         => [ 'type' => 'string' ],
-						'honeyPot'         => [ 'type' => 'boolean' ],
-						'recaptcha'        => [ 'type' => 'boolean' ],
-						'recaptchaVersion' => [ 'type' => 'string' ],
-						'submit'           => [ 'type' => 'object' ],
-						'submitFont'       => [ 'type' => 'object' ],
-						'submitMargin'     => [ 'type' => 'object' ],
-						'submitLabel'      => [ 'type' => 'string' ],
-						'style'            => [ 'type' => 'object' ],
-						'labelFont'        => [ 'type' => 'object' ],
-						'helpFont'         => [ 'type' => 'object' ],
-						'webhook'          => [ 'type' => 'object' ],
-						'autoEmail'        => [ 'type' => 'object' ],
-						'entry'            => [ 'type' => 'object' ],
-						'messages'         => [ 'type' => 'object' ],
-						'messageFont'      => [ 'type' => 'object' ]
-					]
-				],
-			]
+					'properties' => array(
+						'emailTo'   => array( 'type' => 'string' ),
+						'subject'   => array( 'type' => 'string' ),
+						'fromEmail' => array( 'type' => 'string' ),
+						'fromName'  => array( 'type' => 'string' ),
+						'replyTo'   => array( 'type' => 'string' ),
+						'cc'        => array( 'type' => 'string' ),
+						'bcc'       => array( 'type' => 'string' ),
+						'html'      => array( 'type' => 'boolean' )
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_actions',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'array',
+			'default'       => array(),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'  => 'array',
+					'items' => array(
+						'type' => 'string',
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_mailerlite',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array( "group" => array(), "map" => array() ),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'group' => array( 'type' => 'array' ),
+						'map'   => array( 'type' => 'array' ),
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_fluentcrm',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array( "lists" => array(), "tags" => array(), "map" => array(), "doubleOptin" => false ),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'lists'       => array( 'type' => 'array' ),
+						'tags'        => array( 'type' => 'array' ),
+						'map'         => array( 'type' => 'array' ),
+						'doubleOptin' => array( 'type' => 'boolean' ),
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_sendinblue',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array( "lists" => array(), "map" => array() ),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'lists' => array( 'type' => 'array' ),
+						'map'   => array( 'type' => 'array' )
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_mailchimp',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array( "list" => array(), "map" => array() ),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'list' => array( 'type' => 'array' ),
+						'map'  => array( 'type' => 'array' )
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_convertkit',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array( "form" => array(), "sequence" => array(), "tags" => array(), "map" => array() ),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'form'     => array( 'type' => 'array' ),
+						'sequence' => array( 'type' => 'array' ),
+						'tags'     => array( 'type' => 'array' ),
+						'map'      => array( 'type' => 'array' ),
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_activecampaign',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array( "lists" => array(), "map" => array() ),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'lists' => array( 'type' => 'array' ),
+						'map'   => array( 'type' => 'array' )
+					),
+				),
+			),
+		)
+	);
+
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_redirect',
+		array(
+			'show_in_rest'  => true,
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'string',
+			'default'       => ''
+		)
+	);
+
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_honeyPot',
+		array(
+			'show_in_rest'  => true,
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'boolean',
+			'default'       => false
+		)
+	);
+
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_single',
+		array(
+			'show_in_rest'  => true,
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'boolean',
+			'default'       => true
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_recaptcha',
+		array(
+			'show_in_rest'  => true,
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'boolean',
+			'default'       => false
+		)
+	);
+
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_recaptchaVersion',
+		array(
+			'show_in_rest'  => true,
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'string',
+			'default'       => 'v3'
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_submitLabel',
+		array(
+			'show_in_rest'  => true,
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'string',
+			'default'       => ''
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_submit',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"label"                  => "Submit",
+				"width"                  => array(
+					"100",
+					"",
+					""
+				),
+				"size"                   => "standard",
+				"widthType"              => "auto",
+				"fixedWidth"             => array(
+					"",
+					"",
+					""
+				),
+				"align"                  => array(
+					"",
+					"",
+					""
+				),
+				"deskPadding"            => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"tabletPadding"          => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"mobilePadding"          => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"color"                  => "",
+				"background"             => "",
+				"border"                 => "",
+				"backgroundOpacity"      => 1,
+				"borderOpacity"          => 1,
+				"borderRadius"           => "",
+				"borderWidth"            => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"colorHover"             => "",
+				"backgroundHover"        => "",
+				"borderHover"            => "",
+				"backgroundHoverOpacity" => 1,
+				"borderHoverOpacity"     => 1,
+				"icon"                   => "",
+				"iconSide"               => "right",
+				"iconHover"              => false,
+				"cssClass"               => "",
+				"gradient"               => array(
+					"#999999",
+					1,
+					0,
+					100,
+					"linear",
+					180,
+					"center center"
+				),
+				"gradientHover"          => array(
+					"#777777",
+					1,
+					0,
+					100,
+					"linear",
+					180,
+					"center center"
+				),
+				"btnStyle"               => "basic",
+				"btnSize"                => "standard",
+				"backgroundType"         => "solid",
+				"backgroundHoverType"    => "solid",
+				"boxShadow"              => array(
+					false,
+					"#000000",
+					0.2,
+					1,
+					1,
+					2,
+					0,
+					false
+				),
+				"boxShadowHover"         => array(
+					false,
+					"#000000",
+					0.4,
+					2,
+					2,
+					3,
+					0,
+					false
+				)
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						"label"                  => array( 'type' => 'string' ),
+						"width"                  => array( 'type' => 'array' ),
+						"size"                   => array( 'type' => 'string' ),
+						"widthType"              => array( 'type' => 'string' ),
+						"fixedWidth"             => array( 'type' => 'array' ),
+						"align"                  => array( 'type' => 'array' ),
+						"deskPadding"            => array( 'type' => 'array' ),
+						"tabletPadding"          => array( 'type' => 'array' ),
+						"mobilePadding"          => array( 'type' => 'array' ),
+						"color"                  => array( 'type' => 'string' ),
+						"background"             => array( 'type' => 'string' ),
+						"border"                 => array( 'type' => 'string' ),
+						"backgroundOpacity"      => array( 'type' => 'number' ),
+						"borderOpacity"          => array( 'type' => 'number' ),
+						"borderRadius"           => array( 'type' => 'string' ),
+						"borderWidth"            => array( 'type' => 'array' ),
+						"colorHover"             => array( 'type' => 'string' ),
+						"backgroundHover"        => array( 'type' => 'string' ),
+						"borderHover"            => array( 'type' => 'string' ),
+						"backgroundHoverOpacity" => array( 'type' => 'number' ),
+						"borderHoverOpacity"     => array( 'type' => 'number' ),
+						"icon"                   => array( 'type' => 'string' ),
+						"iconSide"               => array( 'type' => 'string' ),
+						"iconHover"              => array( 'type' => 'boolean' ),
+						"cssClass"               => array( 'type' => 'string' ),
+						"gradient"               => array( 'type' => 'array' ),
+						"gradientHover"          => array( 'type' => 'array' ),
+						"btnStyle"               => array( 'type' => 'string' ),
+						"btnSize"                => array( 'type' => 'string' ),
+						"backgroundType"         => array( 'type' => 'string' ),
+						"backgroundHoverType"    => array( 'type' => 'string' ),
+						"boxShadow"              => array( 'type' => 'array' ),
+						"boxShadowHover"         => array( 'type' => 'array' )
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_webhook',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array( "url" => '', "map" => array() ),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'url' => array( 'type' => 'string' ),
+						'map' => array( 'type' => 'array' )
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_autoEmail',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"emailTo"   => '',
+				"subject"   => '',
+				"message"   => '',
+				"fromEmail" => '',
+				"fromName"  => '',
+				"replyTo"   => '',
+				"cc"        => '',
+				"bcc"       => '',
+				"html"      => true
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'emailTo'   => array( 'type' => 'string' ),
+						'subject'   => array( 'type' => 'string' ),
+						'message'   => array( 'type' => 'string' ),
+						'fromEmail' => array( 'type' => 'string' ),
+						'fromName'  => array( 'type' => 'string' ),
+						'replyTo'   => array( 'type' => 'string' ),
+						'cc'        => array( 'type' => 'string' ),
+						'bcc'       => array( 'type' => 'string' ),
+						'html'      => array( 'type' => 'boolean' )
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_entry',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"formName"   => '',
+				"userIP"     => true,
+				"userDevice" => true,
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'formName'   => array( 'type' => 'string' ),
+						'userIP'     => array( 'type' => 'boolean' ),
+						'userDevice' => array( 'type' => 'boolean' ),
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_messages',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"success"        => '',
+				"error"          => '',
+				"required"       => '',
+				"invalid"        => '',
+				"recaptchaerror" => '',
+				"preError"       => '',
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'success'        => array( 'type' => 'string' ),
+						'error'          => array( 'type' => 'string' ),
+						'required'       => array( 'type' => 'string' ),
+						'invalid'        => array( 'type' => 'string' ),
+						'recaptchaerror' => array( 'type' => 'string' ),
+						'preError'       => array( 'type' => 'string' ),
+
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_messageFont',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type' => 'object',
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_submitFont',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"size"          => array(
+					"",
+					"",
+					""
+				),
+				"sizeType"      => "px",
+				"lineHeight"    => array(
+					"",
+					"",
+					""
+				),
+				"lineType"      => "px",
+				"letterSpacing" => "",
+				"textTransform" => "",
+				"family"        => "",
+				"google"        => "",
+				"style"         => "",
+				"weight"        => "",
+				"variant"       => "",
+				"subset"        => "",
+				"loadGoogle"    => true
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'size'          => array( 'type' => 'array' ),
+						'sizeType'      => array( 'type' => 'string' ),
+						'lineHeight'    => array( 'type' => 'array' ),
+						'lineType'      => array( 'type' => 'string' ),
+						'letterSpacing' => array( 'type' => 'string' ),
+						'textTransform' => array( 'type' => 'string' ),
+						'family'        => array( 'type' => 'string' ),
+						'google'        => array( 'type' => 'string' ),
+						'style'         => array( 'type' => 'string' ),
+						'weight'        => array( 'type' => 'string' ),
+						'variant'       => array( 'type' => 'string' ),
+						'subset'        => array( 'type' => 'string' ),
+						'loadGoogle'    => array( 'type' => 'boolean' ),
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_submitMargin',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"desk"    => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"tablet"  => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"mobile"  => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"unit"    => "px",
+				"control" => "linked"
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'desk'    => array( 'type' => 'array' ),
+						'tablet'  => array( 'type' => 'array' ),
+						'mobile'  => array( 'type' => 'array' ),
+						'unit'    => array( 'type' => 'string' ),
+						'control' => array( 'type' => 'string' ),
+
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_style',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"showRequired"            => true,
+				"size"                    => "standard",
+				"deskPadding"             => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"tabletPadding"           => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"mobilePadding"           => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"color"                   => "",
+				"requiredColor"           => "",
+				"background"              => "",
+				"border"                  => "",
+				"backgroundOpacity"       => 1,
+				"borderOpacity"           => 1,
+				"borderRadius"            => "",
+				"borderWidth"             => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"colorActive"             => "",
+				"backgroundActive"        => "",
+				"borderActive"            => "",
+				"backgroundActiveOpacity" => 1,
+				"borderActiveOpacity"     => 1,
+				"gradient"                => array(
+					"#999999",
+					1,
+					0,
+					100,
+					"linear",
+					180,
+					"center center"
+				),
+				"gradientActive"          => array(
+					"#777777",
+					1,
+					0,
+					100,
+					"linear",
+					180,
+					"center center"
+				),
+				"backgroundType"          => "solid",
+				"backgroundActiveType"    => "solid",
+				"boxShadow"               => array(
+					false,
+					"#000000",
+					0.2,
+					1,
+					1,
+					2,
+					0,
+					false
+				),
+				"boxShadowActive"         => array(
+					false,
+					"#000000",
+					0.4,
+					2,
+					2,
+					3,
+					0,
+					false
+				),
+				"fontSize"                => array(
+					"",
+					"",
+					""
+				),
+				"fontSizeType"            => "px",
+				"lineHeight"              => array(
+					"",
+					"",
+					""
+				),
+				"lineType"                => "px",
+				"rowGap"                  => "",
+				"rowGapType"              => "px",
+				"gutter"                  => "",
+				"gutterType"              => "px",
+				"tabletRowGap"            => "",
+				"mobileRowGap"            => "",
+				"tabletGutter"            => "",
+				"mobileGutter"            => ""
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'showRequired'            => array( 'type' => 'boolean' ),
+						'size'                    => array( 'type' => 'string' ),
+						'deskPadding'             => array( 'type' => 'array' ),
+						'tabletPadding'           => array( 'type' => 'array' ),
+						'mobilePadding'           => array( 'type' => 'array' ),
+						'color'                   => array( 'type' => 'string' ),
+						'requiredColor'           => array( 'type' => 'string' ),
+						'background'              => array( 'type' => 'string' ),
+						"border"                  => array( 'type' => 'string' ),
+						'backgroundOpacity'       => array( 'type' => 'number' ),
+						'borderOpacity'           => array( 'type' => 'number' ),
+						'borderRadius'            => array( 'type' => 'string' ),
+						'borderWidth'             => array( 'type' => 'array' ),
+						'colorActive'             => array( 'type' => 'string' ),
+						'backgroundActive'        => array( 'type' => 'string' ),
+						'borderActive'            => array( 'type' => 'string' ),
+						'backgroundActiveOpacity' => array( 'type' => 'number' ),
+						'borderActiveOpacity'     => array( 'type' => 'number' ),
+						'gradient'                => array( 'type' => 'array' ),
+						'gradientActive'          => array( 'type' => 'array' ),
+						'backgroundType'          => array( 'type' => 'string' ),
+						'backgroundActiveType'    => array( 'type' => 'string' ),
+						'boxShadow'               => array( 'type' => 'array' ),
+						'boxShadowActive'         => array( 'type' => 'array' ),
+						'fontSize'                => array( 'type' => 'array' ),
+						'fontSizeType'            => array( 'type' => 'string' ),
+						'lineHeight'              => array( 'type' => 'array' ),
+						'lineType'                => array( 'type' => 'string' ),
+						'rowGap'                  => array( 'type' => 'string' ),
+						'rowGapType'              => array( 'type' => 'string' ),
+						'gutter'                  => array( 'type' => 'string' ),
+						'gutterType'              => array( 'type' => 'string' ),
+						'tabletRowGap'            => array( 'type' => 'string' ),
+						'mobileRowGap'            => array( 'type' => 'string' ),
+						'tabletGutter'            => array( 'type' => 'string' ),
+						'mobileGutter'            => array( 'type' => 'string' ),
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_labelFont',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"color"         => "",
+				"size"          => array(
+					"",
+					"",
+					""
+				),
+				"sizeType"      => "px",
+				"lineHeight"    => array(
+					"",
+					"",
+					""
+				),
+				"lineType"      => "px",
+				"letterSpacing" => "",
+				"textTransform" => "",
+				"family"        => "",
+				"google"        => "",
+				"style"         => "",
+				"weight"        => "",
+				"variant"       => "",
+				"subset"        => "",
+				"loadGoogle"    => true,
+				"padding"       => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"margin"        => array(
+					"",
+					"",
+					"",
+					""
+				)
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'color'         => array( 'type' => 'string' ),
+						'size'          => array( 'type' => 'array' ),
+						'sizeType'      => array( 'type' => 'string' ),
+						'lineHeight'    => array( 'type' => 'array' ),
+						'lineType'      => array( 'type' => 'string' ),
+						'letterSpacing' => array( 'type' => 'string' ),
+						'textTransform' => array( 'type' => 'string' ),
+						"family"        => array( 'type' => 'string' ),
+						'google'        => array( 'type' => 'string' ),
+						'style'         => array( 'type' => 'string' ),
+						'weight'        => array( 'type' => 'string' ),
+						'variant'       => array( 'type' => 'string' ),
+						'subset'        => array( 'type' => 'string' ),
+						'loadGoogle'    => array( 'type' => 'boolean' ),
+						'padding'       => array( 'type' => 'array' ),
+						'margin'        => array( 'type' => 'array' )
+					),
+				),
+			),
+		)
+	);
+
+	register_post_meta(
+		'kadence_form',
+		'_kad_form_helpFont',
+		array(
+			'single'        => true,
+			'auth_callback' => '__return_true',
+			'type'          => 'object',
+			'default'       => array(
+				"color"         => "",
+				"size"          => array(
+					"",
+					"",
+					""
+				),
+				"sizeType"      => "px",
+				"lineHeight"    => array(
+					"",
+					"",
+					""
+				),
+				"lineType"      => "px",
+				"letterSpacing" => "",
+				"textTransform" => "",
+				"family"        => "",
+				"google"        => "",
+				"style"         => "",
+				"weight"        => "",
+				"variant"       => "",
+				"subset"        => "",
+				"loadGoogle"    => true,
+				"padding"       => array(
+					"",
+					"",
+					"",
+					""
+				),
+				"margin"        => array(
+					"",
+					"",
+					"",
+					""
+				)
+			),
+			'show_in_rest'  => array(
+				'schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'color'         => array( 'type' => 'string' ),
+						'size'          => array( 'type' => 'array' ),
+						'sizeType'      => array( 'type' => 'string' ),
+						'lineHeight'    => array( 'type' => 'array' ),
+						'lineType'      => array( 'type' => 'string' ),
+						'letterSpacing' => array( 'type' => 'string' ),
+						'textTransform' => array( 'type' => 'string' ),
+						"family"        => array( 'type' => 'string' ),
+						'google'        => array( 'type' => 'string' ),
+						'style'         => array( 'type' => 'string' ),
+						'weight'        => array( 'type' => 'string' ),
+						'variant'       => array( 'type' => 'string' ),
+						'subset'        => array( 'type' => 'string' ),
+						'loadGoogle'    => array( 'type' => 'boolean' ),
+						'padding'       => array( 'type' => 'array' ),
+						'margin'        => array( 'type' => 'array' )
+					),
+				),
+			),
 		)
 	);
 

@@ -21,7 +21,7 @@ import {
 import { useState } from '@wordpress/element';
 import { ColumnWidth } from '../../../components';
 
-export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit, submitMargin, submitFont, submitLabel } ) {
+export default function SubmitButtonStyles( { setAttributes, submit, submitMargin, submitFont, submitLabel } ) {
 
 	const btnSizes = [
 		{ key: 'small', name: __( 'S', 'kadence-blocks' ) },
@@ -64,8 +64,12 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 	const marginMax = ( marginUnit === 'em' || marginUnit === 'rem' ? 12 : 100 );
 	const marginStep = ( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 );
 
+	const saveSubmit = ( value ) => {
+		setAttributes( { ...submit, ...value }, 'submit');
+	};
+
 	const saveSubmitMargin = ( value ) => {
-		setAttributes( { submitMargin: { ...submitMargin, ...value } } );
+		setAttributes( { ...submitMargin, ...value }, 'submitMargin' );
 	};
 
 	const saveSubmitGradient = ( value, index ) => {
@@ -78,7 +82,7 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 			return item;
 		} );
 
-		setAttributes( { gradient: newItems } );
+		setAttributes( { gradient: newItems }, 'submit' );
 	};
 
 	const saveSubmitGradientHover = ( value, index ) => {
@@ -91,13 +95,11 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 			return item;
 		} );
 
-		setAttributes( { gradientHover: newItems } );
+		setAttributes( { gradientHover: newItems }, 'submit' );
 	};
 
 	const saveSubmitFont = ( value ) => {
-		setAttributes( {
-			submitFont: { ...submitFont, ...value },
-		} );
+		setAttributes( { ...submitFont, ...value }, 'submitFont' );
 	};
 
 	const saveSubmitBoxShadowHover = ( value, index ) => {
@@ -109,7 +111,7 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 
 			return item;
 		} );
-		setAttributes( { boxShadowHover: newItems } );
+		setAttributes( { boxShadowHover: newItems }, 'submit' );
 	};
 
 	const saveSubmitBoxShadow = ( value, index ) => {
@@ -752,7 +754,7 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 			>
 				<TypographyControls
 					letterSpacing={submitFont.letterSpacing}
-					onLetterSpacing={( value ) => saveSubmitFont( { letterSpacing: value } )}
+					onLetterSpacing={( value ) => saveSubmitFont( { letterSpacing: value.toString() } )}
 					textTransform={submitFont.textTransform}
 					onTextTransform={( value ) => saveSubmitFont( { textTransform: value } )}
 					fontFamily={submitFont.family}
@@ -876,7 +878,7 @@ export default function SubmitButtonStyles( { setAttributes, saveSubmit, submit,
 				label={__( 'Submit aria description', 'kadence-blocks' )}
 				help={__( 'Provide more context for screen readers', 'kadence-blocks' )}
 				value={( undefined !== submitLabel ? submitLabel : '' )}
-				onChange={( value ) => setAttributes( { submitLabel: value } )}
+				onChange={( value ) => setAttributes( value, 'submitLabel' )}
 			/>
 		</>
 	);

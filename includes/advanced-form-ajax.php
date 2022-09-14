@@ -575,11 +575,18 @@ class KB_Ajax_Advanced_Form {
 			$this->process_bail( __( 'Submission Failed', 'kadence-blocks' ), __( 'Data not found', 'kadence-blocks' ) );
 		}
 
-		$meta_args = get_post_meta( $post_id, 'kadence_form_attrs', true );
+		$post_meta = get_post_meta( $post_id );
+		$meta_args = array();
+
+		foreach($post_meta as $meta_key => $meta_value ){
+			if( strpos( $meta_key, '_kad_form_' ) === 0 && isset($meta_value[0]) ){
+				$meta_args[ str_replace( '_kad_form_', '', $meta_key ) ] = maybe_unserialize($meta_value[0]);
+			}
+		}
 
 		$form_args['attributes'] = json_decode(json_encode($meta_args), true);
 
-		foreach ( $blocks[0]['innerBlocks'] as $indexkey => $block ) {
+		foreach ( $blocks[0]['innerBlocks'] as $block ) {
 			if ( ! is_object( $block ) && is_array( $block ) && isset( $block['blockName'] ) ) {
 
 

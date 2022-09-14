@@ -20,15 +20,11 @@ export default function MessageOptions( { setAttributes, messageFont, messages, 
 
 	const saveMessages = ( value ) => {
 
-		setAttributes( {
-			messages: {  ...messages, ...value },
-		} );
+		setAttributes( {  ...messages, ...value }, 'messages' );
 	};
 
 	const saveMessageFont = ( value ) => {
-		setAttributes( {
-			messageFont: { ...messageFont, ...value }
-		} );
+		setAttributes( { ...messageFont, ...value }, 'messageFont' );
 	}
 
 	return (
@@ -166,7 +162,7 @@ export default function MessageOptions( { setAttributes, messageFont, messages, 
 			>
 				<TypographyControls
 					letterSpacing={messageFont.letterSpacing}
-					onLetterSpacing={( value ) => saveMessageFont( { letterSpacing: value } )}
+					onLetterSpacing={( value ) => saveMessageFont( { letterSpacing: value.toString() } )}
 					fontFamily={messageFont.family}
 					onFontFamily={( value ) => saveMessageFont( { family: value } )}
 					onFontChange={( select ) => {

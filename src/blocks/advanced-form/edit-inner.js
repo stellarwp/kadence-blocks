@@ -90,55 +90,55 @@ export function EditInner( props ) {
 	const [ paddingControl, setPaddingControl ] = useState( 'individual' );
 	const [ activeTab, setActiveTab ] = useState( 'general' );
 
-	const [ metaAttributes, setMetaAttributes ] = useFormMeta( 'kadence_form_attrs' );
+	const [ marginDesktop, setMarginDesktop ] = useFormMeta( '_kad_form_marginDesktop' );
+	const [ marginTablet, setMarginTablet ] = useFormMeta( '_kad_form_marginTablet' );
+	const [ marginMobile, setMarginMobile ] = useFormMeta( '_kad_form_marginMobile' );
+	const [ marginUnit, setMarginUnit ] = useFormMeta( '_kad_form_marginUnit' );
 
-	const setMetaAttribute = ( value ) => {
-		setMetaAttributes( { ...metaAttributes, ...value } );
+	const [ paddingDesktop, setPaddingDesktop ] = useFormMeta( '_kad_form_paddingDesktop' );
+	const [ paddingTablet, setPaddingTablet ] = useFormMeta( '_kad_form_paddingTablet' );
+	const [ paddingMobile, setPaddingMobile ] = useFormMeta( '_kad_form_paddingMobile' );
+	const [ paddingUnit, setPaddingUnit ] = useFormMeta( '_kad_form_paddingUnit' );
+
+	const [ email, setEmail ] = useFormMeta( '_kad_form_email' );
+	const [ actions, setActions ] = useFormMeta( '_kad_form_actions' );
+	const [ mailerlite, setMailerlite ] = useFormMeta( '_kad_form_mailerlite' );
+	const [ fluentcrm, setFluentcrm ] = useFormMeta( '_kad_form_fluentcrm' );
+	const [ sendinblue, setSendinblue ] = useFormMeta( '_kad_form_sendinblue' );
+	const [ mailchimp, setMailchimp ] = useFormMeta( '_kad_form_mailchimp' );
+	const [ convertkit, setConvertkit ] = useFormMeta( '_kad_form_convertkit' );
+	const [ activecampaign, setActivecampaign ] = useFormMeta( '_kad_form_activecampaign' );
+
+	const [ redirect, setRedirect ] = useFormMeta( '_kad_form_redirect' );
+	const [ honeyPot, setHoneyPot ] = useFormMeta( '_kad_form_honeyPot' );
+	const [ single, setSingle ] = useFormMeta( '_kad_form_single' );
+	const [ recaptcha, setRecaptcha ] = useFormMeta( '_kad_form_recaptcha' );
+	const [ recaptchaVersion, setRecaptchaVersion ] = useFormMeta( '_kad_form_recaptchaVersion' );
+
+	const [ submit, setSubmit ] = useFormMeta( '_kad_form_submit' );
+	const [ submitLabel, setSubmitLabel ] = useFormMeta( '_kad_form_submitLabel' );
+
+	const [ webhook, setWebhook ] = useFormMeta( '_kad_form_webhook' );
+	const [ autoEmail, setAutoEmail ] = useFormMeta( '_kad_form_autoEmail' );
+	const [ entry, setEntry ] = useFormMeta( '_kad_form_entry' );
+	const [ messages, setMessages ] = useFormMeta( '_kad_form_messages' );
+	const [ messageFont, setMessageFont ] = useFormMeta( '_kad_form_messageFont' );
+
+	const [ submitFont, setSubmitFont ] = useFormMeta( '_kad_form_submitFont' );
+	const [ submitMargin, setSubmitMargin ] = useFormMeta( '_kad_form_submitMargin' );
+	const [ labelFont, setLabelFont ] = useFormMeta( '_kad_form_labelFont' );
+
+	const [ style, setStyle ] = useFormMeta( '_kad_form_style' );
+	const [ helpFont, setHelpFont ] = useFormMeta( '_kad_form_helpFont' );
+	const [ meta, setMeta ] = useFormProp( 'meta' );
+
+	const setMetaAttribute = ( value, key ) => {
+		let keyPrefix = '_kad_form_';
+
+		setMeta( { ...meta, [keyPrefix + key]: value } );
 	};
 
-	const saveSubmit = ( value ) => {
-		setMetaAttributes( { ...metaAttributes, submit: { ...metaAttributes.submit, ...value } } );
-	};
-
-	const saveStyle = ( value ) => {
-		setMetaAttributes( { ...metaAttributes, style: { ...metaAttributes.style, ...value } } );
-	};
-
-	const {
-		align,
-		paddingTablet,
-		paddingDesktop,
-		paddingMobile,
-		paddingUnit,
-		marginTablet,
-		marginDesktop,
-		marginMobile,
-		marginUnit,
-		actions,
-		honeyPot,
-		recaptcha,
-		recaptchaVersion,
-		submit,
-		submitFont,
-		submitMargin,
-		submitLabel,
-		style,
-		labelFont,
-		helpFont,
-		email,
-		redirect,
-		mailerlite,
-		fluentcrm,
-		sendinblue,
-		mailchimp,
-		convertkit,
-		activecampaign,
-		webhook,
-		autoEmail,
-		entry,
-		messages,
-		messageFont,
-	} = metaAttributes;
+	const align = '';
 
 	let btnBG;
 	let btnGrad;
@@ -208,12 +208,12 @@ export function EditInner( props ) {
 
 	return (
 		<div>
-			<BlockControls group="block">
-				<BlockAlignmentControl
-					value={align}
-					onChange={( value ) => setMetaAttribute( { align: value } )}
-				/>
-			</BlockControls>
+			{/*<BlockControls group="block">*/}
+			{/*	<BlockAlignmentControl*/}
+			{/*		value={align}*/}
+			{/*		onChange={( value ) => setMetaAttribute( { align: value } )}*/}
+			{/*	/>*/}
+			{/*</BlockControls>*/}
 			<InspectorControls>
 
 				<InspectorControlTabs
@@ -255,23 +255,23 @@ export function EditInner( props ) {
 									label={__( 'Email To Address', 'kadence-blocks' )}
 									placeholder={__( 'name@example.com', 'kadence-blocks' )}
 									value={( undefined !== email.emailTo ? email.emailTo : '' )}
-									onChange={( value ) => setMetaAttribute( { email: { ...email, emailTo: value } } )}
+									onChange={( value ) => setMetaAttribute( { ...email, emailTo: value }, 'email' )}
 									help={__( 'Seperate with comma for more then one email address.', 'kadence-blocks' )}
 								/>
 								<TextControl
 									label={__( 'Email Subject', 'kadence-blocks' )}
 									value={( undefined !== email.subject ? email.subject : '' )}
-									onChange={( value ) => setMetaAttribute( { email: { ...email, subject: value } } )}
+									onChange={( value ) => setMetaAttribute({ ...email, subject: value }, 'email' )}
 								/>
 								<TextControl
 									label={__( 'From Email', 'kadence-blocks' )}
 									value={( undefined !== email.fromEmail ? email.fromEmail : '' )}
-									onChange={( value ) => setMetaAttribute( { email: { ...email, fromEmail: value } } )}
+									onChange={( value ) => setMetaAttribute( { ...email, fromEmail: value },'email')}
 								/>
 								<TextControl
 									label={__( 'From Name', 'kadence-blocks' )}
 									value={( undefined !== email.fromName ? email.fromName : '' )}
-									onChange={( value ) => setMetaAttribute( { email: { ...email, fromName: value } } )}
+									onChange={( value ) => setMetaAttribute( { ...email, fromName: value }, 'email' )}
 								/>
 								<SelectControl
 									label={__( 'Reply To', 'kadence-blocks' )}
@@ -281,24 +281,24 @@ export function EditInner( props ) {
 										{ value: 'from_email', label: __( 'From Email', 'kadence-blocks' ) },
 									]}
 									onChange={value => {
-										setMetaAttribute( { email: { ...email, replyTo: value } } );
+										setMetaAttribute( { ...email, replyTo: value }, 'email' );
 									}}
 								/>
 								<TextControl
 									label={__( 'Cc', 'kadence-blocks' )}
 									value={( undefined !== email.cc ? email.cc : '' )}
-									onChange={( value ) => setMetaAttribute( { email: { ...email, cc: value } } )}
+									onChange={( value ) => setMetaAttribute( { ...email, cc: value }, 'email' )}
 								/>
 								<TextControl
 									label={__( 'Bcc', 'kadence-blocks' )}
 									value={( undefined !== email.bcc ? email.bcc : '' )}
-									onChange={( value ) => setMetaAttribute( { email: { ...email, bcc: value } } )}
+									onChange={( value ) => setMetaAttribute( { ...email, bcc: value }, 'email' )}
 								/>
 								<ToggleControl
 									label={__( 'Send as HTML email?', 'kadence-blocks' )}
 									help={__( 'If off plain text is used.', 'kadence-blocks' )}
 									checked={( undefined !== email.html ? email.html : true )}
-									onChange={( value ) => setMetaAttribute( { email: { ...email, html: value } } )}
+									onChange={( value ) => setMetaAttribute( { ...email, html: value }, 'email' )}
 								/>
 							</KadencePanelBody>
 						)}
@@ -312,7 +312,7 @@ export function EditInner( props ) {
 								<URLInputControl
 									label={__( 'Redirect to', 'kadence-blocks' )}
 									url={redirect}
-									onChangeUrl={value => setMetaAttribute( { redirect: value } )}
+									onChangeUrl={value => setMetaAttribute( value, 'redirect' )}
 									additionalControls={false}
 								/>
 							</KadencePanelBody>
@@ -322,7 +322,7 @@ export function EditInner( props ) {
 							<MailerLiteOptions
 								parentClientId={clientId}
 								settings={mailerlite}
-								save={( value ) => { setMetaAttribute( { mailerlite: { ...mailerlite, ...value } } ); }}
+								save={( value ) => { setMetaAttribute({ ...mailerlite, ...value }, 'mailerlite' ); }}
 							/>
 						)}
 
@@ -330,7 +330,7 @@ export function EditInner( props ) {
 							<FluentCrmOptions
 								parentClientId={clientId}
 								settings={fluentcrm}
-								save={( value ) => setMetaAttribute( { fluentcrm: { ...fluentcrm, ...value } } )}
+								save={( value ) => setMetaAttribute( { ...fluentcrm, ...value }, 'fluentcrm' )}
 							/>
 						)}
 
@@ -338,7 +338,7 @@ export function EditInner( props ) {
 							<SendinBlueOptions
 								parentClientId={clientId}
 								settings={sendinblue}
-								save={( value ) => setMetaAttribute( { sendinblue: { ...sendinblue, ...value } } )}
+								save={( value ) => setMetaAttribute( { ...sendinblue, ...value }, 'sendinblue' )}
 							/>
 						)}
 
@@ -346,7 +346,7 @@ export function EditInner( props ) {
 							<MailchimpOptions
 								parentClientId={clientId}
 								settings={mailchimp}
-								save={( value ) => setMetaAttribute( { mailchimp: { ...mailchimp, ...value } } )}
+								save={( value ) => setMetaAttribute( { ...mailchimp, ...value }, 'mailchimp' )}
 							/>
 						)}
 
@@ -354,7 +354,7 @@ export function EditInner( props ) {
 							<ConvertKitOptions
 								parentClientId={clientId}
 								settings={convertkit}
-								save={( value ) => setMetaAttribute( { convertkit: { ...convertkit, ...value } } )}
+								save={( value ) => setMetaAttribute( { ...convertkit, ...value }, 'convertkit' )}
 							/>
 						)}
 
@@ -362,7 +362,7 @@ export function EditInner( props ) {
 							<ActiveCampaignOptions
 								parentClientId={clientId}
 								settings={activecampaign}
-								save={( value ) => setMetaAttribute( { activecampaign: { ...activecampaign, ...value } } )}
+								save={( value ) => setMetaAttribute( { ...activecampaign, ...value }, 'activecampaign' )}
 							/>
 						)}
 
@@ -370,21 +370,21 @@ export function EditInner( props ) {
 							<WebhookOptions
 								parentClientId={clientId}
 								settings={webhook}
-								save={( value ) => setMetaAttribute( { webhook: { ...webhook, ...value } } )}
+								save={( value ) => setMetaAttribute( { ...webhook, ...value }, 'webhook' )}
 							/>
 						)}
 
 						{actions.includes( 'autoEmail' ) && (
 							<AutoEmailOptions
 								settings={autoEmail}
-								save={( value ) => setMetaAttribute( { autoEmail: { ...autoEmail, ...value } } )}
+								save={( value ) => setMetaAttribute( { ...autoEmail, ...value }, 'autoEmail' )}
 							/>
 						)}
 
 						{actions.includes( 'entry' ) && (
 							<DbEntryOptions
 								settings={entry}
-								save={( value ) => setMetaAttribute( { entry: { ...entry, ...value } } )}
+								save={( value ) => setMetaAttribute( { ...entry, ...value }, 'entry' )}
 							/>
 						)}
 
@@ -399,7 +399,7 @@ export function EditInner( props ) {
 							initialOpen={true}
 							panelName={'kb-form-field-styles'}
 						>
-							<FieldStyles saveStyle={saveStyle} style={style}/>
+							<FieldStyles setAttributes={setMetaAttribute} style={style}/>
 						</KadencePanelBody>
 
 						{/* Label Styles*/}
@@ -425,7 +425,7 @@ export function EditInner( props ) {
 							initialOpen={false}
 							panelName={'kb-form-submit-styles'}
 						>
-							<SubmitButtonStyles saveSubmit={saveSubmit} setAttributes={setMetaAttribute} submit={submit} submitFont={submitFont} submitMargin={submitMargin} submitLabel={submitLabel}/>
+							<SubmitButtonStyles setAttributes={setMetaAttribute} submit={submit} submitFont={submitFont} submitMargin={submitMargin} submitLabel={submitLabel}/>
 						</KadencePanelBody>
 
 						<KadencePanelBody
@@ -451,16 +451,16 @@ export function EditInner( props ) {
 								control={paddingControl}
 								tabletValue={paddingTablet}
 								mobileValue={paddingMobile}
-								onChange={( value ) => setMetaAttribute( { paddingDesktop: value } )}
-								onChangeTablet={( value ) => setMetaAttribute( { paddingTablet: value } )}
-								onChangeMobile={( value ) => setMetaAttribute( { paddingMobile: value } )}
+								onChange={( value ) => setMetaAttribute( value, 'paddingDesktop' )}
+								onChangeTablet={( value ) => setMetaAttribute( value, 'paddingTablet' )}
+								onChangeMobile={( value ) => setMetaAttribute( value, 'paddingMobile' )}
 								onChangeControl={( value ) => setPaddingControl( value )}
 								min={0}
 								max={( paddingUnit === 'em' || paddingUnit === 'rem' ? 24 : 200 )}
 								step={( paddingUnit === 'em' || paddingUnit === 'rem' ? 0.1 : 1 )}
 								unit={paddingUnit}
 								units={[ 'px', 'em', 'rem', '%' ]}
-								onUnit={( value ) => setMetaAttribute( { paddingUnit: value } )}
+								onUnit={( value ) => setMetaAttribute( value, 'paddingUnit' )}
 							/>
 							<ResponsiveMeasurementControls
 								label={__( 'Margin', 'kadence-blocks' )}
@@ -469,17 +469,17 @@ export function EditInner( props ) {
 								tabletValue={marginTablet}
 								mobileValue={marginMobile}
 								onChange={( value ) => {
-									setMetaAttribute( { marginDesktop: value } );
+									setMetaAttribute( value, 'marginDesktop' );
 								}}
-								onChangeTablet={( value ) => setMetaAttribute( { marginTablet: value } )}
-								onChangeMobile={( value ) => setMetaAttribute( { marginMobile: value } )}
+								onChangeTablet={( value ) => setMetaAttribute( value, 'marginTablet' )}
+								onChangeMobile={( value ) => setMetaAttribute( value, 'marginMobile' )}
 								onChangeControl={( value ) => setMarginControl( value )}
 								min={( marginUnit === 'em' || marginUnit === 'rem' ? -12 : -200 )}
 								max={( marginUnit === 'em' || marginUnit === 'rem' ? 24 : 200 )}
 								step={( marginUnit === 'em' || marginUnit === 'rem' ? 0.1 : 1 )}
 								unit={marginUnit}
 								units={[ 'px', 'em', 'rem', '%', 'vh' ]}
-								onUnit={( value ) => setMetaAttribute( { marginUnit: value } )}
+								onUnit={( value ) => setMetaAttribute( value, 'marginUnit' )}
 							/>
 						</KadencePanelBody>
 					</>
@@ -528,9 +528,9 @@ export function EditInner( props ) {
 					<RichText
 						tagName="div"
 						placeholder={__( 'Submit' )}
-						value={metaAttributes.submit.label}
+						value={submit.label}
 						onChange={value => {
-							saveSubmit( { label: value } );
+							setMetaAttribute( { ...submit, label: value }, 'submit' );
 						}}
 						allowedFormats={applyFilters( 'kadence.whitelist_richtext_formats', [ 'kadence/insert-dynamic', 'core/bold', 'core/italic', 'core/strikethrough', 'toolset/inline-field' ] )}
 						className={`kb-advanced-form-submit kb-button-size-${submit.size} kb-button-width-${submit.widthType}`}
@@ -576,6 +576,7 @@ function useFormProp( prop ) {
 
 function useFormMeta( key ) {
 	const [ meta, setMeta ] = useFormProp( 'meta' );
+
 	return [
 		meta[ key ],
 		useCallback(

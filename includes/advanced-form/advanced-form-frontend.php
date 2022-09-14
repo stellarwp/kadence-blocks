@@ -25,7 +25,7 @@ class AdvancedFormFrontend {
 	 */
 	public function render() {
 		$this->append_response( '<div class="wp-block-kadence-advanced-form wp-block-kadence-advanced-form' . $this->unique_id . '">' );
-		$this->append_response( '<form method="post">' );
+		$this->append_response( '<form method="post" class="kb-advanced-form">' );
 
 		if ( is_numeric( $this->post_id ) && 0 !== $this->post_id ) {
 			$this->append_response( '<input type="hidden" name="_kb_form_post_id" value="' . $this->post_id . '">' );

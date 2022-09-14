@@ -150,13 +150,12 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 		// Replace API key with default or users set key.
 		$user_google_maps_key = get_option( 'kadence_blocks_google_maps_api', '' );
 
+
 		if ( empty( $user_google_maps_key ) ) {
 			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', 'AIzaSyBAM2o7PiQqwk15LC1XRH2e_KJ-jUa7KYk', $content );
 		} else {
 			$content = str_replace( 'KADENCE_GOOGLE_MAPS_KEY', $user_google_maps_key, $content );
 		}
-
-		die('test');
 
 		$style_id = 'kb-google-maps' . esc_attr( $unique_id );
 		if ( ! wp_style_is( $style_id, 'enqueued' ) && apply_filters( 'kadence_blocks_render_inline_css', true, 'google_maps', $unique_id ) ) {
@@ -226,8 +225,8 @@ class Kadence_Blocks_Googlemaps_Block extends Kadence_Blocks_Abstract_Block {
 		}
 
 		$google_maps_api_key = get_option( 'kadence_blocks_google_maps_api',  'missingkey' );
-		wp_register_script( 'kadence-blocks-google-maps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array( 'kadence-blocks-google-maps-init-js' ), KADENCE_BLOCKS_VERSION, true );
-		wp_register_script( 'kadence-blocks-google-maps-init-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-google-maps.min.js', array(), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-googlemaps-js', 'https://maps.googleapis.com/maps/api/js?key=' . $google_maps_api_key . '&callback=kbInitMaps', array( 'kadence-blocks-google-maps-init-js' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-blocks-googlemaps-init-js', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-init-google-maps.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 	}
 
 
