@@ -178,7 +178,6 @@
 							if ( required[n].checked == false ){
 								error = true;
 								error_type = 'required';
-								console.log( 'here' );
 								// mark the error in the field.
 								window.kadenceAdvancedForm.markError( required[n], error_type, self );
 							}

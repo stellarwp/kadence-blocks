@@ -18,7 +18,11 @@ import {
 } from '@kadence/components';
 import { useState } from '@wordpress/element';
 
-export default function FieldStyles( { saveStyle, style } ) {
+export default function FieldStyles( { setAttributes, style } ) {
+
+	const saveStyle = ( value ) => {
+		setAttributes( { ...style, ...value }, 'style');
+	}
 
 	const btnSizes = [
 		{ key: 'small', name: __( 'S', 'kadence-blocks' ) },
@@ -619,15 +623,15 @@ export default function FieldStyles( { saveStyle, style } ) {
 				label={__( 'Field Row Gap', 'kadence-blocks' )}
 				value={( undefined !== style.rowGap ? style.rowGap : '' )}
 				onChange={value => {
-					saveStyle( { rowGap: value } );
+					saveStyle( { rowGap: value.toString() } );
 				}}
 				tabletValue={( undefined !== style.tabletRowGap ? style.tabletRowGap : '' )}
 				onChangeTablet={value => {
-					saveStyle( { tabletRowGap: value } );
+					saveStyle( { tabletRowGap: value.toString() } );
 				}}
 				mobileValue={( undefined !== style.mobileRowGap ? style.mobileRowGap : '' )}
 				onChangeMobile={value => {
-					saveStyle( { mobileRowGap: value } );
+					saveStyle( { mobileRowGap: value.toString() } );
 				}}
 				min={0}
 				max={100}

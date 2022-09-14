@@ -48,11 +48,11 @@ export default function SubmitActionOptions( { setAttributes, selectedActions } 
 
 		newItems.push( value );
 
-		setAttributes( { actions: newItems } );
+		setAttributes( newItems, 'actions' );
 	};
 
 	const removeAction = ( value ) => {
-		setAttributes( { actions: selectedActions.filter( item => item !== value ) } );
+		setAttributes( selectedActions.filter( item => item !== value ), 'actions' );
 	};
 
 	return (

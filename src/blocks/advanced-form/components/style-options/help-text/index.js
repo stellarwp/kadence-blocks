@@ -14,7 +14,7 @@ export default function HelpTextOptions( { setAttributes, helpFont } ) {
 	const [ labelMarginControl, setLabelMarginControl ] = useState( 'individual' );
 
 	const saveHelpFont = ( value ) => {
-		setAttributes( { helpFont: { ...helpFont, ...value } } );
+		setAttributes( { ...helpFont, ...value }, 'helpFont' );
 	};
 
 	return (
@@ -44,7 +44,7 @@ export default function HelpTextOptions( { setAttributes, helpFont } ) {
 			>
 				<TypographyControls
 					letterSpacing={helpFont.letterSpacing}
-					onLetterSpacing={( value ) => saveHelpFont( { letterSpacing: value } )}
+					onLetterSpacing={( value ) => saveHelpFont( { letterSpacing: value.toString() } )}
 					textTransform={helpFont.textTransform}
 					onTextTransform={( value ) => saveHelpFont( { textTransform: value } )}
 					fontFamily={helpFont.family}

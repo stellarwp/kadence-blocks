@@ -76,7 +76,7 @@ export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recap
 				label={ __( 'Enable Basic Honey Pot Spam Check', 'kadence-blocks' ) }
 				help={ __( 'This adds a hidden field that if filled out prevents the form from submitting.', 'kadence-blocks' ) }
 				checked={ honeyPot }
-				onChange={ ( value ) => setAttributes( { honeyPot: value } ) }
+				onChange={ ( value ) => setAttributes( value, 'honeyPot' ) }
 			/>
 
 			<hr/>
@@ -84,7 +84,7 @@ export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recap
 			<ToggleControl
 				label={ __( 'Enable Google reCAPTCHA', 'kadence-blocks' ) }
 				checked={ recaptcha }
-				onChange={ ( value ) => setAttributes( { recaptcha: value } ) }
+				onChange={ ( value ) => setAttributes( value, 'recaptcha' ) }
 			/>
 
 			{ recaptcha && (
@@ -98,7 +98,7 @@ export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recap
 								isSmall
 								isPrimary={ recaptchaVersion === 'v2' }
 								aria-pressed={ recaptchaVersion === 'v2' }
-								onClick={ () => setAttributes( { recaptchaVersion: 'v2' } ) }
+								onClick={ () => setAttributes( 'v2', 'recaptchaVersion' ) }
 							>
 								{ __( 'V2', 'kadence-blocks' ) }
 							</Button>
@@ -108,7 +108,7 @@ export default function SpamOptions( { setAttributes, honeyPot, recaptcha, recap
 								isSmall
 								isPrimary={ recaptchaVersion === 'v3' }
 								aria-pressed={ recaptchaVersion === 'v3' }
-								onClick={ () => setAttributes( { recaptchaVersion: 'v3' } ) }
+								onClick={ () => setAttributes( 'v3', 'recaptchaVersion' ) }
 							>
 								{ __( 'V3', 'kadence-blocks' ) }
 							</Button>

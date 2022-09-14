@@ -18,11 +18,11 @@ export default function LabelOptions( { setAttributes, styleAttribute, labelFont
 	const [ labelMarginControl, setLabelMarginControl ] = useState( 'individual' );
 
 	const saveLabelFont = ( value ) => {
-		setAttributes( { labelFont: { ...labelFont, ...value } } );
+		setAttributes( { ...labelFont, ...value }, 'labelFont' );
 	};
 
 	const saveStyle = ( value ) => {
-		setAttributes( { style: { ...styleAttribute, ...value } } );
+		setAttributes( { ...styleAttribute, ...value }, 'style' );
 	}
 
 	return (
@@ -67,7 +67,7 @@ export default function LabelOptions( { setAttributes, styleAttribute, labelFont
 			>
 				<TypographyControls
 					letterSpacing={labelFont.letterSpacing}
-					onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value } )}
+					onLetterSpacing={( value ) => saveLabelFont( { letterSpacing: value.toString() } )}
 					textTransform={labelFont.textTransform}
 					onTextTransform={( value ) => saveLabelFont( { textTransform: value } )}
 					fontFamily={labelFont.family}
