@@ -56,6 +56,9 @@ import {
 	RangeControl,
 	MeasurementControls,
 	IconPicker,
+	SubsectionWrap,
+	KadenceImageControl,
+	BackgroundTypeControl,
 	ResponsiveMeasurementControls,
 	ResponsiveRangeControls,
 	KadencePanelBody,
@@ -1092,577 +1095,502 @@ const ktrowUniqueIDs = [];
 			bgSlider = backgroundSlider;
 		}
 		return (
-			<Fragment>
-				<h2>{ __( 'Slide', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }</h2>
-				<div className="kt-inner-sub-section">
-					<PopColorControl
-						label={ __( 'Slide Background Color', 'kadence-blocks' ) }
-						value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : '' ) }
-						default={ '' }
-						onChange={ value => saveSlideItem( { bgColor: value }, index ) }
-					/>
-					{ ( undefined === bgSlider[ index ] || undefined === bgSlider[ index ].bgImg || '' === bgSlider[ index ].bgImg ) && (
-						<MediaUpload
-							onSelect={ img => {
-								saveSlideItem( {
-									bgImgID: img.id,
-									bgImg: img.url,
-								}, index );
-							} }
-							type="image"
-							value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' ) }
-							render={ ( { open } ) => (
-								<Button
-									className={ 'components-button components-icon-button kt-cta-upload-btn' }
-									onClick={ open }
-								>
-									<Dashicon icon="format-image" />
-									{ __( 'Slide Select Image', 'kadence-blocks' ) }
-								</Button>
-							) }
-						/>
-					) }
-					{ undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImg && (
-						<Fragment>
-							<MediaUpload
-								onSelect={ media => {
-									saveSlideItem( {
-										bgImgID: media.id,
-										bgImg: media.url,
-									}, index );
-								} }
-								type="image"
-								value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' ) }
-								allowedTypes={ [ 'image' ] }
-								render={ ( { open } ) => (
-									<Tooltip text={ __( 'Edit Image', 'kadence-blocks' ) }>
-										<Button
-											style={ {
-												backgroundImage: 'url("' + bgSlider[ index ].bgImg + '")',
-												backgroundSize: 'cover',
-											} }
-											className={ 'kb-sidebar-image' }
-											onClick={ open }
-										>
-											{ __( 'Edit Image' ) }
-										</Button>
-									</Tooltip>
-								) }
-							/>
-							<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
-								<Button
-									className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-									onClick={ () => {
-										saveSlideItem( {
-											bgImgID: '',
-											bgImg: '',
-										}, index );
-									} }
-								>
-									<Dashicon icon="no-alt" />
-								</Button>
-							</Tooltip>
-						</Fragment>
-					) }
-				</div>
-			</Fragment>
+			<SubsectionWrap
+				label={__( 'Slide', 'kadence-blocks' ) + ' ' + ( index + 1 ) + ' ' + __( 'Settings', 'kadence-blocks' ) }
+			>
+				<PopColorControl
+					label={ __( 'Slide Background Color', 'kadence-blocks' ) }
+					value={ ( undefined !== bgSlider && undefined !== bgSlider[ index ] && bgSlider[ index ].bgColor ? bgSlider[ index ].bgColor : '' ) }
+					default={ '' }
+					onChange={ value => saveSlideItem( { bgColor: value }, index ) }
+				/>
+				<KadenceImageControl
+					label={__( 'Slide Background Image', 'kadence-blocks' )}
+					hasImage={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? true : false )}
+					imageURL={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? bgSlider[ index ].bgImg : '' )}
+					imageID={( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImgID ? bgSlider[ index ].bgImgID : '' )}
+					onRemoveImage={() => {
+						saveSlideItem( {
+							bgImgID: '',
+							bgImg: '',
+						}, index );
+					} }
+					onSaveImage={ img => {
+						saveSlideItem( {
+							bgImgID: img.id,
+							bgImg: img.url,
+						}, index );
+					} }
+					disableMediaButtons={ ( bgSlider && bgSlider[ index ] && bgSlider[ index ].bgImg ? true : false ) }
+					setAttributes={setAttributes}
+					{...attributes}
+				/>
+			</SubsectionWrap>
 		);
 	};
 	const deskControls = (
-		<Fragment>
-			
-			{ showSettings( 'background', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Background Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-bg-settings' }
-				>
-					<TabPanel className="kt-inspect-tabs"
-						initialTabName={ backgroundSettingTab }
-						activeClass="active-tab"
-						onSelect={ onTabBackgroundSelect }
-						tabs={ [
-							{
-								name: 'normal',
-								title: <Dashicon icon="format-image" />,
-								className: 'kt-desk-tab',
-							},
-							{
-								name: 'slider',
-								title: <Dashicon icon="slides" />,
-								className: 'kt-tablet-tab',
-							},
-							{
-								name: 'video',
-								title: <Dashicon icon="format-video" />,
-								className: 'kt-mobile-tab',
-							},
-						] }>
-						{
-							( tab ) => {
-								let tabout;
-								if ( tab.name ) {
-									if ( 'slider' === tab.name ) {
-										tabout = (
-											<Fragment>
-												<RangeControl
-													label={ __( 'Background Slider Image Count', 'kadence-blocks' ) }
-													value={ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) }
-													onChange={ newcount => {
-														let newSlides;
-														if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
-															newSlides = [ {
-																bgColor: '',
-																bgImg: '',
-																bgImgID: '',
-															} ];
-														} else {
-															newSlides = backgroundSlider;
-														}
-														if ( newSlides.length < newcount ) {
-															const amount = Math.abs( newcount - newSlides.length );
-															{ times( amount, n => {
-																newSlides.push( {
-																	bgColor: '',
-																	bgImg: '',
-																	bgImgID: '',
-																} );
-															} ); }
-															setAttributes( { backgroundSlider: newSlides } );
-														}
-														setAttributes( { backgroundSliderCount: newcount } );
-													} }
-													step={ 1 }
-													min={ 1 }
-													max={ 20 }
-												/>
-												{ times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => slideControls( n ) ) }
-												<KadenceRadioButtons
-													label={ __( 'Slider Image Size', 'kadence-blocks' ) }
-													value={ bgImgSize }
-													options={ [
-														{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
-														{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
-														{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { bgImgSize: value } ) }
-												/>
-												<SelectControl
-													label={ __( 'Slider Image Position', 'kadence-blocks' ) }
-													value={ bgImgPosition }
-													options={ [
-														{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
-														{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
-														{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
-														{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
-														{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
-														{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
-														{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
-														{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
-														{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { bgImgPosition: value } ) }
-												/>
-												<KadenceRadioButtons
-													label={ __( 'Slider Image Repeat', 'kadence-blocks' ) }
-													value={ bgImgRepeat }
-													options={ [
-														{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
-														{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
-														{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
-														{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
-													] }
-													onChange={ value => setAttributes( { bgImgRepeat: value } ) }
-												/>
-												<ToggleControl
-													label={ __( 'Slider Auto Play', 'kadence-blocks' ) }
-													checked={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ) }
-													onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
-												/>
-												{ backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay && backgroundSliderSettings[ 0 ].autoPlay && (
-													<RangeControl
-														label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
-														value={ backgroundSliderSettings[ 0 ].speed }
-														onChange={ ( value ) => saveSliderSettings( { speed: value } ) }
-														min={ 500 }
-														max={ 15000 }
-														step={ 10 }
-													/>
-												) }
-												<SelectControl
-													label={ __( 'Transition Style', 'kadence-blocks' ) }
-													options={ [
-														{
-															label: __( 'Fade', 'kadence-blocks' ),
-															value: 'fade',
-														},
-														{
-															label: __( 'Slide', 'kadence-blocks' ),
-															value: 'slide',
-														},
-													] }
-													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && false === backgroundSliderSettings[ 0 ].fade ? 'slide' : 'fade' ) }
-													onChange={ ( value ) => {
-														if ( 'slide' === value ) {
-															saveSliderSettings( { fade: false } );
-														} else {
-															saveSliderSettings( { fade: true } );
-														}
-													} }
-												/>
-												<RangeControl
-													label={ __( 'Slider Transition Speed', 'kadence-blocks' ) }
-													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ) }
-													onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
-													min={ 100 }
-													max={ 2000 }
-													step={ 10 }
-												/>
-												<SelectControl
-													label={ __( 'Arrow Style', 'kadence-blocks' ) }
-													options={ [
-														{
-															label: __( 'White on Dark', 'kadence-blocks' ),
-															value: 'whiteondark',
-														},
-														{
-															label: __( 'Black on Light', 'kadence-blocks' ),
-															value: 'blackonlight',
-														},
-														{
-															label: __( 'Outline Black', 'kadence-blocks' ),
-															value: 'outlineblack',
-														},
-														{
-															label: __( 'Outline White', 'kadence-blocks' ),
-															value: 'outlinewhite',
-														},
-														{
-															label: __( 'None', 'kadence-blocks' ),
-															value: 'none',
-														},
-													] }
-													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) }
-													onChange={ ( value ) => saveSliderSettings( { arrowStyle: value } ) }
-												/>
-												<SelectControl
-													label={ __( 'Dot Style' ) }
-													options={ [
-														{
-															label: __( 'Dark', 'kadence-blocks' ),
-															value: 'dark',
-														},
-														{
-															label: __( 'Light', 'kadence-blocks' ),
-															value: 'light',
-														},
-														{
-															label: __( 'Outline Dark', 'kadence-blocks' ),
-															value: 'outlinedark',
-														},
-														{
-															label: __( 'Outline Light', 'kadence-blocks' ),
-															value: 'outlinelight',
-														},
-														{
-															label: __( 'None', 'kadence-blocks' ),
-															value: 'none',
-														},
-													] }
-													value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }
-													onChange={ ( value ) => saveSliderSettings( { dotStyle: value } ) }
-												/>
-											</Fragment>
-										);
-									} else if ( 'video' === tab.name ) {
-										tabout = (
-											<Fragment>
-												{/* <SelectControl
-													label={ __( 'Background Video Type' ) }
-													options={ [
-														{
-															label: __( 'Local (MP4)' ),
-															value: 'local',
-														},
-														{
-															label: __( 'YouTube' ),
-															value: 'youtube',
-														},
-														{
-															label: __( 'Vimeo' ),
-															value: 'vimeo',
-														},
-													] }
-													value={ backgroundVideoType }
-													onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
-												/> */}
-												{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
-													<Fragment>
-														<MediaUpload
-															onSelect={ video => {
-																saveVideoSettings( {
-																	localID: video.id,
-																	local: video.url,
-																} );
-															} }
-															type="video"
-															allowedTypes={ [ 'video' ] }
-															value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? backgroundVideo[ 0 ].localID : '' ) }
-															render={ ( { open } ) => (
-																<Button
-																	className={ 'components-button components-icon-button kt-cta-upload-btn' }
-																	onClick={ open }
-																>
-																	<Dashicon icon="format-image" />
-																	{ __( 'Select Video', 'kadence-blocks' ) }
-																</Button>
-															) }
-														/>
-														{ undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID && (
-															<Tooltip text={ __( 'Remove Video', 'kadence-blocks' ) }>
-																<Button
-																	className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-																	onClick={ () => {
-																		saveVideoSettings( {
-																			localID: '',
-																			local: '',
-																		} );
-																	} }
-																>
-																	<Dashicon icon="no-alt" />
-																</Button>
-															</Tooltip>
-														) }
-														<TextControl
-															label={ __( 'HTML5 Video File URL', 'kadence-blocks' ) }
-															value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
-															onChange={ value => saveVideoSettings( { local: value } ) }
-														/>
-													</Fragment>
-												) }
-												{ 'youtube' === backgroundVideoType && (
-													<TextControl
-														label={ __( 'YouTube ID ( example: Sv_hGITmNuo )', 'kadence-blocks' ) }
-														value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
-														onChange={ value => saveVideoSettings( { youtube: value } ) }
-													/>
-												) }
-												{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
-													<SelectControl
-														label={ __( 'Background Video Ratio', 'kadence-blocks' ) }
-														options={ [
-															{
-																label: __( '16 / 9' ),
-																value: '16/9',
-															},
-															{
-																label: __( '4 / 3' ),
-																value: '4/3',
-															},
-															{
-																label: __( '3 / 2' ),
-																value: '3/2',
-															},
-														] }
-														value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].ratio ? backgroundVideo[ 0 ].ratio : '16/9' ) }
-														onChange={ ( value ) => saveVideoSettings( { ratio: value } ) }
-													/>
-												) }
-												<ToggleControl
-													label={ __( 'Mute Video', 'kadence-blocks' ) }
-													checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].mute ? backgroundVideo[ 0 ].mute : true ) }
-													onChange={ ( value ) => saveVideoSettings( { mute: value } ) }
-												/>
-												<ToggleControl
-													label={ __( 'Loop Video', 'kadence-blocks' ) }
-													checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
-													onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
-												/>
-												<ToggleControl
-													label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
-													checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
-													onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
-												/>
-												<PopColorControl
-													label={ __( 'Background Color', 'kadence-blocks' ) }
-													value={ ( bgColor ? bgColor : '' ) }
-													default={ '' }
-													onChange={ value => setAttributes( { bgColor: value } ) }
-													onClassChange={ value => setAttributes( { bgColorClass: value } ) }
-												/>
-												<MediaUpload
-													onSelect={ onSelectImage }
-													type="image"
-													value={ bgImgID }
-													render={ ( { open } ) => (
-														<Button
-															className={ 'components-button components-icon-button kt-cta-upload-btn' }
-															onClick={ open }
-														>
-															<Dashicon icon="format-image" />
-															{ __( 'Select Video Poster', 'kadence-blocks' ) }
-														</Button>
-													) }
-												/>
-												{ bgImg && (
-													<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
-														<Button
-															className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
-															onClick={ onRemoveImage }
-														>
-															<Dashicon icon="no-alt" />
-														</Button>
-													</Tooltip>
-												) }
-											</Fragment>
-										);
-									} else {
-										tabout = (
-											<Fragment>
-												<PopColorControl
-													label={ __( 'Background Color', 'kadence-blocks' ) }
-													value={ ( bgColor ? bgColor : '' ) }
-													default={ '' }
-													onChange={ value => setAttributes( { bgColor: value } ) }
-													onClassChange={ value => setAttributes( { bgColorClass: value } ) }
-												/>
-												<KadenceBackgroundControl
-													label={ __( 'Background Image', 'kadence-blocks' ) }
-													hasImage={ bgImg }
-													imageURL={ bgImg }
-													imageID={ bgImgID }
-													imagePosition={ ( bgImgPosition ? bgImgPosition : 'center center' ) }
-													imageSize={ ( bgImgSize ? bgImgSize : 'cover' ) }
-													imageRepeat={ ( bgImgRepeat ? bgImgRepeat : 'no-repeat' ) }
-													imageAttachment={ ( bgImgAttachment ? bgImgAttachment : 'scroll' ) }
-													imageAttachmentParallax={ true }
-													onRemoveImage={ onRemoveImage }
-													onSaveImage={ ( img ) => {
-														setAttributes( {
-															bgImgID: img.id,
-															bgImg: img.url,
-														} );
-													} }
-													onSaveURL={ ( newURL ) => {
-														if ( newURL !== bgImg ) {
-															setAttributes( {
-																bgImgID: undefined,
-																bgImg: newURL,
-															} );
-														}
-													} }
-													onSavePosition={ value => setAttributes( { bgImgPosition: value } ) }
-													onSaveSize={ value => setAttributes( { bgImgSize: value } ) }
-													onSaveRepeat={ value => setAttributes( { bgImgRepeat: value } ) }
-													onSaveAttachment={ value => setAttributes( { bgImgAttachment: value } ) }
-													inlineImage={ backgroundInline }
-													onSaveInlineImage={ ( value ) => setAttributes( { backgroundInline: value } ) }
-													disableMediaButtons={ bgImg }
-													dynamicAttribute="bgImg"
-													isSelected={ isSelected }
-													attributes={ attributes }
-													setAttributes={ setAttributes }
-													name={ 'kadence/rowlayout' }
-													clientId={ clientId }
-												/>
-											</Fragment>
-										);
-									}
-								}
-								return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+		<>
+			<BackgroundTypeControl
+				label={ __( 'Type', 'kadence-blocks' ) }
+				type={ backgroundSettingTab }
+				onTypeChange={ ( value ) => {
+					setAttributes( { backgroundSettingTab: value } );
+				} }
+			/>
+			{ 'slider' === backgroundSettingTab && (
+				<>
+					<RangeControl
+						label={ __( 'Slider Item Count', 'kadence-blocks' ) }
+						value={ ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ) }
+						onChange={ newcount => {
+							let newSlides;
+							if ( undefined === backgroundSlider || ( undefined !== backgroundSlider && undefined === backgroundSlider[ 0 ] ) ) {
+								newSlides = [ {
+									bgColor: '',
+									bgImg: '',
+									bgImgID: '',
+								} ];
+							} else {
+								newSlides = backgroundSlider;
 							}
-						}
-					</TabPanel>
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'backgroundOverlay', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-bg-overlay' }
-				>
-					<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
-						activeClass="active-tab"
-						initialTabName={ currentOverlayTab }
-						onSelect={ onOverlayTabSelect }
-						tabs={ [
-							{
-								name: 'normal',
-								title: __( 'Normal', 'kadence-blocks' ),
-								className: 'kt-over-normal',
-							},
-							{
-								name: 'grad',
-								title: __( 'Gradient', 'kadence-blocks' ),
-								className: 'kt-over-grad',
-							},
-						] }>
-						{
-							( tab ) => {
-								let tabout;
-								if ( tab.name ) {
-									if ( 'grad' === tab.name ) {
-										tabout = overGradControls;
-									} else {
-										tabout = overControls;
-									}
-								}
-								return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+							if ( newSlides.length < newcount ) {
+								const amount = Math.abs( newcount - newSlides.length );
+								{ times( amount, n => {
+									newSlides.push( {
+										bgColor: '',
+										bgImg: '',
+										bgImgID: '',
+									} );
+								} ); }
+								setAttributes( { backgroundSlider: newSlides } );
 							}
-						}
-					</TabPanel>
-				</KadencePanelBody>
-			) }
-			{ showSettings( 'border', 'kadence/rowlayout' ) && (
-				<KadencePanelBody
-					title={ __( 'Border Settings', 'kadence-blocks' ) }
-					initialOpen={ false }
-					panelName={ 'kb-row-border-settings' }
-				>
-					<PopColorControl
-						label={ __( 'Border Color', 'kadence-blocks' ) }
-						value={ ( border ? border : '' ) }
-						default={ '' }
-						onChange={ value => setAttributes( { border: value } ) }
-					/>
-					<MeasurementControls
-						label={ __( 'Border Width', 'kadence-blocks' ) }
-						measurement={ borderWidth }
-						onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
-						control={ borderWidthControl }
-						onControl={ ( value ) => setBorderWidthControl( value ) }
-						min={ 0 }
-						max={ 40 }
+							setAttributes( { backgroundSliderCount: newcount } );
+						} }
 						step={ 1 }
-						allowEmpty={ true }
-						unit={ 'px' }
-						units={ [ 'px' ] }
-						showUnit={ true }
-						preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
+						min={ 1 }
+						max={ 20 }
 					/>
-					<MeasurementControls
-						label={ __( 'Border Radius', 'kadence-blocks' ) }
-						measurement={ borderRadius }
-						control={ borderRadiusControl }
-						onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
-						onControl={ ( value ) => setBorderRadiusControl( value ) }
-						min={ 0 }
-						max={ 500 }
-						step={ 1 }
-						allowEmpty={ true }
-						controlTypes={ [
-							{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
-							{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+					{ times( ( undefined !== backgroundSliderCount ? backgroundSliderCount : 1 ), n => slideControls( n ) ) }
+					<KadenceRadioButtons
+						label={ __( 'Slider Image Size', 'kadence-blocks' ) }
+						value={ bgImgSize }
+						options={ [
+							{ value: 'cover', label: __( 'Cover', 'kadence-blocks' ) },
+							{ value: 'contain', label: __( 'Contain', 'kadence-blocks' ) },
+							{ value: 'auto', label: __( 'Auto', 'kadence-blocks' ) },
 						] }
-						firstIcon={ topLeftIcon }
-						secondIcon={ topRightIcon }
-						thirdIcon={ bottomRightIcon }
-						fourthIcon={ bottomLeftIcon }
+						onChange={ value => setAttributes( { bgImgSize: value } ) }
 					/>
-				</KadencePanelBody>
+					<SelectControl
+						label={ __( 'Slider Image Position', 'kadence-blocks' ) }
+						value={ bgImgPosition }
+						options={ [
+							{ value: 'center top', label: __( 'Center Top', 'kadence-blocks' ) },
+							{ value: 'center center', label: __( 'Center Center', 'kadence-blocks' ) },
+							{ value: 'center bottom', label: __( 'Center Bottom', 'kadence-blocks' ) },
+							{ value: 'left top', label: __( 'Left Top', 'kadence-blocks' ) },
+							{ value: 'left center', label: __( 'Left Center', 'kadence-blocks' ) },
+							{ value: 'left bottom', label: __( 'Left Bottom', 'kadence-blocks' ) },
+							{ value: 'right top', label: __( 'Right Top', 'kadence-blocks' ) },
+							{ value: 'right center', label: __( 'Right Center', 'kadence-blocks' ) },
+							{ value: 'right bottom', label: __( 'Right Bottom', 'kadence-blocks' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgPosition: value } ) }
+					/>
+					<KadenceRadioButtons
+						label={ __( 'Slider Image Repeat', 'kadence-blocks' ) }
+						value={ bgImgRepeat }
+						options={ [
+							{ value: 'no-repeat', label: __( 'No Repeat', 'kadence-blocks' ) },
+							{ value: 'repeat', label: __( 'Repeat', 'kadence-blocks' ) },
+							{ value: 'repeat-x', label: __( 'Repeat-x', 'kadence-blocks' ) },
+							{ value: 'repeat-y', label: __( 'Repeat-y', 'kadence-blocks' ) },
+						] }
+						onChange={ value => setAttributes( { bgImgRepeat: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Slider Auto Play', 'kadence-blocks' ) }
+						checked={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay ? backgroundSliderSettings[ 0 ].autoPlay : true ) }
+						onChange={ ( value ) => saveSliderSettings( { autoPlay: value } ) }
+					/>
+					{ backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].autoPlay && backgroundSliderSettings[ 0 ].autoPlay && (
+						<RangeControl
+							label={ __( 'Autoplay Speed', 'kadence-blocks' ) }
+							value={ backgroundSliderSettings[ 0 ].speed }
+							onChange={ ( value ) => saveSliderSettings( { speed: value } ) }
+							min={ 500 }
+							max={ 15000 }
+							step={ 10 }
+						/>
+					) }
+					<SelectControl
+						label={ __( 'Transition Style', 'kadence-blocks' ) }
+						options={ [
+							{
+								label: __( 'Fade', 'kadence-blocks' ),
+								value: 'fade',
+							},
+							{
+								label: __( 'Slide', 'kadence-blocks' ),
+								value: 'slide',
+							},
+						] }
+						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].fade && false === backgroundSliderSettings[ 0 ].fade ? 'slide' : 'fade' ) }
+						onChange={ ( value ) => {
+							if ( 'slide' === value ) {
+								saveSliderSettings( { fade: false } );
+							} else {
+								saveSliderSettings( { fade: true } );
+							}
+						} }
+					/>
+					<RangeControl
+						label={ __( 'Slider Transition Speed', 'kadence-blocks' ) }
+						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].tranSpeed ? backgroundSliderSettings[ 0 ].tranSpeed : 400 ) }
+						onChange={ ( value ) => saveSliderSettings( { tranSpeed: value } ) }
+						min={ 100 }
+						max={ 2000 }
+						step={ 10 }
+					/>
+					<SelectControl
+						label={ __( 'Arrow Style', 'kadence-blocks' ) }
+						options={ [
+							{
+								label: __( 'White on Dark', 'kadence-blocks' ),
+								value: 'whiteondark',
+							},
+							{
+								label: __( 'Black on Light', 'kadence-blocks' ),
+								value: 'blackonlight',
+							},
+							{
+								label: __( 'Outline Black', 'kadence-blocks' ),
+								value: 'outlineblack',
+							},
+							{
+								label: __( 'Outline White', 'kadence-blocks' ),
+								value: 'outlinewhite',
+							},
+							{
+								label: __( 'None', 'kadence-blocks' ),
+								value: 'none',
+							},
+						] }
+						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].arrowStyle ? backgroundSliderSettings[ 0 ].arrowStyle : 'none' ) }
+						onChange={ ( value ) => saveSliderSettings( { arrowStyle: value } ) }
+					/>
+					<SelectControl
+						label={ __( 'Dot Style' ) }
+						options={ [
+							{
+								label: __( 'Dark', 'kadence-blocks' ),
+								value: 'dark',
+							},
+							{
+								label: __( 'Light', 'kadence-blocks' ),
+								value: 'light',
+							},
+							{
+								label: __( 'Outline Dark', 'kadence-blocks' ),
+								value: 'outlinedark',
+							},
+							{
+								label: __( 'Outline Light', 'kadence-blocks' ),
+								value: 'outlinelight',
+							},
+							{
+								label: __( 'None', 'kadence-blocks' ),
+								value: 'none',
+							},
+						] }
+						value={ ( backgroundSliderSettings && backgroundSliderSettings[ 0 ] && undefined !== backgroundSliderSettings[ 0 ].dotStyle ? backgroundSliderSettings[ 0 ].dotStyle : 'dark' ) }
+						onChange={ ( value ) => saveSliderSettings( { dotStyle: value } ) }
+					/>
+				</>
 			) }
-		</Fragment>
+			{ 'video' === backgroundSettingTab && (
+				<>
+					{/* <SelectControl
+						label={ __( 'Background Video Type' ) }
+						options={ [
+							{
+								label: __( 'Local (MP4)' ),
+								value: 'local',
+							},
+							{
+								label: __( 'YouTube' ),
+								value: 'youtube',
+							},
+							{
+								label: __( 'Vimeo' ),
+								value: 'vimeo',
+							},
+						] }
+						value={ backgroundVideoType }
+						onChange={ ( value ) => setAttributes( { backgroundVideoType: value } ) }
+					/> */}
+					{ ( undefined === backgroundVideoType || 'local' === backgroundVideoType ) && (
+						<Fragment>
+							<MediaUpload
+								onSelect={ video => {
+									saveVideoSettings( {
+										localID: video.id,
+										local: video.url,
+									} );
+								} }
+								type="video"
+								allowedTypes={ [ 'video' ] }
+								value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID ? backgroundVideo[ 0 ].localID : '' ) }
+								render={ ( { open } ) => (
+									<Button
+										className={ 'components-button components-icon-button kt-cta-upload-btn' }
+										onClick={ open }
+									>
+										<Dashicon icon="format-image" />
+										{ __( 'Select Video', 'kadence-blocks' ) }
+									</Button>
+								) }
+							/>
+							{ undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].localID && (
+								<Tooltip text={ __( 'Remove Video', 'kadence-blocks' ) }>
+									<Button
+										className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+										onClick={ () => {
+											saveVideoSettings( {
+												localID: '',
+												local: '',
+											} );
+										} }
+									>
+										<Dashicon icon="no-alt" />
+									</Button>
+								</Tooltip>
+							) }
+							<TextControl
+								label={ __( 'HTML5 Video File URL', 'kadence-blocks' ) }
+								value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].local ? backgroundVideo[ 0 ].local : '' ) }
+								onChange={ value => saveVideoSettings( { local: value } ) }
+							/>
+						</Fragment>
+					) }
+					{ 'youtube' === backgroundVideoType && (
+						<TextControl
+							label={ __( 'YouTube ID ( example: Sv_hGITmNuo )', 'kadence-blocks' ) }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && backgroundVideo[ 0 ].youtube ? backgroundVideo[ 0 ].youtube : '' ) }
+							onChange={ value => saveVideoSettings( { youtube: value } ) }
+						/>
+					) }
+					{ undefined !== backgroundVideoType && 'local' !== backgroundVideoType && (
+						<SelectControl
+							label={ __( 'Background Video Ratio', 'kadence-blocks' ) }
+							options={ [
+								{
+									label: __( '16 / 9' ),
+									value: '16/9',
+								},
+								{
+									label: __( '4 / 3' ),
+									value: '4/3',
+								},
+								{
+									label: __( '3 / 2' ),
+									value: '3/2',
+								},
+							] }
+							value={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].ratio ? backgroundVideo[ 0 ].ratio : '16/9' ) }
+							onChange={ ( value ) => saveVideoSettings( { ratio: value } ) }
+						/>
+					) }
+					<ToggleControl
+						label={ __( 'Mute Video', 'kadence-blocks' ) }
+						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].mute ? backgroundVideo[ 0 ].mute : true ) }
+						onChange={ ( value ) => saveVideoSettings( { mute: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Loop Video', 'kadence-blocks' ) }
+						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].loop ? backgroundVideo[ 0 ].loop : true ) }
+						onChange={ ( value ) => saveVideoSettings( { loop: value } ) }
+					/>
+					<ToggleControl
+						label={ __( 'Show Play Pause Buttons?', 'kadence-blocks' ) }
+						checked={ ( undefined !== backgroundVideo && undefined !== backgroundVideo[ 0 ] && undefined !== backgroundVideo[ 0 ].btns ? backgroundVideo[ 0 ].btns : true ) }
+						onChange={ ( value ) => saveVideoSettings( { btns: value } ) }
+					/>
+					<PopColorControl
+						label={ __( 'Background Color', 'kadence-blocks' ) }
+						value={ ( bgColor ? bgColor : '' ) }
+						default={ '' }
+						onChange={ value => setAttributes( { bgColor: value } ) }
+						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
+					/>
+					<MediaUpload
+						onSelect={ onSelectImage }
+						type="image"
+						value={ bgImgID }
+						render={ ( { open } ) => (
+							<Button
+								className={ 'components-button components-icon-button kt-cta-upload-btn' }
+								onClick={ open }
+							>
+								<Dashicon icon="format-image" />
+								{ __( 'Select Video Poster', 'kadence-blocks' ) }
+							</Button>
+						) }
+					/>
+					{ bgImg && (
+						<Tooltip text={ __( 'Remove Image', 'kadence-blocks' ) }>
+							<Button
+								className={ 'components-button components-icon-button kt-remove-img kt-cta-upload-btn' }
+								onClick={ onRemoveImage }
+							>
+								<Dashicon icon="no-alt" />
+							</Button>
+						</Tooltip>
+					) }
+				</>
+			) }
+			{ 'normal' === backgroundSettingTab && (
+				<>
+					<PopColorControl
+						label={ __( 'Background Color', 'kadence-blocks' ) }
+						value={ ( bgColor ? bgColor : '' ) }
+						default={ '' }
+						onChange={ value => setAttributes( { bgColor: value } ) }
+						onClassChange={ value => setAttributes( { bgColorClass: value } ) }
+					/>
+					<KadenceBackgroundControl
+						label={ __( 'Background Image', 'kadence-blocks' ) }
+						hasImage={ bgImg }
+						imageURL={ bgImg }
+						imageID={ bgImgID }
+						imagePosition={ ( bgImgPosition ? bgImgPosition : 'center center' ) }
+						imageSize={ ( bgImgSize ? bgImgSize : 'cover' ) }
+						imageRepeat={ ( bgImgRepeat ? bgImgRepeat : 'no-repeat' ) }
+						imageAttachment={ ( bgImgAttachment ? bgImgAttachment : 'scroll' ) }
+						imageAttachmentParallax={ true }
+						onRemoveImage={ onRemoveImage }
+						onSaveImage={ ( img ) => {
+							setAttributes( {
+								bgImgID: img.id,
+								bgImg: img.url,
+							} );
+						} }
+						onSaveURL={ ( newURL ) => {
+							if ( newURL !== bgImg ) {
+								setAttributes( {
+									bgImgID: undefined,
+									bgImg: newURL,
+								} );
+							}
+						} }
+						onSavePosition={ value => setAttributes( { bgImgPosition: value } ) }
+						onSaveSize={ value => setAttributes( { bgImgSize: value } ) }
+						onSaveRepeat={ value => setAttributes( { bgImgRepeat: value } ) }
+						onSaveAttachment={ value => setAttributes( { bgImgAttachment: value } ) }
+						inlineImage={ backgroundInline }
+						onSaveInlineImage={ ( value ) => setAttributes( { backgroundInline: value } ) }
+						disableMediaButtons={ bgImg }
+						dynamicAttribute="bgImg"
+						isSelected={ isSelected }
+						attributes={ attributes }
+						setAttributes={ setAttributes }
+						name={ 'kadence/rowlayout' }
+						clientId={ clientId }
+					/>
+				</>
+			)}
+		</>
 	);
+const deskOverlayControls = (
+	<Fragment>
+		{ showSettings( 'backgroundOverlay', 'kadence/rowlayout' ) && (
+			<KadencePanelBody
+				title={ __( 'Background Overlay Settings', 'kadence-blocks' ) }
+				initialOpen={ false }
+				panelName={ 'kb-row-bg-overlay' }
+			>
+				<TabPanel className="kt-inspect-tabs kt-gradient-tabs"
+					activeClass="active-tab"
+					initialTabName={ currentOverlayTab }
+					onSelect={ onOverlayTabSelect }
+					tabs={ [
+						{
+							name: 'normal',
+							title: __( 'Normal', 'kadence-blocks' ),
+							className: 'kt-over-normal',
+						},
+						{
+							name: 'grad',
+							title: __( 'Gradient', 'kadence-blocks' ),
+							className: 'kt-over-grad',
+						},
+					] }>
+					{
+						( tab ) => {
+							let tabout;
+							if ( tab.name ) {
+								if ( 'grad' === tab.name ) {
+									tabout = overGradControls;
+								} else {
+									tabout = overControls;
+								}
+							}
+							return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
+						}
+					}
+				</TabPanel>
+			</KadencePanelBody>
+		) }
+		{ showSettings( 'border', 'kadence/rowlayout' ) && (
+			<KadencePanelBody
+				title={ __( 'Border Settings', 'kadence-blocks' ) }
+				initialOpen={ false }
+				panelName={ 'kb-row-border-settings' }
+			>
+				<PopColorControl
+					label={ __( 'Border Color', 'kadence-blocks' ) }
+					value={ ( border ? border : '' ) }
+					default={ '' }
+					onChange={ value => setAttributes( { border: value } ) }
+				/>
+				<MeasurementControls
+					label={ __( 'Border Width', 'kadence-blocks' ) }
+					measurement={ borderWidth }
+					onChange={ ( value ) => setAttributes( { borderWidth: value } ) }
+					control={ borderWidthControl }
+					onControl={ ( value ) => setBorderWidthControl( value ) }
+					min={ 0 }
+					max={ 40 }
+					step={ 1 }
+					allowEmpty={ true }
+					unit={ 'px' }
+					units={ [ 'px' ] }
+					showUnit={ true }
+					preset={ [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ] }
+				/>
+				<MeasurementControls
+					label={ __( 'Border Radius', 'kadence-blocks' ) }
+					measurement={ borderRadius }
+					control={ borderRadiusControl }
+					onChange={ ( value ) => setAttributes( { borderRadius: value } ) }
+					onControl={ ( value ) => setBorderRadiusControl( value ) }
+					min={ 0 }
+					max={ 500 }
+					step={ 1 }
+					allowEmpty={ true }
+					controlTypes={ [
+						{ key: 'linked', name: __( 'Linked', 'kadence-blocks' ), icon: radiusLinkedIcon },
+						{ key: 'individual', name: __( 'Individual', 'kadence-blocks' ), icon: radiusIndividualIcon },
+					] }
+					firstIcon={ topLeftIcon }
+					secondIcon={ topRightIcon }
+					thirdIcon={ bottomRightIcon }
+					fourthIcon={ bottomLeftIcon }
+				/>
+			</KadencePanelBody>
+		) }
+	</Fragment>
+);
 	const overControls = (
 		<Fragment>
 			<RangeControl
@@ -2491,11 +2419,27 @@ const ktrowUniqueIDs = [];
 					) }
 					{ ( activeTab === 'style' ) && (
 						<>
+						{ showSettings( 'background', 'kadence/rowlayout' ) && (
+							<KadencePanelBody
+								title={ __( 'Background Settings', 'kadence-blocks' ) }
+								initialOpen={ true }
+								panelName={ 'kb-row-bg-settings' }
+							>
+								<SmallResponsiveControl
+									label={__( 'Background', 'kadence-blocks' )}
+									hasPadding={ true }
+									desktopChildren={ deskControls }
+									tabletChildren={<div className="kt-sidebar-settings-spacer"></div>}
+									mobileChildren={<div className="kt-sidebar-settings-spacer"></div>}
+								/>
+							</KadencePanelBody>
+						) }
 							<ResponsiveControl
-								desktopChildren={ deskControls }
+								desktopChildren={ deskOverlayControls }
 								tabletChildren={ tabletControls }
 								mobileChildren={ mobileControls }
 							/>
+							<div className="kt-sidebar-settings-spacer"></div>
 							{ showSettings( 'textColor', 'kadence/rowlayout' ) && (
 								colorControls
 							) }
@@ -2567,94 +2511,29 @@ const ktrowUniqueIDs = [];
 											] }
 											onChange={ value => setAttributes( { htmlTag: value } ) }
 										/>
-										<div class="row-min-height-settings">
-											<ButtonGroup className="kt-size-type-options" aria-label={ __( 'Min Height Type', 'kadence-blocks' ) }>
-												{ map( heightTypes, ( { name, key } ) => (
-													<Button
-														key={ key }
-														className="kt-size-btn"
-														isSmall
-														isPrimary={ minHeightUnit === key }
-														aria-pressed={ minHeightUnit === key }
-														onClick={ () => setAttributes( { minHeightUnit: key } ) }
-													>
-														{ name }
-													</Button>
-												) ) }
-											</ButtonGroup>
-											<h2 className="kt-heading-size-title">{ __( 'Minimum Height', 'kadence-blocks' ) }</h2>
-											<TabPanel className="kt-size-tabs"
-												activeClass="active-tab"
-												tabs={ [
-													{
-														name: 'desk',
-														title: <Dashicon icon="desktop" />,
-														className: 'kt-desk-tab',
-													},
-													{
-														name: 'tablet',
-														title: <Dashicon icon="tablet" />,
-														className: 'kt-tablet-tab',
-													},
-													{
-														name: 'mobile',
-														title: <Dashicon icon="smartphone" />,
-														className: 'kt-mobile-tab',
-													},
-												] }>
-												{
-													( tab ) => {
-														let tabout;
-														if ( tab.name ) {
-															if ( 'mobile' === tab.name ) {
-																tabout = (
-																	<RangeControl
-																		label={ __( 'Mobile Min Height', 'kadence-blocks' ) }
-																		value={ minHeightMobile }
-																		onChange={ ( value ) => {
-																			setAttributes( {
-																				minHeightMobile: value,
-																			} );
-																		} }
-																		min={ 0 }
-																		max={ heightMax }
-																	/>
-																);
-															} else if ( 'tablet' === tab.name ) {
-																tabout = (
-																	<RangeControl
-																		label={ __( 'Tablet Min Height', 'kadence-blocks' ) }
-																		value={ minHeightTablet }
-																		onChange={ ( value ) => {
-																			setAttributes( {
-																				minHeightTablet: value,
-																			} );
-																		} }
-																		min={ 0 }
-																		max={ heightMax }
-																	/>
-																);
-															} else {
-																tabout = (
-																	<RangeControl
-																		label={ __( 'Min Height', 'kadence-blocks' ) }
-																		value={ minHeight }
-																		onChange={ ( value ) => {
-																			setAttributes( {
-																				minHeight: value,
-																			} );
-																		} }
-																		min={ 0 }
-																		max={ heightMax }
-																	/>
-																);
-															}
-														}
-														return <div className={ tab.className } key={ tab.className }>{ tabout }</div>;
-													}
-												}
-											</TabPanel>
-										</div>
+										<ResponsiveRangeControls
+											label={ __( 'Minimum Height', 'kadence-blocks' ) }
+											value={ minHeight ? minHeight : '' }
+											onChange={ value => {
+												setAttributes( { minHeight: value } );
+											} }
+											tabletValue={ ( undefined !== minHeightTablet ? minHeightTablet : '' ) }
+											onChangeTablet={ ( value ) => {
+												setAttributes( { minHeightTablet: value } );
+											} }
+											mobileValue={ ( undefined !== minHeightMobile ? minHeightMobile : '' ) }
+											onChangeMobile={ ( value ) => {
+												setAttributes( { minHeightMobile: value } );
+											} }
+											min={ 0 }
+											max={ ( minHeightUnit === 'px' ? 2000 : 200 ) }
+											step={ 1 }
+											unit={ minHeightUnit ? minHeightUnit : 'px' }
+											onUnit={ ( value ) => {
+												setAttributes( { minHeightUnit: value } );
+											} }
+											units={ [ 'px', 'vw', 'vh' ] }
+										/>
 										<ToggleControl
 											label={ __( 'Inner Column Height 100%', 'kadence-blocks' ) }
 											checked={ ( undefined !== columnsInnerHeight ? columnsInnerHeight : false ) }
