@@ -16,12 +16,14 @@ export { default as DynamicBackgroundControl } from './dynamic-background-contro
 export { default as DynamicGalleryControl } from './dynamic-gallery-control';
 export { default as DropShadowControl } from './drop-shadow-control';
 export { default as BackgroundControl } from './background-control';
+export { default as BackgroundTypeControl } from './background-type-control';
 export { default as KadenceFocalPicker } from './focal-picker';
 export { default as KadenceRadioButtons } from './common/radio-buttons';
 export { default as KadenceMediaPlaceholder } from './common/media-placeholder';
 export { default as ImageSizeControl } from './common/image-size-controls';
 export { default as VerticalAlignmentIcon } from './common/vertical-align-icon';
 export { default as KadenceImageControl } from './common/image-controls';
+export { default as SubsectionWrap } from './common/subsection-wrap';
 export { default as KadencePanelBody } from './panel-body';
 export { default as KadenceSelectTerms } from './select-terms-control';
 export { default as SmallResponsiveControl } from './small-responsive-control';

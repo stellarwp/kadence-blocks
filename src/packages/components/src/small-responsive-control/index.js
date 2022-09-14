@@ -27,6 +27,7 @@ export default function SmallResponsiveControl( {
 		desktopChildren,
 		tabletChildren,
 		mobileChildren,
+		hasPadding = false,
 	} ) {
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 	const theDevice = useSelect( ( select ) => {
@@ -71,7 +72,7 @@ export default function SmallResponsiveControl( {
 		desktopChildren
 	);
 	return (
-		<div className={ 'components-base-control kb-small-responsive-control' }>
+		<div className={ `components-base-control kb-small-responsive-control${ hasPadding ? ' responsive-title-area-spacing' : '' }` }>
 			<div className="kadence-title-bar">
 				{ label && (
 					<span className="kadence-control-title">{ label }</span>
