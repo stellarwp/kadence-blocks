@@ -12,6 +12,10 @@ import {
 	ButtonGroup,
 } from '@wordpress/components';
 /**
+ * WordPress dependencies
+ */
+ import { useInstanceId } from '@wordpress/compose';
+/**
  * Build the Measure controls
  * @returns {object} Measure settings.
  */
@@ -25,12 +29,19 @@ export default function KadenceRadioButtons( {
 		wrap=false,
 		...props
 	} ) {
+		const instanceId = useInstanceId( KadenceRadioButtons );
+		const id = `inspector-radio-control-${ instanceId }`;
 	return (
-		<div className={ `kadence-radio-buttons-wrap${ className ? ' ' + className : '' }` }>
+		<div className={ `components-base-control kadence-radio-buttons-wrap${ className ? ' ' + className : '' }` }>
 			{ label && (
-				<h2>{ label }</h2>
+				<label
+					htmlFor={ id }
+					className="kadence-radio-control-label components-radio-control__label"
+				>
+					{ label }
+				</label>
 			) }
-			<ButtonGroup className={ `kadence-radio-container-control${ wrap ? ' kadence-radio-control-flexwrap' : '' }` }>
+			<ButtonGroup id={ id } className={ `kadence-radio-container-control${ wrap ? ' kadence-radio-control-flexwrap' : '' }` }>
 				{ options.map( ( option, index ) =>
 					<Button
 						key={`${option.label}-${option.value}-${index}`}
