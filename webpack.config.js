@@ -20,7 +20,7 @@ module.exports = {
 		'blocks-image': './src/blocks/image/index.js',
 		'blocks-spacer': './src/blocks/spacer/index.js',
 		'blocks-advanced-btn': './src/blocks/advanced-btn/block.js',
-		'blocks-count-up': './src/blocks/count-up/block.js',
+		'blocks-count-up': './src/blocks/countup/block.js',
 		'blocks-row-layout': './src/blocks/row-layout/index.js',
 		'blocks-column': './src/blocks/column/index.js',
 		'blocks-advanced-heading': './src/blocks/advanced-heading/block.js',
