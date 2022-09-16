@@ -304,22 +304,22 @@ import { __ } from '@wordpress/i18n';
 											{ value: 'wider', size:60, label: __('Lg', 'kadence-blocks' ) },
 										] }
 										value={ {
-											value: ( undefined !== columnGutter ? columnGutter : 'defualt' ),
-											size: ( undefined !== customGutter[0] ? customGutter[0] : 30 ),
+											value: ( undefined !== columnGutter ? columnGutter : 'default' ),
+											size: ( undefined !== customGutter && undefined !== customGutter[0] ? customGutter[0] : 30 ),
 										} }
 										onChange={ ( value, size ) => {
 											setAttributes( { columnGutter: value, customGutter: [ size, ( customGutter[1] ? customGutter[1] : '' ), ( customGutter[2] ? customGutter[2] : '' ) ] } );
 										}}
 										tabletValue={ {
 											value: ( undefined !== tabletGutter ? tabletGutter : '' ),
-											size: ( undefined !== customGutter[1] ? customGutter[1] : '' ),
+											size: ( undefined !== customGutter && undefined !== customGutter[1] ? customGutter[1] : '' ),
 										} }
 										onChangeTablet={ ( value, size ) => {
 											setAttributes( { tabletGutter: value, customGutter: [ ( customGutter[0] ? customGutter[0] : '' ), size, ( customGutter[2] ? customGutter[2] : '' ) ] } );
 										}}
 										mobileValue={ {
 											value: ( undefined !== mobileGutter ? mobileGutter : '' ),
-											size: ( undefined !== customGutter[2] ? customGutter[2] : '' ),
+											size: ( undefined !== customGutter && undefined !== customGutter[2] ? customGutter[2] : '' ),
 										} }
 										onChangeMobile={ ( value, size ) => {
 											setAttributes( { mobileGutter: value, customGutter: [ ( customGutter[0] ? customGutter[0] : '' ), ( customGutter[1] ? customGutter[1] : '' ), size ] } );

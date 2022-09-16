@@ -24,7 +24,7 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
 	attributes,
 	previewDevice,
 } ) {
-	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, tabletOverlay,  mobileOverlay, overlaySecondOpacity, overlayFirstOpacity } = attributes;
+	const { uniqueID, columns, mobileLayout, currentTab, colLayout, tabletLayout, columnGutter, collapseGutter, collapseOrder, topPadding, bottomPadding, leftPadding, rightPadding, topPaddingM, bottomPaddingM, leftPaddingM, rightPaddingM, topMargin, bottomMargin, topMarginM, bottomMarginM, bgColor, bgImg, bgImgAttachment, bgImgSize, bgImgPosition, bgImgRepeat, bgImgID, verticalAlignment, overlayOpacity, overlayBgImg, overlayBgImgAttachment, overlayBgImgID, overlayBgImgPosition, overlayBgImgRepeat, overlayBgImgSize, currentOverlayTab, overlayBlendMode, overlayGradAngle, overlayGradLoc, overlayGradLocSecond, overlayGradType, overlay, overlaySecond, tabletOverlay,  mobileOverlay, overlaySecondOpacity, overlayFirstOpacity, overlayGradient } = attributes;
 	// Overlay Color.
 	const previewOverlayColor = getPreviewSize( previewDevice, ( overlay ? KadenceColorOutput( overlay, ( undefined !== overlayFirstOpacity && '' !== overlayFirstOpacity ? overlayFirstOpacity : 1 ) ) : undefined ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlay && tabletOverlay[0].enable ? KadenceColorOutput( tabletOverlay[0].overlay ) : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlay && mobileOverlay[0].enable ? KadenceColorOutput( mobileOverlay[0].overlay ) : '' ) );
 	const previewOverlaySecondColor = getPreviewSize( previewDevice, ( overlaySecond ? KadenceColorOutput( overlaySecond, ( undefined !== overlaySecondOpacity && '' !== overlaySecondOpacity ? overlaySecondOpacity : 1 ) ) : undefined ), KadenceColorOutput( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlaySecond && tabletOverlay[0].enable ? tabletOverlay[0].overlaySecond : '' ), KadenceColorOutput( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlaySecond && mobileOverlay[0].enable ? mobileOverlay[0].overlaySecond : '' ) );
@@ -46,9 +46,10 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
 	const previewOverlayGradLoc = getPreviewSize( previewDevice, ( overlayGradLoc ? overlayGradLoc : 0 ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayGradLoc && tabletOverlay[0].enable ? tabletOverlay[0].overlayGradLoc : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayGradLoc && mobileOverlay[0].enable ? mobileOverlay[0].overlayGradLoc : '' ) );
 
 	const previewOverlayGradLocSecond = getPreviewSize( previewDevice, ( undefined !== overlayGradLocSecond ? overlayGradLocSecond : 100 ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].overlayGradLocSecond && tabletOverlay[0].enable ? tabletOverlay[0].overlayGradLocSecond : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].overlayGradLocSecond && mobileOverlay[0].enable ? mobileOverlay[0].overlayGradLocSecond : '' ) );
+	const previewOverlayGradient = getPreviewSize( previewDevice, ( undefined !== overlayGradient ? overlayGradient : '' ), ( undefined !== tabletOverlay && tabletOverlay[0] && tabletOverlay[0].gradient && tabletOverlay[0].enable ? tabletOverlay[0].gradient : '' ), ( undefined !== mobileOverlay && mobileOverlay[0] && mobileOverlay[0].gradient && mobileOverlay[0].enable ? mobileOverlay[0].gradient : '' ) );
 	return (
 		<Fragment>
-			{ ( ! previewCurrentOverlayTab || 'grad' !== previewCurrentOverlayTab ) && (
+			{ ( ! previewCurrentOverlayTab || 'grad' !== previewCurrentOverlayTab || 'gradient' !== previewCurrentOverlayTab ) && (
 				<div className={ `kt-row-layout-overlay kt-row-overlay-normal${ previewOverlayImage && previewOverlayAttachment === 'parallax' ? ' kt-jarallax' : '' }` } data-bg-img-id={ overlayBgImgID } style={ {
 					backgroundColor: ( previewOverlayColor ? previewOverlayColor : undefined ),
 					backgroundImage: ( previewOverlayImage ? previewOverlayImage : undefined ),
@@ -64,6 +65,14 @@ const overlayOpacityOutput = memoize( ( opacity ) => {
 			{ previewCurrentOverlayTab && 'grad' === previewCurrentOverlayTab && (
 				<div className={ 'kt-row-layout-overlay kt-row-overlay-gradient' } data-bg-img-id={ overlayBgImgID } style={ {
 					backgroundImage: ( 'radial' === previewOverlayGradType ? `radial-gradient(at ${ previewOverlayPosition }, ${ ( previewOverlayColor ? previewOverlayColor : '' ) } ${ previewOverlayGradLoc }%, ${ ( previewOverlaySecondColor ? previewOverlaySecondColor : '' ) } ${ previewOverlayGradLocSecond }%)` : `linear-gradient(${ previewOverlayGradAngle }deg, ${ ( previewOverlayColor ? previewOverlayColor : '' ) } ${ previewOverlayGradLoc }%, ${ ( previewOverlaySecondColor ? previewOverlaySecondColor : '' ) } ${ previewOverlayGradLocSecond }%)` ),
+					mixBlendMode:  ( previewOverlayBlendMode ? previewOverlayBlendMode : undefined ),
+					opacity: ( undefined !== previewOverlayOpacity && Number.isInteger( previewOverlayOpacity ) ? overlayOpacityOutput( previewOverlayOpacity ) : undefined ),
+				} }>
+				</div>
+			) }
+			{ previewCurrentOverlayTab && 'gradient' === previewCurrentOverlayTab && (
+				<div className={ 'kt-row-layout-overlay kt-row-overlay-gradient' } data-bg-img-id={ overlayBgImgID } style={ {
+					backgroundImage: previewOverlayGradient ? previewOverlayGradient : undefined,
 					mixBlendMode:  ( previewOverlayBlendMode ? previewOverlayBlendMode : undefined ),
 					opacity: ( undefined !== previewOverlayOpacity && Number.isInteger( previewOverlayOpacity ) ? overlayOpacityOutput( previewOverlayOpacity ) : undefined ),
 				} }>

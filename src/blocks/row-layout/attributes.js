@@ -324,6 +324,7 @@ const attributes = {
 			bgImgAttachment: 'scroll',
 			bgImgRepeat: 'no-repeat',
 			forceOverDesk: false,
+			gradient:'',
 		} ],
 	},
 	tabletOverlay: {
@@ -558,6 +559,14 @@ const attributes = {
 	inQueryBlock: {
 		type: 'boolean',
 		default: false,
+	},
+	gradient: {
+		type: 'string',
+		default: '',
+	},
+	overlayGradient: {
+		type: 'string',
+		default: '',
 	},
 };
 export default attributes;

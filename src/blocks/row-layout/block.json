@@ -654,6 +654,22 @@
 	"inQueryBlock": {
 	  "type": "boolean",
 	  "default": false
+	},
+	"gradient": {
+		"type": "string",
+		"default": ""
+	},
+	"overlayGradient": {
+		"type": "string",
+		"default": ""
+	},
+	"tabletBackgroundType": {
+		"type": "string",
+		"default": "normal"
+	},
+	"mobileBackgroundType": {
+		"type": "string",
+		"default": "normal"
 	}
   },
   "supports": {
