@@ -70,48 +70,36 @@ class Kadence_Blocks_Form_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-//		// Add Label heading font.
-//		if ( isset( $attributes['labelFont'] ) && is_array( $attributes['labelFont'] ) && isset( $attributes['labelFont'][0] ) && is_array( $attributes['labelFont'][0] ) && isset( $attributes['labelFont'][0]['google'] ) && $attributes['labelFont'][0]['google'] && ( ! isset( $attributes['labelFont'][0]['loadGoogle'] ) || true === $attributes['labelFont'][0]['loadGoogle'] ) && isset( $attributes['labelFont'][0]['family'] ) ) {
-//			$label_font = $attributes['labelFont'][0];
-//			$this->add_gfont(
-//				array(
-//					'googleFont'     => ( isset( $label_font['google'] ) ? $label_font['google'] : false ),
-//					'loadGoogleFont' => ( isset( $label_font['loadGoogle'] ) ? $label_font['loadGoogle'] : true ),
-//					'typography'     => ( isset( $label_font['family'] ) ? $label_font['family'] : '' ),
-//					'fontVariant'    => ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' ),
-//					'fontSubset'     => ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' ),
-//					'loadItalic'     => false,
-//				)
-//			);
-//		}
-//		// Add submit font.
-//		if ( isset( $attributes['submitFont'] ) && is_array( $attributes['submitFont'] ) && isset( $attributes['submitFont'][0] ) && is_array( $attributes['submitFont'][0] ) && isset( $attributes['submitFont'][0]['google'] ) && $attributes['submitFont'][0]['google'] && ( ! isset( $attributes['submitFont'][0]['loadGoogle'] ) || true === $attributes['submitFont'][0]['loadGoogle'] ) && isset( $attributes['submitFont'][0]['family'] ) ) {
-//			$submit_font = $attributes['submitFont'][0];
-//			$this->add_gfont(
-//				array(
-//					'googleFont'     => ( isset( $submit_font['google'] ) ? $submit_font['google'] : false ),
-//					'loadGoogleFont' => ( isset( $submit_font['loadGoogle'] ) ? $submit_font['loadGoogle'] : true ),
-//					'typography'     => ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' ),
-//					'fontVariant'    => ( isset( $submit_font['variant'] ) ? $submit_font['variant'] : '' ),
-//					'fontSubset'     => ( isset( $submit_font['subset'] ) ? $submit_font['subset'] : '' ),
-//					'loadItalic'     => false,
-//				)
-//			);
-//		}
-//		// Add Message font.
-//		if ( isset( $attributes['messageFont'] ) && is_array( $attributes['messageFont'] ) && isset( $attributes['messageFont'][0] ) && is_array( $attributes['messageFont'][0] ) && isset( $attributes['messageFont'][0]['google'] ) && $attributes['messageFont'][0]['google'] && ( ! isset( $attributes['messageFont'][0]['loadGoogle'] ) || true === $attributes['messageFont'][0]['loadGoogle'] ) && isset( $attributes['messageFont'][0]['family'] ) ) {
-//			$message_font = $attributes['messageFont'][0];
-//			$this->add_gfont(
-//				array(
-//					'googleFont'     => ( isset( $message_font['google'] ) ? $message_font['google'] : false ),
-//					'loadGoogleFont' => ( isset( $message_font['loadGoogle'] ) ? $message_font['loadGoogle'] : true ),
-//					'typography'     => ( isset( $message_font['family'] ) ? $message_font['family'] : '' ),
-//					'fontVariant'    => ( isset( $message_font['variant'] ) ? $message_font['variant'] : '' ),
-//					'fontSubset'     => ( isset( $message_font['subset'] ) ? $message_font['subset'] : '' ),
-//					'loadItalic'     => false,
-//				)
-//			);
-//		}
+		// Add Label heading font.
+		if ( isset( $attributes['labelFont'] ) && is_array( $attributes['labelFont'] ) && isset( $attributes['labelFont'][0] ) && is_array( $attributes['labelFont'][0] ) && isset( $attributes['labelFont'][0]['google'] ) && $attributes['labelFont'][0]['google'] && ( ! isset( $attributes['labelFont'][0]['loadGoogle'] ) || true === $attributes['labelFont'][0]['loadGoogle'] ) && isset( $attributes['labelFont'][0]['family'] ) ) {
+			$label_font = $attributes['labelFont'][0];
+
+			$font_family = ( isset( $label_font['family'] ) ? $label_font['family'] : '' );
+			$font_variant = ( isset( $label_font['variant'] ) ? $label_font['variant'] : '' );
+			$font_subset  = ( isset( $label_font['subset'] ) ? $label_font['subset'] : '' );
+
+			$css->maybe_add_google_font( $font_family, $font_variant, $font_subset );
+		}
+		// Add submit font.
+		if ( isset( $attributes['submitFont'] ) && is_array( $attributes['submitFont'] ) && isset( $attributes['submitFont'][0] ) && is_array( $attributes['submitFont'][0] ) && isset( $attributes['submitFont'][0]['google'] ) && $attributes['submitFont'][0]['google'] && ( ! isset( $attributes['submitFont'][0]['loadGoogle'] ) || true === $attributes['submitFont'][0]['loadGoogle'] ) && isset( $attributes['submitFont'][0]['family'] ) ) {
+			$submit_font = $attributes['submitFont'][0];
+
+			$font_family = ( isset( $submit_font['family'] ) ? $submit_font['family'] : '' );
+			$font_variant = ( isset( $submit_font['variant'] ) ? $submit_font['variant'] : '' );
+			$font_subset  = ( isset( $submit_font['subset'] ) ? $submit_font['subset'] : '' );
+
+			$css->maybe_add_google_font( $font_family, $font_variant, $font_subset );
+		}
+		// Add Message font.
+		if ( isset( $attributes['messageFont'] ) && is_array( $attributes['messageFont'] ) && isset( $attributes['messageFont'][0] ) && is_array( $attributes['messageFont'][0] ) && isset( $attributes['messageFont'][0]['google'] ) && $attributes['messageFont'][0]['google'] && ( ! isset( $attributes['messageFont'][0]['loadGoogle'] ) || true === $attributes['messageFont'][0]['loadGoogle'] ) && isset( $attributes['messageFont'][0]['family'] ) ) {
+			$message_font = $attributes['messageFont'][0];
+
+			$font_family = ( isset( $message_font['family'] ) ? $message_font['family'] : '' );
+			$font_variant = ( isset( $message_font['variant'] ) ? $message_font['variant'] : '' );
+			$font_subset  = ( isset( $message_font['subset'] ) ? $message_font['subset'] : '' );
+
+			$css->maybe_add_google_font( $font_family, $font_variant, $font_subset );
+		}
 
 
 		if ( isset( $attributes['containerMargin'] ) && is_array( $attributes['containerMargin'] ) ) {
