@@ -8,6 +8,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
+import { get } from 'lodash';
 
 /**
  * Import Icons
@@ -269,8 +270,9 @@ function KadenceCountdown( { attributes, setAttributes, className, clientId, isN
 		} );
 	};
 	const saveDate = ( value ) => {
-		const theTimezone = ( settings.timezone && settings.timezone.string ? settings.timezone.string : '' );
-		const theTimeOffset = ( settings.timezone && settings.timezone.offset ? settings.timezone.offset : 0 );
+		const theTimezone = get( dateSettings, ['timezone', 'string' ], '');
+		const theTimeOffset = get( dateSettings, ['timezone', 'offset' ], 0);
+
 		const theSiteTimezoneTimestamp = getTimestamp( value, theTimeOffset );
 		setAttributes( {
 			date      : value,

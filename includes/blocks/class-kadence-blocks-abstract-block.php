@@ -1,6 +1,6 @@
 <?php
 /**
- * Class to Build the Icon Block.
+ * Abstract Class to Build Blocks.
  *
  * @package Kadence Blocks
  */

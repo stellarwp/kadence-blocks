@@ -59,12 +59,12 @@ function kadence_gutenberg_editor_assets() {
 
 	$blocks = array(
 		'accordion',
-		'advanced-btn',
-		'advanced-gallery',
+		'advancedbtn',
+		'advancedgallery',
 		'advanced-heading',
 		'advanced-form',
 		'column',
-		'count-up',
+		'countup',
 		'countdown',
 		'form',
 		'googlemaps',

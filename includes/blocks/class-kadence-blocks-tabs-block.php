@@ -335,10 +335,7 @@ class Kadence_Blocks_Tabs_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		/* If this isn't an AMP request */
-		if ( !function_exists( 'is_amp_endpoint' ) || ( function_exists( 'is_amp_endpoint' ) && !is_amp_endpoint()) ) {
-			wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kt-tabs.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
-		}
+		wp_register_script( 'kadence-blocks-' . $this->block_name, KADENCE_BLOCKS_URL . 'includes/assets/js/kt-tabs.min.js', array( 'jquery' ), KADENCE_BLOCKS_VERSION, true );
 
 	}
 

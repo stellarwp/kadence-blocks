@@ -119,10 +119,6 @@ class Kadence_Blocks_Testimonials_Block extends Kadence_Blocks_Abstract_Block {
 			$css->set_selector( '.kt-blocks-testimonials-wrap' . $unique_id . ' .kt-blocks-carousel .kt-blocks-testimonial-carousel-item' );
 		}
 
-//		echo '<pre>';
-//		print_r($attributes['wrapperPadding']);
-//		die();
-
 		// Desktop wrapper padding T/B
 		if ( isset( $attributes['wrapperPadding'][0] ) && is_numeric( $attributes['wrapperPadding'][0] ) ) {
 			$css->add_property( 'padding-top', $attributes['wrapperPadding'][0] . $wrapper_padding_type );

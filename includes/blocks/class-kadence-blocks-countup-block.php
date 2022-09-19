@@ -58,6 +58,29 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 	 */
 	public function build_css( $attributes, $css, $unique_id ) {
 
+		$this->enqueue_script( 'kadence-countup' );
+		$this->enqueue_script( 'countup' );
+
+		// Add title font
+		if ( isset( $attributes['titleFont'] ) && is_array( $attributes['titleFont'] ) && isset( $attributes['titleFont'][0] ) && is_array( $attributes['titleFont'][0] ) && isset( $attributes['titleFont'][0]['google'] ) && $attributes['titleFont'][0]['google'] && ( ! isset( $attributes['titleFont'][0]['loadGoogle'] ) || true === $attributes['titleFont'][0]['loadGoogle'] ) &&  isset( $attributes['titleFont'][0]['family'] ) ) {
+			$title_font = $attributes['titleFont'][0];
+
+			$font_variant = ( ! empty( $title_font['variant'] ) ? array( $title_font['variant'] ) : '' );
+			$font_subset  = ( ! empty( $title_font['subset'] ) ? array( $title_font['subset'] ) : '' );
+
+			$css->maybe_add_google_font( $title_font['family'], $font_variant, $font_subset );
+		}
+
+		// Add number font
+		if ( isset( $attributes['numberFont'] ) && is_array( $attributes['numberFont'] ) && isset( $attributes['numberFont'][0] ) && is_array( $attributes['numberFont'][0] ) && isset( $attributes['numberFont'][0]['google'] ) && $attributes['numberFont'][0]['google'] && ( ! isset( $attributes['numberFont'][0]['loadGoogle'] ) || true === $attributes['numberFont'][0]['loadGoogle'] ) &&  isset( $attributes['numberFont'][0]['family'] ) ) {
+			$numbeer_font = $attributes['numberFont'][0];
+
+			$font_variant = ( ! empty( $numbeer_font['variant'] ) ? array( $numbeer_font['variant'] ) : '' );
+			$font_subset  = ( ! empty( $numbeer_font['subset'] ) ? array( $numbeer_font['subset'] ) : '' );
+
+			$css->maybe_add_google_font( $numbeer_font['family'], $font_variant, $font_subset );
+		}
+
 		$css->set_style_id( 'kb-' . $this->block_name . $unique_id );
 
 		if ( isset( $attributes['titleColor'] ) || isset( $attributes['titleFont'] ) ) {
@@ -461,9 +484,6 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 			}
 		}
 
-		wp_enqueue_script( 'kadence-count-up' );
-		wp_enqueue_script( 'countup' );
-
 		return $css->css_output();
 	}
 
@@ -473,7 +493,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 	public function register_scripts() {
 
 		// Skip calling parent because this block does not have a dedicated CSS file.
-		//parent::register_scripts();
+//		parent::register_scripts();
 
 		// If in the backend, bail out.
 		if ( is_admin() ) {
@@ -483,7 +503,7 @@ class Kadence_Blocks_Countup_Block extends Kadence_Blocks_Abstract_Block {
 			return;
 		}
 
-		wp_register_script( 'kadence-count-up', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-countup.min.js', array( 'countup' ), KADENCE_BLOCKS_VERSION, true );
+		wp_register_script( 'kadence-countup', KADENCE_BLOCKS_URL . 'includes/assets/js/kb-countup.min.js', array( 'countup' ), KADENCE_BLOCKS_VERSION, true );
 		wp_register_script( 'countup', KADENCE_BLOCKS_URL . 'includes/assets/js/countUp.min.js', array(), KADENCE_BLOCKS_VERSION, true );
 
 	}

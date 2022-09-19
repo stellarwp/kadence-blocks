@@ -271,12 +271,6 @@ class Kadence_Blocks_Advanced_Form_Block extends Kadence_Blocks_Abstract_Block {
 			$css->add_property( 'width', '100%');
 		}
 
-		if ( isset( $_GET['die'] ) && $_GET['die'] == 1 ) {
-			echo '<pre>';
-			print_r( $form_attributes );
-			die();
-		}
-
 
 		return $css->css_output();
 	}
